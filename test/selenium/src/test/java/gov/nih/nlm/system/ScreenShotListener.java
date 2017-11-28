@@ -8,6 +8,10 @@ import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
+//import javax.imageio.ImageIO;
+//import ru.yandex.qatools.ashot.AShot;
+//import ru.yandex.qatools.ashot.Screenshot;
+//import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +30,10 @@ public class ScreenShotListener extends TestListenerAdapter {
         System.out.println("Test Fail: " + methodName);
         if (!itr.isSuccess()) {
             try {
+
+//                Screenshot fpScreenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(1000)).takeScreenshot(driver);
+//                ImageIO.write(fpScreenshot.getImage(),"PNG", new File("build/screenshots/" + methodName + "_" + formater.format(calendar.getTime()) + ".png"));
+
                 File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                 FileUtils.copyFile(scrFile,
                         new File("build/screenshots/" + methodName + "_" + formater.format(calendar.getTime()) + ".png"));

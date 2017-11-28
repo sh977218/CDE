@@ -13,10 +13,21 @@ import { FormattedValue } from 'core/models.model';
     selector: "cde-form-description-question-detail",
     templateUrl: "formDescriptionQuestionDetail.component.html"
 })
-export class FormDescriptionQuestionDetailComponent implements OnInit {
-    @Input() elt: CdeForm;
+export class FormDescriptionQuestionDetailComponent {
     @Input() canEdit: boolean = false;
-    @Input() node: TreeNode;
+
+    @Input() set node(node: TreeNode) {
+        this.question = node.data;
+        this.parent = node.parent.data;
+        if (!this.question.instructions)
+            this.question.instructions = new FormattedValue;
+        if (!this.question.skipLogic)
+            this.question.skipLogic = new SkipLogic;
+        if (!this.question.question.uoms)
+            this.question.question.uoms = [];
+        if (this.question.question.uoms) this.validateUoms(this.question.question);
+    };
+
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
@@ -79,7 +90,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 }
             });
         };
-
         this.nameSelectModal.okSelect = (naming = null) => {
             if (!naming) {
                 this.nameSelectModal.question.label = "";
@@ -94,17 +104,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         };
     }
 
-    ngOnInit() {
-        this.question = this.node.data;
-        this.parent = this.node.parent.data;
-        if (!this.question.instructions)
-            this.question.instructions = new FormattedValue;
-        if (!this.question.skipLogic)
-            this.question.skipLogic = new SkipLogic;
-        if (!this.question.question.uoms)
-            this.question.question.uoms = [];
-    }
-
     checkAnswers(answers) {
         let newAnswers = (Array.isArray(answers.value) ? answers.value.filter(answer => answer !== "") : []);
         if (!_.isEqual(this.answersSelected, newAnswers)) {
@@ -114,11 +113,24 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
+    validateUoms(question) {
+        question.uomsValid = [question.uoms.length];
+        question.uoms.forEach((uom, i) => {
+            this.http.get('https://clin-table-search.lhc.nlm.nih.gov/api/ucum/v3/search?q=is_simple:true%20AND%20category:Clinical&df=cs_code,name,guidance&authenticity_token=&terms=' + encodeURIComponent(uom)).map(r => r.json())
+                .subscribe(r => {
+                    r[3].forEach(unit => {
+                        if (unit[1] === uom || unit[0] === uom) question.uomsValid[i] = true;
+                    })
+                });
+        });
+    }
+
     checkUom(uoms) {
         let newUoms = (Array.isArray(uoms.value) ? uoms.value.filter(uom => uom !== "") : []);
         if (!_.isEqual(this.question.question.uoms, newUoms)) {
             this.question.question.uoms = newUoms;
             this.stageElt.emit();
+            this.validateUoms(this.question.question);
         }
     }
 
@@ -176,10 +188,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.nameSelectModal.checkAndUpdateLabel(section);
 
         this.nameSelectModalRef = this.modalService.open(this.formDescriptionNameSelectTmpl, {size: "lg"});
-        this.nameSelectModalRef.result.then(result => {
-            this.stageElt.emit();
-        }, () => {
-        });
+        this.nameSelectModalRef.result.then(() => this.stageElt.emit(), () => {});
     }
 
     removeNode(node) {
