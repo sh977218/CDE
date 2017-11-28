@@ -16,6 +16,7 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
+        textPresent("NHLBI");
         findElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//input")).sendKeys("canYouSeeThis");
         findElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//input")).sendKeys(Keys.RETURN);
         textPresent("Org Updated");
