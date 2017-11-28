@@ -48,7 +48,7 @@
             </li>
         </ul>
         <div class="navbar-nav ml-auto">
-            <ul class="navbar-nav float-right">
+            <ul class="navbar-nav float-right" attr.data-userloaded="loaded-{{userService.user?true:false}}">
                 <li class="nav-item">
                     <a routerLink="/inbox" id="user_inbox" class="dropdown-item" *ngIf="userService.user?.hasMail">
                         <i id="incomingMessage" class="fa fa-envelope text-danger"></i>
@@ -59,8 +59,7 @@
                        routerLink="/login">
                         Log In</a>
                 </li>
-                <li class="nav-item dropdown" *ngIf="userService.user?._id"
-                    attr.data-userloaded="loaded-{{userService.user?true:false}}">
+                <li class="nav-item dropdown" *ngIf="userService.user?._id">
                     <a id="username_link" class="nav-link dropdown-toggle" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false"
                        [textContent]="userService.user?.username | cdeTruncateLongName"></a>
