@@ -18,6 +18,8 @@ const gulp = require('gulp'),
 require('es6-promise').polyfill();
 
 gulp.task('npm', function () {
+    run('node --version').exec();
+    run('npm --version').exec();
     return gulp.src(['./package.json'])
         .pipe(install());
 });
