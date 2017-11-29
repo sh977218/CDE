@@ -11,7 +11,6 @@ export class DatasetsComponent {
     @ViewChild("datasetsContent") public datasetsContent: NgbModalModule;
     @Input() public elt: any;
     public modalRef: NgbModalRef;
-
     constructor(public modalService: NgbModal,
                 public activeModal: NgbActiveModal) {
 
