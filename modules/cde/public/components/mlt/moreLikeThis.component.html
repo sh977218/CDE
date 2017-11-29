@@ -16,46 +16,60 @@
 
                 <cde-pin-board-modal #mltPinModal module="cde"></cde-pin-board-modal>
 
-                <ngb-accordion id="mltAccordion">
-                    <ngb-panel *ngFor="let cde of cdes; let i = index">
-                        <ng-template ngbPanelTitle>
-                            <a class="nonLinkAnchor hand-cursor" id="acc_link_{{i}}">{{cde.primaryNameCopy}}</a>
-                            <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link" id="eyeLink_{{i}}"
-                               (click)="$event.stopPropagation(); view(cde)" tabindex="0"></i>
-                            <i id="pinToBoard_{{i}}" class="fa fa-thumb-tack hand-cursor"
-                               title="Attach to Board" role="link" tabindex="0"
-                               (click)="$event.stopPropagation(); mltPinModal.pinOne(cde, mltPinModal.open())"></i>
-                            <cde-pin-quickboard [elt]="cde" [eltIndex]="i"></cde-pin-quickboard>
-                        </ng-template>
-                        <ng-template ngbPanelContent>
-                            <div class="col-lg-4 col-sm-12 col-12">
-                                <cde-cde-general-details [elt]="cde"></cde-cde-general-details>
+                <div id="mltAccordion">
+                    <div class="card" *ngFor="let cde of cdes;let index = index;">
+                        <div class="card-header">
+                            <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed"> {{cde.naming[0].designation}}</span>
+                            <i class="fa fa-eye hand-cursor" (click)="viewDe(cde);"></i>
+                            <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
+                            <cde-pin-quickboard [elt]="cde" [eltIndex]="index"></cde-pin-quickboard>
+                        </div>
+                        <div class="card-block" [ngbCollapse]="!cde.isCollapsed">
+                            <div class="row">
+                                <div class="col-4">
+                                    <dl class="row">
+                                        <dt class="col-sm-3">Steward:</dt>
+                                        <dd class="col-sm-9">{{cde.stewardOrg.name}}</dd>
+                                        <dt class="col-sm-3">Source:</dt>
+                                        <dd class="col-sm-9">{{cde.source}}</dd>
+                                    </dl>
+                                </div>
+                                <div class="col-4" *ngIf="cde.valueDomain.permissibleValues.length > 0">
+                                    <table class="table-bordered">
+                                        <tr>
+                                            <th>Value</th>
+                                            <th>Code Name</th>
+                                            <th>Code</th>
+                                        </tr>
+                                        <tr *ngFor="let pv of cde.valueDomain.permissibleValues">
+                                            <td>{{pv.permissibleValue}}</td>
+                                            <td>{{pv.valueMeaningName}}
+                                            <td>{{pv.valueMeaningCode}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-4" *ngIf="cde.ids.length > 0">
+                                    <table class="table-bordered">
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Version</th>
+                                            <th>Source</th>
+                                        </tr>
+                                        <tr *ngFor="let id of cde.ids">
+                                            <td>{{id.id}}</td>
+                                            <td>{{id.version}}
+                                            <td>{{id.source}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
-                            <div class="col-lg-4 col-sm-6 col-12">
-                                <cde-value-domain-summary [elt]="cde"></cde-value-domain-summary>
-                            </div>
-                            <div class="col-lg-4 col-sm-6 col-12">
-                                <table *ngIf="cde.ids.length > 0" class="table cdeTable" summary="Identifiers List">
-                                    <tr>
-                                        <th id="id" class="col-6">Id</th>
-                                        <th id="version" class="col-2">Vers.</th>
-                                        <th id="source" class="col-4">Src.</th>
-                                    </tr>
-                                    <tr *ngFor="let id of elt.ids">
-                                        <td headers="id" class="col-6">{{id.id}}</td>
-                                        <td headers="version" class="col-2">{{id.version}}</td>
-                                        <td headers="source" class="col-4">{{id.source}}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </ng-template>
-                    </ngb-panel>
-                </ngb-accordion>
-
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-secondary" id="closeMoreLikeThisBtn" (click)="modalRef.dismiss()">Close</button>
+        <button class="btn btn-secondary" id="closeMoreLikeThisBtn" (click)="d();">Close</button>
     </div>
 </ng-template>

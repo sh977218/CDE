@@ -41,8 +41,10 @@
     <div id="accordionList">
         <h2>CDE Viewing History</h2>
         <div class="card" *ngFor="let cde of cdes;let index = index;">
-            <div class="card-header" (click)="cde.isCollapsed = !cde.isCollapsed">
-                {{cde.naming[0].designation}}
+            <div class="card-header">
+                <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed">
+                    {{cde.naming[0].designation}}
+                </span>
                 <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
                 <cde-pin-quickboard [elt]="cde" [eltIndex]="index"></cde-pin-quickboard>
             </div>
@@ -93,8 +95,10 @@
     <div id="formAccordionList">
         <h2>Form Viewing History</h2>
         <div class="card" *ngFor="let form of forms;let index = index;">
-            <div class="card-header" (click)="form.isCollapsed = !form.isCollapsed">
-                {{form.naming[0].designation}}
+            <div class="card-header">
+                <span class="hand-cursor" (click)="form.isCollapsed = !form.isCollapsed">
+                    {{form.naming[0].designation}}
+                </span>
                 <cde-pin-board [elt]="form" [eltIndex]="index" [module]="'form'"></cde-pin-board>
                 <cde-pin-quickboard [elt]="form" [eltIndex]="index"></cde-pin-quickboard>
             </div>
