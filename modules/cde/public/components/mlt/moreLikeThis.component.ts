@@ -38,7 +38,7 @@ export class MoreLikeThisComponent {
         this.modalRef = this.modalService.open(this.mltModal, {size: "lg"});
     }
 
-    static view (cde) {
+    view (cde) {
         window.open("deView?tinyId=" + cde.tinyId);
     };
 
