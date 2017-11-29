@@ -11,6 +11,7 @@ const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
 const mongo_data = require('../../../modules/system/node-js/mongo-data');
 
 const UOM_MAP = {
+    '': '',
     'Centimeter': 'cm',
     'Day': 'd',
     'Gram': 'g',
@@ -255,6 +256,7 @@ function rowToDataElement(row, cb) {
 
     let unitOfMeasure = getCell(row, 'Unit of Measure');
     if (unitOfMeasure) {
+        unitOfMeasure = unitOfMeasure.trim();
         de.valueDomain.uom = UOM_MAP[unitOfMeasure];
         ALL_UOM.add(unitOfMeasure);
     }
