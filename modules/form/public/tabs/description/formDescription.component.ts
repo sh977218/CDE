@@ -24,6 +24,9 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
     templateUrl: "formDescription.component.html",
     animations: [copySectionAnimation],
     styles: [`
+        :host >>> .tree {
+            cursor: default;
+        }
         :host >>> .panel {
             margin-bottom: 1px;
         }

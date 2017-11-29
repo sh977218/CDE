@@ -42,174 +42,152 @@
             Show if: {{question.skipLogic.condition}}
         </span>
     </div>
-    <div *ngIf="question.instructions?.value" class="questionInstruction">
-        <span class="formViewQuestionLabel">Instructions:</span>
-        <span *ngIf="question.instructions.valueFormat === 'html'"
-              [innerHtml]="question.instructions.value"></span>
-        <span *ngIf="question.instructions.valueFormat !== 'html'" [textContent]="question.instructions.value"></span>
-    </div>
-    <div class="answerList" *ngIf="question.question.answers && question.question.answers.length > 0">
-        <span class="formViewQuestionLabel">Answer Choices:</span>
-        <span *ngFor="let pv of question.question.answers" style="margin-right: -3px">
-            <span class="badge badge-default formViewSummaryLabel" style="background-color: #666"
-                  [textContent]="pv?.valueMeaningName"></span>
-        </span>
-    </div>
-    <div *ngIf="question.question.defaultAnswer && question.question.defaultAnswer.length > 0" class="defaultAnswer">
-        <span class="formViewQuestionLabel">Default Answer:</span>
-        <span class="badge badge-default formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
-    </div>
-    <div *ngIf="question.question.uoms.length > 0" class="questionUom">
-        <span class="formViewQuestionLabel">Units of Measure:</span>
-        <span *ngFor="let uom of question.question.uoms; let index = index"
-              class="badge badge-info  formViewSummaryLabel"
-              [ngClass]="{'label-danger': (question.question.uomsValid && !question.question.uomsValid[index])}">
-            <span [textContent]="uom"></span>
-            <span *ngIf="question.question.uomsValid && !question.question.uomsValid[index]">&nbsp;(invalid)</span>
-        </span>
-    </div>
+    <dl class="row">
+        <ng-container *ngIf="question.instructions?.value">
+            <dt class="col-sm-2">Instructions:</dt>
+            <dd class="col-sm-10">
+            <span *ngIf="question.instructions.valueFormat === 'html'"
+                  [innerHtml]="question.instructions.value"></span>
+                <span *ngIf="question.instructions.valueFormat !== 'html'"
+                      [textContent]="question.instructions.value"></span>
+            </dd>
+        </ng-container>
+        <ng-container *ngIf="question.question.answers && question.question.answers.length > 0">
+            <dt class="col-sm-2">Answer Choices:</dt>
+            <dd class="col-sm-10">
+                <ng-container *ngFor="let pv of question.question.answers">
+                    <span class="badge badge-default formViewSummaryLabel" style="background-color: #666"
+                          [textContent]="pv?.valueMeaningName"></span>
+                </ng-container>
+            </dd>
+        </ng-container>
+        <ng-container *ngIf="question.question.defaultAnswer && question.question.defaultAnswer.length > 0">
+            <dt class="col-sm-2">Default Answer:</dt>
+            <dd class="col-sm-10">
+                <span class="badge badge-default formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
+            </dd>
+        </ng-container>
+        <ng-container *ngIf="question.question.uoms.length > 0">
+            <dt class="col-sm-2">Units of Measure:</dt>
+            <dd class="col-sm-10">
+                <span *ngFor="let uom of question.question.uoms; let index = index"
+                      class="badge badge-info  formViewSummaryLabel"
+                      [ngClass]="{'label-danger': (question.question.uomsValid && !question.question.uomsValid[index])}">
+                    <span [textContent]="uom"></span>
+                    <span *ngIf="question.question.uomsValid && !question.question.uomsValid[index]">&nbsp;(invalid)</span>
+                </span>
+            </dd>
+        </ng-container>
+    </dl>
 </ng-template>
 
 <ng-template #formDescriptionQuestionEditTmpl>
-    <div class="row">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Label:</div>
-        <div class="col-sm-9 col-12">
+    <dl class="row">
+        <dt class="col-sm-2">Label:</dt>
+        <dd class="col-sm-10">
             <i class="fa fa-pencil changeQuestionLabelIcon" title="Change question label"
                (click)="openNameSelect(question, parent)"></i>
             <span *ngIf="!question.hideLabel">{{question.label}}</span>
             <span *ngIf="question.hideLabel">(No label)</span>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Instructions:
-        </div>
-        <div class="col-sm-9 col-12 editQuestionInstructionIcon" *ngIf="question.edit">
+        </dd>
+        <dt class="col-sm-2">Instructions:</dt>
+        <dd class="col-sm-10">
             <cde-inline-area-edit
                     [(model)]="question.instructions.value"
                     [(defFormat)]="question.instructions.valueFormat"
                     [isAllowed]="true" (modelChange)="stageElt.emit()">
             </cde-inline-area-edit>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Required:</div>
-        <div class="col-1">
+        </dd>
+        <dt class="col-sm-2">Required:</dt>
+        <dd class="col-sm-10">
             <input type="checkbox" title="Required" [(ngModel)]="question.question.required"
                    (change)="stageElt.emit()"/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Invisible:</div>
-        <div class="col-1">
+        </dd>
+        <dt class="col-sm-2">Invisible:</dt>
+        <dd class="col-sm-10">
             <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible"
                    (change)="stageElt.emit()">
-        </div>
-    </div>
-    <div class="row" *ngIf="parent">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Show if:</div>
-        <div class="col-sm-9 col-12 skipLogicEditTextarea"
-             [ngClass]="{'has-error':question.skipLogic?.validationError}">
-            <input #slInput type="text" title="Show if"
-                   (focus)="slOptionsRetrigger()"
-                   [ngModel]="question.skipLogic.condition"
-                   (ngModelChange)="validateSkipLogic(question.skipLogic, parent.formElements, $event);"
-                   class="form-control skipLogicCondition"
-                   placeholder="Start typing a question name to find options"
-                   [ngbTypeahead]="getSkipLogicOptions"
-                   (selectItem)="validateSkipLogic(question.skipLogic, parent.formElements, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
-            <span [textContent]="question.skipLogic?.validationError"></span>
-        </div>
-    </div>
-    <div class="row mt-1">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Units of
-            Measure:
-        </div>
-        <div class="col-sm-9 col-12">
+        </dd>
+        <ng-container *ngIf="parent">
+            <dt class="col-sm-2">Show if:</dt>
+            <dd class="col-sm-10" [ngClass]="{'has-error':question.skipLogic?.validationError}">
+                <input #slInput type="text" title="Show if"
+                       (focus)="slOptionsRetrigger()"
+                       [ngModel]="question.skipLogic.condition"
+                       (ngModelChange)="validateSkipLogic(question.skipLogic, parent.formElements, $event);"
+                       class="form-control skipLogicCondition"
+                       placeholder="Start typing a question name to find options"
+                       [ngbTypeahead]="getSkipLogicOptions"
+                       (selectItem)="validateSkipLogic(question.skipLogic, parent.formElements, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
+                <span [textContent]="question.skipLogic?.validationError"></span>
+            </dd>
+        </ng-container>
+        <dt class="col-sm-2">Units of Measure:</dt>
+        <dd class="col-sm-10">
             <select2 class="formDescriptionUoms" [data]="getUoms()" [value]="question.question.uoms"
                      [options]="uomOptions" width="100%"
                      (valueChanged)="checkUom($event)">
             </select2>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Datatype:</div>
-        <div class="col-sm-9 col-12">
-            {{question.question.datatype | cdePlaceholder }}
-        </div>
-    </div>
-    <div *ngIf="question.question.datatype === 'Text'" class="row">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Min Length:</div>
-        <div class="col-sm-9 col-12">
-            {{question.question?.datatypeText?.minLength | cdePlaceholder }}
-        </div>
-        <div class="clear"></div>
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Max Length:</div>
-        <div class="col-sm-9 col-12">
-            {{question.question?.datatypeText?.maxLength}}
-        </div>
-    </div>
-    <div *ngIf="question.question.datatype === 'Number'" class="row">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Min Value:</div>
-        <div class="col-sm-9 col-12">
-            {{question.question?.datatypeNumber?.minValue | cdePlaceholder }}
-        </div>
-        <div class="clear"></div>
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Max Value:</div>
-        <div class="col-sm-9 col-12">
-            {{question.question?.datatypeNumber?.maxValue | cdePlaceholder }}
-        </div>
-    </div>
-    <div *ngIf="question.question.datatype === 'Date'" class="row">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Date Format:
-        </div>
-        <div class="col-sm-9 col-12">
-            {{question.question?.datatypeDate?.format}}
-        </div>
-    </div>
-    <div *ngIf="question.question.datatype === 'Value List'" class="row">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">
-            Multiple Selections:
-        </div>
-        <div class="col-1">
-            <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect"
-                   (change)="stageElt.emit()"/>
-        </div>
-    </div>
-    <div *ngIf="question.question.datatype === 'Value List'" class="row">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">
-            Answer List:
-        </div>
-        <div class="col-sm-9 col-12 mb-2">
-            <select2 class="formDescriptionAnswerList" [data]="getAnswersData()" [value]="getAnswersValue()"
-                     [options]="answersOptions" width="100%"
-                     (valueChanged)="checkAnswers($event)">
-            </select2>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">
-            Default Answer:
-        </div>
-        <div *ngIf="question.question.datatype === 'Value List'" class="col-sm-9 col-12">
-            <select title="Default" class="form-control defaultAnswer"
-                    [(ngModel)]="question.question.defaultAnswer" (change)="stageElt.emit()">
-                <option value=""></option>
-                <option *ngFor="let pv of question.question.answers " [value]="pv.permissibleValue"
-                        [textContent]="pv?.valueMeaningName"></option>
-            </select>
-        </div>
-        <div *ngIf="question.question.datatype !== 'Value List'" class="col-sm-9 col-12 defaultAnswer">
-            <cde-inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true"
-                             (modelChange)="stageElt.emit()"></cde-inline-edit>
-        </div>
-    </div>
-    <div *ngIf="question.question.defaultAnswer" class="row">
-        <div class="col-sm-3 col-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Editable:</div>
-        <div class="col-1">
-            <input type="checkbox" title="Editable" [(ngModel)]="question.question.editable"
-                   (change)="stageElt.emit()"/>
-        </div>
-    </div>
+        </dd>
+        <dt class="col-sm-2">Datatype:</dt>
+        <dd class="col-sm-10">{{question.question.datatype | cdePlaceholder }}</dd>
+        <ng-container *ngIf="question.question.datatype === 'Text'">
+            <dt class="col-sm-2">Min Length:</dt>
+            <dd class="col-sm-10"> {{question.question?.datatypeText?.minLength | cdePlaceholder }}</dd>
+            <dt class="col-sm-2">Max Length:</dt>
+            <dd class="col-sm-10"> {{question.question?.datatypeText?.maxLength}}</dd>
+            <dt class="col-sm-2">:</dt>
+            <dd class="col-sm-10"></dd>
+            <dt class="col-sm-2">:</dt>
+            <dd class="col-sm-10"></dd>
+        </ng-container>
+        <ng-container *ngIf="question.question.datatype === 'Number'">
+            <dt class="col-sm-2">Min Value:</dt>
+            <dd class="col-sm-10"> {{question.question?.datatypeNumber?.minValue | cdePlaceholder }}</dd>
+            <dt class="col-sm-2">Max Value:</dt>
+            <dd class="col-sm-10"> {{question.question?.datatypeNumber?.maxValue | cdePlaceholder }}</dd>
+        </ng-container>
+        <ng-container *ngIf="question.question.datatype === 'Date'">
+            <dt class="col-sm-2">Date Format:</dt>
+            <dd class="col-sm-10"> {{question.question?.datatypeDate?.format}}</dd>
+        </ng-container>
+        <ng-container *ngIf="question.question.datatype === 'Value List'">
+            <dt class="col-sm-2">Multiple Selection:</dt>
+            <dd class="col-sm-10">
+                <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect"
+                       (change)="stageElt.emit()"/>
+            </dd>
+            <dt class="col-sm-2">Answer List:</dt>
+            <dd class="col-sm-10">
+                <select2 class="formDescriptionAnswerList" [data]="getAnswersData()" [value]="getAnswersValue()"
+                         [options]="answersOptions" width="100%"
+                         (valueChanged)="checkAnswers($event)">
+                </select2>
+            </dd>
+        </ng-container>
+        <dt class="col-sm-2">Default Answer:</dt>
+        <dd class="col-sm-10">
+            <ng-container *ngIf="question.question.datatype === 'Value List'">
+                <select title="Default" class="form-control defaultAnswer"
+                        [(ngModel)]="question.question.defaultAnswer" (change)="stageElt.emit()">
+                    <option value=""></option>
+                    <option *ngFor="let pv of question.question.answers " [value]="pv.permissibleValue"
+                            [textContent]="pv?.valueMeaningName"></option>
+                </select>
+            </ng-container>
+            <ng-container *ngIf="question.question.datatype !== 'Value List'">
+                <cde-inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true"
+                                 (modelChange)="stageElt.emit()"></cde-inline-edit>
+            </ng-container>
+        </dd>
+        <ng-container *ngIf="question.question.defaultAnswer">
+            <dt class="col-sm-2">Editable:</dt>
+            <dd class="col-sm-10">
+                <input type="checkbox" title="Editable" [(ngModel)]="question.question.editable"
+                       (change)="stageElt.emit()"/>
+            </dd>
+        </ng-container>
+    </dl>
 </ng-template>
 
 <ng-template #formDescriptionNameSelectTmpl let-c="close" let-d="dismiss">
@@ -231,13 +209,13 @@
                 </button>
             </div>
             <div class="col-lg-9">
-                <dl class="dl-horizontal">
-                    <dt>Name:</dt>
-                    <dd>{{naming.designation}}</dd>
-                    <dt>Definition:</dt>
-                    <dd>{{naming.definition | cdePlaceholder}}</dd>
-                    <dt>Tags:</dt>
-                    <dd>{{naming.tags | cdeArrayList}}</dd>
+                <dl class="row">
+                    <dt class="col-sm-2">Name:</dt>
+                    <dd class="col-sm-10">{{naming.designation}}</dd>
+                    <dt class="col-sm-2">Definition:</dt>
+                    <dd class="col-sm-10">{{naming.definition | cdePlaceholder}}</dd>
+                    <dt class="col-sm-2"> Tags:</dt>
+                    <dd class="col-sm-10">{{naming.tags | cdeArrayList}}</dd>
                 </dl>
             </div>
             <hr/>
