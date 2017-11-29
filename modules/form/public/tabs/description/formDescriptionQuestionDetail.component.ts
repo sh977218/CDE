@@ -120,7 +120,7 @@ export class FormDescriptionQuestionDetailComponent {
                 .subscribe(r => {
                     r[3].forEach(unit => {
                         if (unit[1] === uom || unit[0] === uom) question.uomsValid[i] = true;
-                    })
+                    });
                 });
         });
     }

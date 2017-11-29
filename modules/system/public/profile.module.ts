@@ -8,6 +8,8 @@ import { ProfileComponent } from "./components/profile.component";
 import { SearchModule } from 'search/search.module';
 import { UserCommentsComponent } from "./components/userComments.component";
 import { WidgetModule } from 'widget/widget.module';
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { BoardModule } from 'board/public/board.module';
 
 
 const appRoutes: Routes = [
@@ -17,6 +19,7 @@ const appRoutes: Routes = [
 @NgModule({
     imports: [
         CommonModule,
+        NgbModule,
         RouterModule.forChild(appRoutes),
         // core
         WidgetModule,
@@ -24,17 +27,15 @@ const appRoutes: Routes = [
         CdeSearchModule,
         FormSearchModule,
         SearchModule,
+        BoardModule
     ],
     declarations: [
         ProfileComponent,
         UserCommentsComponent,
     ],
-    entryComponents: [
-    ],
-    exports: [
-    ],
-    providers: [
-    ],
+    entryComponents: [],
+    exports: [],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ProfileModule {

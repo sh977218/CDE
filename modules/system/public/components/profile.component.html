@@ -1,67 +1,132 @@
 <div class="container-fluid" *ngIf="user">
-    <h1 class="page-header">
-        <label>User Profile</label>
-    </h1>
+    <h1>User Profile</h1>
 
-    <h3>General Info</h3>
     <div class="row">
-        <div class="col-lg-4">
-            <table class="table table-user-information">
-                <tr>
-                    <td>Username:</td>
-                    <td id="username">{{user.username}}</td>
-                </tr>
-                <tr>
-                    <td>Quota:</td>
-                    <td id="quota">
-                        {{user.quota / 1024 / 1024 | number:'1.2-2' | cdePlaceholder}}<span *ngIf="hasQuota"> MB</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>E-mail:</td>
-                    <td id="user_email">
-                        <cde-inline-edit id="emailEdit" [(model)]="user.email" [inputType]="'email'" [isAllowed]="true"
-                                         (modelChange)="saveProfile()"></cde-inline-edit>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Curator for:</td>
-                    <td id="curatorFor">{{orgCurator}}</td>
-                </tr>
-                <tr>
-                    <td>Admin for:</td>
-                    <td id="adminFor">{{orgAdmin}}</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table>
+        <div class="col-6">
+            <h2>General Info</h2>
+            <dl class="row">
+                <dt class="col-sm-3">Username:</dt>
+                <dd id="username" class="col-sm-9">{{user.username}}</dd>
+                <dt class="col-sm-3">Quota:</dt>
+                <dd id="quota" class="col-sm-9">
+                    {{user.quota / 1024 / 1024 | number:'1.2-2' | cdePlaceholder}}<span *ngIf="hasQuota"> MB</span>
+                </dd>
+                <dt class="col-sm-3">E-mail:</dt>
+                <dd id="user_email" class="col-sm-9">
+                    <cde-inline-edit id="emailEdit" [(model)]="user.email" [inputType]="'email'" [isAllowed]="true"
+                                     (modelChange)="saveProfile()"></cde-inline-edit>
+                </dd>
+                <dt class="col-sm-3">Curator for:</dt>
+                <dd id="curatorFor" class="col-sm-9">{{orgCurator}}</dd>
+                <dt class="col-sm-3">Admin for:</dt>
+                <dd id="adminFor" class="col-sm-9">{{orgAdmin}}</dd>
+            </dl>
         </div>
     </div>
+    <hr>
 
-    <div *ngIf="user.publishedForms.length > 0">
-        <h3>Your Published Forms</h3>
-        <table class="table table-striped">
-            <tr>
-                <th>Link</th>
-            </tr>
-            <tr *ngFor="let pf of user.publishedForms">
-                <td>
-                    <a href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}}</a>
+    <div *ngIf="user.publishedForms.length > 0" class="row">
+        <div class="col-6">
+            <h2>Your Published Forms</h2>
+            <ul class="list-group">
+                <li class="list-group-item" *ngFor="let pf of user.publishedForms">
+                    <a href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}} </a>
                     <i class="fa fa-trash" title="Remove" (click)="removePublishedForm(pf)"></i>
-                </td>
-            </tr>
-        </table>
+                </li>
+            </ul>
+        </div>
     </div>
+    <hr>
 
-    <h3>CDE Viewing History</h3>
-    <cde-list-view *ngIf="cdes.length > 0" id="accordionList" [elts]="cdes" listView="accordion" module="cde">
-    </cde-list-view>
+    <div id="accordionList">
+        <h2>CDE Viewing History</h2>
+        <div class="card" *ngFor="let cde of cdes;let index = index;">
+            <div class="card-header" (click)="cde.isCollapsed = !cde.isCollapsed">
+                {{cde.naming[0].designation}}
+                <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
+                <cde-pin-quickboard [elt]="cde" [eltIndex]="index"></cde-pin-quickboard>
+            </div>
+            <div class="card-block" [ngbCollapse]="!cde.isCollapsed">
+                <div class="row">
+                    <div class="col-4">
+                        <dl class="row">
+                            <dt class="col-sm-3">Steward:</dt>
+                            <dd class="col-sm-9">{{cde.stewardOrg.name}}</dd>
+                            <dt class="col-sm-3">Source:</dt>
+                            <dd class="col-sm-9">{{cde.source}}</dd>
+                        </dl>
+                    </div>
+                    <div class="col-4" *ngIf="cde.valueDomain.permissibleValues.length > 0">
+                        <table class="table-bordered">
+                            <tr>
+                                <th>Value</th>
+                                <th>Code Name</th>
+                                <th>Code</th>
+                            </tr>
+                            <tr *ngFor="let pv of cde.valueDomain.permissibleValues">
+                                <td>{{pv.permissibleValue}}</td>
+                                <td>{{pv.valueMeaningName}}
+                                <td>{{pv.valueMeaningCode}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-4" *ngIf="cde.ids.length > 0">
+                        <table class="table-bordered">
+                            <tr>
+                                <th>Id</th>
+                                <th>Version</th>
+                                <th>Source</th>
+                            </tr>
+                            <tr *ngFor="let id of cde.ids">
+                                <td>{{id.id}}</td>
+                                <td>{{id.version}}
+                                <td>{{id.source}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
 
-    <h3>Form Viewing History</h3>
-    <cde-list-view *ngIf="forms.length > 0" id="formAccordionList" [elts]="forms" listView="accordion" module="form">
-    </cde-list-view>
+    <div id="formAccordionList">
+        <h2>Form Viewing History</h2>
+        <div class="card" *ngFor="let form of forms;let index = index;">
+            <div class="card-header" (click)="form.isCollapsed = !form.isCollapsed">
+                {{form.naming[0].designation}}
+                <cde-pin-board [elt]="form" [eltIndex]="index" [module]="'form'"></cde-pin-board>
+                <cde-pin-quickboard [elt]="form" [eltIndex]="index"></cde-pin-quickboard>
+            </div>
+            <div class="card-block" [ngbCollapse]="!form.isCollapsed">
+                <div class="row">
+                    <div class="col-4">
+                        <dl class="row">
+                            <dt class="col-sm-3">Steward:</dt>
+                            <dd class="col-sm-9">{{form.stewardOrg.name}}</dd>
+                            <dt class="col-sm-3">Source:</dt>
+                            <dd class="col-sm-9">{{form.source}}</dd>
+                        </dl>
+                    </div>
+                    <div class="col-4" *ngIf="form.ids.length > 0">
+                        <table class="table-bordered">
+                            <tr>
+                                <th>Id</th>
+                                <th>Version</th>
+                                <th>Source</th>
+                            </tr>
+                            <tr *ngFor="let id of form.ids">
+                                <td>{{id.id}}</td>
+                                <td>{{id.version}}
+                                <td>{{id.source}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
 
     <cde-user-comments [user]="user"></cde-user-comments>
 </div>
