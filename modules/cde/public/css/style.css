@@ -138,3 +138,131 @@
 nih-cde:empty + .loading {
     display: block;
 }
+
+.rotate90 {
+    transform: rotate(90deg);
+}
+
+.rotate180 {
+    transform: rotate(180deg);
+}
+
+.rotate270 {
+    transform: rotate(270deg);
+}
+
+/* begin Native Render */
+.form-horizontal {
+    counter-reset: section;
+}
+
+.form-horizontal .native-section .radio-inline, .form-horizontal .native-section .checkbox-inline {
+    padding-top: 0;
+}
+
+label.input-group-addon {
+    background-color: transparent;
+}
+
+.native-section-header {
+    border-bottom: 1px solid #eee;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.native-question-header {
+    page-break-inside: avoid;
+}
+
+.native-question-label {
+    margin-bottom: 0;
+}
+
+div.native-question-label {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+legend.native-question-label {
+    font-size: 14px;
+    font-weight: 700;
+    border-bottom: 0;
+}
+
+.native-question-label-number:before {
+    counter-increment: section;
+    content: counter(section) ". ";
+}
+
+.native-question-answers {
+    margin-bottom: 5px;
+}
+
+div.row .native-question-oneline-l {
+    float: left;
+    margin-top: 6px;
+    margin-right: 5px;
+    background-color: white;
+    padding: 0 5px 0 5px;
+}
+
+.native-box {
+    padding-left: 6%;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.native-value {
+    color: #999;
+    font-style: italic;
+    font-weight: 900;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "|";
+}
+
+.radio-inline, .wordwrap {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.breadcrumb {
+    background-color: white;
+}
+
+.native-instructions {
+    margin-bottom: 5px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.singleSearchResult {
+    padding-left: 10px;
+    margin-bottom: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 3px solid rgba(0, 0, 0, 0.1);
+}
+
+.form-horizontal .native-table-cell.radio,
+.form-horizontal .native-table-cell.checkbox,
+.form-horizontal .native-table-cell.radio-inline,
+.form-horizontal .native-table-cell.checkbox-inline {
+    padding-top: 0;
+}
+
+.cdeAttachmentThumbnail {
+    max-width: 100%;
+    max-height: 200px;
+}
+
+.native-table-cell {
+    height: auto;
+}
+
+.native-table-cell label {
+    font-weight: normal;
+    margin-bottom: 0;
+}
+
+/* end Native Render */

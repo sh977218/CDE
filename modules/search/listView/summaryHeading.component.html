@@ -5,7 +5,7 @@
        (click)="select.emit(elt.tinyId)"></a>
     <small class="text-muted">{{elt.registrationState.registrationStatus}}</small>
     <ng-content select=".summary-list-after"></ng-content>
-    <span *ngIf="elt.highlight?.matchedBy" class="pull-right hidden-xs">
-        <small class="text-muted">Matched by:<strong [innerHtml]="elt.highlight.matchedBy"></strong></small>
+    <span *ngIf="elt.highlight?.matchedBy" class="pull-right hidden-xs small">
+        <small class="text-muted small">Matched by: </small><strong [innerHtml]="elt.highlight.matchedBy"></strong>
     </span>
 </div>
