@@ -20,10 +20,10 @@
                     <ngb-panel *ngFor="let cde of cdes; let i = index">
                         <ng-template ngbPanelTitle>
                             <a class="nonLinkAnchor hand-cursor" id="acc_link_{{i}}">{{cde.primaryNameCopy}}</a>
-                            <span class="fake-link">
+                            <a class="nonLinkAnchor">
                                 <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link" id="eyeLink_{{i}}"
-                                   (click)="$event.stopPropagation(); view(cde, $event)"></i>
-                            </span>
+                                   (click)="$event.stopPropagation(); view(cde)"></i>
+                            </a>
                             <a class="nonLinkAnchor" (click)="$event.stopPropagation()">
                                 <i id="pinToBoard_{{i}}" class="fa fa-thumb-tack hand-cursor"
                                    title="Attach to Board" role="link"
