@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import * as _ from "lodash";
 
@@ -24,8 +24,17 @@ import * as _ from "lodash";
         }
     `]
 })
-export class InlineEditComponent implements OnInit {
-    @Input() model;
+export class InlineEditComponent {
+    private _model: any;
+    @Input() set model(v: any) {
+        this._model = v;
+        if (!this.inputType) this.inputType = 'text';
+        this.value = _.cloneDeep(v);
+    };
+    get model() {
+        return this._model;
+    }
+
     @Input() inputType: string = "text";
     @Input() selectOptions: Array<any> = [];
     @Input() isAllowed: boolean = false;
@@ -36,11 +45,6 @@ export class InlineEditComponent implements OnInit {
 
     public editMode: boolean = false;
     public value: any;
-
-    ngOnInit(): void {
-        if (!this.inputType) this.inputType = 'text';
-        this.value = _.cloneDeep(this.model);
-    }
 
     edit() {
         this.editMode = true;

@@ -139,8 +139,7 @@ export class FormViewComponent implements OnInit {
         if (formId) url = "/formById/" + formId;
         this.http.get(url).map(res => res.json()).subscribe(res => {
             this.elt = res;
-            if (this.elt) this.formLoaded(cb);
-            else cb();
+            this.formLoaded(cb);
         }, () => this.router.navigate(['/pageNotFound'])
         );
     }

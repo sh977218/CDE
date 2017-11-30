@@ -31,8 +31,7 @@
         </dd>
         <dt class="col-sm-3 col-xl-2">Origin:</dt>
         <dd class="col-sm-9 col-xl-10">
-            <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
-                             (modelChange)="onEltChange.emit();">
+            <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit" (modelChange)="onEltChange.emit();">
             </cde-inline-edit>
         </dd>
         <ng-container *ngIf="elt.views">
