@@ -136,12 +136,12 @@
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-download"></i> Export
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="export">
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="export">
                         <ng-container *ngIf="userService?.user?._id || module === 'cde'">
                             <a *ngFor="let key of keys(exporters)" id="{{exporters[key].id}}" class="dropdown-item"
                                (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})">{{exporters[key].display}}</a>
                         </ng-container>
-                        <a *ngIf="userService?.user && displayValidation()" id="exportValidRule"
+                        <a *ngIf="userService?.user && displayValidation()" id="exportValidRule" class="dropdown-item"
                            (click)="openValidRulesModal()"> Validation Rules</a>
                         <a *ngIf="!userService?.user?._id && module !== 'cde'" routerLink="/login"
                            class="dropdown-item">Please login to export forms.</a>

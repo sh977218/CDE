@@ -63,7 +63,7 @@
                     <a id="username_link" class="nav-link dropdown-toggle" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false"
                        [textContent]="userService.user?.username | cdeTruncateLongName"></a>
-                    <div class="dropdown-menu" aria-labelledby="username_link">
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="username_link">
                         <a routerLink="/profile" id="user_profile" class="dropdown-item" *ngIf="userService.user?._id">Profile</a>
                         <a routerLink="/orgComments" id="org_comments" class="dropdown-item"
                            *ngIf="userService.user?.siteAdmin && authShared.isOrgCurator(userService.user)">OrgComments</a>
