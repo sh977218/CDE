@@ -92,7 +92,7 @@ currentLevel.push(new mongoose.Schema({}, {strict: false}));
 let formElementSchema = new Schema(formElementTreeRoot, {_id: false});
 
 exports.formJson = {
-    elementType: {type: String, default: 'form'}
+    elementType: {type: String, default: 'form', enum: ['form']}
     , tinyId: {type: String, index: true}
     , naming: [sharedSchemas.namingSchema]
     , stewardOrg: {

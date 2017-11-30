@@ -1,9 +1,9 @@
 <div id="historyDiv">
     <h4>History</h4>
-    <ng-container *ngIf="priorElements.length === 0">
+    <ng-container *ngIf="priorElements?.length === 0">
         This Element has no history.
     </ng-container>
-    <ng-container *ngIf="priorElements.length > 0">
+    <ng-container *ngIf="priorElements?.length > 0">
         <div style="line-height:40px;">
             <input id="showVersionedHistory" type="checkbox" [(ngModel)]="showVersioned">
             <label for="showVersionedHistory">Only show versioned revisions.</label>
