@@ -16,29 +16,17 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
+        hangon(1);
         findElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//input")).sendKeys("doYouSeeThis");
         findElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//input")).sendKeys(Keys.RETURN);
         textPresent("Org Updated");
         closeAlert();
 
-        // is this fixed yet?
-//        int count = 0;
-//        while (count < 5) {
-            goToCdeByName("Distance from Closest Margin Value");
+        goToCdeByName("Distance from Closest Margin Value");
 
-            goToProperties();
-            clickElement(By.id("openNewPropertyModalBtn"));
-            clickElement(By.id("newKey"));
-//
-//            try {
-//                findElement(By.xpath("//option[@value='doYouSeeThis']"));
-//                findElement(By.xpath("//option[@value='propKey0']"));
-//                break;
-//            } catch (TimeoutException e) {}
-//
-//            hangon(10);
-//            count++;
-//        }
+        goToProperties();
+        clickElement(By.id("openNewPropertyModalBtn"));
+        clickElement(By.id("newKey"));
         findElement(By.xpath("//option[@value='doYouSeeThis']"));
         findElement(By.xpath("//option[@value='propKey0']"));
 
