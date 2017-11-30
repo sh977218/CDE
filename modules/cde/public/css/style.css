@@ -266,3 +266,42 @@ div.row .native-question-oneline-l {
 }
 
 /* end Native Render */
+
+/* begin validation error */
+input.ng-invalid {
+    border-left: 5px solid #a94442 !important;
+}
+
+.ng-valid[required], .ng-valid.required {
+    border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid:not(form) {
+    border-left: 5px solid #a94442; /* red */
+}
+
+/* end validation error */
+
+/* begin alternatives */
+@media print {
+    @page {
+        size: 330mm 427mm;
+        margin: 14mm;
+    }
+
+    .container {
+        width: 1170px;
+    }
+
+    .keep-with-previous {
+        page-break-before: avoid;
+        break-before: avoid;
+    }
+
+    .keep-together {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+}
+
+/* end alternatives */
