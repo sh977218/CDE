@@ -3,25 +3,90 @@ const util = require('util');
 const async = require('async');
 const _ = require('lodash');
 const csv = require('csv');
+const request = require('request');
+const cheerio = require('cheerio');
 
 const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataElement;
 const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
 const mongo_data = require('../../../modules/system/node-js/mongo-data');
-const config = require('../../../modules/system/node-js/parseConfig');
+
+const UOM_MAP = {
+    '': '',
+    'Centimeter': 'cm',
+    'Day': 'd',
+    'Gram': 'g',
+    'Minute': 'min',
+    'Percentage': '%',
+    'minute': 'min',
+    'second': 's',
+    'centimeter': 'cm',
+    'lx': 'lx',
+    'Hour': 'h',
+    'Millimeter': 'mm',
+    'Degree Celsius': 'Cel',
+    'milligram': 'mg',
+    'Decibel': 'cB',
+    'milliAmpere': 'mA',
+    'hours': 'h',
+    'hour': 'h',
+    'percentage': '%',
+    'Newton': 'N',
+    'day': 'd',
+    'gram': 'g',
+    'mm': 'mm',
+    'cm': 'cm',
+    'percent': '%',
+    'days': 'd',
+    'minutes': 'min',
+    'hour:minutes': 'h:m',
+    'cm/s': 'cm/s',
+    's': 's',
+    'Second': 's',
+    'mA': 'mA',
+    'Hz': 'Hz',
+    'ms': 'ms',
+    'Minutes': 'min',
+    'Seconds': 's',
+    'Meter': 'm',
+    'millimeters': 'mm',
+    'centimeters': 'cm',
+    'hh:mm': 'h:m',
+    'RPM/s': 'RPM/s',
+    'RPM': 'RPM',
+    'Month': 'mo',
+    'Centimeter per second': 'cm/s',
+    'kHz': 'kHz',
+    'dB': 'dB',
+    'Celcius': 'Cel',
+    'integer': 'integer',
+    'count': 'count',
+    'Degree': 'Degree',
+};
 
 const DATA_TYPE_MAP = {
     'Alphanumeric': 'Text',
     'Date or Date & Time': 'Date',
     'Numeric Values': 'Number',
-    'Numeric': 'Number'
+    'Numeric': 'Number',
+    'numeric Values': 'Number',
+    'Numeric values': 'Number',
+    'Time': 'Text',
+    'alphanumeric': 'Text'
 };
 
-const FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical TBI CDE/';
-const EXCLUDE_FILE = [];
+let ALL_UOM = new Set();
+let ALL_DATA_TYPE = new Set();
+let UNPARSED_REF_DOC = new Set();
+
+//const FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical TBI CDE/ALL_CDE3.csv';
+const FILE_PATH = 'C:/Users/huangs8/Downloads/ALL_CDE3.csv';
 const EXCLUDE_REF_DOC = [
     'No references available',
     'Please fill out'
 ];
+
+let formCount = 0;
+let deCount = 0;
 
 let log_file = fs.createWriteStream(__dirname + '/debug.log', {flags: 'w'});
 let log_stdout = process.stdout;
@@ -32,11 +97,62 @@ console.log = function (d) {
 };
 
 function getCell(row, header) {
-    if (row[header]) return row[header];
+    if (row[header])
+        return row[header];
     else {
         let headerLower = _.toLower(header);
-        if (row[headerLower]) return row[headerLower];
+        if (row[headerLower])
+            return row[headerLower];
+        else return "";
     }
+}
+
+function parseRefDoc(row, de, cb) {
+    let pubmedUrl = 'https://www.ncbi.nlm.nih.gov/pubmed/?term=';
+    let referencesString = getCell(row, 'References');
+    EXCLUDE_REF_DOC.forEach(exclude_re_doc => {
+        referencesString = referencesString.replace(exclude_re_doc, '').trim();
+    });
+    if (referencesString) {
+        let regex = /\s*(PMID|PUBMED|pubmed\/)(:|,|\s)*(\s*\d*[.|,|\s]*)*/ig;
+        let pmIdArray = referencesString.match(regex);
+        if (pmIdArray)
+            async.forEach(pmIdArray, (pmIdString, doneOne) => {
+                let pmIds = pmIdString.replace(/PMID:/ig, '').replace(/\./ig, '').replace(/pubmed\//ig, '').replace(/PMID/ig, '').trim().split(',').filter(p => p);
+                async.forEach(pmIds, (pmId, doneOneMore) => {
+                    pmId = pmId.trim();
+                    let uri = pubmedUrl + pmId;
+                    request(uri, (err, response, body) => {
+                        if (err) cb(err);
+                        else if (response.statusCode === 200) {
+                            let $ = cheerio.load(body);
+                            let title = $('.rprt_all h1').text();
+                            let abstracttext = $('abstracttext').text();
+                            de.referenceDocuments.push({
+                                docType: 'text',
+                                title: title,
+                                uri: uri,
+                                source: 'PubMed',
+                                languageCode: 'en-us',
+                                document: abstracttext
+                            });
+                            doneOneMore();
+                        } else throw "status: " + response.statusCode;
+                    });
+                }, () => {
+                    doneOne();
+                });
+            }, () => {
+                cb(null, de);
+            });
+        else {
+            UNPARSED_REF_DOC.add(referencesString);
+            de.referenceDocuments.push({
+                document: referencesString
+            });
+            cb(null, de);
+        }
+    } else cb(null, de);
 }
 
 function deToQuestion(row, cde) {
@@ -51,7 +167,7 @@ function deToQuestion(row, cde) {
                 tinyId: cde.tinyId,
                 name: cde.naming[0].designation,
                 version: cde.version,
-                permissibleValues: cde.valueDomain.permissibleValue,
+                permissibleValues: cde.valueDomain.permissibleValues,
                 ids: cde.ids,
                 derivationRules: cde.derivationRules
             },
@@ -60,7 +176,7 @@ function deToQuestion(row, cde) {
             datatypeText: cde.valueDomain.datatypeText,
             datatypeDate: cde.valueDomain.datatypeDate,
             uoms: cde.valueDomain.uom,
-            answers: []
+            answers: cde.valueDomain.permissibleValues
         },
         formElements: []
     };
@@ -71,25 +187,12 @@ function deToQuestion(row, cde) {
     if (row['Guidelines/Instructions'])
         question.instructions.value = row['Guidelines/Instructions'];
 
-    if (row['Permissible Values'] && row['Permissible Value Descriptions'] && row['Permissible Value Output Codes']) {
-        let pvs = row['Permissible Values'].split(';');
-        let pvDescs = row['Permissible Value Descriptions'].split(';');
-        let pvCodes = row['Permissible Value Output Codes'].split(';');
-        for (let i = 0; i < pvs.length; i++) {
-            let pv = {
-                permissibleValue: pvs[i],
-                valueMeaningDefinition: pvDescs[i],
-                valueMeaningCode: pvCodes[i]
-            };
-            question.question.answers.push(pv);
-        }
-    }
     if (row['Input Restriction'].indexOf('Multiple Pre-Defined Values Selected') > -1)
         question.question.multiselect = true;
     return question;
 }
 
-function rowToDataElement(file, row) {
+function rowToDataElement(row, cb) {
     let de = {
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {
@@ -113,53 +216,53 @@ function rowToDataElement(file, row) {
         }]
     };
 
-    /*
-        let effectiveDateString = getCell(row, 'Effective Date');
-        if (effectiveDateString)
-            de.registrationState.effectiveDate = new Date(effectiveDateString);
-        let untilDateString = getCell(row, 'Until Date');
-        if (untilDateString)
-            de.registrationState.untilDate = new Date(untilDateString);
-    */
-
     let variableName = getCell(row, 'Variable Name');
     if (variableName) {
         de.ids = [{
-            source: 'NINDS',
-            id: row['Variable Name']
+            source: 'NINDS Preclinical',
+            id: row['Variable Name'],
+            version: '1'
         }];
     }
 
     let shortDescription = getCell(row, 'Short Description');
     let description = getCell(row, 'Definition');
     let title = getCell(row, 'Title');
-    if (shortDescription === description) {
-        de.naming = [{
-            designation: title,
-            definition: description
-        }];
-    } else {
-        de.naming = [{
-            designation: title,
-            definition: shortDescription
-        }, {
-            designation: '',
-            definition: description
-        }];
-    }
     let preferredQuestionText = getCell(row, 'Preferred Question Text');
-    if (preferredQuestionText) {
+
+    de.naming = [];
+    if (title === preferredQuestionText)
+        de.naming.push({
+            designation: title,
+            tags: ['Preferred Question Text']
+        });
+    else {
+        de.naming.push({
+            designation: title,
+        });
         de.naming.push({
             designation: preferredQuestionText,
-            definition: '',
             tags: ['Preferred Question Text']
         });
     }
+    if (shortDescription === description)
+        de.naming[0].definition = description;
+    else {
+        de.naming[0].definition = description;
+        if (de.naming[1])
+            de.naming[1].definition = shortDescription;
+        else de.naming[1] = {definition: shortDescription};
+    }
 
     let unitOfMeasure = getCell(row, 'Unit of Measure');
-    if (unitOfMeasure) de.valueDomain.uom = unitOfMeasure;
-    let inputRestriction = getCell(row, 'Input Restriction');
-    if (inputRestriction === 'Free-Form Entry') {
+    if (unitOfMeasure) {
+        unitOfMeasure = unitOfMeasure.trim();
+        de.valueDomain.uom = UOM_MAP[unitOfMeasure];
+        ALL_UOM.add(unitOfMeasure);
+    }
+    if (row['Datatype']) ALL_DATA_TYPE.add(row['Datatype']);
+    let inputRestrictionString = getCell(row, 'Input Restriction').toLowerCase();
+    if (inputRestrictionString === 'free-form entry' || inputRestrictionString.trim().length === 0) {
         let datatype = DATA_TYPE_MAP[row['Datatype']];
         if (datatype === 'Text') {
             de.valueDomain.datatype = 'Text';
@@ -178,80 +281,25 @@ function rowToDataElement(file, row) {
         } else {
             de.valueDomain.datatype = 'Text';
             de.valueDomain.datatypeText = {};
-            /*
-                        console.log("---------------------------------");
-                        console.log("| file: " + file);
-                        console.log("| rowIndex: " + row.__rowNum__);
-                        console.log("| Unknown datatype: " + datatype);
-                        console.log("---------------------------------");
-                        console.log("\n");
-            */
         }
-    } else {
+    } else if (inputRestrictionString === 'single pre-defined value selected' || 'multiple pre-defined values selected') {
         de.valueDomain.datatype = 'Value List';
         de.valueDomain.permissibleValues = [];
-        let permissibleValues = getCell(row, 'Permissible Values');
-        let permissibleValueDescriptions = getCell(row, 'Permissible Value Descriptions');
+        let permissibleValueString = getCell(row, 'Permissible Values');
         let permissibleValueOutputCodes = getCell(row, 'Permissible Value Output Codes');
-        if (permissibleValues && permissibleValueDescriptions && permissibleValueOutputCodes) {
-            let pvs = permissibleValues.split(';').filter(t => t);
-            let pvDescriptions = permissibleValueDescriptions.split(';').filter(t => t);
+        if (permissibleValueString) {
+            let permissibleValueArray = permissibleValueString.split(';').filter(t => t);
             let pvCodes = permissibleValueOutputCodes.split(';').filter(t => t);
-            if (pvs.length === pvDescriptions.length && pvDescriptions.length === pvCodes.length && pvs.length === pvCodes.length) {
-                for (let i = 0; i < pvs.length; i++) {
-                    let pv = {
-                        permissibleValue: pvs[i],
-                        valueMeaningName: pvs[i],
-                        valueMeaningDefinition: pvDescriptions[i],
-                        valueMeaningCode: pvCodes[i]
-                    };
-                    de.valueDomain.permissibleValues.push(pv);
-                }
-            } else {
-                console.log("---------------------------------");
-                console.log("| file: " + file);
-                console.log("| rowIndex: " + row.__rowNum__);
-                console.log("| PV Length mismatch. pv:" + pvs.length + " pvDescriptions:" + pvDescriptions.length + " pvCodes:" + pvCodes.length);
-                console.log("---------------------------------");
-                console.log("\n");
-                throw "bad pvs.";
-            }
-        }
-    }
-
-    let references = getCell(row, 'References');
-    if (references && _.findIndex(EXCLUDE_REF_DOC, o => references.indexOf(o) !== -1) === -1) {
-        de.referenceDocuments.push({
-            document: references
-        });
-    }
-    /*if (references && _.findIndex(EXCLUDE_REF_DOC, o => references.indexOf(o) !== -1) === -1) {
-        references.split("-----").forEach(refDocString => {
-            let regs = [
-                new RegExp(/\s*PMID:\s*(\d*[,|\s]*)*!/g),
-                new RegExp(/.*PUBMED:\s*(\d*[,|\s]*)*!/g),
-                new RegExp(/\s*PMID:*\s*(\d*[,|;]*)*!/g),
-                new RegExp(/\s*PMCID:*\s*(\d*[,|;]*)*!/g),
-            ];
-            let pmIds = [];
-            regs.forEach(reg => {
-                let foundRefDoc = refDocString.match(reg);
-                if (foundRefDoc && foundRefDoc.length > 0) {
-                    pmIds = pmIds.concat(foundRefDoc);
-                    refDocString = refDocString.replace(reg, "");
-                }
+            permissibleValueArray.forEach((pv, i) => {
+                let permissibleValue = {
+                    permissibleValue: pvCodes[i] ? pvCodes[i] : pv,
+                    valueMeaningName: pv
+                };
+                de.valueDomain.permissibleValues.push(permissibleValue);
             });
-            if (refDocString.length > 0) {
-                pmIds.forEach(pmId => {
-                    de.referenceDocuments.push({
-                        referenceDocumentId: pmId.replace(/;/g, "").trim(),
-                        document: refDocString
-                    });
-                });
-                // console.log("reminding ref doc string: " + refDocString);
-            }
-        });
-    }*/
+            if (de.valueDomain.permissibleValues.length === 0) cb('bad pvs, permissibleValues is empty');
+        } else cb('bad pvs');
+    } else throw cb('bad input restriction');
 
     let keywords = getCell(row, 'Keywords');
     if (keywords) de.properties.push({key: "Keywords", value: keywords});
@@ -260,85 +308,54 @@ function rowToDataElement(file, row) {
     let notes = getCell(row, 'Notes');
     if (notes) de.properties.push({key: "Notes", value: notes});
 
-    /*
-        ALL_POSSIBLE_CLASSIFICATIONS.forEach(possibleClassification => {
-            if (row[possibleClassification]) {
-                let categories = possibleClassification.split(".").concat(row[possibleClassification]);
-                classificationShared.classifyElt(de, 'NINDS', ['Preclinical TBI CDE'].concat(categories));
-            }
+    let taxonomyString = getCell(row, 'Taxonomy');
+    if (taxonomyString) {
+        let taxonomyArray = taxonomyString.split(';').filter(t => t);
+        if (taxonomyArray.length > 0)
+            de.classification[0].elements[0].elements.push({name: 'Taxonomy', elements: []});
+        taxonomyArray.forEach(t => {
+            de.classification[0].elements[0].elements[0].elements.push({name: t, elements: []});
         });
-
-        if (de.classification.length === 0) {
-            de.classification = [{
-                stewardOrg: {name: 'NINDS'},
-                elements: [{
-                    name: 'Preclinical TBI',
-                    elements: []
-                }]
-            }];
-        }
-    */
-
-    return de;
-}
-
-function saveDataElement(de, row, file, cb) {
-    if (row['Element Type'].indexOf('Unique Data Element') > -1)
-        new DataElementModel(de).save(cb);
-    else if (row['Element Type'].indexOf('Common Data Element') > -1) {
-        DataElementModel.findOne({'ids.id': de.ids[0].id}, (err, existingDe) => {
-            if (err) throw err;
-            else if (!existingDe)
-                new DataElementModel(de).save(cb);
-            else
-                new DataElementModel(de).save(cb);
-        });
-    } else if (row['Element Type'].trim().length === 0) {
-        console.log("Empty Element Type. on file " + file);
-        new DataElementModel(de).save(cb);
-    } else if (row['Element Type'].indexOf('Type of animal subject pre-injury housing including individual or group housing') > -1) {
-        console.log("Element Type: " + row['Element Type'] + " on file " + file);
-        new DataElementModel(de).save(cb);
-    } else throw "Unknown Element Type. on file " + file;
+    }
+    parseRefDoc(row, de, cb);
 }
 
 function run() {
     async.series([
-/*
+        /*
+                function (cb) {
+                    DataElementModel.remove({}, err => {
+                        if (err) throw err;
+                        cb();
+                    });
+                },
+                function (cb) {
+                    FormModel.remove({}, err => {
+                        if (err) throw err;
+                        cb();
+                    });
+                },
+        */
         function (cb) {
-            DataElementModel.remove({}, err => {
+            let cond = {
+                columns: true,
+                rtrim: true,
+                trim: true,
+                relax_column_count: true,
+                skip_empty_lines: true,
+                skip_lines_with_empty_values: true
+            };
+            csv.parse(fs.readFileSync(FILE_PATH), cond, function (err, rows) {
                 if (err) throw err;
-                cb();
-            });
-        },
-        function (cb) {
-            FormModel.remove({}, err => {
-                if (err) throw err;
-                cb();
-            });
-        },
-*/
-        function (cb) {
-            let files = fs.readdirSync(FILE_PATH).filter(f => _.indexOf(EXCLUDE_FILE, f) === -1);
-            async.forEachSeries(files, (file, doneOneFile) => {
-                let cond = {
-                    columns: true,
-                    rtrim: true,
-                    trim: true,
-                    relax_column_count: true,
-                    skip_empty_lines: true,
-                    skip_lines_with_empty_values: true
-                };
-                csv.parse(fs.readFileSync(FILE_PATH + file), cond, function (err, rows) {
-                    if (err) throw err;
-                    let formNameString = file.substring(0, file.indexOf('_'));
+                let allFormsArray = _.uniqBy(rows, 'Form');
+                async.forEachSeries(allFormsArray, (oneForm, doneOneForm) => {
                     let form = {
                         tinyId: mongo_data.generateTinyId(),
                         stewardOrg: {
                             name: 'NINDS'
                         },
                         naming: [
-                            {designation: _.words(formNameString).join(" ")}
+                            {designation: _.words(oneForm.Form).join(" ")}
                         ],
                         registrationState: {
                             registrationStatus: 'Qualified'
@@ -360,15 +377,10 @@ function run() {
                     let lastSection = "";
                     let currentSection = "";
                     let formElements = form.formElements;
-                    let rowIndex = 0;
-                    async.forEachSeries(rows, (row, doneOneRow) => {
-                        let de = rowToDataElement(file, row);
-                        if (!de.naming || !de.naming[0].designation) {
-                            console.log(file + ' has empty row: ' + rowIndex + '. Variable: ' + getCell(row, 'Variable Name'));
-                            rowIndex++;
-                            doneOneRow();
-                        } else {
-                            saveDataElement(de, row, file, (err, newCde) => {
+                    let oneFormArray = _.filter(rows, r => r.Form === oneForm.Form);
+                    async.forEachSeries(oneFormArray, (row, doneOneRow) => {
+                        let variableName = row['Variable Name'].trim();
+                        DataElementModel.findOne({'ids.id': variableName}, (err, existingDE) => {
                                 if (err) throw err;
                                 else {
                                     currentSection = getCell(row, 'Category/Group');
@@ -381,22 +393,51 @@ function run() {
                                         form.formElements.push(newSection);
                                         formElements = newSection.formElements;
                                     }
-                                    let question = deToQuestion(row, newCde);
-                                    formElements.push(question);
-                                    lastSection = currentSection;
-                                    rowIndex++;
-                                    doneOneRow();
+                                    if (existingDE) {
+                                        let question = deToQuestion(row, existingDE);
+                                        formElements.push(question);
+                                        lastSection = currentSection;
+                                        doneOneRow();
+                                    } else {
+                                        rowToDataElement(row, (err, de) => {
+                                            if (err)
+                                                throw err;
+                                            else {
+                                                new DataElementModel(de).save((err, newCde) => {
+                                                    if (err) throw err;
+                                                    else {
+                                                        let question = deToQuestion(row, newCde);
+                                                        formElements.push(question);
+                                                        lastSection = currentSection;
+                                                        deCount++;
+                                                        console.log('deCount: ' + deCount);
+                                                        doneOneRow();
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
                                 }
-                            });
-                        }
+                            }
+                        );
                     }, () => new FormModel(form).save(err => {
                         if (err) throw err;
-                        doneOneFile();
+                        formCount++;
+                        console.log('formCount: ' + formCount);
+                        doneOneForm();
                     }));
+                }, () => {
+                    cb();
                 });
-            }, () => cb());
+            });
         }
     ], () => {
+        console.log('all unit of measure:');
+        console.log(ALL_UOM);
+        console.log('all data type:');
+        console.log(ALL_DATA_TYPE);
+        console.log('unparsed ref doc:');
+        console.log(UNPARSED_REF_DOC);
         process.exit(1);
     });
 }
