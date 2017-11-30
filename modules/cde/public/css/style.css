@@ -305,3 +305,9 @@ input.ng-invalid {
 }
 
 /* end alternatives */
+
+@media (min-width: 575px) {
+    .text-right-md {
+        text-align: right
+    }
+}

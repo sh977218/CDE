@@ -13,11 +13,11 @@
         <b>{{elt.numQuestions}} Questions</b>
         <ng-container *ngIf="elt.primaryDefinitionCopy"> - {{elt.primaryDefinitionCopy}}</ng-container>
         <dl class="row">
-            <dt class="offset-md-3 col-sm-3">Steward:</dt>
-            <dd class="col-md-6 col-sm-9">{{elt.stewardOrg.name}}</dd>
+            <dt class="col-sm-4 text-right-md">Steward:</dt>
+            <dd class="col-sm-8">{{elt.stewardOrg.name}}</dd>
             <ng-container *ngIf="elt.classification.length > 0">
-                <dt class="offset-md-3 col-sm-3">Used By:</dt>
-                <dd class="col-md-6 col-sm-9" id="usedBy">
+                <dt class="col-sm-4 text-right-md">Used By:</dt>
+                <dd class="col-sm-8" id="usedBy">
                     <span *ngIf="!(elt.classification.length > 0)">None</span>
                     <span *ngIf="elt.classification.length > 0">{{getStewards()}}</span>
                 </dd>
