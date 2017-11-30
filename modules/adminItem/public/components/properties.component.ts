@@ -27,7 +27,7 @@ export class PropertiesComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.orgHelperService.then(() => {
+        this.orgHelperService.reload().then(() => {
             this.orgPropertyKeys = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
             this.onInitDone = true;
         });
