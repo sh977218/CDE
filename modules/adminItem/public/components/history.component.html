@@ -54,34 +54,32 @@
 
 <ng-template #compareContent let-c="close" let-d="dismiss" class="hugeModal">
     <div class="modal-header">
-        <label class="col-3">
-            <div class="input-color pull-left">
-                <div class="color-box" style="background-color: #fad000;"></div>
-                <span style="display:inline-block;">&nbsp;Reorder&nbsp;</span>
-            </div>
-            <input class="form-check-input pull-left" type="checkbox" [(ngModel)]="filter.reorder.select">
-        </label>
-        <label class="col-3">
+        <div class="col-3">
+            <div class="color-box pull-left" style="background-color: #fad000;"></div>
+            <strong class="d-inline-block pull-left">&nbsp;Reorder&nbsp;</strong>
+            <input class="pull-left" type="checkbox" [(ngModel)]="filter.reorder.select">
+        </div>
+        <div class="col-3">
             <div class="input-color pull-left">
                 <div class="color-box" style="background-color: #008000;"></div>
-                <span style="display:inline-block;">&nbsp;Add&nbsp;</span>
+                <strong class="d-inline-block">&nbsp;Add&nbsp;</strong>
             </div>
             <input class="form-check-input pull-left" type="checkbox" [(ngModel)]="filter.add.select">
-        </label>
-        <label class="col-3">
+        </div>
+        <div class="col-3">
             <div class="input-color pull-left">
                 <div class="color-box" style="background-color: #a94442;"></div>
-                <span>&nbsp;Remove&nbsp;</span>
+                <strong>&nbsp;Remove&nbsp;</strong>
             </div>
             <input class="form-check-input pull-left" type="checkbox" [(ngModel)]="filter.remove.select">
-        </label>
-        <label class="col-3">
+        </div>
+        <div class="col-3">
             <div class="input-color pull-left">
                 <div class="color-box" style="background-color: #0000ff;"></div>
-                <span>&nbsp;Edit&nbsp;</span>
+                <strong>&nbsp;Edit&nbsp;</strong>
             </div>
             <input class="form-check-input pull-left" type="checkbox" [(ngModel)]="filter.edited.select">
-        </label>
+        </div>
     </div>
     <div class="modal-body" *ngIf="getSelectedElt() && getSelectedElt().length == 2">
         <cde-compare-object [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-object>

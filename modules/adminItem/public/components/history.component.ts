@@ -22,10 +22,9 @@ const URL_MAP = {
             padding-left: 20px;
         }
 
-        .input-color .color-box {
+        .color-box {
             width: 10px;
             height: 10px;
-            display: inline-block;
             left: 5px;
             top: 5px;
         }
