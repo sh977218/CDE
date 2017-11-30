@@ -14,11 +14,11 @@ public class CdeCannotEditSomeDraftTabsTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         goToClassification();
-        textPresent("Go to current non-draft version to see classifications");
+        textPresent("Classification is not available in Drafts.");
         goToAttachments();
-        textPresent("Go to current non-draft version to see attachments");
+        textPresent("Attachments are not available in Drafts.");
         clickElement(By.id("discussBtn"));
-        textPresent("Go to current non-draft version to see comments");
+        textPresent("Discussion is not available in Drafts.");
 
         clickElement(By.id("viewPublished"));
         goToNaming();
