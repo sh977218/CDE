@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, HostListener, OnInit, Output, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
@@ -37,7 +37,6 @@ export class DataElementViewComponent implements OnInit {
     @ViewChild("copyDataElementContent") public copyDataElementContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @ViewChild("tabSet") public tabSet: NgbTabset;
-    @Output() public h = new EventEmitter();
 
     elt: any;
     public eltCopy = {};
@@ -259,6 +258,7 @@ export class DataElementViewComponent implements OnInit {
                     this.savingText = "";
                 }, 3000);
                 this.elt.isDraft = true;
+                if (!this.drafts.length) this.drafts = [this.elt];
                 if (cb) cb(res);
             }, err => this.alert.addAlert("danger", err));
     }
