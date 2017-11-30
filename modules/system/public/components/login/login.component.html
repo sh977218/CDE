@@ -4,16 +4,19 @@
         <p>Note: Log in with your UMLS account. Don't have a UMLS account? <a
                 href="https://uts.nlm.nih.gov//license.html" target="_blank">
             <span class="vsloginLink">Request One Now</span></a></p>
-        <label id="l1" class="sr-only" for="uname">Username</label>
-        <input id="uname" class="form-control" title="username" placeholder="Username" [(ngModel)]="username"
-               autofocus="" required name="username">
-        <label id="l2" class="sr-only" for="passwd">Password</label>
-        <input id="passwd" type="password" name="password" class="form-control" title="password" placeholder="Password"
-               [(ngModel)]="password" required/>
-        <input type="hidden" name="_csrf" [(ngModel)]="csrf">
-
+        <div class="form-group">
+            <label id="l1" class="sr-only" for="uname">Username</label>
+            <input id="uname" class="form-control" title="username" placeholder="Username" [(ngModel)]="username"
+                   autofocus="" required name="username">
+            <label id="l2" class="sr-only" for="passwd">Password</label>
+            <input id="passwd" type="password" name="password" class="form-control" title="password"
+                   placeholder="Password"
+                   [(ngModel)]="password" required/>
+            <input type="hidden" name="_csrf" [(ngModel)]="csrf">
+        </div>
         <button [disabled]="!loginForm.valid || !csrf" class="btn btn-lg btn-primary btn-block" (click)="login()"
-                id="login_button">Log In</button>
+                id="login_button">Log In
+        </button>
         <p>Forgot your <a href="https://uts.nlm.nih.gov/license.html#emailUsername" class="vsloginLink" target="_blank">
             <span>username</span></a> or <a href="https://uts.nlm.nih.gov/license.html#emailTemporaryPassword"
                                             target="_blank">
@@ -22,12 +25,19 @@
             <re-captcha siteKey="{{siteKey}}" (resolved)="resolved($event)"></re-captcha>
         </div>
     </form>
-    <p><small>This warning banner provides privacy and security notices consistent with applicable federal laws,
-        directives, and other federal guidance for accessing this Government system, which includes all devices/storage
-        media attached to this system. This system is provided for Government-authorized use only.
-        Unauthorized or improper use of this system is prohibited and may result in disciplinary action and/or civil
-        and criminal penalties. At any time, and for any lawful Government purpose, the government may monitor, record,
-        and audit your system usage and/or intercept, search and seize any communication or data transiting or stored
-        on this system. Therefore, you have no reasonable expectation of privacy. Any communication or data transiting
-        or stored on this system may be disclosed or used for any lawful Government purpose.</small></p>
+    <p>
+        <small>This warning banner provides privacy and security notices consistent with applicable federal laws,
+            directives, and other federal guidance for accessing this Government system, which includes all
+            devices/storage
+            media attached to this system. This system is provided for Government-authorized use only.
+            Unauthorized or improper use of this system is prohibited and may result in disciplinary action and/or civil
+            and criminal penalties. At any time, and for any lawful Government purpose, the government may monitor,
+            record,
+            and audit your system usage and/or intercept, search and seize any communication or data transiting or
+            stored
+            on this system. Therefore, you have no reasonable expectation of privacy. Any communication or data
+            transiting
+            or stored on this system may be disclosed or used for any lawful Government purpose.
+        </small>
+    </p>
 </div>
