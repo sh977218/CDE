@@ -14,5 +14,11 @@ export class CdeSummaryListContentComponent implements SummaryComponent {
     defaultAttachmentsFilter = a => a.isDefault === true;
     module = 'cde';
 
-    constructor() {}
+    constructor() {
+    }
+
+    getStewards() {
+        return this.elt.classification.map(cl => cl.stewardOrg.name).join(' ');
+    }
+
 }

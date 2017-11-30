@@ -10,7 +10,19 @@
 
 <div class="row">
     <div class="col-md-4 col-sm-12 col-xs-12">
-        <cde-cde-general-details [elt]="elt"></cde-cde-general-details>
+        <dl class="row">
+            <dt class="offset-md-4 col-sm-4">Steward:</dt>
+            <dd class="col-md-6 col-sm-8">{{elt.stewardOrg.name}}</dd>
+            <ng-container *ngIf="elt.classification.length > 0">
+                <dt class="offset-md-4 col-sm-4">Used By:</dt>
+                <dd class="col-md-6 col-sm-8" id="usedBy">
+                    <span *ngIf="!(elt.classification.length > 0)">None</span>
+                    <span *ngIf="elt.classification.length > 0">{{getStewards()}}</span>
+                </dd>
+            </ng-container>
+            <dt class="offset-md-4 col-sm-4">Source:</dt>
+            <dd class="col-md-6 col-sm-8">{{elt.source}}</dd>
+        </dl>
     </div>
     <div class="col-md-5 col-sm-8 col-xs-12">
         <cde-value-domain-summary [elt]="elt"></cde-value-domain-summary>
