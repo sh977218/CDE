@@ -1,51 +1,51 @@
 <div class="container-fluid">
     <div *ngIf="board" class="row overflowHidden">
-        <div class="col-lg-12">
+        <div class="col-lg-12 mt-4 mb-2">
             <h3 class="ib pull-left" id="board_name_{{board.name}}">
                 {{board.name}} <span *ngIf="isModifiedSinceReview">(Board has been modified since last review)</span>
             </h3>
             <div class="ml-auto pull-right">
                 <div *ngIf="reviewers?.length > 0" class="boxed-div p-0 m-0 d-inline-block">
-                    <span class="padding10 pull-left overflowHidden">
-                    <b *ngIf="!board.review?.startDate && !board.review?.endDate">Not started</b>
-                    <b *ngIf="board.review?.startDate && board.review?.endDate">Ended</b>
-                    <b *ngIf="board.review?.startDate && !board.review?.endDate">In progress</b>
-                    <span *ngIf="board.review?.startDate">{{board.review.startDate | date: 'MM/dd/yyyy'}}</span>
-                    <span *ngIf="board.review?.endDate"> ~ {{board.review.endDate | date: 'MM/dd/yyyy'}}</span>
-                    <span *ngFor="let reviewer of reviewers"
-                          title="{{reviewer.username}} {{reviewer.status.approval}}{{reviewer.lastViewedLocal?'. viewed on '+reviewer.lastViewedLocal :''}}">
+                    <div class="overflowHidden">
+                        <b *ngIf="!board.review?.startDate && !board.review?.endDate">Not started</b>
+                        <b *ngIf="board.review?.startDate && board.review?.endDate">Ended</b>
+                        <b *ngIf="board.review?.startDate && !board.review?.endDate">In progress</b>
+                        <span *ngIf="board.review?.startDate">{{board.review.startDate | date: 'MM/dd/yyyy'}}</span>
+                        <span *ngIf="board.review?.endDate"> ~ {{board.review.endDate | date: 'MM/dd/yyyy'}}</span>
+                        <span *ngFor="let reviewer of reviewers"
+                              title="{{reviewer.username}} {{reviewer.status.approval}}{{reviewer.lastViewedLocal?'. viewed on '+reviewer.lastViewedLocal :''}}">
                         <i class="fa fa-lg fa-user-circle mr2 ml2"></i>
                         <i class="fa overlay-lower-right" id="reviewer_{{reviewer.username}}_status"
                            [ngClass]="{'fa-check green-icon':reviewer.status.approval === 'approved',
                                        'fa-times red-icon':reviewer.status.approval === 'disapproved'}"></i>
-                    </span>
-                    <span *ngIf="!isReviewActive() && userService.user?.username === board.owner.username ">
-                        <button class="btn btn-secondary btn-sm" id="startReviewBtn"
-                                (click)="startReview()"> Start Review</button>
-                    </span>
-                    <span *ngIf="isReviewActive() && userService.user?.username === board.owner.username">
-                        <button class="btn btn-secondary btn-sm" id="endReviewBtn"
-                                (click)="endReview()"> End Review</button>
-                    </span>
-                    <span *ngIf="canReview">
-                        <button class="btn btn-secondary btn-sm" id="approveBoardBtn"
-                                [ngClass]="{'bg-color-green white-icon':boardStatus==='approved'}"
-                                (click)="boardApproval('approved')">
-                            <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
-                        <button class="btn btn-secondary btn-sm" id="disApproveBoardBtn"
-                                [ngClass]="{'bg-color-red white-icon':boardStatus==='disapproved'}"
-                                (click)="boardApproval('disapproved')">
-                            <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
-                    </span>
-                </span>
+                        </span>
+                        <button *ngIf="!isReviewActive() && userService.user?.username === board.owner.username "
+                                class="btn btn-secondary" id="startReviewBtn"
+                                (click)="startReview()"> Start Review
+                        </button>
+                        <button *ngIf="isReviewActive() && userService.user?.username === board.owner.username"
+                                class="btn btn-secondary" id="endReviewBtn"
+                                (click)="endReview()"> End Review
+                        </button>
+                        <ng-container *ngIf="canReview">
+                            <button class="btn btn-secondary" id="approveBoardBtn"
+                                    [ngClass]="{'bg-color-green white-icon':boardStatus==='approved'}"
+                                    (click)="boardApproval('approved')">
+                                <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
+                            <button class="btn btn-secondary" id="disApproveBoardBtn"
+                                    [ngClass]="{'bg-color-red white-icon':boardStatus==='disapproved'}"
+                                    (click)="boardApproval('disapproved')">
+                                <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
+                        </ng-container>
+                    </div>
                 </div>
-                <button id="discussBtn" class="btn btn-secondary btn-sm" role="button" title="Discuss CDE"
-                        type="button" (click)="commentMode = !commentMode;">
-                    <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
-                </button>
-                <button *ngIf="userService.user.username === board.owner.username" class="btn btn-secondary btn-sm"
+                <button *ngIf="userService.user.username === board.owner.username" class="btn btn-secondary"
                         id="shareBoardBtn" (click)="shareBoard()">
                     <i class="fa fa-link"></i> Share
+                </button>
+                <button id="discussBtn" class="btn btn-secondary" role="button" title="Discuss CDE"
+                        type="button" (click)="commentMode = !commentMode;">
+                    <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
                 </button>
             </div>
         </div>
