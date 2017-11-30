@@ -86,6 +86,12 @@
     table-layout: fixed;
 }
 
+.cdeTable td, .cdeTable th {
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
 .cdeTable th {
     padding: 0
 }
@@ -310,4 +316,8 @@ input.ng-invalid {
     .text-right-md {
         text-align: right
     }
+}
+
+.modal-lg {
+    max-width: 90%;
 }

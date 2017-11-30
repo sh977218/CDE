@@ -13,9 +13,7 @@
             </div>
             <div *ngIf="cdes">
                 <div *ngIf="cdes.length === 0"><h4>No similar elements to show.</h4></div>
-
                 <cde-pin-board-modal #mltPinModal module="cde"></cde-pin-board-modal>
-
                 <div id="mltAccordion">
                     <div class="card" *ngFor="let cde of cdes;let index = index;">
                         <div class="card-header">
@@ -26,7 +24,7 @@
                         </div>
                         <div class="card-block" [ngbCollapse]="!cde.isCollapsed">
                             <div class="row">
-                                <div class="col-4">
+                                <div class="col-md-4 col-sm-12 col-xs-12">
                                     <dl class="row">
                                         <dt class="col-sm-3">Steward:</dt>
                                         <dd class="col-sm-9">{{cde.stewardOrg.name}}</dd>
@@ -34,7 +32,8 @@
                                         <dd class="col-sm-9">{{cde.source}}</dd>
                                     </dl>
                                 </div>
-                                <div class="col-4" *ngIf="cde.valueDomain.permissibleValues.length > 0">
+                                <div class="col-md-4 col-sm-6 col-xs-12"
+                                     *ngIf="cde.valueDomain.permissibleValues.length > 0">
                                     <table class="table-bordered">
                                         <tr>
                                             <th>Value</th>
@@ -48,8 +47,8 @@
                                         </tr>
                                     </table>
                                 </div>
-                                <div class="col-4" *ngIf="cde.ids.length > 0">
-                                    <table class="table-bordered">
+                                <div class="col-md-4 col-sm-6 col-xs-12" *ngIf="cde.ids.length > 0">
+                                    <table class="table cdeTable">
                                         <tr>
                                             <th>Id</th>
                                             <th>Version</th>
