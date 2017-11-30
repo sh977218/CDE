@@ -1,55 +1,50 @@
 <div id="historyDiv">
     <h4>History</h4>
-    <ng-container *ngIf="priorElements?.length === 0">
-        This Element has no history.
-    </ng-container>
-    <ng-container *ngIf="priorElements?.length > 0">
-        <div style="line-height:40px;">
-            <input id="showVersionedHistory" type="checkbox" [(ngModel)]="showVersioned">
-            <label for="showVersionedHistory">Only show versioned revisions.</label>
-            <button *ngIf="numberSelected===2" class="btn btn-default" id="historyCompareBtn"
-                    (click)="openHistoryCompareModal()">
-                <i class="fa fa-files-o"></i> Compare
-            </button>
-        </div>
-        <table class="table table-hover" id="historyTable">
-            <caption>List of previous versions. Click rows to select them.</caption>
-            <tr>
-                <th width="30px"></th>
-                <th>Updated</th>
-                <th>Updated by</th>
-                <th>Change Note</th>
-                <th>Version</th>
-                <th>View</th>
+    <div style="line-height:40px;">
+        <input id="showVersionedHistory" type="checkbox" [(ngModel)]="showVersioned">
+        <label for="showVersionedHistory">Only show versioned revisions.</label>
+        <button *ngIf="numberSelected===2" class="btn btn-default" id="historyCompareBtn"
+                (click)="openHistoryCompareModal()">
+            <i class="fa fa-files-o"></i> Compare
+        </button>
+    </div>
+    <table class="table table-hover" id="historyTable">
+        <caption>List of previous versions. Click rows to select them.</caption>
+        <tr>
+            <th width="30px"></th>
+            <th>Updated</th>
+            <th>Updated by</th>
+            <th>Change Note</th>
+            <th>Version</th>
+            <th>View</th>
+        </tr>
+        <ng-container *ngFor="let priorElement of priorElements; let i = index">
+            <tr *ngIf="!showVersioned || priorElement?.version !== priorElements[i-1]?.version"
+                (click)="selectRow(priorElement)" [ngClass]="{'isSelected':priorElement.selected}">
+                <td>
+                    <i class="fa fa-check-square-o" *ngIf="priorElement.selected" aria-hidden="true"></i>
+                    <i class="fa fa-square-o" *ngIf="!priorElement.selected" aria-hidden="true"></i>
+                </td>
+                <td>
+                    {{priorElement.updated | date: 'MM/dd/yyyy @ h:mma'}}
+                </td>
+                <td>{{priorElement.updatedBy?.username}}</td>
+                <td>{{priorElement.changeNote}}</td>
+                <td>{{priorElement.version}}</td>
+                <td>
+                    <div id="prior-{{i}}">
+                        <ng-container *ngIf="priorElement.viewing">
+                            Viewing
+                        </ng-container>
+                        <ng-container *ngIf="!priorElement.viewing">
+                            <a [href]="priorElement.url" target="_blank">
+                                <span class="fa fa-eye fa-2x gray"></span></a>
+                        </ng-container>
+                    </div>
+                </td>
             </tr>
-            <ng-container *ngFor="let priorElement of priorElements; let i = index">
-                <tr *ngIf="!showVersioned || priorElement?.version !== priorElements[i-1]?.version"
-                    (click)="selectRow(priorElement)" [ngClass]="{'isSelected':priorElement.selected}">
-                    <td>
-                        <i class="fa fa-check-square-o" *ngIf="priorElement.selected" aria-hidden="true"></i>
-                        <i class="fa fa-square-o" *ngIf="!priorElement.selected" aria-hidden="true"></i>
-                    </td>
-                    <td>
-                        {{priorElement.updated | date: 'MM/dd/yyyy @ h:mma'}}
-                    </td>
-                    <td>{{priorElement.updatedBy?.username}}</td>
-                    <td>{{priorElement.changeNote}}</td>
-                    <td>{{priorElement.version}}</td>
-                    <td>
-                        <div id="prior-{{i}}">
-                            <ng-container *ngIf="priorElement.viewing">
-                                Viewing
-                            </ng-container>
-                            <ng-container *ngIf="!priorElement.viewing">
-                                <a [href]="priorElement.url" target="_blank">
-                                    <span class="fa fa-eye fa-2x gray"></span></a>
-                            </ng-container>
-                        </div>
-                    </td>
-                </tr>
-            </ng-container>
-        </table>
-    </ng-container>
+        </ng-container>
+    </table>
 </div>
 
 <ng-template #compareContent let-c="close" let-d="dismiss" class="hugeModal">
