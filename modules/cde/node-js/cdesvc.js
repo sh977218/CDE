@@ -87,7 +87,7 @@ exports.saveDraftDataElement = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     let elt = req.body;
-    if (elt.tinyId !== tinyId) return res.status(500);
+    if (elt.tinyId !== tinyId) return res.status(400).send();
     if (req.user && req.user.username) elt.updatedBy.username = req.user.username;
     if (!elt.created) elt.created = new Date();
     elt.updated = new Date();
