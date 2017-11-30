@@ -14,7 +14,12 @@ import { UserService } from '_app/user.service';
 
 @Component({
     selector: "cde-create-data-element",
-    templateUrl: "./createDataElement.component.html"
+    templateUrl: "./createDataElement.component.html",
+    styles: [`
+        label {
+            font-weight: 700;
+        }
+    `]
 })
 export class CreateDataElementComponent implements OnInit {
     @Input() elt;
@@ -127,7 +132,7 @@ export class CreateDataElementComponent implements OnInit {
         this.localStorageService.set("classificationHistory", recentlyClassification);
     }
 
-    showSuggestions (event) {
+    showSuggestions(event) {
         if (event.length < 3) return;
         let searchSettings = {
             q: ""
@@ -137,22 +142,22 @@ export class CreateDataElementComponent implements OnInit {
             , regStatuses: []
             , resultPerPage: 20
         };
-        searchSettings.q =  event.trim();
+        searchSettings.q = event.trim();
         this.elasticService.generalSearchQuery(
             this.elasticService.buildElasticQuerySettings(searchSettings), "cde", (err, result) => {
-            if (err) return;
-            this.suggestedCdes = result.cdes;
-            this.suggestedCdes.forEach(cde => {
-                cde.getEltUrl = function () {
-                    return "/deView?tinyId=" + this.tinyId;
-                };
-                cde.getLabel = function () {
-                    if (this.primaryNameCopy)
-                        return this.primaryNameCopy;
-                    else return this.naming[0].designation;
-                };
+                if (err) return;
+                this.suggestedCdes = result.cdes;
+                this.suggestedCdes.forEach(cde => {
+                    cde.getEltUrl = function () {
+                        return "/deView?tinyId=" + this.tinyId;
+                    };
+                    cde.getLabel = function () {
+                        if (this.primaryNameCopy)
+                            return this.primaryNameCopy;
+                        else return this.naming[0].designation;
+                    };
+                });
             });
-        });
     };
 
     createDataElement() {

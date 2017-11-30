@@ -24,7 +24,12 @@ import { AlertService } from '_app/alert/alert.service';
 @Component({
     selector: "cde-create-form",
     providers: [NgbActiveModal],
-    templateUrl: "./createForm.component.html"
+    templateUrl: "./createForm.component.html",
+    styles: [`
+        label {
+            font-weight: 700;
+        }
+    `]
 })
 export class CreateFormComponent implements OnInit {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
