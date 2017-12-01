@@ -18,7 +18,8 @@
                     <div class="card" *ngFor="let cde of cdes;let index = index;">
                         <div class="card-header">
                             <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed"> {{cde.naming[0].designation}}</span>
-                            <i class="fa fa-eye hand-cursor" (click)="viewDe(cde);"></i>
+                            <a href="deView?tinyId={{cde.tinyId}}" target="_blank">
+                                <i class="fa fa-eye iconColor"></i></a>
                             <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
                             <cde-pin-quickboard [elt]="cde" [eltIndex]="index"></cde-pin-quickboard>
                         </div>

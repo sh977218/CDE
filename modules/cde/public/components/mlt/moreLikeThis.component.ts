@@ -37,9 +37,4 @@ export class MoreLikeThisComponent {
         }, () => this.alert.addAlert("error", "Unable to retrieve MLT"));
         this.modalRef = this.modalService.open(this.mltModal, {size: "lg"});
     }
-
-    viewDe(cde) {
-        this.modalRef.close();
-        this.router.navigate(['/deView'], {queryParams: {tinyId: cde.tinyId}});
-    };
 }

@@ -321,3 +321,7 @@ input.ng-invalid {
 .modal-lg {
     max-width: 90%;
 }
+
+.iconColor {
+    color: #292b2c;
+}
