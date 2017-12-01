@@ -10,7 +10,7 @@ var conceptSchema = new Schema({
 }, {_id: false});
 
 var deJson = {
-    elementType: {type: String, default: 'cde', description: "This value is always 'cde'"},
+    elementType: {type: String, default: 'cde', enum: ['cde']},
     naming: {
         type: [sharedSchemas.namingSchema],
         description: "Any string used by which CDE is known, addressed or referred to"

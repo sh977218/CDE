@@ -1,18 +1,18 @@
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Http } from '@angular/http';
-import "rxjs/add/operator/map";
-import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import 'rxjs/add/operator/map';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from '_app/alert/alert.service';
 
 
 const URL_MAP = {
-    "cde": "/deView?cdeId=",
-    "form": "/formView?formId="
+    'cde': '/deView?cdeId=',
+    'form': '/formView?formId='
 };
 
 @Component({
-    selector: "cde-history",
-    templateUrl: "./history.component.html",
+    selector: 'cde-history',
+    templateUrl: './history.component.html',
     styles: [`
         caption {
             caption-side: top;
@@ -44,12 +44,12 @@ const URL_MAP = {
     providers: [NgbActiveModal]
 })
 export class HistoryComponent implements OnInit {
-    @ViewChild("compareContent") public compareContent: NgbModal;
+    @ViewChild('compareContent') public compareContent: NgbModal;
     @Input() public elt: any;
     @Input() public canEdit: boolean = false;
     public modalRef: NgbActiveModal;
     showVersioned: boolean = false;
-    public priorElements = [];
+    public priorElements: any[];
     public numberSelected: number = 0;
     public filter = {
         reorder: {
@@ -72,26 +72,23 @@ export class HistoryComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        let prefix_url = URL_MAP[this.elt.elementType];
+        this.elt.viewing = true;
         delete this.elt.selected;
         if (this.elt.history && this.elt.history.length > 0) {
-            let url;
-            if (this.elt.elementType === "cde") {
-                url = "/deById/" + this.elt._id + "/priorDataElements";
-            } else {
-                url = "/formById/" + this.elt._id + "/priorForms";
-            }
-            this.http.get(url).map(res => res.json()).subscribe(res => {
+            this.http.get(
+                this.elt.elementType === 'cde'
+                    ? '/deById/' + this.elt._id + '/priorDataElements'
+                    : '/formById/' + this.elt._id + '/priorForms'
+            ).map(res => res.json()).subscribe(res => {
                 this.priorElements = res.reverse();
-                this.elt.viewing = true;
                 this.priorElements.splice(0, 0, this.elt);
                 this.priorElements.forEach(pe => {
-                    pe.url = prefix_url + pe._id;
+                    pe.url = URL_MAP[this.elt.elementType] + pe._id;
                 });
-            }, err =>
-                this.alert.addAlert("danger", "Error retrieving history: " + err));
+            }, err => this.alert.addAlert('danger', 'Error retrieving history: ' + err));
+        } else {
+            this.priorElements = [this.elt];
         }
-
     }
 
     selectRow(priorCde) {
@@ -108,7 +105,7 @@ export class HistoryComponent implements OnInit {
     }
 
     openHistoryCompareModal() {
-        this.modalRef = this.modalService.open(this.compareContent, {size: "lg"});
+        this.modalRef = this.modalService.open(this.compareContent, {size: 'lg'});
     }
 
     getSelectedElt() {
