@@ -60,7 +60,7 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
             position: fixed;
             padding: 5px;
             padding-left: 20px;
-            top: 48px;
+            top: 47px;
             border-bottom-left-radius: 50px;
             right: 0;
             -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -118,7 +118,7 @@ export class FormDescriptionComponent implements OnChanges {
     @HostListener('window:scroll', ['$event'])
     doIt() {
         if (this && this.descToolbox && this.descToolbox.nativeElement)
-            this.descToolbox.nativeElement.style.top = (window.pageYOffset > 50 ? 0 : (50 - window.pageYOffset)) + 'px';
+            this.descToolbox.nativeElement.style.top = (window.pageYOffset > 47 ? 0 : (47 - window.pageYOffset)) + 'px';
     }
 
     addIndex = function (elems, elem, i) {

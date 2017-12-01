@@ -8,13 +8,13 @@
         <ngb-tab title="Organizations Curators">
             <ng-template ngbTabContent>
                 <form class="form-inline pt40 pb40" #newCuratorForm="ngForm" id="newOrgCuratorForm" novalidate>
-                    Make
+                    Make&nbsp;
                     <div class="form-group">
                         <input id="newOrgCuratorUsername" name="newOrgCuratorUsername" type="text" class="form-control"
                                placeholder="enter user name" [(ngModel)]="newUsername" autocomplete="off"
                                [ngbTypeahead]="searchTypeahead" required>
                     </div>
-                    a curator for
+                    &nbsp;a curator for&nbsp;
                     <div class="form-group">
                         <select id="newOrgCuratorOrgName" name="newOrgCuratorOrgName" class="form-control"
                                 [(ngModel)]="newOrgName" required>
@@ -49,7 +49,7 @@
             <ng-template ngbTabContent>
                 <form class="form-inline pt40 pb40" role="form" id="transferStewardForm" name="transferStewardForm"
                       novalidate>
-                    Transfer CDEs and forms owned by
+                    Transfer CDEs and forms owned by&nbsp;
                     <div class="form-group">
                         <select id="transferSteward_from" name="transferSteward_from" class="form-control"
                                 [(ngModel)]="transferStewardObj.from" required>
@@ -57,7 +57,7 @@
                             <option *ngFor="let myOrg of userService.user.orgAdmin">{{myOrg}}</option>
                         </select>
                     </div>
-                    to
+                    &nbsp;to&nbsp;
                     <div class="form-group">
                         <select id="transferSteward_to" name="transferSteward_to" class="form-control"
                                 [(ngModel)]="transferStewardObj.to" required>

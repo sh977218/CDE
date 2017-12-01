@@ -1,4 +1,3 @@
-<div *ngFor="let a of alertSvc.allAlerts" class="navbar-fixed-bottom">
+<div *ngFor="let a of alertSvc.allAlerts" class="fixed-bottom" style="z-index: 10000;">
     <ngb-alert type="{{a.type}}" (close)="alertSvc.remove(a.id)">{{ a.message }}</ngb-alert>
 </div>
-

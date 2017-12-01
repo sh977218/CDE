@@ -31,9 +31,18 @@ const tabMap = {
 @Component({
     selector: "cde-discuss-area",
     templateUrl: "./discussArea.component.html",
-    styles:[`
+    styles: [`
     .currentTabComment {
         margin-left: -50px;
+    }
+    .comment {
+        background-color: #f5f5f5;
+        direction: ltr;
+        position: relative;
+        width: 240px;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        border-radius: 2px;
     }
     .comment-arrow-outer {
         border-top: none;
@@ -42,7 +51,7 @@ const tabMap = {
         border-right: 24px solid #ddd;
         left: -25px;
         top: -1px;
-        z-index: 0;
+        z-index: -1;
         height: 0;
         position: absolute;
         width: 0;
@@ -144,6 +153,9 @@ const tabMap = {
         zoom: 1;
         background: #f5f5f5;
         position: static;
+    }
+    .strike {
+        text-decoration: line-through;
     }
     `]
 })

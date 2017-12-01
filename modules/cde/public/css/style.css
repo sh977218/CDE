@@ -38,7 +38,11 @@
     padding: 0 5px 0 5px;
     margin-bottom: 10px;
     background-color: white;
-    font-size: 1.3rem;
+    font-size: 21px;
+}
+
+.cdeFieldset > div {
+    font-size: 14px;
 }
 
 .welcomeCount {
@@ -340,11 +344,22 @@ input.ng-invalid {
     bottom: 5px;
     right: 25px;
 }
+
 .eltCommentView {
     -webkit-box-shadow: 10px 0 5px -2px #888;
 }
 
 #feedback-highlighter {
     cursor: move;
-    height: 574px!important;
+    height: 574px !important;
+}
+
+ins {
+    color: black;
+    background: #bbffbb;
+}
+
+del {
+    color: black;
+    background: #ffbbbb;
 }
