@@ -34,12 +34,12 @@
         <ng-container *ngFor="let option of options">
             <div *ngIf="option.displayAs.display" id="{{option.displayAs.label}}">
                 <div class="overflowHidden">
-                    <label>{{option.displayAs.label}}</label>
+                    <strong>{{option.displayAs.label}}</strong>
                     <div *ngFor="let fullMatch of option.fullMatches" class="col-12">
                         <div class="col-6 noLeftPadding">
                             <div class="fullMatch">
                                 <div *ngFor="let d of option.displayAs.data">
-                                    <label>{{d.label?d.label+":":d.label}}</label>
+                                    <strong>{{d.label?d.label+":":d.label}}</strong>
                                     <span [innerHTML]=getValue(fullMatch.left,d)></span>
                                 </div>
                             </div>
@@ -47,7 +47,7 @@
                         <div class="col-6 noRightPadding">
                             <div class="fullMatch">
                                 <div *ngFor="let d of option.displayAs.data">
-                                    <label>{{d.label?d.label+":":d.label}}</label>
+                                    <strong>{{d.label?d.label+":":d.label}}</strong>
                                     <span [innerHTML]=getValue(fullMatch.right,d)></span>
                                 </div>
                             </div>
@@ -57,7 +57,7 @@
                         <div class="col-6 noLeftPadding">
                             <div class="partialMatch">
                                 <div *ngFor="let d of option.displayAs.data">
-                                    <label>{{d.label?d.label+":":d.label}}</label>
+                                    <strong>{{d.label?d.label+":":d.label}}</strong>
                                     <span [innerHTML]=getValue(partialMatch.left,d)></span>
                                     <i *ngIf="partialMatch.diff.indexOf(d.property)>-1"
                                        class="fa fa-exclamation-triangle"></i>
@@ -67,7 +67,7 @@
                         <div class="col-6 noRightPadding">
                             <div class="partialMatch">
                                 <div *ngFor="let d of option.displayAs.data">
-                                    <label>{{d.label?d.label+":":d.label}}</label>
+                                    <strong>{{d.label?d.label+":":d.label}}</strong>
                                     <span [innerHTML]=getValue(partialMatch.right,d)></span>
                                     <i *ngIf="partialMatch.diff.indexOf(d.property)>-1"
                                        class="fa fa-exclamation-triangle"></i>
@@ -79,7 +79,7 @@
                         <div class="col-6 noLeftPadding">
                             <div *ngFor="let leftNotMatch of option.leftNotMatches" class="notMatch">
                                 <div *ngFor="let d of option.displayAs.data">
-                                    <label>{{d.label?d.label+":":d.label}}</label>
+                                    <strong>{{d.label?d.label+":":d.label}}</strong>
                                     <span [innerHTML]=getValue(leftNotMatch,d)></span>
                                 </div>
                             </div>
@@ -87,7 +87,7 @@
                         <div class="col-6 noRightPadding">
                             <div *ngFor="let rightNotMatch of option.rightNotMatches" class="notMatch">
                                 <div *ngFor="let d of option.displayAs.data">
-                                    <label>{{d.label?d.label+":":d.label}}</label>
+                                    <strong>{{d.label?d.label+":":d.label}}</strong>
                                     <span [innerHTML]=getValue(rightNotMatch,d)></span>
                                 </div>
                             </div>

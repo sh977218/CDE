@@ -55,30 +55,24 @@
 <ng-template #compareContent let-c="close" let-d="dismiss" class="hugeModal">
     <div class="modal-header">
         <div class="col-3">
-            <div class="color-box pull-left" style="background-color: #fad000;"></div>
-            <strong class="d-inline-block pull-left">&nbsp;Reorder&nbsp;</strong>
-            <input class="pull-left" type="checkbox" [(ngModel)]="filter.reorder.select">
+            <span class="d-inline-block color-box" id="reorderIcon"></span>
+            <strong class="d-inline-block">&nbsp;Reorder&nbsp;</strong>
+            <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.reorder.select">
         </div>
         <div class="col-3">
-            <div class="input-color pull-left">
-                <div class="color-box" style="background-color: #008000;"></div>
-                <strong class="d-inline-block">&nbsp;Add&nbsp;</strong>
-            </div>
-            <input class="form-check-input pull-left" type="checkbox" [(ngModel)]="filter.add.select">
+            <div class="d-inline-block color-box" id="addIcon"></div>
+            <strong class="d-inline-block">&nbsp;Add&nbsp;</strong>
+            <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.add.select">
         </div>
         <div class="col-3">
-            <div class="input-color pull-left">
-                <div class="color-box" style="background-color: #a94442;"></div>
-                <strong>&nbsp;Remove&nbsp;</strong>
-            </div>
-            <input class="form-check-input pull-left" type="checkbox" [(ngModel)]="filter.remove.select">
+            <div class="d-inline-block color-box" id="removeIcon"></div>
+            <strong class="d-inline-block">&nbsp;Remove&nbsp;</strong>
+            <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.remove.select">
         </div>
         <div class="col-3">
-            <div class="input-color pull-left">
-                <div class="color-box" style="background-color: #0000ff;"></div>
-                <strong>&nbsp;Edit&nbsp;</strong>
-            </div>
-            <input class="form-check-input pull-left" type="checkbox" [(ngModel)]="filter.edited.select">
+            <div class="d-inline-block color-box" id="editIcon"></div>
+            <strong class="d-inline-block">&nbsp;Edit&nbsp;</strong>
+            <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.edited.select">
         </div>
     </div>
     <div class="modal-body" *ngIf="getSelectedElt() && getSelectedElt().length == 2">
