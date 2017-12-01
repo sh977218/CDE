@@ -20,16 +20,16 @@
                 <h4>Type</h4>
                 <label *ngFor="let type of filter.types; let $index = index" class="d-block">
                     <input type="checkbox" data-id="type-{{type.key}}" [checked]="type.checked"
-                           (change)="selectAggregation('types', $index)">
-                    {{type.key}} ({{type.doc_count}})
+                           (change)="selectAggregation('types', $index)" class="align-middle">
+                    <span class="align-middle">{{type.key}} ({{type.doc_count}})</span>
                 </label>
             </div>
             <div *ngIf="filter.tags.length > 0">
                 <h4>Tags</h4>
                 <label *ngFor="let tag of filter.tags; let $index = index" class="d-block">
                     <input type="checkbox" data-id="tag-{{tag.key}}" [checked]="tag.checked"
-                           (change)="selectAggregation('tags', $index)">
-                    {{tag.key}} ({{tag.doc_count}})
+                           (change)="selectAggregation('tags', $index)" class="align-middle">
+                    <span class="align-middle">{{tag.key}} ({{tag.doc_count}})</span>
                 </label>
             </div>
         </div>
@@ -42,7 +42,9 @@
                         <cde-board-view-template [board]="board" [canEditBoard]="false" [index]="$index">
                         </cde-board-view-template>
 
-                        <small class="myBoardLastModified" id="board_mod_{{index}}">Modified {{board.updatedDate | date: 'MM/dd/yyyy'}}</small>
+                        <small class="myBoardLastModified" id="board_mod_{{index}}">Modified {{board.updatedDate | date:
+                            'MM/dd/yyyy'}}
+                        </small>
                     </div>
                 </div>
             </div>

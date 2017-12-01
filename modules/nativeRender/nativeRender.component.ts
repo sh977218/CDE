@@ -8,7 +8,7 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
     selector: "cde-native-render",
     templateUrl: "./nativeRender.component.html",
     styles: [`
-    :host >>> label {
+    :host >>> label .native-question-label {
         font-weight: 700;
     }
     .form-horizontal {

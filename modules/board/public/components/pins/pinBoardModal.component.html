@@ -16,16 +16,16 @@
                     <h4>Tags</h4>
                     <label *ngFor="let tag of myBoardsSvc.filter.tags" class="d-block">
                         <input type="checkbox" [(ngModel)]="tag.checked" (change)="myBoardsSvc.loadMyBoards()"
-                               attr.data-id="tag-{{tag.key}}">
-                        <small>{{tag.key}} ({{tag.doc_count}})</small>
+                               attr.data-id="tag-{{tag.key}}" class="align-middle">
+                        <span class="align-middle">{{tag.key}} ({{tag.doc_count}})</span>
                     </label>
                 </div>
                 <div *ngIf="myBoardsSvc.filter.shareStatus.length > 0">
                     <h4>Share Status</h4>
                     <label *ngFor="let ss of myBoardsSvc.filter.shareStatus" class="d-block">
                         <input type="checkbox" [(ngModel)]="ss.checked" (change)="myBoardsSvc.loadMyBoards()"
-                               attr.data-id="status-{{ss.key}}">
-                        <small>{{ss.key}} ({{ss.doc_count}})</small>
+                               attr.data-id="status-{{ss.key}}" class="align-middle">
+                        <span class="align-middle">{{ss.key}} ({{ss.doc_count}})</span>
                     </label>
                 </div>
             </div>
