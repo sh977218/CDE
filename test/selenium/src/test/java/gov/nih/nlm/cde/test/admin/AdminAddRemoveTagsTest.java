@@ -16,8 +16,8 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
-        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//input")).sendKeys("canYouSeeThis");
-        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//input")).sendKeys(Keys.RETURN);
+        clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//input"));
+        clickElement(By.xpath("//li[. = 'canYouSeeThis']"));
         textPresent("Org Updated");
         closeAlert();
 
@@ -28,7 +28,7 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
         clickElement(By.id("openNewNamingModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newTags']//input"));
-        String selectTagXpath = "//span[contains(@class,'select2-results')]/ul//li[text()='canYouSeeThis']";
+        String selectTagXpath = "//span[contains(@class,'select2-resulcants')]/ul//li[text()='canYouSeeThis']";
         clickElement(By.xpath(selectTagXpath));
         clickElement(By.id("cancelNewNamingBtn"));
 

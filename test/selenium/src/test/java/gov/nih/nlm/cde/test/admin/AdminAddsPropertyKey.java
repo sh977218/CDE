@@ -16,9 +16,8 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
-        hangon(1);
-        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//input")).sendKeys("doYouSeeThis");
-        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//input")).sendKeys(Keys.RETURN);
+        clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//input"));
+        clickElement(By.xpath("//li[. = 'doYouSeeThis']"));
         textPresent("Org Updated");
         closeAlert();
 
