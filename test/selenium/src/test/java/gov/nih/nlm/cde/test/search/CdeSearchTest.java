@@ -20,7 +20,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textPresent("Mutation Analysis");
         textPresent("C18302");
         goToHistory();
-        textPresent("This Element has no history");
+        textPresent("Viewing");
         goToClassification();
 
         textPresent("GO Trial", By.xpath("//*[@id='GO Trial']"));
