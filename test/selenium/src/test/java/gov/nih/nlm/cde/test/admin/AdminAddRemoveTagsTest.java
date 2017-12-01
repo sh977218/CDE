@@ -36,7 +36,7 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
         clickElement(By.linkText("List Management"));
 
         new Actions(driver).moveToElement(findElement(By.id("orgListName-Training")));
-        clickElement(By.xpath("//li[contains(., 'canYouSeeThis')]/span"));
+        clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//li[contains(., 'canYouSeeThis')]/span"));
         textPresent("Org Updated");
         closeAlert();
 

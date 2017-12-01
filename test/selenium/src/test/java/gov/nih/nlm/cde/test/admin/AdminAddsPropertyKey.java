@@ -36,7 +36,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.linkText("List Management"));
 
         new Actions(driver).moveToElement(findElement(By.id("orgListName-Training"))).perform();
-        clickElement(By.xpath("//li[contains(.,'doYouSeeThis')]/span"));
+        clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//li[contains(.,'doYouSeeThis')]/span"));
         textPresent("Org Updated");
         closeAlert();
 
@@ -46,7 +46,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("openNewPropertyModalBtn"));
         clickElement(By.id("newKey"));
 
-        findElement(By.xpath("//option[@value='propKey0']"));
+        clickElement(By.xpath("//option[@value='propKey0']"));
         Assert.assertEquals(driver.findElements(By.xpath("//option[@value='doYouSeeThis']")).size(), 0);
     }
 
