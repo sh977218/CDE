@@ -343,3 +343,8 @@ input.ng-invalid {
 .eltCommentView {
     -webkit-box-shadow: 10px 0 5px -2px #888;
 }
+
+#feedback-highlighter {
+    cursor: move;
+    height: 574px!important;
+}
