@@ -107,7 +107,7 @@ function getCell(row, header) {
     }
 }
 
-function parseRefDoc(row, de, cb) {
+function parseRefDoc(row, de, form, cb) {
     let pubmedUrl = 'https://www.ncbi.nlm.nih.gov/pubmed/?term=';
     let referencesString = getCell(row, 'References');
     EXCLUDE_REF_DOC.forEach(exclude_re_doc => {
@@ -136,6 +136,14 @@ function parseRefDoc(row, de, cb) {
                                 languageCode: 'en-us',
                                 document: abstracttext
                             });
+                            form.referenceDocuments.push({
+                                docType: 'text',
+                                title: title,
+                                uri: uri,
+                                source: 'PubMed',
+                                languageCode: 'en-us',
+                                document: abstracttext
+                            });
                             doneOneMore();
                         } else throw "status: " + response.statusCode;
                     });
@@ -148,6 +156,9 @@ function parseRefDoc(row, de, cb) {
         else {
             UNPARSED_REF_DOC.add(referencesString);
             de.referenceDocuments.push({
+                document: referencesString
+            });
+            form.referenceDocuments.push({
                 document: referencesString
             });
             cb(null, de);
@@ -192,7 +203,7 @@ function deToQuestion(row, cde) {
     return question;
 }
 
-function rowToDataElement(row, cb) {
+function rowToDataElement(row, form, cb) {
     let de = {
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {
@@ -317,7 +328,7 @@ function rowToDataElement(row, cb) {
             de.classification[0].elements[0].elements[0].elements.push({name: t, elements: []});
         });
     }
-    parseRefDoc(row, de, cb);
+    parseRefDoc(row, de, form, cb);
 }
 
 function run() {
@@ -358,7 +369,7 @@ function run() {
                             {designation: _.words(oneForm.Form).join(" ")}
                         ],
                         registrationState: {
-                            registrationStatus: 'Qualified'
+                            registrationStatus: 'Recorded'
                         },
                         createdBy: {
                             username: 'batchloader'
@@ -399,7 +410,7 @@ function run() {
                                         lastSection = currentSection;
                                         doneOneRow();
                                     } else {
-                                        rowToDataElement(row, (err, de) => {
+                                        rowToDataElement(row, form, (err, de) => {
                                             if (err)
                                                 throw err;
                                             else {
@@ -420,12 +431,15 @@ function run() {
                                 }
                             }
                         );
-                    }, () => new FormModel(form).save(err => {
-                        if (err) throw err;
-                        formCount++;
-                        console.log('formCount: ' + formCount);
-                        doneOneForm();
-                    }));
+                    }, () => {
+                        form.referenceDocuments = _.uniqBy(form.referenceDocuments, 'uri');
+                        new FormModel(form).save(err => {
+                            if (err) throw err;
+                            formCount++;
+                            console.log('formCount: ' + formCount);
+                            doneOneForm();
+                        });
+                    });
                 }, () => {
                     cb();
                 });
