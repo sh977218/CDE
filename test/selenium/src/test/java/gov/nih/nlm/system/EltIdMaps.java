@@ -110,7 +110,7 @@ public class EltIdMaps {
         eltMap.put("Not Equals Test", "QJBWLKc47");
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
         eltMap.put("Patient Health Questionnaire-2 (PHQ-2)", "XJzVz1TZDe");
-        eltMap.put("Patient Health Questionnaire-2 (PHQ-2) More Questions", "XJzVz1TZDE");
+        eltMap.put("Patient Health Questionnaire-2 (PHQ-2) More Questions", "XJzVXFTZDR");
         eltMap.put("Patient Health Questionnaire 2 item (PHQ-2) [Reported]", "XkZqYRlqKf");
         eltMap.put("PHQ-9 quick depression assessment panel [Reported.PHQ]", "mJsGoMU1m");
         eltMap.put("Patient Health Questionnaire - 9 (PHQ-9) Depression Scale", "mJP_B1HrFg");
