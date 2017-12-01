@@ -154,13 +154,8 @@ gulp.task('prepareVersion', ['copyCode'], function () {
     });
 });
 
-gulp.task('webpack-app', ['createDist'], () => {
+gulp.task('buildApp', ['createDist'], function () {
     return run('npm run buildApp').exec();
-});
-
-gulp.task('buildApp', ['webpack-app'], function () {
-    return gulp.src('./modules/_app/serviceWorker/**')
-        .pipe(gulp.dest('./dist/app/'));
 });
 
 gulp.task('buildNative', ['createDist'], () => {
