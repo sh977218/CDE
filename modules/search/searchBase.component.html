@@ -7,29 +7,24 @@
             <img [hidden]="embedded" id="homeNihCdeLogo" class="img-center-responsive"
                  alt="NIH Common Data Elements (CDE) log" src="/cde/public/assets/img/NIH-CDE.png"/>
         </div>
-        <div class="text-center center-block" id="searchDiv">
-            <form #quickSearchForm="ngForm" id="quickSearchForm" class="w-80 m-auto" novalidate method="GET"
-                  style="min-width: 300px;">
-                <div class="input-group input-group-lg">
-                    <label class="sr-only" for="ftsearch-input">Search Terms</label>
+        <div class="row justify-content-md-center" id="searchDiv">
+            <div class="col-12 col-md-auto">
+                <form #quickSearchForm="ngForm" id="quickSearchForm" class="input-group" novalidate
+                      method="GET" style="min-width: 766px;">
                     <input name="q" id="ftsearch-input" class="form-control search-query" type="text"
                            [(ngModel)]="searchSettings.q" aria-labelledby="l1" maxlength="500"
                            [ngbTypeahead]="getAutocompleteSuggestions" [focusFirst]="false">
-
-                    <div class="input-group-btn">
-                        <button id="search.submit" (click)="termSearch()" type="submit"
-                                class="btn btn-danger btn-lg">
-                            <i class="fa fa-search"></i> Search
-                        </button>
-                    </div>
-                </div>
-                <!-- Error display area -->
-                <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
-                   class="error-block">
-                    <span>Query terms must be 500 characters or less.</span>
-                </p>
-            </form>
-            <div class="clear"></div>
+                    <button id="search.submit" (click)="termSearch()" type="submit"
+                            class="btn btn-danger btn-lg">
+                        <i class="fa fa-search"></i> Search
+                    </button>
+                    <!-- Error display area -->
+                    <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
+                       class="error-block">
+                        <span>Query terms must be 500 characters or less.</span>
+                    </p>
+                </form>
+            </div>
         </div>
         <cde-search-export-button id="exportEverything" class="pull-right btn-group mt-3 mb-2" *ngIf="!embedded"
                                   [module]="module"
@@ -84,9 +79,7 @@
             </ngb-tabset>
         </div>
         <div class="mt-3">
-            <span>
-                <span id="totalItems">{{totalItems}}</span> elements across all classifications
-            </span>
+            <span id="totalItems">{{totalItems}}</span> <span>elements across all classifications</span>
         </div>
     </div>
 </ng-template>
@@ -98,19 +91,19 @@
 <ng-template #searchResults>
     <ng-container *ngIf="aggregations">
         <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-            <form class="form-inline w-100">
-                <input id="ftsearch-input" class="form-control" type="text" name="q" placeholder="Search"
+            <form class="input-group">
+                <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#searchBarContent" aria-controls="searchBarContent" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <input id="ftsearch-input" class="form-control pull-left" type="text" name="q" placeholder="Search"
                        [focusFirst]="false" [(ngModel)]="searchSettings.q" maxlength="500"
                        [ngbTypeahead]="getAutocompleteSuggestions" autocomplete="off" style="width:80%;">
-                <button id="search.submit" class="btn btn-danger" type="submit"
+                <button id="search.submit" class="btn btn-danger d-inline-block" type="submit"
                         (click)="termSearch()"><i class="fa fa-search"></i> Search
                 </button>
             </form>
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
-                    data-target="#searchBarContent" aria-controls="searchBarContent" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
             <div class="btn-group ml-auto collapse navbar-collapse" style="width:auto;"
                  id="searchBarContent" role="group" aria-label="Basic example">
                 <button *ngIf="embedded" id="resetSearch" class="btn btn-secondary" name="resetSearch" type="button"
@@ -204,21 +197,7 @@
         </div>
         <div class="container-fluid ml-0" style="max-width: 1200px;">
             <div class="row">
-                <div id="resultList" [ngClass]="filterMode?'col-12 col-sm-10 push-md-2':'col-12'">
-                    <!-- SEARCH RESULTS -->
-                    <span [hidden]="elts.length >= 0" class="h1 pl130"><i class="fa fa-spinner fa-pulse"></i>
-                        Searching...</span>
-                    <span [hidden]="elts.length !== 0" class="h4"><i class="fa fa-frown-o"></i>
-                        No results were found. Try other criterias or selecting more statuses</span>
-                    <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
-                                   (add)="add.emit($event)"></cde-list-view>
-                    <ngb-pagination [hidden]="totalItems <= 0" maxSize="10" [collectionSize]="totalItems"
-                                    [pageSize]="resultPerPage" [(page)]="searchSettings.page"
-                                    (pageChange)="pageChange()"></ngb-pagination>
-                    <!-- link for google indexer only -->
-                    <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
-                </div>
-                <div *ngIf="filterMode" [ngClass]="filterMode?'col-12 col-sm-2 pull-md-10 ':'col-12'">
+                <div *ngIf="filterMode" [ngClass]="filterMode?'col-12 col-sm-2':'col-12'">
                     <!-- FILTERS -->
                     <p class="gray">Filter by:</p>
                     <div> <!-- CLASSIFICATION AGGREGATIONS -->
@@ -361,6 +340,20 @@
                         </div>
                         <br/>
                     </ng-container>
+                </div>
+                <div id="resultList" [ngClass]="filterMode?'col-12 col-sm-10':'col-12'">
+                    <!-- SEARCH RESULTS -->
+                    <span [hidden]="elts.length >= 0" class="h1 pl130"><i class="fa fa-spinner fa-pulse"></i>
+                        Searching...</span>
+                    <span [hidden]="elts.length !== 0" class="h4"><i class="fa fa-frown-o"></i>
+                        No results were found. Try other criterias or selecting more statuses</span>
+                    <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
+                                   (add)="add.emit($event)"></cde-list-view>
+                    <ngb-pagination [hidden]="totalItems <= 0" maxSize="10" [collectionSize]="totalItems"
+                                    [pageSize]="resultPerPage" [(page)]="searchSettings.page"
+                                    (pageChange)="pageChange()"></ngb-pagination>
+                    <!-- link for google indexer only -->
+                    <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
                 </div>
             </div>
         </div>
