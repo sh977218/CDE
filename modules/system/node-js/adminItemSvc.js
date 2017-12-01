@@ -106,14 +106,20 @@ exports.setAttachmentDefault = function (req, res, dao) {
 };
 
 exports.scanFile = function (stream, res, cb) {
-    clamav.createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, function (err, object, malicious) {
-        dbLogger.consoleLog('clamav err:' + err);
-        dbLogger.consoleLog('clamav object:' + object.toString());
-        dbLogger.consoleLog('clamav malicious:' + malicious);
-        if (err) return cb(false);
-        if (malicious) return res.status(431).send("The file probably contains a virus.");
-        cb(true);
-    });
+    dbLogger.consoleLog('clamav begin scan');
+    try {
+        clamav.createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, function (err, object, malicious) {
+            dbLogger.consoleLog('clamav err:' + err);
+            dbLogger.consoleLog('clamav object:' + object.toString());
+            dbLogger.consoleLog('clamav malicious:' + malicious);
+            if (err) return cb(false);
+            if (malicious) return res.status(431).send("The file probably contains a virus.");
+            cb(true);
+        });
+    } catch (err) {
+        dbLogger.consoleLog('clamav throws:' + err);
+        throw err;
+    }
 };
 
 exports.addAttachment = function (req, res, dao) {
