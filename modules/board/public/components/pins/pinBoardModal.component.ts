@@ -19,13 +19,12 @@ export class PinBoardModalComponent {
     private resolve;
     private reject;
 
-    constructor(
-        public myBoardsSvc: MyBoardsService,
-        public modalService: NgbModal,
-        private alert: AlertService,
-        private http: Http,
-        private userService: UserService
-    ) {}
+    constructor(public myBoardsSvc: MyBoardsService,
+                public modalService: NgbModal,
+                private alert: AlertService,
+                private http: Http,
+                private userService: UserService) {
+    }
 
     open() {
         return new Promise((resolve, reject) => {
@@ -56,7 +55,8 @@ export class PinBoardModalComponent {
             }, (err) => {
                 this.alert.addAlert("danger", err);
             });
-        }, () => {});
+        }, () => {
+        });
     }
 
     pinOne(elt: any, promise: Promise<any>) {
@@ -67,7 +67,8 @@ export class PinBoardModalComponent {
             }, (err) => {
                 this.alert.addAlert('danger', err);
             });
-        }, () => {});
+        }, () => {
+        });
     }
 
     selectBoard(board) {

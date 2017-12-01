@@ -4,23 +4,7 @@ import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: 'cde-my-boards',
-    templateUrl: './publicBoards.component.html',
-    styles: [`
-        .my-board-card {
-            border: 1px solid #dcdcdc;
-            border-radius: 5px;
-            margin: 3px;
-            padding: 15px;
-            min-height: 160px;
-            position: relative;
-        }
-        
-        .myBoardLastModified {
-            position: absolute;
-            bottom: 5px;
-            right: 25px;
-        }
-        `]
+    templateUrl: './publicBoards.component.html'
 })
 export class PublicBoardsComponent implements OnInit {
 

@@ -4,17 +4,17 @@
             <cde-create-board></cde-create-board>
         </h3>
     </div>
-    <div style="margin-top: 10px">
+    <div class="modal-body">
         <i *ngIf="myBoardsSvc.reloading" class="fa fa-spinner fa-spin"></i>
         <i *ngIf="!myBoardsSvc.boards" class="fa fa-spinner fa-spin"></i>
         <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0">
-            <div style="margin-left: 10px"> You don't have any boards</div>
+            <div class="ml-10"> You don't have any boards</div>
         </div>
         <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length > 0">
-            <div style="padding-left: 10px" *ngIf="myBoardsSvc.filter">
+            <div class="pl-10" *ngIf="myBoardsSvc.filter">
                 <div *ngIf="myBoardsSvc.filter.tags.length > 0">
                     <h4>Tags</h4>
-                    <label *ngFor="let tag of myBoardsSvc.filter.tags" class="my-board-tag">
+                    <label *ngFor="let tag of myBoardsSvc.filter.tags" class="d-block">
                         <input type="checkbox" [(ngModel)]="tag.checked" (change)="myBoardsSvc.loadMyBoards()"
                                attr.data-id="tag-{{tag.key}}">
                         <small>{{tag.key}} ({{tag.doc_count}})</small>
@@ -22,7 +22,7 @@
                 </div>
                 <div *ngIf="myBoardsSvc.filter.shareStatus.length > 0">
                     <h4>Share Status</h4>
-                    <label *ngFor="let ss of myBoardsSvc.filter.shareStatus" class="my-board-tag">
+                    <label *ngFor="let ss of myBoardsSvc.filter.shareStatus" class="d-block">
                         <input type="checkbox" [(ngModel)]="ss.checked" (change)="myBoardsSvc.loadMyBoards()"
                                attr.data-id="status-{{ss.key}}">
                         <small>{{ss.key}} ({{ss.doc_count}})</small>
