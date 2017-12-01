@@ -60,7 +60,7 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
             position: fixed;
             padding: 5px;
             padding-left: 20px;
-            top: 50px;
+            top: 48px;
             border-bottom-left-radius: 50px;
             right: 0;
             -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);

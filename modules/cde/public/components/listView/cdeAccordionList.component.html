@@ -6,8 +6,8 @@
                 <span class="accordion-list-before">
                 </span>
                 <span class="accordion-list-after">
-                    <small class="matched-by hidden-xs" *ngIf="elt?.highlight?.matchedBy">Matched by: <strong>
-                        <span [innerHtml]="elt.highlight.matchedBy"></span></strong></small>
+                    <small class="matched-by hidden-xs" *ngIf="elt?.highlight?.matchedBy">Matched by:
+                        <strong [innerHtml]="elt.highlight.matchedBy"></strong></small>
 
                     <cde-pin-board [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-board>
                     <cde-pin-quickboard [elt]="elt" [eltIndex]="i"></cde-pin-quickboard>
