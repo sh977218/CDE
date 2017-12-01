@@ -30,7 +30,122 @@ const tabMap = {
 
 @Component({
     selector: "cde-discuss-area",
-    templateUrl: "./discussArea.component.html"
+    templateUrl: "./discussArea.component.html",
+    styles:[`
+    .currentTabComment {
+        margin-left: -50px;
+    }
+    .comment-arrow-outer {
+        border-top: none;
+        border-bottom: 24px solid transparent;
+        border-left: none;
+        border-right: 24px solid #ddd;
+        left: -25px;
+        top: -1px;
+        z-index: 0;
+        height: 0;
+        position: absolute;
+        width: 0;
+    }
+    .comment-arrow-inner {
+        cursor: default;
+        border-top: none;
+        border-bottom: 26px solid transparent;
+        border-left: none;
+        border-right: 26px solid #fff;
+        left: -22px;
+        z-index: 501;
+        top: 0;
+        height: 0;
+        position: absolute;
+        width: 0;
+    }
+    .rootComment {
+        background-color: #f5f5f5;
+        direction: ltr;
+        position: relative;
+        width: 240px;
+        border: none;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        border-radius: 2px;
+    }
+    
+    .commentBody {
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+        background: #fff;
+        min-height: 36px;
+    }
+    
+    .commentHeader {
+        margin: 0 0 8px 0;
+        height: 38px;
+        white-space: nowrap;
+    }
+    
+    .commentMessage {
+        word-wrap: break-word;
+        color: #333;
+        padding: 0;
+    }
+    
+    .rightSideComments {
+        padding: 30px;
+        background-color: #f5f5f5;
+        box-shadow: inset 10px 0 5px -2px #888;
+    }
+    .reply {
+        border: none;
+        border-bottom: 1px solid #e5e5e5;
+        padding: 3px 8px 5px 8px;
+        zoom: 1;
+        background: #f5f5f5;
+        position: static;
+    }
+    .replyInputDiv {
+        border: none;
+        padding: 8px;
+    }
+    .replyInputTextarea {
+        display: block;
+        height: 26px;
+        line-height: 1.4;
+        -webkit-box-sizing: border-box;
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        margin: 0;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        outline-width: 0 !important;
+        padding: 4px;
+        resize: none;
+        width: 100%;
+        border: 1px solid #c8c8c8;
+    }
+    .user-online {
+        width: 32px;
+        height: 6px;
+        background-color: rgb(31, 161, 93);
+    }
+    .user-offline {
+        width: 32px;
+        height: 6px;
+        background-color: #333333;
+    }
+    .showRepliesButton {
+        text-decoration: underline;
+        word-wrap: break-word;
+        color: #15c;
+    }
+    .showRepliesButtonDiv {
+        border: none;
+        border-bottom: 1px solid #e5e5e5;
+        padding: 3px 8px 5px 8px;
+        zoom: 1;
+        background: #f5f5f5;
+        position: static;
+    }
+    `]
 })
 export class DiscussAreaComponent implements OnInit, OnDestroy {
 

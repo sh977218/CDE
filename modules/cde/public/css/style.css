@@ -340,3 +340,6 @@ input.ng-invalid {
     bottom: 5px;
     right: 25px;
 }
+.eltCommentView {
+    -webkit-box-shadow: 10px 0 5px -2px #888;
+}
