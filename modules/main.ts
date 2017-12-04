@@ -13,8 +13,16 @@ import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import "../node_modules/bootstrap/dist/js/bootstrap.js";
 require('expose-loader?bootstrap!bootstrap');
 
+/*
+import "../node_modules/jquery/dist/jquery.js";
+require('expose-loader?jquery!jquery');
+require('expose-loader?$!jquery');
+*/
+
+
 // required for ng2-select2
 import "../node_modules/select2/dist/js/select2.js";
+
 require('expose-loader?select2!select2');
 
 import { enableProdMode } from "@angular/core";

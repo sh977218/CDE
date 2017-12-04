@@ -782,9 +782,7 @@ public class NlmCdeBaseTest {
 
     protected void scrollTo(Integer y) {
         String jsScroll = "scroll(0," + Integer.toString(y) + ");";
-        String jqueryScroll = "$(window).scrollTop(" + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
-        ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
 
     protected void scrollUpBy(Integer y) {
