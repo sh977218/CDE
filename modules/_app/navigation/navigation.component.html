@@ -76,10 +76,10 @@
                            class="dropdown-item"
                            *ngIf="authShared.isOrgAdmin(userService.user)">Account Management</a>
                         <a routerLink="/siteaccountmanagement" id="user_site_management" class="dropdown-item"
-                           *ngIf="userService.user?._id && userService.user?.siteAdmin">Site
-                            Management</a>
+                           *ngIf="userService.user?._id && userService.user?.siteAdmin">
+                            Site Management</a>
                         <a routerLink="/siteAudit" id="user_audit" class="dropdown-item"
-                           *ngIf="userService.user?._id && userService.user?.siteAdmin">Audit</a>
+                           *ngIf="authShared.canOrgAuthority(userService.user)">Audit</a>
                         <a (click)="loginSvc.logout()" target="_self" id="user_logout" class="dropdown-item"
                            *ngIf="userService.user?._id">Log Out</a>
                     </div>
