@@ -122,7 +122,7 @@
                         <i class="glyphicon glyphicon-filter"></i> Hide Filters
                     </div>
                 </button>
-                <cde-list-view-controls [(listView)]="resultsView" *ngIf="embedded"></cde-list-view-controls>
+                <cde-list-view-controls [(listView)]="resultsView" *ngIf="!embedded"></cde-list-view-controls>
 
                 <div class="btn-group" role="group" *ngIf="!embedded">
                     <button id="export" type="button" class="btn btn-secondary dropdown-toggle"

@@ -278,7 +278,7 @@ public class NlmCdeBaseTest {
 
     protected void doLogin(String username, String password) {
         findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
-        List<WebElement> loginLinkList = driver.findElements(By.id("login_link"));
+        List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
         if (loginLinkList.size() > 0) {
             loginAs(username, password);
         } else {
@@ -328,7 +328,7 @@ public class NlmCdeBaseTest {
 
     protected void mustBeLoggedOut() {
         findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
-        List<WebElement> loginLinkList = driver.findElements(By.id("login_link"));
+        List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
         if (loginLinkList.size() > 0) {
             logout();
         }
@@ -1512,7 +1512,7 @@ public class NlmCdeBaseTest {
 
 
     protected void swaggerApi(String api, String text, String tinyId, String version) {
-        clickElement(By.id("dropdownMenu_help"));
+        clickElement(By.id("menu_help_link"));
         clickElement(By.id("apiDocumentationLink"));
         driver.switchTo().frame(findElement(By.cssSelector("iframe")));
         textPresent("CDE API");
