@@ -4,13 +4,13 @@ let dbLogger = require('../../system/node-js/dbLogger.js');
 
 function addQuestion(parent, question) {
     let newQuestion = {
-        "@ID": question.question.cde.tinyId
+        "@ID": question.question.cde.tinyId || "N/A"
     };
     if (question.label !== undefined && !question.hideLabel) {
         newQuestion["@title"] = question.label;
     }
     if (question.instructions && question.instructions.value) {
-        newQuestion.OtherText = {"@val": question.instructions.value};
+        newQuestion.Property = {"@type": "instruction", "@val": question.instructions.value};
     }
     let questionEle = parent.ele({Question: newQuestion});
     if (question.question.cde.ids.length > 0) {
@@ -19,7 +19,7 @@ function addQuestion(parent, question) {
                 CodedValue: {
                     "Code": {"@val": id.id},
                     "CodeSystem": {
-                        "CodeSystemName": {"@val": id.source}
+                        "CodeSystemName": {"@val": id.source || ""}
                     }
                 }
             });
