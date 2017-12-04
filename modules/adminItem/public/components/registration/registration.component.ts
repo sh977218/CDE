@@ -37,6 +37,10 @@ export class RegistrationComponent implements OnInit {
     }
 
     openRegStatusUpdate() {
+        if (this.elt.isDraft) {
+            return this.alert.addAlert("warning", "Please publish this draft before editing status");
+        }
+
         this.http.get('/comments/eltId/' + this.elt.tinyId).map(res => res.json()).subscribe((response) => {
             if (response.filter && response.filter(function (a) {
                     return a.status !== 'resolved' && a.status !== 'deleted';

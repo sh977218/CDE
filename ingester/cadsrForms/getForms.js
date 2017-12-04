@@ -409,7 +409,6 @@ var getForms = function(page, cb){
                     saveForm(f, function () {
                         var i = unsavedForms.indexOf(f.longName);
                         unsavedForms.splice(i,1);
-                        console.log(unsavedForms);
                         cbf();
                     });
                 });

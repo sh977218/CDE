@@ -45,7 +45,6 @@ export class CdeForm extends Elt {
     };
     source: string;
     sources: DataSource;
-    unsaved: boolean = false;
     updated: Date;
     updatedBy: UserReference;
     version: string;
