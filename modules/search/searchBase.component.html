@@ -90,7 +90,7 @@
 
 <ng-template #searchResults>
     <ng-container *ngIf="aggregations">
-        <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+        <nav class="navbar navbar-toggleable-md navbar-light bg-faded" id="searchDiv">
             <form class="input-group">
                 <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#searchBarContent" aria-controls="searchBarContent" aria-expanded="false"
@@ -145,7 +145,7 @@
         <div class="m-3"> <!-- BREADCRUMBS -->
             <strong id="searchResultNum">{{totalItems}}</strong> results for
             <div id="term_crumb" class="d-inline">
-                <span class="badge badge-default">All Terms</span>
+                <span *ngIf="!searchedTerm" class="badge badge-default">All Terms</span>
                 <span *ngIf="searchedTerm" class="badge badge-success mr-2">{{searchedTerm}}
                         <i id="removeTerm" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="searchSettings.q = ''; doSearch()"
