@@ -95,7 +95,7 @@ export class BoardViewComponent implements OnInit {
                     });
                     this.canReview = this.isReviewActive() &&
                             this.board.users.filter(
-                                u => u.role === 'reviewer' && u.username.toLowerCase() === this.userService.user.username.toLowerCase()
+                                u => u.role === 'reviewer' && u?.username.toLowerCase() === this.userService.user.username.toLowerCase()
                             ).length > 0;
                 });
 
