@@ -128,42 +128,44 @@ exports.daoMap = {
 
 
 exports.reIndex = function (index, cb) {
-    let riverFunction = index.filter;
-    if (!riverFunction) {
-        riverFunction = function (elt, cb) {
-            cb(elt);
-        };
-    }
-    let startTime = new Date().getTime();
-    let indexType = Object.keys(index.indexJson.mappings)[0];
-    // start re-index all
-    let injector = new EsInjector(esClient, index.indexName, indexType);
-    let condition = exports.daoMap[index.name].condition;
-    index.count = 0;
-    exports.daoMap[index.name].dao.count(condition, function (err, totalCount) {
-        if (err) dbLogger.consoleLog("Error getting count: " + err, 'error');
-        dbLogger.consoleLog("Total count for " + index.name + " is " + totalCount);
-        index.totalCount = totalCount;
-        let stream = exports.daoMap[index.name].dao.getStream(condition);
-        stream.on('data', function (elt) {
-            stream.pause();
-            riverFunction(elt.toObject(), function (afterRiverElt) {
-                injector.queueDocument(afterRiverElt, function () {
-                    index.count++;
-                    stream.resume();
+    createIndex(index, () => {
+        let riverFunction = index.filter;
+        if (!riverFunction) {
+            riverFunction = function (elt, cb) {
+                cb(elt);
+            };
+        }
+        let startTime = new Date().getTime();
+        let indexType = Object.keys(index.indexJson.mappings)[0];
+        // start re-index all
+        let injector = new EsInjector(esClient, index.indexName, indexType);
+        let condition = exports.daoMap[index.name].condition;
+        index.count = 0;
+        exports.daoMap[index.name].dao.count(condition, function (err, totalCount) {
+            if (err) dbLogger.consoleLog("Error getting count: " + err, 'error');
+            dbLogger.consoleLog("Total count for " + index.name + " is " + totalCount);
+            index.totalCount = totalCount;
+            let stream = exports.daoMap[index.name].dao.getStream(condition);
+            stream.on('data', function (elt) {
+                stream.pause();
+                riverFunction(elt.toObject(), function (afterRiverElt) {
+                    injector.queueDocument(afterRiverElt, function () {
+                        index.count++;
+                        stream.resume();
+                    });
                 });
             });
-        });
-        stream.on('end', function () {
-            injector.inject(function () {
-                let info = "done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.";
-                noDbLogger.noDbLogger.info(info);
-                dbLogger.consoleLog(info);
-                if (cb) cb();
+            stream.on('end', function () {
+                injector.inject(function () {
+                    let info = "done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.";
+                    noDbLogger.noDbLogger.info(info);
+                    dbLogger.consoleLog(info);
+                    if (cb) cb();
+                });
             });
-        });
-        stream.on('error', function (err) {
-            dbLogger.consoleLog("Error getting stream: " + err);
+            stream.on('error', function (err) {
+                dbLogger.consoleLog("Error getting stream: " + err);
+            });
         });
     });
 };
