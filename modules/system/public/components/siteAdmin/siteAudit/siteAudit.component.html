@@ -1,17 +1,17 @@
 <ngb-tabset class="container-fluid" >
-    <ngb-tab title="Logs">
+    <ngb-tab title="Logs" *ngIf="userService.user.siteAdmin">
         <ng-template ngbTabContent>
             <cde-log-audit></cde-log-audit>
         </ng-template>
     </ngb-tab>
 
-    <ngb-tab title="App Logs">
+    <ngb-tab title="App Logs" *ngIf="userService.user.siteAdmin">
        <ng-template ngbTabContent>
             <cde-app-log></cde-app-log>
        </ng-template>
     </ngb-tab>
 
-    <ngb-tab title="Usage">
+    <ngb-tab title="Usage" *ngIf="userService.user.siteAdmin">
         <ng-template ngbTabContent>
             <cde-daily-usage></cde-daily-usage>
         </ng-template>
@@ -35,13 +35,13 @@
         </ng-template>
     </ngb-tab>
 
-    <ngb-tab title="Server Errors">
+    <ngb-tab title="Server Errors" *ngIf="userService.user.siteAdmin">
         <ng-template ngbTabContent>
             <cde-server-errors></cde-server-errors>
         </ng-template>
     </ngb-tab>
 
-    <ngb-tab title="Client Errors">
+    <ngb-tab title="Client Errors" *ngIf="userService.user.siteAdmin">
         <ng-template ngbTabContent>
             <cde-client-errors></cde-client-errors>
         </ng-template>

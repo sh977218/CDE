@@ -99,8 +99,8 @@ exports.init = function (app) {
         } else res.render('bot/cdeSearch', 'system');
     });
     app.get("/deView", [checkHttps, staticHtml], function (req, res) {
-        var tinyId = req.query.tinyId;
-        var version = req.query.version;
+        let tinyId = req.query.tinyId;
+        let version = req.query.version;
         mongo_cde.byTinyIdAndVersion(tinyId, version, (err, cde) => {
             if (err) {
                 res.status(500).send("ERROR - Static Html Error, /deView");
@@ -782,7 +782,7 @@ exports.init = function (app) {
 
 
     app.post('/getFeedbackIssues', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
+        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
             dbLogger.getFeedbackIssues(req.body, function (err, result) {
                 res.send(result);
             });
@@ -884,7 +884,7 @@ exports.init = function (app) {
     });
 
     app.post('/getClassificationAuditLog', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
+        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
             mongo_data.getClassificationAuditLog(req.body, function (err, result) {
                 if (err) return res.status(500).send();
                 res.send(result);

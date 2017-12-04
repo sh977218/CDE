@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { UserService } from '_app/user.service';
 
 @Component({
     selector: "cde-site-audit",
@@ -6,4 +7,7 @@ import { Component } from "@angular/core";
 })
 
 export class SiteAuditComponent  {
+
+    constructor(public userService: UserService) {}
+
 }
