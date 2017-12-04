@@ -546,6 +546,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
         }
     };
+    queryStuff._source = {excludes: ["flatProperties", "properties", "classification.elements", "formElements"]};
     return queryStuff;
 };
 
