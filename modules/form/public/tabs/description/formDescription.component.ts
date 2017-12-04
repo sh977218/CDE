@@ -27,12 +27,17 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
         :host >>> .tree {
             cursor: default;
         }
+        
         :host >>> .panel {
             margin-bottom: 1px;
         }
 
         :host >>> .tree-children {
             padding-left: 0;
+        }
+
+        :host >>> .questionSectionLabel{
+            font-weight:bold;
         }
 
         :host >>> .node-drop-slot {

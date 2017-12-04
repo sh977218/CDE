@@ -12,11 +12,11 @@
     </span>
 
     <cde-inline-edit *ngIf="section.elementType === 'section'"
-                     class="section_title ib" style="margin-left: 5px; width: 62%"
+                     class="section_title ib" style="margin-left: 5px; width: 62%;font-weight:bold;"
                      [(model)]="section.label" [isAllowed]="canEditSection()"
                      (modelChange)="stageElt.emit()"></cde-inline-edit>
     <span *ngIf="section.elementType === 'form'"
-          class="section_title ib" style="margin-left: 5px; width: 62%">
+          class="section_title ib" style="margin-left: 5px; width: 62%;font-weight:bold;">
         Embedded Form:
         <cde-inline-edit id="innerForm_label_edit_icon_{{section.label}}" [(model)]="section.label"
                          [isAllowed]="canEditSection()" (modelChange)="stageElt.emit()">
