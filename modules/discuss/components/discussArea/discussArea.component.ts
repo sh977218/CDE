@@ -43,6 +43,7 @@ const tabMap = {
         border: none;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         border-radius: 2px;
+        margin-bottom: 10px;
     }
     .comment-arrow-outer {
         border-top: none;

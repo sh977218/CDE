@@ -15,13 +15,13 @@
             <li class="nav-item" [ngClass]="{active: isPageActive('/form/search')}">
                 <a id="menu_forms_link" class="nav-link" routerLink="/form/search">Forms</a>
             </li>
-            <li class="nav-item dropdown" [ngClass]="{active: isPageActive('/boardList') || isPageActive('/myboards')}"
-                *ngIf="userService.user?._id">
+            <li class="nav-item dropdown" [ngClass]="{active: isPageActive('/boardList') || isPageActive('/myboards')}">
                 <a id="boardsMenu" class="nav-link dropdown-toggle" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">Boards</a>
                 <div class="dropdown-menu" aria-labelledby="boardsMenu">
                     <a id="publicBoardsLink" routerLink="/boardList" class="dropdown-item">Public Boards</a>
-                    <a id="myBoardsLink" routerLink="/myboards" class="dropdown-item">My Boards</a>
+                    <a *ngIf="userService.user?._id" id="myBoardsLink" routerLink="/myboards" class="dropdown-item">
+                        My Boards</a>
                 </div>
             </li>
             <li class="nav-item dropdown"
