@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
@@ -38,7 +38,8 @@ export class DataElementViewComponent implements OnInit {
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @ViewChild("tabSet") public tabSet: NgbTabset;
 
-    elt: any;
+
+    elt: any = {};
     public eltCopy = {};
     public modalRef: NgbModalRef;
     displayStatusWarning;

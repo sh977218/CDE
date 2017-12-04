@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { PreloadAllModules, RouterModule, Routes } from "@angular/router";
 
 import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFoundComponent';
 
@@ -38,7 +38,10 @@ const appRoutes: Routes = [
     imports: [
         RouterModule.forRoot(
             appRoutes,
-            // { enableTracing: true } // TODO: dev only
+            {
+                // enableTracing: true, // TODO: dev only
+                preloadingStrategy: PreloadAllModules,
+            }
         ),
     ],
     exports: [
