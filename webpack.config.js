@@ -58,12 +58,11 @@ module.exports = {
                 PRODUCTION: JSON.stringify(true),
             }),
             new webpack.ProvidePlugin({
-                '$': 'jquery',
-                'jQuery': 'jquery',
+                $: 'jquery',
+                jQuery: 'jquery',
                 'windows.jQuery': 'jquery',
-                'window.jQuery': 'jquery',
-                'Tether': 'tether',
-                'Popper': ['popper.js', 'default'],
+                Tether: 'tether',
+                Popper: ['popper.js', 'default'],
             }),
             new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
             new AotPlugin.AotPlugin({
@@ -137,12 +136,11 @@ module.exports = {
             new webpack.LoaderOptionsPlugin({debug: true}), // enable debug
             new webpack.ProgressPlugin(), // show progress in ConEmu window
             new webpack.ProvidePlugin({
-                '$': 'jquery',
-                'jQuery': 'jquery',
+                $: 'jquery',
+                jQuery: 'jquery',
                 'windows.jQuery': 'jquery',
-                'window.jQuery': 'jquery',
-                'Tether': 'tether',
-                'Popper': ['popper.js', 'default'],
+                Tether: 'tether',
+                Popper: ['popper.js', 'default'],
             }),
             new ExtractTextPlugin({filename: '[name].css'}),
             new CopyWebpackPlugin([
