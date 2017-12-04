@@ -278,8 +278,8 @@ public class NlmCdeBaseTest {
 
     protected void doLogin(String username, String password) {
         findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
-        WebElement loginLinkList = driver.findElement(By.id("login_link"));
-        if (loginLinkList.isDisplayed()) {
+        List<WebElement> loginLinkList = driver.findElements(By.id("login_link"));
+        if (loginLinkList.size() > 0) {
             loginAs(username, password);
         } else {
             if (!isUsernameMatch(username)) {
