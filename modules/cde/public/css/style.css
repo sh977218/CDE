@@ -368,3 +368,26 @@ del {
     -webkit-animation: wrench 10s linear infinite;
     animation: wrench 10s linear infinite;
 }
+
+/* feedback */
+.feedback-btn.feedback-btn-gray {
+    font-family: inherit !important;
+    border-top-left-radius: 6px !important;
+    border-top-right-radius: 6px !important;
+    font-size: 11px;
+    right: 20px !important;
+    z-index: 3;
+}
+
+#feedback-note-tmp {
+    min-height: 200px;
+}
+
+#feedback-overview-note {
+    width: 350px;
+    height: 317px !important;
+}
+
+#feedback-highlighter {
+    cursor: move;
+}
