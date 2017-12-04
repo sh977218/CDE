@@ -40,7 +40,9 @@
         </div>
     </div>
     <h1 class="mobileViewH1">
-        <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
+        <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadDraft(null):loadDataElement(null)"
+                          [hidden]="drafts?.length === 0"></cde-draft-slider>
+        {{elt.naming[0].designation}}
     </h1>
 
 

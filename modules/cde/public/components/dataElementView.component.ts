@@ -39,7 +39,7 @@ export class DataElementViewComponent implements OnInit {
     @ViewChild("tabSet") public tabSet: NgbTabset;
 
 
-    elt: any = {};
+    elt: any;
     public eltCopy = {};
     public modalRef: NgbModalRef;
     displayStatusWarning;

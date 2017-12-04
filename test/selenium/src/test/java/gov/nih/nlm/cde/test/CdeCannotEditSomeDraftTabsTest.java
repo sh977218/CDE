@@ -20,9 +20,16 @@ public class CdeCannotEditSomeDraftTabsTest extends NlmCdeBaseTest {
         clickElement(By.id("discussBtn"));
         textPresent("Discussion is not available in Drafts.");
 
-        clickElement(By.id("viewPublished"));
+        textPresent("DRAFT");
+        textNotPresent("Published");
+        clickElement(By.cssSelector(".toggle-switch"));
+
         goToNaming();
-        findElement(By.xpath("//button[contains (., 'View Draft')]"));
+
+        textPresent("Published");
+        textNotPresent("DRAFT");
+        clickElement(By.cssSelector(".toggle-switch"));
+
         Assert.assertEquals(driver.findElements(By.id("openNewNamingModalBtn")).size(), 0);
     }
 }

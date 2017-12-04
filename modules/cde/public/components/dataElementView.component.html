@@ -33,7 +33,7 @@
     <h1 class="mobileViewH1">
         <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadDraft(null):loadDataElement(null)"
                           [hidden]="drafts?.length === 0"></cde-draft-slider>
-        <ng-container *ngIf="elt.tinyId">{{elt?.naming[0].designation}}</ng-container>
+        {{elt?.naming[0].designation}}
     </h1>
     <div class="pull-left marginTopBottom5">
         <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
