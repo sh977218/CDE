@@ -31,13 +31,13 @@ public class ScreenShotListener extends TestListenerAdapter {
         System.out.println("Test Fail: " + methodName);
         if (!itr.isSuccess()) {
             try {
-
-                Screenshot fpScreenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(1000)).takeScreenshot(driver);
-                ImageIO.write(fpScreenshot.getImage(),"PNG", new File("build/screenshots/" + methodName + "_FULL_" + formater.format(calendar.getTime()) + ".png"));
-
                 File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                 FileUtils.copyFile(srcFile,
                         new File("build/screenshots/" + methodName + "_" + formater.format(calendar.getTime()) + ".png"));
+
+                Screenshot fpScreenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(1000)).takeScreenshot(driver);
+                ImageIO.write(fpScreenshot.getImage(),"PNG", new File("build/screenshots/" +
+                        methodName + "_FULL_" + formater.format(calendar.getTime()) + ".png"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
