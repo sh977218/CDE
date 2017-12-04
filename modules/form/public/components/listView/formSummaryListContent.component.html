@@ -10,8 +10,8 @@
 
 <div class="row">
     <div class="col-lg-6">
-        <b>{{elt.numQuestions}} Questions</b>
-        <ng-container *ngIf="elt.primaryDefinitionCopy"> - {{elt.primaryDefinitionCopy}}</ng-container>
+        <b>{{elt.numQuestions}} Questions </b> <span *ngIf="elt.primaryDefinitionCopy"> - </span>
+        <span [innerHtml]="elt.primaryDefinitionCopy"></span>
         <dl class="row">
             <dt class="col-sm-4 text-right-md">Steward:</dt>
             <dd class="col-sm-8">{{elt.stewardOrg.name}}</dd>
