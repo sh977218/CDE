@@ -690,7 +690,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void loginAs(String username, String password) {
-        findElement(By.id("login_link")).click();
+        clickElement(By.id("login_link"));
         String usernameStr = username;
         if (username.length() > 17) {
             usernameStr = usernameStr.substring(0, 17) + "...";
@@ -734,7 +734,7 @@ public class NlmCdeBaseTest {
     }
 
     public void goToQuickBoardByModule(String module) {
-        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
+        clickElement(By.id("menu_qb_link"));
         if (module.equals("cde")) {
             clickElement(By.id("dataElementQuickBoard"));
             textPresent("CDE QuickBoard (");
@@ -839,8 +839,8 @@ public class NlmCdeBaseTest {
 
     void enterUsernamePasswordSubmit(String username, String password, String checkText) {
         findElement(By.id("uname")).clear();
-        findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
+        findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).sendKeys(password);
         clickElement(By.id("login_button"));
         try {

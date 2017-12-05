@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test.boards;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -8,11 +9,7 @@ public class AddReviewerToBoardTest extends BoardTest {
 
     private void addNewUser(String username, String role) {
         findElement(By.id("newUser_username")).sendKeys(username);
-        clickElement(By.id("newUser_change"));
-        textPresent("can review");
-        clickElement(By.id("newUser_role_" + role));
-        String icon = role.equals("viewer") ? "fa-eye" : "fa-search-plus";
-        Assert.assertEquals(findElement(By.id("newUser_role")).getAttribute("class").contains(icon), true);
+        new Select(findElement(By.id("newUser_role"))).selectByValue(role);
         clickElement(By.id("addUserBtn"));
     }
 

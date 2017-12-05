@@ -134,7 +134,7 @@
                                [(ngModel)]="newUser.username" required/>
                     </td>
                     <td>
-                        <select [(ngModel)]="newUser.role">
+                        <select [(ngModel)]="newUser.role" id="newUser_role">
                             <option *ngFor="let role of allRoles" [value]="role.name">
                                 {{ role.label}}
                             </option>
