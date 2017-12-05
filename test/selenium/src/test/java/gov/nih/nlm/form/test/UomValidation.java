@@ -12,11 +12,11 @@ public class UomValidation extends NlmCdeBaseTest {
         goToFormDescription();
         textPresent("inch", By.cssSelector(".questionUom"));
         textPresent("meter", By.cssSelector(".questionUom"));
-        textPresent("inches", By.cssSelector(".label-danger"));
+        textPresent("inches", By.cssSelector(".badge-danger"));
         textPresent("cm", By.cssSelector(".questionUom"));
 
-        textNotPresent("meter", By.cssSelector(".label-danger"));
-        textNotPresent("m", By.cssSelector(".label-danger"));
+        textNotPresent("meter", By.cssSelector(".badge-danger"));
+        textNotPresent("m", By.cssSelector(".badge-danger"));
     }
 
 }

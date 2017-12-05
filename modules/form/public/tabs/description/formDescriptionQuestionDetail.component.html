@@ -135,11 +135,7 @@
             <dt class="col-sm-2">Min Length:</dt>
             <dd class="col-sm-10"> {{question.question?.datatypeText?.minLength | cdePlaceholder }}</dd>
             <dt class="col-sm-2">Max Length:</dt>
-            <dd class="col-sm-10"> {{question.question?.datatypeText?.maxLength}}</dd>
-            <dt class="col-sm-2">:</dt>
-            <dd class="col-sm-10"></dd>
-            <dt class="col-sm-2">:</dt>
-            <dd class="col-sm-10"></dd>
+            <dd class="col-sm-10"> {{question.question?.datatypeText?.maxLength | cdePlaceholder}}</dd>
         </ng-container>
         <ng-container *ngIf="question.question.datatype === 'Number'">
             <dt class="col-sm-2">Min Value:</dt>
@@ -166,9 +162,9 @@
             </dd>
         </ng-container>
         <dt class="col-sm-2">Default Answer:</dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-10 defaultAnswer">
             <ng-container *ngIf="question.question.datatype === 'Value List'">
-                <select title="Default" class="form-control defaultAnswer"
+                <select title="Default" class="form-control"
                         [(ngModel)]="question.question.defaultAnswer" (change)="stageElt.emit()">
                     <option value=""></option>
                     <option *ngFor="let pv of question.question.answers " [value]="pv.permissibleValue"
