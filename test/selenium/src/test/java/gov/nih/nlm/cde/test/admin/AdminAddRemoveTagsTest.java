@@ -21,7 +21,12 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
         textPresent("Org Updated");
         closeAlert();
 
+        // ensure it got saved.
         goHome();
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Org Management"));
+        clickElement(By.linkText("List Management"));
+        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//li[contains(., 'canYouSeeThis')]/span"));
 
         goToCdeByName(cdeName);
         goToNaming();
