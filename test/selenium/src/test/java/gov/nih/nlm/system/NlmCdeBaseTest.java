@@ -750,7 +750,7 @@ public class NlmCdeBaseTest {
         goToQuickBoardByModule(module);
         clickElement(By.id("qb_" + module + "_empty"));
         textPresent(("cde".equals(module) ? "CDE" : "Form") + " QuickBoard (0)");
-        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
+        clickElement(By.id("menu_qb_link"));
         hangon(1);
     }
 
