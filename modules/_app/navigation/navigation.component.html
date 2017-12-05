@@ -70,7 +70,7 @@
                         <a routerLink="/profile" id="user_profile" class="dropdown-item" *ngIf="userService.user?._id">Profile</a>
                         <a routerLink="/inbox" id="user_inbox" class="dropdown-item">Inbox</a>
                         <a routerLink="/orgComments" id="org_comments" class="dropdown-item"
-                           *ngIf="userService.user?.siteAdmin && authShared.isOrgCurator(userService.user)">
+                           *ngIf="authShared.isOrgCurator(userService.user) && !userService.user?.siteAdmin">
                             Org Comments</a>
                         <a routerLink="/classificationmanagement" id="user_classifications"
                            class="dropdown-item"

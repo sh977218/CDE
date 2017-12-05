@@ -31,7 +31,7 @@ public class PublishForm extends NlmCdeBaseTest {
         goHome();
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
-        clickElement(By.xpath("//td[a[. ='My Published Form']]/i[@title= 'Remove']"));
+        clickElement(By.xpath("//td[a[normalize-space(.) ='My Published Form']]/i[@title= 'Remove']"));
         textPresent("Saved");
         closeAlert();
         textNotPresent("My Published Form");
