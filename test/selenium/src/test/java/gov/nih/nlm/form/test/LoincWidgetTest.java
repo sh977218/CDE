@@ -9,7 +9,7 @@ public class LoincWidgetTest extends NlmCdeBaseTest {
     @Test
     public void lformsDisplay() {
         goToFormByName("Loinc Widget Test Form");
-        clickElement(By.id("dropdownMenuButton"));
+        clickElement(By.id("selectRenderButton"));
         clickElement(By.id("button_lforms"));
         switchTab(1);
         textPresent("Prior BMSCT Administered Indicator");

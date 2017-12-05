@@ -9,8 +9,8 @@ public class MultiselectLogicTest extends NlmCdeBaseTest {
     @Test
     public void multiselectLogic() {
         goToFormByName("MultiSelect Logic");
-        clickElement(By.id("dropdownMenuButton"));
-        clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
+        clickElement(By.id("selectRenderButton"));
+        clickElement(By.xpath("(//*[@id='selectRenderButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
         textNotPresent("Own home with self care");
         textNotPresent("Slight ataxia (slowness or unsteady turning)");
         clickElement(By.xpath("//label[normalize-space(.)='Medicare']//input"));

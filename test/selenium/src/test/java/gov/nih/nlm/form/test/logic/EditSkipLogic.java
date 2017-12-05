@@ -56,8 +56,8 @@ public class EditSkipLogic extends BaseFormTest {
                 By.xpath("//*[*[text()='To what degree did your fatigue interfere with your physical functioning?']]" +
                         "//*[text()='How often did you have to push yourself to get things done because of your fatigue?']"));
 
-        clickElement(By.id("dropdownMenuButton"));
-        clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
+        clickElement(By.id("selectRenderButton"));
+        clickElement(By.xpath("(//*[@id='selectRenderButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
 
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
         clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']//*/span[text()='Not at all']"));

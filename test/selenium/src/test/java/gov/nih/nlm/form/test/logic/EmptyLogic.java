@@ -16,7 +16,7 @@ public class EmptyLogic extends NlmCdeBaseTest {
         textPresent("If empty:", By.xpath("//*[*[text()='Head injury prior number']]"));
         textPresent("If empty:", By.xpath("//*[*[text()='Noncompliant Reason Text']]"));
 
-        clickElement(By.id("dropdownMenuButton"));
+        clickElement(By.id("selectRenderButton"));
         clickElement(By.id("printableLogicCb"));
 
         // Dates

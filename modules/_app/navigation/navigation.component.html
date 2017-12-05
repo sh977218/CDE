@@ -49,8 +49,8 @@
         </ul>
         <div class="navbar-nav ml-auto">
             <ul class="navbar-nav float-right" attr.data-userloaded="loaded-{{userService.user?true:false}}">
-                <li class="nav-item">
-                    <a routerLink="/inbox" id="user_inbox" class="dropdown-item" *ngIf="userService.user?.hasMail">
+                <li class="nav-item" *ngIf="userService.user?.hasMail">
+                    <a routerLink="/inbox" id="user_inbox" class="nav-link">
                         <i id="incomingMessage" class="fa fa-envelope text-danger"></i>
                     </a>
                 </li>
@@ -66,7 +66,8 @@
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="username_link">
                         <a routerLink="/profile" id="user_profile" class="dropdown-item" *ngIf="userService.user?._id">Profile</a>
                         <a routerLink="/orgComments" id="org_comments" class="dropdown-item"
-                           *ngIf="userService.user?.siteAdmin && authShared.isOrgCurator(userService.user)">Org Comments</a>
+                           *ngIf="userService.user?.siteAdmin && authShared.isOrgCurator(userService.user)">Org
+                            Comments</a>
                         <a routerLink="/classificationmanagement" id="user_classifications"
                            class="dropdown-item"
                            *ngIf="authShared.isOrgCurator(userService.user)">Classifications</a>
