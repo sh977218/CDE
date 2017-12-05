@@ -91,7 +91,7 @@
             <span *ngIf="question.hideLabel">(No label)</span>
         </dd>
         <dt class="col-sm-2">Instructions:</dt>
-        <dd class="col-sm-10 editQuestionInstructionIcon">
+        <dd class="col-sm-10 editQuestionInstruction">
             <cde-inline-area-edit
                     [(model)]="question.instructions.value"
                     [(defFormat)]="question.instructions.valueFormat"
@@ -104,7 +104,7 @@
                    (change)="stageElt.emit()"/>
         </dd>
         <dt class="col-sm-2">Invisible:</dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-10 editQuestionInvisible">
             <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible"
                    (change)="stageElt.emit()">
         </dd>
@@ -123,7 +123,7 @@
             </dd>
         </ng-container>
         <dt class="col-sm-2">Units of Measure:</dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-10 questionUom">
             <select2 class="formDescriptionUoms" [data]="getUoms()" [value]="question.question.uoms"
                      [options]="uomOptions" width="100%"
                      (valueChanged)="checkUom($event)">

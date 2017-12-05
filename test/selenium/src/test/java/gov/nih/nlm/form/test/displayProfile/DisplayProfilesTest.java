@@ -15,8 +15,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToFormDescription();
-        clickElement(By.xpath("//div[@id='question_0_3']//i[contains(@class,'fa-pencil')]"));
-        clickElement(By.xpath("//div[@id='question_0_3']//div[text()='Invisible:']/following-sibling::div/input"));
+        startEditQuestionSectionById("question_0_3");
+        clickElement(By.xpath("//div[@id='question_0_3']//*[contains(@class,'editQuestionInvisible')]/input"));
 
         clickElement(By.id("displayProfiles_tab"));
         createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up", 1, false);

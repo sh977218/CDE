@@ -44,10 +44,10 @@ public class QuestionLayoutTest extends QuestionTest {
         clickElement(By.id("cancelSelectQ"));
 
         clickElement(By.xpath("//*[@id='section_1']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-trash-o')]"));
-        clickElement(By.xpath("//*[@id='section_1']//*[contains(@class,'editIconDiv')]//*[contains(@class,'badge')]/*[contains(@class,'fa-check')]"));
+        clickElement(By.xpath("//*[@id='section_1']//*[contains(@class,'editIconDiv')]//*[contains(@class,'label')]/*[contains(@class,'fa-check')]"));
         textNotPresent(sec2);
         clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-trash-o')]"));
-        clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'editIconDiv')]//*[contains(@class,'badge')]/*[contains(@class,'fa-check')]"));
+        clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'editIconDiv')]//*[contains(@class,'label')]/*[contains(@class,'fa-check')]"));
         textNotPresent(sec1);
 
         textPresent("There is no content yet.");
