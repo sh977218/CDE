@@ -79,7 +79,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/elasticSearch/form', function (req, res) {
         let query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        queryStuff._source = {excludes: ["flatProperties", "properties", "classification.elements", "formElements"]};
+        query._source = {excludes: ["flatProperties", "properties", "classification.elements", "formElements"]};
         sharedElastic.elasticsearch(query, 'form', function (err, result) {
             if (err) return res.status(400).send("invalid query");
             res.send(result);

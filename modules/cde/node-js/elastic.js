@@ -167,7 +167,7 @@ exports.elasticsearch = function (user, settings, cb) {
             }
         };
 
-    queryStuff._source = {excludes: ["flatProperties", "properties", "classification.elements", "formElements"]};
+    query._source = {excludes: ["flatProperties", "properties", "classification.elements", "formElements"]};
 
     sharedElastic.elasticsearch(query, 'cde', function (err, result) {
         if (result && result.cdes && result.cdes.length > 0) {
