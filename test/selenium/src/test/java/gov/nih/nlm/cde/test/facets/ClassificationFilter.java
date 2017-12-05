@@ -14,9 +14,9 @@ public class ClassificationFilter extends NlmCdeBaseTest {
     public void classificationFilters() {
         goToCdeSearch();
         findElement(By.name("q")).sendKeys("Image");
-        findElement(By.id("search.submit")).click();
+        clickElement(By.id("search.submit"));
         textPresent("caBIG (9)");
-        findElement(By.id("li-blank-caBIG")).click();
+        clickElement(By.id("li-blank-caBIG"));
         textPresent("Generic Image");
 
         textPresent("9 results for");
@@ -26,28 +26,28 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         // Check that CTEP classification with 0 items does not show
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("Radiograph Evidence Type"));
 
-        findElement(By.xpath("//*[@id='li-blank-Generic Image']")).click();
+        clickElement(By.xpath("//*[@id='li-blank-Generic Image']"));
         textPresent("genericimage (2)");
-        findElement(By.id("li-blank-gov.nih.nci.ivi.genericimage")).click();
+        clickElement(By.id("li-blank-gov.nih.nci.ivi.genericimage"));
         textPresent("2 results for");
 
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 2);
 
         // Now test unclicking everything
-        findElement(By.xpath("//*[@id='li-checked-Generic Image']")).click();
+        clickElement(By.xpath("//*[@id='li-checked-Generic Image']"));
         textPresent("9 results for");
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 9);
 
         textPresent("Generic Image (2)");
-        findElement(By.xpath("//*[@id='li-blank-Generic Image']")).click();
+        clickElement(By.xpath("//*[@id='li-blank-Generic Image']"));
 
         textPresent("2 results for");
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 2);
 
-        findElement(By.id("li-checked-caBIG")).click();
+        clickElement(By.id("li-checked-caBIG"));
         textPresent("NINDS (");
         Assert.assertTrue(getNumberOfResults() > 90);
     }

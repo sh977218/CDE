@@ -213,9 +213,15 @@
                         <div class="pl-2" id="classificationListHolder">
                             <ng-container
                                     *ngFor="let t of aggregations.orgs.buckets; trackBy: helperObjectsService.trackByKey">
-                            <span class="nonLinkAnchor d-block hand-cursor" (click)="alterOrgFilter(t.key)"
+                            <span *ngIf="t.key === getCurrentSelectedOrg() || !getCurrentSelectedOrg()"
+                                  class="nonLinkAnchor d-block hand-cursor" (click)="alterOrgFilter(t.key)"
                                   [ngbTooltip]="t.longName" placement="right" container="body">
+                                 <ng-container *ngIf="t.key === getCurrentSelectedOrg(); else else01">
+                                    <i class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>
+                                </ng-container>
+                                <ng-template #else01>
                                     <i class="fa fa-chevron-right" id="li-blank-{{t.key}}"></i>
+                                </ng-template>
                                 <a class="nonLinkAnchor" id="classifications-text-{{t.key}}"> {{t.key}}
                                     (<span id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)
                                 </a>
@@ -233,7 +239,7 @@
                                         <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
                                     </ng-template>
                                     <a class="nonLinkAnchor">
-                                        <small>{{e}}</small>
+                                        <span>{{e}}</span>
                                     </a>
                                 </span>
                                 <span class="nonLinkAnchor d-block hand-cursor" (click)="selectElement(b.name)"
