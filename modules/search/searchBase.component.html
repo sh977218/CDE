@@ -1,5 +1,4 @@
 <ng-container *ngIf="view === 'welcome'; then welcomeSearch else searchResults"></ng-container>
-<!--<a [href]="redirectPath" style="display: none" id="redirectMe"></a>-->
 
 <ng-template #welcomeSearch>
     <div class="container">
@@ -65,7 +64,7 @@
                         <div class="row">
                             <div class="col-4" *ngFor="let key of topicsKeys; let i = index;">
                                 <hr *ngIf="i > 2">
-                                <h4 style="margin-bottom:2px;">{{key}}</h4>
+                                <h4>{{key}}</h4>
                                 <ul style="list-style-type: none">
                                     <li *ngFor="let t of topics[key]">
                                         <span class="fake-link" (click)="browseTopic(key + ';' + t.name)">
@@ -349,8 +348,8 @@
                 </div>
                 <div id="resultList" [ngClass]="filterMode?'col-12 col-sm-10':'col-12'">
                     <!-- SEARCH RESULTS -->
-                    <span [hidden]="elts.length >= 0" class="h1 pl130"><i class="fa fa-spinner fa-pulse"></i>
-                        Searching...</span>
+                    <span [hidden]="elts.length >= 0" class="h1 pl130">
+                        <i class="fa fa-spinner fa-pulse"></i>Searching...</span>
                     <span [hidden]="elts.length !== 0" class="h4"><i class="fa fa-frown-o"></i>
                         No results were found. Try other criterias or selecting more statuses</span>
                     <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
