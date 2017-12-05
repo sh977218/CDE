@@ -96,7 +96,7 @@ export class BoardViewComponent implements OnInit {
                     });
                     this.canReview = this.isReviewActive() &&
                         this.board.users.filter(
-                            u => u.role === 'reviewer' && u.username.toLowerCase() === this.userService.user.username.toLowerCase()
+                            u => u.role === 'reviewer' && u.username && u.username.toLowerCase() === this.userService.user.username.toLowerCase()
                         ).length > 0;
                 });
 
@@ -203,6 +203,16 @@ export class BoardViewComponent implements OnInit {
 
     deleteUser(index) {
         this.users.splice(index, 1);
+<<<<<<< HEAD
+=======
+        this.changesMade = true;
+    };
+
+    changeRole(newUser, role) {
+        newUser.role = role.name;
+        this.changesMade = true;
+        newUser.status = 'invited';
+>>>>>>> cc7f43cd1b86f5e85811d454a146b36d71b4081b
     };
 
     okShare() {
