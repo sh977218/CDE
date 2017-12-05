@@ -1,7 +1,8 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
+import ucum from 'ucum.js';
 import { Observable } from "rxjs/Observable";
 
 import { TreeNode } from "angular-tree-component";
@@ -65,6 +66,7 @@ export class FormDescriptionQuestionDetailComponent {
             }
         }
     };
+    uomVersion = 0;
 
     constructor(private http: Http,
                 public modalService: NgbModal,
@@ -114,12 +116,51 @@ export class FormDescriptionQuestionDetailComponent {
     }
 
     validateUoms(question) {
-        question.uomsValid = [question.uoms.length];
+        function matchUnits(a, aKeys, question, index) {
+            let b = ucum.canonicalize(question.uoms[index]).units;
+            question.uomsValid[index] = aKeys.concat(Object.keys(b)).every(u => a[u] && b[u] && a[u] === b[u]);
+        }
+        let baseUnits;
+        let baseUnitsKeys;
+        let delayedUnits = [];
+        question.uomsValid = [];
         question.uoms.forEach((uom, i) => {
-            this.http.get('https://clin-table-search.lhc.nlm.nih.gov/api/ucum/v3/search?q=is_simple:true%20AND%20category:Clinical&df=cs_code,name,guidance&authenticity_token=&terms=' + encodeURIComponent(uom)).map(r => r.json())
+            this.http.get('https://clin-table-search.lhc.nlm.nih.gov/api/ucum/v3/search?q=is_simple:true%20AND%20category:Clinical&df=cs_code,name,guidance&authenticity_token=&terms=' + encodeURIComponent(uom))
+                .map(r => r.json())
                 .subscribe(r => {
                     r[3].forEach(unit => {
-                        if (unit[1] === uom || unit[0] === uom) question.uomsValid[i] = true;
+                        if (unit[0] === uom || unit[1] === uom) {
+                            if (unit[0] !== uom) {
+                                question.uoms[i] = unit[0];
+                                this.uomVersion++;
+                            }
+
+                            let valid = true;
+                            try {
+                                ucum.parse(1, question.uoms[i]);
+                            } catch (err) {
+                                valid = false;
+                            }
+                            if (valid) {
+                                if (i === 0) {
+                                    baseUnits = ucum.canonicalize(question.uoms[i]).units;
+                                    baseUnitsKeys = Object.keys(baseUnits);
+                                    question.uomsValid[i] = valid;
+
+                                    if (delayedUnits.length)
+                                        delayedUnits.forEach(u => matchUnits(baseUnits, baseUnitsKeys, question, u));
+                                } else {
+                                    if (baseUnits)
+                                        matchUnits(baseUnits, baseUnitsKeys, question, i);
+                                    else
+                                        delayedUnits.push(i);
+                                }
+                            } else {
+                                question.uomsValid[i] = valid;
+                            }
+                        } else {
+                            question.uomsValid[i] = false;
+                        }
                     });
                 });
         });
@@ -130,8 +171,8 @@ export class FormDescriptionQuestionDetailComponent {
         if (!_.isEqual(this.question.question.uoms, newUoms)) {
             this.question.question.uoms = newUoms;
             this.stageElt.emit();
-            this.validateUoms(this.question.question);
         }
+        this.validateUoms(this.question.question);
     }
 
     getRepeatLabel(fe) {

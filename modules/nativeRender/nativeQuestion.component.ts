@@ -1,8 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
+import ucum from 'ucum.js';
+
 import { FormService } from 'nativeRender/form.service';
 import { FormQuestion } from 'core/form.model';
 import { NativeRenderService } from './nativeRender.service';
+
 
 @Component({
     selector: 'cde-native-question',
@@ -17,10 +20,12 @@ export class NativeQuestionComponent implements OnInit {
     FormService = FormService;
     hasTime: boolean;
     static readonly reHasTime = /[hHmsSkaAZ]/;
+    previousUom: string;
 
     ngOnInit() {
         this.hasTime = this.formElement.question.datatypeDate
             ? !!NativeQuestionComponent.reHasTime.exec(this.formElement.question.datatypeDate.format) : false;
+        this.previousUom = this.formElement.question.answerUom;
     }
 
     constructor(public nrs: NativeRenderService) {}
@@ -52,6 +57,23 @@ export class NativeQuestionComponent implements OnInit {
         if (this.isFirstInRow(pvIndex !== undefined ? pvIndex : index))
             result += ' clear';
         return result;
+    }
+
+    convert() {
+        if (this.previousUom && this.formElement.question.answer) {
+            let value: number;
+            if (typeof(this.formElement.question.answer) === 'string')
+                value = parseInt(this.formElement.question.answer);
+            else
+                value = this.formElement.question.answer;
+
+            if (value && typeof(value) === 'number' && !isNaN(value)) {
+                let result = ucum.convert(value, this.previousUom, this.formElement.question.answerUom);
+                if (result && !isNaN(result))
+                    this.formElement.question.answer = result;
+            }
+        }
+        this.previousUom = this.formElement.question.answerUom;
     }
 
     isFirstInRow(index) {
