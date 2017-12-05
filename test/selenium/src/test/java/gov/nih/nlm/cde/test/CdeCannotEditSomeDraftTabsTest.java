@@ -24,11 +24,6 @@ public class CdeCannotEditSomeDraftTabsTest extends NlmCdeBaseTest {
         goToNaming();
         findElement(By.xpath("//button[contains (., 'View Draft')]"));
         Assert.assertEquals(driver.findElements(By.id("openNewNamingModalBtn")).size(), 0);
-
-        goToGeneralDetail();
-        clickElement(By.id("editStatus"));
-        textPresent("Please publish this draft before editing status");
-        closeAlert();
     }
 }
 

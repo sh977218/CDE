@@ -17,7 +17,8 @@ import { AlertService } from '_app/alert/alert.service';
 export class RegistrationComponent implements OnInit {
     @ViewChild('regStatusEdit') public regStatusEditModal: NgbModalModule;
     @Input() public elt: any;
-    @Output() save = new EventEmitter();
+    @Input() public canEdit: boolean = false;
+    @Output() onEltChange = new EventEmitter();
     helpMessage: string;
     newState: any = {};
     public modalRef: NgbModalRef;
@@ -29,24 +30,21 @@ export class RegistrationComponent implements OnInit {
                  private alert: AlertService,
                  public isAllowedModel: IsAllowedService,
                  private userService: UserService,
-                 public modalService: NgbModal
-    ) {}
+                 public modalService: NgbModal) {}
 
-    ngOnInit(): void {
+    ngOnInit() {
         this.newState = {registrationStatus: this.elt.registrationState.registrationStatus};
     }
 
     openRegStatusUpdate() {
-        if (this.elt.isDraft) {
-            return this.alert.addAlert("warning", "Please publish this draft before editing status");
-        }
-
         this.http.get('/comments/eltId/' + this.elt.tinyId).map(res => res.json()).subscribe((response) => {
             if (response.filter && response.filter(function (a) {
                     return a.status !== 'resolved' && a.status !== 'deleted';
                 }).length > 0) {
                 this.alert.addAlert('info', 'Info: There are unresolved comments. ');
             }
+
+            this.validRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
 
             this.http.get('/org/' + encodeURIComponent(this.elt.stewardOrg.name)).map(res => res.json()).subscribe((res) => {
                 if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
@@ -72,7 +70,7 @@ export class RegistrationComponent implements OnInit {
         this.elt.registrationState = this.newState;
         this.elt.registrationState.effectiveDate = this.parserFormatter.format(this.newState.effectiveDate);
         this.elt.registrationState.untilDate = this.parserFormatter.format(this.newState.untilDate);
-        this.save.emit();
+        this.onEltChange.emit();
         this.modalRef.close();
     }
 

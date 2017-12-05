@@ -154,6 +154,8 @@ exports.updateDataElement = function (req, res) {
                     allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1)
                     return res.status(403).send("You are not authorized to do this.");
                 let elt = req.body;
+                elt.classification = item.classification;
+                elt.attachments = item.attachments;
                 deValidator.wipeDatatype(elt);
                 mongo_cde.update(elt, req.user, function (err, response) {
                     if (err) return res.status(500).send("ERROR - cannot update de");
