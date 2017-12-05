@@ -230,14 +230,14 @@ exports.init = function (app) {
     });
 
     app.get('/nativeRender', checkHttps, function (req, res) {
-        res.sendFile(path.join(__dirname, '../../_nativeRenderApp', 'nativeRenderApp.html'), undefined, function(err) {
+        res.sendFile(path.join(__dirname, '../../_nativeRenderApp', 'nativeRenderApp.html'), undefined, function (err) {
             if (err)
                 res.sendStatus(404);
         });
     });
 
     app.get('/sw.js', checkHttps, function (req, res) {
-        res.sendFile(path.join(__dirname, '../../../dist/app', 'sw.js'), undefined, function(err) {
+        res.sendFile(path.join(__dirname, '../../../dist/app', 'sw.js'), undefined, function (err) {
             if (err)
                 res.sendStatus(404);
         });
@@ -860,7 +860,8 @@ exports.init = function (app) {
     app.get('/mailStatus', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) return res.send({count: 0});
         mongo_data.mailStatus(req.user, function (err, result) {
-            res.send({count: result});
+            if (err) res.status(500).send("Unable to get mail status");
+            else res.send({count: result});
         });
     });
 
