@@ -44,9 +44,9 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.id("menu_cdes_link"));
         clickElement(By.linkText("Browse by Topic"));
         hangon(1);
-        scrollToView(By.partialLinkText("Health Care Economics and Organizations"));
+        scrollToView(By.xpath("//span[contains(normalize-space(text()),'Health Care Economics and Organizations')]"));
         textPresent("Health Care Economics and Organizations (111");
-        clickElement(By.partialLinkText("Health Care Economics and Organizations"));
+        clickElement(By.xpath("//span[contains(normalize-space(text()),'Health Care Economics and Organizations')]"));
         clickElement(By.id("li-blank-Organizations"));
         clickElement(By.id("li-blank-Government"));
         clickElement(By.xpath("//*[@id='li-blank-Federal Government']"));
@@ -58,7 +58,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         textPresent("results for All Terms | All Classifications | Health Care > Health Care Economics and Organizat... | All St");
         clickElement(By.id("menu_forms_link"));
         clickElement(By.linkText("Browse by Topic"));
-        clickElement(By.partialLinkText("Health Care Economics and Organizations"));
+        clickElement(By.xpath("//span[contains(normalize-space(text()),'Health Care Economics and Organizations')]"));
         clickElement(By.id("li-blank-Organizations"));
         clickElement(By.id("li-blank-Government"));
         clickElement(By.xpath("//*[@id='li-blank-Federal Government']"));
