@@ -26,7 +26,7 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
     public void scrollHistory() {
         searchEltAny("apple", "cde");
         hangon(1);
-        ((JavascriptExecutor) driver).executeScript("$(window).scrollTop(" + Integer.toString(500) + ");", "");
+        scrollUpBy(500);
         hangon(1);
 
         clickElement(By.id("linkToElt_4"));
@@ -34,7 +34,7 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
 
         searchEltAny("patient", "form");
         hangon(1);
-        ((JavascriptExecutor) driver).executeScript("$(window).scrollTop(" + Integer.toString(550) + ");", "");
+        scrollUpBy(500);
         hangon(1);
 
         clickElement(By.id("linkToElt_5"));
@@ -42,7 +42,7 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
 
         searchEltAny("pain", "cde");
         hangon(1);
-        ((JavascriptExecutor) driver).executeScript("$(window).scrollTop(" + Integer.toString(600) + ");", "");
+        scrollUpBy(600);
         hangon(1);
 
         driver.navigate().refresh();
