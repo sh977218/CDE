@@ -4,12 +4,13 @@
         <label *ngIf="formElement.question.datatype !== 'Value List'"
                [hidden]="!hasLabel(formElement)" class="native-question-label"
                attr.for="{{formElement.label}}_{{index}}_box"
-                [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}">
+               [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}">
             <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}</label>
         <div *ngIf="formElement.question.datatype === 'Value List'"
-               [hidden]="!hasLabel(formElement)" class="native-question-label"
-               [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}">
-            <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}</div>
+             [hidden]="!hasLabel(formElement)" class="native-question-label"
+             [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}">
+            <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}
+        </div>
         <div *ngIf="nrs.profile.displayInstructions && formElement?.instructions?.value"
              class="native-instructions">
             <span *ngIf="formElement.instructions.valueFormat === 'html'"
@@ -25,7 +26,7 @@
                     <div *ngSwitchCase="'Value List'">
                         <div class="row">
                             <div *ngFor="let pv of formElement.question.answers; let i = index"
-                                 [ngClass]="classColumns(pv.index, i)" class="col-12">
+                                 [ngClass]="classColumns(pv.index, i)" class="col-xs-12">
                                 <div *ngIf="!pv.nonValuelist">
                                     <label [ngClass]="{'native-question-oneline-l': pv.subQuestions
                                                           && isOneLiner(pv.subQuestions[0], pv.subQuestions.length),
@@ -49,8 +50,8 @@
                                                [required]="formElement.question.required"
                                                [disabled]="!formElement.question.editable"/>
                                         <span [textContent]="nrs.getPvLabel(pv)"></span>
-                                    <span class="native-value" *ngIf="nrs.profile.displayValues"
-                                          [textContent]="nrs.getPvValue(pv)"></span>
+                                        <span class="native-value" *ngIf="nrs.profile.displayValues"
+                                              [textContent]="nrs.getPvValue(pv)"></span>
                                     </label>
                                     <div *ngIf="pv?.subQuestions">
                                         <div *ngFor="let fe of pv.subQuestions; let j = index">
@@ -79,7 +80,8 @@
                     <div *ngSwitchCase="'Date'" class="row">
                         <div class="col-12" [ngClass]="{'col-sm-7': hasTime}">
                             <div class="input-group">
-                                <input class="form-control" [name]="formElement.questionId+'_date'" [title]="formElement.question.answer"
+                                <input class="form-control" [name]="formElement.questionId+'_date'"
+                                       [title]="formElement.question.answer"
                                        attr.id="{{formElement.label}}_{{index}}_box"
                                        [attr.name]="formElement.questionId+'_date'"
                                        [(ngModel)]="formElement.question.answerDate" (ngModelChange)="updateDateTime()"
@@ -93,7 +95,8 @@
                         </div>
                         <div *ngIf="hasTime" class="mt-2 mt-md-0 col-sm-5 col-12">
                             <ngb-timepicker [seconds]="true" size="small" [spinners]="false"
-                                            [title]="formElement.question.answer" [name]="formElement.questionId+'_time'"
+                                            [title]="formElement.question.answer"
+                                            [name]="formElement.questionId+'_time'"
                                             attr.id="{{formElement.label}}_{{index}}_box"
                                             [attr.name]="formElement.questionId+'_time'"
                                             [(ngModel)]="formElement.question.answerTime"

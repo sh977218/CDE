@@ -8,8 +8,8 @@ public class NativeTableTest extends BaseFormTest {
 
     @Test
     public void nativeTableMainTest() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
         String formName = "Form Table Test";
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
 
         textPresent("Patient Family Member Order Name", By.xpath("//thead//th[@rowspan='3']"));

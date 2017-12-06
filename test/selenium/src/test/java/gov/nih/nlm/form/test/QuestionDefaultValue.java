@@ -14,7 +14,7 @@ public class QuestionDefaultValue extends NlmCdeBaseTest {
         goToFormByName(formName);
         goToFormDescription();
         startEditQuestionSectionById("question_0_0");
-        new Select(driver.findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]"))).selectByVisibleText("Brother");
+        new Select(driver.findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]/select"))).selectByVisibleText("Brother");
         saveEditQuestionSectionById("question_0_0");
 
         startEditQuestionSectionById("question_0_1");

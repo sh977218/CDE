@@ -6,7 +6,19 @@ import { NativeRenderService } from './nativeRender.service';
 
 @Component({
     selector: 'cde-native-question',
-    templateUrl: './nativeQuestion.component.html'
+    templateUrl: './nativeQuestion.component.html',
+    styles:[`
+    @media (min-width: 768px) {
+        div .col-sm-2-4 {
+            width: 20%;
+        }
+    
+        .modal-xl, .modal-dialog.modal-lg {
+            width: 90%;
+            max-width: 1200px;
+        }
+    }
+    `]
 })
 export class NativeQuestionComponent implements OnInit {
     @Input() formElement: FormQuestion;
