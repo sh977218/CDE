@@ -219,6 +219,7 @@ public abstract class CommentTest extends CommonTest {
         addCommentNeedApproval(commentText);
 
         clickElement(By.id("replyTextarea_0"));
+        hangon(1);
         findElement(By.id("replyTextarea_0")).sendKeys(replyText);
         hangon(1);
         clickElement(By.id("replyBtn_0"));
