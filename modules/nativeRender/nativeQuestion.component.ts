@@ -13,6 +13,9 @@ import { NativeRenderService } from './nativeRender.service';
             flex: 0 0 20%;
             max-width: 20%;
         }
+    :host >>> label.native-question-label {
+        font-weight: 700;
+    }
     `]
 })
 export class NativeQuestionComponent implements OnInit {
