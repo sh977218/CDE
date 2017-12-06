@@ -127,11 +127,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
     </div>
-    <div class="pull-right marginTopBottom5">
-        <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
-                class="btn btn-info" (click)="loadDraft(null);">
-            <i class="fa fa-eye fa-lg"></i> View Draft
-        </button>
+    <div class="pull-right marginTopBottom5" style="text-align: end">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
             <button class="btn btn-success" id="openSave" (click)="saveModal.openSaveModal();">
@@ -139,9 +135,6 @@
             </button>
             <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
                 <i class="fa fa-trash fa-lg"></i> Delete Draft
-            </button>
-            <button class="btn btn-info" (click)="loadPublished();">
-                <i class="fa fa-eye fa-lg"></i> View Published
             </button>
             <br>Changed by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
         </ng-container>
