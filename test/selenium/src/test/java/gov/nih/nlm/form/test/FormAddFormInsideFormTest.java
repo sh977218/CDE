@@ -16,8 +16,8 @@ public class FormAddFormInsideFormTest extends QuestionTest {
         addFormToSection("Vessel Imaging Angiography", 0);
         textPresent("Embedded Form: Vessel Imaging Angiography");
         String newFormLabel = "new inner form label";
-        clickElement(By.xpath("//div[span/*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']]//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
-        clickElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']"));
+        startEditQuestionSectionById("inform_0_0");
+        clickElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']//i"));
         findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']//form/input")).clear();
         findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']//form/input")).sendKeys(newFormLabel);
         clickElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']//form//button[contains(text(),'Confirm')]"));

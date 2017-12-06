@@ -30,7 +30,7 @@
             <h2>Your Published Forms</h2>
             <ul class="list-group">
                 <li class="list-group-item" *ngFor="let pf of user.publishedForms">
-                    <a href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}} </a>
+                    <a href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}} &nbsp;</a>
                     <i class="fa fa-trash" title="Remove" (click)="removePublishedForm(pf)"></i>
                 </li>
             </ul>
@@ -45,6 +45,8 @@
                 <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed">
                     {{cde.naming[0].designation}}
                 </span>
+                <a routerLink="/deView" [queryParams]="{tinyId: cde.tinyId}">
+                    <i class="fa fa-eye iconColor"></i></a>
                 <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
                 <cde-pin-quickboard [elt]="cde" [eltIndex]="index"></cde-pin-quickboard>
             </div>
@@ -99,6 +101,8 @@
                 <span class="hand-cursor" (click)="form.isCollapsed = !form.isCollapsed">
                     {{form.naming[0].designation}}
                 </span>
+                <a routerLink="/formView" [queryParams]="{tinyId: form.tinyId}">
+                    <i class="fa fa-eye iconColor"></i></a>
                 <cde-pin-board [elt]="form" [eltIndex]="index" [module]="'form'"></cde-pin-board>
                 <cde-pin-quickboard [elt]="form" [eltIndex]="index"></cde-pin-quickboard>
             </div>

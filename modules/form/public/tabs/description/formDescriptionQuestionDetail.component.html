@@ -149,7 +149,7 @@
         </ng-container>
         <ng-container *ngIf="question.question.datatype === 'Value List'">
             <dt class="col-sm-2">Multiple Selection:</dt>
-            <dd class="col-sm-10">
+            <dd class="col-sm-10 multipleSelection">
                 <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect"
                        (change)="stageElt.emit()"/>
             </dd>

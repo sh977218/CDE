@@ -31,7 +31,7 @@ public class NativeTableTest extends BaseFormTest {
         textPresent("Repeats: over First Question", By.xpath("//div[@id='section_0']//span[contains(@class,'badge-primary')]"));
 
         clickElement(By.xpath("//div[@id='question_0_1_0']//i[contains(@class, 'fa-pencil')]"));
-        clickElement(By.xpath("//div[@id='question_0_1_0']//div[text()='Multiple Selections:']/following-sibling::div/input"));
+        clickElement(By.xpath("//div[@id='question_0_1_0']//*[contains(@class,'multipleSelection')]/input"));
 
         goToPreview();
         findElement(By.xpath("//div[@class='native-table-cell']/label[text()='Mother']"));

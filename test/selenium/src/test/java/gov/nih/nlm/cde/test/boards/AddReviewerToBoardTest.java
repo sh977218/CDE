@@ -36,7 +36,7 @@ public class AddReviewerToBoardTest extends BoardTest {
         textPresent("In progress");
         clickElement(By.id("approveBoardBtn"));
         switchTabAndClose(0);
-        clickElement(By.xpath("//button[.='Archive']"));
+        clickElement(By.xpath("//button[normalize-space(.)='Archive']"));
         closeAlert();
         mustBeLoggedInAs(ninds_username, password);
         clickElement(By.id("incomingMessage"));
@@ -47,7 +47,7 @@ public class AddReviewerToBoardTest extends BoardTest {
         textPresent("In progress");
         clickElement(By.id("disApproveBoardBtn"));
         switchTabAndClose(0);
-        clickElement(By.xpath("//button[.='Archive']"));
+        clickElement(By.xpath("//button[normalize-space(.)='Archive']"));
         closeAlert();
         mustBeLoggedInAs(boardUser, password);
         goToBoard(boardName);
