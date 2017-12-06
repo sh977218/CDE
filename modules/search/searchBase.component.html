@@ -200,22 +200,19 @@
                     <!-- FILTERS -->
                     <p class="gray">Filter by:</p>
                     <div> <!-- CLASSIFICATION AGGREGATIONS -->
-                        <strong *ngIf="aggregations.orgs.buckets" id="classif_filter_title">Classification
-                            <span *ngIf="!(altClassificationFilterMode || embedded)" class="nonLinkAnchor"
-                                  id="altClassificationFilterModeToggle"
+                        <strong [hidden]="!aggregations.orgs.buckets" id="classif_filter_title">Classification
+                            <span class="nonLinkAnchor" id="altClassificationFilterModeToggle"
+                                  [hidden]="altClassificationFilterMode || embedded"
                                   (click)="setAltClassificationFilterMode()"
                                   ngbTooltip="Add a second classifications filter as an AND condition"
                                   placement="right" container="body">
-                                <i class="fa fa-plus-square hand-cursor"></i>
-                            </span>
-                        </strong>
+                                <i class="fa fa-plus-square hand-cursor"></i></span></strong>
                         <div class="pl-2" id="classificationListHolder">
-                            <ng-container
-                                    *ngFor="let t of aggregations.orgs.buckets; trackBy: helperObjectsService.trackByKey">
-                            <span *ngIf="!(t.key !== getCurrentSelectedOrg() && getCurrentSelectedOrg())"
-                                  class="nonLinkAnchor d-block hand-cursor" (click)="alterOrgFilter(t.key)"
-                                  [ngbTooltip]="t.longName" placement="right" container="body">
-                                 <ng-container *ngIf="t.key === getCurrentSelectedOrg(); else else01">
+                            <span class="nonLinkAnchor d-block hand-cursor" (click)="alterOrgFilter(t.key)"
+                                  [ngbTooltip]="t.longName" placement="right" container="body"
+                                  *ngFor="let t of aggregations.orgs.buckets; trackBy: helperObjectsService.trackByKey"
+                                  [hidden]="t.key !== getCurrentSelectedOrg() && getCurrentSelectedOrg()">
+                                <ng-container *ngIf="t.key === getCurrentSelectedOrg(); else else01">
                                     <i class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>
                                 </ng-container>
                                 <ng-template #else01>
@@ -225,11 +222,10 @@
                                     (<span id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)
                                 </a>
                             </span>
-                            </ng-container>
                             <div id="classification-facets">
-                                <span class="nonLinkAnchor d-block hand-cursor" (click)="selectElement(e)"
+                                <span class="nonLinkAnchor d-block hand-cursor"
                                       *ngFor="let e of getCurrentSelectedClassification(); let i = index"
-                                      [style.margin-left]="(i + 1) * 10 + 'px'">
+                                      (click)="selectElement(e)" [style.margin-left]="(i + 1) * 10 + 'px'">
                                     <ng-container
                                             *ngIf="getCurrentSelectedClassification()?.indexOf(e) > -1; else else02">
                                         <i class="fa fa-chevron-down" id="li-checked-{{e}}"></i>
@@ -238,7 +234,7 @@
                                         <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
                                     </ng-template>
                                     <a class="nonLinkAnchor">
-                                        <span>{{e}}</span>
+                                        <small>{{e}}</small>
                                     </a>
                                 </span>
                                 <span class="nonLinkAnchor d-block hand-cursor" (click)="selectElement(b.name)"
@@ -252,9 +248,9 @@
                                         <i class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
                                     </ng-template>
                                     <a class="nonLinkAnchor">
-                                        <span style="word-break: break-all">{{b.name}}
+                                        <small style="word-break: break-all">{{b.name}}
                                             (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)
-                                        </span>
+                                        </small>
                                     </a>
                                 </span>
                             </div>
