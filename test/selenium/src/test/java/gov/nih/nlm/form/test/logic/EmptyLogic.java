@@ -11,10 +11,10 @@ public class EmptyLogic extends NlmCdeBaseTest {
     public void emptyLogic() {
         goToFormByName("Empty Logic");
 
-        textPresent("If empty:", By.xpath("//*[*[text()='Birth date']]"));
-        textPresent("If none:", By.xpath("//*[*[text()='Image Acquisition Event Yes No Not Done Indicator']]"));
-        textPresent("If empty:", By.xpath("//*[*[text()='Head injury prior number']]"));
-        textPresent("If empty:", By.xpath("//*[*[text()='Noncompliant Reason Text']]"));
+        textPresent("If empty:", By.xpath("//*[*[normalize-space()='Birth date']]"));
+        textPresent("If none:", By.xpath("//*[*[normalize-space()='Image Acquisition Event Yes No Not Done Indicator']]"));
+        textPresent("If empty:", By.xpath("//*[*[normalize-space()='Head injury prior number']]"));
+        textPresent("If empty:", By.xpath("//*[*[normalize-space()='Noncompliant Reason Text']]"));
 
         clickElement(By.id("selectRenderButton"));
         clickElement(By.id("printableLogicCb"));
@@ -27,7 +27,7 @@ public class EmptyLogic extends NlmCdeBaseTest {
 
         // Value Lists
         textPresent("Pulmonary function test not done reason");
-        findElement(By.xpath("//div[@id='Image Acquisition Event Yes No Not Done Indicator_2']//label/span[text()='No: C49487']")).click();
+        findElement(By.xpath("//div[@id='Image Acquisition Event Yes No Not Done Indicator_2']//label/span[normalize-space()='No: C49487']")).click();
         textNotPresent("Pulmonary function test not done reason");
 
         // Numbers

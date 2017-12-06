@@ -63,8 +63,8 @@ public class DisplayProfilesTest extends BaseFormTest {
 
         selectDisplayProfileByName("No Matrix No Values Wider");
         hangon(1);
-        Assert.assertEquals(findElement(By.xpath("//*[*[[normalize-space()='I was irritated more than people knew']]//*/span[[normalize-space()='Never']")).getLocation().y,
-                findElement(By.xpath("//*[*[[normalize-space()='I was irritated more than people knew']]//*/span[[normalize-space()='Always']")).getLocation().y
+        Assert.assertEquals(findElement(By.xpath("//*[*[normalize-space()='I was irritated more than people knew']]//*[normalize-space(.)='Never']")).getLocation().y,
+                findElement(By.xpath("//*[*[normalize-space()='I was irritated more than people knew']]//*[normalize-space(.)='Always']")).getLocation().y
         );
         clickElement(By.id("displayProfiles_tab"));
 
