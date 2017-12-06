@@ -1003,14 +1003,10 @@ public class NlmCdeBaseTest {
     }
 
     protected void changeDefinitionFormat(int index, boolean isHtml) {
-        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]";
-        String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]";
-        String plainTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Plain Text')]";
-        String confirmBtnXpath = "//*[@id='definition_0']//*[contains(@class,'fa-check')]";
-        clickElement(By.xpath(definitionEditIconXpath));
-        if (isHtml) clickElement(By.xpath(richTextBtnXpath));
-        if (!isHtml) clickElement(By.xpath(plainTextBtnXpath));
-        clickElement(By.xpath(confirmBtnXpath));
+        clickElement(By.xpath("//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]"));
+        if (isHtml) clickElement(By.xpath("//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]"));
+        if (!isHtml) clickElement(By.xpath("//*[@id='definition_" + index + "']//button[contains(text(),'Plain Text')]"));
+        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-check')]"));
         textNotPresent("Confirm");
     }
 

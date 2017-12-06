@@ -4,6 +4,7 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.interactions.Actions;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
@@ -44,6 +45,8 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//li[contains(., 'canYouSeeThis')]/span"));
         textPresent("Org Updated");
         closeAlert();
+
+        Assert.assertEquals(driver.findElements(By.xpath("//tr[@id='orgListName-TEST']//td[3]//li[contains(., 'canYouSeeThis')]")).size(), 0);
 
         goHome();
 
