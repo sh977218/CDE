@@ -132,7 +132,7 @@
   "webtrends": false,
   "antivirus": {
     "ip": "127.0.0.1",
-    "port": 3311
+    "port": 3310
   },
   "pm": {
     "port": 3081,
