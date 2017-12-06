@@ -579,7 +579,7 @@ public class NlmCdeBaseTest {
     }
 
     public void waitForESUpdate() {
-        hangon(10);
+        hangon(4);
     }
 
     /*
@@ -1246,10 +1246,6 @@ public class NlmCdeBaseTest {
         if (unresolvedIssue != null && unresolvedIssue.length() > 0)
             findElement(By.id("newUnresolvedIssue")).sendKeys(unresolvedIssue);
         clickElement(By.id("saveRegStatus"));
-        clickElement(By.id("openSave"));
-        hangon(1);
-        clickElement(By.id("overrideVersion"));
-        clickElement(By.id("confirmSaveBtn"));
     }
 
     protected void checkRecentlyUsedClassifications(String org, String[] classificationArray) {

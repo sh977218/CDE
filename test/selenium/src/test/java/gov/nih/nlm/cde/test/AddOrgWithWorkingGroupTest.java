@@ -49,7 +49,7 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         textPresent(subClassification);
         clickElement(By.id("submit"));
         editRegistrationStatus("Qualified", null, null, null, null);
-        closeAlert();
+        newCdeVersion();
 
         goToClassification();
         addClassificationByTree(orgWG, new String[]{classification, subClassification});

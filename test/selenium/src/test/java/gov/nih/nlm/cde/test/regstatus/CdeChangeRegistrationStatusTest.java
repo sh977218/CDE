@@ -11,8 +11,7 @@ public class CdeChangeRegistrationStatusTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         textPresent("Qualified");
         editRegistrationStatus("Recorded", "09/15/2013", "10/31/2014", "Admin Note 1", "Unresolved Issue 1");
-        textPresent("Data Element saved.");
-        closeAlert();
+        newCdeVersion();
         setLowStatusesVisible();
         goToCdeByName(cdeName);
 
