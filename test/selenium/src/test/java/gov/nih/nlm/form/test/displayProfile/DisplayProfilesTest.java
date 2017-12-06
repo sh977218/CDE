@@ -32,8 +32,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         );
         scrollToViewById("profile_3");
         Assert.assertEquals(
-                findElement(By.xpath("//*[@id='profile_3']//*[*[text()='Education level USA type']]//*/span[text()='1st Grade']")).getLocation().y,
-                findElement(By.xpath("//*[@id='profile_3']//*[*[text()='Education level USA type']]//*/span[text()='5th Grade']")).getLocation().y
+                findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//*/span[text()='1st Grade']")).getLocation().y,
+                findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//*/span[text()='5th Grade']")).getLocation().y
         );
         newFormVersion();
 
@@ -63,8 +63,8 @@ public class DisplayProfilesTest extends BaseFormTest {
 
         selectDisplayProfileByName("No Matrix No Values Wider");
         hangon(1);
-        Assert.assertEquals(findElement(By.xpath("//*[*[text()='I was irritated more than people knew']]//*/span[text()='Never']")).getLocation().y,
-                findElement(By.xpath("//*[*[text()='I was irritated more than people knew']]//*/span[text()='Always']")).getLocation().y
+        Assert.assertEquals(findElement(By.xpath("//*[*[[normalize-space()='I was irritated more than people knew']]//*/span[[normalize-space()='Never']")).getLocation().y,
+                findElement(By.xpath("//*[*[[normalize-space()='I was irritated more than people knew']]//*/span[[normalize-space()='Always']")).getLocation().y
         );
         clickElement(By.id("displayProfiles_tab"));
 

@@ -26,7 +26,7 @@
                     <div *ngSwitchCase="'Value List'">
                         <div class="row">
                             <div *ngFor="let pv of formElement.question.answers; let i = index"
-                                 [ngClass]="classColumns(pv.index, i)" class="col-xs-12">
+                                 [ngClass]="classColumns(pv.index, i)" class="col-12">
                                 <div *ngIf="!pv.nonValuelist">
                                     <label [ngClass]="{'native-question-oneline-l': pv.subQuestions
                                                           && isOneLiner(pv.subQuestions[0], pv.subQuestions.length),

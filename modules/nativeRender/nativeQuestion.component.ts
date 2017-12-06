@@ -10,14 +10,9 @@ import { NativeRenderService } from './nativeRender.service';
     styles:[`
     @media (min-width: 768px) {
         div .col-sm-2-4 {
-            width: 20%;
+            flex: 0 0 20%;
+            max-width: 20%;
         }
-    
-        .modal-xl, .modal-dialog.modal-lg {
-            width: 90%;
-            max-width: 1200px;
-        }
-    }
     `]
 })
 export class NativeQuestionComponent implements OnInit {
