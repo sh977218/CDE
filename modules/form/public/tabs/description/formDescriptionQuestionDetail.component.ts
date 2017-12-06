@@ -118,7 +118,8 @@ export class FormDescriptionQuestionDetailComponent {
     validateUoms(question) {
         function matchUnits(a, aKeys, question, index) {
             let b = ucum.canonicalize(question.uoms[index]).units;
-            question.uomsValid[index] = aKeys.concat(Object.keys(b)).every(u => a[u] && b[u] && a[u] === b[u]);
+            question.uomsValid[index] = question.uomsValid[index]
+                || aKeys.concat(Object.keys(b)).every(u => a[u] && b[u] && a[u] === b[u]);
         }
         let baseUnits;
         let baseUnitsKeys;
@@ -133,6 +134,7 @@ export class FormDescriptionQuestionDetailComponent {
                             if (unit[0] !== uom) {
                                 question.uoms[i] = unit[0];
                                 this.uomVersion++;
+                                this.stageElt.emit();
                             }
 
                             let valid = true;
@@ -145,7 +147,7 @@ export class FormDescriptionQuestionDetailComponent {
                                 if (i === 0) {
                                     baseUnits = ucum.canonicalize(question.uoms[i]).units;
                                     baseUnitsKeys = Object.keys(baseUnits);
-                                    question.uomsValid[i] = valid;
+                                    question.uomsValid[i] = question.uomsValid[i] || valid;
 
                                     if (delayedUnits.length)
                                         delayedUnits.forEach(u => matchUnits(baseUnits, baseUnitsKeys, question, u));
@@ -156,10 +158,10 @@ export class FormDescriptionQuestionDetailComponent {
                                         delayedUnits.push(i);
                                 }
                             } else {
-                                question.uomsValid[i] = valid;
+                                question.uomsValid[i] = question.uomsValid[i] || valid;
                             }
                         } else {
-                            question.uomsValid[i] = false;
+                            question.uomsValid[i] = question.uomsValid[i] || false;
                         }
                     });
                 });
