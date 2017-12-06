@@ -1,24 +1,24 @@
-var cdesvc = require('./cdesvc')
-    , cdediff = require('./cdediff')
-    , boardsvc = require('./../../board/node-js/boardsvc')
-    , mongo_cde = require('./mongo-cde')
-    , mongo_data_system = require('../../system/node-js/mongo-data')
-    , classificationNode_system = require('../../system/node-js/classificationNode')
-    , classificationNode = require('./classificationNode')
-    , classificationShared = require('@std/esm')(module)('../../system/shared/classificationShared')
-    , vsac = require('./vsac-io')
-    , config = require('../../system/node-js/parseConfig')
-    , elastic = require('./elastic')
-    , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
-    , path = require('path')
-    , express = require('express')
-    , sdc = require("./sdc.js")
-    , appStatus = require('./../../system/node-js/status')
-    , multer = require('multer')
-    , elastic_system = require('../../system/node-js/elastic')
-    , exportShared = require('@std/esm')(module)('../../system/shared/exportShared')
-    , usersrvc = require('../../system/node-js/usersrvc')
-;
+const cdesvc = require('./cdesvc');
+const cdediff = require('./cdediff');
+const boardsvc = require('./../../board/node-js/boardsvc');
+const mongo_cde = require('./mongo-cde');
+const mongo_data_system = require('../../system/node-js/mongo-data');
+const classificationNode_system = require('../../system/node-js/classificationNode');
+const classificationNode = require('./classificationNode');
+const classificationShared = require('@std/esm')(module)('../../system/shared/classificationShared');
+const vsac = require('./vsac-io');
+const config = require('../../system/node-js/parseConfig');
+const elastic = require('./elastic');
+const adminItemSvc = require('../../system/node-js/adminItemSvc.js');
+const path = require('path');
+const express = require('express');
+const sdc = require("./sdc.js");
+const appStatus = require('./../../system/node-js/status');
+const multer = require('multer');
+const elastic_system = require('../../system/node-js/elastic');
+const exportShared = require('@std/esm')(module)('../../system/shared/exportShared');
+const usersrvc = require('../../system/node-js/usersrvc');
+const authorizationShared = require('@std/esm')(module)("../../system/shared/authorizationShared");
 
 exports.init = function (app, daoManager) {
     app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
@@ -32,9 +32,9 @@ exports.init = function (app, daoManager) {
     app.get("/de/:tinyId/version/:version?", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
     app.get("/deList/:tinyIdList?", exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
 
-    app.get("/draftDataElement/:tinyId",cdesvc.draftDataElements);
-    app.post("/draftDataElement/:tinyId",cdesvc.saveDraftDataElement);
-    app.delete("/draftDataElement/:tinyId",cdesvc.deleteDraftDataElement);
+    app.get("/draftDataElement/:tinyId", cdesvc.draftDataElements);
+    app.post("/draftDataElement/:tinyId", cdesvc.saveDraftDataElement);
+    app.delete("/draftDataElement/:tinyId", cdesvc.deleteDraftDataElement);
 
     app.get("/de/:tinyId/latestVersion/", exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
 
@@ -224,11 +224,11 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/getCdeAuditLog', function (req, res) {
-        if (!req.isAuthenticated() || !req.user.siteAdmin)
-            return res.status(401).send("Not Authorized");
-        mongo_cde.getCdeAuditLog(req.body, function (err, result) {
-            res.send(result);
-        });
+        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
+            mongo_cde.getCdeAuditLog(req.body, function (err, result) {
+                res.send(result);
+            });
+        } else return res.status(401).send("Not Authorized");
     });
 
     app.post('/elasticSearchExport/cde', function (req, res) {

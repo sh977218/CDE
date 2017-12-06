@@ -63,8 +63,7 @@ export class ListManagementComponent implements OnInit {
 
     saveOrg (org) {
         this.http.post("/updateOrg", org).subscribe(() => {
-            this.orgHelperService.reload().then(
-                () => this.Alert.addAlert("success", "Org Updated"));
+            this.orgHelperService.reload().then(() => this.Alert.addAlert("success", "Org Updated"));
         }, () => this.Alert.addAlert("danger", "Error. Unable to save."));
     }
 

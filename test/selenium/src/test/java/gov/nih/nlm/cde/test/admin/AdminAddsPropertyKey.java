@@ -16,29 +16,16 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
-        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//input")).sendKeys("doYouSeeThis");
-        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//input")).sendKeys(Keys.RETURN);
+        clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//input"));
+        clickElement(By.xpath("//li[. = 'doYouSeeThis']"));
         textPresent("Org Updated");
         closeAlert();
 
-        // is this fixed yet?
-//        int count = 0;
-//        while (count < 5) {
-            goToCdeByName("Distance from Closest Margin Value");
+        goToCdeByName("Distance from Closest Margin Value");
 
-            goToProperties();
-            clickElement(By.id("openNewPropertyModalBtn"));
-            clickElement(By.id("newKey"));
-//
-//            try {
-//                findElement(By.xpath("//option[@value='doYouSeeThis']"));
-//                findElement(By.xpath("//option[@value='propKey0']"));
-//                break;
-//            } catch (TimeoutException e) {}
-//
-//            hangon(10);
-//            count++;
-//        }
+        goToProperties();
+        clickElement(By.id("openNewPropertyModalBtn"));
+        clickElement(By.id("newKey"));
         findElement(By.xpath("//option[@value='doYouSeeThis']"));
         findElement(By.xpath("//option[@value='propKey0']"));
 
@@ -49,7 +36,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.linkText("List Management"));
 
         new Actions(driver).moveToElement(findElement(By.id("orgListName-Training"))).perform();
-        clickElement(By.xpath("//li[contains(.,'doYouSeeThis')]/span"));
+        clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//li[contains(.,'doYouSeeThis')]/span"));
         textPresent("Org Updated");
         closeAlert();
 
@@ -59,7 +46,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("openNewPropertyModalBtn"));
         clickElement(By.id("newKey"));
 
-        findElement(By.xpath("//option[@value='propKey0']"));
+        clickElement(By.xpath("//option[@value='propKey0']"));
         Assert.assertEquals(driver.findElements(By.xpath("//option[@value='doYouSeeThis']")).size(), 0);
     }
 
