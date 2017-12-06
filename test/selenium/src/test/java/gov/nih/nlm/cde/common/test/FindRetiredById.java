@@ -13,8 +13,6 @@ public class FindRetiredById extends NlmCdeBaseTest {
         goToGeneralDetail();
         editRegistrationStatus("Retired", null, null, null, null);
         newCdeVersion();
-        textPresent("Data Element saved.");
-        closeAlert();
         textPresent("Warning: this data element is retired.");
     }
 
