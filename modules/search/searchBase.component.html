@@ -200,9 +200,9 @@
                     <!-- FILTERS -->
                     <p class="gray">Filter by:</p>
                     <div> <!-- CLASSIFICATION AGGREGATIONS -->
-                        <strong *ngIf="aggregations.orgs.buckets.length > 0 && !altClassificationFilterMode && !embedded"
-                                id="classif_filter_title">Classification
-                            <span class="nonLinkAnchor" id="altClassificationFilterModeToggle"
+                        <strong *ngIf="aggregations.orgs.buckets" id="classif_filter_title">Classification
+                            <span *ngIf="!(altClassificationFilterMode || embedded)" class="nonLinkAnchor"
+                                  id="altClassificationFilterModeToggle"
                                   (click)="setAltClassificationFilterMode()"
                                   ngbTooltip="Add a second classifications filter as an AND condition"
                                   placement="right" container="body">
@@ -212,7 +212,7 @@
                         <div class="pl-2" id="classificationListHolder">
                             <ng-container
                                     *ngFor="let t of aggregations.orgs.buckets; trackBy: helperObjectsService.trackByKey">
-                            <span *ngIf="t.key === getCurrentSelectedOrg() || !getCurrentSelectedOrg()"
+                            <span *ngIf="!(t.key !== getCurrentSelectedOrg() && getCurrentSelectedOrg())"
                                   class="nonLinkAnchor d-block hand-cursor" (click)="alterOrgFilter(t.key)"
                                   [ngbTooltip]="t.longName" placement="right" container="body">
                                  <ng-container *ngIf="t.key === getCurrentSelectedOrg(); else else01">
@@ -227,9 +227,9 @@
                             </span>
                             </ng-container>
                             <div id="classification-facets">
-                                <span class="nonLinkAnchor d-block hand-cursor"
+                                <span class="nonLinkAnchor d-block hand-cursor" (click)="selectElement(e)"
                                       *ngFor="let e of getCurrentSelectedClassification(); let i = index"
-                                      (click)="selectElement(e)" [style.margin-left]="(i + 1) * 10 + 'px'">
+                                      [style.margin-left]="(i + 1) * 10 + 'px'">
                                     <ng-container
                                             *ngIf="getCurrentSelectedClassification()?.indexOf(e) > -1; else else02">
                                         <i class="fa fa-chevron-down" id="li-checked-{{e}}"></i>
