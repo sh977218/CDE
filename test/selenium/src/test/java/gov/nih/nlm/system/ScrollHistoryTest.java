@@ -22,7 +22,10 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         }
     }
 
-    @Test
+/*    @Test
+* @TODO
+* feature is not working, but test didn't caught it. simplify test.
+* */
     public void scrollHistory() {
         searchEltAny("apple", "cde");
         hangon(1);
