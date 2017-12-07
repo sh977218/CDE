@@ -17,7 +17,7 @@ public class PaginationTest extends NlmCdeBaseTest {
         clickElement(By.id("li-blank-Qualified"));
         clickElement(By.linkText("»"));
         hangon(2);
-        textPresent("results for patient | NINDS > Disease | All Topics | Qualified");
+        checkSearchResultInfo("patient", "NINDS > Disease", null, "All Topics", "Qualified", null);
     }
 
 }

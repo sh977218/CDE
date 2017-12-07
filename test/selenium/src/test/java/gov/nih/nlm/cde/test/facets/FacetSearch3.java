@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 
 public class FacetSearch3 extends NlmCdeBaseTest {
-    
+
     @Test
     public void infoBarTerms() {
         goToCdeSearch();
@@ -21,7 +21,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         clickElement(By.id("browseOrg-NINDS"));
         textPresent("All Terms");
     }
-    
+
     @Test
     public void hoverOverClassifications() {
         goToCdeSearch();
@@ -41,7 +41,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         hoverOverElement(findElement(By.linkText("CDEs")));
         textNotPresent("Albert Einstein Cancer Center");
     }
-    
+
     @Test
     public void twoClassificationSearch() {
         mustBeLoggedOut();
@@ -49,33 +49,33 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         clickElement(By.id("browseOrg-NINDS"));
         clickElement(By.id("li-blank-Disease"));
         clickElement(By.xpath("//*[@id='li-blank-Neuromuscular Disease']"));
-        textPresent( "NINDS > Disease > Neuromuscular Disease" );
+        textPresent("NINDS > Disease > Neuromuscular Disease");
 
         clickElement(By.id("altClassificationFilterModeToggle"));
-        textPresent("and", By.id("classif_filter"));
+        textPresent("and", By.id("classifAlt_filter"));
         hangon(1);
         clickElement(By.id("li-blank-NINDS"));
         clickElement(By.id("li-blank-Domain"));
         clickElement(By.xpath("//*[@id='li-blank-Assessments and Examinations']"));
-        textPresent( "and NINDS > Domain > Assessments and Examinations" );
-        textPresent( "Imaging Diagnostics (30" );
+        textPresent("NINDS > Domain > Assessments and Examinations", By.id("classifAlt_filter"));
+        textPresent("Imaging Diagnostics (30");
 
         clickElement(By.xpath("//*[@id='li-blank-Imaging Diagnostics']"));
-        textPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
+        textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
 
         clickElement(By.linkText("Boards"));
         hangon(1);
         driver.navigate().back();
-        textPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
+        textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
 
         clickElement(By.id("removeAltClassificationFilterMode"));
-        textNotPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
-        textPresent( "NINDS (100" );
+        textNotPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
+        textPresent("NINDS (100");
 
         clickElement(By.id("menu_cdes_link"));
         findElement(By.id("browseOrg-caCORE"));
         clickElement(By.id("browseOrg-NINDS"));
-        textPresent( "All Terms | NINDS | All Topics | All Statuses" );
+        checkSearchResultInfo("All Terms", "NINDS", null, "All Topics", "All Statuses", null);
     }
-    
+
 }

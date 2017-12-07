@@ -12,7 +12,7 @@ public class UrlSearch extends NlmCdeBaseTest {
         goToCdeSearch();
         String curUrl = driver.getCurrentUrl();
         driver.get(curUrl + "?regStatuses=Candidate&selectedOrg=caBIG");
-        textPresent("All Terms | caBIG | All Topics | Candidate");
+        checkSearchResultInfo("All Terms", "caBIG", null, "All Topics", "Candidate", null);
     }
 
 }

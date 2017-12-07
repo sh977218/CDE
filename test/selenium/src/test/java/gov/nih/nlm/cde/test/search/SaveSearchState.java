@@ -11,7 +11,7 @@ public class SaveSearchState extends NlmCdeBaseTest {
         mustBeLoggedOut();
         setLowStatusesVisible();
         goToCdeSearch();
-        findElement(By.id("browseOrg-CTEP")).click();
+        clickElement(By.id("browseOrg-CTEP"));
         textPresent("results for All Terms");
         int numRes = getNumberOfResults();
         clickElement(By.id("li-blank-CATEGORY"));
@@ -21,17 +21,17 @@ public class SaveSearchState extends NlmCdeBaseTest {
         textNotPresent(numRes + " results for");
         clickElement(By.id("li-blank-Qualified"));
         scrollToTop();
-        textPresent("results for All Terms | CTEP > CATEGORY | All Topics | Standard, Qualified");
+        checkSearchResultInfo("All Terms", "CTEP > CATEGORY", null, "All Topics", "Standard, Qualified", null);
         clickElement(By.id("li-checked-Qualified"));
         scrollToTop();
-        textPresent("results for All Terms | CTEP > CATEGORY | All Topics | Standard");
+        checkSearchResultInfo("All Terms", "CTEP > CATEGORY", null, "All Topics", "Standard", null);
         findElement(By.name("q")).sendKeys("name");
-        findElement(By.id("search.submit")).click();
-        textPresent("results for name | CTEP | All Topics | All Statuses");
-        findElement(By.linkText("Forms")).click();
+        clickElement(By.id("search.submit"));
+        checkSearchResultInfo("name", "CTEP", null, "All Topics", "All Statuses", null);
+        clickElement(By.linkText("Forms"));
         hangon(1);
         textNotPresent("CATEGORY");
         driver.navigate().back();
-        textPresent("results for name | CTEP | All Topics | All Statuses");
+        checkSearchResultInfo("name", "CTEP", null, "All Topics", "All Statuses", null);
     }
 }

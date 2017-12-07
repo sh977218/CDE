@@ -12,11 +12,12 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         mustBeLoggedOut();
         goToCdeSearch();
         clickElement(By.id("browseOrg-caBIG"));
-        int numOfElts = Integer.valueOf(findElement(By.xpath("//*[@id='nbOfClassifElts-All Candidates']")).getText());
+        String numOfElts = findElement(By.xpath("//*[@id='nbOfClassifElts-All Candidates']")).getText();
 
         clickElement(By.xpath("//*[@id='li-blank-All Candidates']"));
 
-        textPresent(numOfElts + " results for All Terms | caBIG > All Candidates | All Topics | All Statuses");
+        textPresent(numOfElts, By.id("searchResultNum"));
+        checkSearchResultInfo("All Terms", "caBIG > All Candidates", null, "All Topics", "All Statuses", null);
     }
 
     @Test

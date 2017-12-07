@@ -17,7 +17,7 @@ public class FindRetired extends NlmCdeBaseTest {
         clickElement(By.id("saveSettings"));
         textPresent("Retired (");
         clickElement(By.id("li-blank-Retired"));
-        textPresent("All Topics | Retired");
+        checkSearchResultInfo(null, null, null, "All Topics", "Retired", null);
         findElement(By.id("ftsearch-input")).sendKeys("Height");
         clickElement(By.id("search.submit"));
         clickElement(By.id("li-blank-Retired"));
