@@ -642,7 +642,7 @@ public class NlmCdeBaseTest {
         int i = 0;
         while (i < 4) {
             try {
-                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(".alert"), text));
+                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("alertSection"), text));
                 driver.switchTo().window(driver.getWindowHandle());
                 i = 10;
             } catch (TimeoutException e) {
