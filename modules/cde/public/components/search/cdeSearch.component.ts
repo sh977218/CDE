@@ -9,6 +9,8 @@ import { OrgHelperService } from 'core/orgHelper.service';
 import { UserService } from "_app/user.service";
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from '_app/alert/alert.service';
+import { PlatformLocation } from '@angular/common';
+import { SearchService } from 'search/search.service';
 
 @Component({
     selector: 'cde-cde-search',
@@ -39,11 +41,12 @@ export class CdeSearchComponent extends SearchBaseComponent {
                 protected modalService: NgbModal,
                 protected elasticService: ElasticService,
                 protected orgHelperService: OrgHelperService,
-                protected userService: UserService,
+                protected route: ActivatedRoute,
                 protected router: Router,
-                protected route: ActivatedRoute) {
+                protected searchService: SearchService,
+                protected userService: UserService) {
         super(_componentFactoryResolver, alert, elasticService, exportService, http, modalService,
-            orgHelperService, userService, router, route);
+            orgHelperService, route, router, searchService, userService);
 
         this.exporters.csv = {id: 'csvExport', display: 'CSV Export'};
     }

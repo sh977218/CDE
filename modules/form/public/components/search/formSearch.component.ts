@@ -9,6 +9,8 @@ import { SearchBaseComponent } from 'search/searchBase.component';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { UserService } from "_app/user.service";
 import { AlertService } from '_app/alert/alert.service';
+import { PlatformLocation } from '@angular/common';
+import { SearchService } from 'search/search.service';
 
 @Component({
     selector: 'cde-form-search',
@@ -39,11 +41,12 @@ export class FormSearchComponent extends SearchBaseComponent {
                 protected modalService: NgbModal,
                 protected elasticService: ElasticService,
                 protected orgHelperService: OrgHelperService,
-                protected userService: UserService,
+                protected route: ActivatedRoute,
                 protected router: Router,
-                protected route: ActivatedRoute) {
+                protected searchService: SearchService,
+                protected userService: UserService) {
         super(_componentFactoryResolver, alert, elasticService, exportService, http, modalService,
-            orgHelperService, userService, router, route);
+            orgHelperService, route, router, searchService, userService);
 
         this.exporters.odm = {id: "odmExport", display: "ODM Export"};
     }

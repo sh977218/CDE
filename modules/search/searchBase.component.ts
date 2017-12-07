@@ -1,5 +1,5 @@
 import {
-    Component, ViewChild, Type, ViewContainerRef, EventEmitter, AfterViewInit, HostListener, OnInit
+    Component, ViewChild, Type, ViewContainerRef, EventEmitter, HostListener, OnInit, OnDestroy
 } from '@angular/core';
 import { SearchSettings } from './search.model';
 import { SharedService } from 'core/shared.service';
@@ -9,8 +9,9 @@ import { CdeForm } from 'core/form.model';
 import { DataElement } from 'core/dataElement.model';
 import { ElasticQueryResponse, Elt, User } from 'core/models.model';
 import { HelperObjectsService } from 'widget/helperObjects.service';
+import { Subscription } from 'rxjs/Subscription';
 
-export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
+export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @HostListener('window:beforeunload') unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname))
             window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
@@ -36,13 +37,14 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     lastQueryTimeStamp: number;
     module: string;
     numPages: any;
-    oninit = false;
     orgs: any[];
     orgHtmlOverview: string;
     pinComponent: Type<Component>;
     pinModalComponent: any;
+    previousUrl: string;
     resultsView: string;
     resultPerPage = 20;
+    routerSubscription: Subscription;
     searchSettings: SearchSettings = new SearchSettings;
     searchedTerm: string;
     took: any;
@@ -53,19 +55,14 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     validRulesStatus: string;
     view: string;
 
-    ngAfterViewInit() {
-        let previousSpot = window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search];
-        if (previousSpot != null)
-            SearchBaseComponent.waitScroll(2, previousSpot);
+    ngOnDestroy() {
+        if (this.routerSubscription)
+            this.routerSubscription.unsubscribe();
     }
 
-    ngOnInit () {
+    ngOnInit() {
         // TODO: remove OnInit when OnChanges inputs is implemented for Dynamic Components
-        // if (!this.oninit)
-        //     this.search();
-        //
         this.route.queryParams.subscribe(() => this.search());
-
     }
 
     constructor(protected _componentFactoryResolver,
@@ -75,17 +72,19 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
                 protected http,
                 protected modalService,
                 protected orgHelperService,
-                protected userService,
+                protected route,
                 protected router,
-                protected route) {
+                protected searchService,
+                protected userService) {
         this.searchSettings.page = 1;
 
-        // TODO: upgrade to Angular when router is available
-        // scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
-        //     let match = /\/(cde|form)\/search\?.*/.exec(oldUrl);
-        //     if (match)
-        //         window.sessionStorage['nlmcde.scroll.' + match[0]] = $(window).scrollTop();
-        // });
+        this.routerSubscription = this.router.events.subscribe(e => {
+            if (this.previousUrl && e.constructor.name === 'NavigationStart') {
+                if (/^\/(cde|form)\/search/.exec(this.previousUrl))
+                    this.scrollHistorySave();
+                this.previousUrl = null;
+            }
+        });
 
         this.filterMode = $(window).width() >= 768;
     }
@@ -607,6 +606,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
                         this.topicsKeys.sort(SearchBaseComponent.compareObjName);
                     }
                 }
+                this.scrollHistoryLoad();
             });
         });
     }
@@ -615,6 +615,20 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
         this.initSearch();
         this.aggregations = null;
         this.doSearch();
+    }
+
+    scrollHistoryLoad() {
+        if (this.searchService.isBackForward) {
+            let previousSpot = window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search];
+            if (previousSpot != null)
+                SearchBaseComponent.waitScroll(2, previousSpot);
+        }
+        this.previousUrl = location.pathname + location.search;
+    }
+
+    scrollHistorySave() {
+        if (!this.searchService.isBackForward)
+            window.sessionStorage['nlmcde.scroll.' + this.previousUrl] = window.scrollY;
     }
 
     static scrollTo(id) {
