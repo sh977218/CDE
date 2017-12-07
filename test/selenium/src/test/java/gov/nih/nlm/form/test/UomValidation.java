@@ -17,13 +17,13 @@ public class UomValidation extends BaseFormTest {
         textPresent("(invalid)", By.cssSelector(".badge-danger"));
         textPresent("cm", By.cssSelector(".questionUom"));
         textNotPresent("meter", By.cssSelector(".questionUom"));
-        textNotPresent("meter", By.cssSelector(".label-danger"));
-        textNotPresent("m", By.cssSelector(".label-danger"));
+        textNotPresent("meter", By.cssSelector(".badge-danger"));
+        textNotPresent("m", By.cssSelector(".badge-danger"));
 
         startEditQuestionSectionById("question_0_3");
         questionEditAddUom("question_0_3", "kilogram");
         saveEditQuestionSectionById("question_0_3");
-        findElement(By.xpath("//*[contains(@class,'label-danger')]//*[text()='kg']"));
+        findElement(By.xpath("//*[contains(@class,'badge-danger')]//*[text()='kg']"));
         textNotPresent("kilogram");
 
         goToPreview();
