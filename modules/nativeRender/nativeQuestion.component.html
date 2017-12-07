@@ -124,7 +124,8 @@
                                 <input type="radio"
                                        [name]="formElement.questionId + '_uom'"
                                        [attr.name]="formElement.questionId + '_uom'"
-                                       [(ngModel)]="formElement.question.answerUom" [value]="uom"
+                                       [(ngModel)]="formElement.question.answerUom" (ngModelChange)="convert()"
+                                       [value]="uom"
                                        [required]="formElement.question.required"
                                        [disabled]="!formElement.question.editable"/> {{uom}}</label>
                         </div>
@@ -143,7 +144,8 @@
                                 <input type="radio" [title]="formElement.question.answerUom"
                                        [name]="formElement.questionId + '_uom'"
                                        [attr.name]="formElement.questionId + '_uom'"
-                                       [(ngModel)]="formElement.question.answerUom" [value]="uom"
+                                       [(ngModel)]="formElement.question.answerUom" (ngModelChange)="convert()"
+                                       [value]="uom"
                                        [required]="formElement.question.required"
                                        [disabled]="!formElement.question.editable"/> {{uom}}</label>
                         </div>

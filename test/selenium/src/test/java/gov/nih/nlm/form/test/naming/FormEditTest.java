@@ -36,9 +36,7 @@ public class FormEditTest extends BaseFormTest {
         textNotPresent("Confirm");
 
         String newQuestionUnitsOfMeasure = "New Units of Measure";
-        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'formDescriptionUoms')]//input[contains(@class,'select2-search__field')]"));
-        findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'formDescriptionUoms')]//input[contains(@class,'select2-search__field')]")).sendKeys(newQuestionUnitsOfMeasure);
-        findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'formDescriptionUoms')]//input[contains(@class,'select2-search__field')]")).sendKeys(Keys.ENTER);
+        questionEditAddUom("question_0_0", newQuestionUnitsOfMeasure);
 
         saveEditQuestionSectionById("question_0_0");
         textPresent("Data unknown text", By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionLabel')]"));

@@ -124,10 +124,12 @@
         </ng-container>
         <dt class="col-sm-2">Units of Measure:</dt>
         <dd class="col-sm-10 questionUom">
-            <select2 class="formDescriptionUoms" [data]="getUoms()" [value]="question.question.uoms"
-                     [options]="uomOptions" width="100%"
-                     (valueChanged)="checkUom($event)">
-            </select2>
+            <ng-container *ngFor="let q of [uomVersion]">
+                <select2 class="formDescriptionUoms" [data]="getUoms()" [value]="question.question.uoms"
+                         [options]="uomOptions" width="100%"
+                         (valueChanged)="checkUom($event)">
+                </select2>
+            </ng-container>
         </dd>
         <dt class="col-sm-2">Datatype:</dt>
         <dd class="col-sm-10">{{question.question.datatype | cdePlaceholder }}</dd>
