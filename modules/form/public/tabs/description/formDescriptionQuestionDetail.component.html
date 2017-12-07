@@ -116,9 +116,11 @@
     <div class="row mt-1">
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Units of Measure:</div>
         <div class="col-sm-10 col-xs-12">
-            <select2 class="formDescriptionUoms" [data]="getUoms()" [value]="question.question.uoms" [options]="uomOptions" width="100%"
-                     (valueChanged)="checkUom($event)">
-            </select2>
+            <ng-container *ngFor="let q of [uomVersion]">
+                <select2 class="formDescriptionUoms" [data]="getUoms()" [value]="question.question.uoms" [options]="uomOptions" width="100%"
+                         (valueChanged)="checkUom($event)">
+                </select2>
+            </ng-container>
         </div>
     </div>
     <div class="row">

@@ -81,6 +81,12 @@ public class BaseFormTest extends FormCommentTest {
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
     }
 
+    public void questionEditAddUom(String id, String text) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'formDescriptionUoms')]//input[contains(@class,'select2-search__field')]"));
+        findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'formDescriptionUoms')]//input[contains(@class,'select2-search__field')]")).sendKeys(text);
+        findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'formDescriptionUoms')]//input[contains(@class,'select2-search__field')]")).sendKeys(Keys.ENTER);
+    }
+
     public void setRepeat(String sectionId, String repeat) {
         if (repeat != null) {
             if (repeat.charAt(0) == 'F')
