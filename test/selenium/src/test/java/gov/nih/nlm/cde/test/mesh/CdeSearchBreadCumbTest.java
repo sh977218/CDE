@@ -11,7 +11,6 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
     public void cdeSearchBreadcrumb() {
         mustBeLoggedOut();
         goToCdeSearch();
-
         clickElement(By.id("browseByTopic"));
         clickElement(By.xpath("//span[contains(normalize-space(text()),'Environment and Public Health')]"));
         textPresent("results for");
@@ -39,13 +38,7 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
         clickElement(By.id("status-text-Qualified"));
         clickElement(By.xpath("//*[@id='datatype-text-Value List']"));
 
-        textPresent("type", By.id("term_crumb"));
-        textPresent("NINDS > Domain", By.id("classif_filter"));
-        textPresent("and", By.id("classif_filter"));
-        textPresent("NINDS > Disease", By.id("classif_filter"));
-        textPresent("Health Care > Environment and Public Health > Pub...", By.id("topic_crumb"));
-        textPresent("Qualified", By.id("status_crumb"));
-        textPresent("Value List", By.id("datatype_crumb"));
+        checkSearchResultInfo("type", "NINDS > Domain", "NINDS > Disease", "Health Care > Environment and Public Health > Pub...", "Qualified", "Value List");
 
         clickElement(By.id("removeDatatypes"));
         clickElement(By.id("removeStatuses"));

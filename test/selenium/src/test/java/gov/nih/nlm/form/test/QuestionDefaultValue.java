@@ -26,7 +26,7 @@ public class QuestionDefaultValue extends NlmCdeBaseTest {
 
         goToFormByName(formName);
         // this find ensures option Brother is selected.
-        findElement(By.xpath("//*[@id='From whom/ what were the medical history data obtained_0']/div[1]/div/div/div/div[5]/div/label"))
+        findElement(By.xpath("//*[*[normalize-space()='From whom/ what were the medical history data obtained']]//label[contains(.,'Brother')]"))
                 .findElement(By.cssSelector("input:checked"));
         goToFormDescription();
         textPresent("Brother", By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]"));

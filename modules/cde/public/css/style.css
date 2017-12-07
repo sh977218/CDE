@@ -400,3 +400,12 @@ del {
 .dark-icon:hover {
     color: white;
 }
+
+/* native render */
+div.row .native-question-oneline-r {
+    overflow: hidden;
+    min-width: 50%;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    margin-left: 6%;
+}

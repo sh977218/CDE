@@ -1,12 +1,12 @@
 <form name="form" class="form-inline pt40 pb40" novalidate>
-    Make&nbsp;
+    <span class="mr-2">Make</span>
     <div class="form-group">
         <input class="form-control" name="message" [(ngModel)]="newAdmin"
                placeholder="enter username" autocomplete="off"
                [ngbTypeahead]="searchTypeahead"
                required/>
     </div>
-    &nbsp;a site admin&nbsp;
+    <span class="mx-2">a site admin</span>
     <button class="btn btn-warning" (click)="addSiteAdmin()" id="saveMessage">Make Admin</button>
 </form>
 
@@ -19,7 +19,7 @@
             <div *ngFor="let user of siteAdmins">
                 <span id="existingSiteAdmin-{{index}}">{{user.username}}</span>
                 <i class="fa fa-trash-o hand-cursor" (click)="removeSiteAdmin(user._id)"
-                           id="removeSiteAdmin-{{index}}" title="Remove"></i>
+                   id="removeSiteAdmin-{{index}}" title="Remove"></i>
             </div>
         </td>
     </tr>

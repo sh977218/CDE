@@ -8,13 +8,13 @@
         <ngb-tab title="Organizations Curators">
             <ng-template ngbTabContent>
                 <form class="form-inline pt40 pb40" #newCuratorForm="ngForm" id="newOrgCuratorForm" novalidate>
-                    Make&nbsp;
+                    <span class="mr-2">Make</span>
                     <div class="form-group">
                         <input id="newOrgCuratorUsername" name="newOrgCuratorUsername" type="text" class="form-control"
                                placeholder="enter user name" [(ngModel)]="newUsername" autocomplete="off"
                                [ngbTypeahead]="searchTypeahead" required>
                     </div>
-                    &nbsp;a curator for&nbsp;
+                    <span class="mx-2">a curator for</span>
                     <div class="form-group">
                         <select id="newOrgCuratorOrgName" name="newOrgCuratorOrgName" class="form-control"
                                 [(ngModel)]="newOrgName" required>
@@ -37,7 +37,8 @@
                         <td>
                             <div *ngFor="let user of orgCurator.users; let $index = index">
                                 <span id="existingOrgCuratorUsername-{{$pindex}}-{{$index}}">{{user.username}}</span>
-                                <i class="fa fa-trash-o hand-cursor" (click)="removeOrgCurator(orgCurator.name, user._id)"
+                                <i class="fa fa-trash-o hand-cursor"
+                                   (click)="removeOrgCurator(orgCurator.name, user._id)"
                                    id="removeOrgCuratorUsername-{{$pindex}}-{{$index}}" title="Remove"></i>
                             </div>
                         </td>
@@ -49,7 +50,7 @@
             <ng-template ngbTabContent>
                 <form class="form-inline pt40 pb40" role="form" id="transferStewardForm" name="transferStewardForm"
                       novalidate>
-                    Transfer CDEs and forms owned by&nbsp;
+                    <span class="mr-2">Transfer CDEs and forms owned by</span>
                     <div class="form-group">
                         <select id="transferSteward_from" name="transferSteward_from" class="form-control"
                                 [(ngModel)]="transferStewardObj.from" required>
@@ -57,7 +58,7 @@
                             <option *ngFor="let myOrg of userService.user.orgAdmin">{{myOrg}}</option>
                         </select>
                     </div>
-                    &nbsp;to&nbsp;
+                    <span class="mx-2">to</span>
                     <div class="form-group">
                         <select id="transferSteward_to" name="transferSteward_to" class="form-control"
                                 [(ngModel)]="transferStewardObj.to" required>

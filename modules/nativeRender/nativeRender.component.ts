@@ -64,14 +64,6 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
         margin-right: 5px;
     }
     
-    div.row .native-question-oneline-r {
-        overflow: hidden;
-        min-width: 50%;
-        margin-top: 1px;
-        margin-bottom: 1px;
-        margin-left: 6%;
-    }
-    
     .native-box {
         padding-left: 6%;
         margin-top: 1px;
