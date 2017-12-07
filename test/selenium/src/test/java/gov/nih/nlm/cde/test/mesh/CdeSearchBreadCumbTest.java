@@ -13,7 +13,7 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("browseByTopic"));
         clickElement(By.xpath("//span[contains(normalize-space(text()),'Environment and Public Health')]"));
-        textPresent("results for");
+        textPresent("results for", By.id("searchResultInfoBar"));
         int count = 0;
         int num = 0;
         while (count < 5 && num < 11) {
