@@ -60,12 +60,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     }
 
     ngOnInit () {
-        // TODO: remove OnInit when OnChanges inputs is implemented for Dynamic Components
-        // if (!this.oninit)
-        //     this.search();
-        //
         this.route.queryParams.subscribe(() => this.search());
-
     }
 
     constructor(protected _componentFactoryResolver,
@@ -80,13 +75,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
                 protected route) {
         this.searchSettings.page = 1;
 
-        // TODO: upgrade to Angular when router is available
-        // scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
-        //     let match = /\/(cde|form)\/search\?.*/.exec(oldUrl);
-        //     if (match)
-        //         window.sessionStorage['nlmcde.scroll.' + match[0]] = $(window).scrollTop();
-        // });
-
+        // TODO remove this one time setting
         this.filterMode = $(window).width() >= 768;
     }
 
@@ -139,11 +128,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
                 SearchBaseComponent.focusClassification();
         } else
             this.reset();
-    }
-
-    autocompleteSuggest(searchTerm) {
-        return this.http.get('/cdeCompletion/' + encodeURI(searchTerm), {})
-            .map(res => res.json());
     }
 
     browseOrg(orgName) {
@@ -298,13 +282,12 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
             searchTerms.topic = this.searchSettings.meshTree;
         if (this.byTopic && !this.isSearched()) searchTerms.byTopic = 1;
         return searchTerms;
-        // return '/' + this.module + '/search?' + searchTerms.join('&');
     }
 
     getAutocompleteSuggestions = (text$: Observable<string>) =>
         text$.debounceTime(500).distinctUntilChanged().switchMap(term =>
             term.length >= 3
-                ? this.autocompleteSuggest(term)
+                ? this.http.get('/cdeCompletion/' + encodeURI(term)).map(res => res.json())
                 : Observable.empty()
         ).take(8);
 

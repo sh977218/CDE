@@ -268,9 +268,9 @@ exports.init = function (app, daoManager) {
     app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
         let result = [];
         let term = req.params.term;
-        elastic_system.completionSuggest(term, function (resp) {
-            if (resp.search_suggest) {
-                resp.search_suggest[0].options.map(function (item) {
+        elastic_system.completionSuggest(term, resp => {
+            if (resp.suggest.search_suggest) {
+                resp.suggest.search_suggest[0].options.map(item => {
                     result.push(item.text);
                 });
             }

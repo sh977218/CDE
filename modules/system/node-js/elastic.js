@@ -202,14 +202,16 @@ exports.initEs = function (cb) {
 
 exports.completionSuggest = function (term, cb) {
     let suggestQuery = {
-        "search_suggest": {
-            "text": term,
-            "completion": {
-                "field": "search_suggest"
+        "suggest": {
+            "search_suggest": {
+                "prefix": term,
+                "completion": {
+                    "field": "search_suggest"
+                }
             }
         }
     };
-    esClient.suggest({
+    esClient.search({
         index: config.elastic.storedQueryIndex.name,
         body: suggestQuery
     }, function (error, response) {
