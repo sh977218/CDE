@@ -20,8 +20,7 @@ public class CompareThreeThenTwoElementsTest extends NlmCdeBaseTest {
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_elt_compare_2"));
         clickElement(By.id("qb_compare"));
-        textPresent("Please select only two elements to compare.");
-        closeAlert();
+        checkAlert("Please select only two elements to compare.");
         clickElement(By.id("remove_2"));
         clickElement(By.id("qb_compare"));
         textPresent("Text term to signify a completed assessment using the Assessment of Motor and Process Skills Assessment (AMPS)");

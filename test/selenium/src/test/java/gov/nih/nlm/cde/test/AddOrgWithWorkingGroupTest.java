@@ -22,8 +22,7 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         new Select(driver.findElement(By.name("newOrgAdminOrgName"))).selectByVisibleText(orgWG);
         findElement(By.id("newOrgAdminUsername")).sendKeys(ctepCurator_username);
         clickElement(By.id("newOrgAdminSubmit"));
-        textPresent("Saved");
-        closeAlert();
+        checkAlert("Saved");
 
         // Create some classifications for working group
         String classification = "DISEASE";

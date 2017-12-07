@@ -16,8 +16,7 @@ public class PinAllCdesInForm extends BoardTest {
         goToFormByName(formName);
         clickElement(By.id("pinAllCdes"));
         clickElement(By.linkText(boardName));
-        textPresent("All elements pinned");
-        closeAlert();
+        checkAlert("All elements pinned");
         waitForESUpdate();
 
         gotoMyBoards();

@@ -22,8 +22,7 @@ public class BoardTest extends NlmCdeBaseTest {
                 clickElement(By.id("privateIcon_" + i));
                 textPresent("Change Status?");
                 clickElement(By.id("confirmChangeStatus_" + i));
-                textPresent(response);
-                closeAlert();
+                checkAlert(response);
                 return;
             }
         }
@@ -61,8 +60,7 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.id("new-board-description")).sendKeys(description);
         hangon(2);
         clickElement(By.id("createBoard"));
-        textPresent(response);
-        closeAlert();
+        checkAlert(response);
     }
 
     protected void pinCdeToBoard(String cdeName, String cdeBoardName) {
@@ -79,8 +77,7 @@ public class BoardTest extends NlmCdeBaseTest {
         clickElement(By.id("pinToBoard_0"));
         textPresent(boardName);
         clickElement(By.linkText(boardName));
-        textPresent("Added to Board");
-        closeAlert();
+        checkAlert("Added to Board");
         modalGone();
     }
 

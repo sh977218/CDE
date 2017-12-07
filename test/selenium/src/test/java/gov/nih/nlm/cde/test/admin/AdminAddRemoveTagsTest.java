@@ -19,8 +19,7 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
         clickElement(By.linkText("List Management"));
         clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//input"));
         clickElement(By.xpath("//li[. = 'canYouSeeThis']"));
-        textPresent("Org Updated");
-        closeAlert();
+        checkAlert("Org Updated");
 
         // ensure it got saved.
         goHome();
@@ -43,8 +42,7 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
 
         new Actions(driver).moveToElement(findElement(By.id("orgListName-Training")));
         clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//li[contains(., 'canYouSeeThis')]/span"));
-        textPresent("Org Updated");
-        closeAlert();
+        checkAlert("Org Updated");
 
         Assert.assertEquals(driver.findElements(By.xpath("//tr[@id='orgListName-TEST']//td[3]//li[contains(., 'canYouSeeThis')]")).size(), 0);
 

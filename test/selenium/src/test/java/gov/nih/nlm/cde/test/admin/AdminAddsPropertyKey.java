@@ -18,8 +18,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.linkText("List Management"));
         clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//input"));
         clickElement(By.xpath("//li[. = 'doYouSeeThis']"));
-        textPresent("Org Updated");
-        closeAlert();
+        checkAlert("Org Updated");
 
         goToCdeByName("Distance from Closest Margin Value");
 
@@ -37,8 +36,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
 
         new Actions(driver).moveToElement(findElement(By.id("orgListName-Training"))).perform();
         clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//li[contains(.,'doYouSeeThis')]/span"));
-        textPresent("Org Updated");
-        closeAlert();
+        checkAlert("Org Updated");
 
         goToCdeByName("Distance from Closest Margin Value");
 

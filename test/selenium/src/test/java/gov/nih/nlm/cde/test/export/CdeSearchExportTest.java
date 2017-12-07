@@ -27,8 +27,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.id("csvExport"));
         textPresent("export is being generated");
-        textPresent("Export downloaded.");
-        closeAlert();
+        checkAlert("Export downloaded.");
         closeAlert();
 
         String[] expected = {
@@ -57,8 +56,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         clickElement(By.id("source"));
         clickElement(By.id("updated"));
         clickElement(By.id("saveSettings"));
-        textPresent("Settings saved!");
-        closeAlert();
+        checkAlert("Settings saved!");
 
         try {
             clickElement(By.id("export"));
@@ -70,10 +68,8 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
             clickElement(By.id("csvExport"));
         }
 
-        textPresent("export is being generated");
-        textPresent("Export downloaded.");
-        closeAlert();
-        closeAlert();
+        checkAlert("export is being generated");
+        checkAlert("Export downloaded.");
 
         String[] expected2 = {
                 "Name, Question Texts, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, Identifiers, Source, Updated",

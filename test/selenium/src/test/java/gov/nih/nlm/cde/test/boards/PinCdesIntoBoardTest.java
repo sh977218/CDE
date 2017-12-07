@@ -26,9 +26,7 @@ public class PinCdesIntoBoardTest extends BoardTest {
         clickElement(By.id("addToBoard"));
         textPresent("Choose a Board to pin this element to");
         clickElement(By.linkText("Blood Board"));
-        textPresent("Added to Board");
-        modalGone();
-        closeAlert();
+        checkAlert("Added to Board");
 
         goToBoard(boardName2);
         textPresent("School special accommodation indicator");

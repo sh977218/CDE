@@ -25,8 +25,7 @@ public class FindRetiredById extends NlmCdeBaseTest {
         goToGeneralDetail();
         editRegistrationStatus("Retired", null, null, null, null);
         newFormVersion();
-        textPresent("Form saved.");
-        closeAlert();
+        checkAlert("Form saved.");
         textPresent("Warning: this form is retired.");
     }
 

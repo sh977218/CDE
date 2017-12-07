@@ -23,15 +23,13 @@ public class PublicVsPrivateBoard extends BoardTest {
 
         logout();
         driver.get(url);
-        textPresent("Board not found");
-        closeAlert();
+        checkAlert("Board not found");
         textNotPresent(boardDef);
 
         loginAs(ctepCurator_username, password);
         driver.get(url);
         // logged in as someone else, I can't see
-        textPresent("Board not found");
-        closeAlert();
+        checkAlert("Board not found");
         textNotPresent(boardDef);
 
         logout();

@@ -25,8 +25,7 @@ public class BoardExportTest extends BoardTest {
         textPresent("Export Board");
         clickElement(By.id(("export")));
         clickElement(By.id(("csvExport")));
-        textPresent("Export downloaded.");
-        closeAlert();
+        checkAlert("Export downloaded.");
 
         String[] expected = {
                 "Name, Question Texts, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",

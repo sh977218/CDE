@@ -310,9 +310,8 @@ public class NlmCdeBaseTest {
         }
 
         clickElement(By.id("addOrg"));
-        textPresent("Saved");
+        checkAlert("Saved");
         textPresent(orgName);
-        closeAlert();
 
         if (orgLongName != null) {
             textPresent(orgLongName);
@@ -601,8 +600,7 @@ public class NlmCdeBaseTest {
 
     protected void newCdeVersion(String changeNote) {
         newVersion(changeNote);
-        textPresent("Data Element saved.");
-        closeAlert();
+        checkAlert("Data Element saved.");
     }
 
     protected void newCdeVersion() {
@@ -638,6 +636,20 @@ public class NlmCdeBaseTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void checkAlert(String text) {
+        int i = 0;
+        while (i < 4) {
+            try {
+                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(".alert"), text));
+                driver.switchTo().window(driver.getWindowHandle());
+                i = 10;
+            } catch (TimeoutException e) {
+                i++;
+            }
+        }
+        if (i != 10) Assert.fail("Failed to find text: " + text + " in alert");
     }
 
     public boolean textPresent(String text, By by) {
@@ -706,16 +718,14 @@ public class NlmCdeBaseTest {
     protected void addCdeToQuickBoard(String cdeName) {
         goToCdeByName(cdeName);
         clickElement(By.id("addToQuickBoard"));
-        textPresent("Added to QuickBoard!");
-        closeAlert();
+        checkAlert("Added to QuickBoard!");
 
     }
 
     protected void addFormToQuickBoard(String formName) {
         searchForm(formName);
         clickElement(By.id("addToCompare_0"));
-        textPresent("Added to QuickBoard!");
-        closeAlert();
+        checkAlert("Added to QuickBoard!");
         findElement(By.name("q")).clear();
     }
 
@@ -729,8 +739,7 @@ public class NlmCdeBaseTest {
         hangon(0.5);
         clickElement(By.id("search.submit"));
         clickElement(By.id("addToCompare_0"));
-        textPresent("Added to QuickBoard!");
-        closeAlert();
+        checkAlert("Added to QuickBoard!");
     }
 
     public void goToQuickBoardByModule(String module) {
@@ -915,8 +924,7 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath(getOrgClassificationIconXpath("remove", categories)));
         findElement(By.id("removeClassificationUserTyped")).sendKeys(classification);
         clickElement(By.id("confirmDeleteClassificationBtn"));
-        textPresent("Classification Deleted");
-        closeAlert();
+        checkAlert("Classification Deleted");
         Assert.assertEquals(0, driver.findElements(By.xpath("//*[@id='" + String.join(",", categories) + "']")).size());
     }
 
@@ -957,8 +965,7 @@ public class NlmCdeBaseTest {
         clickElement(By.id(id));
         hangon(1);
         clickElement(By.id("saveSettings"));
-        textPresent("Settings saved");
-        closeAlert();
+        checkAlert("Settings saved");
         goToSearch("cde");
     }
 
@@ -969,11 +976,9 @@ public class NlmCdeBaseTest {
     protected void loadDefaultSettings() {
         clickElement(By.id("searchSettings"));
         clickElement(By.id("loadDefaultSettings"));
-        textPresent("Default settings loaded");
-        closeAlert();
+        checkAlert("Default settings loaded");
         clickElement(By.id("saveSettings"));
-        textPresent("Settings saved!");
-        closeAlert();
+        checkAlert("Settings saved!");
     }
 
     protected void editDesignationByIndex(int index, String newDesignation) {
@@ -1278,8 +1283,7 @@ public class NlmCdeBaseTest {
         }
         clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
         if (alertText != null) {
-            textPresent(alertText);
-            closeAlert();
+            checkAlert(alertText);
         }
         for (int i = 1; i < classificationArray.length; i++)
             textPresent(classificationArray[i], By.xpath("//*[@id='classificationOrg-" + org + "']"));
@@ -1299,8 +1303,7 @@ public class NlmCdeBaseTest {
         }
         clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
         if (alertText != null) {
-            textPresent(alertText);
-            closeAlert();
+            checkAlert(alertText);
         }
     }
 
@@ -1329,8 +1332,7 @@ public class NlmCdeBaseTest {
             expanderStr += ",";
         }
         clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
-        textPresent("Classification Already Exists");
-        closeAlert();
+        checkAlert("Classification Already Exists");
     }
 
 
@@ -1425,8 +1427,7 @@ public class NlmCdeBaseTest {
             findElement(By.id("addChildClassifInput")).sendKeys(categories[0]);
             hangon(2);
             clickElement(By.id("confirmAddChildClassificationBtn"));
-            textPresent("Classification added");
-            closeAlert();
+            checkAlert("Classification added");
         }
         for (int i = 1; i < categories.length; i++) {
             String[] nextCategories = Arrays.copyOfRange(categories, 0, i + 1);
@@ -1438,8 +1439,7 @@ public class NlmCdeBaseTest {
                 findElement(By.id("addChildClassifInput")).sendKeys(nextCategories[nextCategories.length - 1]);
                 hangon(2);
                 clickElement(By.id("confirmAddChildClassificationBtn"));
-                textPresent("Classification added");
-                closeAlert();
+                checkAlert("Classification added");
             }
         }
     }
