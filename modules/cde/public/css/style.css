@@ -391,3 +391,12 @@ del {
 #feedback-highlighter {
     cursor: move;
 }
+
+/* Font Awesome */
+.dark-icon {
+    color: black;
+}
+
+.dark-icon:hover {
+    color: white;
+}

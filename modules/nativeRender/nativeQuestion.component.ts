@@ -10,7 +10,7 @@ import { NativeRenderService } from './nativeRender.service';
 @Component({
     selector: 'cde-native-question',
     templateUrl: './nativeQuestion.component.html',
-    styles:[`
+    styles: [`
     @media (min-width: 768px) {
         div .col-sm-2-4 {
             flex: 0 0 20%;
