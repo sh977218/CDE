@@ -1,6 +1,7 @@
 import {
     Component, ViewChild, Type, ViewContainerRef, EventEmitter, HostListener, OnInit, OnDestroy
 } from '@angular/core';
+import { NavigationStart } from '@angular/router';
 import { SearchSettings } from './search.model';
 import { SharedService } from 'core/shared.service';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
@@ -79,7 +80,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.searchSettings.page = 1;
 
         this.routerSubscription = this.router.events.subscribe(e => {
-            if (this.previousUrl && e.constructor.name === 'NavigationStart') {
+            if (this.previousUrl && e instanceof NavigationStart) {
                 if (/^\/(cde|form)\/search/.exec(this.previousUrl))
                     this.scrollHistorySave();
                 this.previousUrl = null;

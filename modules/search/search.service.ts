@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PlatformLocation } from '@angular/common';
-import { Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 
 @Injectable()
 export class SearchService {
@@ -14,7 +14,7 @@ export class SearchService {
         });
 
         this.router.events.subscribe(e => {
-            if (e.constructor.name === 'NavigationStart') {
+            if (e instanceof NavigationStart) {
                 if (this.hasNavigated)
                     this.isBackForward = false;
                 else
