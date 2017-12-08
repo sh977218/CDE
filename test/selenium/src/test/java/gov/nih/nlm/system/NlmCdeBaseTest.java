@@ -643,22 +643,22 @@ public class NlmCdeBaseTest {
         while (i < 4) {
             try {
                 shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("alertSection"), text));
-                driver.switchTo().window(driver.getWindowHandle());
+                closeAlert();
                 i = 10;
             } catch (TimeoutException e) {
+                driver.switchTo().window(driver.getWindowHandle());
                 i++;
             }
         }
         if (i != 10) Assert.fail("Failed to find text: " + text + " in alert");
     }
 
-    public boolean textPresent(String text, By by) {
+    public void textPresent(String text, By by) {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
-        return true;
     }
 
-    public boolean textPresent(String text) {
-        return textPresent(text, By.cssSelector("BODY"));
+    public void textPresent(String text) {
+        textPresent(text, By.cssSelector("BODY"));
     }
 
     public boolean textNotPresent(String text) {
