@@ -594,7 +594,7 @@ public class NlmCdeBaseTest {
             List<WebElement> elts = driver.findElements(By.cssSelector("button.close"));
             if (elts.size() > 0) elts.get(0).click();
         } catch (Exception e) {
-            System.out.println("Could not close alert");
+            System.out.println("Could not close alert - " + e.getMessage());
         }
     }
 
