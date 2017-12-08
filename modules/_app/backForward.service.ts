@@ -3,7 +3,7 @@ import { PlatformLocation } from '@angular/common';
 import { NavigationStart, Router } from '@angular/router';
 
 @Injectable()
-export class SearchService {
+export class BackForwardService {
     isBackForward = false;
     hasNavigated = false;
 

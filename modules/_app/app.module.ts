@@ -8,6 +8,7 @@ import { LocalStorageModule } from 'angular-2-local-storage';
 
 import { AlertComponent } from '_app/alert/alert.component';
 import { AlertService } from '_app/alert/alert.service';
+import { BackForwardService } from '_app/backForward.service';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
 import { ElasticService } from '_app/elastic.service';
@@ -42,6 +43,7 @@ import { UserService } from '_app/user.service';
     ],
     providers: [
         AlertService,
+        BackForwardService,
         ElasticService, // TODO: create shared CoreModule loaded async and provide to all lazy routes
         {provide: ErrorHandler, useClass: FrontExceptionHandler},
         LoginService,

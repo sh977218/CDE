@@ -8,7 +8,6 @@ import { AccordionListHeadingComponent } from 'search/listView/accordionListHead
 import { ListViewComponent } from 'search/listView/listView.component';
 import { ListViewControlsComponent } from 'search/listView/listViewControls.component';
 import { SearchExportButtonComponent } from 'search/searchExportButton.component';
-import { SearchService } from 'search/search.service';
 import { SummaryHeadingComponent } from 'search/listView/summaryHeading.component';
 import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/listView/summaryListItem.component';
@@ -52,7 +51,6 @@ import { WidgetModule } from 'widget/widget.module';
         TableListComponent,
     ],
     providers: [
-        SearchService
     ],
 })
 export class SearchModule {

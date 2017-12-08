@@ -68,6 +68,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     constructor(protected _componentFactoryResolver,
                 protected alert,
+                protected backForwardService,
                 protected elasticService,
                 protected exportService,
                 protected http,
@@ -75,7 +76,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 protected orgHelperService,
                 protected route,
                 protected router,
-                protected searchService,
                 protected userService) {
         this.searchSettings.page = 1;
 
@@ -619,7 +619,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     scrollHistoryLoad() {
-        if (this.searchService.isBackForward) {
+        if (this.backForwardService.isBackForward) {
             let previousSpot = window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search];
             if (previousSpot != null)
                 SearchBaseComponent.waitScroll(2, previousSpot);
@@ -628,7 +628,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     scrollHistorySave() {
-        if (!this.searchService.isBackForward)
+        if (!this.backForwardService.isBackForward)
             window.sessionStorage['nlmcde.scroll.' + this.previousUrl] = window.scrollY;
     }
 
