@@ -8,8 +8,7 @@ function noop1(a, cb) { cb(); }
 
 @Injectable()
 export class FormService {
-    constructor(private http: Http) {
-    }
+    constructor(private http: Http) {}
 
     static areDerivationRulesSatisfied(elt) {
         let missingCdes = [];
