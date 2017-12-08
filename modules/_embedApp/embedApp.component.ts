@@ -149,6 +149,7 @@ export class EmbedAppComponent  {
         }
 
         let settings = this.elasticSvc.buildElasticQuerySettings(this.searchSettings);
+        settings.fullRecord = true;
 
         this.elasticSvc.generalSearchQuery(settings, this.searchType, (err, result) => {
             if (err) {

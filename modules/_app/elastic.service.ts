@@ -47,6 +47,7 @@ export class ElasticService {
             , selectedDatatypes: queryParams.datatypes || []
             , visibleStatuses: this.getUserDefaultStatuses()
             , searchToken: this.searchToken
+            , fullRecord: null
         };
     }
 

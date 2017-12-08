@@ -131,6 +131,7 @@ export class FormQuestion implements FormElement {
 
 export class Question {
     answer: any; // input value
+    answerUom: string; // input uom value
     answerDate: any; // working storage for date part
     answerTime: any; // working storage for time part
     answers: PermissibleValue[];
