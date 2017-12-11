@@ -31,6 +31,34 @@ exports.updateOrInsert = function(elt) {
     });
 };
 
+exports.completionSuggest = function (term, cb) {
+    let suggestQuery = {
+        "query": {
+            "match": {
+                "primaryNameSuggest": {
+                    "query":  term
+                }
+            }
+        }, "_source": {
+            "includes": ["primaryNameSuggest"]
+        },
+        "highlight": {
+            "fields": {"primaryNameSuggest": {}}
+        }
+    };
+
+    esClient.search({
+        index: config.elastic.formIndex.name,
+        body: suggestQuery
+    }, function (error, response) {
+        if (error) {
+            cb(error);
+        } else {
+            cb(response);
+        }
+    });
+};
+
 exports.byTinyIdList = function (idList, cb) {
     esClient.search({
         index: config.elastic.formIndex.name,

@@ -216,16 +216,6 @@ exports.completionSuggest = function (term, cb) {
         }
     };
 
-    // let suggestQuery = {
-    //     "suggest": {
-    //         "search_suggest": {
-    //             "prefix": term,
-    //             "completion": {
-    //                 "field": "search_suggest"
-    //             }
-    //         }
-    //     }
-    // };
     esClient.search({
         index: config.elastic.index.name,
         body: suggestQuery

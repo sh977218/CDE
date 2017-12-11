@@ -287,7 +287,16 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     getAutocompleteSuggestions = (text$: Observable<string>) =>
         text$.debounceTime(500).distinctUntilChanged().switchMap(term =>
             term.length >= 3
-                ? this.http.get('/cdeCompletion/' + encodeURI(term)).map(res => res.json())
+                ? this.http.get('/' + this.module + 'Completion/' + encodeURI(term)).map(res => {
+                    let final = new Set();
+                    res.json().forEach(hit => hit.primaryNameSuggest.forEach(
+                        name => {
+                            let uniqueTerms = new Set(name.match(/<em>(.+?)<\/em>/g).map(e => e.replace(/<em>/g, "")
+                                .replace(/<\/em>/g, "").toLowerCase()));
+                            final.add(Array.from(uniqueTerms).join(" "));
+                        }));
+                    return Array.from(final);
+                })
                 : Observable.empty()
         ).take(8);
 
