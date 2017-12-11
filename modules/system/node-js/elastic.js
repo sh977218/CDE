@@ -709,7 +709,7 @@ exports.elasticsearch = function (query, type, cb) {
             }
 
             let result = {
-                totalNumber: response.hits.total
+                totalNumber: response.hits.total <= 10000 ? response.hits.total : 10000
                 , maxScore: response.hits.max_score
                 , took: response.took
             };
