@@ -269,12 +269,7 @@ exports.init = function (app, daoManager) {
         let result = [];
         let term = req.params.term;
         elastic_system.completionSuggest(term, resp => {
-            if (resp.suggest.search_suggest) {
-                resp.suggest.search_suggest[0].options.map(item => {
-                    result.push(item.text);
-                });
-            }
-            res.send(result);
+            res.send(resp.hits.hits.map(r => r.highlight));
         });
     });
 
