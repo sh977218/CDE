@@ -22,7 +22,7 @@ exports.deleteOrgClassification = (user, deleteClassification, settings, callbac
                 settings.selectedElements = deleteClassification.categories;
                 let query = elastic.buildElasticSearchQuery(user, settings);
                 async.parallel([
-                    done => elastic.elasticsearch(query, "cde", function (err, result) {
+                    done => elastic.elasticsearch("cde", query, settings, function (err, result) {
                         if (err) logger.log(err);
                         if (result && result.cdes && result.cdes.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
@@ -49,7 +49,7 @@ exports.deleteOrgClassification = (user, deleteClassification, settings, callbac
                             });
                         } else done();
                     }),
-                    done => elastic.elasticsearch(query, "form", function (err, result) {
+                    done => elastic.elasticsearch("form", query, settings, function (err, result) {
                         if (err) logger.log(err);
                         if (result && result.forms && result.forms.length > 0) {
                             let tinyIds = result.forms.map(c => c.tinyId);
@@ -101,7 +101,7 @@ exports.renameOrgClassification = (user, newClassification, settings, callback) 
                 settings.selectedElements = newClassification.categories;
                 let query = elastic.buildElasticSearchQuery(user, settings);
                 async.parallel([
-                    done => elastic.elasticsearch(query, "cde", function (err, result) {
+                    done => elastic.elasticsearch("cde", query, settings, function (err, result) {
                         if (err) logger.log(err);
                         if (result && result.cdes && result.cdes.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
@@ -129,7 +129,7 @@ exports.renameOrgClassification = (user, newClassification, settings, callback) 
                             });
                         } else done();
                     }),
-                    done => elastic.elasticsearch(query, "form", function (err, result) {
+                    done => elastic.elasticsearch("form", query, settings, function (err, result) {
                         if (err) logger.log(err);
                         if (result && result.forms && result.forms.length > 0) {
                             let tinyIds = result.forms.map(c => c.tinyId);
@@ -192,7 +192,7 @@ exports.reclassifyOrgClassification = (user, oldClassification, newClassificatio
                 settings.selectedElements = oldClassification.categories;
                 let query = elastic.buildElasticSearchQuery(user, settings);
                 async.parallel([
-                    done => elastic.elasticsearch(query, "cde", function (err, result) {
+                    done => elastic.elasticsearch("cde", query, settings, function (err, result) {
                         if (err) logger.log(err);
                         if (result && result.cdes && result.cdes.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
@@ -219,7 +219,7 @@ exports.reclassifyOrgClassification = (user, oldClassification, newClassificatio
                             });
                         } else done();
                     }),
-                    done => elastic.elasticsearch(query, "form", function (err, result) {
+                    done => elastic.elasticsearch( "form", query, settings, function (err, result) {
                         if (err) logger.log(err);
                         if (result && result.forms && result.forms.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);

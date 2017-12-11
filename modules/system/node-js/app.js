@@ -1185,25 +1185,25 @@ exports.init = function (app) {
     app.post('/comments/reply', adminItemSvc.replyToComment);
 
     app.get('/statsNew/cde', function (req, res) {
-        elastic.elasticsearch(elastic.queryNewest, 'cde', (err, result) => {
+        elastic.elasticsearch('cde', elastic.queryNewest, undefined, (err, result) => {
             if (err) return res.status(400).send("invalid query");
             res.send(result.cdes.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
         });
     });
     app.get('/statsNew/form', function (req, res) {
-        elastic.elasticsearch(elastic.queryNewest, 'form', (err, result) => {
+        elastic.elasticsearch('form', elastic.queryNewest, undefined, (err, result) => {
             if (err) return res.status(400).send("invalid query");
             res.send(result.forms.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
         });
     });
     app.get('/statsTopViews/cde', function (req, res) {
-        elastic.elasticsearch(elastic.queryMostViewed, 'cde', (err, result) => {
+        elastic.elasticsearch('cde', elastic.queryMostViewed, undefined, (err, result) => {
             if (err) return res.status(400).send("invalid query");
             res.send(result.cdes.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
         });
     });
     app.get('/statsTopViews/form', function (req, res) {
-        elastic.elasticsearch(elastic.queryMostViewed, 'form', (err, result) => {
+        elastic.elasticsearch('form', elastic.queryMostViewed, undefined, (err, result) => {
             if (err) return res.status(400).send("invalid query");
             res.send(result.forms.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
         });

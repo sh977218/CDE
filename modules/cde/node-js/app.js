@@ -214,7 +214,7 @@ exports.init = function (app, daoManager) {
         if (!req.isAuthenticated()) res.send("Please login first.");
         let query = elastic_system.buildElasticSearchQuery(req.user, req.body.query);
         if (query.size > config.maxPin) return res.status(403).send("Maximum number excesses.");
-        elastic_system.elasticsearch(query, 'cde', function (err, cdes) {
+        elastic_system.elasticsearch('cde', query, req.body.query, function (err, cdes) {
             boardsvc.pinAllToBoard(req, cdes.cdes, res);
         });
     });
