@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
