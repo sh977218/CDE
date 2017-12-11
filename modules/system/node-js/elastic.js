@@ -556,6 +556,10 @@ exports.buildElasticSearchQuery = function (user, settings) {
     return queryStuff;
 };
 
+exports.isSearch = function (settings) {
+    return settings && (settings.searchTerm || settings.selectedOrg || settings.meshTree);
+};
+
 let searchTemplate = {
     cde: {
         index: config.elastic.index.name,
@@ -682,8 +686,9 @@ function doSyncWithMesh(allMappings) {
 }
 
 
-exports.elasticsearch = function (query, type, cb) {
+exports.elasticsearch = function (type, query, settings, cb) {
     let search = searchTemplate[type];
+    let isSearch = this.isSearch(settings);
     if (!search) return cb("Invalid query");
     search.body = query;
     esClient.search(search, function (error, response) {
@@ -716,7 +721,7 @@ exports.elasticsearch = function (query, type, cb) {
             }
 
             let result = {
-                totalNumber: response.hits.total
+                totalNumber: response.hits.total <= 10000 || !isSearch ? response.hits.total : 10000
                 , maxScore: response.hits.max_score
                 , took: response.took
             };
