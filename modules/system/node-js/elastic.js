@@ -202,17 +202,32 @@ exports.initEs = function (cb) {
 
 exports.completionSuggest = function (term, cb) {
     let suggestQuery = {
-        "suggest": {
-            "search_suggest": {
-                "prefix": term,
-                "completion": {
-                    "field": "search_suggest"
+        "query": {
+            "match": {
+                "primaryNameSuggest": {
+                    "query":  term
                 }
             }
+        }, "_source": {
+            "includes": ["primaryNameSuggest"]
+        },
+        "highlight": {
+            "fields": {"primaryNameSuggest": {}}
         }
     };
+
+    // let suggestQuery = {
+    //     "suggest": {
+    //         "search_suggest": {
+    //             "prefix": term,
+    //             "completion": {
+    //                 "field": "search_suggest"
+    //             }
+    //         }
+    //     }
+    // };
     esClient.search({
-        index: config.elastic.storedQueryIndex.name,
+        index: config.elastic.index.name,
         body: suggestQuery
     }, function (error, response) {
         if (error) {
