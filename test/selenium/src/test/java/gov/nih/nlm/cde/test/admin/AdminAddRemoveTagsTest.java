@@ -49,7 +49,12 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
             textPresent("Org Updated");
             closeAlert();
 
+            // ensure it got saved.
             goHome();
+            clickElement(By.id("username_link"));
+            clickElement(By.linkText("Org Management"));
+            clickElement(By.linkText("List Management"));
+            textNotPresent("canYouSeeThis");
 
             goToCdeByName("Distance from Closest Margin Value");
             goToNaming();

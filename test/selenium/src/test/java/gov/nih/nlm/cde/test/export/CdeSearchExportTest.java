@@ -69,8 +69,9 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
             clickElement(By.id("csvExport"));
         }
 
-        checkAlert("export is being generated");
-        checkAlert("Export downloaded.");
+        textPresent("export is being generated");
+        textPresent("Export downloaded.");
+        closeAlert();
 
         String[] expected2 = {
                 "Name, Question Texts, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, Identifiers, Source, Updated",
