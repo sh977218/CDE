@@ -15,7 +15,6 @@ import { LoginService } from '_app/login.service';
 
         .navbar {
             border-radius: 0;
-            padding: 0;
         }
     `]
 })
