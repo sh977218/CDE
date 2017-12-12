@@ -3,7 +3,7 @@
     <div *ngIf="elt.properties.length === 0">There are no properties.</div>
     <ng-container *ngFor="let prop of elt.properties;let i = index">
         <dl class="row">
-            <dt class="col-sm-3">
+            <dt class="col-3 text-right">
                 <ng-container *ngIf="canEdit && prop.edit">Confirm Delete
                     <span class="btn-secondary fa fa-check" (click)="removePropertyByIndex(i)"
                           id="confirmRemoveProperty-{{i}}" title="OK"></span>
@@ -16,9 +16,9 @@
                                     (cb)="reorderProperty();"></cde-sortable-array>
                 Key:
             </dt>
-            <dd id="key_{{i}}" class="col-sm-9">{{prop.key}}</dd>
-            <dt class="col-sm-3">Id:</dt>
-            <dd id="value_{{i}}" class="col-sm-9">
+            <dd id="key_{{i}}" class="col-9">{{prop.key}}</dd>
+            <dt class="col-3 text-right">Id:</dt>
+            <dd id="value_{{i}}" class="col-9">
                 <cde-inline-area-edit [(model)]="prop.value" (save)="onEltChange.emit()"
                                       [(defFormat)]="prop.valueFormat"
                                       [isAllowed]="canEdit"></cde-inline-area-edit>
