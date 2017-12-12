@@ -16,7 +16,7 @@ export class CdeAppComponent implements OnInit {
     name = "Angular 2";
 
     ngOnInit() {
-        let description = '<div id="feedback-welcome"><div class="h3">Report a problem</div>' +
+        let description = '<div id="feedback-welcome" class="hidden-sm-down"><div class="h3">Report a problem</div>' +
             '<p>What would you like to report?</p>' +
             '<textarea id="feedback-note-tmp"></textarea>' +
             '<br><br>' +
@@ -76,5 +76,6 @@ export class CdeAppComponent implements OnInit {
         });
     }
 
-    constructor(backForwardService: BackForwardService) {}
+    constructor(backForwardService: BackForwardService) {
+    }
 }

@@ -409,3 +409,16 @@ div.row .native-question-oneline-r {
     margin-bottom: 1px;
     margin-left: 6%;
 }
+
+label.input-group-addon:last-child {
+    display: table-cell;
+    border-left: 1px solid #ccc;
+}
+
+#leftNav {
+    padding-right: 0;
+}
+
+#middleView {
+    padding-left: 0;
+}

@@ -42,43 +42,38 @@
             Show if: {{question.skipLogic.condition}}
         </span>
     </div>
-    <dl class="row">
-        <ng-container *ngIf="question.instructions?.value">
-            <dt class="col-sm-2">Instructions:</dt>
-            <dd class="col-sm-10 questionInstruction">
-            <span *ngIf="question.instructions.valueFormat === 'html'"
-                  [innerHtml]="question.instructions.value"></span>
+    <div class="row">
+        <div class="col-12">
+            <div *ngIf="question.instructions?.value" class="questionInstruction">
+                <span class="formViewQuestionLabel">Instructions:</span>
+                <span *ngIf="question.instructions.valueFormat === 'html'"
+                      [innerHtml]="question.instructions.value"></span>
                 <span *ngIf="question.instructions.valueFormat !== 'html'"
                       [textContent]="question.instructions.value"></span>
-            </dd>
-        </ng-container>
-        <ng-container *ngIf="question.question.answers && question.question.answers.length > 0">
-            <dt class="col-sm-2">Answer Choices:</dt>
-            <dd class="col-sm-10 answerList">
-                <ng-container *ngFor="let pv of question.question.answers">
+            </div>
+            <div class="answerList" *ngIf="question.question.answers && question.question.answers.length > 0">
+                <span class="formViewQuestionLabel">Answer Choices:</span>
+                <span *ngFor="let pv of question.question.answers" style="margin-right: -3px">
                     <span class="badge badge-default formViewSummaryLabel" style="background-color: #666"
                           [textContent]="pv?.valueMeaningName"></span>
-                </ng-container>
-            </dd>
-        </ng-container>
-        <ng-container *ngIf="question.question.defaultAnswer && question.question.defaultAnswer.length > 0">
-            <dt class="col-sm-2">Default Answer:</dt>
-            <dd class="col-sm-10 defaultAnswer">
+                </span>
+            </div>
+            <div *ngIf="question.question.defaultAnswer && question.question.defaultAnswer.length > 0"
+                 class="defaultAnswer">
+                <span class="formViewQuestionLabel">Default Answer:</span>
                 <span class="badge badge-default formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
-            </dd>
-        </ng-container>
-        <ng-container *ngIf="question.question.uoms.length > 0">
-            <dt class="col-sm-2">Units of Measure:</dt>
-            <dd class="col-sm-10 questionUom">
+            </div>
+            <div *ngIf="question.question.uoms.length > 0" class="questionUom">
+                <span class="formViewQuestionLabel">Units of Measure:</span>
                 <span *ngFor="let uom of question.question.uoms; let index = index"
-                      class="badge badge-info  formViewSummaryLabel"
+                      class="badge badge-info formViewSummaryLabel"
                       [ngClass]="{'badge-danger': (question.question.uomsValid && !question.question.uomsValid[index])}">
                     <span [textContent]="uom"></span>
                     <span *ngIf="question.question.uomsValid && !question.question.uomsValid[index]">&nbsp;(invalid)</span>
                 </span>
-            </dd>
-        </ng-container>
-    </dl>
+            </div>
+        </div>
+    </div>
 </ng-template>
 
 <ng-template #formDescriptionQuestionEditTmpl>

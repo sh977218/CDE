@@ -97,8 +97,8 @@
     <div class="row">
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <div class="row">
-                <div class="col-xl-2 col-lg-3 col-12 navbar-toggleable-md navbar-light ">
-                    <div id="leftNav" class="collapse navbar-collapse mt-20">
+                <div class="col-xl-2 col-lg-3 col-12 navbar-toggleable-md navbar-light" id="leftNav">
+                    <div class="collapse navbar-collapse mt-20">
                         <ul class="list-group">
                             <a id="general_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='general_tab'}"
@@ -116,7 +116,8 @@
                             <a id="classification_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='classification_tab'}"
                                (click)="setCurrentTab('classification_tab');">Classification
-                                <i *ngIf="tabsCommented.indexOf('classification_tab') > -1" class="fa fa-comments pull-right"
+                                <i *ngIf="tabsCommented.indexOf('classification_tab') > -1"
+                                   class="fa fa-comments pull-right"
                                    aria-hidden="true"></i></a>
                             <a id="meshTopic_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='meshTopic_tab'}"
@@ -131,12 +132,14 @@
                             <a id="referenceDocuments_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='referenceDocuments_tab'}"
                                (click)="setCurrentTab('referenceDocuments_tab');">Reference Documents
-                                <i *ngIf="tabsCommented.indexOf('referenceDocuments_tab') > -1" class="fa fa-comments pull-right"
+                                <i *ngIf="tabsCommented.indexOf('referenceDocuments_tab') > -1"
+                                   class="fa fa-comments pull-right"
                                    aria-hidden="true"></i></a>
                             <a id="properties_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='properties_tab'}"
                                (click)="setCurrentTab('properties_tab');">Properties
-                                <i *ngIf="tabsCommented.indexOf('properties_tab') > -1" class="fa fa-comments pull-right"
+                                <i *ngIf="tabsCommented.indexOf('properties_tab') > -1"
+                                   class="fa fa-comments pull-right"
                                    aria-hidden="true"></i></a>
                             <a id="ids_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='ids_tab'}"
                                (click)="setCurrentTab('ids_tab');">Identifiers
@@ -145,7 +148,8 @@
                             <a id="attachments_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='attachments_tab'}"
                                (click)="setCurrentTab('attachments_tab');">Attachments
-                                <i *ngIf="tabsCommented.indexOf('attachments_tab') > -1" class="fa fa-comments pull-right"
+                                <i *ngIf="tabsCommented.indexOf('attachments_tab') > -1"
+                                   class="fa fa-comments pull-right"
                                    aria-hidden="true"></i></a>
                             <a id="history_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='history_tab'}"
@@ -155,12 +159,14 @@
                             <a id="derivationRules_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='derivationRules_tab'}"
                                (click)="setCurrentTab('derivationRules_tab');">Score Derivations
-                                <i *ngIf="tabsCommented.indexOf('derivationRules_tab') > -1" class="fa fa-comments pull-right"
+                                <i *ngIf="tabsCommented.indexOf('derivationRules_tab') > -1"
+                                   class="fa fa-comments pull-right"
                                    aria-hidden="true"></i></a>
                             <a id="validRules_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='validRules_tab'}"
                                (click)="setCurrentTab('validRules_tab');">Validation Rules
-                                <i *ngIf="tabsCommented.indexOf('validRules_tab') > -1" class="fa fa-comments pull-right"
+                                <i *ngIf="tabsCommented.indexOf('validRules_tab') > -1"
+                                   class="fa fa-comments pull-right"
                                    aria-hidden="true"></i></a>
                         </ul>
                     </div>
