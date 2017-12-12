@@ -35,40 +35,39 @@
                           [hidden]="drafts?.length === 0"></cde-draft-slider>
         {{elt?.naming[0].designation}}
     </h1>
-    <div class="pull-left marginTopBottom5">
-        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
-                class="btn btn-small btn-secondary" title="Add to Compare List" type="button"
-                (click)="quickBoardService.addToQuickBoard(elt)">
-            <i class="fa fa-plus"></i><span class="hidden-sm-down-down"> Add to Quick Board</span>
-        </button>
-        <button id="addToBoard" class="btn btn-small btn-secondary" role="button" title="Add to Board"
-                type="button" (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
-            <i class="fa fa-thumb-tack"></i><span class="hidden-sm-down-down"> Add to Board</span>
-        </button>
+    <div class="pull-left">
         <div class="dropdown float-left">
-            <button id="export" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"
+            <button id="export" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-download"></i><span class="hidden-sm-down-down"> Export</span>
+                <i class="fa fa-download"></i>
+                <span class="hidden-sm-down-down"> Export</span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="export">
-                <li>
-                    <a id="jsonExport" class="dropdown-item d-inline" href="deById/{{elt._id}}" target="_blank">
+                <li class="dropdown-item">
+                    <a id='jsonExport' href="deById/{{elt._id}}" target="_blank">
                         JSON File, NIH/CDE Schema</a>
-                    <a href="/schema/cde" target="_blank" class="d-inline">
-                        <i class="fa fa-info-circle"></i></a>
+                    <a href="/schema/cde" target="_blank"><i class="fa fa-info-circle"></i></a>
                 </li>
-                <li>
-                    <a id="xmlExport" class="dropdown-item d-inline" href="deById/{{elt._id}}?type=xml"
-                       target="_blank">XML File, NIH/CDE Schema</a>
+                <li class="dropdown-item">
+                    <a id='xmlExport' href="deById/{{elt._id}}?type=xml" target="_blank">
+                        XML File, NIH/CDE Schema</a>
                 </li>
             </ul>
         </div>
+        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard" class="btn btn-small btn-secondary"
+                title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
+            <i class="fa fa-plus"></i><span class="hidden-sm-down-down"> Add to Quick Board</span>
+        </button>
+        <button id="addToBoard" class="btn btn-small btn-secondary" title="Add to Board"
+                (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
+            <i class="fa fa-thumb-tack"></i><span class="hidden-sm-down-down"> Add to Board</span>
+        </button>
         <button *ngIf="isAllowedModel.isOrgCurator()" id="copyCdeBtn" class="btn btn-small btn-secondary"
-                (click)="openCopyElementModal()" title="Copy CDE">
+                title="Copy CDE" (click)="openCopyElementModal()">
             <i class="fa fa-clone"></i><span class="hidden-sm-down-down"> Copy</span>
         </button>
-        <button id="discussBtn" class="btn btn-small btn-secondary" role="button" title="Discuss CDE"
-                type="button" (click)="commentMode = !commentMode;">
+        <button id="discussBtn" class="btn btn-small btn-secondary" title="Discuss CDE"
+                (click)="commentMode = !commentMode;">
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
             <span class="hidden-sm-down-down"> Discuss</span>
         </button>
@@ -80,7 +79,7 @@
             </button>
         </div>
     </div>
-    <div class="pull-right marginTopBottom5" style="text-align: end">
+    <div class="pull-right" style="text-align: end">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
             <button *ngIf="elt.valueDomain.allValid" class="btn btn-success" id="openSave"

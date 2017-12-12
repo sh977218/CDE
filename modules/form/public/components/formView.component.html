@@ -45,8 +45,54 @@
         {{elt.naming[0].designation}}
     </h1>
     <div class="pull-left">
-        <button *ngIf="quickBoardService.canAddElement(elt)"
-                id="addToQuickBoard" class="btn btn-small btn-secondary"
+        <div class="dropdown float-left">
+            <button id="export" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-download"></i>
+                <span class="hidden-sm-down-down"> Export</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="export">
+                <ng-container *ngIf="isAllowedModel.loggedIn()">
+                    <li class="dropdown-item">
+                        <a id='nihJson' href="formById/{{elt._id}}" target="_blank">
+                            JSON File, NIH/CDE Schema</a>
+                        <a href="/schema/form" target="_blank"><i class="fa fa-info-circle"></i></a>
+                    </li>
+                    <li class="dropdown-item">
+                        <a id='odmExport' href="formById/{{elt._id}}?type=xml&subtype=odm" target="_blank">
+                            XML File, CDISC / ODM</a>
+                        <a href="https://www.cdisc.org/standards/transport/odm" target="_blank">
+                            <i class="fa fa-info-circle"></i></a>
+                    </li>
+                    <li class="dropdown-item">
+                        <a id='sdcExport' href="formById/{{elt._id}}?type=xml&subtype=sdc" target="_blank">
+                            XML File, SDC Schema</a>
+                        <a href="https://github.com/esacinc/sdc-schema-package" target="_blank">
+                            <i class="fa fa-info-circle"></i></a>
+                    </li>
+                    <li class="dropdown-item">
+                        <a *ngIf="!isIe()" id='sdcHtmlExport'
+                           href="formById/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
+                           target="_blank">XML File, SDC Schema with XSL Transform</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <a id='nihXml' href="formById/{{elt._id}}?type=xml" target="_blank">
+                            XML File, NIH/CDE Schema</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <a id='formPublishExport' (click)="openPreparePublishModal()"
+                           target="_blank">Published Form</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <a id='nihRedCap' href="formById/{{elt._id}}?type=REDCap" target="_blank">REDCap</a>
+                        <a href="https://projectredcap.org/" target="_blank"><i class="fa fa-info-circle"></i></a>
+                    </li>
+                </ng-container>
+                <a class="dropdown-item" *ngIf="!isAllowedModel.loggedIn()" href="login">
+                    Please login to export forms.</a>
+            </ul>
+        </div>
+        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard" class="btn btn-small btn-secondary"
                 title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
             <i class="fa fa-plus"></i><span class="hidden-sm-down-down"> Add to Quick Board</span>
         </button>
@@ -54,68 +100,17 @@
                 (click)="mltPinModal.open([elt], 'cde')">
             <i class="fa fa-thumb-tack"></i><span class="hidden-sm-down-down"> Add to Board</span>
         </button>
-        <div class="dropdown float-left">
-            <button id="export" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-download"></i>
-                <span class="hidden-sm-down-down"> Export</span>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="export">
-                <ng-container *ngIf="isAllowedModel.loggedIn()">
-                    <li>
-                        <a id='nihJson' class="dropdown-item d-inline" href="formById/{{elt._id}}" target="_blank">
-                            JSON File, NIH/CDE Schema</a>
-                        <a href="/schema/form" target="_blank" class="d-inline">
-                            <i class="fa fa-info-circle"></i></a>
-                    </li>
-                    <li>
-                        <a id='odmExport' class="dropdown-item d-inline"
-                           href="formById/{{elt._id}}?type=xml&subtype=odm" target="_blank">XML File, CDISC / ODM</a>
-                        <a href="https://www.cdisc.org/standards/transport/odm" target="_blank"
-                           class="d-inline">
-                            <i class="fa fa-info-circle"></i></a>
-                    </li>
-                    <li>
-                        <a id='sdcExport' href="formById/{{elt._id}}?type=xml&subtype=sdc" target="_blank"
-                           class="dropdown-item d-inline">XML File, SDC Schema</a>
-                        <a href="https://github.com/esacinc/sdc-schema-package" target="_blank"
-                           class="d-inline"><i class="fa fa-info-circle"></i></a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" *ngIf="!isIe()" id='sdcHtmlExport'
-                           href="formById/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
-                           target="_blank">XML File, SDC Schema with XSL Transform</a>
-                    </li>
-                    <li><a class="dropdown-item" id='nihXml' href="formById/{{elt._id}}?type=xml"
-                           target="_blank">XML File, NIH/CDE Schema</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-inline" id='formPublishExport' (click)="openPreparePublishModal()"
-                           target="_blank">Published Form</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-inline" id='nihRedCap' href="formById/{{elt._id}}?type=REDCap"
-                           target="_blank">REDCap</a>
-                        <a href="https://projectredcap.org/" target="_blank" class="d-inline">
-                            <i class="fa fa-info-circle"></i></a>
-                    </li>
-                </ng-container>
-                <a class="dropdown-item" *ngIf="!isAllowedModel.loggedIn()" href="login">
-                    Please login to export forms.</a>
-            </ul>
-        </div>
         <button *ngIf="isAllowedModel.loggedIn()"
                 id="pinAllCdes" class="btn btn-small btn-secondary"
                 title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
             <i class="fa fa-cogs"></i><span class="hidden-sm-down-down"> Pin CDEs</span>
         </button>
-        <button *ngIf="isAllowedModel.isOrgCurator()"
-                id="copyFormBtn" class="btn btn-small btn-secondary"
-                title="Copy Form" type="button" (click)="openCopyElementModal()">
+        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyFormBtn" class="btn btn-small btn-secondary"
+                title="Copy Form" (click)="openCopyElementModal()">
             <i class="fa fa-clone"></i><span class="hidden-sm-down-down"> Copy</span>
         </button>
-        <button id="discussBtn" class="btn btn-small btn-secondary"
-                title="Discuss CDE" (click)="commentMode = !commentMode;">
+        <button id="discussBtn" class="btn btn-small btn-secondary" title="Discuss CDE"
+                (click)="commentMode = !commentMode;">
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
             <span class="hidden-sm-down-down"> Discuss</span>
         </button>
