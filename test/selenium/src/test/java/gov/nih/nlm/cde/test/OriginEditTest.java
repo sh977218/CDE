@@ -21,8 +21,7 @@ public class OriginEditTest extends NlmCdeBaseTest {
         findElement(By.xpath("//*[@id='version']")).sendKeys(".1");
         hangon(1);
         clickElement(By.id("confirmNewVersion"));
-        textPresent("Saved.");
-        closeAlert();
+        checkAlert("Saved.");
         String newOrigin = findElement(By.cssSelector("#origin > span > span")).getText();
 
         Assert.assertEquals(origin, newOrigin);

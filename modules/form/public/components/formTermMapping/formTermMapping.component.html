@@ -1,16 +1,15 @@
 <fieldset class="cdeFieldset" id="formTermMapping">
     <legend>Mesh Descriptors:
-        <button  title="Add" role="link" id="addTermMap"
-                 *ngIf="isAllowedModel.isAllowed(elt) && !elt.unsaved" class="btn btn-secondary"
-                 (click)="openAddTermMap()"><span class="fa fa-edit"> Add</span>
+        <button title="Add" role="link" id="addTermMap" *ngIf="isAllowedModel.isAllowed(elt)" class="btn btn-secondary"
+                (click)="openAddTermMap()"><span class="fa fa-edit"> Add</span>
         </button>
     </legend>
     <ul>
         <li *ngFor="let desc of mapping.meshDescriptors; let i = index">
-                {{desc}} - {{descToName[desc]}}
-                <i *ngIf="!confirm && isAllowedModel.isAllowed(elt) && !elt.unsaved" (click)="confirm = i"
-                   class="fa fa-trash-o hand-cursor" title="Remove Mesh Term"></i>
-                <span *ngIf="confirm === i" class="label">Confirm Delete
+            {{desc}} - {{descToName[desc]}}
+            <i *ngIf="!confirm && isAllowedModel.isAllowed(elt)" (click)="confirm = i"
+               class="fa fa-trash-o hand-cursor" title="Remove Mesh Term"></i>
+            <span *ngIf="confirm === i" class="label">Confirm Delete
                     <span class="fa fa-check hand-cursor" (click)="confirm = false; removeMeshDescriptor(i)"
                           id="confirmRemoveMesh-{{i}}" title="Delete"></span>
                     <span class="fa fa-times hand-cursor" (click)="confirm = false"
@@ -37,7 +36,8 @@
                 <button type="submit" class="btn btn-secondary btn-sm"
                         id="addMeshDescButton" (click)="addMeshDescriptor()"
                         *ngIf="descriptor.name.length > 0"
-                        [disabled]="mapping.meshDescriptors?.indexOf(descriptor.id) > -1">Add</button>
+                        [disabled]="mapping.meshDescriptors?.indexOf(descriptor.id) > -1">Add
+                </button>
 
             </div>
         </form>

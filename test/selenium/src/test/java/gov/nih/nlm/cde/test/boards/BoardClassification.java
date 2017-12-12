@@ -11,8 +11,7 @@ public class BoardClassification extends BoardTest {
         goToBoard("Classify Board");
         clickElement(By.id("board.classifyAllCdes"));
         clickElement(By.xpath("//*[@id='Classify Board-classifyBtn']"));
-        textPresent("Elements classified");
-        closeAlert();
+        checkAlert("Elements classified");
         clickElement(By.linkText("Manual muscle testing date and time"));
         goToClassification();
         textPresent("Classify Board");

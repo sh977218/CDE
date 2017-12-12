@@ -16,8 +16,7 @@ public class LinkedFormsTest extends NlmCdeBaseTest {
         textPresent("There is 1 form that uses this cde");
         textPresent("Contains data elements related to the study participant's/ subject's health history. (Examples of CDEs included: review of symptoms and conditions in specific body systems (pulmonary, endocrine, musculoskeletal, etc.)");
         clickElement(By.id("addToCompare_0"));
-        textPresent("Added to QuickBoard!");
-        closeAlert();
+        checkAlert("Added to QuickBoard!");
         clickElement(By.id("closeLinkedFormsModalBtn"));
         textPresent("Quick Board (1)");
     }

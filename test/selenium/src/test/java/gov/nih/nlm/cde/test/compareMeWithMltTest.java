@@ -11,12 +11,10 @@ public class compareMeWithMltTest extends NlmCdeBaseTest {
         String cdeName = "Common Toxicity Criteria Adverse Event Iron Excess Grade";
         goToCdeByName(cdeName);
         clickElement(By.id("addToQuickBoard"));
-        textPresent("Added to QuickBoard!");
-        closeAlert();
+        checkAlert("Added to QuickBoard!");
         clickElement(By.id("mltButton"));
         clickElement(By.xpath("//*[@id='mltAccordion']//div[@class='card']/div[span[contains(.,'Common Toxicity Criteria Adverse Event Platelet Count Grade')]]//i[@title='Add to Quick Board']"));
-        textPresent("Added to QuickBoard");
-        closeAlert();
+        checkAlert("Added to QuickBoard");
         clickElement(By.id("closeMoreLikeThisBtn"));
         textPresent("Quick Board (2)");
         goToQuickBoardByModule("cde");

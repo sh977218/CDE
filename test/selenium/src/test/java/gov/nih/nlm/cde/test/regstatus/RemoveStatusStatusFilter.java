@@ -23,8 +23,7 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Preferred Standard");
         clickElement(By.id("saveRegStatus"));
-        closeAlert();
-        // @TODO REMOVE
+        newCdeVersion();
         waitForESUpdate();
         driver.navigate().back();
         showSearchFilters();
@@ -46,7 +45,7 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Standard");
         clickElement(By.id("saveRegStatus"));
-        closeAlert();
+        newCdeVersion();
         waitForESUpdate();
         goToCdeSearch();
         clickElement(By.id("browseOrg-PBTC"));

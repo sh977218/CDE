@@ -1,8 +1,8 @@
 <fieldset class="cdeFieldset" id="registrationStateDiv">
     <legend>Registration State:
-        <button title="Edit Status" role="link" id="editStatus"
-                *ngIf="isAllowedModel.isAllowed(elt) && !elt.unsaved && !elt.isDraft" class="btn btn-secondary"
-                (click)="openRegStatusUpdate()"><span class="fa fa-edit"> Edit</span>
+        <button title="Edit Status" role="link" id="editStatus" *ngIf="canEdit" class="btn btn-secondary"
+                (click)="openRegStatusUpdate()">
+            <span class="fa fa-edit"> Edit</span>
         </button>
     </legend>
     <dl class="row">

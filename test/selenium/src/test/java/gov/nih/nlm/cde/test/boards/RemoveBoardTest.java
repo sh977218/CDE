@@ -12,8 +12,7 @@ public class RemoveBoardTest extends BoardTest {
         clickElement(By.xpath("//*[@id='boardDiv_" + boardName + "']//*[contains(@id,'removeBoard-')]"));
         textPresent("Confirm Delete");
         clickElement(By.xpath("//*[@id='boardDiv_" + boardName + "']//*[contains(@id,'confirmRemove-')]"));
-        textPresent("Done");
-        closeAlert();
+        checkAlert("Done");
         textNotPresent(boardName);
     }
 }

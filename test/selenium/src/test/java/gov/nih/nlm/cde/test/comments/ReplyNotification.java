@@ -34,8 +34,7 @@ public class ReplyNotification extends CdeCommentTest {
         textPresent("Comment reply | reguser | Reply will trigger");
         clickElement(By.partialLinkText("Comment reply | reguser | Reply will trigger"));
         clickElement(By.xpath("//button[normalize-space(.)='Archive']"));
-        textPresent("Message moved to archived.");
-        closeAlert();
+        checkAlert("Message moved to archived.");
     }
 
 }

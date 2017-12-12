@@ -16,8 +16,7 @@ public class FormAddMeshTermMappingTest extends NlmCdeBaseTest {
         textPresent("D005385 -- Fingers");
         clickElement(By.id("addMeshDescButton"));
         clickElement(By.id("closeModal"));
-        textPresent("Saved");
-        closeAlert();
+        checkAlert("Saved");
         textPresent("D005385 - Fingers");
 
         // check can't add dups

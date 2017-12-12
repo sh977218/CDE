@@ -211,7 +211,7 @@
                         <cde-form-general-details [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft()">
                         </cde-form-general-details>
                         <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-                        <cde-registration [elt]="elt" (save)="saveForm();"></cde-registration>
+                        <cde-registration [elt]="elt" (onEltChange)="saveDraft()" [canEdit]="canEdit()"></cde-registration>
                         <cde-linked-boards [elt]="elt"></cde-linked-boards>
                         <cde-linked-forms [elt]="elt"></cde-linked-forms>
                         <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>

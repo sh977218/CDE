@@ -75,9 +75,7 @@ export class DataElementViewComponent implements OnInit {
                         }
                         let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
                         this.elt.naming.forEach(n => {
-                            n.tags.forEach(t => {
-                                allNamingTags.push(t);
-                            });
+                            n.tags.forEach(t => allNamingTags.push(t));
                         });
                         this.orgNamingTags = _.uniqWith(allNamingTags, _.isEqual).map(t => {
                             return {id: t, text: t};

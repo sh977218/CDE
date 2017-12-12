@@ -12,8 +12,7 @@ public class PrefStdFacets extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         editRegistrationStatus("Preferred Standard", null, null, null, null);
-        textPresent("Data Element saved.");
-        closeAlert();
+        newCdeVersion();
         waitForESUpdate();
         goToCdeSearch();
         clickElement(By.id("browseOrg-DCP"));

@@ -18,8 +18,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
         findElement(By.name("newOrgCuratorUsername")).sendKeys("userToPromote");
         clickElement(By.xpath("//ngb-highlight//span[. = 'userToPromote']"));
         findElement(By.id("newOrgCuratorSubmit")).click();
-        textPresent("Saved");
-        closeAlert();
+        checkAlert("Saved");
         textPresent("userToPromote");
         int orgLength = driver.findElements(By.xpath("//td[starts-with(@id, 'existingOrgCuratorOrgName-')]")).size();
         for (int i = 0; i < orgLength; i++) {
@@ -35,16 +34,14 @@ public class OrgAdminTasks extends BaseClassificationTest {
                 }
             }
         }
-        textPresent("Removed");
-        closeAlert();
+        checkAlert("Removed");
         textNotPresent("userToPromote");
 
         findElement(By.linkText("Organizations Admins")).click();
         new Select(findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText("caBIG");
         findElement(By.id("newOrgAdminUsername")).sendKeys("userToPromote");
         findElement(By.id("newOrgAdminSubmit")).click();
-        textPresent("Saved");
-        closeAlert();
+        checkAlert("Saved");
         textPresent("userToPromote");
         orgLength = driver.findElements(By.xpath("//td[starts-with(@id, 'existingOrgAdminOrgName-')]")).size();
         for (int i = 0; i < orgLength; i++) {
