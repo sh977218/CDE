@@ -25,8 +25,10 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
         clickElement(By.id("search.submit"));
         clickElement(By.id("export"));
         clickElement(By.id("jsonExport"));
-        checkAlert("export is being generated");
-        checkAlert("Export downloaded.");
+        textPresent("export is being generated");
+        textPresent("Export downloaded.");
+        closeAlert();
+        closeAlert();
 
         String[] expected = {
                 "{\"tinyId\":\"03UmDCNQ4x7\",\"imported\":\"2015-09-21T18:20:26.298Z\",\"source\":\"NINDS\",\"version\":\"3\"",
