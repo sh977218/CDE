@@ -12,17 +12,17 @@
     <div class="col-md-4 col-sm-12 col-xs-12">
         <span [innerHtml]="elt.primaryDefinitionCopy"></span>
         <dl class="row">
-            <dt class="col-sm-4 text-right-md">Steward:</dt>
-            <dd class="col-sm-8">{{elt.stewardOrg.name}}</dd>
+            <dt class="col-4 text-right">Steward:</dt>
+            <dd class="col-8">{{elt.stewardOrg.name}}</dd>
             <ng-container *ngIf="elt.classification.length > 0">
-                <dt class="col-sm-4 text-right-md">Used By:</dt>
-                <dd class="col-sm-8" id="usedBy">
+                <dt class="col-4 text-right">Used By:</dt>
+                <dd class="col-8" id="usedBy">
                     <span *ngIf="!(elt.classification.length > 0)">None</span>
                     <span *ngIf="elt.classification.length > 0">{{getStewards()}}</span>
                 </dd>
             </ng-container>
-            <dt class="col-sm-4 text-right-md">Source:</dt>
-            <dd class="col-sm-8">{{elt.source}}</dd>
+            <dt class="col-4 text-right">Source:</dt>
+            <dd class="col-8">{{elt.source}}</dd>
         </dl>
     </div>
     <div class="col-md-5 col-sm-8 col-xs-12">

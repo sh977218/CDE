@@ -48,17 +48,17 @@
         <button *ngIf="quickBoardService.canAddElement(elt)"
                 id="addToQuickBoard" class="btn btn-small btn-secondary"
                 title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
-            <i class="fa fa-plus"></i><span class="hidden-xs-down"> Add to Quick Board</span>
+            <i class="fa fa-plus"></i><span class="hidden-sm-down-down"> Add to Quick Board</span>
         </button>
         <button id="addToBoard" class="btn btn-small btn-secondary" title="Add to Board"
                 (click)="mltPinModal.open([elt], 'cde')">
-            <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
+            <i class="fa fa-thumb-tack"></i><span class="hidden-sm-down-down"> Add to Board</span>
         </button>
         <div class="dropdown float-left">
             <button id="export" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-download"></i>
-                <span class="hidden-xs-down"> Export</span>
+                <span class="hidden-sm-down-down"> Export</span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="export">
                 <ng-container *ngIf="isAllowedModel.loggedIn()">
@@ -107,17 +107,17 @@
         <button *ngIf="isAllowedModel.loggedIn()"
                 id="pinAllCdes" class="btn btn-small btn-secondary"
                 title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
-            <i class="fa fa-cogs"></i><span class="hidden-xs-down"> Pin CDEs</span>
+            <i class="fa fa-cogs"></i><span class="hidden-sm-down-down"> Pin CDEs</span>
         </button>
         <button *ngIf="isAllowedModel.isOrgCurator()"
                 id="copyFormBtn" class="btn btn-small btn-secondary"
                 title="Copy Form" type="button" (click)="openCopyElementModal()">
-            <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
+            <i class="fa fa-clone"></i><span class="hidden-sm-down-down"> Copy</span>
         </button>
         <button id="discussBtn" class="btn btn-small btn-secondary"
                 title="Discuss CDE" (click)="commentMode = !commentMode;">
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
-            <span class="hidden-xs-down"> Discuss</span>
+            <span class="hidden-sm-down-down"> Discuss</span>
         </button>
         <div class="navbar-light d-inline-block">
             <button class="btn btn-secondary navbar-toggler hidden-md-up"

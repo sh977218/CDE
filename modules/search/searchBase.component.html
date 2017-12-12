@@ -7,9 +7,8 @@
                  alt="NIH Common Data Elements (CDE) log" src="/cde/public/assets/img/NIH-CDE.png"/>
         </div>
         <div class="row justify-content-md-center" id="searchDiv">
-            <div class="col-12 col-md-auto">
-                <form #quickSearchForm="ngForm" id="quickSearchForm" class="input-group" novalidate
-                      method="GET" style="min-width: 766px;">
+            <div class="col-12 col-md-auto w-75">
+                <form #quickSearchForm="ngForm" id="quickSearchForm" class="input-group " novalidate method="GET">
                     <input name="q" id="ftsearch-input" class="form-control search-query" type="text"
                            [(ngModel)]="searchSettings.q" aria-labelledby="l1" maxlength="500"
                            [ngbTypeahead]="getAutocompleteSuggestions" [focusFirst]="false">
