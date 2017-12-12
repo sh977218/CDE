@@ -82,7 +82,6 @@ export abstract class Elt {
     stewardOrg: {
         name: string
     };
-    unsaved: boolean = false;
     primaryDefinitionCopy: string; // calculated, Elastic
     score: number; // calculated, Elastic _score
     tinyId: string;

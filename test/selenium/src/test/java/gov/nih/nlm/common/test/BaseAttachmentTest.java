@@ -10,8 +10,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         goToAttachments();
         clickElement(By.xpath("//*[contains(@id, 'attachment_')][//a[.='" + name + "']]//i[contains(@id, 'removeAttachment')]"));
         clickElement(By.xpath("//*[contains(@id, 'attachment_')][//a[.='" + name + "']]//i[contains(@id, 'confirmRemove')]"));
-        textPresent("Attachment Removed.");
-        closeAlert();
+        checkAlert("Attachment Removed.");
         textNotPresent(name);
     }
 
@@ -48,8 +47,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         findElement(By.linkText(name));
 //        textPresent("Scanned by ClamAV");
         clickElement(By.id("approve-" + name));
-        textPresent("Attachment approved");
-        closeAlert();
+        checkAlert("Attachment approved");
 
     }
 
@@ -64,15 +62,13 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
        // textPresent("Scanned by ClamAV");
 
         clickElement(By.id("decline-" + name));
-        textPresent("Attachment declined");
-        closeAlert();
+        checkAlert("Attachment declined");
     }
 
     public void setAttachmentDefault() {
         goToAttachments();
         textPresent("Upload more files");
         clickElement(By.id("defaultCbLabel"));
-        textPresent("Saved");
-        closeAlert();
+        checkAlert("Saved");
     }
 }

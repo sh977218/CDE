@@ -57,8 +57,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         clickElement(By.id("source"));
         clickElement(By.id("updated"));
         clickElement(By.id("saveSettings"));
-        textPresent("Settings saved!");
-        closeAlert();
+        checkAlert("Settings saved!");
 
         try {
             clickElement(By.id("export"));
@@ -72,7 +71,6 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
 
         textPresent("export is being generated");
         textPresent("Export downloaded.");
-        closeAlert();
         closeAlert();
 
         String[] expected2 = {

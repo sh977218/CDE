@@ -33,18 +33,15 @@ public class PinReorderingTest extends BoardTest {
 
         textPresent("Walking ability status", By.id("linkToElt_19"));
         clickElement(By.id("moveDown-19"));
-        textPresent("Saved");
-        closeAlert();
+        checkAlert("Saved");
         textPresent("Urinary tract surgical procedure indicator", By.id("linkToElt_19"));
         clickElement(By.linkText("2"));
         textPresent("Walking ability status", By.id("linkToElt_0"));
         clickElement(By.id("moveTop-0"));
-        textPresent("Saved");
-        closeAlert();
+        checkAlert("Saved");
         textPresent("Urinary tract surgical procedure indicator", By.id("linkToElt_0"));
         clickElement(By.id("moveUp-0"));
-        textPresent("Saved");
-        closeAlert();
+        checkAlert("Saved");
         textPresent("Brief Pain Inventory (BPI) - pain general activity interference scale", By.id("linkToElt_0"));
 
         clickElement(By.linkText("1"));

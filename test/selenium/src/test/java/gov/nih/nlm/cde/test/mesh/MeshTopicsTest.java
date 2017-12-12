@@ -20,8 +20,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         textPresent("National Institute of Neurological Disorders and Stroke");
         clickElement(By.id("addMeshDescButton"));
         clickElement(By.id("cancelMapClassificationMeshBtn"));
-        textPresent("Saved");
-        closeAlert();
+        checkAlert("Saved");
 
         // now update index
         mustBeLoggedInAs(nlm_username, nlm_password);

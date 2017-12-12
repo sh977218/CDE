@@ -27,8 +27,7 @@ public class CreateFormBoard extends BoardTest {
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("TEST");
         textPresent("Classify Board");
         clickElement(By.xpath("//*[@id='Classify Board-classifyBtn']"));
-        textPresent("All Elements classified.");
-        closeAlert();
+        checkAlert("All Elements classified.");
         clickElement(By.id("list_gridView"));
         textPresent("Steward");
         textPresent("Registration Status");
@@ -64,8 +63,7 @@ public class CreateFormBoard extends BoardTest {
                 clickElement(By.id("list_summaryView"));
             clickElement(By.id("unpin_1"));
         }
-        textPresent("Unpinned.");
-        closeAlert();
+        checkAlert("Unpinned.");
         textNotPresent(formName2);
     }
 }

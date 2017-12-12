@@ -35,8 +35,7 @@ public class BoardComments extends NlmCdeBaseTest {
         clickElement(By.id("incomingMessage"));
         clickElement(By.partialLinkText(commentText));
         clickElement(By.cssSelector("button.approveComment"));
-        textPresent("Message moved to archived.");
-        closeAlert();
+        checkAlert("Message moved to archived.");
         closeAlert();
 
         mustBeLoggedInAs(reguser_username, password);

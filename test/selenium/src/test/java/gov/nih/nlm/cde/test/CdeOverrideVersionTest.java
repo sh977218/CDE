@@ -21,9 +21,7 @@ public class CdeOverrideVersionTest extends NlmCdeBaseTest {
         clickElement(By.id("overrideVersion"));
         clickElement(By.id("confirmSaveBtn"));
 
-        textPresent("Data Element saved.");
-        closeAlert();
-        modalGone();
+        checkAlert("Data Element saved.");
 
         goToCdeByName(cdeName);
         textPresent(nameChange);
