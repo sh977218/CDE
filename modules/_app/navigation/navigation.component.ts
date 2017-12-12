@@ -12,6 +12,11 @@ import { LoginService } from '_app/login.service';
             padding-left: 15px;
             padding-right: 15px;
         }
+
+        .navbar {
+            border-radius: 0;
+            padding: 0;
+        }
     `]
 })
 export class NavigationComponent {

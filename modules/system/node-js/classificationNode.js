@@ -247,7 +247,7 @@ exports.classifyEntireSearch = function (req, cb) {
 
     async.each(daoManager.getDaoList(), function (dao, oneDaoDone) {
         var query = elastic.buildElasticSearchQuery(req.body.user, req.body.query);
-        elastic.elasticsearch(query, dao.type, function (err, result) {
+        elastic.elasticsearch(dao.type, query, req.body.query, function (err, result) {
             if (err) return;
             var ids = result[dao.type + 's'].map(function (cde) {
                 return cde.tinyId;

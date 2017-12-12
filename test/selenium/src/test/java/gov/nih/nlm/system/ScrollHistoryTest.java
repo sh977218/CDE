@@ -7,19 +7,17 @@ import org.testng.annotations.Test;
 
 public class ScrollHistoryTest extends NlmCdeBaseTest {
 
-    private void checkScroll(long value) {
-        int i = 0;
-        while(Math.abs(
-                Integer.parseUnsignedInt((((JavascriptExecutor) driver).executeScript("return $(window).scrollTop();", ""))
-                        .toString()) - value) < 10
-                && i < 10) {
-            hangon(1);
-            i++;
-        }
-        if (i == 10) {
-            Assert.fail("Assert failed. Expected: " + value + " Actual value: "
-                    + ((JavascriptExecutor) driver).executeScript("return $(window).scrollTop();", "").equals(value));
-        }
+    private void scrollTo(int value) {
+        ((JavascriptExecutor) driver).executeScript("$(window).scrollTop(" + Integer.toString(value) + ");", "");
+        hangon(1);
+    }
+
+    private void checkScroll(int value) {
+        hangon(5);
+        String scrollLocation = (((JavascriptExecutor) driver)
+                .executeScript("return $(window).scrollTop();", "")).toString();
+        if (Math.abs(Integer.parseUnsignedInt(scrollLocation) - value) > 10)
+            Assert.fail("Assert failed. Expected: " + value + " Actual value: " + scrollLocation);
     }
 
 /*    @Test
@@ -28,40 +26,37 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
 * */
     public void scrollHistory() {
         searchEltAny("apple", "cde");
-        hangon(1);
-        scrollUpBy(500);
-        hangon(1);
+        textPresent("Godin Leisure-Time Exercise Questionnaire");
+        scrollTo(500);
 
-        clickElement(By.id("linkToElt_4"));
+        // cannot use clickElement() because it scrolls
+        findElement(By.id("linkToElt_4")).click();
         findElement(By.id("discussBtn"));
 
         searchEltAny("patient", "form");
-        hangon(1);
-        scrollUpBy(500);
-        hangon(1);
+        textPresent("Patient Health Questionnaire");
+        scrollTo(550);
 
-        clickElement(By.id("linkToElt_5"));
+        // cannot use clickElement() because it scrolls
+        findElement(By.id("linkToElt_5")).click();
         findElement(By.id("discussBtn"));
 
         searchEltAny("pain", "cde");
-        hangon(1);
-        scrollUpBy(600);
-        hangon(1);
+
+        textPresent("Brief Pain Inventory");
+        scrollTo(600);
 
         driver.navigate().refresh();
-
-        checkScroll(600L);
-
-        driver.navigate().back();
-        driver.navigate().back();
-        driver.navigate().back();
-
-        checkScroll(550L);
+        checkScroll(600);
 
         driver.navigate().back();
         driver.navigate().back();
         driver.navigate().back();
-    
-        checkScroll(500L);
+        checkScroll(550);
+
+        driver.navigate().back();
+        driver.navigate().back();
+        driver.navigate().back();
+        checkScroll(500);
     }
 }

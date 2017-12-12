@@ -2,13 +2,15 @@ import { Component, ComponentFactoryResolver, EventEmitter, Input, Output } from
 import { Http } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { AlertService } from '_app/alert/alert.service';
+import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
 import { ExportService } from 'core/export.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { SearchBaseComponent } from 'search/searchBase.component';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { UserService } from "_app/user.service";
-import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: 'cde-form-search',
@@ -24,16 +26,17 @@ export class FormSearchComponent extends SearchBaseComponent {
 
     constructor(protected _componentFactoryResolver: ComponentFactoryResolver,
                 protected alert: AlertService,
+                protected backForwardService: BackForwardService,
                 protected exportService: ExportService,
                 protected http: Http,
                 protected modalService: NgbModal,
                 protected elasticService: ElasticService,
                 protected orgHelperService: OrgHelperService,
-                protected userService: UserService,
+                protected route: ActivatedRoute,
                 protected router: Router,
-                protected route: ActivatedRoute) {
-        super(_componentFactoryResolver, alert, elasticService, exportService, http, modalService,
-            orgHelperService, userService, router, route);
+                protected userService: UserService) {
+        super(_componentFactoryResolver, alert, backForwardService, elasticService, exportService, http, modalService,
+            orgHelperService, route, router, userService);
 
         this.exporters.odm = {id: "odmExport", display: "ODM Export"};
     }

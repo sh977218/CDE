@@ -30,8 +30,10 @@
             <strong>Note:</strong> You may not edit this CDE because it is standard.
         </div>
     </div>
-    <h1 class="mobileViewH1 my-4">
-        <span *ngIf="elt.isDraft" class="badge badge-info ">DRAFT</span> {{elt.naming[0].designation}}
+    <h1 class="mobileViewH1">
+        <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadDraft(null):loadDataElement(null)"
+                          [hidden]="drafts?.length === 0"></cde-draft-slider>
+        {{elt?.naming[0].designation}}
     </h1>
     <div class="pull-left marginTopBottom5">
         <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
@@ -78,11 +80,7 @@
             </button>
         </div>
     </div>
-    <div class="pull-right marginTopBottom5">
-        <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
-                class="btn btn-info" (click)="loadDraft(null);">
-            <i class="fa fa-eye fa-lg"></i> View Draft
-        </button>
+    <div class="pull-right marginTopBottom5" style="text-align: end">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
             <button *ngIf="elt.valueDomain.allValid" class="btn btn-success" id="openSave"
@@ -91,9 +89,6 @@
             </button>
             <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
                 <i class="fa fa-trash fa-lg"></i> Delete Draft
-            </button>
-            <button class="btn btn-info" (click)="loadDataElement(null)" id="viewPublished">
-                <i class="fa fa-eye fa-lg"></i> View Published
             </button>
             <br>Changed by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
         </ng-container>

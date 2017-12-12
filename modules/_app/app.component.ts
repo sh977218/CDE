@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import "feedback/stable/2.0/html2canvas.js";
 import "feedback/stable/2.0/feedback.js";
 import "feedback/stable/2.0/feedback.min.css";
+import { BackForwardService } from '_app/backForward.service';
 
 @Component({
     selector: "nih-cde",
@@ -74,4 +75,6 @@ export class CdeAppComponent implements OnInit {
             initialBox: true
         });
     }
+
+    constructor(backForwardService: BackForwardService) {}
 }

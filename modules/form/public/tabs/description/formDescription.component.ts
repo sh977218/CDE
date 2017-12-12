@@ -18,6 +18,7 @@ import * as _ from 'lodash';
 import { FormService } from "../../../../nativeRender/form.service";
 import { CdeForm, FormElement, FormSection } from "../../../../core/form.model";
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
+import { Http } from '@angular/http';
 
 @Component({
     selector: "cde-form-description",
@@ -182,7 +183,8 @@ export class FormDescriptionComponent implements OnChanges {
 
     constructor(private localStorageService: LocalStorageService,
                 public modalService: NgbModal,
-                private formService: FormService) {
+                private formService: FormService,
+                private http: Http) {
         this.toolSection = {insert: "section", data: this.getNewSection()};
     }
 
@@ -199,13 +201,15 @@ export class FormDescriptionComponent implements OnChanges {
     }
 
     addFormFromSearch(fe) {
-        let inForm: any = FormService.convertFormToSection(fe);
-        inForm.formElements = [];
-        this.addIndex(this.toolDropTo.parent.data.formElements, inForm, this.toolDropTo.index++);
-        this.tree.treeModel.update();
-        this.tree.treeModel.expandAll();
-        this.addIds(this.elt.formElements, "");
-        this.onEltChange.emit();
+        this.http.get("/form/" + fe.tinyId).map(r => r.json()).subscribe(form => {
+            let inForm: any = FormService.convertFormToSection(form);
+            inForm.formElements = [];
+            this.addIndex(this.toolDropTo.parent.data.formElements, inForm, this.toolDropTo.index++);
+            this.tree.treeModel.update();
+            this.tree.treeModel.expandAll();
+            this.addIds(this.elt.formElements, "");
+            this.onEltChange.emit();
+        });
     }
 
     addExpanded(fe) {
@@ -235,9 +239,7 @@ export class FormDescriptionComponent implements OnChanges {
     }
 
     openFormSearch() {
-        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(() => {
-        }, () => {
-        });
+        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(() => {}, () => {});
     }
 
     openQuestionSearch() {

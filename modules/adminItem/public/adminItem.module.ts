@@ -12,6 +12,7 @@ import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
 
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
+import { DraftSliderComponent } from 'adminItem/public/components/draftSlider.component';
 import { HistoryComponent } from "./components/history.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
@@ -48,6 +49,7 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
         ClassifyItemModalComponent,
         CdeUpdateElementComponent,
         CreateFormComponent,
+        DraftSliderComponent,
         IdentifiersComponent,
         LinkedFormsComponent,
         HistoryComponent,
@@ -64,6 +66,7 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
         ClassifyItemModalComponent,
         CdeUpdateElementComponent,
         CreateFormComponent,
+        DraftSliderComponent,
         IdentifiersComponent,
         LinkedFormsComponent,
         HistoryComponent,
