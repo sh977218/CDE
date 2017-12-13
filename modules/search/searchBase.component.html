@@ -15,7 +15,9 @@
                     <label class="sr-only" for="ftsearch-input">Search Terms</label>
                     <input name="q" id="ftsearch-input" class="form-control search-query" type="text"
                            [(ngModel)]="searchSettings.q" aria-labelledby="l1" maxlength="500"
-                           [ngbTypeahead]="getAutocompleteSuggestions" [focusFirst]="false">
+                           [ngbTypeahead]="getAutocompleteSuggestions" [focusFirst]="false"
+                           (selectItem)="typeaheadSelect($event)"
+                    >
 
                     <div class="input-group-btn">
                         <button id="search.submit" (click)="termSearch()" type="submit"

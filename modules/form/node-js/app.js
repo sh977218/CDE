@@ -122,10 +122,13 @@ exports.init = function (app, daoManager) {
         exporters.json.export(res);
     });
 
-    app.get('/formCompletion/:term', exportShared.nocacheMiddleware, (req, res) => {
+    app.post('/formCompletion/:term', exportShared.nocacheMiddleware, (req, res) => {
         let result = [];
         let term = req.params.term;
-        elastic.completionSuggest(term, resp => res.send(resp.hits.hits.map(r => r.highlight)));
+        elastic.completionSuggest(term, req.user, req.body, resp => {
+            resp.hits.hits.forEach(r => delete r._index);
+            res.send(resp.hits.hits)
+        });
     });
 
     app.post('/pinFormCdes', function (req, res) {

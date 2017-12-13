@@ -200,7 +200,7 @@ exports.initEs = function (cb) {
     });
 };
 
-exports.completionSuggest = function (term, cb) {
+exports.completionSuggest = function (term, user, settings, cb) {
     let suggestQuery = {
         "query": {
             "match": {
@@ -211,8 +211,12 @@ exports.completionSuggest = function (term, cb) {
         }, "_source": {
             "includes": ["primaryNameSuggest"]
         },
-        "highlight": {
-            "fields": {"primaryNameSuggest": {}}
+        post_filter: {
+            bool: {
+                filter: [
+                    {bool: {should: exports.regStatusFilter(user, settings)}}
+                ]
+            }
         }
     };
 
@@ -226,6 +230,24 @@ exports.completionSuggest = function (term, cb) {
             cb(response);
         }
     });
+};
+
+
+exports.regStatusFilter = function (user, settings) {
+    // Filter by selected Statuses
+    let filterRegStatusTerms = settings.selectedStatuses.map(regStatus => {
+        return {"term": {"registrationState.registrationStatus": regStatus}};
+    });
+
+    // Filter by Steward
+    if (user) {
+        let curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
+        filterRegStatusTerms = filterRegStatusTerms.concat(curatorOf.map(o => {
+            return {"term": {"stewardOrg": o}};
+        }));
+    }
+
+    return filterRegStatusTerms;
 };
 
 exports.buildElasticSearchQuery = function (user, settings) {
@@ -243,18 +265,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     let sort = !hasSearchTerm;
 
     (function setFilters() {
-        // Filter by selected Statuses
-        let filterRegStatusTerms = settings.selectedStatuses.map(regStatus => {
-            return {"term": {"registrationState.registrationStatus": regStatus}};
-        });
-
-        // Filter by Steward
-        if (user) {
-            let curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
-            filterRegStatusTerms = filterRegStatusTerms.concat(curatorOf.map(o => {
-                return {"term": {"stewardOrg": o}};
-            }));
-        }
+        let filterRegStatusTerms = exports.regStatusFilter(user, settings);
 
         // Filter by selected Datatypes
         let filterDatatypeTerms = settings.selectedDatatypes && settings.selectedDatatypes.map(datatype => {
@@ -280,11 +291,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
         query: {
             // Do not retrieve items marked as forks.
             bool: {
-                must_not: [{
-                    term: {
-                        isFork: "true"
-                    }
-                }],
                 must: [
                     {
                         dis_max: {

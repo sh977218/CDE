@@ -295,21 +295,26 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return searchTerms;
     }
 
+    private lastTypeahead = {};
     getAutocompleteSuggestions = (text$: Observable<string>) =>
         text$.debounceTime(500).distinctUntilChanged().switchMap(term =>
-            term.length >= 3
-                ? this.http.get('/' + this.module + 'Completion/' + encodeURI(term)).map(res => {
+            term.length >= 3 ?
+                this.http.post('/' + this.module + 'Completion/' + encodeURI(term),
+                    this.elasticService.buildElasticQuerySettings(this.searchSettings)).map(res => {
                     let final = new Set();
-                    res.json().forEach(hit => hit.primaryNameSuggest.forEach(
-                        name => {
-                            let uniqueTerms = new Set(name.match(/<em>(.+?)<\/em>/g).map(e => e.replace(/<em>/g, "")
-                                .replace(/<\/em>/g, "").toLowerCase()));
-                            final.add(Array.from(uniqueTerms).join(" "));
-                        }));
+                    this.lastTypeahead = {};
+                    res.json().forEach(e => {
+                        this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
+                        final.add(e._source.primaryNameSuggest)
+                    });
                     return Array.from(final);
                 })
-                : Observable.empty()
+            : Observable.empty()
         ).take(8);
+
+    typeaheadSelect (item) {
+        this.router.navigate([this.module === 'form' ? "formView" : "deView"], {queryParams: {tinyId: this.lastTypeahead[item.item]}});
+    }
 
     getCurrentSelectedClassification() {
         return this.altClassificationFilterMode

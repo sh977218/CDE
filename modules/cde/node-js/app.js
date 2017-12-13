@@ -265,11 +265,12 @@ exports.init = function (app, daoManager) {
         exporters.json.export(res);
     });
 
-    app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
+    app.post('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
         let result = [];
         let term = req.params.term;
-        elastic_system.completionSuggest(term, resp => {
-            res.send(resp.hits.hits.map(r => r.highlight));
+        elastic_system.completionSuggest(term, req.user, req.body, resp => {
+            resp.hits.hits.forEach(r => delete r._index);
+            res.send(resp.hits.hits);
         });
     });
 

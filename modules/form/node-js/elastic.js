@@ -1,10 +1,10 @@
-var config = require('../../system/node-js/parseConfig')
-    , dbLogger = require('../../system/node-js/dbLogger.js')
-    , elasticsearch = require('elasticsearch')
-    , esInit = require('../../system/node-js/elasticSearchInit')
-    ;
+const config = require('../../system/node-js/parseConfig');
+const dbLogger = require('../../system/node-js/dbLogger.js');
+const elasticsearch = require('elasticsearch');
+const esInit = require('../../system/node-js/elasticSearchInit');
+const elastic_system = require('../../system/node-js/elastic');
 
-var esClient = new elasticsearch.Client({
+let esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
 
@@ -31,7 +31,7 @@ exports.updateOrInsert = function(elt) {
     });
 };
 
-exports.completionSuggest = function (term, cb) {
+exports.completionSuggest = function (term, user, settings, cb) {
     let suggestQuery = {
         "query": {
             "match": {
@@ -41,9 +41,12 @@ exports.completionSuggest = function (term, cb) {
             }
         }, "_source": {
             "includes": ["primaryNameSuggest"]
-        },
-        "highlight": {
-            "fields": {"primaryNameSuggest": {}}
+        }, post_filter: {
+            bool: {
+                filter: [
+                    {bool: {should: elastic_system.regStatusFilter(user, settings)}}
+                ]
+            }
         }
     };
 
