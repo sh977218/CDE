@@ -8,12 +8,9 @@
             <th id="code" class="col-2">Code</th>
         </tr>
         <tr *ngFor="let pv of elt.valueDomain.permissibleValues | slice:0:4; let i = index">
-            <td headers="value" class="col-5">{{pv.permissibleValue | slice:0:25}}<span
-                    *ngIf="pv.permissibleValue && pv.permissibleValue.length > 25">...</span></td>
-            <td headers="codeName" class="col-5">{{pv.valueMeaningName | slice:0:25}}<span
-                    *ngIf="pv.valueMeaningName && pv.valueMeaningName.length > 25">...</span></td>
-            <td headers="code" class="col-2">{{pv.valueMeaningCode | slice:0:8}}<span
-                    *ngIf="pv.valueMeaningCode && pv.valueMeaningCode.length > 8">...</span></td>
+            <td headers="value" class="col-5 text-truncate">{{pv.permissibleValue}}</td>
+            <td headers="codeName" class="col-5 text-truncate">{{pv.valueMeaningName}}</td>
+            <td headers="code" class="col-2 text-truncate">{{pv.valueMeaningCode}}</td>
         </tr>
         <tr *ngIf="elt.valueDomain.permissibleValues.length > 5">
             <td colspan="3"> ({{elt.valueDomain.nbOfPVs}} total) See full list in Detailed View</td>
