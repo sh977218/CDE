@@ -20,7 +20,7 @@ public class QuestionTest extends BaseFormTest {
         hangon(1);
         clickElement(By.id("search.submit"));
         textPresent("1 results");
-        clickElement(By.xpath("//*[@class='modal-content']//button[following-sibling::a/*[@id='acc_link_0']]"));
+        clickElement(By.xpath("//*[@id='acc_link_0']/preceding-sibling::button"));
         clickElement(By.id("cancelSelectQ"));
     }
 
