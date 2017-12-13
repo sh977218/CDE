@@ -39,7 +39,7 @@
             </ul>
         </div>
     </div>
-    <h1 class="mobileViewH1">
+    <h1 class="mobileViewH1 my-4">
         <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadDraft(null):loadDataElement(null)"
                           [hidden]="drafts?.length === 0"></cde-draft-slider>
         {{elt.naming[0].designation}}

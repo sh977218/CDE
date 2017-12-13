@@ -162,11 +162,28 @@ nih-cde:empty + .loading {
 }
 
 /* begin Native Render */
+
+.checkbox-inline {
+    display: block;
+    float: left;
+    padding-right: 10px;
+    white-space: nowrap;
+}
+
+.checkbox-inline input {
+    vertical-align: middle;
+}
+
+.checkbox-inline > span {
+    vertical-align: middle;
+}
+
 .form-horizontal {
     counter-reset: section;
 }
 
-.form-horizontal .native-section .radio-inline, .form-horizontal .native-section .checkbox-inline {
+.form-horizontal .native-section .radio-inline,
+.form-horizontal .native-section .checkbox-inline {
     padding-top: 0;
 }
 
@@ -409,7 +426,7 @@ div.row .native-question-oneline-r {
     margin-left: 6%;
 }
 
-label.input-group-addon:last-child {
+label.input-group-addon {
     display: table-cell;
     border-left: 1px solid #ccc;
 }
@@ -425,4 +442,14 @@ label.input-group-addon:last-child {
 #searchResultInfoBar {
     font-size: 16.5px;
     vertical-align: middle;
+}
+
+.carousel-indicators > li {
+    height: 10px;
+}
+
+@media (max-width: 768px) {
+    .feedback-btn {
+        display: none;
+    }
 }

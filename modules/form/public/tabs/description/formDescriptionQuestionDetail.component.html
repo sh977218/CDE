@@ -53,20 +53,18 @@
             </div>
             <div class="answerList" *ngIf="question.question.answers && question.question.answers.length > 0">
                 <span class="formViewQuestionLabel">Answer Choices:</span>
-                <span *ngFor="let pv of question.question.answers" style="margin-right: -3px">
-                    <span class="badge badge-default formViewSummaryLabel" style="background-color: #666"
-                          [textContent]="pv?.valueMeaningName"></span>
-                </span>
+                <span *ngFor="let pv of question.question.answers" class="badge badge-default mx-1 formViewSummaryLabel"
+                      style="background-color: #666" [textContent]="pv?.valueMeaningName"></span>
             </div>
             <div *ngIf="question.question.defaultAnswer && question.question.defaultAnswer.length > 0"
                  class="defaultAnswer">
                 <span class="formViewQuestionLabel">Default Answer:</span>
-                <span class="badge badge-default formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
+                <span class="badge badge-default mx-1 formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
             </div>
             <div *ngIf="question.question.uoms.length > 0" class="questionUom">
                 <span class="formViewQuestionLabel">Units of Measure:</span>
                 <span *ngFor="let uom of question.question.uoms; let index = index"
-                      class="badge badge-info formViewSummaryLabel"
+                      class="badge badge-info mx-1 formViewSummaryLabel"
                       [ngClass]="{'badge-danger': (question.question.uomsValid && !question.question.uomsValid[index])}">
                     <span [textContent]="uom"></span>
                     <span *ngIf="question.question.uomsValid && !question.question.uomsValid[index]">&nbsp;(invalid)</span>
