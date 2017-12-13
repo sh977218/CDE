@@ -1,62 +1,47 @@
-<ngb-accordion id="accordionList" *ngIf="elts">
-    <ngb-panel class='panel-default' *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index">
-        <ng-template ngbPanelTitle>
-            <cde-accordion-list-heading [addMode]="addMode" [elt]="elt" [eltIndex]="i"
-                                        [openInNewTab]="openInNewTab" (add)="add.emit($event)">
-                <span class="accordion-list-before"></span>
-                <span class="accordion-list-after">
-                    <cde-pin-board [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-board>
-                    <cde-pin-quickboard [elt]="elt" [eltIndex]="i"></cde-pin-quickboard>
-                    <a href class="nonLinkAnchor" *ngIf="location=='quickBoard'"
-                       (click)="interruptEvent($event);quickBoardService.removeForm(i)">
-                        <i class="fa fa-trash-o hand-cursor" title="remove" id="remove_{{i}}" role="link"></i></a>
-                    <small id="nQuestion-{{i}}" class="pull-right">{{elt.numQuestions}} questions</small>
-                </span>
-            </cde-accordion-list-heading>
-        </ng-template>
-        <ng-template ngbPanelContent>
+<div *ngIf="elts" id="accordionList">
+    <div class="card" *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index">
+        <div class="card-header">
+            <button class="btn btn-secondary btn-sm" (click)="add.emit(elt);">
+                <i class="fa fa-plus"></i> Add
+            </button>
+            <span class="hand-cursor" (click)="elt.isCollapsed = !elt.isCollapsed"> {{elt.naming[0].designation}}</span>
+            <a href="formView?tinyId={{elt.tinyId}}" target="_blank">
+                <i class="fa fa-eye iconColor"></i>
+            </a>
+            <cde-pin-board [elt]="elt" [eltIndex]="index" [module]="'form'"></cde-pin-board>
+            <cde-pin-quickboard [elt]="elt" [eltIndex]="index"></cde-pin-quickboard>
+            <small id="nQuestion-{{i}}" class="pull-right">{{elt.numQuestions}} questions</small>
+
+        </div>
+        <div class="card-block" [ngbCollapse]="!elt.isCollapsed">
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-6">
                     <h4>General Details</h4>
-                    <dl class="dl-horizontal">
-                        <dt>Name:</dt>
-                        <dd id="dd_general_name" [innerHtml]="elt.naming[0].designation">
-                        </dd>
-                        <dt>Steward:</dt>
-                        <dd [innerHtml]="elt.stewardOrg.name"></dd>
-                        <dt>Definition:</dt>
-                        <dd id="dd_def" [innerHtml]="elt.naming[0].definition || 'N/A'"></dd>
-                        <dt [hidden]="elt.classification.length <= 0">Used By:</dt>
-                        <dd [hidden]="elt.classification.length <= 0" id="usedBy">
-                            <span *ngIf="elt.classification.length <= 0">None</span>
-                            <span *ngIf="elt.classification.length > 0">
-                                <ng-container
-                                        *ngFor="let cl of elt.classification">{{cl.stewardOrg.name}} </ng-container>
-                            </span>
-                        </dd>
-                        <dt id="dt_status">Status:</dt>
-                        <dd id="dd_status">{{elt.registrationState.registrationStatus}}</dd>
+                    <dl class="row">
+                        <dt class="col-3 text-right">Name:</dt>
+                        <dd id="dd_general_name" class="col-9" [innerHtml]="elt.naming[0].designation"></dd>
+                        <dt class="col-3 text-right">Steward:</dt>
+                        <dd class="col-9" [innerHtml]="elt.stewardOrg.name"></dd>
+                        <dt class="col-3 text-right">Definition:</dt>
+                        <dd id="dd_def" class="col-9" [innerHtml]="elt.naming[0].definition || 'N/A'"></dd>
+                        <ng-container *ngIf="elt.classification.length > 0">
+                            <dt class="col-3 text-right">Used By:</dt>
+                            <dd id="usedBy" class="col-9">
+                                <span *ngFor="let cl of elt.classification">{{cl.stewardOrg.name}}</span>
+                            </dd>
+                        </ng-container>
+                        <dt id="dt_status" class="col-3 text-right">Status:</dt>
+                        <dd id="dd_status" class="col-9">{{elt.registrationState.registrationStatus}}</dd>
                     </dl>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-2">
                     <img *ngFor="let attachment of elt.attachments.filter(Elt.isDefault)"
-                         alt="Image attached to the elt"
-                         src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
+                         alt="Image attached to the elt" src="/data/{{attachment.fileid}}"
+                         class='cdeAttachmentThumbnail'/>
                 </div>
             </div>
-            <div class="row">
-                <a *ngIf="quickBoardService.canAddElement(elt)" class="btn btn-small btn-secondary"
-                   (click)="quickBoardService.addToQuickBoard(elt)" id="compare_{{i}}">
-                    <i class="fa fa-plus"></i> Add to Quick Board</a>
+        </div>
+    </div>
+</div>
 
-                <a class='btn btn-small btn-secondary' id="openEltInCurrentTab_{{i}}" *ngIf="openInNewTab"
-                   target="_blank"
-                   [href]="elt.getEltUrl()" title="Full Detail for {{elt.naming[0].designation}}"><i
-                        class="fa fa-eye"></i> View Full Detail</a>
-                <a class='btn btn-small btn-secondary' id="openEltInCurrentTab_{{i}}" *ngIf="!openInNewTab"
-                   [href]="elt.getEltUrl()" title="Full Detail for {{elt.naming[0].designation}}"><i
-                        class="fa fa-eye"></i> View Full Detail</a>
-            </div>
-        </ng-template>
-    </ngb-panel>
-</ngb-accordion>
+<cde-pin-board-modal #pinModalCde module="form"></cde-pin-board-modal>

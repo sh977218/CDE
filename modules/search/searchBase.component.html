@@ -316,8 +316,8 @@
                     <br/>
 
                     <ng-container *ngIf="module === 'cde'">
-                        <strong [hidden]="!aggregations.datatype.datatype.buckets.length" id="datatype_filter">Data
-                            Types</strong>
+                        <strong [hidden]="!aggregations.datatype.datatype.buckets.length" id="datatype_filter">
+                            Data Types</strong>
                         <div class="pl-2" id="datatypeListHolder">
                         <span class="hand-cursor"
                               *ngFor="let t of aggregations.datatype.datatype.buckets">

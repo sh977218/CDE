@@ -1,71 +1,83 @@
-<ngb-accordion id="accordionList">
-    <ngb-panel class='panel-default' *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index">
-        <ng-template ngbPanelTitle>
-            <cde-accordion-list-heading [addMode]="addMode" [elt]="elt" [eltIndex]="i"
-                                        [openInNewTab]="openInNewTab" (add)="add.emit($event)">
-                <span class="accordion-list-before">
-                </span>
-                <span class="accordion-list-after">
-                    <small class="matched-by hidden-sm-down" *ngIf="elt?.highlight?.matchedBy">Matched by:
-                        <strong [innerHtml]="elt.highlight.matchedBy"></strong></small>
-
-                    <cde-pin-board [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-board>
-                    <cde-pin-quickboard [elt]="elt" [eltIndex]="i"></cde-pin-quickboard>
-                </span>
-            </cde-accordion-list-heading>
-        </ng-template>
-        <ng-template ngbPanelContent>
+<div *ngIf="elts" id="accordionList">
+    <div class="card" *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index">
+        <div class="card-header">
+            <button class="btn btn-secondary btn-sm" (click)="add.emit(elt);">
+                <i class="fa fa-plus"></i> Add
+            </button>
+            <span class="hand-cursor" (click)="elt.isCollapsed = !elt.isCollapsed"> {{elt.naming[0].designation}}</span>
+            <a href="deView?tinyId={{elt.tinyId}}" target="_blank">
+                <i class="fa fa-eye iconColor"></i>
+            </a>
+            <cde-pin-board [elt]="elt" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
+            <cde-pin-quickboard [elt]="elt" [eltIndex]="index"></cde-pin-quickboard>
+            <small class="matched-by hidden-sm-down pull-right">
+                Matched by: <strong>Classification</strong>
+            </small>
+        </div>
+        <div class="card-block" [ngbCollapse]="!elt.isCollapsed">
             <div class="row">
-                <div class="col-lg-4 col-sm-12 col-12">
-                    <cde-cde-general-details [elt]="elt"></cde-cde-general-details>
+                <div class="col-md-4 col-sm-12 col-xs-12">
+                    <div [innerHtml]="elt.primaryDefinitionCopy"></div>
+                    <dl class="row">
+                        <ng-container *ngIf="elt.usedBy">
+                            <dt class="col-4 text-right">Used By:</dt>
+                            <dd class="col-8" id="usedBy">
+                                <div *ngIf="elt.classification.length === 0">None</div>
+                                <div *ngIf="elt.classification.length > 0">
+                                    <span *ngFor="let ub of elt.usedBy">{{ub}} </span>
+                                </div>
+                            </dd>
+                        </ng-container>
+                        <dt class="col-4 text-right">Steward:</dt>
+                        <dd class="col-8">{{elt.stewardOrg.name}}</dd>
+                        <ng-container *ngIf="elt.source">
+                            <dt class="col-4 text-right">Source:</dt>
+                            <dd class="col-8">{{elt.source}}</dd>
+                        </ng-container>
+                    </dl>
                 </div>
-                <div class="col-lg-4 col-sm-6 col-12">
-                    <cde-value-domain-summary [elt]="elt"></cde-value-domain-summary>
-                </div>
-                <div class="col-lg-4 col-sm-6 col-12">
-                    <table [hidden]="elt.ids.length <= 0" class="table cdeTable" summary="Identifiers List">
+                <div class="col-md-4 col-sm-6 col-xs-12"
+                     *ngIf="elt.valueDomain.permissibleValues.length > 0">
+                    <table class="table-bordered">
                         <tr>
-                            <th id="id" class="col-6">Id</th>
-                            <th id="version" class="col-2">Vers.</th>
-                            <th id="source" class="col-4">Src.</th>
+                            <th>Value</th>
+                            <th>Code Name</th>
+                            <th>Code</th>
                         </tr>
-                        <tr *ngFor="let id of elt.ids">
-                            <td headers="id" class="col-6">{{id.id}}</td>
-                            <td headers="version" class="col-2">{{id.version}}</td>
-                            <td headers="source" class="col-4">{{id.source}}</td>
+                        <tr *ngFor="let pv of elt.valueDomain.permissibleValues">
+                            <td>{{pv.permissibleValue}}</td>
+                            <td>{{pv.valueMeaningName}}
+                            <td>{{pv.valueMeaningCode}}</td>
                         </tr>
                     </table>
                     <img *ngFor="let attachment of elt.attachments.filter(Elt.isDefault)"
-                         alt="Image attached to the CDE"
-                         src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
+                         alt="Image attached to the CDE" src="/data/{{attachment.fileid}}"
+                         class='cdeAttachmentThumbnail'/>
+                </div>
+                <div class="col-md-4 col-sm-6 col-xs-12" *ngIf="elt.ids.length > 0">
+                    <table class="table cdeTable">
+                        <tr>
+                            <th>Id</th>
+                            <th>Version</th>
+                            <th>Source</th>
+                        </tr>
+                        <tr *ngFor="let id of elt.ids">
+                            <td>{{id.id}}</td>
+                            <td>{{id.version}}
+                            <td>{{id.source}}</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <a *ngIf="!openInNewTab" class='btn btn-small btn-secondary'
-                       routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}" id="openEltInCurrentTab_{{index}}"
-                       (click)="$dismiss();">
-                        <i class="fa fa-eye"></i> View Full Detail</a>
-                    <a *ngIf="openInNewTab" target="_blank" class='btn btn-small btn-secondary'
-                       href="/deView?tinyId={{elt.tinyId}}" id="openCdeInNewTab_{{index}}">
-                        <i class="fa fa-eye"></i> View Full Detail</a>
-                    <a *ngIf="location!='board'" class="btn btn-small btn-secondary"
-                       (click)="pinModalCde.open([elt], 'cde')" id="pin_{{index}}">
-                        <i class="fa fa-thumb-tack"></i> Attach to Board</a>
-                    <a *ngIf="user._id && location=='board'" class="btn btn-small btn-secondary"
-                       (click)="unpin(elt)" id="unpin_{{index}}">
-                        <i class="fa fa-thumb-tack fa-rotate-90" title="unPin"></i> Remove from Board</a>
-                    <a *ngIf="quickBoard.canAddElement(elt)" class="btn btn-small btn-secondary"
-                       (click)="quickBoard.addToQuickBoard(elt)" id="compare_{{index}}">
-                        <i class="fa fa-plus-square-o"></i> Add to Quick Board</a>
-                    <a class="pull-right" href="/sdcview?tinyId={{elt.tinyId}}" target="_blank" aria-label="SDC View"
+            <div class="row justify-content-end">
+                <div class="col">
+                    <a href="/sdcview?tinyId={{elt.tinyId}}" target="_blank" aria-label="SDC View"
                        id="sdcView_{{index}}">
                         <i class="fa fa-share-square-o"></i> SDC View</a>
                 </div>
             </div>
-        </ng-template>
-    </ngb-panel>
-</ngb-accordion>
-
+        </div>
+    </div>
+</div>
 
 <cde-pin-board-modal #pinModalCde module="cde"></cde-pin-board-modal>
