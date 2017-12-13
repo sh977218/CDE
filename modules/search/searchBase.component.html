@@ -145,16 +145,17 @@
             <span class="py-3">
                 <strong id="searchResultNum">{{totalItems}}</strong> results for
                 <div id="term_crumb" class="d-inline">
-                    <span *ngIf="!searchedTerm" class="badge badge-default">All Terms</span>
-                    <span *ngIf="searchedTerm" class="badge badge-success">{{searchedTerm}}
+                    <span *ngIf="!searchedTerm" class="badge badge-default mr-2">All Terms</span>
+                    <span *ngIf="searchedTerm" class="badge badge-success mr-2">{{searchedTerm}}
                         <i id="removeTerm" class="fa fa-times hand-cursor dark-icon pl-2"
                            ngbTooltip="Remove this search term filter" placement="right" container="body"
                            (click)="searchSettings.q = ''; doSearch()"></i>
                     </span>
                 </div>
-                <div id="classif_filter" class="d-inline-block">&nbsp;|&nbsp;
-                    <span *ngIf="!hasSelectedClassifications()" class="badge badge-default">All Classifications</span>
-                    <span *ngIf="hasSelectedClassifications()" class="badge badge-success">{{getSelectedClassifications()}}
+                <div id="classif_filter" class="d-inline-block">|
+                    <span *ngIf="!hasSelectedClassifications()" class="badge badge-default mx-2">
+                        All Classifications</span>
+                    <span *ngIf="hasSelectedClassifications()" class="badge badge-success mx-2">{{getSelectedClassifications()}}
                         <i id="removeClassifications" class="fa fa-times hand-cursor dark-icon pl-2"
                            ngbTooltip="Remove this classification filter" placement="right" container="body"
                            (click)="clearSelectedClassifications()"></i>
@@ -168,25 +169,25 @@
                         </i>
                     </span>
                 </div>
-                <div id="topic_crumb" class="d-inline-block">&nbsp;|&nbsp;
-                    <span *ngIf="!hasSelectedTopics()" class="badge badge-default">All Topics</span>
-                    <span *ngIf="hasSelectedTopics()" class="badge badge-success">{{getSelectedTopics()}}
+                <div id="topic_crumb" class="d-inline-block">|
+                    <span *ngIf="!hasSelectedTopics()" class="badge badge-default mx-2">All Topics</span>
+                    <span *ngIf="hasSelectedTopics()" class="badge badge-success mx-2">{{getSelectedTopics()}}
                         <i id="removeTopics" class="fa fa-times hand-cursor dark-icon pl-2"
                            ngbTooltip="Remove this topics filter" placement="right" container="body"
                            (click)="clearSelectedTopics()"></i>
                     </span>
                 </div>
-                <div id="status_crumb" class="d-inline-block">&nbsp;|&nbsp;
-                    <span *ngIf="!hasSelectedStatuses()" class="badge badge-default">All Statuses</span>
-                    <span *ngIf="hasSelectedStatuses()" class="badge badge-success">{{getSelectedStatuses()}}
+                <div id="status_crumb" class="d-inline-block">|
+                    <span *ngIf="!hasSelectedStatuses()" class="badge badge-default mx-2">All Statuses</span>
+                    <span *ngIf="hasSelectedStatuses()" class="badge badge-success mx-2">{{getSelectedStatuses()}}
                         <i id="removeStatuses" class="fa fa-times hand-cursor dark-icon pl-2"
                            ngbTooltip="Remove this registration statuses filter" placement="right" container="body"
                            (click)="clearSelectedStatuses()"></i>
                     </span>
                 </div>
-                <div *ngIf="module === 'cde'" id="datatype_crumb" class="d-inline-block">&nbsp;|&nbsp;
-                    <span *ngIf="!hasSelectedDatatypes()" class="badge badge-default">All Datatypes</span>
-                    <span *ngIf="hasSelectedDatatypes()" class="badge badge-success">{{getSelectedDatatypes()}}
+                <div *ngIf="module === 'cde'" id="datatype_crumb" class="d-inline-block">|
+                    <span *ngIf="!hasSelectedDatatypes()" class="badge badge-default mx-2">All Datatypes</span>
+                    <span *ngIf="hasSelectedDatatypes()" class="badge badge-success mx-2">{{getSelectedDatatypes()}}
                         <i id="removeDatatypes" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="clearSelectedDatatypes()"
                            ngbTooltip="Remove this datatypes filter" placement="right" container="body"></i>
