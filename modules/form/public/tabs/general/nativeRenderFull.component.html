@@ -24,8 +24,8 @@
                     (Provided by <a class="d-inline" href="https://www.healthit.gov/techlab/" target="_blank"
                                     (click)="$event.stopPropagation()">ONC</a>)
                 </button>
-                <button class="dropdown-item" (click)="pritableCb.click()">Printable Logic:
-                    <input #pritableCb id="printableLogicCb" type="checkbox" [(ngModel)]="overridePrintable"
+                <button id="printableLogicCb" class="dropdown-item" (click)="pritableCb.click()">Printable Logic:
+                    <input #pritableCb type="checkbox" [(ngModel)]="overridePrintable"
                            (click)="$event.stopPropagation()">
                 </button>
             </div>
