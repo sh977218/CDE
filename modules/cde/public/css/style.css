@@ -422,3 +422,8 @@ label.input-group-addon:last-child {
 #middleView {
     padding-left: 0;
 }
+
+#searchResultInfoBar {
+    font-size: 16.5px;
+    vertical-align: middle;
+}
