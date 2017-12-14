@@ -1,6 +1,6 @@
 #!/bin/sh
 
-gradle -b test/selenium/build.gradle -PhubUrl=any -PtestUrl=any -PforkNb=8 -Ptimeout=8 -Pbrowser=any -PdownloadFolder=c:\temp\downloads -PchromeDownloadFolder=c:\temp\downloads -Dorg.gradle.project.downloadFolder=c:\temp\downloads -Dorg.gradle.project.chromeDownloadFolder=c:\temp\downloads clean compileTest &
+gradle -b test/selenium/build.gradle -PhubUrl=any -PtestUrl=any -PforkNb=8 -Ptimeout=8 -Pbrowser=any -PdownloadFolder=c:\temp\downloads -PchromeDownloadFolder=c:\temp\downloads -Dorg.gradle.project.downloadFolder=c:\temp\downloads -Dorg.gradle.project.chromeDownloadFolder=c:\temp\downloads clean compileTest
 
 #sh restore-test-instance.sh
 

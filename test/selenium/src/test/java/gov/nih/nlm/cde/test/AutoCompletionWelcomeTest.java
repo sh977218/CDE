@@ -11,17 +11,34 @@ public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
     public void AutoCompletionWelcome() {
         mustBeLoggedOut();
         goToSearch("cde");
-        findElement(By.id("ftsearch-input")).sendKeys("specimen");
-        textNotPresent("Specimen laterality");
+        findElement(By.id("ftsearch-input")).sendKeys("specimen lat");
+        textNotPresent("Specimen Laterality");
         textPresent("Cell Specimen");
         clickElement(By.xpath("//ngb-highlight[contains(., \"Cell Specimen Requirement\")]"));
         textPresent("The smallest units of living structure capable of independent existence");
 
-        mustBeLoggedInAs(nlm_username, nlm_password);
+        setLowStatusesVisible();
+        goToSearch("cde");
+        findElement(By.id("ftsearch-input")).sendKeys("specimen lat");
+        textPresent("Specimen Laterality");
+        clickElement(By.xpath("//ngb-highlight[contains(., \"Specimen Laterality Not Specified Reason\")]"));
+        textPresent("02/03/2016");
+    }
 
-//        goToSearch("form");
-//        findElement(By.id("ftsearch-input")).sendKeys("prom iso");
-//        Assert.assertEquals(findElement(By.xpath("//div[@id='searchDiv']//ngb-highlight[1]")).getText(), "promis isolation");
+    @Test
+    public void AutoCompletionWelcomeForm() {
+        mustBeLoggedOut();
+        goToSearch("form");
+        findElement(By.id("ftsearch-input")).sendKeys("multi");
+        textNotPresent("MultiSelect");
+        clickElement(By.xpath("//ngb-highlight[contains(., \"Multiple Sclerosis Quality of Life\")]"));
+        textPresent("Rendering has been disabled for this form.");
+
+        setLowStatusesVisible();
+        goToSearch("form");
+        findElement(By.id("ftsearch-input")).sendKeys("multi");
+        clickElement(By.xpath("//ngb-highlight[contains(., \"MultiSelect Logic\")]"));
+        textPresent("Medicaid");
     }
 
 }
