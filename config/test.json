@@ -28,8 +28,9 @@
     "number_of_replicas" : 0
   },
   "siteKey" : "6LecRzAUAAAAAOB_LOhlf3itbTn3zOC2jYC6Er6u",
-  "captchaCode": "6LecRzAUAAAAAN5GJyrT5ZuAPOAi9GtiKo5jXgMF"
-, "useCaptcha" : true
-, "sessionKey":  "Kfji76R"
+  "captchaCode": "6LecRzAUAAAAAN5GJyrT5ZuAPOAi9GtiKo5jXgMF",
+  "useCaptcha" : true,
+  "sessionKey":  "Kfji76R",
+  "expressLogFile": "./expressLog"
 }
 
