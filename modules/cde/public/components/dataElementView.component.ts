@@ -18,10 +18,6 @@ import { Subscription } from 'rxjs/Subscription';
     selector: "cde-data-element-view",
     templateUrl: "dataElementView.component.html",
     styles: [`
-        #leftNav {
-            z-index: 1;
-        }
-
         @media (max-width: 767px) {
             .mobileViewH1 {
                 font-size: 20px;

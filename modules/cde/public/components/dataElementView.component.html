@@ -72,7 +72,7 @@
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
             <span class="hidden-sm-down-down"> Discuss</span>
         </button>
-        <div class="navbar-expand-lg navbar-light d-inline-block">
+        <div class="navbar-expand-md navbar-light d-inline-block">
             <button class="btn btn-outline-secondary navbar-toggler hidden-md-up"
                     data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
                     aria-label="Toggle navigation">
@@ -97,8 +97,8 @@
     <div class="row">
         <div [ngClass]="{'col-9 eltCommentView':commentMode,'col-12':!commentMode}">
             <div class="row">
-                <div id="leftNav" class="col-xl-2 col-lg-3 col-md-4 col-12 navbar-expand-lg navbar-light">
-                    <div class="collapse navbar-collapse">
+                <div class="col-xl-2 col-lg-3 col-md-4 col-12 navbar-expand-md navbar-light">
+                    <div id="leftNav" class="collapse navbar-collapse">
                         <ul class="list-group">
                             <a id="general_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='general_tab'}"

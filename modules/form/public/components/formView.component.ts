@@ -21,10 +21,6 @@ import { Subscription } from 'rxjs/Subscription';
     selector: "cde-form-view",
     templateUrl: "formView.component.html",
     styles: [`
-        #leftNav {
-            z-index: 1;
-        }
-
         @media (max-width: 767px) {
             .mobileViewH1 {
                 font-size: 20px;
