@@ -27,12 +27,12 @@ export class CdeAppComponent implements OnInit {
             '<p>Go ahead and highlight the area!</p>' +
             '<p>Try to draw a rectangle over the affected area. If this window stays in your way you can move it.</p>' +
             '<img src="/system/public/img/feedbackHowtoHighlight.png">' +
-            '<div class="feedback-buttons"><button id="feedback-highlighter-next" class="feedback-next-btn btn btn-info">Next</button><button id="feedback-highlighter-back" class="feedback-back-btn btn btn-secondary">Back</button></div><div class="feedback-wizard-close"></div></div>';
+            '<div class="feedback-buttons"><button id="feedback-highlighter-next" class="feedback-next-btn btn btn-info">Next</button><button id="feedback-highlighter-back" class="feedback-back-btn btn btn-outline-secondary">Back</button></div><div class="feedback-wizard-close"></div></div>';
 
         let overview = '<div id="feedback-overview"><div class="h3">Report a problem</div><div id="feedback-overview-description"><div id="feedback-overview-description-text">' +
             '<h3>Description</h3><div id="feedback-additional-none"><span>None</span></div></div></div><div id="feedback-overview-screenshot"><h3>Screenshot</h3></div>' +
             '<div class="feedback-buttons"><button id="feedback-submit" class="feedback-submit-btn btn btn-success">Submit</button>' +
-            '<button id="feedback-overview-back" class="feedback-back-btn btn btn-secondary">Back</button></div><div id="feedback-overview-error">Please enter a description.</div><div class="feedback-wizard-close"></div></div>';
+            '<button id="feedback-overview-back" class="feedback-back-btn btn btn-outline-secondary">Back</button></div><div id="feedback-overview-error">Please enter a description.</div><div class="feedback-wizard-close"></div></div>';
 
         let submitSuccess = '<div id="feedback-submit-success"><div class="h3">Thank you!</div>' +
             '<p>The issue was successfully submitted.</p>' +

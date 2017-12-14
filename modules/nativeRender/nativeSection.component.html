@@ -5,9 +5,9 @@
                 <h4 [textContent]="formElement.label"></h4>
             </div>
             <div class="col-sm-3" *ngIf="canRepeat(formElement)">
-                <button class="btn btn-secondary fa fa-plus"
+                <button class="btn btn-outline-secondary fa fa-plus"
                         (click)="addSection(formElement, formElements, $index)">Add One</button>
-                <button *ngIf="formElement.isCopy" class="btn btn-secondary fa fa-trash-o"
+                <button *ngIf="formElement.isCopy" class="btn btn-outline-secondary fa fa-trash-o"
                         (click)="removeSection($index)">Remove</button>
             </div>
         </div>

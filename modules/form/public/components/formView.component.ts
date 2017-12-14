@@ -22,7 +22,6 @@ import { Subscription } from 'rxjs/Subscription';
     templateUrl: "formView.component.html",
     styles: [`
         #leftNav {
-            margin-top: 20px;
             z-index: 1;
         }
 

@@ -14,12 +14,12 @@
         <dl class="row">
             <dt class="col-3 text-right">
                 <ng-container *ngIf="id.edit">Confirm Delete
-                    <span class="btn-secondary fa fa-check" (click)="removeIdentifierByIndex(i)"
+                    <span class="btn-outline-secondary fa fa-check" (click)="removeIdentifierByIndex(i)"
                           id="confirmRemoveIdentifier-{{i}}" title="OK"></span>
-                    <span class="btn-secondary fa fa-times" (click)="id.edit = false" id="cancelRemoveIdentifier-{{i}}"
+                    <span class="btn-outline-secondary fa fa-times" (click)="id.edit = false" id="cancelRemoveIdentifier-{{i}}"
                           title="Cancel"></span>
                 </ng-container>
-                <span *ngIf="canEdit && !id.edit" class="btn-secondary fa fa-trash-o" id="removeIdentifier-{{i}}"
+                <span *ngIf="canEdit && !id.edit" class="btn-outline-secondary fa fa-trash-o" id="removeIdentifier-{{i}}"
                       (click)="id.edit = true" title="Remove"></span>
                 Source:
             </dt>
@@ -41,7 +41,7 @@
         </dl>
         <hr>
     </ng-container>
-    <button *ngIf="canEdit" class="btn btn-small btn-secondary" id="openNewIdentifierModalBtn"
+    <button *ngIf="canEdit" class="btn btn-small btn-outline-secondary" id="openNewIdentifierModalBtn"
             (click)="openNewIdentifierModal();">
         <i class="fa fa-plus"></i> Add Identifier
     </button>
@@ -70,7 +70,7 @@
             </div>
         </div>
         <div class="modal-footer" id="newIdModalFooter">
-            <button class="btn cancel" (click)="c('Close click')" id="cancelNewIdentifierBtn" type="button">
+            <button class="btn btn-outline-secondary" (click)="c('Close click')" id="cancelNewIdentifierBtn" type="button">
                 Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newIdentifierForm.form.valid"

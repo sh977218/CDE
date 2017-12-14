@@ -5,12 +5,12 @@
         <dl class="row">
             <dt class="col-3 text-right">
                 <ng-container *ngIf="canEdit && prop.edit">Confirm Delete
-                    <span class="btn-secondary fa fa-check" (click)="removePropertyByIndex(i)"
+                    <span class="btn-outline-secondary fa fa-check" (click)="removePropertyByIndex(i)"
                           id="confirmRemoveProperty-{{i}}" title="OK"></span>
-                    <span class="btn-secondary fa fa-times" (click)="prop.edit = false"
+                    <span class="btn-outline-secondary fa fa-times" (click)="prop.edit = false"
                           id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
                 </ng-container>
-                <span (click)="prop.edit = true" *ngIf="canEdit && !prop.edit" class="btn-secondary fa fa-trash-o"
+                <span (click)="prop.edit = true" *ngIf="canEdit && !prop.edit" class="btn-outline-secondary fa fa-trash-o"
                       id="removeProperty-{{i}}" title="Remove"></span>
                 <cde-sortable-array [theArray]="elt.properties" [index]="i"
                                     (cb)="reorderProperty();"></cde-sortable-array>
@@ -26,7 +26,7 @@
         </dl>
         <hr>
     </ng-container>
-    <button *ngIf="canEdit && onInitDone" class="btn btn-small btn-secondary" id="openNewPropertyModalBtn"
+    <button *ngIf="canEdit && onInitDone" class="btn btn-small btn-outline-secondary" id="openNewPropertyModalBtn"
             (click)="openNewPropertyModal();">
         <i class="fa fa-plus"></i> Add Property
     </button>
@@ -47,10 +47,10 @@
             <div class="form-group">
                 <label for="newValue">Value</label>
                 <div id="newValue">
-                    <button type="button" class="btn btn-secondary btn-xs" (click)="newProperty.valueFormat = '';">
+                    <button type="button" class="btn btn-outline-secondary btn-xs" (click)="newProperty.valueFormat = '';">
                         Plain Text
                     </button>
-                    <button type="button" class="btn btn-secondary btn-xs" (click)="newProperty.valueFormat = 'html';">
+                    <button type="button" class="btn btn-outline-secondary btn-xs" (click)="newProperty.valueFormat = 'html';">
                         Rich Text
                     </button>
                     <textarea name="definition" *ngIf="newProperty.valueFormat !== 'html'"
@@ -67,7 +67,7 @@
             </div>
         </div>
         <div class="modal-footer" id="newPropertyModalFooter">
-            <button class="btn cancel" (click)="c('Close click')" id="cancelNewPropertyBtn" type="button">
+            <button class="btn btn-outline-secondary" (click)="c('Close click')" id="cancelNewPropertyBtn" type="button">
                 Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newPropertyForm.form.valid" id="createNewPropertyBtn"

@@ -88,7 +88,7 @@
 
 <ng-template #searchResults>
     <ng-container *ngIf="aggregations">
-        <nav class="navbar navbar-toggleable-md navbar-light bg-faded" id="searchDiv">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" id="searchDiv">
             <form class="input-group">
                 <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#searchBarContent" aria-controls="searchBarContent" aria-expanded="false"
@@ -104,15 +104,16 @@
             </form>
             <div class="ml-auto collapse navbar-collapse" style="width:auto;"
                  id="searchBarContent" role="group" aria-label="Basic example">
-                <button *ngIf="embedded" id="resetSearch" class="btn btn-secondary" name="resetSearch" type="button"
+                <button *ngIf="embedded" id="resetSearch" class="btn btn-outline-secondary" name="resetSearch"
+                        type="button"
                         (click)="reset()">
                     <i class="fa fa-trash-o"></i> Reset
                 </button>
-                <button id="pinAll" (click)="openPinModal()" class="btn btn-secondary" type="button"
+                <button id="pinAll" (click)="openPinModal()" class="btn btn-outline-secondary" type="button"
                         [hidden]="totalItems <= 0 || module === 'form'" *ngIf="!embedded">
                     <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
                 </button>
-                <button (click)="hideShowFilter()" class="btn btn-secondary" id="showHideFilters">
+                <button (click)="hideShowFilter()" class="btn btn-outline-secondary" id="showHideFilters">
                     <div [hidden]="filterMode">
                         <i class="glyphicon glyphicon-filter"></i> Show Filters
                     </div>
@@ -123,7 +124,7 @@
                 <cde-list-view-controls [(listView)]="resultsView" *ngIf="!embedded"></cde-list-view-controls>
 
                 <div class="btn-group" role="group" *ngIf="!embedded">
-                    <button id="export" type="button" class="btn btn-secondary dropdown-toggle"
+                    <button id="export" type="button" class="btn btn-outline-secondary dropdown-toggle"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-download"></i> Export
                     </button>
@@ -145,7 +146,7 @@
             <span class="py-3">
                 <strong id="searchResultNum">{{totalItems}}</strong> results for
                 <div id="term_crumb" class="d-inline">
-                    <span *ngIf="!searchedTerm" class="badge badge-default mr-2">All Terms</span>
+                    <span *ngIf="!searchedTerm" class="badge badge-secondary mr-2">All Terms</span>
                     <span *ngIf="searchedTerm" class="badge badge-success mr-2">{{searchedTerm}}
                         <i id="removeTerm" class="fa fa-times hand-cursor dark-icon pl-2"
                            ngbTooltip="Remove this search term filter" placement="right" container="body"
@@ -153,7 +154,7 @@
                     </span>
                 </div>
                 <div id="classif_filter" class="d-inline-block">|
-                    <span *ngIf="!hasSelectedClassifications()" class="badge badge-default mx-2">
+                    <span *ngIf="!hasSelectedClassifications()" class="badge badge-secondary mx-2">
                         All Classifications</span>
                     <span *ngIf="hasSelectedClassifications()" class="badge badge-success mx-2">{{getSelectedClassifications()}}
                         <i id="removeClassifications" class="fa fa-times hand-cursor dark-icon pl-2"
@@ -161,7 +162,7 @@
                            (click)="clearSelectedClassifications()"></i>
                     </span>
                 </div>
-                <div *ngIf="altClassificationFilterMode" id="classifAlt_filter" class="d-inline-block">&nbsp;and&nbsp;
+                <div *ngIf="altClassificationFilterMode" id="classifAlt_filter" class="d-inline-block">and
                     <span class="badge badge-success">{{getSelectedClassificationsAlt()}}
                         <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="clearSelectedClassificationsAlt()"
@@ -170,7 +171,7 @@
                     </span>
                 </div>
                 <div id="topic_crumb" class="d-inline-block">|
-                    <span *ngIf="!hasSelectedTopics()" class="badge badge-default mx-2">All Topics</span>
+                    <span *ngIf="!hasSelectedTopics()" class="badge badge-secondary mx-2">All Topics</span>
                     <span *ngIf="hasSelectedTopics()" class="badge badge-success mx-2">{{getSelectedTopics()}}
                         <i id="removeTopics" class="fa fa-times hand-cursor dark-icon pl-2"
                            ngbTooltip="Remove this topics filter" placement="right" container="body"
@@ -178,7 +179,7 @@
                     </span>
                 </div>
                 <div id="status_crumb" class="d-inline-block">|
-                    <span *ngIf="!hasSelectedStatuses()" class="badge badge-default mx-2">All Statuses</span>
+                    <span *ngIf="!hasSelectedStatuses()" class="badge badge-secondary mx-2">All Statuses</span>
                     <span *ngIf="hasSelectedStatuses()" class="badge badge-success mx-2">{{getSelectedStatuses()}}
                         <i id="removeStatuses" class="fa fa-times hand-cursor dark-icon pl-2"
                            ngbTooltip="Remove this registration statuses filter" placement="right" container="body"
@@ -186,7 +187,7 @@
                     </span>
                 </div>
                 <div *ngIf="module === 'cde'" id="datatype_crumb" class="d-inline-block">|
-                    <span *ngIf="!hasSelectedDatatypes()" class="badge badge-default mx-2">All Datatypes</span>
+                    <span *ngIf="!hasSelectedDatatypes()" class="badge badge-secondary mx-2">All Datatypes</span>
                     <span *ngIf="hasSelectedDatatypes()" class="badge badge-success mx-2">{{getSelectedDatatypes()}}
                         <i id="removeDatatypes" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="clearSelectedDatatypes()"

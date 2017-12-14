@@ -29,11 +29,11 @@
         <span *ngIf="question.question.required" class="badge badge-danger formViewSummaryLabel">
             Required
         </span>
-        <span *ngIf="question.question.invisible" class="badge badge-default formViewSummaryLabel"
+        <span *ngIf="question.question.invisible" class="badge badge-secondary formViewSummaryLabel"
               style="background-color: #666">
             Invisible
         </span>
-        <span *ngIf="question.question.editable === false" class="badge badge-default formViewSummaryLabel"
+        <span *ngIf="question.question.editable === false" class="badge badge-secondary formViewSummaryLabel"
               style="background-color: #666">
             Disabled
         </span>
@@ -53,13 +53,13 @@
             </div>
             <div class="answerList" *ngIf="question.question.answers && question.question.answers.length > 0">
                 <span class="formViewQuestionLabel">Answer Choices:</span>
-                <span *ngFor="let pv of question.question.answers" class="badge badge-default mx-1 formViewSummaryLabel"
+                <span *ngFor="let pv of question.question.answers" class="badge badge-secondary mx-1 formViewSummaryLabel"
                       style="background-color: #666" [textContent]="pv?.valueMeaningName"></span>
             </div>
             <div *ngIf="question.question.defaultAnswer && question.question.defaultAnswer.length > 0"
                  class="defaultAnswer">
                 <span class="formViewQuestionLabel">Default Answer:</span>
-                <span class="badge badge-default mx-1 formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
+                <span class="badge badge-secondary mx-1 formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
             </div>
             <div *ngIf="question.question.uoms.length > 0" class="questionUom">
                 <span class="formViewQuestionLabel">Units of Measure:</span>
@@ -195,7 +195,7 @@
 
         <div *ngFor="let naming of nameSelectModal.cde.naming; let i = index" class="row" id="q_select_name_{{i}}">
             <div class="col-lg-3">
-                <button class="btn btn-secondary" (click)="nameSelectModal.okSelect(naming)"><i class="fa fa-check"></i>
+                <button class="btn btn-outline-secondary" (click)="nameSelectModal.okSelect(naming)"><i class="fa fa-check"></i>
                     Select
                 </button>
             </div>
@@ -214,7 +214,7 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <button class="btn btn-secondary" (click)="nameSelectModal.okSelect()"><i class="fa fa-stop"></i> No
+                <button class="btn btn-outline-secondary" (click)="nameSelectModal.okSelect()"><i class="fa fa-stop"></i> No
                     Label
                 </button>
             </div>

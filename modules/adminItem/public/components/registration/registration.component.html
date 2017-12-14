@@ -1,6 +1,6 @@
 <fieldset class="cdeFieldset" id="registrationStateDiv">
     <legend>Registration State:
-        <button title="Edit Status" role="link" id="editStatus" *ngIf="canEdit" class="btn btn-secondary"
+        <button title="Edit Status" role="link" id="editStatus" *ngIf="canEdit" class="btn btn-outline-secondary"
                 (click)="openRegStatusUpdate()">
             <span class="fa fa-edit"> Edit</span>
         </button>
@@ -102,7 +102,7 @@
 
             </div>
             <div class="modal-footer" id="regStatusModalFooter">
-                <button class="btn cancel" (click)="d()" id="cancelRegStatus" type="button">Cancel</button>
+                <button class="btn btn-outline-secondary" (click)="d()" id="cancelRegStatus" type="button">Cancel</button>
                 <button class="btn btn-warning" type="submit" [disabled]="!regForm.form.valid" id="saveRegStatus">
                     Save
                 </button>

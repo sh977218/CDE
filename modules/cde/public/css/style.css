@@ -431,14 +431,6 @@ label.input-group-addon {
     border-left: 1px solid #ccc;
 }
 
-#leftNav {
-    padding-right: 0;
-}
-
-#middleView {
-    padding-left: 0;
-}
-
 #searchResultInfoBar {
     font-size: 16.5px;
     vertical-align: middle;

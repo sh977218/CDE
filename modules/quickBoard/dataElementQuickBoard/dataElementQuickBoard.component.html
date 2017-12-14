@@ -7,11 +7,11 @@
     <div *ngIf="quickBoardService.number_dataElements > 0">
         <cde-compare-side-by-side [(elements)]="quickBoardService.dataElements"></cde-compare-side-by-side>
         <cde-list-view-controls [(listView)]="listViews"></cde-list-view-controls>
-        <button id="qb_de_empty" class="btn btn-secondary" value="Empty Quick Board"
+        <button id="qb_de_empty" class="btn btn-outline-secondary" value="Empty Quick Board"
                 (click)="quickBoardService.emptyDataElementQuickBoard();">
             <i class="fa fa-trash-o"></i> Empty Quick Board
         </button>
-        <button id="qb_de_export" class="btn btn-secondary" value="Export Quick Board"
+        <button id="qb_de_export" class="btn btn-outline-secondary" value="Export Quick Board"
                 (click)="exportService.quickBoardExport(quickBoardService.dataElements)">
             <i class="fa fa-download"></i> Export Quick Board
         </button>

@@ -2,22 +2,22 @@
     <div class="col-12">
         <div class="descriptionToolbox" *ngIf="canEdit" #descToolbox>
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
-            <span role="button" id="addSectionTop" class="btn btn-secondary formDescriptionTool"
+            <span role="button" id="addSectionTop" class="btn btn-outline-secondary formDescriptionTool"
                   [treeDrag]="toolSection" [treeDragEnabled]="true"
                   style="width: 74px;">
                 <i class="fa fa-plus"></i><span class="toolSection"></span>
             </span>
-            <span role="button" id="startAddingQuestions" class="btn btn-secondary formDescriptionTool"
+            <span role="button" id="startAddingQuestions" class="btn btn-outline-secondary formDescriptionTool"
                   *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true"
                   style="width: 87px;">
                 <i class="fa fa-cube"></i><span class="toolQuestion"></span>
             </span>
-            <span role="button" id="startAddingForms" class="btn btn-secondary formDescriptionTool"
+            <span role="button" id="startAddingForms" class="btn btn-outline-secondary formDescriptionTool"
                   *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true"
                   style="width: 68px;">
                 <i class="fa fa-cubes"></i><span class="toolForm"></span>
             </span>
-            <span role="button" *ngIf="hasCopiedSection()" id="pasteSection" class="btn btn-secondary formDescriptionTool"
+            <span role="button" *ngIf="hasCopiedSection()" id="pasteSection" class="btn btn-outline-secondary formDescriptionTool"
                   [treeDrag]="{ref: 'pasteSection'}" [treeDragEnabled]="true" style="width: 68px;">
                 <i class="fa fa-paste" [ngClass]="{'pasteSectionWrench':elt.isCopied}"></i><span
                     class="toolCopySection"></span>
@@ -68,11 +68,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-block" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
+                            <div class="card-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 <div *ngIf="node.data.elementType === 'form' && !node.data.expanded"
                                      (click)="node.data.expanded = true; node.expand()"
-                                     class="btn btn-secondary expand-form">
+                                     class="btn btn-outline-secondary expand-form">
                                     <i class="fa fa-chevron-right" aria-hidden="true"></i> Expand
                                 </div>
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"

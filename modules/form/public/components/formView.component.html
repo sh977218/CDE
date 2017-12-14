@@ -46,7 +46,7 @@
     </h1>
     <div class="pull-left">
         <div class="dropdown float-left">
-            <button id="export" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+            <button id="export" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-download"></i>
                 <span class="hidden-sm-down-down"> Export</span>
@@ -92,30 +92,31 @@
                     Please login to export forms.</a>
             </ul>
         </div>
-        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard" class="btn btn-small btn-secondary"
+        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
+                class="btn btn-small btn-outline-secondary"
                 title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
             <i class="fa fa-plus"></i><span class="hidden-sm-down-down"> Add to Quick Board</span>
         </button>
-        <button id="addToBoard" class="btn btn-small btn-secondary" title="Add to Board"
+        <button id="addToBoard" class="btn btn-small btn-outline-secondary" title="Add to Board"
                 (click)="mltPinModal.open([elt], 'cde')">
             <i class="fa fa-thumb-tack"></i><span class="hidden-sm-down-down"> Add to Board</span>
         </button>
         <button *ngIf="isAllowedModel.loggedIn()"
-                id="pinAllCdes" class="btn btn-small btn-secondary"
+                id="pinAllCdes" class="btn btn-small btn-outline-secondary"
                 title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
             <i class="fa fa-cogs"></i><span class="hidden-sm-down-down"> Pin CDEs</span>
         </button>
-        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyFormBtn" class="btn btn-small btn-secondary"
+        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyFormBtn" class="btn btn-small btn-outline-secondary"
                 title="Copy Form" (click)="openCopyElementModal()">
             <i class="fa fa-clone"></i><span class="hidden-sm-down-down"> Copy</span>
         </button>
-        <button id="discussBtn" class="btn btn-small btn-secondary" title="Discuss CDE"
+        <button id="discussBtn" class="btn btn-small btn-outline-secondary" title="Discuss CDE"
                 (click)="commentMode = !commentMode;">
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
             <span class="hidden-sm-down-down"> Discuss</span>
         </button>
-        <div class="navbar-light d-inline-block">
-            <button class="btn btn-secondary navbar-toggler hidden-md-up"
+        <div class="navbar-expand-lg navbar-light d-inline-block">
+            <button class="btn btn-outline-secondary navbar-toggler hidden-md-up"
                     data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
                     aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -136,10 +137,10 @@
     </div>
     <div class="py-2 clearfix"></div>
     <div class="row">
-        <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
+        <div [ngClass]="{'col-9 eltCommentView':commentMode,'col-12':!commentMode}">
             <div class="row">
-                <div class="col-xl-2 col-lg-3 col-12 navbar-toggleable-md navbar-light" id="leftNav">
-                    <div class="collapse navbar-collapse mt-20">
+                <div class="col-xl-2 col-lg-3 col-12 navbar-expand-lg navbar-light" id="leftNav">
+                    <div class="collapse navbar-collapse">
                         <ul class="list-group">
                             <a id="preview_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='preview_tab'}"
@@ -211,7 +212,8 @@
                         <cde-form-general-details [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft()">
                         </cde-form-general-details>
                         <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-                        <cde-registration [elt]="elt" (onEltChange)="saveDraft()" [canEdit]="canEdit()"></cde-registration>
+                        <cde-registration [elt]="elt" (onEltChange)="saveDraft()"
+                                          [canEdit]="canEdit()"></cde-registration>
                         <cde-linked-boards [elt]="elt"></cde-linked-boards>
                         <cde-linked-forms [elt]="elt"></cde-linked-forms>
                         <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
@@ -257,7 +259,7 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
+        <div *ngIf="commentMode" [ngClass]="{'col-3':commentMode,'':!commentMode}"
              style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
             <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
                               (highlightedTabsChange)="loadHighlightedTabs($event)"

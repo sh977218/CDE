@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import "../../node_modules/bootstrap-tour/build/css/bootstrap-tour.css";
-import * as Tour from "bootstrap-tour/build/js/bootstrap-tour-standalone.js";
+import * as Tour from "bootstrap-tour/build/js/bootstrap-tour.js";
 
 const navigationSteps: Array<any> = [
     {

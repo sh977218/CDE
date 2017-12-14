@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-secondary" id="openLinkedBoardsModalBtn"
+<button type="button" class="btn btn-outline-secondary" id="openLinkedBoardsModalBtn"
         (click)="openLinkedBoardsModal()">Linked Boards</button>
 
 <ng-template #linkedBoardsContent id="linkedFormsModal" let-c="close" let-d="dismiss">
@@ -24,7 +24,7 @@
 
                         <div id="board_tag_{{i}}" class="myBoardTags">
                         <span *ngFor="let tag of board.tags">
-                            <span class="badge badge-default"><i class="fa fa-hashtag"></i>{{tag}}</span>
+                            <span class="badge badge-secondary"><i class="fa fa-hashtag"></i>{{tag}}</span>
                         </span>
                         </div>
                     </div>
@@ -33,6 +33,6 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-secondary" id="closeLinkedBoardBtn" (click)="d()">Close</button>
+        <button class="btn btn-outline-secondary" id="closeLinkedBoardBtn" (click)="d()">Close</button>
     </div>
 </ng-template>

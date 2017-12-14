@@ -1,6 +1,6 @@
 <fieldset class="cdeFieldset" id="formTermMapping">
     <legend>Mesh Descriptors:
-        <button title="Add" role="link" id="addTermMap" *ngIf="isAllowedModel.isAllowed(elt)" class="btn btn-secondary"
+        <button title="Add" role="link" id="addTermMap" *ngIf="isAllowedModel.isAllowed(elt)" class="btn btn-outline-secondary"
                 (click)="openAddTermMap()"><span class="fa fa-edit"> Add</span>
         </button>
     </legend>
@@ -33,7 +33,7 @@
             </div>
             <div *ngIf="descriptor">
                 {{descriptor.id}} -- {{descriptor.name}}
-                <button type="submit" class="btn btn-secondary btn-sm"
+                <button type="submit" class="btn btn-outline-secondary btn-sm"
                         id="addMeshDescButton" (click)="addMeshDescriptor()"
                         *ngIf="descriptor.name.length > 0"
                         [disabled]="mapping.meshDescriptors?.indexOf(descriptor.id) > -1">Add
@@ -43,6 +43,6 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-secondary done" (click)="d()" id="closeModal">Close</button>
+        <button class="btn btn-outline-secondary done" (click)="d()" id="closeModal">Close</button>
     </div>
 </ng-template>

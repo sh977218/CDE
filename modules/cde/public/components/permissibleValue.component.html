@@ -176,10 +176,10 @@
                     </td>
                     <td>
                         <ng-container *ngIf="pv.notValid">
-                            <span class="btn-secondary fa fa-warning text-danger" id="pv-{{i}}-notValid"></span>
+                            <span class="btn-outline-secondary fa fa-warning text-danger" id="pv-{{i}}-notValid"></span>
                         </ng-container>
                         <ng-container *ngIf="canEdit">
-                            <span id="pvRemove_{{i}}" class="btn-secondary fa fa-trash-o" (click)="removePv(i)"
+                            <span id="pvRemove_{{i}}" class="btn-outline-secondary fa fa-trash-o" (click)="removePv(i)"
                                   title="Remove"></span>
                             <cde-sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
                                                 (cb)="sortPermissibleValue();"></cde-sortable-array>
@@ -193,12 +193,12 @@
                  role="alert">There are validation errors. {{elt.pvNotValidMsg }}
             </div>
             <ng-container *ngIf="canEdit">
-                <button class="btn btn-small btn-secondary" role="button" id="openAddPermissibleValueModelBtn"
+                <button class="btn btn-small btn-outline-secondary" role="button" id="openAddPermissibleValueModelBtn"
                         title="Add Permissible Value"
                         (click)="openNewPermissibleValueModal()">
                     <i class="fa fa-plus"></i> Add Permissible Value
                 </button>
-                <button class="btn btn-small btn-secondary" role="button" id="removeAllPermissibleValueBtn"
+                <button class="btn btn-small btn-outline-secondary" role="button" id="removeAllPermissibleValueBtn"
                         title="Remove All Values"
                         (click)="removeAllPermissibleValues()">
                     <i class="fa fa-trash-o"></i> Remove All Values
@@ -224,9 +224,9 @@
         <div *ngIf="isAllowedModel.loggedIn()">
             <div>{{vsacError}}</div>
             <div *ngIf="!editMode">
-                <a *ngIf="canEdit" class="btn btn-secondary"
+                <a *ngIf="canEdit" class="btn btn-outline-secondary"
                    id="updateOIDBtn" (click)="editMode=true">Update O.I.D</a>
-                <a *ngIf="canEdit && vsacMappingExists()" class="btn btn-secondary"
+                <a *ngIf="canEdit && vsacMappingExists()" class="btn btn-outline-secondary"
                    id="removeVSButton" (click)="removeVSMapping()">Remove Mapping</a>
             </div>
             <div *ngIf="editMode">
@@ -262,7 +262,7 @@
         </table>
         <div *ngIf="vsacMappingExists() && !isAllowedModel.loggedIn()">Please log in to see VSAC mapping.</div>
         <a *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()"
-           class="btn btn-small btn-secondary mt20"
+           class="btn btn-small btn-outline-secondary mt20"
            (click)="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
     </ng-container>
 </div>
@@ -309,7 +309,7 @@
             </div>
         </div>
         <div class="modal-footer" id="newPermissibleValueModalFooter">
-            <button class="btn cancel" (click)="c('Close click')" id="cancelNewPermissibleValueBtn"
+            <button class="btn btn-outline-secondary" (click)="c('Close click')" id="cancelNewPermissibleValueBtn"
                     name="cancelNewPermissibleValueBtn"
                     type="button">Cancel
             </button>

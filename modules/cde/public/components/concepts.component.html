@@ -20,7 +20,7 @@
                             <td itemprop="codeSystem">{{concept.origin}}</td>
                             <td itemprop="codeValue">{{concept.originId}}</td>
                             <td headers="actions" *ngIf="canEdit">
-                                <span id="remove{{config.type}}-{{$index}}" class="btn-secondary fa fa-trash-o"
+                                <span id="remove{{config.type}}-{{$index}}" class="btn-outline-secondary fa fa-trash-o"
                                       (click)="removeConcept(config.type, $index)" title="Remove" href></span>
                                 <cde-sortable-array [theArray]="elt[config.type].concepts" [index]="$index"
                                                     (cb)="onEltChange.emit()"></cde-sortable-array>
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <hr/>
-            <button class="btn btn-small btn-secondary" *ngIf="canEdit" id="openNewConceptModalBtn"
+            <button class="btn btn-small btn-outline-secondary" *ngIf="canEdit" id="openNewConceptModalBtn"
                     value="add" (click)="openNewConceptModal()">
                 <i class="fa fa-plus"> </i> Add Concept
             </button>
@@ -70,7 +70,7 @@
             </div>
         </div>
         <div class="modal-footer" id="newConceptModalFooter">
-            <button class="btn cancel" (click)="c('Close click')" id="cancelNewConceptBtn" type="button">
+            <button class="btn btn-outline-secondary" (click)="c('Close click')" id="cancelNewConceptBtn" type="button">
                 Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newConceptForm.form.valid" id="createNewConceptBtn"

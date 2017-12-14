@@ -44,7 +44,7 @@
                         {{message.typeCommentReply.comment.text | slice:0:30}}
                     </ng-template>
                     <ng-template ngbPanelContent>
-                        <div class="card-block">
+                        <div class="card-body">
                             <dl class="row">
                                 <dt class="col-3">User</dt>
                                 <dd class="col-9">{{message.author.name}}</dd>
@@ -61,7 +61,7 @@
                                 </dd>
                             </dl>
 
-                            <button *ngIf="type === 'received'" class="approveComment btn btn-sm btn-secondary"
+                            <button *ngIf="type === 'received'" class="approveComment btn btn-sm btn-outline-secondary"
                                     [ngClass]="{disabled: message.states[0].action==='Approved'}"
                                     (click)="closeMessage(message)" type="button">Archive
                             </button>
@@ -76,12 +76,12 @@
                         {{message.typeCommentApproval.comment.text | slice:0:30}}
                     </ng-template>
                     <ng-template ngbPanelContent>
-                        <div class="card-block">
+                        <div class="card-body">
                             <h4>{{message.humanType}}</h4>
                             <dl class="row">
                                 <dt class="col-3">User</dt>
                                 <dd class="col-9">{{message.author.name}}
-                                    <button class="btn btn-xs btn-secondary authorizeUser"
+                                    <button class="btn btn-xs btn-outline-secondary authorizeUser"
                                             (click)="openAuthorizeUserModal(message)"
                                             type="button">Authorize User Permanently
                                     </button>
@@ -99,12 +99,12 @@
                                 </dd>
                             </dl>
                             <ng-container *ngIf="type === 'received'">
-                                <button class="approveComment btn btn-sm btn-secondary"
+                                <button class="approveComment btn btn-sm btn-outline-secondary"
                                         (click)="approveComment(message)"
                                         [ngClass]="{disabled: message.states[0].action === 'Approved'}"
                                         type="button">Approve Comment
                                 </button>
-                                <button class="declineComment btn btn-sm btn-secondary"
+                                <button class="declineComment btn btn-sm btn-outline-secondary"
                                         (click)="declineComment(message)"
                                         [ngClass]="{disabled: message.states[0].action === 'Approved'}"
                                         type="button">Decline Comment
@@ -123,7 +123,7 @@
                         ( {{message.typeAttachmentApproval.filename}} ) | {{message.author.name}}
                     </ng-template>
                     <ng-template ngbPanelContent>
-                        <div class="card-block">
+                        <div class="card-body">
                             <h4>{{ message.humanType}}</h4>
                             <dl class="row">
                                 <dt class="col-3">User:</dt>
@@ -145,13 +145,13 @@
                             </dl>
 
 
-                            <button *ngIf="type === 'received'" class="approveAttachment btn btn-sm btn-secondary"
+                            <button *ngIf="type === 'received'" class="approveAttachment btn btn-sm btn-outline-secondary"
                                     id='approve-{{message.typeAttachmentApproval.filename}}'
                                     [ngClass]="{disabled: message.states[0].action === 'Approved'}" type="button"
                                     (click)="approveAttachment(message)">Approve Attachment
                             </button>
                             <span *ngIf="message.states[0].action==='Approved'">Approved on {{ message.states[0].date | date }}</span>
-                            <button class="declineAttachment btn btn-sm btn-secondary"
+                            <button class="declineAttachment btn btn-sm btn-outline-secondary"
                                     id='decline-{{message.typeAttachmentApproval.filename}}'
                                     (click)="declineAttachment(message)"
                                     [ngClass]="{disabled: message.states[0].action === 'Approved'}" type="button">
@@ -170,7 +170,7 @@
                         {{message.author.name}}
                     </ng-template>
                     <ng-template ngbPanelContent>
-                        <div class="card-block">
+                        <div class="card-body">
                             <h4>{{message.humanType}}</h4>
                             <dl class="row">
                                 <dt class="col-3">User</dt>
@@ -184,7 +184,7 @@
                                        href="/board/{{message.typeBoardApproval.element.eltId}}">{{message.typeBoardApproval.element.name}}</a>
                                 </dd>
                             </dl>
-                            <button *ngIf="type === 'received'" class="approveComment btn btn-sm btn-secondary"
+                            <button *ngIf="type === 'received'" class="approveComment btn btn-sm btn-outline-secondary"
                                     (click)="closeMessage(message)"
                                     [ngClass]="{disabled: message.states[0].action === 'Approved'}">Archive
                             </button>
