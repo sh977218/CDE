@@ -53,7 +53,7 @@ public class QuestionTest extends BaseFormTest {
         textPresent("1 results");
         textPresent(formName, By.id("acc_link_0"));
 
-        clickElement(By.xpath("//*[@class='modal-content']//button[following-sibling::a/*[@id='acc_link_0']]"));
+        clickElement(By.xpath("//*[@id='acc_link_0']/preceding-sibling::button"));
         clickElement(By.id("cancelSelectF"));
     }
 
