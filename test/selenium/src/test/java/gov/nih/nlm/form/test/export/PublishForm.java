@@ -16,8 +16,7 @@ public class PublishForm extends NlmCdeBaseTest {
         findElement(By.name("publishedFormUrl")).sendKeys(baseUrl + "/sendMockFormData");
         findElement(By.name("publishedFormName")).sendKeys("My Published Form");
         clickElement(By.id("goExport"));
-        textPresent("Done. Go to your profile to see all your published forms");
-        closeAlert();
+        checkAlert("Done. Go to your profile to see all your published forms");
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
         clickElement(By.linkText("My Published Form"));
@@ -32,8 +31,7 @@ public class PublishForm extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
         clickElement(By.xpath("//td[a[. ='My Published Form']]/i[@title= 'Remove']"));
-        textPresent("Saved");
-        closeAlert();
+        checkAlert("Saved");
         textNotPresent("My Published Form");
     }
 

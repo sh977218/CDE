@@ -20,8 +20,7 @@ public class AssignVsacIdTest extends NlmCdeBaseTest {
         clickElement(By.id("updateOIDBtn"));
         findElement(By.name("vsacId")).sendKeys("invalidId");
         clickElement(By.id("vsacIdCheck"));
-        textPresent("Error querying VSAC");
-        closeAlert();
+        checkAlert("Error querying VSAC");
         scrollToViewById("updateOIDBtn");
         clickElement(By.id("updateOIDBtn"));
         findElement(By.name("vsacId")).clear();

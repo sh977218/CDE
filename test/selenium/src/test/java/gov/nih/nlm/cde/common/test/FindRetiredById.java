@@ -12,8 +12,7 @@ public class FindRetiredById extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToGeneralDetail();
         editRegistrationStatus("Retired", null, null, null, null);
-        textPresent("Data Element saved.");
-        closeAlert();
+        newCdeVersion();
         textPresent("Warning: this data element is retired.");
     }
 
@@ -25,8 +24,8 @@ public class FindRetiredById extends NlmCdeBaseTest {
         goToFormByName(formName);
         goToGeneralDetail();
         editRegistrationStatus("Retired", null, null, null, null);
-        textPresent("Form saved.");
-        closeAlert();
+        newFormVersion();
+        checkAlert("Form saved.");
         textPresent("Warning: this form is retired.");
     }
 

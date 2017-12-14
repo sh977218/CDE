@@ -172,7 +172,7 @@
                         <cde-de-general-details [(elt)]="elt" [canEdit]="canEdit()"
                                                 (onEltChange)="saveDraft();"></cde-de-general-details>
                         <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-                        <cde-registration [elt]="elt" (save)="saveDataElement();"></cde-registration>
+                        <cde-registration [elt]="elt" (onEltChange)="saveDraft()" [canEdit]="canEdit()"></cde-registration>
                         <div role="group" aria-label="More Info">
                             <cde-linked-forms [elt]="elt"></cde-linked-forms>
                             <cde-mlt [elt]="elt"></cde-mlt>
@@ -199,11 +199,11 @@
                         </cde-reference-document>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'properties_tab'">
-                        <cde-properties [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();">
+                        <cde-properties [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft()">
                         </cde-properties>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'ids_tab'">
-                        <cde-identifiers [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();">
+                        <cde-identifiers [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft()">
                         </cde-identifiers>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'attachments_tab'">

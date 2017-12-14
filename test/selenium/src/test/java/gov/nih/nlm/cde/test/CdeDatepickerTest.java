@@ -29,8 +29,7 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//div[. = '19']"));
 
         clickElement(By.id("saveRegStatus"));
-        textPresent("Data Element saved.");
-        closeAlert();
+        newCdeVersion();
 
         Assert.assertEquals(findElement(By.id("effectiveDate")).getText(), "02/16/2016");
         Assert.assertEquals(findElement(By.id("untilDate")).getText(), "03/19/2017");

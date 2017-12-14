@@ -4,6 +4,7 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.interactions.Actions;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static com.jayway.restassured.RestAssured.get;
@@ -48,7 +49,12 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
             textPresent("Org Updated");
             closeAlert();
 
+            // ensure it got saved.
             goHome();
+            clickElement(By.id("username_link"));
+            clickElement(By.linkText("Org Management"));
+            clickElement(By.linkText("List Management"));
+            textNotPresent("canYouSeeThis");
 
             goToCdeByName("Distance from Closest Margin Value");
             goToNaming();

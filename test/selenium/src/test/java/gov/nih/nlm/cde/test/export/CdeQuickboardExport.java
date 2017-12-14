@@ -30,8 +30,7 @@ public class CdeQuickboardExport extends NlmCdeBaseTest {
         textPresent("Export Quick Board");
 
         clickElement(By.id("qb_de_export"));
-        textPresent("Export downloaded.");
-        closeAlert();
+        checkAlert("Export downloaded.");
         clickElement(By.id("qb_de_empty"));
 
         String[] expected = {

@@ -17,7 +17,7 @@ public abstract class RegStatusTest extends CommonTest {
         new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Retired");
         textPresent("Retired elements are not returned in searches");
         clickElement(By.id("saveRegStatus"));
-        closeAlert();
+        version();
         waitForESUpdate();
         goToEltSearch();
         findElement(By.name("q")).sendKeys("Alkaline");
@@ -39,6 +39,10 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltByName(eltName);
         goToGeneralDetail();
         textPresent("Standard");
+    }
+
+    public void version() {
+        newCdeVersion();
     }
 
 

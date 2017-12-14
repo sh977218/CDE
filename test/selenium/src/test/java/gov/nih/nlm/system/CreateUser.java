@@ -16,8 +16,7 @@ public class CreateUser extends NlmCdeBaseTest {
         findElement(By.id("newUsername")).sendKeys(newUsername);
         hangon(1);
         clickElement(By.id("createNewUserBtn"));
-        textPresent("User created");
-        closeAlert();
+        checkAlert("User created");
         findElement(By.name("searchUsersInput")).sendKeys("Coco Ch");
         clickElement(By.id("searchUsersSubmit"));
         textPresent("coco channel");

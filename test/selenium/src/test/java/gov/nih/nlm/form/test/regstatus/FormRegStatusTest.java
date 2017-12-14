@@ -27,4 +27,8 @@ public class FormRegStatusTest extends RegStatusTest {
         nlmPromotesToStandard("Form Standard Test");
     }
 
+    public void version() {
+        newFormVersion();
+    }
+
 }
