@@ -445,3 +445,7 @@ label.input-group-addon {
         display: none;
     }
 }
+
+.text-end {
+    text-align: end;
+}

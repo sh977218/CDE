@@ -51,8 +51,6 @@ public class QuestionTest extends BaseFormTest {
         hangon(1);
         clickElement(By.id("search.submit"));
         textPresent("1 results");
-        textPresent(formName, By.id("acc_link_0"));
-
         clickElement(By.xpath("//*[@id='acc_link_0']/preceding-sibling::button"));
         clickElement(By.id("cancelSelectF"));
     }

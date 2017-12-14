@@ -14,7 +14,7 @@
                     <div *ngFor="let rule of cdeStatusRules[statusName][orgName]; let i=index"
                          id="rule_{{statusName}}_{{i}}">
                         <i [ngClass]="{'fa-check btn-success':cdePassingRule(elt, rule), 'fa-times btn-danger': !cdePassingRule(elt, rule)}"
-                           class="fa btn-xs"></i> {{rule.ruleName}}
+                           class="fa btn-sm m-1"></i> {{rule.ruleName}}
                     </div>
                 </div>
                 <hr>

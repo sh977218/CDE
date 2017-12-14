@@ -37,7 +37,7 @@
     </h1>
     <div class="pull-left">
         <div class="dropdown float-left">
-            <button id="export" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown"
+            <button id="export" class="btn btn-outline-secondary dropdown-toggle mr-1" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-download"></i>
                 <span class="hidden-sm-down-down"> Export</span>
@@ -80,7 +80,7 @@
             </button>
         </div>
     </div>
-    <div class="pull-right" style="text-align: end">
+    <div class="pull-right text-end">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
             <button *ngIf="elt.valueDomain.allValid" class="btn btn-success" id="openSave"
@@ -97,8 +97,8 @@
     <div class="row">
         <div [ngClass]="{'col-9 eltCommentView':commentMode,'col-12':!commentMode}">
             <div class="row">
-                <div class="col-xl-2 col-lg-3 col-12 navbar-expand-lg navbar-light" id="leftNav">
-                    <div class="collapse navbar-collapse mt-20">
+                <div id="leftNav" class="col-xl-2 col-lg-3 col-md-4 col-12 navbar-expand-lg navbar-light">
+                    <div class="collapse navbar-collapse">
                         <ul class="list-group">
                             <a id="general_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='general_tab'}"
@@ -171,7 +171,7 @@
                         </ul>
                     </div>
                 </div>
-                <div id="middleView" class="col-xl-10 col-lg-9 col-12">
+                <div id="middleView" class="col-xl-10 col-lg-9 col-md-8 col-12">
                     <ng-container *ngIf="currentTab === 'meshTopic_tab'">
                         <h4>Topics</h4>
                         <span>Topics are
