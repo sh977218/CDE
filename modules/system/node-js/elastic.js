@@ -200,7 +200,7 @@ exports.initEs = function (cb) {
     });
 };
 
-exports.completionSuggest = function (term, user, settings, cb) {
+exports.completionSuggest = function (term, user, settings, indexName, cb) {
     let suggestQuery = {
         "query": {
             "match": {
@@ -221,7 +221,7 @@ exports.completionSuggest = function (term, user, settings, cb) {
     };
 
     esClient.search({
-        index: config.elastic.index.name,
+        index: indexName,
         body: suggestQuery
     }, function (error, response) {
         if (error) {

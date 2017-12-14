@@ -31,37 +31,6 @@ exports.updateOrInsert = function(elt) {
     });
 };
 
-exports.completionSuggest = function (term, user, settings, cb) {
-    let suggestQuery = {
-        "query": {
-            "match": {
-                "primaryNameSuggest": {
-                    "query":  term
-                }
-            }
-        }, "_source": {
-            "includes": ["primaryNameSuggest"]
-        }, post_filter: {
-            bool: {
-                filter: [
-                    {bool: {should: elastic_system.regStatusFilter(user, settings)}}
-                ]
-            }
-        }
-    };
-
-    esClient.search({
-        index: config.elastic.formIndex.name,
-        body: suggestQuery
-    }, function (error, response) {
-        if (error) {
-            cb(error);
-        } else {
-            cb(response);
-        }
-    });
-};
-
 exports.byTinyIdList = function (idList, cb) {
     esClient.search({
         index: config.elastic.formIndex.name,
