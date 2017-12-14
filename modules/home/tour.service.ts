@@ -301,7 +301,7 @@ export class TourService {
             steps: TourService.steps
         });
         tour.init();
-        tour.start();
+        tour.start(true);
     }
 
 }
