@@ -3,7 +3,7 @@
     <div style="line-height:40px;">
         <input id="showVersionedHistory" type="checkbox" [(ngModel)]="showVersioned">
         <label for="showVersionedHistory">Only show versioned revisions.</label>
-        <button *ngIf="numberSelected===2" class="btn btn-lg btn-outline-secondary" id="historyCompareBtn"
+        <button *ngIf="numberSelected===2" class="btn btn-lg btn-outline-dark" id="historyCompareBtn"
                 (click)="openHistoryCompareModal()">
             <i class="fa fa-files-o"></i> Compare
         </button>
@@ -76,7 +76,7 @@
                            [(filter)]="filter"></cde-compare-array>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-lg btn-outline-secondary" id="closeHistoryCompareModal" (click)="c('Close click')" type="button">Close
+        <button class="btn btn-lg btn-outline-dark" id="closeHistoryCompareModal" (click)="c('Close click')" type="button">Close
         </button>
     </div>
 </ng-template>

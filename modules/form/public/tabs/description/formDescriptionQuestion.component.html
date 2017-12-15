@@ -24,7 +24,7 @@
         <span *ngIf="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
     </div>
     <div *ngIf="question.question.cde.outdated" class="d-inline-block left error-block"> (Outdated)
-        <button class="btn btn-lg btn-outline-secondary btn-xs updateQuestionBtn"
+        <button class="btn btn-lg btn-outline-dark btn-xs updateQuestionBtn"
                 (click)="openUpdateCdeVersion(question);">
             Update
         </button>

@@ -104,16 +104,16 @@
             </form>
             <div class="ml-auto collapse navbar-collapse" style="width:auto;"
                  id="searchBarContent" role="group" aria-label="Basic example">
-                <button *ngIf="embedded" id="resetSearch" class="btn btn-lg btn-outline-secondary" name="resetSearch"
+                <button *ngIf="embedded" id="resetSearch" class="btn btn-lg btn-outline-dark" name="resetSearch"
                         type="button"
                         (click)="reset()">
                     <i class="fa fa-trash-o"></i> Reset
                 </button>
-                <button id="pinAll" (click)="openPinModal()" class="btn btn-lg btn-outline-secondary" type="button"
+                <button id="pinAll" (click)="openPinModal()" class="btn btn-lg btn-outline-dark" type="button"
                         [hidden]="totalItems <= 0 || module === 'form'" *ngIf="!embedded">
                     <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
                 </button>
-                <button (click)="hideShowFilter()" class="btn btn-lg btn-outline-secondary" id="showHideFilters">
+                <button (click)="hideShowFilter()" class="btn btn-lg btn-outline-dark" id="showHideFilters">
                     <div [hidden]="filterMode">
                         <i class="glyphicon glyphicon-filter"></i> Show Filters
                     </div>
@@ -124,7 +124,7 @@
                 <cde-list-view-controls [(listView)]="resultsView" *ngIf="!embedded"></cde-list-view-controls>
 
                 <div class="btn-group" role="group" *ngIf="!embedded">
-                    <button id="export" type="button" class="btn btn-lg btn-outline-secondary dropdown-toggle"
+                    <button id="export" type="button" class="btn btn-lg btn-outline-dark dropdown-toggle"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-download"></i> Export
                     </button>

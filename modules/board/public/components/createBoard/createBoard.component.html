@@ -1,4 +1,4 @@
-<button class="btn btn-lg  btn-outline-secondary" value="add" (click)="openNewBoard()"
+<button class="btn btn-lg  btn-outline-dark" value="add" (click)="openNewBoard()"
     id="addBoard" style="margin-bottom: 10px;">
         <i class="fa fa-plus"> </i> Add Board
 </button>
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div class="modal-footer" id="newBoardModalFooter">
-                <button class="btn btn-lg btn-outline-secondary" (click)="d()"
+                <button class="btn btn-lg btn-outline-dark" (click)="d()"
                         id="cancelCreate" type="button">Cancel</button>
                 <button class="btn btn-lg btn-warning" (click)="doCreateBoard()"
                         [disabled]="!bForm.form.valid" id="createBoard"

@@ -7,11 +7,11 @@
     <div *ngIf="quickBoardService.number_forms > 0">
         <cde-compare-side-by-side [(elements)]="quickBoardService.forms"></cde-compare-side-by-side>
         <cde-list-view-controls [(listView)]="listViews"></cde-list-view-controls>
-        <button id="qb_form_empty" class="btn btn-lg btn-outline-secondary" value="Empty Quick Board"
+        <button id="qb_form_empty" class="btn btn-lg btn-outline-dark" value="Empty Quick Board"
                 (click)="quickBoardService.emptyFormQuickBoard();">
             <i class="fa fa-trash-o"></i> Empty Quick Board
         </button>
-        <button id="qb_form_export" class="btn btn-lg btn-outline-secondary"
+        <button id="qb_form_export" class="btn btn-lg btn-outline-dark"
                 value="Export Quick Board">
             <i class="fa fa-download"></i> Export Quick Board
         </button>

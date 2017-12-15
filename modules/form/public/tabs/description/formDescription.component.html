@@ -73,7 +73,7 @@
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 <div *ngIf="node.data.elementType === 'form' && !node.data.expanded"
                                      (click)="node.data.expanded = true; node.expand()"
-                                     class="btn btn-lg btn-outline-secondary expand-form">
+                                     class="btn btn-lg btn-outline-dark expand-form">
                                     <i class="fa fa-chevron-right" aria-hidden="true"></i> Expand
                                 </div>
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"

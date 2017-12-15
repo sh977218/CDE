@@ -3,7 +3,7 @@
 
     <div  *ngIf="!selection">
         <div *ngFor="let org of userService.userOrgs">
-            <h4>Embeds for {{org}} <button (click)="addEmbed(org)" id="{{org}}_addEmbed" class="btn btn-lg  btn-outline-secondary">
+            <h4>Embeds for {{org}} <button (click)="addEmbed(org)" id="{{org}}_addEmbed" class="btn btn-lg  btn-outline-dark">
                 <i class="fa fa-plus-square-o"></i> Add
             </button></h4>
             <span *ngIf="embeds[org]?.length > 0">
@@ -70,7 +70,7 @@
                         <br>
                         <div class="boxed-div">
                             <h4>Names (besides primary)</h4>
-                            <button (click)="addCdeName()" class="btn btn-lg btn-outline-secondary" id="addName">Add Name</button>
+                            <button (click)="addCdeName()" class="btn btn-lg btn-outline-dark" id="addName">Add Name</button>
                             <div *ngFor="let thisName of selection.cde.otherNames; let $index = index" class="boxed-div">
                                 <button (click)="selection.cde.otherNames.splice($index, 1)"
                                         id="name.{{$index}}.remove" title="Remove">
@@ -88,7 +88,7 @@
                         <br>
                         <div class="boxed-div">
                             <h4>Identifiers</h4>
-                            <button (click)="addCdeId()" class="btn btn-lg btn-outline-secondary" id="addId">Add ID</button>
+                            <button (click)="addCdeId()" class="btn btn-lg btn-outline-dark" id="addId">Add ID</button>
                             <div *ngFor="let thisId of selection.cde.ids; let $index = index" class="boxed-div">
                                 <button (click)="selection.cde.ids.splice($index, 1)"
                                         id="id.{{$index}}.remove" title="Remove">
@@ -112,7 +112,7 @@
                         <br>
                         <div class="boxed-div">
                             <h4>Classifications</h4>
-                            <button (click)="addCdeClassification()" class="btn btn-lg btn-outline-secondary" id="addClassification">Add Classification</button>
+                            <button (click)="addCdeClassification()" class="btn btn-lg btn-outline-dark" id="addClassification">Add Classification</button>
                             <div *ngFor="let thisClassif of selection.cde.classifications; let $index = index" class="boxed-div">
                                 <button (click)="selection.cde.classifications.splice($index, 1)"
                                         id="classif.{{$index}}.remove" title="Remove">
@@ -195,11 +195,11 @@
                 </div>
             </div>
 
-            <button class="btn btn-lg btn-outline-secondary" (click)="save()" *ngIf="selection.cde || selection.form"
+            <button class="btn btn-lg btn-outline-dark" (click)="save()" *ngIf="selection.cde || selection.form"
                     [disabled]="!newEmbedForm.valid" id="saveEmbed">
                 <i class="fa fa-save"></i> Save</button>
 
-            <button class="btn btn-lg btn-outline-secondary" (click)="cancel()" *ngIf="selection.cde || selection.form">
+            <button class="btn btn-lg btn-outline-dark" (click)="cancel()" *ngIf="selection.cde || selection.form">
                 <i class="fa fa-close"></i> Cancel</button>
 
             <br><br>

@@ -4,12 +4,12 @@
     </h4>
     <ng-container *ngIf="!elt.isDraft">
         <h4> Classification</h4>
-        <button *ngIf="isAllowedModel.isOrgCurator()" class="btn btn-lg  btn-outline-secondary" id="openClassificationModalBtn"
+        <button *ngIf="isAllowedModel.isOrgCurator()" class="btn btn-lg  btn-outline-dark" id="openClassificationModalBtn"
                 value="add" (click)="openClassifyItemModal()">
             <i class="fa fa-folder-open-o"> </i> Classify this Form
         </button>
         <button *ngIf="isAllowedModel.isOrgCurator() && elt.formElements.length > 0"
-                class="btn btn-lg btn-outline-secondary" id="openClassifyCdesModalBtn"
+                class="btn btn-lg btn-outline-dark" id="openClassifyCdesModalBtn"
                 (click)="openClassifyCdesModal()">
             <i class="fa fa-indent"></i> Classify CDEs
         </button>

@@ -4,7 +4,7 @@
     <ng-container *ngFor="let name of elt.naming;let i = index">
         <dl class="row">
             <dt class="col-3 text-right">
-                <span (click)="removeNamingByIndex(i)" *ngIf="canEdit && !name.edit" class="btn-outline-secondary fa fa-trash-o"
+                <span (click)="removeNamingByIndex(i)" *ngIf="canEdit && !name.edit" class="btn-outline-dark fa fa-trash-o"
                       id="removeNaming-{{i}}" title="Remove"></span>
                 <cde-sortable-array [theArray]="elt.naming" [index]="i" (cb)="onEltChange.emit()"></cde-sortable-array>
                 Name:
@@ -30,7 +30,7 @@
         <hr>
     </ng-container>
     <button *ngIf="canEdit" id="openNewNamingModalBtn"
-            class="btn btn-lg  btn-outline-secondary" (click)="openNewNamingModal();">
+            class="btn btn-lg  btn-outline-dark" (click)="openNewNamingModal();">
         <i class="fa fa-plus"></i> Add Naming
     </button>
 </div>
@@ -48,10 +48,10 @@
             <div class="form-group">
                 <label for="newDefinition">Definition</label>
                 <div id="newDefinition">
-                    <button type="button" class="btn btn-lg btn-outline-secondary btn-xs" (click)="newNaming.definitionFormat = '';">
+                    <button type="button" class="btn btn-lg btn-outline-dark btn-xs" (click)="newNaming.definitionFormat = '';">
                         Plain Text
                     </button>
-                    <button type="button" class="btn btn-lg btn-outline-secondary btn-xs" (click)="newNaming.definitionFormat = 'html';">
+                    <button type="button" class="btn btn-lg btn-outline-dark btn-xs" (click)="newNaming.definitionFormat = 'html';">
                         Rich Text
                     </button>
                     <textarea name="definition" *ngIf="newNaming.definitionFormat !== 'html'"
@@ -76,7 +76,7 @@
             </div>
         </div>
         <div class="modal-footer" id="newNamingModalFooter">
-            <button class="btn btn-lg btn-outline-secondary" (click)="c('Close click')" id="cancelNewNamingBtn" name="cancelNewNamingBtn"
+            <button class="btn btn-lg btn-outline-dark" (click)="c('Close click')" id="cancelNewNamingBtn" name="cancelNewNamingBtn"
                     type="button">Cancel
             </button>
             <button class="btn btn-lg btn-warning" [disabled]="!newNamingForm.form.valid" id="createNewNamingBtn"
