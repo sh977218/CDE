@@ -18,8 +18,9 @@ var path = require('path')
     , morganLogger = require('morgan')
     , compress = require('compression')
     , helmet = require('helmet')
-    , ioServer = require('./modules/system/node-js/ioServer')
-;
+    , ioServer = require('./modules/system/node-js/ioServer');
+const winston = require('winston');
+
 
 require('./modules/system/node-js/elastic').initEs();
 
@@ -46,12 +47,6 @@ domain.on('error', function (err) {
     console.log(err.stack);
     logging.errorLogger.error("Error: Domain Error", {stack: err.stack, origin: "app.domain.error"});
 });
-
-var winstonStream = {
-    write: function (message) {
-        logging.expressLogger.info(message);
-    }
-};
 
 // all environments
 app.set('port', config.port || 3000);
@@ -176,7 +171,27 @@ morganLogger.token('real-remote-addr', function (req) {
     return getRealIp(req);
 });
 
-var expressLogger = morganLogger(JSON.stringify(logFormat), {stream: winstonStream});
+let winstonStream = {
+    write: function (message) {
+        logging.expressLogger.info(message);
+    }
+};
+
+let expressLogger = morganLogger(JSON.stringify(logFormat), {stream: winstonStream});
+
+if (config.expressLogFile) {
+    const Rotate = require('winston-logrotate').Rotate;
+    let logger = new (winston.Logger)({ transports: [new Rotate({
+            file: config.expressLogFile
+        })]
+    });
+    let fileStream = {
+        write: function (message) {
+            logger.info(message);
+        }
+    };
+    app.use(morganLogger('combined', {stream: fileStream}));
+}
 
 var connections = 0;
 setInterval(function () {

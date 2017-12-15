@@ -1,9 +1,8 @@
-var winston = require('winston')
-    , util = require('util')
-    , dbLogger = require('./dbLogger.js')
-    , config = require('./parseConfig')
-    , noDbLogger = require('./noDbLogger')
-;
+const winston = require('winston');
+const util = require('util');
+const dbLogger = require('./dbLogger.js');
+const config = require('./parseConfig');
+const noDbLogger = require('./noDbLogger');
 
 var MongoLogger = winston.transports.MongoLogger = function (options) {
     this.name = 'mongoLogger';
@@ -73,11 +72,12 @@ MongoErrorLogger.prototype.log = function (level, msg, meta) {
 
 exports.MongoErrorLogger = MongoErrorLogger;
 
-var expressLoggerCnf = {
+let expressLoggerCnf = {
   transports: [ new winston.transports.MongoLogger({
         json: true
     })]
 };
+
 
 var expressErrorLoggerCnf = {
   transports: [
@@ -87,8 +87,9 @@ var expressErrorLoggerCnf = {
   ]
 };
 
+
 if (config.expressToStdout) {
-    var consoleLogCnf = {
+    let consoleLogCnf = {
         level: 'verbose',
         colorize: true,
         timestamp: true
@@ -96,8 +97,6 @@ if (config.expressToStdout) {
     expressLoggerCnf.transports.push(new winston.transports.Console(consoleLogCnf));
     expressErrorLoggerCnf.transports.push(new winston.transports.Console(consoleLogCnf));
 }
-
-
 
 exports.expressLogger = new (winston.Logger)(expressLoggerCnf);
 exports.errorLogger = new (winston.Logger)(expressErrorLoggerCnf);
