@@ -158,7 +158,7 @@
 
             <div *ngIf="descriptorID">
                 {{descriptorID}} -- {{descriptorName}}
-                <button *ngIf="descriptorName.length > 0" class="btn btn-lg btn-outline-secondary btn-sm" id="addMeshDescButton"
+                <button *ngIf="descriptorName.length > 0" class="btn btn-lg btn-outline-secondary " id="addMeshDescButton"
                         type="submit" [disabled]="mapping.meshDescriptors.indexOf(descriptorID) > -1">Add
                 </button>
             </div>

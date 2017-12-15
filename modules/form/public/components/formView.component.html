@@ -93,24 +93,24 @@
             </ul>
         </div>
         <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
-                class="btn btn-lg btn-small btn-outline-secondary"
+                class="btn btn-lg  btn-outline-secondary"
                 title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
             <i class="fa fa-plus"></i><span class="hidden-sm-down-down"> Add to Quick Board</span>
         </button>
-        <button id="addToBoard" class="btn btn-lg btn-small btn-outline-secondary" title="Add to Board"
+        <button id="addToBoard" class="btn btn-lg  btn-outline-secondary" title="Add to Board"
                 (click)="mltPinModal.open([elt], 'cde')">
             <i class="fa fa-thumb-tack"></i><span class="hidden-sm-down-down"> Add to Board</span>
         </button>
         <button *ngIf="isAllowedModel.loggedIn()"
-                id="pinAllCdes" class="btn btn-lg btn-small btn-outline-secondary"
+                id="pinAllCdes" class="btn btn-lg  btn-outline-secondary"
                 title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
             <i class="fa fa-cogs"></i><span class="hidden-sm-down-down"> Pin CDEs</span>
         </button>
-        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyFormBtn" class="btn btn-lg btn-small btn-outline-secondary"
+        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyFormBtn" class="btn btn-lg  btn-outline-secondary"
                 title="Copy Form" (click)="openCopyElementModal()">
             <i class="fa fa-clone"></i><span class="hidden-sm-down-down"> Copy</span>
         </button>
-        <button id="discussBtn" class="btn btn-lg btn-small btn-outline-secondary" title="Discuss CDE"
+        <button id="discussBtn" class="btn btn-lg  btn-outline-secondary" title="Discuss CDE"
                 (click)="commentMode = !commentMode;">
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
             <span class="hidden-sm-down-down"> Discuss</span>

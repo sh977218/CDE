@@ -6,7 +6,7 @@
 <ng-template #compareSideBySideContent id="compareSideBySideModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="compareSideBySideModalHeader">
         <div class="col-6 leftObj">
-            <a id="sourceElement" class='btn btn-lg btn-small btn-outline-secondary' target="_blank" [href]=leftUrl>
+            <a id="sourceElement" class='btn btn-lg  btn-outline-secondary' target="_blank" [href]=leftUrl>
                 <i class="fa fa-eye"></i> View Full Detail</a>
             <ng-container *ngIf="canMergeDataElement">
                 <cde-merge-data-element [source]="left" [destination]="right"
@@ -18,7 +18,7 @@
             </ng-container>
         </div>
         <div class="col-6 rightObj">
-            <a id="destinationElement" class='btn btn-lg btn-small btn-outline-secondary' target="_blank" [href]=rightUrl>
+            <a id="destinationElement" class='btn btn-lg  btn-outline-secondary' target="_blank" [href]=rightUrl>
                 <i class="fa fa-eye"></i> View Full Detail</a>
             <ng-container *ngIf="canMergeDataElement">
                 <cde-merge-data-element [source]="left" [destination]="right"

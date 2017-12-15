@@ -55,19 +55,19 @@
             </ul>
         </div>
         <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
-                class="btn btn-lg btn-small btn-outline-secondary"
+                class="btn btn-lg  btn-outline-secondary"
                 title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
             <i class="fa fa-plus"></i><span class="hidden-sm-down-down"> Add to Quick Board</span>
         </button>
-        <button id="addToBoard" class="btn btn-lg btn-small btn-outline-secondary" title="Add to Board"
+        <button id="addToBoard" class="btn btn-lg  btn-outline-secondary" title="Add to Board"
                 (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
             <i class="fa fa-thumb-tack"></i><span class="hidden-sm-down-down"> Add to Board</span>
         </button>
-        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyCdeBtn" class="btn btn-lg btn-small btn-outline-secondary"
+        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyCdeBtn" class="btn btn-lg  btn-outline-secondary"
                 title="Copy CDE" (click)="openCopyElementModal()">
             <i class="fa fa-clone"></i><span class="hidden-sm-down-down"> Copy</span>
         </button>
-        <button id="discussBtn" class="btn btn-lg btn-small btn-outline-secondary" title="Discuss CDE"
+        <button id="discussBtn" class="btn btn-lg  btn-outline-secondary" title="Discuss CDE"
                 (click)="commentMode = !commentMode;">
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
             <span class="hidden-sm-down-down"> Discuss</span>

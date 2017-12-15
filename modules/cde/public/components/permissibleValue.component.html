@@ -193,12 +193,12 @@
                  role="alert">There are validation errors. {{elt.pvNotValidMsg }}
             </div>
             <ng-container *ngIf="canEdit">
-                <button class="btn btn-lg btn-small btn-outline-secondary" role="button" id="openAddPermissibleValueModelBtn"
+                <button class="btn btn-lg  btn-outline-secondary" role="button" id="openAddPermissibleValueModelBtn"
                         title="Add Permissible Value"
                         (click)="openNewPermissibleValueModal()">
                     <i class="fa fa-plus"></i> Add Permissible Value
                 </button>
-                <button class="btn btn-lg btn-small btn-outline-secondary" role="button" id="removeAllPermissibleValueBtn"
+                <button class="btn btn-lg  btn-outline-secondary" role="button" id="removeAllPermissibleValueBtn"
                         title="Remove All Values"
                         (click)="removeAllPermissibleValues()">
                     <i class="fa fa-trash-o"></i> Remove All Values
@@ -262,7 +262,7 @@
         </table>
         <div *ngIf="vsacMappingExists() && !isAllowedModel.loggedIn()">Please log in to see VSAC mapping.</div>
         <a *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()"
-           class="btn btn-lg btn-small btn-outline-secondary mt20"
+           class="btn btn-lg  btn-outline-secondary mt20"
            (click)="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
     </ng-container>
 </div>
