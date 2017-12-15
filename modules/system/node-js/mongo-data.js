@@ -409,14 +409,11 @@ exports.getFile = function (user, id, res) {
 };
 
 exports.updateOrg = function (org, res) {
-    var id = org._id;
+    let id = org._id;
     delete org._id;
-    Org.findOneAndUpdate({_id: id}, org, {new: true}, function (err, found) {
-        if (found) {
-            res.send('Org has been updated.');
-        } else {
-            res.send('Org does not exist.');
-        }
+    Org.findOneAndUpdate({_id: id}, org, {new: true}, (err, found) => {
+        if (err || !found) res.status(500).send('Could not update');
+        else res.send();
     });
 };
 
