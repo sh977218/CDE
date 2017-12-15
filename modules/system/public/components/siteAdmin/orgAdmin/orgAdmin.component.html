@@ -1,21 +1,23 @@
-<form class="form-inline pt40 pb40" #adminForm="ngForm" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
+<form class="form-inline pt40 pb40" #adminForm="ngForm" role="form" id="newOrgAdminForm" name="newOrgAdminForm"
+      novalidate>
     Make&nbsp;
-    <div class="form-group">
+    <div class="form-group mx-1">
         <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
                placeholder="enter user name" [(ngModel)]="newAdmin.username"
                [ngbTypeahead]="searchTypeahead"
                required>
     </div>
     &nbsp;an administrator for&nbsp;
-    <div class="form-group">
+    <div class="form-group mx-1">
         <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"
                 [(ngModel)]="newAdmin.orgName" required>
             <option value="" disabled>select organization</option>
             <option *ngFor="let myOrgAdmin of orgAdmins" [value]="myOrgAdmin.name">{{myOrgAdmin.name}}</option>
         </select>
     </div>
-    <button type="submit" class="btn btn-lg btn-success" id="newOrgAdminSubmit" (click)="addOrgAdmin()"
-            [disabled]="!adminForm.form.valid">Make Admin</button>
+    <button type="submit" class="btn btn-success ml-1" id="newOrgAdminSubmit" (click)="addOrgAdmin()"
+            [disabled]="!adminForm.form.valid">Make Admin
+    </button>
 </form>
 <table class="table table-border table-responsive">
     <tr>

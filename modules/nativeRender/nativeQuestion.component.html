@@ -33,17 +33,17 @@
                                                    'checkbox-inline': formElement.question.multiselect,
                                                    'radio-inline': !formElement.question.multiselect}"
                                            [title]="nrs.getPvLabel(pv)">
-                                        <input type="radio" *ngIf="!formElement.question.multiselect"
-                                               [name]="formElement.questionId"
+                                        <input *ngIf="!formElement.question.multiselect" type="radio"
+                                               class="form-check-input" [name]="formElement.questionId"
+                                               [title]="formElement.question.answer"
                                                [attr.name]="formElement.questionId"
                                                [(ngModel)]="formElement.question.answer"
-                                               [title]="formElement.question.answer"
                                                [value]="pv.permissibleValue"
                                                [required]="formElement.question.required"
                                                [disabled]="!formElement.question.editable"/>
-                                        <input type="checkbox" *ngIf="formElement.question.multiselect"
-                                               [name]="formElement.questionId" title="multiple select"
-                                               [attr.name]="formElement.questionId"
+                                        <input *ngIf="formElement.question.multiselect" type="checkbox"
+                                               class="form-check-input" [name]="formElement.questionId"
+                                               title="multiple select" [attr.name]="formElement.questionId"
                                                [checked]="nrs.checkboxIsChecked(formElement.question, pv.permissibleValue)"
                                                (change)="nrs.checkboxOnChange($event, formElement.question, pv.permissibleValue)"
                                                [value]="pv.permissibleValue"

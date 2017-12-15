@@ -1,5 +1,5 @@
 <br>
-<button id="addRule" class="btn btn-lg btn-success " (click)="openAddRuleModal()">Add New Rule</button>
+<button id="addRule" class="btn btn-success " (click)="openAddRuleModal()">Add New Rule</button>
 <div *ngFor="let orgName of orgNames">
     <div *ngIf="userOrgs[orgName].length > 0">
         <h3>CDEs classified by {{orgName}}</h3>
@@ -20,7 +20,7 @@
                 <td>{{rule.field}}</td>
                 <td>{{rule.rule.regex}}</td>
                 <td>{{rule.occurence}}</td>
-                <td><button (click)="disableRule(orgName, rule)" class="btn btn-lg btn-danger btn-xs">Remove</button></td>
+                <td><button (click)="disableRule(orgName, rule)" class="btn btn-danger btn-xs">Remove</button></td>
             </tr>
         </table>
     </div>

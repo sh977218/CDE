@@ -69,7 +69,7 @@
         </button>
         <button id="discussBtn" class="btn btn-lg  btn-outline-secondary" title="Discuss CDE"
                 (click)="commentMode = !commentMode;">
-            <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
+            <i class="fa fa-comment" [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}"></i>
             <span class="hidden-sm-down-down"> Discuss</span>
         </button>
         <div class="navbar-expand-md navbar-light d-inline-block">

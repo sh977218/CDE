@@ -19,6 +19,12 @@ import { NativeRenderService } from './nativeRender.service';
     :host >>> label.native-question-label {
         font-weight: 700;
     }
+    :host >>> .checkbox-inline > input[type="checkbox"] {
+        margin-top: 6px;
+    }
+    :host >>> .radio-inline > input[type="radio"] {
+        margin-top: 4px;
+    }
     `]
 })
 export class NativeQuestionComponent implements OnInit {
@@ -38,7 +44,8 @@ export class NativeQuestionComponent implements OnInit {
         this.previousUom = this.formElement.question.answerUom;
     }
 
-    constructor(public nrs: NativeRenderService) {}
+    constructor(public nrs: NativeRenderService) {
+    }
 
     classColumns(pvIndex, index) {
         let result = "";
@@ -110,7 +117,7 @@ export class NativeQuestionComponent implements OnInit {
         if (!t)
             t = {hour: 0, minute: 0, second: 0};
 
-        let m = moment([d.year, d.month - 1, d.day, t.hour, t.minute,  t.second]);
+        let m = moment([d.year, d.month - 1, d.day, t.hour, t.minute, t.second]);
         if (m.isValid()) {
             if (this.formElement.question.datatypeDate && this.formElement.question.datatypeDate.format)
                 this.formElement.question.answer = m.format(this.formElement.question.datatypeDate.format);

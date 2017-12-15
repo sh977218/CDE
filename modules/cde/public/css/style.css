@@ -380,11 +380,6 @@ del {
     background: #ffbbbb;
 }
 
-.discussWrench {
-    -webkit-animation: wrench 10s linear infinite;
-    animation: wrench 10s linear infinite;
-}
-
 /* feedback */
 .feedback-btn.feedback-btn-gray {
     font-family: inherit !important;

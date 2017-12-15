@@ -46,15 +46,15 @@
                     <ng-template ngbPanelContent>
                         <div class="card-body">
                             <dl class="row">
-                                <dt class="col-3">User</dt>
+                                <dt class="col-3 text-right">User</dt>
                                 <dd class="col-9">{{message.author.name}}</dd>
                             </dl>
                             <dl class="dl-horizontal">
-                                <dt class="col-3">Reply</dt>
+                                <dt class="col-3 text-right">Reply</dt>
                                 <dd class="col-9">{{message.typeCommentReply.comment.text}}</dd>
                             </dl>
                             <dl class="dl-horizontal">
-                                <dt class="col-3">Element</dt>
+                                <dt class="col-3 text-right">Element</dt>
                                 <dd class="col-9">
                                     <a target="_blank" class="linkToElt"
                                        href="/{{message.typeCommentReply.element.eltType==='cde'?'deView':'formView'}}?tinyId={{message.typeCommentReply.element.eltId}}">{{message.typeCommentReply.element.name}}</a>
@@ -79,7 +79,7 @@
                         <div class="card-body">
                             <h4>{{message.humanType}}</h4>
                             <dl class="row">
-                                <dt class="col-3">User</dt>
+                                <dt class="col-3 text-right">User</dt>
                                 <dd class="col-9">{{message.author.name}}
                                     <button class="btn btn-lg btn-xs btn-outline-secondary authorizeUser"
                                             (click)="openAuthorizeUserModal(message)"
@@ -88,11 +88,11 @@
                                 </dd>
                             </dl>
                             <dl class="row">
-                                <dt class="col-3">Comment</dt>
+                                <dt class="col-3 text-right">Comment</dt>
                                 <dd class="col-9">{{message.typeCommentApproval.comment.text}}</dd>
                             </dl>
                             <dl class="row">
-                                <dt class="col-3">Element</dt>
+                                <dt class="col-3 text-right">Element</dt>
                                 <dd class="col-9">
                                     <a target="_blank" class="linkToElt"
                                        href="/{{message.typeCommentApproval.element.eltType==='cde'?'deView':'formView'}}?tinyId={{message.typeCommentApproval.element.eltId}}">{{message.typeCommentApproval.element.name}}</a>
@@ -126,18 +126,18 @@
                         <div class="card-body">
                             <h4>{{ message.humanType}}</h4>
                             <dl class="row">
-                                <dt class="col-3">User:</dt>
+                                <dt class="col-3 text-right">User:</dt>
                                 <dd class="col-9">{{message.author.name}}
 
-                                <dt class="col-3">File:</dt>
+                                <dt class="col-3 text-right">File:</dt>
                                 <dd class="col-9"><a class="viewAttachmentLink" target="_blank"
                                                      href="/data/{{message.typeAttachmentApproval.fileid}}">
                                     {{message.typeAttachmentApproval.filename}}</a></dd>
 
-                                <dt class="col-3">Date:</dt>
+                                <dt class="col-3 text-right">Date:</dt>
                                 <dd class="col-9">{{message.typeAttachmentApproval.uploadDate | date : medium }}</dd>
 
-                                <dt class="col-3">Scanned:</dt>
+                                <dt class="col-3 text-right">Scanned:</dt>
                                 <dd class="col-9">
                                     <span *ngIf="message.typeAttachmentApproval.scanned">Scanned by ClamAV</span>
                                     <span class="text-danger" *ngIf="!message.typeAttachmentApproval.scanned">This file was not scanned by antivirus!</span>
@@ -173,11 +173,11 @@
                         <div class="card-body">
                             <h4>{{message.humanType}}</h4>
                             <dl class="row">
-                                <dt class="col-3">User</dt>
+                                <dt class="col-3 text-right">User</dt>
                                 <dd class="col-9">{{message.author.name}}</dd>
                             </dl>
                             <dl class="row">
-                                <dt class="col-3">Element</dt>
+                                <dt class="col-3 text-right">Element</dt>
                                 <dd class="col-9">
                                     <a target="_blank" class="linkToElt"
                                        id="board_{{message.typeBoardApproval.element.name}}"

@@ -6,7 +6,7 @@
             </h3>
             <div class="ml-auto pull-right">
                 <div *ngIf="reviewers?.length > 0" class="boxed-div p-0 m-0 d-inline-block">
-                    <div class="overflowHidden">
+                    <div class="overflowHidden p-1">
                         <b *ngIf="!board.review?.startDate && !board.review?.endDate">Not started</b>
                         <b *ngIf="board.review?.startDate && board.review?.endDate">Ended</b>
                         <b *ngIf="board.review?.startDate && !board.review?.endDate">In progress</b>
@@ -39,13 +39,15 @@
                         </ng-container>
                     </div>
                 </div>
-                <button *ngIf="userService.user.username === board.owner.username" class="btn btn-lg btn-outline-secondary"
+                <button *ngIf="userService.user.username === board.owner.username"
+                        class="btn btn-lg btn-outline-secondary"
                         id="shareBoardBtn" (click)="shareBoard()">
                     <i class="fa fa-link"></i> Share
                 </button>
-                <button id="discussBtn" class="btn btn-lg btn-outline-secondary" role="button" title="Discuss CDE"
+                <button id="discussBtn" class="btn btn-lg btn-outline-secondary " role="button" title="Discuss CDE"
                         type="button" (click)="commentMode = !commentMode;">
-                    <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
+                    <i class="fa fa-comment"
+                       [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}"></i> Discuss
                 </button>
             </div>
         </div>
@@ -54,7 +56,8 @@
                 <cde-list-view-controls *ngIf="elts.length > 0" [(listView)]="listViews"></cde-list-view-controls>
 
                 <div *ngIf="board.type === 'cde' && elts.length > 0" class="dropdown pull-left">
-                    <button class="btn btn-lg btn-outline-secondary dropdown-toggle" type="button" id="export" data-toggle="dropdown"
+                    <button class="btn btn-lg btn-outline-secondary dropdown-toggle" type="button" id="export"
+                            data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-download"></i> Export Board
                     </button>
@@ -71,7 +74,8 @@
                 </div>
 
                 <button *ngIf="userService.userOrgs?.length > 0 && elts.length > 0"
-                        id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s" class="btn btn-lg btn-outline-secondary"
+                        id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s"
+                        class="btn btn-lg btn-outline-secondary"
                         (click)="classifyEltBoard()">
                     <i class="fa fa-folder-open-o"></i> Classify All {{board.type==='form'?'Form':'CDE'}}s
                 </button>
