@@ -25,6 +25,12 @@ import { NativeRenderService } from './nativeRender.service';
     :host >>> .radio-inline > input[type="radio"] {
         margin-top: 4px;
     }
+    
+    :host >>> .x {
+        position: absolute;
+        margin-top: 0.25rem;
+        margin-left: -1.25rem;
+    }
     `]
 })
 export class NativeQuestionComponent implements OnInit {
