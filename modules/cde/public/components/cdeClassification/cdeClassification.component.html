@@ -4,7 +4,7 @@
     </h4>
     <ng-container *ngIf="!elt.isDraft">
         <h4> Classification</h4>
-        <button *ngIf="isAllowedModel.isOrgCurator()" class="btn btn-small btn-outline-secondary" id="openClassificationModalBtn"
+        <button *ngIf="isAllowedModel.isOrgCurator()" class="btn btn-lg btn-small btn-outline-secondary" id="openClassificationModalBtn"
                 value="add" (click)="openClassifyItemModal()">
             <i class="fa fa-folder-open-o"> </i> Classify this CDE
         </button>

@@ -13,7 +13,7 @@
                            [(ngModel)]="searchSettings.q" aria-labelledby="l1" maxlength="500"
                            [ngbTypeahead]="getAutocompleteSuggestions" [focusFirst]="false">
                     <button id="search.submit" (click)="termSearch()" type="submit"
-                            class="btn btn-danger btn-lg">
+                            class="btn btn-lg btn-danger btn-lg">
                         <i class="fa fa-search"></i> Search
                     </button>
                     <!-- Error display area -->
@@ -98,22 +98,22 @@
                 <input id="ftsearch-input" class="form-control pull-left" type="text" name="q" placeholder="Search"
                        [focusFirst]="false" [(ngModel)]="searchSettings.q" maxlength="500"
                        [ngbTypeahead]="getAutocompleteSuggestions" autocomplete="off" style="width:80%;">
-                <button id="search.submit" class="btn btn-danger d-inline-block" type="submit"
+                <button id="search.submit" class="btn btn-lg btn-danger d-inline-block" type="submit"
                         (click)="termSearch()"><i class="fa fa-search"></i> Search
                 </button>
             </form>
             <div class="ml-auto collapse navbar-collapse" style="width:auto;"
                  id="searchBarContent" role="group" aria-label="Basic example">
-                <button *ngIf="embedded" id="resetSearch" class="btn btn-outline-secondary" name="resetSearch"
+                <button *ngIf="embedded" id="resetSearch" class="btn btn-lg btn-outline-secondary" name="resetSearch"
                         type="button"
                         (click)="reset()">
                     <i class="fa fa-trash-o"></i> Reset
                 </button>
-                <button id="pinAll" (click)="openPinModal()" class="btn btn-outline-secondary" type="button"
+                <button id="pinAll" (click)="openPinModal()" class="btn btn-lg btn-outline-secondary" type="button"
                         [hidden]="totalItems <= 0 || module === 'form'" *ngIf="!embedded">
                     <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
                 </button>
-                <button (click)="hideShowFilter()" class="btn btn-outline-secondary" id="showHideFilters">
+                <button (click)="hideShowFilter()" class="btn btn-lg btn-outline-secondary" id="showHideFilters">
                     <div [hidden]="filterMode">
                         <i class="glyphicon glyphicon-filter"></i> Show Filters
                     </div>
@@ -124,7 +124,7 @@
                 <cde-list-view-controls [(listView)]="resultsView" *ngIf="!embedded"></cde-list-view-controls>
 
                 <div class="btn-group" role="group" *ngIf="!embedded">
-                    <button id="export" type="button" class="btn btn-outline-secondary dropdown-toggle"
+                    <button id="export" type="button" class="btn btn-lg btn-outline-secondary dropdown-toggle"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-download"></i> Export
                     </button>
@@ -397,7 +397,7 @@
         The export will list the CDE(s) that fail registration status rules for the selected status.
     </div>
     <div class="modal-footer">
-        <button class="btn btn-warning" (click)="d()" id="cancelCopy">Cancel</button>
-        <button class="btn btn-success" (click)="c({status: validRulesStatus})" id="exportVR">Export</button>
+        <button class="btn btn-lg btn-warning" (click)="d()" id="cancelCopy">Cancel</button>
+        <button class="btn btn-lg btn-success" (click)="c({status: validRulesStatus})" id="exportVR">Export</button>
     </div>
 </ng-template>

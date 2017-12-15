@@ -13,7 +13,7 @@
             <option *ngFor="let o of orgs">{{o.name}}</option>
         </select>
     </div>
-    <button type="submit" class="btn btn-success" id="addOrg" (click)="addOrg()"
+    <button type="submit" class="btn btn-lg btn-success" id="addOrg" (click)="addOrg()"
             [disabled]="!newOrgForm.form.valid">Add Organization</button>
 </form>
 <table class="table table-border table-responsive">

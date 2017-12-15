@@ -441,7 +441,7 @@ label.input-group-addon {
 }
 
 @media (max-width: 768px) {
-    .feedback-btn {
+    .feedback-btn btn-lg {
         display: none;
     }
 }

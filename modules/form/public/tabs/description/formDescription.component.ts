@@ -25,6 +25,10 @@ import { Http } from '@angular/http';
     templateUrl: "formDescription.component.html",
     animations: [copySectionAnimation],
     styles: [`
+        :host >>> .badge {
+            font-size: 100%;
+        }
+        
         :host >>> .tree {
             cursor: default;
         }
@@ -46,7 +50,7 @@ import { Http } from '@angular/http';
             margin-bottom: 1px;
         }
 
-        :host >>> .panel-badge-btn {
+        :host >>> .panel-badge-btn btn-lg {
             color: white;
             background-color: #333;
         }

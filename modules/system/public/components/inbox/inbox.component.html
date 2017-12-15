@@ -27,8 +27,8 @@
         Do you want to proceed?
     </div>
     <div class="modal-footer">
-        <button id="authorizeUserOK" class="btn btn-primary" (click)="authorizeUser(currentMessage)">Yes</button>
-        <button class="btn btn-warning" (click)="d()">No</button>
+        <button id="authorizeUserOK" class="btn btn-lg btn-primary" (click)="authorizeUser(currentMessage)">Yes</button>
+        <button class="btn btn-lg btn-warning" (click)="d()">No</button>
     </div>
 </ng-template>
 
@@ -61,7 +61,7 @@
                                 </dd>
                             </dl>
 
-                            <button *ngIf="type === 'received'" class="approveComment btn btn-sm btn-outline-secondary"
+                            <button *ngIf="type === 'received'" class="approveComment btn btn-lg btn-sm btn-outline-secondary"
                                     [ngClass]="{disabled: message.states[0].action==='Approved'}"
                                     (click)="closeMessage(message)" type="button">Archive
                             </button>
@@ -81,7 +81,7 @@
                             <dl class="row">
                                 <dt class="col-3">User</dt>
                                 <dd class="col-9">{{message.author.name}}
-                                    <button class="btn btn-xs btn-outline-secondary authorizeUser"
+                                    <button class="btn btn-lg btn-xs btn-outline-secondary authorizeUser"
                                             (click)="openAuthorizeUserModal(message)"
                                             type="button">Authorize User Permanently
                                     </button>
@@ -99,12 +99,12 @@
                                 </dd>
                             </dl>
                             <ng-container *ngIf="type === 'received'">
-                                <button class="approveComment btn btn-sm btn-outline-secondary"
+                                <button class="approveComment btn btn-lg btn-sm btn-outline-secondary"
                                         (click)="approveComment(message)"
                                         [ngClass]="{disabled: message.states[0].action === 'Approved'}"
                                         type="button">Approve Comment
                                 </button>
-                                <button class="declineComment btn btn-sm btn-outline-secondary"
+                                <button class="declineComment btn btn-lg btn-sm btn-outline-secondary"
                                         (click)="declineComment(message)"
                                         [ngClass]="{disabled: message.states[0].action === 'Approved'}"
                                         type="button">Decline Comment
@@ -145,13 +145,13 @@
                             </dl>
 
 
-                            <button *ngIf="type === 'received'" class="approveAttachment btn btn-sm btn-outline-secondary"
+                            <button *ngIf="type === 'received'" class="approveAttachment btn btn-lg btn-sm btn-outline-secondary"
                                     id='approve-{{message.typeAttachmentApproval.filename}}'
                                     [ngClass]="{disabled: message.states[0].action === 'Approved'}" type="button"
                                     (click)="approveAttachment(message)">Approve Attachment
                             </button>
                             <span *ngIf="message.states[0].action==='Approved'">Approved on {{ message.states[0].date | date }}</span>
-                            <button class="declineAttachment btn btn-sm btn-outline-secondary"
+                            <button class="declineAttachment btn btn-lg btn-sm btn-outline-secondary"
                                     id='decline-{{message.typeAttachmentApproval.filename}}'
                                     (click)="declineAttachment(message)"
                                     [ngClass]="{disabled: message.states[0].action === 'Approved'}" type="button">
@@ -184,7 +184,7 @@
                                        href="/board/{{message.typeBoardApproval.element.eltId}}">{{message.typeBoardApproval.element.name}}</a>
                                 </dd>
                             </dl>
-                            <button *ngIf="type === 'received'" class="approveComment btn btn-sm btn-outline-secondary"
+                            <button *ngIf="type === 'received'" class="approveComment btn btn-lg btn-sm btn-outline-secondary"
                                     (click)="closeMessage(message)"
                                     [ngClass]="{disabled: message.states[0].action === 'Approved'}">Archive
                             </button>

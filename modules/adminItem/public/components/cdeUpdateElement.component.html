@@ -1,6 +1,6 @@
 <div style="margin-top: 15px">
-    <button id="discardChanges" class="btn btn-outline-secondary" (click)="discardChange()">Discard Changes</button>
-    <button id="openSave" class="btn btn-primary" (click)="saveModal.openSaveModal()">Save Changes</button>
+    <button id="discardChanges" class="btn btn-lg btn-outline-secondary" (click)="discardChange()">Discard Changes</button>
+    <button id="openSave" class="btn btn-lg btn-primary" (click)="saveModal.openSaveModal()">Save Changes</button>
 
     <cde-save-modal #saveModal [elt]="elt" (save)="save.emit()"></cde-save-modal>
 </div>

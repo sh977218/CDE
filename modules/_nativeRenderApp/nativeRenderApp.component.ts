@@ -24,7 +24,7 @@ import { FormService } from 'nativeRender/form.service';
         .isSelected {
             background-color: #f5f5f5;
         }
-        .addBtn {
+        .addbtn btn-lg {
             background-color: #61c200;
             color: white;
             margin-left: 0;

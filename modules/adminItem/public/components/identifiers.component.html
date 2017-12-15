@@ -41,7 +41,7 @@
         </dl>
         <hr>
     </ng-container>
-    <button *ngIf="canEdit" class="btn btn-small btn-outline-secondary" id="openNewIdentifierModalBtn"
+    <button *ngIf="canEdit" class="btn btn-lg btn-small btn-outline-secondary" id="openNewIdentifierModalBtn"
             (click)="openNewIdentifierModal();">
         <i class="fa fa-plus"></i> Add Identifier
     </button>
@@ -70,10 +70,10 @@
             </div>
         </div>
         <div class="modal-footer" id="newIdModalFooter">
-            <button class="btn btn-outline-secondary" (click)="c('Close click')" id="cancelNewIdentifierBtn" type="button">
+            <button class="btn btn-lg btn-outline-secondary" (click)="c('Close click')" id="cancelNewIdentifierBtn" type="button">
                 Cancel
             </button>
-            <button class="btn btn-warning" [disabled]="!newIdentifierForm.form.valid"
+            <button class="btn btn-lg btn-warning" [disabled]="!newIdentifierForm.form.valid"
                     id="createNewIdentifierBtn" type="submit">Save
             </button>
         </div>

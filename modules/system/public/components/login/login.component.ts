@@ -21,7 +21,7 @@ import { UserService } from '_app/user.service';
             margin-bottom: 10px;
         }
 
-        .form-signin .btn {
+        .form-signin .btn btn-lg {
             margin: 15px 0 10px 0;
         }
 

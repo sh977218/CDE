@@ -19,7 +19,7 @@
                         <tree-root [nodes]="orgClassificationsTreeView.classifications" [options]="options">
                             <ng-template #treeNodeTemplate let-node="node" let-index="index">
                                 <span>{{ node.data.name }}</span>
-                                <button class="btn btn-outline-secondary btn-xs" type="button" id="{{node.path}}-classifyBtn"
+                                <button class="btn btn-lg btn-outline-secondary btn-xs" type="button" id="{{node.path}}-classifyBtn"
                                         (click)="classifyItemByTree(node)">
                                     <i class="fa fa-plus"></i> Classify
                                 </button>
@@ -57,7 +57,7 @@
                         <div class="breadcrumb" id="recentlyClassification_{{i}}">
                             {{orgClassificationRecentlyAddView.orgName}} /
                             {{orgClassificationRecentlyAddView.categories.join(" / ")}}
-                            <button class="btn btn-outline-secondary btn-xs" type="button"
+                            <button class="btn btn-lg btn-outline-secondary btn-xs" type="button"
                                     (click)="classifyItemByRecentlyAdd(orgClassificationRecentlyAddView)">
                                 <i class="fa fa-plus"></i> Classify
                             </button>
@@ -68,7 +68,7 @@
         </ngb-tabset>
     </div>
     <div class="modal-footer" id="newClassifyItemModalFooter">
-        <button class="btn btn-outline-secondary" (click)="c('Close click')" id="cancelNewClassifyItemBtn"
+        <button class="btn btn-lg btn-outline-secondary" (click)="c('Close click')" id="cancelNewClassifyItemBtn"
                 name="cancelNewClassifyItemBtn" type="button">Close
         </button>
     </div>

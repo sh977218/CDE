@@ -77,7 +77,7 @@
                         <tfoot>
                         <tr [hidden]="newEncounter">
                             <td colspan="4">
-                                <button class="btn btn-sm addBtn" (click)="newEncounter = true">
+                                <button class="btn btn-lg btn-sm addBtn" (click)="newEncounter = true">
                                     <i class="fa fa-plus" aria-hidden="true"></i>
                                     Add
                                 </button>
@@ -85,10 +85,10 @@
                         </tr>
                         <tr [hidden]="!newEncounter">
                             <td colspan="2">
-                                <button class="btn btn-sm addBtn" [disabled]="!newEncounterValid" title="Add" (click)="newEncounterAdd()">
+                                <button class="btn btn-lg btn-sm addBtn" [disabled]="!newEncounterValid" title="Add" (click)="newEncounterAdd()">
                                     <i class="fa fa-plus" aria-hidden="true"></i>
                                 </button>
-                                <button class="btn btn-sm addBtn" title="Cancel" (click)="newEncounterReset()"
+                                <button class="btn btn-lg btn-sm addBtn" title="Cancel" (click)="newEncounterReset()"
                                         style="background-color: red; margin-right: 5px">
                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                 </button>
@@ -133,7 +133,7 @@
                     <cde-native-render [elt]="elt" [submitForm]="submitForm && panelType !== 'patient'"
                                        [profile]="elt.displayProfiles.length > selectedProfile ? elt.displayProfiles[selectedProfile] : null">
                     </cde-native-render>
-                    <input *ngIf="panelType === 'patient'" type="submit" class="btn btn-outline-secondary w-100" id="button_submit" (click)="submitFhir()"
+                    <input *ngIf="panelType === 'patient'" type="submit" class="btn btn-lg btn-outline-secondary w-100" id="button_submit" (click)="submitFhir()"
                            style="margin-left: 0; margin-top: 20px; font-weight: bold">
                     {{saveMessage}}
                 </ng-container>

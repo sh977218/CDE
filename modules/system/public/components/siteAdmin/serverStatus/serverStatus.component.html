@@ -1,6 +1,6 @@
 <div class="container-fluid" id="serverStatuses">
     <div class="row">
-        <button class="btn btn-outline-secondary" id="refreshServerStatus" (click)="refreshStatus()">Refresh</button>
+        <button class="btn btn-lg btn-outline-secondary" id="refreshServerStatus" (click)="refreshStatus()">Refresh</button>
     </div>
 
     <div class="row">
@@ -8,7 +8,7 @@
             <h4>Elastic Search</h4>
             <hr/>
             <div *ngFor="let i of esIndices; let $index = index">
-                <button class="btn btn-outline-secondary" (click)="reIndex($index)"><i class="fa fa-refresh"></i> Re-index: <b>{{i.name}}</b>
+                <button class="btn btn-lg btn-outline-secondary" (click)="reIndex($index)"><i class="fa fa-refresh"></i> Re-index: <b>{{i.name}}</b>
                     / {{i.indexName}}
                 </button>
                 <ngb-progressbar *ngIf="i.totalCount > 0 && i.count > 0" [striped]="true"
@@ -16,7 +16,7 @@
                     {{i.count}} / {{i.totalCount}}
                 </ngb-progressbar>
             </div>
-            <button class="btn btn-outline-secondary" (click)="syncMesh()" id="syncWithMeshButton">Sync with MeSH</button>
+            <button class="btn btn-lg btn-outline-secondary" (click)="syncMesh()" id="syncWithMeshButton">Sync with MeSH</button>
             <div *ngFor="let meshSync of meshSyncs">
                 <ngb-progressbar *ngIf="meshSync.total > 0 && meshSync.done > 0"
                                  [striped]="true" [max]="meshSync.total" [value]="meshSync.done"
@@ -41,7 +41,7 @@
                 <dd class="col-sm-9">{{status.pmPort}}</dd>
                 <dt class="col-sm-3">All Up:</dt>
                 <dd class="col-sm-9">
-                    <div class="btn btn-xs" [ngClass]="{'btn-success': status.allUp, 'btn-danger': !status.allUp}">
+                    <div class="btn btn-lg btn-xs" [ngClass]="{'btn-success': status.allUp, 'btn-danger': !status.allUp}">
                         <i class="fa" [ngClass]="{'fa-check': status.allUp, 'fa-times': !status.allUp}"></i>
                     </div>
                 </dd>
@@ -53,7 +53,7 @@
                         <dt class="col-sm-3">Up:</dt>
                         <dd class="col-sm-9">
                             <a [ngClass]="{'btn-success': status.elastic.up, 'btn-danger': !status.elastic.up}"
-                               class="btn btn-xs">
+                               class="btn btn-lg btn-xs">
                                 <i [ngClass]="{'fa-check': status.elastic.up, 'fa-times': !status.elastic.up}"
                                    class="fa"></i></a>
                         </dd>
@@ -65,7 +65,7 @@
                     <dl class="row">
                         <dt class="col-sm-3">{{ind.name}}:</dt>
                         <dd class="col-sm-9">
-                            <a class="btn btn-xs" [ngClass]="{'btn-success': ind.up, 'btn-danger': !ind.up}">
+                            <a class="btn btn-lg btn-xs" [ngClass]="{'btn-success': ind.up, 'btn-danger': !ind.up}">
                                 <i class="fa" [ngClass]="{'fa-check': ind.up, 'fa-times': !ind.up}"></i></a>
                         </dd>
                         <dt class="col-sm-3">Message:</dt>
@@ -85,7 +85,7 @@
         <h4>Reindexing: {{esIndices[indexToReindex].indexName}}</h4>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" type="button" (click)="okReIndex(); c()">OK</button>
-        <button class="btn btn-warning" type="button" (click)="d()">Cancel</button>
+        <button class="btn btn-lg btn-primary" type="button" (click)="okReIndex(); c()">OK</button>
+        <button class="btn btn-lg btn-warning" type="button" (click)="d()">Cancel</button>
     </div>
 </ng-template>

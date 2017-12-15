@@ -195,7 +195,7 @@
 
         <div *ngFor="let naming of nameSelectModal.cde.naming; let i = index" class="row" id="q_select_name_{{i}}">
             <div class="col-lg-3">
-                <button class="btn btn-outline-secondary" (click)="nameSelectModal.okSelect(naming)"><i class="fa fa-check"></i>
+                <button class="btn btn-lg btn-outline-secondary" (click)="nameSelectModal.okSelect(naming)"><i class="fa fa-check"></i>
                     Select
                 </button>
             </div>
@@ -214,13 +214,13 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <button class="btn btn-outline-secondary" (click)="nameSelectModal.okSelect()"><i class="fa fa-stop"></i> No
+                <button class="btn btn-lg btn-outline-secondary" (click)="nameSelectModal.okSelect()"><i class="fa fa-stop"></i> No
                     Label
                 </button>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
+        <button class="btn btn-lg btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
     </div>
 </ng-template>

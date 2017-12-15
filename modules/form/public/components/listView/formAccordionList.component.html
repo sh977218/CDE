@@ -1,7 +1,7 @@
 <div *ngIf="elts" id="accordionList">
     <div class="card" *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index">
         <div class="card-header">
-            <button class="btn btn-outline-secondary btn-sm" (click)="add.emit(elt);">
+            <button class="btn btn-lg btn-outline-secondary btn-sm" (click)="add.emit(elt);">
                 <i class="fa fa-plus"></i> Add
             </button>
             <span class="hand-cursor" (click)="elt.isCollapsed = !elt.isCollapsed"> {{elt.naming[0].designation}}</span>

@@ -1,5 +1,5 @@
 <div>
-    <button class="btn btn-outline-secondary" (click)="openNewUserModal()" id="opeNewUserModalBtn">
+    <button class="btn btn-lg btn-outline-secondary" (click)="openNewUserModal()" id="opeNewUserModalBtn">
         <i class="fa fa-plus-square-o"></i> Create User
     </button>
 
@@ -8,7 +8,7 @@
                placeholder="enter username" autocomplete="off" [(ngModel)]="search.username"
                [ngbTypeahead]="searchTypeahead" [resultFormatter]="formatter"
                [inputFormatter]="formatter" required>
-        <button type="submit" class="btn btn-success" id="searchUsersSubmit" (click)="searchUsers()">Search</button>
+        <button type="submit" class="btn btn-lg btn-success" id="searchUsersSubmit" (click)="searchUsers()">Search</button>
     </form>
 
     <div *ngFor="let u of foundUsers; let $index = index">
@@ -79,10 +79,10 @@
             </div>
         </div>
         <div class="modal-footer" id="newUserModalFooter">
-            <button class="btn btn-outline-secondary" (click)="c('Close click')" id="cancelNewUserBtn" type="button">
+            <button class="btn btn-lg btn-outline-secondary" (click)="c('Close click')" id="cancelNewUserBtn" type="button">
                 Cancel
             </button>
-            <button class="btn btn-warning" [disabled]="!newUserForm.form.valid" id="createNewUserBtn"
+            <button class="btn btn-lg btn-warning" [disabled]="!newUserForm.form.valid" id="createNewUserBtn"
                     type="submit">Save
             </button>
         </div>

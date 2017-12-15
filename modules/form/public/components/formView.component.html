@@ -46,7 +46,7 @@
     </h1>
     <div class="pull-left">
         <div class="dropdown float-left">
-            <button id="export" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown"
+            <button id="export" class="btn btn-lg btn-outline-secondary dropdown-toggle" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-download"></i>
                 <span class="hidden-sm-down-down"> Export</span>
@@ -93,30 +93,30 @@
             </ul>
         </div>
         <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
-                class="btn btn-small btn-outline-secondary"
+                class="btn btn-lg btn-small btn-outline-secondary"
                 title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
             <i class="fa fa-plus"></i><span class="hidden-sm-down-down"> Add to Quick Board</span>
         </button>
-        <button id="addToBoard" class="btn btn-small btn-outline-secondary" title="Add to Board"
+        <button id="addToBoard" class="btn btn-lg btn-small btn-outline-secondary" title="Add to Board"
                 (click)="mltPinModal.open([elt], 'cde')">
             <i class="fa fa-thumb-tack"></i><span class="hidden-sm-down-down"> Add to Board</span>
         </button>
         <button *ngIf="isAllowedModel.loggedIn()"
-                id="pinAllCdes" class="btn btn-small btn-outline-secondary"
+                id="pinAllCdes" class="btn btn-lg btn-small btn-outline-secondary"
                 title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
             <i class="fa fa-cogs"></i><span class="hidden-sm-down-down"> Pin CDEs</span>
         </button>
-        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyFormBtn" class="btn btn-small btn-outline-secondary"
+        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyFormBtn" class="btn btn-lg btn-small btn-outline-secondary"
                 title="Copy Form" (click)="openCopyElementModal()">
             <i class="fa fa-clone"></i><span class="hidden-sm-down-down"> Copy</span>
         </button>
-        <button id="discussBtn" class="btn btn-small btn-outline-secondary" title="Discuss CDE"
+        <button id="discussBtn" class="btn btn-lg btn-small btn-outline-secondary" title="Discuss CDE"
                 (click)="commentMode = !commentMode;">
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
             <span class="hidden-sm-down-down"> Discuss</span>
         </button>
         <div class="navbar-expand-md navbar-light d-inline-block">
-            <button class="btn btn-outline-secondary navbar-toggler hidden-md-up"
+            <button class="btn btn-lg btn-outline-secondary navbar-toggler hidden-md-up"
                     data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
                     aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -126,10 +126,10 @@
     <div class="pull-right text-end">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
-            <button class="btn btn-success" id="openSave" (click)="saveModal.openSaveModal();">
+            <button class="btn btn-lg btn-success" id="openSave" (click)="saveModal.openSaveModal();">
                 <i class="fa fa-globe fa-lg"></i> Publish
             </button>
-            <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
+            <button class="btn btn-lg btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
                 <i class="fa fa-trash fa-lg"></i> Delete Draft
             </button>
             <br>Changed by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
@@ -310,8 +310,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-warning" (click)="c()" id="cancelExport">Cancel</button>
-            <button class="btn btn-success" (click)="publishForm(formInput)" id="goExport"
+            <button class="btn btn-lg btn-warning" (click)="c()" id="cancelExport">Cancel</button>
+            <button class="btn btn-lg btn-success" (click)="publishForm(formInput)" id="goExport"
                     [disabled]="!createPublishedForm.form.valid">Publish my form.
             </button>
         </div>

@@ -26,7 +26,7 @@
         </dl>
         <hr>
     </ng-container>
-    <button *ngIf="canEdit && onInitDone" class="btn btn-small btn-outline-secondary" id="openNewPropertyModalBtn"
+    <button *ngIf="canEdit && onInitDone" class="btn btn-lg btn-small btn-outline-secondary" id="openNewPropertyModalBtn"
             (click)="openNewPropertyModal();">
         <i class="fa fa-plus"></i> Add Property
     </button>
@@ -47,10 +47,10 @@
             <div class="form-group">
                 <label for="newValue">Value</label>
                 <div id="newValue">
-                    <button type="button" class="btn btn-outline-secondary btn-xs" (click)="newProperty.valueFormat = '';">
+                    <button type="button" class="btn btn-lg btn-outline-secondary btn-xs" (click)="newProperty.valueFormat = '';">
                         Plain Text
                     </button>
-                    <button type="button" class="btn btn-outline-secondary btn-xs" (click)="newProperty.valueFormat = 'html';">
+                    <button type="button" class="btn btn-lg btn-outline-secondary btn-xs" (click)="newProperty.valueFormat = 'html';">
                         Rich Text
                     </button>
                     <textarea name="definition" *ngIf="newProperty.valueFormat !== 'html'"
@@ -67,10 +67,10 @@
             </div>
         </div>
         <div class="modal-footer" id="newPropertyModalFooter">
-            <button class="btn btn-outline-secondary" (click)="c('Close click')" id="cancelNewPropertyBtn" type="button">
+            <button class="btn btn-lg btn-outline-secondary" (click)="c('Close click')" id="cancelNewPropertyBtn" type="button">
                 Cancel
             </button>
-            <button class="btn btn-warning" [disabled]="!newPropertyForm.form.valid" id="createNewPropertyBtn"
+            <button class="btn btn-lg btn-warning" [disabled]="!newPropertyForm.form.valid" id="createNewPropertyBtn"
                     type="submit">
                 Save
             </button>
