@@ -14,7 +14,7 @@ public class BoardComments extends NlmCdeBaseTest {
         String boardName = "Stomach Cancer";
         goToBoard(boardName);
         findElement(By.id("discussBtn"));
-        Assert.assertEquals(driver.findElements(By.cssSelector(".discussWrench")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.cssSelector(".faa-wrench")).size(), 0);
         clickElement(By.id("discussBtn"));
 
         String commentText = "Here is the first comment";
@@ -40,7 +40,7 @@ public class BoardComments extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(reguser_username, password);
         goToBoard(boardName);
-        findElement(By.cssSelector(".discussWrench"));
+        findElement(By.cssSelector(".faa-wrench"));
         clickElement(By.id("discussBtn"));
         textPresent(commentText);
         findElement(By.id("removeComment-0"));
