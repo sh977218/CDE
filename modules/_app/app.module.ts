@@ -48,7 +48,8 @@ import { UserService } from '_app/user.service';
         {provide: ErrorHandler, useClass: FrontExceptionHandler},
         LoginService,
         QuickBoardListService,
-        UserService
+        UserService,
+		OrgHelperService
     ],
     exports: [
         PageNotFoundComponent,
