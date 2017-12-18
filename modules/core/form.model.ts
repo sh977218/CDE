@@ -13,7 +13,7 @@ import {
     RegistrationState, UserReference
 } from 'core/models.model';
 
-export class CdeForm extends Elt {
+export class CdeForm extends Elt implements FormElementsContainer {
     archived: boolean = false;
     changeNote: string;
     classification: Classification[];
@@ -32,6 +32,7 @@ export class CdeForm extends Elt {
     ids: CdeId[];
     imported: Date;
     isCopyrighted: boolean;
+    isDraft: boolean; // calculated, formView
     lastMigrationScript: string;
     naming: Naming[];
     noRenderAllowed: boolean;
@@ -77,7 +78,11 @@ export class DisplayProfile {
     sectionsAsMatrix: boolean = true;
 }
 
-export interface FormElement {
+export interface FormElementsContainer {
+    formElements: FormElement[];
+}
+
+export interface FormElement extends FormElementsContainer {
     _id: ObjectId;
     readonly elementType: string;
     formElements: FormElement[];
@@ -87,80 +92,51 @@ export interface FormElement {
     skipLogic: SkipLogic;
 }
 
-export class FormSection implements FormElement {
-    _id: ObjectId;
+export interface FormSectionOrForm extends FormElement {
+    forbidMatrix: boolean; // Calculated, used for Follow View Model
+}
+
+export class FormSection implements FormSectionOrForm {
+    _id;
     edit: boolean = false;
     elementType = 'section';
     expanded = true; // Calculated, used for View TreeComponent
-    instructions: Instruction;
-    formElements = [];
-    label = "";
-    repeat: string;
+    forbidMatrix;
+    formElements;
+    instructions;
+    label = '';
+    repeat;
     repeatNumber: number;
     repeatOption: string;
     section: Section;
-    skipLogic = new SkipLogic;
+    skipLogic;
 }
 
-export class FormInForm implements FormElement {
-    _id: ObjectId;
+export class FormInForm implements FormSectionOrForm {
+    _id;
     elementType = 'form';
-    formElements = [];
-    instructions: Instruction;
+    forbidMatrix;
+    formElements;
+    instructions;
     inForm: InForm;
-    label = "";
-    repeat: string;
-    skipLogic = new SkipLogic;
+    label = '';
+    repeat;
+    skipLogic;
 }
 
 export class FormQuestion implements FormElement {
-    _id: ObjectId;
+    _id;
     elementType = 'question';
     edit: boolean = false;
-    formElements = [];
+    formElements;
     hideLabel: boolean = false;
     incompleteRule: boolean = false;
-    instructions: Instruction;
-    label = "";
+    instructions;
+    label = '';
     question: Question;
     questionId: string;
-    repeat: string;
-    skipLogic = new SkipLogic;
-}
-
-export class Question {
-    answer: any; // input value
-    answerUom: string; // input uom value
-    answerDate: any; // working storage for date part
-    answerTime: any; // working storage for time part
-    answers: PermissibleValue[];
-    cde: QuestionCde;
-    datatype: string;
-    datatypeDate: {
-        format: string,
-    };
-    datatypeNumber: {
-        minValue: number,
-        maxValue: number,
-        precision: number,
-    };
-    datatypeText: TextQuestion;
-    defaultAnswer: string;
-    editable: boolean = true;
-    invisible: boolean = false;
-    isScore: boolean = false;
-    multiselect: boolean;
-    partOf: string; // display "(part of ...)" in Form Description
-    required: boolean = false;
-    uoms: string[];
-}
-
-export class SkipLogic {
-    action: string;
-    condition: string;
-}
-
-class Section {
+    repeat;
+    skipLogic;
 }
 
 class InForm {
@@ -169,6 +145,33 @@ class InForm {
         tinyId: string,
         version: string,
     };
+}
+
+export class PermissibleFormValue extends PermissibleValue implements FormElementsContainer {
+    formElements: FormElement[];
+    index: number;
+    nonValuelist: boolean;
+}
+
+export class Question {
+    answer: any; // input value
+    answerUom: string; // input uom value
+    answerDate: any; // working storage for date part
+    answerTime: any; // working storage for time part
+    answers: PermissibleFormValue[];
+    cde: QuestionCde;
+    datatype: string;
+    datatypeDate: QuestionTypeDate;
+    datatypeNumber: QuestionTypeNumber;
+    datatypeText: QuestionTypeText;
+    defaultAnswer: string;
+    editable: boolean = true;
+    invisible: boolean = false;
+    isScore: boolean = false;
+    multiselect: boolean;
+    partOf: string; // display "(part of ...)" in Form Description
+    required: boolean = false;
+    uoms: string[];
 }
 
 class QuestionCde {
@@ -181,10 +184,29 @@ class QuestionCde {
     derivationRules: DerivationRule[];
 }
 
-class TextQuestion {
+class QuestionTypeDate {
+    format: string;
+}
+
+class QuestionTypeNumber {
+    minValue: number;
+    maxValue: number;
+    precision: number;
+}
+
+class QuestionTypeText {
     minLength: number;
     maxLength: number;
     regex: string;
     rule: string;
     showAsTextArea: boolean = false;
+}
+
+class Section {
+}
+
+export class SkipLogic {
+    action: string;
+    condition: string;
+    validationError: string;
 }

@@ -52,6 +52,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     topics: any;
     topicsKeys: string[];
     totalItems: any;
+    totalItemsLimited: any;
     user: User;
     validRulesStatus: string;
     view: string;
@@ -240,7 +241,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     fakeNextPageLink() {
-        let p = (this.totalItems / this.resultPerPage > 1)
+        let p = (this.totalItemsLimited / this.resultPerPage > 1)
             ? (this.searchSettings.page ? this.searchSettings.page : 1) + 1
             : 1;
         return this.generateSearchForTerm(p);
@@ -486,6 +487,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.numPages = Math.ceil(result.totalNumber / this.resultPerPage);
                 this.took = result.took;
                 this.totalItems = result.totalNumber;
+                this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
 
                 // Convert Elastic JSON to Elt Object
                 this.elts = result[this.module + 's'];

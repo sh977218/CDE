@@ -18,7 +18,6 @@ export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
     @Input() canEdit: boolean = false;
     @Input() node: TreeNode;
-    @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
@@ -92,7 +91,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     getSkipLogicOptions = (text$: Observable<string>) =>
         text$.debounceTime(300).map(term =>
-            this.skipLogicService.getCurrentOptions(term, this.parent.formElements, this.section, this.parent.formElements.indexOf(this.section))
+            this.skipLogicService.getTypeaheadOptions(term, this.parent, this.section)
         );
 
     getTemplate() {
@@ -131,14 +130,10 @@ export class FormDescriptionSectionComponent implements OnInit {
             }, 0);
     }
 
-    validateSkipLogic(skipLogic, previousQuestions, item) {
-        let oldSkipLogic = skipLogic;
-        if (oldSkipLogic && oldSkipLogic.condition !== item) {
-            let validateSkipLogicResult = this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item);
-            if (validateSkipLogicResult && skipLogic && skipLogic.condition && skipLogic.condition.trim().length > 0)
-                this.stageElt.emit();
-            else
-                this.isFormValid.emit(false);
+    typeaheadSkipLogic(parent, fe, event) {
+        if (fe.skipLogic && fe.skipLogic.condition !== event) {
+            this.skipLogicService.typeaheadSkipLogic(parent, fe, event);
+            this.stageElt.emit();
         }
     }
 

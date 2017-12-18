@@ -23,8 +23,7 @@
                                [formElement]="formElement" [numSubQuestions]="numSubQuestions"></cde-native-section-matrix>
     <div *ngIf="sectionType() === 'section'">
         <div *ngFor="let element of formElement.formElements; let i = index">
-            <div *ngIf="nrs.SkipLogicService.evaluateSkipLogicAndClear(element.skipLogic?.condition, formElement.formElements,
-                    element, nrs.getElt(), nrs.getErrors())">
+            <div *ngIf="nrs.skipLogicService.evalSkipLogicAndClear(formElement, element, nrs.getElt(), nrs.getErrors())">
                 <div *ngIf="element.elementType === 'question'" [ngClass]="{'keep-with-previous':i===0,
                          'native-box': !formElement.label && formElement.instructions && formElement.instructions.value}"
                      class="native-question-header native-question-answers">

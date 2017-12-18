@@ -38,9 +38,18 @@
                     <span *ngIf="i < missingCdes.length">,</span></li>
             </ul>
         </div>
+        <div *ngIf="validationErrors.length > 0" class="alert alert-warning mt20" role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            The following errors need to be corrected in order to Publish:
+            <ul class="list-inline">
+                <li *ngFor="let error of validationErrors;let i = index;">
+                    {{error}}
+                </li>
+            </ul>
+        </div>
     </div>
     <h1 class="mobileViewH1">
-        <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadDraft(null):loadDataElement(null)"
+        <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadDraft():loadPublished()"
                           [hidden]="drafts?.length === 0"></cde-draft-slider>
         {{elt.naming[0].designation}}
     </h1>
@@ -84,7 +93,7 @@
                            class="d-inline"><i class="fa fa-info-circle"></i></a>
                     </li>
                     <li>
-                        <a class="dropdown-item" *ngIf="!isIe()" id='sdcHtmlExport'
+                        <a class="dropdown-item" *ngIf="!browserService.isIe()" id='sdcHtmlExport'
                            href="formById/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
                            target="_blank">XML File, SDC Schema with XSL Transform</a>
                     </li>
@@ -92,7 +101,7 @@
                            target="_blank">XML File, NIH/CDE Schema</a>
                     </li>
                     <li>
-                        <a class="dropdown-item d-inline" id='formPublishExport' (click)="openPreparePublishModal()"
+                        <a class="dropdown-item d-inline" id='formPublishExport' (click)="openExportPublishModal()"
                            target="_blank">Published Form</a>
                     </li>
                     <li>
@@ -130,7 +139,7 @@
     <div class="pull-right marginTopBottom5" style="text-align: end">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
-            <button class="btn btn-success" id="openSave" (click)="saveModal.openSaveModal();">
+            <button class="btn btn-success" id="openSave" (click)="publish()">
                 <i class="fa fa-globe fa-lg"></i> Publish
             </button>
             <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
@@ -212,8 +221,6 @@
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'description_tab'">
                         <cde-form-description [cache]="cache" [(elt)]="elt" [canEdit]="canEdit()"
-
-                                              (isFormValid)="setIsValid($event)"
                                               (onEltChange)="saveDraft()"></cde-form-description>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'naming_tab'">
@@ -272,7 +279,7 @@
     </div>
 </ng-template>
 
-<ng-template #publishFormContent id="publishFormModal" let-c="close" let-d="dismiss">
+<ng-template #exportPublishModal id="publishFormModal" let-c="close" let-d="dismiss">
     <form #createPublishedForm="ngForm">
         <div class="modal-header" id="publishFormModalHeader">
             <h3>Export to a Published Form</h3>
@@ -282,8 +289,7 @@
                 the endpoint of your choice. Note that the NIH CDE Repository will not have access to any of the
                 submitted.
                 You will need to ensure that your endpoint meets your own security standards. A sample endpoint could be
-                a
-                Google Spreadsheet (via a Google Script published as a web app).
+                a Google Spreadsheet (via a Google Script published as a web app).
             </p>
             To get started, please follow these steps:
             <div class="form-group">
@@ -303,7 +309,7 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-warning" (click)="c()" id="cancelExport">Cancel</button>
-            <button class="btn btn-success" (click)="publishForm(formInput)" id="goExport"
+            <button class="btn btn-success" (click)="exportPublishForm(formInput)" id="goExport"
                     [disabled]="!createPublishedForm.form.valid">Publish my form.
             </button>
         </div>

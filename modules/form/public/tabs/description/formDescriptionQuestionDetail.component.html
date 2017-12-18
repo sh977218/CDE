@@ -105,11 +105,11 @@
             <input #slInput type="text" title="Show if"
                    (focus)="slOptionsRetrigger()"
                    [ngModel]="question.skipLogic.condition"
-                   (ngModelChange)="validateSkipLogic(question.skipLogic, parent.formElements, $event);"
+                   (ngModelChange)="typeaheadSkipLogic(parent, question, $event);"
                    class="form-control skipLogicCondition"
                    placeholder="Start typing a question name to find options"
                    [ngbTypeahead]="getSkipLogicOptions"
-                   (selectItem)="validateSkipLogic(question.skipLogic, parent.formElements, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
+                   (selectItem)="typeaheadSkipLogic(parent, question, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
             <span [textContent]="question.skipLogic?.validationError"></span>
         </div>
     </div>

@@ -104,15 +104,11 @@ import { Http } from '@angular/http';
 export class FormDescriptionComponent implements OnChanges {
     @Input() elt: CdeForm;
     @Input() canEdit: boolean = false;
-    @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() onEltChange = new EventEmitter();
-
     @ViewChild(TreeComponent) public tree: TreeComponent;
     @ViewChild("formSearchTmpl") formSearchTmpl: TemplateRef<any>;
     @ViewChild("questionSearchTmpl") questionSearchTmpl: TemplateRef<any>;
-
     @ViewChild("descToolbox") descToolbox: ElementRef;
-
     @HostListener('window:scroll', ['$event'])
     doIt() {
         if (this && this.descToolbox && this.descToolbox.nativeElement)

@@ -27,8 +27,8 @@
                             <div *ngFor="let pv of formElement.question.answers; let i = index"
                                  [ngClass]="classColumns(pv.index, i)" class="col-xs-12">
                                 <div *ngIf="!pv.nonValuelist">
-                                    <label [ngClass]="{'native-question-oneline-l': pv.subQuestions
-                                                          && isOneLiner(pv.subQuestions[0], pv.subQuestions.length),
+                                    <label [ngClass]="{'native-question-oneline-l': pv.formElements && isOneLiner(
+                                                            pv.formElements[0], pv.formElements.length),
                                                    'checkbox-inline': formElement.question.multiselect,
                                                    'radio-inline': !formElement.question.multiselect}"
                                            [title]="nrs.getPvLabel(pv)">
@@ -52,23 +52,22 @@
                                     <span class="native-value" *ngIf="nrs.profile.displayValues"
                                           [textContent]="nrs.getPvValue(pv)"></span>
                                     </label>
-                                    <div *ngIf="pv?.subQuestions">
-                                        <div *ngFor="let fe of pv.subQuestions; let j = index">
+                                    <div *ngIf="pv?.formElements">
+                                        <div *ngFor="let fe of pv.formElements; let j = index">
                                             <div *ngIf="nrs.getNativeRenderType() !== nrs.SHOW_IF
-                                               || nrs.SkipLogicService.evaluateSkipLogicAndClear(fe.skipLogic?.condition,
-					       pv.subQuestions, fe, nrs.getElt(), nrs.getErrors())"
-                                                 [ngClass]="{'native-question-oneline-r': pv.subQuestions && isOneLiner(pv.subQuestions[0], (pv && pv.subQuestions ? pv.subQuestions.length : 0)),
-                                                            'native-box': pv.subQuestions && !isOneLiner(fe, (pv && pv.subQuestions ? pv.subQuestions.length : 0))}"
+                                               || nrs.skipLogicService.evalSkipLogicAndClear(pv, fe, nrs.getElt(), nrs.getErrors())"
+                                                 [ngClass]="{'native-question-oneline-r': isOneLiner(pv.formElements[0], pv.formElements.length),
+                                                            'native-box': pv.formElements && !isOneLiner(fe, pv.formElements.length)}"
                                                  class="native-question-header">
                                                 <cde-native-question *ngIf="fe.elementType === 'question'"
                                                                      [formElement]="fe"
-                                                                     [numSubQuestions]="pv && pv.subQuestions ? pv.subQuestions.length : 0"
+                                                                     [numSubQuestions]="pv.formElements.length"
                                                                      [index]="i"></cde-native-question>
                                                 <cde-native-section
                                                         *ngIf="fe.elementType === 'section' || fe.elementType === 'form'"
-                                                        [formElements]="pv.subQuestions"
+                                                        [formElements]="pv.formElements"
                                                         [formElement]="fe"
-                                                        [numSubQuestions]="pv && pv.subQuestions ? pv.subQuestions.length : 0"></cde-native-section>
+                                                        [numSubQuestions]="pv.formElements.length"></cde-native-section>
                                             </div>
                                         </div>
                                     </div>
@@ -151,24 +150,23 @@
                 </div>
             </div>
             <div *ngFor="let pv of formElement.question.answers; let i = index">
-                <div *ngIf="pv.nonValuelist && pv.subQuestions">
-                    <div *ngFor="let fe of pv.subQuestions; let j = index">
+                <div *ngIf="pv.nonValuelist && pv.formElements">
+                    <div *ngFor="let fe of pv.formElements; let j = index">
                         <div *ngIf="nrs.getNativeRenderType() !== this.nrs.SHOW_IF
-                                        || nrs.SkipLogicService.evaluateSkipLogicAndClear(fe.skipLogic?.condition,
-					pv.subQuestions, fe, nrs.getElt(), nrs.getErrors())"
-                             [ngClass]="{'native-question-oneline-r': pv.subQuestions && isOneLiner(pv.subQuestions[0], (pv && pv.subQuestions ? pv.subQuestions.length : 0))}"
+                                        || nrs.skipLogicService.evalSkipLogicAndClear(pv, fe, nrs.getElt(), nrs.getErrors())"
+                             [ngClass]="{'native-question-oneline-r': isOneLiner(pv.formElements[0], pv.formElements.length)}"
                              class="native-question-header">
                             <cde-native-question
                                     *ngIf="(fe.elementType === 'question') && pv.nonValuelist"
                                     [formElement]="fe"
-                                    [numSubQuestions]="pv && pv.subQuestions ? pv.subQuestions.length : 0"
+                                    [numSubQuestions]="pv.formElements.length"
                                     [parentValue]="pv.permissibleValue"
                                     [index]="i"></cde-native-question>
                             <cde-native-section
                                     *ngIf="(fe.elementType === 'section' || fe.elementType === 'form') && pv.nonValuelist"
-                                    [formElements]="pv.subQuestions"
+                                    [formElements]="pv.formElements"
                                     [formElement]="fe"
-                                    [numSubQuestions]="pv && pv.subQuestions ? pv.subQuestions.length : 0"></cde-native-section>
+                                    [numSubQuestions]="pv.formElements.length"></cde-native-section>
                         </div>
                     </div>
                 </div>

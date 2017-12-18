@@ -417,8 +417,8 @@ export class NativeRenderAppComponent {
                             if (count >= instance)
                                 return result = f;
                             f.question.answers.forEach(a => {
-                                if (a.subQuestions && !result)
-                                    a.subQuestions.forEach(sq => !result && getByIdRecurse(sq, tinyId));
+                                if (a.formElements && !result)
+                                    a.formElements.forEach(sq => !result && getByIdRecurse(sq, tinyId));
                             });
                         }
                     }
@@ -457,8 +457,8 @@ export class NativeRenderAppComponent {
                                 if (count >= instance)
                                     return result = f;
                                 f.question.answers.forEach(a => {
-                                    if (a.subQuestions && !result)
-                                        a.subQuestions.forEach(sq => !result && getByCodeRecurse(sq));
+                                    if (a.formElements && !result)
+                                        a.formElements.forEach(sq => !result && getByCodeRecurse(sq));
                                 });
                             }
                         }

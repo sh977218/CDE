@@ -69,11 +69,24 @@ export class DataSource {
 }
 
 export interface ElasticQueryResponse {
+    _shards: any;
     aggregations: any; // Elastic aggregated grouping
     cdes: DataElement[]; // optional
     forms: CdeForm[]; // optional
+    hits: {
+        max_score: number,
+        hits: {
+            _id: string,
+            _index: string,
+            _score: number,
+            _source: any,
+            _type: string
+        }[],
+        total: number
+    };
     maxScore: number; // Elastic highest score on query
     took: number; // Elastic time to process query in milliseconds
+    timed_out: boolean;
     totalNumber: number; // Elastic number of results
 }
 
@@ -121,9 +134,9 @@ export class Naming {
     designation: string;
     languageCode: string;
     source: string;
-    tags: {
+    tags: [{
         tag: string,
-    };
+    }];
 }
 
 export type ObjectId = string;

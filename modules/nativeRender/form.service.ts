@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import * as async from 'async';
 import noop from 'lodash.noop';
-import { FormQuestion } from 'core/form.model';
+import { FormElement, FormElementsContainer, FormQuestion } from 'core/form.model';
 
 function noop1(a, cb) { cb(); }
 
@@ -52,22 +52,6 @@ export class FormService {
         }, cb);
     }
 
-    static getQuestions(fe, qLabel) {
-        let result = [];
-        fe.forEach((element) => {
-            if (element.elementType !== 'question')
-                result = result.concat(this.getQuestions(element.formElements, qLabel));
-            else {
-                let label = element.label;
-                if (!label || label.length === 0)
-                    label = element.question.cde.name;
-                if (label === qLabel)
-                    result = result.concat(element);
-            }
-        });
-        return result;
-    }
-
     // modifies form to add sub-forms
     // callback(err: string)
     fetchWholeForm(form, callback = noop) {
@@ -115,9 +99,22 @@ export class FormService {
 
     // callback(error)
     // feCb(fe, cbContinue(error))
-    static iterateFe(elt, callback = noop, formCb = noop1, sectionCb = noop1, questionCb = noop1) {
-        if (elt && Array.isArray(elt.formElements))
-            async.forEach(elt.formElements, (fe: any, cb) => {
+    static iterateFe(fe: FormElementsContainer, callback, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
+        if (fe)
+            this.iterateFes(fe.formElements, callback, formCb, sectionCb, questionCb);
+    }
+
+    // cb(fe)
+    static iterateFeSync(fe: FormElementsContainer, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
+        if (fe)
+            this.iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
+    }
+
+    // callback(error)
+    // feCb(fe, cbContinue(error))
+    static iterateFes(fes: FormElement[], callback = noop, formCb = noop1, sectionCb = noop1, questionCb = noop1) {
+        if (Array.isArray(fes))
+            async.forEach(fes, (fe: any, cb) => {
                 if (fe.elementType === 'form') {
                     formCb(fe, (err) => {
                         if (err)
@@ -139,9 +136,9 @@ export class FormService {
     }
 
     // cb(fe)
-    static iterateFeSync(elt, formCb = noop, sectionCb = noop, questionCb = noop) {
-        if (elt && Array.isArray(elt.formElements))
-            elt.formElements.forEach(fe => {
+    static iterateFesSync(fes: FormElement[], formCb = noop, sectionCb = noop, questionCb = noop) {
+        if (Array.isArray(fes))
+            fes.forEach(fe => {
                 if (fe.elementType === 'form') {
                     formCb(fe);
                     FormService.iterateFeSync(fe, formCb, sectionCb, questionCb);

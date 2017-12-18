@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CdeForm, DisplayProfile } from 'core/form.model';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';

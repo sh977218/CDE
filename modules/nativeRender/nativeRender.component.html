@@ -3,16 +3,14 @@
 
 <form *ngIf="!endpointUrl && nrs.getElt()" name="sectionLabel" role="form" class="form-horizontal">
     <cde-native-section *ngIf="nrs.getNativeRenderType() !== NRS.SHOW_IF
-                                  || nrs.SkipLogicService.evaluateSkipLogic(nrs.getElt().skipLogic?.condition,
-                                  null, nrs.getElt(), nrs.getElt(), nrs.getErrors())"
+                                  || nrs.skipLogicService.evalSkipLogic(null, nrs.getElt(), nrs.getElt(), nrs.getErrors())"
                         [formElement]="nrs.getElt()"></cde-native-section>
 </form>
 <form ngNoForm #formData *ngIf="endpointUrl && nrs.getElt()" name="sectionLabel" role="form" class="form-horizontal"
       [action]="getEndpointUrl()" method="post">
 
     <cde-native-section *ngIf="nrs.getNativeRenderType() !== NRS.SHOW_IF
-                                  || nrs.SkipLogicService.evaluateSkipLogic(nrs.getElt().skipLogic?.condition,
-                                  null, nrs.getElt(), nrs.getElt(), nrs.getErrors())"
+                                  || nrs.skipLogicService.evalSkipLogic(null, nrs.getElt(), nrs.getElt(), nrs.getErrors())"
                         [formElement]="nrs.getElt()"></cde-native-section>
 
     <input type="hidden" name="formUrl" [value]="formUrl">
@@ -24,6 +22,4 @@
 <small *ngIf="nrs.getElt()?.isCopyrighted && (!nrs.profile || nrs.profile.displayCopyright)"
        id="copyrightStatement">{{nrs.getElt().copyright.text}}</small>
 
-<ngb-alert type="danger" *ngIf="nrs.hasErrors()">
-    <span [textContent]="nrs.getErrors().join(' -- ')"></span>
-</ngb-alert>
+<div><code *ngFor="let error of nrs.getErrors()">{{error}}</code></div>

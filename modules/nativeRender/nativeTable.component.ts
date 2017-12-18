@@ -130,7 +130,7 @@ export class NativeTableComponent implements OnInit {
                     this.nrs.elt.formInput[i + '-' + sectionName + f.questionId + '_uom'] = f.question.uoms[0];
                 });
             f.question.answers.forEach(a => {
-                a.subQuestions && a.subQuestions.forEach(sf => {
+                a.formElements && a.formElements.forEach(sf => {
                     let ret = this.renderFormElement(sf, tcontent, level, retr, r, c, sectionStyle, sectionName);
                     retr = ret.retr;
                     c = ret.c;
