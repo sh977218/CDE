@@ -190,7 +190,7 @@ if (config.expressLogFile) {
             logger.info(message);
         }
     };
-    app.use(morganLogger('combined', {stream: fileStream}));
+    app.use(morganLogger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":response-time ms"', {stream: fileStream}));
 }
 
 var connections = 0;
