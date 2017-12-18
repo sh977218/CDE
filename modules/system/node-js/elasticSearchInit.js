@@ -80,16 +80,36 @@ exports.createIndexJson = {
                 }
                 , "version": {"type": "string", "index": "no"}
                 , "views": {type: "integer"}
+                , primaryNameSuggest: {
+                    "type":            "string",
+                    "analyzer":  "autocomplete",
+                    "search_analyzer": "standard"
+                }
             }
         }
     }, settings: {
         index: {
             "number_of_replicas": config.elastic.number_of_replicas,
             analysis: {
+                "filter": {
+                    "autocomplete_filter": {
+                        "type":     "edge_ngram",
+                        "min_gram": 1,
+                        "max_gram": 20
+                    }
+                },
                 analyzer: {
                     default: {
                         type: 'snowball'
                         , language: 'English'
+                    },
+                    "autocomplete": {
+                        "type":      "custom",
+                        "tokenizer": "standard",
+                        "filter": [
+                            "lowercase",
+                            "autocomplete_filter"
+                        ]
                     }
                 }
             }
@@ -139,11 +159,39 @@ exports.createFormIndexJson = {
                     }
                 }, "views": {"type": "integer"}
                 , "numQuestions": {"type": "integer"}
+                , primaryNameSuggest: {
+                    "type":            "string",
+                    "analyzer":  "autocomplete",
+                    "search_analyzer": "standard"
+                }
             }
         }
     }, settings: {
         index: {
-            "number_of_replicas": config.elastic.number_of_replicas
+            "number_of_replicas": config.elastic.number_of_replicas,
+            analysis: {
+                "filter": {
+                    "autocomplete_filter": {
+                        "type":     "edge_ngram",
+                        "min_gram": 1,
+                        "max_gram": 20
+                    }
+                },
+                analyzer: {
+                    default: {
+                        type: 'snowball'
+                        , language: 'English'
+                    },
+                    "autocomplete": {
+                        "type":      "custom",
+                        "tokenizer": "standard",
+                        "filter": [
+                            "lowercase",
+                            "autocomplete_filter"
+                        ]
+                    }
+                }
+            }
         }
     }
 };
@@ -237,6 +285,7 @@ exports.riverFunction = function (_elt, cb) {
         elt.stewardOrgCopy = elt.stewardOrg;
         elt.steward = elt.stewardOrg.name;
         elt.primaryNameCopy = elt.naming ? escapeHTML(elt.naming[0].designation) : '';
+        elt.primaryNameSuggest = elt.primaryNameCopy;
 
         var primDef;
         for (var i = 0; i < elt.naming.length; i++) {

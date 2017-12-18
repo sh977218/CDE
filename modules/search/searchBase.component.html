@@ -11,7 +11,8 @@
                 <form #quickSearchForm="ngForm" id="quickSearchForm" class="input-group" novalidate method="GET">
                     <input name="q" id="ftsearch-input" class="form-control search-query" type="text"
                            [(ngModel)]="searchSettings.q" aria-labelledby="l1" maxlength="500"
-                           [ngbTypeahead]="getAutocompleteSuggestions" [focusFirst]="false">
+                           [ngbTypeahead]="getAutocompleteSuggestions" [focusFirst]="false"
+                           (selectItem)="typeaheadSelect($event)">
                     <button id="search.submit" (click)="termSearch()" type="submit"
                             class="btn btn-lg btn-danger btn-lg">
                         <i class="fa fa-search"></i> Search

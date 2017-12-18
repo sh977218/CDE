@@ -11,6 +11,7 @@ const mongo_data_system = require('../../system/node-js/mongo-data');
 const classificationNode_system = require('../../system/node-js/classificationNode');
 const adminItemSvc = require('../../system/node-js/adminItemSvc.js');
 const elastic_system = require('../../system/node-js/elastic');
+const elastic = require('./elastic');
 const sharedElastic = require('../../system/node-js/elastic.js');
 const exportShared = require('@std/esm')(module)('../../system/shared/exportShared');
 const boardsvc = require('../../board/node-js/boardsvc');
@@ -121,8 +122,13 @@ exports.init = function (app, daoManager) {
         exporters.json.export(res);
     });
 
-    app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function () {
-        return [];
+    app.post('/formCompletion/:term', exportShared.nocacheMiddleware, (req, res) => {
+        let result = [];
+        let term = req.params.term;
+        elastic_system.completionSuggest(term, req.user, req.body, config.elastic.formIndex.name, resp => {
+            resp.hits.hits.forEach(r => r._index = undefined);
+            res.send(resp.hits.hits)
+        });
     });
 
     app.post('/pinFormCdes', function (req, res) {

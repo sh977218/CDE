@@ -17,6 +17,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//input"));
         clickElement(By.xpath("//li[. = 'doYouSeeThis']"));
         checkAlert("Org Updated");
+        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//li[contains(.,'doYouSeeThis')]/span"));
 
         // ensure it got saved.
         goHome();
