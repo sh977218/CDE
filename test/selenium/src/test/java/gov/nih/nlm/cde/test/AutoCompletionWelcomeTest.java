@@ -9,16 +9,36 @@ public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
 
     @Test
     public void AutoCompletionWelcome() {
+        mustBeLoggedOut();
         goToSearch("cde");
-        String search_input = "Winter will be cold";
-        findElement(By.id("ftsearch-input")).sendKeys(search_input);
-        clickElement(By.id("search.submit"));
-        textPresent("results for Winter will be cold");
-        waitForESUpdate();
+        findElement(By.id("ftsearch-input")).sendKeys("specimen lat");
+        textNotPresent("Specimen Laterality");
+        textPresent("Cell Specimen");
+        clickElement(By.xpath("//ngb-highlight[contains(., \"Cell Specimen Requirement\")]"));
+        textPresent("The smallest units of living structure capable of independent existence");
+
+        setLowStatusesVisible();
         goToSearch("cde");
-        findElement(By.id("ftsearch-input")).clear();
-        findElement(By.id("ftsearch-input")).sendKeys("Wint");
-        String search_string = findElement(By.xpath("//div[@id='searchDiv']//ngb-highlight[1]")).getText();
-        Assert.assertTrue(search_string.contains(search_input.toLowerCase()));
+        findElement(By.id("ftsearch-input")).sendKeys("specimen lat");
+        textPresent("Specimen Laterality");
+        clickElement(By.xpath("//ngb-highlight[contains(., \"Specimen Laterality Not Specified Reason\")]"));
+        textPresent("02/03/2016");
     }
+
+    @Test
+    public void AutoCompletionWelcomeForm() {
+        mustBeLoggedOut();
+        goToSearch("form");
+        findElement(By.id("ftsearch-input")).sendKeys("multi");
+        textNotPresent("MultiSelect");
+        clickElement(By.xpath("//ngb-highlight[contains(., \"Multiple Sclerosis Quality of Life\")]"));
+        textPresent("Rendering has been disabled for this form.");
+
+        setLowStatusesVisible();
+        goToSearch("form");
+        findElement(By.id("ftsearch-input")).sendKeys("multi");
+        clickElement(By.xpath("//ngb-highlight[contains(., \"MultiSelect Logic\")]"));
+        textPresent("Medicaid");
+    }
+
 }

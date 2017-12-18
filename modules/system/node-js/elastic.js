@@ -200,17 +200,28 @@ exports.initEs = function (cb) {
     });
 };
 
-exports.completionSuggest = function (term, cb) {
+exports.completionSuggest = function (term, user, settings, indexName, cb) {
     let suggestQuery = {
-        "search_suggest": {
-            "text": term,
-            "completion": {
-                "field": "search_suggest"
+        "query": {
+            "match": {
+                "primaryNameSuggest": {
+                    "query":  term
+                }
+            }
+        }, "_source": {
+            "includes": ["primaryNameSuggest"]
+        },
+        post_filter: {
+            bool: {
+                filter: [
+                    {bool: {should: exports.regStatusFilter(user, settings)}}
+                ]
             }
         }
     };
-    esClient.suggest({
-        index: config.elastic.storedQueryIndex.name,
+
+    esClient.search({
+        index: indexName,
         body: suggestQuery
     }, function (error, response) {
         if (error) {
@@ -219,6 +230,24 @@ exports.completionSuggest = function (term, cb) {
             cb(response);
         }
     });
+};
+
+
+exports.regStatusFilter = function (user, settings) {
+    // Filter by selected Statuses
+    let filterRegStatusTerms = settings.selectedStatuses.map(regStatus => {
+        return {"term": {"registrationState.registrationStatus": regStatus}};
+    });
+
+    // Filter by Steward
+    if (user) {
+        let curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
+        filterRegStatusTerms = filterRegStatusTerms.concat(curatorOf.map(o => {
+            return {"term": {"stewardOrg": o}};
+        }));
+    }
+
+    return filterRegStatusTerms;
 };
 
 exports.buildElasticSearchQuery = function (user, settings) {
@@ -236,18 +265,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     let sort = !hasSearchTerm;
 
     (function setFilters() {
-        // Filter by selected Statuses
-        let filterRegStatusTerms = settings.selectedStatuses.map(regStatus => {
-            return {"term": {"registrationState.registrationStatus": regStatus}};
-        });
-
-        // Filter by Steward
-        if (user) {
-            let curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
-            filterRegStatusTerms = filterRegStatusTerms.concat(curatorOf.map(o => {
-                return {"term": {"stewardOrg": o}};
-            }));
-        }
+        let filterRegStatusTerms = exports.regStatusFilter(user, settings);
 
         // Filter by selected Datatypes
         let filterDatatypeTerms = settings.selectedDatatypes && settings.selectedDatatypes.map(datatype => {
@@ -273,11 +291,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
         query: {
             // Do not retrieve items marked as forks.
             bool: {
-                must_not: [{
-                    term: {
-                        isFork: "true"
-                    }
-                }],
                 must: [
                     {
                         dis_max: {
