@@ -89,18 +89,18 @@
             <cde-inline-area-edit
                     [(model)]="question.instructions.value"
                     [(defFormat)]="question.instructions.valueFormat"
-                    [isAllowed]="true" (modelChange)="stageElt.emit()">
+                    [isAllowed]="true" (modelChange)="onEltChange.emit()">
             </cde-inline-area-edit>
         </dd>
         <dt class="col-2">Required:</dt>
         <dd class="col-10">
             <input type="checkbox" title="Required" [(ngModel)]="question.question.required"
-                   (change)="stageElt.emit()"/>
+                   (change)="onEltChange.emit()"/>
         </dd>
         <dt class="col-2">Invisible:</dt>
         <dd class="col-10 editQuestionInvisible">
             <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible"
-                   (change)="stageElt.emit()">
+                   (change)="onEltChange.emit()">
         </dd>
         <ng-container *ngIf="parent">
             <dt class="col-2">Show if:</dt>
@@ -147,7 +147,7 @@
             <dt class="col-2">Multiple Selection:</dt>
             <dd class="col-10 multipleSelection">
                 <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect"
-                       (change)="stageElt.emit()"/>
+                       (change)="onEltChange.emit()"/>
             </dd>
             <dt class="col-2">Answer List:</dt>
             <dd class="col-10">
@@ -161,7 +161,7 @@
         <dd class="col-10 defaultAnswer">
             <ng-container *ngIf="question.question.datatype === 'Value List'">
                 <select title="Default" class="form-control"
-                        [(ngModel)]="question.question.defaultAnswer" (change)="stageElt.emit()">
+                        [(ngModel)]="question.question.defaultAnswer" (change)="onEltChange.emit()">
                     <option value=""></option>
                     <option *ngFor="let pv of question.question.answers " [value]="pv.permissibleValue"
                             [textContent]="pv?.valueMeaningName"></option>
@@ -169,14 +169,14 @@
             </ng-container>
             <ng-container *ngIf="question.question.datatype !== 'Value List'">
                 <cde-inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true"
-                                 (modelChange)="stageElt.emit()"></cde-inline-edit>
+                                 (modelChange)="onEltChange.emit()"></cde-inline-edit>
             </ng-container>
         </dd>
         <ng-container *ngIf="question.question.defaultAnswer">
             <dt class="col-2">Editable:</dt>
             <dd class="col-10">
                 <input type="checkbox" title="Editable" [(ngModel)]="question.question.editable"
-                       (change)="stageElt.emit()"/>
+                       (change)="onEltChange.emit()"/>
             </dd>
         </ng-container>
         <ng-container *ngIf="!question.question.cde.tinyId">
@@ -199,30 +199,45 @@
         </ngb-alert>
 
         <div *ngFor="let naming of nameSelectModal.cde.naming; let i = index" class="row" id="q_select_name_{{i}}">
-            <div class="col-lg-3">
+            <div class="col-3">
                 <button class="btn btn-lg btn-outline-dark" (click)="nameSelectModal.okSelect(naming)"><i
                         class="fa fa-check"></i>
                     Select
                 </button>
             </div>
-            <div class="col-lg-9">
+            <div class="col-9">
                 <dl class="row">
                     <dt class="col-2">Name:</dt>
-                    <dd class="col-10">{{naming.designation}}</dd>
+                    <dd class="col-10">
+                        <cde-inline-edit [(model)]="naming.designation" (modelChange)="onEltChange.emit();"
+                                         [isAllowed]="!question.question.cde.tinyId"></cde-inline-edit>
+                    </dd>
                     <dt class="col-2">Definition:</dt>
-                    <dd class="col-10">{{naming.definition | cdePlaceholder}}</dd>
+                    <dd class="col-10">
+                        <cde-inline-area-edit [(model)]="naming.definition" (modelChange)="onEltChange.emit();"
+                                              [(defFormat)]="naming.definitionFormat"
+                                              [isAllowed]="!question.question.cde.tinyId"></cde-inline-area-edit>
+                    </dd>
                     <dt class="col-2"> Tags:</dt>
-                    <dd class="col-10">{{naming.tags | cdeArrayList}}</dd>
+                    <dd class="col-10">
+                        <select2 [data]="namingTags" [value]="naming.tags" [options]="options" width="100%"
+                                 [disabled]="question.question.cde.tinyId" (valueChanged)="changedTags(naming,$event)">
+                        </select2>
+                    </dd>
                 </dl>
             </div>
             <hr/>
         </div>
-
         <div class="row">
             <div class="col-lg-12">
-                <button class="btn btn-lg btn-outline-dark" (click)="nameSelectModal.okSelect()"><i
-                        class="fa fa-stop"></i> No Label
+                <button class="btn btn-lg btn-outline-dark" (click)="nameSelectModal.okSelect()">
+                    <i class="fa fa-stop"></i> No Label
                 </button>
+                <button *ngIf="!question.question.cde.tinyId" class="btn btn-lg btn-outline-dark"
+                        (click)="addNamingToNewCde();">
+                    <i class="fa fa-plus"></i> Add Naming
+                </button>
+
             </div>
         </div>
     </div>

@@ -7,6 +7,7 @@ var questionSchema = {
     cde: {
         tinyId: String
         , name: String
+        , naming: []
         , version: String
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
         , ids: [sharedSchemas.idSchema]

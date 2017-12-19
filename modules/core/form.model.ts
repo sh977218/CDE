@@ -175,6 +175,7 @@ class InForm {
 export class QuestionCde {
     ids: CdeId[];
     name: string;
+    naming = [];
     permissibleValues: PermissibleValue[];
     outdated: boolean = false;
     tinyId: string;

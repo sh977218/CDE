@@ -30,7 +30,7 @@ export class FormDescriptionQuestionDetailComponent {
     };
 
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
+    @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("formDescriptionNameSelectTmpl") formDescriptionNameSelectTmpl: NgbModalModule;
     @ViewChild("formDescriptionQuestionTmpl") formDescriptionQuestionTmpl: TemplateRef<any>;
@@ -52,6 +52,7 @@ export class FormDescriptionQuestionDetailComponent {
             }
         }
     };
+    namingTags = [];
     answersSelected: Array<string>;
     nameSelectModal: any = {};
     nameSelectModalRef: NgbModalRef;
@@ -111,7 +112,7 @@ export class FormDescriptionQuestionDetailComponent {
         if (!_.isEqual(this.answersSelected, newAnswers)) {
             this.question.question.answers = this.question.question.cde.permissibleValues.filter(a => newAnswers.indexOf(a.permissibleValue) > -1);
             this.answersSelected = this.question.question.answers.map(a => a.permissibleValue);
-            this.stageElt.emit();
+            this.onEltChange.emit();
         }
     }
 
@@ -135,7 +136,7 @@ export class FormDescriptionQuestionDetailComponent {
                             if (unit[0] !== uom) {
                                 question.uoms[i] = unit[0];
                                 this.uomVersion++;
-                                this.stageElt.emit();
+                                this.onEltChange.emit();
                             }
 
                             let valid = true;
@@ -173,7 +174,7 @@ export class FormDescriptionQuestionDetailComponent {
         let newUoms = (Array.isArray(uoms.value) ? uoms.value.filter(uom => uom !== "") : []);
         if (!_.isEqual(this.question.question.uoms, newUoms)) {
             this.question.question.uoms = newUoms;
-            this.stageElt.emit();
+            this.onEltChange.emit();
         }
         this.validateUoms(this.question.question);
     }
@@ -230,14 +231,14 @@ export class FormDescriptionQuestionDetailComponent {
             this.nameSelectModal.checkAndUpdateLabel(section);
         }
         this.nameSelectModalRef = this.modalService.open(this.formDescriptionNameSelectTmpl, {size: "lg"});
-        this.nameSelectModalRef.result.then(() => this.stageElt.emit(), () => {
+        this.nameSelectModalRef.result.then(() => this.onEltChange.emit(), () => {
         });
     }
 
     removeNode(node) {
         node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
         node.treeModel.update();
-        this.stageElt.emit();
+        this.onEltChange.emit();
     }
 
     slOptionsRetrigger() {
@@ -252,11 +253,31 @@ export class FormDescriptionQuestionDetailComponent {
         if (oldSkipLogic && oldSkipLogic.condition !== item) {
             let validateSkipLogicResult = this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item);
             if (validateSkipLogicResult)
-                this.stageElt.emit();
+                this.onEltChange.emit();
             else
                 this.isFormValid.emit(false);
         }
     }
 
     static inputEvent = new Event('input');
+
+
+    public options: Select2Options = {
+        multiple: true,
+        tags: true,
+        language: {
+            noResults: () => {
+                return "No Tags found, Tags are managed in Org Management > List Management";
+            }
+        }
+    };
+
+    changedTags(name, data: { value: string[] }) {
+        name.tags = data.value;
+        this.onEltChange.emit();
+    }
+
+    addNamingToNewCde() {
+        this.question.question.cde.naming.push({designation: '', definition: '', tags: []});
+    }
 }
