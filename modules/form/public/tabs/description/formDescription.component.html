@@ -7,6 +7,11 @@
                   style="width: 74px;">
                 <i class="fa fa-plus"></i><span class="toolSection"></span>
             </span>
+            <span role="button" id="startAddingCde" class="btn btn-lg btn-light formDescriptionTool"
+                  *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'cde'}" [treeDragEnabled]="true"
+                  style="width: 87px;">
+                <i class="fa fa-cube"></i><span class="toolCde"></span>
+            </span>
             <span role="button" id="startAddingQuestions" class="btn btn-lg btn-light formDescriptionTool"
                   *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true"
                   style="width: 87px;">
@@ -114,3 +119,7 @@
         <button class="btn btn-lg btn-warning" (click)="d()" id="cancelSelectQ">Close</button>
     </div>
 </ng-template>
+
+
+-------------------------
+{{elt.formElements | json}}

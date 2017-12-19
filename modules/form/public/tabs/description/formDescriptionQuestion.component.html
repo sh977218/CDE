@@ -30,10 +30,11 @@
         </button>
     </div>
     <div class="d-inline-block left">
-        <a target="_blank" title="{{question.question.cde.name}}"
+        <a *ngIf="question.question.cde.tinyId" target="_blank" title="{{question.question.cde.name}}"
            href="/deView?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
             <i class="fa fa-eye"></i> View CDE
         </a>
+        <span *ngIf="!question.question.cde.tinyId">(This is a new CDE)</span>
     </div>
     <div class="d-inline-block left">{{getDatatypeLabel(question)}}</div>
     <div *ngIf="!isSubForm && canEdit" class="d-inline-block pull-right editIconDiv" style="font-size: 16px">

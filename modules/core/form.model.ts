@@ -115,6 +115,7 @@ export class FormInForm implements FormElement {
 
 export class FormQuestion implements FormElement {
     _id: ObjectId;
+    newCde: boolean = false;
     elementType = 'question';
     edit: boolean = false;
     formElements = [];
@@ -122,7 +123,7 @@ export class FormQuestion implements FormElement {
     incompleteRule: boolean = false;
     instructions: Instruction;
     label = "";
-    question: Question;
+    question: Question = new Question;
     questionId: string;
     repeat: string;
     skipLogic = new SkipLogic;
@@ -134,7 +135,7 @@ export class Question {
     answerDate: any; // working storage for date part
     answerTime: any; // working storage for time part
     answers: PermissibleValue[];
-    cde: QuestionCde;
+    cde: QuestionCde = new QuestionCde;
     datatype: string;
     datatypeDate: {
         format: string,
@@ -171,7 +172,7 @@ class InForm {
     };
 }
 
-class QuestionCde {
+export class QuestionCde {
     ids: CdeId[];
     name: string;
     permissibleValues: PermissibleValue[];

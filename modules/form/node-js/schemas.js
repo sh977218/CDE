@@ -1,8 +1,7 @@
-var mongoose = require('mongoose')
-    , Schema = mongoose.Schema
-    , sharedSchemas = require('../../system/node-js/schemas.js')
-    , config = require("config")
-;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const sharedSchemas = require('../../system/node-js/schemas.js');
+const config = require('config');
 
 var questionSchema = {
     cde: {

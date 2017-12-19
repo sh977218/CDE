@@ -77,34 +77,34 @@
 
 <ng-template #formDescriptionQuestionEditTmpl>
     <dl class="row">
-        <dt class="col-sm-2">Label:</dt>
-        <dd class="col-sm-10">
+        <dt class="col-2">Label:</dt>
+        <dd class="col-10">
             <i class="fa fa-pencil changeQuestionLabelIcon" title="Change question label"
                (click)="openNameSelect(question, parent)"></i>
             <span *ngIf="!question.hideLabel">{{question.label}}</span>
             <span *ngIf="question.hideLabel">(No label)</span>
         </dd>
-        <dt class="col-sm-2">Instructions:</dt>
-        <dd class="col-sm-10 editQuestionInstruction">
+        <dt class="col-2">Instructions:</dt>
+        <dd class="col-10 editQuestionInstruction">
             <cde-inline-area-edit
                     [(model)]="question.instructions.value"
                     [(defFormat)]="question.instructions.valueFormat"
                     [isAllowed]="true" (modelChange)="stageElt.emit()">
             </cde-inline-area-edit>
         </dd>
-        <dt class="col-sm-2">Required:</dt>
-        <dd class="col-sm-10">
+        <dt class="col-2">Required:</dt>
+        <dd class="col-10">
             <input type="checkbox" title="Required" [(ngModel)]="question.question.required"
                    (change)="stageElt.emit()"/>
         </dd>
-        <dt class="col-sm-2">Invisible:</dt>
-        <dd class="col-sm-10 editQuestionInvisible">
+        <dt class="col-2">Invisible:</dt>
+        <dd class="col-10 editQuestionInvisible">
             <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible"
                    (change)="stageElt.emit()">
         </dd>
         <ng-container *ngIf="parent">
-            <dt class="col-sm-2">Show if:</dt>
-            <dd class="col-sm-10 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
+            <dt class="col-2">Show if:</dt>
+            <dd class="col-10 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
                 <input #slInput type="text" title="Show if"
                        (focus)="slOptionsRetrigger()"
                        [ngModel]="question.skipLogic.condition"
@@ -116,8 +116,8 @@
                 <span [textContent]="question.skipLogic?.validationError"></span>
             </dd>
         </ng-container>
-        <dt class="col-sm-2">Units of Measure:</dt>
-        <dd class="col-sm-10 questionUom">
+        <dt class="col-2">Units of Measure:</dt>
+        <dd class="col-10 questionUom">
             <ng-container *ngFor="let q of [uomVersion]">
                 <select2 class="formDescriptionUoms" [data]="getUoms()" [value]="question.question.uoms"
                          [options]="uomOptions" width="100%"
@@ -125,40 +125,40 @@
                 </select2>
             </ng-container>
         </dd>
-        <dt class="col-sm-2">Datatype:</dt>
-        <dd class="col-sm-10">{{question.question.datatype | cdePlaceholder }}</dd>
+        <dt class="col-2">Datatype:</dt>
+        <dd class="col-10">{{question.question.datatype | cdePlaceholder }}</dd>
         <ng-container *ngIf="question.question.datatype === 'Text'">
-            <dt class="col-sm-2">Min Length:</dt>
-            <dd class="col-sm-10"> {{question.question?.datatypeText?.minLength | cdePlaceholder }}</dd>
-            <dt class="col-sm-2">Max Length:</dt>
-            <dd class="col-sm-10"> {{question.question?.datatypeText?.maxLength | cdePlaceholder}}</dd>
+            <dt class="col-2">Min Length:</dt>
+            <dd class="col-10"> {{question.question?.datatypeText?.minLength | cdePlaceholder }}</dd>
+            <dt class="col-2">Max Length:</dt>
+            <dd class="col-10"> {{question.question?.datatypeText?.maxLength | cdePlaceholder}}</dd>
         </ng-container>
         <ng-container *ngIf="question.question.datatype === 'Number'">
-            <dt class="col-sm-2">Min Value:</dt>
-            <dd class="col-sm-10"> {{question.question?.datatypeNumber?.minValue | cdePlaceholder }}</dd>
-            <dt class="col-sm-2">Max Value:</dt>
-            <dd class="col-sm-10"> {{question.question?.datatypeNumber?.maxValue | cdePlaceholder }}</dd>
+            <dt class="col-2">Min Value:</dt>
+            <dd class="col-10"> {{question.question?.datatypeNumber?.minValue | cdePlaceholder }}</dd>
+            <dt class="col-2">Max Value:</dt>
+            <dd class="col-10"> {{question.question?.datatypeNumber?.maxValue | cdePlaceholder }}</dd>
         </ng-container>
         <ng-container *ngIf="question.question.datatype === 'Date'">
-            <dt class="col-sm-2">Date Format:</dt>
-            <dd class="col-sm-10"> {{question.question?.datatypeDate?.format}}</dd>
+            <dt class="col-2">Date Format:</dt>
+            <dd class="col-10"> {{question.question?.datatypeDate?.format}}</dd>
         </ng-container>
         <ng-container *ngIf="question.question.datatype === 'Value List'">
-            <dt class="col-sm-2">Multiple Selection:</dt>
-            <dd class="col-sm-10 multipleSelection">
+            <dt class="col-2">Multiple Selection:</dt>
+            <dd class="col-10 multipleSelection">
                 <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect"
                        (change)="stageElt.emit()"/>
             </dd>
-            <dt class="col-sm-2">Answer List:</dt>
-            <dd class="col-sm-10">
+            <dt class="col-2">Answer List:</dt>
+            <dd class="col-10">
                 <select2 class="formDescriptionAnswerList" [data]="getAnswersData()" [value]="getAnswersValue()"
                          [options]="answersOptions" width="100%"
                          (valueChanged)="checkAnswers($event)">
                 </select2>
             </dd>
         </ng-container>
-        <dt class="col-sm-2">Default Answer:</dt>
-        <dd class="col-sm-10 defaultAnswer">
+        <dt class="col-2">Default Answer:</dt>
+        <dd class="col-10 defaultAnswer">
             <ng-container *ngIf="question.question.datatype === 'Value List'">
                 <select title="Default" class="form-control"
                         [(ngModel)]="question.question.defaultAnswer" (change)="stageElt.emit()">
@@ -173,11 +173,15 @@
             </ng-container>
         </dd>
         <ng-container *ngIf="question.question.defaultAnswer">
-            <dt class="col-sm-2">Editable:</dt>
-            <dd class="col-sm-10">
+            <dt class="col-2">Editable:</dt>
+            <dd class="col-10">
                 <input type="checkbox" title="Editable" [(ngModel)]="question.question.editable"
                        (change)="stageElt.emit()"/>
             </dd>
+        </ng-container>
+        <ng-container *ngIf="!question.question.cde.tinyId">
+            <dt class="col-2">CDE:</dt>
+            <dd class="col-10"></dd>
         </ng-container>
     </dl>
 </ng-template>
@@ -203,12 +207,12 @@
             </div>
             <div class="col-lg-9">
                 <dl class="row">
-                    <dt class="col-sm-2">Name:</dt>
-                    <dd class="col-sm-10">{{naming.designation}}</dd>
-                    <dt class="col-sm-2">Definition:</dt>
-                    <dd class="col-sm-10">{{naming.definition | cdePlaceholder}}</dd>
-                    <dt class="col-sm-2"> Tags:</dt>
-                    <dd class="col-sm-10">{{naming.tags | cdeArrayList}}</dd>
+                    <dt class="col-2">Name:</dt>
+                    <dd class="col-10">{{naming.designation}}</dd>
+                    <dt class="col-2">Definition:</dt>
+                    <dd class="col-10">{{naming.definition | cdePlaceholder}}</dd>
+                    <dt class="col-2"> Tags:</dt>
+                    <dd class="col-10">{{naming.tags | cdeArrayList}}</dd>
                 </dl>
             </div>
             <hr/>
@@ -217,8 +221,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <button class="btn btn-lg btn-outline-dark" (click)="nameSelectModal.okSelect()"><i
-                        class="fa fa-stop"></i> No
-                    Label
+                        class="fa fa-stop"></i> No Label
                 </button>
             </div>
         </div>

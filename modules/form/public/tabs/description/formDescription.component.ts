@@ -15,8 +15,8 @@ import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 import * as _ from 'lodash';
 
-import { FormService } from "../../../../nativeRender/form.service";
-import { CdeForm, FormElement, FormSection } from "../../../../core/form.model";
+import { FormService } from "nativeRender/form.service";
+import { CdeForm, FormElement, FormQuestion, FormSection, Question, QuestionCde } from "../../../../core/form.model";
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { Http } from '@angular/http';
 
@@ -104,6 +104,10 @@ import { Http } from '@angular/http';
             content: ' Question';
         }
 
+        .toolCde:before {
+            content: ' CDE';
+        }
+
         .toolForm:before {
             content: ' Form';
         }
@@ -143,7 +147,7 @@ export class FormDescriptionComponent implements OnChanges {
         allowDrop: (element, {parent, index}) => {
             return element !== parent && parent.data.elementType !== "question" && (!element
                 || !element.ref && (element.data.elementType !== "question" || parent.data.elementType === "section")
-                || element.ref === "form"
+                || element.ref === "form" || element.ref === "cde"
                 || element.ref === "pasteSection"
                 || element.ref === "question" && parent.data.elementType === "section"
             ) && !FormService.isSubForm(parent);
@@ -158,6 +162,8 @@ export class FormDescriptionComponent implements OnChanges {
                         this.toolDropTo = to;
                         if (from.ref === "question")
                             this.openQuestionSearch();
+                        else if (from.ref === "cde")
+                            this.addIndex(to.parent.data.formElements, this.getNewQuestion(), to.index);
                         else if (from.ref === "form")
                             this.openFormSearch();
                         else if (from.ref === "pasteSection")
@@ -237,13 +243,23 @@ export class FormDescriptionComponent implements OnChanges {
         return new FormSection;
     }
 
+    getNewQuestion() {
+        let formQuestion = new FormQuestion;
+        formQuestion.newCde = true;
+        formQuestion.question = new Question;
+        formQuestion.question.cde = new QuestionCde;
+        return formQuestion;
+    }
+
     hasCopiedSection() {
         let copiedSection = this.localStorageService.get("sectionCopied");
         return !_.isEmpty(copiedSection);
     }
 
     openFormSearch() {
-        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(() => {}, () => {});
+        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(() => {
+        }, () => {
+        });
     }
 
     openQuestionSearch() {

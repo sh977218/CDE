@@ -121,6 +121,7 @@ export class FormDescriptionQuestionDetailComponent {
             question.uomsValid[index] = question.uomsValid[index]
                 || aKeys.concat(Object.keys(b)).every(u => a[u] && b[u] && a[u] === b[u]);
         }
+
         let baseUnits;
         let baseUnitsKeys;
         let delayedUnits = [];
@@ -220,18 +221,17 @@ export class FormDescriptionQuestionDetailComponent {
         this.nameSelectModal.section = section;
         this.nameSelectModal.question = question;
         this.nameSelectModal.cde = question.question.cde;
-        let url = "/de/" + this.nameSelectModal.cde.tinyId;
-        if (this.nameSelectModal.cde.version) url += "/version/" + this.nameSelectModal.cde.version;
-        this.http.get(url).map((res: Response) => res.json())
-            .subscribe((response) => {
-                this.nameSelectModal.cde = response;
-            }, () => {
-                this.nameSelectModal.cde = "error";
-            });
-        this.nameSelectModal.checkAndUpdateLabel(section);
-
+        if (this.nameSelectModal.cde.tinyId) {
+            let url = "/de/" + this.nameSelectModal.cde.tinyId;
+            if (this.nameSelectModal.cde.version) url += "/version/" + this.nameSelectModal.cde.version;
+            this.http.get(url).map((res: Response) => res.json())
+                .subscribe(response => this.nameSelectModal.cde = response,
+                    () => this.nameSelectModal.cde = "error");
+            this.nameSelectModal.checkAndUpdateLabel(section);
+        }
         this.nameSelectModalRef = this.modalService.open(this.formDescriptionNameSelectTmpl, {size: "lg"});
-        this.nameSelectModalRef.result.then(() => this.stageElt.emit(), () => {});
+        this.nameSelectModalRef.result.then(() => this.stageElt.emit(), () => {
+        });
     }
 
     removeNode(node) {
