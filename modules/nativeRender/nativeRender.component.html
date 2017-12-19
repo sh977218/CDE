@@ -22,4 +22,4 @@
 <small *ngIf="nrs.getElt()?.isCopyrighted && (!nrs.profile || nrs.profile.displayCopyright)"
        id="copyrightStatement">{{nrs.getElt().copyright.text}}</small>
 
-<div><code *ngFor="let error of nrs.getErrors()">{{error}}</code></div>
+<div *ngFor="let error of nrs.getErrors()"><code>{{error}}</code></div>
