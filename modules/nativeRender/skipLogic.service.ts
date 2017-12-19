@@ -140,12 +140,9 @@ export class SkipLogicService {
 
     static getQuestions(fes: FormElement[], filter = undefined): FormQuestion[] {
         let matchedQuestions = [];
-        let sectionQuestions = fe => {
-            matchedQuestions = matchedQuestions.concat(this.getQuestions(fe.formElements, filter));
-        };
-        FormService.iterateFesSync(fes, sectionQuestions, sectionQuestions, fe => {
+        FormService.iterateFesSync(fes, undefined, undefined, fe => {
             if (!filter || filter(fe))
-                matchedQuestions = matchedQuestions.concat(fe);
+               matchedQuestions.push(fe);
         });
         return matchedQuestions;
     }

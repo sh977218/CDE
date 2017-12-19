@@ -115,9 +115,6 @@ export class FormDescriptionComponent implements OnChanges {
             this.descToolbox.nativeElement.style.top = (window.pageYOffset > 50 ? 0 : (50 - window.pageYOffset)) + 'px';
     }
 
-    addIndex = function (elems, elem, i) {
-        return elems.splice(i, 0, elem);
-    };
     toolDropTo: { index: number, parent: any };
     toolSection: { insert: 'section', data: FormElement };
     treeOptions = {
@@ -174,6 +171,10 @@ export class FormDescriptionComponent implements OnChanges {
                 private formService: FormService,
                 private http: Http) {
         this.toolSection = {insert: "section", data: this.getNewSection()};
+    }
+
+    addIndex(elems, elem, i) {
+        return elems.splice(i, 0, elem);
     }
 
     addQuestionFromSearch(cde) {

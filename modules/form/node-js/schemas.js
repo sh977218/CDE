@@ -48,47 +48,33 @@ var inFormSchema = {
     }
 };
 
-var formElementTreeRoot = {
-    elementType: {type: String, enum: ['section', 'question', 'form']}
-    , label: String
-    , instructions: sharedSchemas.instructionSchema
-    , repeat: String
-    , repeatsFor: String
-    , showIfExpression: String
-    , section: sectionSchema
-    , question: questionSchema
-    , inForm: inFormSchema
-    , formElements: []
-    , skipLogic: {
-        action: {type: String, enum: ['show', 'enable']}
-        , condition: String
-    },
-    _id: false
-};
+function getFormElementSchema() {
+    return {
+        _id: false,
+        elementType: {type: String, enum: ['section', 'question', 'form']},
+        formElements: [],
+        instructions: sharedSchemas.instructionSchema,
+        inForm: {type: inFormSchema, default: undefined},
+        label: String,
+        question: {type: questionSchema, default: undefined},
+        repeat: String,
+        repeatsFor: String,
+        section: {type: sectionSchema, default: undefined},
+        showIfExpression: String,
+        skipLogic: {
+            action: {type: String, enum: ['show', 'enable']},
+            condition: String,
+        },
+    };
+}
+
+let formElementTreeRoot = getFormElementSchema();
 let currentLevel = formElementTreeRoot.formElements;
 for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
-    currentLevel.push({
-        elementType: {type: String, enum: ['section', 'question', 'form']}
-        , label: String
-        , hideLabel: {type: Boolean, default: false}
-        , instructions: sharedSchemas.instructionSchema
-        , repeat: String
-        , repeatsFor: String
-        , showIfExpression: String
-        , section: sectionSchema
-        , question: questionSchema
-        , inForm: inFormSchema
-        , formElements: []
-        , skipLogic: {
-            action: {type: String, enum: ['show', 'enable']}
-            , condition: String
-        },
-        _id: false
-    });
+    currentLevel.push(getFormElementSchema());
     currentLevel = currentLevel[0].formElements;
 }
 currentLevel.push(new mongoose.Schema({}, {strict: false}));
-
 let formElementSchema = new Schema(formElementTreeRoot, {_id: false});
 
 exports.formJson = {

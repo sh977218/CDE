@@ -36,6 +36,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     filterMode = true;
     helperObjectsService = HelperObjectsService;
     lastQueryTimeStamp: number;
+    private lastTypeahead = {};
     module: string;
     numPages: any;
     orgs: any[];
@@ -296,8 +297,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return searchTerms;
     }
 
-    private lastTypeahead = {};
-    getAutocompleteSuggestions = (text$: Observable<string>) =>
+    getAutocompleteSuggestions = ((text$: Observable<string>) =>
         text$.debounceTime(500).distinctUntilChanged().switchMap(term =>
             term.length >= 3 ?
                 this.http.post('/' + this.module + 'Completion/' + encodeURI(term),
@@ -310,12 +310,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     });
                     return Array.from(final);
                 })
-            : Observable.empty()
-        ).take(8);
-
-    typeaheadSelect (item) {
-        this.router.navigate([this.module === 'form' ? "formView" : "deView"], {queryParams: {tinyId: this.lastTypeahead[item.item]}});
-    }
+                : Observable.empty()
+        ).take(8));
 
     getCurrentSelectedClassification() {
         return this.altClassificationFilterMode
@@ -772,6 +768,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
 
         this.doSearch();
+    }
+
+    typeaheadSelect (item) {
+        this.router.navigate([this.module === 'form' ? "formView" : "deView"], {queryParams: {tinyId: this.lastTypeahead[item.item]}});
     }
 
     static waitScroll(count, previousSpot) {

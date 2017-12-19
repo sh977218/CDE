@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import * as async from 'async';
+
+import {
+    areDerivationRulesSatisfied, convertFormToSection, findQuestionByTinyId, isSubForm, iterateFe, iterateFes,
+    iterateFeSync, iterateFesSync, score
+} from 'form/shared/formShared';
 import noop from 'lodash.noop';
-import { FormElement, FormElementsContainer, FormQuestion } from 'core/form.model';
+import { FormQuestion } from 'core/form.model';
 
 function noop1(a, cb) { cb(); }
 
@@ -10,177 +14,15 @@ function noop1(a, cb) { cb(); }
 export class FormService {
     constructor(private http: Http) {}
 
-    static areDerivationRulesSatisfied(elt) {
-        let missingCdes = [];
-        let allCdes = {};
-        let allQuestions = [];
-        FormService.iterateFeSync(elt, undefined, undefined, (fe) => {
-            if (fe.question.datatype === 'Number' && !Number.isNaN(fe.question.defaultAnswer))
-                fe.question.answer = Number.parseFloat(fe.question.defaultAnswer);
-            else
-                fe.question.answer = fe.question.defaultAnswer;
-            allCdes[fe.question.cde.tinyId] = fe.question;
-            allQuestions.push(fe);
-        });
-        allQuestions.forEach(quest => {
-            if (quest.question.cde.derivationRules)
-                quest.question.cde.derivationRules.forEach(derRule => {
-                    delete quest.incompleteRule;
-                    if (derRule.ruleType === 'score') {
-                        quest.question.isScore = true;
-                        quest.question.scoreFormula = derRule.formula;
-                    }
-                    derRule.inputs.forEach(input => {
-                        if (allCdes[input]) {
-                            allCdes[input].partOf = 'score';
-                        } else {
-                            missingCdes.push({tinyId: input});
-                            quest.incompleteRule = true;
-                        }
-                    });
-                });
-        });
-        return missingCdes;
-    }
-
-    // cb(err, elt)
-    getForm(tinyId, id, cb = noop) {
-        let url = '/form/' + tinyId;
-        if (id) url = '/formById/' + id;
-        this.http.get(url).map(res => res.json()).subscribe(res => {
-            cb(null, res);
-        }, cb);
-    }
-
-    // modifies form to add sub-forms
-    // callback(err: string)
-    fetchWholeForm(form, callback = noop) {
-        let formCb = (fe, cb) => {
-            this.http.get('/form/' + fe.inForm.form.tinyId
-                + (fe.inForm.form.version ? '/version/' + fe.inForm.form.version : ''))
-                .map(function (res) {
-                    return res.json();
-                })
-                .subscribe(function (response: any) {
-                    fe.formElements = response.formElements;
-                    cb();
-                }, function (err) {
-                    cb(err.statusText);
-                });
-        };
-        function questionCb(fe, cb) {
-            if (fe.question.cde.derivationRules)
-                fe.question.cde.derivationRules.forEach(function (derRule) {
-                    delete fe.incompleteRule;
-                    if (derRule.ruleType === 'score') {
-                        fe.question.isScore = true;
-                        fe.question.scoreFormula = derRule.formula;
-                    }
-                });
-            cb();
-        }
-        FormService.iterateFe(form, callback, formCb, undefined, questionCb);
-    }
-
-    static findQuestionByTinyId(tinyId, elt) {
-        let result = null;
-        let doFormElement = function (formElt) {
-            if (formElt.elementType === 'question') {
-                if (formElt.question.cde.tinyId === tinyId) {
-                    result = formElt;
-                }
-            } else if (formElt.elementType === 'section') {
-                formElt.formElements.forEach(doFormElement);
-            }
-        };
-        elt.formElements.forEach(doFormElement);
-        return result;
-    }
-
-    // callback(error)
-    // feCb(fe, cbContinue(error))
-    static iterateFe(fe: FormElementsContainer, callback, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
-        if (fe)
-            this.iterateFes(fe.formElements, callback, formCb, sectionCb, questionCb);
-    }
-
-    // cb(fe)
-    static iterateFeSync(fe: FormElementsContainer, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
-        if (fe)
-            this.iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
-    }
-
-    // callback(error)
-    // feCb(fe, cbContinue(error))
-    static iterateFes(fes: FormElement[], callback = noop, formCb = noop1, sectionCb = noop1, questionCb = noop1) {
-        if (Array.isArray(fes))
-            async.forEach(fes, (fe: any, cb) => {
-                if (fe.elementType === 'form') {
-                    formCb(fe, (err) => {
-                        if (err)
-                            cb(err);
-                        else
-                            this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
-                    });
-                } else if (fe.elementType === 'section') {
-                    sectionCb(fe, (err) => {
-                        if (err)
-                            cb(err);
-                        else
-                            this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
-                    });
-                } else {
-                    questionCb(fe, cb);
-                }
-            }, callback);
-    }
-
-    // cb(fe)
-    static iterateFesSync(fes: FormElement[], formCb = noop, sectionCb = noop, questionCb = noop) {
-        if (Array.isArray(fes))
-            fes.forEach(fe => {
-                if (fe.elementType === 'form') {
-                    formCb(fe);
-                    FormService.iterateFeSync(fe, formCb, sectionCb, questionCb);
-                } else if (fe.elementType === 'section') {
-                    sectionCb(fe);
-                    FormService.iterateFeSync(fe, formCb, sectionCb, questionCb);
-                } else {
-                    questionCb(fe);
-                }
-            });
-    };
-
-    static score(question, elt) {
-        if (!question.question.isScore)
-            return;
-        let result: any = 0;
-        let service = this;
-        question.question.cde.derivationRules.forEach(function (derRule) {
-            if (derRule.ruleType === 'score') {
-                if (derRule.formula === 'sumAll' || derRule.formula === 'mean') {
-                    derRule.inputs.forEach(function (cdeTinyId) {
-                        let q = service.findQuestionByTinyId(cdeTinyId, elt);
-                        if (isNaN(result)) return;
-                        if (q) {
-                            let answer = q.question.answer;
-                            if (answer == null)
-                                return result = 'Incomplete answers';
-                            if (isNaN(answer))
-                                return result = 'Unable to score';
-                            else
-                                result = result + parseFloat(answer);
-                        }
-                    });
-                }
-                if (derRule.formula === 'mean') {
-                    if (!isNaN(result))
-                        result = result / derRule.inputs.length;
-                }
-            }
-        });
-        return result;
-    }
+    static areDerivationRulesSatisfied = areDerivationRulesSatisfied;
+    static convertFormToSection = convertFormToSection;
+    static findQuestionByTinyId = findQuestionByTinyId;
+    static isSubForm = isSubForm;
+    static iterateFe = iterateFe;
+    static iterateFeSync = iterateFeSync;
+    static iterateFes = iterateFes;
+    static iterateFesSync = iterateFesSync;
+    static score = score;
 
     convertCdeToQuestion(cde, cb): FormQuestion {
         if (cde.valueDomain !== undefined) {
@@ -264,32 +106,42 @@ export class FormService {
         }
     }
 
-    static convertFormToSection(form) {
-        if (form.formElements)
-            return {
-                elementType: 'form',
-                label: form.naming[0] ? form.naming[0].designation : '',
-                skipLogic: {
-                    condition: ''
-                },
-                inForm: {
-                    form: {
-                        tinyId: form.tinyId,
-                        version: form.version,
-                        name: form.naming[0] ? form.naming[0].designation : '',
-                        ids: form.ids
+    // modifies form to add sub-forms
+    // callback(err: string)
+    fetchWholeForm(form, callback = noop) {
+        let formCb = (fe, cb) => {
+            this.http.get('/form/' + fe.inForm.form.tinyId
+                + (fe.inForm.form.version ? '/version/' + fe.inForm.form.version : ''))
+                .map(function (res) {
+                    return res.json();
+                })
+                .subscribe(function (response: any) {
+                    fe.formElements = response.formElements;
+                    cb();
+                }, function (err) {
+                    cb(err.statusText);
+                });
+        };
+        function questionCb(fe, cb) {
+            if (fe.question.cde.derivationRules)
+                fe.question.cde.derivationRules.forEach(function (derRule) {
+                    delete fe.incompleteRule;
+                    if (derRule.ruleType === 'score') {
+                        fe.question.isScore = true;
+                        fe.question.scoreFormula = derRule.formula;
                     }
-                }
-            };
-        else
-            return {};
+                });
+            cb();
+        }
+        FormService.iterateFe(form, callback, formCb, undefined, questionCb);
     }
 
-    static isSubForm(node) {
-        let n = node;
-        while (n.data.elementType !== 'form' && n.parent) {
-            n = n.parent;
-        }
-        return n.data.elementType === 'form';
+    // cb(err, elt)
+    getForm(tinyId, id, cb = noop) {
+        let url = '/form/' + tinyId;
+        if (id) url = '/formById/' + id;
+        this.http.get(url).map(res => res.json()).subscribe(res => {
+            cb(null, res);
+        }, cb);
     }
 }

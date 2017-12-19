@@ -4,7 +4,7 @@ import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 
 import { AlertService } from '_app/alert/alert.service';
-import { FormElement, SkipLogic } from "core/form.model";
+import { FormElement, FormSection, SkipLogic } from "core/form.model";
 import { FormattedValue } from 'core/models.model';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
@@ -26,7 +26,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     isSubForm = false;
     parent: FormElement;
-    section: any;
+    section: FormSection;
 
     repeatOptions = [
         {label: "", value: ""},

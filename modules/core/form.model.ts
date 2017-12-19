@@ -27,7 +27,7 @@ export class CdeForm extends Elt implements FormElementsContainer {
     displayProfiles: DisplayProfile[];
     elementType: string = 'form';
     formInput: any;
-    formElements: FormElement[];
+    formElements: FormElement[] = [];
     history: ObjectId[];
     ids: CdeId[];
     imported: Date;
@@ -102,7 +102,7 @@ export class FormSection implements FormSectionOrForm {
     elementType = 'section';
     expanded = true; // Calculated, used for View TreeComponent
     forbidMatrix;
-    formElements;
+    formElements = [];
     instructions;
     label = '';
     repeat;
@@ -116,7 +116,7 @@ export class FormInForm implements FormSectionOrForm {
     _id;
     elementType = 'form';
     forbidMatrix;
-    formElements;
+    formElements = [];
     instructions;
     inForm: InForm;
     label = '';
@@ -128,7 +128,7 @@ export class FormQuestion implements FormElement {
     _id;
     elementType = 'question';
     edit: boolean = false;
-    formElements;
+    formElements = [];
     hideLabel: boolean = false;
     incompleteRule: boolean = false;
     instructions;

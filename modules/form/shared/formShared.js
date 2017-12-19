@@ -1,34 +1,94 @@
-var _crypto;
-if (typeof IS_BROWSER !== 'undefined' && IS_BROWSER) { // jshint ignore:line
-    // This will be executed in Chrome
-    try {
-        _crypto = jscrypto; // jshint ignore:line
-    } catch (e) {
-    }
-} else {
-    // This will be executed in NodeJS
-    _crypto = require('crypto');
-}
-var cdeOdmMapping;
+import * as async from 'async';
+import noop from 'lodash.noop';
 
-export const flattenFormElement = function (fe) {
-    var result = [];
+
+export function areDerivationRulesSatisfied(elt) {
+    let missingCdes = [];
+    let allCdes = {};
+    let allQuestions = [];
+    this.iterateFeSync(elt, undefined, undefined, (fe) => {
+        if (fe.question.datatype === 'Number' && !Number.isNaN(fe.question.defaultAnswer))
+            fe.question.answer = Number.parseFloat(fe.question.defaultAnswer);
+        else
+            fe.question.answer = fe.question.defaultAnswer;
+        allCdes[fe.question.cde.tinyId] = fe.question;
+        allQuestions.push(fe);
+    });
+    allQuestions.forEach(quest => {
+        if (quest.question.cde.derivationRules)
+            quest.question.cde.derivationRules.forEach(derRule => {
+                delete quest.incompleteRule;
+                if (derRule.ruleType === 'score') {
+                    quest.question.isScore = true;
+                    quest.question.scoreFormula = derRule.formula;
+                }
+                derRule.inputs.forEach(input => {
+                    if (allCdes[input]) {
+                        allCdes[input].partOf = 'score';
+                    } else {
+                        missingCdes.push({tinyId: input});
+                        quest.incompleteRule = true;
+                    }
+                });
+            });
+    });
+    return missingCdes;
+}
+
+export function convertFormToSection(form) {
+    if (form.formElements)
+        return {
+            elementType: 'form',
+            label: form.naming[0] ? form.naming[0].designation : '',
+            skipLogic: {
+                condition: ''
+            },
+            inForm: {
+                form: {
+                    tinyId: form.tinyId,
+                    version: form.version,
+                    name: form.naming[0] ? form.naming[0].designation : '',
+                    ids: form.ids
+                }
+            }
+        };
+    else
+        return {};
+}
+
+export function findQuestionByTinyId(tinyId, elt) {
+    let result = null;
+    let doFormElement = function (formElt) {
+        if (formElt.elementType === 'question') {
+            if (formElt.question.cde.tinyId === tinyId) {
+                result = formElt;
+            }
+        } else if (formElt.elementType === 'section') {
+            formElt.formElements.forEach(doFormElement);
+        }
+    };
+    elt.formElements.forEach(doFormElement);
+    return result;
+}
+
+export function flattenFormElement(fe) {
+    let result = [];
     fe.formElements.map(function (subFe) {
         if (!subFe.formElements || subFe.formElements.length === 0) {
             result.push(subFe);
         } else {
-            var subEs = flattenFormElement(subFe);
+            let subEs = flattenFormElement(subFe);
             subEs.forEach(function (e) {
                 result.push(e);
             });
         }
     });
     return result;
-};
+}
 
-export const getFormQuestions = function (form) {
-    var getQuestions = function (fe) {
-        var qs = [];
+export function getFormQuestions(form) {
+    let getQuestions = function (fe) {
+        let qs = [];
         if (fe.formElements) {
             fe.formElements.forEach(function (e) {
                 if (e.elementType === 'question') qs.push(e.question);
@@ -38,16 +98,15 @@ export const getFormQuestions = function (form) {
         return qs;
     };
     return getQuestions(form);
-};
+}
 
-export const getFormCdes = function (form) {
+export function getFormCdes(form) {
     return getFormQuestions(form).map(function (q) {
         return q.cde;
     });
-};
+}
 
-
-export const getFormOdm = function (form, cb) {
+export function getFormOdm(form, cb) {
 
     if (!form) return cb(null, "");
     if (!form.formElements) {
@@ -55,7 +114,7 @@ export const getFormOdm = function (form, cb) {
     }
 
     function cdeToOdmDatatype(cdeType) {
-        return cdeOdmMapping = {
+        return {
             "Value List": "text",
             "Character": "text",
             "Numeric": "float",
@@ -90,7 +149,7 @@ export const getFormOdm = function (form, cb) {
         return text.replace(/\<.+?\>/gi, ""); // jshint ignore:line
     }
 
-    var odmJsonForm = {
+    let odmJsonForm = {
         '$CreationDateTime': new Date().toISOString()
         , '$FileOID': form.tinyId
         , '$FileType': 'Snapshot'
@@ -140,16 +199,16 @@ export const getFormOdm = function (form, cb) {
             }
         }
     };
-    var sections = [];
-    var questions = [];
-    var codeLists = [];
+    let sections = [];
+    let questions = [];
+    let codeLists = [];
 
     form.formElements.forEach(function (s1, si) {
-        var childrenOids = [];
+        let childrenOids = [];
         flattenFormElement(s1).forEach(function (q1, qi) {
-            var oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
+            let oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
             childrenOids.push(oid);
-            var odmQuestion = {
+            let odmQuestion = {
                 Question: {
                     TranslatedText: {
                         '$xml:lang': 'en'
@@ -161,12 +220,12 @@ export const getFormOdm = function (form, cb) {
                 , '$OID': oid
             };
             if (q1.question.answers) {
-                var codeListAlreadyPresent = false;
+                let codeListAlreadyPresent = false;
                 codeLists.forEach(function (cl) {
-                    var codeListInHouse = cl.CodeListItem.map(function (i) {
+                    let codeListInHouse = cl.CodeListItem.map(function (i) {
                         return i.Decode.TranslatedText._;
                     }).sort();
-                    var codeListToAdd = q1.question.answers.map(function (a) {
+                    let codeListToAdd = q1.question.answers.map(function (a) {
                         return a.valueMeaningName;
                     }).sort();
                     if (JSON.stringify(codeListInHouse) === JSON.stringify(codeListToAdd)) {
@@ -179,13 +238,13 @@ export const getFormOdm = function (form, cb) {
                 if (!codeListAlreadyPresent) {
                     odmQuestion.CodeListRef = {'$CodeListOID': 'CL_' + oid};
                     questions.push(odmQuestion);
-                    var codeList = {
+                    let codeList = {
                         '$DataType': cdeToOdmDatatype(q1.question.datatype)
                         , '$OID': 'CL_' + oid
                         , '$Name': q1.label
                     };
                     codeList.CodeListItem = q1.question.answers.map(function (pv) {
-                        var cl = {
+                        let cl = {
                             '$CodedValue': pv.permissibleValue,
                             Decode: {
                                 TranslatedText: {
@@ -204,7 +263,7 @@ export const getFormOdm = function (form, cb) {
                 }
             }
         });
-        var oid = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+        let oid = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
         odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
             '$ItemGroupOID': oid
             , '$Mandatory': 'Yes'
@@ -240,4 +299,101 @@ export const getFormOdm = function (form, cb) {
         odmJsonForm.Study.MetaDataVersion.CodeList.push(cl);
     });
     cb(null, odmJsonForm);
-};
+}
+
+export function isSubForm(node) {
+    let n = node;
+    while (n.data.elementType !== 'form' && n.parent) {
+        n = n.parent;
+    }
+    return n.data.elementType === 'form';
+}
+
+// callback(error)
+// feCb(fe, cbContinue(error))
+export function iterateFe(fe, callback, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
+    if (fe)
+        this.iterateFes(fe.formElements, callback, formCb, sectionCb, questionCb);
+}
+
+// cb(fe)
+export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
+    if (fe)
+        this.iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
+}
+
+// callback(error)
+// feCb(fe, cbContinue(error))
+export function iterateFes(fes, callback = noop, formCb = noop1, sectionCb = noop1, questionCb = noop1) {
+    if (Array.isArray(fes))
+        async.forEach(fes, (fe, cb) => {
+            if (fe.elementType === 'form') {
+                formCb(fe, (err) => {
+                    if (err)
+                        cb(err);
+                    else
+                        this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
+                });
+            } else if (fe.elementType === 'section') {
+                sectionCb(fe, (err) => {
+                    if (err)
+                        cb(err);
+                    else
+                        this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
+                });
+            } else {
+                questionCb(fe, cb);
+            }
+        }, callback);
+}
+
+// cb(fe)
+export function iterateFesSync(fes, formCb = noop, sectionCb = noop, questionCb = noop) {
+    if (Array.isArray(fes))
+        fes.forEach(fe => {
+            if (fe.elementType === 'form') {
+                formCb(fe);
+                this.iterateFeSync(fe, formCb, sectionCb, questionCb);
+            } else if (fe.elementType === 'section') {
+                sectionCb(fe);
+                this.iterateFeSync(fe, formCb, sectionCb, questionCb);
+            } else {
+                questionCb(fe);
+            }
+        });
+}
+
+function noop1(a, cb) {
+    cb();
+}
+
+export function score(question, elt) {
+    if (!question.question.isScore)
+        return;
+    let result = 0;
+    let service = this;
+    question.question.cde.derivationRules.forEach(function (derRule) {
+        if (derRule.ruleType === 'score') {
+            if (derRule.formula === 'sumAll' || derRule.formula === 'mean') {
+                derRule.inputs.forEach(function (cdeTinyId) {
+                    let q = service.findQuestionByTinyId(cdeTinyId, elt);
+                    if (isNaN(result)) return;
+                    if (q) {
+                        let answer = q.question.answer;
+                        if (answer === null)
+                            result = 'Incomplete answers';
+                        else if (isNaN(answer))
+                            result = 'Unable to score';
+                        else
+                            result = result + parseFloat(answer);
+                    }
+                });
+            }
+            if (derRule.formula === 'mean') {
+                if (!isNaN(result))
+                    result = result / derRule.inputs.length;
+            }
+        }
+    });
+    return result;
+}
