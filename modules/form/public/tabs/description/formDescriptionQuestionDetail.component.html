@@ -180,8 +180,66 @@
             </dd>
         </ng-container>
         <ng-container *ngIf="!question.question.cde.tinyId">
-            <dt class="col-2">CDE:</dt>
-            <dd class="col-10"></dd>
+            <dt class="col-2">CDE Data Type:</dt>
+            <dd class="col-10">
+                <select2 [data]="dataTypeOptions" [value]="question.question.cde.datatype"
+                         [options]="datatypeSelect2Options"
+                         width="100%" (valueChanged)="changedDatatype($event)">
+                </select2>
+            </dd>
+            <ng-container *ngIf="question.question.cde.datatype==='Value List'">
+                <dt class="col-2">Permissible Values:</dt>
+                <dd class="col-10">
+                    <table class="table table-border table-responsive">
+                        <tr>
+                            <th>Value</th>
+                            <th>Code Name</th>
+                            <th>Code</th>
+                            <th>Code System</th>
+                            <th>Code Description</th>
+                            <th></th>
+                        </tr>
+                        <tr *ngFor="let pv of question.question.cde.permissibleValues;let i = index;">
+                            <td>
+                                <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="true"
+                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                            </td>
+                            <td>
+                                <cde-inline-edit [(model)]="pv.valueMeaningName" [isAllowed]="true"
+                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                            <td>
+                                <cde-inline-edit [(model)]="pv.valueMeaningCode" [isAllowed]="true"
+                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                            </td>
+                            <td>
+                                <cde-inline-edit [(model)]="pv.codeSystemName" [isAllowed]="true"
+                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                            </td>
+                            <td>
+                                <cde-inline-edit [(model)]="pv.valueMeaningDefinition" [isAllowed]="true"
+                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                            </td>
+                            <td>
+                                <button class="btn btn-outline-danger btn-xs"
+                                        (click)="question.question.cde.permissibleValues.splice(i,1);">Remove
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input [(ngModel)]="newPv.permissibleValue"/></td>
+                            <td><input [(ngModel)]="newPv.valueMeaningName"/>
+                            <td><input [(ngModel)]="newPv.valueMeaningCode"/></td>
+                            <td><input [(ngModel)]="newPv.codeSystemName"/></td>
+                            <td><input [(ngModel)]="newPv.valueMeaningDefinition"/></td>
+                            <td>
+                                <button class="btn btn-outline-success btn-xs"
+                                        (click)="question.question.cde.permissibleValues.push(newPv);newPv = {};">Add
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </dd>
+            </ng-container>
         </ng-container>
     </dl>
 </ng-template>
@@ -220,7 +278,7 @@
                     </dd>
                     <dt class="col-2"> Tags:</dt>
                     <dd class="col-10">
-                        <select2 [data]="namingTags" [value]="naming.tags" [options]="options" width="100%"
+                        <select2 [data]="namingTags" [value]="naming.tags" [options]="namingSelet2Options" width="100%"
                                  [disabled]="question.question.cde.tinyId" (valueChanged)="changedTags(naming,$event)">
                         </select2>
                     </dd>

@@ -9,6 +9,7 @@ import { TreeNode } from "angular-tree-component";
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { CdeForm, FormElement, FormQuestion, SkipLogic } from 'core/form.model';
 import { FormattedValue } from 'core/models.model';
+import * as deValidator from 'cde/shared/deValidator';
 
 @Component({
     selector: "cde-form-description-question-detail",
@@ -262,7 +263,7 @@ export class FormDescriptionQuestionDetailComponent {
     static inputEvent = new Event('input');
 
 
-    public options: Select2Options = {
+    public namingSelet2Options: Select2Options = {
         multiple: true,
         tags: true,
         language: {
@@ -270,6 +271,12 @@ export class FormDescriptionQuestionDetailComponent {
                 return "No Tags found, Tags are managed in Org Management > List Management";
             }
         }
+    };
+    public dataTypeOptions = ["Value List", "Text", "Date", "Number"];
+
+    datatypeSelect2Options = {
+        multiple: false,
+        tags: true
     };
 
     changedTags(name, data: { value: string[] }) {
@@ -279,5 +286,13 @@ export class FormDescriptionQuestionDetailComponent {
 
     addNamingToNewCde() {
         this.question.question.cde.naming.push({designation: '', definition: '', tags: []});
+        this.onEltChange.emit();
     }
+
+    changedDatatype(data: { value: string[] }) {
+        this.question.question.cde.datatype = data.value;
+        this.onEltChange.emit();
+    }
+
+    newPv = {};
 }

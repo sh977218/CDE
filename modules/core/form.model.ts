@@ -176,7 +176,8 @@ export class QuestionCde {
     ids: CdeId[];
     name: string;
     naming = [];
-    permissibleValues: PermissibleValue[];
+    datatype;
+    permissibleValues: PermissibleValue[] = [];
     outdated: boolean = false;
     tinyId: string;
     version: string;

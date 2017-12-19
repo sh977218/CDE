@@ -8,6 +8,7 @@ var questionSchema = {
         tinyId: String
         , name: String
         , naming: []
+        , datatype: String
         , version: String
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
         , ids: [sharedSchemas.idSchema]
