@@ -90,6 +90,7 @@ export interface FormElement extends FormElementsContainer {
     label: string;
     repeat: string;
     skipLogic: SkipLogic;
+    updatedSkipLogic: boolean; // calculated, formDescription
 }
 
 export interface FormSectionOrForm extends FormElement {
@@ -110,6 +111,7 @@ export class FormSection implements FormSectionOrForm {
     repeatOption: string;
     section: Section;
     skipLogic;
+    updatedSkipLogic;
 }
 
 export class FormInForm implements FormSectionOrForm {
@@ -122,6 +124,7 @@ export class FormInForm implements FormSectionOrForm {
     label = '';
     repeat;
     skipLogic;
+    updatedSkipLogic;
 }
 
 export class FormQuestion implements FormElement {
@@ -137,6 +140,7 @@ export class FormQuestion implements FormElement {
     questionId: string;
     repeat;
     skipLogic;
+    updatedSkipLogic;
 }
 
 class InForm {
