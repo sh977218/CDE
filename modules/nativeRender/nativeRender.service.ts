@@ -100,7 +100,8 @@ export class NativeRenderService {
     }
 
     addError(msg: string) {
-        this.errors.push(msg);
+        if (this.errors.indexOf(msg) === -1)
+            this.errors.push(msg);
     }
     hasErrors() {
         return !!this.errors.length;

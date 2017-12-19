@@ -10,27 +10,27 @@ export class SkipLogicService {
 
     constructor(private errorHandler: ErrorHandler) {}
 
-    static evaluateSkipLogic(condition: string, parent: FormElementsContainer, fe: FormElement, elt: CdeForm, errors = []) {
+    static evaluateSkipLogic(condition: string, parent: FormElementsContainer, fe: FormElement, nrs) {
         if (!condition)
             return true;
         let rule = condition.trim();
         if (rule.indexOf('AND') > -1)
-            return this.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), parent, fe, elt, errors) &&
-                this.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), parent, fe, elt, errors);
+            return this.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), parent, fe, nrs) &&
+                this.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), parent, fe, nrs);
         if (rule.indexOf('OR') > -1)
-            return (this.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), parent, fe, elt, errors) ||
-                this.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3), parent, fe, elt, errors));
+            return (this.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), parent, fe, nrs) ||
+                this.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3), parent, fe, nrs));
 
         let operatorArr = />=|<=|=|>|<|!=/.exec(rule);
         if (!operatorArr || operatorArr.length <= 0) {
-            errors.push('SkipLogic is incorrect. Operator is missing. ' + rule);
+            nrs.addError('SkipLogic is incorrect. Operator is missing. ' + rule);
             return false;
         }
         let operator = operatorArr[0];
 
         let ruleArr = rule.split(/>=|<=|=|>|<|!=/);
         if (ruleArr.length !== 2) {
-            errors.push('SkipLogic is incorrect. Operator requires 2 arguments. ' + rule);
+            nrs.addError('SkipLogic is incorrect. Operator requires 2 arguments. ' + rule);
             return false;
         }
         let questionLabel = ruleArr[0].replace(/"/g, '').trim();
@@ -38,15 +38,13 @@ export class SkipLogicService {
 
         let realAnswerObj = this.getQuestionPriorByLabel(parent, fe, questionLabel);
         if (!realAnswerObj) {
-            errors.push('SkipLogic is incorrect. Question not found. ' + rule);
+            nrs.addError('SkipLogic is incorrect. Question not found. ' + rule);
             return false;
         }
 
-        let realAnswer = realAnswerObj.question.isScore ? FormService.score(realAnswerObj, elt) : realAnswerObj.question.answer;
+        let realAnswer = realAnswerObj.question.isScore ? FormService.score(realAnswerObj, nrs.getElt()) : realAnswerObj.question.answer;
         if (realAnswer === undefined || realAnswer === null ||
             (typeof realAnswer === 'number' && isNaN(realAnswer))) realAnswer = '';
-
-        let a = operatorArr[4].split(' ');
 
         if (expectedAnswer === '' && operator === '=') {
             if (realAnswerObj.question.datatype === 'Number') {
@@ -73,7 +71,7 @@ export class SkipLogicService {
                 if (operator === '>') return new Date(realAnswer) > new Date(expectedAnswer);
                 if (operator === '<=') return new Date(realAnswer) <= new Date(expectedAnswer);
                 if (operator === '>=') return new Date(realAnswer) >= new Date(expectedAnswer);
-                errors.push('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type date. ' + rule);
+                nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type date. ' + rule);
                 return false;
             case 'Number':
                 if (operator === '=') return realAnswer === parseInt(expectedAnswer);
@@ -82,12 +80,12 @@ export class SkipLogicService {
                 if (operator === '>') return realAnswer > parseInt(expectedAnswer);
                 if (operator === '<=') return realAnswer <= parseInt(expectedAnswer);
                 if (operator === '>=') return realAnswer >= parseInt(expectedAnswer);
-                errors.push('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type number. ' + rule);
+                nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type number. ' + rule);
                 return false;
             case 'Text':
                 if (operator === '=') return realAnswer === expectedAnswer;
                 if (operator === '!=') return realAnswer !== expectedAnswer;
-                errors.push('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type text. ' + rule);
+                nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type text. ' + rule);
                 return false;
             case 'Value List':
                 if (operator === '=') {
@@ -102,19 +100,19 @@ export class SkipLogicService {
                     else
                         return realAnswer !== expectedAnswer;
                 }
-                errors.push('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for value list. ' + rule);
+                nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for value list. ' + rule);
                 return false;
             default:
                 if (operator === '=') return realAnswer === expectedAnswer;
                 if (operator === '!=') return realAnswer !== expectedAnswer;
-                errors.push('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type external. ' + rule);
+                nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type external. ' + rule);
                 return false;
         }
     }
 
-    evalSkipLogic(parent, fe, elt, errors) {
+    evalSkipLogic(parent, fe, nrs) {
         try {
-            return SkipLogicService.evaluateSkipLogic(fe.skipLogic ? fe.skipLogic.condition : null, parent, fe, elt, errors);
+            return SkipLogicService.evaluateSkipLogic(fe.skipLogic ? fe.skipLogic.condition : null, parent, fe, nrs);
         } catch (error) {
             this.errorHandler.handleError({
                 name: 'Skip Logic Evaluation Error',
@@ -125,8 +123,8 @@ export class SkipLogicService {
         }
     }
 
-    evalSkipLogicAndClear(parent, fe, elt, errors) {
-        let skipLogicResult = this.evalSkipLogic(parent, fe, elt, errors);
+    evalSkipLogicAndClear(parent, fe, nrs) {
+        let skipLogicResult = this.evalSkipLogic(parent, fe, nrs);
         if (!skipLogicResult && fe.question)
             fe.question.answer = undefined;
         return skipLogicResult;
@@ -335,19 +333,19 @@ export class SkipLogicService {
             case 'Value List':
                 if (tokens[2].length > 0 && filteredQuestion.question.answers.map(a => '"' + SkipLogicService
                         .tokenSanitizer(a.permissibleValue) + '"').indexOf(tokens[2]) < 0)
-                    return '"' + tokens[2] + '" is not a valid answer for "' + filteredQuestion.label + '"';
+                    return tokens[2] + ' is not a valid answer for "' + filteredQuestion.label + '"';
                 break;
             case 'Number':
                 if (isNaN(tokens[2]))
-                    return '"' + tokens[2] + '" is not a valid number for "' + filteredQuestion.label + '". Replace ' + tokens[2] + " with a valid number.";
+                    return tokens[2] + ' is not a valid number for "' + filteredQuestion.label + '". Replace ' + tokens[2] + ' with a valid number.';
                 if (filteredQuestion.question.datatypeNumber) {
                     let answerNumber = parseInt(tokens[2]);
                     let max = filteredQuestion.question.datatypeNumber.maxValue;
                     let min = filteredQuestion.question.datatypeNumber.minValue;
                     if (min !== undefined && answerNumber < min)
-                        return '"' + tokens[2] + '" is less than a minimal answer for "' + filteredQuestion.label + '"';
+                        return tokens[2] + ' is less than a minimal answer for "' + filteredQuestion.label + '"';
                     if (max !== undefined && answerNumber > max)
-                        return '"' + tokens[2] + '" is bigger than a maximal answer for "' + filteredQuestion.label + '"';
+                        return tokens[2] + ' is bigger than a maximal answer for "' + filteredQuestion.label + '"';
                 }
                 break;
             case 'Date':
