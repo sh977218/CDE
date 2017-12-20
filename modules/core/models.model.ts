@@ -134,9 +134,7 @@ export class Naming {
     designation: string;
     languageCode: string;
     source: string;
-    tags: [{
-        tag: string,
-    }];
+    tags: string[];
 }
 
 export type ObjectId = string;

@@ -16,7 +16,7 @@ import {
 export class CdeForm extends Elt implements FormElementsContainer {
     archived: boolean = false;
     changeNote: string;
-    classification: Classification[];
+    classification: Classification[] = [];
     comments: Comment[];
     copyright: {
         authority: string,
@@ -34,7 +34,7 @@ export class CdeForm extends Elt implements FormElementsContainer {
     isCopyrighted: boolean;
     isDraft: boolean; // calculated, formView
     lastMigrationScript: string;
-    naming: Naming[];
+    naming: Naming[] = [];
     noRenderAllowed: boolean;
     numQuestions: number; // calculated, Elastic
     origin: string;
@@ -43,12 +43,20 @@ export class CdeForm extends Elt implements FormElementsContainer {
     registrationState: RegistrationState;
     stewardOrg: {
         name: string,
-    };
+    } = {name};
     source: string;
     sources: DataSource;
     updated: Date;
     updatedBy: UserReference;
     version: string;
+
+    constructor(label = undefined) {
+        super();
+        this.naming.push(new Naming());
+        this.naming[0].designation = label;
+        this.registrationState = new RegistrationState;
+        this.registrationState.registrationStatus = 'Incomplete';
+    }
 
     getEltUrl() {
         return '/formView?tinyId=' + this.tinyId;
@@ -99,7 +107,7 @@ export interface FormSectionOrForm extends FormElement {
 
 export class FormSection implements FormSectionOrForm {
     _id;
-    edit: boolean = false;
+    edit: boolean;
     elementType = 'section';
     expanded = true; // Calculated, used for View TreeComponent
     forbidMatrix;
@@ -132,11 +140,11 @@ export class FormQuestion implements FormElement {
     elementType = 'question';
     edit: boolean = false;
     formElements = [];
-    hideLabel: boolean = false;
-    incompleteRule: boolean = false;
+    hideLabel: boolean;
+    incompleteRule: boolean;
     instructions;
     label = '';
-    question: Question;
+    question: Question = new Question();
     questionId: string;
     repeat;
     skipLogic;
@@ -162,30 +170,30 @@ export class Question {
     answerUom: string; // input uom value
     answerDate: any; // working storage for date part
     answerTime: any; // working storage for time part
-    answers: PermissibleFormValue[];
-    cde: QuestionCde;
+    answers: PermissibleFormValue[] = [];
+    cde: QuestionCde = new QuestionCde();
     datatype: string;
     datatypeDate: QuestionTypeDate;
     datatypeNumber: QuestionTypeNumber;
     datatypeText: QuestionTypeText;
     defaultAnswer: string;
     editable: boolean = true;
-    invisible: boolean = false;
-    isScore: boolean = false;
+    invisible: boolean;
+    isScore: boolean;
     multiselect: boolean;
     partOf: string; // display "(part of ...)" in Form Description
-    required: boolean = false;
-    uoms: string[];
+    required: boolean;
+    uoms: string[] = [];
 }
 
 class QuestionCde {
-    ids: CdeId[];
+    ids: CdeId[] = [];
     name: string;
-    permissibleValues: PermissibleValue[];
+    permissibleValues: PermissibleValue[] = [];
     outdated: boolean = false;
     tinyId: string;
     version: string;
-    derivationRules: DerivationRule[];
+    derivationRules: DerivationRule[] = [];
 }
 
 class QuestionTypeDate {

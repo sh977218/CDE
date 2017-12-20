@@ -19,8 +19,8 @@ public class FormJsonExport extends NlmCdeBaseTest {
 
         String[] toCompare = {
                 "{\"title\":\"CRF\",\"uri\":\"https://commondataelements.ninds.nih.gov/Doc/EPI/F1126_Adverse_Event_Tracking_Log.docx\"}",
-                "{\"permissibleValue\":\"Yes\",\"valueMeaningName\":\"Yes\"}",
-                "{\"permissibleValue\":\"Yes\",\"valueMeaningName\":\"Yes\"}",
+                "\"permissibleValue\":\"Yes\"",
+                "\"valueMeaningName\":\"Yes\"",
                 "\"registrationState\":{\"registrationStatus\":\"Qualified\"}",
                 "\"stewardOrg\":{\"name\":\"NINDS\"}",
                 "\"naming\":[{\"designation\":\"Adverse Event Tracking Log\""

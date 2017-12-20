@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
+import noop from 'lodash.noop';
 
 import {
     areDerivationRulesSatisfied, convertFormToSection, findQuestionByTinyId, isSubForm, iterateFe, iterateFes,
     iterateFeSync, iterateFesSync, score
 } from 'form/shared/formShared';
-import noop from 'lodash.noop';
 import { FormQuestion } from 'core/form.model';
 
 function noop1(a, cb) { cb(); }
@@ -25,85 +25,58 @@ export class FormService {
     static score = score;
 
     convertCdeToQuestion(cde, cb): FormQuestion {
-        if (cde.valueDomain !== undefined) {
-            let question = {
-                elementType: 'question',
-                label: cde.naming[0].designation,
-                hideLabel: undefined,
-                skipLogic: {
-                    condition: ''
-                },
-                question: {
-                    cde: {
-                        tinyId: cde.tinyId,
-                        version: cde.version,
-                        derivationRules: cde.derivationRules,
-                        name: cde.naming[0] ? cde.naming[0].designation : '',
-                        ids: cde.ids ? cde.ids : [],
-                        permissibleValues: []
-                    },
-                    datatype: cde.valueDomain.datatype,
-                    datatypeDate: undefined,
-                    datatypeNumber: undefined,
-                    datatypeText: undefined,
-                    required: false,
-                    uoms: cde.valueDomain.uom ? [cde.valueDomain.uom] : [],
-                    answers: []
-                }
-            };
-            cde.naming.forEach(function (n) {
-                if (!n.tags) n.tags = [];
-                if (n.tags.filter(function (t) {
-                        return t.toLowerCase().indexOf('Question Text') > 0;
-                    }).length > 0) {
-                    if (!n.designation || (n.designation && n.designation.trim().length === 0)) {
-                        question.label = cde.naming[0].designation ? cde.naming[0].designation : '';
-                        question.hideLabel = true;
-                    } else {
-                        question.label = n.designation;
-                    }
-                }
-            });
+        if (cde.valueDomain === undefined)
+            throw new Error('Cde ' + cde.tinyId + ' is not valid');
 
-            if (question.question.datatype === 'Number') {
-                question.question.datatypeNumber = cde.valueDomain.datatypeNumber ? cde.valueDomain.datatypeNumber : {};
-            } else if (question.question.datatype === 'Text') {
-                question.question.datatypeText = cde.valueDomain.datatypeText ? cde.valueDomain.datatypeText : {};
-            } else if (question.question.datatype === 'Date') {
-                question.question.datatypeDate = cde.valueDomain.datatypeDate ? cde.valueDomain.datatypeDate : {};
-            } else if (question.question.datatype === 'Value List') {
-                if (cde.valueDomain.permissibleValues.length > 0) {
-                    // elastic only store 10 pv, retrieve pv when have more than 9 pv.
-                    if (cde.valueDomain.permissibleValues.length > 9) {
-                        this.http.get('/de/' + cde.tinyId + '/version/' + (cde.version ? cde.version : ''))
-                            .map((res: Response) => res.json())
-                            .subscribe((result) => {
-                                result.valueDomain.permissibleValues.forEach(function (pv) {
-                                    if (!pv.valueMeaningName || pv.valueMeaningName.trim().length === 0) {
-                                        pv.valueMeaningName = pv.permissibleValue;
-                                    }
-                                    question.question.answers.push(pv);
-                                    question.question.cde.permissibleValues.push(pv);
-                                });
-                                cb(question);
-                            }, err => cb());
-                        return;
-                    } else {
-                        cde.valueDomain.permissibleValues.forEach(function (pv) {
-                            if (!pv.valueMeaningName || pv.valueMeaningName.trim().length === 0) {
-                                pv.valueMeaningName = pv.permissibleValue;
-                            }
-                            question.question.answers.push(pv);
-                            question.question.cde.permissibleValues.push(pv);
-                        });
-                    }
+        let q = new FormQuestion;
+        q.question.cde.derivationRules = cde.derivationRules;
+        q.question.cde.name = cde.naming[0] ? cde.naming[0].designation : '';
+        q.question.cde.permissibleValues = cde.valueDomain.permissibleValues;
+        q.question.cde.tinyId = cde.tinyId;
+        q.question.cde.version = cde.version;
+        q.question.datatype = cde.valueDomain.datatype;
+        q.question.datatypeDate = cde.valueDomain.datatypeDate;
+        q.question.datatypeNumber = cde.valueDomain.datatypeNumber;
+        q.question.datatypeText = cde.valueDomain.datatypeText;
+        if (cde.ids)
+            q.question.cde.ids = cde.ids;
+        if (cde.valueDomain.uom)
+            q.question.uoms.push(cde.valueDomain.uom);
+
+        cde.naming.forEach(n => {
+            if (Array.isArray(n.tags) && n.tags.indexOf('Question Text') > -1)
+                q.label = n.designation;
+        });
+        if (!q.label)
+            q.label = cde.naming[0].designation;
+        if (!q.label)
+            q.hideLabel = true;
+
+        function convertPv(q, cde) {
+            cde.valueDomain.permissibleValues.forEach(pv => {
+                if (!pv.valueMeaningName || pv.valueMeaningName.trim().length === 0) {
+                    pv.valueMeaningName = pv.permissibleValue;
                 }
+                q.question.answers.push(pv);
+                q.question.cde.permissibleValues.push(pv);
+            });
+        }
+        if (cde.valueDomain.permissibleValues.length > 0) {
+            // elastic only store 10 pv, retrieve pv when have more than 9 pv.
+            if (cde.valueDomain.permissibleValues.length > 9) {
+                this.http.get('/de/' + cde.tinyId + '/version/' + (cde.version ? cde.version : ''))
+                    .map((res: Response) => res.json())
+                    .subscribe((result) => {
+                        convertPv(q, result);
+                        cb(q);
+                    }, err => cb());
+                return;
+            } else {
+                convertPv(q, cde);
             }
-            return cb(question);
         }
-        else {
-            return cb({});
-        }
+
+        return cb(q);
     }
 
     // modifies form to add sub-forms

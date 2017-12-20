@@ -380,7 +380,7 @@ export function score(question, elt) {
                     if (isNaN(result)) return;
                     if (q) {
                         let answer = q.question.answer;
-                        if (answer === null)
+                        if (typeof(answer) === "undefined" || answer === null)
                             result = 'Incomplete answers';
                         else if (isNaN(answer))
                             result = 'Unable to score';

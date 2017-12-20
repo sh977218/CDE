@@ -34,15 +34,17 @@ export class NativeRenderService {
 
         // clean up
         FormService.iterateFeSync(this.elt, undefined, undefined, f => {
-            for (let i = 0; i < f.question.answers.length; i++) {
-                let answer = f.question.answers[i];
-                if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue))
-                    f.question.answers.splice(i--, 1);
-                else {
-                    if (answer.formElements)
-                        answer.formElements = undefined;
-                    if (answer.index)
-                        answer.index = undefined;
+            if (Array.isArray(f.question.anwers)) {
+                for (let i = 0; i < f.question.answers.length; i++) {
+                    let answer = f.question.answers[i];
+                    if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue))
+                        f.question.answers.splice(i--, 1);
+                    else {
+                        if (answer.formElements)
+                            answer.formElements = undefined;
+                        if (answer.index)
+                            answer.index = undefined;
+                    }
                 }
             }
         });
