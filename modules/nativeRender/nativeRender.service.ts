@@ -34,7 +34,7 @@ export class NativeRenderService {
 
         // clean up
         FormService.iterateFeSync(this.elt, undefined, undefined, f => {
-            if (Array.isArray(f.question.anwers)) {
+            if (Array.isArray(f.question.answers)) {
                 for (let i = 0; i < f.question.answers.length; i++) {
                     let answer = f.question.answers[i];
                     if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue))
