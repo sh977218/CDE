@@ -25,7 +25,7 @@
                     (Provided by <a class="d-inline" href="https://www.healthit.gov/techlab/" target="_blank"
                                     (click)="$event.stopPropagation()">ONC</a>)
                 </button>
-                <button id="printableLogicCb" class="dropdown-item" #printableCb (click)="overridePrintable = !overridePrintable">Printable Logic:
+                <button class="dropdown-item" (click)="overridePrintable = !overridePrintable">Printable Logic:
                     <i class="fa fa-fw" [class.fa-check-square-o]="overridePrintable" [class.fa-square-o]="!overridePrintable"></i>
                 </button>
             </div>

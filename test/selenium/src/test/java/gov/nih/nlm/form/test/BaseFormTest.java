@@ -98,6 +98,11 @@ public class BaseFormTest extends FormCommentTest {
         }
     }
 
+    public void togglePrintableLogic() {
+        clickElement(By.id("dropdownMenuButton"));
+        clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']"));
+    }
+
     public void dragAndDrop(WebElement source, WebElement target) {
         String basePath = new File("").getAbsolutePath();
 
