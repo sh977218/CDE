@@ -48,8 +48,8 @@
         <div class="dropdown float-left">
             <button id="export" class="btn  btn-outline-dark dropdown-toggle mr-1" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-download"></i>
-                <span class="d-none d-sm-inline-block"> Export</span>
+                <i class="fa fa-download mr-1"></i>
+                <span class="d-none d-sm-inline-block">Export</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="export">
                 <ng-container *ngIf="isAllowedModel.loggedIn()">
@@ -95,25 +95,25 @@
         <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
                 class="btn   btn-outline-dark"
                 title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
-            <i class="fa fa-plus"></i><span class="d-none d-sm-inline-block"> Add to Quick Board</span>
+            <i class="fa fa-plus mr-1"></i><span class="d-none d-sm-inline-block">Add to Quick Board</span>
         </button>
         <button id="addToBoard" class="btn  btn-outline-dark" title="Add to Board"
                 (click)="mltPinModal.open([elt], 'cde')">
-            <i class="fa fa-thumb-tack"></i><span class="d-none d-sm-inline-block"> Add to Board</span>
+            <i class="fa fa-thumb-tack mr-1"></i><span class="d-none d-sm-inline-block">Add to Board</span>
         </button>
         <button *ngIf="isAllowedModel.loggedIn()"
                 id="pinAllCdes" class="btn   btn-outline-dark"
                 title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
-            <i class="fa fa-cogs"></i><span class="d-none d-sm-inline-block"> Pin CDEs</span>
+            <i class="fa fa-cogs mr-1"></i><span class="d-none d-sm-inline-block">Pin CDEs</span>
         </button>
         <button *ngIf="isAllowedModel.isOrgCurator()" id="copyFormBtn" class="btn   btn-outline-dark"
                 title="Copy Form" (click)="openCopyElementModal()">
-            <i class="fa fa-clone"></i><span class="d-none d-sm-inline-block"> Copy</span>
+            <i class="fa fa-clone mr-1"></i><span class="d-none d-sm-inline-block">Copy</span>
         </button>
         <button id="discussBtn" class="btn   btn-outline-dark" title="Discuss CDE"
                 (click)="commentMode = !commentMode;">
-            <i class="fa fa-comment" [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}"></i>
-            <span class="d-none d-sm-inline-block"> Discuss</span>
+            <i class="fa fa-comment mr-1" [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}"></i>
+            <span class="d-none d-sm-inline-block">Discuss</span>
         </button>
         <div class="navbar-expand-md navbar-light d-inline-block">
             <button class="btn  btn-outline-dark navbar-toggler hidden-md-up"

@@ -20,10 +20,10 @@ import { NativeRenderService } from './nativeRender.service';
         font-weight: 700;
     }
     :host >>> .checkbox-inline > input[type="checkbox"] {
-        margin-top: 6px;
+        margin-top: 10px !important;
     }
     :host >>> .radio-inline > input[type="radio"] {
-        margin-top: 4px;
+        margin-top: 7px !important;
     }
     
     :host >>> .x {
