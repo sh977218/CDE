@@ -6,11 +6,15 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.testng.annotations.Test;
 
 public class ScrollHistoryTest extends NlmCdeBaseTest {
+    private void scrollTo(int value) {
+        ((JavascriptExecutor) driver).executeScript("$(window).scrollTop(" + Integer.toString(value) + ");", "");
+        hangon(1);
+    }
 
     private void checkScroll(int value) {
         hangon(5);
         String scrollLocation = (((JavascriptExecutor) driver)
-                .executeScript("return window.pageYOffset;", "")).toString();
+                .executeScript("return $(window).scrollTop();", "")).toString();
         if (Math.abs(Integer.parseUnsignedInt(scrollLocation) - value) > 10)
             Assert.fail("Assert failed. Expected: " + value + " Actual value: " + scrollLocation);
     }

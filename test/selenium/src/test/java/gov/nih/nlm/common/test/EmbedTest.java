@@ -72,7 +72,12 @@ public class EmbedTest extends NlmCdeBaseTest {
         scrollTo(2500);
         driver.switchTo().frame("previewFrame");
 
-        findElement(By.id("search.submit")).click();
+        try {
+            findElement(By.id("search.submit")).click();
+        } catch (Exception e) {
+            scrollDownBy(200);
+            findElement(By.id("search.submit")).click();
+        }
         textPresent("Ethnicity");
         textPresent("results (");
 
