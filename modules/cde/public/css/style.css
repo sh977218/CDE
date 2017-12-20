@@ -1,3 +1,15 @@
+/* over write a link to pass chrome audit low contrast ratio */
+a {
+    color: #337ab7;
+
+}
+
+.homeDescriptionLink {
+    color: #0F4E9D;
+}
+
+/* end */
+
 .bg-white {
     background-color: white;
 }
@@ -436,7 +448,7 @@ label.input-group-addon {
 }
 
 @media (max-width: 768px) {
-    .feedback-btn  {
+    .feedback-btn {
         display: none;
     }
 }

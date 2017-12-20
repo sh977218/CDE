@@ -10,7 +10,7 @@
                       [innerHtml]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)">
                 </span>
             </ng-template>
-            <cde-inline-select-edit [ngbTooltip]="stewardTooltip" [(value)]="elt.stewardOrg.name"
+            <cde-inline-select-edit [ngbTooltip]="stewardTooltip" placement="bottom" [(value)]="elt.stewardOrg.name"
                                     [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
                                     [isAllowed]="canEdit && !elt.isDraft">
             </cde-inline-select-edit>
@@ -31,7 +31,8 @@
         </dd>
         <dt class="col-3 text-right">Origin:</dt>
         <dd class="col-9">
-            <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit" (modelChange)="onEltChange.emit();">
+            <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
+                             (modelChange)="onEltChange.emit();">
             </cde-inline-edit>
         </dd>
         <ng-container *ngIf="elt.views">
