@@ -10,6 +10,10 @@ a {
 
 /* end */
 
+.modal {
+    overflow-y: scroll !important;
+}
+
 .bg-white {
     background-color: white;
 }
