@@ -12,7 +12,7 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
     }
 
     private void checkScroll(int value) {
-        hangon(5);
+        textPresent("Log In",By.id("login_link"));
         String scrollLocation = (((JavascriptExecutor) driver)
                 .executeScript("return $(window).scrollTop();", "")).toString();
         if (Math.abs(Integer.parseUnsignedInt(scrollLocation) - value) > 10)
@@ -24,7 +24,6 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         searchEltAny("apple", "cde");
         textPresent("Godin Leisure-Time Exercise Questionnaire");
         scrollTo(500);
-
         // cannot use clickElement() because it scrolls
         findElement(By.id("linkToElt_4")).click();
         findElement(By.id("discussBtn"));
@@ -32,26 +31,27 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         searchEltAny("patient", "form");
         textPresent("Patient Health Questionnaire");
         scrollTo(550);
-
         // cannot use clickElement() because it scrolls
         findElement(By.id("linkToElt_5")).click();
         findElement(By.id("discussBtn"));
 
         searchEltAny("pain", "cde");
-
         textPresent("Brief Pain Inventory");
         scrollTo(600);
-
         driver.navigate().refresh();
         checkScroll(600);
 
         driver.navigate().back();
+        textPresent("Log In", By.id("login_link"));
         driver.navigate().back();
+        textPresent("Log In", By.id("login_link"));
         driver.navigate().back();
         checkScroll(550);
 
         driver.navigate().back();
+        textPresent("Log In", By.id("login_link"));
         driver.navigate().back();
+        textPresent("Log In", By.id("login_link"));
         driver.navigate().back();
         checkScroll(500);
     }

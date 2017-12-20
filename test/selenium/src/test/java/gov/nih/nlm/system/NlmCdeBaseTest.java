@@ -140,7 +140,7 @@ public class NlmCdeBaseTest {
         } else if ("chrome".equals(b)) {
             ChromeOptions options = new ChromeOptions();
             if (u != null) options.addArguments("--user-agent=googleBot");
-            options.addArguments("--start-maximized");
+        //    options.addArguments("--start-maximized");
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
             options.setExperimentalOption("prefs", prefs);
@@ -1009,7 +1009,8 @@ public class NlmCdeBaseTest {
     protected void changeDefinitionFormat(int index, boolean isHtml) {
         clickElement(By.xpath("//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]"));
         if (isHtml) clickElement(By.xpath("//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]"));
-        if (!isHtml) clickElement(By.xpath("//*[@id='definition_" + index + "']//button[contains(text(),'Plain Text')]"));
+        if (!isHtml)
+            clickElement(By.xpath("//*[@id='definition_" + index + "']//button[contains(text(),'Plain Text')]"));
         clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-check')]"));
         textNotPresent("Confirm");
     }
