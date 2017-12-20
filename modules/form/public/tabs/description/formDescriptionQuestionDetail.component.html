@@ -220,8 +220,7 @@
                                                  (modelChange)="onEltChange.emit();"></cde-inline-edit>
                             </td>
                             <td>
-                                <button class="btn btn-outline-danger btn-xs"
-                                        (click)="removePv(i);">Remove
+                                <button class="btn btn-outline-danger btn-xs" (click)="removePv(i);">Remove
                                 </button>
                             </td>
                         </tr>
@@ -256,9 +255,8 @@
 
         <div *ngFor="let naming of nameSelectModal.cde.naming; let i = index" class="row" id="q_select_name_{{i}}">
             <div class="col-3">
-                <button class="btn btn-lg btn-outline-dark" (click)="nameSelectModal.okSelect(naming)"><i
-                        class="fa fa-check"></i>
-                    Select
+                <button class="btn btn-outline-dark" (click)="nameSelectModal.okSelect(naming)">
+                    <i class="fa fa-check mr-1"></i>Select
                 </button>
             </div>
             <div class="col-9">
@@ -286,18 +284,17 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <button class="btn btn-lg btn-outline-dark" (click)="nameSelectModal.okSelect()">
+                <button class="btn btn-outline-dark" (click)="nameSelectModal.okSelect()">
                     <i class="fa fa-stop"></i> No Label
                 </button>
-                <button *ngIf="!question.question.cde.tinyId" class="btn btn-lg btn-outline-dark"
+                <button *ngIf="!question.question.cde.tinyId" class="btn btn-outline-dark"
                         (click)="addNamingToNewCde();">
                     <i class="fa fa-plus"></i> Add Naming
                 </button>
-
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-lg btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
+        <button class="btn  btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
     </div>
 </ng-template>

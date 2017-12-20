@@ -1,4 +1,4 @@
-<a class='btn btn-lg  btn-outline-dark fa fa-clipboard MergeDataElement'
+<a class='btn   btn-outline-dark fa fa-clipboard MergeDataElement'
    id="openMergeDataElementModalBtn" (click)="openMergeDataElementModal()"> Merge Data Element</a>
 
 <ng-template #mergeDataElementContent id="mergeDataElementModal" let-c="close" let-d="dismiss">
@@ -14,7 +14,7 @@
     <div class="modal-body" id="MergeDataElementModalBody">
         <div class="col-10 col-offset-1">
             Fields to be Imported
-            <button id="checkAllMergeFieldsBtn" class="btn btn-lg btn-outline-dark" (click)="checkAllMergerFields();">
+            <button id="checkAllMergeFieldsBtn" class="btn  btn-outline-dark" (click)="checkAllMergerFields();">
                 Check All
             </button>
             <div class="row">
@@ -82,8 +82,8 @@
         </div>
     </div>
     <div class="modal-footer" id="MergeDataElementModalFooter">
-        <button class="btn btn-lg btn-outline-dark cancel" (click)="c()">Cancel</button>
-        <button class="btn btn-lg btn-warning cancel" (click)="doMerge()" [disabled]="!allow" id="doMergeBtn">
+        <button class="btn  btn-outline-dark cancel" (click)="c()">Cancel</button>
+        <button class="btn  btn-warning cancel" (click)="doMerge()" [disabled]="!allow" id="doMergeBtn">
             Retire & Merge
         </button>
     </div>

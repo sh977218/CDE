@@ -20,19 +20,19 @@
                                        'fa-times red-icon':reviewer.status.approval === 'disapproved'}"></i>
                         </span>
                         <button *ngIf="!isReviewActive() && userService.user?.username === board.owner.username "
-                                class="btn btn-lg btn-outline-dark" id="startReviewBtn"
+                                class="btn  btn-outline-dark" id="startReviewBtn"
                                 (click)="startReview()"> Start Review
                         </button>
                         <button *ngIf="isReviewActive() && userService.user?.username === board.owner.username"
-                                class="btn btn-lg btn-outline-dark" id="endReviewBtn"
+                                class="btn  btn-outline-dark" id="endReviewBtn"
                                 (click)="endReview()"> End Review
                         </button>
                         <ng-container *ngIf="canReview">
-                            <button class="btn btn-lg btn-outline-dark" id="approveBoardBtn"
+                            <button class="btn  btn-outline-dark" id="approveBoardBtn"
                                     [ngClass]="{'bg-color-green white-icon':boardStatus==='approved'}"
                                     (click)="boardApproval('approved')">
                                 <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
-                            <button class="btn btn-lg btn-outline-dark" id="disApproveBoardBtn"
+                            <button class="btn  btn-outline-dark" id="disApproveBoardBtn"
                                     [ngClass]="{'bg-color-red white-icon':boardStatus==='disapproved'}"
                                     (click)="boardApproval('disapproved')">
                                 <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
@@ -40,11 +40,11 @@
                     </div>
                 </div>
                 <button *ngIf="userService.user.username === board.owner.username"
-                        class="btn btn-lg btn-outline-dark"
+                        class="btn  btn-outline-dark"
                         id="shareBoardBtn" (click)="shareBoard()">
                     <i class="fa fa-link"></i> Share
                 </button>
-                <button id="discussBtn" class="btn btn-lg btn-outline-dark " role="button" title="Discuss CDE"
+                <button id="discussBtn" class="btn  btn-outline-dark " role="button" title="Discuss CDE"
                         type="button" (click)="commentMode = !commentMode;">
                     <i class="fa fa-comment"
                        [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}"></i> Discuss
@@ -56,7 +56,7 @@
                 <cde-list-view-controls *ngIf="elts.length > 0" [(listView)]="listViews"></cde-list-view-controls>
 
                 <div *ngIf="board.type === 'cde' && elts.length > 0" class="dropdown pull-left">
-                    <button class="btn btn-lg btn-outline-dark dropdown-toggle" type="button" id="export"
+                    <button class="btn  btn-outline-dark dropdown-toggle" type="button" id="export"
                             data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-download"></i> Export Board
@@ -75,7 +75,7 @@
 
                 <button *ngIf="userService.userOrgs?.length > 0 && elts.length > 0"
                         id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s"
-                        class="btn btn-lg btn-outline-dark"
+                        class="btn  btn-outline-dark"
                         (click)="classifyEltBoard()">
                     <i class="fa fa-folder-open-o"></i> Classify All {{board.type==='form'?'Form':'CDE'}}s
                 </button>
@@ -153,8 +153,8 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-lg btn-outline-dark" (click)="okShare()" id="sendBtn">Send</button>
-        <button class="btn btn-lg btn-outline-dark pull-right" (click)="d()" id="closeShareModal">Cancel</button>
+        <button class="btn  btn-outline-dark" (click)="okShare()" id="sendBtn">Send</button>
+        <button class="btn  btn-outline-dark pull-right" (click)="d()" id="closeShareModal">Cancel</button>
     </div>
 </ng-template>
 <cde-classify-item-modal #classifyCdesModal [elt]="board" [modalTitle]="modalTitle"

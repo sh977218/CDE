@@ -24,7 +24,7 @@
         <span *ngIf="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
     </div>
     <div *ngIf="question.question.cde.outdated" class="d-inline-block left error-block"> (Outdated)
-        <button class="btn btn-lg btn-outline-dark btn-xs updateQuestionBtn"
+        <button class="btn  btn-outline-dark btn-xs updateQuestionBtn"
                 (click)="openUpdateCdeVersion(question);">
             Update
         </button>
@@ -193,7 +193,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-lg btn-warning" (click)="c()" id="okSelect">OK</button>
-        <button class="btn btn-lg btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
+        <button class="btn  btn-warning" (click)="c()" id="okSelect">OK</button>
+        <button class="btn  btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
     </div>
 </ng-template>

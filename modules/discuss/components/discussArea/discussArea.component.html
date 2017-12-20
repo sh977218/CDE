@@ -10,7 +10,7 @@
             <label class="sr-only" for="commentTextArea">Comments</label>
             <textarea name="commentTextArea" id="commentTextArea" class="form-control" rows="3"
                       [(ngModel)]="newComment.text" placeholder="Join the discussion..." required></textarea>
-            <input name="postComment" id="postComment" class="btn btn-lg btn-outline-dark" type="button"
+            <input name="postComment" id="postComment" class="btn  btn-outline-dark" type="button"
                    value="Post Comment" (click)="addComment()" [disabled]="!commentForm.form.valid"/>
         </form>
     </div>
@@ -226,9 +226,9 @@
                 </textarea>
                 <div class="replyInputBtn" *ngIf="tempReplies[comment._id]?.length > 0" style="margin-top: 10px">
                     <button (click)="replyTo(comment._id)" style="margin-left: 0"
-                            class="btn btn-lg btn-outline-dark" id="replyBtn_{{commentIndex}}">Reply
+                            class="btn  btn-outline-dark" id="replyBtn_{{commentIndex}}">Reply
                     </button>
-                    <button (click)="cancelReply(comment)" class="btn btn-lg btn-outline-dark">Cancel</button>
+                    <button (click)="cancelReply(comment)" class="btn  btn-outline-dark">Cancel</button>
                 </div>
             </div>
         </div>
