@@ -1,11 +1,11 @@
 package gov.nih.nlm.form.test.logic;
 
-import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 
-public class EmptyLogic extends NlmCdeBaseTest {
+public class EmptyLogic extends BaseFormTest {
 
     @Test
     public void emptyLogic() {
