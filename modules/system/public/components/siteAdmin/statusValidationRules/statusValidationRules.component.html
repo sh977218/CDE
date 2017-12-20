@@ -34,7 +34,7 @@
         Do you want to remove this rule?
     </div>
     <div class="modal-footer">
-        <button class="btn btn-lg btn-danger" (click)="c()" id="removeRule">Remove</button>
+        <button class="btn  btn-danger" (click)="c()" id="removeRule">Remove</button>
         <button class="btn" (click)="d()" id="cancel">Cancel</button>
     </div>
 </ng-template>
@@ -90,8 +90,8 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-lg btn-warning" (click)="d()" id="cancelNew">Cancel</button>
-        <button [disabled]="!newRuleForm.form.valid"  class="btn btn-lg btn-success"
+        <button class="btn  btn-warning" (click)="d()" id="cancelNew">Cancel</button>
+        <button [disabled]="!newRuleForm.form.valid"  class="btn  btn-success"
                 (click)="c(newRule)" id="saveRule">Save</button>
     </div>
 

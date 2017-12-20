@@ -50,7 +50,7 @@ import { Http } from '@angular/http';
             margin-bottom: 1px;
         }
 
-        :host >>> .panel-badge-btn btn-lg {
+        :host >>> .panel-badge-btn  {
             color: white;
             background-color: #333;
         }

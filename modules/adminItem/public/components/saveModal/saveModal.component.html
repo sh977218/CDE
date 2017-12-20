@@ -25,8 +25,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-lg btn-outline-dark" (click)="c('cancel')" id="cancelSaveBtn" type="button">Cancel</button>
-            <button class="btn btn-lg btn-warning" id="confirmSaveBtn" (click)="confirmSave();" type="button"
+            <button class="btn  btn-outline-dark" (click)="c('cancel')" id="cancelSaveBtn" type="button">Cancel</button>
+            <button class="btn  btn-warning" id="confirmSaveBtn" (click)="confirmSave();" type="button"
                     [disabled]="!updateElementForm.form.valid || (!overrideVersion && duplicatedVersion)">Save
             </button>
         </div>

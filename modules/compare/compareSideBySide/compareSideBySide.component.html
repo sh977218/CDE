@@ -1,4 +1,4 @@
-<button *ngIf="elements.length > 1" id="qb_compare" class="btn btn-lg btn-outline-dark"
+<button *ngIf="elements.length > 1" id="qb_compare" class="btn  btn-outline-dark"
         (click)="openCompareSideBySideContent();">
     <i class="fa fa-search"></i> Side by Side View
 </button>
@@ -6,7 +6,7 @@
 <ng-template #compareSideBySideContent id="compareSideBySideModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="compareSideBySideModalHeader">
         <div class="col-6 leftObj">
-            <a id="sourceElement" class='btn btn-lg  btn-outline-dark' target="_blank" [href]=leftUrl>
+            <a id="sourceElement" class='btn   btn-outline-dark' target="_blank" [href]=leftUrl>
                 <i class="fa fa-eye"></i> View Full Detail</a>
             <ng-container *ngIf="canMergeDataElement">
                 <cde-merge-data-element [source]="left" [destination]="right"
@@ -18,7 +18,7 @@
             </ng-container>
         </div>
         <div class="col-6 rightObj">
-            <a id="destinationElement" class='btn btn-lg  btn-outline-dark' target="_blank" [href]=rightUrl>
+            <a id="destinationElement" class='btn   btn-outline-dark' target="_blank" [href]=rightUrl>
                 <i class="fa fa-eye"></i> View Full Detail</a>
             <ng-container *ngIf="canMergeDataElement">
                 <cde-merge-data-element [source]="left" [destination]="right"
@@ -98,7 +98,7 @@
         </ng-container>
     </div>
     <div class="modal-footer" id="compareSideBySideModalFooter">
-        <button class="btn btn-lg btn-warning" id="closeCompareSideBySideBtn" (click)="c();">Close
+        <button class="btn  btn-warning" id="closeCompareSideBySideBtn" (click)="c();">Close
         </button>
     </div>
 </ng-template>

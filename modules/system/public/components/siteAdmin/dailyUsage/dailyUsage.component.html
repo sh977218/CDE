@@ -2,7 +2,7 @@
     <div class="row">
         <form class="form-search">
             <div class="form-group col-lg-3">
-                <button id="search.submit" type="submit" (click)="generate()" class="btn btn-lg btn-danger">Generate
+                <button id="search.submit" type="submit" (click)="generate()" class="btn  btn-danger">Generate
                 </button>
             </div>
         </form>
@@ -32,11 +32,11 @@
             <span *ngIf="entry.usernames && entry.usernames.length > 0">
                 <span *ngFor="let u of entry.usernames">{{u.username}} </span>
             </span>
-            <span *ngIf="!entry.usernames"><a class="btn btn-lg btn-mini"
+            <span *ngIf="!entry.usernames"><a class="btn  btn-mini"
                                               (click)="lookupUsername(entry._id.ip)">Reveal</a></span>
         </div>
     </div>
-    <button class="btn btn-lg btn-outline-dark" *ngIf="dailyUsage && dailyUsage.length > entryLimit"
+    <button class="btn  btn-outline-dark" *ngIf="dailyUsage && dailyUsage.length > entryLimit"
             (click)="seeMore()">More
     </button>
 </div>

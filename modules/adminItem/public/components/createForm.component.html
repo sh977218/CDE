@@ -27,7 +27,7 @@
                 </select>
             </div>
             <div class="form-group" *ngIf="elt.stewardOrg.name">
-                <button class="btn btn-lg  btn-outline-dark" id="openClassificationModalBtn"
+                <button class="btn   btn-outline-dark" id="openClassificationModalBtn"
                         value="add" (click)="openClassifyItemModal()">
                     <i class="fa fa-folder-open-o"> </i> Classify this {{ elt.elementType | uppercase}}
                 </button>
@@ -40,8 +40,8 @@
                 <i class="fa fa-warning"></i> {{validationErrors(elt)}}
             </div>
             <div class="form-group">
-                <button class="btn btn-lg btn-warning ml-sm-5" (click)="cancelCreateForm();"> Cancel</button>
-                <button id="submit" type="submit" (click)="createForm();" class="btn btn-lg  btn-success"
+                <button class="btn  btn-warning ml-sm-5" (click)="cancelCreateForm();"> Cancel</button>
+                <button id="submit" type="submit" (click)="createForm();" class="btn   btn-success"
                         [disabled]="!dataElementForm.form.valid"> Submit
                 </button>
             </div>

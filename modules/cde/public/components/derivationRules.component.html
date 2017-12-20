@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <button *ngIf="canAddScore()" class="btn btn-lg  btn-outline-dark" id="addNewScore" value="add"
+    <button *ngIf="canAddScore()" class="btn   btn-outline-dark" id="addNewScore" value="add"
             (click)="openNewScoreModal()"><i class="fa fa-plus"> </i> Add Score
     </button>
 
@@ -83,8 +83,8 @@
             </div>
         </div>
         <div class="modal-footer" id="newScoreModalFooter">
-            <button class="btn btn-lg btn-outline-dark" (click)="c('Close click')" id="cancelNewScoreBtn" type="button"> Cancel</button>
-            <button class="btn btn-lg btn-warning" type="submit"
+            <button class="btn  btn-outline-dark" (click)="c('Close click')" id="cancelNewScoreBtn" type="button"> Cancel</button>
+            <button class="btn  btn-warning" type="submit"
                     [disabled]="someCdesInvalid() || !newScoreForm.form.valid"
                     id="createDerivationRule">Save
             </button>

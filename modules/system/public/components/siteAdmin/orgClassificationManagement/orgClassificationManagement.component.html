@@ -62,10 +62,10 @@
             </span>
         </div>
         <div class="modal-footer" id="renameClassificationModalFooter">
-            <button class="btn btn-lg btn-outline-dark" (click)="c('cancel')" id="cancelRenameClassificationBtn"
+            <button class="btn  btn-outline-dark" (click)="c('cancel')" id="cancelRenameClassificationBtn"
                     name="cancelRenameClassificationBtn" type="button">Cancel
             </button>
-            <button class="btn btn-lg btn-danger" id="confirmRenameClassificationBtn"
+            <button class="btn  btn-danger" id="confirmRenameClassificationBtn"
                     [disabled]="!newClassificationName && !renameClassificationForm.form.valid"
                     name="confirmRenameClassificationBtn" type="submit">OK
             </button>
@@ -93,10 +93,10 @@
                [placeholder]="selectedClassificationString" title="Please confirm">
     </div>
     <div class="modal-footer" id="deleteClassificationModalFooter">
-        <button class="btn btn-lg btn-outline-dark" (click)="c('cancel')" id="cancelDeleteClassificationBtn"
+        <button class="btn  btn-outline-dark" (click)="c('cancel')" id="cancelDeleteClassificationBtn"
                 name="cancelDeleteClassificationBtn" type="button">Cancel
         </button>
-        <button class="btn btn-lg btn-danger" (click)="c('confirm')" id="confirmDeleteClassificationBtn"
+        <button class="btn  btn-danger" (click)="c('confirm')" id="confirmDeleteClassificationBtn"
                 [disabled]="userTyped !== selectedClassificationString" name="confirmDeleteClassificationBtn"
                 type="submit">OK
         </button>
@@ -123,10 +123,10 @@
                    placeholder="New Classification Name" id="addChildClassifInput" pattern="^[^;]+$" required>
         </div>
         <div class="modal-footer" id="addChildClassificationModalFooter">
-            <button class="btn btn-lg btn-outline-dark" (click)="c('cancel')" id="cancelAddChildClassificationBtn"
+            <button class="btn  btn-outline-dark" (click)="c('cancel')" id="cancelAddChildClassificationBtn"
                     name="cancelDeleteClassificationBtn">Cancel
             </button>
-            <button class="btn btn-lg btn-danger" type="submit" id="confirmAddChildClassificationBtn"
+            <button class="btn  btn-danger" type="submit" id="confirmAddChildClassificationBtn"
                     [disabled]="!newClassificationName && !addChildClassificationForm.form.valid"
                     name="confirmDeleteClassificationBtn">OK
             </button>
@@ -158,14 +158,14 @@
 
             <div *ngIf="descriptorID">
                 {{descriptorID}} -- {{descriptorName}}
-                <button *ngIf="descriptorName.length > 0" class="btn btn-lg btn-outline-dark " id="addMeshDescButton"
+                <button *ngIf="descriptorName.length > 0" class="btn  btn-outline-dark " id="addMeshDescButton"
                         type="submit" [disabled]="mapping.meshDescriptors.indexOf(descriptorID) > -1">Add
                 </button>
             </div>
 
         </div>
         <div class="modal-footer" id="mapClassificationMeshModalFooter">
-            <button class="btn btn-lg btn-outline-dark" (click)="c('cancel')" id="cancelMapClassificationMeshBtn"
+            <button class="btn  btn-outline-dark" (click)="c('cancel')" id="cancelMapClassificationMeshBtn"
                     name="cancelDeleteClassificationBtn">Close
             </button>
         </div>
