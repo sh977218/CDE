@@ -54,7 +54,7 @@
             <div class="answerList" *ngIf="question.question.answers && question.question.answers.length > 0">
                 <span class="formViewQuestionLabel">Answer Choices:</span>
                 <span *ngFor="let pv of question.question.answers"
-                      class="badge badge-secondary mx-1 formViewSummaryLabel"
+                      class="badge badge-secondary m-1 formViewSummaryLabel"
                       style="background-color: #666" [textContent]="pv?.valueMeaningName"></span>
             </div>
             <div *ngIf="question.question.defaultAnswer && question.question.defaultAnswer.length > 0"
@@ -65,7 +65,7 @@
             <div *ngIf="question.question.uoms.length > 0" class="questionUom">
                 <span class="formViewQuestionLabel">Units of Measure:</span>
                 <span *ngFor="let uom of question.question.uoms; let index = index"
-                      class="badge badge-info mx-1 formViewSummaryLabel"
+                      class="badge badge-info m-1 formViewSummaryLabel"
                       [ngClass]="{'badge-danger': (question.question.uomsValid && !question.question.uomsValid[index])}">
                     <span [textContent]="uom"></span>
                     <span *ngIf="question.question.uomsValid && !question.question.uomsValid[index]">&nbsp;(invalid)</span>
@@ -221,20 +221,18 @@
                             </td>
                             <td>
                                 <button class="btn btn-outline-danger btn-xs"
-                                        (click)="question.question.cde.permissibleValues.splice(i,1);">Remove
+                                        (click)="removePv(i);">Remove
                                 </button>
                             </td>
                         </tr>
                         <tr>
-                            <td><input [(ngModel)]="newPv.permissibleValue"/></td>
-                            <td><input [(ngModel)]="newPv.valueMeaningName"/>
-                            <td><input [(ngModel)]="newPv.valueMeaningCode"/></td>
-                            <td><input [(ngModel)]="newPv.codeSystemName"/></td>
-                            <td><input [(ngModel)]="newPv.valueMeaningDefinition"/></td>
+                            <td><input [(ngModel)]="newPv.permissibleValue" class="w-100"/></td>
+                            <td><input [(ngModel)]="newPv.valueMeaningName" class="w-100"/></td>
+                            <td><input [(ngModel)]="newPv.valueMeaningCode" class="w-100"/></td>
+                            <td><input [(ngModel)]="newPv.codeSystemName" class="w-100"/></td>
+                            <td><input [(ngModel)]="newPv.valueMeaningDefinition" class="w-100"/></td>
                             <td>
-                                <button class="btn btn-outline-success btn-xs"
-                                        (click)="question.question.cde.permissibleValues.push(newPv);newPv = {};">Add
-                                </button>
+                                <button class="btn btn-outline-success btn-xs" (click)="addNewPv(newPv);">Add</button>
                             </td>
                         </tr>
                     </table>

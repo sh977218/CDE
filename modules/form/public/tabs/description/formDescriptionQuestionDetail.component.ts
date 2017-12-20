@@ -294,5 +294,16 @@ export class FormDescriptionQuestionDetailComponent {
         this.onEltChange.emit();
     }
 
+    removePv(i){
+        this.question.question.cde.permissibleValues.splice(i,1);
+        this.onEltChange.emit();
+    }
+
+    addNewPv(newPv){
+        this.question.question.cde.permissibleValues.push(newPv);
+        this.newPv = {};
+        this.onEltChange.emit();
+    }
+
     newPv = {};
 }
