@@ -841,6 +841,12 @@ public class NlmCdeBaseTest {
         scrollToView(By.xpath(xpath));
     }
 
+    protected int getCurrentYOffset() {
+        String scrollLocation = (((JavascriptExecutor) driver)
+                .executeScript("return window.pageYOffset", "")).toString();
+        return Double.valueOf(scrollLocation).intValue();
+    }
+
     protected void hoverOverElement(WebElement ele) {
         Actions action = new Actions(driver);
         action.moveToElement(ele);
