@@ -140,7 +140,7 @@ public class NlmCdeBaseTest {
         } else if ("chrome".equals(b)) {
             ChromeOptions options = new ChromeOptions();
             if (u != null) options.addArguments("--user-agent=googleBot");
-        //    options.addArguments("--start-maximized");
+            options.addArguments("--start-maximized");
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
             options.setExperimentalOption("prefs", prefs);
