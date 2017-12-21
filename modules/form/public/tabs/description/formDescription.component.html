@@ -2,12 +2,12 @@
     <div class="col-12">
         <div class="descriptionToolbox" *ngIf="canEdit" #descToolbox>
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
-            <span role="button" id="addSectionTop" class="btn  btn-light formDescriptionTool"
+            <span role="button" id="addSectionTop" class="btn btn-light formDescriptionTool"
                   [treeDrag]="toolSection" [treeDragEnabled]="true"
                   style="width: 74px;">
                 <i class="fa fa-plus"></i><span class="toolSection"></span>
             </span>
-            <span role="button" id="startAddingCde" class="btn btn-lg btn-light formDescriptionTool"
+            <span role="button" id="startAddingCde" class="btn btn-light formDescriptionTool"
                   *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'cde'}" [treeDragEnabled]="true"
                   style="width: 87px;">
                 <i class="fa fa-cube"></i><span class="toolCde"></span>
@@ -17,7 +17,7 @@
                   style="width: 87px;">
                 <i class="fa fa-cube"></i><span class="toolQuestion"></span>
             </span>
-            <span role="button" id="startAddingForms" class="btn  btn-light formDescriptionTool"
+            <span role="button" id="startAddingForms" class="btn btn-light formDescriptionTool"
                   *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true"
                   style="width: 68px;">
                 <i class="fa fa-cubes"></i><span class="toolForm"></span>
