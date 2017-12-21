@@ -164,8 +164,10 @@ export class FormDescriptionComponent implements OnChanges {
                         this.toolDropTo = to;
                         if (from.ref === "question")
                             this.openQuestionSearch();
-                        else if (from.ref === "cde")
+                        else if (from.ref === "cde") {
                             this.addIndex(to.parent.data.formElements, this.getNewQuestion(), to.index);
+                            tree.update();
+                        }
                         else if (from.ref === "form")
                             this.openFormSearch();
                         else if (from.ref === "pasteSection")
