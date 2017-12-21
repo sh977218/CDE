@@ -6,53 +6,49 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.testng.annotations.Test;
 
 public class ScrollHistoryTest extends NlmCdeBaseTest {
-    private void scrollTo(int value) {
-        ((JavascriptExecutor) driver).executeScript("$(window).scrollTop(" + Integer.toString(value) + ");", "");
-        hangon(1);
-    }
 
     private void checkScroll(int value) {
-        textPresent("Log In",By.id("login_link"));
+        hangon(4);
         String scrollLocation = (((JavascriptExecutor) driver)
-                .executeScript("return $(window).scrollTop();", "")).toString();
-        if (Math.abs(Integer.parseUnsignedInt(scrollLocation) - value) > 10)
+                .executeScript("return window.pageYOffset", "")).toString();
+        if (Math.abs(Double.valueOf(scrollLocation).intValue() - value) > 10)
             Assert.fail("Assert failed. Expected: " + value + " Actual value: " + scrollLocation);
+        hangon(4);
     }
 
     @Test
     public void scrollHistory() {
+        String elementId = "linkToElt_4";
+
         searchEltAny("apple", "cde");
         textPresent("Godin Leisure-Time Exercise Questionnaire");
-        scrollTo(500);
-        // cannot use clickElement() because it scrolls
-        findElement(By.id("linkToElt_4")).click();
-        findElement(By.id("discussBtn"));
+        scrollToViewById(elementId);
+        int appleOffset = getCurrentYOffset();
+        clickElement(By.id(elementId));
+        textPresent("Log In", By.id("login_link"));
 
         searchEltAny("patient", "form");
         textPresent("Patient Health Questionnaire");
-        scrollTo(550);
-        // cannot use clickElement() because it scrolls
-        findElement(By.id("linkToElt_5")).click();
-        findElement(By.id("discussBtn"));
+        scrollToViewById(elementId);
+        int patientOffset = getCurrentYOffset();
+        clickElement(By.id(elementId));
+        textPresent("Log In", By.id("login_link"));
 
         searchEltAny("pain", "cde");
         textPresent("Brief Pain Inventory");
-        scrollTo(600);
+        scrollToViewById(elementId);
+        int painOffset = getCurrentYOffset();
         driver.navigate().refresh();
-        checkScroll(600);
+        checkScroll(painOffset);
 
         driver.navigate().back();
-        textPresent("Log In", By.id("login_link"));
         driver.navigate().back();
-        textPresent("Log In", By.id("login_link"));
         driver.navigate().back();
-        checkScroll(550);
+        checkScroll(patientOffset);
 
         driver.navigate().back();
-        textPresent("Log In", By.id("login_link"));
         driver.navigate().back();
-        textPresent("Log In", By.id("login_link"));
         driver.navigate().back();
-        checkScroll(500);
+        checkScroll(appleOffset);
     }
 }
