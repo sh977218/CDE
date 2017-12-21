@@ -25,12 +25,6 @@ import { NativeRenderService } from './nativeRender.service';
     :host >>> .form-check-label > input[type="radio"] {
         margin-top: 7px !important;
     }
-    
-    :host >>> .x {
-        position: absolute;
-        margin-top: 0.25rem;
-        margin-left: -1.25rem;
-    }
     `]
 })
 export class NativeQuestionComponent implements OnInit {

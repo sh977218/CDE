@@ -1,13 +1,13 @@
 <form class="form-inline pt40 pb40" #adminForm="ngForm" role="form" id="newOrgAdminForm" name="newOrgAdminForm"
       novalidate>
-    Make&nbsp;
+    Make
     <div class="form-group mx-1">
         <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
                placeholder="enter user name" [(ngModel)]="newAdmin.username"
                [ngbTypeahead]="searchTypeahead"
                required>
     </div>
-    &nbsp;an administrator for&nbsp;
+    an administrator for
     <div class="form-group mx-1">
         <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"
                 [(ngModel)]="newAdmin.orgName" required>
