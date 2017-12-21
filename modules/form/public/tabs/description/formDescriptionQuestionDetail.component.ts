@@ -73,16 +73,15 @@ export class FormDescriptionQuestionDetailComponent {
                     let updateSkipLogic = false;
                     let tokens = SkipLogicService.tokenSplitter(fe.skipLogic.condition);
                     tokens.forEach((token, i) => {
-                        if (i % 2 === 0 && token === '"' + this.nameSelectModal.question.label + '"') {
+                        if (i % 4 === 0 && token === '"' + this.nameSelectModal.question.label + '"') {
                             this.nameSelectModal.updateSkipLogic = true;
                             updateSkipLogic = true;
                             if (doUpdate && selectedNaming)
                                 tokens[i] = '"' + selectedNaming + '"';
-                        } else if (i % 2 === 0 && token !== this.nameSelectModal.question.label)
-                            tokens[i] = '"' + tokens[i] + '"';
+                        }
                     });
                     if (doUpdate && updateSkipLogic) {
-                        fe.skipLogic.condition = tokens.join('');
+                        fe.skipLogic.condition = tokens.join(' ');
                         fe.updatedSkipLogic = true;
                     }
                 }

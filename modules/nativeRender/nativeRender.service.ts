@@ -52,7 +52,7 @@ export class NativeRenderService {
         if (this.getNativeRenderType() === NativeRenderService.FOLLOW_UP) {
             this.followForm = NativeRenderService.cloneForm(this.elt);
             NativeRenderService.transformFormToInline(this.followForm);
-            NativeRenderService.preprocessValueLists(this.followForm.formElements);
+            NativeRenderService.assignValueListRows(this.followForm.formElements);
         }
     }
 
@@ -153,16 +153,16 @@ export class NativeRenderService {
     }
 
     static transformFormToInline(form: FormElement): boolean {
+        let followEligibleQuestions = [];
         let transformed = false;
         let feSize = (form.formElements ? form.formElements.length : 0);
         for (let i = 0; i < feSize; i++) {
             let fe = form.formElements[i];
-            let qs = SkipLogicService.getShowIfQ(form, fe);
+            let qs = SkipLogicService.getShowIfQ(followEligibleQuestions, fe);
             if (qs.length > 0) {
                 let substituted = false;
                 let parentQ = qs[0][0];
                 qs.forEach(function (match) {
-                    let answer;
                     if (parentQ.question.datatype === 'Value List') {
                         if (match[3] === "") {
                             parentQ.question.answers.push({
@@ -172,10 +172,10 @@ export class NativeRenderService {
                             });
                             substituted = true;
                         } else {
-                            answer = parentQ.question.answers.filter(function (a) {
-                                return a.permissibleValue === match[3];
-                            });
-                            if (answer.length) answer = answer[0];
+                            let answers = parentQ.question.answers.filter(a => a.permissibleValue === match[3]);
+                            let answer;
+                            if (answers.length)
+                                answer = answers[0];
                             if (answer) {
                                 if (!answer.formElements) answer.formElements = [];
                                 answer.formElements.push(fe);
@@ -207,7 +207,10 @@ export class NativeRenderService {
                     i--;
                     transformed = true;
                 }
+            } else {
+                followEligibleQuestions.length = 0;
             }
+            followEligibleQuestions.push(fe);
 
             // Post-Transform Processing
             if (fe.elementType === 'section' || fe.elementType === 'form') {
@@ -258,12 +261,11 @@ export class NativeRenderService {
         return values.length > 0 && values[0].indexOf('/') > -1 ? values[0] : Math.max.apply(null, values);
     }
 
-    static preprocessValueLists(formElements: FormElement[]) {
+    static assignValueListRows(formElements: FormElement[]) {
         formElements && formElements.forEach(function (fe) {
-            if (fe.elementType === 'section' || fe.elementType === 'form') {
-                NativeRenderService.preprocessValueLists(fe.formElements);
-                return;
-            }
+            if (fe.elementType === 'section' || fe.elementType === 'form')
+                return NativeRenderService.assignValueListRows(fe.formElements);
+
             if ((fe as FormQuestion).question && (fe as FormQuestion).question.answers) {
                 let index = -1;
                 (fe as FormQuestion).question.answers.forEach(function (pv: PermissibleFormValue, i, a) {
@@ -274,7 +276,7 @@ export class NativeRenderService {
                         pv.index = ++index;
 
                     if (pv.formElements)
-                        NativeRenderService.preprocessValueLists(pv.formElements);
+                        NativeRenderService.assignValueListRows(pv.formElements);
                 });
             }
         });

@@ -13,7 +13,7 @@ public class MultiSubQuestion extends BaseFormTest {
         String formName = "Multi SubQuestion";
         goToFormByName(formName);
 
-        textPresent("Yes",
+        textPresent("Was participant fasting prior to sample collection?",
                 By.xpath("//*[*[text()='Was genetic testing performed?']]//*[*[text()='Test Name']]" +
                         "//*[*[text()='Was participant fasting prior to sample collection?']]"));
     }

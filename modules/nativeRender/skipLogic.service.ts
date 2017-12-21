@@ -1,8 +1,7 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import trim from 'lodash.trim';
-import { CdeForm, FormElement, FormElementsContainer, FormQuestion, SkipLogic } from 'core/form.model';
+import { FormElement, FormElementsContainer, FormQuestion, SkipLogic } from 'core/form.model';
 import { FormService } from './form.service';
-import { FrontExceptionHandler } from '_commonApp/frontExceptionHandler';
 
 @Injectable()
 export class SkipLogicService {
@@ -163,13 +162,13 @@ export class SkipLogicService {
         return matchedQuestions[0] as FormQuestion;
     }
 
-    static getShowIfQ(parent: FormElementsContainer, fe: FormElement): any[] {
+    static getShowIfQ(fes: FormElement[], fe: FormElement): any[] {
         if (fe.skipLogic && fe.skipLogic.condition) {
             let strPieces = fe.skipLogic.condition.split('"');
             if (strPieces[0] === '') strPieces.shift();
             if (strPieces[strPieces.length - 1] === '') strPieces.pop();
             return strPieces.reduce((acc, e, i, strPieces) => {
-                let matchQ = this.getQuestionPriorByLabel(parent, fe, strPieces[i]);
+                let matchQ = this.getQuestionPriorByLabel({formElements: fes}, fe, strPieces[i]);
                 if (matchQ) {
                     let operator = strPieces[i + 1].trim();
                     let compValue = strPieces[i + 2];
@@ -260,7 +259,7 @@ export class SkipLogicService {
         tokens.push(res[0]);
         str = str.substring(res[0].length).trim();
 
-        res = str.match(/^"([^"]*)"/);
+        res = str.match(/^"?([^"]*)"?/);
         if (!res) {
             tokens.unmatched = str;
             return tokens;
