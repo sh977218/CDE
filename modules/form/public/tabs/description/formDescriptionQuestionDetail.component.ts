@@ -204,7 +204,7 @@ export class FormDescriptionQuestionDetailComponent {
     }
 
     getAnswersValue() {
-        if (!this.answersSelected)
+        if (!this.answersSelected && this.question.question.answers)
             this.answersSelected = this.question.question.answers.map(a => a.permissibleValue);
         return this.answersSelected;
     }
@@ -291,6 +291,7 @@ export class FormDescriptionQuestionDetailComponent {
 
     changedDatatype(data: { value: string }) {
         this.question.question.cde.datatype = data.value;
+        this.question.question.datatype = data.value;
         this.onEltChange.emit();
     }
 
@@ -301,6 +302,7 @@ export class FormDescriptionQuestionDetailComponent {
 
     addNewPv(newPv) {
         this.question.question.cde.permissibleValues.push(newPv);
+        this.question.question.answers.push(newPv);
         this.newPv = {};
         this.onEltChange.emit();
     }

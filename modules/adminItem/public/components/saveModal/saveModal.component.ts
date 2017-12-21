@@ -1,14 +1,31 @@
-import { Component, Input, Output, ViewChild, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input, Output, ViewChild, EventEmitter } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 import { AlertService } from '_app/alert/alert.service';
+import * as deValidator from "../../../../cde/shared/deValidator.js";
 
 @Component({
     selector: "cde-save-modal",
     templateUrl: "./saveModal.component.html"
 })
-export class SaveModalComponent {
+export class SaveModalComponent implements OnInit {
+    protected newCdes = [];
+
+    loopFormElements = form => {
+        if (form.formElements) {
+            form.formElements.forEach(fe => {
+                if (!fe.question.cde.tinyId) {
+                    deValidator.checkPvUnicity(fe.question.cde);
+                    this.newCdes.push(fe.question.cde)
+                }
+                else this.loopFormElements(fe.formElements);
+            });
+        }
+    }
+
+    ngOnInit(): void {
+    }
 
     @ViewChild("updateElementContent") public updateElementContent: NgbModalModule;
 
@@ -50,6 +67,10 @@ export class SaveModalComponent {
     openSaveModal() {
         this.newVersionVersionUnicity();
         if (this.elt) this.elt.changeNote = "";
+        if (this.elt.elementType === 'form' && this.elt.isDraft) {
+            this.loopFormElements(this.elt);
+        }
+        console.log('a');
         this.modalRef = this.modalService.open(this.updateElementContent, {container: "body", size: "lg"});
     }
 
