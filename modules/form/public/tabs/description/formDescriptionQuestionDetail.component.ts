@@ -289,17 +289,17 @@ export class FormDescriptionQuestionDetailComponent {
         this.onEltChange.emit();
     }
 
-    changedDatatype(data: { value: string[] }) {
+    changedDatatype(data: { value: string }) {
         this.question.question.cde.datatype = data.value;
         this.onEltChange.emit();
     }
 
-    removePv(i){
-        this.question.question.cde.permissibleValues.splice(i,1);
+    removePv(i) {
+        this.question.question.cde.permissibleValues.splice(i, 1);
         this.onEltChange.emit();
     }
 
-    addNewPv(newPv){
+    addNewPv(newPv) {
         this.question.question.cde.permissibleValues.push(newPv);
         this.newPv = {};
         this.onEltChange.emit();
