@@ -8,6 +8,9 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
     selector: "cde-native-render",
     templateUrl: "./nativeRender.component.html",
     styles: [`
+    :host >>> .form-check{
+        margin-bottom: 0;
+    }
     :host >>> label .native-question-label {
         font-weight: 700;
     }
@@ -16,7 +19,7 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
     }
     
     .form-horizontal .native-section .radio-inline,
-    .form-horizontal .native-section .checkbox-inline {
+    .form-horizontal .native-section {
         padding-top: 0;
     }
     
@@ -90,8 +93,7 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
     
     .form-horizontal .native-table-cell.radio,
     .form-horizontal .native-table-cell.checkbox,
-    .form-horizontal .native-table-cell.radio-inline,
-    .form-horizontal .native-table-cell.checkbox-inline {
+    .form-horizontal .native-table-cell.form-check-input {
         padding-top: 0;
     }
     

@@ -1,3 +1,19 @@
+/* over write a link to pass chrome audit low contrast ratio */
+a {
+    color: #337ab7;
+
+}
+
+.homeDescriptionLink {
+    color: #0F4E9D;
+}
+
+/* end */
+
+.modal {
+    overflow-y: scroll !important;
+}
+
 .bg-white {
     background-color: white;
 }
@@ -163,18 +179,11 @@ nih-cde:empty + .loading {
 
 /* begin Native Render */
 
-.checkbox-inline {
-    display: block;
-    float: left;
-    padding-right: 10px;
-    white-space: nowrap;
-}
-
-.checkbox-inline input {
+.form-check-input input {
     vertical-align: middle;
 }
 
-.checkbox-inline > span {
+.form-check-input > span {
     vertical-align: middle;
 }
 
@@ -182,8 +191,7 @@ nih-cde:empty + .loading {
     counter-reset: section;
 }
 
-.form-horizontal .native-section .radio-inline,
-.form-horizontal .native-section .checkbox-inline {
+.form-horizontal .native-section .form-check-input {
     padding-top: 0;
 }
 
@@ -272,8 +280,7 @@ div.row .native-question-oneline-l {
 
 .form-horizontal .native-table-cell.radio,
 .form-horizontal .native-table-cell.checkbox,
-.form-horizontal .native-table-cell.radio-inline,
-.form-horizontal .native-table-cell.checkbox-inline {
+.form-horizontal .native-table-cell.form-check-input {
     padding-top: 0;
 }
 

@@ -19,10 +19,10 @@ import { NativeRenderService } from './nativeRender.service';
     :host >>> label.native-question-label {
         font-weight: 700;
     }
-    :host >>> .checkbox-inline > input[type="checkbox"] {
+    :host >>> .form-check-label > input[type="checkbox"] {
         margin-top: 10px !important;
     }
-    :host >>> .radio-inline > input[type="radio"] {
+    :host >>> .form-check-label > input[type="radio"] {
         margin-top: 7px !important;
     }
     

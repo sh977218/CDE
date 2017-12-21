@@ -29,9 +29,7 @@
                                  [ngClass]="classColumns(pv.index, i)" class="col-12">
                                 <div *ngIf="!pv.nonValuelist" class="form-check">
                                     <label class="form-check-label" [ngClass]="{'native-question-oneline-l': pv.subQuestions
-                                                          && isOneLiner(pv.subQuestions[0], pv.subQuestions.length),
-                                                   'checkbox-inline': formElement.question.multiselect,
-                                                   'radio-inline': !formElement.question.multiselect}"
+                                                          && isOneLiner(pv.subQuestions[0], pv.subQuestions.length)}"
                                            [title]="nrs.getPvLabel(pv)">
                                         <input *ngIf="!formElement.question.multiselect" type="radio"
                                                class="form-check-input" [name]="formElement.questionId"
