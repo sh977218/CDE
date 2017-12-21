@@ -8,11 +8,11 @@ import org.testng.annotations.Test;
 public class ScrollHistoryTest extends NlmCdeBaseTest {
     private void scrollTo(int value) {
         ((JavascriptExecutor) driver).executeScript("$(window).scrollTop(" + Integer.toString(value) + ");", "");
-        hangon(1);
+        hangon(4);
     }
 
     private void checkScroll(int value) {
-        textPresent("Log In",By.id("login_link"));
+        hangon(4);
         String scrollLocation = (((JavascriptExecutor) driver)
                 .executeScript("return $(window).scrollTop();", "")).toString();
         if (Math.abs(Integer.parseUnsignedInt(scrollLocation) - value) > 10)
@@ -42,16 +42,16 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         checkScroll(600);
 
         driver.navigate().back();
-        textPresent("Log In", By.id("login_link"));
+        hangon(4);
         driver.navigate().back();
-        textPresent("Log In", By.id("login_link"));
+        hangon(4);
         driver.navigate().back();
         checkScroll(550);
 
         driver.navigate().back();
-        textPresent("Log In", By.id("login_link"));
+        hangon(4);
         driver.navigate().back();
-        textPresent("Log In", By.id("login_link"));
+        hangon(4);
         driver.navigate().back();
         checkScroll(500);
     }
