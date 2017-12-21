@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 
 import { AlertService } from '_app/alert/alert.service';
 import { BrowserService } from 'widget/browser.service';
+import { CdeForm, FormElement, FormElementsContainer } from 'core/form.model';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { FormService } from 'nativeRender/form.service';
 import { IsAllowedService } from 'core/isAllowed.service';
@@ -14,9 +15,9 @@ import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardMod
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { Subscription } from 'rxjs/Subscription';
 import { UserService } from '_app/user.service';
-import { CdeForm, FormElement, FormElementsContainer } from 'core/form.model';
 
 
 @Component({
@@ -340,7 +341,7 @@ export class FormViewComponent implements OnInit {
     validateSkipLogic() {
         let validationErrors = this.validationErrors;
         function findExistingErrors(parent: FormElementsContainer, fe: FormElement) {
-            if (fe.skipLogic && !SkipLogicService.validateSkipLogic(parent, fe))
+            if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe))
                 validationErrors.push('SkipLogic error on form element "' + SkipLogicService.getLabel(fe) + '".');
             if (Array.isArray(fe.formElements))
                 fe.formElements.forEach(f => findExistingErrors(fe, f));

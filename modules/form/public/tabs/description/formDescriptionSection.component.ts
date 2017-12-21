@@ -8,7 +8,7 @@ import { FormElement, FormSection, SkipLogic } from "core/form.model";
 import { FormattedValue } from 'core/models.model';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 
 @Component({
     selector: "cde-form-description-section",
@@ -36,7 +36,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     constructor(private localStorageService: LocalStorageService,
                 private alert: AlertService,
-                public skipLogicService: SkipLogicService) {
+                public skipLogicValidateService: SkipLogicValidateService) {
     }
 
     ngOnInit() {
@@ -91,7 +91,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     getSkipLogicOptions = (text$: Observable<string>) =>
         text$.debounceTime(300).map(term =>
-            this.skipLogicService.getTypeaheadOptions(term, this.parent, this.section)
+            this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.section)
         );
 
     getTemplate() {
@@ -132,7 +132,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     typeaheadSkipLogic(parent, fe, event) {
         if (fe.skipLogic && fe.skipLogic.condition !== event) {
-            this.skipLogicService.typeaheadSkipLogic(parent, fe, event);
+            this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
             this.stageElt.emit();
         }
     }

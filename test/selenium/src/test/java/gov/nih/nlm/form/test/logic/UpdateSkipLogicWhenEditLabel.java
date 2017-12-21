@@ -32,6 +32,7 @@ public class UpdateSkipLogicWhenEditLabel extends BaseFormTest {
         goToFormByName(formName);
         togglePrintableLogic();
         textNotPresent("Reason for premature intervention discontinuation");
+        findElement(By.xpath("//*[@id='Off study date and time_0']//input")).clear();
         findElement(By.xpath("//*[@id='Off study date and time_0']//input")).sendKeys("10/15/2016");
         clickElement(By.xpath("//*[@id='Did participant subject discontinue intervention before planned end of study?_2']//label/span[text()[contains(., 'No')]]"));
         textPresent("Reason for premature intervention discontinuation");

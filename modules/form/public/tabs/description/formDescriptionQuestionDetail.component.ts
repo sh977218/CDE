@@ -9,6 +9,7 @@ import { TreeNode } from "angular-tree-component";
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { CdeForm, FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'core/form.model';
 import { FormattedValue } from 'core/models.model';
+import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 
 @Component({
     selector: "cde-form-description-question-detail",
@@ -66,34 +67,15 @@ export class FormDescriptionQuestionDetailComponent {
 
     constructor(private http: Http,
                 public modalService: NgbModal,
-                public skipLogicService: SkipLogicService) {
-        this.nameSelectModal.checkAndUpdateLabel = (section, doUpdate = false, selectedNaming = false) => {
-            section.formElements.forEach((fe) => {
-                if (fe.skipLogic && fe.skipLogic.condition) {
-                    let updateSkipLogic = false;
-                    let tokens = SkipLogicService.tokenSplitter(fe.skipLogic.condition);
-                    tokens.forEach((token, i) => {
-                        if (i % 4 === 0 && token === '"' + this.nameSelectModal.question.label + '"') {
-                            this.nameSelectModal.updateSkipLogic = true;
-                            updateSkipLogic = true;
-                            if (doUpdate && selectedNaming)
-                                tokens[i] = '"' + selectedNaming + '"';
-                        }
-                    });
-                    if (doUpdate && updateSkipLogic) {
-                        fe.skipLogic.condition = tokens.join(' ');
-                        fe.updatedSkipLogic = true;
-                    }
-                }
-            });
-        };
+                public skipLogicValidateService: SkipLogicValidateService) {
         this.nameSelectModal.okSelect = (naming = null) => {
             if (!naming) {
                 this.nameSelectModal.question.label = "";
                 this.nameSelectModal.question.hideLabel = true;
             }
             else {
-                this.nameSelectModal.checkAndUpdateLabel(this.nameSelectModal.section, true, naming.designation);
+                this.nameSelectModal.updateSkipLogic = SkipLogicValidateService.checkAndUpdateLabel(
+                    this.nameSelectModal.section, this.nameSelectModal.question.label, naming.designation);
                 this.nameSelectModal.question.label = naming.designation;
                 this.nameSelectModal.question.hideLabel = false;
             }
@@ -183,7 +165,7 @@ export class FormDescriptionQuestionDetailComponent {
 
     getSkipLogicOptions = (text$: Observable<string>) =>
         text$.debounceTime(300).map(term =>
-            this.skipLogicService.getTypeaheadOptions(term, this.parent, this.question)
+            this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question)
         );
 
     getTemplate() {
@@ -224,7 +206,8 @@ export class FormDescriptionQuestionDetailComponent {
             }, () => {
                 this.nameSelectModal.cde = "error";
             });
-        this.nameSelectModal.checkAndUpdateLabel(section);
+        this.nameSelectModal.updateSkipLogic = SkipLogicValidateService.checkAndUpdateLabel(section,
+            this.nameSelectModal.question.label);
 
         this.nameSelectModalRef = this.modalService.open(this.formDescriptionNameSelectTmpl, {size: "lg"});
         this.nameSelectModalRef.result.then(() => this.stageElt.emit(), () => {});
@@ -245,7 +228,7 @@ export class FormDescriptionQuestionDetailComponent {
 
     typeaheadSkipLogic(parent, fe, event) {
         if (fe.skipLogic && fe.skipLogic.condition !== event) {
-            this.skipLogicService.typeaheadSkipLogic(parent, fe, event);
+            this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
             this.stageElt.emit();
         }
     }
