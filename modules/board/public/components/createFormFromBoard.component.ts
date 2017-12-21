@@ -33,8 +33,8 @@ export class CreateFormFromBoardComponent {
                     res.elts.forEach(p => {
                         this.formService.convertCdeToQuestion(p, q => {
                             this.elt.formElements[0].formElements.push(q);
-                            this.modalRef = this.modalService.open(this.createFormContent, {size: 'lg'});
                         });
+                        this.modalRef = this.modalService.open(this.createFormContent, {size: 'lg'});
                     });
                 }, err => this.alert.addAlert('danger', 'Error on load elements in board ' + err)
             );

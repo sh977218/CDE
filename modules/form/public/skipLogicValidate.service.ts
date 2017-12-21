@@ -10,6 +10,7 @@ export class SkipLogicValidateService {
     constructor() {}
 
     static checkAndUpdateLabel(section, oldLabel, newLabel = undefined) {
+        let result = false;
         section.formElements.forEach((fe) => {
             if (fe.skipLogic && fe.skipLogic.condition) {
                 let updateSkipLogic = false;
@@ -17,6 +18,7 @@ export class SkipLogicValidateService {
                 tokens.forEach((token, i) => {
                     if (i % 4 === 0 && token === '"' + oldLabel + '"') {
                         updateSkipLogic = true;
+                        result = true;
                         if (newLabel)
                             tokens[i] = '"' + newLabel + '"';
                     }
@@ -27,6 +29,7 @@ export class SkipLogicValidateService {
                 }
             }
         });
+        return result;
     }
 
     getTypeaheadOptions(currentContent, parent: FormElementsContainer, fe: FormElement): string[] {
