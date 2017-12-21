@@ -56,7 +56,7 @@ module.exports = {
                 $: 'jquery',
                 jQuery: 'jquery',
                 'windows.jQuery': 'jquery',
-                'Tether':'tether',
+                Tether:'tether',
                 Popper: ['popper.js', 'default'],
             }),
             new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
