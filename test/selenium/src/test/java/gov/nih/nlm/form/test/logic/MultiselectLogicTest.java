@@ -1,18 +1,16 @@
 package gov.nih.nlm.form.test.logic;
 
-import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class MultiselectLogicTest extends NlmCdeBaseTest {
+public class MultiselectLogicTest extends BaseFormTest {
 
     @Test
     public void multiselectLogic() {
         String formName = "MultiSelect Logic";
         goToFormByName(formName);
-        clickElement(By.id("selectRenderButton"));
-        clickElement(By.id("printableLogicCb"));
-        clickElement(By.id("preview_tab"));
+        togglePrintableLogic();
         textNotPresent("Own home with self care");
         textNotPresent("Slight ataxia (slowness or unsteady turning)");
         clickElement(By.xpath("//label[normalize-space(.)='Medicare']//input"));

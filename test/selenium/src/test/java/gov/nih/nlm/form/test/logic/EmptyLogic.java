@@ -1,11 +1,11 @@
 package gov.nih.nlm.form.test.logic;
 
-import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 
-public class EmptyLogic extends NlmCdeBaseTest {
+public class EmptyLogic extends BaseFormTest {
 
     @Test
     public void emptyLogic() {
@@ -15,9 +15,7 @@ public class EmptyLogic extends NlmCdeBaseTest {
         textPresent("If none:", By.xpath("//*[*[normalize-space()='Image Acquisition Event Yes No Not Done Indicator']]"));
         textPresent("If empty:", By.xpath("//*[*[normalize-space()='Head injury prior number']]"));
         textPresent("If empty:", By.xpath("//*[*[normalize-space()='Noncompliant Reason Text']]"));
-
-        clickElement(By.id("selectRenderButton"));
-        clickElement(By.id("printableLogicCb"));
+        togglePrintableLogic();
 
         // Dates
         textPresent("Data unknown indicator");

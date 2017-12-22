@@ -36,9 +36,9 @@ public class FormScoreTest extends QuestionTest {
         textNotPresent("id: h7pThcFJv2r");
         textNotPresent("Incomplete Rule", By.id("question_0_2"));
 
-        textPresent("ALS Severity Score (ALSSS) - swallow score (part of score)");
-        textPresent("ALS Severity Score (ALSSS) - lower extremity walk score (part of score)");
-        textPresent("ALS Severity Score (ALSSS) - upper extremity dress hygiene score");
+        textPresent("Swallowing (part of score)");
+        textPresent("Lower extremity and walking (part of score)");
+        textPresent("Upper extremity dressing and hygiene (part of score)");
     }
 
 }

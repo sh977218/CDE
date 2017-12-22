@@ -1,18 +1,18 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-
 import { Http } from '@angular/http';
-import { IActionMapping, TreeComponent } from 'angular-tree-component';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { IActionMapping, TreeComponent } from 'angular-tree-component';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/map';
 
+import { AlertService } from '_app/alert/alert.service';
 import { ClassificationService } from "core/classification.service";
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { SharedService } from 'core/shared.service';
-import { Subject } from 'rxjs/Subject';
 import { UserService } from '_app/user.service';
-import { AlertService } from '_app/alert/alert.service';
+import { ElasticQueryResponse } from 'core/models.model';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -94,7 +94,7 @@ export class OrgClassificationManagementComponent implements OnInit {
                 let url = (window as any).meshUrl + "/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=" + term;
                 if (term) return this.http.get(url).map(res => res.json());
                 else return Observable.of<string[]>([]);
-            }).subscribe(res => {
+            }).subscribe((res: ElasticQueryResponse) => {
             if (res && res.hits && res.hits.hits && res.hits.hits.length === 1) {
                 let desc = res.hits.hits[0]._source;
                 this.descriptorName = desc.DescriptorName.String.t;

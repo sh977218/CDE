@@ -1,6 +1,5 @@
 package gov.nih.nlm.form.test.logic;
 
-
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.interactions.Actions;
@@ -55,9 +54,7 @@ public class EditSkipLogic extends BaseFormTest {
         textPresent("How often did you have to push yourself to get things done because of your fatigue?",
                 By.xpath("//*[*[normalize-space()='To what degree did your fatigue interfere with your physical functioning?']]//*[normalize-space()='How often did you have to push yourself to get things done because of your fatigue?']"));
 
-        clickElement(By.id("selectRenderButton"));
-        clickElement(By.xpath("(//*[@id='selectRenderButton']/following-sibling::div)/button[normalize-space(normalize-space()) = 'Printable Logic:']/input"));
-
+        togglePrintableLogic();
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
         clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']//*/span[normalize-space()='Not at all']"));
         clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']//*/span[normalize-space()='A little bit']"));
