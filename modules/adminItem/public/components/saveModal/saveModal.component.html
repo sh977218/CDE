@@ -6,9 +6,21 @@
         <div class="modal-body" id="updateElementModalBody">
             <div *ngIf="newCdes.length > 0" class="form-group">
                 There are new CDEs
+                <button class="btn btn-outline-dark">Create All</button>
                 <div *ngFor="let newCde of newCdes" class="card">
-                    <div class="card-header">(This is a New CDE)</div>
-                    <div class="card-body">
+                    <div class="card-header">
+                        <div (click)="newCde.isCollapsed = !newCde.isCollapsed"
+                             [ngClass]="{'text-danger':newCde.naming.length === 0}">
+                            <span *ngIf="newCde.naming.length > 0 ">
+               w                 {{newCde.naming[0].designation}}
+                            </span>
+                            <span *ngIf="newCde.naming.length === 0">
+                            naming is empty;
+                            </span>
+                        </div>
+                        <button class="btn btn-outline-dark">Create</button>
+                    </div>
+                    <div class="card-body" [ngbCollapse]="!newCde.isCollapsed">
                         <dl class="row">
                             <dt class="col-2 text-right">Naming:</dt>
                             <dd class="col-10">
@@ -40,14 +52,6 @@
                             </dd>
                         </dl>
                     </div>
-                    <div class="card-foot">
-                        <div *ngIf="newCde.naming.invalid" class="alert alert-danger" role="alert">
-                            {{newCde.naming.message}}
-                        </div>
-                        <div *ngIf="!newCde.allValid" class="alert alert-danger" role="alert">
-                            {{newCde.pvNotValidMsg}}
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -72,8 +76,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn  btn-outline-dark" (click)="c('cancel')" id="cancelSaveBtn" type="button">Cancel</button>
-            <button class="btn  btn-warning" id="confirmSaveBtn" (click)="confirmSave();" type="button"
+            <button class="btn btn-outline-dark" (click)="c('cancel')" id="cancelSaveBtn" type="button">Cancel</button>
+            <button class="btn btn-warning" id="confirmSaveBtn" (click)="confirmSave();" type="button"
                     [disabled]="!updateElementForm.form.valid || (!overrideVersion && duplicatedVersion)">Save
             </button>
         </div>

@@ -19,7 +19,6 @@ export class SaveModalComponent implements OnInit {
                     this.loopFormElements(fe);
                 } else {
                     if (!fe.question.cde.tinyId) {
-                        deValidator.checkPvUnicity(fe.question.cde);
                         if (fe.question.cde.naming.length === 0) {
                             fe.question.cde.naming.invalid = true;
                             fe.question.cde.naming.message = "no naming.";
