@@ -20,7 +20,7 @@ import { NativeRenderService } from './nativeRender.service';
         font-weight: 700;
     }
     :host >>> .form-check-label > input[type="checkbox"] {
-        margin-top: 10px !important;
+        margin-top: 8px !important;
     }
     :host >>> .form-check-label > input[type="radio"] {
         margin-top: 7px !important;
