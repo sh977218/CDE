@@ -273,13 +273,12 @@ exports.buildElasticSearchQuery = function (user, settings) {
         });
 
         settings.filter = {
-            bool: {
+           bool: {
                 filter: [
                     {bool: {should: filterDatatypeTerms}},
                     {bool: {should: filterRegStatusTerms}}
-                ]
-            }
-        };
+                ]}};
+
         settings.filterDatatype = {
             bool: {should: filterRegStatusTerms}
         };
@@ -415,14 +414,21 @@ exports.buildElasticSearchQuery = function (user, settings) {
         }
     };
     if (usersvc.myOrgs(user).length > 0)
-        regStatusAggFilter.bool.should.push({
-            "bool": {
-                "must_not": {term: {"registrationState.registrationStatus": "Retired"}},
-                "should": usersvc.myOrgs(user).map(org => {
-                    return {"term": {"stewardOrg.name": org}};
-                })
-            }
+        usersvc.myOrgs(user).map(org => {
+            regStatusAggFilter.bool.should[0].bool.should.push({"term": {"stewardOrg.name": org}})
         });
+        // regStatusAggFilter.bool.should.push({
+        //     "bool": {
+        //         "must_not": {term: {"registrationState.registrationStatus": "Retired"}},
+        //         "should": usersvc.myOrgs(user).map(org => {
+        //             return {"term": {"stewardOrg.name": org}};
+        //         })
+        //     }
+        // });
+        // regStatusAggFilter.bool.should[0].bool.should.pushAll(
+        //     usersvc.myOrgs(user).map(org => {
+        //             return {"term": {"stewardOrg.name": org}};
+        //     }));
 
     if (sort) {
         //noinspection JSAnnotator
