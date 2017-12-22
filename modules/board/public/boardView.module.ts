@@ -10,6 +10,7 @@ import { BoardViewComponent } from 'board/public/components/boardView/boardView.
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
 import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
+import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
 
@@ -31,6 +32,7 @@ const boardRoutes: Routes = [
         DiscussModule,
         CdeSearchModule,
         FormSearchModule,
+        NativeRenderModule,
         SearchModule,
     ],
     declarations: [

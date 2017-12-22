@@ -28,6 +28,14 @@ module.exports = {
                 use: prod ? ['@ngtools/webpack'] : ['ts-loader', 'angular2-template-loader']
             },
             {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+                query: {
+                    presets: ['env']
+                }
+            },
+            {
                 test: /\.css$/, include: /node_modules/,
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
@@ -56,7 +64,7 @@ module.exports = {
                 $: 'jquery',
                 jQuery: 'jquery',
                 'windows.jQuery': 'jquery',
-                'Tether':'tether',
+                Tether:'tether',
                 Popper: ['popper.js', 'default'],
             }),
             new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),

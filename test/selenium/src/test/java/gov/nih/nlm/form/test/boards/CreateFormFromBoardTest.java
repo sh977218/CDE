@@ -11,10 +11,10 @@ public class CreateFormFromBoardTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToBoard("Form Board");
         clickElement(By.id("createFormBtn"));
+        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("TEST");
         findElement(By.id("eltName")).sendKeys("New form from boards");
         findElement(By.id("eltDefinition")).sendKeys("New form from boards definition");
         findElement(By.id("formVersion")).sendKeys("1.0");
-        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("TEST");
         addClassificationByTree("TEST", new String[]{"Classify Board", "Classif_Board_Sub"}, null);
         findElement(By.linkText("Classif_Board_Sub"));
         clickElement(By.id("submit"));

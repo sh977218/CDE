@@ -1,168 +1,199 @@
-import { Injectable } from "@angular/core";
-import { FormService } from "./form.service";
+import { ErrorHandler, Injectable } from '@angular/core';
+import { FormElement, FormElementsContainer, FormQuestion, SkipLogic } from 'core/form.model';
+import { FormService } from './form.service';
 
 @Injectable()
 export class SkipLogicService {
-    preSkipLogicSelect = "";
+    constructor(private errorHandler: ErrorHandler) {}
 
-    constructor() {}
-
-    static evaluateSkipLogic(condition, formElements, fe, elt, errors = []) {
-        if (!condition) return true;
-        let rule = condition.trim();
-        if (rule.indexOf("AND") > -1) {
-            return this.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), formElements, fe, elt, errors) &&
-                this.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), formElements, fe, elt, errors);
-        }
-        if (rule.indexOf("OR") > -1) {
-            return (this.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), formElements, fe, elt, errors) ||
-            this.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3), formElements, fe, elt, errors));
-        }
-        let ruleArr = rule.split(/>=|<=|=|>|<|!=/);
-        let questionLabel = ruleArr[0].replace(/"/g, "").trim();
-        let operatorArr = />=|<=|=|>|<|!=/.exec(rule);
-        if (!operatorArr) {
-            errors.push("SkipLogic is incorrect. " + rule);
+    static evaluateSkipLogic(condition: string, parent: FormElementsContainer, fe: FormElement, nrs) {
+        if (!condition)
             return true;
+        let rule = condition.trim();
+        if (rule.indexOf('AND') > -1)
+            return this.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), parent, fe, nrs) &&
+                this.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), parent, fe, nrs);
+        if (rule.indexOf('OR') > -1)
+            return (this.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), parent, fe, nrs) ||
+                this.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3), parent, fe, nrs));
+
+        let operatorArr = />=|<=|=|>|<|!=/.exec(rule);
+        if (!operatorArr || operatorArr.length <= 0) {
+            nrs.addError('SkipLogic is incorrect. Operator is missing. ' + rule);
+            return false;
         }
         let operator = operatorArr[0];
-        let expectedAnswer = ruleArr[1].replace(/"/g, "").trim();
-        let realAnswerArr = FormService.getQuestions(formElements, questionLabel);
-        let realAnswerObj = realAnswerArr[0];
-        let realAnswer = realAnswerObj ? (realAnswerObj.question.isScore ?
-            FormService.score(realAnswerObj, elt) : realAnswerObj.question.answer) : undefined;
+
+        let ruleArr = rule.split(/>=|<=|=|>|<|!=/);
+        if (ruleArr.length !== 2) {
+            nrs.addError('SkipLogic is incorrect. Operator requires 2 arguments. ' + rule);
+            return false;
+        }
+        let questionLabel = ruleArr[0].replace(/"/g, '').trim();
+        let expectedAnswer = ruleArr[1].replace(/"/g, '').trim();
+
+        let realAnswerObj = this.getQuestionPriorByLabel(parent, fe, questionLabel);
+        if (!realAnswerObj) {
+            nrs.addError('SkipLogic is incorrect. Question not found. ' + rule);
+            return false;
+        }
+
+        let realAnswer = realAnswerObj.question.isScore ? FormService.score(realAnswerObj, nrs.getElt()) : realAnswerObj.question.answer;
         if (realAnswer === undefined || realAnswer === null ||
-            (typeof realAnswer === "number" && isNaN(realAnswer))) realAnswer = "";
-        if (expectedAnswer === "" && operator === "=") {
-            if (realAnswerObj.question.datatype === "Number") {
-                if (realAnswer === "" || isNaN(realAnswer)) return true;
+            (typeof realAnswer === 'number' && isNaN(realAnswer))) realAnswer = '';
+
+        if (expectedAnswer === '' && operator === '=') {
+            if (realAnswerObj.question.datatype === 'Number') {
+                if (realAnswer === '' || isNaN(realAnswer))
+                    return true;
             } else {
-                if (realAnswer === "" || ("" + realAnswer).trim().length === 0) return true;
+                if (realAnswer === '' || ('' + realAnswer).trim().length === 0)
+                    return true;
             }
         }
-        else if (realAnswer || realAnswer === "") {
-            if (realAnswerObj.question.datatype === "Date") {
+        if (!realAnswer && realAnswer !== '')
+            return false;
+        switch (realAnswerObj.question.datatype) {
+            case 'Date':
                 // format HTML5 standard YYYY-MM-DD to American DD/MM/YYYY
                 if (realAnswer) {
                     let match = /(\d{4})-(\d{2})-(\d{2})/.exec(realAnswer);
                     if (match.length === 4)
-                        realAnswer = match[2] + "/" + match[3] + "/" + match[1];
+                        realAnswer = match[2] + '/' + match[3] + '/' + match[1];
                 }
-                if (operator === "=") return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
-                if (operator === "!=") return new Date(realAnswer).getTime() !== new Date(expectedAnswer).getTime();
-                if (operator === "<") return new Date(realAnswer) < new Date(expectedAnswer);
-                if (operator === ">") return new Date(realAnswer) > new Date(expectedAnswer);
-                if (operator === "<=") return new Date(realAnswer) <= new Date(expectedAnswer);
-                if (operator === ">=") return new Date(realAnswer) >= new Date(expectedAnswer);
-            } else if (realAnswerObj.question.datatype === "Number") {
-                if (operator === "=") return realAnswer === parseInt(expectedAnswer);
-                if (operator === "!=") return realAnswer !== parseInt(expectedAnswer);
-                if (operator === "<") return realAnswer < parseInt(expectedAnswer);
-                if (operator === ">") return realAnswer > parseInt(expectedAnswer);
-                if (operator === "<=") return realAnswer <= parseInt(expectedAnswer);
-                if (operator === ">=") return realAnswer >= parseInt(expectedAnswer);
-            } else if (realAnswerObj.question.datatype === "Text") {
-                if (operator === "=") return realAnswer === expectedAnswer;
-                if (operator === "!=") return realAnswer !== expectedAnswer;
-                else return false;
-            } else if (realAnswerObj.question.datatype === "Value List") {
-                if (operator === "=") {
+                if (operator === '=') return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
+                if (operator === '!=') return new Date(realAnswer).getTime() !== new Date(expectedAnswer).getTime();
+                if (operator === '<') return new Date(realAnswer) < new Date(expectedAnswer);
+                if (operator === '>') return new Date(realAnswer) > new Date(expectedAnswer);
+                if (operator === '<=') return new Date(realAnswer) <= new Date(expectedAnswer);
+                if (operator === '>=') return new Date(realAnswer) >= new Date(expectedAnswer);
+                nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type date. ' + rule);
+                return false;
+            case 'Number':
+                if (operator === '=') return realAnswer === parseInt(expectedAnswer);
+                if (operator === '!=') return realAnswer !== parseInt(expectedAnswer);
+                if (operator === '<') return realAnswer < parseInt(expectedAnswer);
+                if (operator === '>') return realAnswer > parseInt(expectedAnswer);
+                if (operator === '<=') return realAnswer <= parseInt(expectedAnswer);
+                if (operator === '>=') return realAnswer >= parseInt(expectedAnswer);
+                nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type number. ' + rule);
+                return false;
+            case 'Text':
+                if (operator === '=') return realAnswer === expectedAnswer;
+                if (operator === '!=') return realAnswer !== expectedAnswer;
+                nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type text. ' + rule);
+                return false;
+            case 'Value List':
+                if (operator === '=') {
                     if (Array.isArray(realAnswer))
                         return realAnswer.indexOf(expectedAnswer) > -1;
                     else
                         return realAnswer === expectedAnswer;
                 }
-                if (operator === "!=") {
+                if (operator === '!=') {
                     if (Array.isArray(realAnswer))
                         return realAnswer.length !== 1 || realAnswer[0] !== expectedAnswer;
                     else
                         return realAnswer !== expectedAnswer;
                 }
-                else
-                    return false;
-            } else {
-                if (operator === "=") return realAnswer === expectedAnswer;
-                if (operator === "!=") return realAnswer !== expectedAnswer;
-                else return false;
-            }
-        } else
-            return false;
+                nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for value list. ' + rule);
+                return false;
+            default:
+                if (operator === '=') return realAnswer === expectedAnswer;
+                if (operator === '!=') return realAnswer !== expectedAnswer;
+                nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type external. ' + rule);
+                return false;
+        }
     }
 
-    static evaluateSkipLogicAndClear(rule, formElements, fe, elt, errors = []) {
-        let skipLogicResult = this.evaluateSkipLogic(rule, formElements, fe, elt, errors);
+    evalSkipLogic(parent, fe, nrs) {
+        try {
+            return SkipLogicService.evaluateSkipLogic(fe.skipLogic ? fe.skipLogic.condition : null, parent, fe, nrs);
+        } catch (error) {
+            this.errorHandler.handleError({
+                name: 'Skip Logic Evaluation Error',
+                message: error.message,
+                stack: error.stack
+            });
+            return true;
+        }
+    }
 
-        if (!skipLogicResult && fe.question) fe.question.answer = undefined;
+    evalSkipLogicAndClear(parent, fe, nrs) {
+        let skipLogicResult = this.evalSkipLogic(parent, fe, nrs);
+        if (!skipLogicResult && fe.question)
+            fe.question.answer = undefined;
         return skipLogicResult;
     }
 
-    static getAnswer(previousLevel, questionName) {
-        let searchQuestion = questionName.substring(1, questionName.length - 1);
-        let questions = previousLevel.filter(function (q) {
-            let label = q.label;
-            if ((!label || label.length === 0) && q.question) label = q.question.cde.name;
-            if (label && questionName) return SkipLogicService.questionSanitizer(label) === searchQuestion;
+    static getLabel(q) {
+        if (q.label)
+            return q.label.trim();
+        if (q.question && q.question.cde)
+            return q.question.cde.name.trim();
+        return null; // ERROR: question is malformed, validation should catch this
+    }
+
+    static getQuestions(fes: FormElement[], filter = undefined): FormQuestion[] {
+        let matchedQuestions = [];
+        FormService.iterateFesSync(fes, undefined, undefined, fe => {
+            if (!filter || filter(fe))
+               matchedQuestions.push(fe);
         });
-        if (questions.length <= 0) return [];
-        let question = questions[0];
-        if (question.question.datatype === 'Value List') {
-            let answers = question.question.answers;
-            return answers.map(function (a) {
-                return '"' + SkipLogicService.questionSanitizer(a.permissibleValue) + '" ';
-            });
-        } else if (question.question.datatype === 'Number') {
-            return ['"{{' + question.question.datatype + '}}" '];
-        } else if (question.question.datatype === 'Date') {
-            return ['"{{MM/DD/YYYY}}" '];
-        }
+        return matchedQuestions;
     }
 
-    getCurrentOptions(currentContent, previousQuestions, thisQuestion, index) {
-        if (!currentContent) currentContent = '';
-        if (!thisQuestion.skipLogic) thisQuestion.skipLogic = {condition: ''};
+    static getQuestionsPrior(parent: FormElementsContainer, fe: FormElement, filter = undefined): FormQuestion[] {
+        let index = -1;
+        if (fe)
+            index = parent.formElements.indexOf(fe);
 
-        let tokens = SkipLogicService.tokenSplitter(currentContent);
-        this.preSkipLogicSelect = currentContent.substr(0, currentContent.length - tokens.unmatched.length);
-
-        let options = [];
-        if (tokens.length % 4 === 0) {
-            options = previousQuestions.filter(function (q, i) {
-                // Will assemble a list of questions
-                if (i >= index) return false; // Exclude myself
-                else if (q.elementType !== "question") return false; // This element is not a question, ignore
-                else if (q.question.datatype === 'Value List' && (!q.question.answers || q.question.answers.length === 0)) return false; // This question has no permissible answers, ignore
-                else if (q.question.datatype === 'Date' || q.question.datatype === 'Number') return true;
-                else return true;
-            }).map(function (q) {
-                let label = q.label;
-                if ((!label || label.length === 0) && q.question) label = q.question.cde.name;
-                return '"' + SkipLogicService.questionSanitizer(label) + '" ';
-            });
-        } else if (tokens.length % 4 === 1) {
-            options = ["= ", "< ", "> ", ">= ", "<= ", "!= "];
-        } else if (tokens.length % 4 === 2) {
-            options = SkipLogicService.getAnswer(previousQuestions, tokens[tokens.length - 2]);
-        } else if (tokens.length % 4 === 3) {
-            options = ["AND ", "OR "];
-        }
-
-        if (!options) options = [];
-        let optionsFiltered = options.filter(o => o.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1);
-        if (optionsFiltered.length > 6)
-            optionsFiltered = optionsFiltered.slice(optionsFiltered.length - 6, optionsFiltered.length);
-        if (optionsFiltered.length > 0)
-            options = optionsFiltered;
-
-        return options;
+        return this.getQuestions(index > -1 ? parent.formElements.slice(0, index) : parent.formElements, filter);
     }
 
-    static tokenSplitter(str) {
+    static getQuestionPriorByLabel(parent: FormElementsContainer, fe: FormElement, label: string): FormQuestion {
+        label = label.trim();
+        let matchedQuestions = this.getQuestionsPrior(parent, fe, fe => this.getLabel(fe) === label);
+        if (matchedQuestions.length <= 0)
+            return null;
+        return matchedQuestions[0] as FormQuestion;
+    }
+
+    static getShowIfQ(fes: FormElement[], fe: FormElement): any[] {
+        if (fe.skipLogic && fe.skipLogic.condition) {
+            let strPieces = fe.skipLogic.condition.split('"');
+            if (strPieces[0] === '') strPieces.shift();
+            if (strPieces[strPieces.length - 1] === '') strPieces.pop();
+            return strPieces.reduce((acc, e, i, strPieces) => {
+                let matchQ = this.getQuestionPriorByLabel({formElements: fes}, fe, strPieces[i]);
+                if (matchQ) {
+                    let operator = strPieces[i + 1].trim();
+                    let compValue = strPieces[i + 2];
+                    let operatorWithNumber = operator.split(' ');
+                    if (operatorWithNumber.length > 1) {
+                        operator = operatorWithNumber[0];
+                        compValue = operatorWithNumber[1];
+                    }
+                    acc.push([matchQ, strPieces[i], operator, compValue]);
+                }
+                return acc;
+            }, []);
+        }
+        return [];
+    }
+
+    static tokenSanitizer(label: string): string {
+        return label.replace(/"/g, "'").trim();
+    }
+
+    static tokenSplitter(str: string) {
         let tokens: any = [];
-        if (!str) {
-            tokens.unmatched = "";
+        tokens.unmatched = '';
+        if (!str)
             return tokens;
-        }
         str = str.trim();
+        if (!str)
+            return tokens;
 
         let res = str.match(/^"[^"]+"/);
         if (!res) {
@@ -180,7 +211,7 @@ export class SkipLogicService {
         tokens.push(res[0]);
         str = str.substring(res[0].length).trim();
 
-        res = str.match(/^"([^"]*)"/);
+        res = str.match(/^"?([^"]+)"?/);
         if (!res) {
             tokens.unmatched = str;
             return tokens;
@@ -206,72 +237,5 @@ export class SkipLogicService {
         } else {
             return tokens;
         }
-    }
-
-    static validateSingleExpression(tokens, previousQuestions) {
-        let filteredQuestions = previousQuestions.filter(function (pq) {
-            let label = pq.label;
-            if ((!label || label.length === 0) && pq.question) label = pq.question.cde.name;
-            return '"' + SkipLogicService.questionSanitizer(label) + '"' === tokens[0];
-        });
-        if (filteredQuestions.length !== 1) {
-            return '"' + tokens[0] + '" is not a valid question label';
-        } else {
-            let filteredQuestion = filteredQuestions[0];
-            if (filteredQuestion.question.datatype === 'Value List') {
-                if (tokens[2].length > 0 && filteredQuestion.question.answers.map(function (a) {
-                        return '"' + SkipLogicService.questionSanitizer(a.permissibleValue) + '"';
-                    }).indexOf(tokens[2]) < 0) {
-                    return '"' + tokens[2] + '" is not a valid answer for "' + filteredQuestion.label + '"';
-                }
-            } else if (filteredQuestion.question.datatype === 'Number') {
-                if (isNaN(tokens[2]))
-                    return '"' + tokens[2] + '" is not a valid number for "' + filteredQuestion.label + '". Replace ' + tokens[2] + " with a valid number.";
-                else if (filteredQuestion.question.datatypeNumber) {
-                    let answerNumber = parseInt(tokens[2]);
-                    let max = filteredQuestion.question.datatypeNumber.maxValue;
-                    let min = filteredQuestion.question.datatypeNumber.minValue;
-                    if (min !== undefined && answerNumber < min)
-                        return '"' + tokens[2] + '" is less than a minimal answer for "' + filteredQuestion.label + '"';
-                    if (max !== undefined && answerNumber > max)
-                        return '"' + tokens[2] + '" is bigger than a maximal answer for "' + filteredQuestion.label + '"';
-                }
-            } else if (filteredQuestion.question.datatype === 'Date') {
-                if (tokens[2].length > 0 && new Date(tokens[2]).toString() === 'Invalid Date')
-                    return tokens[2] + ' is not a valid date for "' + filteredQuestion.label + '".';
-            }
-        }
-    }
-
-    validateSkipLogic(skipLogic, previousQuestions, event) {
-        if (event && event.item)
-            skipLogic.condition = this.preSkipLogicSelect + event.item;
-        else
-            skipLogic.condition = event;
-
-        let logic = skipLogic.condition.trim();
-        let tokens = SkipLogicService.tokenSplitter(logic);
-        delete skipLogic.validationError;
-        if (tokens.unmatched) {
-            skipLogic.validationError = "Unexpected token: " + tokens.unmatched;
-            return false;
-        }
-        if (!logic || logic.length === 0) {
-            return true;
-        }
-        if ((tokens.length - 3) % 4 !== 0) {
-            skipLogic.validationError = "Unexpected number of tokens in expression " + tokens.length;
-            return false;
-        }
-        let err = SkipLogicService.validateSingleExpression(tokens.slice(0, 3), previousQuestions);
-        if (err) {
-            skipLogic.validationError = err;
-            return false;
-        }
-        return true;
-    }
-
-    static questionSanitizer(label) {
-        return label.replace(/"/g, "'").trim();
     }
 }

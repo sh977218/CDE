@@ -1,4 +1,4 @@
-import { ErrorHandler, NgModule } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { HttpModule } from "@angular/http";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from "@angular/platform-browser";
@@ -11,8 +11,8 @@ import { AlertService } from '_app/alert/alert.service';
 import { BackForwardService } from '_app/backForward.service';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
+import { CommonAppModule } from '_commonApp/commonApp.module';
 import { ElasticService } from '_app/elastic.service';
-import { FrontExceptionHandler } from '_app/frontExceptionHandler';
 import { LoginService } from '_app/login.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
 import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFoundComponent';
@@ -33,6 +33,7 @@ import { UserService } from '_app/user.service';
         NgbDropdownModule.forRoot(),
         // internal
         CdeAppRoutingModule,
+        CommonAppModule,
     ],
     declarations: [
         AlertComponent,
@@ -45,7 +46,6 @@ import { UserService } from '_app/user.service';
         AlertService,
         BackForwardService,
         ElasticService, // TODO: create shared CoreModule loaded async and provide to all lazy routes
-        {provide: ErrorHandler, useClass: FrontExceptionHandler},
         LoginService,
         QuickBoardListService,
         UserService

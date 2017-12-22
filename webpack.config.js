@@ -37,6 +37,13 @@ module.exports = {
                 }
             },
             {
+                test: require.resolve('jquery'),
+                use: [{
+                    loader: 'expose-loader',
+                    options: '$'
+                }]
+            },
+            {
                 test: /\.css$/, include: /node_modules/,
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',

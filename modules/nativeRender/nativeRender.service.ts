@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { CdeForm, DisplayProfile } from 'core/form.model';
+import {
+    CdeForm, DisplayProfile, FormElement, FormQuestion, FormSection, FormSectionOrForm, PermissibleFormValue
+} from 'core/form.model';
 import { FormService } from 'nativeRender/form.service';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 
@@ -7,15 +9,16 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
 export class NativeRenderService {
     static readonly SHOW_IF: string = 'Dynamic';
     static readonly FOLLOW_UP: string = 'Follow-up';
-    private errors: Array<string> = [];
+    private errors: string[] = [];
     private overrideNativeRenderType: string = null;
     private currentNativeRenderType: string;
-    readonly SkipLogicService = SkipLogicService;
 
     profile: DisplayProfile;
     elt: CdeForm;
     form: CdeForm;
     followForm: any;
+
+    constructor(public skipLogicService: SkipLogicService) {}
 
     getNativeRenderType() {
         let newType = this.overrideNativeRenderType || (this.profile && this.profile.displayType);
@@ -31,19 +34,25 @@ export class NativeRenderService {
 
         // clean up
         FormService.iterateFeSync(this.elt, undefined, undefined, f => {
-            for (let i = 0; i < f.question.answers.length; i++) {
-                let answer = f.question.answers[i];
-                if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue))
-                    f.question.answers.splice(i--, 1);
-                else if (answer.subQuestions)
-                    delete answer.subQuestions;
+            if (Array.isArray(f.question.answers)) {
+                for (let i = 0; i < f.question.answers.length; i++) {
+                    let answer = f.question.answers[i];
+                    if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue))
+                        f.question.answers.splice(i--, 1);
+                    else {
+                        if (answer.formElements)
+                            answer.formElements = undefined;
+                        if (answer.index)
+                            answer.index = undefined;
+                    }
+                }
             }
         });
 
         if (this.getNativeRenderType() === NativeRenderService.FOLLOW_UP) {
             this.followForm = NativeRenderService.cloneForm(this.elt);
             NativeRenderService.transformFormToInline(this.followForm);
-            NativeRenderService.preprocessValueLists(this.followForm.formElements);
+            NativeRenderService.assignValueListRows(this.followForm.formElements);
         }
     }
 
@@ -93,7 +102,8 @@ export class NativeRenderService {
     }
 
     addError(msg: string) {
-        this.errors.push(msg);
+        if (this.errors.indexOf(msg) === -1)
+            this.errors.push(msg);
     }
     hasErrors() {
         return !!this.errors.length;
@@ -127,56 +137,55 @@ export class NativeRenderService {
         return model;
     }
 
-    static cloneForm(form: CdeForm) {
+    static cloneForm(form: CdeForm): CdeForm {
         let clone = JSON.parse(JSON.stringify(form));
         NativeRenderService.cloneFes(clone.formElements, form.formElements);
         return clone;
     }
 
-    static cloneFes(newFes, oldFes) {
+    static cloneFes(newFes: FormElement[], oldFes: FormElement[]) {
         for (let i = 0, size = newFes.length; i < size; i++) {
             if (newFes[i].elementType === 'question')
-                newFes[i].question = oldFes[i].question;
+                (newFes[i] as FormQuestion).question = (oldFes[i] as FormQuestion).question;
             else
                 NativeRenderService.cloneFes(newFes[i].formElements, oldFes[i].formElements);
         }
     }
 
-    static transformFormToInline(form) {
-        let prevQ = [];
+    static transformFormToInline(form: FormElement): boolean {
+        let followEligibleQuestions = [];
         let transformed = false;
         let feSize = (form.formElements ? form.formElements.length : 0);
         for (let i = 0; i < feSize; i++) {
             let fe = form.formElements[i];
-            let qs = NativeRenderService.getShowIfQ(fe, prevQ);
+            let qs = SkipLogicService.getShowIfQ(followEligibleQuestions, fe);
             if (qs.length > 0) {
                 let substituted = false;
                 let parentQ = qs[0][0];
                 qs.forEach(function (match) {
-                    let answer;
                     if (parentQ.question.datatype === 'Value List') {
                         if (match[3] === "") {
                             parentQ.question.answers.push({
                                 permissibleValue: NativeRenderService.createRelativeText([match[3]], match[2], true),
                                 nonValuelist: true,
-                                subQuestions: [fe]
+                                formElements: [fe]
                             });
                             substituted = true;
                         } else {
-                            answer = parentQ.question.answers.filter(function (a) {
-                                return a.permissibleValue === match[3];
-                            });
-                            if (answer.length) answer = answer[0];
+                            let answers = parentQ.question.answers.filter(a => a.permissibleValue === match[3]);
+                            let answer;
+                            if (answers.length)
+                                answer = answers[0];
                             if (answer) {
-                                if (!answer.subQuestions) answer.subQuestions = [];
-                                answer.subQuestions.push(fe);
+                                if (!answer.formElements) answer.formElements = [];
+                                answer.formElements.push(fe);
                                 substituted = true;
                             }
                         }
                     } else {
                         if (!parentQ.question.answers) parentQ.question.answers = [];
-                        let existingLogic = parentQ.question.answers.filter(function (el) {
-                            return el.nonValuelist && el.subQuestions.length === 1 && el.subQuestions[0] === fe;
+                        let existingLogic = parentQ.question.answers.filter(function (a) {
+                            return a.nonValuelist && a.formElements.length === 1 && a.formElements[0] === fe;
                         });
                         if (existingLogic.length > 0) {
                             let existingSubQ = existingLogic[0];
@@ -186,7 +195,7 @@ export class NativeRenderService {
                             parentQ.question.answers.push({
                                 permissibleValue: NativeRenderService.createRelativeText([match[3]], match[2], false),
                                 nonValuelist: true,
-                                subQuestions: [fe]
+                                formElements: [fe]
                             });
                         }
                         substituted = true;
@@ -198,51 +207,27 @@ export class NativeRenderService {
                     i--;
                     transformed = true;
                 }
-                prevQ.push(fe);
             } else {
-                prevQ = [fe];
+                followEligibleQuestions.length = 0;
             }
+            followEligibleQuestions.push(fe);
+
+            // Post-Transform Processing
             if (fe.elementType === 'section' || fe.elementType === 'form') {
                 if (NativeRenderService.transformFormToInline(fe))
-                    fe.forbidMatrix = true;
-                if (fe.skipLogic) delete fe.skipLogic;
-                continue;
+                    (fe as FormSectionOrForm).forbidMatrix = true;
+            } else {
+                let feq = fe as FormQuestion;
+                if (feq.question.uoms && feq.question.uoms.length === 1)
+                    feq.question.answerUom = feq.question.uoms[0];
             }
-            // after transform processing of questions
-            if (fe.question.uoms && fe.question.uoms.length === 1)
-                fe.question.answerUom = fe.question.uoms[0];
-            if (fe.skipLogic) delete fe.skipLogic;
+            if (fe.skipLogic)
+                fe.skipLogic = undefined;
         }
         return transformed;
     }
 
-    static getShowIfQ(q, prevQ) {
-        if (q.skipLogic && q.skipLogic.condition) {
-            let strPieces = q.skipLogic.condition.split('"');
-            if (strPieces[0] === "") strPieces.shift();
-            if (strPieces[strPieces.length - 1] === "") strPieces.pop();
-            let accumulate = [];
-            strPieces.forEach(function (e, i, strPieces) {
-                let matchQ = prevQ.filter(function (q) {
-                    return q.label === strPieces[i];
-                });
-                if (matchQ.length) {
-                    let operator = strPieces[i + 1].trim();
-                    let compValue = strPieces[i + 2];
-                    let operatorWithNumber = operator.split(' ');
-                    if (operatorWithNumber.length > 1) {
-                        operator = operatorWithNumber[0];
-                        compValue = operatorWithNumber[1];
-                    }
-                    accumulate.push([matchQ[0], strPieces[i], operator, compValue]);
-                }
-            });
-            return accumulate;
-        }
-        return [];
-    }
-
-    static createRelativeText(v, oper, isValuelist) {
+    static createRelativeText(v: string[], oper: string, isValuelist: boolean): string {
         let values = JSON.parse(JSON.stringify(v));
         values.forEach(function (e, i, a) {
             if (e === "") {
@@ -276,28 +261,29 @@ export class NativeRenderService {
         return values.length > 0 && values[0].indexOf('/') > -1 ? values[0] : Math.max.apply(null, values);
     }
 
-    static preprocessValueLists(formElements) {
+    static assignValueListRows(formElements: FormElement[]) {
         formElements && formElements.forEach(function (fe) {
-            if (fe.elementType === 'section' || fe.elementType === 'form') {
-                NativeRenderService.preprocessValueLists(fe.formElements);
-                return;
-            }
-            if (fe.question && fe.question.answers) {
+            if (fe.elementType === 'section' || fe.elementType === 'form')
+                return NativeRenderService.assignValueListRows(fe.formElements);
+
+            if ((fe as FormQuestion).question && (fe as FormQuestion).question.answers) {
                 let index = -1;
-                fe.question.answers.forEach(function (v: any, i, a) {
-                    if (NativeRenderService.hasOwnRow(v) || index === -1 && (i + 1 < a.length && NativeRenderService.hasOwnRow(a[i + 1]) || i + 1 === a.length))
-                        v.index = index = -1;
+                (fe as FormQuestion).question.answers.forEach(function (pv: PermissibleFormValue, i, a) {
+                    if (NativeRenderService.hasOwnRow(pv) || index === -1 && (i + 1 < a.length
+                            && NativeRenderService.hasOwnRow(a[i + 1]) || i + 1 === a.length))
+                        pv.index = index = -1;
                     else
-                        v.index = ++index;
-                    if (v.subQuestions)
-                        NativeRenderService.preprocessValueLists(v.subQuestions);
+                        pv.index = ++index;
+
+                    if (pv.formElements)
+                        NativeRenderService.assignValueListRows(pv.formElements);
                 });
             }
         });
     }
 
     static hasOwnRow(e) {
-        return !!e.subQuestions;
+        return !!e.formElements;
     }
 
     static flattenForm(elt) {
@@ -360,7 +346,7 @@ export class NativeRenderService {
                 questions.push(q);
             }
             fe.question.answers && fe.question.answers.forEach(function (a) {
-                a.subQuestions && a.subQuestions.forEach(function (sq) {
+                a.formElements && a.formElements.forEach(function (sq) {
                     questions = questions.concat(flattenFormFe(sq, sectionHeading, sectionName, repeatNum));
                 });
             });
@@ -376,15 +362,14 @@ export class NativeRenderService {
     }
 
     static getFirstQuestion(fe): any {
-        let elem = fe;
-        let firstQuestion = null;
-        while (elem) {
-            if (elem.elementType !== 'question') {
-                if (!elem.formElements && elem.formElements.length > 0)
+        let firstQuestion: FormQuestion;
+        while (fe) {
+            if (fe.elementType !== 'question') {
+                if (!fe.formElements && fe.formElements.length > 0)
                     break;
-                elem = elem.formElements[0];
+                fe = fe.formElements[0];
             } else {
-                firstQuestion = elem;
+                firstQuestion = fe;
                 break;
             }
         }
@@ -395,7 +380,7 @@ export class NativeRenderService {
         return firstQuestion;
     }
 
-    static getRepeatNumber(fe) {
+    static getRepeatNumber(fe: FormElement): number {
         if (fe.repeat) {
             if (fe.repeat[0] === 'F') {
                 let firstQ = NativeRenderService.getFirstQuestion(fe);
