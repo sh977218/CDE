@@ -243,7 +243,7 @@ exports.regStatusFilter = function (user, settings) {
     if (user) {
         let curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
         filterRegStatusTerms = filterRegStatusTerms.concat(curatorOf.map(o => {
-            return {"term": {"stewardOrg": o}};
+            return {"term": {"stewardOrg.name": o}};
         }));
     }
 
