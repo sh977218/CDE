@@ -48,13 +48,8 @@
             </ul>
         </div>
     </div>
-    <<<<<<< HEAD
     <h1 class="mobileViewH1 my-4">
-        <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadDraft(null):loadDataElement(null)"
-        =======
-        <h1 class="mobileViewH1">
-            <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadDraft():loadPublished()"
-            >>>>>>> cdd799ba2a7e6fb3778b5b15f176ffbf57cb1fe3
+        <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadDraft():loadPublished()"
                 [hidden]="drafts?.length === 0">
             </cde-draft-slider>
             {{elt.naming[0].designation}}
@@ -85,13 +80,8 @@
                             <a href="https://github.com/esacinc/sdc-schema-package" target="_blank">
                                 <i class="fa fa-info-circle"></i></a>
                         </li>
-                        <<<<<<< HEAD
                         <li class="dropdown-item">
-                            <a *ngIf="!isIe()" id='sdcHtmlExport'
-                            =======
-                        <li>
-                            <a class="dropdown-item" *ngIf="!browserService.isIe()" id='sdcHtmlExport'
-                            >>>>>>> cdd799ba2a7e6fb3778b5b15f176ffbf57cb1fe3
+                            <a  *ngIf="!browserService.isIe()" id='sdcHtmlExport'
                                 href="formById/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
                                 target="_blank">XML File, SDC Schema with XSL Transform</a>
                         </li>
@@ -99,13 +89,8 @@
                             <a id='nihXml' href="formById/{{elt._id}}?type=xml" target="_blank">
                                 XML File, NIH/CDE Schema</a>
                         </li>
-                        <<<<<<< HEAD
                         <li class="dropdown-item">
-                            <a id='formPublishExport' (click)="openPreparePublishModal()"
-                            =======
-                        <li>
-                            <a class="dropdown-item d-inline" id='formPublishExport' (click)="openExportPublishModal()"
-                            >>>>>>> cdd799ba2a7e6fb3778b5b15f176ffbf57cb1fe3
+                            <a id='formPublishExport' (click)="openExportPublishModal()"
                                 target="_blank">Published Form</a>
                         </li>
                         <li class="dropdown-item">
@@ -152,11 +137,7 @@
         <div class="pull-right text-end">
             <ng-container *ngIf="elt.isDraft">
                 {{savingText}}
-                <<<<<<< HEAD
-                <button class="btn  btn-success" id="openSave" (click)="saveModal.openSaveModal();">
-                    =======
-                    <button class="btn btn-success" id="openSave" (click)="publish()">
-                        >>>>>>> cdd799ba2a7e6fb3778b5b15f176ffbf57cb1fe3
+                <button class="btn  btn-success" id="openSave" (click)="publish()">
                         <i class="fa fa-globe fa-lg"></i> Publish
                     </button>
                     <button class="btn  btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
