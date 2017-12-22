@@ -8,6 +8,11 @@ export class BrowserService {
         }
     };
 
+    static isIe() {
+        let userAgent = window.navigator.userAgent;
+        return /internet explorer/i.test(userAgent);
+    }
+
     static openUrl(url, event, newTab = false) {
         BrowserService.interruptEvent(event);
         if (newTab)

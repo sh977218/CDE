@@ -7,8 +7,9 @@ import { Observable } from "rxjs/Observable";
 
 import { TreeNode } from "angular-tree-component";
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
-import { CdeForm, FormElement, FormQuestion, SkipLogic } from 'core/form.model';
+import { CdeForm, FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'core/form.model';
 import { FormattedValue } from 'core/models.model';
+import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 
 @Component({
     selector: "cde-form-description-question-detail",
@@ -16,7 +17,6 @@ import { FormattedValue } from 'core/models.model';
 })
 export class FormDescriptionQuestionDetailComponent {
     @Input() canEdit: boolean = false;
-
     @Input() set node(node: TreeNode) {
         this.question = node.data;
         this.parent = node.parent.data;
@@ -28,10 +28,7 @@ export class FormDescriptionQuestionDetailComponent {
             this.question.question.uoms = [];
         if (this.question.question.uoms) this.validateUoms(this.question.question);
     };
-
-    @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
-
     @ViewChild("formDescriptionNameSelectTmpl") formDescriptionNameSelectTmpl: NgbModalModule;
     @ViewChild("formDescriptionQuestionTmpl") formDescriptionQuestionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionQuestionEditTmpl") formDescriptionQuestionEditTmpl: TemplateRef<any>;
@@ -70,35 +67,15 @@ export class FormDescriptionQuestionDetailComponent {
 
     constructor(private http: Http,
                 public modalService: NgbModal,
-                public skipLogicService: SkipLogicService) {
-        this.nameSelectModal.checkAndUpdateLabel = (section, doUpdate = false, selectedNaming = false) => {
-            section.formElements.forEach((fe) => {
-                if (fe.skipLogic && fe.skipLogic.condition) {
-                    let updateSkipLogic = false;
-                    let tokens = SkipLogicService.tokenSplitter(fe.skipLogic.condition);
-                    tokens.forEach((token, i) => {
-                        if (i % 2 === 0 && token === '"' + this.nameSelectModal.question.label + '"') {
-                            this.nameSelectModal.updateSkipLogic = true;
-                            updateSkipLogic = true;
-                            if (doUpdate && selectedNaming)
-                                tokens[i] = '"' + selectedNaming + '"';
-                        } else if (i % 2 === 0 && token !== this.nameSelectModal.question.label)
-                            tokens[i] = '"' + tokens[i] + '"';
-                    });
-                    if (doUpdate && updateSkipLogic) {
-                        fe.skipLogic.condition = tokens.join('');
-                        fe.updatedSkipLogic = true;
-                    }
-                }
-            });
-        };
+                public skipLogicValidateService: SkipLogicValidateService) {
         this.nameSelectModal.okSelect = (naming = null) => {
             if (!naming) {
                 this.nameSelectModal.question.label = "";
                 this.nameSelectModal.question.hideLabel = true;
             }
             else {
-                this.nameSelectModal.checkAndUpdateLabel(this.nameSelectModal.section, true, naming.designation);
+                this.nameSelectModal.updateSkipLogic = SkipLogicValidateService.checkAndUpdateLabel(
+                    this.nameSelectModal.section, this.nameSelectModal.question.label, naming.designation);
                 this.nameSelectModal.question.label = naming.designation;
                 this.nameSelectModal.question.hideLabel = false;
             }
@@ -109,7 +86,8 @@ export class FormDescriptionQuestionDetailComponent {
     checkAnswers(answers) {
         let newAnswers = (Array.isArray(answers.value) ? answers.value.filter(answer => answer !== "") : []);
         if (!_.isEqual(this.answersSelected, newAnswers)) {
-            this.question.question.answers = this.question.question.cde.permissibleValues.filter(a => newAnswers.indexOf(a.permissibleValue) > -1);
+            this.question.question.answers = this.question.question.cde.permissibleValues
+                .filter(a => newAnswers.indexOf(a.permissibleValue) > -1) as PermissibleFormValue[];
             this.answersSelected = this.question.question.answers.map(a => a.permissibleValue);
             this.stageElt.emit();
         }
@@ -187,7 +165,7 @@ export class FormDescriptionQuestionDetailComponent {
 
     getSkipLogicOptions = (text$: Observable<string>) =>
         text$.debounceTime(300).map(term =>
-            this.skipLogicService.getCurrentOptions(term, this.parent.formElements, this.question, this.parent.formElements.indexOf(this.question))
+            this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question)
         );
 
     getTemplate() {
@@ -228,7 +206,8 @@ export class FormDescriptionQuestionDetailComponent {
             }, () => {
                 this.nameSelectModal.cde = "error";
             });
-        this.nameSelectModal.checkAndUpdateLabel(section);
+        this.nameSelectModal.updateSkipLogic = SkipLogicValidateService.checkAndUpdateLabel(section,
+            this.nameSelectModal.question.label);
 
         this.nameSelectModalRef = this.modalService.open(this.formDescriptionNameSelectTmpl, {size: "lg"});
         this.nameSelectModalRef.result.then(() => this.stageElt.emit(), () => {});
@@ -247,14 +226,10 @@ export class FormDescriptionQuestionDetailComponent {
             }, 0);
     }
 
-    validateSkipLogic(skipLogic, previousQuestions, item) {
-        let oldSkipLogic = skipLogic;
-        if (oldSkipLogic && oldSkipLogic.condition !== item) {
-            let validateSkipLogicResult = this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item);
-            if (validateSkipLogicResult)
-                this.stageElt.emit();
-            else
-                this.isFormValid.emit(false);
+    typeaheadSkipLogic(parent, fe, event) {
+        if (fe.skipLogic && fe.skipLogic.condition !== event) {
+            this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
+            this.stageElt.emit();
         }
     }
 

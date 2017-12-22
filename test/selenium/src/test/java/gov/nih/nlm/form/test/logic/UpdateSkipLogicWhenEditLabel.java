@@ -13,7 +13,7 @@ public class UpdateSkipLogicWhenEditLabel extends BaseFormTest {
         String formName = "Study Discontinuation/Completion";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-                clickElement(By.id("dropdownMenuButton"));                clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
+        togglePrintableLogic();
         textNotPresent("Reason for premature intervention discontinuation");
         findElement(By.xpath("//*[@id='Off study date_0']//input")).sendKeys("10/15/2016");
         clickElement(By.xpath("//*[@id='Did participant subject discontinue intervention before planned end of study?_2']//label/span[text()[contains(., 'No')]]"));
@@ -30,8 +30,9 @@ public class UpdateSkipLogicWhenEditLabel extends BaseFormTest {
 
         newFormVersion();
         goToFormByName(formName);
-                clickElement(By.id("dropdownMenuButton"));                clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
+        togglePrintableLogic();
         textNotPresent("Reason for premature intervention discontinuation");
+        findElement(By.xpath("//*[@id='Off study date and time_0']//input")).clear();
         findElement(By.xpath("//*[@id='Off study date and time_0']//input")).sendKeys("10/15/2016");
         clickElement(By.xpath("//*[@id='Did participant subject discontinue intervention before planned end of study?_2']//label/span[text()[contains(., 'No')]]"));
         textPresent("Reason for premature intervention discontinuation");

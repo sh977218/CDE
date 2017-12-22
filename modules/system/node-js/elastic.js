@@ -694,7 +694,6 @@ function doSyncWithMesh(allMappings) {
 
 exports.elasticsearch = function (type, query, settings, cb) {
     let search = searchTemplate[type];
-    let isSearch = this.isSearch(settings);
     if (!search) return cb("Invalid query");
     search.body = query;
     esClient.search(search, function (error, response) {
@@ -727,7 +726,7 @@ exports.elasticsearch = function (type, query, settings, cb) {
             }
 
             let result = {
-                totalNumber: response.hits.total <= 10000 || !isSearch ? response.hits.total : 10000
+                totalNumber: response.hits.total
                 , maxScore: response.hits.max_score
                 , took: response.took
             };

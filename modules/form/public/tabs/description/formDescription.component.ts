@@ -104,24 +104,17 @@ import { Http } from '@angular/http';
 export class FormDescriptionComponent implements OnChanges {
     @Input() elt: CdeForm;
     @Input() canEdit: boolean = false;
-    @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() onEltChange = new EventEmitter();
-
     @ViewChild(TreeComponent) public tree: TreeComponent;
     @ViewChild("formSearchTmpl") formSearchTmpl: TemplateRef<any>;
     @ViewChild("questionSearchTmpl") questionSearchTmpl: TemplateRef<any>;
-
     @ViewChild("descToolbox") descToolbox: ElementRef;
-
     @HostListener('window:scroll', ['$event'])
     doIt() {
         if (this && this.descToolbox && this.descToolbox.nativeElement)
             this.descToolbox.nativeElement.style.top = (window.pageYOffset > 50 ? 0 : (50 - window.pageYOffset)) + 'px';
     }
 
-    addIndex = function (elems, elem, i) {
-        return elems.splice(i, 0, elem);
-    };
     toolDropTo: { index: number, parent: any };
     toolSection: { insert: 'section', data: FormElement };
     treeOptions = {
@@ -178,6 +171,10 @@ export class FormDescriptionComponent implements OnChanges {
                 private formService: FormService,
                 private http: Http) {
         this.toolSection = {insert: "section", data: this.getNewSection()};
+    }
+
+    addIndex(elems, elem, i) {
+        return elems.splice(i, 0, elem);
     }
 
     addQuestionFromSearch(cde) {
