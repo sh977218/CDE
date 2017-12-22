@@ -100,7 +100,7 @@ public class BaseFormTest extends FormCommentTest {
 
     public void togglePrintableLogic() {
         clickElement(By.id("selectRenderButton"));
-        clickElement(By.xpath("(//*[@id='selectRenderButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
+        clickElement(By.id("printableLogicCb"));
     }
 
     public void dragAndDrop(WebElement source, WebElement target) {
