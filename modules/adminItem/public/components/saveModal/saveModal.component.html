@@ -4,6 +4,53 @@
     </div>
     <form #updateElementForm="ngForm">
         <div class="modal-body" id="updateElementModalBody">
+            <div *ngIf="newCdes.length > 0" class="form-group">
+                There are new CDEs
+                <div *ngFor="let newCde of newCdes" class="card">
+                    <div class="card-header">(This is a New CDE)</div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-2 text-right">Naming:</dt>
+                            <dd class="col-10">
+                                <dl *ngFor="let cdeNaming of newCde.naming" class="row">
+                                    <dt class="col-3 text-right">Designation:</dt>
+                                    <dd class="col-9">{{cdeNaming.designation}}</dd>
+                                    <dt class="col-3 text-right">Definition:</dt>
+                                    <dd class="col-9">{{cdeNaming.definition}}</dd>
+                                    <dt class="col-3 text-right">Tags:</dt>
+                                    <dd class="col-9">
+                                        <dl *ngFor="let cdeTag of cdeNaming.tags" class="row">
+                                            <span class="badge badge-default mx-1">{{cdeTag}}</span>
+                                        </dl>
+                                    </dd>
+                                </dl>
+                            </dd>
+                            <dt class="col-2 text-right">Data Type:</dt>
+                            <dd class="col-10">{{newCde.datatype}}</dd>
+                            <dt class="col-2 text-right">Identifiers:</dt>
+                            <dd class="col-10">
+                                <dl *ngFor="let cdeId of newCde.ids" class="row">
+                                    <dt class="col-3 text-right">Source:</dt>
+                                    <dd class="col-9">{{cdeId.source}}</dd>
+                                    <dt class="col-3 text-right">Id:</dt>
+                                    <dd class="col-9">{{cdeId.id}}</dd>
+                                    <dt class="col-3 text-right">Version:</dt>
+                                    <dd class="col-9">{{cdeId.version}}</dd>
+                                </dl>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="card-foot">
+                        <div *ngIf="newCde.naming.invalid" class="alert alert-danger" role="alert">
+                            {{newCde.naming.message}}
+                        </div>
+                        <div *ngIf="!newCde.allValid" class="alert alert-danger" role="alert">
+                            {{newCde.pvNotValidMsg}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label for="changeNote">Change Note</label>
                 <textarea id="changeNote" class="form-control" name="changeNote"

@@ -292,20 +292,35 @@ export class FormDescriptionQuestionDetailComponent {
     changedDatatype(data: { value: string }) {
         this.question.question.cde.datatype = data.value;
         this.question.question.datatype = data.value;
+        this.question.question.answers = this.question.question.cde.permissibleValues;
         this.onEltChange.emit();
     }
 
-    removePv(i) {
+    removeCdePv(i) {
         this.question.question.cde.permissibleValues.splice(i, 1);
         this.onEltChange.emit();
     }
 
-    addNewPv(newPv) {
-        this.question.question.cde.permissibleValues.push(newPv);
-        this.question.question.answers.push(newPv);
-        this.newPv = {};
+    removeCdeId(i) {
+        this.question.question.cde.ids.splice(i, 1);
         this.onEltChange.emit();
     }
 
-    newPv = {};
+    addNewCdePv(newCdePv) {
+        this.question.question.cde.permissibleValues.push(newCdePv);
+        this.question.question.answers.push(newCdePv);
+        this.newCdePv = {};
+        this.onEltChange.emit();
+    }
+
+    addNewCdeId(newCdeId) {
+        if (!this.question.question.cde.ids)
+            this.question.question.cde.ids = [];
+        this.question.question.cde.ids.push(newCdeId);
+        this.newCdeId = {};
+        this.onEltChange.emit();
+    }
+
+    newCdePv = {};
+    newCdeId = {};
 }

@@ -15,11 +15,21 @@ export class SaveModalComponent implements OnInit {
     loopFormElements = form => {
         if (form.formElements) {
             form.formElements.forEach(fe => {
-                if (!fe.question.cde.tinyId) {
-                    deValidator.checkPvUnicity(fe.question.cde);
-                    this.newCdes.push(fe.question.cde)
+                if (fe.elementType == 'section') {
+                    this.loopFormElements(fe);
+                } else {
+                    if (!fe.question.cde.tinyId) {
+                        deValidator.checkPvUnicity(fe.question.cde);
+                        if (fe.question.cde.naming.length === 0) {
+                            fe.question.cde.naming.invalid = true;
+                            fe.question.cde.naming.message = "no naming.";
+                        } else {
+                            fe.question.cde.naming.invalid = false;
+                            fe.question.cde.naming.message = null;
+                        }
+                        this.newCdes.push(fe.question.cde)
+                    }
                 }
-                else this.loopFormElements(fe.formElements);
             });
         }
     }
@@ -73,5 +83,4 @@ export class SaveModalComponent implements OnInit {
         console.log('a');
         this.modalRef = this.modalService.open(this.updateElementContent, {container: "body", size: "lg"});
     }
-
 }
