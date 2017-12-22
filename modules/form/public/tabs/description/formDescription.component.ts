@@ -118,24 +118,17 @@ const TOOL_BAR_OFF_SET = 55;
 export class FormDescriptionComponent implements OnChanges {
     @Input() elt: CdeForm;
     @Input() canEdit: boolean = false;
-    @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() onEltChange = new EventEmitter();
-
     @ViewChild(TreeComponent) public tree: TreeComponent;
     @ViewChild("formSearchTmpl") formSearchTmpl: TemplateRef<any>;
     @ViewChild("questionSearchTmpl") questionSearchTmpl: TemplateRef<any>;
-
     @ViewChild("descToolbox") descToolbox: ElementRef;
-
     @HostListener('window:scroll', ['$event'])
     doIt() {
         if (this && this.descToolbox && this.descToolbox.nativeElement)
             this.descToolbox.nativeElement.style.top = (window.pageYOffset > TOOL_BAR_OFF_SET ? 0 : (TOOL_BAR_OFF_SET - window.pageYOffset)) + 'px';
     }
 
-    addIndex = function (elems, elem, i) {
-        return elems.splice(i, 0, elem);
-    };
     toolDropTo: { index: number, parent: any };
     toolSection: { insert: 'section', data: FormElement };
     treeOptions = {
@@ -192,6 +185,10 @@ export class FormDescriptionComponent implements OnChanges {
                 private formService: FormService,
                 private http: Http) {
         this.toolSection = {insert: "section", data: this.getNewSection()};
+    }
+
+    addIndex(elems, elem, i) {
+        return elems.splice(i, 0, elem);
     }
 
     addQuestionFromSearch(cde) {

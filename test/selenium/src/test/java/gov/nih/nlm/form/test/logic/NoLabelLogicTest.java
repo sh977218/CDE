@@ -22,8 +22,7 @@ public class NoLabelLogicTest extends BaseFormTest {
         textPresent("Show if: \"Gender type\" = \"Unknown\"");
         goToPreview();
         textPresent("Walking speed value");
-        clickElement(By.id("selectRenderButton"));
-        clickElement(By.xpath("(//*[@id='selectRenderButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
+        togglePrintableLogic();
         textNotPresent("Walking speed value");
         clickElement(By.xpath("//span[. ='Unknown']"));
         textPresent("Walking speed value");

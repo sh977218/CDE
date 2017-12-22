@@ -4,11 +4,11 @@ import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 
 import { AlertService } from '_app/alert/alert.service';
-import { FormElement, SkipLogic } from "core/form.model";
+import { FormElement, FormSection, SkipLogic } from "core/form.model";
 import { FormattedValue } from 'core/models.model';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 
 @Component({
     selector: "cde-form-description-section",
@@ -18,7 +18,6 @@ export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
     @Input() canEdit: boolean = false;
     @Input() node: TreeNode;
-    @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
@@ -27,7 +26,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     isSubForm = false;
     parent: FormElement;
-    section: any;
+    section: FormSection;
 
     repeatOptions = [
         {label: "", value: ""},
@@ -37,7 +36,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     constructor(private localStorageService: LocalStorageService,
                 private alert: AlertService,
-                public skipLogicService: SkipLogicService) {
+                public skipLogicValidateService: SkipLogicValidateService) {
     }
 
     ngOnInit() {
@@ -92,7 +91,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     getSkipLogicOptions = (text$: Observable<string>) =>
         text$.debounceTime(300).map(term =>
-            this.skipLogicService.getCurrentOptions(term, this.parent.formElements, this.section, this.parent.formElements.indexOf(this.section))
+            this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.section)
         );
 
     getTemplate() {
@@ -131,14 +130,10 @@ export class FormDescriptionSectionComponent implements OnInit {
             }, 0);
     }
 
-    validateSkipLogic(skipLogic, previousQuestions, item) {
-        let oldSkipLogic = skipLogic;
-        if (oldSkipLogic && oldSkipLogic.condition !== item) {
-            let validateSkipLogicResult = this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item);
-            if (validateSkipLogicResult && skipLogic && skipLogic.condition && skipLogic.condition.trim().length > 0)
-                this.stageElt.emit();
-            else
-                this.isFormValid.emit(false);
+    typeaheadSkipLogic(parent, fe, event) {
+        if (fe.skipLogic && fe.skipLogic.condition !== event) {
+            this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
+            this.stageElt.emit();
         }
     }
 

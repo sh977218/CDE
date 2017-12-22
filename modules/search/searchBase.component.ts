@@ -36,6 +36,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     filterMode = true;
     helperObjectsService = HelperObjectsService;
     lastQueryTimeStamp: number;
+    private lastTypeahead = {};
     module: string;
     numPages: any;
     orgs: any[];
@@ -52,6 +53,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     topics: any;
     topicsKeys: string[];
     totalItems: any;
+    totalItemsLimited: any;
     user: User;
     validRulesStatus: string;
     view: string;
@@ -240,7 +242,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     fakeNextPageLink() {
-        let p = (this.totalItems / this.resultPerPage > 1)
+        let p = (this.totalItemsLimited / this.resultPerPage > 1)
             ? (this.searchSettings.page ? this.searchSettings.page : 1) + 1
             : 1;
         return this.generateSearchForTerm(p);
@@ -295,8 +297,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return searchTerms;
     }
 
-    private lastTypeahead = {};
-    getAutocompleteSuggestions = (text$: Observable<string>) =>
+    getAutocompleteSuggestions = ((text$: Observable<string>) =>
         text$.debounceTime(500).distinctUntilChanged().switchMap(term =>
             term.length >= 3 ?
                 this.http.post('/' + this.module + 'Completion/' + encodeURI(term),
@@ -308,12 +309,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                         final.add(e._source.primaryNameSuggest);
                     });
                     return Array.from(final);
-                }) : Observable.empty()
-        ).take(8)
-
-    typeaheadSelect (item) {
-        this.router.navigate([this.module === 'form' ? "formView" : "deView"], {queryParams: {tinyId: this.lastTypeahead[item.item]}});
-    }
+                })
+                : Observable.empty()
+        ).take(8));
 
     getCurrentSelectedClassification() {
         return this.altClassificationFilterMode
@@ -485,6 +483,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.numPages = Math.ceil(result.totalNumber / this.resultPerPage);
                 this.took = result.took;
                 this.totalItems = result.totalNumber;
+                this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
 
                 // Convert Elastic JSON to Elt Object
                 this.elts = result[this.module + 's'];
@@ -769,6 +768,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
 
         this.doSearch();
+    }
+
+    typeaheadSelect (item) {
+        this.router.navigate([this.module === 'form' ? "formView" : "deView"], {queryParams: {tinyId: this.lastTypeahead[item.item]}});
     }
 
     static waitScroll(count, previousSpot) {
