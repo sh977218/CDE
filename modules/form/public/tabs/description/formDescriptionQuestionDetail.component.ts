@@ -266,6 +266,11 @@ export class FormDescriptionQuestionDetailComponent {
         this.onEltChange.emit();
     }
 
+    removeNamingFromNewCde(i) {
+        this.nameSelectModal.cde.naming.splice(i, 1);
+        this.onEltChange.emit();
+    }
+
     changedDatatype(data: { value: string }) {
         this.question.question.cde.datatype = data.value;
         this.question.question.datatype = data.value;

@@ -266,7 +266,8 @@
                             <td><input [(ngModel)]="newCdePv.codeSystemName" class="w-100"/></td>
                             <td><input [(ngModel)]="newCdePv.valueMeaningDefinition" class="w-100"/></td>
                             <td>
-                                <button class="btn btn-outline-success btn-xs" (click)="addNewCdePv(newCdePv);">Add</button>
+                                <button class="btn btn-outline-success btn-xs" (click)="addNewCdePv(newCdePv);">Add
+                                </button>
                             </td>
                         </tr>
                     </table>
@@ -292,6 +293,10 @@
             <div class="col-3">
                 <button class="btn btn-outline-dark" (click)="nameSelectModal.okSelect(naming)">
                     <i class="fa fa-check mr-1"></i>Select
+                </button>
+                <button *ngIf="!question.question.cde.tinyId" class="btn btn-outline-dark"
+                        (click)="removeNamingFromNewCde(i);">
+                    <i class="fa fa-minus"></i> Remove Naming
                 </button>
             </div>
             <div class="col-9">
