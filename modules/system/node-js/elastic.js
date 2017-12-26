@@ -284,17 +284,16 @@ exports.buildElasticSearchQuery = function (user, settings) {
     settings.filter = {
        bool: {
             filter: [
-                {bool: {should: filterDatatypeTerms}},
                 {bool: {should: filterRegStatusTerms}}
             ]}};
 
-    if ()
+    if (filterDatatypeTerms.length > 0) {
+        settings.filter.bool.filter.push({bool: {should: filterDatatypeTerms}});
+    }
 
     settings.filterDatatype = {
         bool: {should: filterRegStatusTerms}
     };
-    // })();
-
 
     let queryStuff = {
         post_filter: settings.filter,
@@ -428,18 +427,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
         usersvc.myOrgs(user).map(org => {
             regStatusAggFilter.bool.should[0].bool.should.push({"term": {"stewardOrg.name": org}})
         });
-        // regStatusAggFilter.bool.should.push({
-        //     "bool": {
-        //         "must_not": {term: {"registrationState.registrationStatus": "Retired"}},
-        //         "should": usersvc.myOrgs(user).map(org => {
-        //             return {"term": {"stewardOrg.name": org}};
-        //         })
-        //     }
-        // });
-        // regStatusAggFilter.bool.should[0].bool.should.pushAll(
-        //     usersvc.myOrgs(user).map(org => {
-        //             return {"term": {"stewardOrg.name": org}};
-        //     }));
 
     if (sort) {
         //noinspection JSAnnotator
