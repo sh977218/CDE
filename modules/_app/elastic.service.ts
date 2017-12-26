@@ -29,9 +29,9 @@ export class ElasticService {
         let regStatuses = queryParams.regStatuses;
         if (!regStatuses) regStatuses = [];
 
-        if (regStatuses.length === 0) {
-            regStatuses = this.getUserDefaultStatuses();
-        }
+        // if (regStatuses.length === 0) {
+        //     regStatuses = this.getUserDefaultStatuses();
+        // }
 
         return {
             resultPerPage: queryParams.resultPerPage
