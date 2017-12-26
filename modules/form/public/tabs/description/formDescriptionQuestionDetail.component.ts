@@ -16,6 +16,7 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 })
 export class FormDescriptionQuestionDetailComponent {
     @Input() canEdit: boolean = false;
+
     @Input() set node(node: TreeNode) {
         this.question = node.data;
         this.parent = node.parent.data;
@@ -27,6 +28,7 @@ export class FormDescriptionQuestionDetailComponent {
             this.question.question.uoms = [];
         if (this.question.question.uoms) this.validateUoms(this.question.question);
     };
+
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild("formDescriptionNameSelectTmpl") formDescriptionNameSelectTmpl: NgbModalModule;
     @ViewChild("formDescriptionQuestionTmpl") formDescriptionQuestionTmpl: TemplateRef<any>;
@@ -199,14 +201,16 @@ export class FormDescriptionQuestionDetailComponent {
         this.nameSelectModal.section = section;
         this.nameSelectModal.question = question;
         this.nameSelectModal.cde = question.question.cde;
-        let url = "/de/" + this.nameSelectModal.cde.tinyId;
-        if (this.nameSelectModal.cde.version) url += "/version/" + this.nameSelectModal.cde.version;
-        this.http.get(url).map((res: Response) => res.json())
-            .subscribe((response) => {
-                this.nameSelectModal.cde = response;
-            }, () => {
-                this.nameSelectModal.cde = "error";
-            });
+        if (this.nameSelectModal.cde.tinyId) {
+            let url = "/de/" + this.nameSelectModal.cde.tinyId;
+            if (this.nameSelectModal.cde.version) url += "/version/" + this.nameSelectModal.cde.version;
+            this.http.get(url).map((res: Response) => res.json())
+                .subscribe((response) => {
+                    this.nameSelectModal.cde = response;
+                }, () => {
+                    this.nameSelectModal.cde = "error";
+                });
+        }
         this.nameSelectModal.updateSkipLogic = SkipLogicValidateService.checkAndUpdateLabel(section, this.nameSelectModal.question.label);
         this.nameSelectModalRef = this.modalService.open(this.formDescriptionNameSelectTmpl, {size: "lg"});
         this.nameSelectModalRef.result.then(() => this.onEltChange.emit(), () => {

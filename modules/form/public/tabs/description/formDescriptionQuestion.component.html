@@ -34,7 +34,7 @@
            href="/deView?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
             <i class="fa fa-eye"></i> View CDE
         </a>
-        <span *ngIf="!question.question.cde.tinyId">(This is a new CDE)</span>
+        <span *ngIf="!question.question.cde.tinyId" class="text-danger">(This is a new CDE)</span>
     </div>
     <div class="d-inline-block left">{{getDatatypeLabel(question)}}</div>
     <div *ngIf="!isSubForm && canEdit" class="d-inline-block pull-right editIconDiv" style="font-size: 16px">

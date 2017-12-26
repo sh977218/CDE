@@ -1,12 +1,11 @@
 import * as async from 'async';
 import noop from 'lodash.noop';
 
-
 export function areDerivationRulesSatisfied(elt) {
     let missingCdes = [];
     let allCdes = {};
     let allQuestions = [];
-    this.iterateFeSync(elt, undefined, undefined, (fe) => {
+    this.iterateFeSync(elt, undefined, undefined, fe => {
         if (fe.question.datatype === 'Number' && !Number.isNaN(fe.question.defaultAnswer))
             fe.question.answer = Number.parseFloat(fe.question.defaultAnswer);
         else
@@ -396,4 +395,25 @@ export function score(question, elt) {
         }
     });
     return result;
+}
+
+
+export function loopFormElements(form, doQuestion = null, doForm = null, doSection = null) {
+    if (!form.formElements) form.formElements = [];
+    form.formElements.forEach(fe => {
+        if (fe.elementType === 'question') {
+            if (doQuestion)
+                doQuestion(fe, null);
+            else
+                this.loopFormElements(fe, doQuestion, doForm, doSection);
+        }
+        else if (fe.elementType === 'form') {
+            if (doForm) doForm(fe, () => this.loopFormElements(fe, null, null, null));
+            else this.loopFormElements(fe, doQuestion, doForm, doSection);
+        }
+        else if (fe.elementType === 'section') {
+            if (doSection) doSection(fe, () => this.loopFormElements(fe, null, null, null));
+            else this.loopFormElements(fe, doQuestion, doForm, doSection);
+        }
+    });
 }

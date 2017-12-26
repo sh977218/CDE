@@ -5,20 +5,30 @@
     <form #updateElementForm="ngForm">
         <div class="modal-body" id="updateElementModalBody">
             <div *ngIf="newCdes.length > 0" class="form-group">
-                There are new CDEs
-                <button class="btn btn-outline-dark">Create All</button>
+                <div class="text-truncate m-2">
+                    <span class="font-weight-bold">There are new CDEs</span>
+                    <button class="btn btn-outline-dark float-right" (click)="createAllDataElements(newCdes);">
+                        Create All
+                    </button>
+                </div>
                 <div *ngFor="let newCde of newCdes" class="card">
                     <div class="card-header">
-                        <div (click)="newCde.isCollapsed = !newCde.isCollapsed"
+                        <div class="float-left" (click)="newCde.isCollapsed = !newCde.isCollapsed"
                              [ngClass]="{'text-danger':newCde.naming.length === 0}">
                             <span *ngIf="newCde.naming.length > 0 ">
-               w                 {{newCde.naming[0].designation}}
+                                {{newCde.naming[0].designation}}
                             </span>
                             <span *ngIf="newCde.naming.length === 0">
                             naming is empty;
                             </span>
                         </div>
-                        <button class="btn btn-outline-dark">Create</button>
+                        <div class="float-right">
+                            <span *ngIf="newCde.saved" class="text-success"> saved </span>
+                            <span *ngIf="newCde.error" class="text-danger"> {{newCde.error}}</span>
+                            <button *ngIf="!nweCde.tinyId" class="btn btn-sm btn-warning"
+                                    (click)="createDataElement(newCde,null);">Create
+                            </button>
+                        </div>
                     </div>
                     <div class="card-body" [ngbCollapse]="!newCde.isCollapsed">
                         <dl class="row">

@@ -1,45 +1,24 @@
-import { Component, OnInit, Input, Output, ViewChild, EventEmitter } from "@angular/core";
+import { Component, Input, Output, ViewChild, EventEmitter } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
+import * as async from "async";
+
+import * as formShared from '../../../../form/shared/formShared';
 import { AlertService } from '_app/alert/alert.service';
-import * as deValidator from "../../../../cde/shared/deValidator.js";
 
 @Component({
     selector: "cde-save-modal",
     templateUrl: "./saveModal.component.html"
 })
-export class SaveModalComponent implements OnInit {
+export class SaveModalComponent {
     protected newCdes = [];
-
-    loopFormElements = form => {
-        if (form.formElements) {
-            form.formElements.forEach(fe => {
-                if (fe.elementType == 'section') {
-                    this.loopFormElements(fe);
-                } else {
-                    if (!fe.question.cde.tinyId) {
-                        if (fe.question.cde.naming.length === 0) {
-                            fe.question.cde.naming.invalid = true;
-                            fe.question.cde.naming.message = "no naming.";
-                        } else {
-                            fe.question.cde.naming.invalid = false;
-                            fe.question.cde.naming.message = null;
-                        }
-                        this.newCdes.push(fe.question.cde)
-                    }
-                }
-            });
-        }
-    }
-
-    ngOnInit(): void {
-    }
 
     @ViewChild("updateElementContent") public updateElementContent: NgbModalModule;
 
     @Input() elt: any;
     @Output() save = new EventEmitter();
+    @Output() onEltChange = new EventEmitter();
 
     public modalRef: NgbModalRef;
     public duplicatedVersion = false;
@@ -74,12 +53,64 @@ export class SaveModalComponent implements OnInit {
     }
 
     openSaveModal() {
+        this.newCdes = [];
         this.newVersionVersionUnicity();
         if (this.elt) this.elt.changeNote = "";
         if (this.elt.elementType === 'form' && this.elt.isDraft) {
-            this.loopFormElements(this.elt);
+            formShared.loopFormElements(this.elt, (fe, cb) => {
+                if (!fe.question.cde.tinyId) {
+                    if (fe.question.cde.naming.length === 0) {
+                        fe.question.cde.naming.invalid = true;
+                        fe.question.cde.naming.message = "no naming.";
+                    } else {
+                        fe.question.cde.naming.invalid = false;
+                        fe.question.cde.naming.message = null;
+                    }
+                    this.newCdes.push(fe.question.cde);
+                }
+                if (cb) cb();
+            });
         }
-        console.log('a');
         this.modalRef = this.modalService.open(this.updateElementContent, {container: "body", size: "lg"});
     }
+
+    createDataElement(newCde, cb) {
+        let dataElement = {
+            naming: newCde.naming,
+            stewardOrg: {
+                name: this.elt.stewardOrg.name
+            },
+            valueDomain: {
+                datatype: newCde.datatype,
+                identifiers: newCde.ids,
+                ids: newCde.ids,
+                datatypeText: newCde.datatypeText,
+                datatypeNumber: newCde.datatypeNumber,
+                datatypeDate: newCde.datatypeDate,
+                datatypeTime: newCde.datatypeTime,
+                permissibleValues: newCde.permissibleValues
+            },
+            ids: newCde.ids
+        };
+        this.http.post("/de", dataElement).map(res => res.json())
+            .subscribe(res => {
+                if (res.tinyId) newCde.tinyId = res.tinyId;
+                newCde.saved = true;
+                if (cb) cb();
+                else this.onEltChange.emit();
+            }, err => {
+                newCde.error = err;
+                this.alert.addAlert("danger", err)
+            });
+    }
+
+    createAllDataElements(newCdes) {
+        async.forEach(newCdes, (newCde, doneOneCde) => {
+            this.createDataElement(newCde, doneOneCde);
+        }, () => {
+            this.onEltChange.emit();
+            this.alert.addAlert("success", "All CDEs saved.");
+        });
+    }
+
 }
