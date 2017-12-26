@@ -3,7 +3,7 @@
     <div style="line-height:40px;">
         <input id="showVersionedHistory" type="checkbox" [(ngModel)]="showVersioned">
         <label for="showVersionedHistory">Only show versioned revisions.</label>
-        <button *ngIf="numberSelected===2" class="btn btn-default" id="historyCompareBtn"
+        <button *ngIf="numberSelected===2" class="btn  btn-outline-dark" id="historyCompareBtn"
                 (click)="openHistoryCompareModal()">
             <i class="fa fa-files-o"></i> Compare
         </button>
@@ -49,34 +49,26 @@
 
 <ng-template #compareContent let-c="close" let-d="dismiss" class="hugeModal">
     <div class="modal-header">
-        <label class="col-xs-3">
-            <div class="input-color floatLeft">
-                <div class="color-box" style="background-color: #fad000;"></div>
-                <span style="display:inline-block;">&nbsp;Reorder&nbsp;</span>
-            </div>
-            <input class="form-check-input floatLeft" type="checkbox" [(ngModel)]="filter.reorder.select">
-        </label>
-        <label class="col-xs-3">
-            <div class="input-color floatLeft">
-                <div class="color-box" style="background-color: #008000;"></div>
-                <span style="display:inline-block;">&nbsp;Add&nbsp;</span>
-            </div>
-            <input class="form-check-input floatLeft" type="checkbox" [(ngModel)]="filter.add.select">
-        </label>
-        <label class="col-xs-3">
-            <div class="input-color floatLeft">
-                <div class="color-box" style="background-color: #a94442;"></div>
-                <span>&nbsp;Remove&nbsp;</span>
-            </div>
-            <input class="form-check-input floatLeft" type="checkbox" [(ngModel)]="filter.remove.select">
-        </label>
-        <label class="col-xs-3">
-            <div class="input-color floatLeft">
-                <div class="color-box" style="background-color: #0000ff;"></div>
-                <span>&nbsp;Edit&nbsp;</span>
-            </div>
-            <input class="form-check-input floatLeft" type="checkbox" [(ngModel)]="filter.edited.select">
-        </label>
+        <div class="col-3">
+            <span class="d-inline-block color-box" id="reorderIcon"></span>
+            <strong class="d-inline-block">&nbsp;Reorder&nbsp;</strong>
+            <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.reorder.select">
+        </div>
+        <div class="col-3">
+            <div class="d-inline-block color-box" id="addIcon"></div>
+            <strong class="d-inline-block">&nbsp;Add&nbsp;</strong>
+            <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.add.select">
+        </div>
+        <div class="col-3">
+            <div class="d-inline-block color-box" id="removeIcon"></div>
+            <strong class="d-inline-block">&nbsp;Remove&nbsp;</strong>
+            <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.remove.select">
+        </div>
+        <div class="col-3">
+            <div class="d-inline-block color-box" id="editIcon"></div>
+            <strong class="d-inline-block">&nbsp;Edit&nbsp;</strong>
+            <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.edited.select">
+        </div>
     </div>
     <div class="modal-body" *ngIf="getSelectedElt() && getSelectedElt().length == 2">
         <cde-compare-object [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-object>
@@ -84,7 +76,7 @@
                            [(filter)]="filter"></cde-compare-array>
     </div>
     <div class="modal-footer">
-        <button class="btn cancel" id="closeHistoryCompareModal" (click)="c('Close click')" type="button">Close
+        <button class="btn  btn-outline-dark" id="closeHistoryCompareModal" (click)="c('Close click')" type="button">Close
         </button>
     </div>
 </ng-template>

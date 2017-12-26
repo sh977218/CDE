@@ -15,8 +15,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToFormDescription();
-        clickElement(By.xpath("//div[@id='question_0_3']//i[contains(@class,'fa-pencil')]"));
-        clickElement(By.xpath("//div[@id='question_0_3']//div[text()='Invisible:']/following-sibling::div/input"));
+        startEditQuestionSectionById("question_0_3");
+        clickElement(By.xpath("//div[@id='question_0_3']//*[contains(@class,'editQuestionInvisible')]/input"));
 
         clickElement(By.id("displayProfiles_tab"));
         createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up", 1, false);
@@ -32,8 +32,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         );
         scrollToViewById("profile_3");
         Assert.assertEquals(
-                findElement(By.xpath("//*[@id='profile_3']//*[*[text()='Education level USA type']]//*/span[text()='1st Grade']")).getLocation().y,
-                findElement(By.xpath("//*[@id='profile_3']//*[*[text()='Education level USA type']]//*/span[text()='5th Grade']")).getLocation().y
+                findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//*/span[text()='1st Grade']")).getLocation().y,
+                findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//*/span[text()='5th Grade']")).getLocation().y
         );
         newFormVersion();
 
@@ -63,8 +63,8 @@ public class DisplayProfilesTest extends BaseFormTest {
 
         selectDisplayProfileByName("No Matrix No Values Wider");
         hangon(1);
-        Assert.assertEquals(findElement(By.xpath("//*[*[text()='I was irritated more than people knew']]//*/span[text()='Never']")).getLocation().y,
-                findElement(By.xpath("//*[*[text()='I was irritated more than people knew']]//*/span[text()='Always']")).getLocation().y
+        Assert.assertEquals(findElement(By.xpath("//*[*[normalize-space()='I was irritated more than people knew']]//*[normalize-space(.)='Never']")).getLocation().y,
+                findElement(By.xpath("//*[*[normalize-space()='I was irritated more than people knew']]//*[normalize-space(.)='Always']")).getLocation().y
         );
         clickElement(By.id("displayProfiles_tab"));
 

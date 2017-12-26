@@ -30,135 +30,148 @@
             <strong>Note:</strong> You may not edit this CDE because it is standard.
         </div>
     </div>
-    <h1 class="mobileViewH1">
+    <h1 class="mobileViewH1 my-4">
         <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadDraft(null):loadDataElement(null)"
                           [hidden]="drafts?.length === 0"></cde-draft-slider>
         {{elt?.naming[0].designation}}
     </h1>
-    <div class="pull-left marginTopBottom5">
-        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
-                class="btn btn-small btn-default" title="Add to Compare List" type="button"
-                (click)="quickBoardService.addToQuickBoard(elt)">
-            <i class="fa fa-plus"></i><span class="hidden-xs-down"> Add to Quick Board</span>
-        </button>
-        <button id="addToBoard" class="btn btn-small btn-default" role="button" title="Add to Board"
-                type="button" (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
-            <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
-        </button>
-        <div ngbDropdown class="float-left">
-            <button ngbDropdownToggle id="export" class="btn btn-default dropdown-toggle"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-download"></i><span class="hidden-xs-down"> Export</span>
+    <div class="pull-left">
+        <div class="dropdown float-left">
+            <button id="export" class="btn  btn-outline-dark dropdown-toggle mr-1" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-download mr-1"></i>
+                <span class="d-none d-sm-inline-block">Export</span>
             </button>
-            <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="export">
-                <li>
-                    <a id="jsonExport" class="dropdown-item" href="deById/{{elt._id}}" target="_blank">
+            <ul class="dropdown-menu" aria-labelledby="export">
+                <li class="dropdown-item">
+                    <a id='jsonExport' href="deById/{{elt._id}}" target="_blank">
                         JSON File, NIH/CDE Schema</a>
-                    <a href="/schema/cde" target="_blank" class="d-inline">
-                        <i class="fa fa-info-circle"></i></a>
+                    <a href="/schema/cde" target="_blank"><i class="fa fa-info-circle"></i></a>
                 </li>
-                <li>
-                    <a id="xmlExport" class="dropdown-item" href="deById/{{elt._id}}?type=xml"
-                       target="_blank">XML File, NIH/CDE Schema</a>
+                <li class="dropdown-item">
+                    <a id='xmlExport' href="deById/{{elt._id}}?type=xml" target="_blank">
+                        XML File, NIH/CDE Schema</a>
                 </li>
-            </div>
+            </ul>
         </div>
-        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyCdeBtn" class="btn btn-small btn-default"
-                (click)="openCopyElementModal()" title="Copy CDE">
-            <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
+        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
+                class="btn   btn-outline-dark"
+                title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
+            <i class="fa fa-plus mr-1"></i><span class="d-none d-sm-inline-block">Add to Quick Board</span>
         </button>
-        <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
-                type="button" (click)="commentMode = !commentMode;">
-            <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
-            <span class="hidden-xs-down"> Discuss</span>
+        <button id="addToBoard" class="btn   btn-outline-dark" title="Add to Board"
+                (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
+            <i class="fa fa-thumb-tack"></i><span class="d-none d-sm-inline-block">Add to Board</span>
         </button>
-        <button class="btn btn-default navbar-expand-lg navbar-light navbar-toggler visible-xs-inline"
-                data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyCdeBtn" class="btn   btn-outline-dark"
+                title="Copy CDE" (click)="openCopyElementModal()">
+            <i class="fa fa-clone mr-1"></i><span class="d-none d-sm-inline-block">Copy</span>
         </button>
+        <button id="discussBtn" class="btn   btn-outline-dark" title="Discuss CDE"
+                (click)="commentMode = !commentMode;">
+            <i class="fa fa-comment mr-1" [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}"></i>
+            <span class="d-none d-sm-inline-block">Discuss</span>
+        </button>
+        <div class="navbar-expand-md navbar-light d-inline-block">
+            <button class="btn  btn-outline-dark navbar-toggler hidden-md-up"
+                    data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
     </div>
-    <div class="pull-right marginTopBottom5" style="text-align: end">
+    <div class="pull-right text-end">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
-            <button *ngIf="elt.valueDomain.allValid" class="btn btn-success" id="openSave"
+            <button *ngIf="elt.valueDomain.allValid" class="btn  btn-success" id="openSave"
                     (click)="saveModal.openSaveModal();">
-                <i class="fa fa-globe fa-lg"></i> Publish
+                <i class="fa fa-globe fa-lg mr-1"></i>Publish
             </button>
-            <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
-                <i class="fa fa-trash fa-lg"></i> Delete Draft
+            <button class="btn  btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
+                <i class="fa fa-trash fa-lg mr-1"></i>Delete Draft
             </button>
             <br>Changed by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
         </ng-container>
     </div>
-    <div class="clearfix"></div>
+    <div class="py-2 clearfix"></div>
     <div class="row">
-        <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
+        <div [ngClass]="{'col-9 eltCommentView':commentMode,'col-12':!commentMode}">
             <div class="row">
-                <div id="leftNav" class="col-lg-2 col-md-3 col-xs-12 collapse navbar-collapse mt-20">
-                    <ul class="list-group">
-                        <a id="general_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='general_tab'}"
-                           (click)="setCurrentTab('general_tab');">General Detail
-                            <i *ngIf="tabsCommented.indexOf('general_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="pvs_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='pvs_tab'}"
-                           (click)="setCurrentTab('pvs_tab');">Permissible Values
-                            <i *ngIf="tabsCommented.indexOf('pvs_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="naming_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='naming_tab'}"
-                           (click)="setCurrentTab('naming_tab');">Naming
-                            <i *ngIf="tabsCommented.indexOf('naming_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="classification_tab" class="list-group-item"
-                           [ngClass]="{'active':currentTab ==='classification_tab'}"
-                           (click)="setCurrentTab('classification_tab');">Classification
-                            <i *ngIf="tabsCommented.indexOf('classification_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="meshTopic_tab" class="list-group-item"
-                           [ngClass]="{'active':currentTab ==='meshTopic_tab'}"
-                           (click)="setCurrentTab('meshTopic_tab');">Mesh Topic
-                            <i *ngIf="tabsCommented.indexOf('meshTopic_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="concepts_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='concepts_tab'}"
-                           (click)="setCurrentTab('concepts_tab');">Concepts
-                            <i *ngIf="tabsCommented.indexOf('concepts_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="referenceDocuments_tab" class="list-group-item"
-                           [ngClass]="{'active':currentTab ==='referenceDocuments_tab'}"
-                           (click)="setCurrentTab('referenceDocuments_tab');">Reference Documents
-                            <i *ngIf="tabsCommented.indexOf('referenceDocuments_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="properties_tab" class="list-group-item"
-                           [ngClass]="{'active':currentTab ==='properties_tab'}"
-                           (click)="setCurrentTab('properties_tab');">Properties
-                            <i *ngIf="tabsCommented.indexOf('properties_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="ids_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='ids_tab'}"
-                           (click)="setCurrentTab('ids_tab');">Identifiers
-                            <i *ngIf="tabsCommented.indexOf('ids_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="attachments_tab" class="list-group-item"
-                           [ngClass]="{'active':currentTab ==='attachments_tab'}"
-                           (click)="setCurrentTab('attachments_tab');">Attachments
-                            <i *ngIf="tabsCommented.indexOf('attachments_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="history_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='history_tab'}"
-                           (click)="setCurrentTab('history_tab');">History
-                            <i *ngIf="tabsCommented.indexOf('history_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="derivationRules_tab" class="list-group-item"
-                           [ngClass]="{'active':currentTab ==='derivationRules_tab'}"
-                           (click)="setCurrentTab('derivationRules_tab');">Score Derivations
-                            <i *ngIf="tabsCommented.indexOf('derivationRules_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="validRules_tab" class="list-group-item"
-                           [ngClass]="{'active':currentTab ==='validRules_tab'}"
-                           (click)="setCurrentTab('validRules_tab');">Validation Rules
-                            <i *ngIf="tabsCommented.indexOf('validRules_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                    </ul>
+                <div class="col-xl-2 col-lg-3 col-md-4 col-12 navbar-expand-md navbar-light">
+                    <div id="leftNav" class="collapse navbar-collapse">
+                        <ul class="list-group">
+                            <a id="general_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='general_tab'}"
+                               (click)="setCurrentTab('general_tab');">General Detail
+                                <i *ngIf="tabsCommented.indexOf('general_tab') > -1" class="fa fa-comments pull-right"
+                                   aria-hidden="true">&nbsp;</i></a>
+                            <a id="pvs_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='pvs_tab'}"
+                               (click)="setCurrentTab('pvs_tab');">Permissible Values
+                                <i *ngIf="tabsCommented.indexOf('pvs_tab') > -1" class="fa fa-comments pull-right"
+                                   aria-hidden="true"></i></a>
+                            <a id="naming_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='naming_tab'}"
+                               (click)="setCurrentTab('naming_tab');">Naming
+                                <i *ngIf="tabsCommented.indexOf('naming_tab') > -1" class="fa fa-comments pull-right"
+                                   aria-hidden="true"></i></a>
+                            <a id="classification_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='classification_tab'}"
+                               (click)="setCurrentTab('classification_tab');">Classification
+                                <i *ngIf="tabsCommented.indexOf('classification_tab') > -1"
+                                   class="fa fa-comments pull-right"
+                                   aria-hidden="true"></i></a>
+                            <a id="meshTopic_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='meshTopic_tab'}"
+                               (click)="setCurrentTab('meshTopic_tab');">Mesh Topic
+                                <i *ngIf="tabsCommented.indexOf('meshTopic_tab') > -1" class="fa fa-comments pull-right"
+                                   aria-hidden="true"></i></a>
+                            <a id="concepts_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='concepts_tab'}"
+                               (click)="setCurrentTab('concepts_tab');">Concepts
+                                <i *ngIf="tabsCommented.indexOf('concepts_tab') > -1" class="fa fa-comments pull-right"
+                                   aria-hidden="true"></i></a>
+                            <a id="referenceDocuments_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='referenceDocuments_tab'}"
+                               (click)="setCurrentTab('referenceDocuments_tab');">Reference Documents
+                                <i *ngIf="tabsCommented.indexOf('referenceDocuments_tab') > -1"
+                                   class="fa fa-comments pull-right"
+                                   aria-hidden="true"></i></a>
+                            <a id="properties_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='properties_tab'}"
+                               (click)="setCurrentTab('properties_tab');">Properties
+                                <i *ngIf="tabsCommented.indexOf('properties_tab') > -1"
+                                   class="fa fa-comments pull-right"
+                                   aria-hidden="true"></i></a>
+                            <a id="ids_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='ids_tab'}"
+                               (click)="setCurrentTab('ids_tab');">Identifiers
+                                <i *ngIf="tabsCommented.indexOf('ids_tab') > -1" class="fa fa-comments pull-right"
+                                   aria-hidden="true"></i></a>
+                            <a id="attachments_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='attachments_tab'}"
+                               (click)="setCurrentTab('attachments_tab');">Attachments
+                                <i *ngIf="tabsCommented.indexOf('attachments_tab') > -1"
+                                   class="fa fa-comments pull-right"
+                                   aria-hidden="true"></i></a>
+                            <a id="history_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='history_tab'}"
+                               (click)="setCurrentTab('history_tab');">History
+                                <i *ngIf="tabsCommented.indexOf('history_tab') > -1" class="fa fa-comments pull-right"
+                                   aria-hidden="true"></i></a>
+                            <a id="derivationRules_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='derivationRules_tab'}"
+                               (click)="setCurrentTab('derivationRules_tab');">Score Derivations
+                                <i *ngIf="tabsCommented.indexOf('derivationRules_tab') > -1"
+                                   class="fa fa-comments pull-right"
+                                   aria-hidden="true"></i></a>
+                            <a id="validRules_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='validRules_tab'}"
+                               (click)="setCurrentTab('validRules_tab');">Validation Rules
+                                <i *ngIf="tabsCommented.indexOf('validRules_tab') > -1"
+                                   class="fa fa-comments pull-right"
+                                   aria-hidden="true"></i></a>
+                        </ul>
+                    </div>
                 </div>
-                <div id="middleView" class="col-lg-10 col-md-9 col-xs-12">
+                <div id="middleView" class="col-xl-10 col-lg-9 col-md-8 col-12">
                     <ng-container *ngIf="currentTab === 'meshTopic_tab'">
                         <h4>Topics</h4>
                         <span>Topics are
@@ -172,7 +185,8 @@
                         <cde-de-general-details [(elt)]="elt" [canEdit]="canEdit()"
                                                 (onEltChange)="saveDraft();"></cde-de-general-details>
                         <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-                        <cde-registration [elt]="elt" (onEltChange)="saveDraft()" [canEdit]="canEdit()"></cde-registration>
+                        <cde-registration [elt]="elt" (onEltChange)="saveDraft()"
+                                          [canEdit]="canEdit()"></cde-registration>
                         <div role="group" aria-label="More Info">
                             <cde-linked-forms [elt]="elt"></cde-linked-forms>
                             <cde-mlt [elt]="elt"></cde-mlt>
@@ -224,7 +238,7 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
+        <div *ngIf="commentMode" [ngClass]="{'col-3':commentMode,'':!commentMode}"
              style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
             <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
                               (highlightedTabsChange)="loadHighlightedTabs($event)"

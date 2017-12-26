@@ -8,16 +8,10 @@ import { LoginService } from '_app/login.service';
     selector: "cde-navigation",
     templateUrl: "./navigation.component.html",
     styles: [`
-        .navbar-collapse.collapse.in, .navbar-collapse.collapsing {
-            display: block !important;
-            width: auto;
+        .navbar-nav > li > a {
+            padding-left: 15px;
+            padding-right: 15px;
         }
-
-        .navbar {
-            border-radius: 0;
-            padding: 0;
-        }
-
     `]
 })
 export class NavigationComponent {

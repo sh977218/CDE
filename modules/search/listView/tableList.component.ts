@@ -4,6 +4,11 @@ import { ElasticService } from '_app/elastic.service';
 @Component({
     selector: 'cde-table-list',
     templateUrl: './tableList.component.html',
+    styles: [`
+        :host >>> ul {
+            padding-left: 15px;
+        }
+    `]
 })
 export class TableListComponent implements DoCheck, OnChanges {
     @Input() elts: any[];

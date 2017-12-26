@@ -20,11 +20,21 @@ import { CdeForm, FormElement, FormSection } from "../../../../core/form.model";
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { Http } from '@angular/http';
 
+const TOOL_BAR_OFF_SET = 55;
+
 @Component({
     selector: "cde-form-description",
     templateUrl: "formDescription.component.html",
     animations: [copySectionAnimation],
     styles: [`
+        :host >>> .badge {
+            font-size: 100%;
+        }
+        
+        :host >>> .tree {
+            cursor: default;
+        }
+        
         :host >>> .panel {
             margin-bottom: 1px;
         }
@@ -33,12 +43,16 @@ import { Http } from '@angular/http';
             padding-left: 0;
         }
 
+        :host >>> .questionSectionLabel{
+            font-weight:bold;
+        }
+
         :host >>> .node-drop-slot {
             height: 10px;
             margin-bottom: 1px;
         }
 
-        :host >>> .panel-badge-btn {
+        :host >>> .panel-badge-btn  {
             color: white;
             background-color: #333;
         }
@@ -54,11 +68,11 @@ import { Http } from '@angular/http';
 
         .descriptionToolbox {
             color: #9d9d9d;
-            background-color: #222;
+            background-color: #343a40;
             position: fixed;
             padding: 5px;
             padding-left: 20px;
-            top: 50px;
+            top: ${TOOL_BAR_OFF_SET}px;
             border-bottom-left-radius: 50px;
             right: 0;
             -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -112,7 +126,7 @@ export class FormDescriptionComponent implements OnChanges {
     @HostListener('window:scroll', ['$event'])
     doIt() {
         if (this && this.descToolbox && this.descToolbox.nativeElement)
-            this.descToolbox.nativeElement.style.top = (window.pageYOffset > 50 ? 0 : (50 - window.pageYOffset)) + 'px';
+            this.descToolbox.nativeElement.style.top = (window.pageYOffset > TOOL_BAR_OFF_SET ? 0 : (TOOL_BAR_OFF_SET - window.pageYOffset)) + 'px';
     }
 
     toolDropTo: { index: number, parent: any };
@@ -228,7 +242,9 @@ export class FormDescriptionComponent implements OnChanges {
     }
 
     openFormSearch() {
-        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(() => {}, () => {});
+        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(() => {
+        }, () => {
+        });
     }
 
     openQuestionSearch() {

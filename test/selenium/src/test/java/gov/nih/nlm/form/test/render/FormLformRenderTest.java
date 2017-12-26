@@ -11,7 +11,7 @@ public class FormLformRenderTest extends NlmCdeBaseTest {
     public void lFormRender() {
         String formName = "Loinc Widget Test Form";
         goToFormByName(formName);
-        clickElement(By.id("dropdownMenuButton"));
+        clickElement(By.id("selectRenderButton"));
         clickElement(By.id("button_lforms"));
         switchTab(1);
         textPresent("PROMIS SF v1.0 - Phys. Function 10a");

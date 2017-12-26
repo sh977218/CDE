@@ -37,6 +37,13 @@ module.exports = {
                 }
             },
             {
+                test: require.resolve('jquery'),
+                use: [{
+                    loader: 'expose-loader',
+                    options: '$'
+                }]
+            },
+            {
                 test: /\.css$/, include: /node_modules/,
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
@@ -45,7 +52,7 @@ module.exports = {
             },
             {test: /\.css$/, exclude: /node_modules/, use: ['style-loader?insertAt=top', 'css-loader']},
             {test: /\.html$/, use: [{loader: 'html-loader', options: {minimize: false}}]},
-            {test: /\.png$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]}
+            {test: /\.(eot|png|svg|ttf|woff|woff2)$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]},
         ]
     },
     plugins: prod ?
@@ -61,7 +68,7 @@ module.exports = {
                 $: 'jquery',
                 jQuery: 'jquery',
                 'windows.jQuery': 'jquery',
-                'Tether':'tether',
+                Tether: 'tether',
                 Popper: ['popper.js', 'default'],
             }),
             new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
@@ -139,7 +146,7 @@ module.exports = {
                 $: 'jquery',
                 jQuery: 'jquery',
                 'windows.jQuery': 'jquery',
-                'Tether':'tether',
+                Tether: 'tether',
                 Popper: ['popper.js', 'default'],
             }),
             new ExtractTextPlugin({filename: '[name].css'}),

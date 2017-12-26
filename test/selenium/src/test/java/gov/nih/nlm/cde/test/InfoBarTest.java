@@ -5,26 +5,26 @@ import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class InfoBarTest extends NlmCdeBaseTest {
-    
+
     @Test
     public void infoBarStatus() {
         setLowStatusesVisible();
-        findElement(By.id("browseOrg-caBIG")).click();
-        textPresent("| All Statuses");
+        clickElement(By.id("browseOrg-caBIG"));
+        textPresent("All Statuses", By.id("status_crumb"));
         clickElement(By.id("li-blank-Standard"));
         hangon(1);
         clickElement(By.id("li-blank-Qualified"));
-        textPresent("| Standard, Qualified");
+        textPresent("Standard, Qualified", By.id("status_crumb"));
         hangon(1);
         clickElement(By.id("li-checked-Qualified"));
         hangon(1);
-        textNotPresent(", Qualified");
-        textPresent("| Standard");
+        textNotPresent("Qualified", By.id("status_crumb"));
+        textPresent("Standard", By.id("status_crumb"));
         clickElement(By.id("li-blank-Candidate"));
-        textPresent( "| Standard, Candidate" );
+        textPresent("Standard, Candidate", By.id("status_crumb"));
         scrollToTop();
-        findElement(By.id("menu_cdes_link")).click();
-        textPresent( "Browse by Classification" );
+        clickElement(By.id("menu_cdes_link"));
+        textPresent("Browse by Classification");
     }
-    
+
 }

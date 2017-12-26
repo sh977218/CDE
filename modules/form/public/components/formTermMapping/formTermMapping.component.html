@@ -1,19 +1,18 @@
 <fieldset class="cdeFieldset" id="formTermMapping">
     <legend>Mesh Descriptors:
-        <button  title="Add" role="link" id="addTermMap"
-                 *ngIf="isAllowedModel.isAllowed(elt)" class="btn btn-default"
-                 (click)="openAddTermMap()"><span class="fa fa-edit"> Add</span>
+        <button title="Add" role="link" id="addTermMap" *ngIf="isAllowedModel.isAllowed(elt)" class="btn  btn-outline-dark"
+                (click)="openAddTermMap()"><span class="fa fa-edit"> Add</span>
         </button>
     </legend>
     <ul>
         <li *ngFor="let desc of mapping.meshDescriptors; let i = index">
-                {{desc}} - {{descToName[desc]}}
-                <i *ngIf="!confirm && isAllowedModel.isAllowed(elt)" (click)="confirm = i"
-                   class="fa fa-trash-o hand-cursor" title="Remove Mesh Term"></i>
-                <span *ngIf="confirm === i" class="badge">Confirm Delete
-                    <span class="btn-default fa fa-check panel-badge-btn hand-cursor" (click)="confirm = false; removeMeshDescriptor(i)"
+            {{desc}} - {{descToName[desc]}}
+            <i *ngIf="!confirm && isAllowedModel.isAllowed(elt)" (click)="confirm = i"
+               class="fa fa-trash-o hand-cursor" title="Remove Mesh Term"></i>
+            <span *ngIf="confirm === i" class="label">Confirm Delete
+                    <span class="fa fa-check hand-cursor" (click)="confirm = false; removeMeshDescriptor(i)"
                           id="confirmRemoveMesh-{{i}}" title="Delete"></span>
-                    <span class="btn-default fa fa-times panel-badge-btn hand-cursor" (click)="confirm = false"
+                    <span class="fa fa-times hand-cursor" (click)="confirm = false"
                           id="cancelRemoveMesh-{{i}}" title="Cancel"></span>
                 </span>
         </li>
@@ -34,15 +33,16 @@
             </div>
             <div *ngIf="descriptor">
                 {{descriptor.id}} -- {{descriptor.name}}
-                <button type="submit" class="btn btn-default btn-sm"
+                <button type="submit" class="btn  btn-outline-dark "
                         id="addMeshDescButton" (click)="addMeshDescriptor()"
                         *ngIf="descriptor.name.length > 0"
-                        [disabled]="mapping.meshDescriptors?.indexOf(descriptor.id) > -1">Add</button>
+                        [disabled]="mapping.meshDescriptors?.indexOf(descriptor.id) > -1">Add
+                </button>
 
             </div>
         </form>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-default done" (click)="d()" id="closeModal">Close</button>
+        <button class="btn  btn-outline-dark done" (click)="d()" id="closeModal">Close</button>
     </div>
 </ng-template>

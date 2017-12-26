@@ -3,11 +3,11 @@
     <div *ngIf="elt.derivationRules < 1">There are no derivation rules.</div>
     <div *ngFor="let derRule of elt.derivationRules; let i = index">
         <div class="row">
-            <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
+            <div class="col-lg-1" *ngIf="isAllowedModel.isAllowed(elt)">
                 <a class="fa fa-trash-o" id="removeDerivationRule-{{i}}"
                    title="Remove" (click)="removeDerivationRule(i)"></a>
             </div>
-            <div class="col-md-11">
+            <div class="col-lg-11">
                 <dl class="dl-horizontal">
                     <dt>Name:</dt>
                     <dd id="dd_derRule_name_{{i}}">{{derRule.name}}</dd>
@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <button *ngIf="canAddScore()" class="btn btn-small btn-default" id="addNewScore" value="add"
+    <button *ngIf="canAddScore()" class="btn   btn-outline-dark" id="addNewScore" value="add"
             (click)="openNewScoreModal()"><i class="fa fa-plus"> </i> Add Score
     </button>
 
@@ -37,12 +37,12 @@
         <h5>This Data Element is used to derive to the following Data Elements:</h5>
         <table class="table cdeTable">
             <tr>
-                <th class="col-xs-3">Rule Name</th>
-                <th class="col-xs-9">CDE Name</th>
+                <th class="col-3">Rule Name</th>
+                <th class="col-9">CDE Name</th>
             </tr>
             <tr *ngFor="let derOut of elt.derivationOutputs">
-                <td class="col-xs-3">{{derOut.ruleName}}</td>
-                <td class="col-xs-9">
+                <td class="col-3">{{derOut.ruleName}}</td>
+                <td class="col-9">
                     <a routerLink="/deView" [queryParams]="{tinyId: derOut.cde.tinyId}">{{derOut.cde.naming[0].designation}}</a>
                 </td>
             </tr>
@@ -83,8 +83,8 @@
             </div>
         </div>
         <div class="modal-footer" id="newScoreModalFooter">
-            <button class="btn cancel" (click)="c('Close click')" id="cancelNewScoreBtn" type="button"> Cancel</button>
-            <button class="btn btn-warning" type="submit"
+            <button class="btn  btn-outline-dark" (click)="c('Close click')" id="cancelNewScoreBtn" type="button"> Cancel</button>
+            <button class="btn  btn-warning" type="submit"
                     [disabled]="someCdesInvalid() || !newScoreForm.form.valid"
                     id="createDerivationRule">Save
             </button>

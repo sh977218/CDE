@@ -4,12 +4,13 @@
         <label *ngIf="formElement.question.datatype !== 'Value List'"
                [hidden]="!hasLabel(formElement)" class="native-question-label"
                attr.for="{{formElement.label}}_{{index}}_box"
-                [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}">
+               [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}">
             <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}</label>
         <div *ngIf="formElement.question.datatype === 'Value List'"
-               [hidden]="!hasLabel(formElement)" class="native-question-label"
-               [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}">
-            <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}</div>
+             [hidden]="!hasLabel(formElement)" class="native-question-label"
+             [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}">
+            <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}
+        </div>
         <div *ngIf="nrs.profile.displayInstructions && formElement?.instructions?.value"
              class="native-instructions">
             <span *ngIf="formElement.instructions.valueFormat === 'html'"
@@ -25,32 +26,30 @@
                     <div *ngSwitchCase="'Value List'">
                         <div class="row">
                             <div *ngFor="let pv of formElement.question.answers; let i = index"
-                                 [ngClass]="classColumns(pv.index, i)" class="col-xs-12">
-                                <div *ngIf="!pv.nonValuelist">
-                                    <label [ngClass]="{'native-question-oneline-l': pv.formElements && isOneLiner(
-                                                            pv.formElements[0], pv.formElements.length),
-                                                   'checkbox-inline': formElement.question.multiselect,
-                                                   'radio-inline': !formElement.question.multiselect}"
+                                 [ngClass]="classColumns(pv.index, i)" class="col-12">
+                                <div *ngIf="!pv.nonValuelist" class="form-check">
+                                    <label class="form-check-label" [ngClass]="{'native-question-oneline-l': pv.formElements
+                                                          && isOneLiner(pv.formElements[0], pv.formElements.length)}"
                                            [title]="nrs.getPvLabel(pv)">
-                                        <input type="radio" *ngIf="!formElement.question.multiselect"
-                                               [name]="formElement.questionId"
+                                        <input *ngIf="!formElement.question.multiselect" type="radio"
+                                               class="form-check-input" [name]="formElement.questionId"
+                                               [title]="formElement.question.answer"
                                                [attr.name]="formElement.questionId"
                                                [(ngModel)]="formElement.question.answer"
-                                               [title]="formElement.question.answer"
                                                [value]="pv.permissibleValue"
                                                [required]="formElement.question.required"
                                                [disabled]="!formElement.question.editable"/>
-                                        <input type="checkbox" *ngIf="formElement.question.multiselect"
-                                               [name]="formElement.questionId" title="multiple select"
-                                               [attr.name]="formElement.questionId"
+                                        <input *ngIf="formElement.question.multiselect" type="checkbox"
+                                               class="form-check-input" [name]="formElement.questionId"
+                                               title="multiple select" [attr.name]="formElement.questionId"
                                                [checked]="nrs.checkboxIsChecked(formElement.question, pv.permissibleValue)"
                                                (change)="nrs.checkboxOnChange($event, formElement.question, pv.permissibleValue)"
                                                [value]="pv.permissibleValue"
                                                [required]="formElement.question.required"
                                                [disabled]="!formElement.question.editable"/>
                                         <span [textContent]="nrs.getPvLabel(pv)"></span>
-                                    <span class="native-value" *ngIf="nrs.profile.displayValues"
-                                          [textContent]="nrs.getPvValue(pv)"></span>
+                                        <span class="native-value" *ngIf="nrs.profile.displayValues"
+                                              [textContent]="nrs.getPvValue(pv)"></span>
                                     </label>
                                     <div *ngIf="pv?.formElements">
                                         <div *ngFor="let fe of pv.formElements; let j = index">
@@ -76,9 +75,10 @@
                         </div>
                     </div>
                     <div *ngSwitchCase="'Date'" class="row">
-                        <div class="col-xs-12" [ngClass]="{'col-sm-7': hasTime}">
+                        <div class="col-12" [ngClass]="{'col-sm-7': hasTime}">
                             <div class="input-group">
-                                <input class="form-control" [name]="formElement.questionId+'_date'" [title]="formElement.question.answer"
+                                <input class="form-control" [name]="formElement.questionId+'_date'"
+                                       [title]="formElement.question.answer"
                                        attr.id="{{formElement.label}}_{{index}}_box"
                                        [attr.name]="formElement.questionId+'_date'"
                                        [(ngModel)]="formElement.question.answerDate" (ngModelChange)="updateDateTime()"
@@ -90,9 +90,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="hasTime" class="mt-2 mt-md-0 col-sm-5 col-xs-12">
+                        <div *ngIf="hasTime" class="mt-2 mt-md-0 col-sm-5 col-12">
                             <ngb-timepicker [seconds]="true" size="small" [spinners]="false"
-                                            [title]="formElement.question.answer" [name]="formElement.questionId+'_time'"
+                                            [title]="formElement.question.answer"
+                                            [name]="formElement.questionId+'_time'"
                                             attr.id="{{formElement.label}}_{{index}}_box"
                                             [attr.name]="formElement.questionId+'_time'"
                                             [(ngModel)]="formElement.question.answerTime"

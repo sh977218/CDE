@@ -1,23 +1,24 @@
 <div *ngIf="elt" id="descriptionDiv" class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <div class="descriptionToolbox" *ngIf="canEdit" #descToolbox>
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
-            <span role="button" id="addSectionTop" class="btn btn-default formDescriptionTool"
+            <span role="button" id="addSectionTop" class="btn  btn-light formDescriptionTool"
                   [treeDrag]="toolSection" [treeDragEnabled]="true"
                   style="width: 74px;">
                 <i class="fa fa-plus"></i><span class="toolSection"></span>
             </span>
-            <span role="button" id="startAddingQuestions" class="btn btn-default formDescriptionTool"
+            <span role="button" id="startAddingQuestions" class="btn  btn-light formDescriptionTool"
                   *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true"
                   style="width: 87px;">
                 <i class="fa fa-cube"></i><span class="toolQuestion"></span>
             </span>
-            <span role="button" id="startAddingForms" class="btn btn-default formDescriptionTool"
+            <span role="button" id="startAddingForms" class="btn  btn-light formDescriptionTool"
                   *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true"
                   style="width: 68px;">
                 <i class="fa fa-cubes"></i><span class="toolForm"></span>
             </span>
-            <span role="button" *ngIf="hasCopiedSection()" id="pasteSection" class="btn btn-default formDescriptionTool"
+            <span role="button" *ngIf="hasCopiedSection()" id="pasteSection"
+                  class="btn  btn-light formDescriptionTool"
                   [treeDrag]="{ref: 'pasteSection'}" [treeDragEnabled]="true" style="width: 68px;">
                 <i class="fa fa-paste" [ngClass]="{'pasteSectionWrench':elt.isCopied}"></i><span
                     class="toolCopySection"></span>
@@ -45,8 +46,8 @@
                          [class.tree-node-focused]="node.isFocused">
                         <tree-node-drop-slot *ngIf="index === 0" [dropIndex]="node.index"
                                              [node]="node.parent"></tree-node-drop-slot>
-                        <div class="panel panel-default" [@copySection]="node.data.isCopied">
-                            <div class="panel-heading">
+                        <div class="card" [@copySection]="node.data.isCopied">
+                            <div class="card-header">
                                 <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
                                     <div class="node-content-wrapper w-100"
                                          (click)="node.mouseAction('click', $event)"
@@ -67,11 +68,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
+                            <div class="card-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 <div *ngIf="node.data.elementType === 'form' && !node.data.expanded"
                                      (click)="node.data.expanded = true; node.expand()"
-                                     class="btn btn-default expand-form">
+                                     class="btn  btn-outline-dark expand-form">
                                     <i class="fa fa-chevron-right" aria-hidden="true"></i> Expand
                                 </div>
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
@@ -96,7 +97,7 @@
                          [embedded]="true" (add)="addFormFromSearch($event)"></cde-form-search>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-warning" (click)="d()" id="cancelSelectF">Close</button>
+        <button class="btn  btn-warning" (click)="d()" id="cancelSelectF">Close</button>
     </div>
 </ng-template>
 
@@ -108,6 +109,6 @@
         <cde-cde-search addMode="True" [embedded]="true" (add)="addQuestionFromSearch($event)"></cde-cde-search>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-warning" (click)="d()" id="cancelSelectQ">Close</button>
+        <button class="btn  btn-warning" (click)="d()" id="cancelSelectQ">Close</button>
     </div>
 </ng-template>

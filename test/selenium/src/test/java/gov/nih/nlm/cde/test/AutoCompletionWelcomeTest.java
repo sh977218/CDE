@@ -10,7 +10,7 @@ public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
     @Test
     public void AutoCompletionWelcome() {
         mustBeLoggedOut();
-        goToSearch("cde");
+        goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("specimen lat");
         textNotPresent("Specimen Laterality");
         textPresent("Cell Specimen");
@@ -18,7 +18,7 @@ public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
         textPresent("The smallest units of living structure capable of independent existence");
 
         setLowStatusesVisible();
-        goToSearch("cde");
+        goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("specimen lat");
         textPresent("Specimen Laterality");
         clickElement(By.xpath("//ngb-highlight[contains(., \"Specimen Laterality Not Specified Reason\")]"));

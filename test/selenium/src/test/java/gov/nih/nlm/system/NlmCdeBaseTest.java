@@ -278,8 +278,8 @@ public class NlmCdeBaseTest {
 
     protected void doLogin(String username, String password) {
         findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
-        WebElement loginLinkList = driver.findElement(By.id("login_link"));
-        if (loginLinkList.isDisplayed()) {
+        List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
+        if (loginLinkList.size() > 0) {
             loginAs(username, password);
         } else {
             if (!isUsernameMatch(username)) {
@@ -327,8 +327,8 @@ public class NlmCdeBaseTest {
 
     protected void mustBeLoggedOut() {
         findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
-        WebElement loginLinkList = driver.findElement(By.id("login_link"));
-        if (!loginLinkList.isDisplayed()) {
+        List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
+        if (loginLinkList.size() == 0) {
             logout();
         }
     }
@@ -666,6 +666,7 @@ public class NlmCdeBaseTest {
     }
 
     public boolean textNotPresent(String text, By by) {
+        if (driver.findElements(by).size() == 0) return true;
         wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElementLocated(by, text)));
         return true;
     }
@@ -702,7 +703,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void loginAs(String username, String password) {
-        findElement(By.id("login_link")).click();
+        clickElement(By.id("login_link"));
         String usernameStr = username;
         if (username.length() > 17) {
             usernameStr = usernameStr.substring(0, 17) + "...";
@@ -743,7 +744,7 @@ public class NlmCdeBaseTest {
     }
 
     public void goToQuickBoardByModule(String module) {
-        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
+        clickElement(By.id("menu_qb_link"));
         if (module.equals("cde")) {
             clickElement(By.id("dataElementQuickBoard"));
             textPresent("CDE QuickBoard (");
@@ -759,7 +760,7 @@ public class NlmCdeBaseTest {
         goToQuickBoardByModule(module);
         clickElement(By.id("qb_" + module + "_empty"));
         textPresent(("cde".equals(module) ? "CDE" : "Form") + " QuickBoard (0)");
-        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
+        clickElement(By.id("menu_qb_link"));
         hangon(1);
     }
 
@@ -791,9 +792,7 @@ public class NlmCdeBaseTest {
 
     protected void scrollTo(Integer y) {
         String jsScroll = "scroll(0," + Integer.toString(y) + ");";
-        String jqueryScroll = "$(window).scrollTop(" + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
-        ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
 
     protected void scrollUpBy(Integer y) {
@@ -842,6 +841,12 @@ public class NlmCdeBaseTest {
         scrollToView(By.xpath(xpath));
     }
 
+    protected int getCurrentYOffset() {
+        String scrollLocation = (((JavascriptExecutor) driver)
+                .executeScript("return window.pageYOffset", "")).toString();
+        return Double.valueOf(scrollLocation).intValue();
+    }
+
     protected void hoverOverElement(WebElement ele) {
         Actions action = new Actions(driver);
         action.moveToElement(ele);
@@ -850,8 +855,8 @@ public class NlmCdeBaseTest {
 
     void enterUsernamePasswordSubmit(String username, String password, String checkText) {
         findElement(By.id("uname")).clear();
-        findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
+        findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).sendKeys(password);
         clickElement(By.id("login_button"));
         try {
@@ -1010,7 +1015,8 @@ public class NlmCdeBaseTest {
     protected void changeDefinitionFormat(int index, boolean isHtml) {
         clickElement(By.xpath("//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]"));
         if (isHtml) clickElement(By.xpath("//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]"));
-        if (!isHtml) clickElement(By.xpath("//*[@id='definition_" + index + "']//button[contains(text(),'Plain Text')]"));
+        if (!isHtml)
+            clickElement(By.xpath("//*[@id='definition_" + index + "']//button[contains(text(),'Plain Text')]"));
         clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-check')]"));
         textNotPresent("Confirm");
     }
@@ -1510,7 +1516,7 @@ public class NlmCdeBaseTest {
 
 
     protected void swaggerApi(String api, String text, String tinyId, String version) {
-        clickElement(By.id("dropdownMenu_help"));
+        clickElement(By.id("menu_help_link"));
         clickElement(By.id("apiDocumentationLink"));
         driver.switchTo().frame(findElement(By.cssSelector("iframe")));
         textPresent("CDE API");
@@ -1584,5 +1590,15 @@ public class NlmCdeBaseTest {
         hangon(2);
         clickElement(By.xpath("//*[@id='origin']//button[text()='Confirm']"));
         textPresent(origin, By.id("origin"));
+    }
+
+    protected void checkSearchResultInfo(String term, String classif, String classifAlt, String topic, String status, String datetype) {
+        if (term != null) textPresent(term, By.id("term_crumb"));
+        if (classif != null) textPresent(classif, By.id("classif_filter"));
+        if (classifAlt != null) textPresent(classifAlt, By.id("classifAlt_filter"));
+        if (topic != null) textPresent(topic, By.id("topic_crumb"));
+        if (status != null) textPresent(status, By.id("status_crumb"));
+        if (datetype != null) textPresent(datetype, By.id("datatype_crumb"));
+
     }
 }

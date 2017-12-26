@@ -22,7 +22,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
         textPresent("Quick Board (4)");
         addCdeToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
         textPresent("Quick Board (5)");
-        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
+        clickElement(By.id("menu_qb_link"));
         textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
         hangon(1);
         clickElement(By.id("list_gridView"));
@@ -69,7 +69,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
     public void goToEmptyQuickBoard() {
         goHome();
         textPresent("Quick Board (0)");
-        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
+        clickElement(By.id("menu_qb_link"));
         textPresent("CDE QuickBoard (0)");
         textPresent("Form QuickBoard (0)");
         textPresent("The quick board is empty.");

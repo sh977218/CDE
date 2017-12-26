@@ -1,11 +1,11 @@
 <div id="conceptsDiv">
     <h4>Concepts</h4>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-lg-12">
             <div *ngFor="let config of conceptConfigurations; ">
                 <div *ngIf="elt[config.type].concepts.length > 0">
                     <h5 [innerHTML]="config.details.display"></h5>
-                    <table class="table-bordered table-condensed table-striped">
+                    <table class="table table-bordered table-condensed table-striped">
                         <tr>
                             <th>Code Name</th>
                             <th>Code System</th>
@@ -20,7 +20,7 @@
                             <td itemprop="codeSystem">{{concept.origin}}</td>
                             <td itemprop="codeValue">{{concept.originId}}</td>
                             <td headers="actions" *ngIf="canEdit">
-                                <span id="remove{{config.type}}-{{$index}}" class="btn-default fa fa-trash-o"
+                                <span id="remove{{config.type}}-{{$index}}" class="btn-outline-dark fa fa-trash-o"
                                       (click)="removeConcept(config.type, $index)" title="Remove" href></span>
                                 <cde-sortable-array [theArray]="elt[config.type].concepts" [index]="$index"
                                                     (cb)="onEltChange.emit()"></cde-sortable-array>
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <hr/>
-            <button class="btn btn-small btn-default" *ngIf="canEdit" id="openNewConceptModalBtn"
+            <button class="btn   btn-outline-dark" *ngIf="canEdit" id="openNewConceptModalBtn"
                     value="add" (click)="openNewConceptModal()">
                 <i class="fa fa-plus"> </i> Add Concept
             </button>
@@ -70,10 +70,10 @@
             </div>
         </div>
         <div class="modal-footer" id="newConceptModalFooter">
-            <button class="btn cancel" (click)="c('Close click')" id="cancelNewConceptBtn" type="button">
+            <button class="btn  btn-outline-dark" (click)="c('Close click')" id="cancelNewConceptBtn" type="button">
                 Cancel
             </button>
-            <button class="btn btn-warning" [disabled]="!newConceptForm.form.valid" id="createNewConceptBtn"
+            <button class="btn  btn-warning" [disabled]="!newConceptForm.form.valid" id="createNewConceptBtn"
                     type="submit">Save
             </button>
         </div>

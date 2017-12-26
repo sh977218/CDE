@@ -18,20 +18,26 @@ const URL_MAP = {
             caption-side: top;
         }
 
-        .input-color input {
-            padding-left: 20px;
-        }
-
-        .input-color .color-box {
+        .color-box {
             width: 10px;
             height: 10px;
-            display: inline-block;
-            left: 5px;
-            top: 5px;
         }
 
         .isSelected {
             background-color: #f5f5f5;
+        }
+        
+        #reorderIcon{
+            background-color: #fad000;
+        }
+        #addIcon{
+            background-color: #008000;
+        }
+        #removeIcon{
+            background-color: #a94442;
+        } 
+        #editIcon{
+            background-color: #0000ff;
         }
 
     `],

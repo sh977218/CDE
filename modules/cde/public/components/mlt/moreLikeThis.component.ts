@@ -1,7 +1,9 @@
-import { Http } from "@angular/http";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { Component, Input, ViewChild } from "@angular/core";
+import { Http } from "@angular/http";
+import { Router } from '@angular/router';
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import "rxjs/add/operator/map";
+
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { AlertService } from '_app/alert/alert.service';
@@ -22,25 +24,17 @@ export class MoreLikeThisComponent {
     cdes: any[];
 
     constructor(private http: Http,
+                private router: Router,
                 private alert: AlertService,
                 public modalService: NgbModal,
                 public quickBoardService: QuickBoardListService) {
     }
 
-    open () {
-        //noinspection TypeScriptValidateTypes
-        this.http.get("/moreLikeCde/" + this.elt.tinyId).map(res => res.json()).subscribe(response => {
+    open() {
+        this.http.get("/moreLikeCde/" + this.elt.tinyId)
+            .map(res => res.json()).subscribe(response => {
             this.cdes = response.cdes;
-        }, () => {
-            this.alert.addAlert("error", "Unable to retrieve MLT");
-        });
-
+        }, () => this.alert.addAlert("error", "Unable to retrieve MLT"));
         this.modalRef = this.modalService.open(this.mltModal, {size: "lg"});
     }
-
-    view (cde) {
-        window.open("deView?tinyId=" + cde.tinyId);
-    };
-
-
 }

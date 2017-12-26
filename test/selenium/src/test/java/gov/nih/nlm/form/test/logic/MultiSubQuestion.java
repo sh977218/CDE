@@ -12,10 +12,8 @@ public class MultiSubQuestion extends BaseFormTest {
         mustBeLoggedInAs(ninds_username, password);
         String formName = "Multi SubQuestion";
         goToFormByName(formName);
-
         textPresent("Was participant fasting prior to sample collection?",
-                By.xpath("//*[*[text()='Was genetic testing performed?']]//*[*[text()='Test Name']]" +
-                        "//*[*[text()='Was participant fasting prior to sample collection?']]"));
+                By.xpath("//*[*[normalize-space()='Was genetic testing performed?']]//*[*[normalize-space()='Test Name']]//*[*[normalize-space()='Was participant fasting prior to sample collection?']]"));
     }
 
 }

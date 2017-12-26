@@ -26,13 +26,13 @@ public class FormEditTest extends BaseFormTest {
         clickElement(By.xpath("//*[@id='q_select_name_1']/div/button"));
 
         String newQuestionInstruction = "New Question Instruction";
-        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstructionIcon')]//i[contains(@class,'fa-edit')]"));
+        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstruction')]//i[contains(@class,'fa-edit')]"));
         textPresent("Plain Text");
         textPresent("Rich Text");
         textPresent("Confirm");
-        findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstructionIcon')]//textarea")).clear();
-        findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstructionIcon')]//textarea")).sendKeys(newQuestionInstruction);
-        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstructionIcon')]//button[contains(text(),'Confirm')]"));
+        findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstruction')]//textarea")).clear();
+        findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstruction')]//textarea")).sendKeys(newQuestionInstruction);
+        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstruction')]//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
 
         String newQuestionUnitsOfMeasure = "New Units of Measure";

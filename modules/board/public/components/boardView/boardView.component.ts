@@ -33,16 +33,16 @@ export class BoardViewComponent implements OnInit {
     feedbackClass: string[] = [""];
     users: any[] = [];
     modalTitle: string;
-    changesMade: boolean;
     newUser: any = {username: '', role: 'viewer'};
+
     allRoles = [{
         label: 'can review',
         name: 'reviewer',
-        icon: 'fa-search-plus'
+        icon: 'fa fa-search-plus'
     }, {
         label: 'can view',
         name: 'viewer',
-        icon: 'fa-eye'
+        icon: 'fa fa-eye'
     }];
     url: string;
     boardId: string;
@@ -197,20 +197,12 @@ export class BoardViewComponent implements OnInit {
         } else {
             this.users.push(newUser);
             this.newUser = {username: '', role: 'viewer'};
-            this.changesMade = true;
             this.getReviewers();
         }
     };
 
     deleteUser(index) {
         this.users.splice(index, 1);
-        this.changesMade = true;
-    };
-
-    changeRole(newUser, role) {
-        newUser.role = role.name;
-        this.changesMade = true;
-        newUser.status = 'invited';
     };
 
     okShare() {

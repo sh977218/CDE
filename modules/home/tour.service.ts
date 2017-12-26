@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import "../../node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css";
-import * as Tour from "bootstrap-tour/build/js/bootstrap-tour-standalone.js";
+import "../../node_modules/bootstrap-tour/build/css/bootstrap-tour.css";
+import * as Tour from "bootstrap-tour/build/js/bootstrap-tour.js";
 
 const navigationSteps: Array<any> = [
     {
@@ -301,7 +301,7 @@ export class TourService {
             steps: TourService.steps
         });
         tour.init();
-        tour.start();
+        tour.start(true);
     }
 
 }

@@ -52,17 +52,14 @@ public class EditSkipLogic extends BaseFormTest {
 
         goToFormByName(formName);
         textPresent("How often did you have to push yourself to get things done because of your fatigue?",
-                By.xpath("//*[*[text()='To what degree did your fatigue interfere with your physical functioning?']]" +
-                        "//*[text()='How often did you have to push yourself to get things done because of your fatigue?']"));
+                By.xpath("//*[*[normalize-space()='To what degree did your fatigue interfere with your physical functioning?']]//*[normalize-space()='How often did you have to push yourself to get things done because of your fatigue?']"));
 
         togglePrintableLogic();
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']//*/span[text()='Not at all']"));
-        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']" +
-                "//*/span[text()='A little bit']"));
+        clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']//*/span[normalize-space()='Not at all']"));
+        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']//*/span[normalize-space()='A little bit']"));
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']" +
-                "//*/span[text()='Not at all']"));
+        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']//*/span[normalize-space()='Not at all']"));
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
     }
 

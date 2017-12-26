@@ -10,8 +10,8 @@ public class BadQueryTest extends NlmCdeBaseTest {
     public void badQuery() {
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("brain neoplasms\"$:{(.#%@!~");
-        findElement(By.cssSelector(".fa-search")).click();
-        textPresent("results for brain neoplasms | All Class");
+        clickElement(By.id("search.submit"));
+        checkSearchResultInfo("brain neoplasms", "All Classifications", null, "All Topics", "All Statuses", "All Datatypes");
     }
 
 }

@@ -9,7 +9,23 @@ import { NativeRenderService } from './nativeRender.service';
 
 @Component({
     selector: 'cde-native-question',
-    templateUrl: './nativeQuestion.component.html'
+    templateUrl: './nativeQuestion.component.html',
+    styles: [`
+    @media (min-width: 768px) {
+        div .col-sm-2-4 {
+            flex: 0 0 20%;
+            max-width: 20%;
+        }
+    :host >>> label.native-question-label {
+        font-weight: 700;
+    }
+    :host >>> .form-check-label > input[type="checkbox"] {
+        margin-top: 8px !important;
+    }
+    :host >>> .form-check-label > input[type="radio"] {
+        margin-top: 7px !important;
+    }
+    `]
 })
 export class NativeQuestionComponent implements OnInit {
     @Input() formElement: FormQuestion;
@@ -28,7 +44,8 @@ export class NativeQuestionComponent implements OnInit {
         this.previousUom = this.formElement.question.answerUom;
     }
 
-    constructor(public nrs: NativeRenderService) {}
+    constructor(public nrs: NativeRenderService) {
+    }
 
     classColumns(pvIndex, index) {
         let result = "";
@@ -100,7 +117,7 @@ export class NativeQuestionComponent implements OnInit {
         if (!t)
             t = {hour: 0, minute: 0, second: 0};
 
-        let m = moment([d.year, d.month - 1, d.day, t.hour, t.minute,  t.second]);
+        let m = moment([d.year, d.month - 1, d.day, t.hour, t.minute, t.second]);
         if (m.isValid()) {
             if (this.formElement.question.datatypeDate && this.formElement.question.datatypeDate.format)
                 this.formElement.question.answer = m.format(this.formElement.question.datatypeDate.format);

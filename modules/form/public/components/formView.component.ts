@@ -24,15 +24,6 @@ import { UserService } from '_app/user.service';
     selector: 'cde-form-view',
     templateUrl: 'formView.component.html',
     styles: [`
-        .marginTopBottom5 {
-            margin: 5px 0
-        }
-
-        #leftNav {
-            margin-top: 20px;
-            z-index: 1;
-        }
-
         @media (max-width: 767px) {
             .mobileViewH1 {
                 font-size: 20px;

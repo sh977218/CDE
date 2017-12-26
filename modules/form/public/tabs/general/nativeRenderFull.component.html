@@ -1,12 +1,11 @@
 <div class="row">
-    <div class="col-xs-12 noGridPadLarge">
+    <div class="col-12 noGridPadLarge">
         <div class="dropdown float-left">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                    data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
+            <button class="btn  btn-outline-dark dropdown-toggle" type="button" id="selectRenderButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Options
             </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <div class="dropdown-menu" aria-labelledby="selectRenderButton">
                 <button class="dropdown-item"
                         attr.data-url="/nativeRender?tinyId={{elt.tinyId}}"
                         onclick="window.open(this.getAttribute('data-url'),'_blank')">
@@ -25,13 +24,15 @@
                     (Provided by <a class="d-inline" href="https://www.healthit.gov/techlab/" target="_blank"
                                     (click)="$event.stopPropagation()">ONC</a>)
                 </button>
-                <button class="dropdown-item" (click)="overridePrintable = !overridePrintable">Printable Logic:
-                    <i class="fa fa-fw" [class.fa-check-square-o]="overridePrintable" [class.fa-square-o]="!overridePrintable"></i>
+                <button id="printableLogicCb" class="dropdown-item" (click)="overridePrintable = !overridePrintable">
+                    Printable Logic:
+                    <i class="fa fa-fw" [class.fa-check-square-o]="overridePrintable"
+                       [class.fa-square-o]="!overridePrintable"></i>
                 </button>
             </div>
         </div>
         <div class="dropdown float-left" *ngIf="elt.displayProfiles?.length > 0">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="select_display_profile"
+            <button class="btn  btn-outline-dark dropdown-toggle" type="button" id="select_display_profile"
                     data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                 Display Profile: {{selectedProfileName}}
@@ -45,7 +46,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-12 noGridPadSmall">
+    <div class="col-12 noGridPadSmall">
         <div *ngIf="elt.noRenderAllowed"
              class="text-center mt20">Rendering has been disabled for this form.
         </div>

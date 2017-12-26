@@ -8,7 +8,8 @@ public class MultiselectLogicTest extends BaseFormTest {
 
     @Test
     public void multiselectLogic() {
-        goToFormByName("MultiSelect Logic");
+        String formName = "MultiSelect Logic";
+        goToFormByName(formName);
         togglePrintableLogic();
         textNotPresent("Own home with self care");
         textNotPresent("Slight ataxia (slowness or unsteady turning)");

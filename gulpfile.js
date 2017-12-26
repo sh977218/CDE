@@ -4,10 +4,8 @@ const gulp = require('gulp'),
     usemin = require('gulp-usemin'),
     rev = require('gulp-rev'),
     minifyCss = require('gulp-clean-css'),
-    bower = require('gulp-bower'),
     install = require('gulp-install'),
     replace = require('gulp-replace'),
-    wiredep = require('gulp-wiredep'),
     fs = require('fs'),
     esInit = require('./modules/system/node-js/elasticSearchInit'),
     git = require('gulp-git'),
@@ -28,12 +26,7 @@ gulp.task('copyNpmDeps', ['npm'], function () {
         .pipe(install({production: true}));
 });
 
-gulp.task('bower', function () {
-    return bower()
-        .pipe(gulp.dest('./modules/components'));
-});
-
-gulp.task('thirdParty', ['npm', 'bower'], function () {
+gulp.task('thirdParty', ['npm'], function () {
     let streamArr = [];
 
     streamArr.push(gulp.src('./node_modules/core-js/client/shim.min.js')
@@ -47,21 +40,6 @@ gulp.task('thirdParty', ['npm', 'bower'], function () {
         './node_modules/intl/locale-data/jsonp/en.js',
     ]).pipe(gulp.dest('./dist/common/')));
 
-    // bower
-    streamArr.push(gulp.src('./modules/components/font-awesome/css/font-awesome.min.css')
-        .pipe(gulp.dest('./dist/components/font-awesome/css/')));
-    streamArr.push(gulp.src('./modules/components/font-awesome/fonts/*')
-        .pipe(gulp.dest('./dist/components/font-awesome/fonts/')));
-    streamArr.push(gulp.src('./modules/components/bootstrap-css-only/css/bootstrap.min.css')
-        .pipe(replace('/*# sourceMappingURL=bootstrap.min.css.map */', ''))
-        .pipe(gulp.dest('./dist/components/bootstrap-css-only/css/')));
-    streamArr.push(gulp.src('./modules/components/bootstrap-css-only/fonts/*')
-        .pipe(gulp.dest('./dist/components/bootstrap-css-only/fonts/')));
-    streamArr.push(gulp.src('./modules/components/bootstrap/dist/js/bootstrap.min.js')
-        .pipe(gulp.dest('./dist/components/bootstrap/dist/js/')));
-    streamArr.push(gulp.src('./modules/components/jquery/jquery.min.js')
-        .pipe(gulp.dest('./dist/components/jquery/')));
-
     return merge(streamArr);
 });
 
@@ -70,16 +48,7 @@ gulp.task('createDist', ['thirdParty'], function () {
         .pipe(gulp.dest('./dist/common'));
 });
 
-gulp.task('lhc-wiredep', ['bower'], function () {
-    return gulp.src("./modules/form/public/html/lformsRender.html")
-        .pipe(wiredep({
-            directory: "modules/components"
-            , ignorePath: "../../.."
-        }))
-        .pipe(gulp.dest("./modules/form/public/html"));
-});
-
-gulp.task('copyCode', ['lhc-wiredep'], function () {
+gulp.task('copyCode', [], function () {
     let streamArray = [];
 
     ['cde', 'form', 'processManager', 'system', 'board'].forEach(function (module) {
@@ -103,10 +72,6 @@ gulp.task('copyCode', ['lhc-wiredep'], function () {
         streamArray.push(gulp.src('./modules/system/views/' + file)
             .pipe(gulp.dest(config.node.buildDir + "/modules/system/views/")));
     });
-
-    streamArray.push(gulp.src('./modules/components/**/*')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/components/")));
-
     streamArray.push(gulp.src('./modules/processManager/pmApp.js')
         .pipe(gulp.dest(config.node.buildDir + "/modules/processManager/")));
 
@@ -170,13 +135,7 @@ gulp.task('copyDist', ['buildApp', 'buildEmbed', 'buildNative'], () => {
     let streamArray = [];
 
     // App
-    streamArray.push(gulp.src('./dist/app/*.png')
-        .pipe(gulp.dest(config.node.buildDir + '/dist/app')));
-    streamArray.push(gulp.src('./dist/app/*.js')
-        .pipe(gulp.dest(config.node.buildDir + '/dist/app')));
-    streamArray.push(gulp.src('./dist/app/offline/*')
-        .pipe(gulp.dest(config.node.buildDir + '/dist/app/offline')));
-    streamArray.push(gulp.src('./dist/app/*.webmanifest')
+    streamArray.push(gulp.src('./dist/app/*')
         .pipe(gulp.dest(config.node.buildDir + '/dist/app')));
 
     // Embed
@@ -190,12 +149,6 @@ gulp.task('copyDist', ['buildApp', 'buildEmbed', 'buildNative'], () => {
         .pipe(gulp.dest(config.node.buildDir + '/dist/native')));
     streamArray.push(gulp.src('./dist/native/*.js')
         .pipe(gulp.dest(config.node.buildDir + '/dist/native')));
-
-    // bower
-    streamArray.push(gulp.src('./dist/components/bootstrap-css-only/fonts/*')
-        .pipe(gulp.dest(config.node.buildDir + '/dist/components/bootstrap-css-only/fonts/')));
-    streamArray.push(gulp.src('./dist/components/font-awesome/fonts/*')
-        .pipe(gulp.dest(config.node.buildDir + '/dist/components/font-awesome/fonts/')));
 
     return merge(streamArray);
 });

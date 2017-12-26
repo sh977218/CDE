@@ -30,6 +30,15 @@ const URL_MAP = {
             background-color: rgba(242, 217, 217, .5);
             margin: 2px 0;
         }
+        :host >>> ins {
+            color: black;
+            background: #bbffbb;
+        }
+        
+        :host >>> del {
+            color: black;
+            background: #ffbbbb;
+        }
     `]
 })
 export class CompareSideBySideComponent implements OnInit {

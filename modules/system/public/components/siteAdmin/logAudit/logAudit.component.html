@@ -1,5 +1,5 @@
 <div id="logAuditDiv">
-    <div class="col-xs-12">
+    <div class="col-12">
         <form role="form" class="form-inline">
             <label class="sr-only" for="ip">Remote Address</label>
             <input class="form-control mb-2 mr-sm-2 mb-sm-0" id="ip" name="ip" type="text"
@@ -10,7 +10,7 @@
             <label class="sr-only" for="toDate">Until Date</label>
             <input class="form-control mb-2 mr-sm-2 mb-sm-0" id="toDate" name="toDate" type="datetime-local"
                    [(ngModel)]="toDate" placeholder="Until Date">
-            <button type="submit" class="btn btn-default" id="searchBtn" (click)="searchLogs()">Submit</button>
+            <button type="submit" class="btn  btn-outline-dark" id="searchBtn" (click)="searchLogs()">Submit</button>
         </form>
         <table class="table table-striped table-bordered table-condensed table-responsive">
             <tr>

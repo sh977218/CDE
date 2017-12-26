@@ -57,10 +57,8 @@ const appRoutes: Routes = [
         PermissibleValueComponent,
         ValidRulesComponent,
     ],
-    entryComponents: [
-    ],
-    exports: [
-    ],
+    entryComponents: [],
+    exports: [],
     providers: [
         DataElementService,
     ],

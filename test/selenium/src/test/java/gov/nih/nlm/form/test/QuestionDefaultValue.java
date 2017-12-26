@@ -14,7 +14,7 @@ public class QuestionDefaultValue extends NlmCdeBaseTest {
         goToFormByName(formName);
         goToFormDescription();
         startEditQuestionSectionById("question_0_0");
-        new Select(driver.findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]"))).selectByVisibleText("Brother");
+        new Select(driver.findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]/select"))).selectByVisibleText("Brother");
         saveEditQuestionSectionById("question_0_0");
 
         startEditQuestionSectionById("question_0_1");
@@ -26,7 +26,7 @@ public class QuestionDefaultValue extends NlmCdeBaseTest {
 
         goToFormByName(formName);
         // this find ensures option Brother is selected.
-        findElement(By.xpath("//*[*[text()='From whom/ what were the medical history data obtained']]//*[contains(.,'Brother')]"))
+        findElement(By.xpath("//*[*[normalize-space()='From whom/ what were the medical history data obtained']]//label[contains(.,'Brother')]"))
                 .findElement(By.cssSelector("input:checked"));
         goToFormDescription();
         textPresent("Brother", By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]"));
