@@ -127,6 +127,7 @@ export class FormDescriptionComponent implements OnChanges {
     @ViewChild("formSearchTmpl") formSearchTmpl: TemplateRef<any>;
     @ViewChild("questionSearchTmpl") questionSearchTmpl: TemplateRef<any>;
     @ViewChild("descToolbox") descToolbox: ElementRef;
+
     @HostListener('window:scroll', ['$event'])
     doIt() {
         if (this && this.descToolbox && this.descToolbox.nativeElement)
@@ -155,17 +156,19 @@ export class FormDescriptionComponent implements OnChanges {
                         tree.update();
                     } else if (from.ref) {
                         this.toolDropTo = to;
-                        if (from.ref === "question")
+                        if (from.ref === "question") {
                             this.openQuestionSearch();
-                        else if (from.ref === "cde") {
+                            return;
+                        } else if (from.ref === "form") {
+                            this.openFormSearch();
+                            return;
+                        } else if (from.ref === "pasteSection") {
+                            this.pasteSection();
+                            return;
+                        } else if (from.ref === "cde") {
                             this.addIndex(to.parent.data.formElements, this.getNewQuestion(), to.index);
                             tree.update();
                         }
-                        else if (from.ref === "form")
-                            this.openFormSearch();
-                        else if (from.ref === "pasteSection")
-                            this.pasteSection();
-                        return;
                     } else
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
 
