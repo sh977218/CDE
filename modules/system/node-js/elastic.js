@@ -415,7 +415,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
             "should": [
                 {
                     "bool": {
-                        "should": settings.visibleStatuses.map(regStatus => {
+                        "should": settings.visibleStatuses.concat(settings.selectedStatuses).map(regStatus => {
                             return {"term": {"registrationState.registrationStatus": regStatus}};
                         })
                     }
