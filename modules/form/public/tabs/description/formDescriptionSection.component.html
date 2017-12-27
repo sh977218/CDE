@@ -11,26 +11,29 @@
            title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}"></i>
     </span>
 
-    <cde-inline-edit *ngIf="section.elementType === 'section'"
-                     class="section_title ib" style="margin-left: 5px; width: 62%;font-weight:bold;"
+    <cde-inline-edit *ngIf="section.elementType === 'section'" (click)="section.edit = true"
+                     class="section_label questionSectionLabel ib"
+                     style="margin-left: 5px; width: 62%;font-weight:bold;"
                      [(model)]="section.label" [isAllowed]="canEditSection()"
-                     (modelChange)="stageElt.emit()"></cde-inline-edit>
-    <span *ngIf="section.elementType === 'form'"
-          class="section_title ib" style="margin-left: 5px; width: 62%;font-weight:bold;">
-        Embedded Form:
+                     (modelChange)="onEltChange.emit()"></cde-inline-edit>
+    <div *ngIf="section.elementType === 'form'" (click)="section.edit = true"
+         class="section_title questionSectionLabel d-inline-block"
+         style="margin-left: 5px; width: 62%;font-weight:bold;">Embedded Form:
         <cde-inline-edit id="innerForm_label_edit_icon_{{section.label}}" [(model)]="section.label"
-                         [isAllowed]="canEditSection()" (modelChange)="stageElt.emit()">
+                         [isAllowed]="canEditSection()" (modelChange)="onEltChange.emit()">
             {{section.label}}
         </cde-inline-edit>
-    </span>
+    </div>
 
     <span *ngIf="!isSubForm && canEdit" class="pull-right editIconDiv">
+        <a *ngIf="section.elementType === 'form' && section.inForm.form.tinyId" target="_blank"
+           title="{{section.inForm.form.name}}"
+           href="/formView?tinyId={{section.inForm.form.tinyId}}&version={{section.inForm.form.version}}">
+            <i class="fa fa-eye"></i> View Form
+        </a>
+
         <i *ngIf="section.elementType === 'section'" class="fa fa-copy copySection" title="Copy section"
            (click)="copySection(section)"></i>
-        <i *ngIf="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section"
-           (click)="section.edit = true"></i>
-        <i *ngIf="section.edit" class="fa fa-check hand-cursor" title="Save edit section"
-           (click)="section.edit = false"></i>
         <i *ngIf="!section.confirmDelete" class="fa fa-trash-o hand-cursor" title="Remove Section"
            (click)="section.confirmDelete = true"></i>
         <span *ngIf="section.confirmDelete" class="label">Confirm Delete
@@ -67,7 +70,7 @@
                     <cde-inline-area-edit
                             [(model)]="section.instructions.value"
                             [(defFormat)]="section.instructions.valueFormat"
-                            [isAllowed]="canEditSection()" (modelChange)="stageElt.emit()"></cde-inline-area-edit>
+                            [isAllowed]="canEditSection()" (modelChange)="onEltChange.emit()"></cde-inline-area-edit>
                 </div>
                 <div class="questionSectionLabel section_cardinality">Repeats:
                     <select class="form-control" title="Repeats" [(ngModel)]="section.repeatOption"
@@ -129,12 +132,12 @@
                     <cde-inline-area-edit [(model)]="section.instructions.value"
                                           [(defFormat)]="section.instructions.valueFormat"
                                           [isAllowed]="canEditSection()"
-                                          (modelChange)="stageElt.emit()">
+                                          (modelChange)="onEltChange.emit()">
                     </cde-inline-area-edit>
                 </div>
                 <div class="questionSectionLabel section_cardinality">Repeats:
                     <select class="form-control" title="Repeats" [(ngModel)]="section.repeatOption"
-                            (change)="setRepeat(section);stageElt.emit()">
+                            (change)="setRepeat(section);onEltChange.emit()">
                         <option *ngFor="let item of repeatOptions" [value]="item.value"
                                 [textContent]="item.label"></option>
                     </select>
@@ -143,7 +146,7 @@
                      class="questionSectionLabel section_cardinality">Repeat Maximum Times:
                     <input type="number" title="Repeats Maximum Times" class="form-control"
                            [(ngModel)]="section.repeatNumber"
-                           (change)="setRepeat(section);stageElt.emit()"/>
+                           (change)="setRepeat(section);onEltChange.emit()"/>
                 </div>
                 <div class="questionSectionLabel">Show if:
                     <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
@@ -160,11 +163,6 @@
                 </span>
                 </div>
             </div>
-        </div>
-        <div>
-            <span class="questionSectionLabel">Form:</span>
-            <a href="formView?tinyId={{section.inForm.form.tinyId}}"
-               target="_blank"><i class="fa fa-eye"></i> {{section.inForm.form.name}}</a>
         </div>
     </div>
 </ng-template>

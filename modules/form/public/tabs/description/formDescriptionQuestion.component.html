@@ -7,50 +7,48 @@
            [ngClass]="{'fa-spin': question.updatedSkipLogic}"
            title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
     </div>
-    <div *ngIf="question.question.isScore" class="d-inline-block left">
-        <strong>Score: </strong>
+    <div class="questionSectionLabel d-inline-block left" (click)="question.edit = true">
+        <div *ngIf="question.question.isScore" class="d-inline-block left">
+            <strong>Score: </strong>
+        </div>
+        <div class="d-inline-block left questionLabel" title="{{question.label}}" style="margin-left: 5px">
+            <ng-container *ngIf="question.hideLabel">
+                <i class="fa fa-question-circle" ngbTooltip="This question has no label"></i>
+                <strong [textContent]="question.question.cde.name"></strong>
+            </ng-container>
+            <strong *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}}</strong>
+            <small *ngIf="question.question.partOf" class="text-info">
+                (part of {{question.question.partOf}})
+            </small>
+        </div>
+        <div class="d-inline-block left">
+            <span *ngIf="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
+        </div>
+        <div *ngIf="question.question.cde.outdated" class="d-inline-block left error-block"> (Outdated)
+            <button class="btn  btn-outline-dark btn-xs updateQuestionBtn"
+                    (click)="openUpdateCdeVersion(question);">
+                Update
+            </button>
+        </div>
+        <div class="d-inline-block left">{{getDatatypeLabel(question)}}</div>
     </div>
-    <div class="d-inline-block left questionLabel" title="{{question.label}}" style="margin-left: 5px">
-        <ng-container *ngIf="question.hideLabel">
-            <i class="fa fa-question-circle" ngbTooltip="This question has no label"></i>
-            <strong [textContent]="question.question.cde.name"></strong>
-        </ng-container>
-        <strong *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}}</strong>
-        <small *ngIf="question.question.partOf" class="text-info">
-            (part of {{question.question.partOf}})
-        </small>
-    </div>
-    <div class="d-inline-block left">
-        <span *ngIf="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
-    </div>
-    <div *ngIf="question.question.cde.outdated" class="d-inline-block left error-block"> (Outdated)
-        <button class="btn  btn-outline-dark btn-xs updateQuestionBtn"
-                (click)="openUpdateCdeVersion(question);">
-            Update
-        </button>
-    </div>
-    <div class="d-inline-block left">
+    <div class="d-inline-block pull-right">
         <a *ngIf="question.question.cde.tinyId" target="_blank" title="{{question.question.cde.name}}"
            href="/deView?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
             <i class="fa fa-eye"></i> View CDE
         </a>
         <span *ngIf="!question.question.cde.tinyId" class="text-danger">(This is a new CDE)</span>
-    </div>
-    <div class="d-inline-block left">{{getDatatypeLabel(question)}}</div>
-    <div *ngIf="!isSubForm && canEdit" class="d-inline-block pull-right editIconDiv" style="font-size: 16px">
-        <i *ngIf="!question.edit" class="fa fa-pencil hand-cursor" title="edit question"
-           (click)="question.edit = true"></i>
-        <i *ngIf="question.edit" class="fa fa-check hand-cursor" title="save edit question"
-           (click)="question.edit = false;"></i>
-        <i *ngIf="!question.confirmDelete" (click)="question.confirmDelete = true;"
-           class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
-        <span *ngIf="question.confirmDelete" class="label">Confirm Delete
+        <div *ngIf="!isSubForm && canEdit" class="d-inline-block  editIconDiv" style="font-size: 16px">
+            <i *ngIf="!question.confirmDelete" (click)="question.confirmDelete = true;"
+               class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
+            <span *ngIf="question.confirmDelete" class="label">Confirm Delete
                 <span class="fa fa-check hand-cursor" (click)="removeNode(node)"
                       id="confirmRemoveProperty-{{i}}" title="Delete"></span>
                 <span class="fa fa-times hand-cursor"
                       (click)="question.confirmDelete = false"
                       id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
             </span>
+        </div>
     </div>
 </div>
 

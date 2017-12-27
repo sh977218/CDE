@@ -18,7 +18,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
     @Input() canEdit: boolean = false;
     @Input() node: TreeNode;
-    @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
+    @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
@@ -73,7 +73,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     removeNode(node) {
         node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
         node.treeModel.update();
-        this.stageElt.emit();
+        this.onEltChange.emit();
     }
 
     static getRepeatOption(section) {
@@ -101,11 +101,11 @@ export class FormDescriptionSectionComponent implements OnInit {
     setRepeat(section) {
         if (section.repeatOption === "F") {
             section.repeat = "First Question";
-            this.stageElt.emit();
+            this.onEltChange.emit();
         } else if (section.repeatOption === "N") {
             section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
             if (section.repeat > 0)
-                this.stageElt.emit();
+                this.onEltChange.emit();
         }
         else {
             section.repeat = undefined;
@@ -133,7 +133,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     typeaheadSkipLogic(parent, fe, event) {
         if (fe.skipLogic && fe.skipLogic.condition !== event) {
             this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
-            this.stageElt.emit();
+            this.onEltChange.emit();
         }
     }
 

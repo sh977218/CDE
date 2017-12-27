@@ -45,7 +45,7 @@ function fetchWholeForm(form, callback) {
             } else {
                 let tinyId = fe.question.cde.tinyId;
                 let version = fe.question.cde.version ? fe.question.cde.version : null;
-                mongo_cde.DataElement.findOne({tinyId: tinyId, archived: false},  {version: 1}, (err, elt) => {
+                mongo_cde.DataElement.findOne({tinyId: tinyId, archived: false}, {version: 1}, (err, elt) => {
                     if (err || !elt) cb(err);
                     else {
                         let systemDeVersion = elt.version ? elt.version : null;
@@ -194,7 +194,14 @@ exports.draftForms = function (req, res) {
     mongo_form.draftForms(tinyId, function (err, forms) {
         if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
         if (!forms) return res.status(404).send();
-        res.send(forms);
+        async.forEachSeries(forms, (form, doneOneForm) => {
+            fetchWholeForm(form, function (err) {
+                if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
+                else doneOneForm();
+            })
+        }, () => {
+            res.send(forms);
+        })
     });
 };
 exports.saveDraftForm = function (req, res) {

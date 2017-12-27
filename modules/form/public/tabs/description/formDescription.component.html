@@ -9,7 +9,7 @@
             </span>
             <span role="button" id="startAddingCde" class="btn btn-light formDescriptionTool"
                   *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'cde'}" [treeDragEnabled]="true"
-                  style="width: 87px;">
+                  style="width: 68px;">
                 <i class="fa fa-cube"></i><span class="toolCde"></span>
             </span>
             <span role="button" id="startAddingQuestions" class="btn btn-light formDescriptionTool"
@@ -62,14 +62,15 @@
                                          [treeAllowDrop]="node.allowDrop">
                                         <cde-form-description-section
                                                 *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
-                                                [elt]="elt" [canEdit]="canEdit"
-                                                [node]="node"
-                                                (stageElt)="onEltChange.emit()"></cde-form-description-section>
+                                                [elt]="elt" [canEdit]="canEdit" [node]="node"
+                                                (onEltChange)="onEltChange.emit()"></cde-form-description-section>
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"
-                                                [elt]="elt" [canEdit]="canEdit"
-                                                [node]="node"
+                                                [elt]="elt" [canEdit]="canEdit" [node]="node"
                                                 (stageElt)="onEltChange.emit()"></cde-form-description-question>
+                                        <button *ngIf="(node.data.elementType === 'section' || node.data.elementType === 'form') && node.data.edit"
+                                                class="btn btn-outline-success btn-sm" (click)="ok(node)">OK
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -77,7 +78,7 @@
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 <div *ngIf="node.data.elementType === 'form' && !node.data.expanded"
                                      (click)="node.data.expanded = !node.data.expanded "
-                                     class="btn  btn-outline-dark expand-form">
+                                     class="btn btn-outline-dark expand-form">
                                     <i class="fa fa-chevron-right" aria-hidden="true"></i> Expand
                                 </div>
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
@@ -85,6 +86,9 @@
                                                                       [elt]="elt" [node]="node" [canEdit]="canEdit"
                                                                       (onEltChange)="onEltChange.emit();">
                                 </cde-form-description-question-detail>
+                                <button *ngIf="node.data.edit" class="btn btn-outline-success btn-sm"
+                                        (click)="node.data.edit = false;">OK
+                                </button>
                             </div>
                         </div>
                         <tree-node-drop-slot [dropIndex]="node.index + 1" [node]="node.parent"></tree-node-drop-slot>
@@ -110,10 +114,18 @@
 
 <ng-template #questionSearchTmpl let-c="close" let-d="dismiss">
     <div class="modal-header">
-        <h3>Search Questions</h3>
+        <button (click)="questionModelMode = 'search'">Search Questions</button>
+        <button (click)="questionModelMode = 'add'">Add A New Data Element</button>
     </div>
     <div class="modal-body">
-        <cde-cde-search addMode="True" [embedded]="true" (add)="addQuestionFromSearch($event)"></cde-cde-search>
+        <ng-container *ngIf="questionModelMode === 'search'">
+            <cde-cde-search addMode="True" [embedded]="true"
+                            (add)="addQuestionFromSearch($event)"></cde-cde-search>
+        </ng-container>
+        <div *ngIf="questionModelMode === 'add'">
+            <label for="newDEName"></label>
+            <input id="newDEName" placeholder="New Data Element Name"/>
+        </div>
     </div>
     <div class="modal-footer">
         <button class="btn  btn-warning" (click)="d()" id="cancelSelectQ">Close</button>

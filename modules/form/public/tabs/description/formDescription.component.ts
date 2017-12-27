@@ -27,32 +27,32 @@ const TOOL_BAR_OFF_SET = 55;
     templateUrl: "formDescription.component.html",
     animations: [copySectionAnimation],
     styles: [`
-        :host >>> .badge {
+        :host > > > .badge {
             font-size: 100%;
         }
-        
-        :host >>> .tree {
+
+        :host > > > .tree {
             cursor: default;
         }
-        
-        :host >>> .panel {
+
+        :host > > > .panel {
             margin-bottom: 1px;
         }
 
-        :host >>> .tree-children {
+        :host > > > .tree-children {
             padding-left: 0;
         }
 
-        :host >>> .questionSectionLabel{
-            font-weight:bold;
+        :host > > > .questionSectionLabel {
+            font-weight: bold;
         }
 
-        :host >>> .node-drop-slot {
+        :host > > > .node-drop-slot {
             height: 10px;
             margin-bottom: 1px;
         }
 
-        :host >>> .panel-badge-btn  {
+        :host > > > .panel-badge-btn {
             color: white;
             background-color: #333;
         }
@@ -72,7 +72,7 @@ const TOOL_BAR_OFF_SET = 55;
             position: fixed;
             padding: 5px;
             padding-left: 20px;
-            top: ${TOOL_BAR_OFF_SET}px;
+            top: ${TOOL_BAR_OFF_SET} px;
             border-bottom-left-radius: 50px;
             right: 0;
             -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -127,6 +127,8 @@ export class FormDescriptionComponent implements OnChanges {
     @ViewChild("formSearchTmpl") formSearchTmpl: TemplateRef<any>;
     @ViewChild("questionSearchTmpl") questionSearchTmpl: TemplateRef<any>;
     @ViewChild("descToolbox") descToolbox: ElementRef;
+
+    questionModelMode = 'search';
 
     @HostListener('window:scroll', ['$event'])
     doIt() {
@@ -279,5 +281,9 @@ export class FormDescriptionComponent implements OnChanges {
         this.tree.treeModel.expandAll();
         this.addIds(this.elt.formElements, "");
         this.onEltChange.emit();
+    }
+
+    ok(node) {
+        node.data.edit = false;
     }
 }

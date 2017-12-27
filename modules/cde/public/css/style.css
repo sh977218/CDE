@@ -451,3 +451,13 @@ label.input-group-addon {
 .text-end {
     text-align: end;
 }
+
+questionSectionLabel {
+    min-width: 75%;
+}
+
+.questionSectionLabel:hover {
+    background-color: black;
+    opacity: 0.8;
+    color: white;
+}
