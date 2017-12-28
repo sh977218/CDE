@@ -251,10 +251,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     private filterOutWorkingGroups(cb) {
         this.orgHelperService.then(() => {
             this.userService.then(() => {
-                this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter(bucket => {
-                    return this.orgHelperService.showWorkingGroup(bucket.key, this.userService.user)
-                        || this.userService.user.siteAdmin;
-                });
+                this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter(bucket =>
+                    this.orgHelperService.showWorkingGroup(bucket.key) || this.userService.user.siteAdmin
+                );
                 cb();
             });
         });
