@@ -291,6 +291,10 @@ exports.buildElasticSearchQuery = function (user, settings) {
         settings.filter.bool.filter.push({bool: {should: filterDatatypeTerms}});
     }
 
+    if (settings.visibleStatuses.indexOf("Retired") === -1) {
+        settings.filter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
+    }
+
     settings.filterDatatype = {
         bool: {should: filterRegStatusTerms}
     };
@@ -412,7 +416,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     // show statuses that either you selected, or it's your org and it's not retired.
     let regStatusAggFilter = {
         "bool": {
-            "should": [
+            "filter": [
                 {
                     "bool": {
                         "should": settings.visibleStatuses.concat(settings.selectedStatuses).map(regStatus => {
@@ -425,8 +429,13 @@ exports.buildElasticSearchQuery = function (user, settings) {
     };
     if (usersvc.myOrgs(user).length > 0)
         usersvc.myOrgs(user).map(org => {
-            regStatusAggFilter.bool.should[0].bool.should.push({"term": {"stewardOrg.name": org}})
+            regStatusAggFilter.bool.filter[0].bool.should.push({"term": {"stewardOrg.name": org}})
         });
+
+    if (settings.visibleStatuses.indexOf("Retired") === -1) {
+        regStatusAggFilter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
+    }
+
 
     if (sort) {
         //noinspection JSAnnotator
