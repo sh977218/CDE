@@ -278,6 +278,10 @@ export class FormDescriptionQuestionDetailComponent {
         this.onEltChange.emit();
     }
 
+    removeCdeNaming(i) {
+        this.question.question.cde.naming.splice(i, 1);
+        this.onEltChange.emit();
+    }
     removeCdePv(i) {
         this.question.question.cde.permissibleValues.splice(i, 1);
         this.onEltChange.emit();
@@ -288,6 +292,11 @@ export class FormDescriptionQuestionDetailComponent {
         this.onEltChange.emit();
     }
 
+    addNewCdeNaming(newCdeNaming) {
+        this.question.question.cde.naming.push(newCdeNaming);
+        this.newCdeNaming = {};
+        this.onEltChange.emit();
+    }
     addNewCdePv(newCdePv) {
         this.question.question.cde.permissibleValues.push(newCdePv);
         this.question.question.answers.push(newCdePv);
@@ -305,4 +314,5 @@ export class FormDescriptionQuestionDetailComponent {
 
     newCdePv = {};
     newCdeId = {};
+    newCdeNaming={};
 }

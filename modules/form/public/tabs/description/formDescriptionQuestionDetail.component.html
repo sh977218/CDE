@@ -180,6 +180,46 @@
             </dd>
         </ng-container>
         <ng-container *ngIf="!question.question.cde.tinyId">
+            <dt class="col-2">CDE Namings:</dt>
+            <dd class="col-10">
+                <table class="table table-border table-responsive">
+                    <tr>
+                        <th>Name</th>
+                        <th>Definition</th>
+                        <th>Tags</th>
+                        <th></th>
+                    </tr>
+                    <tr *ngFor="let cdeNaming of question.question.cde.naming;let i = index;">
+                        <td>
+                            <cde-inline-edit [(model)]="cdeNaming.designation" [isAllowed]="true"
+                                             (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                        </td>
+                        <td>
+                            <cde-inline-edit [(model)]="cdeNaming.definition" [isAllowed]="true"
+                                             (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                        <td>
+                        <select2 [data]="[]" [value]="cdeNaming.tags" [options]="options"
+                                 [disabled]="false" width="100%"
+                                 (valueChanged)="changedTags(name,$event)">
+                        </select2>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-danger btn-xs" (click)="removeCdeNaming(i);">Remove</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input [(ngModel)]="newCdeNaming.designation" class="w-100"/></td>
+                        <td><input [(ngModel)]="newCdeNaming.definition" class="w-100"/></td>
+                        <td><input [(ngModel)]="newCdeNaming.tags" class="w-100"/></td>
+                        <td>
+                            <button class="btn btn-outline-success btn-xs" (click)="addNewCdeNaming(newCdeNaming);">
+                                Add
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+
+            </dd>
             <dt class="col-2">CDE Identifiers:</dt>
             <dd class="col-10">
                 <table class="table table-border table-responsive">
@@ -275,6 +315,9 @@
             </ng-container>
         </ng-container>
     </dl>
+    <button *ngIf="question.edit" class="btn btn-outline-success btn-sm"
+            (click)="question.edit = false;">OK
+    </button>
 </ng-template>
 
 <ng-template #formDescriptionNameSelectTmpl let-c="close" let-d="dismiss">
@@ -293,10 +336,6 @@
             <div class="col-3">
                 <button class="btn btn-outline-dark" (click)="nameSelectModal.okSelect(naming)">
                     <i class="fa fa-check mr-1"></i>Select
-                </button>
-                <button *ngIf="!question.question.cde.tinyId" class="btn btn-outline-dark"
-                        (click)="removeNamingFromNewCde(i);">
-                    <i class="fa fa-minus"></i> Remove Naming
                 </button>
             </div>
             <div class="col-9">
@@ -326,10 +365,6 @@
             <div class="col-lg-12">
                 <button class="btn btn-outline-dark" (click)="nameSelectModal.okSelect()">
                     <i class="fa fa-stop"></i> No Label
-                </button>
-                <button *ngIf="!question.question.cde.tinyId" class="btn btn-outline-dark"
-                        (click)="addNamingToNewCde();">
-                    <i class="fa fa-plus"></i> Add Naming
                 </button>
             </div>
         </div>

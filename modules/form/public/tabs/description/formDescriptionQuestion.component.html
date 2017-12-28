@@ -1,5 +1,5 @@
 <div class="question_view" [ngClass]="{'bg-warning': question.question.cde.outdated}">
-    <div *ngIf="!isSubForm && canEdit" class="d-inline-block left">
+    <div *ngIf="!isSubForm && canEdit" class="float-left">
         <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"
            [treeDrag]="node"
            [treeDragEnabled]="node.allowDrag()"></i>
@@ -7,11 +7,11 @@
            [ngClass]="{'fa-spin': question.updatedSkipLogic}"
            title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
     </div>
-    <div class="questionSectionLabel d-inline-block left" (click)="question.edit = true">
-        <div *ngIf="question.question.isScore" class="d-inline-block left">
+    <div class="questionSectionLabel float-left" (click)="question.edit = true">
+        <div *ngIf="question.question.isScore" class="float-left">
             <strong>Score: </strong>
         </div>
-        <div class="d-inline-block left questionLabel" title="{{question.label}}" style="margin-left: 5px">
+        <div class="float-left questionLabel" title="{{question.label}}" style="margin-left: 5px">
             <ng-container *ngIf="question.hideLabel">
                 <i class="fa fa-question-circle" ngbTooltip="This question has no label"></i>
                 <strong [textContent]="question.question.cde.name"></strong>
@@ -21,18 +21,18 @@
                 (part of {{question.question.partOf}})
             </small>
         </div>
-        <div class="d-inline-block left">
+        <div class="float-left">
             <span *ngIf="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
         </div>
-        <div *ngIf="question.question.cde.outdated" class="d-inline-block left error-block"> (Outdated)
+        <div *ngIf="question.question.cde.outdated" class="float-left error-block"> (Outdated)
             <button class="btn  btn-outline-dark btn-xs updateQuestionBtn"
                     (click)="openUpdateCdeVersion(question);">
                 Update
             </button>
         </div>
-        <div class="d-inline-block left">{{getDatatypeLabel(question)}}</div>
+        <div class="float-left">{{getDatatypeLabel(question)}}</div>
     </div>
-    <div class="d-inline-block pull-right">
+    <div class="float-right">
         <a *ngIf="question.question.cde.tinyId" target="_blank" title="{{question.question.cde.name}}"
            href="/deView?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
             <i class="fa fa-eye"></i> View CDE

@@ -452,8 +452,8 @@ label.input-group-addon {
     text-align: end;
 }
 
-questionSectionLabel {
-    min-width: 75%;
+.questionSectionLabel {
+    min-width: 50% !important;
 }
 
 .questionSectionLabel:hover {

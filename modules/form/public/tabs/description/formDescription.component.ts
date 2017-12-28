@@ -27,32 +27,32 @@ const TOOL_BAR_OFF_SET = 55;
     templateUrl: "formDescription.component.html",
     animations: [copySectionAnimation],
     styles: [`
-        :host > > > .badge {
+        :host >>> .badge {
             font-size: 100%;
         }
 
-        :host > > > .tree {
+        :host >>> .tree {
             cursor: default;
         }
 
-        :host > > > .panel {
+        :host >>> .panel {
             margin-bottom: 1px;
         }
 
-        :host > > > .tree-children {
+        :host >>> .tree-children {
             padding-left: 0;
         }
 
-        :host > > > .questionSectionLabel {
+        :host >>> .questionSectionLabel {
             font-weight: bold;
         }
 
-        :host > > > .node-drop-slot {
+        :host >>> .node-drop-slot {
             height: 10px;
             margin-bottom: 1px;
         }
 
-        :host > > > .panel-badge-btn {
+        :host >>> .panel-badge-btn {
             color: white;
             background-color: #333;
         }
@@ -119,8 +119,16 @@ const TOOL_BAR_OFF_SET = 55;
         }
     `]
 })
-export class FormDescriptionComponent implements OnChanges {
-    @Input() elt: CdeForm;
+export class FormDescriptionComponent {
+    private _elt: CdeForm;
+    @Input() set elt(e: CdeForm) {
+        this._elt = e;
+        this.addExpanded(e);
+        this.addIds(e.formElements, "");
+    };
+    get elt() {
+        return this._elt;
+    }
     @Input() canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
     @ViewChild(TreeComponent) public tree: TreeComponent;
@@ -129,6 +137,7 @@ export class FormDescriptionComponent implements OnChanges {
     @ViewChild("descToolbox") descToolbox: ElementRef;
 
     questionModelMode = 'search';
+    newDataElementName;
 
     @HostListener('window:scroll', ['$event'])
     doIt() {
@@ -159,7 +168,7 @@ export class FormDescriptionComponent implements OnChanges {
                     } else if (from.ref) {
                         this.toolDropTo = to;
                         if (from.ref === "question") {
-                            this.openQuestionSearch();
+                            this.openQuestionSearch(to, tree);
                             return;
                         } else if (from.ref === "form") {
                             this.openFormSearch();
@@ -185,13 +194,6 @@ export class FormDescriptionComponent implements OnChanges {
         dropSlotHeight: 3,
         isExpandedField: "expanded"
     };
-
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes.elt) {
-            this.addExpanded(this.elt);
-            this.addIds(this.elt.formElements, "");
-        }
-    }
 
     constructor(private localStorageService: LocalStorageService,
                 public modalService: NgbModal,
@@ -268,8 +270,18 @@ export class FormDescriptionComponent implements OnChanges {
         });
     }
 
-    openQuestionSearch() {
-        this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(() => {
+    openQuestionSearch(to, tree) {
+        this.newDataElementName = "";
+        this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(reason => {
+            if (reason === 'create') {
+                let newQuestion = this.getNewQuestion();
+                newQuestion.label = this.newDataElementName;
+                newQuestion.question.cde.naming = [{designation: this.newDataElementName}];            ;
+                this.addIndex(to.parent.data.formElements, newQuestion, to.index);
+                tree.update();
+                this.addIds(this.elt.formElements, "");
+                this.onEltChange.emit();
+            }
         }, () => {
         });
     }
