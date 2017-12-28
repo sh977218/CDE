@@ -81,8 +81,8 @@
                                      class="btn btn-outline-dark expand-form">
                                     <i class="fa fa-chevron-right" aria-hidden="true"></i> Expand
                                 </div>
+
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
-                                                                      [ngbCollapse]="!node.data.expanded"
                                                                       [elt]="elt" [node]="node" [canEdit]="canEdit"
                                                                       (onEltChange)="onEltChange.emit();">
                                 </cde-form-description-question-detail>

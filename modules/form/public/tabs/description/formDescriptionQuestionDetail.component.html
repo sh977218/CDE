@@ -256,7 +256,7 @@
                 </table>
 
             </dd>
-            <dt class="col-2">CDE Data Type:</dt>
+            <dt class="col-2">CDE Datatype:</dt>
             <dd class="col-10">
                 <select2 [data]="dataTypeOptions" [value]="question.question.cde.datatype"
                          [options]="datatypeSelect2Options"
@@ -315,8 +315,7 @@
             </ng-container>
         </ng-container>
     </dl>
-    <button *ngIf="question.edit" class="btn btn-outline-success btn-sm"
-            (click)="question.edit = false;">OK
+    <button *ngIf="question.edit" class="btn btn-outline-success btn-sm" (click)="question.edit = false;">OK
     </button>
 </ng-template>
 

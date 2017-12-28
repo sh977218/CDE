@@ -72,7 +72,7 @@ const TOOL_BAR_OFF_SET = 55;
             position: fixed;
             padding: 5px;
             padding-left: 20px;
-            top: ${TOOL_BAR_OFF_SET} px;
+            top: ${TOOL_BAR_OFF_SET}px;
             border-bottom-left-radius: 50px;
             right: 0;
             -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -163,7 +163,7 @@ export class FormDescriptionComponent {
             mouse: {
                 drop: (tree, node, $event, {from, to}) => {
                     if (from.insert) {
-                        this.addIndex(to.parent.data.formElements, this.getNewSection(), to.index);
+                        this.addIndex(to.parent.data.formElements, new FormSection(), to.index);
                         tree.update();
                     } else if (from.ref) {
                         this.toolDropTo = to;
@@ -176,9 +176,9 @@ export class FormDescriptionComponent {
                         } else if (from.ref === "pasteSection") {
                             this.pasteSection();
                             return;
-                        } else if (from.ref === "cde") {
-                            this.addIndex(to.parent.data.formElements, this.getNewQuestion(), to.index);
-                            tree.update();
+                        // } else if (from.ref === "cde") {
+                        //     this.addIndex(to.parent.data.formElements, this.getNewQuestion(), to.index);
+                        //     tree.update();
                         }
                     } else
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
@@ -199,7 +199,7 @@ export class FormDescriptionComponent {
                 public modalService: NgbModal,
                 private formService: FormService,
                 private http: Http) {
-        this.toolSection = {insert: "section", data: this.getNewSection()};
+        this.toolSection = {insert: "section", data: new FormSection()};
     }
 
     addIndex(elems, elem, i) {
@@ -247,36 +247,25 @@ export class FormDescriptionComponent {
         });
     }
 
-    getNewSection() {
-        return new FormSection;
-    }
-
-    getNewQuestion() {
-        let formQuestion = new FormQuestion;
-        formQuestion.newCde = true;
-        formQuestion.question = new Question;
-        formQuestion.question.cde = new QuestionCde;
-        return formQuestion;
-    }
-
     hasCopiedSection() {
         let copiedSection = this.localStorageService.get("sectionCopied");
         return !_.isEmpty(copiedSection);
     }
 
     openFormSearch() {
-        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(() => {
-        }, () => {
-        });
+        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(() => {}, () => {});
     }
 
     openQuestionSearch(to, tree) {
         this.newDataElementName = "";
         this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(reason => {
             if (reason === 'create') {
-                let newQuestion = this.getNewQuestion();
+                // let newQuestion = this.getNewQuestion();
+                let newQuestion = new FormQuestion();
+                newQuestion.newCde = true;
+                newQuestion.edit = true;
                 newQuestion.label = this.newDataElementName;
-                newQuestion.question.cde.naming = [{designation: this.newDataElementName}];            ;
+                newQuestion.question.cde.naming = [{designation: this.newDataElementName}];
                 this.addIndex(to.parent.data.formElements, newQuestion, to.index);
                 tree.update();
                 this.addIds(this.elt.formElements, "");

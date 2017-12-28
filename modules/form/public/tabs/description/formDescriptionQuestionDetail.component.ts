@@ -172,7 +172,9 @@ export class FormDescriptionQuestionDetailComponent {
         );
 
     getTemplate() {
-        return (this.canEdit && this.question.edit ? this.formDescriptionQuestionEditTmpl : this.formDescriptionQuestionTmpl);
+        return (this.canEdit && this.question.edit
+            ? this.formDescriptionQuestionEditTmpl
+            : this.formDescriptionQuestionTmpl);
     }
 
     getAnswersData() {
@@ -274,7 +276,7 @@ export class FormDescriptionQuestionDetailComponent {
     changedDatatype(data: { value: string }) {
         this.question.question.cde.datatype = data.value;
         this.question.question.datatype = data.value;
-        this.question.question.answers = this.question.question.cde.permissibleValues;
+        this.question.question.answers = [];
         this.onEltChange.emit();
     }
 
