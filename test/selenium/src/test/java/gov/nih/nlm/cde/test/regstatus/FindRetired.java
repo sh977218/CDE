@@ -25,7 +25,7 @@ public class FindRetired extends NlmCdeBaseTest {
         driver.get(driver.getCurrentUrl());
         textPresent("Retired", By.id("status_crumb"));
         textPresent("Height or length alternative measurement");
-        textNotPresent("Retired (2");
+        textPresent("Retired (2");
     }
 
 
