@@ -57,6 +57,13 @@ const TOOL_BAR_OFF_SET = 55;
             background-color: #333;
         }
 
+        :host >>> .badge.formViewSummaryLabel {
+            display: inline-flex;
+            margin-right: 4px;
+            margin-top: 2px;
+            white-space: normal;
+        }
+
         .node-content-wrapper.is-dragging-over {
             background-color: #ddffee;
             box-shadow: inset 0 0 1px #999;

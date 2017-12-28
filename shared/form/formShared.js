@@ -301,6 +301,14 @@ export function getFormOdm(form, cb) {
     cb(null, odmJsonForm);
 }
 
+export function getLabel(fe) {
+    if (fe.label)
+        return fe.label;
+    if (fe.question && fe.question.cde)
+        return fe.question.cde.name;
+    return null;
+}
+
 export function isSubForm(node) {
     let n = node;
     while (n.data.elementType !== 'form' && n.parent) {

@@ -51,8 +51,8 @@
                     </dd>
                     <dt class="col-sm-5">Number of Columns:</dt>
                     <dd class="col-sm-7 ">
-                        <select [ngModel]="profile.numberOfColumns" id="nc_{{index}}"
-                                (ngModelChange)="onChange(profile,$event)">
+                        <select [(ngModel)]="profile.numberOfColumns" id="nc_{{index}}"
+                                (ngModelChange)="onEltChange.emit()">
                             <option value=1>1</option>
                             <option value=2>2</option>
                             <option value=3>3</option>
@@ -73,6 +73,21 @@
                         (Use # in place of number. Ex: "#." for "1.")
                     </dd>
                 </dl>
+                <div class="card">
+                    <div class="card-header" (click)="profile.editUoms=!profile.editUoms;populateUoms()">
+                        Edit Unit of Measure Aliases
+                    </div>
+                    <div class="card-body row">
+                        <ng-container *ngFor="let uom of profile.uoms">
+                            <div class="col">{{uom.label}}</div>
+                            <div class="col">
+                                <select [(ngModel)]="uom.alias" (ngModelChange)="onEltChange.emit()">
+                                    <option *ngFor="let option of uom.options">{{option}}</option>
+                                </select>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
             </div>
             <div class="col-lg-7 col-sm-12">
                 <div class="displayProfileRenderDiv" style="border: dashed 1px; zoom:60%; padding: 0 15px;">

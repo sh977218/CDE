@@ -3,8 +3,8 @@ import { Http, Response } from '@angular/http';
 import noop from 'lodash.noop';
 
 import {
-    areDerivationRulesSatisfied, convertFormToSection, findQuestionByTinyId, isSubForm, iterateFe, iterateFes,
-    iterateFeSync, iterateFesSync, score
+areDerivationRulesSatisfied, convertFormToSection, findQuestionByTinyId, getLabel, isSubForm, iterateFe, iterateFes,
+iterateFeSync, iterateFesSync, score
 } from '../../shared/form/formShared';
 import { FormQuestion } from 'core/form.model';
 
@@ -16,6 +16,7 @@ export class FormService {
 
     static areDerivationRulesSatisfied = areDerivationRulesSatisfied;
     static convertFormToSection = convertFormToSection;
+    static getLabel = getLabel;
     static findQuestionByTinyId = findQuestionByTinyId;
     static isSubForm = isSubForm;
     static iterateFe = iterateFe;

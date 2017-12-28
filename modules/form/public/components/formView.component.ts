@@ -14,7 +14,6 @@ import { OrgHelperService } from 'core/orgHelper.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
-import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { Subscription } from 'rxjs/Subscription';
 import { UserService } from '_app/user.service';
@@ -333,7 +332,7 @@ export class FormViewComponent implements OnInit {
         let validationErrors = this.validationErrors;
         function findExistingErrors(parent: FormElementsContainer, fe: FormElement) {
             if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe))
-                validationErrors.push('SkipLogic error on form element "' + SkipLogicService.getLabel(fe) + '".');
+                validationErrors.push('SkipLogic error on form element "' + FormService.getLabel(fe) + '".');
             if (Array.isArray(fe.formElements))
                 fe.formElements.forEach(f => findExistingErrors(fe, f));
         }

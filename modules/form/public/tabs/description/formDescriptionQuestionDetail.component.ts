@@ -10,6 +10,8 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { CdeForm, FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'core/form.model';
 import { FormattedValue } from 'core/models.model';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
+import { FormService } from 'nativeRender/form.service';
+import { UcumService } from 'form/public/ucum.service';
 
 @Component({
     selector: "cde-form-description-question-detail",
@@ -67,7 +69,8 @@ export class FormDescriptionQuestionDetailComponent {
 
     constructor(private http: Http,
                 public modalService: NgbModal,
-                public skipLogicValidateService: SkipLogicValidateService) {
+                public skipLogicValidateService: SkipLogicValidateService,
+                private ucumService: UcumService) {
         this.nameSelectModal.okSelect = (naming = null) => {
             if (!naming) {
                 this.nameSelectModal.question.label = "";
@@ -93,66 +96,13 @@ export class FormDescriptionQuestionDetailComponent {
         }
     }
 
-    validateUoms(question) {
-        function matchUnits(a, aKeys, question, index) {
-            let b = ucum.canonicalize(question.uoms[index]).units;
-            question.uomsValid[index] = question.uomsValid[index]
-                || aKeys.concat(Object.keys(b)).every(u => a[u] && b[u] && a[u] === b[u]);
-        }
-        let baseUnits;
-        let baseUnitsKeys;
-        let delayedUnits = [];
-        question.uomsValid = [];
-        question.uoms.forEach((uom, i) => {
-            this.http.get('https://clin-table-search.lhc.nlm.nih.gov/api/ucum/v3/search?q=is_simple:true%20AND%20category:Clinical&df=cs_code,name,guidance&authenticity_token=&terms=' + encodeURIComponent(uom))
-                .map(r => r.json())
-                .subscribe(r => {
-                    r[3].forEach(unit => {
-                        if (unit[0] === uom || unit[1] === uom) {
-                            if (unit[0] !== uom) {
-                                question.uoms[i] = unit[0];
-                                this.uomVersion++;
-                                this.stageElt.emit();
-                            }
-
-                            let valid = true;
-                            try {
-                                ucum.parse(1, question.uoms[i]);
-                            } catch (err) {
-                                valid = false;
-                            }
-                            if (valid) {
-                                if (i === 0) {
-                                    baseUnits = ucum.canonicalize(question.uoms[i]).units;
-                                    baseUnitsKeys = Object.keys(baseUnits);
-                                    question.uomsValid[i] = question.uomsValid[i] || valid;
-
-                                    if (delayedUnits.length)
-                                        delayedUnits.forEach(u => matchUnits(baseUnits, baseUnitsKeys, question, u));
-                                } else {
-                                    if (baseUnits)
-                                        matchUnits(baseUnits, baseUnitsKeys, question, i);
-                                    else
-                                        delayedUnits.push(i);
-                                }
-                            } else {
-                                question.uomsValid[i] = question.uomsValid[i] || valid;
-                            }
-                        } else {
-                            question.uomsValid[i] = question.uomsValid[i] || false;
-                        }
-                    });
-                });
-        });
-    }
-
     checkUom(uoms) {
         let newUoms = (Array.isArray(uoms.value) ? uoms.value.filter(uom => uom !== "") : []);
         if (!_.isEqual(this.question.question.uoms, newUoms)) {
             this.question.question.uoms = newUoms;
             this.stageElt.emit();
+            this.validateUoms(this.question.question);
         }
-        this.validateUoms(this.question.question);
     }
 
     getRepeatLabel(fe) {
@@ -231,6 +181,43 @@ export class FormDescriptionQuestionDetailComponent {
             this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
             this.stageElt.emit();
         }
+    }
+
+    validateUoms(question) {
+        let baseUnits;
+        let baseUnitsKeys;
+        question.uomsValid = [];
+        Observable.of(...question.uoms).concatMap(
+            this.ucumService.getUnit,
+            (uom, unit, i) => {
+                if (unit.length === 0)
+                    return question.uomsValid[i] = 'Unit is not found.';
+
+                if (unit[0] !== uom) {
+                    question.uoms[i] = unit[0];
+                    this.uomVersion++;
+                    this.stageElt.emit();
+                }
+
+                try {
+                    ucum.parse(1, question.uoms[i]);
+                } catch (err) {
+                    return question.uomsValid[i] = 'Unit is not valid.';
+                }
+
+                if (i === 0) {
+                    baseUnits = ucum.canonicalize(question.uoms[i]).units;
+                    baseUnitsKeys = Object.keys(baseUnits);
+                    return question.uomsValid[i] = null;
+                } else {
+                    let b = ucum.canonicalize(question.uoms[i]).units;
+                    if (!baseUnitsKeys.concat(Object.keys(b)).every(u => baseUnits[u] && b[u] && baseUnits[u] === b[u]))
+                        return question.uomsValid[i] = 'Unit not compatible with first unit.';
+                    else
+                        return question.uomsValid[i] = null;
+                }
+            }
+        ).subscribe(() => {});
     }
 
     static inputEvent = new Event('input');

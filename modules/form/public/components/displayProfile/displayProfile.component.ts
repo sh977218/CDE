@@ -1,6 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Observable } from 'rxjs/Observable';
 import "rxjs/add/operator/map";
-import { DisplayProfile } from 'core/form.model';
+
+import { CdeForm, DisplayProfile } from 'core/form.model';
+import { FormService } from 'nativeRender/form.service';
+import { UcumService } from 'form/public/ucum.service';
+
 
 @Component({
     selector: "cde-display-profile",
@@ -8,15 +13,20 @@ import { DisplayProfile } from 'core/form.model';
 })
 export class DisplayProfileComponent implements OnInit {
 
-    @Input() elt: any;
+    @Input() elt: CdeForm;
     @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
 
     samples = [];
     showDelete: boolean;
+    uoms = new Map<string, string[]>();
+    uomsDate: Date;
 
     ngOnInit() {
         this.elt.displayProfiles.forEach(() => this.samples.push(JSON.parse(JSON.stringify(this.sampleElt))));
+    }
+
+    constructor(private ucumService: UcumService) {
     }
 
     addProfile() {
@@ -29,11 +39,32 @@ export class DisplayProfileComponent implements OnInit {
         this.onEltChange.emit();
     };
 
+    getUoms() {
+        if (this.uomsDate !== this.elt.updated) {
+            this.uoms.clear();
+            FormService.iterateFeSync(this.elt, undefined, undefined, q => {
+                if (Array.isArray(q.question.uoms))
+                    q.question.uoms.forEach(u => this.ucumService.getUnitNames(u).subscribe(names => this.uoms.set(u, names)));
+            });
+            this.uomsDate = this.elt.updated;
+        }
+        return this.uoms;
+    }
+
+    profileUomsEditCreate(profile) {
+
+    }
+
+    profileUomsEditSave(profile) {
+
+    }
+
+
     removeDisplayProfile(index) {
         this.elt.displayProfiles.splice(index, 1);
         this.samples.splice(index, 1);
         this.onEltChange.emit();
-    };
+    }
 
     setDisplayType(profile, $event) {
         profile.displayType = $event.target.checked ? 'Follow-up' : 'Dynamic';
