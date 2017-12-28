@@ -7,7 +7,7 @@
            [ngClass]="{'fa-spin': question.updatedSkipLogic}"
            title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
     </div>
-    <div class="questionSectionLabel float-left" (click)="question.edit = true">
+    <div class="questionSectionLabel float-left" (click)="editQuestion(question);">
         <div *ngIf="question.question.isScore" class="float-left">
             <strong>Score: </strong>
         </div>

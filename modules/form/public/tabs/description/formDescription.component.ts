@@ -19,6 +19,7 @@ import { FormService } from "nativeRender/form.service";
 import { CdeForm, FormElement, FormQuestion, FormSection, Question, QuestionCde } from "../../../../core/form.model";
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { Http } from '@angular/http';
+import { Hotkey, HotkeysService } from "angular2-hotkeys";
 
 const TOOL_BAR_OFF_SET = 55;
 
@@ -138,6 +139,7 @@ export class FormDescriptionComponent {
 
     questionModelMode = 'search';
     newDataElementName;
+    formElementEditing;
 
     @HostListener('window:scroll', ['$event'])
     doIt() {
@@ -176,9 +178,6 @@ export class FormDescriptionComponent {
                         } else if (from.ref === "pasteSection") {
                             this.pasteSection();
                             return;
-                        // } else if (from.ref === "cde") {
-                        //     this.addIndex(to.parent.data.formElements, this.getNewQuestion(), to.index);
-                        //     tree.update();
                         }
                     } else
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
@@ -195,15 +194,32 @@ export class FormDescriptionComponent {
         isExpandedField: "expanded"
     };
 
-    constructor(private localStorageService: LocalStorageService,
+    constructor(private http: Http,
+                private localStorageService: LocalStorageService,
                 public modalService: NgbModal,
                 private formService: FormService,
-                private http: Http) {
-        this.toolSection = {insert: "section", data: new FormSection()};
+                private _hotkeysService: HotkeysService) {
+        this._hotkeysService.add([
+            new Hotkey('q', (event: KeyboardEvent): boolean => {
+                if (this.formElementEditing) {
+                    let newQuestion = new FormQuestion();
+                    newQuestion.newCde = true;
+                    newQuestion.edit = true;
+                    newQuestion.label = this.newDataElementName;
+                    newQuestion.question.cde.naming = [{designation: this.newDataElementName}];
+                    this.addIndex(this.formElementEditing.formElements, newQuestion, this.formElementEditing.index++);
+                    this.tree.treeModel.update();
+                    this.addIds(this.elt.formElements, "");
+                    this.formElementEditing.formElement.edit = false;
+                    this.onEltChange.emit();
+                }
+                return false;
+            })
+        ]);
     }
 
-    addIndex(elems, elem, i) {
-        return elems.splice(i, 0, elem);
+    addIndex(elements, element, i) {
+        return elements.splice(i, 0, element);
     }
 
     addQuestionFromSearch(cde) {
@@ -282,9 +298,5 @@ export class FormDescriptionComponent {
         this.tree.treeModel.expandAll();
         this.addIds(this.elt.formElements, "");
         this.onEltChange.emit();
-    }
-
-    ok(node) {
-        node.data.edit = false;
     }
 }

@@ -198,10 +198,11 @@
                             <cde-inline-edit [(model)]="cdeNaming.definition" [isAllowed]="true"
                                              (modelChange)="onEltChange.emit();"></cde-inline-edit>
                         <td>
-                        <select2 [data]="[]" [value]="cdeNaming.tags" [options]="options"
-                                 [disabled]="false" width="100%"
-                                 (valueChanged)="changedTags(name,$event)">
-                        </select2>
+                            <select2 [data]="namingTags" [value]="cdeNaming.tags"
+                                     [options]="namingSelet2Options"
+                                     [disabled]="false" width="100%"
+                                     (valueChanged)="changedTags(cdeName,$event)">
+                            </select2>
                         </td>
                         <td>
                             <button class="btn btn-outline-danger btn-xs" (click)="removeCdeNaming(i);">Remove</button>
@@ -210,7 +211,13 @@
                     <tr>
                         <td><input [(ngModel)]="newCdeNaming.designation" class="w-100"/></td>
                         <td><input [(ngModel)]="newCdeNaming.definition" class="w-100"/></td>
-                        <td><input [(ngModel)]="newCdeNaming.tags" class="w-100"/></td>
+                        <td>
+                            <select2 [data]="namingTags" [value]="newCdeNaming.tags"
+                                     [options]="namingSelet2Options"
+                                     [disabled]="false" width="100%"
+                                     (valueChanged)="changedTags(newCdeNaming,$event)">
+                            </select2>
+                        </td>
                         <td>
                             <button class="btn btn-outline-success btn-xs" (click)="addNewCdeNaming(newCdeNaming);">
                                 Add
@@ -341,19 +348,18 @@
                 <dl class="row">
                     <dt class="col-2">Name:</dt>
                     <dd class="col-10">
-                        <cde-inline-edit [(model)]="naming.designation" (modelChange)="onEltChange.emit();"
-                                         [isAllowed]="!question.question.cde.tinyId"></cde-inline-edit>
+                        <cde-inline-edit [(model)]="naming.designation"
+                                         (modelChange)="onEltChange.emit();"></cde-inline-edit>
                     </dd>
                     <dt class="col-2">Definition:</dt>
                     <dd class="col-10">
                         <cde-inline-area-edit [(model)]="naming.definition" (modelChange)="onEltChange.emit();"
-                                              [(defFormat)]="naming.definitionFormat"
-                                              [isAllowed]="!question.question.cde.tinyId"></cde-inline-area-edit>
+                                              [(defFormat)]="naming.definitionFormat"></cde-inline-area-edit>
                     </dd>
                     <dt class="col-2"> Tags:</dt>
                     <dd class="col-10">
                         <select2 [data]="namingTags" [value]="naming.tags" [options]="namingSelet2Options" width="100%"
-                                 [disabled]="question.question.cde.tinyId" (valueChanged)="changedTags(naming,$event)">
+                                 (valueChanged)="changedTags(naming,$event)">
                         </select2>
                     </dd>
                 </dl>

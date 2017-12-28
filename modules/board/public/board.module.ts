@@ -4,7 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { RouterModule } from '@angular/router';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { Select2Module } from 'ng2-select2';
-import { SelectModule } from 'ng2-select';
+import {HotkeyModule} from 'angular2-hotkeys';
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { BoardViewTemplateComponent } from 'board/public/components/boardViewTemplate/boardViewTemplate.component';
@@ -27,7 +27,7 @@ import { WidgetModule } from "widget/widget.module";
         NgbModule,
         RouterModule,
         Select2Module,
-        SelectModule,
+        HotkeyModule.forRoot(),
         // core
         WidgetModule,
         // internal

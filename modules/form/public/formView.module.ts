@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeModule } from 'angular-tree-component';
 import { Select2Module } from 'ng2-select2';
-import { SelectModule } from 'ng2-select';
+import {HotkeyModule} from 'angular2-hotkeys';
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { ArrayListPipe } from './arrayList.pipe';
@@ -38,7 +38,7 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         Select2Module,
-        SelectModule,
+        HotkeyModule.forRoot(),
         TreeModule,
         // core
         WidgetModule,

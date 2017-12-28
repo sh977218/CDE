@@ -3,7 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { Select2Module } from 'ng2-select2';
-import { SelectModule } from 'ng2-select';
+import {HotkeyModule} from 'angular2-hotkeys';
 
 import { OrgAdminComponent } from 'system/public/components/siteAdmin/orgAdmin/orgAdmin.component';
 import { UsersMgtComponent } from 'system/public/components/siteAdmin/usersMgt/usersMgt.component';
@@ -16,7 +16,7 @@ import { WidgetModule } from 'widget/widget.module';
         FormsModule,
         NgbModule,
         Select2Module,
-        SelectModule,
+        HotkeyModule.forRoot(),
         // core
         WidgetModule,
         // internal

@@ -1,4 +1,7 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import {
+    Component, ElementRef, EventEmitter, Host, Input, OnInit, Output, TemplateRef,
+    ViewChild
+} from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
@@ -9,6 +12,7 @@ import { FormattedValue } from 'core/models.model';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
+import { FormDescriptionComponent } from "./formDescription.component";
 
 @Component({
     selector: "cde-form-description-section",
@@ -17,6 +21,7 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
     @Input() canEdit: boolean = false;
+    @Input() index;
     @Input() node: TreeNode;
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
 
@@ -34,7 +39,8 @@ export class FormDescriptionSectionComponent implements OnInit {
         {label: "Over first question", value: "F"}
     ];
 
-    constructor(private localStorageService: LocalStorageService,
+    constructor(@Host() public formDescriptionComponent: FormDescriptionComponent,
+                private localStorageService: LocalStorageService,
                 private alert: AlertService,
                 public skipLogicValidateService: SkipLogicValidateService) {
     }
@@ -147,5 +153,14 @@ export class FormDescriptionSectionComponent implements OnInit {
             section.isCopied = "clear";
             delete this.elt.isCopied;
         }, 3000);
+    }
+
+    editSection(section) {
+        section.edit = true;
+        this.formDescriptionComponent.formElementEditing = {
+            formElements: this.parent.formElements,
+            index: this.index,
+            formElement: section
+        };
     }
 }

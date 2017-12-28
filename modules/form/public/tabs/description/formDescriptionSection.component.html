@@ -11,12 +11,12 @@
            title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}"></i>
     </span>
 
-    <cde-inline-edit *ngIf="section.elementType === 'section'" (click)="section.edit = true"
+    <cde-inline-edit *ngIf="section.elementType === 'section'" (click)="editSection(section);"
                      class="section_label questionSectionLabel ib"
                      style="margin-left: 5px; width: 62%;font-weight:bold;"
                      [(model)]="section.label" [isAllowed]="canEditSection()"
                      (modelChange)="onEltChange.emit()"></cde-inline-edit>
-    <div *ngIf="section.elementType === 'form'" (click)="section.edit = true"
+    <div *ngIf="section.elementType === 'form'" (click)="editSection(section);"
          class="section_title questionSectionLabel d-inline-block"
          style="margin-left: 5px; width: 62%;font-weight:bold;">Embedded Form:
         <cde-inline-edit id="innerForm_label_edit_icon_{{section.label}}" [(model)]="section.label"

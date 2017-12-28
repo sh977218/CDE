@@ -9,6 +9,7 @@ import { TreeNode } from "angular-tree-component";
 import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'core/form.model';
 import { FormattedValue } from 'core/models.model';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
+import { AlertService } from "../../../../_app/alert/alert.service";
 
 @Component({
     selector: "cde-form-description-question-detail",
@@ -68,6 +69,7 @@ export class FormDescriptionQuestionDetailComponent {
     uomVersion = 0;
 
     constructor(private http: Http,
+                private alert:AlertService,
                 public modalService: NgbModal,
                 public skipLogicValidateService: SkipLogicValidateService) {
         this.nameSelectModal.okSelect = (naming = null) => {
@@ -263,16 +265,6 @@ export class FormDescriptionQuestionDetailComponent {
         this.onEltChange.emit();
     }
 
-    addNamingToNewCde() {
-        this.question.question.cde.naming.push({designation: '', definition: '', tags: []});
-        this.onEltChange.emit();
-    }
-
-    removeNamingFromNewCde(i) {
-        this.nameSelectModal.cde.naming.splice(i, 1);
-        this.onEltChange.emit();
-    }
-
     changedDatatype(data: { value: string }) {
         this.question.question.cde.datatype = data.value;
         this.question.question.datatype = data.value;
@@ -281,6 +273,9 @@ export class FormDescriptionQuestionDetailComponent {
     }
 
     removeCdeNaming(i) {
+        if (this.question.question.cde.naming.length === 1) {
+            return this.alert.addAlert("danger", "Data element must have namings.");
+        }
         this.question.question.cde.naming.splice(i, 1);
         this.onEltChange.emit();
     }

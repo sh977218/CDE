@@ -7,11 +7,6 @@
                   style="width: 74px;">
                 <i class="fa fa-plus"></i><span class="toolSection"></span>
             </span>
-            <span role="button" id="startAddingCde" class="btn btn-light formDescriptionTool"
-                  *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'cde'}" [treeDragEnabled]="true"
-                  style="width: 68px;">
-                <i class="fa fa-cube"></i><span class="toolCde"></span>
-            </span>
             <span role="button" id="startAddingQuestions" class="btn btn-light formDescriptionTool"
                   *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true"
                   style="width: 87px;">
@@ -23,7 +18,7 @@
                 <i class="fa fa-cubes"></i><span class="toolForm"></span>
             </span>
             <span role="button" *ngIf="hasCopiedSection()" id="pasteSection"
-                  class="btn  btn-light formDescriptionTool"
+                  class="btn btn-light formDescriptionTool"
                   [treeDrag]="{ref: 'pasteSection'}" [treeDragEnabled]="true" style="width: 68px;">
                 <i class="fa fa-paste" [ngClass]="{'pasteSectionWrench':elt.isCopied}"></i><span
                     class="toolCopySection"></span>
@@ -66,10 +61,11 @@
                                                 (onEltChange)="onEltChange.emit()"></cde-form-description-section>
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"
-                                                [elt]="elt" [canEdit]="canEdit" [node]="node"
+                                                [elt]="elt" [canEdit]="canEdit" [node]="node" [index]="index"
                                                 (stageElt)="onEltChange.emit()"></cde-form-description-question>
                                         <button *ngIf="(node.data.elementType === 'section' || node.data.elementType === 'form') && node.data.edit"
-                                                class="btn btn-outline-success btn-sm" (click)="ok(node)">OK
+                                                class="btn btn-outline-success btn-sm"
+                                                (click)="node.data.edit = false;">OK
                                         </button>
                                     </div>
                                 </div>

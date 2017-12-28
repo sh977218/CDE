@@ -1,20 +1,21 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Host, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
-import { CdeForm, FormElement, FormQuestion } from "core/form.model";
+import { FormElement, FormQuestion } from "core/form.model";
 import { TreeNode } from "angular-tree-component";
 import { FormService } from 'nativeRender/form.service';
+import { FormDescriptionComponent } from "./formDescription.component";
 
 @Component({
     selector: "cde-form-description-question",
     templateUrl: "formDescriptionQuestion.component.html"
 })
 export class FormDescriptionQuestionComponent implements OnInit {
-    @Input() elt: CdeForm;
     @Input() canEdit: boolean = false;
     @Input() node: TreeNode;
+    @Input() index;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("updateCdeVersionTmpl") updateCdeVersionTmpl: NgbModalModule;
@@ -25,7 +26,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
     question: FormQuestion;
     parent: FormElement;
 
-    constructor(public formService: FormService,
+    constructor(@Host() public formDescriptionComponent: FormDescriptionComponent,
+                public formService: FormService,
                 private http: Http,
                 public modalService: NgbModal) {
     }
@@ -131,5 +133,14 @@ export class FormDescriptionQuestionComponent implements OnInit {
                     });
                 });
             });
+    }
+
+    editQuestion(question) {
+        question.edit = true;
+        this.formDescriptionComponent.formElementEditing = {
+            formElements: this.parent.formElements,
+            index: this.index,
+            formElement: question
+        };
     }
 }
