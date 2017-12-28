@@ -291,7 +291,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         settings.filter.bool.filter.push({bool: {should: filterDatatypeTerms}});
     }
 
-    if (settings.visibleStatuses.indexOf("Retired") === -1) {
+    if (settings.visibleStatuses.indexOf("Retired") === -1 && settings.selectedStatuses.indexOf("Retired") === -1) {
         settings.filter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
     }
 
@@ -432,7 +432,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
             regStatusAggFilter.bool.filter[0].bool.should.push({"term": {"stewardOrg.name": org}})
         });
 
-    if (settings.visibleStatuses.indexOf("Retired") === -1) {
+    if (settings.visibleStatuses.indexOf("Retired") === -1 && settings.selectedStatuses.indexOf("Retired") === -1) {
         regStatusAggFilter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
     }
 
