@@ -157,6 +157,9 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     editSection(section) {
         section.edit = true;
+        if (this.formDescriptionComponent.formElementEditing) {
+            this.formDescriptionComponent.formElementEditing.formElement.edit = false;
+        }
         this.formDescriptionComponent.formElementEditing = {
             formElements: this.parent.formElements,
             index: this.index,

@@ -7,27 +7,17 @@
             <div *ngIf="newCdes.length > 0" class="form-group">
                 <div class="text-truncate m-2">
                     <span class="font-weight-bold">There are new CDEs</span>
-                    <button class="btn btn-outline-dark float-right" (click)="createAllDataElements(newCdes);">
-                        Create All
-                    </button>
                 </div>
                 <div *ngFor="let newCde of newCdes" class="card">
                     <div class="card-header">
                         <div class="float-left" (click)="newCde.isCollapsed = !newCde.isCollapsed"
                              [ngClass]="{'text-danger':newCde.naming.length === 0}">
-                            <span *ngIf="newCde.naming.length > 0 ">
+                            <span *ngIf="newCde.naming.length > 0" class="hand-cursor">
                                 {{newCde.naming[0].designation}}
                             </span>
                             <span *ngIf="newCde.naming.length === 0">
                             naming is empty;
                             </span>
-                        </div>
-                        <div class="float-right">
-                            <span *ngIf="newCde.saved" class="text-success"> saved </span>
-                            <span *ngIf="newCde.error" class="text-danger"> {{newCde.error}}</span>
-                            <button *ngIf="!nweCde.tinyId" class="btn btn-sm btn-warning"
-                                    (click)="createDataElement(newCde,null);">Create
-                            </button>
                         </div>
                     </div>
                     <div class="card-body" [ngbCollapse]="!newCde.isCollapsed">

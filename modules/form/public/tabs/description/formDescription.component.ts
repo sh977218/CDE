@@ -202,16 +202,27 @@ export class FormDescriptionComponent {
         this._hotkeysService.add([
             new Hotkey('q', (event: KeyboardEvent): boolean => {
                 if (this.formElementEditing) {
-                    let newQuestion = new FormQuestion();
-                    newQuestion.newCde = true;
-                    newQuestion.edit = true;
-                    newQuestion.label = this.newDataElementName;
-                    newQuestion.question.cde.naming = [{designation: this.newDataElementName}];
-                    this.addIndex(this.formElementEditing.formElements, newQuestion, this.formElementEditing.index++);
-                    this.tree.treeModel.update();
-                    this.addIds(this.elt.formElements, "");
-                    this.formElementEditing.formElement.edit = false;
-                    this.onEltChange.emit();
+                    this.newDataElementName = "";
+                    this.questionModelMode = 'add';
+                    this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(reason => {
+                        if (reason === 'create') {
+                            // let newQuestion = this.getNewQuestion();
+                            let newQuestion = new FormQuestion();
+                            newQuestion.newCde = true;
+                            newQuestion.edit = true;
+                            newQuestion.label = this.newDataElementName;
+                            newQuestion.question.cde.naming = [{designation: this.newDataElementName}];
+                            this.formElementEditing.index = this.formElementEditing.index + 1;
+                            this.addIndex(this.formElementEditing.formElements, newQuestion, this.formElementEditing.index);
+                            this.tree.treeModel.update();
+                            this.addIds(this.elt.formElements, "");
+                            this.formElementEditing.formElement.edit = false;
+                            this.formElementEditing.formElement = newQuestion;
+
+                            this.onEltChange.emit();
+                        }
+                    }, () => {
+                    });
                 }
                 return false;
             })

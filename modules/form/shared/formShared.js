@@ -398,22 +398,25 @@ export function score(question, elt) {
 }
 
 
-export function loopFormElements(form, doQuestion = null, doForm = null, doSection = null) {
+export function loopFormElements(form, doQuestion, doForm, doSection, cb) {
     if (!form.formElements) form.formElements = [];
-    form.formElements.forEach(fe => {
+    async.forEachSeries(form.formElements, (fe, doneOne) => {
         if (fe.elementType === 'question') {
-            if (doQuestion)
-                doQuestion(fe, null);
-            else
-                this.loopFormElements(fe, doQuestion, doForm, doSection);
+            if (doQuestion) doQuestion(fe, doneOne);
+            else this.loopFormElements(fe, doQuestion, doForm, doSection, doneOne);
         }
         else if (fe.elementType === 'form') {
-            if (doForm) doForm(fe, () => this.loopFormElements(fe, null, null, null));
-            else this.loopFormElements(fe, doQuestion, doForm, doSection);
+            if (doForm) doForm(fe, () => this.loopFormElements(fe, null, null, null, doneOne));
+            else this.loopFormElements(fe, doQuestion, doForm, doSection, doneOne);
         }
         else if (fe.elementType === 'section') {
-            if (doSection) doSection(fe, () => this.loopFormElements(fe, null, null, null));
-            else this.loopFormElements(fe, doQuestion, doForm, doSection);
+            if (doSection) doSection(fe, () => this.loopFormElements(fe, null, null, null, doneOne));
+            else this.loopFormElements(fe, doQuestion, doForm, doSection, doneOne);
+        } else {
+            console.log("Unknown element type: " + fe.elementType);
+            doneOne();
         }
+    }, () => {
+        if (cb) cb();
     });
 }

@@ -137,6 +137,10 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
     editQuestion(question) {
         question.edit = true;
+        if (this.formDescriptionComponent.formElementEditing) {
+            if (this.formDescriptionComponent.formElementEditing.formElement !== question)
+                this.formDescriptionComponent.formElementEditing.formElement.edit = false;
+        }
         this.formDescriptionComponent.formElementEditing = {
             formElements: this.parent.formElements,
             index: this.index,

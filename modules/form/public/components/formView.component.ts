@@ -18,6 +18,8 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { Subscription } from 'rxjs/Subscription';
 import { UserService } from '_app/user.service';
+import * as async from "async";
+import * as formShared from "../../shared/formShared";
 
 
 @Component({
@@ -93,7 +95,7 @@ export class FormViewComponent implements OnInit {
             this.commentAreaComponent.setCurrentTab(this.currentTab);
     }
 
-    canEdit () {
+    canEdit() {
         return this.isAllowedModel.isAllowed(this.elt) && (this.drafts.length === 0 || this.elt.isDraft);
     }
 
@@ -171,9 +173,9 @@ export class FormViewComponent implements OnInit {
         let url = '/form/' + this.route.snapshot.queryParams['tinyId'];
         if (formId) url = '/formById/' + formId;
         this.http.get(url).map(res => res.json()).subscribe(res => {
-            this.elt = res;
-            this.formLoaded(cb);
-        }, () => this.router.navigate(['/pageNotFound'])
+                this.elt = res;
+                this.formLoaded(cb);
+            }, () => this.router.navigate(['/pageNotFound'])
         );
     }
 
@@ -279,14 +281,53 @@ export class FormViewComponent implements OnInit {
             }, err => this.alert.addAlert('danger', err));
     }
 
-    saveForm() {
-        this.http.put('/form/' + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(
-            res => {
-                if (res) // TODO: use res instead of loading and block PUT /form/ when drafted?
-                    this.loadForm(() => this.alert.addAlert('success', 'Form saved.'));
+
+    createDataElement(newCde, cb) {
+        let dataElement = {
+            naming: newCde.naming,
+            stewardOrg: {
+                name: this.elt.stewardOrg.name
             },
-            err => this.router.navigate(['/pageNotFound'])
-        );
+            valueDomain: {
+                datatype: newCde.datatype,
+                identifiers: newCde.ids,
+                ids: newCde.ids,
+                datatypeText: newCde.datatypeText,
+                datatypeNumber: newCde.datatypeNumber,
+                datatypeDate: newCde.datatypeDate,
+                datatypeTime: newCde.datatypeTime,
+                permissibleValues: newCde.permissibleValues
+            },
+            ids: newCde.ids
+        };
+        this.http.post("/de", dataElement).map(res => res.json())
+            .subscribe(res => {
+                if (res.tinyId) newCde.tinyId = res.tinyId;
+                if (cb) cb();
+            }, err => {
+                newCde.error = err;
+                this.alert.addAlert("danger", err);
+            });
+    }
+
+    saveForm() {
+        let newCdes = [];
+        formShared.loopFormElements(this.elt, (fe, cb) => {
+            if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
+            if (cb) cb();
+        }, null, null, () => {
+            async.forEach(newCdes, (newCde, doneOneCde) => {
+                this.createDataElement(newCde, doneOneCde);
+            }, () => {
+                this.http.put('/form/' + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(
+                    res => {
+                        if (res) // TODO: use res instead of loading and block PUT /form/ when drafted?
+                            this.loadForm(() => this.alert.addAlert('success', 'Form saved.'));
+                    },
+                    () => this.router.navigate(['/pageNotFound'])
+                );
+            });
+        });
     }
 
     setDefault(index) {
@@ -331,12 +372,14 @@ export class FormViewComponent implements OnInit {
 
     validateSkipLogic() {
         let validationErrors = this.validationErrors;
+
         function findExistingErrors(parent: FormElementsContainer, fe: FormElement) {
             if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe))
                 validationErrors.push('SkipLogic error on form element "' + SkipLogicService.getLabel(fe) + '".');
             if (Array.isArray(fe.formElements))
                 fe.formElements.forEach(f => findExistingErrors(fe, f));
         }
+
         this.elt.formElements.forEach(fe => findExistingErrors(this.elt, fe));
     }
 }

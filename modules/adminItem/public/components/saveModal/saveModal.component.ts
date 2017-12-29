@@ -2,7 +2,6 @@ import { Component, Input, Output, ViewChild, EventEmitter } from "@angular/core
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
-import * as async from "async";
 
 import * as formShared from '../../../../form/shared/formShared';
 import { AlertService } from '_app/alert/alert.service';
@@ -69,48 +68,9 @@ export class SaveModalComponent {
                     this.newCdes.push(fe.question.cde);
                 }
                 if (cb) cb();
+            }, null, null, () => {
+                this.modalRef = this.modalService.open(this.updateElementContent, {container: "body", size: "lg"});
             });
         }
-        this.modalRef = this.modalService.open(this.updateElementContent, {container: "body", size: "lg"});
     }
-
-    createDataElement(newCde, cb) {
-        let dataElement = {
-            naming: newCde.naming,
-            stewardOrg: {
-                name: this.elt.stewardOrg.name
-            },
-            valueDomain: {
-                datatype: newCde.datatype,
-                identifiers: newCde.ids,
-                ids: newCde.ids,
-                datatypeText: newCde.datatypeText,
-                datatypeNumber: newCde.datatypeNumber,
-                datatypeDate: newCde.datatypeDate,
-                datatypeTime: newCde.datatypeTime,
-                permissibleValues: newCde.permissibleValues
-            },
-            ids: newCde.ids
-        };
-        this.http.post("/de", dataElement).map(res => res.json())
-            .subscribe(res => {
-                if (res.tinyId) newCde.tinyId = res.tinyId;
-                newCde.saved = true;
-                if (cb) cb();
-                else this.onEltChange.emit();
-            }, err => {
-                newCde.error = err;
-                this.alert.addAlert("danger", err)
-            });
-    }
-
-    createAllDataElements(newCdes) {
-        async.forEach(newCdes, (newCde, doneOneCde) => {
-            this.createDataElement(newCde, doneOneCde);
-        }, () => {
-            this.onEltChange.emit();
-            this.alert.addAlert("success", "All CDEs saved.");
-        });
-    }
-
 }
