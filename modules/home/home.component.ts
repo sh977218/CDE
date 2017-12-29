@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component } from '@angular/core';
+import { AfterViewChecked, Component, HostListener } from '@angular/core';
 import { Http } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
 import { CdeForm } from 'core/form.model';
@@ -197,17 +197,6 @@ export class HomeComponent implements AfterViewChecked {
     currentTab: string;
     elt: CdeForm;
     currentFormFeature: any;
-    // featuredItems = {
-    //     Forms: [
-    //         {tinyId: '7kBFB4TUM', name: 'BRICS NINR SF-36'},
-    //         {tinyId: '7JlBFjBiMf', name: 'Demography NCI Standard Template'},
-    //         {tinyId: 'mJP_B1HrFg', name: 'Patient Health Questionnaire - 9 (PHQ-9) Depression Scale'},
-    //         {tinyId: '7kjmoQ8xQ', name: 'Patient-Reported Outcomes with LASIK Pre-Operative Questionnaire'},
-    //         {tinyId: 'mJsGoMU1m', name: 'PHQ-9 quick depression assessment panel [Reported.PHQ]'},
-    //         {tinyId: '71_l5EnuFUl', name: 'PROMIS Parent Proxy SF v1.0 - Mobility 8a'},
-    //         {tinyId: 'XySUBn_NZ', name: 'SDC Adrenal'},
-    //     ]
-    // };
     formFeatures = [
         {feature: 'Answer Grid', description: 'Multiple choice answers are displayed as a grid / matrix.', tinyId: '71pwc60mQ'},
         {feature: 'Scoring', description: 'Fields calculated from previous answers.', tinyId: 'mJsGoMU1m'},
@@ -219,9 +208,18 @@ export class HomeComponent implements AfterViewChecked {
     newItems = {CDEs: null, Forms: null};
     statsType = 'Forms';
     topItems = {CDEs: null, Forms: null};
+    displayCarousel: Boolean;
 
     constructor(private http: Http, private route: ActivatedRoute, private formService: FormService) {
         this.getForm(this.formFeatures[0]);
+
+        this.displayCarousel = (window.screen.width > 575);
+
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        this.displayCarousel = (window.screen.width > 575);
     }
 
     ngAfterViewChecked() {
