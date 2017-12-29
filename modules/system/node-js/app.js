@@ -244,7 +244,7 @@ exports.init = function (app) {
     });
 
     // delete org classification
-    app.delete('/orgClassification/', function (req, res) {
+    app.delete('/orgClassification/', (req, res) => {
         let deleteClassification = req.body.deleteClassification;
         let settings = req.body.settings;
         if (!deleteClassification || !settings) return res.status(400).send();

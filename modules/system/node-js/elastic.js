@@ -287,11 +287,13 @@ exports.buildElasticSearchQuery = function (user, settings) {
                 {bool: {should: filterRegStatusTerms}}
             ]}};
 
-    if (filterDatatypeTerms.length > 0) {
+    if (filterDatatypeTerms && filterDatatypeTerms.length > 0) {
         settings.filter.bool.filter.push({bool: {should: filterDatatypeTerms}});
     }
 
-    if (settings.visibleStatuses.indexOf("Retired") === -1 && settings.selectedStatuses.indexOf("Retired") === -1) {
+    if (settings.visibleStatuses
+        && settings.visibleStatuses.indexOf("Retired") === -1
+        && settings.selectedStatuses.indexOf("Retired") === -1) {
         settings.filter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
     }
 
