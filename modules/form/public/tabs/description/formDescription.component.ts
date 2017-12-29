@@ -218,11 +218,11 @@ export class FormDescriptionComponent {
                             this.addIds(this.elt.formElements, "");
                             this.formElementEditing.formElement.edit = false;
                             this.formElementEditing.formElement = newQuestion;
-
                             this.onEltChange.emit();
+                            window.document.getElementById((newQuestion as any).descriptionId).scrollIntoView();
                         }
-                    }, () => {
-                    });
+                    }, () => {});
+                    setTimeout(() => window.document.getElementById("newDEName").focus(), 0);
                 }
                 return false;
             })

@@ -6,7 +6,6 @@ export const checkPvUnicity = function (valueDomain) {
         result.allValid = false;
         valueDomain.pvNotValidMsg = "permissibleValues is empty";
         valueDomain.allValid = false;
-        return;
     }
     var allPvs = {}, allCodes = {}, allVms = {};
     valueDomain.permissibleValues.forEach(function (pv) {
@@ -18,7 +17,6 @@ export const checkPvUnicity = function (valueDomain) {
             result.allValid = false;
             valueDomain.pvNotValidMsg = pv.notValid;
             valueDomain.allValid = false;
-            return;
         }
         if (allPvs[pv.permissibleValue]) {
             pv.notValid = "Duplicate Permissible Value";
@@ -26,7 +24,6 @@ export const checkPvUnicity = function (valueDomain) {
             result.allValid = false;
             valueDomain.pvNotValidMsg = pv.notValid;
             valueDomain.allValid = false;
-            return;
         }
         if (allVms[pv.valueMeaningName]) {
             pv.notValid = "Duplicate Code Name";
@@ -34,7 +31,6 @@ export const checkPvUnicity = function (valueDomain) {
             result.allValid = false;
             valueDomain.pvNotValidMsg = pv.notValid;
             valueDomain.allValid = false;
-            return;
         }
         if (allCodes[pv.valueMeaningCode]) {
             pv.notValid = "Duplicate Code";
@@ -42,7 +38,6 @@ export const checkPvUnicity = function (valueDomain) {
             result.allValid = false;
             valueDomain.pvNotValidMsg = pv.notValid;
             valueDomain.allValid = false;
-            return;
         }
         allPvs[pv.permissibleValue] = 1;
         if (pv.valueMeaningName && pv.valueMeaningName.length > 0)

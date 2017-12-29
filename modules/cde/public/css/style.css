@@ -452,6 +452,12 @@ label.input-group-addon {
     text-align: end;
 }
 
+.questionSectionLabel:hover > .card-header {
+    background-color: black;
+    opacity: 0.8;
+    color: white;
+}
+
 .questionSectionLabel {
     min-width: 50% !important;
 }

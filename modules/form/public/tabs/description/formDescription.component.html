@@ -125,17 +125,19 @@
         <form #newDataElementForm="ngForm" (ngSubmit)="c('create');">
             <div class="modal-header">
                 <h1>New Data Element</h1>
-                <button class="btn btn-outline-dark" (click)="questionModelMode = 'search'">
+                <button class="btn btn-outline-dark" type="button" (click)="questionModelMode = 'search'">
                     Search Questions
                 </button>
             </div>
             <div class="modal-body">
                 <label for="newDEName"></label>
-                <input [(ngModel)]="newDataElementName" id="newDEName" name="newDEName"
-                       placeholder="New Data Element Name" required/>
+                <input [(ngModel)]="newDataElementName" class="form-control" id="newDEName" name="newDEName"
+                       placeholder="New Data Element Name" required autofocus/>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-warning" type="submit" id="createNewDataElement">Create</button>
+                <button class="btn btn-warning" type="submit"
+                        [disabled]="!newDataElementForm.valid"
+                        id="createNewDataElement">Create</button>
             </div>
         </form>
     </ng-container>
