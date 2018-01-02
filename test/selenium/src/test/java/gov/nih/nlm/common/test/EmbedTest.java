@@ -72,9 +72,10 @@ public class EmbedTest extends NlmCdeBaseTest {
         scrollTo(2500);
         driver.switchTo().frame("previewFrame");
         clickElement(By.id("poweredByNihCde"));
+        findElement(By.id("ftsearch-input")).sendKeys("Ethnicity");
         findElement(By.id("search.submit")).click();
 
-        textPresent("Ethnicity");
+        textPresent("Ethnicity USA category");
         textPresent("results (");
 
         hangon(1);
