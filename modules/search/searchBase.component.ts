@@ -144,6 +144,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     browseOrg(orgName) {
+        window.scrollTo(0, 0);
+
         this.searchSettings.selectedOrg = orgName;
 
         this.doSearch();
