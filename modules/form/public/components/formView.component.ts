@@ -329,7 +329,7 @@ export class FormViewComponent implements OnInit {
             });
         });
     }
-
+ 
     setDefault(index) {
         this.http.post('/attachments/form/setDefault',
             {
