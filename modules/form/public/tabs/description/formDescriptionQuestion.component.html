@@ -1,57 +1,55 @@
-<div class="question_view" [ngClass]="{'bg-warning': question.question.cde.outdated}">
-    <div *ngIf="!isSubForm && canEdit" class="float-left">
-        <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"
-           [treeDrag]="node"
-           [treeDragEnabled]="node.allowDrag()"></i>
-        <i *ngIf="question.skipLogic?.condition?.length > 0" class="fa fa-cog updatedSkipLogicIcon"
-           [ngClass]="{'fa-spin': question.updatedSkipLogic}"
-           title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
-    </div>
-    <div class="questionSectionLabel float-left" (click)="editQuestion(question);">
-        <div *ngIf="question.question.isScore" class="float-left">
-            <strong>Score: </strong>
+<div class="question_view">
+    <div class="text-truncate"
+         [ngClass]="{'bg-warning': question.question.cde.outdated && !question.hover,'bg-secondary':question.hover}">
+        <div *ngIf="!isSubForm && canEdit" class="float-left">
+            <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"
+               [treeDrag]="node" [treeDragEnabled]="node.allowDrag()"></i>
+            <i *ngIf="question.skipLogic?.condition?.length > 0" class="fa fa-cog updatedSkipLogicIcon"
+               [ngClass]="{'fa-spin': question.updatedSkipLogic}"
+               title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
         </div>
-        <div class="float-left questionLabel" title="{{question.label}}" style="margin-left: 5px">
-            <ng-container *ngIf="question.hideLabel">
-                <i class="fa fa-question-circle" ngbTooltip="This question has no label"></i>
-                <strong [textContent]="question.question.cde.name"></strong>
+        <div class="font-weight-bold hand-cursor float-left " (click)="editQuestion(question);"
+             (mouseover)="question.hover = true;" (mouseout)="question.hover = false;">
+            <div *ngIf="question.question.isScore" class="float-left">Score:</div>
+            <div class="float-left questionLabel ml-1" title="{{question.label}}">
+                <ng-container *ngIf="question.hideLabel">
+                    <i class="fa fa-question-circle" ngbTooltip="This question has no label"></i>
+                    <strong [textContent]="question.question.cde.name"></strong>
+                </ng-container>
+                <strong *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}}</strong>
+                <small *ngIf="question.question.partOf" class="text-info">
+                    (part of {{question.question.partOf}})
+                </small>
+            </div>
+            <div *ngIf="question.incompleteRule" class="float-left">(Incomplete Rule)</div>
+            <ng-container *ngIf="question.question.cde.outdated">
+                <div class="float-left error-block"> (Outdated)</div>
+                <button class="btn btn-outline-dark btn-sm updateQuestionBtn"
+                        (click)="openUpdateCdeVersion(question);">
+                    Update
+                </button>
             </ng-container>
-            <strong *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}}</strong>
-            <small *ngIf="question.question.partOf" class="text-info">
-                (part of {{question.question.partOf}})
-            </small>
+            <div class="float-left">{{getDatatypeLabel(question)}}</div>
         </div>
-        <div class="float-left">
-            <span *ngIf="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
-        </div>
-        <div *ngIf="question.question.cde.outdated" class="float-left error-block"> (Outdated)
-            <button class="btn  btn-outline-dark btn-xs updateQuestionBtn"
-                    (click)="openUpdateCdeVersion(question);">
-                Update
-            </button>
-        </div>
-        <div class="float-left">{{getDatatypeLabel(question)}}</div>
-    </div>
-    <div class="float-right">
-        <a *ngIf="question.question.cde.tinyId" target="_blank" title="{{question.question.cde.name}}"
-           href="/deView?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
-            <i class="fa fa-eye"></i> View CDE
-        </a>
-        <span *ngIf="!question.question.cde.tinyId" class="text-danger">(This is a new CDE)</span>
-        <div *ngIf="!isSubForm && canEdit" class="d-inline-block  editIconDiv" style="font-size: 16px">
-            <i *ngIf="!question.confirmDelete" (click)="question.confirmDelete = true;"
-               class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
-            <span *ngIf="question.confirmDelete" class="label">Confirm Delete
-                <span class="fa fa-check hand-cursor" (click)="removeNode(node)"
-                      id="confirmRemoveProperty-{{i}}" title="Delete"></span>
-                <span class="fa fa-times hand-cursor"
-                      (click)="question.confirmDelete = false"
-                      id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
-            </span>
+        <div class="float-right">
+            <a *ngIf="question.question.cde.tinyId" target="_blank" title="{{question.question.cde.name}}"
+               href="/deView?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
+                <i class="fa fa-eye"></i> View CDE
+            </a>
+            <span *ngIf="!question.question.cde.tinyId" class="text-danger">(This is a new CDE)</span>
+            <div *ngIf="!isSubForm && canEdit" class="d-inline-block" style="font-size: 16px">
+                <i *ngIf="!question.confirmDelete" (click)="question.confirmDelete = true;"
+                   class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
+                <ng-container *ngIf="question.confirmDelete">Confirm Delete
+                    <span class="fa fa-check hand-cursor" (click)="removeNode(node)"
+                          id="confirmRemoveProperty-{{i}}" title="Delete"></span>
+                    <span class="fa fa-times hand-cursor" (click)="question.confirmDelete = false"
+                          id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
+                </ng-container>
+            </div>
         </div>
     </div>
 </div>
-
 <ng-template #updateCdeVersionTmpl let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h3>Confirm Changes:</h3>
@@ -60,14 +58,14 @@
         <i *ngIf="reloading" class="fa fa-spinner fa-spin"></i>
         <div>
             <div class="row">
-                <div class="col-sm-2 questionSectionLabel">Label:</div>
+                <div class="col-sm-2 font-weight-bold">Label:</div>
                 <div class="col-sm-8" id="mdd_question_title">
                     <span [ngClass]="{mark: updateCdeVersion.bLabel}">{{updateCdeVersion.newQuestion.label | cdePlaceholder}}</span>
                     <span *ngIf="updateCdeVersion.bLabel" class="red">( was {{ updateCdeVersion.currentQuestion.label }} )</span>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2 questionSectionLabel">Datatype:</div>
+                <div class="col-sm-2 font-weight-bold">Datatype:</div>
                 <div class="col-sm-8" id="mdd_datatype">
                     <span [ngClass]="{mark: updateCdeVersion.bDatatype}">{{updateCdeVersion.newQuestion.question.datatype | cdePlaceholder }}</span>
                     <span *ngIf="bDatatype"
@@ -76,7 +74,7 @@
             </div>
             <div *ngIf="updateCdeVersion.newQuestion.question.datatype ==='Number'">
                 <div class="row">
-                    <div class="col-sm-2 questionSectionLabel">Min Value:</div>
+                    <div class="col-sm-2 font-weight-bold">Min Value:</div>
                     <div class="col-sm-8" id="mdd_minimal">
                     <span [ngClass]="{mark: updateCdeVersion.bNumberMin}">
                         {{updateCdeVersion.newQuestion.question?.datatypeNumber?.minValue | cdePlaceholder }}</span>
@@ -85,7 +83,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-2 questionSectionLabel">Max Value:</div>
+                    <div class="col-sm-2 font-weight-bold">Max Value:</div>
                     <div class="col-sm-8" id="mdd_maximal">
                     <span [ngClass]="{mark: updateCdeVersion.bNumberMax}">
                         {{updateCdeVersion.newQuestion.question?.datatypeNumber.maxValue | cdePlaceholder }}</span>
@@ -95,14 +93,14 @@
                 </div>
             </div>
             <div class="row" *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Value List'">
-                <div class="col-sm-2 questionSectionLabel">Multiple Selections:</div>
+                <div class="col-sm-2 font-weight-bold">Multiple Selections:</div>
                 <div class="col-sm-8" id="mdd_question_multi">
                     <input type="checkbox" [ngModel]="updateCdeVersion.newQuestion.question.multiselect"
                            title="Multiple Selection" disabled/>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2 questionSectionLabel">Units of Measures:</div>
+                <div class="col-sm-2 font-weight-bold">Units of Measures:</div>
                 <div class="col-sm-8" id="mdd_q_uoms">
                     <span [ngClass]="{mark: updateCdeVersion.bUom}"
                           *ngIf="updateCdeVersion.newQuestion.question.uoms.length > 0">
@@ -127,7 +125,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2 questionSectionLabel">Default Answer:</div>
+                <div class="col-sm-2 font-weight-bold">Default Answer:</div>
                 <div class="col-sm-8" id="mdd_q_defaultAnswer">
                     <span [ngClass]="{mark: updateCdeVersion.bDefault}"
                           *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Value List'">
@@ -160,7 +158,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2 questionSectionLabel">CDE:</div>
+                <div class="col-sm-2 font-weight-bold">CDE:</div>
                 <div class="col-sm-8" id="mdd_d_cde">
                     <a [ngClass]="{mark: updateCdeVersion.bCde}"
                        href="/deView?tinyId={{updateCdeVersion.newQuestion.question.cde.tinyId}}&version={{updateCdeVersion.newQuestion.question.cde.version}}"
@@ -177,7 +175,7 @@
                 </div>
             </div>
             <div class="row answerList" *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Value List'">
-                <div class="col-sm-2 questionSectionLabel">Answer List:</div>
+                <div class="col-sm-2 font-weight-bold">Answer List:</div>
                 <div class="col-sm-8" id="mdd_d_answers">
                     <div [ngClass]="{mark: updateCdeVersion.bValuelist}"
                          *ngFor="let pv of updateCdeVersion.newQuestion.question.answers"

@@ -44,10 +44,6 @@ const TOOL_BAR_OFF_SET = 55;
             padding-left: 0;
         }
 
-        :host >>> .questionSectionLabel {
-            font-weight: bold;
-        }
-
         :host >>> .node-drop-slot {
             height: 10px;
             margin-bottom: 1px;
@@ -64,7 +60,7 @@ const TOOL_BAR_OFF_SET = 55;
         }
 
         .panel-body-form {
-            background-color: #eee;
+            background-color: rgba(0, 0, 0, 0.03);
         }
 
         .descriptionToolbox {

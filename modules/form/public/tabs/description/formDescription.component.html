@@ -63,21 +63,16 @@
                                                 *ngIf="node.data.elementType === 'question'"
                                                 [elt]="elt" [canEdit]="canEdit" [node]="node" [index]="index"
                                                 (stageElt)="onEltChange.emit()"></cde-form-description-question>
-                                        <button *ngIf="(node.data.elementType === 'section' || node.data.elementType === 'form') && node.data.edit"
-                                                class="btn btn-outline-success btn-sm"
-                                                (click)="node.data.edit = false;">OK
-                                        </button>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 <div *ngIf="node.data.elementType === 'form' && !node.data.expanded"
-                                     (click)="node.data.expanded = !node.data.expanded "
+                                     (click)="node.data.expanded = true; node.expand()"
                                      class="btn btn-outline-dark expand-form">
                                     <i class="fa fa-chevron-right" aria-hidden="true"></i> Expand
                                 </div>
-
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
                                                                       [elt]="elt" [node]="node" [canEdit]="canEdit"
                                                                       (onEltChange)="onEltChange.emit();">
@@ -137,7 +132,8 @@
             <div class="modal-footer">
                 <button class="btn btn-warning" type="submit"
                         [disabled]="!newDataElementForm.valid"
-                        id="createNewDataElement">Create</button>
+                        id="createNewDataElement">Create
+                </button>
             </div>
         </form>
     </ng-container>

@@ -298,11 +298,13 @@ export class FormViewComponent implements OnInit {
                 datatypeTime: newCde.datatypeTime,
                 permissibleValues: newCde.permissibleValues
             },
+            classification: this.elt.classification,
             ids: newCde.ids
         };
         this.http.post("/de", dataElement).map(res => res.json())
             .subscribe(res => {
                 if (res.tinyId) newCde.tinyId = res.tinyId;
+                if (res.version) newCde.version = res.version;
                 if (cb) cb();
             }, err => {
                 newCde.error = err;
@@ -329,7 +331,7 @@ export class FormViewComponent implements OnInit {
             });
         });
     }
- 
+
     setDefault(index) {
         this.http.post('/attachments/form/setDefault',
             {

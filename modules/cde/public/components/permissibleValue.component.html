@@ -48,8 +48,6 @@
                 <cde-inline-edit id="datatypeTextRule" [(model)]="elt.valueDomain.datatypeText.rule"
                                  (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
             </dd>
-            <dt class="col-3 text-right">:</dt>
-            <dd class="col-9"></dd>
         </ng-container>
         <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() == 'number'">
             <dt class="col-3 text-right">Minimum Value:</dt>
