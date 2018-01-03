@@ -69,7 +69,7 @@ export class FormDescriptionQuestionDetailComponent {
     uomVersion = 0;
 
     constructor(private http: Http,
-                private alert:AlertService,
+                private alert: AlertService,
                 public modalService: NgbModal,
                 public skipLogicValidateService: SkipLogicValidateService) {
         this.nameSelectModal.okSelect = (naming = null) => {
@@ -274,7 +274,7 @@ export class FormDescriptionQuestionDetailComponent {
 
     removeCdeNaming(i) {
         if (this.question.question.cde.naming.length === 1) {
-            return this.alert.addAlert("danger", "Data element must have namings.");
+            return this.alert.addAlert("danger", "Data element must have at least one name.");
         }
         this.question.question.cde.naming.splice(i, 1);
         this.onEltChange.emit();
@@ -290,26 +290,32 @@ export class FormDescriptionQuestionDetailComponent {
     }
 
     addNewCdeNaming(newCdeNaming) {
-        this.question.question.cde.naming.push(newCdeNaming);
-        this.newCdeNaming = {};
-        this.onEltChange.emit();
+        if (!_.isEmpty(newCdeNaming)) {
+            this.question.question.cde.naming.push(newCdeNaming);
+            this.newCdeNaming = {};
+            this.onEltChange.emit();
+        } else this.alert.addAlert("danger", "Empty name.");
     }
     addNewCdePv(newCdePv) {
-        this.question.question.cde.permissibleValues.push(newCdePv);
-        this.question.question.answers.push(newCdePv);
-        this.newCdePv = {};
-        this.onEltChange.emit();
+        if (!_.isEmpty(newCdePv)) {
+            this.question.question.cde.permissibleValues.push(newCdePv);
+            this.question.question.answers.push(newCdePv);
+            this.newCdePv = {};
+            this.onEltChange.emit();
+        } else this.alert.addAlert("danger", "Empty PV.");
     }
 
     addNewCdeId(newCdeId) {
-        if (!this.question.question.cde.ids)
-            this.question.question.cde.ids = [];
-        this.question.question.cde.ids.push(newCdeId);
-        this.newCdeId = {};
-        this.onEltChange.emit();
+        if (!_.isEmpty(newCdeId)) {
+            if (!this.question.question.cde.ids)
+                this.question.question.cde.ids = [];
+            this.question.question.cde.ids.push(newCdeId);
+            this.newCdeId = {};
+            this.onEltChange.emit();
+        } else this.alert.addAlert("danger", "Empty identifier.");
     }
 
     newCdePv = {};
     newCdeId = {};
-    newCdeNaming={};
+    newCdeNaming = {};
 }

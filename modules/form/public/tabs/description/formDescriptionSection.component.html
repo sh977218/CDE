@@ -1,5 +1,5 @@
 <div class="questionSectionTitle" (click)="section.updatedSkipLogic = false">
-    <div class="text-truncate" style="padding: 5px" [ngClass]="{'hover-bg':section.hover}">
+    <div class="text-truncate p-1" [ngClass]="{'hover-bg':section.hover}">
         <div *ngIf="!isSubForm && canEdit" class="float-left">
             <i class="fa fa-arrows fa-lg question-move-handle"
                [treeDrag]="node" [treeDragEnabled]="node.allowDrag()"></i>
@@ -10,10 +10,10 @@
                [ngClass]="{'fa-spin': section.updatedSkipLogic}"
                title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}"></i>
         </div>
-        <div id="innerForm_label_edit_icon_{{section.label}}" class="font-weight-bold hand-cursor float-left">
+        <div id="innerForm_label_edit_icon_{{section.label}}" class="font-weight-bold float-left">
             <span *ngIf="section.elementType === 'form'">Embedded Form:</span>
-            <cde-inline-edit (click)="editSection(section);"
-                             (mouseover)="section.hover = true;" (mouseout)="section.hover = false;"
+            <cde-inline-edit (click)="editSection(section);" [ngClass]="{'hand-cursor':!isSubForm && canEdit}"
+                             (mouseover)="hoverInSection(section)" (mouseout)="hoverOutSection(section)"
                              [(model)]="section.label" [isAllowed]="canEditSection()"
                              (modelChange)="onEltChange.emit()" style="width: 62%;"></cde-inline-edit>
         </div>
@@ -23,7 +23,7 @@
                href="/formView?tinyId={{section.inForm.form.tinyId}}&version={{section.inForm.form.version}}">
                 <i class="fa fa-eye"></i> View Form
             </a>
-            <div *ngIf="!isSubForm && canEdit" class="d-inline-block" style="font-size: 16px">
+            <div class="d-inline-block" style="font-size: 16px">
                 <i *ngIf="section.elementType === 'section'" class="fa fa-copy copySection" title="Copy section"
                    (click)="copySection(section)"></i>
                 <i *ngIf="!section.confirmDelete" class="fa fa-trash-o hand-cursor" title="Remove Section"

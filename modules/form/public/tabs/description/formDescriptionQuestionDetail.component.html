@@ -125,8 +125,6 @@
                 </select2>
             </ng-container>
         </dd>
-        <dt class="col-2">Datatype:</dt>
-        <dd class="col-10">{{question.question.datatype | cdePlaceholder }}</dd>
         <ng-container *ngIf="question.question.datatype === 'Text'">
             <dt class="col-2">Min Length:</dt>
             <dd class="col-10"> {{question.question?.datatypeText?.minLength | cdePlaceholder }}</dd>
@@ -205,7 +203,7 @@
                             </select2>
                         </td>
                         <td>
-                            <button class="btn btn-outline-danger btn-xs" (click)="removeCdeNaming(i);">Remove</button>
+                            <i class="fa fa-trash hand-cursor" (click)="removeCdeNaming(i);"></i>
                         </td>
                     </tr>
                     <tr>
@@ -219,9 +217,7 @@
                             </select2>
                         </td>
                         <td>
-                            <button class="btn btn-outline-success btn-xs" (click)="addNewCdeNaming(newCdeNaming);">
-                                Add
-                            </button>
+                            <i class="fa fa-plus hand-cursor" (click)="addNewCdeNaming(newCdeNaming);"></i>
                         </td>
                     </tr>
                 </table>
@@ -249,7 +245,7 @@
                                              (modelChange)="onEltChange.emit();"></cde-inline-edit>
                         </td>
                         <td>
-                            <button class="btn btn-outline-danger btn-xs" (click)="removeCdeId(i);">Remove</button>
+                            <i class="fa fa-trash hand-cursor" (click)="removeCdeId(i);"></i>
                         </td>
                     </tr>
                     <tr>
@@ -257,7 +253,7 @@
                         <td><input [(ngModel)]="newCdeId.id" class="w-100"/></td>
                         <td><input [(ngModel)]="newCdeId.version" class="w-100"/></td>
                         <td>
-                            <button class="btn btn-outline-success btn-xs" (click)="addNewCdeId(newCdeId);">Add</button>
+                            <i class="fa fa-plus hand-cursor" (click)="addNewCdeId(newCdeId);"></i>
                         </td>
                     </tr>
                 </table>
@@ -303,7 +299,7 @@
                                                  (modelChange)="onEltChange.emit();"></cde-inline-edit>
                             </td>
                             <td>
-                                <button class="btn btn-outline-danger btn-xs" (click)="removeCdePv(i);">Remove</button>
+                                <i class="fa fa-trash hand-cursor" (click)="removeCdePv(i);"></i>
                             </td>
                         </tr>
                         <tr>
@@ -313,8 +309,7 @@
                             <td><input [(ngModel)]="newCdePv.codeSystemName" class="w-100"/></td>
                             <td><input [(ngModel)]="newCdePv.valueMeaningDefinition" class="w-100"/></td>
                             <td>
-                                <button class="btn btn-outline-success btn-xs" (click)="addNewCdePv(newCdePv);">Add
-                                </button>
+                                <i class="fa fa-plus hand-cursor" (click)="addNewCdePv(newCdePv);"></i>
                             </td>
                         </tr>
                     </table>
@@ -322,8 +317,6 @@
             </ng-container>
         </ng-container>
     </dl>
-    <!--<button *ngIf="question.edit" class="btn btn-outline-success btn-sm" (click)="question.edit = false;">OK-->
-    <!--</button>-->
 </ng-template>
 
 <ng-template #formDescriptionNameSelectTmpl let-c="close" let-d="dismiss">

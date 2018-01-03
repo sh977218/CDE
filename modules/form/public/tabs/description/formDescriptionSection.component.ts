@@ -155,11 +155,23 @@ export class FormDescriptionSectionComponent implements OnInit {
         }, 3000);
     }
 
+    hoverInSection(section) {
+        if (!this.isSubForm && this.canEdit) {
+            section.hover = true;
+        }
+    }
+    hoverOutSection(section) {
+        if (!this.isSubForm && this.canEdit) {
+            section.hover = false;
+        }
+    }
+
     editSection(section) {
         if (!this.isSubForm && this.canEdit) {
             section.edit = !section.edit;
             if (this.formDescriptionComponent.formElementEditing) {
-                this.formDescriptionComponent.formElementEditing.formElement.edit = false;
+                if (this.formDescriptionComponent.formElementEditing.formElement !== section)
+                    this.formDescriptionComponent.formElementEditing.formElement.edit = false;
             }
             this.formDescriptionComponent.formElementEditing = {
                 formElements: this.parent.formElements,

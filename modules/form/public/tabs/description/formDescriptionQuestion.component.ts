@@ -134,7 +134,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
                         return modal;
                     })();
 
-                    this.modalService.open(this.updateCdeVersionTmpl).result.then(() => {
+                    this.modalService.open(this.updateCdeVersionTmpl, {size: 'lg'}).result.then(() => {
                         question.question = newQuestion.question;
                         question.label = newQuestion.label;
                         this.stageElt.emit();
@@ -142,6 +142,18 @@ export class FormDescriptionQuestionComponent implements OnInit {
                     });
                 });
             });
+    }
+
+    hoverInQuestion(question) {
+        if (!this.isSubForm && this.canEdit) {
+            question.hover = true;
+        }
+    }
+
+    hoverOutQuestion(question) {
+        if (!this.isSubForm && this.canEdit) {
+            question.hover = false;
+        }
     }
 
     editQuestion(question) {

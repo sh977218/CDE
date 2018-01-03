@@ -56,12 +56,8 @@
                                          (treeDrop)="node.onDrop($event)"
                                          [treeAllowDrop]="node.allowDrop">
                                         <cde-form-description-section
-                                                *ngIf="node.data.elementType === 'section'"
+                                                *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
                                                 [elt]="elt" [canEdit]="canEdit" [node]="node"
-                                                (onEltChange)="onEltChange.emit()"></cde-form-description-section>
-                                        <cde-form-description-section
-                                                *ngIf="node.data.elementType === 'form'"
-                                                [elt]="elt" [canEdit]="false" [node]="node"
                                                 (onEltChange)="onEltChange.emit()"></cde-form-description-section>
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"
