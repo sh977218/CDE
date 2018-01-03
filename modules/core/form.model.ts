@@ -137,12 +137,12 @@ export class FormInForm implements FormSectionOrForm {
 
 export class FormQuestion implements FormElement {
     _id;
-    newCde: boolean = false;
+    newCde: boolean;
     elementType = 'question';
-    edit: boolean = false;
+    edit: boolean;
     formElements = [];
-    hideLabel: boolean = false;
-    incompleteRule: boolean = false;
+    hideLabel: boolean;
+    incompleteRule: boolean;
     instructions: Instruction;
     label = "";
     question: Question = new Question();
@@ -171,7 +171,7 @@ export class Question {
     answerUom: string; // input uom value
     answerDate: any; // working storage for date part
     answerTime: any; // working storage for time part
-    answers: PermissibleValue[] = [];
+    answers: PermissibleFormValue[] = [];
     cde: QuestionCde = new QuestionCde();
     datatype: string;
     datatypeDate: QuestionTypeDate;
@@ -188,7 +188,7 @@ export class Question {
 }
 
 export class QuestionCde {
-    ids: CdeId[];
+    ids: CdeId[] = [];
     name: string;
     naming = [];
     datatype = 'Text';

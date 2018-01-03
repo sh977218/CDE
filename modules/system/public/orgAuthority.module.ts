@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Select2Module } from 'ng2-select2';
-import {HotkeyModule} from 'angular2-hotkeys';
 
 import { ListManagementComponent } from 'system/public/components/siteAdmin/listManagement/listManagement.component';
 import { StatusValidationRulesComponent } from 'system/public/components/siteAdmin/statusValidationRules/statusValidationRules.component';
@@ -25,7 +24,6 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         Select2Module,
-        HotkeyModule.forRoot(),
         // core
         WidgetModule,
         // internal
