@@ -1,6 +1,6 @@
 <div class="question_view">
-    <div class="text-truncate"
-         [ngClass]="{'bg-warning': question.question.cde.outdated && !question.hover,'bg-secondary':question.hover}">
+    <div class="text-truncate" style="padding: 5px"
+         [ngClass]="{'outdated-bg': question.question.cde.outdated && !question.hover,'hover-bg':question.hover}">
         <div *ngIf="!isSubForm && canEdit" class="float-left">
             <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"
                [treeDrag]="node" [treeDragEnabled]="node.allowDrag()"></i>

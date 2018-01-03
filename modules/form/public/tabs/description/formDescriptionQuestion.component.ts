@@ -10,7 +10,16 @@ import { FormDescriptionComponent } from "./formDescription.component";
 
 @Component({
     selector: "cde-form-description-question",
-    templateUrl: "formDescriptionQuestion.component.html"
+    templateUrl: "formDescriptionQuestion.component.html",
+    styles: [
+        `            
+            .outdated-bg {
+                background-color: #ffecc5;
+                border: 1px;
+                border-radius: 10px;
+            }
+        `
+    ]
 })
 export class FormDescriptionQuestionComponent implements OnInit {
     @Input() canEdit: boolean = false;

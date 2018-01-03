@@ -28,6 +28,12 @@ const TOOL_BAR_OFF_SET = 55;
     templateUrl: "formDescription.component.html",
     animations: [copySectionAnimation],
     styles: [`
+        :host >>> .hover-bg {
+            background-color: lightblue;
+            border: 1px;
+            border-radius: 10px;
+        }
+
         :host >>> .badge {
             font-size: 100%;
         }

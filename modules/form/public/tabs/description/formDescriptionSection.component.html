@@ -1,5 +1,5 @@
 <div class="questionSectionTitle" (click)="section.updatedSkipLogic = false">
-    <div class="text-truncate" [ngClass]="{'bg-secondary':section.hover}">
+    <div class="text-truncate" style="padding: 5px" [ngClass]="{'hover-bg':section.hover}">
         <div *ngIf="!isSubForm && canEdit" class="float-left">
             <i class="fa fa-arrows fa-lg question-move-handle"
                [treeDrag]="node" [treeDragEnabled]="node.allowDrag()"></i>
