@@ -40,14 +40,14 @@ var questionSchema = {
 
 var sectionSchema = {};
 
-var inFormSchema = {
+var inFormSchema = new Schema({
     form: {
         tinyId: String,
         version: String,
         name: String,
         ids: [sharedSchemas.idSchema]
     }
-};
+}, {_id: false});
 
 function getFormElementSchema() {
     return {
@@ -57,7 +57,7 @@ function getFormElementSchema() {
         instructions: sharedSchemas.instructionSchema,
         inForm: {type: inFormSchema, default: undefined},
         label: String,
-        question: {type: questionSchema, default: undefined},
+        question: {type: new Schema(questionSchema, {_id: false}), default: undefined},
         repeat: String,
         repeatsFor: String,
         section: {type: sectionSchema, default: undefined},
@@ -65,7 +65,7 @@ function getFormElementSchema() {
         skipLogic: {
             action: {type: String, enum: ['show', 'enable']},
             condition: String,
-        },
+        }
     };
 }
 
