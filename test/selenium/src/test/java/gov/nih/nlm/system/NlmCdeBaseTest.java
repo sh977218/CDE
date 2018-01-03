@@ -1343,11 +1343,11 @@ public class NlmCdeBaseTest {
 
 
     public void startEditQuestionSectionById(String id) {
-        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionLabel ')]"));
     }
 
     public void saveEditQuestionSectionById(String id) {
-        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionLabel ')]"));
     }
 
     /**
