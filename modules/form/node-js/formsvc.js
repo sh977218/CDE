@@ -10,6 +10,7 @@ let sdc = require("./sdcForm");
 let odm = require("./odmForm");
 let redCap = require("./redCapForm");
 let publishForm = require("./publishForm");
+const dbLogger = require('../../system/node-js/dbLogger');
 
 function setResponseXmlHeader(res) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -213,7 +214,15 @@ exports.saveDraftForm = function (req, res) {
     if (!elt.created) elt.created = new Date();
     elt.updated = new Date();
     mongo_form.saveDraftForm(elt, function (err, form) {
-        if (err) return res.status(500).send("ERROR - save draft form. " + tinyId);
+        if (err) {
+            dbLogger.logError({
+                message: "Error saving draft: " + tinyId,
+                origin: "formSvc.saveDraftDataElement",
+                stack: err,
+                details: ""
+            });
+            return res.status(500).send("ERROR - save draft form. " + tinyId);
+        }
         res.send(form);
     });
 };

@@ -35,7 +35,7 @@
             <div *ngIf="option.displayAs.display" id="{{option.displayAs.label}}">
                 <div class="overflowHidden">
                     <strong>{{option.displayAs.label}}</strong>
-                    <div *ngFor="let fullMatch of option.fullMatches" class="col-12">
+                    <div *ngFor="let fullMatch of option.fullMatches" class="row">
                         <div class="col-6 noLeftPadding">
                             <div class="fullMatch">
                                 <div *ngFor="let d of option.displayAs.data">
@@ -53,7 +53,7 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngFor="let partialMatch of option.partialMatches" class="col-12">
+                    <div *ngFor="let partialMatch of option.partialMatches" class="row">
                         <div class="col-6 noLeftPadding">
                             <div class="partialMatch">
                                 <div *ngFor="let d of option.displayAs.data">
@@ -75,7 +75,7 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="option.leftNotMatches.length>0 || option.rightNotMatches.length>0" class="col-12">
+                    <div *ngIf="option.leftNotMatches.length>0 || option.rightNotMatches.length>0" class="row">
                         <div class="col-6 noLeftPadding">
                             <div *ngFor="let leftNotMatch of option.leftNotMatches" class="notMatch">
                                 <div *ngFor="let d of option.displayAs.data">
