@@ -108,6 +108,7 @@ export interface FormSectionOrForm extends FormElement {
 export class FormSection implements FormSectionOrForm {
     _id;
     edit: boolean;
+    hover: boolean;
     elementType = 'section';
     expanded = true; // Calculated, used for View TreeComponent
     forbidMatrix;
@@ -140,6 +141,7 @@ export class FormQuestion implements FormElement {
     newCde: boolean;
     elementType = 'question';
     edit: boolean = false;
+    hover: boolean;
     formElements = [];
     hideLabel: boolean;
     incompleteRule: boolean;
