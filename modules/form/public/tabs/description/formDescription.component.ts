@@ -206,7 +206,7 @@ export class FormDescriptionComponent implements OnChanges {
     addFormFromSearch(fe) {
         this.http.get("/form/" + fe.tinyId).map(r => r.json()).subscribe(form => {
             let inForm: any = FormService.convertFormToSection(form);
-            inForm.formElements = [];
+            inForm.formElements = form.formElements;
             this.addIndex(this.toolDropTo.parent.data.formElements, inForm, this.toolDropTo.index++);
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();
