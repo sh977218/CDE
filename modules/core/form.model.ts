@@ -139,12 +139,12 @@ export class FormQuestion implements FormElement {
     _id;
     newCde: boolean;
     elementType = 'question';
-    edit: boolean;
+    edit: boolean = false;
     formElements = [];
     hideLabel: boolean;
     incompleteRule: boolean;
     instructions: Instruction;
-    label = "";
+    label = '';
     question: Question = new Question();
     questionId: string;
     repeat;
