@@ -56,7 +56,7 @@ function getFormElementSchema() {
         instructions: sharedSchemas.instructionSchema,
         inForm: {type: inFormSchema, default: undefined},
         label: String,
-        question: {type: new Schema(questionSchema), default: undefined},
+        question: {type: new Schema(questionSchema, {_id: false}), default: undefined},
         repeat: String,
         repeatsFor: String,
         section: {type: sectionSchema, default: undefined},
@@ -64,7 +64,7 @@ function getFormElementSchema() {
         skipLogic: {
             action: {type: String, enum: ['show', 'enable']},
             condition: String,
-        },
+        }
     };
 }
 
