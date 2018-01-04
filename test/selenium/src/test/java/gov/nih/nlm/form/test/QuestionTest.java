@@ -24,11 +24,12 @@ public class QuestionTest extends BaseFormTest {
 
     public void addCdes(String[] cdeNames) {
         for (String cdeName : cdeNames) {
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            StringSelection stringSelection = new StringSelection(cdeName);
-            clipboard.setContents(stringSelection, null);
             try {
                 hangon(2);
+/*
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                StringSelection stringSelection = new StringSelection(cdeName);
+                clipboard.setContents(stringSelection, null);
                 Robot robot = new Robot();
                 robot.keyPress(KeyEvent.VK_Q);
                 robot.keyRelease(KeyEvent.VK_Q);
@@ -37,11 +38,16 @@ public class QuestionTest extends BaseFormTest {
                 robot.keyPress(KeyEvent.VK_V);
                 robot.keyRelease(KeyEvent.VK_V);
                 robot.keyRelease(KeyEvent.VK_CONTROL);
+*/
+                new Actions(driver).sendKeys("q").build().perform();
+                textPresent("New Data Element");
                 hangon(2);
+                new Actions(driver).sendKeys(cdeName).build().perform();
+                hangon(2);
+                clickElement(By.id("createNewDataElement"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            clickElement(By.id("createNewDataElement"));
         }
 
     }
