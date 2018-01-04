@@ -7,13 +7,15 @@
                   style="width: 74px;">
                 <i class="fa fa-plus"></i><span class="toolSection"></span>
             </span>
-            <span role="button" id="startAddingQuestions" class="btn btn-light formDescriptionTool"
-                  *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true"
+            <span *ngIf="elt.formElements.length > 0" role="button" id="startAddingQuestions"
+                  class="btn btn-light formDescriptionTool"
+                  [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true"
                   style="width: 87px;">
                 <i class="fa fa-cube"></i><span class="toolQuestion"></span>
             </span>
-            <span role="button" id="startAddingForms" class="btn btn-light formDescriptionTool"
-                  *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true"
+            <span *ngIf="elt.formElements.length > 0" role="button" id="startAddingForms"
+                  class="btn btn-light formDescriptionTool"
+                  [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true"
                   style="width: 68px;">
                 <i class="fa fa-cubes"></i><span class="toolForm"></span>
             </span>

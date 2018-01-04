@@ -109,10 +109,6 @@ const TOOL_BAR_OFF_SET = 55;
             content: ' Question';
         }
 
-        .toolCde:before {
-            content: ' CDE';
-        }
-
         .toolForm:before {
             content: ' Form';
         }
@@ -123,7 +119,7 @@ const TOOL_BAR_OFF_SET = 55;
     `]
 })
 export class FormDescriptionComponent {
-    private _elt: CdeForm;
+/*    private _elt: CdeForm;
     @Input() set elt(e: CdeForm) {
         this._elt = e;
         this.addExpanded(e);
@@ -131,7 +127,8 @@ export class FormDescriptionComponent {
     };
     get elt() {
         return this._elt;
-    }
+    }*/
+    @Input() elt: CdeForm;
     @Input() canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
     @ViewChild(TreeComponent) public tree: TreeComponent;
@@ -158,7 +155,7 @@ export class FormDescriptionComponent {
         allowDrop: (element, {parent, index}) => {
             return element !== parent && parent.data.elementType !== "question" && (!element
                 || !element.ref && (element.data.elementType !== "question" || parent.data.elementType === "section")
-                || element.ref === "form" || element.ref === "cde"
+                || element.ref === "form"
                 || element.ref === "pasteSection"
                 || element.ref === "question" && parent.data.elementType === "section"
             ) && !FormService.isSubForm(parent);
@@ -201,6 +198,7 @@ export class FormDescriptionComponent {
                 public modalService: NgbModal,
                 private formService: FormService,
                 private _hotkeysService: HotkeysService) {
+        this.toolSection = {insert: "section", data: new FormSection()};
         this._hotkeysService.add([
             new Hotkey('q', (event: KeyboardEvent): boolean => {
                 if (this.formElementEditing) {
