@@ -39,6 +39,7 @@ public class QuestionTest extends BaseFormTest {
                 robot.keyRelease(KeyEvent.VK_CONTROL);
                 hangon(2);
             } catch (Exception e) {
+                e.printStackTrace();
             }
             clickElement(By.id("createNewDataElement"));
         }

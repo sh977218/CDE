@@ -12,9 +12,9 @@ public class EmptyAnswers extends NlmCdeBaseTest {
         goToFormByName("Stroke Symptoms/Comorbid Events");
         goToFormDescription();
         textPresent("Answer Choices:", By.id("question_0_0"));
-        clickElement(By.cssSelector("#question_0_0 .fa-pencil"));
+        startEditQuestionById("question_0_0");
         clickElement(By.cssSelector("#question_0_0 .formDescriptionAnswerList .select2-selection__clear"));
-        clickElement(By.cssSelector("#question_0_0 .fa-check"));
+        saveEditQuestionById("question_0_0");
         textNotPresent("Answer Choices:", By.id("question_0_0"));
     }
 

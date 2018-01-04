@@ -1370,12 +1370,12 @@ public class NlmCdeBaseTest {
      */
     protected void editSection(String sectionId, String newSectionName, String newSectionInstruction, boolean isInstructionHtml, String newSectionCardinalityType, String newSectionCardinality) {
         startEditSectionById(sectionId);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
-        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input")).clear();
-        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input")).sendKeys(newSectionName);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'sectionTitle')]//i[contains(@class,'fa-edit')]"));
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'sectionTitle')]//input")).clear();
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'sectionTitle')]//input")).sendKeys(newSectionName);
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'sectionTitle')]//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
-        textPresent(newSectionName, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]"));
+        textPresent(newSectionName, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'sectionTitle')]"));
 
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//i[contains(@class,'fa-edit')]"));
         textPresent("Plain Text");
