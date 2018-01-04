@@ -17,7 +17,7 @@ public class FormAddFormInsideFormTest extends QuestionTest {
         textPresent("Embedded Form: Vessel Imaging Angiography");
         textPresent("Study ID number");
         String newFormLabel = "new inner form label";
-        startEditQuestionSectionById("inform_0_0");
+        startEditSectionById("inform_0_0");
         clickElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']//i"));
         findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']//form/input")).clear();
         findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']//form/input")).sendKeys(newFormLabel);

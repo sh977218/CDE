@@ -1342,12 +1342,21 @@ public class NlmCdeBaseTest {
     }
 
 
-    public void startEditQuestionSectionById(String id) {
+    public void startEditQuestionById(String id) {
         clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionLabel')]"));
     }
 
-    public void saveEditQuestionSectionById(String id) {
+    public void saveEditQuestionById(String id) {
         clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionLabel')]"));
+    }
+
+
+    public void startEditSectionById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'sectionLabel')]"));
+    }
+
+    public void saveEditSectionById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'sectionLabel')]"));
     }
 
     /**
@@ -1360,7 +1369,7 @@ public class NlmCdeBaseTest {
      * @param newSectionCardinality New section cardinality
      */
     protected void editSection(String sectionId, String newSectionName, String newSectionInstruction, boolean isInstructionHtml, String newSectionCardinalityType, String newSectionCardinality) {
-        startEditQuestionSectionById(sectionId);
+        startEditSectionById(sectionId);
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
         findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input")).clear();
         findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input")).sendKeys(newSectionName);
@@ -1382,7 +1391,7 @@ public class NlmCdeBaseTest {
 
         new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(newSectionCardinalityType);
         findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(newSectionCardinality);
-        saveEditQuestionSectionById("section_0");
+        saveEditSectionById("section_0");
         if (newSectionCardinality.equals("1"))
             textNotPresent("Repeats", By.xpath("//*[@id='" + sectionId + "']"));
         else textNotPresent("Repeats " + newSectionCardinality + " times", By.xpath("//*[@id='" + sectionId + "']"));

@@ -13,15 +13,15 @@ public class QuestionDefaultValue extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
         goToFormDescription();
-        startEditQuestionSectionById("question_0_0");
+        startEditQuestionById("question_0_0");
         new Select(driver.findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]/select"))).selectByVisibleText("Brother");
-        saveEditQuestionSectionById("question_0_0");
+        saveEditQuestionById("question_0_0");
 
-        startEditQuestionSectionById("question_0_1");
+        startEditQuestionById("question_0_1");
         clickElement(By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]//i[contains(@class,'fa-edit')]"));
         findElement(By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]//input")).sendKeys("A default answer!");
         clickElement(By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]//button[contains(text(),'Confirm')]"));
-        saveEditQuestionSectionById("question_0_1");
+        saveEditQuestionById("question_0_1");
         newFormVersion();
 
         goToFormByName(formName);

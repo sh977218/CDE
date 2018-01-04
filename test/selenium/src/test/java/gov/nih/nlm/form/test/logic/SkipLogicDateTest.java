@@ -14,7 +14,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         goToFormByName(formName);
         goToFormDescription();
         textPresent("Macula volume (OD)");
-        startEditQuestionSectionById("question_0_2");
+        startEditQuestionById("question_0_2");
         String inputXpath1 = locateSkipLogicEditTextareaXpathByQuestionId("question_0_2");
 
         editSkipLogic(inputXpath1, "\"Indicate date of reference scan\"", 2, 2, true, "Unexpected number of tokens in expression 1");
@@ -28,15 +28,15 @@ public class SkipLogicDateTest extends BaseFormTest {
         findElement(By.xpath(inputXpath1)).sendKeys(correctSkipLogicString);
         textNotPresent("Unexpected number of tokens");
         textNotPresent("is not a valid date for");
-        saveEditQuestionSectionById("question_0_2");
+        saveEditQuestionById("question_0_2");
 
-        startEditQuestionSectionById("question_0_3");
+        startEditQuestionById("question_0_3");
         findElement(By.xpath(locateSkipLogicEditTextareaXpathByQuestionId("question_0_3"))).sendKeys("\"Indicate date of reference scan\">\"10/11/2016\"");
-        saveEditQuestionSectionById("question_0_3");
+        saveEditQuestionById("question_0_3");
 
-        startEditQuestionSectionById("question_0_4");
+        startEditQuestionById("question_0_4");
         findElement(By.xpath(locateSkipLogicEditTextareaXpathByQuestionId("question_0_4"))).sendKeys("\"Indicate date of reference scan\"<\"10/11/2016\"");
-        saveEditQuestionSectionById("question_0_4");
+        saveEditQuestionById("question_0_4");
 
         newFormVersion();
 

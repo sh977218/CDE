@@ -62,7 +62,7 @@ public class BaseFormTest extends FormCommentTest {
                 }
             }
         }
-        startEditQuestionSectionById(sectionId);
+        startEditSectionById(sectionId);
         if (title != null) {
             editSectionTitle(sectionId, title);
         }
@@ -70,7 +70,7 @@ public class BaseFormTest extends FormCommentTest {
             hangon(1); // allow time for id to be processed
             setRepeat(sectionId, repeat);
         }
-        saveEditQuestionSectionById(sectionId);
+        saveEditSectionById(sectionId);
     }
 
     public void editSectionTitle(String sectionId, String title) {

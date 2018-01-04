@@ -1,4 +1,4 @@
-<div class="questionSectionTitle" (click)="section.updatedSkipLogic = false">
+<div (click)="section.updatedSkipLogic = false">
     <div class="text-truncate p-1" [ngClass]="{'hover-bg':section.hover}">
         <div *ngIf="!isSubForm && canEdit" class="float-left">
             <i class="fa fa-arrows fa-lg question-move-handle"
@@ -12,7 +12,8 @@
         </div>
         <div id="innerForm_label_edit_icon_{{section.label}}" class="font-weight-bold float-left">
             <span *ngIf="section.elementType === 'form'">Embedded Form:</span>
-            <cde-inline-edit (click)="editSection(section);" [ngClass]="{'hand-cursor':!isSubForm && canEdit}"
+            <cde-inline-edit (click)="editSection(section);" class="sectionLabel"
+                             [ngClass]="{'hand-cursor':!isSubForm && canEdit}"
                              (mouseover)="hoverInSection(section)" (mouseout)="hoverOutSection(section)"
                              [(model)]="section.label" [isAllowed]="canEditSection()"
                              (modelChange)="onEltChange.emit()" style="width: 62%;"></cde-inline-edit>

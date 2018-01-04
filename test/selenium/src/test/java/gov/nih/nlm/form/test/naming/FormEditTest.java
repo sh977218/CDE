@@ -20,7 +20,7 @@ public class FormEditTest extends BaseFormTest {
 
     private void editQuestion() {
         scrollToViewById("question_0_0");
-        startEditQuestionSectionById("question_0_0");
+        startEditQuestionById("question_0_0");
         clickElement(By.xpath("//*[@id='question_0_0']//i[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("Select a question label from a CDE Name");
         clickElement(By.xpath("//*[@id='q_select_name_1']/div/button"));
@@ -38,7 +38,7 @@ public class FormEditTest extends BaseFormTest {
         String newQuestionUnitsOfMeasure = "New Units of Measure";
         questionEditAddUom("question_0_0", newQuestionUnitsOfMeasure);
 
-        saveEditQuestionSectionById("question_0_0");
+        saveEditQuestionById("question_0_0");
         textPresent("Data unknown text", By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionLabel')]"));
         textPresent(newQuestionUnitsOfMeasure, By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionUom')]"));
         textPresent(newQuestionInstruction, By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionInstruction')]"));

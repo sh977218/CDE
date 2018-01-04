@@ -15,7 +15,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToFormDescription();
-        startEditQuestionSectionById("question_0_3");
+        startEditQuestionById("question_0_3");
         clickElement(By.xpath("//div[@id='question_0_3']//*[contains(@class,'editQuestionInvisible')]/input"));
 
         clickElement(By.id("displayProfiles_tab"));
