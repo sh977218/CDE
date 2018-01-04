@@ -5,10 +5,41 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
+
 public class QuestionTest extends BaseFormTest {
 
     public void addQuestionToSection(String cdeName, int sectionNumber) {
         addQuestionToSectionUnsafe(cdeName, sectionNumber);
+    }
+
+    public void addCdeAfter(String cdeName, String id) {
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        StringSelection stringSelection = new StringSelection(cdeName);
+        clipboard.setContents(stringSelection, null);
+
+        WebElement sourceElt = findElement(By.xpath("//*[@id='startAddingQuestions']"));
+        WebElement targetElt = findElement(By.xpath("//*[@id='" + id + "']//tree-node-drop-slot[2]"));
+        (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
+        dragAndDrop(sourceElt, targetElt);
+        if (driver.findElements(By.id("addNewCdeBtn")).size() > 0)
+            clickElement(By.id("addNewCdeBtn"));
+        try {
+            hangon(2);
+            Robot robot = new Robot();
+            robot.keyPress(KeyEvent.VK_CONTROL);
+            robot.keyPress(KeyEvent.VK_V);
+            robot.keyRelease(KeyEvent.VK_V);
+            robot.keyRelease(KeyEvent.VK_CONTROL);
+            hangon(2);
+        } catch (Exception e) {
+        }
+        clickElement(By.id("createNewDataElement"));
+        String newId = Integer.valueOf(id)
+        textPresent(cdeName,By.id());
     }
 
     public void addQuestionToSectionUnsafe(String cdeName, int sectionNumber) {

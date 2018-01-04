@@ -107,13 +107,13 @@
     <ng-container *ngIf="questionModelMode === 'search'">
         <div class="modal-header">
             <h1>Search Questions</h1>
-            <button class="btn btn-outline-dark" (click)="questionModelMode = 'add'">
+            <button class="btn btn-outline-dark" id="addNewCdeBtn" (click)="questionModelMode = 'add'">
                 Add A New Data Element
             </button>
         </div>
         <div class="modal-body">
-            <cde-cde-search addMode="True" [embedded]="true"
-                            (add)="addQuestionFromSearch($event)"></cde-cde-search>
+            <cde-cde-search addMode="True" [embedded]="true" (add)="addQuestionFromSearch($event)">
+            </cde-cde-search>
         </div>
         <div class="modal-footer">
             <button class="btn  btn-warning" (click)="d()" id="cancelSelectQ">Close</button>

@@ -75,7 +75,7 @@ const TOOL_BAR_OFF_SET = 55;
             position: fixed;
             padding: 5px;
             padding-left: 20px;
-            top: ${TOOL_BAR_OFF_SET}px;
+            top: ${TOOL_BAR_OFF_SET} px;
             border-bottom-left-radius: 50px;
             right: 0;
             -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -119,16 +119,16 @@ const TOOL_BAR_OFF_SET = 55;
     `]
 })
 export class FormDescriptionComponent {
-/*    private _elt: CdeForm;
+    private _elt: CdeForm;
     @Input() set elt(e: CdeForm) {
         this._elt = e;
         this.addExpanded(e);
         this.addIds(e.formElements, "");
     };
+
     get elt() {
         return this._elt;
-    }*/
-    @Input() elt: CdeForm;
+    }
     @Input() canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
     @ViewChild(TreeComponent) public tree: TreeComponent;
@@ -169,7 +169,7 @@ export class FormDescriptionComponent {
                     } else if (from.ref) {
                         this.toolDropTo = to;
                         if (from.ref === "question") {
-                            this.openQuestionSearch(to, tree);
+                            this.openQuestionSearch(to);
                             return;
                         } else if (from.ref === "form") {
                             this.openFormSearch();
@@ -221,7 +221,8 @@ export class FormDescriptionComponent {
                             this.onEltChange.emit();
                             window.document.getElementById((newQuestion as any).descriptionId).scrollIntoView();
                         }
-                    }, () => {});
+                    }, () => {
+                    });
                     setTimeout(() => window.document.getElementById("newDEName").focus(), 0);
                 }
                 return false;
@@ -280,10 +281,12 @@ export class FormDescriptionComponent {
     }
 
     openFormSearch() {
-        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(() => {}, () => {});
+        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(() => {
+        }, () => {
+        });
     }
 
-    openQuestionSearch(to, tree) {
+    openQuestionSearch(to) {
         this.newDataElementName = "";
         this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(reason => {
             if (reason === 'create') {
@@ -294,7 +297,7 @@ export class FormDescriptionComponent {
                 newQuestion.label = this.newDataElementName;
                 newQuestion.question.cde.naming = [{designation: this.newDataElementName}];
                 this.addIndex(to.parent.data.formElements, newQuestion, to.index);
-                tree.update();
+                this.tree.treeModel.update();
                 this.addIds(this.elt.formElements, "");
                 this.onEltChange.emit();
             }

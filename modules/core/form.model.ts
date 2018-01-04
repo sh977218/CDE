@@ -138,7 +138,7 @@ export class FormInForm implements FormSectionOrForm {
 
 export class FormQuestion implements FormElement {
     _id;
-    newCde: boolean;
+    newCde: boolean = false;
     elementType = 'question';
     edit: boolean = false;
     hover: boolean;
