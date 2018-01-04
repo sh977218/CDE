@@ -9,6 +9,7 @@ let elastic = require('../../cde/node-js/elastic');
 let deValidator = require('@std/esm')(module)('../../cde/shared/deValidator');
 let vsac = require('./vsac-io');
 let exportShared = require('@std/esm')(module)('../../system/shared/exportShared');
+const dbLogger = require('../../system/node-js/dbLogger');
 
 exports.byId = function (req, res) {
     let id = req.params.id;
@@ -92,7 +93,15 @@ exports.saveDraftDataElement = function (req, res) {
     if (!elt.created) elt.created = new Date();
     elt.updated = new Date();
     mongo_cde.saveDraftDataElement(elt, function (err, dataElement) {
-        if (err) return res.status(500).send("ERROR - save draft data element. " + tinyId);
+        if (err) {
+            dbLogger.logError({
+                message: "Error saving draft: " + tinyId,
+                origin: "cdeSvc.saveDraftDataElement",
+                stack: err,
+                details: ""
+            });
+            return res.status(500).send("ERROR - save draft data element. " + tinyId);
+        }
         res.send(dataElement);
     });
 };

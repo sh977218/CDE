@@ -187,7 +187,21 @@ exports.init = function (app, daoManager) {
 
     // This is for tests only
     app.post('/sendMockFormData', function (req, res) {
-        if (req.body.q1 === "1" && req.body.q2 === "2" && req.body.q3 === "Lab Name" && req.body.mapping === "{\"sections\":[{\"section\":\"\",\"questions\":[{\"question\":\"Number of CAG repeats on a larger allele\",\"name\":\"q1\",\"ids\":[{\"version\":\"3\",\"id\":\"C14936\",\"source\":\"NINDS\"},{\"id\":\"CAGRepeatsLargerAlleleNum\",\"source\":\"NINDS Variable Name\"}],\"tinyId\":\"VTO0Feb6NSC\"},{\"question\":\"Number of CAG repeats on a smaller allele\",\"name\":\"q2\",\"ids\":[{\"version\":\"3\",\"id\":\"C14937\",\"source\":\"NINDS\"},{\"id\":\"CAGRepeatsSmallerAlleleNum\",\"source\":\"NINDS Variable Name\"}],\"tinyId\":\"uw_koHkZ_JT\"},{\"question\":\"Name of laboratory that performed this molecular study\",\"name\":\"q3\",\"ids\":[{\"version\":\"3\",\"id\":\"C17744\",\"source\":\"NINDS\"},{\"id\":\"MolecularStdyLabName\",\"source\":\"NINDS Variable Name\"}],\"tinyId\":\"EdUB2kWmV61\"}]}]}") {
+        let mapping = JSON.parse(req.body.mapping);
+        if (req.body.q1 === "1" && req.body.q2 === "2"
+            && req.body.q3 === "Lab Name"
+            && mapping.sections[0].questions[0].question === "Number of CAG repeats on a larger allele"
+            && mapping.sections[0].questions[0].name === "q1"
+            && mapping.sections[0].questions[0].ids[0].source === "NINDS"
+            && mapping.sections[0].questions[0].ids[0].id === "C14936"
+            && mapping.sections[0].questions[0].ids[0].version === "3"
+            && mapping.sections[0].questions[0].ids[1].source === "NINDS Variable Name"
+            && mapping.sections[0].questions[0].ids[1].id === "CAGRepeatsLargerAlleleNum"
+            && mapping.sections[0].questions[0].tinyId === "VTO0Feb6NSC"
+            && mapping.sections[0].questions[1].tinyId === "uw_koHkZ_JT"
+            && mapping.sections[0].questions[2].question === "Name of laboratory that performed this molecular study"
+            && mapping.sections[0].questions[2].name === "q3"
+            && mapping.sections[0].questions[2].tinyId === "EdUB2kWmV61") {
             if (req.body.formUrl.indexOf(config.publicUrl + "/data") === 0) res.send("<html><body>Form Submitted</body></html>"); else if (config.publicUrl.indexOf('localhost') === -1) {
                 dns.lookup(/\/\/.*:/.exec(req.body.formUrl), (err, result) => {
                     if (!err && req.body.formUrl.indexOf(result + "/data") === 0) res.send("<html><body>Form Submitted</body></html>"); else res.status(401).send("<html><body>Not the right input</body></html>");
