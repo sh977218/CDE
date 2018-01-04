@@ -16,13 +16,42 @@ public class QuestionTest extends BaseFormTest {
         addQuestionToSectionUnsafe(cdeName, sectionNumber);
     }
 
-    public void addCdeAfter(String cdeName, String id) {
+    public void addCdeBeforeId(String cdeName, String id) {
+        String dropXpath = "//*[@id='" + id + "']//tree-node-drop-slot[1]";
+        addCde(cdeName, dropXpath);
+        textPresent(cdeName, By.id(id));
+    }
+
+    public void addCdes(String[] cdeNames) {
+        for (String cdeName : cdeNames) {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            StringSelection stringSelection = new StringSelection(cdeName);
+            clipboard.setContents(stringSelection, null);
+            try {
+                hangon(2);
+                Robot robot = new Robot();
+                robot.keyPress(KeyEvent.VK_Q);
+                robot.keyRelease(KeyEvent.VK_Q);
+                textPresent("New Data Element");
+                robot.keyPress(KeyEvent.VK_CONTROL);
+                robot.keyPress(KeyEvent.VK_V);
+                robot.keyRelease(KeyEvent.VK_V);
+                robot.keyRelease(KeyEvent.VK_CONTROL);
+                hangon(2);
+            } catch (Exception e) {
+            }
+            clickElement(By.id("createNewDataElement"));
+        }
+
+    }
+
+    private void addCde(String cdeName, String dropXpath) {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         StringSelection stringSelection = new StringSelection(cdeName);
         clipboard.setContents(stringSelection, null);
 
         WebElement sourceElt = findElement(By.xpath("//*[@id='startAddingQuestions']"));
-        WebElement targetElt = findElement(By.xpath("//*[@id='" + id + "']//tree-node-drop-slot[2]"));
+        WebElement targetElt = findElement(By.xpath(dropXpath));
         (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
         dragAndDrop(sourceElt, targetElt);
         if (driver.findElements(By.id("addNewCdeBtn")).size() > 0)
@@ -38,9 +67,8 @@ public class QuestionTest extends BaseFormTest {
         } catch (Exception e) {
         }
         clickElement(By.id("createNewDataElement"));
-        String newId = Integer.valueOf(id)
-        textPresent(cdeName,By.id());
     }
+
 
     public void addQuestionToSectionUnsafe(String cdeName, int sectionNumber) {
         addQuestionDialog(sectionNumber);
