@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const sharedSchemas = require('../../system/node-js/schemas.js');
+const sharedSchemas = require('../system/schemas.js');
 const config = require("config");
 
 const instructionSchema = new Schema({value: String, valueFormat: String}, {_id: false});
