@@ -4,9 +4,8 @@ import {
     EventEmitter,
     HostListener,
     Input,
-    OnChanges,
     Output,
-    SimpleChanges,
+    OnInit,
     TemplateRef,
     ViewChild
 } from "@angular/core";
@@ -118,7 +117,7 @@ const TOOL_BAR_OFF_SET = 55;
         }
     `]
 })
-export class FormDescriptionComponent {
+export class FormDescriptionComponent implements OnInit {
     private _elt: CdeForm;
     @Input() set elt(e: CdeForm) {
         this._elt = e;
@@ -169,7 +168,7 @@ export class FormDescriptionComponent {
                     } else if (from.ref) {
                         this.toolDropTo = to;
                         if (from.ref === "question") {
-                            this.openQuestionSearch(to);
+                            this.openQuestionSearch(to, tree);
                             return;
                         } else if (from.ref === "form") {
                             this.openFormSearch();
@@ -199,6 +198,9 @@ export class FormDescriptionComponent {
                 private formService: FormService,
                 private _hotkeysService: HotkeysService) {
         this.toolSection = {insert: "section", data: new FormSection()};
+    }
+
+    ngOnInit(): void {
         this._hotkeysService.add([
             new Hotkey('q', (event: KeyboardEvent): boolean => {
                 if (this.formElementEditing) {
@@ -207,7 +209,7 @@ export class FormDescriptionComponent {
                     this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(reason => {
                         if (reason === 'create') {
                             // let newQuestion = this.getNewQuestion();
-                            let newQuestion = new FormQuestion();
+                            let newQuestion = new FormQuestion;
                             newQuestion.newCde = true;
                             newQuestion.edit = true;
                             newQuestion.label = this.newDataElementName;
@@ -215,6 +217,7 @@ export class FormDescriptionComponent {
                             this.formElementEditing.index = this.formElementEditing.index + 1;
                             this.addIndex(this.formElementEditing.formElements, newQuestion, this.formElementEditing.index);
                             this.tree.treeModel.update();
+                            this.tree.treeModel.expandAll();
                             this.addIds(this.elt.formElements, "");
                             this.formElementEditing.formElement.edit = false;
                             this.formElementEditing.formElement = newQuestion;
@@ -286,7 +289,7 @@ export class FormDescriptionComponent {
         });
     }
 
-    openQuestionSearch(to) {
+    openQuestionSearch(to, tree) {
         this.newDataElementName = "";
         this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(reason => {
             if (reason === 'create') {
@@ -297,8 +300,12 @@ export class FormDescriptionComponent {
                 newQuestion.label = this.newDataElementName;
                 newQuestion.question.cde.naming = [{designation: this.newDataElementName}];
                 this.addIndex(to.parent.data.formElements, newQuestion, to.index);
-                this.tree.treeModel.update();
+                tree.update();
+                tree.expandAll();
                 this.addIds(this.elt.formElements, "");
+                this.formElementEditing.formElement.edit = false;
+                this.formElementEditing.formElement = newQuestion;
+                this.formElementEditing.formElements = to.parent.data.formElements;
                 this.onEltChange.emit();
             }
         }, () => {

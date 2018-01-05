@@ -246,12 +246,7 @@ export class FormDescriptionQuestionDetailComponent {
 
     public namingSelet2Options: Select2Options = {
         multiple: true,
-        tags: true,
-        language: {
-            noResults: () => {
-                return "No Tags found, Tags are managed in Org Management > List Management";
-            }
-        }
+        tags: true
     };
     public dataTypeOptions = ["Value List", "Text", "Date", "Number"];
 

@@ -330,14 +330,14 @@ export function iterateFes(fes, callback = noop, formCb = noop1, sectionCb = noo
                     else this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
                 });
             } else if (fe.elementType === 'section') {
-                sectionCb(fe, (err) => {
-                    if (err) cb(err);
-                    else this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
+                sectionCb(fe, () => {
+                    this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
                 });
             } else if (fe.elementType === 'question') {
                 questionCb(fe, cb);
             } else {
                 console.log("Unknown element type: " + fe.elementType);
+                cb();
             }
         }, callback);
 }
@@ -352,8 +352,10 @@ export function iterateFesSync(fes, formCb = noop, sectionCb = noop, questionCb 
             } else if (fe.elementType === 'section') {
                 sectionCb(fe);
                 this.iterateFeSync(fe, formCb, sectionCb, questionCb);
-            } else {
+            } else if (fe.elementType === 'question') {
                 questionCb(fe);
+            } else {
+                console.log("Unknown element type: " + fe.elementType);
             }
         });
 }
