@@ -123,8 +123,7 @@ export class FormDescriptionQuestionDetailComponent {
                             }
                             if (valid) {
                                 if (i === 0) {
-                                    let temp = ucum.canonicalize(question.uoms[i]);
-                                    baseUnits = temp.units;
+                                    baseUnits = ucum.canonicalize(question.uoms[i]);
                                     baseUnitsKeys = Object.keys(baseUnits);
                                     question.uomsValid[i] = question.uomsValid[i] || valid;
 

@@ -12,7 +12,7 @@ public class TwoClassifThenReset extends NlmCdeBaseTest {
         clickElement(By.id("browseOrg-CTEP"));
         findElement(By.id("li-blank-CATEGORY")).click();
         textPresent("AdEERS");
-        findElement(By.id("altClassificationFilterModeToggle")).click();
+        clickElement(By.id("altClassificationFilterModeToggle"));
         textPresent("SPOREs");
         clickElement(By.id("li-blank-CTEP"));
         findElement(By.id("li-blank-DISEASE")).click();
