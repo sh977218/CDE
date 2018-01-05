@@ -1,10 +1,12 @@
-var mongoose = require('mongoose')
-    , Schema = mongoose.Schema
-    , sharedSchemas = require('../../system/node-js/schemas.js')
-    , config = require("config")
-;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const sharedSchemas = require('../../system/node-js/schemas.js');
+const config = require("config");
 
-var questionSchema = {
+
+const instructionSchema = new Schema({value: String, valueFormat: String}, {_id: false});
+
+const questionSchema = new Schema({
     cde: {
         tinyId: String
         , name: String
@@ -35,11 +37,9 @@ var questionSchema = {
     , multiselect: Boolean
     , answers: [sharedSchemas.permissibleValueSchema]
     , defaultAnswer: String
-};
+}, {_id: false});
 
-var sectionSchema = {};
-
-var inFormSchema = new Schema({
+let inFormSchema = new Schema({
     form: {
         tinyId: String,
         version: String,
@@ -48,18 +48,17 @@ var inFormSchema = new Schema({
     }
 }, {_id: false});
 
-function getFormElementSchema() {
+function getFormElementJson() {
     return {
         _id: false,
         elementType: {type: String, enum: ['section', 'question', 'form']},
-        // formElements: [],
-        instructions: sharedSchemas.instructionSchema,
+        instructions: instructionSchema,
         inForm: {type: inFormSchema, default: undefined},
         label: String,
-        question: {type: new Schema(questionSchema, {_id: false}), default: undefined},
+        question: {type: questionSchema, default: undefined},
         repeat: String,
         repeatsFor: String,
-        section: {type: sectionSchema, default: undefined},
+        section: {type: new Schema({}, {_id: false}), default: undefined},
         showIfExpression: String,
         skipLogic: {
             action: {type: String, enum: ['show', 'enable']},
@@ -68,24 +67,15 @@ function getFormElementSchema() {
     };
 }
 
-let innerFormEltJson = getFormElementSchema();
+let innerFormEltJson = getFormElementJson();
 innerFormEltJson.formElements = [new mongoose.Schema({}, {strict: false})];
 let innerFormEltSchema = new Schema(innerFormEltJson, {_id: false});
 
 for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
-    innerFormEltJson = getFormElementSchema();
+    innerFormEltJson = getFormElementJson();
     innerFormEltJson.formElements = [innerFormEltSchema];
     innerFormEltSchema = new Schema(innerFormEltJson, {_id: false});
 }
-
-// let formElementTreeRoot = getFormElementSchema();
-// let currentLevel = formElementTreeRoot.formElements;
-// for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
-//     currentLevel.push(getFormElementSchema());
-//     currentLevel = currentLevel[0].formElements;
-// }
-// currentLevel.push(new mongoose.Schema({}, {strict: false}));
-// let formElementSchema = new Schema(formElementTreeRoot, {_id: false});
 
 exports.formJson = {
     elementType: {type: String, default: 'form', enum: ['form']}
