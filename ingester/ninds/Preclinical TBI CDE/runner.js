@@ -6,9 +6,9 @@ const csv = require('csv');
 const request = require('request');
 const cheerio = require('cheerio');
 
-const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataElement;
-const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
-const mongo_data = require('../../../modules/system/node-js/mongo-data');
+const DataElementModel = require('../../../server/cde/mongo-cde').DataElement;
+const FormModel = require('../../../server/form/mongo-form').Form;
+const mongo_data = require('../../../server/system/mongo-data');
 
 const UOM_MAP = {
     '': '',

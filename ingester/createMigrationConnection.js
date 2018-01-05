@@ -1,10 +1,10 @@
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
-let config = require('../modules/system/node-js/parseConfig');
-let cde_schemas = require('../modules/cde/node-js/schemas');
-let form_schemas = require('../modules/form/node-js/schemas');
-let sharedSchemas = require('../modules/system/node-js/schemas.js');
+let config = require('../server/system/parseConfig');
+let cde_schemas = require('../server/cde/schemas');
+let form_schemas = require('../server/form/schemas');
+let sharedSchemas = require('../server/system/schemas.js');
 
 let mongoMigrationUri = config.mongoMigrationUri;
 let migrationConn = mongoose.createConnection(mongoMigrationUri);

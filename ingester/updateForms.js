@@ -4,8 +4,8 @@
  */
 var MigrationFormModel = require('./createMigrationConnection').MigrationFormModel,
     MigrationOrgModel = require('./createMigrationConnection').MigrationOrgModel,
-    OrgModel = require('../modules/system/node-js/mongo-data').Org,
-    mongo_form = require('../modules/form/node-js/mongo-form'),
+    OrgModel = require('../server/system/mongo-data').Org,
+    mongo_form = require('../server/form/mongo-form'),
     FormModel = mongo_form.Form,
     classificationShared = require('@std/esm')(module)('../modules/system/shared/classificationShared'),
     updateShare = require('./updateShare')

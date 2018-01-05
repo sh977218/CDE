@@ -1,4 +1,4 @@
-const mongo_form = require('../modules/form/node-js/mongo-form'),
+const mongo_form = require('../server/form/mongo-form'),
     async = require('async')
 ;
 

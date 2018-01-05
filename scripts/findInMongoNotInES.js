@@ -1,5 +1,5 @@
-var mongo_cde = require('../modules/cde/node-js/mongo-cde'),
-    esClient = require('../modules/system/node-js/elastic').esClient,
+var mongo_cde = require('../server/cde/mongo-cde'),
+    esClient = require('../server/system/elastic').esClient,
     config = require('config')
     ;
 

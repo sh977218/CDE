@@ -6,9 +6,9 @@ const xml2js = require('xml2js');
 process.env.NODE_CONFIG_DIR = path.resolve('../../../config');
 const config = require('config');
 
-const mongo_cde = require('../../../modules/cde/node-js/mongo-cde');
-const mongo_data = require('../../../modules/system/node-js/mongo-data');
-const mongo_form = require('../../../modules/form/node-js/mongo-form');
+const mongo_cde = require('../../../server/cde/mongo-cde');
+const mongo_data = require('../../../server/system/mongo-data');
+const mongo_form = require('../../../server/form/mongo-form');
 
 const DataElement = mongo_cde.DataElement;
 const FormModel = mongo_form.Form;

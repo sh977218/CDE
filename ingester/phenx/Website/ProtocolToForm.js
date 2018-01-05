@@ -1,6 +1,6 @@
 let _ = require('lodash');
 
-let mongo_data = require('../../../modules/system/node-js/mongo-data');
+let mongo_data = require('../../../server/system/mongo-data');
 let classificationShare = require('@std/esm')(module)('../../../modules/system/shared/classificationShared');
 let updateShare = require('../../updateShare');
 

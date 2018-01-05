@@ -1,6 +1,6 @@
 var async = require('async'),
     MigrationNindsModel = require('./../createMigrationConnection').MigrationNindsModel,
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
+    mongo_cde = require('../../server/cde/mongo-cde'),
     DataElement = mongo_cde.DataElement
     ;
 

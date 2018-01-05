@@ -1,4 +1,4 @@
-var mongo_board = require('../modules/board/node-js/mongo-board'),
+var mongo_board = require('../server/board/mongo-board'),
     async = require('async')
     ;
 

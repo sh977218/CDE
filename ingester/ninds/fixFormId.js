@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
-var config = require('../../modules/system/node-js/parseConfig');
+var config = require('../../server/system/parseConfig');
 var NindsModel = require('../createMigrationConnection').MigrationNindsModel;
-var Form = require('../../modules/form/node-js/mongo-form').Form;
+var Form = require('../../server/form/mongo-form').Form;
 
 
 function run() {

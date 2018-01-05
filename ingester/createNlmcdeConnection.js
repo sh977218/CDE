@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var config = require('../modules/system/node-js/parseConfig');
-var cde_schemas = require('../modules/cde/node-js/schemas');
-var form_schemas = require('../modules/form/node-js/schemas');
-var sharedSchemas = require('../modules/system/node-js/schemas.js');
+var config = require('../server/system/parseConfig');
+var cde_schemas = require('../server/cde/schemas');
+var form_schemas = require('../server/form/schemas');
+var sharedSchemas = require('../server/system/schemas.js');
 
 var mongoUri = config.mongoUri;
 var mongoConn = mongoose.createConnection(mongoUri);

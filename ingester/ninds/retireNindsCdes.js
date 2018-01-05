@@ -1,5 +1,5 @@
 var async = require('async'),
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
+    mongo_cde = require('../../server/cde/mongo-cde'),
     DataElement = mongo_cde.DataElement
     ;
 var retired = 0;
