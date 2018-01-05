@@ -39,7 +39,7 @@
                 <i class="fa fa-eye"></i> View CDE
             </a>
             <span *ngIf="!question.question.cde.tinyId" class="text-danger">(This is a new CDE)</span>
-            <div *ngIf="!isSubForm && canEdit" class="d-inline-block" style="font-size: 16px">
+            <div *ngIf="!isSubForm && canEdit" class="d-inline-block editIconDiv" style="font-size: 16px">
                 <i *ngIf="!question.confirmDelete" (click)="question.confirmDelete = true;"
                    class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
                 <ng-container *ngIf="question.confirmDelete">Confirm Delete

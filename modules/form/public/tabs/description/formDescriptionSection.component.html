@@ -14,7 +14,7 @@
              class="font-weight-bold float-left hand-cursor sectionLabel ml-1"
              (mouseover)="hoverInSection(section)" (mouseout)="hoverOutSection(section)"
              (click)="editSection(section);">
-            <span *ngIf="section.elementType === 'form'">Embedded Form:</span>{{section.label}}
+            <span *ngIf="section.elementType === 'form'">Embedded Form:</span>{{section.label | cdePlaceholder}}
         </div>
         <div *ngIf="!isSubForm && canEdit" class="float-right">
             <a *ngIf="section.elementType === 'form' && section.inForm.form.tinyId" target="_blank"
@@ -22,7 +22,7 @@
                href="/formView?tinyId={{section.inForm.form.tinyId}}&version={{section.inForm.form.version}}">
                 <i class="fa fa-eye"></i> View Form
             </a>
-            <div class="d-inline-block" style="font-size: 16px">
+            <div class="d-inline-block editIconDiv" style="font-size: 16px">
                 <i *ngIf="section.elementType === 'section'" class="fa fa-copy copySection" title="Copy section"
                    (click)="copySection(section)"></i>
                 <i *ngIf="!section.confirmDelete" class="fa fa-trash-o hand-cursor" title="Remove Section"
