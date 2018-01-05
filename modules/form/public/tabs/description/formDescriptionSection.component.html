@@ -14,7 +14,7 @@
              class="font-weight-bold float-left hand-cursor sectionLabel ml-1"
              (mouseover)="hoverInSection(section)" (mouseout)="hoverOutSection(section)"
              (click)="editSection(section);">
-            <span *ngIf="section.elementType === 'form'">Embedded Form:</span>{{section.label | cdePlaceholder}}
+            <span *ngIf="section.elementType === 'form'">Embedded Form: </span>{{section.label | cdePlaceholder}}
         </div>
         <div *ngIf="!isSubForm && canEdit" class="float-right">
             <a *ngIf="section.elementType === 'form' && section.inForm.form.tinyId" target="_blank"
