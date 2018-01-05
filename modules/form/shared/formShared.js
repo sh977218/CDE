@@ -311,14 +311,12 @@ export function isSubForm(node) {
 // callback(error)
 // feCb(fe, cbContinue(error))
 export function iterateFe(fe, callback, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
-    if (fe)
-        this.iterateFes(fe.formElements, callback, formCb, sectionCb, questionCb);
+    if (fe) this.iterateFes(fe.formElements, callback, formCb, sectionCb, questionCb);
 }
 
 // cb(fe)
 export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
-    if (fe)
-        this.iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
+    if (fe) this.iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
 }
 
 // callback(error)
@@ -328,20 +326,18 @@ export function iterateFes(fes, callback = noop, formCb = noop1, sectionCb = noo
         async.forEach(fes, (fe, cb) => {
             if (fe.elementType === 'form') {
                 formCb(fe, (err) => {
-                    if (err)
-                        cb(err);
-                    else
-                        this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
+                    if (err) cb(err);
+                    else this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
                 });
             } else if (fe.elementType === 'section') {
                 sectionCb(fe, (err) => {
-                    if (err)
-                        cb(err);
-                    else
-                        this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
+                    if (err) cb(err);
+                    else this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
                 });
-            } else {
+            } else if (fe.elementType === 'question') {
                 questionCb(fe, cb);
+            } else {
+                console.log("Unknown element type: " + fe.elementType);
             }
         }, callback);
 }
@@ -395,28 +391,4 @@ export function score(question, elt) {
         }
     });
     return result;
-}
-
-
-export function loopFormElements(form, doQuestion, doForm, doSection, cb) {
-    if (!form.formElements) form.formElements = [];
-    async.forEachSeries(form.formElements, (fe, doneOne) => {
-        if (fe.elementType === 'question') {
-            if (doQuestion) doQuestion(fe, doneOne);
-            else this.loopFormElements(fe, doQuestion, doForm, doSection, doneOne);
-        }
-        else if (fe.elementType === 'form') {
-            if (doForm) doForm(fe, () => this.loopFormElements(fe, null, null, null, doneOne));
-            else this.loopFormElements(fe, doQuestion, doForm, doSection, doneOne);
-        }
-        else if (fe.elementType === 'section') {
-            if (doSection) doSection(fe, () => this.loopFormElements(fe, null, null, null, doneOne));
-            else this.loopFormElements(fe, doQuestion, doForm, doSection, doneOne);
-        } else {
-            console.log("Unknown element type: " + fe.elementType);
-            doneOne();
-        }
-    }, () => {
-        if (cb) cb();
-    });
 }

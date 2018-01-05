@@ -314,10 +314,7 @@ export class FormViewComponent implements OnInit {
 
     saveForm() {
         let newCdes = [];
-        formShared.loopFormElements(this.elt, (fe, cb) => {
-            if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
-            if (cb) cb();
-        }, null, null, () => {
+        formShared.iterateFes(this.elt, () => {
             async.forEach(newCdes, (newCde, doneOneCde) => {
                 this.createDataElement(newCde, doneOneCde);
             }, () => {
@@ -329,6 +326,9 @@ export class FormViewComponent implements OnInit {
                     () => this.router.navigate(['/pageNotFound'])
                 );
             });
+        }, null, null, (fe, cb) => {
+            if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
+            if (cb) cb();
         });
     }
 
