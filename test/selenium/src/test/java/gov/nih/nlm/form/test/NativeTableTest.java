@@ -25,7 +25,7 @@ public class NativeTableTest extends BaseFormTest {
         goToFormDescription();
         textPresent("Repeats: 5 times", By.xpath("//div[@id='section_0']//span[contains(@class,'badge-primary')]"));
         startEditSectionById("section_0");
-        clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'sectionTitle')]//i[contains(@class,'fa-edit')]"));
+        clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_label')]//i[contains(@class,'fa-edit')]"));
         setRepeat("section_0", "F");
         saveEditSectionById("section_0");
         textPresent("Repeats: over First Question", By.xpath("//div[@id='section_0']//span[contains(@class,'badge-primary')]"));
