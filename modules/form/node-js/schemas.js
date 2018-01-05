@@ -52,7 +52,7 @@ function getFormElementSchema() {
     return {
         _id: false,
         elementType: {type: String, enum: ['section', 'question', 'form']},
-        formElements: [],
+        // formElements: [],
         instructions: sharedSchemas.instructionSchema,
         inForm: {type: inFormSchema, default: undefined},
         label: String,
@@ -68,14 +68,24 @@ function getFormElementSchema() {
     };
 }
 
-let formElementTreeRoot = getFormElementSchema();
-let currentLevel = formElementTreeRoot.formElements;
+let innerFormEltJson = getFormElementSchema();
+innerFormEltJson.formElements = [new mongoose.Schema({}, {strict: false})];
+let innerFormEltSchema = new Schema(innerFormEltJson, {_id: false});
+
 for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
-    currentLevel.push(getFormElementSchema());
-    currentLevel = currentLevel[0].formElements;
+    innerFormEltJson = getFormElementSchema();
+    innerFormEltJson.formElements = [innerFormEltSchema];
+    innerFormEltSchema = new Schema(innerFormEltJson, {_id: false});
 }
-currentLevel.push(new mongoose.Schema({}, {strict: false}));
-let formElementSchema = new Schema(formElementTreeRoot, {_id: false});
+
+// let formElementTreeRoot = getFormElementSchema();
+// let currentLevel = formElementTreeRoot.formElements;
+// for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
+//     currentLevel.push(getFormElementSchema());
+//     currentLevel = currentLevel[0].formElements;
+// }
+// currentLevel.push(new mongoose.Schema({}, {strict: false}));
+// let formElementSchema = new Schema(formElementTreeRoot, {_id: false});
 
 exports.formJson = {
     elementType: {type: String, default: 'form', enum: ['form']}
@@ -118,7 +128,7 @@ exports.formJson = {
         userId: mongoose.Schema.Types.ObjectId
         , username: String
     }
-    , formElements: [formElementSchema]
+    , formElements: [innerFormEltSchema]
     , archived: {type: Boolean, default: false, index: true}
     , classification: [sharedSchemas.classificationSchema]
     , displayProfiles: [{
