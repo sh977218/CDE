@@ -201,6 +201,7 @@ export class FormDescriptionComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.doIt();
         this._hotkeysService.add([
             new Hotkey('q', (event: KeyboardEvent): boolean => {
                 if (this.formElementEditing) {
