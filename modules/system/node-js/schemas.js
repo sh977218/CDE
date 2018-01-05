@@ -240,8 +240,6 @@ schemas.registrationStateSchema = {
     replacedBy: {tinyId: {type: String, description: "tinyId of replacement CDE"}}
 };
 
-schemas.instructionSchema = {value: String, valueFormat: String};
-
 schemas.propertySchema = {key: String, value: String, source: String, valueFormat: String, _id: false};
 
 schemas.idSchema = {source: String, id: String, version: String, _id: false};
