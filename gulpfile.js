@@ -52,8 +52,6 @@ gulp.task('copyCode', [], function () {
     let streamArray = [];
 
     ['cde', 'form', 'processManager', 'system', 'board'].forEach(function (module) {
-        streamArray.push(gulp.src('./modules/' + module + '/node-js/**/*')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/')));
         streamArray.push(gulp.src('./modules/' + module + '/shared/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/shared/')));
         streamArray.push(gulp.src('./modules/' + module + '/**/*.png')
@@ -106,15 +104,19 @@ gulp.task('copyCode', [], function () {
     streamArray.push(gulp.src('./modules/form/public/assets/**')
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/")));
 
+    streamArray.push(gulp.src('./server/**')
+        .pipe(gulp.dest(config.node.buildDir + "/server/")));
+
+
     return merge(streamArray);
 });
 
 gulp.task('prepareVersion', ['copyCode'], function () {
     git.revParse({args: '--short HEAD'}, function (err, hash) {
-        fs.writeFile(config.node.buildDir + "/modules/system/node-js/version.js", "exports.version = '" + hash + "';",
+        fs.writeFile(config.node.buildDir + "/server/system/version.js", "exports.version = '" + hash + "';",
             function (err) {
                 if (err) console.log("ERROR generating version.html: " + err);
-                else console.log("generated " + config.node.buildDir + "/modules/system/node-js/version.js");
+                else console.log("generated " + config.node.buildDir + "/server/system/version.js");
             });
     });
 });
