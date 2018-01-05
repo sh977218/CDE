@@ -314,7 +314,7 @@ export class FormViewComponent implements OnInit {
 
     saveForm() {
         let newCdes = [];
-        formShared.iterateFes(this.elt, () => {
+        formShared.iterateFes(this.elt.formElements, () => {
             async.forEach(newCdes, (newCde, doneOneCde) => {
                 this.createDataElement(newCde, doneOneCde);
             }, () => {
@@ -326,7 +326,7 @@ export class FormViewComponent implements OnInit {
                     () => this.router.navigate(['/pageNotFound'])
                 );
             });
-        }, null, null, (fe, cb) => {
+        }, undefined, undefined, (fe, cb) => {
             if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
             if (cb) cb();
         });
