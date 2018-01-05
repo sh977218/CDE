@@ -71,14 +71,15 @@ public class BaseFormTest extends FormCommentTest {
             setRepeat(sectionId, repeat);
         }
         saveEditSectionById(sectionId);
+        textPresent(title, By.id(sectionId));
     }
 
     public void editSectionTitle(String sectionId, String title) {
-        clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'sectionTitle')]//i[contains(@class,'fa-edit')]"));
-        String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'sectionTitle')]//input";
+        clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//i[contains(@class,'fa-edit')]"));
+        String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input";
         findElement(By.xpath(sectionInput)).clear();
         findElement(By.xpath(sectionInput)).sendKeys(title);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'sectionTitle')]//button[contains(text(),'Confirm')]"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//button[contains(text(),'Confirm')]"));
     }
 
     public void questionEditAddUom(String id, String text) {
