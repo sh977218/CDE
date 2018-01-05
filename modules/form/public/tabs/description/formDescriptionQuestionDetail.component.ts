@@ -114,13 +114,9 @@ export class FormDescriptionQuestionDetailComponent {
                 .subscribe(r => {
                     r[3].forEach(unit => {
                         if (unit[0] === uom || unit[1] === uom) {
-                            if (unit[0] !== uom) {
-                                question.uoms[i] = unit[0];
-                                this.uomVersion++;
-                                this.onEltChange.emit();
-                            }
-
                             let valid = true;
+                            if (unit[0] !== uom) valid = false;
+
                             try {
                                 ucum.parse(1, question.uoms[i]);
                             } catch (err) {
@@ -135,10 +131,8 @@ export class FormDescriptionQuestionDetailComponent {
                                     if (delayedUnits.length)
                                         delayedUnits.forEach(u => matchUnits(baseUnits, baseUnitsKeys, question, u));
                                 } else {
-                                    if (baseUnits)
-                                        matchUnits(baseUnits, baseUnitsKeys, question, i);
-                                    else
-                                        delayedUnits.push(i);
+                                    if (baseUnits) matchUnits(baseUnits, baseUnitsKeys, question, i);
+                                    else delayedUnits.push(i);
                                 }
                             } else {
                                 question.uomsValid[i] = question.uomsValid[i] || valid;
@@ -274,6 +268,7 @@ export class FormDescriptionQuestionDetailComponent {
         this.question.question.cde.naming.splice(i, 1);
         this.onEltChange.emit();
     }
+
     removeCdePv(i) {
         this.question.question.cde.permissibleValues.splice(i, 1);
         this.onEltChange.emit();
@@ -291,6 +286,7 @@ export class FormDescriptionQuestionDetailComponent {
             this.onEltChange.emit();
         } else this.alert.addAlert("danger", "Empty name.");
     }
+
     addNewCdePv(newCdePv) {
         if (!_.isEmpty(newCdePv)) {
             this.question.question.cde.permissibleValues.push(newCdePv);

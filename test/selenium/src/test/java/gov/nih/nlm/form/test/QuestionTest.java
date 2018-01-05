@@ -26,19 +26,6 @@ public class QuestionTest extends BaseFormTest {
         for (String cdeName : cdeNames) {
             try {
                 hangon(2);
-/*
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                StringSelection stringSelection = new StringSelection(cdeName);
-                clipboard.setContents(stringSelection, null);
-                Robot robot = new Robot();
-                robot.keyPress(KeyEvent.VK_Q);
-                robot.keyRelease(KeyEvent.VK_Q);
-                textPresent("New Data Element");
-                robot.keyPress(KeyEvent.VK_CONTROL);
-                robot.keyPress(KeyEvent.VK_V);
-                robot.keyRelease(KeyEvent.VK_V);
-                robot.keyRelease(KeyEvent.VK_CONTROL);
-*/
                 new Actions(driver).sendKeys("q").build().perform();
                 textPresent("New Data Element");
                 hangon(2);
@@ -53,10 +40,6 @@ public class QuestionTest extends BaseFormTest {
     }
 
     private void addCde(String cdeName, String dropXpath) {
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        StringSelection stringSelection = new StringSelection(cdeName);
-        clipboard.setContents(stringSelection, null);
-
         WebElement sourceElt = findElement(By.xpath("//*[@id='startAddingQuestions']"));
         WebElement targetElt = findElement(By.xpath(dropXpath));
         (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
@@ -65,15 +48,14 @@ public class QuestionTest extends BaseFormTest {
             clickElement(By.id("addNewCdeBtn"));
         try {
             hangon(2);
-            Robot robot = new Robot();
-            robot.keyPress(KeyEvent.VK_CONTROL);
-            robot.keyPress(KeyEvent.VK_V);
-            robot.keyRelease(KeyEvent.VK_V);
-            robot.keyRelease(KeyEvent.VK_CONTROL);
+            new Actions(driver).sendKeys("q").build().perform();
+            textPresent("New Data Element");
             hangon(2);
+            new Actions(driver).sendKeys(cdeName).build().perform();
+            hangon(2);
+            clickElement(By.id("createNewDataElement"));
         } catch (Exception e) {
         }
-        clickElement(By.id("createNewDataElement"));
     }
 
 
