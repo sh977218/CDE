@@ -6,6 +6,7 @@ import {
     Input,
     Output,
     OnInit,
+    AfterViewInit,
     TemplateRef,
     ViewChild
 } from "@angular/core";
@@ -117,7 +118,7 @@ const TOOL_BAR_OFF_SET = 55;
         }
     `]
 })
-export class FormDescriptionComponent implements OnInit {
+export class FormDescriptionComponent implements OnInit, AfterViewInit {
     private _elt: CdeForm;
     @Input() set elt(e: CdeForm) {
         this._elt = e;
@@ -140,6 +141,10 @@ export class FormDescriptionComponent implements OnInit {
     formElementEditing;
 
     @HostListener('window:scroll', ['$event'])
+    scrollEvent() {
+        this.doIt();
+    }
+
     doIt() {
         if (this && this.descToolbox && this.descToolbox.nativeElement)
             this.descToolbox.nativeElement.style.top = (window.pageYOffset > TOOL_BAR_OFF_SET ? 0 : (TOOL_BAR_OFF_SET - window.pageYOffset)) + 'px';
@@ -201,7 +206,6 @@ export class FormDescriptionComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.doIt();
         this._hotkeysService.add([
             new Hotkey('q', (event: KeyboardEvent): boolean => {
                 if (this.formElementEditing) {
@@ -232,6 +236,10 @@ export class FormDescriptionComponent implements OnInit {
                 return false;
             })
         ]);
+    }
+
+    ngAfterViewInit(): void {
+        this.doIt();
     }
 
     addIndex(elements, element, i) {
