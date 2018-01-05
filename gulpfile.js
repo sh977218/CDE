@@ -107,6 +107,9 @@ gulp.task('copyCode', [], function () {
     streamArray.push(gulp.src('./server/**')
         .pipe(gulp.dest(config.node.buildDir + "/server/")));
 
+    streamArray.push(gulp.src('./shared/**')
+        .pipe(gulp.dest(config.node.buildDir + "/shared/")));
+
 
     return merge(streamArray);
 });
