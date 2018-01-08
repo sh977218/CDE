@@ -109,13 +109,8 @@ export class FormDescriptionQuestionDetailComponent {
                 .subscribe(r => {
                     r[3].forEach(unit => {
                         if (unit[0] === uom || unit[1] === uom) {
-                            if (unit[0] !== uom) {
-                                question.uoms[i] = unit[0];
-                                this.uomVersion++;
-                                this.stageElt.emit();
-                            }
-
                             let valid = true;
+                            if (unit[0] !== uom) valid = false;
                             try {
                                 ucum.parse(1, question.uoms[i]);
                             } catch (err) {
