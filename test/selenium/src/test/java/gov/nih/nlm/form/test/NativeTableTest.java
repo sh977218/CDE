@@ -30,7 +30,7 @@ public class NativeTableTest extends BaseFormTest {
         saveEditSectionById("section_0");
         textPresent("Repeats: over First Question", By.xpath("//div[@id='section_0']//span[contains(@class,'badge-primary')]"));
 
-        clickElement(By.xpath("//div[@id='question_0_1_0']//i[contains(@class, 'fa-pencil')]"));
+        startEditQuestionById("question_0_1_0");
         clickElement(By.xpath("//div[@id='question_0_1_0']//*[contains(@class,'multipleSelection')]/input"));
 
         goToPreview();
