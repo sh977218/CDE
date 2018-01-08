@@ -185,9 +185,6 @@ export class FormDescriptionQuestionDetailComponent {
         question.uomsValid = [];
         this.ucumService.validateUnits(question.uoms, (errors, units) => {
             question.uoms.forEach((uom, i, uoms) => {
-                if (uom !== units[i] && !errors[i])
-                    errors[i] = 'Unit ' + uom + ' found but needs to be replaced with ' + units[i];
-
                 question.uomsValid[i] = errors[i];
             });
         });

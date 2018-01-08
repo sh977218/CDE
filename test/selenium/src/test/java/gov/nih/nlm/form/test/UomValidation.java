@@ -12,18 +12,18 @@ public class UomValidation extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("DNA Elements - Participant/Subject Information");
         goToFormDescription();
-        textPresent("replaced with [in_i]", By.cssSelector(".questionUom"));
-        textPresent("meter", By.cssSelector(".questionUom"));
-        textPresent("replaced with m", By.cssSelector(".questionUom"));
-        textPresent("mean [in_i] (inch)", By.cssSelector(".questionUom"));
-        textPresent("m", By.cssSelector(".questionUom"));
-        textPresent("cm", By.cssSelector(".questionUom"));
+        textPresent("replaced with [in_i]");
+        textPresent("meter");
+        textPresent("replaced with m");
+        textPresent("mean [in_i] (inch)");
+        textPresent("m");
+        textPresent("cm");
 
         startEditQuestionSectionById("question_0_3");
         questionEditAddUom("question_0_3", "kilogram");
         saveEditQuestionSectionById("question_0_3");
         findElement(By.xpath("//*[contains(@class,'badge-danger')]//*[text()='kilogram']"));
-        textNotPresent("kg");
+        textPresent("replaced with kg");
 
         goToPreview();
         findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']")).sendKeys("1.25");

@@ -299,6 +299,8 @@ exports.init = function (app, daoManager) {
             validateUom(uom, (error, u) => {
                 errors[i] = error;
                 units[i] = u;
+                if (!errors[i] && uom !== units[i])
+                    errors[i] = 'Unit ' + uom + ' found but needs to be replaced with ' + units[i];
             });
             if (i > 0 && !errors[0] && !errors[i]) {
                 let result = ucum.convertUnitTo(units[i], 1, units[0], true);
