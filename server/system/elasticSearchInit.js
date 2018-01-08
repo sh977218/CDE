@@ -124,7 +124,7 @@ exports.createFormIndexJson = {
         "form": {
             "properties": {
                 "stewardOrg": {properties: {"name": {"type": "string", "index": "not_analyzed"}}}
-                , displayProfile : { properties: {
+                , displayProfiles : { properties: {
                     uomAliases: { index: "no" }
                 }}
                 , "flatClassifications": {"type": "string", "index": "not_analyzed"}

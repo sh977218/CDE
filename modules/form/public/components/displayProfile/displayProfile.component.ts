@@ -133,7 +133,7 @@ export class DisplayProfileComponent implements OnInit {
         this.onEltChange.emit();
     }
 
-    onChange(p, event) {
+    onChange(p: DisplayProfile, event) {
         p.numberOfColumns = parseInt(event);
         this.onEltChange.emit();
     }

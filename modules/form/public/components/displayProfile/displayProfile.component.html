@@ -51,8 +51,8 @@
                     </dd>
                     <dt class="col-sm-5">Number of Columns:</dt>
                     <dd class="col-sm-7 ">
-                        <select [(ngModel)]="dPVM.profile.numberOfColumns" id="nc_{{index}}"
-                                (ngModelChange)="onEltChange.emit()">
+                        <select [ngModel]="dPVM.profile.numberOfColumns" id="nc_{{index}}"
+                                (ngModelChange)="onChange(dPVM.profile,$event)">
                             <option value=1>1</option>
                             <option value=2>2</option>
                             <option value=3>3</option>
