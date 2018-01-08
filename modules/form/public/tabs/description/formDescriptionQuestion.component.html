@@ -44,9 +44,9 @@
         <i *ngIf="!question.confirmDelete" (click)="question.confirmDelete = true;"
            class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
         <span *ngIf="question.confirmDelete" class="badge badge-secondary" style="font-size: 75%">
-            <a href="#" class="badge badge-danger" (click)="removeNode(node)"
+            <a class="badge badge-danger" (click)="removeNode(node)"
                id="confirmRemoveProperty-{{i}}" title="Delete">Delete <i class="fa fa-check"></i></a>
-            <a href="#" class="badge badge-secondary" (click)="question.confirmDelete = false"
+            <a class="badge badge-secondary" (click)="question.confirmDelete = false"
                id="cancelRemoveProperty-{{i}}" title="Cancel">Cancel <i class="fa fa-times"></i></a>
         </span>
     </div>
