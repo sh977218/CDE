@@ -224,9 +224,11 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                             this.tree.treeModel.update();
                             this.tree.treeModel.expandAll();
                             this.addIds(this.elt.formElements, "");
-                            this.updateFormElementEditing(this.formElementEditing.formElements, newQuestion);
+                            this.setFormElementEditing(this.formElementEditing.formElements, newQuestion);
                             this.onEltChange.emit();
-                            window.document.getElementById((newQuestion as any).descriptionId).scrollIntoView();
+                            setTimeout(() => {
+                                window.document.getElementById((newQuestion as any).descriptionId).scrollIntoView();
+                            }, 0);
                         }
                     }, () => {
                     });
@@ -253,7 +255,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();
             this.addIds(this.elt.formElements, "");
-            this.updateFormElementEditing(this.toolDropTo.parent.data.formElements, question);
+            this.setFormElementEditing(this.toolDropTo.parent.data.formElements, question);
             this.onEltChange.emit();
         });
     }
@@ -266,7 +268,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();
             this.addIds(this.elt.formElements, "");
-            this.updateFormElementEditing(this.toolDropTo.parent.data.formElements, inForm);
+            this.setFormElementEditing(this.toolDropTo.parent.data.formElements, inForm);
             this.onEltChange.emit();
         });
     }
@@ -313,7 +315,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 tree.update();
                 tree.expandAll();
                 this.addIds(this.elt.formElements, "");
-                this.updateFormElementEditing(this.elt.formElements, newQuestion);
+                this.setFormElementEditing(this.elt.formElements, newQuestion);
                 this.onEltChange.emit();
             }
         }, () => {
@@ -329,7 +331,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.onEltChange.emit();
     }
 
-    updateFormElementEditing(formElements, formElement) {
+    setFormElementEditing(formElements, formElement) {
         if (this.formElementEditing.formElement)
             this.formElementEditing.formElement.edit = false;
         this.formElementEditing.formElement = formElement;
