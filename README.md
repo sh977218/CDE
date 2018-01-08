@@ -165,10 +165,7 @@ In the following order, run these commands, all of them either in their own term
 
 2 ```sh nodeStart ```     
 
-3 ```sh	$> node ./modules/cde/node-js/mock/vsacMock.js ```
-
-Now, you need the app running in some way when you run the test. 
-
+Now, you need the app running in some way when you run the test.
 
 We have include a script, start-test-instance.sh, that, in addition to running all the tests, also runs the app. We suggest that you use it.
 

@@ -3,10 +3,10 @@ var fs = require('fs')
     , xml2js = require('xml2js')
     , mongoose = require('mongoose')
     , shortid = require('shortid')
-    , classNode = require('../modules/system/node-js/classificationNode.js')
+    , classNode = require('../server/system/classificationNode.js')
     , config = require('config')
-    , cde_schemas = require('../modules/cde/node-js/schemas')
-    , sys_schemas = require('../modules/system/node-js/schemas')
+    , cde_schemas = require('../server/cde/schemas')
+    , sys_schemas = require('../server/system/schemas')
 ;
 
 var parser = new xml2js.Parser();

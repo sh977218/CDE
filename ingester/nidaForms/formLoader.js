@@ -1,6 +1,6 @@
 var forms = require("../../nida-forms.json")
-    , mongo_form = require("../../modules/form/node-js/mongo-form")
-    , mongo_cde = require("../../modules/cde/node-js/mongo-cde")
+    , mongo_form = require("../../server/form/mongo-form")
+    , mongo_cde = require("../../server/cde/mongo-cde")
     , async = require('async');
 
 console.log(JSON.stringify(forms));

@@ -1,6 +1,6 @@
 var csv = require('csv')
     , fs = require('fs')
-    , mongo_form = require('../modules/form/node-js/mongo-form')
+    , mongo_form = require('../server/form/mongo-form')
     , async = require('async');
 
 var count = 0;

@@ -3,10 +3,10 @@ let csv = require('csv');
 let fs = require('fs');
 let capitalize = require('capitalize');
 
-let mongo_data = require('../../modules/system/node-js/mongo-data');
-let mongo_cde = require('../../modules/cde/node-js/mongo-cde');
+let mongo_data = require('../../server/system/mongo-data');
+let mongo_cde = require('../../server/cde/mongo-cde');
 let DataElementModel = mongo_cde.DataElement;
-let mongo_form = require('../../modules/form/node-js/mongo-form');
+let mongo_form = require('../../server/form/mongo-form');
 let FormModel = mongo_form.Form;
 
 let MigrationProtocolModel = require('../createMigrationConnection').MigrationProtocolModel;

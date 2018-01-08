@@ -1,6 +1,6 @@
-var mongo_form = require('../modules/form/node-js/mongo-form'),
-    mongo_cde = require('../modules/cde/node-js/mongo-cde'),
-    mongo_data = require('../modules/system/node-js/mongo-data'),
+var mongo_form = require('../server/form/mongo-form'),
+    mongo_cde = require('../server/cde/mongo-cde'),
+    mongo_data = require('../server/system/mongo-data'),
     async = require('async')
     ;
 

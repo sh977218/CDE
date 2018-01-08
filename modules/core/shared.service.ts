@@ -1,8 +1,8 @@
-import * as authorizationShared from "system/shared/authorizationShared";
-import * as classificationShared from "system/shared/classificationShared";
-import * as formShared from "form/shared/formShared";
-import * as exportShared from "system/shared/exportShared";
-import * as regStatusShared from "system/shared/regStatusShared";
+import * as authorizationShared from "../../shared/system/authorizationShared";
+import * as classificationShared from "../../shared/system/classificationShared";
+import * as formShared from "../../shared/form/formShared";
+import * as exportShared from "../../shared/system/exportShared";
+import * as regStatusShared from "../../shared/system/regStatusShared";
 
 export class SharedService {
     static readonly auth: any = authorizationShared;

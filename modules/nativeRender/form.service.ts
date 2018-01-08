@@ -5,7 +5,7 @@ import noop from 'lodash.noop';
 import {
     areDerivationRulesSatisfied, convertFormToSection, findQuestionByTinyId, isSubForm, iterateFe, iterateFes,
     iterateFeSync, iterateFesSync, score
-} from 'form/shared/formShared';
+} from '../../shared/form/formShared';
 import { FormQuestion } from 'core/form.model';
 
 function noop1(a, cb) { cb(); }

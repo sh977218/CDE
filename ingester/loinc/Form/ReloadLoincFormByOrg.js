@@ -2,7 +2,7 @@ var async = require('async');
 var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 var MigrationOrgModel = require('../../createMigrationConnection').MigrationOrgModel;
 var OrgModel = require('../../createNlmcdeConnection').OrgModel;
-var mongo_form = require('../../../modules/form/node-js/mongo-form');
+var mongo_form = require('../../../server/form/mongo-form');
 var FormModel = mongo_form.Form;
 
 var orgMapping = require('../Mapping/ORG_INFO_MAP').map;

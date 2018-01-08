@@ -1,4 +1,4 @@
-const mongo_cde = require('../modules/cde/node-js/mongo-cde');
+const mongo_cde = require('../server/cde/mongo-cde');
 const DataElementModal = mongo_cde.DataElement;
 
 let count = 0;

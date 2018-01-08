@@ -1,4 +1,4 @@
-var config = require('../modules/system/node-js/parseConfig');
+var config = require('../server/system/parseConfig');
 
 var _kibana =
     {

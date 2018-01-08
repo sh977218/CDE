@@ -9,7 +9,7 @@ import { SharedService } from 'core/shared.service';
 import { UserService } from '_app/user.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as deValidator from "../../shared/deValidator.js";
+import * as deValidator from "../../../../shared/cde/deValidator.js";
 import { AlertService } from '_app/alert/alert.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { Subscription } from 'rxjs/Subscription';

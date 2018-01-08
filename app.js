@@ -1,28 +1,27 @@
-var path = require('path')
-    , express = require('express')
-    , http = require('http')
-    , httpProxy = require('http-proxy')
-    , flash = require('connect-flash')
-    , mongo_data_system = require('./modules/system/node-js/mongo-data')
-    , config = require('config')
-    , session = require('express-session')
-    , favicon = require('serve-favicon')
-    , auth = require('./modules/system/node-js/authentication')
-    , logging = require('./modules/system/node-js/logging.js')
-    , daoManager = require('./modules/system/node-js/moduleDaoManager.js')
-    , domain = require('domain').create()
-    , ipfilter = require('express-ipfilter')
-    , bodyParser = require('body-parser')
-    , cookieParser = require('cookie-parser')
-    , methodOverride = require('method-override')
-    , morganLogger = require('morgan')
-    , compress = require('compression')
-    , helmet = require('helmet')
-    , ioServer = require('./modules/system/node-js/ioServer');
+const path = require('path');
+const express = require('express');
+const http = require('http');
+const httpProxy = require('http-proxy');
+const flash = require('connect-flash');
+const mongo_data_system = require('./server/system/mongo-data');
+const config = require('config');
+const session = require('express-session');
+const favicon = require('serve-favicon');
+const auth = require('./server/system/authentication');
+const logging = require('./server/system/logging.js');
+const daoManager = require('./server/system/moduleDaoManager.js');
+const domain = require('domain').create();
+const ipfilter = require('express-ipfilter');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const methodOverride = require('method-override');
+const morganLogger = require('morgan');
+const compress = require('compression');
+const helmet = require('helmet');
+const ioServer = require('./server/system/ioServer');
 const winston = require('winston');
 
-
-require('./modules/system/node-js/elastic').initEs();
+require('./server/system/elastic').initEs();
 
 require('log-buffer')(config.logBufferSize || 4096);
 
@@ -139,7 +138,6 @@ app.use(function (req, res, next) {
 
 app.use("/cde/public", express.static(path.join(__dirname, '/modules/cde/public')));
 app.use("/system/public", express.static(path.join(__dirname, '/modules/system/public')));
-app.use("/board/public", express.static(path.join(__dirname, '/modules/board/public')));
 app.use("/swagger/public", express.static(path.join(__dirname, '/modules/swagger/public')));
 app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
 
@@ -216,16 +214,16 @@ express.response.render = function (view, module, msg) {
 };
 
 try {
-    var cdeModule = require(path.join(__dirname, './modules/cde/node-js/app.js'));
+    var cdeModule = require(path.join(__dirname, './server/cde/app.js'));
     cdeModule.init(app, daoManager);
 
-    var systemModule = require(path.join(__dirname, './modules/system/node-js/app.js'));
+    var systemModule = require(path.join(__dirname, './server/system/app.js'));
     systemModule.init(app, daoManager);
 
-    var formModule = require(path.join(__dirname, './modules/form/node-js/app.js'));
+    var formModule = require(path.join(__dirname, './server/form/app.js'));
     formModule.init(app, daoManager);
 
-    var boardModule = require(path.join(__dirname, './modules/board/node-js/app.js'));
+    var boardModule = require(path.join(__dirname, './server/board/app.js'));
     boardModule.init(app, daoManager);
 
     var swaggerModule = require(path.join(__dirname, './modules/swagger/index.js'));

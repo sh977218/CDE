@@ -4,8 +4,8 @@ var fs = require('fs')
     , mongoose = require('mongoose')
     , shortid = require('shortid')
     , config = require('config')
-    , form_schemas = require('../modules/form/node-js/schemas')
-    , cde_schemas = require('../modules/cde/node-js/schemas')
+    , form_schemas = require('../server/form/schemas')
+    , cde_schemas = require('../server/cde/schemas')
     , async = require('async')
     ;
 
