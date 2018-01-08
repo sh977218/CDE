@@ -235,7 +235,7 @@ exports.init = function (app) {
     });
 
     app.get('/sw.js', checkHttps, function (req, res) {
-        res.sendFile(path.join(__dirname, '../../../dist/app', 'sw.js'), undefined, function (err) {
+        res.sendFile(path.join(__dirname, '../../dist/app', 'sw.js'), undefined, function (err) {
             if (err)
                 res.sendStatus(404);
         });

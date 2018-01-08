@@ -1,17 +1,15 @@
 import { Component, ElementRef, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import * as _ from "lodash";
-import ucum from 'ucum.js';
+import { TreeNode } from "angular-tree-component";
+import _isEqual from 'lodash/isEqual';
 import { Observable } from "rxjs/Observable";
 
-import { TreeNode } from "angular-tree-component";
-import { SkipLogicService } from 'nativeRender/skipLogic.service';
-import { CdeForm, FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'core/form.model';
+import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'core/form.model';
 import { FormattedValue } from 'core/models.model';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
-import { FormService } from 'nativeRender/form.service';
 import { UcumService } from 'form/public/ucum.service';
+
 
 @Component({
     selector: "cde-form-description-question-detail",
@@ -88,7 +86,7 @@ export class FormDescriptionQuestionDetailComponent {
 
     checkAnswers(answers) {
         let newAnswers = (Array.isArray(answers.value) ? answers.value.filter(answer => answer !== "") : []);
-        if (!_.isEqual(this.answersSelected, newAnswers)) {
+        if (!_isEqual(this.answersSelected, newAnswers)) {
             this.question.question.answers = this.question.question.cde.permissibleValues
                 .filter(a => newAnswers.indexOf(a.permissibleValue) > -1) as PermissibleFormValue[];
             this.answersSelected = this.question.question.answers.map(a => a.permissibleValue);
@@ -98,7 +96,7 @@ export class FormDescriptionQuestionDetailComponent {
 
     checkUom(uoms) {
         let newUoms = (Array.isArray(uoms.value) ? uoms.value.filter(uom => uom !== "") : []);
-        if (!_.isEqual(this.question.question.uoms, newUoms)) {
+        if (!_isEqual(this.question.question.uoms, newUoms)) {
             this.question.question.uoms = newUoms;
             this.stageElt.emit();
             this.validateUoms(this.question.question);
@@ -184,40 +182,15 @@ export class FormDescriptionQuestionDetailComponent {
     }
 
     validateUoms(question) {
-        let baseUnits;
-        let baseUnitsKeys;
         question.uomsValid = [];
-        Observable.of(...question.uoms).concatMap(
-            this.ucumService.getUnit,
-            (uom, unit, i) => {
-                if (unit.length === 0)
-                    return question.uomsValid[i] = 'Unit is not found.';
+        this.ucumService.validateUnits(question.uoms, (errors, units) => {
+            question.uoms.forEach((uom, i, uoms) => {
+                if (uom !== units[i] && !errors[i])
+                    errors[i] = 'Unit ' + uom + ' found but needs to be replaced with ' + units[i];
 
-                if (unit[0] !== uom) {
-                    question.uoms[i] = unit[0];
-                    this.uomVersion++;
-                    this.stageElt.emit();
-                }
-
-                try {
-                    ucum.parse(1, question.uoms[i]);
-                } catch (err) {
-                    return question.uomsValid[i] = 'Unit is not valid.';
-                }
-
-                if (i === 0) {
-                    baseUnits = ucum.canonicalize(question.uoms[i]).units;
-                    baseUnitsKeys = Object.keys(baseUnits);
-                    return question.uomsValid[i] = null;
-                } else {
-                    let b = ucum.canonicalize(question.uoms[i]).units;
-                    if (!baseUnitsKeys.concat(Object.keys(b)).every(u => baseUnits[u] && b[u] && baseUnits[u] === b[u]))
-                        return question.uomsValid[i] = 'Unit not compatible with first unit.';
-                    else
-                        return question.uomsValid[i] = null;
-                }
-            }
-        ).subscribe(() => {});
+                question.uomsValid[i] = errors[i];
+            });
+        });
     }
 
     static inputEvent = new Event('input');

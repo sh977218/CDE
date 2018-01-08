@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import noop from 'lodash.noop';
+import noop from 'lodash/noop';
 
 import {
 areDerivationRulesSatisfied, convertFormToSection, findQuestionByTinyId, getLabel, isSubForm, iterateFe, iterateFes,

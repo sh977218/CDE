@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const express = require('express');
 const path = require('path');
 const dns = require('dns');
@@ -11,11 +12,18 @@ const mongo_data_system = require('../system/mongo-data');
 const classificationNode_system = require('../system/classificationNode');
 const adminItemSvc = require('../system/adminItemSvc.js');
 const elastic_system = require('../system/elastic');
-const elastic = require('./elastic');
+// const elastic = require('./elastic');
 const sharedElastic = require('../system/elastic.js');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const boardsvc = require('../board/boardsvc');
 const usersrvc = require('../system/usersrvc');
+
+// ucum from lhc uses IndexDB
+global.location = {origin: 'localhost'};
+const setGlobalVars = require('indexeddbshim');
+global.window = global; // We'll allow ourselves to use `window.indexedDB` or `indexedDB` as a global
+setGlobalVars();
+const ucum = require('ucum').UcumLhcUtils.getInstance();
 
 function allowXOrigin (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -122,11 +130,10 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/formCompletion/:term', exportShared.nocacheMiddleware, (req, res) => {
-        let result = [];
         let term = req.params.term;
         elastic_system.completionSuggest(term, req.user, req.body, config.elastic.formIndex.name, resp => {
             resp.hits.hits.forEach(r => r._index = undefined);
-            res.send(resp.hits.hits)
+            res.send(resp.hits.hits);
         });
     });
 
@@ -219,4 +226,86 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/schema/form', (req, res) => res.send(mongo_form.Form.jsonSchema()));
+
+    app.get('/ucumConvert', (req, res) => {
+        let value = req.query.value === '0' ? 1e-20 : parseFloat(req.query.value); // 0 workaround
+        let result = ucum.convertUnitTo(req.query.from, value, req.query.to);
+        if (result.status === 'succeeded') {
+            let ret = Math.abs(result.toVal) < 1 ? _.round(result.toVal, 10) : result.toVal; // 0 workaround
+            res.send('' + ret);
+        } else {
+            res.send('');
+        }
+    });
+
+    // cb(error, uom)
+    function validateUom(uom, cb) {
+        let error;
+        let validation = ucum.validateUnitString(uom, true);
+        if (validation.status === 'valid')
+            return cb(undefined, uom);
+
+        if (validation.suggestions && validation.suggestions.length) {
+            let suggestions = [];
+            validation.suggestions.forEach(s => s.units.forEach(u => u.name === uom ? suggestions.push(u.code) : null));
+            if (suggestions.length)
+                return cb(undefined, suggestions[0]);
+
+            if (validation.suggestions[0].units.length) {
+                let suggestion = validation.suggestions[0].units[0];
+                error = 'Unit is not found. Did you mean ' + suggestion[0] + ' (' + suggestion[1] + ')?';
+            }
+        } else {
+            let suggestions = [];
+            let synonyms = ucum.checkSynonyms(uom);
+            if (synonyms.status === 'succeeded' && synonyms.units.length) {
+                synonyms.units.forEach(u => u.name === uom ? suggestions.push(u.code) : null);
+                if (suggestions.length)
+                    return cb(undefined, suggestions[0]);
+
+                error = 'Unit is not found. Did you mean ' + synonyms.units[0].name + '?';
+            }
+        }
+        if (!error)
+            error = validation.msg.length ? 'Unit is not found. ' + validation.msg[0] : 'Unit is not found.';
+        cb(error, uom);
+    }
+
+    app.get('/ucumNames', (req, res) => {
+       let uom = req.query.uom;
+       if (!uom || typeof uom !== 'string')
+           return res.sendStatus(400);
+
+       let resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
+       if (!resp || !resp.unit)
+           return res.send([]);
+
+       let unit = resp.unit;
+       let name = unit.name_;
+       let synonyms = unit.synonyms_.split('; ');
+       if (synonyms.length && synonyms[synonyms.length - 1] === '')
+           synonyms.length--;
+       res.send([name, ...synonyms]);
+    });
+
+    app.get('/ucumValidate', (req, res) => {
+        let uoms = JSON.parse(req.query.uoms);
+        if (!Array.isArray(uoms))
+            return res.sendStatus(400);
+
+        let errors = [];
+        let units = [];
+        uoms.forEach((uom, i) => {
+            validateUom(uom, (error, u) => {
+                errors[i] = error;
+                units[i] = u;
+            });
+            if (i > 0 && !errors[0] && !errors[i]) {
+                let result = ucum.convertUnitTo(units[i], 1, units[0], true);
+                if (result.status !== 'succeeded')
+                    errors[i] = 'Unit not compatible with first unit.' + (result.msg.length ? ' ' + result.msg[0] : '');
+            }
+        });
+        res.send({errors: errors, units: units});
+    });
 };

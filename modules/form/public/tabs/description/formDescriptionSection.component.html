@@ -33,11 +33,11 @@
            (click)="section.edit = false"></i>
         <i *ngIf="!section.confirmDelete" class="fa fa-trash-o hand-cursor" title="Remove Section"
            (click)="section.confirmDelete = true"></i>
-        <span *ngIf="section.confirmDelete" class="label">Confirm Delete
-            <span class="fa fa-check hand-cursor" (click)="removeNode(node)"
-                  id="confirmRemoveProperty-{{i}}" title="Delete"></span>
-            <span class="fa fa-times hand-cursor" (click)="section.confirmDelete = false"
-                  id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
+        <span *ngIf="section.confirmDelete" class="badge badge-secondary" style="font-size: 75%">
+            <a href="#" class="badge badge-danger" (click)="removeNode(node)"
+               id="confirmRemoveProperty-{{i}}" title="Delete">Delete <i class="fa fa-check"></i></a>
+            <a href="#" class="badge badge-secondary" (click)="section.confirmDelete = false"
+               id="cancelRemoveProperty-{{i}}" title="Cancel">Cancel <i class="fa fa-times"></i></a>
         </span>
     </span>
 </div>

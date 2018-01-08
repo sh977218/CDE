@@ -9,22 +9,23 @@ import {
     SimpleChanges,
     TemplateRef,
     ViewChild
-} from "@angular/core";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
-import { LocalStorageService } from 'angular-2-local-storage';
-import * as _ from 'lodash';
-
-import { FormService } from "../../../../nativeRender/form.service";
-import { CdeForm, FormElement, FormSection } from "../../../../core/form.model";
-import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
+} from '@angular/core';
 import { Http } from '@angular/http';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TREE_ACTIONS, TreeComponent } from 'angular-tree-component';
+import { LocalStorageService } from 'angular-2-local-storage';
+import _isEmpty from 'lodash/isEmpty';
+import _noop from 'lodash/noop';
+
+import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
+import { CdeForm, FormElement, FormSection } from 'core/form.model';
+import { FormService } from 'nativeRender/form.service';
 
 const TOOL_BAR_OFF_SET = 55;
 
 @Component({
-    selector: "cde-form-description",
-    templateUrl: "formDescription.component.html",
+    selector: 'cde-form-description',
+    templateUrl: 'formDescription.component.html',
     animations: [copySectionAnimation],
     styles: [`
         :host >>> .badge {
@@ -127,9 +128,9 @@ export class FormDescriptionComponent implements OnChanges {
     @Input() canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
     @ViewChild(TreeComponent) public tree: TreeComponent;
-    @ViewChild("formSearchTmpl") formSearchTmpl: TemplateRef<any>;
-    @ViewChild("questionSearchTmpl") questionSearchTmpl: TemplateRef<any>;
-    @ViewChild("descToolbox") descToolbox: ElementRef;
+    @ViewChild('formSearchTmpl') formSearchTmpl: TemplateRef<any>;
+    @ViewChild('questionSearchTmpl') questionSearchTmpl: TemplateRef<any>;
+    @ViewChild('descToolbox') descToolbox: ElementRef;
     @HostListener('window:scroll', ['$event'])
     doIt() {
         if (this && this.descToolbox && this.descToolbox.nativeElement)
@@ -140,14 +141,14 @@ export class FormDescriptionComponent implements OnChanges {
     toolSection: { insert: 'section', data: FormElement };
     treeOptions = {
         allowDrag: (element) => {
-            return !FormService.isSubForm(element) || element.data.elementType === "form" && !FormService.isSubForm(element.parent);
+            return !FormService.isSubForm(element) || element.data.elementType === 'form' && !FormService.isSubForm(element.parent);
         },
         allowDrop: (element, {parent, index}) => {
-            return element !== parent && parent.data.elementType !== "question" && (!element
-                || !element.ref && (element.data.elementType !== "question" || parent.data.elementType === "section")
-                || element.ref === "form"
-                || element.ref === "pasteSection"
-                || element.ref === "question" && parent.data.elementType === "section"
+            return element !== parent && parent.data.elementType !== 'question' && (!element
+                || !element.ref && (element.data.elementType !== 'question' || parent.data.elementType === 'section')
+                || element.ref === 'form'
+                || element.ref === 'pasteSection'
+                || element.ref === 'question' && parent.data.elementType === 'section'
             ) && !FormService.isSubForm(parent);
         },
         actionMapping: {
@@ -158,32 +159,32 @@ export class FormDescriptionComponent implements OnChanges {
                         tree.update();
                     } else if (from.ref) {
                         this.toolDropTo = to;
-                        if (from.ref === "question")
+                        if (from.ref === 'question')
                             this.openQuestionSearch();
-                        else if (from.ref === "form")
+                        else if (from.ref === 'form')
                             this.openFormSearch();
-                        else if (from.ref === "pasteSection")
+                        else if (from.ref === 'pasteSection')
                             this.pasteSection();
                         return;
                     } else
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
 
                     tree.expandAll();
-                    this.addIds(this.elt.formElements, "");
+                    this.addIds(this.elt.formElements, '');
                     this.onEltChange.emit();
                 }
             }
         },
-        childrenField: "formElements",
-        displayField: "label",
+        childrenField: 'formElements',
+        displayField: 'label',
         dropSlotHeight: 3,
-        isExpandedField: "expanded"
+        isExpandedField: 'expanded'
     };
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.elt) {
             this.addExpanded(this.elt);
-            this.addIds(this.elt.formElements, "");
+            this.addIds(this.elt.formElements, '');
         }
     }
 
@@ -191,7 +192,7 @@ export class FormDescriptionComponent implements OnChanges {
                 public modalService: NgbModal,
                 private formService: FormService,
                 private http: Http) {
-        this.toolSection = {insert: "section", data: this.getNewSection()};
+        this.toolSection = {insert: 'section', data: this.getNewSection()};
     }
 
     addIndex(elems, elem, i) {
@@ -205,37 +206,37 @@ export class FormDescriptionComponent implements OnChanges {
             this.addIndex(this.toolDropTo.parent.data.formElements, question, this.toolDropTo.index++);
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();
-            this.addIds(this.elt.formElements, "");
+            this.addIds(this.elt.formElements, '');
             this.onEltChange.emit();
         });
     }
 
     addFormFromSearch(fe) {
-        this.http.get("/form/" + fe.tinyId).map(r => r.json()).subscribe(form => {
+        this.http.get('/form/' + fe.tinyId).map(r => r.json()).subscribe(form => {
             let inForm: any = FormService.convertFormToSection(form);
             inForm.formElements = form.formElements;
             this.addIndex(this.toolDropTo.parent.data.formElements, inForm, this.toolDropTo.index++);
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();
-            this.addIds(this.elt.formElements, "");
+            this.addIds(this.elt.formElements, '');
             this.onEltChange.emit();
         });
     }
 
     addExpanded(fe) {
         fe.expanded = true;
-        FormService.iterateFeSync(fe, _.noop, fe => fe.expanded = true, fe => fe.expanded = true);
+        FormService.iterateFeSync(fe, _noop, fe => fe.expanded = true, fe => fe.expanded = true);
     }
 
     addIds(fes, preId) {
         fes.forEach((fe, i) => {
-            let newPreId = preId + "_" + i;
-            if (fe.elementType === "section" || fe.elementType === "form") {
-                fe.descriptionId = (fe.elementType === "section" ? "section" + newPreId : "inform" + newPreId);
+            let newPreId = preId + '_' + i;
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                fe.descriptionId = (fe.elementType === 'section' ? 'section' + newPreId : 'inform' + newPreId);
                 if (fe.formElements && fe.formElements.length > 0)
                     this.addIds(fe.formElements, newPreId);
-            } else if (fe.elementType === "question")
-                fe.descriptionId = "question" + newPreId;
+            } else if (fe.elementType === 'question')
+                fe.descriptionId = 'question' + newPreId;
         });
     }
 
@@ -244,28 +245,28 @@ export class FormDescriptionComponent implements OnChanges {
     }
 
     hasCopiedSection() {
-        let copiedSection = this.localStorageService.get("sectionCopied");
-        return !_.isEmpty(copiedSection);
+        let copiedSection = this.localStorageService.get('sectionCopied');
+        return !_isEmpty(copiedSection);
     }
 
     openFormSearch() {
-        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(() => {
+        this.modalService.open(this.formSearchTmpl, {size: 'lg'}).result.then(() => {
         }, () => {
         });
     }
 
     openQuestionSearch() {
-        this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(() => {
+        this.modalService.open(this.questionSearchTmpl, {size: 'lg'}).result.then(() => {
         }, () => {
         });
     }
 
     pasteSection() {
-        let fe = this.localStorageService.get("sectionCopied");
+        let fe = this.localStorageService.get('sectionCopied');
         this.addIndex(this.toolDropTo.parent.data.formElements, fe, this.toolDropTo.index++);
         this.tree.treeModel.update();
         this.tree.treeModel.expandAll();
-        this.addIds(this.elt.formElements, "");
+        this.addIds(this.elt.formElements, '');
         this.onEltChange.emit();
     }
 }

@@ -1,25 +1,33 @@
-import { Injectable } from "@angular/core";
-import * as _ from 'lodash';
+import { Injectable } from '@angular/core';
+import _cloneDeep from 'lodash/cloneDeep';
+import _findIndex from 'lodash/findIndex';
+import _forEach from 'lodash/forEach';
+import _get from 'lodash/get';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
+import _slice from 'lodash/slice';
+import _uniq from 'lodash/uniq';
+import _uniqWith from 'lodash/uniqWith';
+
 
 @Injectable()
 export class CompareService {
-
     doCompareObject(newer, older, option) {
-        _.forEach(option, property => {
+        _forEach(option, property => {
             if (!newer && !older) {
                 property.match = true;
-                property.newer = "";
-                property.older = "";
+                property.newer = '';
+                property.older = '';
                 return;
             }
-            let l = "";
-            if (newer) l = _.get(newer, property.property);
-            let r = "";
-            if (older) r = _.get(older, property.property);
+            let l = '';
+            if (newer) l = _get(newer, property.property);
+            let r = '';
+            if (older) r = _get(older, property.property);
             if (!property.data) {
-                property.match = _.isEqual(l, r);
-                property.newer = l ? l.toString() : "";
-                property.older = r ? r.toString() : "";
+                property.match = _isEqual(l, r);
+                property.newer = l ? l.toString() : '';
+                property.older = r ? r.toString() : '';
                 if (!newer && !older) property.match = true;
             } else {
                 this.doCompareObject(l, r, property.data);
@@ -30,9 +38,9 @@ export class CompareService {
     };
 
     copyValue(obj, data) {
-        _.forEach(data, d => {
-            let value = _.get(obj, d.property);
-            if (_.isEmpty(value)) value = "";
+        _forEach(data, d => {
+            let value = _get(obj, d.property);
+            if (_isEmpty(value)) value = '';
             obj[d.property] = value;
         });
     }
@@ -41,9 +49,9 @@ export class CompareService {
         option.result = [];
         let beginIndex = 0;
 
-        _.forEach(newer, (l, leftIndex) => {
-            let rightArrayCopy = _.slice(older, beginIndex);
-            let rightIndex = _.findIndex(rightArrayCopy, o => option.isEqual(o, l));
+        _forEach(newer, (l, leftIndex) => {
+            let rightArrayCopy = _slice(older, beginIndex);
+            let rightIndex = _findIndex(rightArrayCopy, o => option.isEqual(o, l));
             if (rightIndex === -1) {
                 if (leftIndex === newer.length - 1) {
                     option.result.push({
@@ -87,11 +95,11 @@ export class CompareService {
                 };
                 if (!l.diff) l.diff = [];
                 if (!r.diff) r.diff = [];
-                let diff = _.uniq(l.diff.concat(r.diff));
-                tempResult["older"] = l;
-                tempResult["newer"] = r;
-                tempResult["diff"] = diff;
-                tempResult["edited"] = true;
+                let diff = _uniq(l.diff.concat(r.diff));
+                tempResult['older'] = l;
+                tempResult['newer'] = r;
+                tempResult['diff'] = diff;
+                tempResult['edited'] = true;
                 option.result.push(tempResult);
                 beginIndex++;
             }
@@ -113,52 +121,52 @@ export class CompareService {
             option.display = option.result.filter(p => p.display).length > 0;
             option.result.forEach(r => {
                 if (r.newer && r.add) {
-                    if (_.findIndex(older, o => {
+                    if (_findIndex(older, o => {
                             let temp = option.isEqual(o, r.data);
-                            if (temp) r.older = _.cloneDeep(o);
+                            if (temp) r.older = _cloneDeep(o);
                             return temp;
                         }) !== -1) {
                         delete r.add;
-                        if (!r.match) r.diff = _.uniq(r.data.diff);
+                        if (!r.match) r.diff = _uniq(r.data.diff);
                         r.reorder = true;
                     }
                 }
                 if (r.older && r.add) {
-                    if (_.findIndex(newer, o => option.isEqual(o, r.data)) === -1) {
+                    if (_findIndex(newer, o => option.isEqual(o, r.data)) === -1) {
                         delete r.add;
                         r.remove = true;
                     } else {
                         delete r.add;
-                        if (!r.match) r.diff = _.uniq(r.data.diff);
+                        if (!r.match) r.diff = _uniq(r.data.diff);
                         r.reorder = true;
                     }
                 }
             });
-            option.result = _.uniqWith(option.result, (willRemove: any, willStay) => {
+            option.result = _uniqWith(option.result, (willRemove: any, willStay) => {
                 if (willRemove.reorder && willStay.reorder) {
                     if (!willStay.newer) willStay.newer = willRemove.newer;
                     if (!willStay.older) willStay.older = willRemove.older;
-                    let aData = _.cloneDeep(willRemove.data);
+                    let aData = _cloneDeep(willRemove.data);
                     delete aData.diff;
-                    let bData = _.cloneDeep(willStay.data);
+                    let bData = _cloneDeep(willStay.data);
                     delete bData.diff;
                     if (option.isEqual(aData, bData)) {
                         return true;
                     }
                 }
                 if (willRemove.add && willStay.add) {
-                    let aData = _.cloneDeep(willRemove.data);
+                    let aData = _cloneDeep(willRemove.data);
                     delete aData.diff;
-                    let bData = _.cloneDeep(willStay.data);
+                    let bData = _cloneDeep(willStay.data);
                     delete bData.diff;
                     if (option.isEqual(aData, bData)) {
                         return true;
                     }
                 }
                 if (willRemove.remove && willStay.remove) {
-                    let aData = _.cloneDeep(willRemove.data);
+                    let aData = _cloneDeep(willRemove.data);
                     delete aData.diff;
-                    let bData = _.cloneDeep(willStay.data);
+                    let bData = _cloneDeep(willStay.data);
                     delete bData.diff;
                     if (option.isEqual(aData, bData)) {
                         return true;
@@ -175,17 +183,17 @@ export class CompareService {
     }
 
     doCompareArray(newer, older, option) {
-        _.forEach(option, property => {
+        _forEach(option, property => {
             if (!newer && !older) {
                 property.match = true;
                 property.display = false;
                 return;
             }
-            if (!property.isEqual) property.isEqual = _.isEqual;
+            if (!property.isEqual) property.isEqual = _isEqual;
             let l = [];
-            if (newer) l = _.get(newer, property.property);
+            if (newer) l = _get(newer, property.property);
             let r = [];
-            if (older) r = _.get(older, property.property);
+            if (older) r = _get(older, property.property);
             this.doCompareArrayImpl(l, r, property);
         });
     }
