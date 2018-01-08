@@ -11,7 +11,7 @@ public class UomValidation extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("DNA Elements - Participant/Subject Information");
         goToFormDescription();
-        textPresent("[in_i]", By.cssSelector(".questionUom"));
+        textPresent("inch", By.cssSelector(".questionUom"));
         textPresent("m", By.cssSelector(".questionUom"));
         textPresent("inches", By.cssSelector(".badge-danger"));
         textPresent("(invalid)", By.cssSelector(".badge-danger"));
