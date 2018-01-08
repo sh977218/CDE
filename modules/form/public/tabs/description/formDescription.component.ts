@@ -75,7 +75,7 @@ const TOOL_BAR_OFF_SET = 55;
             position: fixed;
             padding: 5px;
             padding-left: 20px;
-            top: ${TOOL_BAR_OFF_SET} px;
+            top: ${TOOL_BAR_OFF_SET}px;
             border-bottom-left-radius: 50px;
             right: 0;
             -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -138,7 +138,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     questionModelMode = 'search';
     newDataElementName;
-    formElementEditing;
+    formElementEditing: any = {};
 
     @HostListener('window:scroll', ['$event'])
     scrollEvent() {
@@ -224,8 +224,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                             this.tree.treeModel.update();
                             this.tree.treeModel.expandAll();
                             this.addIds(this.elt.formElements, "");
-                            this.formElementEditing.formElement.edit = false;
-                            this.formElementEditing.formElement = newQuestion;
+                            this.updateFormElementEditing(this.formElementEditing.formElements, newQuestion);
                             this.onEltChange.emit();
                             window.document.getElementById((newQuestion as any).descriptionId).scrollIntoView();
                         }
@@ -254,6 +253,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();
             this.addIds(this.elt.formElements, "");
+            this.updateFormElementEditing(this.toolDropTo.parent.data.formElements, question);
             this.onEltChange.emit();
         });
     }
@@ -266,6 +266,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();
             this.addIds(this.elt.formElements, "");
+            this.updateFormElementEditing(this.toolDropTo.parent.data.formElements, inForm);
             this.onEltChange.emit();
         });
     }
@@ -312,9 +313,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 tree.update();
                 tree.expandAll();
                 this.addIds(this.elt.formElements, "");
-                this.formElementEditing.formElement.edit = false;
-                this.formElementEditing.formElement = newQuestion;
-                this.formElementEditing.formElements = to.parent.data.formElements;
+                this.updateFormElementEditing(this.elt.formElements, newQuestion);
                 this.onEltChange.emit();
             }
         }, () => {
@@ -328,5 +327,12 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.tree.treeModel.expandAll();
         this.addIds(this.elt.formElements, "");
         this.onEltChange.emit();
+    }
+
+    updateFormElementEditing(formElements, formElement) {
+        if (this.formElementEditing.formElement)
+            this.formElementEditing.formElement.edit = false;
+        this.formElementEditing.formElement = formElement;
+        this.formElementEditing.formElements = formElements;
     }
 }
