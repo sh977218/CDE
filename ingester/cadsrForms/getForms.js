@@ -33,10 +33,10 @@ var request = require('request')
     , parseString = require('xml2js').parseString
     , mongoose = require('mongoose')
     , async = require('async')
-    , mongo_form = require('../../modules/form/node-js/mongo-form.js')
-    , mongo_cde = require('../../modules/cde/node-js/mongo-cde.js')
+    , mongo_form = require('../../server/form/mongo-form.js')
+    , mongo_cde = require('../../server/cde/mongo-cde.js')
     , classificationShared = require('@std/esm')(module)('../../modules/system/shared/classificationShared')
-    , mongo_data_system = require('../../modules/system/node-js/mongo-data')
+    , mongo_data_system = require('../../server/system/mongo-data')
     ;
 
 var startTime = new Date().getTime();

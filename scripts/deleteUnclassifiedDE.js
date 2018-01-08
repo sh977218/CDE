@@ -1,6 +1,6 @@
 const async = require('async');
-const mongo_cde = require('../modules/cde/node-js/mongo-cde');
-const mongo_data = require('../modules/system/node-js/mongo-data');
+const mongo_cde = require('../server/cde/mongo-cde');
+const mongo_data = require('../server/system/mongo-data');
 const DataElementModal = mongo_cde.DataElement;
 
 let count = 0;

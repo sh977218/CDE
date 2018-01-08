@@ -1,4 +1,4 @@
-const mongo_cde = require('../modules/cde/node-js/mongo-cde'),
+const mongo_cde = require('../server/cde/mongo-cde'),
     _ = require('lodash')
 ;
 

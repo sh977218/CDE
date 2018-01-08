@@ -1,9 +1,9 @@
 var fs = require('fs'),
     https = require('https'),
-    mongo_cde = require('../modules/cde/node-js/mongo-cde'),
+    mongo_cde = require('../server/cde/mongo-cde'),
     config = require('config'),
     classificationShared = require('@std/esm')(module)('../modules/system/shared/classificationShared'),
-    mongo_data_system = require('../modules/system/node-js/mongo-data'),
+    mongo_data_system = require('../server/system/mongo-data'),
     async = require('async'),
     xml2js = require('xml2js'),
     ninds = require('./convertcsv');

@@ -2,8 +2,8 @@ let xml2js = require('xml2js');
 let _ = require('lodash');
 let builder = new xml2js.Builder({attrkey: 'attribute'});
 let Readable = require('stream').Readable;
-let mongo_data = require('../modules/system/node-js/mongo-data');
-let cdediff = require('../modules/cde/node-js/cdediff');
+let mongo_data = require('../server/system/mongo-data');
+let cdediff = require('../server/cde/cdediff');
 let classificationShared = require('@std/esm')(module)('../modules/system/shared/classificationShared');
 
 exports.loaderUser = {

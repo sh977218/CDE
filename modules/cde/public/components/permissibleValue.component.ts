@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core
 import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Http } from "@angular/http";
 import * as _ from "lodash";
-import * as deValidator from "../../shared/deValidator.js";
+import * as deValidator from "../../../../shared/cde/deValidator.js";
 
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Observable";

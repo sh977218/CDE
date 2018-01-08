@@ -1,5 +1,5 @@
 var async = require('async'),
-    OrgModel = require('../modules/system/node-js/mongo-data').Org;
+    OrgModel = require('../server/system/mongo-data').Org;
 
 var orgCount = 0;
 OrgModel.find({}).exec(function (findOrgError, orgs) {

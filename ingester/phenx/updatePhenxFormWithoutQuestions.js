@@ -7,9 +7,9 @@ let _ = require('lodash');
 let MigrationMeasureModel = require('../createMigrationConnection').MigrationMeasureModel;
 let MigrationForm = require('../createMigrationConnection').MigrationFormModel;
 let MigrationOrgModel = require('../createMigrationConnection').MigrationOrgModel;
-let mongo_form = require('../../modules/form/node-js/mongo-form');
+let mongo_form = require('../../server/form/mongo-form');
 let FormModel = mongo_form.Form;
-let OrgModel = require('../../modules/system/node-js/mongo-data').Org;
+let OrgModel = require('../../server/system/mongo-data').Org;
 
 let updateShare = require('../updateShare');
 

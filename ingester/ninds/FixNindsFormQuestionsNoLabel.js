@@ -1,5 +1,5 @@
 var async = require('async');
-var FormModel = require('../../modules/form/node-js/mongo-form').Form;
+var FormModel = require('../../server/form/mongo-form').Form;
 
 var totalForm = 0;
 FormModel.find({

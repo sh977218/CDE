@@ -1,8 +1,8 @@
 var fs = require('fs'),
     mongoose = require('mongoose'),
     config = require('config'),
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
-    mongo_form = require('../../modules/form/node-js/mongo-form'),
+    mongo_cde = require('../../server/cde/mongo-cde'),
+    mongo_form = require('../../server/form/mongo-form'),
     classificationShared = require('@std/esm')(module)('../../modules/system/shared/classificationShared.js'),
     async = require('async'),
     crypto = require('crypto');
