@@ -1,7 +1,7 @@
-var umls = require('../modules/cde/node-js/vsac-io'),
+var umls = require('../server/cde/vsac-io'),
     request = require('request'),
     mongoose = require('mongoose'),
-    mongo_cde = require('../modules/cde/node-js/mongo-cde'),
+    mongo_cde = require('../server/cde/mongo-cde'),
     config = require('config'),
     async = require('async')
 ;

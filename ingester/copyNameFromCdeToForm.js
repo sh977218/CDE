@@ -1,8 +1,8 @@
 var mongoose = require('mongoose'),
-    config = require('../modules/system/node-js/parseConfig'),
-    schemas = require('../modules/system/node-js/schemas.js'),
-    cde_schemas = require('../modules/cde/node-js/schemas'),
-    form_schemas = require('../modules/form/node-js/schemas'),
+    config = require('../server/system/parseConfig'),
+    schemas = require('../server/system/schemas.js'),
+    cde_schemas = require('../server/cde/schemas'),
+    form_schemas = require('../server/form/schemas'),
     async = require('async');
 
 var mongoUrl = config.mongoUri;

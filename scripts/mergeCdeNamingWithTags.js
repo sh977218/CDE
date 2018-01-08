@@ -1,5 +1,5 @@
 var async = require('async');
-var mongo_cde = require('../modules/cde/node-js/mongo-cde');
+var mongo_cde = require('../server/cde/mongo-cde');
 var DataElementModel = mongo_cde.DataElement;
 
 var recordsCount = 0;

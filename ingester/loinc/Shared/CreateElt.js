@@ -1,4 +1,4 @@
-var mongo_data = require('../../../modules/system/node-js/mongo-data');
+var mongo_data = require('../../../server/system/mongo-data');
 
 var ParseNaming = require('./ParseNaming');
 var ParseIds = require('./ParseIds');

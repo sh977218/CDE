@@ -36,11 +36,8 @@
     "modules/components",
     "modules/static",
     "node_modules",
-    "modules/board/node-js",
-    "modules/cde/node-js",
-    "modules/form/node-js",
+    "server",
     "modules/form/public/assets",
-    "modules/system/node-js",
     "protractor",
     "scripts",
     "test"

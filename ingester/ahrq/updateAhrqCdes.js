@@ -1,11 +1,11 @@
 var async = require('async');
-var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
-var cdediff = require('../../modules/cde/node-js/cdediff');
+var mongo_cde = require('../../server/cde/mongo-cde');
+var cdediff = require('../../server/cde/cdediff');
 var classificationShared = require('@std/esm')(module)('../../modules/system/shared/classificationShared');
 var MigrationDataElement = require('../createMigrationConnection').MigrationDataElementModel;
 var DataElement = mongo_cde.DataElement;
 var MigrationOrg = require('../createMigrationConnection').MigrationOrgModel;
-var Org = require('../../modules/system/node-js/mongo-data').Org;
+var Org = require('../../server/system/mongo-data').Org;
 var updateShare = require('../updateShare');
 
 var source = 'LOINC';

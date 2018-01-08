@@ -1,5 +1,5 @@
 var async = require('async');
-var DataElementModel = require('../../modules/cde/node-js/mongo-cde').DataElement;
+var DataElementModel = require('../../server/cde/mongo-cde').DataElement;
 
 var today = new Date();
 var beforeNow = new Date();

@@ -5,8 +5,8 @@ var csv = require('csv')
     , fs = require('fs')
     , byline = require('byline')
     , async = require('async')
-    , mongo_cde = require('../../modules/cde/node-js/mongo-cde.js')
-    , mongo_form = require('../../modules/form/node-js/mongo-form.js')
+    , mongo_cde = require('../../server/cde/mongo-cde.js')
+    , mongo_form = require('../../server/form/mongo-form.js')
 ;
 
 var loincCsvPath = process.argv[2];

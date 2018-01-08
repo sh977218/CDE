@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import * as formShared from "form/shared/formShared";
+import * as formShared from "../../../shared/form/formShared";
 
 @Component({
     selector: "cde-embedded-form-search-result",

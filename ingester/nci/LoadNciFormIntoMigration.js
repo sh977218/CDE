@@ -1,6 +1,6 @@
 var async = require('async'),
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
-    mongo_data = require('../../modules/system/node-js/mongo-data'),
+    mongo_cde = require('../../server/cde/mongo-cde'),
+    mongo_data = require('../../server/system/mongo-data'),
     MigrationNCIModel = require('./../createMigrationConnection').MigrationNCIFormXmlModel,
     MigrationFormModel = require('./../createMigrationConnection').MigrationFormModel,
     MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel,
