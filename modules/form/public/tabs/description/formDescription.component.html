@@ -106,9 +106,9 @@
 <ng-template #questionSearchTmpl let-c="close" let-d="dismiss">
     <ng-container *ngIf="questionModelMode === 'search'">
         <div class="modal-header">
-            <h1>Search Questions</h1>
+            <h1>Search Data Elements</h1>
             <button class="btn btn-outline-dark" id="addNewCdeBtn" (click)="questionModelMode = 'add'">
-                Add A New Data Element
+                Create Data Element
             </button>
         </div>
         <div class="modal-body">
@@ -122,9 +122,9 @@
     <ng-container *ngIf="questionModelMode === 'add'">
         <form #newDataElementForm="ngForm" (ngSubmit)="c('create');">
             <div class="modal-header">
-                <h1>New Data Element</h1>
+                <h1>Create Data Element</h1>
                 <button class="btn btn-outline-dark" type="button" (click)="questionModelMode = 'search'">
-                    Search Questions
+                    Search Data Elements
                 </button>
             </div>
             <div class="modal-body">

@@ -154,13 +154,10 @@ export class FormViewComponent implements OnInit {
         this.userService.then(() => {
             if (this.userService.user && this.userService.user.username)
                 this.loadDraft(() => {
-                    if (this.elt)
-                        cb();
-                    else
-                        this.loadPublished(cb);
+                    if (this.elt) cb();
+                    else this.loadPublished(cb);
                 });
-            else
-                this.loadPublished(cb);
+            else this.loadPublished(cb);
         });
     }
 
@@ -320,10 +317,8 @@ export class FormViewComponent implements OnInit {
             }, () => {
                 this.http.put('/form/' + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(
                     res => {
-                        if (res) // TODO: use res instead of loading and block PUT /form/ when drafted?
-                            this.loadForm(() => this.alert.addAlert('success', 'Form saved.'));
-                    },
-                    () => this.router.navigate(['/pageNotFound'])
+                        if (res) this.loadForm(() => this.alert.addAlert('success', 'Form saved.'));
+                    }, () => this.router.navigate(['/pageNotFound'])
                 );
             });
         }, undefined, undefined, (fe, cb) => {

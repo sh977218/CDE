@@ -27,7 +27,7 @@ public class QuestionTest extends BaseFormTest {
             try {
                 hangon(2);
                 new Actions(driver).sendKeys("q").build().perform();
-                textPresent("New Data Element");
+                textPresent("Create Data Element");
                 hangon(2);
                 new Actions(driver).sendKeys(cdeName).build().perform();
                 hangon(2);
@@ -49,7 +49,7 @@ public class QuestionTest extends BaseFormTest {
         try {
             hangon(2);
             new Actions(driver).sendKeys("q").build().perform();
-            textPresent("New Data Element");
+            textPresent("Create Data Element");
             hangon(2);
             new Actions(driver).sendKeys(cdeName).build().perform();
             hangon(2);
@@ -80,7 +80,7 @@ public class QuestionTest extends BaseFormTest {
                 WebElement targetElt = findElement(By.xpath("//*[@id='section_" + sectionNumber + "']//*[contains(@class,'node-content-wrapper')]"));
                 (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
                 dragAndDrop(sourceElt, targetElt);
-                textPresent("Search Questions");
+                textPresent("Search Data Elements");
                 i = 10;
             } catch (TimeoutException e) {
                 if (i == 4) {
