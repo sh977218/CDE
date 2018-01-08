@@ -30,6 +30,16 @@ public class UomValidation extends BaseFormTest {
         Assert.assertEquals(findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']")).getAttribute("title"),"1.25");
         clickElement(By.xpath("(//div[@id='If Yes, what are the number of CAG repeats on the larger allele_3']//input[@name='q4_uom'])[2]"));
         Assert.assertEquals(findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']")).getAttribute("title"),"0.03175");
+
+        clickElement(By.id("displayProfiles_tab"));
+        createDisplayProfile(0, "Uom", true, true, true, true, "Follow-up", 1, false);
+        createDisplayProfile(1, "No Uom", true, true, true, true, "Follow-up", 1, false);
+        new Select(findElement(By.cssSelector(".card select"))).selectByVisibleText("international inch");
+
+        goToPreview();
+        textPresent("international inch");
+        selectDisplayProfileByName("No Uom");
+        textNotPresent("international inch");
     }
 
 }
