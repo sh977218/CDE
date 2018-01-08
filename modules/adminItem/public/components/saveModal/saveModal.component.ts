@@ -3,7 +3,7 @@ import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
-import * as formShared from '../../../../form/shared/formShared';
+import * as formShared from "../../../../../shared/form/formShared";
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({

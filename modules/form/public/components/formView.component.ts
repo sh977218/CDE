@@ -19,7 +19,7 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 import { Subscription } from 'rxjs/Subscription';
 import { UserService } from '_app/user.service';
 import * as async from "async";
-import * as formShared from "../../shared/formShared";
+import * as formShared from "../../../../shared/form/formShared";
 
 
 @Component({
