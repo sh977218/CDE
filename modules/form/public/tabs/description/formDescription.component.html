@@ -59,7 +59,7 @@
                                          [treeAllowDrop]="node.allowDrop">
                                         <cde-form-description-section
                                                 *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
-                                                [elt]="elt" [canEdit]="canEdit" [node]="node"
+                                                [elt]="elt" [canEdit]="canEdit" [node]="node" [index]="index"
                                                 (onEltChange)="onEltChange.emit()"></cde-form-description-section>
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"

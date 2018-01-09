@@ -216,7 +216,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         this._hotkeysService.add([
             new Hotkey('q', (event: KeyboardEvent): boolean => {
-                if (this.formElementEditing) {
+                if (!_isEmpty(this.formElementEditing)) {
                     this.newDataElementName = "";
                     this.questionModelMode = 'add';
                     this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(reason => {
@@ -232,7 +232,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                             this.tree.treeModel.update();
                             this.tree.treeModel.expandAll();
                             this.addIds(this.elt.formElements, "");
-                            this.setFormElementEditing(this.formElementEditing.formElements, newQuestion);
+                            this.setCurrentEditing(this.formElementEditing.formElements, newQuestion, this.formElementEditing.index);
                             this.onEltChange.emit();
                             setTimeout(() => {
                                 window.document.getElementById((newQuestion as any).descriptionId).scrollIntoView();
@@ -263,7 +263,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();
             this.addIds(this.elt.formElements, '');
-            this.setFormElementEditing(this.toolDropTo.parent.data.formElements, question);
+            this.setCurrentEditing(this.toolDropTo.parent.data.formElements, question, this.toolDropTo.index);
             this.onEltChange.emit();
         });
     }
@@ -276,7 +276,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();
             this.addIds(this.elt.formElements, '');
-            this.setFormElementEditing(this.toolDropTo.parent.data.formElements, inForm);
+            this.setCurrentEditing(this.toolDropTo.parent.data.formElements, inForm, this.toolDropTo.index);
             this.onEltChange.emit();
         });
     }
@@ -323,7 +323,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 tree.update();
                 tree.expandAll();
                 this.addIds(this.elt.formElements, '');
-                this.setFormElementEditing(this.elt.formElements, newQuestion);
+                this.setCurrentEditing(this.elt.formElements, newQuestion, to.index);
                 this.onEltChange.emit();
             }
         }, () => {
@@ -339,10 +339,27 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.onEltChange.emit();
     }
 
-    setFormElementEditing(formElements, formElement) {
-        if (this.formElementEditing.formElement)
-            this.formElementEditing.formElement.edit = false;
-        this.formElementEditing.formElement = formElement;
-        this.formElementEditing.formElements = formElements;
+    setCurrentEditing(formElements, formElement, index) {
+        if (_isEmpty(this.formElementEditing.formElement)) {
+            this.formElementEditing = {
+                formElement: formElement,
+                formElements: formElements,
+                index: index
+            };
+            formElement.edit = true;
+        } else {
+            if (this.formElementEditing.formElement === formElement) {
+                this.formElementEditing = {};
+                formElement.edit = false;
+            } else {
+                this.formElementEditing.formElement.edit = false;
+                this.formElementEditing = {
+                    formElement: formElement,
+                    formElements: formElements,
+                    index: index
+                };
+                formElement.edit = true;
+            }
+        }
     }
 }

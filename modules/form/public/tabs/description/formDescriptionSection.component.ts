@@ -168,16 +168,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     editSection(section) {
         if (!this.isSubForm && this.canEdit) {
-            section.edit = !section.edit;
-            if (this.formDescriptionComponent.formElementEditing) {
-                if (this.formDescriptionComponent.formElementEditing.formElement !== section)
-                    this.formDescriptionComponent.formElementEditing.formElement.edit = false;
-            }
-            this.formDescriptionComponent.formElementEditing = {
-                formElements: this.parent.formElements,
-                index: this.index,
-                formElement: section
-            };
+            this.formDescriptionComponent.setCurrentEditing(this.parent.formElements, section, this.index);
         }
     }
 }
