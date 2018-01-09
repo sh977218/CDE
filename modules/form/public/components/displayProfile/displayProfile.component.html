@@ -90,7 +90,7 @@
                         </ng-container>
                         <ng-container *ngIf="dPVM.aliases.edit">
                             <ng-container *ngFor="let uom of uoms.keys()">
-                                <div class="col-12 col-sm-6 mb-1">
+                                <div class="col-12 col-sm-6 mb-1" id="alias-{{uom}}">
                                     {{uom}}:
                                     <select [ngModel]="dPVM.aliases.value.get(uom)" (ngModelChange)="profileUomsEditSave(dPVM, uom, $event)">
                                         <option *ngFor="let option of uoms.get(uom)">{{option}}</option>

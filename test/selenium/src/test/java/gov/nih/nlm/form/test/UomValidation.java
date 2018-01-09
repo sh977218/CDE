@@ -35,7 +35,8 @@ public class UomValidation extends BaseFormTest {
         clickElement(By.id("displayProfiles_tab"));
         createDisplayProfile(0, "Uom", true, true, true, true, "Follow-up", 1, false);
         createDisplayProfile(1, "No Uom", true, true, true, true, "Follow-up", 1, false);
-        new Select(findElement(By.cssSelector(".card select"))).selectByVisibleText("international inch");
+        clickElement(By.cssSelector(".card .card-header"));
+        new Select(findElement(By.xpath("//*[@id='profile_0']//*[@id='alias-inch']/select"))).selectByVisibleText("international inch");
 
         goToPreview();
         textPresent("international inch");
