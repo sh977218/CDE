@@ -11,22 +11,20 @@ public class UomValidation extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("DNA Elements - Participant/Subject Information");
         goToFormDescription();
-        textPresent("inch", By.cssSelector(".questionUom"));
+        textPresent("[in_i]", By.cssSelector(".questionUom"));
         textPresent("m", By.cssSelector(".questionUom"));
-        textPresent("inches", By.id("question_0_3"));
-        textPresent("(invalid)", By.id("question_0_3"));
+        textPresent("inches", By.cssSelector(".badge-danger"));
+        textPresent("(invalid)", By.cssSelector(".badge-danger"));
         textPresent("cm", By.cssSelector(".questionUom"));
         textNotPresent("meter", By.cssSelector(".questionUom"));
-        textNotPresent("meter", By.id("question_0_3"));
-        textNotPresent("m", By.id("question_0_3"));
+        textNotPresent("meter", By.cssSelector(".badge-danger"));
+        textNotPresent("m", By.cssSelector(".badge-danger"));
 
-        startEditQuestionById("question_0_3");
+        startEditQuestionSectionById("question_0_3");
         questionEditAddUom("question_0_3", "kilogram");
-        saveEditQuestionById("question_0_3");
-/*
+        saveEditQuestionSectionById("question_0_3");
         findElement(By.xpath("//*[contains(@class,'badge-danger')]//*[text()='kg']"));
         textNotPresent("kilogram");
-*/
 
         goToPreview();
         findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']")).sendKeys("1.25");
