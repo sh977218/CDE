@@ -1,6 +1,6 @@
 <div id="displayProfileDiv" class="col-12">
     <h4>Display Profiles</h4>
-    <div *ngFor="let profile of elt.displayProfiles; let index = index" class="hr" id="profile_{{index}}">
+    <div *ngFor="let dPVM of dPVMs; let index = index" class="hr" id="profile_{{index}}">
         <div class="text-right" *ngIf="canEdit">
             <span *ngIf="showDelete">Confirm Delete
                 <a class="fa fa-check" (click)="showDelete = false; removeDisplayProfile(index)"
@@ -15,44 +15,44 @@
                 <dl class="row">
                     <dt class="col-sm-5">Name:</dt>
                     <dd id="dd_origin_nlm" class="col-sm-7 ">
-                        <cde-inline-edit id="profileNameEdit_{{index}}" [(model)]="profile.name" [isAllowed]="canEdit"
+                        <cde-inline-edit id="profileNameEdit_{{index}}" [(model)]="dPVM.profile.name" [isAllowed]="canEdit"
                                          (modelChange)="onEltChange.emit();"></cde-inline-edit>
                     </dd>
                     <dt class="col-sm-5">Sections as matrices:</dt>
                     <dd class="col-sm-7 ">
-                        <input type="checkbox" [(ngModel)]="profile.sectionsAsMatrix" [disabled]="!canEdit"
+                        <input type="checkbox" [(ngModel)]="dPVM.profile.sectionsAsMatrix" [disabled]="!canEdit"
                                id="displayAsMatrix_{{index}}" (change)="onEltChange.emit();"/>
                     </dd>
                     <dt class="col-sm-5">Display answer values:</dt>
                     <dd class="col-sm-7 ">
-                        <input type="checkbox" [(ngModel)]="profile.displayValues" [disabled]="!canEdit"
+                        <input type="checkbox" [(ngModel)]="dPVM.profile.displayValues" [disabled]="!canEdit"
                                id="displayValues_{{index}}" (change)="onEltChange.emit();"/>
                     </dd>
                     <dt class="col-sm-5">Display Instructions:</dt>
                     <dd class="col-sm-7 ">
-                        <input type="checkbox" [(ngModel)]="profile.displayInstructions" [disabled]="!canEdit"
+                        <input type="checkbox" [(ngModel)]="dPVM.profile.displayInstructions" [disabled]="!canEdit"
                                id="displayInstructions_{{index}}" (change)="onEltChange.emit();">
                     </dd>
                     <dt class="col-sm-5">Display Copyright:</dt>
                     <dd class="col-sm-7 ">
-                        <input type="checkbox" [(ngModel)]="profile.displayCopyright" [disabled]="!canEdit"
+                        <input type="checkbox" [(ngModel)]="dPVM.profile.displayCopyright" [disabled]="!canEdit"
                                id="displayCopyright_{{index}}" (change)="onEltChange.emit();">
                     </dd>
                     <dt class="col-sm-5">Display Question Numbers:</dt>
                     <dd class="col-sm-7 ">
-                        <input type="checkbox" [(ngModel)]="profile.displayNumbering" [disabled]="!canEdit"
+                        <input type="checkbox" [(ngModel)]="dPVM.profile.displayNumbering" [disabled]="!canEdit"
                                id="displayNumbering_{{index}}" (change)="onEltChange.emit();">
                     </dd>
                     <dt class="col-sm-5">Display Printable Logic:</dt>
                     <dd class="col-sm-7 ">
                         <input type="checkbox" [disabled]="!canEdit" id="displayType_{{index}}"
-                               [checked]="profile.displayType === 'Follow-up'"
-                               (change)="setDisplayType(profile, $event)">
+                               [checked]="dPVM.profile.displayType === 'Follow-up'"
+                               (change)="setDisplayType(dPVM.profile, $event)">
                     </dd>
                     <dt class="col-sm-5">Number of Columns:</dt>
                     <dd class="col-sm-7 ">
-                        <select [ngModel]="profile.numberOfColumns" id="nc_{{index}}"
-                                (ngModelChange)="onChange(profile,$event)">
+                        <select [ngModel]="dPVM.profile.numberOfColumns" id="nc_{{index}}"
+                                (ngModelChange)="onChange(dPVM.profile,$event)">
                             <option value=1>1</option>
                             <option value=2>2</option>
                             <option value=3>3</option>
@@ -63,12 +63,12 @@
                     </dd>
                     <dt class="col-sm-5">Display Invisible Questions:</dt>
                     <dd class="col-sm-7 ">
-                        <input type="checkbox" [(ngModel)]="profile.displayInvisible" [disabled]="!canEdit"
+                        <input type="checkbox" [(ngModel)]="dPVM.profile.displayInvisible" [disabled]="!canEdit"
                                id="displayInvisible_{{index}}" (change)="onEltChange.emit();">
                     </dd>
                     <dt class="col-sm-5">Repeat Format String:</dt>
                     <dd class="col-sm-7 ">
-                        <input class="form-control" [(ngModel)]="profile.repeatFormat"
+                        <input class="form-control" [(ngModel)]="dPVM.profile.repeatFormat"
                                [disabled]="!canEdit" id="displayRepeatFormat_{{index}}" (change)="onEltChange.emit();">
                         (Use # in place of number. Ex: "#." for "1.")
                     </dd>
@@ -76,7 +76,30 @@
             </div>
             <div class="col-lg-7 col-sm-12">
                 <div class="displayProfileRenderDiv" style="border: dashed 1px; zoom:60%; padding: 0 15px;">
-                    <cde-native-render [elt]="samples[index]" [profile]="profile"></cde-native-render>
+                    <cde-native-render [elt]="dPVM.sample" [profile]="dPVM.profile"></cde-native-render>
+                </div>
+                <div class="card mt-1">
+                    <div class="card-header hand-cursor hoverEdit" (click)="dPVM.aliases.edit=!dPVM.aliases.edit;dPVM.aliases.edit && profileUomsEditCreate(dPVM)">
+                        Edit Unit of Measure Aliases
+                    </div>
+                    <div class="card-body row">
+                        <ng-container *ngIf="!dPVM.aliases.edit">
+                            <ng-container *ngFor="let uom of dPVM.uomAliasesKeys">
+                                <div class="col-12 col-sm-6 mb-1">{{uom}}: {{dPVM.profile.uomAliases[uom]}}</div>
+                            </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="dPVM.aliases.edit">
+                            <ng-container *ngFor="let uom of uoms.keys()">
+                                <div class="col-12 col-sm-6 mb-1" id="alias-{{uom}}">
+                                    {{uom}}:
+                                    <select [ngModel]="dPVM.aliases.value.get(uom)" (ngModelChange)="profileUomsEditSave(dPVM, uom, $event)">
+                                        <option *ngFor="let option of uoms.get(uom)">{{option}}</option>
+                                    </select>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+
+                    </div>
                 </div>
             </div>
         </div>

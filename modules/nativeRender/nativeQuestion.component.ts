@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Http } from '@angular/http';
 import * as moment from 'moment';
-import ucum from 'ucum.js';
 
 import { FormService } from 'nativeRender/form.service';
 import { FormQuestion } from 'core/form.model';
@@ -11,20 +11,25 @@ import { NativeRenderService } from './nativeRender.service';
     selector: 'cde-native-question',
     templateUrl: './nativeQuestion.component.html',
     styles: [`
-    @media (min-width: 768px) {
-        div .col-sm-2-4 {
-            flex: 0 0 20%;
-            max-width: 20%;
+        @media (min-width: 768px) {
+            div .col-sm-2-4 {
+                flex: 0 0 20%;
+                max-width: 20%;
+            }
         }
-    :host >>> label.native-question-label {
-        font-weight: 700;
-    }
-    :host >>> .form-check-label > input[type="checkbox"] {
-        margin-top: 8px !important;
-    }
-    :host >>> .form-check-label > input[type="radio"] {
-        margin-top: 7px !important;
-    }
+        :host >>> label.native-question-label {
+            font-weight: 700;
+        }
+        :host >>> .form-check-label > input[type="checkbox"] {
+            margin-top: 8px !important;
+        }
+        :host >>> .form-check-label > input[type="radio"] {
+            margin-top: 7px !important;
+        }
+
+        .native-valuelist-label {
+            word-break: break-word;
+        }
     `]
 })
 export class NativeQuestionComponent implements OnInit {
@@ -44,7 +49,7 @@ export class NativeQuestionComponent implements OnInit {
         this.previousUom = this.formElement.question.answerUom;
     }
 
-    constructor(public nrs: NativeRenderService) {
+    constructor(private http: Http, public nrs: NativeRenderService) {
     }
 
     classColumns(pvIndex, index) {
@@ -77,20 +82,28 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     convert() {
-        if (this.previousUom && this.formElement.question.answer) {
+        if (this.previousUom && this.formElement.question.answer != null) {
             let value: number;
             if (typeof(this.formElement.question.answer) === 'string')
-                value = parseInt(this.formElement.question.answer);
+                value = parseFloat(this.formElement.question.answer);
             else
                 value = this.formElement.question.answer;
 
-            if (value && typeof(value) === 'number' && !isNaN(value)) {
-                let result = ucum.convert(value, this.previousUom, this.formElement.question.answerUom);
-                if (result && !isNaN(result))
-                    this.formElement.question.answer = result;
+            if (typeof(value) === 'number' && !isNaN(value)) {
+                let unit = this.formElement.question.answerUom;
+                this.convertUnits(value, this.previousUom, this.formElement.question.answerUom, (error, result) => {
+                    if (!error && result !== undefined && !isNaN(result) && unit === this.formElement.question.answerUom)
+                        this.formElement.question.answer = result;
+                });
             }
         }
         this.previousUom = this.formElement.question.answerUom;
+    }
+
+    // cb(error, number)
+    convertUnits(value: number, fromUnit: string, toUnit: string, cb) {
+        this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit) + '&to='
+            + encodeURIComponent(toUnit)).map(r => r.json()).subscribe(v => cb(undefined, v), e => cb(e));
     }
 
     isFirstInRow(index) {

@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output } from "@angular/core";
-
-import * as _ from "lodash";
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import _cloneDeep from 'lodash/cloneDeep';
 
 @Component({
     selector: "cde-inline-area-edit",
@@ -41,8 +40,8 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     };
 
     ngOnInit(): void {
-        this.value = _.cloneDeep(this.model);
-        this.localFormat = _.cloneDeep(this.defFormat);
+        this.value = _cloneDeep(this.model);
+        this.localFormat = _cloneDeep(this.defFormat);
     }
 
     ngAfterViewInit() {
@@ -61,8 +60,8 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     }
 
     discard() {
-        this.value = _.cloneDeep(this.model);
-        this.localFormat = _.cloneDeep(this.defFormat);
+        this.value = _cloneDeep(this.model);
+        this.localFormat = _cloneDeep(this.defFormat);
         this.editMode = false;
     }
 

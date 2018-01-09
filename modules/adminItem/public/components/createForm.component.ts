@@ -7,24 +7,25 @@ import {
     QueryList,
     ViewChildren,
     EventEmitter
-} from "@angular/core";
-import { Http } from "@angular/http";
+} from '@angular/core';
+import { Http } from '@angular/http';
 import { Router } from '@angular/router';
-import { NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import * as _ from "lodash";
-import { TreeComponent } from "angular-tree-component";
-import { LocalStorageService } from "angular-2-local-storage/dist";
+import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import _cloneDeep from 'lodash/cloneDeep';
+import _isEqual from 'lodash/isEqual';
+import { TreeComponent } from 'angular-tree-component';
+import { LocalStorageService } from 'angular-2-local-storage/dist';
 
-import { ClassifyItemModalComponent } from "adminItem/public/components/classification/classifyItemModal.component";
+import { AlertService } from '_app/alert/alert.service';
+import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { SharedService } from 'core/shared.service';
 import { UserService } from '_app/user.service';
-import { AlertService } from '_app/alert/alert.service';
 
 @Component({
-    selector: "cde-create-form",
+    selector: 'cde-create-form',
     providers: [NgbActiveModal],
-    templateUrl: "./createForm.component.html",
+    templateUrl: './createForm.component.html',
     styles: [`
         label {
             font-weight: 700;
@@ -32,7 +33,7 @@ import { AlertService } from '_app/alert/alert.service';
     `]
 })
 export class CreateFormComponent implements OnInit {
-    @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
+    @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
     @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
     @Input() elt;
     @Input() extModalRef: NgbModalRef;
@@ -49,11 +50,11 @@ export class CreateFormComponent implements OnInit {
 
     ngOnInit(): void {
         if (!this.elt) this.elt = {
-            elementType: "form",
+            elementType: 'form',
             classification: [], stewardOrg: {}, naming: [{
-                designation: "", definition: "", tags: []
+                designation: '', definition: '', tags: []
             }],
-            registrationState: {registrationStatus: "Incomplete"}
+            registrationState: {registrationStatus: 'Incomplete'}
         };
     }
 
@@ -67,7 +68,7 @@ export class CreateFormComponent implements OnInit {
             eltId: this.elt._id,
             orgName: event.selectedOrg
         };
-        let eltCopy = _.cloneDeep(this.elt);
+        let eltCopy = _cloneDeep(this.elt);
         SharedService.classificationShared.classifyItem(eltCopy, event.selectedOrg, event.classificationArray);
         this.updateClassificationLocalStorage(postBody);
         this.elt = eltCopy;
@@ -76,14 +77,14 @@ export class CreateFormComponent implements OnInit {
 
     validationErrors(elt) {
         if (!elt.naming[0].designation) {
-            return "Please enter a name for the new Form";
+            return 'Please enter a name for the new Form';
         } else if (!elt.naming[0].definition) {
-            return "Please enter a definition for the new Form";
+            return 'Please enter a definition for the new Form';
         } else if (!elt.stewardOrg.name) {
-            return "Please select a steward for the new Form";
+            return 'Please select a steward for the new Form';
         }
         if (elt.classification.length === 0) {
-            return "Please select at least one classification";
+            return 'Please select at least one classification';
         } else {
             let found = false;
             for (let i = 0; i < elt.classification.length; i++) {
@@ -92,43 +93,43 @@ export class CreateFormComponent implements OnInit {
                 }
             }
             if (!found) {
-                return "Please select at least one classification owned by " + elt.stewardOrg.name;
+                return 'Please select at least one classification owned by ' + elt.stewardOrg.name;
             }
         }
         return null;
     };
 
     confirmDelete(event) {
-        let eltCopy = _.cloneDeep(this.elt);
+        let eltCopy = _cloneDeep(this.elt);
         let steward = SharedService.classificationShared.findSteward(eltCopy, event.deleteOrgName);
         SharedService.classificationShared.removeCategory(steward.object, event.deleteClassificationArray, err => {
-            if (err) this.alert.addAlert("danger", err);
+            if (err) this.alert.addAlert('danger', err);
             else {
                 this.elt = eltCopy;
-                this.alert.addAlert("success", "Classification removed.");
+                this.alert.addAlert('success', 'Classification removed.');
             }
         });
     };
 
     updateClassificationLocalStorage(item) {
-        let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
+        let recentlyClassification = <Array<any>>this.localStorageService.get('classificationHistory');
         if (!recentlyClassification) recentlyClassification = [];
         recentlyClassification = recentlyClassification.filter(o => {
             if (o.cdeId) o.eltId = o.cdeId;
-            return _.isEqual(o, item);
+            return _isEqual(o, item);
         });
         recentlyClassification.unshift(item);
-        this.localStorageService.set("classificationHistory", recentlyClassification);
+        this.localStorageService.set('classificationHistory', recentlyClassification);
     }
 
     createForm() {
-        this.http.post("/form", this.elt).map(res => res.json())
+        this.http.post('/form', this.elt).map(res => res.json())
             .subscribe(res => {
-                    this.router.navigate(["/formView"], {queryParams: {tinyId: res.tinyId}});
+                    this.router.navigate(['/formView'], {queryParams: {tinyId: res.tinyId}});
                     if (this.extModalRef) this.extModalRef.close();
                 },
                 err => {
-                    this.alert.addAlert("danger", err);
+                    this.alert.addAlert('danger', err);
                 });
     }
 
@@ -136,7 +137,7 @@ export class CreateFormComponent implements OnInit {
         if (this.extModalRef) {
             this.extModalRef.close();
         } else {
-            this.router.navigate(["/"]);
+            this.router.navigate(['/']);
         }
     }
 

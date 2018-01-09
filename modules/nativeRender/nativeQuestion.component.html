@@ -28,7 +28,8 @@
                             <div *ngFor="let pv of formElement.question.answers; let i = index"
                                  [ngClass]="classColumns(pv.index, i)" class="col-12">
                                 <div *ngIf="!pv.nonValuelist" class="form-check">
-                                    <label class="form-check-label" [ngClass]="{'native-question-oneline-l': pv.formElements
+                                    <label class="form-check-label native-valuelist-label"
+                                           [ngClass]="{'native-question-oneline-l': pv.formElements
                                                           && isOneLiner(pv.formElements[0], pv.formElements.length)}"
                                            [title]="nrs.getPvLabel(pv)">
                                         <input *ngIf="!formElement.question.multiselect" type="radio"
@@ -105,7 +106,7 @@
                                [attr.name]="formElement.questionId" [ngModel]="formElement.question.answer">
                     </div>
                     <div *ngSwitchCase="'Number'">
-                        <div [ngClass]="{'input-group': formElement.question.uoms.length > 0}">
+                        <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
                             <input type="number" class="form-control" [name]="formElement.questionId"
                                    attr.id="{{formElement.label}}_{{index}}_box"
                                    [attr.name]="formElement.questionId"
@@ -114,7 +115,7 @@
                                    [attr.max]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.maxValue : null"
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable"/>
-                            <label *ngFor="let uom of formElement.question.uoms"
+                            <label *ngFor="let uom of formElement.question.uomsAlias"
                                    [title]="formElement.question.answerUom"
                                    [ngClass]="{'nativeRequiredBox': formElement.question.required}"
                                    class="input-group-addon">
@@ -128,14 +129,14 @@
                         </div>
                     </div>
                     <div *ngSwitchDefault>
-                        <div [ngClass]="{'input-group': formElement.question.uoms.length > 0}">
+                        <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
                             <input type="text" class="form-control" [name]="formElement.questionId"
                                    attr.id="{{formElement.label}}_{{index}}_box"
                                    [attr.name]="formElement.questionId"
                                    [(ngModel)]="formElement.question.answer" [title]="formElement.question.answer"
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable"/>
-                            <label *ngFor="let uom of formElement.question.uoms"
+                            <label *ngFor="let uom of formElement.question.uomsAlias"
                                    [ngClass]="{'nativeRequiredBox': formElement.question.required}"
                                    class="input-group-addon" [title]="formElement.question.answerUom">
                                 <input type="radio" [title]="formElement.question.answerUom"

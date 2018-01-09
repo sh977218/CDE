@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-
-import * as _ from "lodash";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import _cloneDeep from 'lodash/cloneDeep';
 
 @Component({
     selector: "cde-inline-edit",
@@ -29,7 +28,7 @@ export class InlineEditComponent {
     @Input() set model(v: any) {
         this._model = v;
         if (!this.inputType) this.inputType = 'text';
-        this.value = _.cloneDeep(v);
+        this.value = _cloneDeep(v);
     };
     get model() {
         return this._model;
@@ -51,7 +50,7 @@ export class InlineEditComponent {
     }
 
     discard() {
-        this.value = _.cloneDeep(this.model);
+        this.value = _cloneDeep(this.model);
         this.editMode = false;
     }
 

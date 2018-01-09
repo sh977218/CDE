@@ -2,7 +2,11 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { Http } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModalRef, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
-import * as _ from 'lodash';
+import _cloneDeep from 'lodash/cloneDeep';
+import _isEqual from 'lodash/isEqual';
+import _noop from 'lodash/noop';
+import _uniqWith from 'lodash/uniqWith';
+import { Subscription } from 'rxjs/Subscription';
 
 import { AlertService } from '_app/alert/alert.service';
 import { BrowserService } from 'widget/browser.service';
@@ -14,9 +18,7 @@ import { OrgHelperService } from 'core/orgHelper.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
-import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
-import { Subscription } from 'rxjs/Subscription';
 import { UserService } from '_app/user.service';
 
 
@@ -78,7 +80,7 @@ export class FormViewComponent implements OnInit {
                             allNamingTags.push(t);
                         });
                     });
-                    this.orgNamingTags = _.uniqWith(allNamingTags, _.isEqual).map(t => {
+                    this.orgNamingTags = _uniqWith(allNamingTags, _isEqual).map(t => {
                         return {id: t, text: t};
                     });
                 });
@@ -114,6 +116,7 @@ export class FormViewComponent implements OnInit {
 
     formLoaded(cb) {
         if (this.elt) {
+            CdeForm.validate(this.elt);
             this.formId = this.elt._id;
             this.missingCdes = FormService.areDerivationRulesSatisfied(this.elt);
             this.loadComments(this.elt, null);
@@ -130,7 +133,7 @@ export class FormViewComponent implements OnInit {
         }, err => this.alert.addAlert('danger', 'Error loading comments. ' + err));
     }
 
-    loadDraft(cb = _.noop) {
+    loadDraft(cb = _noop) {
         this.http.get('/draftForm/' + this.route.snapshot.queryParams['tinyId'])
             .map(res => res.json()).subscribe(res => {
             if (res && res.length > 0) {
@@ -148,7 +151,7 @@ export class FormViewComponent implements OnInit {
         });
     }
 
-    loadForm(cb = _.noop) {
+    loadForm(cb = _noop) {
         this.userService.then(() => {
             if (this.userService.user && this.userService.user.username)
                 this.loadDraft(() => {
@@ -166,7 +169,7 @@ export class FormViewComponent implements OnInit {
         this.highlightedTabs = $event;
     }
 
-    loadPublished(cb = _.noop) {
+    loadPublished(cb = _noop) {
         let formId = this.route.snapshot.queryParams['formId'];
         let url = '/form/' + this.route.snapshot.queryParams['tinyId'];
         if (formId) url = '/formById/' + formId;
@@ -178,7 +181,7 @@ export class FormViewComponent implements OnInit {
     }
 
     openCopyElementModal() {
-        this.eltCopy = _.cloneDeep(this.elt);
+        this.eltCopy = _cloneDeep(this.elt);
         this.eltCopy['classification'] = this.elt.classification.filter(c => {
             return this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1;
         });
@@ -333,7 +336,7 @@ export class FormViewComponent implements OnInit {
         let validationErrors = this.validationErrors;
         function findExistingErrors(parent: FormElementsContainer, fe: FormElement) {
             if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe))
-                validationErrors.push('SkipLogic error on form element "' + SkipLogicService.getLabel(fe) + '".');
+                validationErrors.push('SkipLogic error on form element "' + FormService.getLabel(fe) + '".');
             if (Array.isArray(fe.formElements))
                 fe.formElements.forEach(f => findExistingErrors(fe, f));
         }

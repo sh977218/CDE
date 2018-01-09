@@ -1,29 +1,26 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Http } from "@angular/http";
-import * as _ from "lodash";
-import * as deValidator from "../../../../shared/cde/deValidator.js";
-
-import { Subject } from "rxjs/Subject";
-import { Observable } from "rxjs/Observable";
-
-// Observable class extensions
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Http } from '@angular/http';
+import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import _indexOf from 'lodash/indexOf';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/of';
-// Observable operators
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+
+import * as deValidator from '../../../../shared/cde/deValidator.js';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { AlertService } from '_app/alert/alert.service';
 
 
 @Component({
-    selector: "cde-permissible-value",
+    selector: 'cde-permissible-value',
     providers: [NgbActiveModal],
-    templateUrl: "permissibleValue.component.html"
+    templateUrl: 'permissibleValue.component.html'
 })
 export class PermissibleValueComponent {
-    @ViewChild("newPermissibleValueContent") public newPermissibleValueContent: NgbModalModule;
+    @ViewChild('newPermissibleValueContent') public newPermissibleValueContent: NgbModalModule;
     @Input() canEdit;
     @Output() onEltChange = new EventEmitter();
 
@@ -32,7 +29,7 @@ export class PermissibleValueComponent {
     @Input()
     set elt(v: any) {
         this._elt = v;
-        let isDatatypeDefined = _.indexOf(this.dataTypeOptions, this.elt.valueDomain.datatype);
+        let isDatatypeDefined = _indexOf(this.dataTypeOptions, this.elt.valueDomain.datatype);
         if (isDatatypeDefined === -1) this.dataTypeOptions.push(this.elt.valueDomain.datatype);
         deValidator.fixDatatype(this.elt);
         this.elt.allValid = true;
@@ -45,7 +42,7 @@ export class PermissibleValueComponent {
             };
 
         this.searchTerms.debounceTime(300).distinctUntilChanged().switchMap(term => term
-            ? this.http.get("/searchUmls?searchTerm=" + term).map(res => res.json())
+            ? this.http.get('/searchUmls?searchTerm=' + term).map(res => res.json())
             : Observable.of<string[]>([])).subscribe((res) => {
             if (res.result && res.result.results)
                 this.umlsTerms = res.result.results;
@@ -64,8 +61,8 @@ export class PermissibleValueComponent {
     pVTypeheadVsacNameList;
     canLinkPv = false;
 
-    dataTypeOptions = ["Value List", "Text", "Date", "Number", "Externally Defined"];
-    dataTypeValueListOptions = ["Text", "Date", "Number"];
+    dataTypeOptions = ['Value List', 'Text', 'Date', 'Number', 'Externally Defined'];
+    dataTypeValueListOptions = ['Text', 'Date', 'Number'];
 
     public containsKnownSystem: boolean = false;
 
@@ -74,10 +71,10 @@ export class PermissibleValueComponent {
 
     newPermissibleValue: any = {};
     SOURCES = {
-        "NCI Thesaurus": {source: "NCI", termType: "PT", codes: {}, selected: false, disabled: false},
-        "UMLS": {source: "UMLS", termType: "PT", codes: {}, selected: false, disabled: false},
-        "LOINC": {source: "LNC", termType: "LA", codes: {}, selected: false, disabled: true},
-        "SNOMEDCT US": {source: "SNOMEDCT_US", termType: "PT", codes: {}, selected: false, disabled: true}
+        'NCI Thesaurus': {source: 'NCI', termType: 'PT', codes: {}, selected: false, disabled: false},
+        'UMLS': {source: 'UMLS', termType: 'PT', codes: {}, selected: false, disabled: false},
+        'LOINC': {source: 'LNC', termType: 'LA', codes: {}, selected: false, disabled: true},
+        'SNOMEDCT US': {source: 'SNOMEDCT_US', termType: 'PT', codes: {}, selected: false, disabled: true}
     };
     keys = Object.keys;
 
@@ -99,7 +96,7 @@ export class PermissibleValueComponent {
     }
 
     openNewPermissibleValueModal() {
-        this.modalRef = this.modalService.open(this.newPermissibleValueContent, {size: "lg"});
+        this.modalRef = this.modalService.open(this.newPermissibleValueContent, {size: 'lg'});
         this.modalRef.result.then(() => this.newPermissibleValue = {}, () => {
         });
     }
@@ -138,17 +135,17 @@ export class PermissibleValueComponent {
         let source = this.SOURCES[src];
         if (src && source) {
             matchedPvs.forEach(pvObj => {
-                pvObj.valueMeaningCode.split(":").forEach(code => {
+                pvObj.valueMeaningCode.split(':').forEach(code => {
                     if (this.SOURCES[pvObj.codeSystemName]) {
                         if (!source.codes)
                             source.codes = {};
                         if (!source.codes[code])
-                            source.codes[code] = {code: "", meaning: "Retrieving..."};
-                    } else this.alert.addAlert("danger", "Unknown source in pv code " + code);
+                            source.codes[code] = {code: '', meaning: 'Retrieving...'};
+                    } else this.alert.addAlert('danger', 'Unknown source in pv code ' + code);
                 });
             });
         } else
-            this.alert.addAlert("danger", "Unknown source in pv source: " + src);
+            this.alert.addAlert('danger', 'Unknown source in pv source: ' + src);
     };
 
     lookupAsSource(src) {
@@ -157,31 +154,31 @@ export class PermissibleValueComponent {
         else this.dupCodesForSameSrc(src);
         let targetSource = this.SOURCES[src].source;
         this.elt.valueDomain.permissibleValues.forEach(pv => {
-            __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "", meaning: "Retrieving..."};
+            __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: '', meaning: 'Retrieving...'};
             let code = pv.valueMeaningCode;
             let source;
             if (pv.codeSystemName)
                 source = this.SOURCES[pv.codeSystemName].source;
             if (code && source) {
-                if (src === "UMLS" && source === "UMLS") {
+                if (src === 'UMLS' && source === 'UMLS') {
                     __this.SOURCES[src].codes[pv.valueMeaningCode] = {
                         code: pv.valueMeaningCode,
                         meaning: pv.valueMeaningName
                     };
-                } else if (src === "UMLS") {
-                    this.http.get("/umlsCuiFromSrc/" + code + "/" + source).map(res => res.json())
+                } else if (src === 'UMLS') {
+                    this.http.get('/umlsCuiFromSrc/' + code + '/' + source).map(res => res.json())
                         .subscribe(
                             res => {
                                 if (res.result.length > 0)
                                     res.result.forEach((r) => {
                                         __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                                     });
-                                else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
-                            }, err => this.alert.addAlert("danger", err));
+                                else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
+                            }, err => this.alert.addAlert('danger', err));
 
                 }
-                else if (source === "UMLS") {
-                    this.http.get("/umlsAtomsBridge/" + code + "/" + targetSource).map(res => res.json())
+                else if (source === 'UMLS') {
+                    this.http.get('/umlsAtomsBridge/' + code + '/' + targetSource).map(res => res.json())
                         .subscribe(
                             res => {
                                 let l = res.result.filter(r => r.termType === __this.SOURCES[src].termType);
@@ -190,19 +187,19 @@ export class PermissibleValueComponent {
                                         code: l[0].ui,
                                         meaning: l[0].name
                                     };
-                                } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
-                            }, err => this.alert.addAlert("danger", err));
+                                } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
+                            }, err => this.alert.addAlert('danger', err));
                 } else {
-                    this.http.get("/crossWalkingVocabularies/" + source + "/" + code + "/" + targetSource).map(res => res.json())
+                    this.http.get('/crossWalkingVocabularies/' + source + '/' + code + '/' + targetSource).map(res => res.json())
                         .subscribe(res => {
                             if (res.result.length > 0)
                                 res.result.forEach((r) => {
                                     __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                                 });
-                            else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
-                        }, err => this.alert.addAlert("danger", err));
+                            else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
+                        }, err => this.alert.addAlert('danger', err));
                 }
-            } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
+            } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
         });
     };
 
@@ -248,8 +245,8 @@ export class PermissibleValueComponent {
 
     checkPvUnicity() {
         let validObject = deValidator.checkPvUnicity(this.elt.valueDomain);
-        this.elt.allValid = validObject["allValid"];
-        this.elt.pvNotValidMsg = validObject["pvNotValidMsg"];
+        this.elt.allValid = validObject['allValid'];
+        this.elt.pvNotValidMsg = validObject['pvNotValidMsg'];
     };
 
     validateVsacWithPv() {
@@ -267,11 +264,11 @@ export class PermissibleValueComponent {
     addVsacValue(vsacValue) {
         if (this.isVsInPv(vsacValue)) return;
         else this.elt.valueDomain.permissibleValues.push({
-            "permissibleValue": vsacValue.displayName,
-            "valueMeaningName": vsacValue.displayName,
-            "valueMeaningCode": vsacValue.code,
-            "codeSystemName": vsacValue.codeSystemName,
-            "codeSystemVersion": vsacValue.codeSystemVersion
+            'permissibleValue': vsacValue.displayName,
+            'valueMeaningName': vsacValue.displayName,
+            'valueMeaningCode': vsacValue.code,
+            'codeSystemName': vsacValue.codeSystemName,
+            'codeSystemVersion': vsacValue.codeSystemVersion
         });
         this.runManualValidation();
     };
@@ -286,21 +283,21 @@ export class PermissibleValueComponent {
         if (dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id) {
             this.vsacValueSet = [];
             this.pVTypeheadVsacNameList = [];
-            this.http.get("/vsacBridge/" + dec.conceptualDomain.vsac.id).map(res => res.json()).subscribe(
+            this.http.get('/vsacBridge/' + dec.conceptualDomain.vsac.id).map(res => res.json()).subscribe(
                 res => {
-                    let data = res["ns0:RetrieveValueSetResponse"];
+                    let data = res['ns0:RetrieveValueSetResponse'];
                     if (data) {
                         this.elt.dataElementConcept.conceptualDomain.vsac.name = data['ns0:ValueSet'][0]['$'].displayName;
                         this.elt.dataElementConcept.conceptualDomain.vsac.version = data['ns0:ValueSet'][0]['$'].version;
-                        for (let i = 0; i < data["ns0:ValueSet"][0]["ns0:ConceptList"][0]["ns0:Concept"].length; i++) {
-                            let vsac = data["ns0:ValueSet"][0]["ns0:ConceptList"][0]["ns0:Concept"][i]["$"];
+                        for (let i = 0; i < data['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
+                            let vsac = data['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$'];
                             this.vsacValueSet.push(vsac);
                             this.pVTypeheadVsacNameList.push(vsac.displayName);
                         }
                         this.validateVsacWithPv();
                         this.validatePvWithVsac();
-                    } else this.alert.addAlert("danger", "Error: No data retrieved from VSAC.");
-                }, () => this.alert.addAlert("danger", "Error querying VSAC"));
+                    } else this.alert.addAlert('danger', 'Error: No data retrieved from VSAC.');
+                }, () => this.alert.addAlert('danger', 'Error querying VSAC'));
         }
         this.canLinkPvFunc();
     };
@@ -312,11 +309,11 @@ export class PermissibleValueComponent {
     };
 
     selectFromUmls(term) {
-        this.newPermissibleValue["valueMeaningName"] = term.name;
-        this.newPermissibleValue["valueMeaningCode"] = term.ui;
-        this.newPermissibleValue["codeSystemName"] = "UMLS";
-        if (!this.newPermissibleValue["permissibleValue"]) {
-            this.newPermissibleValue["permissibleValue"] = term.name;
+        this.newPermissibleValue['valueMeaningName'] = term.name;
+        this.newPermissibleValue['valueMeaningCode'] = term.ui;
+        this.newPermissibleValue['codeSystemName'] = 'UMLS';
+        if (!this.newPermissibleValue['permissibleValue']) {
+            this.newPermissibleValue['permissibleValue'] = term.name;
         }
     };
 
