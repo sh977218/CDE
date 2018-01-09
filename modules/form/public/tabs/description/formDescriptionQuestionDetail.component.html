@@ -68,7 +68,7 @@
                       class="badge badge-info mx-1 formViewSummaryLabel"
                       [ngClass]="{'badge-danger': (question.question.uomsValid && !question.question.uomsValid[index])}">
                     <span [textContent]="uom"></span>
-                    <span *ngIf="question.question.uomsValid && !question.question.uomsValid[index]">&nbsp;(invalid)</span>
+                    <span *ngIf="question.question.uomsValid && !question.question.uomsValid[index]"> (invalid)</span>
                 </span>
             </div>
         </div>
