@@ -2,7 +2,7 @@ import { Http } from "@angular/http";
 import { Component, ViewChild } from "@angular/core";
 import { Select2OptionData } from "ng2-select2";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { Observable } from "rxjs/Rx";
+import { Observable } from "rxjs/Observable";
 import { SharedService } from "core/shared.service";
 import { AlertService } from '_app/alert/alert.service';
 

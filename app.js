@@ -24,6 +24,7 @@ const winston = require('winston');
 require('./server/system/elastic').initEs();
 
 require('log-buffer')(config.logBufferSize || 4096);
+console.log(process.versions.node);
 
 var app = express();
 

@@ -27,7 +27,7 @@
         </div>
         <div *ngIf="elt.outdated" class="alert alert-info mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
-            <strong>Note: </strong>Some CDEs in this form have newer version.
+            <strong>Note: </strong>Some CDEs in this form have newer versions.
         </div>
         <div *ngIf="missingCdes.length > 0" class="alert alert-warning mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
@@ -134,16 +134,16 @@
                 </button>
             </div>
         </div>
-        <div class="pull-right text-end">
+        <div class="pull-right text-right">
             <ng-container *ngIf="elt.isDraft">
                 {{savingText}}
                 <button class="btn  btn-success" id="openSave" (click)="publish()">
-                        <i class="fa fa-globe fa-lg"></i> Publish
-                    </button>
-                    <button class="btn  btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
-                        <i class="fa fa-trash fa-lg"></i> Delete Draft
-                    </button>
-                    <br>Changed by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
+                    <i class="fa fa-globe fa-lg"></i> Publish
+                </button>
+                <button class="btn  btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
+                    <i class="fa fa-trash fa-lg"></i> Delete Draft
+                </button>
+                <div>Changed by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</div>
             </ng-container>
         </div>
         <div class="py-2 clearfix"></div>

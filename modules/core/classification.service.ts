@@ -1,9 +1,12 @@
-import { Injectable } from "@angular/core";
-import { Http, RequestOptions } from "@angular/http";
-import { LocalStorageService } from "angular-2-local-storage";
-import * as _ from 'lodash';
+import { Injectable } from '@angular/core';
+import { Http, RequestOptions } from '@angular/http';
+import { LocalStorageService } from 'angular-2-local-storage';
+import _isEqual from 'lodash/isEqual';
+import _uniqWith from 'lodash/uniqWith';
+
 import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
+
 
 @Injectable()
 export class ClassificationService {
@@ -21,15 +24,15 @@ export class ClassificationService {
             allPossibleCategories.push(accumulateCategories.concat([i]));
             accumulateCategories.push(i);
         });
-        let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
+        let recentlyClassification = <Array<any>>this.localStorageService.get('classificationHistory');
         if (!recentlyClassification) recentlyClassification = [];
         allPossibleCategories.forEach(i => recentlyClassification.unshift({
             categories: i,
             orgName: item.orgName
         }));
-        recentlyClassification = _.uniqWith(recentlyClassification, (a, b) =>
-            _.isEqual(a.categories, b.categories) && _.isEqual(a.orgName, b.orgName));
-        this.localStorageService.set("classificationHistory", recentlyClassification);
+        recentlyClassification = _uniqWith(recentlyClassification, (a, b) =>
+            _isEqual(a.categories, b.categories) && _isEqual(a.orgName, b.orgName));
+        this.localStorageService.set('classificationHistory', recentlyClassification);
     }
 
 
@@ -81,7 +84,7 @@ export class ClassificationService {
 
     doClassif(currentString, classif, result) {
         if (currentString.length > 0) {
-            currentString = currentString + " | ";
+            currentString = currentString + ' | ';
         }
         currentString = currentString + classif.name;
         if (classif.elements && classif.elements.length > 0) {
@@ -110,7 +113,7 @@ export class ClassificationService {
     removeOrgClassification(deleteClassification, cb) {
         let settings = {
             resultPerPage: 10000,
-            searchTerm: "",
+            searchTerm: '',
             page: 1,
             selectedStatuses: this.esService.getUserDefaultStatuses()
         };
@@ -120,16 +123,16 @@ export class ClassificationService {
                 settings: settings,
             }
         });
-        this.http.delete("/orgClassification/", ro)
+        this.http.delete('/orgClassification/', ro)
             .map(res => res.text()).subscribe(
             res => cb(res),
-            err => this.alert.addAlert("danger", err));
+            err => this.alert.addAlert('danger', err));
     }
 
     reclassifyOrgClassification(oldClassification, newClassification, cb) {
         let settings = {
             resultPerPage: 10000,
-            searchTerm: "",
+            searchTerm: '',
             page: 1,
             selectedStatuses: this.esService.getUserDefaultStatuses()
         };
@@ -138,16 +141,16 @@ export class ClassificationService {
             oldClassification: oldClassification,
             newClassification: newClassification
         };
-        this.http.post("/orgReclassification/", postBody)
+        this.http.post('/orgReclassification/', postBody)
             .map(res => res.text()).subscribe(
             res => cb(res),
-            err => this.alert.addAlert("danger", err));
+            err => this.alert.addAlert('danger', err));
     }
 
     renameOrgClassification(newClassification, cb) {
         let settings = {
             resultPerPage: 10000,
-            searchTerm: "",
+            searchTerm: '',
             page: 1,
             selectedStatuses: this.esService.getUserDefaultStatuses()
         };
@@ -155,20 +158,20 @@ export class ClassificationService {
             settings: settings,
             newClassification: newClassification
         };
-        this.http.post("/OrgClassification/rename", postBody)
+        this.http.post('/OrgClassification/rename', postBody)
             .map(res => res.text()).subscribe(
             res => cb(res),
-            err => this.alert.addAlert("danger", err));
+            err => this.alert.addAlert('danger', err));
     }
 
     addChildClassification(newClassification, cb) {
         let putBody = {
             newClassification: newClassification
         };
-        this.http.put("/orgClassification/", putBody)
+        this.http.put('/orgClassification/', putBody)
             .map(res => res.text()).subscribe(
             res => cb(res),
-            err => this.alert.addAlert("danger", err));
+            err => this.alert.addAlert('danger', err));
     }
 
 }

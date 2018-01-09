@@ -54,21 +54,21 @@
             <div class="answerList" *ngIf="question.question.answers && question.question.answers.length > 0">
                 <span class="formViewQuestionLabel">Answer Choices:</span>
                 <span *ngFor="let pv of question.question.answers"
-                      class="badge badge-secondary mx-1 formViewSummaryLabel"
+                      class="badge badge-secondary formViewSummaryLabel"
                       style="background-color: #666" [textContent]="pv?.valueMeaningName"></span>
             </div>
             <div *ngIf="question.question.defaultAnswer && question.question.defaultAnswer.length > 0"
                  class="defaultAnswer">
                 <span class="formViewQuestionLabel">Default Answer:</span>
-                <span class="badge badge-secondary mx-1 formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
+                <span class="badge badge-secondary formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
             </div>
             <div *ngIf="question.question.uoms.length > 0" class="questionUom">
                 <span class="formViewQuestionLabel">Units of Measure:</span>
                 <span *ngFor="let uom of question.question.uoms; let index = index"
-                      class="badge badge-info mx-1 formViewSummaryLabel"
-                      [ngClass]="{'badge-danger': (question.question.uomsValid && !question.question.uomsValid[index])}">
+                      class="badge badge-info formViewSummaryLabel"
+                      [ngClass]="{'badge-danger': (question.question.uomsValid && question.question.uomsValid[index])}">
                     <span [textContent]="uom"></span>
-                    <span *ngIf="question.question.uomsValid && !question.question.uomsValid[index]">&nbsp;(invalid)</span>
+                    <span *ngIf="question.question.uomsValid && question.question.uomsValid[index]">&nbsp;(Error: {{question.question.uomsValid[index]}})</span>
                 </span>
             </div>
         </div>
@@ -116,15 +116,16 @@
                 <span [textContent]="question.skipLogic?.validationError"></span>
             </dd>
         </ng-container>
-        <dt class="col-sm-2">Units of Measure:</dt>
-        <dd class="col-sm-10 questionUom">
-            <ng-container *ngFor="let q of [uomVersion]">
-                <select2 class="formDescriptionUoms" [data]="getUoms()" [value]="question.question.uoms"
-                         [options]="uomOptions" width="100%"
-                         (valueChanged)="checkUom($event)">
-                </select2>
-            </ng-container>
-        </dd>
+        <ng-container *ngIf="question.question.datatype === 'Number' || question.question.datatype === 'Text'">
+            <dt class="col-sm-2">Units of Measure:</dt>
+            <dd class="col-sm-10 questionUom">
+                <ng-container *ngFor="let q of [uomVersion]">
+                    <select2 class="formDescriptionUoms" [data]="getUoms()" [options]="uomOptions" width="100%"
+                             [value]="question.question.uoms" (valueChanged)="checkUom($event)">
+                    </select2>
+                </ng-container>
+            </dd>
+        </ng-container>
         <dt class="col-sm-2">Datatype:</dt>
         <dd class="col-sm-10">{{question.question.datatype | cdePlaceholder }}</dd>
         <ng-container *ngIf="question.question.datatype === 'Text'">

@@ -1,9 +1,11 @@
-import _ from 'lodash';
+import _find from 'lodash/find';
+import _findIndex from 'lodash/findIndex';
+import _slice from 'lodash/slice';
 
 export const actions = {
-    create: "create",
-    delete: "delete",
-    rename: "rename"
+    create: 'create',
+    delete: 'delete',
+    rename: 'rename'
 };
 
 
@@ -14,7 +16,7 @@ export function findLeaf(classification, categories) {
     var index = null;
     categories.forEach(function (category, i) {
         index = i;
-        var found = _.find(leaf.elements, function (element) {
+        var found = _find(leaf.elements, function (element) {
             return element.name === category;
         });
         if (i === categories.length - 2) parent = found;
@@ -32,13 +34,13 @@ export function addCategoriesToTree(tree, categories) {
     var temp = tree;
     categories.forEach(function (category) {
         if (!temp.elements) temp.elements = [];
-        var found = _.find(temp.elements, function (element) {
+        var found = _find(temp.elements, function (element) {
             return element.name === category;
         });
         if (!found) {
             temp.elements.push({name: category, elements: []});
         }
-        temp = _.find(temp.elements, function (element) {
+        temp = _find(temp.elements, function (element) {
             return element.name === category;
         });
     });
@@ -46,25 +48,25 @@ export function addCategoriesToTree(tree, categories) {
 
 export function addCategoriesToOrg(org, categories) {
     if (!org.classifications) org.classifications = [];
-    var found = _.find(org.classifications, function (o) {
+    var found = _find(org.classifications, function (o) {
         return o.name === categories[0];
     });
     if (!found) org.classifications.push({name: categories[0], elements: []})
-    found = _.find(org.classifications, function (o) {
+    found = _find(org.classifications, function (o) {
         return o.name === categories[0];
     });
-    addCategoriesToTree(found, _.slice(categories, 1));
+    addCategoriesToTree(found, _slice(categories, 1));
 }
 
 export function arrangeClassification(item, orgName) {
-    var index = _.findIndex(item.classification, function (o) {
+    var index = _findIndex(item.classification, function (o) {
         return o.stewardOrg.name === orgName;
     });
     item.classification.splice(0, 0, item.classification.splice(index, 1)[0]);
 }
 
 export function classifyElt(item, orgName, categories) {
-    var classification = _.find(item.classification, function (o) {
+    var classification = _find(item.classification, function (o) {
         return o.stewardOrg && o.stewardOrg.name === orgName;
     });
     if (!classification) {
@@ -72,18 +74,18 @@ export function classifyElt(item, orgName, categories) {
             stewardOrg: {name: orgName},
             elements: []
         });
-        classification = _.find(item.classification, function (o) {
+        classification = _find(item.classification, function (o) {
             return o.stewardOrg && o.stewardOrg.name === orgName;
         });
     }
     addCategoriesToTree(classification, categories);
     arrangeClassification(item, orgName);
     item.updated = new Date();
-    if (item.markModified) item.markModified("classification");
+    if (item.markModified) item.markModified('classification');
 }
 
 export function unclassifyElt(item, orgName, categories) {
-    var classification = _.find(item.classification, function (o) {
+    var classification = _find(item.classification, function (o) {
         return o.stewardOrg && o.stewardOrg.name === orgName;
     });
     if (classification) {
@@ -91,13 +93,13 @@ export function unclassifyElt(item, orgName, categories) {
         if (leaf) {
             leaf.parent.elements.splice(leaf.index, 1);
             item.updated = new Date();
-            if (item.markModified) item.markModified("classification");
+            if (item.markModified) item.markModified('classification');
         }
     }
 };
 
 export function renameClassifyElt(item, orgName, categories, newName) {
-    var classification = _.find(item.classification, function (o) {
+    var classification = _find(item.classification, function (o) {
         return o.stewardOrg && o.stewardOrg.name === orgName;
     });
     if (classification) {
@@ -106,7 +108,7 @@ export function renameClassifyElt(item, orgName, categories, newName) {
             leaf.leaf.name = newName;
             item.updated = new Date();
             arrangeClassification(item, orgName);
-            if (item.markModified) item.markModified("classification");
+            if (item.markModified) item.markModified('classification');
         }
     }
 }
@@ -182,7 +184,7 @@ export function removeCategory(tree, fields, cb) {
             return cb();
         }
     }
-    return cb("Did not find match classifications.");
+    return cb('Did not find match classifications.');
 }
 
 export function classifyItem(item, orgName, classifPath) {
@@ -204,7 +206,7 @@ export function classifyItem(item, orgName, classifPath) {
 export function addCategory(tree, fields, cb) {
     var lastLevel = fetchLevel(tree, fields);
     if (isDuplicate(lastLevel.elements, fields[fields.length - 1])) {
-        if (cb) return cb("Classification Already Exists");
+        if (cb) return cb('Classification Already Exists');
     } else {
         lastLevel.elements.push({name: fields[fields.length - 1], elements: []});
         if (cb) return cb();

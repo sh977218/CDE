@@ -1,8 +1,14 @@
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
-import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import * as _ from "lodash";
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import _cloneDeep from 'lodash/cloneDeep';
+import _differenceWith from 'lodash/differenceWith';
+import _get from 'lodash/get';
+import _intersectionWith from 'lodash/intersectionWith';
+import _isArray from 'lodash/isArray';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
 import { QuickBoardListService } from '_app/quickBoardList.service';
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs/Observable';
 import { Http } from '@angular/http';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { AlertService } from '_app/alert/alert.service';
@@ -70,7 +76,7 @@ export class CompareSideBySideComponent implements OnInit {
                 if (e.elementType && e.elementType === "question") {
                     delete e.formElements;
                     delete e._id;
-                    questions.push(_.cloneDeep(e));
+                    questions.push(_cloneDeep(e));
                 } else questions = questions.concat(this.flatFormQuestions(e));
             });
         }
@@ -86,7 +92,7 @@ export class CompareSideBySideComponent implements OnInit {
                     data: [{label: "", property: "data"}]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: () => {
@@ -94,7 +100,7 @@ export class CompareSideBySideComponent implements OnInit {
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -106,12 +112,12 @@ export class CompareSideBySideComponent implements OnInit {
                     data: [{label: "", property: "data"}]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => [],
                 partialMatches: [],
-                notMatchFn: (a, b) => _.isEqual(a, b),
+                notMatchFn: (a, b) => _isEqual(a, b),
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -126,20 +132,20 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a.designation, b.designation) && _.isEqual(a.definition, b.definition);
+                    return _isEqual(a.designation, b.designation) && _isEqual(a.definition, b.definition);
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     let diff = [];
-                    if (!_.isEqual(a, b) && _.isEqual(a.designation, b.designation)) {
-                        if (!_.isEqual(a.definition, b.definition)) diff.push("definition");
-                        if (!_.isEqual(a.tags, b.tags)) diff.push("tags");
+                    if (!_isEqual(a, b) && _isEqual(a.designation, b.designation)) {
+                        if (!_isEqual(a.definition, b.definition)) diff.push("definition");
+                        if (!_isEqual(a.tags, b.tags)) diff.push("tags");
                     }
                     return diff;
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a.designation, b.designation);
+                    return _isEqual(a.designation, b.designation);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -157,22 +163,22 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     let diff = [];
-                    if (!_.isEqual(a, b) && _.isEqual(a.title, b.title)) {
-                        if (!_.isEqual(a.uri, b.uri)) diff.push("uri");
-                        if (!_.isEqual(a.providerOrg, b.providerOrg)) diff.push("providerOrg");
-                        if (!_.isEqual(a.languageCode, b.languageCode)) diff.push("languageCode");
-                        if (!_.isEqual(a.document, b.document)) diff.push("document");
+                    if (!_isEqual(a, b) && _isEqual(a.title, b.title)) {
+                        if (!_isEqual(a.uri, b.uri)) diff.push("uri");
+                        if (!_isEqual(a.providerOrg, b.providerOrg)) diff.push("providerOrg");
+                        if (!_isEqual(a.languageCode, b.languageCode)) diff.push("languageCode");
+                        if (!_isEqual(a.document, b.document)) diff.push("document");
                     }
                     return diff;
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a.title, b.title);
+                    return _isEqual(a.title, b.title);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -189,20 +195,20 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     let diff = [];
-                    if (!_.isEqual(a, b) && _.isEqual(a.key, b.key)) {
-                        if (!_.isEqual(a.value, b.value)) diff.push("value");
-                        if (!_.isEqual(a.valueFormat, b.valueFormat)) diff.push("valueFormat");
+                    if (!_isEqual(a, b) && _isEqual(a.key, b.key)) {
+                        if (!_isEqual(a.value, b.value)) diff.push("value");
+                        if (!_isEqual(a.valueFormat, b.valueFormat)) diff.push("valueFormat");
                     }
                     return diff;
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a.key, b.key);
+                    return _isEqual(a.key, b.key);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -217,13 +223,13 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => [],
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a.source, b.source) && _.isEqual(a.id, b.id);
+                    return _isEqual(a.source, b.source) && _isEqual(a.id, b.id);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -241,7 +247,7 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: () => {
@@ -249,7 +255,7 @@ export class CompareSideBySideComponent implements OnInit {
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -264,7 +270,7 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: () => {
@@ -272,7 +278,7 @@ export class CompareSideBySideComponent implements OnInit {
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -287,7 +293,7 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: () => {
@@ -295,7 +301,7 @@ export class CompareSideBySideComponent implements OnInit {
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -309,7 +315,7 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: () => {
@@ -317,7 +323,7 @@ export class CompareSideBySideComponent implements OnInit {
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -331,7 +337,7 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: () => {
@@ -339,7 +345,7 @@ export class CompareSideBySideComponent implements OnInit {
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -353,7 +359,7 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: () => {
@@ -361,7 +367,7 @@ export class CompareSideBySideComponent implements OnInit {
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -378,7 +384,7 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: () => {
@@ -386,7 +392,7 @@ export class CompareSideBySideComponent implements OnInit {
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -402,7 +408,7 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: () => {
@@ -410,7 +416,7 @@ export class CompareSideBySideComponent implements OnInit {
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -427,7 +433,7 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: () => {
@@ -435,7 +441,7 @@ export class CompareSideBySideComponent implements OnInit {
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -449,7 +455,7 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: () => {
@@ -457,7 +463,7 @@ export class CompareSideBySideComponent implements OnInit {
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -471,7 +477,7 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: () => {
@@ -479,7 +485,7 @@ export class CompareSideBySideComponent implements OnInit {
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -495,7 +501,7 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: () => {
@@ -503,7 +509,7 @@ export class CompareSideBySideComponent implements OnInit {
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -527,22 +533,22 @@ export class CompareSideBySideComponent implements OnInit {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
+                    return _isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     let diff = [];
-                    if (!_.isEqual(a, b) && _.isEqual(a.question.cde.tinyId, b.question.cde.tinyId)) {
-                        if (!_.isEqual(a.label, b.label)) diff.push("label");
-                        if (!_.isEqual(a.question.datatype, b.question.datatype)) diff.push("question.datatype");
-                        if (!_.isEqual(a.question.uoms, b.question.uoms)) diff.push("question.uoms");
-                        if (!_.isEqual(a.question.answers, b.question.answers)) diff.push("question.answers");
+                    if (!_isEqual(a, b) && _isEqual(a.question.cde.tinyId, b.question.cde.tinyId)) {
+                        if (!_isEqual(a.label, b.label)) diff.push("label");
+                        if (!_isEqual(a.question.datatype, b.question.datatype)) diff.push("question.datatype");
+                        if (!_isEqual(a.question.uoms, b.question.uoms)) diff.push("question.uoms");
+                        if (!_isEqual(a.question.answers, b.question.answers)) diff.push("question.answers");
                     }
                     return diff;
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _.isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
+                    return _isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -595,22 +601,22 @@ export class CompareSideBySideComponent implements OnInit {
             }
             this.getOptions(this.left, this.right);
             this.options.forEach(option => {
-                let l = _.get(this.left, option.displayAs.property);
-                let r = _.get(this.right, option.displayAs.property);
+                let l = _get(this.left, option.displayAs.property);
+                let r = _get(this.right, option.displayAs.property);
                 if (!l) l = [];
                 if (!r) r = [];
                 if (typeof l !== "object") l = [{data: l}];
-                if (!_.isArray(l)) l = [l];
+                if (!_isArray(l)) l = [l];
                 if (typeof r !== "object") r = [{data: r}];
-                if (!_.isArray(r)) r = [r];
-                _.intersectionWith(l, r, (a, b) => {
+                if (!_isArray(r)) r = [r];
+                _intersectionWith(l, r, (a, b) => {
                     if (option.fullMatchFn(a, b)) {
                         option.displayAs.display = true;
                         option.fullMatches.push({left: a, right: b});
                         return true;
                     }
                 });
-                _.intersectionWith(l, r, (a, b) => {
+                _intersectionWith(l, r, (a, b) => {
                     let partialMatchDiff = option.partialMatchFn(a, b);
                     if (partialMatchDiff.length > 0) {
                         option.displayAs.display = true;
@@ -618,8 +624,8 @@ export class CompareSideBySideComponent implements OnInit {
                         return true;
                     }
                 });
-                option.leftNotMatches = _.differenceWith(l, r, option.notMatchFn);
-                option.rightNotMatches = _.differenceWith(r, l, option.notMatchFn);
+                option.leftNotMatches = _differenceWith(l, r, option.notMatchFn);
+                option.rightNotMatches = _differenceWith(r, l, option.notMatchFn);
                 if (option.leftNotMatches.length > 0 || option.rightNotMatches.length > 0)
                     option.displayAs.display = true;
             });
@@ -628,14 +634,14 @@ export class CompareSideBySideComponent implements OnInit {
     }
 
     getValue(o, d) {
-        let value = _.get(o, d.property);
+        let value = _get(o, d.property);
         if (!value) return;
         if (d.url) return '<a target="_blank" href="' + d.url + value + '">' + value + '</a>';
         else if (d.properties) {
-            let v = value.map(v => _.get(v, d.properties.property));
-            if (!_.isEmpty(v)) return d.properties.label + ": " + v;
+            let v = value.map(v => _get(v, d.properties.property));
+            if (!_isEmpty(v)) return d.properties.label + ": " + v;
             else return "";
-        } else if (_.isArray(value))
+        } else if (_isArray(value))
             return JSON.stringify(value);
         else return value;
     }

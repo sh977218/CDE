@@ -32,8 +32,8 @@ export class NativeRenderService {
         if (!this.elt)
             return;
 
-        // clean up
-        FormService.iterateFeSync(this.elt, undefined, undefined, f => {
+        FormService.iterateFeSync(this.elt, undefined, undefined, (f: FormQuestion) => {
+            // clean up
             if (Array.isArray(f.question.answers)) {
                 for (let i = 0; i < f.question.answers.length; i++) {
                     let answer = f.question.answers[i];
@@ -46,6 +46,19 @@ export class NativeRenderService {
                             answer.index = undefined;
                     }
                 }
+            }
+
+            // alias
+            if (this.profile) {
+                f.question.uomsAlias = [];
+                f.question.uoms.forEach(u => {
+                    if (this.profile.uomAliases[u])
+                        f.question.uomsAlias.push(this.profile.uomAliases[u]);
+                    else
+                        f.question.uomsAlias.push(u);
+                });
+            } else {
+                f.question.uomsAlias = f.question.uoms;
             }
         });
 

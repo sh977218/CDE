@@ -1,5 +1,5 @@
 import * as async from 'async';
-import noop from 'lodash.noop';
+import noop from 'lodash/noop';
 
 
 export function areDerivationRulesSatisfied(elt) {
@@ -299,6 +299,14 @@ export function getFormOdm(form, cb) {
         odmJsonForm.Study.MetaDataVersion.CodeList.push(cl);
     });
     cb(null, odmJsonForm);
+}
+
+export function getLabel(fe) {
+    if (fe.label)
+        return fe.label;
+    if (fe.question && fe.question.cde)
+        return fe.question.cde.name;
+    return null;
 }
 
 export function isSubForm(node) {

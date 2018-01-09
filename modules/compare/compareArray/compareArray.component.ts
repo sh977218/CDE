@@ -1,36 +1,39 @@
-import { Component, Input, OnInit } from "@angular/core";
-import "rxjs/add/operator/map";
-import { CompareService } from "../../core/compare.service";
-import * as _ from "lodash";
+import { Component, Input, OnInit } from '@angular/core';
+import 'rxjs/add/operator/map';
+import { CompareService } from 'core/compare.service';
+import _cloneDeep from 'lodash/cloneDeep';
+import _forEach from 'lodash/forEach';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
 
 
 let compareArrayOption = [
     {
         label: "Reference Documents",
         equal: function (a, b) {
-            if (_.isEmpty(a.diff)) a.diff = [];
-            if (_.isEmpty(b.diff)) b.diff = [];
-            let result = _.isEqual(a.title, b.title);
+            if (_isEmpty(a.diff)) a.diff = [];
+            if (_isEmpty(b.diff)) b.diff = [];
+            let result = _isEqual(a.title, b.title);
             if (result) {
-                if (!_.isEqual(a.uri, b.uri)) {
+                if (!_isEqual(a.uri, b.uri)) {
                     a.diff.push("uri");
                     b.diff.push("uri");
                     a.display = true;
                     b.display = true;
                 }
-                if (!_.isEqual(a.providerOrg, b.providerOrg)) {
+                if (!_isEqual(a.providerOrg, b.providerOrg)) {
                     a.diff.push("providerOrg");
                     b.diff.push("providerOrg");
                     a.display = true;
                     b.display = true;
                 }
-                if (!_.isEqual(a.languageCode, b.languageCode)) {
+                if (!_isEqual(a.languageCode, b.languageCode)) {
                     a.diff.push("languageCode");
                     b.diff.push("languageCode");
                     a.display = true;
                     b.display = true;
                 }
-                if (!_.isEqual(a.document, b.document)) {
+                if (!_isEqual(a.document, b.document)) {
                     a.diff.push("document");
                     b.diff.push("document");
                     a.display = true;
@@ -51,29 +54,29 @@ let compareArrayOption = [
     {
         label: "Naming",
         isEqual: function (a, b) {
-            if (_.isEmpty(a.diff)) a.diff = [];
-            if (_.isEmpty(b.diff)) b.diff = [];
-            let result = _.isEqual(a.designation, b.designation);
+            if (_isEmpty(a.diff)) a.diff = [];
+            if (_isEmpty(b.diff)) b.diff = [];
+            let result = _isEqual(a.designation, b.designation);
             if (result) {
-                if (!_.isEqual(a.definition, b.definition)) {
+                if (!_isEqual(a.definition, b.definition)) {
                     a.diff.push("definition");
                     b.diff.push("definition");
                     a.display = true;
                     b.display = true;
                 }
-                if (!_.isEqual(a.languageCode, b.languageCode)) {
+                if (!_isEqual(a.languageCode, b.languageCode)) {
                     a.diff.push("languageCode");
                     b.diff.push("languageCode");
                     a.display = true;
                     b.display = true;
                 }
-                if (!_.isEqual(a.source, b.source)) {
+                if (!_isEqual(a.source, b.source)) {
                     a.diff.push("source");
                     b.diff.push("source");
                     a.display = true;
                     b.display = true;
                 }
-                if (!_.isEqual(a.tags, b.tags)) {
+                if (!_isEqual(a.tags, b.tags)) {
                     a.diff.push("tags");
                     b.diff.push("tags");
                     a.display = true;
@@ -92,11 +95,11 @@ let compareArrayOption = [
     {
         label: "Properties",
         isEqual: function (a, b) {
-            if (_.isEmpty(a.diff)) a.diff = [];
-            if (_.isEmpty(b.diff)) b.diff = [];
-            let result = _.isEqual(a.key, b.key);
+            if (_isEmpty(a.diff)) a.diff = [];
+            if (_isEmpty(b.diff)) b.diff = [];
+            let result = _isEqual(a.key, b.key);
             if (result) {
-                if (!_.isEqual(a.value, b.value)) {
+                if (!_isEqual(a.value, b.value)) {
                     a.diff.push("value");
                     b.diff.push("value");
                     a.display = true;
@@ -114,11 +117,11 @@ let compareArrayOption = [
     {
         label: "Identifiers",
         isEqual: function (a, b) {
-            if (_.isEmpty(a.diff)) a.diff = [];
-            if (_.isEmpty(b.diff)) b.diff = [];
-            let result = _.isEqual(a.source, b.source) && _.isEqual(a.id, b.id);
+            if (_isEmpty(a.diff)) a.diff = [];
+            if (_isEmpty(b.diff)) b.diff = [];
+            let result = _isEqual(a.source, b.source) && _isEqual(a.id, b.id);
             if (result) {
-                if (!_.isEqual(a.version, b.version)) {
+                if (!_isEqual(a.version, b.version)) {
                     a.diff.push("version");
                     b.diff.push("version");
                     a.display = true;
@@ -140,17 +143,17 @@ let cdeCompareArrayOption = [
     {
         label: "Value List",
         isEqual: function (a, b) {
-            if (_.isEmpty(a.diff)) a.diff = [];
-            if (_.isEmpty(b.diff)) b.diff = [];
-            let result = _.isEqual(a.valueMeaningName, b.valueMeaningName);
+            if (_isEmpty(a.diff)) a.diff = [];
+            if (_isEmpty(b.diff)) b.diff = [];
+            let result = _isEqual(a.valueMeaningName, b.valueMeaningName);
             if (result) {
-                if (!_.isEqual(a.permissibleValue, b.permissibleValue)) {
+                if (!_isEqual(a.permissibleValue, b.permissibleValue)) {
                     a.diff.push("permissibleValue");
                     b.diff.push("permissibleValue");
                     a.display = true;
                     b.display = true;
                 }
-                if (!_.isEqual(a.valueMeaningDefinition, b.valueMeaningDefinition)) {
+                if (!_isEqual(a.valueMeaningDefinition, b.valueMeaningDefinition)) {
                     a.diff.push("valueMeaningDefinition");
                     b.diff.push("valueMeaningDefinition");
                     a.display = true;
@@ -172,7 +175,7 @@ let cdeCompareArrayOption = [
     {
         label: "Concepts",
         isEqual: function (a, b) {
-            return _.isEqual(a, b);
+            return _isEqual(a, b);
         },
         property: "concepts",
         data: [
@@ -188,37 +191,37 @@ let formCompareArrayOption = [
         label: "Form Elements",
         isEqual: function (a, b) {
             if (a.elementType === 'question' && b.elementType === 'question') {
-                if (_.isEmpty(a.diff)) a.diff = [];
-                if (_.isEmpty(b.diff)) b.diff = [];
-                let result = _.isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
+                if (_isEmpty(a.diff)) a.diff = [];
+                if (_isEmpty(b.diff)) b.diff = [];
+                let result = _isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
                 if (result) {
                     if (!a || !b) {
                     }
-                    if (!_.isEqual(a.label, b.label)) {
+                    if (!_isEqual(a.label, b.label)) {
                         a.diff.push("label");
                         b.diff.push("label");
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_.isEqual(a.instructions.value, b.instructions.value)) {
+                    if (!_isEqual(a.instructions.value, b.instructions.value)) {
                         a.diff.push("instructions.value");
                         b.diff.push("instructions.value");
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_.isEqual(a.question.uoms, b.question.uoms)) {
+                    if (!_isEqual(a.question.uoms, b.question.uoms)) {
                         a.diff.push("question.uom");
                         b.diff.push("question.uom");
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_.isEqual(a.skipLogic.condition, b.skipLogic.condition)) {
+                    if (!_isEqual(a.skipLogic.condition, b.skipLogic.condition)) {
                         a.diff.push("skipLogic.condition");
                         b.diff.push("skipLogic.condition");
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_.isEqual(a.question.answers, b.question.answers)) {
+                    if (!_isEqual(a.question.answers, b.question.answers)) {
                         a.diff.push("question.answers");
                         b.diff.push("question.answers");
                         a.question.answers = JSON.stringify(a.question.answers);
@@ -230,23 +233,23 @@ let formCompareArrayOption = [
                 return result;
             }
             if (a.elementType === 'form' && b.elementType === 'form') {
-                if (_.isEmpty(a.diff)) a.diff = [];
-                if (_.isEmpty(b.diff)) b.diff = [];
-                let result = _.isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
+                if (_isEmpty(a.diff)) a.diff = [];
+                if (_isEmpty(b.diff)) b.diff = [];
+                let result = _isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
                 if (result) {
-                    if (!_.isEqual(a.instructions.value, b.instructions.value)) {
+                    if (!_isEqual(a.instructions.value, b.instructions.value)) {
                         a.diff.push("instructions.value");
                         b.diff.push("instructions.value");
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_.isEqual(a.repeat, b.repeat)) {
+                    if (!_isEqual(a.repeat, b.repeat)) {
                         a.diff.push("repeat");
                         b.diff.push("repeat");
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_.isEqual(a.skipLogic.condition, b.skipLogic.condition)) {
+                    if (!_isEqual(a.skipLogic.condition, b.skipLogic.condition)) {
                         a.diff.push("skipLogic.condition");
                         b.diff.push("skipLogic.condition");
                         a.display = true;
@@ -256,23 +259,23 @@ let formCompareArrayOption = [
                 return result;
             }
             if (a.elementType === 'section' && b.elementType === 'section') {
-                if (_.isEmpty(a.diff)) a.diff = [];
-                if (_.isEmpty(b.diff)) b.diff = [];
-                let result = _.isEqual(a.sectionId, b.sectionId);
+                if (_isEmpty(a.diff)) a.diff = [];
+                if (_isEmpty(b.diff)) b.diff = [];
+                let result = _isEqual(a.sectionId, b.sectionId);
                 if (result) {
-                    if (!_.isEqual(a.instructions.value, b.instructions.value)) {
+                    if (!_isEqual(a.instructions.value, b.instructions.value)) {
                         a.diff.push("instructions.value");
                         b.diff.push("instructions.value");
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_.isEqual(a.repeat, b.repeat)) {
+                    if (!_isEqual(a.repeat, b.repeat)) {
                         a.diff.push("repeat");
                         b.diff.push("repeat");
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_.isEqual(a.skipLogic.condition, b.skipLogic.condition)) {
+                    if (!_isEqual(a.skipLogic.condition, b.skipLogic.condition)) {
                         a.diff.push("skipLogic.condition");
                         b.diff.push("skipLogic.condition");
                         a.display = true;
@@ -357,18 +360,18 @@ export class CompareArrayComponent implements OnInit {
     flatFormQuestions(fe, questions) {
         let index = 0;
         if (fe.formElements !== undefined) {
-            _.forEach(fe.formElements, e => {
+            _forEach(fe.formElements, e => {
                 if (e.elementType && e.elementType === 'question') {
-                    let questionCopy = _.cloneDeep(e);
+                    let questionCopy = _cloneDeep(e);
                     this.fixFormElement(questionCopy);
                     if (questionCopy.hideLabel) questionCopy.label = "";
                     questions.push(questionCopy);
                 } else if (e.elementType && e.elementType === 'form') {
-                    let formCopy = _.cloneDeep(e);
+                    let formCopy = _cloneDeep(e);
                     this.fixFormElement(formCopy);
                     questions.push(formCopy);
                 } else if (e.elementType && e.elementType === 'section') {
-                    let sectionCopy = _.cloneDeep(e);
+                    let sectionCopy = _cloneDeep(e);
                     this.fixFormElement(sectionCopy);
                     sectionCopy["sectionId"] = "section_" + index;
                     index++;

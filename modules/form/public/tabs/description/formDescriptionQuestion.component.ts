@@ -1,15 +1,17 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
-import { Http, Response } from "@angular/http";
-import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
-import * as _ from "lodash";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Http, Response } from '@angular/http';
+import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { TreeNode } from 'angular-tree-component';
+import _isEqual from 'lodash/isEqual';
+import _toString from 'lodash/toString';
 
-import { CdeForm, FormElement, FormQuestion } from "core/form.model";
-import { TreeNode } from "angular-tree-component";
+import { CdeForm, FormElement, FormQuestion } from 'core/form.model';
 import { FormService } from 'nativeRender/form.service';
 
+
 @Component({
-    selector: "cde-form-description-question",
-    templateUrl: "formDescriptionQuestion.component.html"
+    selector: 'cde-form-description-question',
+    templateUrl: 'formDescriptionQuestion.component.html'
 })
 export class FormDescriptionQuestionComponent implements OnInit {
     @Input() elt: CdeForm;
@@ -17,7 +19,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
     @Input() node: TreeNode;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
-    @ViewChild("updateCdeVersionTmpl") updateCdeVersionTmpl: NgbModalModule;
+    @ViewChild('updateCdeVersionTmpl') updateCdeVersionTmpl: NgbModalModule;
 
     isSubForm = false;
     updateCdeVersion: any;
@@ -38,11 +40,11 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
     getDatatypeLabel(question) {
         let datatype = question.question.datatype;
-        if (datatype === "Number") {
-            return "(Number)";
-        } else if (datatype === "Date") {
-            return "(Date)";
-        } else return "";
+        if (datatype === 'Number') {
+            return '(Number)';
+        } else if (datatype === 'Date') {
+            return '(Date)';
+        } else return '';
     }
 
     isScore(formElt) {
@@ -74,14 +76,14 @@ export class FormDescriptionQuestionComponent implements OnInit {
                         newQuestion.question.skipLogic = currentQuestion.question.skipLogic;
                         newQuestion.repeat = currentQuestion.repeat;
 
-                        this.http.get("/de/" + newQuestion.question.cde.tinyId).map((res: Response) => res.json())
+                        this.http.get('/de/' + newQuestion.question.cde.tinyId).map((res: Response) => res.json())
                             .subscribe(newCde => {
-                                let cdeUrl = "/de/" + currentQuestion.question.cde.tinyId;
+                                let cdeUrl = '/de/' + currentQuestion.question.cde.tinyId;
                                 if (currentQuestion.question.cde.version && currentQuestion.question.cde.version.length > 0)
-                                    cdeUrl = cdeUrl + "/version/" + currentQuestion.question.cde.version;
+                                    cdeUrl = cdeUrl + '/version/' + currentQuestion.question.cde.version;
                                 this.http.get(cdeUrl).map((res: Response) => res.json())
                                     .subscribe((oldCde) => {
-                                        modal.bLabel = !_.isEqual(newCde.naming, oldCde.naming);
+                                        modal.bLabel = !_isEqual(newCde.naming, oldCde.naming);
                                     });
                                 let found = false;
                                 newCde.naming.forEach(result => {
@@ -92,10 +94,10 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
                         modal.bCde = true;
                         modal.bDatatype = currentQuestion.question.datatype !== newQuestion.question.datatype;
-                        modal.bUom = !_.isEqual(currentQuestion.question.uoms, newQuestion.question.uoms);
+                        modal.bUom = !_isEqual(currentQuestion.question.uoms, newQuestion.question.uoms);
 
-                        if (newQuestion.question.datatype === "Number") {
-                            if (currentQuestion.question.datatype === "Number" &&
+                        if (newQuestion.question.datatype === 'Number') {
+                            if (currentQuestion.question.datatype === 'Number' &&
                                 currentQuestion.question.datatypeNumber &&
                                 newQuestion.question.datatypeNumber) {
                                 modal.bNumberMin = currentQuestion.question.datatypeNumber.minValue
@@ -106,9 +108,9 @@ export class FormDescriptionQuestionComponent implements OnInit {
                                 modal.bNumberMin = modal.bNumberMax = true;
                             }
                         }
-                        if (newQuestion.question.datatype === "Value List") {
-                            if (currentQuestion.question.datatype === "Value List") {
-                                modal.bValuelist = !_.isEqual(currentQuestion.question.cde.permissibleValues,
+                        if (newQuestion.question.datatype === 'Value List') {
+                            if (currentQuestion.question.datatype === 'Value List') {
+                                modal.bValuelist = !_isEqual(currentQuestion.question.cde.permissibleValues,
                                     newQuestion.question.cde.permissibleValues);
                                 if (!modal.bValuelist) newQuestion.question.answers = currentQuestion.question.answers;
 
@@ -118,7 +120,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
                                 modal.bValuelist = true;
                             }
                         }
-                        modal.bDefault = _.toString(currentQuestion.question.defaultAnswer) !== _.toString(newQuestion.question.defaultAnswer);
+                        modal.bDefault = _toString(currentQuestion.question.defaultAnswer) !== _toString(newQuestion.question.defaultAnswer);
 
                         return modal;
                     })();
