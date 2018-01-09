@@ -413,7 +413,7 @@ exports.updateOrg = function (org, res) {
     delete org._id;
     Org.findOneAndUpdate({_id: id}, org, {new: true}, (err, found) => {
         if (err || !found) res.status(500).send('Could not update');
-        else res.send();
+        else setTimeout(() => res.send(), 1000);
     });
 };
 
