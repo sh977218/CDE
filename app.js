@@ -73,6 +73,10 @@ var getRealIp = function (req) {
     if (req.ip) return req.ip;
 };
 
+// app.use((req, res) => {
+//     res.status(503).send("we are down");
+// })
+
 var blackIps = [];
 var timedBlackIps = [];
 app.use(ipfilter(blackIps, {errorMessage: "You are not authorized. Please contact support if you believe you should not see this error."}));
