@@ -3,6 +3,7 @@ import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { TreeNode } from "angular-tree-component";
 import _isEqual from 'lodash/isEqual';
+import _isEmpty from 'lodash/isEmpty';
 import { Observable } from "rxjs/Observable";
 
 import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'core/form.model';
@@ -242,7 +243,7 @@ export class FormDescriptionQuestionDetailComponent {
     }
 
     addNewCdeNaming(newCdeNaming) {
-        if (!_.isEmpty(newCdeNaming)) {
+        if (!_isEmpty(newCdeNaming)) {
             this.question.question.cde.naming.push(newCdeNaming);
             this.newCdeNaming = {};
             this.onEltChange.emit();
@@ -250,7 +251,7 @@ export class FormDescriptionQuestionDetailComponent {
     }
 
     addNewCdePv(newCdePv) {
-        if (!_.isEmpty(newCdePv)) {
+        if (!_isEmpty(newCdePv)) {
             this.question.question.cde.permissibleValues.push(newCdePv);
             this.question.question.answers.push(newCdePv);
             this.newCdePv = {};
@@ -259,7 +260,7 @@ export class FormDescriptionQuestionDetailComponent {
     }
 
     addNewCdeId(newCdeId) {
-        if (!_.isEmpty(newCdeId)) {
+        if (!_isEmpty(newCdeId)) {
             if (!this.question.question.cde.ids)
                 this.question.question.cde.ids = [];
             this.question.question.cde.ids.push(newCdeId);

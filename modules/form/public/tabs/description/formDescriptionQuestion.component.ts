@@ -1,14 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Host, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
 import _toString from 'lodash/toString';
 
-import { CdeForm, FormElement, FormQuestion } from 'core/form.model';
+import { FormElement, FormQuestion } from 'core/form.model';
 import { FormService } from 'nativeRender/form.service';
 import { FormDescriptionComponent } from "./formDescription.component";
-
 
 @Component({
     selector: 'cde-form-description-question',
