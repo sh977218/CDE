@@ -133,6 +133,7 @@ exports.formJson = {
         , numberOfColumns: {type: Number, min: 1, max: 6}
         , displayInvisible: {type: Boolean}
         , repeatFormat: {type: String, default: ''}
+        , uomAliases: Schema.Types.Mixed
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]

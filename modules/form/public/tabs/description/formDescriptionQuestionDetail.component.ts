@@ -1,14 +1,14 @@
 import { Component, ElementRef, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import * as _ from "lodash";
-import ucum from 'ucum.js';
+import { TreeNode } from "angular-tree-component";
+import _isEqual from 'lodash/isEqual';
 import { Observable } from "rxjs/Observable";
 
-import { TreeNode } from "angular-tree-component";
 import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'core/form.model';
 import { FormattedValue } from 'core/models.model';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
+import { UcumService } from 'form/public/ucum.service';
 import { AlertService } from "../../../../_app/alert/alert.service";
 
 @Component({
@@ -71,7 +71,8 @@ export class FormDescriptionQuestionDetailComponent {
     constructor(private http: Http,
                 private alert: AlertService,
                 public modalService: NgbModal,
-                public skipLogicValidateService: SkipLogicValidateService) {
+                public skipLogicValidateService: SkipLogicValidateService,
+                private ucumService: UcumService) {
         this.nameSelectModal.okSelect = (naming = null) => {
             if (!naming) {
                 this.nameSelectModal.question.label = "";
@@ -89,7 +90,7 @@ export class FormDescriptionQuestionDetailComponent {
 
     checkAnswers(answers) {
         let newAnswers = (Array.isArray(answers.value) ? answers.value.filter(answer => answer !== "") : []);
-        if (!_.isEqual(this.answersSelected, newAnswers)) {
+        if (!_isEqual(this.answersSelected, newAnswers)) {
             this.question.question.answers = this.question.question.cde.permissibleValues
                 .filter(a => newAnswers.indexOf(a.permissibleValue) > -1) as PermissibleFormValue[];
             this.answersSelected = this.question.question.answers.map(a => a.permissibleValue);
@@ -97,61 +98,13 @@ export class FormDescriptionQuestionDetailComponent {
         }
     }
 
-    validateUoms(question) {
-        function matchUnits(a, aKeys, question, index) {
-            let b = ucum.canonicalize(question.uoms[index]).units;
-            question.uomsValid[index] = question.uomsValid[index]
-                || aKeys.concat(Object.keys(b)).every(u => a[u] && b[u] && a[u] === b[u]);
-        }
-
-        let baseUnits;
-        let baseUnitsKeys;
-        let delayedUnits = [];
-        question.uomsValid = [];
-        question.uoms.forEach((uom, i) => {
-            this.http.get('https://clin-table-search.lhc.nlm.nih.gov/api/ucum/v3/search?q=is_simple:true%20AND%20category:Clinical&df=cs_code,name,guidance&authenticity_token=&terms=' + encodeURIComponent(uom))
-                .map(r => r.json())
-                .subscribe(r => {
-                    r[3].forEach(unit => {
-                        if (unit[0] === uom || unit[1] === uom) {
-                            let valid = true;
-                            if (unit[0] !== uom) valid = false;
-
-                            try {
-                                ucum.parse(1, question.uoms[i]);
-                            } catch (err) {
-                                valid = false;
-                            }
-                            if (valid) {
-                                if (i === 0) {
-                                    baseUnits = ucum.canonicalize(question.uoms[i]).units;
-                                    baseUnitsKeys = Object.keys(baseUnits);
-                                    question.uomsValid[i] = question.uomsValid[i] || valid;
-
-                                    if (delayedUnits.length)
-                                        delayedUnits.forEach(u => matchUnits(baseUnits, baseUnitsKeys, question, u));
-                                } else {
-                                    if (baseUnits) matchUnits(baseUnits, baseUnitsKeys, question, i);
-                                    else delayedUnits.push(i);
-                                }
-                            } else {
-                                question.uomsValid[i] = question.uomsValid[i] || valid;
-                            }
-                        } else {
-                            question.uomsValid[i] = question.uomsValid[i] || false;
-                        }
-                    });
-                });
-        });
-    }
-
     checkUom(uoms) {
         let newUoms = (Array.isArray(uoms.value) ? uoms.value.filter(uom => uom !== "") : []);
-        if (!_.isEqual(this.question.question.uoms, newUoms)) {
+        if (!_isEqual(this.question.question.uoms, newUoms)) {
             this.question.question.uoms = newUoms;
             this.onEltChange.emit();
+            this.validateUoms(this.question.question);
         }
-        this.validateUoms(this.question.question);
     }
 
     getRepeatLabel(fe) {
@@ -233,6 +186,15 @@ export class FormDescriptionQuestionDetailComponent {
             this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
             this.onEltChange.emit();
         }
+    }
+
+    validateUoms(question) {
+        question.uomsValid = [];
+        this.ucumService.validateUnits(question.uoms, (errors, units) => {
+            question.uoms.forEach((uom, i, uoms) => {
+                question.uomsValid[i] = errors[i];
+            });
+        });
     }
 
     static inputEvent = new Event('input');

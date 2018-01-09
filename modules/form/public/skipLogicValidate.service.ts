@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as _ from 'lodash';
+import _trim from 'lodash/trim';
 import { FormElement, FormElementsContainer, SkipLogic } from 'core/form.model';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 
@@ -111,7 +111,7 @@ export class SkipLogicValidateService {
     }
 
     static validateSkipLogicSingleExpression(parent: FormElementsContainer, fe: FormElement, tokens): string {
-        let filteredQuestion = SkipLogicService.getQuestionPriorByLabel(parent, fe, _.trim(tokens[0], '"'));
+        let filteredQuestion = SkipLogicService.getQuestionPriorByLabel(parent, fe, _trim(tokens[0], '"'));
         if (!filteredQuestion)
             return tokens[0] + ' is not a valid question label';
 

@@ -42,12 +42,12 @@
             <div *ngIf="!isSubForm && canEdit" class="d-inline-block editIconDiv" style="font-size: 16px">
                 <i *ngIf="!question.confirmDelete" (click)="question.confirmDelete = true;"
                    class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
-                <ng-container *ngIf="question.confirmDelete">Confirm Delete
-                    <span class="fa fa-check hand-cursor" (click)="removeNode(node)"
-                          id="confirmRemoveProperty-{{i}}" title="Delete"></span>
-                    <span class="fa fa-times hand-cursor" (click)="question.confirmDelete = false"
-                          id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
-                </ng-container>
+                <span *ngIf="question.confirmDelete" class="badge badge-secondary" style="font-size: 75%">
+                    <a class="badge badge-danger" (click)="removeNode(node)"
+                       id="confirmRemoveProperty-{{i}}" title="Delete">Delete <i class="fa fa-check"></i></a>
+                    <a class="badge badge-secondary" (click)="question.confirmDelete = false"
+                       id="cancelRemoveProperty-{{i}}" title="Cancel">Cancel <i class="fa fa-times"></i></a>
+                </span>
             </div>
         </div>
     </div>

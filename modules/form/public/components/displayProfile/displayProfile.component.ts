@@ -1,22 +1,46 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import "rxjs/add/operator/map";
-import { DisplayProfile } from 'core/form.model';
+
+import { CdeForm, DisplayProfile } from 'core/form.model';
+import { FormViewComponent } from 'form/public/components/formView.component';
+import { FormService } from 'nativeRender/form.service';
+import { UcumService } from 'form/public/ucum.service';
+
+type DisplayProfileVM = {
+    aliases: {
+        date: Date,
+        edit: boolean,
+        value: Map<string, string>
+    },
+    profile: DisplayProfile,
+    sample: CdeForm,
+    showDelete: boolean,
+    uomAliasesKeys: string[],
+};
 
 @Component({
     selector: "cde-display-profile",
-    templateUrl: "./displayProfile.component.html"
+    styles: [`
+        .hoverEdit:hover {
+            background-color: lightgreen;
+        }
+    `],
+    templateUrl: "./displayProfile.component.html",
 })
 export class DisplayProfileComponent implements OnInit {
-
-    @Input() elt: any;
+    @Input() elt: CdeForm;
     @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
 
-    samples = [];
-    showDelete: boolean;
+    dPVMs: DisplayProfileVM[] = [];
+    uoms = new Map<string, string[]>();
+    uomsDate: Date;
+    uomsPromise: Promise<void>;
 
     ngOnInit() {
-        this.elt.displayProfiles.forEach(() => this.samples.push(JSON.parse(JSON.stringify(this.sampleElt))));
+        this.elt.displayProfiles.forEach(profile => this.dPVMs.push(DisplayProfileComponent.dPVMNew(profile)));
+    }
+
+    constructor(private ucumService: UcumService, private formViewComponent: FormViewComponent) {
     }
 
     addProfile() {
@@ -25,27 +49,96 @@ export class DisplayProfileComponent implements OnInit {
             this.elt.displayProfiles = [newProfile];
         else
             this.elt.displayProfiles.push(newProfile);
-        this.samples.push(JSON.parse(JSON.stringify(this.sampleElt)));
+        this.dPVMs.push(DisplayProfileComponent.dPVMNew(newProfile));
         this.onEltChange.emit();
-    };
+    }
+
+    static dPVMNew(profile): DisplayProfileVM {
+        return {
+            aliases: {
+                date: undefined,
+                edit: false,
+                value: new Map<string, string>(),
+            },
+            profile: profile,
+            sample: DisplayProfileComponent.getSample(),
+            showDelete: false,
+            uomAliasesKeys: profile.uomAliases ? Object.keys(profile.uomAliases) : [],
+        };
+    }
+
+    static getSample() {
+        return JSON.parse(JSON.stringify(this.sampleElt));
+    }
+
+    getUoms(): Promise<void> {
+        if (this.uomsDate === this.elt.updated)
+            return this.uomsPromise;
+
+        return this.uomsPromise = new Promise<void>(resolve => {
+            let resourceCount = 0;
+            this.uoms.clear();
+            this.uomsDate = this.elt.updated;
+            FormService.iterateFeSync(this.elt, undefined, undefined, q => {
+                if (Array.isArray(q.question.uoms))
+                    q.question.uoms.forEach(u => {
+                        resourceCount++;
+                        this.ucumService.getUnitNames(u, names => {
+                            this.uoms.set(u, names);
+                            if (--resourceCount === 0)
+                                resolve();
+                        });
+                    });
+            });
+        });
+    }
+
+    profileUomsEditCreate(dPVM: DisplayProfileVM) {
+        if (!dPVM)
+            return;
+
+        this.getUoms().then(() => {
+            if (dPVM.aliases && dPVM.aliases.date === this.uomsDate)
+                return;
+
+            let profile = dPVM.profile;
+            dPVM.aliases.date = this.uomsDate;
+            this.uoms.forEach((names, uom) => dPVM.aliases.value.set(uom, ''));
+            for (let key of dPVM.uomAliasesKeys) {
+                let aliases = this.uoms.get(key);
+                if (aliases && aliases.indexOf(profile.uomAliases[key]) > -1)
+                    dPVM.aliases.value.set(key, profile.uomAliases[key]);
+                else
+                    delete profile.uomAliases[key];
+            }
+        });
+    }
+
+    profileUomsEditSave(dPVM: DisplayProfileVM, uom: string, value: string) {
+        dPVM.aliases.value.set(uom, value);
+        dPVM.profile.uomAliases[uom] = value;
+        dPVM.uomAliasesKeys = Object.keys(dPVM.profile.uomAliases);
+        this.onEltChange.emit();
+    }
+
 
     removeDisplayProfile(index) {
         this.elt.displayProfiles.splice(index, 1);
-        this.samples.splice(index, 1);
+        this.dPVMs.splice(index, 1);
         this.onEltChange.emit();
-    };
+    }
 
-    setDisplayType(profile, $event) {
+    setDisplayType(profile: DisplayProfile, $event) {
         profile.displayType = $event.target.checked ? 'Follow-up' : 'Dynamic';
         this.onEltChange.emit();
     }
 
-    onChange(p, event) {
+    onChange(p: DisplayProfile, event) {
         p.numberOfColumns = parseInt(event);
         this.onEltChange.emit();
     }
 
-    sampleElt = {
+    static sampleElt = {
         "formElements": [
             {
                 "label": "Section",

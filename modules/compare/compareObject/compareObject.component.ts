@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from "@angular/core";
-import "rxjs/add/operator/map";
-import { CompareService } from "../../core/compare.service";
-import { ClassificationService } from "../../core/classification.service";
-import * as _ from "lodash";
+import { Component, Input, OnInit } from '@angular/core';
+import 'rxjs/add/operator/map';
+import { CompareService } from 'core/compare.service';
+import { ClassificationService } from 'core/classification.service';
+import _cloneDeep from 'lodash/cloneDeep';
 
 @Component({
     selector: "cde-compare-object",
@@ -53,8 +53,8 @@ export class CompareObjectComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.newer = _.cloneDeep(this.newer);
-        this.older = _.cloneDeep(this.older);
+        this.newer = _cloneDeep(this.newer);
+        this.older = _cloneDeep(this.older);
         this.ClassificationService.sortClassification(this.newer);
         this.ClassificationService.sortClassification(this.older);
         this.newer.flatClassifications = this.ClassificationService.flattenClassification(this.newer).join(",");

@@ -3,7 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/debounceTime";
 
-import { Observable } from "rxjs/Rx";
+import { Observable } from "rxjs/Observable";
 import { IsAllowedService } from 'core/isAllowed.service';
 import { AlertService } from '_app/alert/alert.service';
 

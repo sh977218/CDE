@@ -25,6 +25,7 @@ import { FormViewComponent } from './components/formView.component';
 import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
+import { UcumService } from 'form/public/ucum.service';
 import { WidgetModule } from 'widget/widget.module';
 
 const appRoutes: Routes = [
@@ -67,6 +68,7 @@ const appRoutes: Routes = [
     exports: [],
     providers: [
         SkipLogicValidateService,
+        UcumService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

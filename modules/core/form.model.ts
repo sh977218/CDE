@@ -12,6 +12,7 @@ import {
     ReferenceDocument,
     RegistrationState, UserReference
 } from 'core/models.model';
+import { FormService } from 'nativeRender/form.service';
 
 export class CdeForm extends Elt implements FormElementsContainer {
     archived: boolean = false;
@@ -58,6 +59,10 @@ export class CdeForm extends Elt implements FormElementsContainer {
         this.registrationState.registrationStatus = 'Incomplete';
     }
 
+    static copy(elt: any) {
+        return Object.assign(new CdeForm, elt);
+    }
+
     getEltUrl() {
         return '/formView?tinyId=' + this.tinyId;
     }
@@ -65,10 +70,38 @@ export class CdeForm extends Elt implements FormElementsContainer {
     getLabel() {
         return this.naming[0].designation;
     }
+
+    static validate(elt: CdeForm) {
+        elt.displayProfiles.forEach(dp => {
+            if (!dp.uomAliases)
+                dp.uomAliases = {};
+        });
+        FormService.iterateFeSync(elt,
+            form => {
+                if (!Array.isArray(form.formElements))
+                    form.formElements = [];
+            },
+            section => {
+                if (!Array.isArray(section.formElements))
+                    section.formElements = [];
+            },
+            q => {
+                if (!Array.isArray(q.formElements))
+                    q.formElements = [];
+                if (!Array.isArray(q.question.answers))
+                    q.question.answers = [];
+                if (!Array.isArray(q.question.uoms))
+                    q.question.uoms = [];
+                if (!Array.isArray(q.question.cde.permissibleValues))
+                    q.question.cde.permissibleValues = [];
+                if (!Array.isArray(q.question.cde.derivationRules))
+                    q.question.cde.derivationRules = [];
+            }
+        );
+    }
 }
 
 export class DisplayProfile {
-
     constructor(name: string) {
         this.name = name;
     }
@@ -84,6 +117,7 @@ export class DisplayProfile {
     numberOfColumns: number = 4;
     repeatFormat: string = '#.';
     sectionsAsMatrix: boolean = true;
+    uomAliases: any = {};
 }
 
 export interface FormElementsContainer {
@@ -188,6 +222,7 @@ export class Question {
     partOf: string; // display "(part of ...)" in Form Description
     required: boolean;
     uoms: string[] = [];
+    uomsAlias: string[] = []; // calculated, NativeRenderService
 }
 
 export class QuestionCde {
