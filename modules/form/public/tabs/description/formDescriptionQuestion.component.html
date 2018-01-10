@@ -14,7 +14,7 @@
             <div *ngIf="question.question.isScore" class="float-left">Score:</div>
             <div class="float-left questionLabel ml-1" title="{{question.label}}">
                 <ng-container *ngIf="question.hideLabel">
-                    <i class="fa fa-question-circle" ngbTooltip="This question has no label"></i>
+                    <i class="fa fa-question-circle" ngbTooltip="This question has no label" placement="right"></i>
                     <strong [textContent]="question.question.cde.name"></strong>
                 </ng-container>
                 <strong *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}}</strong>
