@@ -30,7 +30,12 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('fetch', function(event) {
     event.respondWith(
-        fetch(event.request).catch(function() {
+        fetch(event.request).then(function (resp) {
+            if (resp.status === 503) {
+                throw new Error();
+            }
+            return resp;
+        }).catch(function() {
             var requestURL = new URL(event.request.url);
             if (requestURL.origin === location.origin && urlsToCache.indexOf(requestURL.pathname) > -1) {
                 return caches.match(requestURL.pathname);
