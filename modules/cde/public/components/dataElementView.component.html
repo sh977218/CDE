@@ -119,11 +119,6 @@
                                 <i *ngIf="tabsCommented.indexOf('classification_tab') > -1"
                                    class="fa fa-comments pull-right"
                                    aria-hidden="true"></i></a>
-                            <a id="meshTopic_tab" class="list-group-item"
-                               [ngClass]="{'active':currentTab ==='meshTopic_tab'}"
-                               (click)="setCurrentTab('meshTopic_tab');">Mesh Topic
-                                <i *ngIf="tabsCommented.indexOf('meshTopic_tab') > -1" class="fa fa-comments pull-right"
-                                   aria-hidden="true"></i></a>
                             <a id="concepts_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='concepts_tab'}"
                                (click)="setCurrentTab('concepts_tab');">Concepts
@@ -172,15 +167,6 @@
                     </div>
                 </div>
                 <div id="middleView" class="col-xl-10 col-lg-9 col-md-8 col-12">
-                    <ng-container *ngIf="currentTab === 'meshTopic_tab'">
-                        <h4>Topics</h4>
-                        <span>Topics are
-                                <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> terms and appear here if classifications are mapped to
-                                <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> trees.</span>
-                        <ul>
-                            <li *ngFor="let t of elt.flatMeshSimpleTrees">{{t}} <br></li>
-                        </ul>
-                    </ng-container>
                     <ng-container *ngIf="currentTab === 'general_tab'">
                         <cde-de-general-details [(elt)]="elt" [canEdit]="canEdit()"
                                                 (onEltChange)="saveDraft();"></cde-de-general-details>
