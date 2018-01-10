@@ -25,6 +25,17 @@ export class QuickBoardListService {
         this.loadElements();
     }
 
+    private findFormQuestionNr (fe) {
+        let n = 0;
+        if (fe.formElements) {
+            fe.formElements.forEach(_fe => {
+                if (_fe.elementType && _fe.elementType === 'question') n++;
+                else n = n + this.findFormQuestionNr(_fe);
+            });
+        }
+        return n;
+    }
+
     loadElements(): void {
         let dataElementLocalStorage = <Array<any>> this.localStorageService.get('quickBoard');
         if (dataElementLocalStorage) {
@@ -46,6 +57,7 @@ export class QuickBoardListService {
                     .subscribe(res => {
                         if (res) {
                             this.forms = res;
+                            this.forms.forEach(f => f.numQuestions = this.findFormQuestionNr(f));
                             this.number_forms = this.forms.length;
                         }
                     }, err => this.alert.addAlert('danger', err));

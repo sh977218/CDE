@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class AddToQuickBoardFromView extends NlmCdeBaseTest {
 
     @Test
-    public void addToQuickBoardFromView() {
+    public void addFormToQuickBoardFromView() {
         textPresent("Quick Board (0)");
         goToFormByName("Vessel Imaging Angiography");
         clickElement(By.id("addToQuickBoard"));
@@ -15,6 +15,7 @@ public class AddToQuickBoardFromView extends NlmCdeBaseTest {
         clickElement(By.id("menu_qb_link"));
         clickElement(By.id("formQuickBoard"));
         clickElement(By.linkText("Vessel Imaging Angiography"));
+        textPresent("30 Questions");
     }
 
 
