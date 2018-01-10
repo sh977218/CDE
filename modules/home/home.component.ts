@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { TourService } from 'home/tour.service';
 
 @Component({
@@ -36,8 +36,17 @@ import { TourService } from 'home/tour.service';
     `],
     templateUrl: 'home.component.html'
 })
+
 export class HomeComponent {
+    displayCarousel: Boolean = (window.screen.width > 575);
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        this.displayCarousel = (window.screen.width > 575);
+    }
+
     takeATour() {
         TourService.takeATour();
     }
+
 }

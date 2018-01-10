@@ -55,9 +55,6 @@ export class EmbedAppComponent  {
 
         this.searchViewSettings = elasticSvc.getDefault();
 
-
-
-
     }
 
     searchViewSettings: any;
@@ -153,7 +150,6 @@ export class EmbedAppComponent  {
 
         this.elasticSvc.generalSearchQuery(settings, this.searchType, (err, result) => {
             if (err) {
-                // $scope[type + 's'] = [];
                 this.elts = [];
                 return;
             }

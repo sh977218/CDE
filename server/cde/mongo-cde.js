@@ -187,44 +187,6 @@ exports.cdesByTinyIdListInOrder = function (idList, callback) {
     });
 };
 
-exports.acceptFork = function (fork, orig, callback) {
-    fork.forkOf = undefined;
-    fork.tinyId = orig.tinyId;
-    orig.archived = true;
-    fork.stewardOrg = orig.stewardOrg;
-    fork.registrationState.registrationStatus = orig.registrationState.registrationStatus;
-    fork.save(function (err) {
-        if (err) {
-            callback(err);
-        }
-        else {
-            orig.save(function (err) {
-                callback(err);
-            });
-        }
-    });
-};
-
-exports.isForkOf = function (fork, callback) {
-    return DataElement.findOne({tinyId: fork.forkOf}).where("archived").equals(false).exec(function (err, cde) {
-        callback(err, cde);
-    });
-};
-
-exports.forks = function (cdeId, callback) {
-    DataElement.findById(cdeId).exec(function (err, dataElement) {
-        if (dataElement !== null) {
-            return DataElement.find({forkOf: dataElement.tinyId}, "tinyId naming stewardOrg updated updatedBy createdBy created updated changeNote")
-                .where("archived").equals(false).where("registrationState.registrationStatus").ne("Retired").exec(function (err, cdes) {
-                    callback("", cdes);
-                });
-        } else {
-            callback(err, []);
-        }
-    });
-};
-
-
 var viewedCdes = {};
 var threshold = config.viewsIncrementThreshold || 50;
 exports.inCdeView = function (cde) {

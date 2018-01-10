@@ -235,19 +235,28 @@ exports.completionSuggest = function (term, user, settings, indexName, cb) {
 
 exports.regStatusFilter = function (user, settings) {
     // Filter by selected Statuses
-    let filterRegStatusTerms = settings.selectedStatuses.map(regStatus => {
-        return {"term": {"registrationState.registrationStatus": regStatus}};
-    });
 
-    // Filter by Steward
-    if (user) {
-        let curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
-        filterRegStatusTerms = filterRegStatusTerms.concat(curatorOf.map(o => {
-            return {"term": {"stewardOrg": o}};
-        }));
+    if (settings.selectedStatuses.length > 0) {
+        return settings.selectedStatuses.map(regStatus => {
+            return {"term": {"registrationState.registrationStatus": regStatus}};
+        });
+    } else {
+        let filterRegStatusTerms = settings.visibleStatuses.map(regStatus => {
+            return {"term": {"registrationState.registrationStatus": regStatus}};
+        });
+
+        // Filter by Steward
+        if (user) {
+            let curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
+            filterRegStatusTerms = filterRegStatusTerms.concat(curatorOf.map(o => {
+                return {"term": {"stewardOrg.name": o}};
+            }));
+        }
+
+        return filterRegStatusTerms;
+
     }
 
-    return filterRegStatusTerms;
 };
 
 exports.buildElasticSearchQuery = function (user, settings) {
@@ -264,27 +273,33 @@ exports.buildElasticSearchQuery = function (user, settings) {
     // last resort, we sort.
     let sort = !hasSearchTerm;
 
-    (function setFilters() {
-        let filterRegStatusTerms = exports.regStatusFilter(user, settings);
+    // (function setFilters() {
+    let filterRegStatusTerms = exports.regStatusFilter(user, settings);
 
-        // Filter by selected Datatypes
-        let filterDatatypeTerms = settings.selectedDatatypes && settings.selectedDatatypes.map(datatype => {
-            return {"term": {"valueDomain.datatype": datatype}};
-        });
+    // Filter by selected Datatypes
+    let filterDatatypeTerms = settings.selectedDatatypes && settings.selectedDatatypes.map(datatype => {
+        return {"term": {"valueDomain.datatype": datatype}};
+    });
 
-        settings.filter = {
-            bool: {
-                filter: [
-                    {bool: {should: filterDatatypeTerms}},
-                    {bool: {should: filterRegStatusTerms}}
-                ]
-            }
-        };
-        settings.filterDatatype = {
-            bool: {should: filterRegStatusTerms}
-        };
-    })();
+    settings.filter = {
+       bool: {
+            filter: [
+                {bool: {should: filterRegStatusTerms}}
+            ]}};
 
+    if (filterDatatypeTerms && filterDatatypeTerms.length > 0) {
+        settings.filter.bool.filter.push({bool: {should: filterDatatypeTerms}});
+    }
+
+    if (settings.visibleStatuses
+        && settings.visibleStatuses.indexOf("Retired") === -1
+        && settings.selectedStatuses.indexOf("Retired") === -1) {
+        settings.filter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
+    }
+
+    settings.filterDatatype = {
+        bool: {should: filterRegStatusTerms}
+    };
 
     let queryStuff = {
         post_filter: settings.filter,
@@ -403,10 +418,10 @@ exports.buildElasticSearchQuery = function (user, settings) {
     // show statuses that either you selected, or it's your org and it's not retired.
     let regStatusAggFilter = {
         "bool": {
-            "should": [
+            "filter": [
                 {
                     "bool": {
-                        "should": settings.visibleStatuses.map(regStatus => {
+                        "should": settings.visibleStatuses.concat(settings.selectedStatuses).map(regStatus => {
                             return {"term": {"registrationState.registrationStatus": regStatus}};
                         })
                     }
@@ -415,14 +430,14 @@ exports.buildElasticSearchQuery = function (user, settings) {
         }
     };
     if (usersvc.myOrgs(user).length > 0)
-        regStatusAggFilter.bool.should.push({
-            "bool": {
-                "must_not": {term: {"registrationState.registrationStatus": "Retired"}},
-                "should": usersvc.myOrgs(user).map(org => {
-                    return {"term": {"stewardOrg.name": org}};
-                })
-            }
+        usersvc.myOrgs(user).map(org => {
+            regStatusAggFilter.bool.filter[0].bool.should.push({"term": {"stewardOrg.name": org}})
         });
+
+    if (settings.visibleStatuses.indexOf("Retired") === -1 && settings.selectedStatuses.indexOf("Retired") === -1) {
+        regStatusAggFilter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
+    }
+
 
     if (sort) {
         //noinspection JSAnnotator
