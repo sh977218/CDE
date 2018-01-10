@@ -218,7 +218,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             new Hotkey('q', (event: KeyboardEvent): boolean => {
                 if (!_isEmpty(this.formElementEditing)) {
                     this.newDataElementName = "";
-                    this.questionModelMode = 'add';
                     this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(reason => {
                         if (reason === 'create') {
                             // let newQuestion = this.getNewQuestion();
