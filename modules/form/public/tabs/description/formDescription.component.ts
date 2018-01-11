@@ -170,43 +170,30 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     toolDropTo: { index: number, parent: any };
-    toolSection: { insert: 'section', data: FormElement };
     treeOptions = {
-        allowDrag: (element) => {
-            return !FormService.isSubForm(element) || element.data.elementType === 'form' && !FormService.isSubForm(element.parent);
-        },
+        allowDrag: element => !FormService.isSubForm(element) || element.data.elementType === 'form' && !FormService.isSubForm(element.parent),
         allowDrop: (element, {parent, index}) => {
             return element !== parent && parent.data.elementType !== 'question' && (!element
                 || !element.ref && (element.data.elementType !== 'question' || parent.data.elementType === 'section')
-                || element.ref === 'form'
-                || element.ref === 'pasteSection'
-                || element.ref === 'question' && parent.data.elementType === 'section'
+                || element.ref === 'section' || element.ref === 'form' || element.ref === 'pasteSection'
+                || (element.ref === 'question' && parent.data.elementType === 'section')
             ) && !FormService.isSubForm(parent);
         },
         actionMapping: {
             mouse: {
                 drop: (tree, node, $event, {from, to}) => {
-                    if (from.insert) {
-                        this.addIndex(to.parent.data.formElements, new FormSection(), to.index);
-                        tree.update();
-                    } else if (from.ref) {
+                    if (from.ref) {
                         this.toolDropTo = to;
-                        if (from.ref === 'question') {
+                        if (from.ref === 'section') {
+                            this.addFormElement(to.parent.data.formElements, new FormSection(), to.index);
+                        } else if (from.ref === 'question') {
                             this.openQuestionSearch();
-                            return;
                         } else if (from.ref === 'form') {
                             this.openFormSearch();
-                            return;
                         } else if (from.ref === 'pasteSection') {
-                            this.pasteSection(to.parent.data.formElements, to.index);
-                            return;
-                        }
-                    } else
-                        TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
-
-                    tree.expandAll();
-                    this.addIds(this.elt.formElements, '');
-                    this.onEltChange.emit();
+                            this.addFormElement(to.parent.data.formElements, this.localStorageService.get('sectionCopied'), to.index);
+                        } else TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
+                    } else TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
                 }
             }
         },
@@ -221,14 +208,13 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 public modalService: NgbModal,
                 private formService: FormService,
                 private _hotkeysService: HotkeysService) {
-        this.toolSection = {insert: "section", data: new FormSection()};
     }
 
     ngOnInit(): void {
         this._hotkeysService.add([
             new Hotkey('q', (event: KeyboardEvent): boolean => {
                 if (!this.isModalOpen && !_isEmpty(this.formElementEditing) && this.formElementEditing.formElement.elementType === 'question') {
-//                    this.openQuestionSearch(this.formElementEditing.formElements, this.formElementEditing.index);
+                    this.openQuestionSearch();
                     if (this.questionModelMode === 'add')
                         setTimeout(() => window.document.getElementById("newDEName").focus(), 0);
                 } else return false;
@@ -242,34 +228,25 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     addIndex(elements, element, i) {
         elements.splice(i, 0, element);
+        this.addIds(this.elt.formElements, '');
     }
 
     addQuestionFromSearch(cde, cb = null) {
         this.formService.convertCdeToQuestion(cde, question => {
             question.formElements = [];
             question.expanded = true;
-            this.addIndex(this.toolDropTo.parent.data.formElements, question, this.toolDropTo.index);
-            this.tree.treeModel.update();
-            this.tree.treeModel.expandAll();
-            this.addIds(this.elt.formElements, '');
-            if (this.formElementEditing.formElement)
-                this.formElementEditing.formElement.edit = false;
-            this.formElementEditing = {};
-            this.onEltChange.emit();
+            this.addFormElement(this.toolDropTo.parent.data.formElements, question, this.toolDropTo.index);
             if (cb) cb(question);
         });
     }
 
-    addFormFromSearch(fe) {
+    addFormFromSearch(fe, cb = null) {
         this.http.get('/form/' + fe.tinyId).map(r => r.json()).subscribe(form => {
             let inForm: any = FormService.convertFormToSection(form);
             inForm.formElements = form.formElements;
-            this.addIndex(this.toolDropTo.parent.data.formElements, inForm, this.toolDropTo.index);
-            this.tree.treeModel.update();
-            this.tree.treeModel.expandAll();
-            this.addIds(this.elt.formElements, '');
+            this.addFormElement(this.toolDropTo.parent.data.formElements, inForm, this.toolDropTo.index);
             this.setCurrentEditing(this.toolDropTo.parent.data.formElements, inForm, this.toolDropTo.index);
-            this.onEltChange.emit();
+            if (cb) cb(inForm);
         });
     }
 
@@ -310,17 +287,18 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     createNewDataElement(c) {
         this.addQuestionFromSearch(this.newDataElement, question => {
+            if (this.formElementEditing.formElement)
+                this.formElementEditing.formElement.edit = false;
+            this.formElementEditing = {};
             setTimeout(() => window.document.getElementById((question).descriptionId).scrollIntoView(), 0);
             c();
         });
     }
 
-    pasteSection(formElements, index) {
-        let fe = this.localStorageService.get('sectionCopied');
-        this.addIndex(formElements, fe, index);
+    addFormElement(formElements, question, index) {
+        this.addIndex(formElements, question, index);
         this.tree.treeModel.update();
         this.tree.treeModel.expandAll();
-        this.addIds(this.elt.formElements, '');
         this.onEltChange.emit();
     }
 
