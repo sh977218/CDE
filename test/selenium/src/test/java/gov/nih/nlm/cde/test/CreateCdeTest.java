@@ -33,7 +33,6 @@ public class CreateCdeTest extends BaseClassificationTest {
 
         textPresent(definition);
 
-
         goToClassification();
 
         textPresent("Submission and Reporting");
@@ -42,8 +41,17 @@ public class CreateCdeTest extends BaseClassificationTest {
         textPresent("Disease");
         textPresent("Headache");
 
-         goToIdentifiers();
+        goToIdentifiers();
         Assert.assertEquals("", findElement(By.id("dd_version_nlm")).getText());
+
+        clickElement(By.id("username_link"));
+        clickElement(By.id("user_audit"));
+        clickElement(By.partialLinkText("CDE Audit Log"));
+
+        clickElement(By.partialLinkText(name));
+        clickElement(By.linkText(name));
+        textPresent(definition);
+
     }
 
 }
