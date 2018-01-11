@@ -331,26 +331,23 @@ export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, que
 // callback(error)
 // feCb(fe, cbContinue(error))
 export function iterateFes(fes, callback = noop, formCb = noop1, sectionCb = noop1, questionCb = noop1) {
-    if (Array.isArray(fes))
+    if (Array.isArray(fes)) {
         async.forEach(fes, (fe, cb) => {
             if (fe.elementType === 'form') {
-                formCb(fe, (err) => {
-                    if (err)
-                        cb(err);
-                    else
-                        this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
+                formCb(fe, err => {
+                    if (err) cb(err);
+                    else this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
                 });
             } else if (fe.elementType === 'section') {
-                sectionCb(fe, (err) => {
-                    if (err)
-                        cb(err);
-                    else
-                        this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
+                sectionCb(fe, err => {
+                    if (err) cb(err);
+                    else this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
                 });
             } else {
                 questionCb(fe, cb);
             }
         }, callback);
+    }
 }
 
 // cb(fe)
