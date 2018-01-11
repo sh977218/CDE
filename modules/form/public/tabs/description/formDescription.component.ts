@@ -242,10 +242,12 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.formService.convertCdeToQuestion(cde, question => {
             question.formElements = [];
             question.expanded = true;
-            this.formElementEditing.formElement = question;
+            question.edit = true;
             this.addFormElement(question);
             this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
-            if (cb) cb(question);
+            setTimeout(() => window.document.getElementById(question.descriptionId).scrollIntoView(), 0);
+            this.isModalOpen = false;
+            if (cb) cb();
         });
     }
 
@@ -256,6 +258,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             this.formElementEditing.formElement = inForm;
             this.addFormElement(inForm);
             this.setCurrentEditing(this.formElementEditing.formElements, inForm, this.formElementEditing.index);
+            this.isModalOpen = false;
             if (cb) cb(inForm);
         });
     }
@@ -296,12 +299,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     createNewDataElement(c) {
-        this.addQuestionFromSearch(this.newDataElement, newQuestion => {
-            newQuestion.edit = true;
-            this.formElementEditing.formElement = newQuestion;
-            setTimeout(() => window.document.getElementById((newQuestion).descriptionId).scrollIntoView(), 0);
+        this.addQuestionFromSearch(this.newDataElement, () => {
             c();
-            this.isModalOpen = false;
         });
     }
 
@@ -312,19 +311,24 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.onEltChange.emit();
     }
 
-    closeCurrentEditing(formElement) {
-
-    }
-
     setCurrentEditing(formElements, formElement, index) {
-        if (this.formElementEditing && this.formElementEditing.formElement) {
-            if (this.formElementEditing && this.formElementEditing.formElement === formElement) {
+        if (_isEmpty(this.formElementEditing.formElement)) {
+            this.formElementEditing = {
+                formElement: formElement,
+                formElements: formElements,
+                index: index
+            };
+        } else {
+            if (this.formElementEditing.formElement === formElement) {
+                this.formElementEditing = {};
+            } else {
+                this.formElementEditing.formElement.edit = false;
+                this.formElementEditing = {
+                    formElement: formElement,
+                    formElements: formElements,
+                    index: index
+                };
             }
         }
-        this.formElementEditing = {
-            formElements: formElements,
-            formElement: formElement,
-            index: index
-        };
     }
 }
