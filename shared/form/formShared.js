@@ -1,11 +1,12 @@
 import * as async from 'async';
 import noop from 'lodash/noop';
 
+
 export function areDerivationRulesSatisfied(elt) {
     let missingCdes = [];
     let allCdes = {};
     let allQuestions = [];
-    this.iterateFeSync(elt, undefined, undefined, fe => {
+    this.iterateFeSync(elt, undefined, undefined, (fe) => {
         if (fe.question.datatype === 'Number' && !Number.isNaN(fe.question.defaultAnswer))
             fe.question.answer = Number.parseFloat(fe.question.defaultAnswer);
         else
@@ -319,12 +320,14 @@ export function isSubForm(node) {
 // callback(error)
 // feCb(fe, cbContinue(error))
 export function iterateFe(fe, callback, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
-    if (fe) this.iterateFes(fe.formElements, callback, formCb, sectionCb, questionCb);
+    if (fe)
+        this.iterateFes(fe.formElements, callback, formCb, sectionCb, questionCb);
 }
 
 // cb(fe)
 export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
-    if (fe) this.iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
+    if (fe)
+        this.iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
 }
 
 // callback(error)
@@ -334,18 +337,20 @@ export function iterateFes(fes, callback = noop, formCb = noop1, sectionCb = noo
         async.forEach(fes, (fe, cb) => {
             if (fe.elementType === 'form') {
                 formCb(fe, (err) => {
-                    if (err) cb(err);
-                    else this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
+                    if (err)
+                        cb(err);
+                    else
+                        this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
                 });
             } else if (fe.elementType === 'section') {
-                sectionCb(fe, () => {
-                    this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
+                sectionCb(fe, (err) => {
+                    if (err)
+                        cb(err);
+                    else
+                        this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
                 });
-            } else if (fe.elementType === 'question') {
-                questionCb(fe, cb);
             } else {
-                console.log("Unknown element type: " + fe.elementType);
-                cb();
+                questionCb(fe, cb);
             }
         }, callback);
 }
@@ -360,10 +365,8 @@ export function iterateFesSync(fes, formCb = noop, sectionCb = noop, questionCb 
             } else if (fe.elementType === 'section') {
                 sectionCb(fe);
                 this.iterateFeSync(fe, formCb, sectionCb, questionCb);
-            } else if (fe.elementType === 'question') {
-                questionCb(fe);
             } else {
-                console.log("Unknown element type: " + fe.elementType);
+                questionCb(fe);
             }
         });
 }

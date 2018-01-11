@@ -169,7 +169,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         };
     }
 
-    toolDropTo: { index: number, parent: any };
     treeOptions = {
         allowDrag: element => !FormService.isSubForm(element) || element.data.elementType === 'form' && !FormService.isSubForm(element.parent),
         allowDrop: (element, {parent, index}) => {
@@ -183,15 +182,22 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             mouse: {
                 drop: (tree, node, $event, {from, to}) => {
                     if (from.ref) {
-                        this.toolDropTo = to;
+                        this.formElementEditing = {
+                            formElements: to.parent.data.formElements,
+                            index: to.index
+                        };
                         if (from.ref === 'section') {
-                            this.addFormElement(to.parent.data.formElements, new FormSection(), to.index);
+                            let newSection = new FormSection();
+                            this.formElementEditing.formElement = newSection;
+                            this.addFormElement(newSection);
                         } else if (from.ref === 'question') {
                             this.openQuestionSearch();
                         } else if (from.ref === 'form') {
                             this.openFormSearch();
                         } else if (from.ref === 'pasteSection') {
-                            this.addFormElement(to.parent.data.formElements, this.localStorageService.get('sectionCopied'), to.index);
+                            let copiedSection = this.localStorageService.get('sectionCopied');
+                            this.formElementEditing.formElement = copiedSection;
+                            this.addFormElement(copiedSection);
                         } else TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
                     } else TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
                 }
@@ -213,7 +219,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         this._hotkeysService.add([
             new Hotkey('q', (event: KeyboardEvent): boolean => {
-                if (!this.isModalOpen && !_isEmpty(this.formElementEditing) && this.formElementEditing.formElement.elementType === 'question') {
+                if (!this.isModalOpen && !_isEmpty(this.formElementEditing) && this.formElementEditing.formElement && this.formElementEditing.formElement.elementType === 'question') {
+                    this.formElementEditing.index++;
                     this.openQuestionSearch();
                     if (this.questionModelMode === 'add')
                         setTimeout(() => window.document.getElementById("newDEName").focus(), 0);
@@ -235,7 +242,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.formService.convertCdeToQuestion(cde, question => {
             question.formElements = [];
             question.expanded = true;
-            this.addFormElement(this.toolDropTo.parent.data.formElements, question, this.toolDropTo.index);
+            this.formElementEditing.formElement = question;
+            this.addFormElement(question);
+            this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
             if (cb) cb(question);
         });
     }
@@ -244,8 +253,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.http.get('/form/' + fe.tinyId).map(r => r.json()).subscribe(form => {
             let inForm: any = FormService.convertFormToSection(form);
             inForm.formElements = form.formElements;
-            this.addFormElement(this.toolDropTo.parent.data.formElements, inForm, this.toolDropTo.index);
-            this.setCurrentEditing(this.toolDropTo.parent.data.formElements, inForm, this.toolDropTo.index);
+            this.formElementEditing.formElement = inForm;
+            this.addFormElement(inForm);
+            this.setCurrentEditing(this.formElementEditing.formElements, inForm, this.formElementEditing.index);
             if (cb) cb(inForm);
         });
     }
@@ -286,41 +296,35 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     createNewDataElement(c) {
-        this.addQuestionFromSearch(this.newDataElement, question => {
-            if (this.formElementEditing.formElement)
-                this.formElementEditing.formElement.edit = false;
-            this.formElementEditing = {};
-            setTimeout(() => window.document.getElementById((question).descriptionId).scrollIntoView(), 0);
+        this.addQuestionFromSearch(this.newDataElement, newQuestion => {
+            newQuestion.edit = true;
+            this.formElementEditing.formElement = newQuestion;
+            setTimeout(() => window.document.getElementById((newQuestion).descriptionId).scrollIntoView(), 0);
             c();
+            this.isModalOpen = false;
         });
     }
 
-    addFormElement(formElements, question, index) {
-        this.addIndex(formElements, question, index);
+    addFormElement(question) {
+        this.addIndex(this.formElementEditing.formElements, question, this.formElementEditing.index);
         this.tree.treeModel.update();
         this.tree.treeModel.expandAll();
         this.onEltChange.emit();
     }
 
+    closeCurrentEditing(formElement) {
+
+    }
+
     setCurrentEditing(formElements, formElement, index) {
-        if (_isEmpty(this.formElementEditing.formElement)) {
-            this.formElementEditing = {
-                formElement: formElement,
-                formElements: formElements,
-                index: index
-            };
-            formElement.edit = true;
-        } else {
-            if (this.formElementEditing.formElement === formElement) {
-                this.formElementEditing = {};
-            } else {
-                this.formElementEditing.formElement.edit = false;
-                this.formElementEditing = {
-                    formElement: formElement,
-                    formElements: formElements,
-                    index: index
-                };
+        if (this.formElementEditing && this.formElementEditing.formElement) {
+            if (this.formElementEditing && this.formElementEditing.formElement === formElement) {
             }
         }
+        this.formElementEditing = {
+            formElements: formElements,
+            formElement: formElement,
+            index: index
+        };
     }
 }
