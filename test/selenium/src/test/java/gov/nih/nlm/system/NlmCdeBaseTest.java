@@ -369,10 +369,6 @@ public class NlmCdeBaseTest {
         clickElement(By.id("classification_tab"));
     }
 
-    protected void goToMeshTopic() {
-        clickElement(By.id("meshTopic_tab"));
-    }
-
     protected void goToConcepts() {
         clickElement(By.id("concepts_tab"));
     }
