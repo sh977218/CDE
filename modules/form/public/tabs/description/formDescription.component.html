@@ -95,8 +95,9 @@
         <h3>Search Forms</h3>
     </div>
     <div class="modal-body">
-        <cde-form-search class="panel-group" id="accordion_form" addMode="True"
-                         [embedded]="true" (add)="addFormFromSearch($event)"></cde-form-search>
+        <cde-form-search class="panel-group" id="accordion_form" addMode="True" [embedded]="true"
+                         (add)="addFormFromSearch($event)">
+        </cde-form-search>
     </div>
     <div class="modal-footer">
         <button class="btn  btn-warning" (click)="d()" id="cancelSelectF">Close</button>
@@ -120,7 +121,7 @@
         </div>
     </ng-container>
     <ng-container *ngIf="questionModelMode === 'add'">
-        <form #newDataElementForm="ngForm" (ngSubmit)="c('create');">
+        <form #newDataElementForm="ngForm" (ngSubmit)="createNewDataElement(c);">
             <div class="modal-header">
                 <h1>Create Data Element</h1>
                 <button class="btn btn-outline-dark" type="button" (click)="questionModelMode = 'search'">
@@ -129,7 +130,7 @@
             </div>
             <div class="modal-body">
                 <label for="newDEName"></label>
-                <input [(ngModel)]="newDataElementName" class="form-control" id="newDEName" name="newDEName"
+                <input [(ngModel)]="newDataElement.naming[0].designation" class="form-control" id="newDEName" name="newDEName"
                        placeholder="New Data Element Name" required autofocus/>
             </div>
             <div class="modal-footer">

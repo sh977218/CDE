@@ -5,6 +5,7 @@ import {
 import { Observable } from "rxjs/Observable";
 import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
+import _isEmpty from 'lodash/isEmpty';
 
 import { AlertService } from '_app/alert/alert.service';
 import { FormElement, FormSection, SkipLogic } from "core/form.model";
@@ -160,6 +161,7 @@ export class FormDescriptionSectionComponent implements OnInit {
             section.hover = true;
         }
     }
+
     hoverOutSection(section) {
         if (!this.isSubForm && this.canEdit) {
             section.hover = false;
@@ -168,6 +170,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     editSection(section) {
         if (!this.isSubForm && this.canEdit) {
+            section.edit = !section.edit;
             this.formDescriptionComponent.setCurrentEditing(this.parent.formElements, section, this.index);
         }
     }

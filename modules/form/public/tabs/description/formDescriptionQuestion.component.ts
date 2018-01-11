@@ -158,6 +158,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
     editQuestion(question) {
         if (!this.isSubForm && this.canEdit) {
+            question.edit = !question.edit;
             this.formDescriptionComponent.setCurrentEditing(this.parent.formElements, question, this.index);
         }
     }
