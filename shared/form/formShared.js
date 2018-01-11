@@ -320,14 +320,12 @@ export function isSubForm(node) {
 // callback(error)
 // feCb(fe, cbContinue(error))
 export function iterateFe(fe, callback, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
-    if (fe)
-        this.iterateFes(fe.formElements, callback, formCb, sectionCb, questionCb);
+    if (fe) this.iterateFes(fe.formElements, callback, formCb, sectionCb, questionCb);
 }
 
 // cb(fe)
 export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
-    if (fe)
-        this.iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
+    if (fe) this.iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
 }
 
 // callback(error)
