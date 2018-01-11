@@ -11,11 +11,12 @@ public class AddToQuickBoardFromView extends NlmCdeBaseTest {
         textPresent("Quick Board (0)");
         goToFormByName("Vessel Imaging Angiography");
         clickElement(By.id("addToQuickBoard"));
+        checkAlert("Added to QuickBoard");
         textPresent("Quick Board (1)");
         clickElement(By.id("menu_qb_link"));
         clickElement(By.id("formQuickBoard"));
-        clickElement(By.linkText("Vessel Imaging Angiography"));
         textPresent("30 Questions");
+        clickElement(By.linkText("Vessel Imaging Angiography"));
     }
 
 
