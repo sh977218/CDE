@@ -232,7 +232,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         this._hotkeysService.add([
             new Hotkey('q', (event: KeyboardEvent): boolean => {
-                if (!this.isModalOpen && !_isEmpty(this.formElementEditing) && this.formElementEditing.formElement && this.formElementEditing.formElement.elementType === 'question') {
+                if (!this.isModalOpen && !_isEmpty(this.formElementEditing) &&
+                    this.formElementEditing.formElement && this.formElementEditing.formElement.elementType === 'question') {
                     this.formElementEditing.index++;
                     this.openQuestionSearch();
                 } else return false;
@@ -303,6 +304,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     openQuestionSearch() {
+        this.isModalOpen = true;
         this.newDataElement = this.initNewDataElement();
         this.modalService.open(this.questionSearchTmpl, {size: 'lg'}).result.then(
             () => this.isModalOpen = false,

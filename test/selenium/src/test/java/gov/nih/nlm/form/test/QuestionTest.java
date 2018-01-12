@@ -25,12 +25,9 @@ public class QuestionTest extends BaseFormTest {
     public void addCdes(String[] cdeNames) {
         for (String cdeName : cdeNames) {
             try {
-                hangon(2);
                 new Actions(driver).sendKeys("q").build().perform();
                 textPresent("Create Data Element");
-                hangon(2);
                 new Actions(driver).sendKeys(cdeName).build().perform();
-                hangon(2);
                 clickElement(By.id("createNewDataElement"));
             } catch (Exception e) {
                 e.printStackTrace();

@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { TreeNode } from "angular-tree-component";
@@ -11,13 +11,15 @@ import { FormattedValue } from 'core/models.model';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
 import { AlertService } from "../../../../_app/alert/alert.service";
+import { OrgHelperService } from "../../../../core/orgHelper.service";
 
 @Component({
     selector: "cde-form-description-question-detail",
     templateUrl: "formDescriptionQuestionDetail.component.html"
 })
-export class FormDescriptionQuestionDetailComponent {
+export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() canEdit: boolean = false;
+    @Input() elt;
 
     @Input() set node(node: TreeNode) {
         this.question = node.data;
@@ -73,7 +75,8 @@ export class FormDescriptionQuestionDetailComponent {
                 private alert: AlertService,
                 public modalService: NgbModal,
                 public skipLogicValidateService: SkipLogicValidateService,
-                private ucumService: UcumService) {
+                private ucumService: UcumService,
+                private orgHelperService: OrgHelperService) {
         this.nameSelectModal.okSelect = (naming = null) => {
             if (!naming) {
                 this.nameSelectModal.question.label = "";
@@ -87,6 +90,10 @@ export class FormDescriptionQuestionDetailComponent {
             }
             this.nameSelectModalRef.close();
         };
+    }
+
+    ngOnInit() {
+        this.namingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
     }
 
     checkAnswers(answers) {
@@ -169,6 +176,7 @@ export class FormDescriptionQuestionDetailComponent {
         });
     }
 
+    // TODO : remove me
     removeNode(node) {
         node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
         node.treeModel.update();
@@ -191,15 +199,14 @@ export class FormDescriptionQuestionDetailComponent {
 
     validateUoms(question) {
         question.uomsValid = [];
-        this.ucumService.validateUnits(question.uoms, (errors, units) => {
-            question.uoms.forEach((uom, i, uoms) => {
+        this.ucumService.validateUnits(question.uoms, errors => {
+            question.uoms.forEach((uom, i) => {
                 question.uomsValid[i] = errors[i];
             });
         });
     }
 
     static inputEvent = new Event('input');
-
 
     public namingSelet2Options: Select2Options = {
         multiple: true,
