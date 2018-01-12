@@ -669,7 +669,7 @@ public class NlmCdeBaseTest {
 
     protected void goHome() {
         driver.get(baseUrl + "/home");
-        textPresent("has been designed to provide access");
+        textPresent("has been designed to provide access", By.id("introduction"));
         findElement(By.cssSelector(".carousel-indicators"));
     }
 

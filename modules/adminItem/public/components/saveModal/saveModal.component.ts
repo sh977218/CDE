@@ -56,18 +56,23 @@ export class SaveModalComponent {
         this.newVersionVersionUnicity();
         if (this.elt) this.elt.changeNote = '';
         if (this.elt.elementType === 'form' && this.elt.isDraft)
-            formShared.iterateFesSync(this.elt, undefined, undefined, fe => {
-                if (!fe.question.cde.tinyId) {
-                    if (fe.question.cde.naming.length === 0) {
-                        fe.question.cde.naming.invalid = true;
-                        fe.question.cde.naming.message = 'no naming.';
-                    } else {
-                        fe.question.cde.naming.invalid = false;
-                        fe.question.cde.naming.message = null;
-                    }
-                    this.newCdes.push(fe.question.cde);
+            formShared.iterateFormElements(this.elt, {
+                async: true,
+                questionCb: (fe, cb) => {
+                    if (!fe.question.cde.tinyId) {
+                        if (fe.question.cde.naming.length === 0) {
+                            fe.question.cde.naming.invalid = true;
+                            fe.question.cde.naming.message = 'no naming.';
+                        } else {
+                            fe.question.cde.naming.invalid = false;
+                            fe.question.cde.naming.message = null;
+                        }
+                        this.newCdes.push(fe.question.cde);
+                        if (cb) cb();
+                    } else if (cb) cb();
                 }
+            }, () => {
+                this.modalRef = this.modalService.open(this.updateElementContent, {container: 'body', size: 'lg'});
             });
-        this.modalRef = this.modalService.open(this.updateElementContent, {container: 'body', size: 'lg'});
     }
 }

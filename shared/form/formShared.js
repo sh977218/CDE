@@ -332,7 +332,7 @@ export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, que
 // feCb(fe, cbContinue(error))
 export function iterateFes(fes, callback = noop, formCb = noop1, sectionCb = noop1, questionCb = noop1) {
     if (Array.isArray(fes)) {
-        async.forEach(fes, (fe, cb) => {
+        async.forEachSeries(fes, (fe, cb) => {
             if (fe.elementType === 'form') {
                 formCb(fe, err => {
                     if (err) cb(err);
@@ -347,7 +347,7 @@ export function iterateFes(fes, callback = noop, formCb = noop1, sectionCb = noo
                 questionCb(fe, cb);
             }
         }, callback);
-    }
+    } else callback();
 }
 
 // cb(fe)
@@ -400,3 +400,42 @@ export function score(question, elt) {
     });
     return result;
 }
+
+
+export function iterateFormElements(fe = {}, option = {}, cb = undefined) {
+    if (!fe.formElements) fe.formElements = [];
+    if (Array.isArray(fe.formElements)) {
+        if (option.async) {
+            async.forEachSeries(fe.formElements, (fe, doneOneFe) => {
+                if (fe.elementType === 'section') {
+                    if (option.sectionCb) option.sectionCb(fe, doneOneFe);
+                    else this.iterateFormElements(fe, option, doneOneFe);
+                }
+                else if (fe.elementType === 'form') {
+                    if (option.formCb) option.formCb(fe, doneOneFe);
+                    else this.iterateFormElements(fe, option, doneOneFe);
+                }
+                else if (fe.elementType === 'question') {
+                    if (option.questionCb) option.questionCb(fe, doneOneFe);
+                    else doneOneFe();
+                } else doneOneFe();
+            }, cb);
+        } else {
+            fe.formElements.forEach(fe => {
+                if (fe.elementType === 'section') {
+                    if (option.sectionCb) option.sectionCb(fe);
+                    else this.iterateFormElements(fe, option);
+                }
+                else if (fe.elementType === 'form') {
+                    if (option.formCb) option.formCb(fe);
+                    else this.iterateFormElements(fe, option);
+                }
+                else if (fe.elementType === 'question') {
+                    if (option.questionCb) option.questionCb(fe);
+                }
+            });
+            cb();
+        }
+    } else cb();
+}
+

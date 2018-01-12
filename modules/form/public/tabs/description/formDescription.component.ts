@@ -198,8 +198,20 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                             let copiedSection = this.localStorageService.get('sectionCopied');
                             this.formElementEditing.formElement = copiedSection;
                             this.addFormElement(copiedSection);
-                        } else TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
-                    } else TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
+                        } else {
+                            TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
+                            this.addIds(this.elt.formElements, '');
+                            this.tree.treeModel.update();
+                            this.tree.treeModel.expandAll();
+                            this.onEltChange.emit();
+                        }
+                    } else {
+                        TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
+                        this.addIds(this.elt.formElements, '');
+                        this.tree.treeModel.update();
+                        this.tree.treeModel.expandAll();
+                        this.onEltChange.emit();
+                    }
                 }
             }
         },
