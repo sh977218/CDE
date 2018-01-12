@@ -4,9 +4,8 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import _find from 'lodash/find';
 import _isEmpty from 'lodash/isEmpty';
 import _remove from 'lodash/remove';
-
+import * as formShared from "../../shared/form/formShared";
 import { AlertService } from '_app/alert/alert.service';
-
 
 @Injectable()
 export class QuickBoardListService {
@@ -46,6 +45,10 @@ export class QuickBoardListService {
                     .subscribe(res => {
                         if (res) {
                             this.forms = res;
+                            this.forms.forEach(f => {
+                                f.numQuestions = 0;
+                                formShared.iterateFes(f.formElements, undefined, undefined, undefined, () => f.numQuestions++);
+                            });
                             this.number_forms = this.forms.length;
                         }
                     }, err => this.alert.addAlert('danger', err));
