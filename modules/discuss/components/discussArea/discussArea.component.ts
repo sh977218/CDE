@@ -24,8 +24,7 @@ const tabMap = {
     "ids_tab": "ids",
     "attachments_tab": "attachments",
     "history_tab": "history",
-    "derivationRules_tab": "derivationRules",
-    "validRules_tab": "validRules"
+    "rules_tab": "derivationRules"
 };
 
 @Component({

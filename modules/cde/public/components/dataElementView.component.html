@@ -151,16 +151,10 @@
                                (click)="setCurrentTab('history_tab');">History
                                 <i *ngIf="tabsCommented.indexOf('history_tab') > -1" class="fa fa-comments pull-right"
                                    aria-hidden="true"></i></a>
-                            <a id="derivationRules_tab" class="list-group-item"
-                               [ngClass]="{'active':currentTab ==='derivationRules_tab'}"
-                               (click)="setCurrentTab('derivationRules_tab');">Score Derivations
-                                <i *ngIf="tabsCommented.indexOf('derivationRules_tab') > -1"
-                                   class="fa fa-comments pull-right"
-                                   aria-hidden="true"></i></a>
-                            <a id="validRules_tab" class="list-group-item"
-                               [ngClass]="{'active':currentTab ==='validRules_tab'}"
-                               (click)="setCurrentTab('validRules_tab');">Validation Rules
-                                <i *ngIf="tabsCommented.indexOf('validRules_tab') > -1"
+                            <a id="rules_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='rules_tab'}"
+                               (click)="setCurrentTab('rules_tab');">Rules
+                                <i *ngIf="tabsCommented.indexOf('rules_tab') > -1"
                                    class="fa fa-comments pull-right"
                                    aria-hidden="true"></i></a>
                         </ul>
@@ -215,10 +209,8 @@
                     <ng-container *ngIf="currentTab === 'history_tab'">
                         <cde-history [elt]="elt" [canEdit]="canEdit()"></cde-history>
                     </ng-container>
-                    <ng-container *ngIf="currentTab === 'derivationRules_tab'">
+                    <ng-container *ngIf="currentTab === 'rules_tab'">
                         <cde-derivation-rules [elt]="elt" (onEltChange)="saveDraft();"></cde-derivation-rules>
-                    </ng-container>
-                    <ng-container *ngIf="currentTab === 'validRules_tab'">
                         <cde-valid-rules [elt]="elt"></cde-valid-rules>
                     </ng-container>
                 </div>

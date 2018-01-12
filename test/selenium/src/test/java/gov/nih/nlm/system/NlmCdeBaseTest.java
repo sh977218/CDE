@@ -394,11 +394,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void goToScoreDerivations() {
-        clickElement(By.id("derivationRules_tab"));
-    }
-
-    protected void goToValidationRules() {
-        goToValidationRules();
+        clickElement(By.id("rules_tab"));
     }
 
     private void goToElementByName(String name, String type) {
