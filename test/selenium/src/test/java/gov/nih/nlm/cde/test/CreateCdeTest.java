@@ -49,9 +49,7 @@ public class CreateCdeTest extends BaseClassificationTest {
         clickElement(By.id("user_audit"));
         clickElement(By.partialLinkText("CDE Audit Log"));
         clickElement(By.partialLinkText(name));
-        clickElement(By.linkText(name));
-        textPresent(definition);
-
+        findElement(By.linkText(name));
     }
 
 }

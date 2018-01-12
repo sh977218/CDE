@@ -33,7 +33,7 @@ public class UomValidation extends BaseFormTest {
         clickElement(By.xpath("(//div[@id='If Yes, what are the number of CAG repeats on the larger allele_3']//input[@name='q4_uom'])[2]"));
         wait.until(ExpectedConditions.attributeToBe(
                 By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']"),
-                "title", 
+                "title",
                 "0.03175"));
 
         clickElement(By.id("displayProfiles_tab"));

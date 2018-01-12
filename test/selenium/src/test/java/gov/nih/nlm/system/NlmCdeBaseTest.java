@@ -1007,8 +1007,7 @@ public class NlmCdeBaseTest {
     protected void changeDefinitionFormat(int index, boolean isHtml) {
         clickElement(By.xpath("//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]"));
         if (isHtml) clickElement(By.xpath("//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]"));
-        if (!isHtml)
-            clickElement(By.xpath("//*[@id='definition_" + index + "']//button[contains(text(),'Plain Text')]"));
+        else clickElement(By.xpath("//*[@id='definition_" + index + "']//button[contains(text(),'Plain Text')]"));
         clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-check')]"));
         textNotPresent("Confirm");
     }
