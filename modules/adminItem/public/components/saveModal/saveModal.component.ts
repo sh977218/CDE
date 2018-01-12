@@ -74,5 +74,7 @@ export class SaveModalComponent {
             }, () => {
                 this.modalRef = this.modalService.open(this.updateElementContent, {container: 'body', size: 'lg'});
             });
+        else this.modalRef = this.modalService.open(this.updateElementContent, {container: 'body', size: 'lg'});
+
     }
 }

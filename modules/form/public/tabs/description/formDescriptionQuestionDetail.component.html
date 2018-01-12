@@ -125,24 +125,6 @@
                 </ng-container>
             </dd>
         </ng-container>
-        <dt class="col-2">Datatype:</dt>
-        <dd class="col-10">{{question.question.datatype | cdePlaceholder }}</dd>
-        <ng-container *ngIf="question.question.datatype === 'Text'">
-            <dt class="col-2">Min Length:</dt>
-            <dd class="col-10"> {{question.question?.datatypeText?.minLength | cdePlaceholder }}</dd>
-            <dt class="col-2">Max Length:</dt>
-            <dd class="col-10"> {{question.question?.datatypeText?.maxLength | cdePlaceholder}}</dd>
-        </ng-container>
-        <ng-container *ngIf="question.question.datatype === 'Number'">
-            <dt class="col-2">Min Value:</dt>
-            <dd class="col-10"> {{question.question?.datatypeNumber?.minValue | cdePlaceholder }}</dd>
-            <dt class="col-2">Max Value:</dt>
-            <dd class="col-10"> {{question.question?.datatypeNumber?.maxValue | cdePlaceholder }}</dd>
-        </ng-container>
-        <ng-container *ngIf="question.question.datatype === 'Date'">
-            <dt class="col-2">Date Format:</dt>
-            <dd class="col-10"> {{question.question?.datatypeDate?.format}}</dd>
-        </ng-container>
         <ng-container *ngIf="question.question.datatype === 'Value List'">
             <dt class="col-2">Multiple Selection:</dt>
             <dd class="col-10 multipleSelection">

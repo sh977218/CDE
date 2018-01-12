@@ -163,7 +163,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     initNewDataElement() {
         return {
             naming: [{
-                designation: ''
+                designation: '',
+                tags: ['Question Text']
             }],
             valueDomain: {datatype: 'Text', permissibleValues: []}
         };
@@ -234,8 +235,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 if (!this.isModalOpen && !_isEmpty(this.formElementEditing) && this.formElementEditing.formElement && this.formElementEditing.formElement.elementType === 'question') {
                     this.formElementEditing.index++;
                     this.openQuestionSearch();
-                    if (this.questionModelMode === 'add')
-                        setTimeout(() => window.document.getElementById("newDEName").focus(), 0);
                 } else return false;
             })
         ]);
@@ -308,6 +307,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.modalService.open(this.questionSearchTmpl, {size: 'lg'}).result.then(
             () => this.isModalOpen = false,
             () => this.isModalOpen = false);
+        if (this.questionModelMode === 'add')
+            setTimeout(() => window.document.getElementById("newDEName").focus(), 0);
     }
 
     createNewDataElement(c) {

@@ -31,9 +31,7 @@
                                     <dd class="col-9">{{cdeNaming.definition}}</dd>
                                     <dt class="col-3 text-right">Tags:</dt>
                                     <dd class="col-9">
-                                        <dl *ngFor="let cdeTag of cdeNaming.tags" class="row">
-                                            <span class="badge badge-default mx-1">{{cdeTag}}</span>
-                                        </dl>
+                                        <span *ngFor="let cdeTag of cdeNaming.tags" class="badge badge-secondary mx-1">{{cdeTag}}</span>
                                     </dd>
                                 </dl>
                             </dd>
