@@ -197,19 +197,18 @@ const cdeSteps: Array<any> = [
         element: "#history_tab",
         content: "This section shows all prior states of the CDE. Each version can be view as it was at a given date. In addition, differences between versions can be highlighted to easily identify changes over time.",
         placement: "top",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#derivationRules_tab", "derivationRulesDiv", resolve))
+        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#rules_tab", "derivationRulesDiv", resolve))
 
     },
     {
         title: " 28/42 Derivation Rules",
-        element: "#derivationRules_tab",
+        element: "#rules_tab",
         content: "Derivation Rules are used to connect CDEs together, for example, in the form of a score.",
         placement: "bottom",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#validRules_tab", "validRulesDiv", resolve))
     },
     {
         title: " 29/42 Validation Rules",
-        element: "#validRules_tab",
+        element: "#rules_tab",
         content: "Validation Rules are used to validate CDE. ",
         placement: "bottom"
     },
