@@ -44,10 +44,10 @@ public class CreateCdeTest extends BaseClassificationTest {
         goToIdentifiers();
         Assert.assertEquals("", findElement(By.id("dd_version_nlm")).getText());
 
+        mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.id("user_audit"));
         clickElement(By.partialLinkText("CDE Audit Log"));
-
         clickElement(By.partialLinkText(name));
         clickElement(By.linkText(name));
         textPresent(definition);

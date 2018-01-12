@@ -283,7 +283,7 @@ exports.update = function (elt, user, callback, special) {
                         });
                     }
                     callback(err, newDe);
-                    auditModications(dataElement, newDe, user);
+                    auditModifications(dataElement, newDe, user);
                 });
             }
         });
