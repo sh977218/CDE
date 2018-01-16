@@ -62,7 +62,7 @@ public class FormAddCdeTest extends QuestionTest {
 
         textPresent("newCde2 second name", By.id("designation_1"));
         textPresent("newCde2 second definition", By.id("definition_1"));
-        textPresent("Test", By.id("tags_1"));
+        textPresent("TEST", By.id("tags_1"));
 
         goToIdentifiers();
         textPresent("newCde2Source", By.id("source_0"));
@@ -80,7 +80,7 @@ public class FormAddCdeTest extends QuestionTest {
         textPresent("Question Text", By.id("tags_0"));
         textPresent("newCde3 second name", By.id("designation_1"));
         textPresent("newCde3 second definition", By.id("definition_1"));
-        textPresent("Test", By.id("tags_1"));
+        textPresent("TEST", By.id("tags_1"));
         textPresent("Preferred Question Text", By.id("tags_1"));
         textNotPresent("newCde3 third name");
         textNotPresent("you should not see this definition");
