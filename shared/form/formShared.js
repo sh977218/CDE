@@ -332,7 +332,7 @@ export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, que
 // feCb(fe, cbContinue(error))
 export function iterateFes(fes, callback = noop, formCb = noop1, sectionCb = noop1, questionCb = noop1) {
     if (Array.isArray(fes)) {
-        async.forEachSeries(fes, (fe, cb) => {
+        async.forEach(fes, (fe, cb) => {
             if (fe.elementType === 'form') {
                 formCb(fe, err => {
                     if (err) cb(err);
@@ -347,7 +347,7 @@ export function iterateFes(fes, callback = noop, formCb = noop1, sectionCb = noo
                 questionCb(fe, cb);
             }
         }, callback);
-    } else callback();
+    }
 }
 
 // cb(fe)
