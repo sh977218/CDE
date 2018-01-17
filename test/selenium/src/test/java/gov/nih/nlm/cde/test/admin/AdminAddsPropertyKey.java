@@ -21,6 +21,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
 
         // ensure it got saved.
         goHome();
+        driver.navigate().refresh();
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));

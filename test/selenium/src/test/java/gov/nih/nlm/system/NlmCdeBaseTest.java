@@ -1455,13 +1455,6 @@ public class NlmCdeBaseTest {
         textPresent(newStewardOrg);
     }
 
-    protected void editUninOfMeasurement(String newUom) {
-        clickElement(By.xpath("//*[@id = 'uom']//i[contains(@class,'fa fa-edit')]"));
-        findElement(By.xpath("//*[@id = 'uom']//input")).sendKeys(newUom);
-        clickElement(By.xpath("//*[@id = 'uom']//button[contains(@class,'fa fa-check')]"));
-        textPresent(newUom, By.id("uom"));
-    }
-
     private void clickIFrameElement(By by) {
         int num_try = 0;
         boolean clickable = false;
@@ -1475,8 +1468,7 @@ public class NlmCdeBaseTest {
                 clickable = true;
             } catch (Exception e) {
                 System.out.println("   exception: " + e);
-                clickable = false;
-                if (num_try == 10) clickable = true;
+                clickable = num_try == 10;
             }
         }
         hangon(2);
@@ -1496,8 +1488,7 @@ public class NlmCdeBaseTest {
                 clickable = true;
             } catch (Exception e) {
                 System.out.println("   exception: " + e);
-                clickable = false;
-                if (num_try == 10) clickable = true;
+                clickable = num_try == 10;
             }
         }
         hangon(2);
@@ -1512,6 +1503,10 @@ public class NlmCdeBaseTest {
         hangon(1);
         driver.switchTo().frame(findElement(By.cssSelector("iframe")));
         textPresent("CDE API");
+        // it appears selenium has issues scrolling inside iframe, this might give us room
+        if (api.indexOf("form") == 0) {
+            clickElement(By.cssSelector("a[href='#/CDE']"));
+        }
         findElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//a")).click();
         clickIFrameElement(By.xpath("//button[. = 'Try it out ']"));
         sendKeyIFrameElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input"), tinyId);
