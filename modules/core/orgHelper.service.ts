@@ -7,10 +7,14 @@ import { UserService } from '_app/user.service';
 export class OrgHelperService  {
     orgsDetailedInfo: any;
     private promise: Promise<void>;
+    private id: number;
 
     constructor(private http: Http,
                 private userService: UserService) {
         this.reload();
+
+        this.id = new Date().getTime();
+        console.log("construct " + this.id);
     }
 
     addLongNameToOrgs(buckets) {
@@ -51,6 +55,7 @@ export class OrgHelperService  {
     }
 
     reload() {
+        console.log("reloading: " + this.id);
         return this.promise = new Promise<void>(resolve => {
             this.http.get('/listOrgsDetailedInfo')
                 .map(r => r.json())

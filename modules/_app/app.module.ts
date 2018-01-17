@@ -19,6 +19,7 @@ import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFoundComponent';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';
+import { CoreModule } from "../core/core.module";
 
 @NgModule({
     imports: [
@@ -34,6 +35,7 @@ import { UserService } from '_app/user.service';
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
+        CoreModule
     ],
     declarations: [
         AlertComponent,
