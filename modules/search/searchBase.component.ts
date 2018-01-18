@@ -12,6 +12,44 @@ import { ElasticQueryResponse, Elt, User } from 'core/models.model';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 import { Subscription } from 'rxjs/Subscription';
 
+export const searchStyles: string = `
+    .treeItem {
+        margin-left: 15px;
+    }
+    .treeItemIcon {
+        font-size: 14px;
+    }
+    .treeItemText {
+        font-size: 12px;
+        word-break: break-word;
+    }
+    .treeParent {
+        font-size: 12px;
+        line-height: 1;
+        margin-bottom: .2rem;
+        margin-top: .2rem;
+        padding-left: 10px;
+        text-indent: -5px;
+    }
+    .treeCurrent {
+        cursor: default;
+        font-size: 12px;
+        font-weight: bolder;
+        line-height: 1;
+        margin-bottom: .2rem;
+        margin-top: .2rem;
+        text-indent: -1px;
+    }
+    .treeChild {
+        font-size: 12px;
+        line-height: 1;
+        margin-bottom: .2rem;
+        margin-top: .2rem;
+        padding-left: 10px;
+        text-indent: -5px;
+    }
+`;
+
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @HostListener('window:beforeunload') unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname))
@@ -127,12 +165,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.searchSettings.selectedOrg = orgName;
             }
         } else {
-            if (this.altClassificationFilterMode) {
-                this.searchSettings.selectedOrgAlt = undefined;
-            } else {
-                this.searchSettings.selectedOrg = undefined;
-            }
-            classifToAlter.length = 0;
+            if (this.altClassificationFilterMode)
+                this.searchSettings.classificationAlt.length = 0;
+            else
+                this.searchSettings.classification.length = 0;
         }
         delete this.aggregations.groups;
         if (this.isSearched()) {
@@ -675,7 +711,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             classifToSelect.push(e);
         } else {
             let i = classifToSelect.indexOf(e);
-            if (i > -1) classifToSelect.length = i;
+            if (i > -1) classifToSelect.length = i + 1;
             else classifToSelect.push(e);
         }
 
@@ -686,7 +722,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     selectTopic(topic) {
         let toSelect = !this.searchSettings.meshTree ? [] : this.searchSettings.meshTree.split(';');
         let i = toSelect.indexOf(topic);
-        if (i > -1) toSelect.length = i;
+        if (i > -1) toSelect.length = i + 1;
         else toSelect.push(topic);
         this.searchSettings.meshTree = toSelect.join(';');
 
