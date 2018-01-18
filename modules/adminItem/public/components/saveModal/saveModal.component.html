@@ -4,6 +4,55 @@
     </div>
     <form #updateElementForm="ngForm">
         <div class="modal-body" id="updateElementModalBody">
+            <div *ngIf="newCdes.length > 0" class="form-group">
+                <div class="text-truncate m-2">
+                    <span class="font-weight-bold">There are new CDEs</span>
+                </div>
+                <div *ngFor="let newCde of newCdes" class="card">
+                    <div class="card-header">
+                        <div class="float-left" (click)="newCde.isCollapsed = !newCde.isCollapsed"
+                             [ngClass]="{'text-danger':newCde.naming.length === 0}">
+                            <span *ngIf="newCde.naming.length > 0" class="hand-cursor">
+                                {{newCde.naming[0].designation}}
+                            </span>
+                            <span *ngIf="newCde.naming.length === 0">
+                            naming is empty;
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body" [ngbCollapse]="!newCde.isCollapsed">
+                        <dl class="row">
+                            <dt class="col-2 text-right">Naming:</dt>
+                            <dd class="col-10">
+                                <dl *ngFor="let cdeNaming of newCde.naming" class="row">
+                                    <dt class="col-3 text-right">Designation:</dt>
+                                    <dd class="col-9">{{cdeNaming.designation}}</dd>
+                                    <dt class="col-3 text-right">Definition:</dt>
+                                    <dd class="col-9">{{cdeNaming.definition}}</dd>
+                                    <dt class="col-3 text-right">Tags:</dt>
+                                    <dd class="col-9">
+                                        <span *ngFor="let cdeTag of cdeNaming.tags" class="badge badge-secondary mx-1">{{cdeTag}}</span>
+                                    </dd>
+                                </dl>
+                            </dd>
+                            <dt class="col-2 text-right">Data Type:</dt>
+                            <dd class="col-10">{{newCde.datatype}}</dd>
+                            <dt class="col-2 text-right">Identifiers:</dt>
+                            <dd class="col-10">
+                                <dl *ngFor="let cdeId of newCde.ids" class="row">
+                                    <dt class="col-3 text-right">Source:</dt>
+                                    <dd class="col-9">{{cdeId.source}}</dd>
+                                    <dt class="col-3 text-right">Id:</dt>
+                                    <dd class="col-9">{{cdeId.id}}</dd>
+                                    <dt class="col-3 text-right">Version:</dt>
+                                    <dd class="col-9">{{cdeId.version}}</dd>
+                                </dl>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label for="changeNote">Change Note</label>
                 <textarea id="changeNote" class="form-control" name="changeNote"
@@ -25,8 +74,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn  btn-outline-dark" (click)="c('cancel')" id="cancelSaveBtn" type="button">Cancel</button>
-            <button class="btn  btn-warning" id="confirmSaveBtn" (click)="confirmSave();" type="button"
+            <button class="btn btn-outline-dark" (click)="c('cancel')" id="cancelSaveBtn" type="button">Cancel</button>
+            <button class="btn btn-warning" id="confirmSaveBtn" (click)="confirmSave();" type="button"
                     [disabled]="!updateElementForm.form.valid || (!overrideVersion && duplicatedVersion)">Save
             </button>
         </div>

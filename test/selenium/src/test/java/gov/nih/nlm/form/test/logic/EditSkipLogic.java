@@ -32,7 +32,7 @@ public class EditSkipLogic extends BaseFormTest {
         textPresent("Often", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
         textPresent("Always", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
 
-        startEditQuestionSectionById("question_3_2");
+        startEditQuestionById("question_3_2");
         (new Actions(driver)).moveToElement(findElement(By.id("question_3_2"))).perform(); // scroll into view
         String inputXpath = locateSkipLogicEditTextareaXpathByQuestionId("question_3_2");
         editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1, true,
@@ -47,7 +47,7 @@ public class EditSkipLogic extends BaseFormTest {
         editSkipLogic(inputXpath, "=", 6, 1, true, "Unexpected number of tokens in expression 6");
         editSkipLogic(inputXpath, "\"2\"", 5, 2, false, "Unexpected number of tokens in expression 2");
 
-        saveEditQuestionSectionById("question_3_2");
+        saveEditQuestionById("question_3_2");
         newFormVersion();
 
         goToFormByName(formName);

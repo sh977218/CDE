@@ -62,7 +62,7 @@ public class BaseFormTest extends FormCommentTest {
                 }
             }
         }
-        startEditQuestionSectionById(sectionId);
+        startEditSectionById(sectionId);
         if (title != null) {
             editSectionTitle(sectionId, title);
         }
@@ -70,15 +70,16 @@ public class BaseFormTest extends FormCommentTest {
             hangon(1); // allow time for id to be processed
             setRepeat(sectionId, repeat);
         }
-        saveEditQuestionSectionById(sectionId);
+        saveEditSectionById(sectionId);
+        textPresent(title, By.id(sectionId));
     }
 
     public void editSectionTitle(String sectionId, String title) {
-        clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
-        String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input";
+        clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//i[contains(@class,'fa-edit')]"));
+        String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input";
         findElement(By.xpath(sectionInput)).clear();
         findElement(By.xpath(sectionInput)).sendKeys(title);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//button[contains(text(),'Confirm')]"));
     }
 
     public void questionEditAddUom(String id, String text) {

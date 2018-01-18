@@ -1,22 +1,30 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Host, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
 import _toString from 'lodash/toString';
 
-import { CdeForm, FormElement, FormQuestion } from 'core/form.model';
+import { FormElement, FormQuestion } from 'core/form.model';
 import { FormService } from 'nativeRender/form.service';
-
+import { FormDescriptionComponent } from "./formDescription.component";
 
 @Component({
     selector: 'cde-form-description-question',
-    templateUrl: 'formDescriptionQuestion.component.html'
+    templateUrl: 'formDescriptionQuestion.component.html',
+    styles: [`            
+        .outdated-bg {
+            background-color: #ffecc5;
+            border: 1px;
+            border-radius: 10px;
+        }
+        `
+    ]
 })
 export class FormDescriptionQuestionComponent implements OnInit {
-    @Input() elt: CdeForm;
     @Input() canEdit: boolean = false;
     @Input() node: TreeNode;
+    @Input() index;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild('updateCdeVersionTmpl') updateCdeVersionTmpl: NgbModalModule;
@@ -27,7 +35,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
     question: FormQuestion;
     parent: FormElement;
 
-    constructor(public formService: FormService,
+    constructor(@Host() public formDescriptionComponent: FormDescriptionComponent,
+                public formService: FormService,
                 private http: Http,
                 public modalService: NgbModal) {
     }
@@ -125,7 +134,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
                         return modal;
                     })();
 
-                    this.modalService.open(this.updateCdeVersionTmpl).result.then(() => {
+                    this.modalService.open(this.updateCdeVersionTmpl, {size: 'lg'}).result.then(() => {
                         question.question = newQuestion.question;
                         question.label = newQuestion.label;
                         this.stageElt.emit();
@@ -134,4 +143,24 @@ export class FormDescriptionQuestionComponent implements OnInit {
                 });
             });
     }
+
+    hoverInQuestion(question) {
+        if (!this.isSubForm && this.canEdit) {
+            question.hover = true;
+        }
+    }
+
+    hoverOutQuestion(question) {
+        if (!this.isSubForm && this.canEdit) {
+            question.hover = false;
+        }
+    }
+
+    editQuestion(question) {
+        if (!this.isSubForm && this.canEdit) {
+            question.edit = !question.edit;
+            this.formDescriptionComponent.setCurrentEditing(this.parent.formElements, question, this.index);
+        }
+    }
+
 }

@@ -142,6 +142,7 @@ export interface FormSectionOrForm extends FormElement {
 export class FormSection implements FormSectionOrForm {
     _id;
     edit: boolean;
+    hover: boolean;
     elementType = 'section';
     expanded = true; // Calculated, used for View TreeComponent
     forbidMatrix;
@@ -170,13 +171,20 @@ export class FormInForm implements FormSectionOrForm {
 }
 
 export class FormQuestion implements FormElement {
+    constructor(_newCde?: boolean, _edit?: boolean) {
+        this.newCde = _newCde;
+        this.edit = _edit;
+    }
     _id;
+    descriptionId: string;
+    newCde: boolean = false;
     elementType = 'question';
     edit: boolean = false;
+    hover: boolean = false;
     formElements = [];
     hideLabel: boolean;
     incompleteRule: boolean;
-    instructions;
+    instructions: Instruction;
     label = '';
     question: Question = new Question();
     questionId: string;
@@ -221,9 +229,11 @@ export class Question {
     uomsAlias: string[] = []; // calculated, NativeRenderService
 }
 
-class QuestionCde {
+export class QuestionCde {
     ids: CdeId[] = [];
     name: string;
+    naming = [];
+    datatype = 'Text';
     permissibleValues: PermissibleValue[] = [];
     outdated: boolean = false;
     tinyId: string;

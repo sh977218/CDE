@@ -87,7 +87,6 @@
                            [attr.max]="q.question.datatypeNumber ? q.question.datatypeNumber.maxValue : null"
                            [required]="q.question.required"
                            [disabled]="!q.question.editable"/>
-                    <div *ngIf="q.question.uoms.length > 0">Units of Measure:</div>
                     <label *ngFor="let uom of q.question.uoms"
                            [ngClass]="{'nativeRequiredBox': q.question.required}"
                            style="padding-left: 10px;display: block">
