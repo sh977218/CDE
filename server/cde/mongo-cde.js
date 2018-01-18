@@ -206,7 +206,7 @@ exports.save = function (mongooseObject, callback) {
 };
 
 exports.create = function (cde, user, callback) {
-    var newDe = new DataElement(cde);
+    let newDe = new DataElement(cde);
     if (!newDe.registrationState || !newDe.registrationState.registrationStatus) {
         newDe.registrationState = {
             registrationStatus: "Incomplete"
@@ -216,7 +216,10 @@ exports.create = function (cde, user, callback) {
     newDe.createdBy.userId = user._id;
     newDe.createdBy.username = user.username;
     newDe.tinyId = mongo_data_system.generateTinyId();
-    newDe.save(callback);
+    newDe.save((err, newElt) => {
+        callback(err, newElt);
+        auditModifications(null, newElt, user);
+    });
 };
 
 exports.fork = function (elt, user, callback) {
@@ -280,7 +283,7 @@ exports.update = function (elt, user, callback, special) {
                         });
                     }
                     callback(err, newDe);
-                    exports.saveModification(dataElement, newDe, user);
+                    auditModifications(dataElement, newDe, user);
                 });
             }
         });
@@ -312,9 +315,8 @@ exports.transferSteward = function (from, to, callback) {
     });
 };
 
-exports.saveModification = function (oldDe, newDe, user) {
-    var diff = cdediff.diff(newDe, oldDe);
-    var message = {
+let auditModifications = function (oldDe, newDe, user) {
+    let message = {
         date: new Date()
         , user: {
             username: user.username
@@ -325,18 +327,22 @@ exports.saveModification = function (oldDe, newDe, user) {
             , _id: newDe._id
             , name: newDe.naming[0].designation
         }
-        , previousItem: {
+    };
+
+    if (oldDe) {
+        message.previousItem = {
             tinyId: oldDe.tinyId
             , version: oldDe.version
             , _id: oldDe._id
             , name: oldDe.naming[0].designation
-        }
-        , diff: diff
-    };
-    CdeAudit(message).save((err) => {
+        };
+        message.diff = cdediff.diff(newDe, oldDe);
+    }
+
+    CdeAudit(message).save(err => {
         if (err) {
             logging.errorLogger.error("Error: Cannot add to CDE Audit. newDe.tinyId: " + newDe.tinyId, {
-                origin: "cde.mongo-cde.saveModification",
+                origin: "cde.mongo-cde.auditModifications",
                 stack: new Error().stack,
                 details: "err " + err
             });

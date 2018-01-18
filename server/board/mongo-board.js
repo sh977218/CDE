@@ -23,11 +23,6 @@ schemas.pinningBoardSchema.pre('remove', function (next) {
 var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
 exports.PinningBoard = PinningBoard;
 
-
-exports.pinCdes = function () {
-
-}
-
 /* ---------- PUT NEW REST API above ---------- */
 
 exports.getPrimaryName = function (elt) {
