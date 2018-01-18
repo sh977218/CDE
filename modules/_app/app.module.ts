@@ -19,7 +19,7 @@ import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFoundComponent';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';
-import { CoreModule } from "../core/core.module";
+import { OrgHelperService } from "../core/orgHelper.service";
 
 @NgModule({
     imports: [
@@ -35,7 +35,6 @@ import { CoreModule } from "../core/core.module";
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
-        CoreModule
     ],
     declarations: [
         AlertComponent,
@@ -50,7 +49,8 @@ import { CoreModule } from "../core/core.module";
         ElasticService, // TODO: create shared CoreModule loaded async and provide to all lazy routes
         LoginService,
         QuickBoardListService,
-        UserService
+        UserService,
+        OrgHelperService,
     ],
     exports: [
         PageNotFoundComponent,
