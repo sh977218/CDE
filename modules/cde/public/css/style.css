@@ -120,10 +120,6 @@ a {
     padding: 0
 }
 
-.clearFloatsAfter::after {
-    clear: both;
-}
-
 .fake-link {
     color: #337ab7;
     text-decoration: none;
