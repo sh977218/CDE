@@ -19,6 +19,7 @@ import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFoundComponent';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';
+import { OrgHelperService } from "../core/orgHelper.service";
 
 @NgModule({
     imports: [
@@ -48,7 +49,8 @@ import { UserService } from '_app/user.service';
         ElasticService, // TODO: create shared CoreModule loaded async and provide to all lazy routes
         LoginService,
         QuickBoardListService,
-        UserService
+        UserService,
+        OrgHelperService,
     ],
     exports: [
         PageNotFoundComponent,

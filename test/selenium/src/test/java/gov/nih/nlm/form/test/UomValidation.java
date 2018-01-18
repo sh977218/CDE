@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -30,7 +31,10 @@ public class UomValidation extends BaseFormTest {
         clickElement(By.xpath("(//div[@id='If Yes, what are the number of CAG repeats on the larger allele_3']//input[@name='q4_uom'])[1]"));
         Assert.assertEquals(findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']")).getAttribute("title"),"1.25");
         clickElement(By.xpath("(//div[@id='If Yes, what are the number of CAG repeats on the larger allele_3']//input[@name='q4_uom'])[2]"));
-        Assert.assertEquals(findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']")).getAttribute("title"),"0.03175");
+        wait.until(ExpectedConditions.attributeToBe(
+                By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']"),
+                "title",
+                "0.03175"));
 
         clickElement(By.id("displayProfiles_tab"));
         createDisplayProfile(0, "Uom", true, true, true, true, "Follow-up", 1, false);
