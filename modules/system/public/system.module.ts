@@ -23,14 +23,12 @@ import { WidgetModule } from 'widget/widget.module';
         OrgAdminComponent,
         UsersMgtComponent,
     ],
-    entryComponents: [
-    ],
+    entryComponents: [],
     exports: [
         OrgAdminComponent,
         UsersMgtComponent,
     ],
-    providers: [
-    ],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SystemModule {

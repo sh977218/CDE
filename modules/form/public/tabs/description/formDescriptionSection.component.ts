@@ -1,7 +1,11 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import {
+    Component, ElementRef, EventEmitter, Host, Input, OnInit, Output, TemplateRef,
+    ViewChild
+} from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
+import _isEmpty from 'lodash/isEmpty';
 
 import { AlertService } from '_app/alert/alert.service';
 import { FormElement, FormSection, SkipLogic } from "core/form.model";
@@ -9,6 +13,7 @@ import { FormattedValue } from 'core/models.model';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
+import { FormDescriptionComponent } from "./formDescription.component";
 
 @Component({
     selector: "cde-form-description-section",
@@ -17,8 +22,9 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
     @Input() canEdit: boolean = false;
+    @Input() index;
     @Input() node: TreeNode;
-    @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
+    @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
@@ -34,7 +40,8 @@ export class FormDescriptionSectionComponent implements OnInit {
         {label: "Over first question", value: "F"}
     ];
 
-    constructor(private localStorageService: LocalStorageService,
+    constructor(@Host() public formDescriptionComponent: FormDescriptionComponent,
+                private localStorageService: LocalStorageService,
                 private alert: AlertService,
                 public skipLogicValidateService: SkipLogicValidateService) {
     }
@@ -73,7 +80,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     removeNode(node) {
         node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
         node.treeModel.update();
-        this.stageElt.emit();
+        this.onEltChange.emit();
     }
 
     static getRepeatOption(section) {
@@ -101,11 +108,11 @@ export class FormDescriptionSectionComponent implements OnInit {
     setRepeat(section) {
         if (section.repeatOption === "F") {
             section.repeat = "First Question";
-            this.stageElt.emit();
+            this.onEltChange.emit();
         } else if (section.repeatOption === "N") {
             section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
             if (section.repeat > 0)
-                this.stageElt.emit();
+                this.onEltChange.emit();
         }
         else {
             section.repeat = undefined;
@@ -133,7 +140,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     typeaheadSkipLogic(parent, fe, event) {
         if (fe.skipLogic && fe.skipLogic.condition !== event) {
             this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
-            this.stageElt.emit();
+            this.onEltChange.emit();
         }
     }
 
@@ -147,5 +154,24 @@ export class FormDescriptionSectionComponent implements OnInit {
             section.isCopied = "clear";
             delete this.elt.isCopied;
         }, 3000);
+    }
+
+    hoverInSection(section) {
+        if (!this.isSubForm && this.canEdit) {
+            section.hover = true;
+        }
+    }
+
+    hoverOutSection(section) {
+        if (!this.isSubForm && this.canEdit) {
+            section.hover = false;
+        }
+    }
+
+    editSection(section) {
+        if (!this.isSubForm && this.canEdit) {
+            section.edit = !section.edit;
+            this.formDescriptionComponent.setCurrentEditing(this.parent.formElements, section, this.index);
+        }
     }
 }

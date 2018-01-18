@@ -93,6 +93,7 @@ public class EltIdMaps {
         eltMap.put("Form Delete Test", "QyT6ElOKLl");
         eltMap.put("Form History Test", "QkGEqKVNZ");
         eltMap.put("Form History Compare Test", "XJQfsXNjz");
+        eltMap.put("formAddCdeTest", "7kkK62xR4");
         eltMap.put("Answer List Test", "XyWvhfX4W");
         eltMap.put("Form Table Test", "713d9u1vX");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");

@@ -18,23 +18,23 @@ public class RemoveExistingSkipLogicTest extends BaseFormTest {
 
         textPresent(skipLogic);
 
-        startEditQuestionSectionById("question_0_1");
+        startEditQuestionById("question_0_1");
         findElement(By.cssSelector("#question_0_1 input.skipLogicCondition")).clear();
         findElement(By.cssSelector("#question_0_1 input.skipLogicCondition")).sendKeys(Keys.SPACE);
         findElement(By.cssSelector("#question_0_1 input.skipLogicCondition")).sendKeys(Keys.BACK_SPACE);
-        saveEditQuestionSectionById("question_0_1");
+        saveEditQuestionById("question_0_1");
 
-        startEditQuestionSectionById("section_0_2");
+        startEditSectionById("section_0_2");
         findElement(By.cssSelector("#section_0_2 input.skipLogicCondition")).clear();
         findElement(By.cssSelector("#section_0_2 input.skipLogicCondition")).sendKeys(Keys.SPACE);
         findElement(By.cssSelector("#section_0_2 input.skipLogicCondition")).sendKeys(Keys.BACK_SPACE);
-        saveEditQuestionSectionById("section_0_2");
+        saveEditSectionById("section_0_2");
 
-        startEditQuestionSectionById("inform_0_3");
+        startEditSectionById("inform_0_3");
         findElement(By.cssSelector("#inform_0_3 input.skipLogicCondition")).clear();
         findElement(By.cssSelector("#inform_0_3 input.skipLogicCondition")).sendKeys(Keys.SPACE);
         findElement(By.cssSelector("#inform_0_3 input.skipLogicCondition")).sendKeys(Keys.BACK_SPACE);
-        saveEditQuestionSectionById("inform_0_3");
+        saveEditSectionById("inform_0_3");
         newFormVersion();
 
         goToFormByName(formName);

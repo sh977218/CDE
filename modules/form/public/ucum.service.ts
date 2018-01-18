@@ -18,7 +18,7 @@ export class UcumService {
     // cb(errors, units)
     validateUnits(uoms: string[], cb) {
         if (Array.isArray(uoms) && uoms.length)
-            this.http.get('/ucumValidate?uoms=' + JSON.stringify(uoms)).map(r => r.json())
+            this.http.get('/ucumValidate?uoms=' + encodeURIComponent(JSON.stringify(uoms))).map(r => r.json())
                 .subscribe(response => cb(response.errors, response.units));
         else
             cb([], []);
