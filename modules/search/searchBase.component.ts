@@ -13,18 +13,21 @@ import { HelperObjectsService } from 'widget/helperObjects.service';
 import { Subscription } from 'rxjs/Subscription';
 
 export const searchStyles: string = `
+    .treeTitle {
+        display: inline-block;
+        font-weight: bold;
+        text-indent: -1px;
+    }
     .treeItem {
         margin-left: 15px;
     }
     .treeItemIcon {
-        font-size: 14px;
     }
     .treeItemText {
-        font-size: 12px;
+        font-size: 80%;
         word-break: break-word;
     }
     .treeParent {
-        font-size: 12px;
         line-height: 1;
         margin-bottom: .2rem;
         margin-top: .2rem;
@@ -33,7 +36,6 @@ export const searchStyles: string = `
     }
     .treeCurrent {
         cursor: default;
-        font-size: 12px;
         font-weight: bolder;
         line-height: 1;
         margin-bottom: .2rem;
@@ -41,7 +43,6 @@ export const searchStyles: string = `
         text-indent: -1px;
     }
     .treeChild {
-        font-size: 12px;
         line-height: 1;
         margin-bottom: .2rem;
         margin-top: .2rem;
@@ -291,11 +292,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     static focusClassification() {
-        window.document.getElementById('#classif_filter_title').focus();
+        window.document.getElementById('classificationListHolder').focus();
     }
 
     static focusTopic() {
-        window.document.getElementById('#meshTrees_filter').focus();
+        window.document.getElementById('meshTreesListHolder').focus();
     }
 
     generateSearchForTerm(pageNumber = null) {

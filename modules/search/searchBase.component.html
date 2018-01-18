@@ -201,7 +201,7 @@
                 <p class="text-muted">Filter by:</p>
                 <!-- CLASSIFICATION AGGREGATIONS -->
                 <div *ngIf="aggregations.orgs.buckets" id="classificationListHolder" class="my-3">
-                    <strong id="classif_filter_title">Classification</strong>
+                    <span class="treeTitle">Classification</span>
                     <span *ngIf="!altClassificationFilterMode && !embedded" id="altClassificationFilterModeToggle"
                           class="fa fa-plus-square hand-cursor" (click)="setAltClassificationFilterMode()" role="link"
                           ngbTooltip="Add a second classifications filter as an AND condition" placement="right"
@@ -248,7 +248,7 @@
                 </div>
                 <!-- TOPIC AGGREGATIONS -->
                 <div *ngIf="searchSettings.meshTree || aggregations.topics.length" id="meshTreesListHolder" class="my-3">
-                    <strong id="meshTrees_filter">Topics</strong>
+                    <span class="treeTitle">Topics</span>
                     <div *ngFor="let e of getCurrentSelectedTopic(); index as i; last as isLast"
                          class="hand-cursor" (click)="selectTopic(e)" role="link">
                         <div *ngIf="!isLast; else topicSelf" class="treeParent">
@@ -268,9 +268,8 @@
                     </div>
                 </div>
                 <!-- REGISTRATION STATUS AGGREGATION -->
-                <div id="registrationStatusListHolder" class="my-3">
-                    <strong [hidden]="!aggregations.statuses.statuses.buckets" id="status_filter">
-                        Registration Status</strong>
+                <div *ngIf="aggregations.statuses.statuses.buckets" id="registrationStatusListHolder" class="my-3">
+                    <span class="treeTitle">Registration Status</span>
                     <ng-container *ngFor="let t of aggregations.statuses.statuses.buckets" >
                         <div *ngIf="t.doc_count > 0" class="treeItem hand-cursor"
                              (click)="addStatusFilter(t.key)" role="link"
@@ -286,9 +285,8 @@
                     </ng-container>
                 </div>
                 <!--DATA TYPE AGGREGATION-->
-                <div *ngIf="module === 'cde'" id="datatypeListHolder" class="my-3">
-                    <strong [hidden]="!aggregations.datatype.datatype.buckets.length" id="datatype_filter">
-                        Data Types</strong>
+                <div *ngIf="module === 'cde' && aggregations.datatype.datatype.buckets.length" id="datatypeListHolder" class="my-3">
+                    <span class="treeTitle">Data Types</span>
                     <ng-container *ngFor="let t of aggregations.datatype.datatype.buckets">
                         <div *ngIf="t.doc_count > 0" class="treeItem hand-cursor"
                              (click)="addDatatypeFilter(t.key)" role="link">

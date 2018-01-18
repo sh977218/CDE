@@ -66,6 +66,6 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.id("li-blank-United States Public Health Service"));
         clickElement(By.id("li-blank-National Institutes of Health (U.S.)"));
         textPresent("National Institute of Neurological Disorders and Stroke");
-        scrollToViewById("status_filter");
+        scrollToViewById("registrationStatusListHolder");
     }
 }
