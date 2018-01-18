@@ -15,9 +15,9 @@ public class NoLabelLogicTest extends BaseFormTest {
         textPresent("Undifferentiated/Indeterminant/Intersex");
         textPresent("Walking speed value");
         goToFormDescription();
-        startEditQuestionSectionById("question_0_1");
+        startEditQuestionById("question_0_1");
         findElement(By.xpath(locateSkipLogicEditTextareaXpathByQuestionId("question_0_1"))).sendKeys("\"Gender type\" = \"Unknown\"");
-        saveEditQuestionSectionById("question_0_1");
+        saveEditQuestionById("question_0_1");
         newFormVersion();
         textPresent("Show if: \"Gender type\" = \"Unknown\"");
         goToPreview();

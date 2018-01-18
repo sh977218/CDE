@@ -20,9 +20,9 @@ public class UomValidation extends BaseFormTest {
         textPresent("m");
         textPresent("cm");
 
-        startEditQuestionSectionById("question_0_3");
+        startEditQuestionById("question_0_3");
         questionEditAddUom("question_0_3", "kilogram");
-        saveEditQuestionSectionById("question_0_3");
+        saveEditQuestionById("question_0_3");
         findElement(By.xpath("//*[contains(@class,'badge-danger')]//*[text()='kilogram']"));
         textPresent("replaced with kg");
 

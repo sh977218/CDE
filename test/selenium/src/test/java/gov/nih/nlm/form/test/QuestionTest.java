@@ -5,10 +5,125 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
+
 public class QuestionTest extends BaseFormTest {
 
     public void addQuestionToSection(String cdeName, int sectionNumber) {
         addQuestionToSectionUnsafe(cdeName, sectionNumber);
+    }
+
+    public void addCdeByNameBeforeId(String cdeName, String id) {
+        String dropXpath = "//*[@id='" + id + "']//tree-node-drop-slot[1]";
+        addCde(cdeName, dropXpath);
+        textPresent(cdeName, By.id(id));
+    }
+
+    public void addCdesByNames(String[] cdeNames) {
+        for (String cdeName : cdeNames) {
+            try {
+                new Actions(driver).sendKeys("q").build().perform();
+                textPresent("Create Data Element");
+                new Actions(driver).sendKeys(cdeName).build().perform();
+                clickElement(By.id("createNewDataElement"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void addCde(String cdeName, String dropXpath) {
+        WebElement sourceElt = findElement(By.xpath("//*[@id='startAddingQuestions']"));
+        WebElement targetElt = findElement(By.xpath(dropXpath));
+        (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
+        dragAndDrop(sourceElt, targetElt);
+        try {
+            if (driver.findElements(By.id("addNewCdeBtn")).size() > 0)
+                clickElement(By.id("addNewCdeBtn"));
+            textPresent("Create Data Element");
+            new Actions(driver).sendKeys(cdeName).build().perform();
+            clickElement(By.id("createNewDataElement"));
+        } catch (Exception e) {
+        }
+    }
+
+    public void addCdeNameById(String questionId, String newName, String newDefinition, String[] newTags) {
+        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]")).size() > 0;
+        if (!isQuestionOpen) startEditQuestionById(questionId);
+        String preXpath = "//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]//*[@class='newCdeName']";
+        if (newName != null)
+            findElement(By.xpath(preXpath + "//*[contains(@class,'newCdeDesignation')]")).sendKeys(newName);
+        if (newDefinition != null)
+            findElement(By.xpath(preXpath + "//*[contains(@class,'newCdeDefinition')]")).sendKeys(newDefinition);
+        if (newTags != null) {
+            String tagsInputXpath = preXpath + "//*[contains(@class,'newCdeTags')]//input";
+            for (String newTag : newTags) {
+                String selectTagXpath = "//span[contains(@class,'select2-results')]/ul//li[text()='" + newTag + "']";
+                clickElement(By.xpath(tagsInputXpath));
+                clickElement(By.xpath(selectTagXpath));
+                textPresent(newTag, By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]//*[@class='newCdeName']//*[contains(@class,'newCdeTags')]//*[@class='select2-selection__rendered']"));
+            }
+        }
+        clickElement(By.xpath(preXpath + "//*[contains(@class,'fa fa-plus')]"));
+    }
+
+    public void addCdeIdentifierById(String questionId, String newSource, String newIdentifier, String newVersion) {
+        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]")).size() > 0;
+        if (!isQuestionOpen) startEditQuestionById(questionId);
+        String preXpath = "//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeIdentifier')]//*[@class='newCdeIdentifier']";
+        if (newSource != null)
+            findElement(By.xpath(preXpath + "//*[contains(@class,'newCdeSource')]")).sendKeys(newSource);
+        if (newIdentifier != null)
+            findElement(By.xpath(preXpath + "//*[contains(@class,'newCdeId')]")).sendKeys(newIdentifier);
+        if (newVersion != null)
+            findElement(By.xpath(preXpath + "//*[contains(@class,'newCdeVersion')]")).sendKeys(newVersion);
+        clickElement(By.xpath(preXpath + "//*[contains(@class,'fa fa-plus')]"));
+    }
+
+    public void deleteCdeNameById(String questionId, int i) {
+        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]")).size() > 0;
+        if (!isQuestionOpen) startEditQuestionById(questionId);
+        clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]/table/tbody/tr[" + i + "]//i[contains(@class,'fa fa-trash')]"));
+    }
+
+    public void deleteCdeIdentifierById(String questionId, int i) {
+        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]")).size() > 0;
+        if (!isQuestionOpen) startEditQuestionById(questionId);
+        clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeIdentifier')]/table/tbody/tr[" + i + "]//i[contains(@class,'fa fa-trash')]"));
+    }
+
+    public void editCdeDataTypeById(String questionId, String dataType) {
+        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]")).size() > 0;
+        if (!isQuestionOpen) startEditQuestionById(questionId);
+        clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeDataType')]//span[contains(@class,'select2-selection--single')]"));
+        clickElement(By.xpath("(//*[contains(@class,'select2-dropdown')]//*[contains(@class,'select2-results')]//ul//li)[text()='" + dataType + "']"));
+    }
+
+    public void addCdePvById(String questionId, String pv, String codeName, String code, String codeSystem, String codeDescription) {
+        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]")).size() > 0;
+        if (!isQuestionOpen) startEditQuestionById(questionId);
+        String preXpath = "//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdePVs')]//*[@class='newCdePv']";
+        if (pv != null)
+            findElement(By.xpath(preXpath + "//*[contains(@class,'permissibleValue')]")).sendKeys(pv);
+        if (codeName != null)
+            findElement(By.xpath(preXpath + "//*[contains(@class,'pvName')]")).sendKeys(codeName);
+        if (code != null)
+            findElement(By.xpath(preXpath + "//*[contains(@class,'pvCode')]")).sendKeys(code);
+        if (codeSystem != null)
+            findElement(By.xpath(preXpath + "//*[contains(@class,'pvCodeSystem')]")).sendKeys(codeSystem);
+        if (codeDescription != null)
+            findElement(By.xpath(preXpath + "//*[contains(@class,'pvDefinition')]")).sendKeys(codeDescription);
+        clickElement(By.xpath(preXpath + "//*[contains(@class,'fa fa-plus')]"));
+    }
+
+    public void deleteCdePvById(String questionId, int i) {
+        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]")).size() > 0;
+        if (!isQuestionOpen) startEditQuestionById(questionId);
+        clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdePVs')]/table/tbody/tr[" + i + "]//i[contains(@class,'fa fa-trash')]"));
     }
 
     public void addQuestionToSectionUnsafe(String cdeName, int sectionNumber) {
@@ -32,7 +147,7 @@ public class QuestionTest extends BaseFormTest {
                 WebElement targetElt = findElement(By.xpath("//*[@id='section_" + sectionNumber + "']//*[contains(@class,'node-content-wrapper')]"));
                 (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
                 dragAndDrop(sourceElt, targetElt);
-                textPresent("Search Questions");
+                textPresent("Search Data Elements");
                 i = 10;
             } catch (TimeoutException e) {
                 if (i == 4) {
