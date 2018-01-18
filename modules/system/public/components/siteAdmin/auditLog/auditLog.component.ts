@@ -1,5 +1,5 @@
 import { Http } from "@angular/http";
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import "rxjs/add/operator/map";
 import { CdeDiffPopulateService } from "./cdeDiffPopulate.service";
 
@@ -8,18 +8,15 @@ import { CdeDiffPopulateService } from "./cdeDiffPopulate.service";
     templateUrl: "./auditLog.component.html"
 })
 
-export class AuditLogComponent implements OnInit {
+export class AuditLogComponent {
 
     constructor(private http: Http,
                 private cdeDiff: CdeDiffPopulateService) {
+        this.gotoPageLocal();
     }
 
     records: any[] = [];
     currentPage: number = 1;
-
-    ngOnInit() {
-        this.gotoPageLocal();
-    }
 
     gotoPageLocal() {
         this.http.post("/getCdeAuditLog", {

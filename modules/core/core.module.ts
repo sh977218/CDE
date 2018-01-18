@@ -24,7 +24,6 @@ import { RegistrationValidatorService } from 'core/registrationValidator.service
         MergeFormService,
         MergeShareService,
         {provide: NgbDateParserFormatter, useClass: CdeAmericanDateParserFormatter},
-        OrgHelperService,
         RegistrationValidatorService,
     ],
     exports: [

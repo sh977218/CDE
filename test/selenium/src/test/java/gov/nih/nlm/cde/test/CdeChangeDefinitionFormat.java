@@ -17,7 +17,12 @@ public class CdeChangeDefinitionFormat extends NlmCdeBaseTest {
         editDefinitionByIndex(0, definitionChange, false);
         newCdeVersion();
 
-        changeDefinitionFormat(0, true);
+        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-edit')]"));
+        clickElement(By.xpath("//*[@id='definition_0']//button[contains(text(),'Rich Text')]"));
+        hangon(1);
+        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-check')]"));
+        textNotPresent("Confirm");
+
         newCdeVersion();
 
         textPresent("html characters][bold]");
