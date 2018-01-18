@@ -17,9 +17,6 @@ public class QuestionLayoutTest extends QuestionTest {
         addSectionTop(sec1, null);
         addSectionBottom(sec2, null);
 
-        textPresent(sec1);
-        textPresent(sec2);
-
         addQuestionDialog(0);
         textPresent("Browse by Classification");
         scrollToViewById("browseOrg-caCORE");

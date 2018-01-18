@@ -36,12 +36,9 @@ const appRoutes: Routes = [
         OrgsEditComponent,
         StatusValidationRulesComponent,
     ],
-    entryComponents: [
-    ],
-    exports: [
-    ],
-    providers: [
-    ],
+    entryComponents: [],
+    exports: [],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class OrgAuthorityModule {

@@ -665,7 +665,7 @@ public class NlmCdeBaseTest {
 
     protected void goHome() {
         driver.get(baseUrl + "/home");
-        textPresent("has been designed to provide access");
+        textPresent("has been designed to provide access", By.id("introduction"));
         findElement(By.cssSelector(".carousel-indicators"));
     }
 
@@ -1334,12 +1334,21 @@ public class NlmCdeBaseTest {
     }
 
 
-    public void startEditQuestionSectionById(String id) {
-        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
+    public void startEditQuestionById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionLabel')]"));
     }
 
-    public void saveEditQuestionSectionById(String id) {
-        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
+    public void saveEditQuestionById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionLabel')]"));
+    }
+
+
+    public void startEditSectionById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'sectionLabel')]"));
+    }
+
+    public void saveEditSectionById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'sectionLabel')]"));
     }
 
     /**
@@ -1352,13 +1361,13 @@ public class NlmCdeBaseTest {
      * @param newSectionCardinality New section cardinality
      */
     protected void editSection(String sectionId, String newSectionName, String newSectionInstruction, boolean isInstructionHtml, String newSectionCardinalityType, String newSectionCardinality) {
-        startEditQuestionSectionById(sectionId);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
-        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input")).clear();
-        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input")).sendKeys(newSectionName);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
+        startEditSectionById(sectionId);
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//i[contains(@class,'fa-edit')]"));
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input")).clear();
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input")).sendKeys(newSectionName);
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
-        textPresent(newSectionName, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]"));
+        textPresent(newSectionName, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]"));
 
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//i[contains(@class,'fa-edit')]"));
         textPresent("Plain Text");
@@ -1374,7 +1383,7 @@ public class NlmCdeBaseTest {
 
         new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(newSectionCardinalityType);
         findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(newSectionCardinality);
-        saveEditQuestionSectionById("section_0");
+        saveEditSectionById("section_0");
         if (newSectionCardinality.equals("1"))
             textNotPresent("Repeats", By.xpath("//*[@id='" + sectionId + "']"));
         else textNotPresent("Repeats " + newSectionCardinality + " times", By.xpath("//*[@id='" + sectionId + "']"));

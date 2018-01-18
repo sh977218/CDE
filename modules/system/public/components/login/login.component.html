@@ -1,5 +1,5 @@
 <div class="container">
-    <form class="form-signin" #loginForm="ngForm" autocomplete="off">
+    <form class="form-signin" #loginForm="ngForm" autocomplete="false">
         <h2 class="form-signin-heading">Please Log In</h2>
         <p>Note: Log in with your UMLS account. Don't have a UMLS account? <a
                 href="https://uts.nlm.nih.gov//license.html" target="_blank">
@@ -7,11 +7,10 @@
         <div class="form-group">
             <label id="l1" class="sr-only" for="uname">Username</label>
             <input id="uname" class="form-control" title="username" placeholder="Username" [(ngModel)]="username"
-                   autofocus="" required name="username">
+                   autofocus="" required name="username" autocomplete="false">
             <label id="l2" class="sr-only" for="passwd">Password</label>
             <input id="passwd" type="password" name="password" class="form-control" title="password"
-                   placeholder="Password"
-                   [(ngModel)]="password" required/>
+                   placeholder="Password" autocomplete="false" [(ngModel)]="password" required/>
             <input type="hidden" name="_csrf" [(ngModel)]="csrf">
         </div>
         <button [disabled]="!loginForm.valid || !csrf" class="btn   btn-primary btn-block" (click)="login()"

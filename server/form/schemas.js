@@ -9,6 +9,8 @@ const questionSchema = new Schema({
     cde: {
         tinyId: String
         , name: String
+        , naming: []
+        , datatype: String
         , version: String
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
         , ids: [sharedSchemas.idSchema]

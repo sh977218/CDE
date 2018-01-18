@@ -400,3 +400,42 @@ export function score(question, elt) {
     });
     return result;
 }
+
+
+export function iterateFormElements(fe = {}, option = {}, cb = undefined) {
+    if (!fe.formElements) fe.formElements = [];
+    if (Array.isArray(fe.formElements)) {
+        if (option.async) {
+            async.forEachSeries(fe.formElements, (fe, doneOneFe) => {
+                if (fe.elementType === 'section') {
+                    if (option.sectionCb) option.sectionCb(fe, doneOneFe);
+                    else this.iterateFormElements(fe, option, doneOneFe);
+                }
+                else if (fe.elementType === 'form') {
+                    if (option.formCb) option.formCb(fe, doneOneFe);
+                    else this.iterateFormElements(fe, option, doneOneFe);
+                }
+                else if (fe.elementType === 'question') {
+                    if (option.questionCb) option.questionCb(fe, doneOneFe);
+                    else doneOneFe();
+                } else doneOneFe();
+            }, cb);
+        } else {
+            fe.formElements.forEach(fe => {
+                if (fe.elementType === 'section') {
+                    if (option.sectionCb) option.sectionCb(fe);
+                    else this.iterateFormElements(fe, option);
+                }
+                else if (fe.elementType === 'form') {
+                    if (option.formCb) option.formCb(fe);
+                    else this.iterateFormElements(fe, option);
+                }
+                else if (fe.elementType === 'question') {
+                    if (option.questionCb) option.questionCb(fe);
+                }
+            });
+            cb();
+        }
+    } else cb();
+}
+

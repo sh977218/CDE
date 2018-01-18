@@ -19,7 +19,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         goToFormDescription();
 
         textNotPresent("Multiple Selections:");
-        startEditQuestionSectionById("question_0_0");
+        startEditQuestionById("question_0_0");
         List<WebElement> lis = driver.findElements(By.cssSelector("#question_0_0 .select2-selection__choice"));
         Assert.assertEquals(lis.size(), 3);
         Assert.assertEquals(lis.get(0).getText(), "×Female Gender");
@@ -32,16 +32,16 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         Assert.assertEquals(lis.size(), 2);
         Assert.assertEquals(lis.get(0).getText(), "×Male Gender");
         Assert.assertEquals(lis.get(1).getText(), "×Unknown");
-        saveEditQuestionSectionById("question_0_0");
+        saveEditQuestionById("question_0_0");
         newFormVersion();
 
         goToFormByName(formName);
         goToFormDescription();
         textNotPresent("Female Gender");
-        startEditQuestionSectionById("question_0_0");
+        startEditQuestionById("question_0_0");
         clickElement(By.cssSelector(".formDescriptionAnswerList .select2-search__field"));
         clickElement(By.xpath("//li[contains(@class,'select2-results__option') and contains(text(), 'Female Gender')]"));
-        saveEditQuestionSectionById("question_0_0");
+        saveEditQuestionById("question_0_0");
         newFormVersion();
 
         goToFormByName(formName);

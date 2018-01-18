@@ -4,9 +4,9 @@ import {
     EventEmitter,
     HostListener,
     Input,
-    OnChanges,
     Output,
-    SimpleChanges,
+    OnInit,
+    AfterViewInit,
     TemplateRef,
     ViewChild
 } from '@angular/core';
@@ -16,9 +16,10 @@ import { TREE_ACTIONS, TreeComponent } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEmpty from 'lodash/isEmpty';
 import _noop from 'lodash/noop';
+import { Hotkey, HotkeysService } from "angular2-hotkeys";
 
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
-import { CdeForm, FormElement, FormSection } from 'core/form.model';
+import { CdeForm, FormElement, FormQuestion, FormSection } from 'core/form.model';
 import { FormService } from 'nativeRender/form.service';
 
 const TOOL_BAR_OFF_SET = 55;
@@ -28,14 +29,20 @@ const TOOL_BAR_OFF_SET = 55;
     templateUrl: 'formDescription.component.html',
     animations: [copySectionAnimation],
     styles: [`
+        :host >>> .hover-bg {
+            background-color: lightblue;
+            border: 1px;
+            border-radius: 10px;
+        }
+
         :host >>> .badge {
             font-size: 100%;
         }
-        
+
         :host >>> .tree {
             cursor: default;
         }
-        
+
         :host >>> .panel {
             margin-bottom: 1px;
         }
@@ -44,16 +51,12 @@ const TOOL_BAR_OFF_SET = 55;
             padding-left: 0;
         }
 
-        :host >>> .questionSectionLabel{
-            font-weight:bold;
-        }
-
         :host >>> .node-drop-slot {
             height: 10px;
             margin-bottom: 1px;
         }
 
-        :host >>> .panel-badge-btn  {
+        :host >>> .panel-badge-btn {
             color: white;
             background-color: #333;
         }
@@ -71,7 +74,7 @@ const TOOL_BAR_OFF_SET = 55;
         }
 
         .panel-body-form {
-            background-color: #eee;
+            background-color: rgba(0, 0, 0, 0.03);
         }
 
         .descriptionToolbox {
@@ -123,55 +126,93 @@ const TOOL_BAR_OFF_SET = 55;
         }
     `]
 })
-export class FormDescriptionComponent implements OnChanges {
-    @Input() elt: CdeForm;
+export class FormDescriptionComponent implements OnInit, AfterViewInit {
+    private _elt: CdeForm;
+    @Input() set elt(e: CdeForm) {
+        this._elt = e;
+        this.addExpanded(e);
+        this.addIds(e.formElements, "");
+    };
+
+    get elt() {
+        return this._elt;
+    }
+
     @Input() canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
     @ViewChild(TreeComponent) public tree: TreeComponent;
     @ViewChild('formSearchTmpl') formSearchTmpl: TemplateRef<any>;
     @ViewChild('questionSearchTmpl') questionSearchTmpl: TemplateRef<any>;
     @ViewChild('descToolbox') descToolbox: ElementRef;
+
+    questionModelMode = 'search';
+    newDataElement = this.initNewDataElement();
+    formElementEditing: any = {};
+    isModalOpen: boolean = false;
+
     @HostListener('window:scroll', ['$event'])
+    scrollEvent() {
+        this.doIt();
+    }
+
     doIt() {
         if (this && this.descToolbox && this.descToolbox.nativeElement)
             this.descToolbox.nativeElement.style.top = (window.pageYOffset > TOOL_BAR_OFF_SET ? 0 : (TOOL_BAR_OFF_SET - window.pageYOffset)) + 'px';
     }
 
-    toolDropTo: { index: number, parent: any };
-    toolSection: { insert: 'section', data: FormElement };
+    initNewDataElement() {
+        return {
+            naming: [{
+                designation: '',
+                tags: ['Question Text']
+            }],
+            valueDomain: {datatype: 'Text', permissibleValues: []}
+        };
+    }
+
     treeOptions = {
-        allowDrag: (element) => {
-            return !FormService.isSubForm(element) || element.data.elementType === 'form' && !FormService.isSubForm(element.parent);
-        },
+        allowDrag: element => !FormService.isSubForm(element) || element.data.elementType === 'form' && !FormService.isSubForm(element.parent),
         allowDrop: (element, {parent, index}) => {
             return element !== parent && parent.data.elementType !== 'question' && (!element
                 || !element.ref && (element.data.elementType !== 'question' || parent.data.elementType === 'section')
-                || element.ref === 'form'
-                || element.ref === 'pasteSection'
-                || element.ref === 'question' && parent.data.elementType === 'section'
+                || element.ref === 'section' || element.ref === 'form' || element.ref === 'pasteSection'
+                || (element.ref === 'question' && parent.data.elementType === 'section')
             ) && !FormService.isSubForm(parent);
         },
         actionMapping: {
             mouse: {
                 drop: (tree, node, $event, {from, to}) => {
-                    if (from.insert) {
-                        this.addIndex(to.parent.data.formElements, this.getNewSection(), to.index);
-                        tree.update();
-                    } else if (from.ref) {
-                        this.toolDropTo = to;
-                        if (from.ref === 'question')
+                    if (from.ref) {
+                        this.formElementEditing = {
+                            formElements: to.parent.data.formElements,
+                            index: to.index
+                        };
+                        if (from.ref === 'section') {
+                            let newSection = new FormSection();
+                            this.formElementEditing.formElement = newSection;
+                            this.addFormElement(newSection);
+                        } else if (from.ref === 'question') {
                             this.openQuestionSearch();
-                        else if (from.ref === 'form')
+                        } else if (from.ref === 'form') {
                             this.openFormSearch();
-                        else if (from.ref === 'pasteSection')
-                            this.pasteSection();
-                        return;
-                    } else
+                        } else if (from.ref === 'pasteSection') {
+                            let copiedSection = this.localStorageService.get('sectionCopied');
+                            this.formElementEditing.formElement = copiedSection;
+                            this.addFormElement(copiedSection);
+                        } else {
+                            TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
+                            this.addIds(this.elt.formElements, '');
+                            this.tree.treeModel.update();
+                            this.tree.treeModel.expandAll();
+                            this.onEltChange.emit();
+                        }
+                    } else {
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
-
-                    tree.expandAll();
-                    this.addIds(this.elt.formElements, '');
-                    this.onEltChange.emit();
+                        this.addIds(this.elt.formElements, '');
+                        this.tree.treeModel.update();
+                        this.tree.treeModel.expandAll();
+                        this.onEltChange.emit();
+                    }
                 }
             }
         },
@@ -181,45 +222,56 @@ export class FormDescriptionComponent implements OnChanges {
         isExpandedField: 'expanded'
     };
 
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes.elt) {
-            this.addExpanded(this.elt);
-            this.addIds(this.elt.formElements, '');
-        }
-    }
-
-    constructor(private localStorageService: LocalStorageService,
+    constructor(private http: Http,
+                private localStorageService: LocalStorageService,
                 public modalService: NgbModal,
                 private formService: FormService,
-                private http: Http) {
-        this.toolSection = {insert: 'section', data: this.getNewSection()};
+                private _hotkeysService: HotkeysService) {
     }
 
-    addIndex(elems, elem, i) {
-        return elems.splice(i, 0, elem);
+    ngOnInit(): void {
+        this._hotkeysService.add([
+            new Hotkey('q', (event: KeyboardEvent): boolean => {
+                if (!this.isModalOpen && !_isEmpty(this.formElementEditing) &&
+                    this.formElementEditing.formElement && this.formElementEditing.formElement.elementType === 'question') {
+                    this.formElementEditing.index++;
+                    this.openQuestionSearch();
+                } else return false;
+            })
+        ]);
     }
 
-    addQuestionFromSearch(cde) {
+    ngAfterViewInit(): void {
+        this.doIt();
+    }
+
+    addIndex(elements, element, i) {
+        elements.splice(i, 0, element);
+        this.addIds(this.elt.formElements, '');
+    }
+
+    addQuestionFromSearch(cde, cb = null) {
         this.formService.convertCdeToQuestion(cde, question => {
             question.formElements = [];
             question.expanded = true;
-            this.addIndex(this.toolDropTo.parent.data.formElements, question, this.toolDropTo.index++);
-            this.tree.treeModel.update();
-            this.tree.treeModel.expandAll();
-            this.addIds(this.elt.formElements, '');
-            this.onEltChange.emit();
+            question.edit = true;
+            this.addFormElement(question);
+            this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
+            setTimeout(() => window.document.getElementById(question.descriptionId).scrollIntoView(), 0);
+            this.isModalOpen = false;
+            if (cb) cb();
         });
     }
 
-    addFormFromSearch(fe) {
+    addFormFromSearch(fe, cb = null) {
         this.http.get('/form/' + fe.tinyId).map(r => r.json()).subscribe(form => {
             let inForm: any = FormService.convertFormToSection(form);
             inForm.formElements = form.formElements;
-            this.addIndex(this.toolDropTo.parent.data.formElements, inForm, this.toolDropTo.index++);
-            this.tree.treeModel.update();
-            this.tree.treeModel.expandAll();
-            this.addIds(this.elt.formElements, '');
-            this.onEltChange.emit();
+            this.formElementEditing.formElement = inForm;
+            this.addFormElement(inForm);
+            this.setCurrentEditing(this.formElementEditing.formElements, inForm, this.formElementEditing.index);
+            this.isModalOpen = false;
+            if (cb) cb(inForm);
         });
     }
 
@@ -240,33 +292,58 @@ export class FormDescriptionComponent implements OnChanges {
         });
     }
 
-    getNewSection() {
-        return new FormSection;
-    }
-
     hasCopiedSection() {
-        let copiedSection = this.localStorageService.get('sectionCopied');
-        return !_isEmpty(copiedSection);
+        return !_isEmpty(this.localStorageService.get('sectionCopied'));
     }
 
     openFormSearch() {
-        this.modalService.open(this.formSearchTmpl, {size: 'lg'}).result.then(() => {
-        }, () => {
-        });
+        this.isModalOpen = true;
+        this.modalService.open(this.formSearchTmpl, {size: 'lg'}).result.then(
+            () => this.isModalOpen = false,
+            () => this.isModalOpen = false);
     }
 
     openQuestionSearch() {
-        this.modalService.open(this.questionSearchTmpl, {size: 'lg'}).result.then(() => {
-        }, () => {
+        this.isModalOpen = true;
+        this.newDataElement = this.initNewDataElement();
+        this.modalService.open(this.questionSearchTmpl, {size: 'lg'}).result.then(
+            () => this.isModalOpen = false,
+            () => this.isModalOpen = false);
+        if (this.questionModelMode === 'add')
+            setTimeout(() => window.document.getElementById("newDEName").focus(), 0);
+    }
+
+    createNewDataElement(c) {
+        this.addQuestionFromSearch(this.newDataElement, () => {
+            c();
         });
     }
 
-    pasteSection() {
-        let fe = this.localStorageService.get('sectionCopied');
-        this.addIndex(this.toolDropTo.parent.data.formElements, fe, this.toolDropTo.index++);
+    addFormElement(question) {
+        this.addIndex(this.formElementEditing.formElements, question, this.formElementEditing.index);
         this.tree.treeModel.update();
         this.tree.treeModel.expandAll();
-        this.addIds(this.elt.formElements, '');
         this.onEltChange.emit();
+    }
+
+    setCurrentEditing(formElements, formElement, index) {
+        if (_isEmpty(this.formElementEditing.formElement)) {
+            this.formElementEditing = {
+                formElement: formElement,
+                formElements: formElements,
+                index: index
+            };
+        } else {
+            if (this.formElementEditing.formElement === formElement) {
+                this.formElementEditing = {};
+            } else {
+                this.formElementEditing.formElement.edit = false;
+                this.formElementEditing = {
+                    formElement: formElement,
+                    formElements: formElements,
+                    index: index
+                };
+            }
+        }
     }
 }

@@ -18,7 +18,7 @@ public class DragHandleVisibility extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.linkText("Form Description"));
         Assert.assertTrue(findElement(By.xpath(
-                "//*[@id='section_0']//div[contains(@class,'questionSectionTitle')]//i[contains(@class,'fa fa-arrows')]"
+                "//*[@id='section_0']//div[contains(@class,'sectionTitle')]//i[contains(@class,'fa fa-arrows')]"
         )).isDisplayed());
         Assert.assertTrue(findElement(By.xpath(
                 "//*[@id='question_0_0']//*[contains(@class,'question_view')]//i[contains(@class,'fa fa-arrows')]"

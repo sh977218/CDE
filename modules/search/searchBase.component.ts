@@ -219,12 +219,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     static compareString(a: string, b: string): number {
-        if (a > b)
-            return 1;
-        if (a < b)
-            return -1;
-        if (a === b)
-            return 0;
+        if (a > b) return 1;
+        if (a < b) return -1;
+        if (a === b) return 0;
         return NaN;
     }
 
@@ -235,12 +232,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     doSearch() {
-        if (!this.embedded) {
-            // let loc = this.generateSearchForTerm();
-            // window.sessionStorage.removeItem('nlmcde.scroll.' + loc);
-            this.redirect(this.generateSearchForTerm());
-        } else
-            this.reload();
+        if (!this.embedded) this.redirect(this.generateSearchForTerm());
+        else this.reload();
     }
 
     fakeNextPageLink() {
@@ -262,12 +255,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     static focusClassification() {
-        // any good angular way to do this?
-        $('#classif_filter_title').focus(); // jshint ignore:line
+        window.document.getElementById('#classif_filter_title').focus();
     }
 
     static focusTopic() {
-        $('#meshTrees_filter').focus();
+        window.document.getElementById('#meshTrees_filter').focus();
     }
 
     generateSearchForTerm(pageNumber = null) {
@@ -628,8 +620,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     scrollHistoryLoad() {
         if (this.backForwardService.isBackForward) {
             let previousSpot = window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search];
-            if (previousSpot != null)
-                SearchBaseComponent.waitScroll(2, previousSpot);
+            if (previousSpot != null) SearchBaseComponent.waitScroll(2, previousSpot);
         }
         this.previousUrl = location.pathname + location.search;
     }
@@ -641,8 +632,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     static scrollTo(id) {
         const element = document.querySelector('#' + id);
-        if (element)
-            element.scrollIntoView(element);
+        if (element) element.scrollIntoView(element);
     }
 
     search() {
@@ -650,8 +640,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         let params = SearchBaseComponent.searchParamsGet();
         this.searchSettings.q = params['q'];
         this.searchSettings.page = params['page'];
-        if (!this.searchSettings.page)
-            this.searchSettings.page = 1;
+        if (!this.searchSettings.page) this.searchSettings.page = 1;
         this.searchSettings.selectedOrg = params['selectedOrg'];
         this.searchSettings.selectedOrgAlt = params['selectedOrgAlt'];
         this.altClassificationFilterMode = !!params['selectedOrgAlt'];
@@ -668,10 +657,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         let params: any = {};
         location.search && location.search.substr(1).split('&').forEach(e => {
             let p = e.split('=');
-            if (p.length === 2)
-                params[p[0]] = decodeURIComponent(p[1]);
-            else
-                params[p[0]] = null;
+            if (p.length === 2) params[p[0]] = decodeURIComponent(p[1]);
+            else params[p[0]] = null;
         });
         return params;
     }
@@ -688,40 +675,29 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             classifToSelect.push(e);
         } else {
             let i = classifToSelect.indexOf(e);
-            if (i > -1) {
-                classifToSelect.length = i;
-            } else {
-                classifToSelect.push(e);
-            }
+            if (i > -1) classifToSelect.length = i;
+            else classifToSelect.push(e);
         }
 
         this.doSearch();
-        if (!this.embedded)
-            SearchBaseComponent.focusClassification();
+        if (!this.embedded) SearchBaseComponent.focusClassification();
     }
 
     selectTopic(topic) {
-        let toSelect = !this.searchSettings.meshTree ? [] :
-            this.searchSettings.meshTree.split(';');
+        let toSelect = !this.searchSettings.meshTree ? [] : this.searchSettings.meshTree.split(';');
         let i = toSelect.indexOf(topic);
-        if (i > -1) {
-            toSelect.length = i;
-        } else {
-            toSelect.push(topic);
-        }
+        if (i > -1) toSelect.length = i;
+        else toSelect.push(topic);
         this.searchSettings.meshTree = toSelect.join(';');
 
         this.doSearch();
-        if (!this.embedded)
-            SearchBaseComponent.focusTopic();
+        if (!this.embedded) SearchBaseComponent.focusTopic();
     }
 
     setAltClassificationFilterMode() {
         this.altClassificationFilterMode = true;
-
         this.doSearch();
-        if (!this.embedded)
-            SearchBaseComponent.focusClassification();
+        if (!this.embedded) SearchBaseComponent.focusClassification();
     }
 
     switchView(view) {
@@ -732,8 +708,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (this.view === 'welcome') {
             // ngAfterViewChecked
             setTimeout(() => {
-                if (this.byTopic)
-                    this.tabset.select('browseByTopic');
+                if (this.byTopic) this.tabset.select('browseByTopic');
             }, 100);
         }
         if (this.view === 'results') {
@@ -776,11 +751,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     static waitScroll(count, previousSpot) {
-        if (count > 0)
-            setTimeout(function () {
-                SearchBaseComponent.waitScroll(count - 1, previousSpot);
-            }, 100);
-        else
-            window.scrollTo(0, previousSpot);
+        if (count > 0) setTimeout(() => SearchBaseComponent.waitScroll(count - 1, previousSpot), 100);
+        else window.scrollTo(0, previousSpot);
     }
 }
