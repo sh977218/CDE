@@ -244,24 +244,6 @@ export class TableListComponent implements OnInit {
             : line;
     }
 
-    static previewList(list, f) {
-        const size = list.length;
-        let naming = '';
-        let count = 0;
-        for (let i = 0; i < size; i++) {
-            let formatted = f(list[i]);
-            if (formatted) {
-                naming += `<li>${this.lineClip(formatted)}</li>`;
-                count++;
-            }
-            if (count === this.maxLines && i + 1 < size) {
-                naming += '<li class="lastItem">...</li>';
-                break;
-            }
-        }
-        return `<ul>${naming}</ul>`;
-    }
-
     static truncatedList(list, f) {
         const size = list.length;
         let result = [];
