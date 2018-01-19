@@ -46,13 +46,13 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(numRes > 248);
         Assert.assertTrue(numRes < 254);
         assertSearchFilterSelected("classif-Acute Hospitalized", true);
-        clickElement(By.id("classif-Acute Hospitalized"));
+        clickElement(By.id("classif-Traumatic Brain Injury"));
         textPresent("Domain");
         clickElement(By.id("classif-Domain"));
         textPresent("Outcomes and End Points (12");
         scrollToTop();
         assertSearchFilterSelected("classif-Disease", true);
-        clickElement(By.id("classif-Disease"));
+        clickElement(By.id("classif-NINDS"));
         textPresent("Population (111");
     }
 

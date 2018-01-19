@@ -15,7 +15,7 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-caCORE"));
         textPresent("caCORE 3.2");
-        clickElement(By.id("classif-caCORE"));
+        clickElement(By.xpath("//*[@id='classif-caCORE' and contains(@class, 'treeChild')]"));
         clickElement(By.id("classif-CSM"));
         textPresent("2 results");
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
