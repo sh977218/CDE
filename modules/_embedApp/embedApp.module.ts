@@ -15,6 +15,7 @@ import { EmbedAppComponent } from '_embedApp/embedApp.component';
 import { EmbeddedFormSearchResultComponent } from '_embedApp/searchResults/embeddedFormSearchResult.component';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
+import { OrgHelperService } from "../core/orgHelper.service";
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { UserService } from '_app/user.service';
     ],
     providers: [
         ElasticService,
-        UserService
+        UserService,
+        OrgHelperService,
     ],
     imports: [
         BrowserModule,

@@ -1,6 +1,7 @@
 package gov.nih.nlm.system;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.Test;
 
 public class FormViewingHistory extends NlmCdeBaseTest {
@@ -12,11 +13,16 @@ public class FormViewingHistory extends NlmCdeBaseTest {
 
         goToFormByName(formName);
         hangon(4);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
-        textPresent("User Profile");
 
-        textPresent("No Label Logic");
+        try {
+            clickElement(By.id("username_link"));
+            clickElement(By.linkText("Profile"));
+            textPresent("User Profile");
+            textPresent("No Label Logic");
+        } catch (TimeoutException e) {
+            driver.navigate().refresh();
+            textPresent("No Label Logic");
+        }
 
     }
 
