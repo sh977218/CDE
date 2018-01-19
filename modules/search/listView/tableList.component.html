@@ -6,7 +6,6 @@
     </thead>
     <tbody>
     <tr *ngFor="let row of rows">
-
         <td *ngFor="let prop of row"
             [class]="prop.css">
             <ng-container [ngSwitch]="prop.css">
@@ -14,9 +13,29 @@
                     <a routerLink="/deView" [queryParams]="{tinyId: prop.tinyId}">{{prop.value}}</a>
                 </ng-container>
                 <ng-container *ngSwitchCase="'naming'">
-                    previewList(e.naming, n => n.designation)
-
+                    <ul>
+                        <li *ngFor="let v of prop.values; let last = last"
+                            [ngClass]="{lastItem: last}">{{v}}</li>
+                    </ul>
                 </ng-container>
+                <ng-container *ngSwitchCase="'ids'">
+                    <ul>
+                        <li *ngFor="let id of prop.values">{{id.source}}:
+                            <strong>{{id.id}}</strong>
+                            <span *ngIf="id.version"> v{{id.version}}</span>
+                        </li>
+                    </ul>
+                </ng-container>
+                <ng-container *ngSwitchCase="'permissibleValues multiline-ellipsis'">
+                    {{prop.datatype}}
+                    <ng-container *ngIf="prop.values?.length > 0">:
+                        <ul>
+                            <li *ngFor="let v of prop.values; let last = last"
+                                [ngClass]="{lastItem: last}">{{v}}</li>
+                        </ul>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngSwitchDefault>{{prop.value}}</ng-container>
             </ng-container>
         </td>
     </tr>
