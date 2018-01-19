@@ -218,12 +218,14 @@
                                     <a class="treeItemText"> {{t.key}}</a>
                                 </div>
                                 <ng-template #classifSelf>
-                                    <div id="classif-{{t.key}}" class="treeCurrent treeItemText">{{t.key}}</div>
+                                    <div id="classif-{{t.key}}" class="treeCurrent treeItemText"
+                                         [ngbTooltip]="t.longName" placement="right" container="body">{{t.key}}</div>
                                 </ng-template>
                             </ng-container>
                         </ng-container>
                         <ng-template #classifOrg>
-                            <div id="classif-{{t.key}}" class="treeChild hand-cursor" (click)="alterOrgFilter(t.key)" role="link">
+                            <div id="classif-{{t.key}}" class="treeChild hand-cursor" (click)="alterOrgFilter(t.key)"
+                                 role="link" [ngbTooltip]="t.longName" placement="right" container="body">
                                 <i class="treeItemIcon fa fa-angle-right"></i>
                                 <a class="treeItemText">{{t.key}} (<span id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)</a>
                             </div>
