@@ -10,7 +10,8 @@
             [class]="prop.css">
             <ng-container [ngSwitch]="prop.css">
                 <ng-container *ngSwitchCase="'name'">
-                    <a routerLink="/deView" [queryParams]="{tinyId: prop.tinyId}">{{prop.value}}</a>
+                    <a routerLink="/{{prop.elt.elementType==='cde'?'de':'form'}}View"
+                       [queryParams]="{tinyId: prop.elt.tinyId}">{{prop.elt.naming[0].designation}}</a>
                 </ng-container>
                 <ng-container *ngSwitchCase="'naming'">
                     <ul>

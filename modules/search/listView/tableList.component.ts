@@ -75,8 +75,7 @@ export class TableListComponent implements OnInit {
             if (tableSetup.name)
                 row.push({
                     css: 'name',
-                    tinyId: e.tinyId,
-                    value: e.naming[0].designation
+                    elt: e
                 });
             if (tableSetup.questionTexts)
                 row.push({
@@ -179,8 +178,7 @@ export class TableListComponent implements OnInit {
             if (tableSetup.name)
                 row.push({
                     css: 'name',
-                    tinyId: e.tinyId,
-                    value: e.naming[0].designation
+                    elt: e
                 });
             if (tableSetup.naming)
                 row.push({
