@@ -256,6 +256,14 @@ public class NlmCdeBaseTest {
 
     }
 
+    protected void assertSearchFilterSelected(String id, boolean state) {
+        if (state)
+            findElement(By.xpath("//*[@id='" + id + "']/*[contains(@class,'treeItemIconSelected')]"));
+        else
+            Assert.assertTrue(driver.findElements(By.xpath(
+                    "//*[@id='" + id + "']/*[contains(@class,'treeItemIconSelected')]")).size() == 0);
+    }
+
     protected void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");

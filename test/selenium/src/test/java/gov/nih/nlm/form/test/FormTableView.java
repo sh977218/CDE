@@ -20,7 +20,7 @@ public class FormTableView extends BaseFormTest {
         textPresent("Questions");
 
         textNotPresent("Alternate Name for a Table View Form!");
-        clickElement(By.xpath("//*[@id='li-blank-Denise Test CS']"));
+        clickElement(By.id("classif-Denise Test CS"));
         textPresent("TESTOrg");
         textPresent("goodForTablesForm");
 

@@ -14,8 +14,8 @@ public class RememberFacetsTest extends NlmCdeBaseTest {
     public void rememberFacets() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-caCORE"));
-        clickElement(By.id("li-blank-caCORE"));
-        clickElement(By.id("li-blank-CSM"));
+        clickElement(By.id("classif-caCORE"));
+        clickElement(By.id("classif-CSM"));
         textPresent("2 results for");
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 2);

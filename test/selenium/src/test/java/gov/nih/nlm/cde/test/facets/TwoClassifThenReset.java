@@ -10,12 +10,12 @@ public class TwoClassifThenReset extends NlmCdeBaseTest {
     public void twoClassifsThenReset() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-CTEP"));
-        findElement(By.id("li-blank-CATEGORY")).click();
+        clickElement(By.id("classif-CATEGORY"));
         textPresent("AdEERS");
         clickElement(By.id("altClassificationFilterModeToggle"));
         textPresent("SPOREs");
-        clickElement(By.id("li-blank-CTEP"));
-        findElement(By.id("li-blank-DISEASE")).click();
+        clickElement(By.id("classif-CTEP"));
+        clickElement(By.id("classif-DISEASE"));
         textPresent("Bladder");
         clickElement(By.id("menu_cdes_link"));
         clickElement(By.id("browseOrg-CCR"));

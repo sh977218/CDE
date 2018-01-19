@@ -25,18 +25,18 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
             driver.navigate().refresh();
         }
         Assert.assertTrue(num >= 11, "Not enough elements: " + num);
-        findElement(By.id("classifications-text-NINDS"));
+        findElement(By.id("classif-NINDS"));
 
         findElement(By.id("ftsearch-input")).sendKeys("type");
         clickElement(By.id("search.submit"));
-        clickElement(By.id("classifications-text-NINDS"));
+        clickElement(By.id("classif-NINDS"));
         clickElement(By.partialLinkText("Domain"));
         clickElement(By.id("altClassificationFilterModeToggle"));
-        clickElement(By.id("classifications-text-NINDS"));
+        clickElement(By.id("classif-NINDS"));
         clickElement(By.partialLinkText("Disease"));
-        clickElement(By.xpath("//*[@id='li-blank-Public Health']"));
-        clickElement(By.id("status-text-Qualified"));
-        clickElement(By.xpath("//*[@id='datatype-text-Value List']"));
+        clickElement(By.id("classif-Public Health"));
+        clickElement(By.id("regstatus-Qualified"));
+        clickElement(By.id("datatype-Value List"));
 
         checkSearchResultInfo("type", "NINDS > Domain", "NINDS > Disease", "Health Care > Environment and Public Health > Pub...", "Qualified", "Value List");
 

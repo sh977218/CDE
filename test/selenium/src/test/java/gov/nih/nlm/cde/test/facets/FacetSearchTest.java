@@ -14,7 +14,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("browseOrg-caBIG"));
         String numOfElts = findElement(By.xpath("//*[@id='nbOfClassifElts-All Candidates']")).getText();
 
-        clickElement(By.xpath("//*[@id='li-blank-All Candidates']"));
+        clickElement(By.id("classif-All Candidates"));
 
         textPresent(numOfElts, By.id("searchResultNum"));
         checkSearchResultInfo("All Terms", "caBIG > All Candidates", null, "All Topics", "All Statuses", null);
@@ -27,7 +27,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("browseOrg-CIP"));
         textPresent("Qualified (" + numOfCipElts + ")");
         int numOfLidcElts = Integer.valueOf(findElement(By.id("nbOfClassifElts-LIDC")).getText());
-        clickElement(By.id("li-blank-LIDC"));
+        clickElement(By.id("classif-LIDC"));
         textPresent("Qualified (" + numOfLidcElts + ")");
     }
 
@@ -35,22 +35,24 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     public void deepFacets() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
-        clickElement(By.id("li-blank-Disease"));
-        clickElement(By.xpath("//*[@id='li-blank-Traumatic Brain Injury']"));
-        clickElement(By.xpath("//*[@id='li-blank-Acute Hospitalized']"));
-        clickElement(By.id("li-blank-Classification"));
+        clickElement(By.id("classif-Disease"));
+        clickElement(By.id("classif-Traumatic Brain Injury"));
+        clickElement(By.id("classif-Acute Hospitalized"));
+        clickElement(By.id("classif-Classification"));
         int numRes = getNumberOfResults();
-        clickElement(By.id("li-blank-Basic"));
+        clickElement(By.id("classif-Basic"));
         textNotPresent(numRes + " results for");
         numRes = getNumberOfResults();
         Assert.assertTrue(numRes > 248);
         Assert.assertTrue(numRes < 254);
-        clickElement(By.xpath("//*[@id='li-checked-Acute Hospitalized']"));
-        textPresent("Domain (19");
-        clickElement(By.id("li-blank-Domain"));
+        assertSearchFilterSelected("classif-Acute Hospitalized", true);
+        clickElement(By.id("classif-Acute Hospitalized"));
+        textPresent("Domain");
+        clickElement(By.id("classif-Domain"));
         textPresent("Outcomes and End Points (12");
         scrollToTop();
-        clickElement(By.id("li-checked-Disease"));
+        assertSearchFilterSelected("classif-Disease", true);
+        clickElement(By.id("classif-Disease"));
         textPresent("Population (111");
     }
 
@@ -59,7 +61,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         mustBeLoggedOut();
         setLowStatusesVisible();
         clickElement(By.id("browseOrg-caBIG"));
-        clickElement(By.id("li-blank-ASCO"));
+        clickElement(By.id("classif-ASCO"));
         textPresent("Agent Physical Appearance Type");
         textPresent("First Follow-up Visit Date");
         textPresent("Heart MUGA Test Date");
@@ -69,7 +71,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textPresent("Person Birth Date");
         textPresent("Patient Ethnic Group Category");
 
-        clickElement(By.id("li-blank-Standard"));
+        clickElement(By.id("regstatus-Standard"));
         textNotPresent("Agent Physical Appearance Type");
         textNotPresent("First Follow-up Visit Date");
         textNotPresent("Heart MUGA Test Date");
@@ -78,9 +80,11 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textNotPresent("Patient Ethnic Group Category");
 
         scrollToTop();
-        clickElement(By.id("li-checked-Standard"));
+        assertSearchFilterSelected("regstatus-Standard", true);
+        clickElement(By.id("regstatus-Standard"));
         hangon(1);
-        clickElement(By.id("li-blank-Qualified"));
+        assertSearchFilterSelected("regstatus-Qualified", false);
+        clickElement(By.id("regstatus-Qualified"));
         textNotPresent("Agent Physical Appearance Type");
         textNotPresent("First Follow-up Visit Date");
         textPresent("Heart MUGA Test Date");
@@ -90,9 +94,11 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textPresent("Patient Ethnic Group Category");
 
         scrollToTop();
-        clickElement(By.id("li-checked-Qualified"));
+        assertSearchFilterSelected("regstatus-Qualified", false);
+        clickElement(By.id("regstatus-Qualified"));
         hangon(1);
-        clickElement(By.id("li-blank-Candidate"));
+        assertSearchFilterSelected("regstatus-Candidate", false);
+        clickElement(By.id("regstatus-Candidate"));
         textPresent("Agent Physical Appearance Type");
         textPresent("First Follow-up Visit Date");
         textNotPresent("Heart MUGA Test Date");
@@ -110,7 +116,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
         int numOfDiseaseElts = Integer.valueOf(findElement(By.id("nbOfClassifElts-DISEASE")).getText());
 
-        clickElement(By.id("li-blank-DISEASE"));
+        clickElement(By.id("classif-DISEASE"));
 
         textPresent(numOfDiseaseElts + " results for");
 

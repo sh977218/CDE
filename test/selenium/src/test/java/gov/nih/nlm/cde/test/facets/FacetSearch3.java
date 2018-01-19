@@ -29,13 +29,13 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         clickElement(By.id("browseOrg-AECC"));
         hoverOverElement(findElement(By.linkText("CDEs")));
         textNotPresent("Albert Einstein Cancer Center");
-        hoverOverElement(findElement(By.id("classifications-text-AECC")));
+        hoverOverElement(findElement(By.xpath("//*[@id='classif-AECC']/*[contains(@class,'treeItemText')]")));
         try {
             textPresent("Albert Einstein Cancer Center");
         } catch (TimeoutException e) {
             hoverOverElement(findElement(By.linkText("CDEs")));
             hangon(1);
-            hoverOverElement(findElement(By.id("classifications-text-AECC")));
+            hoverOverElement(findElement(By.id("//*[@id='classif-AECC']/*[contains(@class,'treeItemText')]")));
             textPresent("Albert Einstein Cancer Center");
         }
         hoverOverElement(findElement(By.linkText("CDEs")));
@@ -47,20 +47,20 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         mustBeLoggedOut();
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
-        clickElement(By.id("li-blank-Disease"));
-        clickElement(By.xpath("//*[@id='li-blank-Neuromuscular Disease']"));
+        clickElement(By.id("classif-Disease"));
+        clickElement(By.id("classif-Neuromuscular Disease"));
         textPresent("NINDS > Disease > Neuromuscular Disease");
 
         clickElement(By.id("altClassificationFilterModeToggle"));
         textPresent("and", By.id("classifAlt_filter"));
         hangon(1);
-        clickElement(By.id("li-blank-NINDS"));
-        clickElement(By.id("li-blank-Domain"));
-        clickElement(By.xpath("//*[@id='li-blank-Assessments and Examinations']"));
+        clickElement(By.id("classif-NINDS"));
+        clickElement(By.id("classif-Domain"));
+        clickElement(By.id("classif-Assessments and Examinations"));
         textPresent("NINDS > Domain > Assessments and Examinations", By.id("classifAlt_filter"));
         textPresent("Imaging Diagnostics (30");
 
-        clickElement(By.xpath("//*[@id='li-blank-Imaging Diagnostics']"));
+        clickElement(By.id("classif-Imaging Diagnostics"));
         textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
 
         clickElement(By.linkText("Boards"));
