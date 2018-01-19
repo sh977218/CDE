@@ -532,7 +532,6 @@ exports.init = function (app) {
     app.post('/updateOrg', function (req, res) {
         if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
             mongo_data.updateOrg(req.body, res);
-            console.log("Called update Org with " + JSON.stringify(req.body));
         } else {
             res.status(401).send();
         }

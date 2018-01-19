@@ -18,8 +18,8 @@ import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.co
         CommonModule,
         FormsModule,
         NgbModule.forRoot(),
-        // internal
         CoreModule
+        // internal
     ],
     declarations: [
         InlineAreaEditComponent,
