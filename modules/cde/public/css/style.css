@@ -1,13 +1,11 @@
 /* over write a link to pass chrome audit low contrast ratio */
 a {
     color: #337ab7;
-
 }
 
 .homeDescriptionLink {
     color: #0F4E9D;
 }
-
 /* end */
 
 .modal {
@@ -214,12 +212,10 @@ label.input-group-addon {
 }
 
 div.native-question-label {
-    font-size: 14px;
     font-weight: 700;
 }
 
 legend.native-question-label {
-    font-size: 14px;
     font-weight: 700;
     border-bottom: 0;
 }
