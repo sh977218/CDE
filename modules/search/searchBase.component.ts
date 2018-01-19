@@ -747,7 +747,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     typeaheadSelect (item) {
-        this.router.navigate([this.module === 'form' ? "formView" : "deView"], {queryParams: {tinyId: this.lastTypeahead[item.item]}});
+        if (!this.embedded)
+            this.router.navigate([this.module === 'form' ? "formView" : "deView"], {queryParams: {tinyId: this.lastTypeahead[item.item]}});
+        else this.reload();
     }
 
     static waitScroll(count, previousSpot) {
