@@ -35,7 +35,7 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         Assert.assertEquals(linkList.size(), 2);
 
         // Now test unclicking everything
-        clickElement(By.id("classif-Generic Image"));
+        clickElement(By.id("classif-caBIG"));
         textPresent("9 results for");
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 9);
@@ -47,7 +47,7 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 2);
 
-        clickElement(By.id("classif-caBIG"));
+        clickElement(By.id("removeClassifications"));
         textPresent("NINDS (");
         Assert.assertTrue(getNumberOfResults() > 90);
     }

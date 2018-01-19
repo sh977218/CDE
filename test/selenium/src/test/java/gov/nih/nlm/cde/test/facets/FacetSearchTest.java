@@ -94,7 +94,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textPresent("Patient Ethnic Group Category");
 
         scrollToTop();
-        assertSearchFilterSelected("regstatus-Qualified", false);
+        assertSearchFilterSelected("regstatus-Qualified", true);
         clickElement(By.id("regstatus-Qualified"));
         hangon(1);
         assertSearchFilterSelected("regstatus-Candidate", false);

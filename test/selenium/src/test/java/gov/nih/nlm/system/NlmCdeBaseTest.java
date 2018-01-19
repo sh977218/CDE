@@ -257,11 +257,18 @@ public class NlmCdeBaseTest {
     }
 
     protected void assertSearchFilterSelected(String id, boolean state) {
-        if (state)
-            findElement(By.xpath("//*[@id='" + id + "']/*[contains(@class,'treeItemIconSelected')]"));
-        else
-            Assert.assertTrue(driver.findElements(By.xpath(
-                    "//*[@id='" + id + "']/*[contains(@class,'treeItemIconSelected')]")).size() == 0);
+        if (id.startsWith("classif-") || id.startsWith("topic-")) {
+            if (state)
+                findElement(By.xpath("//*[@id='" + id + "' and (contains(@class, 'treeParent') or contains(@class, 'treeCurrent'))]"));
+            else
+                findElement(By.xpath("//*[@id='" + id + "' and contains(@class, 'treeChild')]"));
+        } else {
+            if (state)
+                findElement(By.xpath("//*[@id='" + id + "']/*[contains(@class,'treeItemIconSelected')]"));
+            else
+                Assert.assertTrue(driver.findElements(By.xpath(
+                        "//*[@id='" + id + "']/*[contains(@class,'treeItemIconSelected')]")).size() == 0);
+        }
     }
 
     protected void clearStorage() {

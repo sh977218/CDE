@@ -210,7 +210,7 @@
                     <ng-container *ngFor="let t of aggregations.orgs.buckets; trackBy: helperObjectsService.trackByKey">
                         <ng-container *ngIf="getCurrentSelectedOrg(); else classifOrg">
                             <ng-container *ngIf="t.key === getCurrentSelectedOrg()">
-                                <div *ngIf="searchSettings.classification?.length; else classifSelf"
+                                <div *ngIf="getCurrentSelectedClassification()?.length; else classifSelf"
                                      id="classif-{{t.key}}" class="treeParent hand-cursor"
                                      (click)="alterOrgFilter(t.key)" role="link"
                                      [ngbTooltip]="t.longName" placement="right" container="body">
@@ -218,7 +218,7 @@
                                     <a class="treeItemText"> {{t.key}}</a>
                                 </div>
                                 <ng-template #classifSelf>
-                                    <div class="treeCurrent treeItemText">{{t.key}}</div>
+                                    <div id="classif-{{t.key}}" class="treeCurrent treeItemText">{{t.key}}</div>
                                 </ng-template>
                             </ng-container>
                         </ng-container>
@@ -236,7 +236,7 @@
                             <a class="treeItemText"> {{e}}</a>
                         </div>
                         <ng-template #classifSelf2>
-                            <div class="treeCurrent treeItemText"
+                            <div id="classif-{{e}}" class="treeCurrent treeItemText"
                                  [class.treeItem]="getCurrentSelectedClassification().length">{{e}}</div>
                         </ng-template>
                     </ng-container>

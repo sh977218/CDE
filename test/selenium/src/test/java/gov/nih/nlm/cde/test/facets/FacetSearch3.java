@@ -70,7 +70,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
 
         clickElement(By.id("removeAltClassificationFilterMode"));
         textNotPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
-        textPresent("NINDS (100");
+        textPresent("Classification (100");
 
         clickElement(By.id("menu_cdes_link"));
         findElement(By.id("browseOrg-caCORE"));

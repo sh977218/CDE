@@ -14,7 +14,7 @@ public class PaginationTest extends NlmCdeBaseTest {
         clickElement(By.id("classif-NINDS"));
         clickElement(By.id("classif-Disease"));
         hangon(2);
-        clickElement(By.id("classif-Qualified"));
+        clickElement(By.id("regstatus-Qualified"));
         clickElement(By.linkText("»"));
         hangon(2);
         checkSearchResultInfo("patient", "NINDS > Disease", null, "All Topics", "Qualified", null);
