@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { PreloadAllModules, RouterModule, Routes } from "@angular/router";
 
-import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFoundComponent';
+import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
 
 const appRoutes: Routes = [
     {path: 'api', loadChildren: 'system/public/documentApi.module#DocumentApiModule'},

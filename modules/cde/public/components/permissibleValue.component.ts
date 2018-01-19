@@ -9,7 +9,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
-import * as deValidator from '../../../../shared/cde/deValidator.js';
+import * as deValidator from 'cde/../../shared/cde/deValidator.js';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { AlertService } from '_app/alert/alert.service';
 

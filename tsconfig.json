@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "allowJs": true,
+    "allowJs": false,
     "allowUnreachableCode": true,
     "baseUrl": "./modules",
     "emitDecoratorMetadata": true,
@@ -10,8 +10,6 @@
       "es2015",
       "dom"
     ],
-    "listEmittedFiles": false,
-    "listFiles": false,
     "module": "ES2015",
     "moduleResolution": "node",
     "noImplicitAny": false,
@@ -24,25 +22,23 @@
       "node_modules/@types"
     ]
   },
+  "angularCompilerOptions": {
+  },
   "awesomeTypescriptLoaderOptions": {
     "useWebpackText": true
   },
   "exclude": [
     "build",
-    "bower_components",
     "deploy",
     "dist",
     "ingester",
-    "modules/components",
-    "modules/static",
-    "node_modules",
-    "server",
+    "modules/_embedApp",
+    "modules/_nativeRenderApp",
     "modules/form/public/assets",
+    "node_modules",
     "protractor",
     "scripts",
+    "server",
     "test"
-  ],
-  "angularCompilerOptions": {
-    "skipMetadataEmit": true
-  }
+  ]
 }

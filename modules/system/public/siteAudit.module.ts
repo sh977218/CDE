@@ -6,7 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppLogComponent } from 'system/public/components/siteAdmin/appLogs/appLog.component';
 import { AuditLogComponent } from 'system/public/components/siteAdmin/auditLog/auditLog.component';
-import { CamelCaseToHumanPipe } from 'core/camelCaseToHumanPipe';
+import { CamelCaseToHumanPipe } from 'core/camelCaseToHuman.pipe';
 import { CdeDiffPopulateService } from 'system/public/components/siteAdmin/auditLog/cdeDiffPopulate.service';
 import { ClassificationAuditLogComponent } from 'system/public/components/siteAdmin/classificationAuditLog/classificationAuditLog.component';
 import { ClientErrorsComponent } from 'system/public/components/siteAdmin/clientErrors/clientErrors.component';

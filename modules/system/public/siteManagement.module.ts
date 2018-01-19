@@ -1,18 +1,18 @@
-import { CommonModule } from "@angular/common";
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { JsonpModule } from "@angular/http";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { CommonModule } from '@angular/common';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { JsonpModule } from '@angular/http';
+import { RouterModule, Routes } from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CKEditorModule } from 'ng2-ckeditor';
-import { WidgetModule } from 'widget/widget.module';
+import { TimeAgoPipeModule } from 'time-ago-pipe/es5';
 
-import { EditSiteAdminsComponent } from "./components/siteAdmin/editSiteAdmins/editSiteAdmins.component";
-import { ServerStatusComponent } from "./components/siteAdmin/serverStatus/serverStatus.component";
-import { TimeAgoPipe } from "time-ago-pipe";
-import { SiteManagementComponent } from "./components/siteAdmin/siteManagement/siteManagement.component";
+import { EditSiteAdminsComponent } from 'system/public/components/siteAdmin/editSiteAdmins/editSiteAdmins.component';
+import { ServerStatusComponent } from 'system/public/components/siteAdmin/serverStatus/serverStatus.component';
+import { SiteManagementComponent } from 'system/public/components/siteAdmin/siteManagement/siteManagement.component';
 import { DiscussModule } from 'discuss/discuss.module';
-import { RouterModule, Routes } from "@angular/router";
 import { SystemModule } from 'system/public/system.module';
+import { WidgetModule } from 'widget/widget.module';
 
 const appRoutes: Routes = [
     {path: '', component: SiteManagementComponent},
@@ -26,6 +26,7 @@ const appRoutes: Routes = [
         JsonpModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
+        TimeAgoPipeModule,
         // core
         WidgetModule,
         // internal
@@ -36,7 +37,6 @@ const appRoutes: Routes = [
         EditSiteAdminsComponent,
         ServerStatusComponent,
         SiteManagementComponent,
-        TimeAgoPipe,
     ],
     entryComponents: [
     ],

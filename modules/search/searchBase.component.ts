@@ -669,7 +669,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     static scrollTo(id) {
         const element = document.querySelector('#' + id);
-        if (element) element.scrollIntoView(element);
+        if (element) element.scrollIntoView();
     }
 
     search() {

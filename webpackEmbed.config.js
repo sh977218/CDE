@@ -3,9 +3,11 @@ const prod = process.env.BUILD_ENV === 'production'; // build type from "npm run
 const path = require('path');
 const webpack = require('webpack');
 const AotPlugin = require('@ngtools/webpack');
+const { CheckerPlugin } = require('awesome-typescript-loader');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 // const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const OptimizeJsPlugin = require('optimize-js-plugin');
 // let BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -24,8 +26,12 @@ module.exports = {
         rules: [
             {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
             {
-                test: /\.ts$/,
-                use: prod ? ['@ngtools/webpack'] : ['ts-loader', 'angular2-template-loader']
+                test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+                use: prod ? ['@ngtools/webpack'] : [
+                    {loader: 'awesome-typescript-loader', options: {configFile: 'tsconfigEmbed.json'}},
+                    'angular-router-loader',
+                    'angular2-template-loader'
+                ]
             },
             {
                 test: /\.js$/,
@@ -53,7 +59,7 @@ module.exports = {
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
-                /angular(\\|\/)core(\\|\/)@angular/,
+                /@angular(\\|\/)core(\\|\/)esm5/,
                 path.resolve(__dirname, '../src')
             ),
             new webpack.DefinePlugin({
@@ -67,8 +73,7 @@ module.exports = {
                 Tether:'tether',
                 Popper: ['popper.js', 'default'],
             }),
-            new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-            new AotPlugin.AotPlugin({
+            new AotPlugin.AngularCompilerPlugin({
                 tsConfigPath: path.resolve(__dirname, 'tsconfigEmbed.json'),
                 entryModule: path.join(__dirname, 'modules', '_embedApp/embedApp.module') + '#EmbedAppModule',
             }),
@@ -101,7 +106,7 @@ module.exports = {
         ] : [
             new CleanWebpackPlugin(['dist/embed']),
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
-                /angular(\\|\/)core(\\|\/)@angular/,
+                /@angular(\\|\/)core(\\|\/)esm5/,
                 path.resolve(__dirname, '../src')
             ),
             new webpack.DefinePlugin({
@@ -118,6 +123,8 @@ module.exports = {
                 'Tether':'tether',
                 Popper: ['popper.js', 'default'],
             }),
+            new CheckerPlugin(),
+            new HardSourceWebpackPlugin(),
             new ExtractTextPlugin({filename: '[name].css'}),
             // new CopyWebpackPlugin([
             //     {from: 'modules/_embedApp/assets/'}

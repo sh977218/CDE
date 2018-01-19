@@ -15,7 +15,7 @@ import { CommonAppModule } from '_commonApp/commonApp.module';
 import { ElasticService } from '_app/elastic.service';
 import { LoginService } from '_app/login.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
-import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFoundComponent';
+import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';

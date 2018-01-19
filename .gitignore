@@ -10,8 +10,6 @@ dump/
 migration/
 nbproject
 node_modules
-bower_components
-modules/components/
 modules/cde/public/assets/fonts/
 modules/cde/public/assets/img/robot.png
 modules/system/views/version.html
