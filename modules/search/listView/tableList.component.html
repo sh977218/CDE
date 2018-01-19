@@ -6,9 +6,18 @@
     </thead>
     <tbody>
     <tr *ngFor="let row of rows">
+
         <td *ngFor="let prop of row"
-            [class]="prop.css"
-            [innerHtml]="prop.html">
+            [class]="prop.css">
+            <ng-container [ngSwitch]="prop.css">
+                <ng-container *ngSwitchCase="'name'">
+                    <a routerLink="/deView" [queryParams]="{tinyId: prop.tinyId}">{{prop.value}}</a>
+                </ng-container>
+                <ng-container *ngSwitchCase="'naming'">
+                    previewList(e.naming, n => n.designation)
+
+                </ng-container>
+            </ng-container>
         </td>
     </tr>
     </tbody>

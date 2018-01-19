@@ -86,11 +86,13 @@ export class TableListComponent implements DoCheck, OnChanges {
             if (tableSetup.name)
                 row.push({
                     css: 'name',
-                    html: `<a routerLink="/deView" [queryParams]="{tinyId: ${e.tinyId}}">${e.naming[0].designation}</a>`
+                    tinyId: e.tinyId,
+                    value: e.naming[0].designation
                 });
             if (tableSetup.questionTexts)
                 row.push({
                     css: 'naming',
+                    naming: TableListComponent.getQuestionTexts(e);
                     html: TableListComponent.previewList(TableListComponent.getQuestionTexts(e), n => n.designation)
                 });
             if (tableSetup.naming)
