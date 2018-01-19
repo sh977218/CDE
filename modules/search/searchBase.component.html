@@ -211,10 +211,11 @@
                         <ng-container *ngIf="getCurrentSelectedOrg(); else classifOrg">
                             <ng-container *ngIf="t.key === getCurrentSelectedOrg()">
                                 <div *ngIf="searchSettings.classification?.length; else classifSelf"
-                                     class="treeParent hand-cursor" (click)="alterOrgFilter(t.key)" role="link"
+                                     id="classif-{{t.key}}" class="treeParent hand-cursor"
+                                     (click)="alterOrgFilter(t.key)" role="link"
                                      [ngbTooltip]="t.longName" placement="right" container="body">
-                                    <i id="li-blank-{{t.key}}" class="fa fa-angle-left treeItemIcon"></i>
-                                    <a id="classifications-text-{{t.key}}" class="treeItemText"> {{t.key}}</a>
+                                    <i class="treeItemIcon fa fa-angle-left"></i>
+                                    <a class="treeItemText"> {{t.key}}</a>
                                 </div>
                                 <ng-template #classifSelf>
                                     <div class="treeCurrent treeItemText">{{t.key}}</div>
@@ -222,17 +223,17 @@
                             </ng-container>
                         </ng-container>
                         <ng-template #classifOrg>
-                            <div class="treeChild hand-cursor" (click)="alterOrgFilter(t.key)" role="link">
-                                <i id="li-blank-{{t.key}}" class="treeItemIcon fa fa-angle-right"></i>
+                            <div id="classif-{{t.key}}" class="treeChild hand-cursor" (click)="alterOrgFilter(t.key)" role="link">
+                                <i class="treeItemIcon fa fa-angle-right"></i>
                                 <a class="treeItemText">{{t.key}} (<span id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)</a>
                             </div>
                         </ng-template>
                     </ng-container>
                     <ng-container *ngFor="let e of getCurrentSelectedClassification(); index as i; last as isLast">
-                        <div *ngIf="!isLast; else classifSelf2" class="treeParent hand-cursor"
+                        <div *ngIf="!isLast; else classifSelf2" id="classif-{{e}}" class="treeParent hand-cursor"
                              (click)="selectElement(e)" role="link">
-                            <i id="li-blank-{{e}}" class="fa fa-angle-left treeItemIcon"></i>
-                            <a id="classifications-text-{{e}}" class="treeItemText"> {{e}}</a>
+                            <i class="fa fa-angle-left treeItemIcon"></i>
+                            <a class="treeItemText"> {{e}}</a>
                         </div>
                         <ng-template #classifSelf2>
                             <div class="treeCurrent treeItemText"
@@ -240,9 +241,9 @@
                         </ng-template>
                     </ng-container>
                     <div *ngFor="let b of (altClassificationFilterMode?aggregations.flatClassificationsAlt:aggregations.flatClassifications); trackBy: helperObjectsService.trackByName"
-                         class="treeChild hand-cursor" [class.treeItem]="getCurrentSelectedClassification().length"
+                         id="classif-{{b.name}}" class="treeChild hand-cursor" [class.treeItem]="getCurrentSelectedClassification().length"
                          (click)="selectElement(b.name)" role="link">
-                        <i id="li-blank-{{b.name}}" class="treeItemIcon fa fa-angle-right"></i>
+                        <i class="treeItemIcon fa fa-angle-right"></i>
                         <a class="treeItemText">{{b.name}} (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)</a>
                     </div>
                 </div>
@@ -250,9 +251,9 @@
                 <div *ngIf="searchSettings.meshTree || aggregations.topics.length" id="meshTreesListHolder" class="my-3">
                     <span class="treeTitle">Topics</span>
                     <div *ngFor="let e of getCurrentSelectedTopic(); index as i; last as isLast"
-                         class="hand-cursor" (click)="selectTopic(e)" role="link">
+                         id="topic-{{e}}" class="hand-cursor" (click)="selectTopic(e)" role="link">
                         <div *ngIf="!isLast; else topicSelf" class="treeParent">
-                            <i id="li-checked-{{e}}" class="treeItemIcon fa fa-angle-left"></i>
+                            <i class="treeItemIcon treeItemIconSelected fa fa-angle-left"></i>
                             <a class="treeItemText">{{e}}</a>
                         </div>
                         <ng-template #topicSelf>
@@ -261,9 +262,9 @@
                         </ng-template>
                     </div>
                     <div *ngFor="let b of aggregations.topics; trackBy: helperObjectsService.trackByName"
-                         class="treeChild hand-cursor" [class.treeItem]="getCurrentSelectedTopic().length > 1"
+                         id="topic-{{b.name}}" class="treeChild hand-cursor" [class.treeItem]="getCurrentSelectedTopic().length > 1"
                          (click)="selectTopic(b.name)" role="link">
-                        <i id="li-blank-{{b.name}}" class="treeItemIcon fa fa-angle-right"></i>
+                        <i class="treeItemIcon fa fa-angle-right"></i>
                         <a class="treeItemText">{{b.name}} (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)</a>
                     </div>
                 </div>
@@ -271,16 +272,16 @@
                 <div *ngIf="aggregations.statuses.statuses.buckets" id="registrationStatusListHolder" class="my-3">
                     <span class="treeTitle">Registration Status</span>
                     <ng-container *ngFor="let t of aggregations.statuses.statuses.buckets" >
-                        <div *ngIf="t.doc_count > 0" class="treeItem hand-cursor"
+                        <div *ngIf="t.doc_count > 0" id="regstatus-{{t.key}}" class="treeItem hand-cursor"
                              (click)="addStatusFilter(t.key)" role="link"
                              [ngbTooltip]="getRegStatusHelp(t.key)" placement="right" container="body">
                             <ng-container *ngIf="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1; else else06">
-                                <i id="li-checked-{{t.key}}" class="treeItemIcon fa fa-check-square-o"></i>
+                                <i class="treeItemIcon treeItemIconSelected fa fa-check-square-o"></i>
                             </ng-container>
                             <ng-template #else06>
-                                <i id="li-blank-{{t.key}}" class="treeItemIcon fa fa-square-o"></i>
+                                <i class="treeItemIcon fa fa-square-o"></i>
                             </ng-template>
-                            <a id="status-text-{{t.key}}" class="treeItemText">{{t.key}} ({{t.doc_count}})</a>
+                            <a class="treeItemText">{{t.key}} ({{t.doc_count}})</a>
                         </div>
                     </ng-container>
                 </div>
@@ -288,15 +289,15 @@
                 <div *ngIf="module === 'cde' && aggregations.datatype.datatype.buckets.length" id="datatypeListHolder" class="my-3">
                     <span class="treeTitle">Data Types</span>
                     <ng-container *ngFor="let t of aggregations.datatype.datatype.buckets">
-                        <div *ngIf="t.doc_count > 0" class="treeItem hand-cursor"
+                        <div *ngIf="t.doc_count > 0" id="datatype-{{t.key}}" class="treeItem hand-cursor"
                              (click)="addDatatypeFilter(t.key)" role="link">
                             <ng-container *ngIf="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1; else else07">
-                                <i id="li-checked-{{t.key}}" class="treeItemIcon fa fa-check-square-o"></i>
+                                <i class="treeItemIcon treeItemIconSelected fa fa-check-square-o"></i>
                             </ng-container>
                             <ng-template #else07>
-                                <i id="li-blank-{{t.key}}" class="treeItemIcon fa fa-square-o"></i>
+                                <i class="treeItemIcon fa fa-square-o"></i>
                             </ng-template>
-                            <a id="datatype-text-{{t.key}}" class="treeItemText">{{t.key}} ({{t.doc_count}})</a>
+                            <a class="treeItemText">{{t.key}} ({{t.doc_count}})</a>
                         </div>
                     </ng-container>
                 </div>

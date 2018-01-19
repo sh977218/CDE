@@ -13,10 +13,10 @@ public class PinAllLessThan20 extends BoardTest {
         goToCdeSearch();
 
         clickElement(By.id("browseOrg-NINDS"));
-        clickElement(By.id("li-blank-Disease"));
-        clickElement(By.id("li-blank-Stroke"));
-        clickElement(By.id("li-blank-Classification"));
-        clickElement(By.id("li-blank-Exploratory"));
+        clickElement(By.id("classif-Disease"));
+        clickElement(By.id("classif-Stroke"));
+        clickElement(By.id("classif-Classification"));
+        clickElement(By.id("classif-Exploratory"));
         textPresent("9 results for All Terms");
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         clickElement(By.id("pinAll"));

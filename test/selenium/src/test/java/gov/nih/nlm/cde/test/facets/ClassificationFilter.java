@@ -16,7 +16,7 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         findElement(By.name("q")).sendKeys("Image");
         clickElement(By.id("search.submit"));
         textPresent("caBIG (9)");
-        clickElement(By.id("li-blank-caBIG"));
+        clickElement(By.id("classif-caBIG"));
         textPresent("Generic Image");
 
         textPresent("9 results for");
@@ -26,9 +26,9 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         // Check that CTEP classification with 0 items does not show
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("Radiograph Evidence Type"));
 
-        clickElement(By.xpath("//*[@id='li-blank-Generic Image']"));
+        clickElement(By.xpath("//*[@id='classif-Generic Image']"));
         textPresent("genericimage (2)");
-        clickElement(By.id("li-blank-gov.nih.nci.ivi.genericimage"));
+        clickElement(By.id("classif-gov.nih.nci.ivi.genericimage"));
         textPresent("2 results for");
 
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));

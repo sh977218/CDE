@@ -18,7 +18,7 @@ public class TourTest extends NlmCdeBaseTest {
             "CDEs or Forms can be browsed by Classifications. Classifications are ways for content owners to organize their CDEs.",
             "Or by topic. Topics are MeSH terms.",
             "These boxes represent classifications. Clicking NLM will browse all CDEs classified by NLM.",
-            "Browsing can return hundreds of elements, sorted by their registration and usage. When elements have list of values, the search summary shows a subset of those values.",
+            "Browsing can return hundreds of elements sorted by relevance.",
             "We can continue browsing inside the NLM classification here.",
             "By default, only Qualified and above statuses will be returned. This can be changed in your preferences (the wheel in the upper right corner).",
             "Finally, we can narrow our results down by datatype. For example, only see CDEs that represent a number.",
