@@ -26,7 +26,6 @@ export const searchStyles: string = `
     .treeItemText {
         font-size: 80%;
         word-wrap: break-word;
-        word-break: break-all;
     }
     .treeParent {
         line-height: 1;
