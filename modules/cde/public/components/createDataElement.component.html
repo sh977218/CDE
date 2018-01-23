@@ -57,6 +57,8 @@
                         <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed">
                             {{cde.naming[0].designation}}
                         </span>
+                        <a routerLink="/deView" [queryParams]="{tinyId: cde.tinyId}" target="_blank">
+                            <i class="fa fa-eye iconColor"></i></a>
                         <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
                         <cde-pin-quickboard [elt]="cde" [eltIndex]="index"></cde-pin-quickboard>
                     </div>
