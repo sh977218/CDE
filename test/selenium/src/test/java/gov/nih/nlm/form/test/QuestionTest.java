@@ -18,8 +18,14 @@ public class QuestionTest extends BaseFormTest {
 
     public void addCdeByNameBeforeId(String cdeName, String id) {
         String dropXpath = "//*[@id='" + id + "']//tree-node-drop-slot[1]";
-        addCde(cdeName, dropXpath);
+        addCde(cdeName, dropXpath, false);
         textPresent(cdeName, By.id(id));
+    }
+
+    public void addCdeByPartialNameBeforeId(String cdeNameString, String id) {
+        String dropXpath = "//*[@id='" + id + "']//tree-node-drop-slot[1]";
+        addCde(cdeNameString, dropXpath, true);
+        textPresent(cdeNameString, By.id(id));
     }
 
     public void addCdesByNames(String[] cdeNames) {
@@ -36,7 +42,7 @@ public class QuestionTest extends BaseFormTest {
 
     }
 
-    private void addCde(String cdeName, String dropXpath) {
+    private void addCde(String cdeName, String dropXpath, boolean isSuggested) {
         WebElement sourceElt = findElement(By.xpath("//*[@id='startAddingQuestions']"));
         WebElement targetElt = findElement(By.xpath(dropXpath));
         (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
@@ -46,7 +52,8 @@ public class QuestionTest extends BaseFormTest {
                 clickElement(By.id("addNewCdeBtn"));
             textPresent("Create Data Element");
             new Actions(driver).sendKeys(cdeName).build().perform();
-            clickElement(By.id("createNewDataElement"));
+            if (!isSuggested) clickElement(By.id("createNewDataElement"));
+            else clickElement(By.id("(//*[@id='accordionList']//div[@class='card-header']//button)[1]"));
         } catch (Exception e) {
         }
     }

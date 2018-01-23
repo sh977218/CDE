@@ -25,6 +25,7 @@ import { CdeForm, FormSection } from 'core/form.model';
 import { SearchSettings } from "../../../../search/search.model";
 import { FormService } from 'nativeRender/form.service';
 import { ElasticService } from "../../../../_app/elastic.service";
+import { AlertService } from "../../../../_app/alert/alert.service";
 
 const TOOL_BAR_OFF_SET = 55;
 
@@ -141,12 +142,15 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             if (term) {
                 settings.resultPerPage = 5;
                 settings.searchTerm = term;
-                return this.http.post('/elasticSearch/cde', settings).map(res => res.json());
+                return this.http.post('/cdeCompletion/' + encodeURI(term), this.elasticService.buildElasticQuerySettings(settings)).map(res => res.json());
             }
             else return Observable.of<string[]>([]);
         }).subscribe(res => {
-            if (res.cdes)
-                this.suggestedCdes = res.cdes;
+            let tinyIdList = res.map(r => r._id).slice(1, 5);
+            if (tinyIdList && tinyIdList.length > 0)
+                this.http.get('/deList/' + tinyIdList).map(res => res.json()).subscribe(result => {
+                    this.suggestedCdes = result;
+                }, err => this.alert.addAlert('danger', err));
             else this.suggestedCdes = [];
         });
     };
@@ -249,6 +253,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 public modalService: NgbModal,
                 private formService: FormService,
                 private elasticService: ElasticService,
+                private alert: AlertService,
                 private _hotkeysService: HotkeysService) {
     }
 
@@ -342,7 +347,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     createNewDataElement(newCde = this.newDataElement, c) {
-        this.addQuestionFromSearch(this.newDataElement, () => {
+        this.addQuestionFromSearch(newCde, () => {
             c();
         });
     }

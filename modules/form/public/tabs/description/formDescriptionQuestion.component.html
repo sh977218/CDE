@@ -32,7 +32,7 @@
                     (click)="openUpdateCdeVersion(question);">Update
             </button>
         </ng-container>
-        <div class="float-left mx-1">{{getDatatypeLabel(question)}}</div>
+        <div class="float-left questionDataType mx-1">{{getDatatypeLabel(question)}}</div>
         <div class="float-right">
             <a *ngIf="question.question.cde.tinyId" target="_blank" title="{{question.question.cde.name}}"
                href="/deView?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">

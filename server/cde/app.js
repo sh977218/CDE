@@ -264,7 +264,6 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
-        let result = [];
         let term = req.params.term;
         elastic_system.completionSuggest(term, req.user, req.body,config.elastic.index.name, resp => {
             resp.hits.hits.forEach(r => r._index = undefined);

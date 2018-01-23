@@ -8,23 +8,30 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
     @Test
     public void formAddCde() {
         String form = "formAddSuggestedCdeTest";
-        String cdeName1 = "pati";
+        String cdeName1 = "patien";
+        String cdeName2 = "Height measureme";
+        String cdeName3 = "Gastrointestinal therapy continuous feed end t";
+        String cdeName4 = "Diary day headache indic";
         mustBeLoggedInAs(nlm_username, nlm_username);
         goToFormByName(form);
         goToFormDescription();
-        addCdeByNameBeforeId(cdeName1, "question_0_0");
-        newFormVersion();
-        checkNewCde1();
+        addCdeByPartialNameBeforeId(cdeName1, "question_0_0");
+        textPresent("Retreatment Patient Request Type", By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionLabel')]"));
+
+        addCdeByPartialNameBeforeId(cdeName2, "question_0_1");
+        textPresent("Height (Specify)", By.xpath("//*[@id='question_0_1']//*[contains(@class,'questionLabel')]"));
+        textPresent("Number", By.xpath("//*[@id='question_0_1']//*[contains(@class,'questionDataType')]"));
+
+        addCdeByPartialNameBeforeId(cdeName3, "question_0_2");
+        textPresent("Continuous feeding end time", By.xpath("//*[@id='question_0_2']//*[contains(@class,'questionLabel')]"));
+        textPresent("Date", By.xpath("//*[@id='question_0_2']//*[contains(@class,'questionDataType')]"));
+
+        addCdeByPartialNameBeforeId(cdeName4, "question_0_3");
+        textPresent("Migraine", By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionLabel')]"));
+        saveEditQuestionById("question_0_3");
+        textPresent("YesNoUnknown", By.xpath("//*[@id='question_0_3']//*[contains(@class,'card-body')]//*[contains(@class,'answerList')]"));
+
     }
 
-    private void checkNewCde1() {
-        String cdeName1 = "newCde1";
-        goToCdeByName(cdeName1);
-        goToPermissibleValues();
-        textPresent("Text", By.id("datatypeSelect"));
-        goToNaming();
-        textPresent(cdeName1, By.id("designation_0"));
-        textPresent("Question Text", By.id("tags_0"));
-    }
 
 }

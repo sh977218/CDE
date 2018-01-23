@@ -121,7 +121,7 @@
         </div>
     </ng-container>
     <ng-container *ngIf="questionModelMode === 'add'">
-        <form #newDataElementForm="ngForm" (ngSubmit)="createNewDataElement(null,c);">
+        <form #newDataElementForm="ngForm" (ngSubmit)="createNewDataElement(undefined,c);">
             <div class="modal-header">
                 <h1>Create Data Element</h1>
                 <button class="btn btn-outline-dark" type="button" (click)="questionModelMode = 'search'">
@@ -138,8 +138,8 @@
                     <h4>Possible Matches</h4>
                     <div class="card" *ngFor="let cde of suggestedCdes;let index = index;">
                         <div class="card-header">
-                            <button class="btn btn-outline-danger">
-                                <i class="fa fa-plus" (click)="createNewDataElement(cde,c);"></i> Add
+                            <button class="btn btn-outline-danger hand-cursor" type="button" (click)="createNewDataElement(cde,c);">
+                                <i class="fa fa-plus"></i> Add
                             </button>
                             <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed">
                                 {{cde.naming[0].designation}}
