@@ -182,6 +182,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     initNewDataElement() {
+        this.suggestedCdes = [];
         return {
             naming: [{
                 designation: '',
@@ -340,7 +341,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.searchTerms.next(this.newDataElement.naming[0].designation);
     }
 
-    createNewDataElement(c) {
+    createNewDataElement(newCde = this.newDataElement, c) {
         this.addQuestionFromSearch(this.newDataElement, () => {
             c();
         });
