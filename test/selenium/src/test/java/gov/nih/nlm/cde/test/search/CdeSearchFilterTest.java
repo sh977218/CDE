@@ -20,7 +20,7 @@ public class CdeSearchFilterTest extends NlmCdeBaseTest {
         textPresent("Value List (4)");
         textPresent("NUMBER (1)");
 
-        clickElement(By.id("status-text-Candidate"));
+        clickElement(By.xpath("//*[@id='regstatus-Candidate']/*[@class='treeItemText']"));
         textPresent("3 results for");
         textNotPresent("Neoadjuvant Therapy");
         textPresent("Under Review (1)");
@@ -29,7 +29,7 @@ public class CdeSearchFilterTest extends NlmCdeBaseTest {
         textPresent("Value List (2)");
         textPresent("NUMBER (1)");
 
-        clickElement(By.xpath("//*[@id='datatype-text-Value List']"));
+        clickElement(By.xpath("//*[@id='datatype-Value List']/*[@class='treeItemText']"));
         textPresent("2 results for");
         textNotPresent("Visible Tumor Anterior-Posterior Orientation Size 3 Digit Number");
         textPresent("Candidate (3)");

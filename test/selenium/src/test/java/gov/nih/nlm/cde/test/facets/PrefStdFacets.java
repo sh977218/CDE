@@ -17,7 +17,7 @@ public class PrefStdFacets extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-DCP"));
         textPresent("Preferred Standard (");
-        clickElement(By.id("li-blank-Standard"));
+        clickElement(By.id("regstatus-Standard"));
         textNotPresent(cdeName);
     }
 
