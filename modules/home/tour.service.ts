@@ -57,23 +57,23 @@ const searchResultSteps: Array<any> = [
     {
         title: " 10/42 Search Result",
         element: "#resultList",
-        content: "Browsing can return hundreds of elements, sorted by their registration and usage. When elements have list of values, the search summary shows a subset of those values.",
+        content: "Browsing can return hundreds of elements sorted by relevance.",
         placement: "top"
     },
     {
         title: " 11/42 Classification Filter",
-        element: "#classif_filter_title",
+        element: "#classificationListHolder",
         content: "We can continue browsing inside the NLM classification here.",
         placement: "top"
     },
     {
         title: " 12/42 Registration Status",
-        element: "#status_filter",
+        element: "#registrationStatusListHolder",
         content: "By default, only Qualified and above statuses will be returned. This can be changed in your preferences (the wheel in the upper right corner)."
     },
     {
         title: " 13/42 Data Types",
-        element: "#datatype_filter",
+        element: "#datatypeListHolder",
         content: "Finally, we can narrow our results down by datatype. For example, only see CDEs that represent a number."
     },
     {
