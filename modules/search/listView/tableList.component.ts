@@ -1,4 +1,4 @@
-import { Component, DoCheck, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 
 @Component({
@@ -10,43 +10,32 @@ import { ElasticService } from '_app/elastic.service';
         }
     `]
 })
-export class TableListComponent implements DoCheck, OnChanges {
-    @Input() elts: any[];
+export class TableListComponent implements OnInit {
+    @Input() set elts(elts: any[]) {
+        this._elts = elts;
+        this.render();
+    };
+    get elts() {
+        return this._elts;
+    }
     @Input() module: string;
 
-    cacheElts: any[];
+    private _elts: any[];
     headings: string[];
     rows: any[];
 
-    constructor(public esService: ElasticService) {
-        if (esService.searchSettings && esService.searchSettings.tableViewFields)
-            this.render();
-    }
+    constructor(public esService: ElasticService) {}
 
-    ngDoCheck() {
-        // TODO: remove DoCheck when OnChanges inputs is implemented for Dynamic Components
-        if (this.elts !== this.cacheElts)
-            this.render();
-    }
-
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes.elts)
-            this.render();
+    ngOnInit () {
+        this.render();
     }
 
     render() {
-        if (!this.esService.searchSettings.tableViewFields)
-            return;
-
+        if (!this.esService.searchSettings.tableViewFields) return;
         if (this.module === 'cde')
             this.renderCde();
         else if (this.module === 'form')
             this.renderForm();
-        else if (this.module === 'board')
-            this.renderBoard();
-    }
-
-    renderBoard() {
     }
 
     renderCde() {
@@ -86,76 +75,73 @@ export class TableListComponent implements DoCheck, OnChanges {
             if (tableSetup.name)
                 row.push({
                     css: 'name',
-                    html: `<a routerLink="/deView" [queryParams]="{tinyId: ${e.tinyId}}">${e.naming[0].designation}</a>`
+                    elt: e
                 });
             if (tableSetup.questionTexts)
                 row.push({
                     css: 'naming',
-                    html: TableListComponent.previewList(TableListComponent.getQuestionTexts(e), n => n.designation)
+                    values: TableListComponent.truncatedList(TableListComponent.getQuestionTexts(e), n => n.designation),
                 });
             if (tableSetup.naming)
                 row.push({
                     css: 'naming',
-                    html: TableListComponent.previewList(TableListComponent.getOtherNames(e), n => n.designation)
+                    values: TableListComponent.truncatedList(TableListComponent.getOtherNames(e), n => n.designation),
                 });
             if (tableSetup.permissibleValues)
                 row.push({
                     css: 'permissibleValues multiline-ellipsis',
-                    html: '<div>' + e.valueDomain.datatype + (e.valueDomain.datatype === 'Value List' ? ':' : '')
-                    + '</div>' + TableListComponent.previewList(e.valueDomain.permissibleValues, pv => pv.permissibleValue)
+                    datatype: e.valueDomain.datatype,
+                    values: TableListComponent.truncatedList(e.valueDomain.permissibleValues, pv => pv.permissibleValue)
                 });
             if (tableSetup.nbOfPVs)
                 row.push({
                     css: 'nbOfPVs',
-                    html: e.valueDomain.nbOfPVs
+                    value: e.valueDomain.nbOfPVs
                 });
             if (tableSetup.uom)
                 row.push({
                     css: 'uom',
-                    html: e.valueDomain.uom
+                    value: e.valueDomain.uom
                 });
             if (tableSetup.stewardOrg)
                 row.push({
                     css: 'stewardOrg',
-                    html: e.stewardOrg.name
+                    value: e.stewardOrg.name
                 });
             if (tableSetup.usedBy)
                 row.push({
                     css: 'usedBy multiline-ellipsis',
-                    html: e.usedBy && TableListComponent.lineClip(e.usedBy.join(', '))
+                    value: e.usedBy && TableListComponent.lineClip(e.usedBy.join(', '))
                 });
             if (tableSetup.registrationStatus)
                 row.push({
                     css: 'registrationStatus',
-                    html: e.registrationState.registrationStatus
+                    value: e.registrationState.registrationStatus
                 });
             if (tableSetup.administrativeStatus)
                 row.push({
                     css: 'administrativeStatus',
-                    html: e.registrationState.administrativeStatus
+                    value: e.registrationState.administrativeStatus
                 });
             if (tableSetup.ids)
                 row.push({
                     css: 'ids',
-                    html: TableListComponent.previewList(e.ids, id => {
-                        let version = id.version ? 'v' + id.version : '';
-                        return `${id.source}: <strong>${id.id}</strong> ${version}`;
-                    })
+                    values: TableListComponent.truncatedList(e.ids, (e) => e)
                 });
             if (tableSetup.source)
                 row.push({
                     css: 'source',
-                    html: e.source
+                    value: e.source
                 });
             if (tableSetup.updated)
                 row.push({
                     css: 'updated',
-                    html: e.updated ? new Date(e.updated).toLocaleString('en-US') : null
+                    value: e.updated ? new Date(e.updated).toLocaleString('en-US') : null
                 });
             if (tableSetup.tinyId)
                 row.push({
                     css: '',
-                    html: e.tinyId
+                    value: e.tinyId
                 });
             return row;
         });
@@ -192,65 +178,61 @@ export class TableListComponent implements DoCheck, OnChanges {
             if (tableSetup.name)
                 row.push({
                     css: 'name',
-                    html: `<a routerLink="/formView" [queryParams]="{tinyId: ${e.tinyId}}">${e.naming[0].designation}</a>`
+                    elt: e
                 });
             if (tableSetup.naming)
                 row.push({
                     css: 'naming',
-                    html: TableListComponent.previewList(e.naming, n => n.designation)
+                    values: TableListComponent.truncatedList(TableListComponent.getOtherNames(e), n => n.designation),
                 });
             if (tableSetup.stewardOrg)
                 row.push({
                     css: 'stewardOrg',
-                    html: e.stewardOrg.name
+                    value: e.stewardOrg.name
                 });
             if (tableSetup.usedBy)
                 row.push({
                     css: 'usedBy multiline-ellipsis',
-                    html: e.usedBy && TableListComponent.lineClip(e.usedBy.join(', '))
+                    value: e.usedBy && TableListComponent.lineClip(e.usedBy.join(', '))
                 });
             if (tableSetup.registrationStatus)
                 row.push({
                     css: 'registrationStatus',
-                    html: e.registrationState.registrationStatus
+                    value: e.registrationState.registrationStatus
                 });
             if (tableSetup.administrativeStatus)
                 row.push({
                     css: 'administrativeStatus',
-                    html: e.registrationState.administrativeStatus
+                    value: e.registrationState.administrativeStatus
                 });
             if (tableSetup.ids)
                 row.push({
                     css: 'ids',
-                    html: TableListComponent.previewList(e.ids, id => {
-                        let version = id.version ? 'v' + id.version : '';
-                        return `${id.source}: <strong>${id.id}</strong> ${version}`;
-                    })
+                    values: TableListComponent.truncatedList(e.ids, (e) => e)
                 });
             if (tableSetup.numQuestions)
                 row.push({
                     css: 'numQuestions',
-                    html: e.numQuestions
+                    value: e.numQuestions
                 });
             if (tableSetup.source)
                 row.push({
                     css: 'source',
-                    html: e.source
+                    value: e.source
                 });
             if (tableSetup.updated)
                 row.push({
                     css: 'updated',
-                    html: e.updated ? new Date(e.updated).toLocaleString('en-US') : null
+                    value: e.updated ? new Date(e.updated).toLocaleString('en-US') : null
                 });
             if (tableSetup.tinyId)
                 row.push({
                     css: '',
-                    html: e.tinyId
+                    value: e.tinyId
                 });
             return row;
         });
     }
-
     static readonly maxLines = 5;
     static readonly lineLength = 62;
 
@@ -260,22 +242,18 @@ export class TableListComponent implements DoCheck, OnChanges {
             : line;
     }
 
-    static previewList(list, f) {
+    static truncatedList(list, f) {
         const size = list.length;
-        let naming = '';
-        let count = 0;
+        let result = [];
         for (let i = 0; i < size; i++) {
             let formatted = f(list[i]);
-            if (formatted) {
-                naming += `<li>${this.lineClip(formatted)}</li>`;
-                count++;
-            }
-            if (count === this.maxLines && i + 1 < size) {
-                naming += '<li class="lastItem">...</li>';
-                break;
+            if (formatted) result.push(this.lineClip(formatted));
+            if (result.length === this.maxLines && (i + 1) < size) {
+                result.push("...");
+                i = size;
             }
         }
-        return `<ul>${naming}</ul>`;
+        return result;
     }
 
     static getQuestionTexts(e) {
@@ -286,9 +264,9 @@ export class TableListComponent implements DoCheck, OnChanges {
     }
 
     static getOtherNames(cde) {
-        return cde.naming.filter(n => {
+        return cde.naming.filter((n, i) => {
             if (!n.tags) n.tags = [];
-            return n.tags.filter(t => t.indexOf('Question Text') > -1).length === 0;
+            return i > 0 && n.tags.filter(t => t.indexOf('Question Text') > -1).length === 0;
         });
     }
 }

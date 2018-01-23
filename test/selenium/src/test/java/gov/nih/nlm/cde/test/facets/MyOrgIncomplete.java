@@ -18,6 +18,7 @@ public class MyOrgIncomplete extends NlmCdeBaseTest {
         clickElement(By.id("browseOrg-ONC"));
         textPresent("Incomplete (");
         clickElement(By.xpath("//*[@id='regstatus-Incomplete']/*[@class='treeItemText']"));
+        textPresent("Incomplete", By.id("searchResultInfoBar"));
         textPresent("Incomplete (" + getNumberOfResults());
 
         goToCdeSearch();
