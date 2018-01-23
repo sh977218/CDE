@@ -32,7 +32,7 @@ public class QuestionLayoutTest extends QuestionTest {
         textPresent("java.util.Date (2)");
         textPresent("Value List (1)");
 
-        clickElement(By.id("datatype-text-java.util.Date"));
+        clickElement(By.id("datatype-java.util.Date"));
         textPresent("2 results for All Terms");
         textNotPresent("Reference Editor java.lang.String");
         textNotPresent("Mage-OM (");

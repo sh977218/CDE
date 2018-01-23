@@ -8,12 +8,13 @@ import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
 import { ExportService } from 'core/export.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
-import { SearchBaseComponent } from 'search/searchBase.component';
+import { SearchBaseComponent, searchStyles } from 'search/searchBase.component';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { UserService } from "_app/user.service";
 
 @Component({
     selector: 'cde-cde-search',
+    styles: [searchStyles],
     templateUrl: '../../../../search/searchBase.component.html'
 })
 export class CdeSearchComponent extends SearchBaseComponent {
