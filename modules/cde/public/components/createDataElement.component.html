@@ -54,9 +54,9 @@
                 <h4>Possible Matches</h4>
                 <div class="card" *ngFor="let cde of suggestedCdes;let index = index;">
                     <div class="card-header">
-                <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed">
-                    {{cde.naming[0].designation}}
-                </span>
+                        <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed">
+                            {{cde.naming[0].designation}}
+                        </span>
                         <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
                         <cde-pin-quickboard [elt]="cde" [eltIndex]="index"></cde-pin-quickboard>
                     </div>
@@ -64,10 +64,10 @@
                         <div class="row">
                             <div class="col-4">
                                 <dl class="row">
-                                    <dt class="col-sm-3">Steward:</dt>
-                                    <dd class="col-sm-9">{{cde.stewardOrg.name}}</dd>
-                                    <dt class="col-sm-3">Source:</dt>
-                                    <dd class="col-sm-9">{{cde.source}}</dd>
+                                    <dt class="col-sm-5">Steward:</dt>
+                                    <dd class="col-sm-7">{{cde.stewardOrg.name}}</dd>
+                                    <dt class="col-sm-5">Source:</dt>
+                                    <dd class="col-sm-7">{{cde.source}}</dd>
                                 </dl>
                             </div>
                             <div class="col-4" *ngIf="cde.valueDomain.permissibleValues.length > 0">
