@@ -12,10 +12,10 @@ public class PinAllMoreThan20 extends BoardTest {
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
-        clickElement(By.id("li-blank-Disease"));
-        clickElement(By.xpath("//*[@id='li-blank-Amyotrophic Lateral Sclerosis']"));
-        clickElement(By.id("li-blank-Classification"));
-        clickElement(By.id("li-blank-Core"));
+        clickElement(By.id("classif-Disease"));
+        clickElement(By.id("classif-Amyotrophic Lateral Sclerosis"));
+        clickElement(By.id("classif-Classification"));
+        clickElement(By.id("classif-Core"));
         hangon(3);
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         Assert.assertTrue(searchResultNum_int > 20);

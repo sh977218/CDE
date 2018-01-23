@@ -11,10 +11,10 @@ public class PaginationTest extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("patient");
         clickElement(By.id("search.submit"));
-        clickElement(By.id("li-blank-NINDS"));
-        clickElement(By.id("li-blank-Disease"));
+        clickElement(By.id("classif-NINDS"));
+        clickElement(By.id("classif-Disease"));
         hangon(2);
-        clickElement(By.id("li-blank-Qualified"));
+        clickElement(By.id("regstatus-Qualified"));
         clickElement(By.linkText("»"));
         hangon(2);
         checkSearchResultInfo("patient", "NINDS > Disease", null, "All Topics", "Qualified", null);

@@ -28,7 +28,7 @@ public class HighlightTest extends NlmCdeBaseTest {
         // no highlights
         goToCdeSearch();
         clickElement(By.id("browseOrg-caCORE"));
-        clickElement(By.id("li-blank-Mage-OM"));
+        clickElement(By.id("classif-Mage-OM"));
         textPresent("A note acknowledging a source of information or quoting a passage._A person who edits material for publication; a person having managerial and sometimes policy-making responsibility for the editorial ...");
 
     }
