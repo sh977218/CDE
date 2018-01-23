@@ -337,9 +337,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.modalService.open(this.questionSearchTmpl, {size: 'lg'}).result.then(
             () => this.isModalOpen = false,
             () => this.isModalOpen = false);
-        if (this.questionModelMode === 'add') {
-            setTimeout(() => window.document.getElementById("newDEName").focus(), 0);
-        }
+        setTimeout(() => {
+            if (this.questionModelMode === 'add') window.document.getElementById("newDEName").focus();
+        }, 0);
     }
 
     newDataElementNameChanged() {

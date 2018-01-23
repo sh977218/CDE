@@ -16,6 +16,18 @@ public class QuestionTest extends BaseFormTest {
         addQuestionToSectionUnsafe(cdeName, sectionNumber);
     }
 
+    public void addQuestionToSectionByAutoComplete(String cdeNameString, int sectionNumber) {
+        addQuestionDialog(sectionNumber);
+
+        findElement(By.id("ftsearch-input")).clear();
+        textPresent("", By.id("ftsearch-input"));
+        findElement(By.id("ftsearch-input")).sendKeys(cdeNameString);
+        hangon(1);
+        clickElement(By.xpath("(//ngb-highlight[contains(., '" + cdeNameString + "')])[1]"));
+        clickElement(By.xpath("//*[@id='acc_link_0']/preceding-sibling::button"));
+        clickElement(By.id("cancelSelectQ"));
+    }
+
     public void addCdeByNameBeforeId(String cdeName, String id) {
         String dropXpath = "//*[@id='" + id + "']//tree-node-drop-slot[1]";
         addCde(cdeName, dropXpath, false);
