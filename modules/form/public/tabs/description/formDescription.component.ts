@@ -22,10 +22,10 @@ import { Subject } from 'rxjs/Subject';
 
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { CdeForm, FormSection } from 'core/form.model';
-import { SearchSettings } from "../../../../search/search.model";
+import { SearchSettings } from '../../../../search/search.model';
 import { FormService } from 'nativeRender/form.service';
-import { ElasticService } from "../../../../_app/elastic.service";
-import { AlertService } from "../../../../_app/alert/alert.service";
+import { ElasticService } from '../../../../_app/elastic.service';
+import { AlertService } from '../../../../_app/alert/alert.service';
 
 const TOOL_BAR_OFF_SET = 55;
 
@@ -146,7 +146,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             }
             else return Observable.of<string[]>([]);
         }).subscribe(res => {
-            let tinyIdList = res.map(r => r._id).slice(1, 5);
+            let tinyIdList = res.map(r => r._id).slice(0, 5);
             if (tinyIdList && tinyIdList.length > 0)
                 this.http.get('/deList/' + tinyIdList).map(res => res.json()).subscribe(result => {
                     this.suggestedCdes = result;
