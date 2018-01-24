@@ -31,7 +31,6 @@ public class QuestionTest extends BaseFormTest {
     public void addCdeByNameBeforeId(String cdeName, String id, boolean isSuggested) {
         String dropXpath = "//*[@id='" + id + "']//tree-node-drop-slot[1]";
         addCde(cdeName, dropXpath, isSuggested);
-        textPresent(cdeName, By.id(id));
     }
 
     public void addCdesByNames(String[] cdeNames) {
