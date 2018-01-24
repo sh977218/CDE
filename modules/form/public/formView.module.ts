@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeModule } from 'angular-tree-component';
+import "angular-tree-component/dist/angular-tree-component.css";
 import { Select2Module } from 'ng2-select2';
 import { HotkeyModule } from 'angular2-hotkeys';
 

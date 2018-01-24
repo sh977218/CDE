@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { Select2Module } from "ng2-select2";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
+import "angular-tree-component/dist/angular-tree-component.css";
 
 import { AdminItemModule } from "adminItem/public/adminItem.module";
 import { BoardModule } from "board/public/board.module";
