@@ -13,6 +13,6 @@ public class FormSearchShowNumberQuestionsTest extends NlmCdeBaseTest {
         textPresent("8 Questions", By.id("searchResult_0"));
 
         searchElt("Form In Form Num Questions", "form");
-       textPresent("21 Questions", By.id("searchResult_0"));
+        textPresent("21 Questions", By.id("searchResult_0"));
     }
 }
