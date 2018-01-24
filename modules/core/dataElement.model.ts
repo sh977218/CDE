@@ -3,6 +3,7 @@ import { DerivationRule, Elt } from "core/models.model";
 export class DataElement extends Elt {
     primaryNameCopy: string;
     derivationRules: DerivationRule[];
+    elementType = 'cde';
 
     static copy(de: any) {
         return Object.assign(new DataElement, de);

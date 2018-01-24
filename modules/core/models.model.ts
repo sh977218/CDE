@@ -103,6 +103,7 @@ export abstract class Elt {
     referenceDocuments: ReferenceDocument[];
     attachments: Attachment[];
     properties: Property[];
+    classification: Classification[] = [];
 
     abstract getEltUrl();
 

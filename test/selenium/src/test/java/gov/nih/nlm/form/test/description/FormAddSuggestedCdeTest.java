@@ -6,27 +6,27 @@ import org.testng.annotations.Test;
 
 public class FormAddSuggestedCdeTest extends QuestionTest {
     @Test
-    public void formAddCde() {
+    public void formAddSuggestedCde() {
         String form = "formAddSuggestedCdeTest";
-        String cdeName1 = "patien";
+        String cdeName1 = "brocco";
         String cdeName2 = "Height measureme";
         String cdeName3 = "Gastrointestinal therapy continuous feed end t";
         String cdeName4 = "Diary day headache indic";
         mustBeLoggedInAs(nlm_username, nlm_username);
         goToFormByName(form);
         goToFormDescription();
-        addCdeByPartialNameBeforeId(cdeName1, "question_0_0");
-        textPresent("Retreatment Patient Request Type", By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionLabel')]"));
+        addCdeByNameBeforeId(cdeName1, "question_0_0",true);
+        textPresent("Broccoli (1/2 cup)", By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionLabel')]"));
 
-        addCdeByPartialNameBeforeId(cdeName2, "question_0_1");
+        addCdeByNameBeforeId(cdeName2, "question_0_1",true);
         textPresent("Height (Specify)", By.xpath("//*[@id='question_0_1']//*[contains(@class,'questionLabel')]"));
         textPresent("Number", By.xpath("//*[@id='question_0_1']//*[contains(@class,'questionDataType')]"));
 
-        addCdeByPartialNameBeforeId(cdeName3, "question_0_2");
+        addCdeByNameBeforeId(cdeName3, "question_0_2",true);
         textPresent("Continuous feeding end time", By.xpath("//*[@id='question_0_2']//*[contains(@class,'questionLabel')]"));
         textPresent("Date", By.xpath("//*[@id='question_0_2']//*[contains(@class,'questionDataType')]"));
 
-        addCdeByPartialNameBeforeId(cdeName4, "question_0_3");
+        addCdeByNameBeforeId(cdeName4, "question_0_3",true);
         textPresent("Migraine", By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionLabel')]"));
         saveEditQuestionById("question_0_3");
         textPresent("YesNoUnknown", By.xpath("//*[@id='question_0_3']//*[contains(@class,'card-body')]//*[contains(@class,'answerList')]"));

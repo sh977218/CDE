@@ -12,11 +12,9 @@ import { ElasticService } from '_app/elastic.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { SharedService } from 'core/shared.service';
 import { UserService } from '_app/user.service';
-import { CdeForm } from '../../../core/form.model';
 import { SearchSettings } from '../../../search/search.model';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-
 
 @Component({
     selector: 'cde-create-data-element',
@@ -28,17 +26,7 @@ import { Subject } from 'rxjs/Subject';
     `]
 })
 export class CreateDataElementComponent implements OnInit {
-    private _elt: CdeForm = new CdeForm();
-
-    @Input() set elt(e: CdeForm) {
-        this._elt = e;
-        this.validationErrors(this.elt);
-    };
-
-    get elt() {
-        return this._elt;
-    }
-
+    @Input() elt;
     @Output() close = new EventEmitter<void>();
     @Output() dismiss = new EventEmitter<void>();
     @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
@@ -59,7 +47,15 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     ngOnInit(): void {
-
+        if (!this.elt)
+            this.elt = {
+                elementType: 'cde',
+                classification: [], stewardOrg: {}, naming: [{
+                    designation: '', definition: '', tags: []
+                }],
+                registrationState: {registrationStatus: 'Incomplete'}
+            };
+        this.validationErrors(this.elt);
         let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
         this.searchTerms.debounceTime(300).distinctUntilChanged().switchMap(term => {
             if (term) {
@@ -79,7 +75,7 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     dataElementNameChanged() {
-        this.searchTerms.next(this._elt.naming[0].designation);
+        this.searchTerms.next(this.elt.naming[0].designation);
     }
 
     openClassifyItemModal() {

@@ -28,16 +28,10 @@ public class QuestionTest extends BaseFormTest {
         clickElement(By.id("cancelSelectQ"));
     }
 
-    public void addCdeByNameBeforeId(String cdeName, String id) {
+    public void addCdeByNameBeforeId(String cdeName, String id, boolean isSuggested) {
         String dropXpath = "//*[@id='" + id + "']//tree-node-drop-slot[1]";
-        addCde(cdeName, dropXpath, false);
+        addCde(cdeName, dropXpath, isSuggested);
         textPresent(cdeName, By.id(id));
-    }
-
-    public void addCdeByPartialNameBeforeId(String cdeNameString, String id) {
-        String dropXpath = "//*[@id='" + id + "']//tree-node-drop-slot[1]";
-        addCde(cdeNameString, dropXpath, true);
-        textPresent(cdeNameString, By.id(id));
     }
 
     public void addCdesByNames(String[] cdeNames) {
