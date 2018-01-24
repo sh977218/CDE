@@ -185,6 +185,7 @@ schemas.userSchema = new mongoose.Schema({
             registrationStatus: Boolean,
             administrativeStatus: Boolean,
             ids: Boolean,
+            identifiers: [String],
             source: Boolean,
             updated: Boolean,
             numQuestions: Boolean,

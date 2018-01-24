@@ -11,13 +11,19 @@ import { AlertService } from '_app/alert/alert.service';
 export class SearchPreferencesComponent {
     searchSettings: any;
     allIdentifiers = [];
+    public options = {
+        multiple: true,
+        tags: true
+    };
 
     constructor(private http: Http,
                 public esService: ElasticService,
                 private alert: AlertService) {
         this.searchSettings = this.esService.searchSettings;
         this.http.get('/identifiersSource').map(res => res.json()).subscribe(res => {
-            this.allIdentifiers = res;
+            this.allIdentifiers = res.map(r => {
+                return {id: r, text: r};
+            });
         }, err => this.alert.addAlert('danger', err));
     }
 
@@ -39,5 +45,10 @@ export class SearchPreferencesComponent {
         });
         this.alert.addAlert("info", "Default settings loaded. Press Save to persist them.");
     };
+
+
+    changedIdentifier(searchSettings, data: { value: string[] }) {
+       // searchSettings.tableViewFields.identifiers = data.value;
+    }
 
 }

@@ -19,7 +19,7 @@ export class NamingComponent {
     public newNaming: Naming = new Naming();
     public modalRef: NgbModalRef;
 
-    public options: Select2Options = {
+    public options = {
         multiple: true,
         tags: true,
         language: {
