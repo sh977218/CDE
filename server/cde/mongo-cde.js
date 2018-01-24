@@ -80,7 +80,7 @@ exports.byTinyIdList = function (tinyIdList, callback) {
             cdes.forEach(mongo_data_system.formatElt);
             _.forEach(tinyIdList, t => {
                 let c = _.find(cdes, cde => cde.tinyId === t);
-                if(c) result.push(c);
+                if (c) result.push(c);
             });
             callback(err, result);
         });
@@ -100,6 +100,10 @@ exports.saveDraftDataElement = function (elt, cb) {
 
 exports.deleteDraftDataElement = function (tinyId, cb) {
     DataElementDraft.remove({tinyId: tinyId}, cb);
+};
+
+exports.identifierSources = function (cb) {
+    DataElement.distinct('ids.source', cb)
 };
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */

@@ -8,7 +8,6 @@ const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
 const usersrvc = require('./usersrvc');
 const orgClassificationSvc = require('./orgClassificationSvc');
-const express = require('express');
 const path = require('path');
 const adminItemSvc = require("./adminItemSvc");
 const csrf = require('csurf');
@@ -315,6 +314,26 @@ exports.init = function (app) {
             if (j) return res.send({done: false});
             else res.send({done: true});
         });
+    });
+
+    app.get('/identifiersSource/:type?', (req, res) => {
+        let type = req.params.type;
+        if (type === 'cde') {
+            mongo_cde.identifierSources((err, result) => {
+                if (err) res.status(500).send("Error - mongo cde identifierSources");
+                else res.send(result);
+            })
+        } else if (type === 'form') {
+            mongo_form.identifierSources((err, result) => {
+                if (err) res.status(500).send("Error - mongo cde identifierSources");
+                else res.send(result);
+            })
+        } else {
+            mongo_data.identifierSources((err, result) => {
+                if (err) res.status(500).send("Error - mongo cde identifierSources");
+                else res.send(result);
+            })
+        }
     });
 
     /* ---------- PUT NEW REST API above ---------- */

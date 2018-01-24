@@ -122,6 +122,11 @@
                 <div class="checkbox indent">
                     <label><input id="ids" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.ids">
                         Identifiers</label>
+                    <select [disabled]="!searchSettings.tableViewFields.ids">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
                 </div>
                 <div class="checkbox indent">
                     <label><input id="source" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.source">
