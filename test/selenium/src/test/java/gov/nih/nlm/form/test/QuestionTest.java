@@ -58,7 +58,7 @@ public class QuestionTest extends BaseFormTest {
             textPresent("Create Data Element");
             new Actions(driver).sendKeys(cdeName).build().perform();
             if (!isSuggested) clickElement(By.id("createNewDataElement"));
-            else clickElement(By.id("(//*[@id='accordionList']//div[@class='card-header']//button)[1]"));
+            else clickElement(By.xpath("(//*[@id='accordionList']//div[@class='card-header']//button)[1]"));
         } catch (Exception e) {
         }
     }
