@@ -22,9 +22,9 @@ public class FormCdeExport extends NlmCdeBaseTest {
         checkAlert("Export downloaded");
 
         String[] expected = {
-                "Traumatic brain injury symptom category\tTBI symptom or sign category\tValue List\tPhysical; Sleep; Cognitive; Emotional; Other\tNINDS\tNINDS\tQualified\tNINDS: C01056 v3; NINDS Variable Name: TBISympCat",
-                "Insomnia Severity Index (ISI) - difficulty falling asleep measurement\tDifficulty falling asleep\tValue List\t0; 1; 2; 3; 4\tNINDS\tNINDS\tQualified\tNINDS: C09377 v3; NINDS Variable Name: ISIDifFalAslpMeasr",
-                "Insomnia Severity Index (ISI) - Total score\tTotal Score\tNumber\t\tNINDS\tNINDS\tQualified\tNINDS: C21126 v1; NINDS Variable Name: ISITotalScore"
+                "Traumatic brain injury symptom category,TBI symptom or sign category,Value List,Physical; Sleep; Cognitive; Emotional; Other,NINDS,NINDS,Qualified,NINDS: C01056 v3; NINDS Variable Name: TBISympCat",
+                "Insomnia Severity Index (ISI) - difficulty falling asleep measurement,Difficulty falling asleep,Value List,0; 1; 2; 3; 4,NINDS,NINDS,Qualified,NINDS: C09377 v3; NINDS Variable Name: ISIDifFalAslpMeasr",
+                "Insomnia Severity Index (ISI) - Total score,Total Score,Number,,NINDS,NINDS,Qualified,NINDS: C21126 v1; NINDS Variable Name: ISITotalScore"
         };
         try {
             String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/FormCdes-Xy910Dz6f.csv")));
