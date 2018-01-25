@@ -34,8 +34,8 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         clickElement(By.id(elementId));
         textPresent("Log In", By.id("login_link"));
 
-        searchEltAny("pain", "cde");
-        textPresent("Brief Pain Inventory");
+        searchEltAny("10", "cde");
+        textPresent("Test of Memory Malingering (TOMM) - Trial 1 question 10 score");
         scrollToViewById(elementId);
         int painOffset = getCurrentYOffset();
         driver.navigate().refresh();
