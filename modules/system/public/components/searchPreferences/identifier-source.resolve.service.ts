@@ -12,9 +12,8 @@ export class IdentifierSourcesResolve implements Resolve<any> {
     resolve(): Promise<any> | boolean {
         let p = this.http.get('/identifiersSource').toPromise();
         p.then(res => {
-            console.log(res);
-
-//            this.identifierSources = res;
+            if (res && res['_body'])
+                this.identifierSources = JSON.parse(res['_body']);
         });
         return p;
     }
