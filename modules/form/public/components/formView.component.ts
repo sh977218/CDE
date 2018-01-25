@@ -22,6 +22,7 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 import { UserService } from '_app/user.service';
 import * as async from "async";
 import * as formShared from "../../../../shared/form/formShared";
+import { ExportService } from "../../../core/export.service";
 
 
 @Component({
@@ -68,6 +69,7 @@ export class FormViewComponent implements OnInit {
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
                 public userService: UserService,
+                public exportService: ExportService,
                 private route: ActivatedRoute,
                 private router: Router) {
     }
