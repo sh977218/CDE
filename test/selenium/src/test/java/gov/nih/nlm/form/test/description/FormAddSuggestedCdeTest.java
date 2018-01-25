@@ -15,21 +15,22 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
         mustBeLoggedInAs(nlm_username, nlm_username);
         goToFormByName(form);
         goToFormDescription();
-        addCdeByNameBeforeId(cdeName1, "question_0_0",true);
+
+        addCdeByNameBeforeId(cdeName1, "question_0_0", true);
         textPresent("Broccoli (1/2 cup)", By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionLabel')]"));
 
-        addCdeByNameBeforeId(cdeName2, "question_0_1",true);
-        textPresent("Height (Specify)", By.xpath("//*[@id='question_0_1']//*[contains(@class,'questionLabel')]"));
-        textPresent("Number", By.xpath("//*[@id='question_0_1']//*[contains(@class,'questionDataType')]"));
+        addCdeByNameBeforeId(cdeName2, "question_0_1", true);
+        textPresent("Height (Specify)", By.xpath("//*[@id='question_0_2']//*[contains(@class,'questionLabel')]"));
+        textPresent("Number", By.xpath("//*[@id='question_0_2']//*[contains(@class,'questionDataType')]"));
 
-        addCdeByNameBeforeId(cdeName3, "question_0_2",true);
-        textPresent("Continuous feeding end time", By.xpath("//*[@id='question_0_2']//*[contains(@class,'questionLabel')]"));
-        textPresent("Date", By.xpath("//*[@id='question_0_2']//*[contains(@class,'questionDataType')]"));
+        addCdeByNameBeforeId(cdeName3, "question_0_2", true);
+        textPresent("Continuous feeding end time", By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionLabel')]"));
+        textPresent("Date", By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionDataType')]"));
 
-        addCdeByNameBeforeId(cdeName4, "question_0_3",true);
-        textPresent("Migraine", By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionLabel')]"));
-        saveEditQuestionById("question_0_3");
-        textPresent("YesNoUnknown", By.xpath("//*[@id='question_0_3']//*[contains(@class,'card-body')]//*[contains(@class,'answerList')]"));
+        addCdeByNameBeforeId(cdeName4, "question_0_3", true);
+        textPresent("Migraine", By.xpath("//*[@id='question_0_4']//*[contains(@class,'questionLabel')]"));
+        saveEditQuestionById("question_0_4");
+        textPresent("YesNoUnknown", By.xpath("//*[@id='question_0_4']//*[contains(@class,'card-body')]//*[contains(@class,'answerList')]"));
 
     }
 
