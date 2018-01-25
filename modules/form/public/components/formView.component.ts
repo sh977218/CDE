@@ -135,32 +135,23 @@ export class FormViewComponent implements OnInit {
         }, err => this.alert.addAlert('danger', 'Error loading comments. ' + err));
     }
 
-    loadDraft(cb = _noop) {
-        this.http.get('/draftForm/' + this.route.snapshot.queryParams['tinyId'])
-            .map(res => res.json()).subscribe(res => {
-            if (res && res.length > 0) {
-                this.drafts = res;
-                this.elt = res[0];
-                this.formLoaded(cb);
-            } else {
-                this.drafts = [];
-                this.elt = null;
-                cb();
-            }
-        }, err => {
-            this.alert.addAlert('danger', err);
-            cb();
-        });
-    }
-
     loadForm(cb = _noop) {
         this.userService.then(() => {
-            if (this.userService.user && this.userService.user.username)
-                this.loadDraft(() => {
-                    if (this.elt) cb();
-                    else this.loadPublished(cb);
+            if (this.userService.user && this.userService.user.username) {
+                this.http.get('/draftForm/' + this.route.snapshot.queryParams['tinyId']).map(res => res.json()).subscribe(res => {
+                    if (res && res.length > 0 && this.isAllowedModel.isAllowed(res[0])) {
+                        this.drafts = res;
+                        this.elt = res[0];
+                        this.formLoaded(cb);
+                    } else {
+                        this.drafts = [];
+                        this.loadPublished(cb);
+                    }
+                }, err => {
+                    this.alert.addAlert('danger', err);
+                    cb();
                 });
-            else this.loadPublished(cb);
+            } else this.loadPublished(cb);
         });
     }
 
