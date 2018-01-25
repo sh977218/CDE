@@ -123,7 +123,7 @@
                     <label><input id="ids" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.ids">
                         Identifiers</label>
                     <select2 [data]="identifierSources" [(value)]="searchSettings.tableViewFields.identifiers"
-                             [options]="options" width="100%"
+                             [options]="options" width="100%" id="identifiers"
                              [disabled]="!searchSettings.tableViewFields.ids"
                              (valueChanged)="changedIdentifier(searchSettings,$event)">
                     </select2>
