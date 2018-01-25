@@ -97,6 +97,9 @@
                         <a id='nihRedCap' href="formById/{{elt._id}}?type=REDCap" target="_blank">REDCap</a>
                         <a href="https://projectredcap.org/" target="_blank"><i class="fa fa-info-circle"></i></a>
                     </li>
+                    <li class="dropdown-item">
+                        <span id='formCdesExport' (click)="exportService.formCdeExport(elt)">CDE Dictionary (CSV)</span>
+                    </li>
                 </ng-container>
                 <a class="dropdown-item" *ngIf="!isAllowedModel.loggedIn()" href="login">
                     Please login to export forms.</a>
