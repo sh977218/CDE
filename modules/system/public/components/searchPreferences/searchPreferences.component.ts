@@ -14,7 +14,8 @@ export class SearchPreferencesComponent implements OnInit {
     identifierSources = [];
     public options = {
         multiple: true,
-        tags: true
+        tags: true,
+        placeholder: 'Optional: select identifiers to include (default: all)'
     };
 
     constructor(private http: Http,
