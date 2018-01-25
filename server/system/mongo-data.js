@@ -54,16 +54,6 @@ exports.removeJobStatus = function (type, cb) {
     JobQueue.remove({type: type}, cb);
 };
 
-exports.identifierSources = function (cb) {
-    mongo_cde.DataElement.distinct('ids.source', (err1, result1) => {
-        if (err1) cb(err1);
-        else mongo_form.Form.distinct('ids.source', (err2, result2) => {
-            if (err2) cb(err2);
-            else cb(null, _.union(result1, result2));
-        })
-    })
-};
-
 exports.getClusterHostStatus = function (server, callback) {
     ClusterStatus.findOne({hostname: server.hostname, port: server.port}).exec(function (err, result) {
         callback(err, result);

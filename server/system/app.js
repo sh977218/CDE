@@ -22,6 +22,8 @@ const spawn = require('child_process').spawn;
 const authorization = require('./authorization');
 const esInit = require('./elasticSearchInit');
 const elastic = require('./elastic.js');
+const cdeElastic = require('../cde/elastic.js');
+const formElastic = require('../form/elastic.js');
 const app_status = require("./status.js");
 const async = require('async');
 const request = require('request');
@@ -319,20 +321,20 @@ exports.init = function (app) {
     app.get('/identifiersSource/:type?', (req, res) => {
         let type = req.params.type;
         if (type === 'cde') {
-            mongo_cde.identifierSources((err, result) => {
-                if (err) res.status(500).send("Error - mongo cde identifierSources");
-                else res.send(result);
-            })
+            cdeElastic.DataElementDistinct("ids.source", function (result) {
+                res.send(result);
+            });
         } else if (type === 'form') {
-            mongo_form.identifierSources((err, result) => {
-                if (err) res.status(500).send("Error - mongo cde identifierSources");
-                else res.send(result);
-            })
+            formElastic.FormDistinct("ids.source", function (result) {
+                res.send(result);
+            });
+
         } else {
-            mongo_data.identifierSources((err, result) => {
-                if (err) res.status(500).send("Error - mongo cde identifierSources");
-                else res.send(result);
-            })
+            cdeElastic.DataElementDistinct("ids.source", function (result1) {
+                formElastic.FormDistinct("ids.source", function (result2) {
+                    res.send(_.union(result1, result2));
+                });
+            });
         }
     });
 

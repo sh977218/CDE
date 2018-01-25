@@ -102,10 +102,6 @@ exports.deleteDraftDataElement = function (tinyId, cb) {
     DataElementDraft.remove({tinyId: tinyId}, cb);
 };
 
-exports.identifierSources = function (cb) {
-    DataElement.distinct('ids.source', cb)
-};
-
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
 exports.getPrimaryName = function (elt) {

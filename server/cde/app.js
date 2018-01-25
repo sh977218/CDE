@@ -60,12 +60,6 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/listOrgsFromDEClassification', exportShared.nocacheMiddleware, function (req, res) {
-        elastic.DataElementDistinct("classification.stewardOrg.name", function (result) {
-            res.send(result);
-        });
-    });
-
     app.get('/autocomplete/org/:name', exportShared.nocacheMiddleware, function (req, res) {
         mongo_cde.org_autocomplete(req.params.name, function (result) {
             res.send(result);

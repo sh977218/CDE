@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Http } from '@angular/http';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from '_app/alert/alert.service';
+import { IdentifierSourcesResolve } from "./identifier-source.resolve.service";
 
 @Component({
     selector: 'cde-search-preferences',
@@ -10,7 +11,7 @@ import { AlertService } from '_app/alert/alert.service';
 
 export class SearchPreferencesComponent {
     searchSettings: any;
-    allIdentifiers = ['NINDS', 'NINDS Variable Name', 'caDSR', 'GRDR', 'Assessment Center', 'LOINC', '(LOINC)', 'UMLS', 'TESTOrg'];
+    identifierSources = ['NINDS', 'NINDS Variable Name', 'caDSR', 'GRDR', 'Assessment Center', 'LOINC', '(LOINC)', 'UMLS', 'TESTOrg'];
     public options = {
         multiple: true,
         tags: true
@@ -18,15 +19,10 @@ export class SearchPreferencesComponent {
 
     constructor(private http: Http,
                 public esService: ElasticService,
+                private identifierSourceSvc: IdentifierSourcesResolve,
                 private alert: AlertService) {
         this.searchSettings = this.esService.searchSettings;
-/*
-        this.http.get('/identifiersSource').map(res => res.json()).subscribe(res => {
-            this.allIdentifiers = res.map(r => {
-                return {id: r, text: r};
-            });
-        }, err => this.alert.addAlert('danger', err));
-*/
+        this.identifierSources = this.identifierSourceSvc.identifierSources;
     }
 
     saveSettings() {

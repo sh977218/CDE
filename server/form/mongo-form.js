@@ -116,10 +116,6 @@ exports.latestVersionByTinyId = function (tinyId, cb) {
     });
 };
 
-exports.identifierSources = function (cb) {
-    Form.distinct('ids.source', cb)
-};
-
 /* ---------- PUT NEW REST API above ---------- */
 
 exports.getPrimaryName = function (elt) {
