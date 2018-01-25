@@ -31,7 +31,7 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
         textPresent("Headache", By.xpath("//*[@id='question_0_4']//*[contains(@class,'questionLabel')]"));
         saveEditQuestionById("question_0_4");
         textPresent("Yes", By.xpath("//*[@id='question_0_4']//*[contains(@class,'card-body')]//*[contains(@class,'answerList')]"));
-        textPresent("NO", By.xpath("//*[@id='question_0_4']//*[contains(@class,'card-body')]//*[contains(@class,'answerList')]"));
+        textPresent("No", By.xpath("//*[@id='question_0_4']//*[contains(@class,'card-body')]//*[contains(@class,'answerList')]"));
         textPresent("Unknown", By.xpath("//*[@id='question_0_4']//*[contains(@class,'card-body')]//*[contains(@class,'answerList')]"));
 
     }
