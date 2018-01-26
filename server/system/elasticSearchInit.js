@@ -49,7 +49,7 @@ exports.createIndexJson = {
                     "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "source": {"type": "string"},
+                        "source": {"type": "string", "index": "not_analyzed"},
                         "id": {"type": "string"},
                         "version": {"type": "string"}
                     }

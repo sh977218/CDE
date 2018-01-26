@@ -15,18 +15,21 @@ export class TableListComponent implements OnInit {
         this._elts = elts;
         this.render();
     };
+
     get elts() {
         return this._elts;
     }
+
     @Input() module: string;
 
     private _elts: any[];
     headings: string[];
     rows: any[];
 
-    constructor(public esService: ElasticService) {}
+    constructor(public esService: ElasticService) {
+    }
 
-    ngOnInit () {
+    ngOnInit() {
         this.render();
     }
 
@@ -61,8 +64,13 @@ export class TableListComponent implements OnInit {
             this.headings.push('Registration Status');
         if (tableSetup.administrativeStatus)
             this.headings.push('Admin Status');
-        if (tableSetup.ids)
-            this.headings.push('Identifiers');
+        if (tableSetup.ids) {
+            if (tableSetup.identifiers.length > 0) {
+                tableSetup.identifiers.forEach(i => {
+                    this.headings.push(i);
+                });
+            } else this.headings.push('Identifiers');
+        }
         if (tableSetup.source)
             this.headings.push('Source');
         if (tableSetup.updated)
@@ -123,11 +131,25 @@ export class TableListComponent implements OnInit {
                     css: 'administrativeStatus',
                     value: e.registrationState.administrativeStatus
                 });
-            if (tableSetup.ids)
-                row.push({
+            if (tableSetup.ids) {
+                if (tableSetup.identifiers.length > 0) {
+                    tableSetup.identifiers.forEach(i => {
+                        let value = '';
+                        e.ids.forEach(id => {
+                            if (id.source === i) {
+                                value = id.id + (id.version ? " v" + id.version : "");
+                            }
+                        });
+                        row.push({
+                            css: i,
+                            values: value
+                        });
+                    });
+                } else row.push({
                     css: 'ids',
                     values: TableListComponent.truncatedList(e.ids, (e) => e)
                 });
+            }
             if (tableSetup.source)
                 row.push({
                     css: 'source',
@@ -162,8 +184,13 @@ export class TableListComponent implements OnInit {
             this.headings.push('Registration Status');
         if (tableSetup.administrativeStatus)
             this.headings.push('Admin Status');
-        if (tableSetup.ids)
-            this.headings.push('Identifiers');
+        if (tableSetup.ids) {
+            if (tableSetup.identifiers.length > 0) {
+                tableSetup.identifiers.forEach(i => {
+                    this.headings.push(i);
+                });
+            } else this.headings.push('Identifiers');
+        }
         if (tableSetup.numQuestions)
             this.headings.push('Questions');
         if (tableSetup.source)
@@ -205,11 +232,25 @@ export class TableListComponent implements OnInit {
                     css: 'administrativeStatus',
                     value: e.registrationState.administrativeStatus
                 });
-            if (tableSetup.ids)
-                row.push({
+            if (tableSetup.ids) {
+                if (tableSetup.identifiers.length > 0) {
+                    tableSetup.identifiers.forEach(i => {
+                        let value = '';
+                        e.ids.forEach(id => {
+                            if (id.source === i) {
+                                value = id.id + (id.version ? " v" + id.version : "");
+                            }
+                        });
+                        row.push({
+                            css: i,
+                            values: value
+                        });
+                    });
+                } else row.push({
                     css: 'ids',
                     values: TableListComponent.truncatedList(e.ids, (e) => e)
                 });
+            }
             if (tableSetup.numQuestions)
                 row.push({
                     css: 'numQuestions',
@@ -233,6 +274,7 @@ export class TableListComponent implements OnInit {
             return row;
         });
     }
+
     static readonly maxLines = 5;
     static readonly lineLength = 62;
 

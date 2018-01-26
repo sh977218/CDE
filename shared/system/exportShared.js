@@ -35,7 +35,11 @@ export const getCdeCsvHeader = function (settings) {
         cdeHeader += ", Administrative Status";
     }
     if (settings.ids) {
-        cdeHeader += ", Identifiers";
+        if (settings.identifiers.length > 0) {
+            settings.identifiers.forEach(i => {
+                cdeHeader = cdeHeader + ", " + i;
+            })
+        } else cdeHeader += ", Identifiers";
     }
     if (settings.source) {
         cdeHeader += ", Source";
@@ -120,7 +124,13 @@ export const projectCdeForExport = function (ele, settings) {
         cde.administrativeStatus = ele.registrationState.administrativeStatus;
     }
     if (settings.ids) {
-        cde.ids = ele.ids.map(function (id) {
+        if (settings.identifiers.length > 0) {
+            settings.identifiers.forEach(i => {
+                ele.ids.forEach(id => {
+                    if (id.source === i) cde[i] = id.id + (id.version ? " v" + id.version : "");
+                });
+            })
+        } else cde.ids = ele.ids.map(function (id) {
             return id.source + ": " + id.id + (id.version ? " v" + id.version : "");
         });
     }
