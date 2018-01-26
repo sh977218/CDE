@@ -7,6 +7,7 @@ import "rxjs/Observable";
 import "fhirclient";
 import { mappings } from "./fhirMapping";
 import { FormService } from 'nativeRender/form.service';
+import { CdeForm } from "../core/form.model";
 
 @Component({
     selector: "cde-native-render-standalone",
