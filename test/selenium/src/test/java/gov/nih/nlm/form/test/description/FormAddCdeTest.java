@@ -14,7 +14,7 @@ public class FormAddCdeTest extends QuestionTest {
         mustBeLoggedInAs(nlm_username, nlm_username);
         goToFormByName(form);
         goToFormDescription();
-        addCdeByNameBeforeId(cdeName1, "question_0_0");
+        addCdeByNameBeforeId(cdeName1, "question_0_0", false);
         addCdesByNames(cdeNames);
         addCdeNameById("question_0_1", "newCde2 second name", "newCde2 second definition", new String[]{"TEST"});
         addCdeIdentifierById("question_0_1", "newCde2Source", "newCde2Id", "newCde2Version");

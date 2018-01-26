@@ -17,7 +17,6 @@ import { FormService } from 'nativeRender/form.service';
 export class CdeForm extends Elt implements FormElementsContainer {
     archived: boolean = false;
     changeNote: string;
-    classification: Classification[] = [];
     comments: Comment[];
     copyright: {
         authority: string,

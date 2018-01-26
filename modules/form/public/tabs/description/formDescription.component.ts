@@ -17,10 +17,15 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import _isEmpty from 'lodash/isEmpty';
 import _noop from 'lodash/noop';
 import { Hotkey, HotkeysService } from "angular2-hotkeys";
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
-import { CdeForm, FormElement, FormQuestion, FormSection } from 'core/form.model';
+import { CdeForm, FormSection } from 'core/form.model';
+import { SearchSettings } from '../../../../search/search.model';
 import { FormService } from 'nativeRender/form.service';
+import { ElasticService } from '../../../../_app/elastic.service';
+import { AlertService } from '../../../../_app/alert/alert.service';
 
 const TOOL_BAR_OFF_SET = 55;
 
@@ -132,6 +137,22 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this._elt = e;
         this.addExpanded(e);
         this.addIds(e.formElements, "");
+        let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
+        this.searchTerms.debounceTime(300).distinctUntilChanged().switchMap(term => {
+            if (term) {
+                settings.resultPerPage = 5;
+                settings.searchTerm = term;
+                return this.http.post('/cdeCompletion/' + encodeURI(term), this.elasticService.buildElasticQuerySettings(settings)).map(res => res.json());
+            }
+            else return Observable.of<string[]>([]);
+        }).subscribe(res => {
+            let tinyIdList = res.map(r => r._id).slice(0, 5);
+            if (tinyIdList && tinyIdList.length > 0)
+                this.http.get('/deList/' + tinyIdList).map(res => res.json()).subscribe(result => {
+                    this.suggestedCdes = result;
+                }, err => this.alert.addAlert('danger', err));
+            else this.suggestedCdes = [];
+        });
     };
 
     get elt() {
@@ -150,6 +171,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     formElementEditing: any = {};
     isModalOpen: boolean = false;
 
+    searchSettings = new SearchSettings;
+    private searchTerms = new Subject<string>();
+    suggestedCdes = [];
+
     @HostListener('window:scroll', ['$event'])
     scrollEvent() {
         this.doIt();
@@ -161,6 +186,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     initNewDataElement() {
+        this.suggestedCdes = [];
         return {
             naming: [{
                 designation: '',
@@ -226,6 +252,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 private localStorageService: LocalStorageService,
                 public modalService: NgbModal,
                 private formService: FormService,
+                private elasticService: ElasticService,
+                private alert: AlertService,
                 private _hotkeysService: HotkeysService) {
     }
 
@@ -309,14 +337,17 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.modalService.open(this.questionSearchTmpl, {size: 'lg'}).result.then(
             () => this.isModalOpen = false,
             () => this.isModalOpen = false);
-
         setTimeout(() => {
             if (this.questionModelMode === 'add') window.document.getElementById("newDEName").focus();
         }, 0);
     }
 
-    createNewDataElement(c) {
-        this.addQuestionFromSearch(this.newDataElement, () => {
+    newDataElementNameChanged() {
+        this.searchTerms.next(this.newDataElement.naming[0].designation);
+    }
+
+    createNewDataElement(newCde = this.newDataElement, c) {
+        this.addQuestionFromSearch(newCde, () => {
             c();
         });
     }
