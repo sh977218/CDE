@@ -30,11 +30,14 @@ gulp.task('copyNpmDeps', ['npm'], function () {
 gulp.task('thirdParty', ['npm'], function () {
     let streamArr = [];
 
-    streamArr.push(gulp.src('./node_modules/core-js/client/shim.min.js')
-        .pipe(replace('//# sourceMappingURL=shim.min.js.map', ''))
+    streamArr.push(gulp.src('./node_modules/core-js/client/core.min.js')
+        .pipe(replace('//# sourceMappingURL=core.min.js.map', ''))
         .pipe(gulp.dest('./dist/common/')));
     streamArr.push(gulp.src('./node_modules/intl/dist/Intl.min.js')
         .pipe(replace('//# sourceMappingURL=Intl.min.js.map', ''))
+        .pipe(gulp.dest('./dist/common/')));
+    streamArr.push(gulp.src('./node_modules/web-animations-js/web-animations.min.js')
+        .pipe(replace('//# sourceMappingURL=web-animations.min.js.map', ''))
         .pipe(gulp.dest('./dist/common/')));
     streamArr.push(gulp.src([
         './node_modules/classlist.js/classList.min.js',
