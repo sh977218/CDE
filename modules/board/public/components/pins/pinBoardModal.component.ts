@@ -37,7 +37,7 @@ export class PinBoardModalComponent {
             if (this.module === "form")
                 url += "/forms/";
 
-            this.http.put<any>(url, elts, {observe: 'response'}).subscribe(r => {
+            this.http.put(url, elts, {observe: 'response', responseType: 'text'}).subscribe(r => {
                 this.alert.addAlert(r.status === 200 ? "success" : "warning", r.body);
                 this.modalRef.close();
             }, (err) => {
@@ -50,7 +50,7 @@ export class PinBoardModalComponent {
     pinOne(elt: any, promise: Promise<any>) {
         promise.then(board => {
             let url = '/pin/' + this.module + '/' + elt.tinyId + '/' + board._id;
-            this.http.put<any>(url, {}, {observe: 'response'}).subscribe(r => {
+            this.http.put(url, {}, {observe: 'response', responseType: 'text'}).subscribe(r => {
                 this.alert.addAlert(r.status === 200 ? 'success' : 'warning', r.body);
                 this.modalRef.close();
             }, (err) => {

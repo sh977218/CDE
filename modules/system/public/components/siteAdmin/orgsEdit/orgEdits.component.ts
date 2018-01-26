@@ -26,8 +26,9 @@ export class OrgsEditComponent implements OnInit {
 
     addOrg () {
         this.http.post('/addOrg',
-            {name: this.newOrg.name, longName: this.newOrg.longName, workingGroupOf: this.newOrg.workingGroupOf})
-            .subscribe(res => {
+            {name: this.newOrg.name, longName: this.newOrg.longName, workingGroupOf: this.newOrg.workingGroupOf},
+            {responseType: 'text'})
+            .subscribe(() => {
                     this.Alert.addAlert('success', 'Saved');
                     this.getOrgs();
                     this.newOrg = {};

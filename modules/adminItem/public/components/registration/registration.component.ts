@@ -56,7 +56,7 @@ export class RegistrationComponent implements OnInit {
 
             this.validRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
 
-            this.http.get<any>('/org/' + encodeURIComponent(this.elt.stewardOrg.name)).subscribe((res) => {
+            this.http.get<any>('/org/' + encodeURIComponent(this.elt.stewardOrg.name)).subscribe(res => {
                 if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
                     this.validRegStatuses = this.validRegStatuses.concat(['Recorded', 'Qualified']);
                     if (this.userService.user.siteAdmin) {

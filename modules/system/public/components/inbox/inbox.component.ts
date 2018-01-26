@@ -28,9 +28,9 @@ export class InboxComponent implements OnInit {
     ) {}
 
     approveComment(msg) {
-        this.http.post<any>('/comments/approve', {
+        this.http.post('/comments/approve', {
             commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
-        }).subscribe(response => {
+        }, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
         }, response => {
@@ -39,7 +39,7 @@ export class InboxComponent implements OnInit {
     }
 
     approveAttachment(msg) {
-        this.http.get<any>('/attachment/approve/' + msg.typeAttachmentApproval.fileid).subscribe(response => {
+        this.http.get('/attachment/approve/' + msg.typeAttachmentApproval.fileid, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
         }, response => {
@@ -49,7 +49,7 @@ export class InboxComponent implements OnInit {
 
     authorizeUser (msg) {
         let request = {username: msg.author.name, role: 'CommentAuthor'};
-        this.http.post<any>('/addUserRole', request).subscribe(response => {
+        this.http.post('/addUserRole', request, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
         }, response => {
             this.alert.addAlert('danger', response);
@@ -80,7 +80,7 @@ export class InboxComponent implements OnInit {
     }
 
     declineAttachment(msg) {
-        this.http.get<any>('/attachment/decline/' + msg.typeAttachmentApproval.fileid).subscribe(response => {
+        this.http.get('/attachment/decline/' + msg.typeAttachmentApproval.fileid, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
         }, response => {
@@ -89,9 +89,9 @@ export class InboxComponent implements OnInit {
     }
 
     declineComment(msg) {
-        this.http.post<any>('/comments/decline', {
+        this.http.post('/comments/decline', {
         //     commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
-        }).subscribe(response => {
+        }, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
         }, response => {
