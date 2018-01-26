@@ -27,9 +27,9 @@ export class OrgAdminComponent implements OnInit {
 
     addOrgAdmin () {
         this.http.post('/addOrgAdmin', {
-            username: this.newAdmin.username
-            , org: this.newAdmin.orgName
-        }).subscribe(() => {
+            username: this.newAdmin.username,
+            org: this.newAdmin.orgName
+        }, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Saved');
             this.getAdmins();
         }, () => this.alert.addAlert('danger', 'There was an issue adding this administrator.'));

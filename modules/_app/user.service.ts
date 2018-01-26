@@ -5,6 +5,7 @@ import { of } from 'rxjs/observable/of';
 import { Observable } from 'rxjs/Observable';
 
 import { IsAllowedService } from 'core/isAllowed.service';
+import { SharedService } from 'core/shared.service';
 
 
 @Injectable()
@@ -14,7 +15,7 @@ export class UserService {
         text$.pipe(
             debounceTime(300),
             distinctUntilChanged(),
-            switchMap(term => term.length < 3 || !IsAllowedService.hasRoleStatic(this.user, 'OrgAuthority') ? [] :
+            switchMap(term => term.length < 3 || !SharedService.auth.hasRole(this.user, 'OrgAuthority') ? [] :
                 this.http.get<any>('/searchUsers/' + term).pipe(
                     map((r: any) => r.users.map(u => u.username)),
                     catchError(() => of([]))

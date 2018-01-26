@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import * as async from 'async';
-import * as moment from 'moment';
+import * as async_forEach from 'async/forEach';
+import * as async_parallel from 'async/parallel';
+import * as moment from 'moment/min/moment.min';
 import 'fhirclient';
 
-import { mappings } from './fhirMapping';
+import { mappings } from '_nativeRenderApp/fhirMapping';
+import { CdeForm } from 'core/form.model';
 import { FormService } from 'nativeRender/form.service';
 
 @Component({
@@ -34,7 +36,7 @@ import { FormService } from 'nativeRender/form.service';
     templateUrl: './nativeRenderApp.component.html'
 })
 export class NativeRenderAppComponent {
-    elt: any;
+    elt: CdeForm;
     errorMessage: string;
     methodLoadForm = this.loadForm.bind(this);
     newEncounter = false;
@@ -186,7 +188,8 @@ export class NativeRenderAppComponent {
     }
 
     getForm(tinyId, cb) {
-        this.http.get('/form/' + tinyId).subscribe(elt => {
+        this.http.get<CdeForm>('/form/' + tinyId).subscribe(elt => {
+            CdeForm.validate(elt);
             cb(null, elt);
         }, (err) => {
             cb(err.statusText);
@@ -269,7 +272,7 @@ export class NativeRenderAppComponent {
                     this.patient = pt;
                 });
 
-            async.parallel([
+            async_parallel([
                 cb => {
                     this.smart.patient.api.fetchAll({type: 'Encounter'})
                         .then((results, refs) => {
@@ -661,7 +664,7 @@ export class NativeRenderAppComponent {
             }
         }
         // TODO: refresh before copy from server and compare again to prevent save with conflict
-        async.forEach(submitFhirPending, (p, done) => {
+        async_forEach(submitFhirPending, (p, done) => {
             if (p.before)
                 this.smart.api.update({
                     data: JSON.stringify(p.after),

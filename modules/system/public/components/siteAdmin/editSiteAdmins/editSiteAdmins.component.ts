@@ -24,7 +24,7 @@ export class EditSiteAdminsComponent implements OnInit {
     ) {}
 
     addSiteAdmin() {
-        this.http.post('/addSiteAdmin', {username: this.newAdmin.username}).subscribe(() => {
+        this.http.post('/addSiteAdmin', {username: this.newAdmin.username}, {responseType: 'text'}).subscribe(() => {
             this.Alert.addAlert('success', 'Saved');
             this.getSiteAdmins();
         }, () => this.Alert.addAlert('danger', 'There was an issue adding this administrator.')

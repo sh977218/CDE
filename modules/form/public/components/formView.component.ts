@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModalRef, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
-import * as async from 'async';
+import * as async_forEach from 'async/forEach';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
@@ -248,10 +248,9 @@ export class FormViewComponent implements OnInit {
     }
 
     removeDraft() {
-        this.http.delete('/draftForm/' + this.elt.tinyId)
+        this.http.delete('/draftForm/' + this.elt.tinyId, {responseType: 'text'})
             .subscribe(res => {
-                if (res)
-                    this.loadForm(() => this.drafts = []);
+                this.loadForm(() => this.drafts = []);
             }, err => this.alert.addAlert('danger', err));
     }
 
@@ -316,7 +315,7 @@ export class FormViewComponent implements OnInit {
             if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
             if (cb) cb();
         }, () => {
-            async.forEach(newCdes, (newCde, doneOneCde) => {
+            async_forEach(newCdes, (newCde, doneOneCde) => {
                 this.createDataElement(newCde, doneOneCde);
             }, () => {
                 this.http.put('/form/' + this.elt.tinyId, this.elt).subscribe(

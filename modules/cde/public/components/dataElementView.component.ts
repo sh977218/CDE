@@ -235,6 +235,14 @@ export class DataElementViewComponent implements OnInit {
             err => this.alert.addAlert('danger', err));
     }
 
+    removeDraft() {
+        this.http.delete('/draftDataElement/' + this.elt.tinyId, {responseType: 'text'})
+            .subscribe(res => {
+                this.drafts = [];
+                this.loadDataElement(null);
+            }, err => this.alert.addAlert('danger', err));
+    }
+
     saveDraft(cb) {
         this.savingText = 'Saving ...';
         this.elt._id = this.deId;
@@ -266,13 +274,4 @@ export class DataElementViewComponent implements OnInit {
             }
         }, err => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
     }
-
-    removeDraft() {
-        this.http.delete('/draftDataElement/' + this.elt.tinyId)
-            .subscribe(res => {
-                this.drafts = [];
-                if (res) this.loadDataElement(null);
-            }, err => this.alert.addAlert('danger', err));
-    }
-
 }

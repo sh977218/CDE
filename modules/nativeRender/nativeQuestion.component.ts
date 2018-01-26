@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import * as moment from 'moment';
+import * as moment from 'moment/min/moment.min';
 
 import { FormService } from 'nativeRender/form.service';
 import { FormQuestion } from 'core/form.model';

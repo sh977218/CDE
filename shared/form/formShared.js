@@ -1,4 +1,5 @@
-import * as async from 'async';
+import * as async_forEach from 'async/forEach';
+import * as async_forEachSeries from 'async/forEachSeries';
 import noop from 'lodash/noop';
 
 
@@ -332,7 +333,7 @@ export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, que
 // feCb(fe, cbContinue(error))
 export function iterateFes(fes, formCb = noop1, sectionCb = noop1, questionCb = noop1, callback = noop) {
     if (Array.isArray(fes)) {
-        async.forEach(fes, (fe, cb) => {
+        async_forEach(fes, (fe, cb) => {
             if (fe.elementType === 'form') {
                 formCb(fe, err => {
                     if (err) cb(err);
@@ -406,7 +407,7 @@ export function iterateFormElements(fe = {}, option = {}, cb = undefined) {
     if (!fe.formElements) fe.formElements = [];
     if (Array.isArray(fe.formElements)) {
         if (option.async) {
-            async.forEachSeries(fe.formElements, (fe, doneOneFe) => {
+            async_forEachSeries(fe.formElements, (fe, doneOneFe) => {
                 if (fe.elementType === 'section') {
                     if (option.sectionCb) option.sectionCb(fe, doneOneFe);
                     else this.iterateFormElements(fe, option, doneOneFe);

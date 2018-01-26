@@ -7,8 +7,8 @@ import 'reflect-metadata';
 import 'font-awesome/css/font-awesome.css';
 
 // path to node_modules required to override module/components/bootstrap
-import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import '../../node_modules/bootstrap/dist/js/bootstrap.min.js';
+import '../../node_modules/bootstrap/dist/css/bootstrap.css';
+import '../../node_modules/bootstrap/dist/js/bootstrap.js';
 require('expose-loader?bootstrap!bootstrap');
 
 import { enableProdMode } from '@angular/core';
