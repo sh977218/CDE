@@ -24,14 +24,10 @@ const appRoutes: Routes = [
         AdminItemModule,
         CdeModule,
     ],
-    declarations: [
-    ],
-    entryComponents: [
-    ],
-    exports: [
-    ],
-    providers: [
-    ],
+    declarations: [],
+    entryComponents: [],
+    exports: [],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CdeCreateModule {

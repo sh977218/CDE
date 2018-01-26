@@ -26,7 +26,7 @@ export class FormService {
     static score = score;
 
     convertCdeToQuestion(cde, cb): FormQuestion {
-        if (cde.valueDomain === undefined)
+        if (!cde || cde.valueDomain === undefined)
             throw new Error('Cde ' + cde.tinyId + ' is not valid');
 
         let q = new FormQuestion;
