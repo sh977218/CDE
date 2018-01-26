@@ -31,7 +31,7 @@ const appRoutes: Routes = [
     {
         path: 'searchPreferences',
         resolve: {
-            identifierSources: IdentifierSourcesResolve
+            IdentifierSourcesResolve
         },
         loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule'
     },

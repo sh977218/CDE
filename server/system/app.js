@@ -317,25 +317,23 @@ exports.init = function (app) {
             else res.send({done: true});
         });
     });
+    app.get('/identifierSources/cde', (req, res) => {
+        cdeElastic.DataElementDistinct("ids.source", function (result) {
+            res.send(result);
+        });
+    });
+    app.get('/identifierSources/form', (req, res) => {
+        formElastic.FormDistinct("ids.source", function (result) {
+            res.send(result);
+        });
+    });
 
-    app.get('/identifiersSource/:type?', (req, res) => {
-        let type = req.params.type;
-        if (type === 'cde') {
-            cdeElastic.DataElementDistinct("ids.source", function (result) {
-                res.send(result);
+    app.get('/identifierSources/', (req, res) => {
+        cdeElastic.DataElementDistinct("ids.source", function (result1) {
+            formElastic.FormDistinct("ids.source", function (result2) {
+                res.send(_.union(result1, result2));
             });
-        } else if (type === 'form') {
-            formElastic.FormDistinct("ids.source", function (result) {
-                res.send(result);
-            });
-
-        } else {
-            cdeElastic.DataElementDistinct("ids.source", function (result1) {
-                formElastic.FormDistinct("ids.source", function (result2) {
-                    res.send(_.union(result1, result2));
-                });
-            });
-        }
+        });
     });
 
     /* ---------- PUT NEW REST API above ---------- */
