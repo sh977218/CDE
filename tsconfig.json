@@ -32,8 +32,6 @@
     "deploy",
     "dist",
     "ingester",
-    "modules/_embedApp",
-    "modules/_nativeRenderApp",
     "modules/form/public/assets",
     "node_modules",
     "protractor",

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import * as async_forEachSeries from 'async/forEachSeries';
+import async_forEachSeries from 'async/forEachSeries';
 
 import { IsAllowedService } from 'core/isAllowed.service';
 import { MergeCdeService } from 'core/mergeCde.service';

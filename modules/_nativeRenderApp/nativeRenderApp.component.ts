@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import * as async_forEach from 'async/forEach';
-import * as async_parallel from 'async/parallel';
+import async_forEach from 'async/forEach';
+import async_parallel from 'async/parallel';
 import * as moment from 'moment/min/moment.min';
 import 'fhirclient';
 

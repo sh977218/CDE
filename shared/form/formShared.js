@@ -1,5 +1,5 @@
-import * as async_forEach from 'async/forEach';
-import * as async_forEachSeries from 'async/forEachSeries';
+import async_forEach from 'async/forEach';
+import async_forEachSeries from 'async/forEachSeries';
 import noop from 'lodash/noop';
 
 
