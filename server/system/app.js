@@ -8,7 +8,6 @@ const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
 const usersrvc = require('./usersrvc');
 const orgClassificationSvc = require('./orgClassificationSvc');
-const express = require('express');
 const path = require('path');
 const adminItemSvc = require("./adminItemSvc");
 const csrf = require('csurf');
@@ -23,6 +22,8 @@ const spawn = require('child_process').spawn;
 const authorization = require('./authorization');
 const esInit = require('./elasticSearchInit');
 const elastic = require('./elastic.js');
+const cdeElastic = require('../cde/elastic.js');
+const formElastic = require('../form/elastic.js');
 const app_status = require("./status.js");
 const async = require('async');
 const request = require('request');
@@ -228,7 +229,7 @@ exports.init = function (app) {
     });
 
     app.get('/nativeRender', checkHttps, function (req, res) {
-        res.sendFile(path.join(__dirname, '../../_nativeRenderApp', 'nativeRenderApp.html'), undefined, function (err) {
+        res.sendFile(path.join(__dirname, '../../modules/_nativeRenderApp', 'nativeRenderApp.html'), undefined, function (err) {
             if (err)
                 res.sendStatus(404);
         });
@@ -314,6 +315,24 @@ exports.init = function (app) {
             if (err) res.status(409).send("Error - job status " + jobType);
             if (j) return res.send({done: false});
             else res.send({done: true});
+        });
+    });
+    app.get('/identifierSources/cde', (req, res) => {
+        cdeElastic.DataElementDistinct("ids.source", function (result) {
+            res.send(result);
+        });
+    });
+    app.get('/identifierSources/form', (req, res) => {
+        formElastic.FormDistinct("ids.source", function (result) {
+            res.send(result);
+        });
+    });
+
+    app.get('/identifierSources/', (req, res) => {
+        cdeElastic.DataElementDistinct("ids.source", function (result1) {
+            formElastic.FormDistinct("ids.source", function (result2) {
+                res.send(_.union(result1, result2));
+            });
         });
     });
 

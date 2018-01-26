@@ -286,13 +286,14 @@ exports.DataElementDistinct = function (field, cb) {
                 details: "query " + JSON.stringify(distinctQuery) + "error " + error + "response" + JSON.stringify(response)
             });
         } else {
-            var list = response.aggregations.aggregationsName.buckets.map(function (b) {
+            let list = response.aggregations.aggregationsName.buckets.map(function (b) {
                 return b.key;
             });
             cb(list);
         }
     });
 };
+
 exports.boardSearch = function (filter, cb) {
     let query = {
         "size": 100,

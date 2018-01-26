@@ -1,19 +1,21 @@
-const async = require('async')
-    , _ = require('lodash')
-    , config = require('./parseConfig')
-    , logging = require('./logging')
-    , regStatusShared = require('@std/esm')(module)('../../shared/system/regStatusShared') //jshint ignore:line
-    , usersvc = require("./usersrvc")
-    , elasticsearch = require('elasticsearch')
-    , esInit = require('./elasticSearchInit')
-    , dbLogger = require('./dbLogger.js')
-    , mongo_cde = require("../cde/mongo-cde")
-    , mongo_form = require("../form/mongo-form")
-    , mongo_board = require("../board/mongo-board")
-    , mongo_storedQuery = require("../cde/mongo-storedQuery")
-    , mongo_data = require("./mongo-data")
-    , noDbLogger = require("./noDbLogger")
-;
+const async = require('async');
+const _ = require('lodash');
+const config = require('./parseConfig');
+const logging = require('./logging');
+const regStatusShared = require('@std/esm')(module)('../../shared/system/regStatusShared'); //jshint ignore:line
+const usersvc = require("./usersrvc");
+const elasticsearch = require('elasticsearch');
+const cdeElastic = require('../cde/elastic');
+const formElastic = require('../form/elastic');
+const esInit = require('./elasticSearchInit');
+const dbLogger = require('./dbLogger.js');
+const mongo_cde = require("../cde/mongo-cde");
+const mongo_form = require("../form/mongo-form");
+const mongo_board = require("../board/mongo-board");
+const mongo_storedQuery = require("../cde/mongo-storedQuery");
+const mongo_data = require("./mongo-data");
+const noDbLogger = require("./noDbLogger");
+
 
 let esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
@@ -205,7 +207,7 @@ exports.completionSuggest = function (term, user, settings, indexName, cb) {
         "query": {
             "match": {
                 "primaryNameSuggest": {
-                    "query":  term
+                    "query": term
                 }
             }
         }, "_source": {
@@ -282,10 +284,12 @@ exports.buildElasticSearchQuery = function (user, settings) {
     });
 
     settings.filter = {
-       bool: {
+        bool: {
             filter: [
                 {bool: {should: filterRegStatusTerms}}
-            ]}};
+            ]
+        }
+    };
 
     if (filterDatatypeTerms && filterDatatypeTerms.length > 0) {
         settings.filter.bool.filter.push({bool: {should: filterDatatypeTerms}});
@@ -828,10 +832,14 @@ exports.queryMostViewed = {
     query: {
         bool: {
             filter: [
-                {bool: {should: [
-                    {"term": {"registrationState.registrationStatus": "Standard"}},
-                    {"term": {"registrationState.registrationStatus": "Qualified"}}
-                ]}}
+                {
+                    bool: {
+                        should: [
+                            {"term": {"registrationState.registrationStatus": "Standard"}},
+                            {"term": {"registrationState.registrationStatus": "Qualified"}}
+                        ]
+                    }
+                }
             ]
         }
     },
@@ -845,18 +853,22 @@ exports.queryNewest = {
     query: {
         bool: {
             filter: [
-                {bool: {should: [
-                    {"term": {"registrationState.registrationStatus": "Standard"}},
-                    {"term": {"registrationState.registrationStatus": "Qualified"}}
-                ]}}
+                {
+                    bool: {
+                        should: [
+                            {"term": {"registrationState.registrationStatus": "Standard"}},
+                            {"term": {"registrationState.registrationStatus": "Qualified"}}
+                        ]
+                    }
+                }
             ]
         }
     },
     sort: {
-        _script : {
-            type : 'number',
-            script : "doc['updated'].value > 0 ? doc['updated'].value : (doc['created'].value > 0 ? doc['created'].value : doc['imported'].value)",
-            order : 'desc'
+        _script: {
+            type: 'number',
+            script: "doc['updated'].value > 0 ? doc['updated'].value : (doc['created'].value > 0 ? doc['created'].value : doc['imported'].value)",
+            order: 'desc'
         }
     }
 };
