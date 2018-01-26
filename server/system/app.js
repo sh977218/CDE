@@ -229,7 +229,7 @@ exports.init = function (app) {
     });
 
     app.get('/nativeRender', checkHttps, function (req, res) {
-        res.sendFile(path.join(__dirname, '../../_nativeRenderApp', 'nativeRenderApp.html'), undefined, function (err) {
+        res.sendFile(path.join(__dirname, '../../modules/_nativeRenderApp', 'nativeRenderApp.html'), undefined, function (err) {
             if (err)
                 res.sendStatus(404);
         });

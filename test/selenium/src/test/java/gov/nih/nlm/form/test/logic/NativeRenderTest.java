@@ -19,6 +19,12 @@ public class NativeRenderTest extends BaseFormTest {
                 findElement(By.xpath("//label[span[text()='Not specified']]/following-sibling::div//input")).getLocation().y,
                 8
         );
+
+        clickElement(By.id("selectRenderButton"));
+        clickElement(By.id("button_print_follow"));
+        switchTab(1);
+        textPresent("Does your health now limit you in climbing one flight of stairs?");
+        switchTabAndClose(0);
     }
 
 }
