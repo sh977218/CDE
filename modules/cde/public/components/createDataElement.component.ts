@@ -12,7 +12,9 @@ import { ElasticService } from '_app/elastic.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { SharedService } from 'core/shared.service';
 import { UserService } from '_app/user.service';
-
+import { SearchSettings } from '../../../search/search.model';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
     selector: 'cde-create-data-element',
@@ -31,7 +33,9 @@ export class CreateDataElementComponent implements OnInit {
 
     modalRef: NgbModalRef;
     validationMessage;
-    suggestedCdes: any[] = [];
+    searchSettings = new SearchSettings;
+    private searchTerms = new Subject<string>();
+    suggestedCdes = [];
 
     constructor(public userService: UserService,
                 public isAllowedModel: IsAllowedService,
@@ -52,6 +56,26 @@ export class CreateDataElementComponent implements OnInit {
                 registrationState: {registrationStatus: 'Incomplete'}
             };
         this.validationErrors(this.elt);
+        let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
+        this.searchTerms.debounceTime(300).distinctUntilChanged().switchMap(term => {
+            if (term) {
+                settings.resultPerPage = 5;
+                settings.searchTerm = term;
+                return this.http.post('/cdeCompletion/' + encodeURI(term), this.elasticService.buildElasticQuerySettings(settings)).map(res => res.json());
+            }
+            else return Observable.of<string[]>([]);
+        }).subscribe(res => {
+            let tinyIdList = res.map(r => r._id).slice(0, 5);
+            if (tinyIdList && tinyIdList.length > 0)
+                this.http.get('/deList/' + tinyIdList).map(res => res.json()).subscribe(result => {
+                    this.suggestedCdes = result;
+                }, err => this.alert.addAlert('danger', err));
+            else this.suggestedCdes = [];
+        });
+    }
+
+    dataElementNameChanged() {
+        this.searchTerms.next(this.elt.naming[0].designation);
     }
 
     openClassifyItemModal() {
@@ -118,11 +142,6 @@ export class CreateDataElementComponent implements OnInit {
         });
     }
 
-    elementNameChanged() {
-        if (!(this.elt.naming[0].designation) || this.elt.naming[0].designation.length < 3) return;
-        else this.showSuggestions(this.elt.naming[0].designation);
-    };
-
     updateClassificationLocalStorage(item) {
         let recentlyClassification = <Array<any>>this.localStorageService.get('classificationHistory');
         if (!recentlyClassification) recentlyClassification = [];
@@ -134,34 +153,6 @@ export class CreateDataElementComponent implements OnInit {
         this.localStorageService.set('classificationHistory', recentlyClassification);
     }
 
-    showSuggestions(event) {
-        if (event.length < 3) return;
-        let searchSettings = {
-            q: ''
-            , page: 1
-            , classification: []
-            , classificationAlt: []
-            , regStatuses: []
-            , resultPerPage: 20
-        };
-        searchSettings.q = event.trim();
-        this.elasticService.generalSearchQuery(
-            this.elasticService.buildElasticQuerySettings(searchSettings), 'cde', (err, result) => {
-                if (err) return;
-                this.suggestedCdes = result.cdes;
-                this.suggestedCdes.forEach(cde => {
-                    cde.getEltUrl = function () {
-                        return '/deView?tinyId=' + this.tinyId;
-                    };
-                    cde.getLabel = function () {
-                        if (this.primaryNameCopy)
-                            return this.primaryNameCopy;
-                        else return this.naming[0].designation;
-                    };
-                });
-            });
-    };
-
     createDataElement() {
         this.http.post('/de', this.elt).map(res => res.json())
             .subscribe(res => {
@@ -171,9 +162,7 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     cancelCreateDataElement() {
-        if (this.dismiss.observers.length)
-            this.dismiss.emit();
-        else
-            this.router.navigate(['/']);
+        if (this.dismiss.observers.length) this.dismiss.emit();
+        else this.router.navigate(['/']);
     }
 }
