@@ -82,12 +82,12 @@ export class LoginComponent implements OnInit {
     }
 
     login() {
-        this.http.post<any>('/login', {
+        this.http.post('/login', {
             username: this.username,
             password: this.password,
             _csrf: this.csrf,
             recaptcha: this.recaptcha
-        }).subscribe(res => {
+        }, {responseType: 'text'}).subscribe(res => {
             this.userService.reload();
             if (res === 'OK') {
                 if (this.loginSvc.getPreviousRoute()) {

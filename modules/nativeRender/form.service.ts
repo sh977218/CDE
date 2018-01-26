@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import noop from 'lodash/noop';
-import { map } from 'rxjs/operators';
 
 import { FormQuestion } from 'core/form.model';
 import { SharedService } from 'core/shared.service';
@@ -67,7 +66,6 @@ export class FormService {
             // elastic only store 10 pv, retrieve pv when have more than 9 pv.
             if (cde.valueDomain.permissibleValues.length > 9) {
                 this.http.get('/de/' + cde.tinyId + '/version/' + (cde.version ? cde.version : ''))
-                    .pipe(map((res: Response) => res.json()))
                     .subscribe((result) => {
                         convertPv(q, result);
                         cb(q);

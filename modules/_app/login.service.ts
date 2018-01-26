@@ -33,7 +33,7 @@ export class LoginService {
     }
 
     logout() {
-        this.http.post('/logout', {}).subscribe(() => {
+        this.http.post('/logout', {}, {responseType: 'text'}).subscribe(() => {
             this.userService.reload();
             this.router.navigate(['/login']);
        });

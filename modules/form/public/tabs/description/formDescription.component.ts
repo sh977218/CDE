@@ -11,7 +11,6 @@ import {
     TemplateRef,
     ViewChild
 } from '@angular/core';
-import { Http } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TREE_ACTIONS, TreeComponent } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
@@ -130,48 +129,24 @@ const TOOL_BAR_OFF_SET = 55;
 })
 export class FormDescriptionComponent implements OnInit, AfterViewInit {
     private _elt: CdeForm;
+    @Input() canEdit: boolean = false;
     @Input() set elt(e: CdeForm) {
         this._elt = e;
         this.addExpanded(e);
         this.addIds(e.formElements, "");
-    };
-
+    }
     get elt() {
         return this._elt;
     }
-
-    @Input() canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
     @ViewChild(TreeComponent) public tree: TreeComponent;
     @ViewChild('formSearchTmpl') formSearchTmpl: TemplateRef<any>;
     @ViewChild('questionSearchTmpl') questionSearchTmpl: TemplateRef<any>;
     @ViewChild('descToolbox') descToolbox: ElementRef;
-
-    questionModelMode = 'search';
-    newDataElement = this.initNewDataElement();
     formElementEditing: any = {};
     isModalOpen: boolean = false;
-
-    @HostListener('window:scroll', ['$event'])
-    scrollEvent() {
-        this.doIt();
-    }
-
-    doIt() {
-        if (this && this.descToolbox && this.descToolbox.nativeElement)
-            this.descToolbox.nativeElement.style.top = (window.pageYOffset > TOOL_BAR_OFF_SET ? 0 : (TOOL_BAR_OFF_SET - window.pageYOffset)) + 'px';
-    }
-
-    initNewDataElement() {
-        return {
-            naming: [{
-                designation: '',
-                tags: ['Question Text']
-            }],
-            valueDomain: {datatype: 'Text', permissibleValues: []}
-        };
-    }
-
+    newDataElement = this.initNewDataElement();
+    questionModelMode = 'search';
     treeOptions = {
         allowDrag: element => !FormService.isSubForm(element) || element.data.elementType === 'form' && !FormService.isSubForm(element.parent),
         allowDrop: (element, {parent, index}) => {
@@ -224,13 +199,14 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         isExpandedField: 'expanded'
     };
 
-    constructor(
-        private formService: FormService,
-        private _hotkeysService: HotkeysService,
-        private http: HttpClient,
-        private localStorageService: LocalStorageService,
-        public modalService: NgbModal,
-    ) {
+    @HostListener('window:scroll', ['$event'])
+    scrollEvent() {
+        this.doIt();
+    }
+
+    doIt() {
+        if (this && this.descToolbox && this.descToolbox.nativeElement)
+            this.descToolbox.nativeElement.style.top = (window.pageYOffset > TOOL_BAR_OFF_SET ? 0 : (TOOL_BAR_OFF_SET - window.pageYOffset)) + 'px';
     }
 
     ngOnInit(): void {
@@ -247,6 +223,15 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
         this.doIt();
+    }
+
+    constructor(
+        private formService: FormService,
+        private _hotkeysService: HotkeysService,
+        private http: HttpClient,
+        private localStorageService: LocalStorageService,
+        public modalService: NgbModal,
+    ) {
     }
 
     addIndex(elements, element, i) {
@@ -298,6 +283,16 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     hasCopiedSection() {
         return !_isEmpty(this.localStorageService.get('sectionCopied'));
+    }
+
+    initNewDataElement() {
+        return {
+            naming: [{
+                designation: '',
+                tags: ['Question Text']
+            }],
+            valueDomain: {datatype: 'Text', permissibleValues: []}
+        };
     }
 
     openFormSearch() {

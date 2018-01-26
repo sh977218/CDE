@@ -337,7 +337,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     this.elasticService.buildElasticQuerySettings(this.searchSettings)).map(res => {
                     let final = new Set();
                     this.lastTypeahead = {};
-                    res.json().forEach(e => {
+                    res.forEach(e => {
                         this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
                         final.add(e._source.primaryNameSuggest);
                     });

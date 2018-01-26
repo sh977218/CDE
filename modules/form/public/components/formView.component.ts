@@ -352,7 +352,7 @@ export class FormViewComponent implements OnInit {
             formData.append('id', this.elt._id);
             this.http.post<any>('/attachments/form/add', formData).subscribe(
                 r => {
-                    if (r.message) this.alert.addAlert('info', r.text());
+                    if (r.message) this.alert.addAlert('info', r);
                     else {
                         this.elt = r;
                         this.alert.addAlert('success', 'Attachment added.');

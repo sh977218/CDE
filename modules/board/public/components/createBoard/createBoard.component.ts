@@ -33,7 +33,7 @@ export class CreateBoardComponent {
             this.modalRef.close();
             this.alert.addAlert('success', 'Board created.');
         }, r => {
-            this.alert.addAlert('danger', r.text());
+            this.alert.addAlert('danger', r);
         });
     }
 

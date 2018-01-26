@@ -1037,7 +1037,7 @@ exports.init = function (app) {
         if (!req.params.id) return res.status(400).send("Missing Id parameter");
         mongo_data.findMeshClassification({eltId: req.params.id}, function (err, mm) {
             if (err) return res.status(500).send();
-            return res.send(mm[0]);
+            return res.send(mm.length ? mm[0] : '{}');
         });
     });
 

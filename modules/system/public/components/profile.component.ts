@@ -1,13 +1,12 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { Http } from '@angular/http';
-import { CdeForm } from 'core/form.model';
-import { DataElement } from 'core/dataElement.model';
-import { User } from 'core/models.model';
 import _isArray from 'lodash/isArray';
 
-import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
-import { HttpClient } from '@angular/common/http';
+import { UserService } from '_app/user.service';
+import { DataElement } from 'core/dataElement.model';
+import { CdeForm } from 'core/form.model';
+import { User } from 'core/models.model';
 
 
 @Component({
