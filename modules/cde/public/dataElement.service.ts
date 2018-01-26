@@ -1,20 +1,22 @@
-import { Injectable } from "@angular/core";
-import { Http } from "@angular/http";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+import { DataElement } from 'core/dataElement.model';
 
 @Injectable()
 export class DataElementService {
-    elt;
-    constructor(private http: Http) {
-    }
+    elt: DataElement;
 
-    save(elt) {
-        let url = "";
-        return this.http.post(url, elt);
+    constructor(
+        private http: HttpClient
+    ) {
     }
 
     get(tinyId) {
-        let url = "/de/" + tinyId;
-        return this.http.get(url).map(res => res.json());
+        return this.http.get('/de/' + tinyId);
     }
 
+    // save(elt) {
+    //     return this.http.post('', elt);
+    // }
 }

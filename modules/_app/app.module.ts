@@ -1,7 +1,7 @@
-import { NgModule } from "@angular/core";
-import { HttpModule } from "@angular/http";
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserModule } from "@angular/platform-browser";
+import { BrowserModule } from '@angular/platform-browser';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap/alert/alert.module';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap/dropdown/dropdown.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
@@ -19,16 +19,17 @@ import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component'
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';
-import { OrgHelperService } from "../core/orgHelper.service";
+import { OrgHelperService } from 'core/orgHelper.service';
+
 
 @NgModule({
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
-        HttpModule,
+        HttpClientModule,
         LocalStorageModule.withConfig({
-            prefix: "nlmcde",
-            storageType: "localStorage"
+            prefix: 'nlmcde',
+            storageType: 'localStorage'
         }),
         NgbAlertModule.forRoot(),
         NgbDropdownModule.forRoot(),

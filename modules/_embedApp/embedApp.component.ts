@@ -1,28 +1,53 @@
-import { Component } from "@angular/core";
-import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import "../../node_modules/feedback/stable/2.0/html2canvas.js";
-import { Http } from '@angular/http';
-import { SharedService } from 'core/shared.service';
+import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import '../../node_modules/feedback/stable/2.0/html2canvas.js';
+
 import { ElasticService } from '_app/elastic.service';
+import { SharedService } from 'core/shared.service';
+
 
 @Component({
-    selector: "cde-embed",
-    templateUrl: "./embedApp.component.html"
+    selector: 'cde-embed',
+    templateUrl: './embedApp.component.html'
 })
 export class EmbedAppComponent  {
-    name = "Embedded NIH CDE Repository";
+    aggregations: any = {};
+    cutoffIndex: number;
+    elts: any = [];
+    embed: any;
+    lastQueryTimeStamp: number;
+    name = 'Embedded NIH CDE Repository';
+    numPages: number;
+    resultPerPage: number;
+    searchStarted: boolean = false;
+    searchSettings = {
+        q: ''
+        , page: 1
+        , classification: []
+        , classificationAlt: []
+        , regStatuses: []
+        , resultPerPage: 5
+        , selectedOrg: ''
+    };
+    searchType = 'cde';
+    searchViewSettings: any;
+    selectedClassif: string = '';
+    took: number;
+    totalItems: number;
 
-    constructor(private http: Http,
-                private elasticSvc: ElasticService) {
-
+    constructor(
+        private http: HttpClient,
+        private elasticSvc: ElasticService,
+    ) {
         let args = {};
-        let args1 = window.location.search.substr(1).split("&");
+        let args1 = window.location.search.substr(1).split('&');
         args1.forEach(arg => {
-            let argArr = arg.split("=");
+            let argArr = arg.split('=');
             args[argArr[0]] = argArr[1];
         });
 
-        this.http.get('/embed/' + args['id']).map(r => r.json()).subscribe(response => {
+        this.http.get<any>('/embed/' + args['id']).subscribe(response => {
             this.embed = response;
             this.searchViewSettings.tableViewFields.customFields = [];
 
@@ -31,7 +56,7 @@ export class EmbedAppComponent  {
             embed4Type.ids.forEach(eId => {
                 this.searchViewSettings.tableViewFields.customFields.push({key: eId.idLabel, label: eId.idLabel});
                 if (eId.version) {
-                    this.searchViewSettings.tableViewFields.customFields.push({key: eId.idLabel + "_version", label: eId.versionLabel});
+                    this.searchViewSettings.tableViewFields.customFields.push({key: eId.idLabel + '_version', label: eId.versionLabel});
                 }
             });
 
@@ -40,12 +65,12 @@ export class EmbedAppComponent  {
             });
 
             if (embed4Type.primaryDefinition && embed4Type.primaryDefinition.show) {
-                this.searchViewSettings.tableViewFields.customFields.push({key: "primaryDefinition",
+                this.searchViewSettings.tableViewFields.customFields.push({key: 'primaryDefinition',
                     label: embed4Type.primaryDefinition.label, style: embed4Type.primaryDefinition.style});
             }
 
             if (embed4Type.registrationStatus && embed4Type.registrationStatus.show) {
-                this.searchViewSettings.tableViewFields.customFields.push({key: "registrationStatus",
+                this.searchViewSettings.tableViewFields.customFields.push({key: 'registrationStatus',
                     label: embed4Type.registrationStatus.label});
             }
 
@@ -54,53 +79,12 @@ export class EmbedAppComponent  {
         });
 
         this.searchViewSettings = elasticSvc.getDefault();
-
-    }
-
-    searchViewSettings: any;
-
-    searchType = 'cde';
-    lastQueryTimeStamp: number;
-    elts: any = [];
-    resultPerPage: number;
-    numPages: number;
-    totalItems: number;
-    took: number;
-    cutoffIndex: number;
-    searchStarted: boolean = false;
-
-    aggregations: any = {};
-    searchSettings = {
-        q: ""
-        , page: 1
-        , classification: []
-        , classificationAlt: []
-        , regStatuses: []
-        , resultPerPage: 5
-        , selectedOrg: ""
-    };
-    selectedClassif: string = "";
-    embed: any;
-
-    selectElement () {
-        this.searchSettings.classification.push(this.selectedClassif);
-        this.selectedClassif = "";
-        this.searchStarted = true;
-        this.search();
     }
 
     crumbSelect (i) {
         this.searchSettings.classification.length = i + 1;
         this.search();
-    };
-
-    reset () {
-        this.searchSettings.q = "";
-        this.searchSettings.page = 1;
-        this.searchSettings.classification = [];
-        this.search();
-        this.searchStarted = false;
-    };
+    }
 
     doClassif(currentString, classif, result) {
         if (currentString.length > 0) {
@@ -130,6 +114,13 @@ export class EmbedAppComponent  {
         return result;
     }
 
+    reset () {
+        this.searchSettings.q = '';
+        this.searchSettings.page = 1;
+        this.searchSettings.classification = [];
+        this.search();
+        this.searchStarted = false;
+    }
 
     search () {
         this.searchSettings.resultPerPage = this.embed[this.searchType].pageSize;
@@ -200,7 +191,7 @@ export class EmbedAppComponent  {
                         if (id) {
                             c.embed[eId.idLabel] = id.id;
                             if (eId.version) {
-                                c.embed[eId.idLabel + "_version"] = id.version;
+                                c.embed[eId.idLabel + '_version'] = id.version;
                             }
                         }
                     });
@@ -245,8 +236,8 @@ export class EmbedAppComponent  {
                             result = cl.indexOf(eCl.startsWith) === 0;
                             if (eCl.exclude) result = result && !cl.match(exclude);
                             if (eCl.selectedOnly) {
-                                result = result && cl.indexOf(this.embed.org + ";" +
-                                    this.searchSettings.classification.join(";")) === 0;
+                                result = result && cl.indexOf(this.embed.org + ';' +
+                                    this.searchSettings.classification.join(';')) === 0;
                             }
                             return result;
                         }).map(cl => cl.substr(eCl.startsWith.length));
@@ -265,7 +256,7 @@ export class EmbedAppComponent  {
                         , regStatuses: []
                     });
 
-                    this.elasticSvc.generalSearchQuery(lfSettings, "form", (err, result) => {
+                    this.elasticSvc.generalSearchQuery(lfSettings, 'form', (err, result) => {
                         if (result.forms) {
                             result.forms.forEach(crf => c.embed.linkedForms.push({name: crf.primaryNameCopy}));
                         }
@@ -275,6 +266,12 @@ export class EmbedAppComponent  {
             });
 
         });
-    };
+    }
 
+    selectElement () {
+        this.searchSettings.classification.push(this.selectedClassif);
+        this.selectedClassif = '';
+        this.searchStarted = true;
+        this.search();
+    }
 }

@@ -1,29 +1,29 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
 import noop from 'lodash/noop';
+import { map } from 'rxjs/operators';
 
-import {
-areDerivationRulesSatisfied, convertFormToSection, findQuestionByTinyId, getLabel, isSubForm, iterateFe, iterateFes,
-iterateFeSync, iterateFesSync, score
-} from '../../shared/form/formShared';
 import { FormQuestion } from 'core/form.model';
+import { SharedService } from 'core/shared.service';
 
 function noop1(a, cb) { cb(); }
 
 @Injectable()
 export class FormService {
-    constructor(private http: Http) {}
+    static areDerivationRulesSatisfied = SharedService.formShared.areDerivationRulesSatisfied;
+    static convertFormToSection = SharedService.formShared.convertFormToSection;
+    static getLabel = SharedService.formShared.getLabel;
+    static findQuestionByTinyId = SharedService.formShared.findQuestionByTinyId;
+    static isSubForm = SharedService.formShared.isSubForm;
+    static iterateFe = SharedService.formShared.iterateFe;
+    static iterateFeSync = SharedService.formShared.iterateFeSync;
+    static iterateFes = SharedService.formShared.iterateFes;
+    static iterateFesSync = SharedService.formShared.iterateFesSync;
+    static score = SharedService.formShared.score;
 
-    static areDerivationRulesSatisfied = areDerivationRulesSatisfied;
-    static convertFormToSection = convertFormToSection;
-    static getLabel = getLabel;
-    static findQuestionByTinyId = findQuestionByTinyId;
-    static isSubForm = isSubForm;
-    static iterateFe = iterateFe;
-    static iterateFeSync = iterateFeSync;
-    static iterateFes = iterateFes;
-    static iterateFesSync = iterateFesSync;
-    static score = score;
+    constructor(
+        private http: HttpClient
+    ) {}
 
     convertCdeToQuestion(cde, cb): FormQuestion {
         if (cde.valueDomain === undefined)
@@ -67,7 +67,7 @@ export class FormService {
             // elastic only store 10 pv, retrieve pv when have more than 9 pv.
             if (cde.valueDomain.permissibleValues.length > 9) {
                 this.http.get('/de/' + cde.tinyId + '/version/' + (cde.version ? cde.version : ''))
-                    .map((res: Response) => res.json())
+                    .pipe(map((res: Response) => res.json()))
                     .subscribe((result) => {
                         convertPv(q, result);
                         cb(q);
@@ -87,9 +87,6 @@ export class FormService {
         let formCb = (fe, cb) => {
             this.http.get('/form/' + fe.inForm.form.tinyId
                 + (fe.inForm.form.version ? '/version/' + fe.inForm.form.version : ''))
-                .map(function (res) {
-                    return res.json();
-                })
                 .subscribe(function (response: any) {
                     fe.formElements = response.formElements;
                     cb();
@@ -108,14 +105,14 @@ export class FormService {
                 });
             cb();
         }
-        FormService.iterateFe(form, callback, formCb, undefined, questionCb);
+        FormService.iterateFe(form, formCb, undefined, questionCb, callback);
     }
 
     // cb(err, elt)
     getForm(tinyId, id, cb = noop) {
         let url = '/form/' + tinyId;
         if (id) url = '/formById/' + id;
-        this.http.get(url).map(res => res.json()).subscribe(res => {
+        this.http.get(url).subscribe(res => {
             cb(null, res);
         }, cb);
     }

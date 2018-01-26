@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import 'rxjs/add/operator/map';
+import _cloneDeep from 'lodash/cloneDeep';
+
 import { CompareService } from 'core/compare.service';
 import { ClassificationService } from 'core/classification.service';
-import _cloneDeep from 'lodash/cloneDeep';
 
 @Component({
     selector: "cde-compare-object",

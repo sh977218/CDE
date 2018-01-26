@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import {
     Component,
     Input,
@@ -8,19 +9,20 @@ import {
     ViewChildren,
     EventEmitter
 } from '@angular/core';
-import { Http } from '@angular/http';
 import { Router } from '@angular/router';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { LocalStorageService } from 'angular-2-local-storage/dist';
+import { TreeComponent } from 'angular-tree-component';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
-import { TreeComponent } from 'angular-tree-component';
-import { LocalStorageService } from 'angular-2-local-storage/dist';
 
 import { AlertService } from '_app/alert/alert.service';
+import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { CdeForm } from 'core/form.model';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { SharedService } from 'core/shared.service';
-import { UserService } from '_app/user.service';
+
 
 @Component({
     selector: 'cde-create-form',
@@ -33,22 +35,14 @@ import { UserService } from '_app/user.service';
     `]
 })
 export class CreateFormComponent implements OnInit {
-    @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
-    @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
     @Input() elt;
     @Input() extModalRef: NgbModalRef;
     @Output() eltChange = new EventEmitter();
+    @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
+    @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
     modalRef: NgbModalRef;
 
-    constructor(public userService: UserService,
-                public isAllowedModel: IsAllowedService,
-                private localStorageService: LocalStorageService,
-                private http: Http,
-                private alert: AlertService,
-                private router: Router) {
-    }
-
-    ngOnInit(): void {
+    ngOnInit() {
         if (!this.elt) this.elt = {
             elementType: 'form',
             classification: [], stewardOrg: {}, naming: [{
@@ -58,8 +52,14 @@ export class CreateFormComponent implements OnInit {
         };
     }
 
-    openClassifyItemModal() {
-        this.modalRef = this.classifyItemComponent.openModal();
+    constructor(
+        private alert: AlertService,
+        private http: HttpClient,
+        public isAllowedModel: IsAllowedService,
+        private localStorageService: LocalStorageService,
+        private router: Router,
+    public userService: UserService,
+    ) {
     }
 
     afterClassified(event) {
@@ -73,6 +73,52 @@ export class CreateFormComponent implements OnInit {
         this.updateClassificationLocalStorage(postBody);
         this.elt = eltCopy;
         this.modalRef.close();
+    }
+
+    cancelCreateForm() {
+        if (this.extModalRef) {
+            this.extModalRef.close();
+        } else {
+            this.router.navigate(['/']);
+        }
+    }
+
+    createForm() {
+        this.http.post<CdeForm>('/form', this.elt)
+            .subscribe(res => {
+                    this.router.navigate(['/formView'], {queryParams: {tinyId: res.tinyId}});
+                    if (this.extModalRef) this.extModalRef.close();
+                },
+                err => {
+                    this.alert.addAlert('danger', err);
+                });
+    }
+
+    confirmDelete(event) {
+        let eltCopy = _cloneDeep(this.elt);
+        let steward = SharedService.classificationShared.findSteward(eltCopy, event.deleteOrgName);
+        SharedService.classificationShared.removeCategory(steward.object, event.deleteClassificationArray, err => {
+            if (err) this.alert.addAlert('danger', err);
+            else {
+                this.elt = eltCopy;
+                this.alert.addAlert('success', 'Classification removed.');
+            }
+        });
+    };
+
+    openClassifyItemModal() {
+        this.modalRef = this.classifyItemComponent.openModal();
+    }
+
+    updateClassificationLocalStorage(item) {
+        let recentlyClassification = <Array<any>>this.localStorageService.get('classificationHistory');
+        if (!recentlyClassification) recentlyClassification = [];
+        recentlyClassification = recentlyClassification.filter(o => {
+            if (o.cdeId) o.eltId = o.cdeId;
+            return _isEqual(o, item);
+        });
+        recentlyClassification.unshift(item);
+        this.localStorageService.set('classificationHistory', recentlyClassification);
     }
 
     validationErrors(elt) {
@@ -97,48 +143,5 @@ export class CreateFormComponent implements OnInit {
             }
         }
         return null;
-    };
-
-    confirmDelete(event) {
-        let eltCopy = _cloneDeep(this.elt);
-        let steward = SharedService.classificationShared.findSteward(eltCopy, event.deleteOrgName);
-        SharedService.classificationShared.removeCategory(steward.object, event.deleteClassificationArray, err => {
-            if (err) this.alert.addAlert('danger', err);
-            else {
-                this.elt = eltCopy;
-                this.alert.addAlert('success', 'Classification removed.');
-            }
-        });
-    };
-
-    updateClassificationLocalStorage(item) {
-        let recentlyClassification = <Array<any>>this.localStorageService.get('classificationHistory');
-        if (!recentlyClassification) recentlyClassification = [];
-        recentlyClassification = recentlyClassification.filter(o => {
-            if (o.cdeId) o.eltId = o.cdeId;
-            return _isEqual(o, item);
-        });
-        recentlyClassification.unshift(item);
-        this.localStorageService.set('classificationHistory', recentlyClassification);
     }
-
-    createForm() {
-        this.http.post('/form', this.elt).map(res => res.json())
-            .subscribe(res => {
-                    this.router.navigate(['/formView'], {queryParams: {tinyId: res.tinyId}});
-                    if (this.extModalRef) this.extModalRef.close();
-                },
-                err => {
-                    this.alert.addAlert('danger', err);
-                });
-    }
-
-    cancelCreateForm() {
-        if (this.extModalRef) {
-            this.extModalRef.close();
-        } else {
-            this.router.navigate(['/']);
-        }
-    }
-
 }

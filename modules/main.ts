@@ -14,7 +14,6 @@ require('expose-loader?bootstrap!bootstrap');
 
 // required for ng2-select2
 import '../node_modules/select2/dist/js/select2.js';
-
 require('expose-loader?select2!select2');
 
 import { enableProdMode } from '@angular/core';

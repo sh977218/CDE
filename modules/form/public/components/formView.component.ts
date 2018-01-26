@@ -1,7 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { Http } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModalRef, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import * as async from 'async';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
@@ -9,19 +10,20 @@ import _uniqWith from 'lodash/uniqWith';
 import { Subscription } from 'rxjs/Subscription';
 
 import { AlertService } from '_app/alert/alert.service';
-import { BrowserService } from 'widget/browser.service';
-import { CdeForm, FormElement, FormElementsContainer } from 'core/form.model';
-import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
-import { FormService } from 'nativeRender/form.service';
-import { IsAllowedService } from 'core/isAllowed.service';
-import { OrgHelperService } from 'core/orgHelper.service';
-import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
-import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
-import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UserService } from '_app/user.service';
-import * as async from "async";
-import * as formShared from "../../../../shared/form/formShared";
+import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
+import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
+import { DataElement } from 'core/dataElement.model';
+import { CdeForm, FormElement, FormElementsContainer } from 'core/form.model';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { Comment } from 'core/models.model';
+import { OrgHelperService } from 'core/orgHelper.service';
+import { SharedService } from 'core/shared.service';
+import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
+import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
+import { FormService } from 'nativeRender/form.service';
+import { BrowserService } from 'widget/browser.service';
 
 
 @Component({
@@ -60,7 +62,7 @@ export class FormViewComponent implements OnInit {
     tabsCommented = [];
     validationErrors: string[] = [];
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private ref: ChangeDetectorRef,
                 public modalService: NgbModal,
                 public isAllowedModel: IsAllowedService,
@@ -127,8 +129,7 @@ export class FormViewComponent implements OnInit {
     }
 
     loadComments(form, cb) {
-        this.http.get('/comments/eltId/' + form.tinyId)
-            .map(res => res.json()).subscribe(res => {
+        this.http.get<Comment[]>('/comments/eltId/' + form.tinyId).subscribe(res => {
             this.hasComments = res && (res.length > 0);
             this.tabsCommented = res.map(c => c.linkedTab + '_tab');
             if (cb) cb();
@@ -136,8 +137,7 @@ export class FormViewComponent implements OnInit {
     }
 
     loadDraft(cb = _noop) {
-        this.http.get('/draftForm/' + this.route.snapshot.queryParams['tinyId'])
-            .map(res => res.json()).subscribe(res => {
+        this.http.get<any>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(res => {
             if (res && res.length > 0) {
                 this.drafts = res;
                 this.elt = res[0];
@@ -172,11 +172,10 @@ export class FormViewComponent implements OnInit {
         let formId = this.route.snapshot.queryParams['formId'];
         let url = '/form/' + this.route.snapshot.queryParams['tinyId'];
         if (formId) url = '/formById/' + formId;
-        this.http.get(url).map(res => res.json()).subscribe(res => {
-                this.elt = res;
-                this.formLoaded(cb);
-            }, () => this.router.navigate(['/pageNotFound'])
-        );
+        this.http.get<CdeForm>(url).subscribe(res => {
+            this.elt = res;
+            this.formLoaded(cb);
+        }, () => this.router.navigate(['/pageNotFound']));
     }
 
     openCopyElementModal() {
@@ -238,10 +237,10 @@ export class FormViewComponent implements OnInit {
     }
 
     removeAttachment(event) {
-        this.http.post('/attachments/form/remove', {
+        this.http.post<CdeForm>('/attachments/form/remove', {
             index: event,
             id: this.elt._id
-        }).map(r => r.json()).subscribe(res => {
+        }).subscribe(res => {
             this.elt = res;
             this.alert.addAlert('success', 'Attachment Removed.');
             this.ref.detectChanges();
@@ -266,19 +265,18 @@ export class FormViewComponent implements OnInit {
         else this.elt.createdBy = {userId: undefined, username: username};
         this.elt.updated = new Date();
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
-        this.draftSubscription = this.http.post('/draftForm/' + this.elt.tinyId, this.elt)
-            .map(res => res.json()).subscribe(res => {
-                this.elt.isDraft = true;
-                if (!this.drafts.length)
-                    this.drafts = [this.elt];
-                this.savingText = 'Saved';
-                setTimeout(() => {
-                    this.savingText = '';
-                }, 3000);
-                this.missingCdes = FormService.areDerivationRulesSatisfied(this.elt);
-                this.validate();
-                if (cb) cb(res);
-            }, err => this.alert.addAlert('danger', err));
+        this.draftSubscription = this.http.post('/draftForm/' + this.elt.tinyId, this.elt).subscribe(res => {
+            this.elt.isDraft = true;
+            if (!this.drafts.length)
+                this.drafts = [this.elt];
+            this.savingText = 'Saved';
+            setTimeout(() => {
+                this.savingText = '';
+            }, 3000);
+            this.missingCdes = FormService.areDerivationRulesSatisfied(this.elt);
+            this.validate();
+            if (cb) cb(res);
+        }, err => this.alert.addAlert('danger', err));
     }
 
 
@@ -301,43 +299,43 @@ export class FormViewComponent implements OnInit {
             classification: this.elt.classification,
             ids: newCde.ids
         };
-        this.http.post("/de", dataElement).map(res => res.json())
+        this.http.post<DataElement>('/de', dataElement)
             .subscribe(res => {
                 if (res.tinyId) newCde.tinyId = res.tinyId;
                 if (res.version) newCde.version = res.version;
                 if (cb) cb();
             }, err => {
                 newCde.error = err;
-                this.alert.addAlert("danger", err);
+                this.alert.addAlert('danger', err);
             });
     }
 
     saveForm() {
         let newCdes = [];
-        formShared.iterateFes(this.elt.formElements, () => {
+        SharedService.formShared.iterateFes(this.elt.formElements, undefined, undefined, (fe, cb) => {
+            if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
+            if (cb) cb();
+        }, () => {
             async.forEach(newCdes, (newCde, doneOneCde) => {
                 this.createDataElement(newCde, doneOneCde);
             }, () => {
-                this.http.put('/form/' + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(
+                this.http.put('/form/' + this.elt.tinyId, this.elt).subscribe(
                     res => {
                         if (res) this.loadForm(() => this.alert.addAlert('success', 'Form saved.'));
                     }, () => this.router.navigate(['/pageNotFound'])
                 );
             });
-        }, undefined, undefined, (fe, cb) => {
-            if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
-            if (cb) cb();
         });
 
     }
 
     setDefault(index) {
-        this.http.post('/attachments/form/setDefault',
+        this.http.post<CdeForm>('/attachments/form/setDefault',
             {
                 index: index,
                 state: this.elt.attachments[index].isDefault,
                 id: this.elt._id
-            }).map(r => r.json()).subscribe(res => {
+            }).subscribe(res => {
             this.elt = res;
             this.alert.addAlert('success', 'Saved');
             this.ref.detectChanges();
@@ -352,7 +350,7 @@ export class FormViewComponent implements OnInit {
                 formData.append('uploadedFiles', files[i]);
             }
             formData.append('id', this.elt._id);
-            this.http.post('/attachments/form/add', formData).map(r => r.json()).subscribe(
+            this.http.post<any>('/attachments/form/add', formData).subscribe(
                 r => {
                     if (r.message) this.alert.addAlert('info', r.text());
                     else {

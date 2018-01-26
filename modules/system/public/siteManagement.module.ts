@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { JsonpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CKEditorModule } from 'ng2-ckeditor';
@@ -23,7 +22,6 @@ const appRoutes: Routes = [
         CKEditorModule,
         CommonModule,
         FormsModule,
-        JsonpModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
         TimeAgoPipeModule,

@@ -1,28 +1,31 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from "@angular/core";
-import { Http } from "@angular/http";
-import { MergeCdeService } from "./mergeCde.service";
-import { MergeShareService } from "./mergeShare.service";
 import * as async from "async";
+
 import { IsAllowedService } from 'core/isAllowed.service';
+import { MergeCdeService } from "core/mergeCde.service";
+import { MergeShareService } from "core/mergeShare.service";
+
 
 @Injectable()
 export class MergeFormService {
-
-    public error: any = {
+    error: any = {
         error: "",
         ownTargetForm: false,
         ownSourceForm: false
     };
 
-    constructor(private http: Http,
-                private mergeCdeService: MergeCdeService,
-                private mergeShareService: MergeShareService,
-                public isAllowedModel: IsAllowedService) {
+    constructor(
+        private http: HttpClient,
+        public isAllowedModel: IsAllowedService,
+        private mergeCdeService: MergeCdeService,
+        private mergeShareService: MergeShareService,
+    ) {
     }
 
-    public saveForm(form, cb) {
+    saveForm(form, cb) {
         //noinspection TypeScriptValidateTypes
-        this.http.put("/form/" + form.tinyId, form).map(res => res.json()).subscribe(
+        this.http.put("/form/" + form.tinyId, form).subscribe(
             data => {
                 cb(null, data);
             },
@@ -58,7 +61,7 @@ export class MergeFormService {
         });
     }
 
-    public doMerge(mergeFrom, mergeTo, fields, doneOne, cb) {
+    doMerge(mergeFrom, mergeTo, fields, doneOne, cb) {
         if (mergeFrom.length !== mergeTo.length) {
             cb({error: "number of question on left is not same on right."});
         } else {

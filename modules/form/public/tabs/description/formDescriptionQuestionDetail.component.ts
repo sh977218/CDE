@@ -1,26 +1,26 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
-import { Http, Response } from "@angular/http";
-import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { TreeNode } from "angular-tree-component";
+import { HttpClient } from '@angular/common/http';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { TreeNode } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
-import { Observable } from "rxjs/Observable";
+import { debounceTime, map } from 'rxjs/operators';
+import { Observable } from 'rxjs/Observable';
 
+import { AlertService } from '_app/alert/alert.service';
 import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'core/form.model';
 import { FormattedValue } from 'core/models.model';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
-import { AlertService } from "../../../../_app/alert/alert.service";
-import { OrgHelperService } from "../../../../core/orgHelper.service";
+import { OrgHelperService } from 'core/orgHelper.service';
 
 @Component({
-    selector: "cde-form-description-question-detail",
-    templateUrl: "formDescriptionQuestionDetail.component.html"
+    selector: 'cde-form-description-question-detail',
+    templateUrl: 'formDescriptionQuestionDetail.component.html'
 })
 export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() canEdit: boolean = false;
     @Input() elt;
-
     @Input() set node(node: TreeNode) {
         this.question = node.data;
         this.parent = node.parent.data;
@@ -32,25 +32,23 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.question.question.uoms = [];
         if (this.question.question.uoms) this.validateUoms(this.question.question);
     };
-
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
-    @ViewChild("formDescriptionNameSelectTmpl") formDescriptionNameSelectTmpl: NgbModalModule;
-    @ViewChild("formDescriptionQuestionTmpl") formDescriptionQuestionTmpl: TemplateRef<any>;
-    @ViewChild("formDescriptionQuestionEditTmpl") formDescriptionQuestionEditTmpl: TemplateRef<any>;
-    @ViewChild("slInput") slInput: ElementRef;
-
+    @ViewChild('formDescriptionNameSelectTmpl') formDescriptionNameSelectTmpl: NgbModalModule;
+    @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl: TemplateRef<any>;
+    @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl: TemplateRef<any>;
+    @ViewChild('slInput') slInput: ElementRef;
     answersOptions: any = {
         allowClear: true,
         multiple: true,
         closeOnSelect: true,
         placeholder: {
-            id: "",
-            placeholder: "Leave blank to ..."
+            id: '',
+            placeholder: 'Leave blank to ...'
         },
         tags: true,
         language: {
             noResults: () => {
-                return "No Answer List entries are listed on the CDE.";
+                return 'No Answer List entries are listed on the CDE.';
             }
         }
     };
@@ -65,21 +63,23 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         tags: true,
         language: {
             noResults: () => {
-                return "No Units of Measure are listed on the CDE. Type in more followed by ENTER.";
+                return 'No Units of Measure are listed on the CDE. Type in more followed by ENTER.';
             }
         }
     };
     uomVersion = 0;
 
-    constructor(private http: Http,
-                private alert: AlertService,
-                public modalService: NgbModal,
-                public skipLogicValidateService: SkipLogicValidateService,
-                private ucumService: UcumService,
-                private orgHelperService: OrgHelperService) {
+    constructor(
+        private alert: AlertService,
+        private http: HttpClient,
+        public modalService: NgbModal,
+        private orgHelperService: OrgHelperService,
+        public skipLogicValidateService: SkipLogicValidateService,
+        private ucumService: UcumService,
+    ) {
         this.nameSelectModal.okSelect = (naming = null) => {
             if (!naming) {
-                this.nameSelectModal.question.label = "";
+                this.nameSelectModal.question.label = '';
                 this.nameSelectModal.question.hideLabel = true;
             }
             else {
@@ -97,7 +97,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     checkAnswers(answers) {
-        let newAnswers = (Array.isArray(answers.value) ? answers.value.filter(answer => answer !== "") : []);
+        let newAnswers = (Array.isArray(answers.value) ? answers.value.filter(answer => answer !== '') : []);
         if (!_isEqual(this.answersSelected, newAnswers)) {
             this.question.question.answers = this.question.question.cde.permissibleValues
                 .filter(a => newAnswers.indexOf(a.permissibleValue) > -1) as PermissibleFormValue[];
@@ -107,7 +107,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     checkUom(uoms) {
-        let newUoms = (Array.isArray(uoms.value) ? uoms.value.filter(uom => uom !== "") : []);
+        let newUoms = (Array.isArray(uoms.value) ? uoms.value.filter(uom => uom !== '') : []);
         if (!_isEqual(this.question.question.uoms, newUoms)) {
             this.question.question.uoms = newUoms;
             this.onEltChange.emit();
@@ -117,15 +117,16 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     getRepeatLabel(fe) {
         if (!fe.repeat)
-            return "";
-        if (fe.repeat[0] === "F")
-            return "over First Question";
-        return parseInt(fe.repeat) + " times";
+            return '';
+        if (fe.repeat[0] === 'F')
+            return 'over First Question';
+        return parseInt(fe.repeat) + ' times';
     }
 
     getSkipLogicOptions = (text$: Observable<string>) =>
-        text$.debounceTime(300).map(term =>
-            this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question)
+        text$.pipe(
+            debounceTime(300),
+            map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question))
         );
 
     getTemplate() {
@@ -161,17 +162,16 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.nameSelectModal.question = question;
         this.nameSelectModal.cde = question.question.cde;
         if (this.nameSelectModal.cde.tinyId) {
-            let url = "/de/" + this.nameSelectModal.cde.tinyId;
-            if (this.nameSelectModal.cde.version) url += "/version/" + this.nameSelectModal.cde.version;
-            this.http.get(url).map((res: Response) => res.json())
-                .subscribe((response) => {
-                    this.nameSelectModal.cde = response;
-                }, () => {
-                    this.nameSelectModal.cde = "error";
-                });
+            let url = '/de/' + this.nameSelectModal.cde.tinyId;
+            if (this.nameSelectModal.cde.version) url += '/version/' + this.nameSelectModal.cde.version;
+            this.http.get(url).subscribe((response) => {
+                this.nameSelectModal.cde = response;
+            }, () => {
+                this.nameSelectModal.cde = 'error';
+            });
         }
         this.nameSelectModal.updateSkipLogic = SkipLogicValidateService.checkAndUpdateLabel(section, this.nameSelectModal.question.label);
-        this.nameSelectModalRef = this.modalService.open(this.formDescriptionNameSelectTmpl, {size: "lg"});
+        this.nameSelectModalRef = this.modalService.open(this.formDescriptionNameSelectTmpl, {size: 'lg'});
         this.nameSelectModalRef.result.then(() => this.onEltChange.emit(), () => {
         });
     }
@@ -212,7 +212,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         multiple: true,
         tags: true
     };
-    public dataTypeOptions = ["Value List", "Text", "Date", "Number"];
+    public dataTypeOptions = ['Value List', 'Text', 'Date', 'Number'];
 
     datatypeSelect2Options = {
         multiple: false,
@@ -233,7 +233,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     removeCdeNaming(i) {
         if (this.question.question.cde.naming.length === 1) {
-            return this.alert.addAlert("danger", "Data element must have at least one name.");
+            return this.alert.addAlert('danger', 'Data element must have at least one name.');
         }
         this.question.question.cde.naming.splice(i, 1);
         this.onEltChange.emit();
@@ -254,7 +254,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.question.question.cde.naming.push(newCdeNaming);
             this.newCdeNaming = {};
             this.onEltChange.emit();
-        } else this.alert.addAlert("danger", "Empty name.");
+        } else this.alert.addAlert('danger', 'Empty name.');
     }
 
     addNewCdePv(newCdePv) {
@@ -263,7 +263,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.question.question.answers.push(newCdePv);
             this.newCdePv = {};
             this.onEltChange.emit();
-        } else this.alert.addAlert("danger", "Empty PV.");
+        } else this.alert.addAlert('danger', 'Empty PV.');
     }
 
     addNewCdeId(newCdeId) {
@@ -273,7 +273,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.question.question.cde.ids.push(newCdeId);
             this.newCdeId = {};
             this.onEltChange.emit();
-        } else this.alert.addAlert("danger", "Empty identifier.");
+        } else this.alert.addAlert('danger', 'Empty identifier.');
     }
 
     newCdePv = {};

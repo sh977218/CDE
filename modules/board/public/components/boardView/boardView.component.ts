@@ -1,40 +1,25 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { Http } from "@angular/http";
-import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { SharedService } from "core/shared.service";
-import { saveAs } from "file-saver";
-import { ClassifyItemModalComponent } from "adminItem/public/components/classification/classifyItemModal.component";
-import { OrgHelperService } from "core/orgHelper.service";
-import { UserService } from "_app/user.service";
-import { ElasticService } from "_app/elastic.service";
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { saveAs } from 'file-saver';
+
 import { AlertService } from '_app/alert/alert.service';
+import { ElasticService } from '_app/elastic.service';
+import { UserService } from '_app/user.service';
+import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { Comment } from 'core/models.model';
+import { OrgHelperService } from 'core/orgHelper.service';
+import { SharedService } from 'core/shared.service';
+
 
 @Component({
     selector: 'cde-board-view',
     templateUrl: './boardView.component.html',
 })
 export class BoardViewComponent implements OnInit {
-
-    @ViewChild("shareBoardModal") public shareBoardModal: NgbModalModule;
-    @ViewChild("classifyCdesModal") public classifyCdesModal: ClassifyItemModalComponent;
-
-    currentPage: number = 1;
-    totalItems: number;
-    board: any;
-    hasComments: boolean;
-    isModifiedSinceReview: boolean;
-    reviewers: any[];
-    canReview: boolean;
-    listViews: {};
-    elts: any[] = [];
-    commentMode: boolean;
-    boardStatus: any;
-    feedbackClass: string[] = [""];
-    users: any[] = [];
-    modalTitle: string;
-    newUser: any = {username: '', role: 'viewer'};
-
+    @ViewChild('shareBoardModal') public shareBoardModal: NgbModalModule;
+    @ViewChild('classifyCdesModal') public classifyCdesModal: ClassifyItemModalComponent;
     allRoles = [{
         label: 'can review',
         name: 'reviewer',
@@ -44,20 +29,25 @@ export class BoardViewComponent implements OnInit {
         name: 'viewer',
         icon: 'fa fa-eye'
     }];
-    url: string;
+    board: any;
     boardId: string;
-
-    shareModalRef: NgbModalRef;
+    boardStatus: any;
+    canReview: boolean;
     classifyCdesRefModal: NgbModalRef;
-
-    constructor(private http: Http,
-                private alert: AlertService,
-                protected userService: UserService,
-                private modalService: NgbModal,
-                public esService: ElasticService,
-                private orgHelper: OrgHelperService,
-                private route: ActivatedRoute) {
-    }
+    commentMode: boolean;
+    currentPage: number = 1;
+    elts: any[] = [];
+    feedbackClass: string[] = [''];
+    hasComments: boolean;
+    isModifiedSinceReview: boolean;
+    listViews: {};
+    modalTitle: string;
+    newUser: any = {username: '', role: 'viewer'};
+    reviewers: any[];
+    shareModalRef: NgbModalRef;
+    totalItems: number;
+    url: string;
+    users: any[] = [];
 
     ngOnInit() {
         this.boardId = this.route.snapshot.params['boardId'];
@@ -65,8 +55,123 @@ export class BoardViewComponent implements OnInit {
         this.url = location.href;
     }
 
+    constructor(
+        private alert: AlertService,
+        public esService: ElasticService,
+        private http: HttpClient,
+        private modalService: NgbModal,
+        private orgHelper: OrgHelperService,
+        private route: ActivatedRoute,
+        protected userService: UserService,
+    ) {
+    }
+
+    addClassification(event) {
+        let _timeout = setInterval(() => this.alert.addAlert('warning', 'Classification task is still in progress. Please hold on.'), 3000);
+        this.http.post(this.board.type === 'form' ? '/classifyFormBoard' : '/classifyCdeBoard',
+            {
+                boardId: this.board._id,
+                newClassification: {
+                    categories: event.classificationArray,
+                    orgName: event.selectedOrg
+                }
+            }
+        ).subscribe(() => {
+            clearInterval(_timeout);
+            this.alert.addAlert('success', 'All Elements classified.');
+        }, () => {
+            this.alert.addAlert('danger', 'Unexpected error. Not Elements were classified! You may try again.');
+            clearInterval(_timeout);
+        });
+        this.classifyCdesRefModal.close();
+    }
+
+    addUser(newUser) {
+        if (this.users.filter(o => o.username.toLowerCase() === newUser.username.toLowerCase())[0]) {
+            this.alert.addAlert('danger', 'username exists');
+        } else {
+            this.users.push(newUser);
+            this.newUser = {username: '', role: 'viewer'};
+            this.getReviewers();
+        }
+    }
+
+    boardApproval(approval) {
+        this.http.post('/board/approval', {boardId: this.board._id, approval: approval}).subscribe(() => {
+            this.boardStatus = approval;
+            this.reload();
+        });
+    }
+
+    classifyEltBoard() {
+        this.classifyCdesRefModal = this.classifyCdesModal.openModal();
+    }
+
+    deleteUser(index) {
+        this.users.splice(index, 1);
+    }
+
+    endReview() {
+        this.http.post('/board/endReview', {boardId: this.board._id}).subscribe(() => {
+            this.reload();
+        }, response => {
+            this.alert.addAlert('danger', response);
+            this.reload();
+        });
+    }
+
+    exportBoard() {
+        this.http.get<any>('/board/' + this.board._id + '/0/500/?type=csv').subscribe(response => {
+            let settings = this.esService.searchSettings;
+            let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
+            response.elts.forEach(ele => {
+                csv += SharedService.exportShared.convertToCsv(
+                    SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
+            });
+            if (csv) {
+                let blob = new Blob([csv], {
+                    type: 'text/csv'
+                });
+                saveAs(blob, 'BoardExport' + '.csv');  // jshint ignore:line
+                this.alert.addAlert('success', 'Export downloaded.');
+                this.feedbackClass = ['fa-download'];
+            } else {
+                this.alert.addAlert('danger', 'The server is busy processing similar request, please try again in a minute.');
+            }
+        });
+    }
+
+    getReviewers() {
+        this.reviewers = this.board.users.filter(u => u.role === 'reviewer');
+    }
+
+    isReviewActive() {
+        return this.board.review && this.isReviewStarted() && !this.isReviewEnded();
+    }
+
+    isReviewEnded() {
+        return this.board.review && this.board.review.endDate &&
+            new Date(this.board.review.endDate) < new Date();
+    }
+
+    isReviewStarted() {
+        return this.board.review && this.board.review.startDate &&
+            new Date(this.board.review.startDate) < new Date();
+    }
+
+    okShare() {
+        this.http.post('/board/users', {
+            boardId: this.board._id,
+            users: this.users
+        }).subscribe(() => {
+            this.shareModalRef.close();
+            this.board.users = this.users;
+            this.reload();
+        });
+    }
+
     reload() {
-        this.http.get("/board/" + this.boardId + "/" + ((this.currentPage - 1) * 20)).map(r => r.json()).subscribe(response => {
+        this.http.get<any>('/board/' + this.boardId + '/' + ((this.currentPage - 1) * 20)).subscribe(response => {
             if (response.board) {
                 this.board = response.board;
                 this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
@@ -109,143 +214,36 @@ export class BoardViewComponent implements OnInit {
                         this.boardStatus = u.status.approval;
                     }
                 });
-                this.http.get("/comments/eltId/" + this.board._id)
-                    .map(res => res.json()).subscribe(
+                this.http.get<Comment[]>('/comments/eltId/' + this.board._id).subscribe(
                     res => this.hasComments = res && (res.length > 0),
-                    err => this.alert.addAlert("danger", "Error on loading comments. ")
+                    () => this.alert.addAlert('danger', 'Error on loading comments. ')
                 );
             }
         }, () => {
-            this.alert.addAlert("danger", "Board not found");
+            this.alert.addAlert('danger', 'Board not found');
         });
-    };
+    }
 
     setPage(newPage) {
         if (this.currentPage !== newPage) {
             this.currentPage = newPage;
             this.reload();
         }
-    };
-
-    exportBoard() {
-        this.http.get('/board/' + this.board._id + '/0/500/?type=csv')
-            .map(r => r.json()).subscribe(response => {
-            let settings = this.esService.searchSettings;
-            let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
-            response.elts.forEach(ele => {
-                csv += SharedService.exportShared.convertToCsv(
-                    SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
-            });
-            if (csv) {
-                let blob = new Blob([csv], {
-                    type: "text/csv"
-                });
-                saveAs(blob, 'BoardExport' + '.csv');  // jshint ignore:line
-                this.alert.addAlert("success", "Export downloaded.");
-                this.feedbackClass = ["fa-download"];
-            } else {
-                this.alert.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
-            }
-        });
-    };
-
-    addClassification(event) {
-        let _timeout = setInterval(() => this.alert.addAlert("warning", "Classification task is still in progress. Please hold on."), 3000);
-        this.http.post(this.board.type === 'form' ? '/classifyFormBoard' : '/classifyCdeBoard',
-            {
-                boardId: this.board._id,
-                newClassification: {
-                    categories: event.classificationArray,
-                    orgName: event.selectedOrg
-                }
-            }
-        ).subscribe(() => {
-            clearInterval(_timeout);
-            this.alert.addAlert("success", "All Elements classified.");
-        }, () => {
-            this.alert.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
-            clearInterval(_timeout);
-        });
-        this.classifyCdesRefModal.close();
     }
-
-    classifyEltBoard() {
-        this.classifyCdesRefModal = this.classifyCdesModal.openModal();
-    };
-
-    getReviewers() {
-        this.reviewers = this.board.users.filter(u => u.role === 'reviewer');
-    };
-
-    isReviewStarted() {
-        return this.board.review && this.board.review.startDate &&
-            new Date(this.board.review.startDate) < new Date();
-    }
-
-    isReviewEnded() {
-        return this.board.review && this.board.review.endDate &&
-            new Date(this.board.review.endDate) < new Date();
-    }
-
-    isReviewActive() {
-        return this.board.review && this.isReviewStarted() && !this.isReviewEnded();
-    };
-
-    addUser(newUser) {
-        if (this.users.filter(o => o.username.toLowerCase() === newUser.username.toLowerCase())[0]) {
-            this.alert.addAlert('danger', 'username exists');
-        } else {
-            this.users.push(newUser);
-            this.newUser = {username: '', role: 'viewer'};
-            this.getReviewers();
-        }
-    };
-
-    deleteUser(index) {
-        this.users.splice(index, 1);
-    };
-
-    okShare() {
-        this.http.post('/board/users', {
-            boardId: this.board._id,
-            users: this.users
-        }).subscribe(() => {
-            this.shareModalRef.close();
-            this.board.users = this.users;
-            this.reload();
-        });
-    };
 
     shareBoard() {
         this.users = [];
         this.board.users.forEach(u => this.users.push(u));
-        this.shareModalRef = this.modalService.open(this.shareBoardModal, {size: "lg"});
-    };
-
-    boardApproval(approval) {
-        this.http.post('/board/approval', {boardId: this.board._id, approval: approval}).subscribe(() => {
-            this.boardStatus = approval;
-            this.reload();
-        });
-    };
+        this.shareModalRef = this.modalService.open(this.shareBoardModal, {size: 'lg'});
+    }
 
     startReview() {
-        this.http.post("/board/startReview", {boardId: this.board._id}).map(r => r.text()).subscribe(() => {
+        this.http.post('/board/startReview', {boardId: this.board._id}).subscribe(() => {
                 this.reload();
             }, response => {
-                this.alert.addAlert("danger", response);
+                this.alert.addAlert('danger', response);
                 this.reload();
             }
         );
-    };
-
-    endReview() {
-        this.http.post("/board/endReview", {boardId: this.board._id}).map(r => r.text()).subscribe(() => {
-            this.reload();
-        }, response => {
-            this.alert.addAlert("danger", response);
-            this.reload();
-        });
-    };
-
+    }
 }

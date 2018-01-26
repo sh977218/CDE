@@ -1,15 +1,14 @@
-import { Component } from "@angular/core";
-import { Http } from '@angular/http';
-import * as async from "async";
+import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+import * as async from 'async';
 import * as moment from 'moment';
-import "rxjs/add/operator/map";
-import "rxjs/Observable";
-import "fhirclient";
-import { mappings } from "./fhirMapping";
+import 'fhirclient';
+
+import { mappings } from './fhirMapping';
 import { FormService } from 'nativeRender/form.service';
 
 @Component({
-    selector: "cde-native-render-standalone",
+    selector: 'cde-native-render-standalone',
     styles: [`
         .info-heading {
             display: inline-block;
@@ -32,7 +31,7 @@ import { FormService } from 'nativeRender/form.service';
             vertical-align: baseline;
         }
     `],
-    templateUrl: "./nativeRenderApp.component.html"
+    templateUrl: './nativeRenderApp.component.html'
 })
 export class NativeRenderAppComponent {
     elt: any;
@@ -91,7 +90,10 @@ export class NativeRenderAppComponent {
     };
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
-    constructor(private http: Http, private formService: FormService) {
+    constructor(
+        private formService: FormService,
+        private http: HttpClient,
+    ) {
         let args: any = NativeRenderAppComponent.searchParamsGet();
         this.selectedProfile = args.selectedProfile;
         this.submitForm = args.submit !== undefined;
@@ -110,16 +112,16 @@ export class NativeRenderAppComponent {
                 this.loadFhir();
             else if (args.iss)
                 (<any>window).FHIR.oauth2.authorize({
-                    "client_id": "7d291805-3ec8-42a5-ba7d-bb7ef1558c71",
-                    "redirect_uri": "http://localhost:3001/form/public/html/nativeRenderStandalone.html?panelType=patient",
-                    "scope":  "patient/*.*"
+                    'client_id': '7d291805-3ec8-42a5-ba7d-bb7ef1558c71',
+                    'redirect_uri': 'http://localhost:3001/form/public/html/nativeRenderStandalone.html?panelType=patient',
+                    'scope':  'patient/*.*'
                 });
         }
     }
 
     encounterAdd(encounter) {
         this.patientEncounters.push({
-            type: encounter.type ? encounter.type.map(e => e.text).join(", ") : null,
+            type: encounter.type ? encounter.type.map(e => e.text).join(', ') : null,
             reason: encounter.reason
                 ? encounter.reason.map(r => r.coding.length ? r.coding[0].display : '') : null,
             date: encounter.period.start,
@@ -184,7 +186,7 @@ export class NativeRenderAppComponent {
     }
 
     getForm(tinyId, cb) {
-        this.http.get('/form/' + tinyId).map(res => res.json()).subscribe(elt => {
+        this.http.get('/form/' + tinyId).subscribe(elt => {
             cb(null, elt);
         }, (err) => {
             cb(err.statusText);
@@ -255,7 +257,7 @@ export class NativeRenderAppComponent {
     getPatientName() {
         if (this.patient) {
             let name = this.patient.name.filter(name => name.use === 'official')[0];
-            return name.family + ', ' + name.given.join(" ");
+            return name.family + ', ' + name.given.join(' ');
         }
     }
 
@@ -269,7 +271,7 @@ export class NativeRenderAppComponent {
 
             async.parallel([
                 cb => {
-                    this.smart.patient.api.fetchAll({type: "Encounter"})
+                    this.smart.patient.api.fetchAll({type: 'Encounter'})
                         .then((results, refs) => {
                             results.forEach(encounter => {
                                 this.encounterAdd(encounter);
@@ -278,7 +280,7 @@ export class NativeRenderAppComponent {
                         });
                 },
                 cb => {
-                    this.smart.patient.api.fetchAll({type: "Observation"})
+                    this.smart.patient.api.fetchAll({type: 'Observation'})
                         .then((results, refs) => {
                             results.forEach(observation =>
                                 this.patientObservations.push(NativeRenderAppComponent.observationAdd(observation))
@@ -287,7 +289,7 @@ export class NativeRenderAppComponent {
                         });
                 },
                 cb => {
-                    this.smart.patient.api.search({type: "Organization"})
+                    this.smart.patient.api.search({type: 'Organization'})
                         .then((results, refs) => {
                             if (results && results.data && results.data.entry && results.data.entry.length)
                                 this.patientOrganization = results.data.entry[0].resource;
@@ -329,7 +331,7 @@ export class NativeRenderAppComponent {
     }
 
     loadForm(err = null, elt = null) {
-        if (err) return this.errorMessage = "Sorry, we are unable to retrieve this element.";
+        if (err) return this.errorMessage = 'Sorry, we are unable to retrieve this element.';
         this.elt = elt;
         this.loadFhirData();
     }
@@ -512,7 +514,7 @@ export class NativeRenderAppComponent {
     newEncounterAdd() {
         this.smart.patient.api.create({
             baseUrl: 'https://sb-fhir-stu3.smarthealthit.org/smartstu3/data/',
-            type: "Encounter",
+            type: 'Encounter',
             data: JSON.stringify(this.newEncounterGet())
         }).then(response => {
             if (response.data && response.data.resourceType === 'Encounter')
@@ -523,17 +525,17 @@ export class NativeRenderAppComponent {
 
     newEncounterGet() {
         let encounter = {
-            "resourceType": "Encounter",
-            "id": null,
-            "status": "finished",
-            "class": {"code": "outpatient"},
-            "type": [{"coding": [{"system": "http://snomed.info/sct", "code": "185349003"}], "text": "Outpatient Encounter"}],
-            "period": {"start": null, "end": null},
-            "serviceProvider": {
-                "reference": null
+            resourceType: 'Encounter',
+            id: null,
+            status: 'finished',
+            class: {'code': 'outpatient'},
+            type: [{'coding': [{'system': 'http://snomed.info/sct', 'code': '185349003'}], 'text': 'Outpatient Encounter'}],
+            period: {'start': null, 'end': null},
+            serviceProvider: {
+                reference: null
             },
-            "subject": {
-                "reference": null
+            subject: {
+                reference: null
             }
         };
         encounter.period.start = encounter.period.end = this.newEncounterDate;
@@ -568,19 +570,19 @@ export class NativeRenderAppComponent {
 
     static newObservationGet(): any {
         return {
-            "resourceType": "Observation",
-            "id": null,
-            "status": "final",
-            "category": [],
-            "code": null,
-            "subject": {
-                "reference": null
+            resourceType: 'Observation',
+            id: null,
+            status: 'final',
+            category: [],
+            code: null,
+            subject: {
+                reference: null
             },
-            "context": {
-                "reference": null
+            context: {
+                reference: null
             },
-            "effectiveDateTime": null,
-            "issued": null
+            effectiveDateTime: null,
+            issued: null
         };
     }
 
@@ -633,9 +635,9 @@ export class NativeRenderAppComponent {
             let category = NativeRenderAppComponent.fhirObservations[obsCode.system + ' ' + obsCode.code];
             if (category)
                 observation.category.push({
-                    "coding": [{
-                        "system": "http://hl7.org/fhir/observation-category",
-                        "code": category.categoryCode
+                    coding: [{
+                        system: 'http://hl7.org/fhir/observation-category',
+                        code: category.categoryCode
                     }]
                 });
 
@@ -687,7 +689,7 @@ export class NativeRenderAppComponent {
                 this.smart.patient.api.create({
                     baseUrl: 'https://sb-fhir-stu3.smarthealthit.org/smartstu3/data/',
                     data: JSON.stringify(p.after),
-                    type: "Observation"
+                    type: 'Observation'
                 }).then(response => {
                     if (!response || !response.data)
                         return done('Not saved ' + p.after.id);

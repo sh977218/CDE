@@ -1,14 +1,12 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from "@angular/core";
-import "rxjs/add/operator/map";
-import { Http } from "@angular/http";
+
+import { ElasticQueryResponse } from 'core/models.model';
+
 
 @Injectable()
 export class MyBoardsService {
-
-    constructor(
-        private http: Http
-    ) {}
-
+    boards: any[];
     filter: any = {
         tags: [],
         shareStatus: [],
@@ -20,15 +18,17 @@ export class MyBoardsService {
         selectedTags: [],
         suggestTags: []
     };
+    reloading: boolean = false;
 
-    public boards: any[];
-    public reloading: boolean = false;
+    constructor(
+        private http: HttpClient
+    ) {}
 
-    public loadMyBoards(type = null) {
+    loadMyBoards(type = null) {
         this.filter.selectedShareStatus = this.filter.shareStatus.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
-        this.http.post("/myBoards", this.filter).map(res => res.json()).subscribe(res => {
+        this.http.post<ElasticQueryResponse>("/myBoards", this.filter).subscribe(res => {
             if (res.hits) {
                 this.boards = res.hits.hits.map(h => {
                     h._source._id = h._id;
@@ -46,11 +46,10 @@ export class MyBoardsService {
             if (type)
                 this.boards = this.boards.filter(b => b.type === type);
         });
-    };
+    }
 
-    public waitAndReload() {
+    waitAndReload() {
         this.reloading = true;
         setTimeout(() => this.loadMyBoards(), 2000);
     }
-
 }

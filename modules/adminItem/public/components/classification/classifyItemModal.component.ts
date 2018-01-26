@@ -1,10 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Input, ViewChild, Output, EventEmitter } from "@angular/core";
-import { Http } from "@angular/http";
-import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageService } from "angular-2-local-storage/dist";
-import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
+import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
+
 import { UserService } from '_app/user.service';
 import { ClassificationService } from 'core/classification.service';
 
@@ -15,21 +15,19 @@ const actionMapping: IActionMapping = {
     }
 };
 
+
 @Component({
     selector: "cde-classify-item-modal",
     templateUrl: "classifyItemModal.component.html",
     providers: [NgbActiveModal]
 })
 export class ClassifyItemModalComponent {
-    @ViewChild("classifyItemContent") public classifyItemContent: NgbModalModule;
     @Input() modalTitle: string = "Classify this CDE";
     @Output() onEltSelected = new EventEmitter();
-
-    public modalRef: NgbModalRef;
-    selectedOrg: any;
+    @ViewChild("classifyItemContent") classifyItemContent: NgbModalModule;
+    modalRef: NgbModalRef;
     orgClassificationsTreeView: any;
     orgClassificationsRecentlyAddView: any;
-
     options = {
         idField: "name",
         childrenField: "elements",
@@ -37,46 +35,16 @@ export class ClassifyItemModalComponent {
         isExpandedField: "expanded",
         actionMapping: actionMapping
     };
+    selectedOrg: any;
     treeNode: TreeNode;
 
-    constructor(private http: Http,
-                public modalService: NgbModal,
-                private localStorageService: LocalStorageService,
-                public userService: UserService,
-                private classificationSvc: ClassificationService) {
-    }
-
-    openModal() {
-        this.orgClassificationsTreeView = null;
-        this.orgClassificationsRecentlyAddView = null;
-        if (this.selectedOrg) {
-            this.onChangeOrg(this.selectedOrg);
-        } else this.userService.then(() => {
-            if (this.userService.userOrgs.length === 1) this.onChangeOrg(this.userService.userOrgs[0]);
-        });
-        return this.modalService.open(this.classifyItemContent);
-    }
-
-    onChangeOrg(value) {
-        if (value) {
-            let url = "/org/" + encodeURIComponent(value);
-            //noinspection TypeScriptValidateTypes
-            this.http.get(url).map(res => res.json()).subscribe(
-                res => {
-                    this.selectedOrg = value;
-                    this.orgClassificationsTreeView = res;
-                }, () => {
-                    this.orgClassificationsTreeView = {};
-                });
-        } else this.orgClassificationsTreeView = [];
-    }
-
-    onChangeClassifyView(event) {
-        if (event.nextId === "recentlyAddViewTab") {
-            this.orgClassificationsRecentlyAddView = this.localStorageService.get("classificationHistory");
-        } else {
-            this.orgClassificationsTreeView = null;
-        }
+    constructor(
+        private classificationSvc: ClassificationService,
+        private http: HttpClient,
+        private localStorageService: LocalStorageService,
+        public modalService: NgbModal,
+        public userService: UserService,
+    ) {
     }
 
     classifyItemByRecentlyAdd(classificationRecentlyAdd) {
@@ -107,5 +75,38 @@ export class ClassifyItemModalComponent {
             classificationArray: classificationArray,
             selectedOrg: this.selectedOrg
         });
+    }
+
+    onChangeClassifyView(event) {
+        if (event.nextId === "recentlyAddViewTab") {
+            this.orgClassificationsRecentlyAddView = this.localStorageService.get("classificationHistory");
+        } else {
+            this.orgClassificationsTreeView = null;
+        }
+    }
+
+    onChangeOrg(value) {
+        if (value) {
+            let url = "/org/" + encodeURIComponent(value);
+            //noinspection TypeScriptValidateTypes
+            this.http.get(url).subscribe(
+                res => {
+                    this.selectedOrg = value;
+                    this.orgClassificationsTreeView = res;
+                }, () => {
+                    this.orgClassificationsTreeView = {};
+                });
+        } else this.orgClassificationsTreeView = [];
+    }
+
+    openModal() {
+        this.orgClassificationsTreeView = null;
+        this.orgClassificationsRecentlyAddView = null;
+        if (this.selectedOrg) {
+            this.onChangeOrg(this.selectedOrg);
+        } else this.userService.then(() => {
+            if (this.userService.userOrgs.length === 1) this.onChangeOrg(this.userService.userOrgs[0]);
+        });
+        return this.modalService.open(this.classifyItemContent);
     }
 }

@@ -319,8 +319,8 @@ export function isSubForm(node) {
 
 // callback(error)
 // feCb(fe, cbContinue(error))
-export function iterateFe(fe, callback, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
-    if (fe) this.iterateFes(fe.formElements, callback, formCb, sectionCb, questionCb);
+export function iterateFe(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, callback = undefined) {
+    if (fe) this.iterateFes(fe.formElements, formCb, sectionCb, questionCb, callback);
 }
 
 // cb(fe)
@@ -330,18 +330,18 @@ export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, que
 
 // callback(error)
 // feCb(fe, cbContinue(error))
-export function iterateFes(fes, callback = noop, formCb = noop1, sectionCb = noop1, questionCb = noop1) {
+export function iterateFes(fes, formCb = noop1, sectionCb = noop1, questionCb = noop1, callback = noop) {
     if (Array.isArray(fes)) {
         async.forEach(fes, (fe, cb) => {
             if (fe.elementType === 'form') {
                 formCb(fe, err => {
                     if (err) cb(err);
-                    else this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
+                    else this.iterateFe(fe, formCb, sectionCb, questionCb, cb);
                 });
             } else if (fe.elementType === 'section') {
                 sectionCb(fe, err => {
                     if (err) cb(err);
-                    else this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
+                    else this.iterateFe(fe, formCb, sectionCb, questionCb, cb);
                 });
             } else {
                 questionCb(fe, cb);

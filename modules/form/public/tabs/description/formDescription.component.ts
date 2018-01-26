@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import {
     Component,
     ElementRef,
@@ -14,13 +15,14 @@ import { Http } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TREE_ACTIONS, TreeComponent } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
+import { Hotkey, HotkeysService } from "angular2-hotkeys";
 import _isEmpty from 'lodash/isEmpty';
 import _noop from 'lodash/noop';
-import { Hotkey, HotkeysService } from "angular2-hotkeys";
 
-import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { CdeForm, FormElement, FormQuestion, FormSection } from 'core/form.model';
+import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
+
 
 const TOOL_BAR_OFF_SET = 55;
 
@@ -222,11 +224,13 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         isExpandedField: 'expanded'
     };
 
-    constructor(private http: Http,
-                private localStorageService: LocalStorageService,
-                public modalService: NgbModal,
-                private formService: FormService,
-                private _hotkeysService: HotkeysService) {
+    constructor(
+        private formService: FormService,
+        private _hotkeysService: HotkeysService,
+        private http: HttpClient,
+        private localStorageService: LocalStorageService,
+        public modalService: NgbModal,
+    ) {
     }
 
     ngOnInit(): void {
@@ -264,7 +268,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     addFormFromSearch(fe, cb = null) {
-        this.http.get('/form/' + fe.tinyId).map(r => r.json()).subscribe(form => {
+        this.http.get<CdeForm>('/form/' + fe.tinyId).subscribe(form => {
             let inForm: any = FormService.convertFormToSection(form);
             inForm.formElements = form.formElements;
             this.formElementEditing.formElement = inForm;

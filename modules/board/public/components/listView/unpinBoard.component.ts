@@ -1,8 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
-import { Http } from '@angular/http';
-import { BoardListService } from 'board/public/components/listView/boardList.service';
-import { UserService } from '_app/user.service';
+
 import { AlertService } from '_app/alert/alert.service';
+import { UserService } from '_app/user.service';
+import { BoardListService } from 'board/public/components/listView/boardList.service';
+
 
 @Component({
     selector: 'cde-unpin-board',
@@ -11,13 +13,14 @@ import { AlertService } from '_app/alert/alert.service';
 export class UnpinBoardComponent {
     @Input() elt: any;
     @Input() eltIndex: any;
-
     pinModal: any;
 
-    constructor(private http: Http,
-                private boardListService: BoardListService,
-                private alert: AlertService,
-                public userService: UserService) {}
+    constructor(
+        private alert: AlertService,
+        private boardListService: BoardListService,
+        private http: HttpClient,
+        public userService: UserService,
+    ) {}
 
     unpin() {
         let url = '/pin/' + this.boardListService.board.type + '/' + this.elt.tinyId + '/' + this.boardListService.board._id;

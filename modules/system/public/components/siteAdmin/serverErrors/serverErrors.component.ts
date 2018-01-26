@@ -1,19 +1,17 @@
-import { Http } from "@angular/http";
-import { Component, OnInit } from "@angular/core";
-import "rxjs/add/operator/map";
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+
+type ServerErrorRecord = any;
+
 
 @Component({
-    selector: "cde-server-errors",
-    templateUrl: "./serverErrors.component.html"
+    selector: 'cde-server-errors',
+    templateUrl: './serverErrors.component.html'
 })
-
 export class ServerErrorsComponent implements OnInit {
-
-    constructor(private http: Http) {}
-
     currentPage: number = 1;
     excludeFilters: any[] = [];
-    records: any[] = [];
+    records: ServerErrorRecord[] = [];
     error: any = {};
     excludeFilterToAdd: any[] = [];
 
@@ -21,19 +19,23 @@ export class ServerErrorsComponent implements OnInit {
         this.gotoPage();
     }
 
-    gotoPage () {
-        this.http.post("/getServerErrors", {
-            skip: (this.currentPage - 1) * 50,
-            limit: 50
-        }).map(r => r.json()).subscribe(response => {
-            this.records = response;
-        });
-    };
+    constructor(
+        private http: HttpClient
+    ) {}
 
     addExcludeFilter (toAdd) {
         if (toAdd.length > 0 && this.excludeFilters.indexOf(toAdd) === -1) {
             this.excludeFilters.push(toAdd.trim());
             this.gotoPage();
         }
+    };
+
+    gotoPage () {
+        this.http.post<ServerErrorRecord[]>('/getServerErrors', {
+            skip: (this.currentPage - 1) * 50,
+            limit: 50
+        }).subscribe(response => {
+            this.records = response;
+        });
     };
 }

@@ -2,15 +2,18 @@ import {
     Component, ViewChild, Type, ViewContainerRef, EventEmitter, HostListener, OnInit, OnDestroy
 } from '@angular/core';
 import { NavigationStart } from '@angular/router';
-import { SearchSettings } from './search.model';
-import { SharedService } from 'core/shared.service';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import { empty } from 'rxjs/observable/empty';
+import { debounceTime, distinctUntilChanged, switchMap, take } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import { CdeForm } from 'core/form.model';
-import { DataElement } from 'core/dataElement.model';
-import { ElasticQueryResponse, Elt, User } from 'core/models.model';
-import { HelperObjectsService } from 'widget/helperObjects.service';
 import { Subscription } from 'rxjs/Subscription';
+
+import { DataElement } from 'core/dataElement.model';
+import { CdeForm } from 'core/form.model';
+import { ElasticQueryResponse, Elt, User } from 'core/models.model';
+import { SharedService } from 'core/shared.service';
+import { SearchSettings } from 'search/search.model';
+import { HelperObjectsService } from 'widget/helperObjects.service';
 
 export const searchStyles: string = `
     .treeTitle {
@@ -328,7 +331,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     getAutocompleteSuggestions = ((text$: Observable<string>) =>
-        text$.debounceTime(500).distinctUntilChanged().switchMap(term =>
+        text$.pipe(debounceTime(500), distinctUntilChanged(), switchMap(term =>
             term.length >= 3 ?
                 this.http.post('/' + this.module + 'Completion/' + encodeURI(term),
                     this.elasticService.buildElasticQuerySettings(this.searchSettings)).map(res => {
@@ -340,8 +343,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     });
                     return Array.from(final);
                 })
-                : Observable.empty()
-        ).take(8));
+                : empty()
+        ), take(8)));
 
     getCurrentSelectedClassification() {
         return this.altClassificationFilterMode

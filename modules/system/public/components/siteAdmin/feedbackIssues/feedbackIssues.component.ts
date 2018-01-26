@@ -1,22 +1,19 @@
-import { Http } from "@angular/http";
-import { Component, OnInit, ViewChild } from "@angular/core";
-import "rxjs/add/operator/map";
-import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+
+type FeedbackErrorRecord = any;
+
 
 @Component({
-    selector: "cde-feedback-issues",
-    templateUrl: "./feedbackIssues.component.html"
+    selector: 'cde-feedback-issues',
+    templateUrl: './feedbackIssues.component.html'
 })
-
 export class FeedbackIssuesComponent implements OnInit {
-
-    constructor(private http: Http,
-                public modalService: NgbModal) {}
-
-    @ViewChild("rawHtmlModal") public rawHtmlModal: NgbModalModule;
-    @ViewChild("screenshotModal") public screenshotModal: NgbModalModule;
+    @ViewChild('rawHtmlModal') public rawHtmlModal: NgbModalModule;
+    @ViewChild('screenshotModal') public screenshotModal: NgbModalModule;
     currentPage: number = 1;
-    records: any[] = [];
+    records: FeedbackErrorRecord[] = [];
     screenshot: string;
     rawHtml: string;
 
@@ -24,18 +21,16 @@ export class FeedbackIssuesComponent implements OnInit {
         this.gotoPage();
     }
 
+    constructor(private http: HttpClient,
+                public modalService: NgbModal) {}
+
     gotoPage () {
-        this.http.post("/getFeedbackIssues", {
+        this.http.post<FeedbackErrorRecord[]>('/getFeedbackIssues', {
             skip: (this.currentPage - 1) * 50,
             limit: 50
-        }).map(r => r.json()).subscribe(response => {
+        }).subscribe(response => {
             this.records = response;
         });
-    }
-
-    showScreenshot (sc) {
-        this.screenshot = sc;
-        this.modalService.open(this.screenshotModal, {size: 'lg'});
     }
 
     showRawHtml (raw) {
@@ -43,7 +38,8 @@ export class FeedbackIssuesComponent implements OnInit {
         this.modalService.open(this.rawHtmlModal, {size: 'lg'});
     }
 
-
-
-
+    showScreenshot (sc) {
+        this.screenshot = sc;
+        this.modalService.open(this.screenshotModal, {size: 'lg'});
+    }
 }

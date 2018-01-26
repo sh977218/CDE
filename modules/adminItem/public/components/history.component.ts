@@ -1,6 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { Http } from '@angular/http';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 import { AlertService } from '_app/alert/alert.service';
 
 
@@ -65,20 +66,22 @@ export class HistoryComponent implements OnInit {
         }
     };
 
-    constructor(private alert: AlertService,
-                private http: Http,
-                public modalService: NgbModal) {
+    constructor(
+        private alert: AlertService,
+        private http: HttpClient,
+        public modalService: NgbModal
+    ) {
     }
 
     ngOnInit(): void {
         this.elt.viewing = true;
         delete this.elt.selected;
         if (this.elt.history && this.elt.history.length > 0) {
-            this.http.get(
+            this.http.get<any[]>(
                 this.elt.elementType === 'cde'
                     ? '/deById/' + this.elt._id + '/priorDataElements'
                     : '/formById/' + this.elt._id + '/priorForms'
-            ).map(res => res.json()).subscribe(res => {
+            ).subscribe(res => {
                 this.priorElements = res.reverse();
                 this.priorElements.splice(0, 0, this.elt);
                 this.priorElements.forEach(pe => {
@@ -110,5 +113,4 @@ export class HistoryComponent implements OnInit {
     getSelectedElt() {
         return this.priorElements.filter(p => p.selected);
     }
-
 }

@@ -12,7 +12,7 @@
                     <div class="form-group">
                         <input id="newOrgCuratorUsername" name="newOrgCuratorUsername" type="text" class="form-control"
                                placeholder="enter user name" [(ngModel)]="newUsername" autocomplete="off"
-                               [ngbTypeahead]="searchTypeahead" required>
+                               [ngbTypeahead]="userService.searchTypeahead" required>
                     </div>
                     <span class="mx-2">a curator for</span>
                     <div class="form-group">
