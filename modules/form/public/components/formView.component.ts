@@ -15,6 +15,7 @@ import { UserService } from '_app/user.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { DataElement } from 'core/dataElement.model';
+import { ExportService } from 'core/export.service';
 import { CdeForm, FormElement, FormElementsContainer } from 'core/form.model';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { Comment } from 'core/models.model';
@@ -22,7 +23,6 @@ import { OrgHelperService } from 'core/orgHelper.service';
 import { SharedService } from 'core/shared.service';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
-import { ExportService } from "../../../core/export.service";
 import { FormService } from 'nativeRender/form.service';
 import { BrowserService } from 'widget/browser.service';
 
@@ -44,7 +44,6 @@ export class FormViewComponent implements OnInit {
     @ViewChild('mltPinModalCde') public mltPinModalCde: PinBoardModalComponent;
     @ViewChild('exportPublishModal') public exportPublishModal: NgbModalModule;
     @ViewChild('saveModal') public saveModal: SaveModalComponent;
-
     browserService = BrowserService;
     commentMode;
     currentTab = 'preview_tab';
@@ -62,19 +61,6 @@ export class FormViewComponent implements OnInit {
     savingText: string = '';
     tabsCommented = [];
     validationErrors: string[] = [];
-
-    constructor(private http: HttpClient,
-                private ref: ChangeDetectorRef,
-                public modalService: NgbModal,
-                public isAllowedModel: IsAllowedService,
-                private orgHelperService: OrgHelperService,
-                public quickBoardService: QuickBoardListService,
-                private alert: AlertService,
-                public userService: UserService,
-                public exportService: ExportService,
-                private route: ActivatedRoute,
-                private router: Router) {
-    }
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
@@ -95,6 +81,19 @@ export class FormViewComponent implements OnInit {
         });
     }
 
+    constructor(private http: HttpClient,
+                private ref: ChangeDetectorRef,
+                public modalService: NgbModal,
+                public isAllowedModel: IsAllowedService,
+                private orgHelperService: OrgHelperService,
+                public quickBoardService: QuickBoardListService,
+                private alert: AlertService,
+                public userService: UserService,
+                public exportService: ExportService,
+                private route: ActivatedRoute,
+                private router: Router) {
+    }
+
     beforeChange(event) {
         this.currentTab = event.nextId;
         if (this.commentMode)
@@ -103,6 +102,36 @@ export class FormViewComponent implements OnInit {
 
     canEdit() {
         return this.isAllowedModel.isAllowed(this.elt) && (this.drafts.length === 0 || this.elt.isDraft);
+    }
+
+    createDataElement(newCde, cb) {
+        let dataElement = {
+            naming: newCde.naming,
+            stewardOrg: {
+                name: this.elt.stewardOrg.name
+            },
+            valueDomain: {
+                datatype: newCde.datatype,
+                identifiers: newCde.ids,
+                ids: newCde.ids,
+                datatypeText: newCde.datatypeText,
+                datatypeNumber: newCde.datatypeNumber,
+                datatypeDate: newCde.datatypeDate,
+                datatypeTime: newCde.datatypeTime,
+                permissibleValues: newCde.permissibleValues
+            },
+            classification: this.elt.classification,
+            ids: newCde.ids
+        };
+        this.http.post<DataElement>('/de', dataElement)
+            .subscribe(res => {
+                if (res.tinyId) newCde.tinyId = res.tinyId;
+                if (res.version) newCde.version = res.version;
+                if (cb) cb();
+            }, err => {
+                newCde.error = err;
+                this.alert.addAlert('danger', err);
+            });
     }
 
     exportPublishForm() {
@@ -151,6 +180,7 @@ export class FormViewComponent implements OnInit {
                         this.loadPublished(cb);
                     }
                 }, err => {
+                    // do not load form
                     this.alert.addAlert('danger', err);
                     cb();
                 });
@@ -270,37 +300,6 @@ export class FormViewComponent implements OnInit {
             this.validate();
             if (cb) cb(res);
         }, err => this.alert.addAlert('danger', err));
-    }
-
-
-    createDataElement(newCde, cb) {
-        let dataElement = {
-            naming: newCde.naming,
-            stewardOrg: {
-                name: this.elt.stewardOrg.name
-            },
-            valueDomain: {
-                datatype: newCde.datatype,
-                identifiers: newCde.ids,
-                ids: newCde.ids,
-                datatypeText: newCde.datatypeText,
-                datatypeNumber: newCde.datatypeNumber,
-                datatypeDate: newCde.datatypeDate,
-                datatypeTime: newCde.datatypeTime,
-                permissibleValues: newCde.permissibleValues
-            },
-            classification: this.elt.classification,
-            ids: newCde.ids
-        };
-        this.http.post<DataElement>('/de', dataElement)
-            .subscribe(res => {
-                if (res.tinyId) newCde.tinyId = res.tinyId;
-                if (res.version) newCde.version = res.version;
-                if (cb) cb();
-            }, err => {
-                newCde.error = err;
-                this.alert.addAlert('danger', err);
-            });
     }
 
     saveForm() {

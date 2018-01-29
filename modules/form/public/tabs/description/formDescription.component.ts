@@ -17,16 +17,16 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import { Hotkey, HotkeysService } from "angular2-hotkeys";
 import _isEmpty from 'lodash/isEmpty';
 import _noop from 'lodash/noop';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
+import { AlertService } from '_app/alert/alert.service';
+import { ElasticService } from '_app/elastic.service';
 import { CdeForm, FormSection } from 'core/form.model';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
-import { SearchSettings } from '../../../../search/search.model';
 import { FormService } from 'nativeRender/form.service';
-import { ElasticService } from '../../../../_app/elastic.service';
-import { AlertService } from '../../../../_app/alert/alert.service';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { SearchSettings } from 'search/search.model';
 
 
 const TOOL_BAR_OFF_SET = 55;
@@ -140,25 +140,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this._elt = e;
         this.addExpanded(e);
         this.addIds(e.formElements, "");
-        let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
-        this.searchTerms.pipe(
-            debounceTime(300),
-            distinctUntilChanged(),
-            switchMap(term => {
-                if (term) {
-                    settings.resultPerPage = 5;
-                    settings.searchTerm = term;
-                    return this.http.post('/cdeCompletion/' + encodeURI(term), this.elasticService.buildElasticQuerySettings(settings)).map(res => res.json());
-                } else return Observable.of<string[]>([]);
-            })
-        ).subscribe(res => {
-            let tinyIdList = res.map(r => r._id).slice(0, 5);
-            if (tinyIdList && tinyIdList.length > 0)
-                this.http.get('/deList/' + tinyIdList).map(res => res.json()).subscribe(result => {
-                    this.suggestedCdes = result;
-                }, err => this.alert.addAlert('danger', err));
-            else this.suggestedCdes = [];
-        });
     }
     get elt() {
         return this._elt;
@@ -247,6 +228,26 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 } else return false;
             })
         ]);
+
+        let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
+        this.searchTerms.pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            switchMap(term => {
+                if (term) {
+                    settings.resultPerPage = 5;
+                    settings.searchTerm = term;
+                    return this.http.post<any[]>('/cdeCompletion/' + encodeURI(term), this.elasticService.buildElasticQuerySettings(settings));
+                } else return Observable.of<string[]>([]);
+            })
+        ).subscribe(res => {
+            let tinyIdList = res.map(r => r._id).slice(0, 5);
+            if (tinyIdList && tinyIdList.length > 0)
+                this.http.get<any[]>('/deList/' + tinyIdList).subscribe(result => {
+                    this.suggestedCdes = result;
+                }, err => this.alert.addAlert('danger', err));
+            else this.suggestedCdes = [];
+        });
     }
 
     ngAfterViewInit(): void {

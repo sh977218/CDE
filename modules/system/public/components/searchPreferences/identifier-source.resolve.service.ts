@@ -1,12 +1,14 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { Resolve } from '@angular/router';
 
 @Injectable()
 export class IdentifierSourcesResolve implements Resolve<any> {
     identifierSources = [];
 
-    constructor(private http: Http) {
+    constructor(
+        private http: HttpClient
+    ) {
     }
 
     resolve(): Promise<any> | boolean {

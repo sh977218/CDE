@@ -5,6 +5,9 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LocalStorageService } from 'angular-2-local-storage/dist';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
@@ -13,10 +16,8 @@ import { ClassifyItemModalComponent } from 'adminItem/public/components/classifi
 import { DataElement } from 'core/dataElement.model';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { SharedService } from 'core/shared.service';
-import { SearchSettings } from '../../../search/search.model';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { SearchSettings } from 'search/search.model';
+
 
 @Component({
     selector: 'cde-create-data-element',
@@ -33,10 +34,10 @@ export class CreateDataElementComponent implements OnInit {
     @Output() dismiss = new EventEmitter<void>();
     @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
     modalRef: NgbModalRef;
-    validationMessage;
     searchSettings = new SearchSettings;
     private searchTerms = new Subject<string>();
     suggestedCdes = [];
+    validationMessage;
 
     ngOnInit() {
         if (!this.elt)
@@ -56,13 +57,13 @@ export class CreateDataElementComponent implements OnInit {
                 if (term) {
                     settings.resultPerPage = 5;
                     settings.searchTerm = term;
-                    return this.http.post('/cdeCompletion/' + encodeURI(term), this.elasticService.buildElasticQuerySettings(settings)).map(res => res.json());
+                    return this.http.post<any[]>('/cdeCompletion/' + encodeURI(term), this.elasticService.buildElasticQuerySettings(settings));
                 } else return Observable.of<string[]>([]);
             })
         ).subscribe(res => {
             let tinyIdList = res.map(r => r._id).slice(0, 5);
             if (tinyIdList && tinyIdList.length > 0)
-                this.http.get('/deList/' + tinyIdList).map(res => res.json()).subscribe(result => {
+                this.http.get<any[]>('/deList/' + tinyIdList).subscribe(result => {
                     this.suggestedCdes = result;
                 }, err => this.alert.addAlert('danger', err));
             else this.suggestedCdes = [];
