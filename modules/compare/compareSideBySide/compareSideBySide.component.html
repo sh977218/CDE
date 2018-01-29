@@ -31,9 +31,6 @@
         </div>
     </div>
     <div class="modal-body col-12" id="compareSideBySideModalBody">
-        <div *ngFor="let option of options">
-            {{option.displayAs.label}}
-\        </div>
         <ng-container *ngFor="let option of options">
             <div *ngIf="option.displayAs.display" id="{{option.displayAs.label}}">
                 <div class="overflowHidden">
