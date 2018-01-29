@@ -32,7 +32,7 @@ export class CdeClassificationComponent {
             '/addCdeClassification/', (err) => {
                 this.classifyItemModalRef.close();
                 if (err) {
-                    this.alert.addAlert('danger', err._body);
+                    this.alert.addAlert('danger', err);
                 } else {
                     this.reloadElt(() => this.alert.addAlert('success', 'Classification added.'));
                 }

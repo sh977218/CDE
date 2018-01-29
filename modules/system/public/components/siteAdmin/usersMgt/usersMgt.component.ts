@@ -34,7 +34,7 @@ export class UsersMgtComponent {
     ) {}
 
     addNewUser() {
-        this.http.put('/user', {username: this.newUsername}).subscribe(
+        this.http.put('/user', {username: this.newUsername}, {responseType: 'text'}).subscribe(
             () => this.Alert.addAlert('success', 'User created'),
             () => this.Alert.addAlert('danger', 'Cannot create user. Does it already exist?')
         );

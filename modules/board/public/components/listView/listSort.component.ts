@@ -36,7 +36,7 @@ export class ListSortComponent {
     }
 
     movePin(endPoint, pinId) {
-        this.http.post(endPoint, {boardId: this.boardListService.board._id, tinyId: pinId}).subscribe(() => {
+        this.http.post(endPoint, {boardId: this.boardListService.board._id, tinyId: pinId}, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Saved');
             this.boardListService.reload.emit();
         }, (response) => {

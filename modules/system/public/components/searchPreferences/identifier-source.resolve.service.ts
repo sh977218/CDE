@@ -12,10 +12,10 @@ export class IdentifierSourcesResolve implements Resolve<any> {
     }
 
     resolve(): Promise<any> | boolean {
-        let p = this.http.get('/identifierSources').toPromise();
+        let p = this.http.get<any[]>('/identifierSources').toPromise();
         p.then(res => {
-            if (res && res['_body'])
-                this.identifierSources = JSON.parse(res['_body']);
+            if (res)
+                this.identifierSources = res;
         });
         return p;
     }

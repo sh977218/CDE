@@ -19,16 +19,16 @@ export class CreateBoardComponent {
     };
 
     constructor(
+        private alert: AlertService,
         private http: HttpClient,
         public modalService: NgbModal,
-        private alert: AlertService,
         private myBoardsSvc: MyBoardsService
     ) {
     }
 
     doCreateBoard() {
         this.newBoard.shareStatus = 'Private';
-        this.http.post('/board', this.newBoard).subscribe(() => {
+        this.http.post('/board', this.newBoard, {responseType: 'text'}).subscribe(() => {
             this.myBoardsSvc.waitAndReload();
             this.modalRef.close();
             this.alert.addAlert('success', 'Board created.');

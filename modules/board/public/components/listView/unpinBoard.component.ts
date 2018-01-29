@@ -24,7 +24,7 @@ export class UnpinBoardComponent {
 
     unpin() {
         let url = '/pin/' + this.boardListService.board.type + '/' + this.elt.tinyId + '/' + this.boardListService.board._id;
-        this.http.delete(url).subscribe(() => {
+        this.http.delete(url, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Unpinned.');
             this.boardListService.reload.emit();
         }, (response) => {

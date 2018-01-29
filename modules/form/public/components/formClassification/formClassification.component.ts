@@ -45,13 +45,13 @@ export class FormClassificationComponent {
         };
 
         //noinspection TypeScriptValidateTypes
-        this.http.post('/classification/bulk/tinyId', postBody)
+        this.http.post('/classification/bulk/tinyId', postBody, {responseType: 'text'})
             .subscribe(res => {
-                if (res['_body'] === 'Done') {
+                if (res === 'Done') {
                     this.classifyCdesModalRef.close('success');
                     this.alert.addAlert('success', 'All CDEs Classified.');
                 }
-                else if (res['_body'] === 'Processing') {
+                else if (res === 'Processing') {
                     let fn = setInterval(() => {
                         //noinspection TypeScriptValidateTypes
                         this.http.get<any>('/bulkClassifyCdeStatus/' + this.elt._id)
@@ -86,7 +86,7 @@ export class FormClassificationComponent {
         this.classificationSvc.classifyItem(this.elt, event.selectedOrg, event.classificationArray,
             '/addFormClassification/', (err) => {
                 this.classifyItemModalRef.close();
-                if (err) this.alert.addAlert('danger', err._body);
+                if (err) this.alert.addAlert('danger', err);
                 else this.reloadElt(() => this.alert.addAlert('success', 'Classification added.'));
             });
     }

@@ -43,7 +43,7 @@ export class ClassificationService {
             eltId: elt._id,
             orgName: org
         };
-        this.http.post(endPoint, postBody).subscribe(
+        this.http.post(endPoint, postBody, {responseType: 'text'}).subscribe(
             () => {
                 this.updateClassificationLocalStorage(postBody);
                 cb();
@@ -124,7 +124,7 @@ export class ClassificationService {
                 settings: settings,
             }
         };
-        this.http.post('/orgClassification/', ro).subscribe(
+        this.http.post('/orgClassification/', ro, {responseType: 'text'}).subscribe(
             res => cb(res),
             err => this.alert.addAlert('danger', err));
     }

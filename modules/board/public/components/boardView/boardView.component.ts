@@ -163,7 +163,7 @@ export class BoardViewComponent implements OnInit {
         this.http.post('/board/users', {
             boardId: this.board._id,
             users: this.users
-        }).subscribe(() => {
+        }, {responseType: 'text'}).subscribe(() => {
             this.shareModalRef.close();
             this.board.users = this.users;
             this.reload();
@@ -238,7 +238,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     startReview() {
-        this.http.post('/board/startReview', {boardId: this.board._id}).subscribe(() => {
+        this.http.post('/board/startReview', {boardId: this.board._id}, {responseType: 'text'}).subscribe(() => {
                 this.reload();
             }, response => {
                 this.alert.addAlert('danger', response);
