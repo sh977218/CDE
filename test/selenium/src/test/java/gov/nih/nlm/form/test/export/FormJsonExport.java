@@ -29,7 +29,7 @@ public class FormJsonExport extends NlmCdeBaseTest {
         String response = findElement(By.cssSelector("HTML body pre")).getAttribute("innerHTML");
 
         for (String s : toCompare) {
-            Assert.assertTrue(response.contains(s), "Export actually contains: " + response);
+            Assert.assertTrue(response.contains(s), "String:\n" + s + "\nis not with in\n" + response + "\n");
         }
 
         switchTabAndClose(0);
