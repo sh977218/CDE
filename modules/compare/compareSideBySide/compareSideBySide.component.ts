@@ -152,6 +152,33 @@ export class CompareSideBySideComponent implements OnInit {
             },
             {
                 displayAs: {
+                    label: "Identifiers",
+                    property: "ids",
+                    data: [
+                        {label: "Source", property: "source"},
+                        {label: "Id", property: "id"},
+                        {label: "Version", property: "version"}
+                    ]
+                },
+                fullMatchFn: (a, b) => {
+                    return _isEqual(a.source, b.source) && _isEqual(a.id, b.id) && _isEqual(a.version, b.version);
+                },
+                fullMatches: [],
+                partialMatchFn: (a, b) => {
+                    let diff = [];
+                    if (!_isEqual(a, b) && _isEqual(a.source, b.source)) {
+                        if (!_isEqual(a.id, b.id)) diff.push("id");
+                        if (!_isEqual(a.version, b.version)) diff.push("version");
+                    }
+                    return diff;
+                },
+                partialMatches: [],
+                notMatchFn: (a, b) => _isEqual(a.source, b.source),
+                leftNotMatches: [],
+                rightNotMatches: []
+            },
+            {
+                displayAs: {
                     label: "Reference Documents",
                     property: "referenceDocuments",
                     data: [
@@ -576,8 +603,7 @@ export class CompareSideBySideComponent implements OnInit {
 
     openCompareSideBySideContent() {
         let selectedDEs = this.elements.filter(d => d.checked);
-        if (this.elements.length === 2)
-            selectedDEs = this.elements;
+        if (this.elements.length === 2) selectedDEs = this.elements;
         if (selectedDEs.length !== 2) {
             this.alert.addAlert("warning", "Please select only two elements to compare.");
             return;
