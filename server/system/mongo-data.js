@@ -1,17 +1,19 @@
-var schemas = require('./schemas')
-    , mongoose = require('mongoose')
-    , config = require('./parseConfig')
-    , Grid = require('gridfs-stream')
-    , connHelper = require('./connections')
-    , session = require('express-session')
-    , MongoStore = require('connect-mongo')(session)
-    , shortid = require("shortid")
-    , logging = require('./logging.js')
-    , authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared")
-    , daoManager = require('./moduleDaoManager')
-    , async = require('async')
-    , _ = require('lodash')
-;
+const schemas = require('./schemas');
+const mongoose = require('mongoose');
+const config = require('./parseConfig');
+const Grid = require('gridfs-stream');
+const connHelper = require('./connections');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const shortid = require("shortid");
+const logging = require('./logging.js');
+const mongo_cde = require('../cde/mongo-cde');
+const mongo_form = require('../form/mongo-form');
+const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
+const daoManager = require('./moduleDaoManager');
+const async = require('async');
+const _ = require('lodash');
+
 
 var conn = connHelper.establishConnection(config.database.appData),
     Org = conn.model('Org', schemas.orgSchema),

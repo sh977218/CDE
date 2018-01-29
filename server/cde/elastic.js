@@ -143,7 +143,9 @@ exports.dataElementDelete = function (elt, cb) {
 };
 
 exports.elasticsearch = function (user, settings, cb) {
-    var query = sharedElastic.buildElasticSearchQuery(user, settings);
+    const query = sharedElastic.buildElasticSearchQuery(user, settings);
+    if (query.size > 100) return cb("size exceeded");
+    if ((query.from + query.size) > 10000) return cb("page size exceeded");
     if (!config.modules.cde.highlight) {
         Object.keys(query.highlight.fields).forEach(function (field) {
             if (!(field === "primaryNameCopy" || field === "primaryDefinitionCopy")) {
@@ -178,7 +180,7 @@ exports.elasticsearch = function (user, settings, cb) {
     });
 };
 
-var mltConf = {
+const mltConf = {
     "mlt_fields": [
         "naming.designation",
         "naming.definition",
@@ -284,13 +286,14 @@ exports.DataElementDistinct = function (field, cb) {
                 details: "query " + JSON.stringify(distinctQuery) + "error " + error + "response" + JSON.stringify(response)
             });
         } else {
-            var list = response.aggregations.aggregationsName.buckets.map(function (b) {
+            let list = response.aggregations.aggregationsName.buckets.map(function (b) {
                 return b.key;
             });
             cb(list);
         }
     });
 };
+
 exports.boardSearch = function (filter, cb) {
     let query = {
         "size": 100,

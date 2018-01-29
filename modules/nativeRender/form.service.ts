@@ -25,14 +25,14 @@ export class FormService {
     ) {}
 
     convertCdeToQuestion(cde, cb): FormQuestion {
-        if (cde.valueDomain === undefined)
+        if (!cde || cde.valueDomain === undefined)
             throw new Error('Cde ' + cde.tinyId + ' is not valid');
 
         let q = new FormQuestion;
         q.question.cde.derivationRules = cde.derivationRules;
         q.question.cde.name = cde.naming[0] ? cde.naming[0].designation : '';
         q.question.cde.naming = cde.naming;
-        q.question.cde.permissibleValues = cde.valueDomain.permissibleValues;
+        q.question.cde.permissibleValues = [];
         q.question.cde.tinyId = cde.tinyId;
         q.question.cde.version = cde.version;
         q.question.datatype = cde.valueDomain.datatype;

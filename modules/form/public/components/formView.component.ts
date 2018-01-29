@@ -22,6 +22,7 @@ import { OrgHelperService } from 'core/orgHelper.service';
 import { SharedService } from 'core/shared.service';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
+import { ExportService } from "../../../core/export.service";
 import { FormService } from 'nativeRender/form.service';
 import { BrowserService } from 'widget/browser.service';
 
@@ -70,6 +71,7 @@ export class FormViewComponent implements OnInit {
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
                 public userService: UserService,
+                public exportService: ExportService,
                 private route: ActivatedRoute,
                 private router: Router) {
     }
@@ -136,31 +138,23 @@ export class FormViewComponent implements OnInit {
         }, err => this.alert.addAlert('danger', 'Error loading comments. ' + err));
     }
 
-    loadDraft(cb = _noop) {
-        this.http.get<any>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(res => {
-            if (res && res.length > 0) {
-                this.drafts = res;
-                this.elt = res[0];
-                this.formLoaded(cb);
-            } else {
-                this.drafts = [];
-                this.elt = null;
-                cb();
-            }
-        }, err => {
-            this.alert.addAlert('danger', err);
-            cb();
-        });
-    }
-
     loadForm(cb = _noop) {
         this.userService.then(() => {
-            if (this.userService.user && this.userService.user.username)
-                this.loadDraft(() => {
-                    if (this.elt) cb();
-                    else this.loadPublished(cb);
+            if (this.userService.user && this.userService.user.username) {
+                this.http.get<any>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(res => {
+                    if (res && res.length > 0 && this.isAllowedModel.isAllowed(res[0])) {
+                        this.drafts = res;
+                        this.elt = res[0];
+                        this.formLoaded(cb);
+                    } else {
+                        this.drafts = [];
+                        this.loadPublished(cb);
+                    }
+                }, err => {
+                    this.alert.addAlert('danger', err);
+                    cb();
                 });
-            else this.loadPublished(cb);
+            } else this.loadPublished(cb);
         });
     }
 

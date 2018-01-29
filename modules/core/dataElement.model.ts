@@ -4,6 +4,7 @@ import { CdeId, DerivationRule, Elt, PermissibleValue } from "core/models.model"
 export class DataElement extends Elt {
     primaryNameCopy: string;
     derivationRules: DerivationRule[];
+    elementType = 'cde';
     valueDomain: ValueDomain;
 
     static copy(de: any) {

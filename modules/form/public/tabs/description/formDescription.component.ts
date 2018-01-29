@@ -17,10 +17,16 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import { Hotkey, HotkeysService } from "angular2-hotkeys";
 import _isEmpty from 'lodash/isEmpty';
 import _noop from 'lodash/noop';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
-import { CdeForm, FormElement, FormQuestion, FormSection } from 'core/form.model';
+import { CdeForm, FormSection } from 'core/form.model';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
+import { SearchSettings } from '../../../../search/search.model';
 import { FormService } from 'nativeRender/form.service';
+import { ElasticService } from '../../../../_app/elastic.service';
+import { AlertService } from '../../../../_app/alert/alert.service';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 
 const TOOL_BAR_OFF_SET = 55;
@@ -134,6 +140,25 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this._elt = e;
         this.addExpanded(e);
         this.addIds(e.formElements, "");
+        let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
+        this.searchTerms.pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            switchMap(term => {
+                if (term) {
+                    settings.resultPerPage = 5;
+                    settings.searchTerm = term;
+                    return this.http.post('/cdeCompletion/' + encodeURI(term), this.elasticService.buildElasticQuerySettings(settings)).map(res => res.json());
+                } else return Observable.of<string[]>([]);
+            })
+        ).subscribe(res => {
+            let tinyIdList = res.map(r => r._id).slice(0, 5);
+            if (tinyIdList && tinyIdList.length > 0)
+                this.http.get('/deList/' + tinyIdList).map(res => res.json()).subscribe(result => {
+                    this.suggestedCdes = result;
+                }, err => this.alert.addAlert('danger', err));
+            else this.suggestedCdes = [];
+        });
     }
     get elt() {
         return this._elt;
@@ -147,6 +172,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     isModalOpen: boolean = false;
     newDataElement = this.initNewDataElement();
     questionModelMode = 'search';
+    searchSettings = new SearchSettings;
+    private searchTerms = new Subject<string>();
+    suggestedCdes = [];
     treeOptions = {
         allowDrag: element => !FormService.isSubForm(element) || element.data.elementType === 'form' && !FormService.isSubForm(element.parent),
         allowDrop: (element, {parent, index}) => {
@@ -226,6 +254,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     constructor(
+        private alert: AlertService,
+        private elasticService: ElasticService,
         private formService: FormService,
         private _hotkeysService: HotkeysService,
         private http: HttpClient,
@@ -286,6 +316,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     initNewDataElement() {
+        this.suggestedCdes = [];
         return {
             naming: [{
                 designation: '',
@@ -308,14 +339,17 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.modalService.open(this.questionSearchTmpl, {size: 'lg'}).result.then(
             () => this.isModalOpen = false,
             () => this.isModalOpen = false);
-
         setTimeout(() => {
             if (this.questionModelMode === 'add') window.document.getElementById("newDEName").focus();
         }, 0);
     }
 
-    createNewDataElement(c) {
-        this.addQuestionFromSearch(this.newDataElement, () => {
+    newDataElementNameChanged() {
+        this.searchTerms.next(this.newDataElement.naming[0].designation);
+    }
+
+    createNewDataElement(newCde = this.newDataElement, c) {
+        this.addQuestionFromSearch(newCde, () => {
             c();
         });
     }

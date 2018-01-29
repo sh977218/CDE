@@ -86,9 +86,12 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearch/form', function (req, res) {
-        let query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        if (!req.body.fullRecord)
+        const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
+        if (query.size > 100) return res.status(400).send();
+        if ((query.from + query.size) > 10000) return res.status(400).send();
+        if (!req.body.fullRecord) {
             query._source = {excludes: ["flatProperties", "properties", "classification.elements", "formElements"]};
+        }
         sharedElastic.elasticsearch('form', query, req.body, function (err, result) {
             if (err) return res.status(400).send("invalid query");
             res.send(result);

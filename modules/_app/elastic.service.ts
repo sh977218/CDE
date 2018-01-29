@@ -145,7 +145,7 @@ export class ElasticService {
         );
     }
 
-    saveConfiguration (settings) {
+    saveConfiguration(settings) {
         this.searchSettings = settings;
         let savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
         delete savedSettings.includeRetired;
@@ -154,7 +154,7 @@ export class ElasticService {
             this.http.post("/user/update/searchSettings", savedSettings).subscribe();
     }
 
-    getDefault () {
+    getDefault() {
         return {
             "version": 20160329
             , "defaultSearchView": "summary"
@@ -171,6 +171,7 @@ export class ElasticService {
                 "registrationStatus": true,
                 "administrativeStatus": false,
                 "ids": true,
+                "identifiers": [],
                 "source": false,
                 "updated": false,
                 "numQuestions": true,
@@ -179,11 +180,11 @@ export class ElasticService {
         };
     };
 
-    getDefaultSearchView () {
+    getDefaultSearchView() {
         return this.searchSettings.defaultSearchView;
     };
 
-    getUserDefaultStatuses () {
+    getUserDefaultStatuses() {
         let overThreshold = false;
         let result = SharedService.regStatusShared.orderedList.filter(status => {
             if (overThreshold) return false;
@@ -194,7 +195,7 @@ export class ElasticService {
         return result;
     };
 
-    loadSearchSettings () {
+    loadSearchSettings() {
         if (!this.searchSettings) {
             this.searchSettings = this.localStorageService.get("SearchSettings");
             if (!this.searchSettings) this.searchSettings = this.getDefault();

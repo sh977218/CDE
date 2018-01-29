@@ -13,7 +13,10 @@ import { ClassifyItemModalComponent } from 'adminItem/public/components/classifi
 import { DataElement } from 'core/dataElement.model';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { SharedService } from 'core/shared.service';
-
+import { SearchSettings } from '../../../search/search.model';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'cde-create-data-element',
@@ -30,8 +33,10 @@ export class CreateDataElementComponent implements OnInit {
     @Output() dismiss = new EventEmitter<void>();
     @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
     modalRef: NgbModalRef;
-    suggestedCdes: any[] = [];
     validationMessage;
+    searchSettings = new SearchSettings;
+    private searchTerms = new Subject<string>();
+    suggestedCdes = [];
 
     ngOnInit() {
         if (!this.elt)
@@ -43,6 +48,29 @@ export class CreateDataElementComponent implements OnInit {
                 registrationState: {registrationStatus: 'Incomplete'}
             };
         this.validationErrors(this.elt);
+        let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
+        this.searchTerms.pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            switchMap(term => {
+                if (term) {
+                    settings.resultPerPage = 5;
+                    settings.searchTerm = term;
+                    return this.http.post('/cdeCompletion/' + encodeURI(term), this.elasticService.buildElasticQuerySettings(settings)).map(res => res.json());
+                } else return Observable.of<string[]>([]);
+            })
+        ).subscribe(res => {
+            let tinyIdList = res.map(r => r._id).slice(0, 5);
+            if (tinyIdList && tinyIdList.length > 0)
+                this.http.get('/deList/' + tinyIdList).map(res => res.json()).subscribe(result => {
+                    this.suggestedCdes = result;
+                }, err => this.alert.addAlert('danger', err));
+            else this.suggestedCdes = [];
+        });
+    }
+
+    dataElementNameChanged() {
+        this.searchTerms.next(this.elt.naming[0].designation);
     }
 
     constructor(
@@ -70,10 +98,8 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     cancelCreateDataElement() {
-        if (this.dismiss.observers.length)
-            this.dismiss.emit();
-        else
-            this.router.navigate(['/']);
+        if (this.dismiss.observers.length) this.dismiss.emit();
+        else this.router.navigate(['/']);
     }
 
     confirmDelete(event) {

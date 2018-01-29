@@ -16,23 +16,36 @@
                 <ng-container *ngSwitchCase="'naming'">
                     <ul>
                         <li *ngFor="let v of prop.values; let last = last"
-                            [ngClass]="{lastItem: last}">{{v}}</li>
+                            [ngClass]="{lastItem: last}">{{v}}
+                        </li>
                     </ul>
                 </ng-container>
                 <ng-container *ngSwitchCase="'ids'">
-                    <ul>
-                        <li *ngFor="let id of prop.values">{{id.source}}:
-                            <strong>{{id.id}}</strong>
-                            <span *ngIf="id.version"> v{{id.version}}</span>
-                        </li>
-                    </ul>
+                    <ng-container *ngIf="esService.searchSettings.tableViewFields.identifiers.length === 0">
+                        <ul>
+                            <li *ngFor="let id of prop.values">{{id.source}}:
+                                <strong>{{id.id}}</strong>
+                                <span *ngIf="id.version"> v{{id.version}}</span>
+                            </li>
+                        </ul>
+                    </ng-container>
+                </ng-container>
+                <ng-container
+                        *ngIf="esService.searchSettings.tableViewFields.ids && esService.searchSettings.tableViewFields.identifiers.length > 0">
+                    <ng-container
+                            *ngFor="let identifier of esService.searchSettings.tableViewFields.identifiers">
+                        <ng-container *ngSwitchCase="identifier">
+                            {{prop.values}}
+                        </ng-container>
+                    </ng-container>
                 </ng-container>
                 <ng-container *ngSwitchCase="'permissibleValues multiline-ellipsis'">
                     {{prop.datatype}}
                     <ng-container *ngIf="prop.values?.length > 0">:
                         <ul>
                             <li *ngFor="let v of prop.values; let last = last"
-                                [ngClass]="{lastItem: last}">{{v}}</li>
+                                [ngClass]="{lastItem: last}">{{v}}
+                            </li>
                         </ul>
                     </ng-container>
                 </ng-container>

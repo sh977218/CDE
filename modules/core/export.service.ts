@@ -7,13 +7,16 @@ import { RegistrationValidatorService } from "core/registrationValidator.service
 import { SharedService } from 'core/shared.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
+import * as formShared from "../../shared/form/formShared";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable()
 export class ExportService {
     constructor(private alertService: AlertService,
                 private registrationValidatorService: RegistrationValidatorService,
                 private elasticService: ElasticService,
-                protected userService: UserService) {
+                protected userService: UserService,
+                protected http: HttpClient) {
     }
 
     exportSearchResults(type, module, exportSettings) {
@@ -133,4 +136,29 @@ export class ExportService {
             this.alertService.addAlert("danger", "Something went wrong, please try again in a minute.");
         }
     }
+
+
+
+    async formCdeExport (form) {
+        let settings = this.elasticService.searchSettings;
+        let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
+
+        for (let qCde of formShared.getFormCdes(form)) {
+            const cde = await this.http.get('/de/' + qCde.tinyId).toPromise();
+            result += SharedService.exportShared.convertToCsv(
+                SharedService.exportShared.projectCdeForExport(cde, settings.tableViewFields));
+        }
+
+        if (result) {
+            let blob = new Blob([result], {
+                type: "text/csv"
+            });
+            saveAs(blob, 'FormCdes-' + form.tinyId + '.csv');
+            this.alertService.addAlert("success", "Export downloaded.");
+        } else {
+            this.alertService.addAlert("danger", "Something went wrong, please try again in a minute.");
+        }
+    }
+
+
 }

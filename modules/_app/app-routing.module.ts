@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { PreloadAllModules, RouterModule, Routes } from "@angular/router";
 
 import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
+import { IdentifierSourcesResolve } from "../system/public/components/searchPreferences/identifier-source.resolve.service";
 
 const appRoutes: Routes = [
     {path: 'api', loadChildren: 'system/public/documentApi.module#DocumentApiModule'},
@@ -27,7 +28,13 @@ const appRoutes: Routes = [
     {path: 'quickBoard', loadChildren: 'quickBoard/quickBoard.module#QuickBoardModule'},
     {path: 'profile', loadChildren: 'system/public/profile.module#ProfileModule'},
     {path: 'sdcview', loadChildren: 'cde/public/sdcView.module#SdcViewModule'},
-    {path: 'searchPreferences', loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule'},
+    {
+        path: 'searchPreferences',
+        resolve: {
+            IdentifierSourcesResolve
+        },
+        loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule'
+    },
     {path: 'siteaccountmanagement', loadChildren: 'system/public/siteManagement.module#SiteManagementModule'},
     {path: 'siteAudit', loadChildren: 'system/public/siteAudit.module#SiteAuditModule'},
     {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -44,9 +51,8 @@ const appRoutes: Routes = [
             }
         ),
     ],
-    exports: [
-        RouterModule,
-    ]
+    providers: [IdentifierSourcesResolve],
+    exports: [RouterModule]
 })
 export class CdeAppRoutingModule {
 }

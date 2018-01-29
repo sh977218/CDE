@@ -16,7 +16,7 @@ export class NamingComponent {
     @ViewChild('newNamingContent') newNamingContent: NgbModalModule;
     modalRef: NgbModalRef;
     newNaming: Naming = new Naming();
-    options: Select2Options = {
+    options = {
         multiple: true,
         tags: true,
         language: {

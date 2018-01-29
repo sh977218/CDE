@@ -15,7 +15,6 @@ import {
 import { FormService } from 'nativeRender/form.service';
 
 export class CdeForm extends Elt implements FormElementsContainer {
-
     comments: Comment[];
     copyright: {
         authority: string,
