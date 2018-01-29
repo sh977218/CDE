@@ -53,6 +53,7 @@
         ],
         "component-class-suffix": true,
         "component-selector": [true, "element", ["nih", "cde"], "kebab-case"],
+        "curly": [true, "ignore-same-line"],
         "directive-class-suffix": true,
         "directive-selector": [true, "attribute", ["nih", "cde"], "camelCase"],
         "import-destructuring-spacing": true,

@@ -119,12 +119,10 @@ export class ClassificationService {
             selectedStatuses: this.esService.getUserDefaultStatuses()
         };
         let ro = {
-            body: {
-                deleteClassification: deleteClassification,
-                settings: settings,
-            }
+            deleteClassification: deleteClassification,
+            settings: settings,
         };
-        this.http.post('/orgClassification/', ro, {responseType: 'text'}).subscribe(
+        this.http.post('/orgClassificationDelete/', ro, {responseType: 'text'}).subscribe(
             res => cb(res),
             err => this.alert.addAlert('danger', err));
     }

@@ -40,9 +40,9 @@ export class SaveModalComponent {
             url = '/de/' + this.elt.tinyId + '/latestVersion/';
         if (this.elt.elementType === 'form')
             url = '/form/' + this.elt.tinyId + '/latestVersion/';
-        this.http.get(url).subscribe(
+        this.http.get(url, {responseType: 'text'}).subscribe(
             res => {
-                if (res && newVersion && _isEqual(res.toString(), newVersion.toString())) {
+                if (res && newVersion && _isEqual(res, newVersion)) {
                     this.duplicatedVersion = true;
                 } else {
                     this.duplicatedVersion = false;

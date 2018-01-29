@@ -15,8 +15,4 @@ export class DataElementService {
     get(tinyId) {
         return this.http.get('/de/' + tinyId);
     }
-
-    // save(elt) {
-    //     return this.http.post('', elt);
-    // }
 }
