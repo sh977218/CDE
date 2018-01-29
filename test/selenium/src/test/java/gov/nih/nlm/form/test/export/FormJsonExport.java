@@ -21,7 +21,7 @@ public class FormJsonExport extends NlmCdeBaseTest {
                 "{\"title\":\"CRF\",\"uri\":\"https://commondataelements.ninds.nih.gov/Doc/EPI/F1126_Adverse_Event_Tracking_Log.docx\"}",
                 "\"permissibleValue\":\"Yes\"",
                 "\"valueMeaningName\":\"Yes\"",
-                "\"registrationState\":{\"registrationStatus\":\"Qualified\",\"replacedBy\":{}}",
+                "\"registrationState\":{\"registrationStatus\":\"Qualified\"}",
                 "\"stewardOrg\":{\"name\":\"NINDS\"}",
                 "\"naming\":[{\"designation\":\"Adverse Event Tracking Log\""
         };
