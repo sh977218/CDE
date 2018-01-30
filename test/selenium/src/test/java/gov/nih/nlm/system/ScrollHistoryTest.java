@@ -23,6 +23,7 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         searchEltAny("apple", "cde");
         textPresent("Godin Leisure-Time Exercise Questionnaire");
         scrollToViewById(elementId);
+        hangon(1);
         int appleOffset = getCurrentYOffset();
         clickElement(By.id(elementId));
         textPresent("Log In", By.id("login_link"));
@@ -30,6 +31,7 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         searchEltAny("patient", "form");
         textPresent("Patient Health Questionnaire");
         scrollToViewById(elementId);
+        hangon(1);
         int patientOffset = getCurrentYOffset();
         clickElement(By.id(elementId));
         textPresent("Log In", By.id("login_link"));
@@ -37,6 +39,7 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         searchEltAny("10", "cde");
         textPresent("Test of Memory Malingering (TOMM) - Trial 1 question 10 score");
         scrollToViewById(elementId);
+        hangon(1);
         int painOffset = getCurrentYOffset();
         driver.navigate().refresh();
         checkScroll(painOffset);
