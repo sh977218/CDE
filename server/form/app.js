@@ -25,7 +25,7 @@ global.window = global; // We'll allow ourselves to use `window.indexedDB` or `i
 setGlobalVars();
 const ucum = require('ucum').UcumLhcUtils.getInstance();
 
-function allowXOrigin (req, res, next) {
+function allowXOrigin(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     next();
@@ -41,9 +41,9 @@ exports.init = function (app, daoManager) {
     app.get("/form/:tinyId/version/:version?", [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyIdVersion);
     app.get("/formList/:tinyIdList?", exportShared.nocacheMiddleware, formSvc.byTinyIdList);
 
-    app.get("/draftForm/:tinyId",formSvc.draftForms);
-    app.post("/draftForm/:tinyId",formSvc.saveDraftForm);
-    app.delete("/draftForm/:tinyId",formSvc.deleteDraftForm);
+    app.get("/draftForm/:tinyId", formSvc.draftForms);
+    app.post("/draftForm/:tinyId", formSvc.saveDraftForm);
+    app.delete("/draftForm/:tinyId", formSvc.deleteDraftForm);
 
     app.get("/form/:tinyId/latestVersion/", exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
 
@@ -274,21 +274,35 @@ exports.init = function (app, daoManager) {
         cb(error, uom);
     }
 
+    app.get('/ucumSynonyms', (req, res) => {
+        let uom = req.query.uom;
+        if (!uom || typeof uom !== 'string')
+            return res.sendStatus(400);
+
+        let resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
+        if (!resp || !resp.unit)
+            return res.send([]);
+
+        let unit = resp.unit;
+        let name = unit.name_;
+        let synonyms = unit.synonyms_.split('; ');
+        if (synonyms.length && synonyms[synonyms.length - 1] === '')
+            synonyms.length--;
+        res.send([name, ...synonyms]);
+    });
+
     app.get('/ucumNames', (req, res) => {
-       let uom = req.query.uom;
-       if (!uom || typeof uom !== 'string')
-           return res.sendStatus(400);
+        let uom = req.query.uom;
+        if (!uom || typeof uom !== 'string')
+            return res.sendStatus(400);
 
-       let resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
-       if (!resp || !resp.unit)
-           return res.send([]);
-
-       let unit = resp.unit;
-       let name = unit.name_;
-       let synonyms = unit.synonyms_.split('; ');
-       if (synonyms.length && synonyms[synonyms.length - 1] === '')
-           synonyms.length--;
-       res.send([name, ...synonyms]);
+        let resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
+        if (!resp || !resp.unit)
+            return res.send([]);
+        else res.send([{
+            name: resp.unit.name_,
+            synonyms: resp.unit.synonyms_.split('; ')
+        }]);
     });
 
     app.get('/ucumValidate', (req, res) => {

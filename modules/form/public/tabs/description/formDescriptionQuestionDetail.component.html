@@ -118,11 +118,19 @@
         <ng-container *ngIf="question.question.datatype === 'Number' || question.question.datatype === 'Text'">
             <dt class="col-2">Units of Measure:</dt>
             <dd class="col-10 questionUom">
-                <ng-container *ngFor="let q of [uomVersion]">
-                    <select2 class="formDescriptionUoms" [data]="getUoms()" [options]="uomOptions" width="100%"
-                             [value]="question.question.uoms" (valueChanged)="checkUom($event)">
-                    </select2>
-                </ng-container>
+                <div class="border rounded">
+                    <span class="badge badge-success mx-1" *ngFor="let uom of question.question.uoms;let i = index;">
+                        <i class="fa fa-times hand-cursor dark-icon pl-1"
+                           (click)="removeUomByIndex(i);"></i>
+                        {{uom}}
+                    </span>
+                    <ng-template #rt let-r="result" let-t="term">
+                        synonyms: {{ r.synonyms | json}}
+                        name: {{ r.name}}
+                    </ng-template>
+                    <input [ngbTypeahead]="ucumService.search" [resultTemplate]="rt" [(ngModel)]="newUom"
+                           [inputFormatter]="ucumService.formatter" (selectItem)="selectedUom($event);"/>
+                </div>
             </dd>
         </ng-container>
         <ng-container *ngIf="question.question.datatype === 'Value List'">

@@ -4,6 +4,7 @@ import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstra
 import { TreeNode } from "angular-tree-component";
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
+import _union from 'lodash/union';
 import { Observable } from "rxjs/Observable";
 
 import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'core/form.model';
@@ -60,16 +61,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     nameSelectModalRef: NgbModalRef;
     question: FormQuestion;
     parent: FormElement;
-    uomOptions: any = {
-        multiple: true,
-        tags: true,
-        language: {
-            noResults: () => {
-                return "No Units of Measure are listed on the CDE. Type in more followed by ENTER.";
-            }
-        }
-    };
-    uomVersion = 0;
 
     constructor(private http: Http,
                 private alert: AlertService,
@@ -279,4 +270,17 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     newCdePv = {};
     newCdeId = {};
     newCdeNaming = {};
+
+    newUom = '';
+    selectedUom(event) {
+        if (event && event.item && event.item.name && event.item.name !== '')
+            this.question.question.uoms = _union(this.question.question.uoms, [event.item.name]);
+        this.onEltChange.emit();
+        this.newUom = '';
+    }
+
+    removeUomByIndex(i) {
+        this.question.question.uoms.splice(i, 1);
+        this.onEltChange.emit();
+    }
 }

@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
 
 @Injectable()
 export class UcumService {
@@ -30,7 +34,7 @@ export class UcumService {
         if (match)
             return cb(match);
 
-        this.http.get('/ucumNames?uom=' + encodeURIComponent(uom)).map(r => r.json()).subscribe(response => {
+        this.http.get('/ucumSynonyms?uom=' + encodeURIComponent(uom)).map(r => r.json()).subscribe(response => {
             if (Array.isArray(response)) {
                 this.uomUnitMap.set(uom, response);
                 return cb(response);
@@ -38,4 +42,13 @@ export class UcumService {
             return cb([]);
         });
     }
+
+    search = (text$: Observable<string>) =>
+        text$.debounceTime(200).distinctUntilChanged()
+            .switchMap(term => {
+                if (term === '') return of([]);
+                else return this.http.get('/ucumNames?uom=' + encodeURIComponent(term)).map(r => r.json());
+            });
+
+    formatter = (x: { name: string, synonyms: [any] }) => '';
 }
