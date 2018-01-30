@@ -6,6 +6,7 @@ import _uniqWith from 'lodash/uniqWith';
 
 import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
+import { AngularHelperService } from 'widget/angularHelper.service';
 
 
 @Injectable()
@@ -18,7 +19,7 @@ export class ClassificationService {
     ) {
     }
 
-    public updateClassificationLocalStorage(item) {
+    updateClassificationLocalStorage(item) {
         let allPossibleCategories = [];
         let accumulateCategories = [];
         item.categories.forEach(i => {
@@ -37,7 +38,7 @@ export class ClassificationService {
     }
 
 
-    public classifyItem(elt, org, classifArray, endPoint, cb) {
+    classifyItem(elt, org, classifArray, endPoint, cb) {
         let postBody = {
             categories: classifArray,
             eltId: elt._id,
@@ -47,10 +48,10 @@ export class ClassificationService {
             () => {
                 this.updateClassificationLocalStorage(postBody);
                 cb();
-            }, err => cb(err));
+            }, err => cb(AngularHelperService.httpErrorMessage(err)));
     }
 
-    public removeClassification(elt, org, classifArray, endPoint, cb) {
+    removeClassification(elt, org, classifArray, endPoint, cb) {
         let deleteBody = {
             categories: classifArray,
             eltId: elt._id,

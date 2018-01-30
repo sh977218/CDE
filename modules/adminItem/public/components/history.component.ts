@@ -26,7 +26,7 @@ const URL_MAP = {
         .isSelected {
             background-color: #f5f5f5;
         }
-        
+
         #reorderIcon{
             background-color: #fad000;
         }
@@ -35,7 +35,7 @@ const URL_MAP = {
         }
         #removeIcon{
             background-color: #a94442;
-        } 
+        }
         #editIcon{
             background-color: #0000ff;
         }
@@ -87,7 +87,7 @@ export class HistoryComponent implements OnInit {
                 this.priorElements.forEach(pe => {
                     pe.url = URL_MAP[this.elt.elementType] + pe._id;
                 });
-            }, err => this.alert.addAlert('danger', 'Error retrieving history: ' + err));
+            }, err => this.alert.httpErrorMessageAlert(err, 'Error retrieving history:'));
         } else {
             this.priorElements = [this.elt];
         }

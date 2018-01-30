@@ -48,7 +48,7 @@ export class SaveModalComponent {
                     this.duplicatedVersion = false;
                     this.overrideVersion = false;
                 }
-            }, err => this.alert.addAlert('danger', err));
+            }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     openSaveModal() {

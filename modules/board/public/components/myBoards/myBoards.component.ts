@@ -68,13 +68,9 @@ export class MyBoardsComponent implements OnInit {
     save(board) {
         delete board.editMode;
         this.http.post('/board', board, {responseType: 'text'}).subscribe(() => {
-                this.alert.addAlert('success', 'Saved.');
-                this.myBoardsSvc.waitAndReload();
-            }, err => {
-                console.log(err);
-                this.alert.addAlert('danger', err);
-            }
-        );
+            this.alert.addAlert('success', 'Saved.');
+            this.myBoardsSvc.waitAndReload();
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     selectAggregation(aggName, $index) {

@@ -32,9 +32,7 @@ export class CreateBoardComponent {
             this.myBoardsSvc.waitAndReload();
             this.modalRef.close();
             this.alert.addAlert('success', 'Board created.');
-        }, r => {
-            this.alert.addAlert('danger', r);
-        });
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     openNewBoard() {

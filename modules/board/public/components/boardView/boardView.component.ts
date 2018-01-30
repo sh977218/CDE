@@ -114,8 +114,8 @@ export class BoardViewComponent implements OnInit {
     endReview() {
         this.http.post('/board/endReview', {boardId: this.board._id}).subscribe(() => {
             this.reload();
-        }, response => {
-            this.alert.addAlert('danger', response);
+        }, err => {
+            this.alert.httpErrorMessageAlert(err);
             this.reload();
         });
     }
@@ -240,8 +240,8 @@ export class BoardViewComponent implements OnInit {
     startReview() {
         this.http.post('/board/startReview', {boardId: this.board._id}, {responseType: 'text'}).subscribe(() => {
                 this.reload();
-            }, response => {
-                this.alert.addAlert('danger', response);
+            }, err => {
+                this.alert.httpErrorMessageAlert(err);
                 this.reload();
             }
         );

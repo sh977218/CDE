@@ -51,7 +51,7 @@ export class OrgsEditComponent implements OnInit {
             this.orgs = this.getOrgs(() => {
                 this.orgHelperService.reload().then(() => this.Alert.addAlert('success', 'Saved'));
             });
-        }, res => this.Alert.addAlert('danger', 'There was an issue updating this org.')
+        }, () => this.Alert.addAlert('danger', 'There was an issue updating this org.')
         );
     }
 }

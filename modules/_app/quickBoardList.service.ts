@@ -66,19 +66,20 @@ export class QuickBoardListService {
         let dataElementLocalStorage = <Array<any>> this.localStorageService.get('quickBoard');
         if (dataElementLocalStorage) {
             let l = dataElementLocalStorage.map(d => d.tinyId);
-            if (!_isEmpty(l))
+            if (!_isEmpty(l)) {
                 this.http.get<DataElement[]>('/deList/' + l)
                     .subscribe(res => {
                         if (res) {
                             this.dataElements = res;
                             this.number_dataElements = this.dataElements.length;
                         }
-                    }, err => this.alert.addAlert('danger', err));
+                    }, err => this.alert.httpErrorMessageAlert(err));
+            }
         }
         let formLocalStorage = <Array<any>> this.localStorageService.get('formQuickBoard');
         if (formLocalStorage) {
             let l = formLocalStorage.map(d => d.tinyId);
-            if (!_isEmpty(l))
+            if (!_isEmpty(l)) {
                 this.http.get<CdeForm[]>('/formList/' + l)
                     .subscribe(res => {
                         if (res) {
@@ -89,7 +90,8 @@ export class QuickBoardListService {
                             });
                             this.number_forms = this.forms.length;
                         }
-                    }, err => this.alert.addAlert('danger', err));
+                    }, err => this.alert.httpErrorMessageAlert(err));
+            }
         }
         this.module = <string>this.localStorageService.get('defaultQuickBoard');
     }

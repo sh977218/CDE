@@ -122,7 +122,7 @@ export class CompareSideBySideComponent implements OnInit {
                     option.displayAs.display = true;
             });
             cb();
-        }, err => this.alert.addAlert('danger', err));
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     flatFormQuestions(fe) {

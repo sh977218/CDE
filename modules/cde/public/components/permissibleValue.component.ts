@@ -29,22 +29,23 @@ export class PermissibleValueComponent {
         this.loadValueSet();
         this.initSrcOptions();
         this.canLinkPvFunc();
-        if (!this.elt.dataElementConcept.conceptualDomain)
+        if (!this.elt.dataElementConcept.conceptualDomain) {
             this.elt.dataElementConcept.conceptualDomain = {
                 vsac: {}
             };
+        }
 
         this.searchTerms.pipe(debounceTime(300), distinctUntilChanged(), switchMap(term => term
             ? this.http.get('/searchUmls?searchTerm=' + term)
             : Observable.of<string[]>([]))).subscribe((res: any) => {
-            if (res.result && res.result.results)
+            if (res.result && res.result.results) {
                 this.umlsTerms = res.result.results;
-            else this.umlsTerms = [];
+            } else this.umlsTerms = [];
         });
     }
     get elt(): any {
         return this._elt;
-    };
+    }
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newPermissibleValueContent') public newPermissibleValueContent: NgbModalModule;
     canLinkPv = false;
@@ -72,7 +73,7 @@ export class PermissibleValueComponent {
     };
 
     constructor(
-        private alert: AlertService,
+        private Alert: AlertService,
         public isAllowedModel: IsAllowedService,
         public http: HttpClient,
         public modalService: NgbModal,
@@ -99,13 +100,15 @@ export class PermissibleValueComponent {
 
     addVsacValue(vsacValue) {
         if (this.isVsInPv(vsacValue)) return;
-        else this.elt.valueDomain.permissibleValues.push({
-            'permissibleValue': vsacValue.displayName,
-            'valueMeaningName': vsacValue.displayName,
-            'valueMeaningCode': vsacValue.code,
-            'codeSystemName': vsacValue.codeSystemName,
-            'codeSystemVersion': vsacValue.codeSystemVersion
-        });
+        else {
+            this.elt.valueDomain.permissibleValues.push({
+                'permissibleValue': vsacValue.displayName,
+                'valueMeaningName': vsacValue.displayName,
+                'valueMeaningCode': vsacValue.code,
+                'codeSystemName': vsacValue.codeSystemName,
+                'codeSystemVersion': vsacValue.codeSystemVersion
+            });
+        }
         this.runManualValidation();
     }
 
@@ -140,15 +143,18 @@ export class PermissibleValueComponent {
             matchedPvs.forEach(pvObj => {
                 pvObj.valueMeaningCode.split(':').forEach(code => {
                     if (this.SOURCES[pvObj.codeSystemName]) {
-                        if (!source.codes)
+                        if (!source.codes) {
                             source.codes = {};
-                        if (!source.codes[code])
+                        }
+                        if (!source.codes[code]) {
                             source.codes[code] = {code: '', meaning: 'Retrieving...'};
-                    } else this.alert.addAlert('danger', 'Unknown source in pv code ' + code);
+                        }
+                    } else this.Alert.addAlert('danger', 'Unknown source in pv code ' + code);
                 });
             });
-        } else
-            this.alert.addAlert('danger', 'Unknown source in pv source: ' + src);
+        } else {
+            this.Alert.addAlert('danger', 'Unknown source in pv source: ' + src);
+        }
     }
 
     initSrcOptions() {
@@ -194,8 +200,8 @@ export class PermissibleValueComponent {
                         }
                         this.validateVsacWithPv();
                         this.validatePvWithVsac();
-                    } else this.alert.addAlert('danger', 'Error: No data retrieved from VSAC.');
-                }, () => this.alert.addAlert('danger', 'Error querying VSAC'));
+                    } else this.Alert.addAlert('danger', 'Error: No data retrieved from VSAC.');
+                }, () => this.Alert.addAlert('danger', 'Error querying VSAC'));
         }
         this.canLinkPvFunc();
     }
@@ -209,8 +215,9 @@ export class PermissibleValueComponent {
             __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: '', meaning: 'Retrieving...'};
             let code = pv.valueMeaningCode;
             let source;
-            if (pv.codeSystemName)
+            if (pv.codeSystemName) {
                 source = this.SOURCES[pv.codeSystemName].source;
+            }
             if (code && source) {
                 if (src === 'UMLS' && source === 'UMLS') {
                     __this.SOURCES[src].codes[pv.valueMeaningCode] = {
@@ -221,12 +228,12 @@ export class PermissibleValueComponent {
                     this.http.get<any>('/umlsCuiFromSrc/' + code + '/' + source)
                         .subscribe(
                             res => {
-                                if (res.result.length > 0)
+                                if (res.result.length > 0) {
                                     res.result.forEach((r) => {
                                         __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                                     });
-                                else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                            }, err => this.alert.addAlert('danger', err));
+                                } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
+                            }, err => this.Alert.httpErrorMessageAlert(err));
 
                 }
                 else if (source === 'UMLS') {
@@ -240,16 +247,16 @@ export class PermissibleValueComponent {
                                         meaning: l[0].name
                                     };
                                 } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                            }, err => this.alert.addAlert('danger', err));
+                            }, err => this.Alert.httpErrorMessageAlert(err));
                 } else {
                     this.http.get<any>('/crossWalkingVocabularies/' + source + '/' + code + '/' + targetSource)
                         .subscribe(res => {
-                            if (res.result.length > 0)
+                            if (res.result.length > 0) {
                                 res.result.forEach((r) => {
                                     __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                                 });
-                            else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                        }, err => this.alert.addAlert('danger', err));
+                            } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
+                        }, );
                 }
             } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
         });

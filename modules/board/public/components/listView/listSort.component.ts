@@ -39,8 +39,8 @@ export class ListSortComponent {
         this.http.post(endPoint, {boardId: this.boardListService.board._id, tinyId: pinId}, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Saved');
             this.boardListService.reload.emit();
-        }, (response) => {
-            this.alert.addAlert('danger', response);
+        }, err => {
+            this.alert.httpErrorMessageAlert(err);
             this.boardListService.reload.emit();
         });
     }

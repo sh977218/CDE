@@ -28,7 +28,6 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
 import { FormService } from 'nativeRender/form.service';
 import { SearchSettings } from 'search/search.model';
 
-
 const TOOL_BAR_OFF_SET = 55;
 
 @Component({
@@ -245,7 +244,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             if (tinyIdList && tinyIdList.length > 0)
                 this.http.get<any[]>('/deList/' + tinyIdList).subscribe(result => {
                     this.suggestedCdes = result;
-                }, err => this.alert.addAlert('danger', err));
+                }, err => this.alert.httpErrorMessageAlert(err));
             else this.suggestedCdes = [];
         });
     }

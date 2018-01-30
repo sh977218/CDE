@@ -31,18 +31,18 @@ export class PinBoardModalComponent {
 
     pinMultiple(elts: any, promise: Promise<any>) {
         promise.then(board => {
-            let url = "/board/id/" + board._id;
-            if (this.module === "cde")
-                url += "/dataElements/";
-            if (this.module === "form")
-                url += "/forms/";
+            let url = '/board/id/' + board._id;
+            if (this.module === 'cde') {
+                url += '/dataElements/';
+            }
+            if (this.module === 'form') {
+                url += '/forms/';
+            }
 
             this.http.put(url, elts, {observe: 'response', responseType: 'text'}).subscribe(r => {
-                this.alert.addAlert(r.status === 200 ? "success" : "warning", r.body);
+                this.alert.addAlert(r.status === 200 ? 'success' : 'warning', r.body);
                 this.modalRef.close();
-            }, (err) => {
-                this.alert.addAlert("danger", err);
-            });
+            }, err => this.alert.httpErrorMessageAlert(err));
         }, () => {
         });
     }
@@ -53,9 +53,7 @@ export class PinBoardModalComponent {
             this.http.put(url, {}, {observe: 'response', responseType: 'text'}).subscribe(r => {
                 this.alert.addAlert(r.status === 200 ? 'success' : 'warning', r.body);
                 this.modalRef.close();
-            }, (err) => {
-                this.alert.addAlert('danger', err);
-            });
+            }, err => this.alert.httpErrorMessageAlert(err));
         }, () => {
         });
     }

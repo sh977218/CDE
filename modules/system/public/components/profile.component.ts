@@ -30,12 +30,12 @@ export class ProfileComponent {
             this.cdes = response;
             if (_isArray(response)) this.cdes.forEach((elt, i, elts) => elts[i] = DataElement.copy(elt));
             else this.cdes = [];
-        }, err => this.alert.addAlert('danger', 'Error, unable to retrieve data element view history. ' + err));
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error, unable to retrieve data element view history.'));
         this.http.get('/viewingHistory/form').subscribe(response => {
             this.forms = response;
             if (_isArray(response)) this.forms.forEach((elt, i, elts) => elts[i] = CdeForm.copy(elt));
             else this.forms = [];
-        }, err => this.alert.addAlert('danger', 'Error, unable to retrieve form view history. ' + err));
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error, unable to retrieve form view history.'));
         this.reloadUser();
     }
 
@@ -45,7 +45,7 @@ export class ProfileComponent {
                 this.reloadUser();
                 this.alert.addAlert('success', 'Saved');
             },
-            err => this.alert.addAlert('danger', 'Error, unable to save')
+            () => this.alert.addAlert('danger', 'Error, unable to save')
         );
     }
 

@@ -33,27 +33,21 @@ export class InboxComponent implements OnInit {
         }, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
-        }, response => {
-            this.alert.addAlert('danger', response);
-        });
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     approveAttachment(msg) {
         this.http.get('/attachment/approve/' + msg.typeAttachmentApproval.fileid, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
-        }, response => {
-            this.alert.addAlert('danger', response);
-        });
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     authorizeUser (msg) {
         let request = {username: msg.author.name, role: 'CommentAuthor'};
         this.http.post('/addUserRole', request, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
-        }, response => {
-            this.alert.addAlert('danger', response);
-        });
+        }, err => this.alert.httpErrorMessageAlert(err));
         this.approveUserModalRef.close();
     }
 
@@ -83,9 +77,7 @@ export class InboxComponent implements OnInit {
         this.http.get('/attachment/decline/' + msg.typeAttachmentApproval.fileid, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
-        }, response => {
-            this.alert.addAlert('danger', response);
-        });
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     declineComment(msg) {
@@ -94,9 +86,7 @@ export class InboxComponent implements OnInit {
         }, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
-        }, response => {
-            this.alert.addAlert('danger', response);
-        });
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     getAllMail() {

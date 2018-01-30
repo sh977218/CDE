@@ -29,7 +29,7 @@ export class CdeClassificationComponent {
 
     classifyItem(event) {
         this.classificationSvc.classifyItem(this.elt, event.selectedOrg, event.classificationArray,
-            '/addCdeClassification/', (err) => {
+            '/addCdeClassification/', err => {
                 this.classifyItemModalRef.close();
                 if (err) {
                     this.alert.addAlert('danger', err);

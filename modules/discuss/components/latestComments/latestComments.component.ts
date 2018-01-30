@@ -32,7 +32,7 @@ export class LatestCommentsComponent {
                 this.comments.totalItems = (page - 2) * 30 + this.comments.latestComments.length;
             }
         });
-    };
+    }
 
     pageChange () {
         this.getComments(this.comments.currentCommentsPage);

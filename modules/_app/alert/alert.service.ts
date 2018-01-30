@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs/Subject";
+import { AngularHelperService } from 'widget/angularHelper.service';
 
 
 class Alert {
@@ -29,6 +30,11 @@ export class AlertService {
 
     addAlert(type: string, message: string) {
         this._alertSubject.next(new Alert(type, message));
+    }
+
+    httpErrorMessageAlert(err, info: string = '') {
+        let errorMessage = AngularHelperService.httpErrorMessage(err);
+        this.addAlert('danger', info ? info + ' ' + errorMessage : errorMessage);
     }
 
     remove (alertId: number) {

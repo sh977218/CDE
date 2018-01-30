@@ -89,9 +89,7 @@ export class CreateFormComponent implements OnInit {
                     this.router.navigate(['/formView'], {queryParams: {tinyId: res.tinyId}});
                     if (this.extModalRef) this.extModalRef.close();
                 },
-                err => {
-                    this.alert.addAlert('danger', err);
-                });
+                err => this.alert.httpErrorMessageAlert(err));
     }
 
     confirmDelete(event) {

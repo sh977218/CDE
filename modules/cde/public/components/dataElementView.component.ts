@@ -115,7 +115,7 @@ export class DataElementViewComponent implements OnInit {
             this.hasComments = res && (res.length > 0);
             this.tabsCommented = res.map(c => c.linkedTab + '_tab');
             if (cb) cb();
-        }, err => this.alert.addAlert('danger', 'Error loading comments. ' + err));
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
     }
 
     setDisplayStatusWarning() {
@@ -136,7 +136,7 @@ export class DataElementViewComponent implements OnInit {
         this.userService.then(() => {
             this.displayStatusWarning = assignValue();
         });
-    };
+    }
 
     openCopyElementModal() {
         this.eltCopy = _cloneDeep(this.elt);
@@ -195,10 +195,10 @@ export class DataElementViewComponent implements OnInit {
                 state: this.elt.attachments[index].isDefault,
                 id: this.elt._id
             }).subscribe(res => {
-            this.elt = res;
-            this.alert.addAlert('success', 'Saved');
-            this.ref.detectChanges();
-        });
+                this.elt = res;
+                this.alert.addAlert('success', 'Saved');
+                this.ref.detectChanges();
+            });
     }
 
     upload(event) {
@@ -232,7 +232,7 @@ export class DataElementViewComponent implements OnInit {
                 } else this.drafts = [];
                 if (cb) cb();
             },
-            err => this.alert.addAlert('danger', err));
+            err => this.alert.httpErrorMessageAlert(err));
     }
 
     removeDraft() {
@@ -240,7 +240,7 @@ export class DataElementViewComponent implements OnInit {
             .subscribe(res => {
                 this.drafts = [];
                 this.loadDataElement(null);
-            }, err => this.alert.addAlert('danger', err));
+            }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     saveDraft(cb) {
@@ -262,7 +262,7 @@ export class DataElementViewComponent implements OnInit {
                 this.elt.isDraft = true;
                 if (!this.drafts.length) this.drafts = [this.elt];
                 if (cb) cb(res);
-            }, err => this.alert.addAlert('danger', err));
+            }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     saveDataElement() {
@@ -272,6 +272,6 @@ export class DataElementViewComponent implements OnInit {
                 this.loadDataElement(() => this.alert.addAlert('success', 'Data Element saved.'));
                 this.loadDraft(null);
             }
-        }, err => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
+        }, () => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
     }
 }

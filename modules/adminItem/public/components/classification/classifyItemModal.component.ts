@@ -64,8 +64,9 @@ export class ClassifyItemModalComponent {
         let _treeNode = treeNode;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual)
+            if (!_treeNode.data.virtual) {
                 classificationArray.unshift(_treeNode.data.name);
+            }
         }
         this.classificationSvc.updateClassificationLocalStorage({
             categories: classificationArray,

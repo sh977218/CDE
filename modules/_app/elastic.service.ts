@@ -138,8 +138,8 @@ export class ElasticService {
     getExport(query, type, cb) {
         this.http.post("/elasticSearchExport/" + type, query).subscribe(
             response => cb(null, response),
-            function onError(response) {
-                if (response.status === 503) cb("The server is busy processing similar request, please try again in a minute.");
+            err => {
+                if (err.status === 503) cb("The server is busy processing similar request, please try again in a minute.");
                 else cb("An error occured. This issue has been reported.");
             }
         );
@@ -150,8 +150,9 @@ export class ElasticService {
         let savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
         delete savedSettings.includeRetired;
         this.localStorageService.set("SearchSettings", savedSettings);
-        if (this.userService.user.username)
+        if (this.userService.user.username) {
             this.http.post("/user/update/searchSettings", savedSettings).subscribe();
+        }
     }
 
     getDefault() {

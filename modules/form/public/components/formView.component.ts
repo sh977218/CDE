@@ -25,6 +25,7 @@ import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { FormService } from 'nativeRender/form.service';
 import { BrowserService } from 'widget/browser.service';
+import { AngularHelperService } from 'widget/angularHelper.service';
 
 
 @Component({
@@ -96,8 +97,9 @@ export class FormViewComponent implements OnInit {
 
     beforeChange(event) {
         this.currentTab = event.nextId;
-        if (this.commentMode)
+        if (this.commentMode) {
             this.commentAreaComponent.setCurrentTab(this.currentTab);
+        }
     }
 
     canEdit() {
@@ -129,8 +131,8 @@ export class FormViewComponent implements OnInit {
                 if (res.version) newCde.version = res.version;
                 if (cb) cb();
             }, err => {
-                newCde.error = err;
-                this.alert.addAlert('danger', err);
+                newCde.error = AngularHelperService.httpErrorMessage(err);
+                this.alert.httpErrorMessageAlert(err);
             });
     }
 
@@ -144,9 +146,10 @@ export class FormViewComponent implements OnInit {
                 this.alert.addAlert('info', 'Done. Go to your profile to see all your published forms');
                 this.modalRef.close();
             }, err => {
-                this.alert.addAlert('danger', 'Error when publishing form. ' + err);
+                this.alert.httpErrorMessageAlert(err, 'Error when publishing form.');
                 this.modalRef.close();
-            });
+            }
+        );
     }
 
     formLoaded(cb) {
@@ -164,7 +167,7 @@ export class FormViewComponent implements OnInit {
             this.hasComments = res && (res.length > 0);
             this.tabsCommented = res.map(c => c.linkedTab + '_tab');
             if (cb) cb();
-        }, err => this.alert.addAlert('danger', 'Error loading comments. ' + err));
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
     }
 
     loadForm(cb = _noop) {
@@ -181,7 +184,7 @@ export class FormViewComponent implements OnInit {
                     }
                 }, err => {
                     // do not load form
-                    this.alert.addAlert('danger', err);
+                    this.alert.httpErrorMessageAlert(err);
                     cb();
                 });
             } else this.loadPublished(cb);
@@ -240,10 +243,13 @@ export class FormViewComponent implements OnInit {
     pinAllCdesIntoBoard() {
         let cdes = [];
         let doFormElement = formElt => {
-            if (formElt.elementType === 'question')
+            if (formElt.elementType === 'question') {
                 cdes.push(formElt.question.cde);
-            else if (formElt.elementType === 'section' || formElt.elementType === 'form')
-                formElt.formElements.forEach(doFormElement);
+            } else {
+                if (formElt.elementType === 'section' || formElt.elementType === 'form') {
+                    formElt.formElements.forEach(doFormElement);
+                }
+            }
         };
         this.elt.formElements.forEach(doFormElement);
         this.mltPinModalCde.pinMultiple(cdes, this.mltPinModalCde.open());
@@ -275,7 +281,7 @@ export class FormViewComponent implements OnInit {
         this.http.delete('/draftForm/' + this.elt.tinyId, {responseType: 'text'})
             .subscribe(res => {
                 this.loadForm(() => this.drafts = []);
-            }, err => this.alert.addAlert('danger', err));
+            }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     saveDraft(cb) {
@@ -290,8 +296,9 @@ export class FormViewComponent implements OnInit {
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
         this.draftSubscription = this.http.post('/draftForm/' + this.elt.tinyId, this.elt).subscribe(res => {
             this.elt.isDraft = true;
-            if (!this.drafts.length)
+            if (!this.drafts.length) {
                 this.drafts = [this.elt];
+            }
             this.savingText = 'Saved';
             setTimeout(() => {
                 this.savingText = '';
@@ -299,7 +306,7 @@ export class FormViewComponent implements OnInit {
             this.missingCdes = FormService.areDerivationRulesSatisfied(this.elt);
             this.validate();
             if (cb) cb(res);
-        }, err => this.alert.addAlert('danger', err));
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     saveForm() {
@@ -328,10 +335,10 @@ export class FormViewComponent implements OnInit {
                 state: this.elt.attachments[index].isDefault,
                 id: this.elt._id
             }).subscribe(res => {
-            this.elt = res;
-            this.alert.addAlert('success', 'Saved');
-            this.ref.detectChanges();
-        });
+                this.elt = res;
+                this.alert.addAlert('success', 'Saved');
+                this.ref.detectChanges();
+            });
     }
 
     upload(event) {
@@ -365,10 +372,12 @@ export class FormViewComponent implements OnInit {
         let validationErrors = this.validationErrors;
 
         function findExistingErrors(parent: FormElementsContainer, fe: FormElement) {
-            if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe))
+            if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe)) {
                 validationErrors.push('SkipLogic error on form element "' + FormService.getLabel(fe) + '".');
-            if (Array.isArray(fe.formElements))
+            }
+            if (Array.isArray(fe.formElements)) {
                 fe.formElements.forEach(f => findExistingErrors(fe, f));
+            }
         }
 
         this.elt.formElements.forEach(fe => findExistingErrors(this.elt, fe));

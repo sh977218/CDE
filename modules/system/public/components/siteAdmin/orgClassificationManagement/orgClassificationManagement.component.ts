@@ -146,7 +146,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             res => {
                 this.alert.addAlert('success', 'Saved');
                 this.mapping = res;
-            }, err => this.alert.addAlert('danger', 'There was an issue saving this record.'));
+            }, () => this.alert.addAlert('danger', 'There was an issue saving this record.'));
     }
 
     checkJob(type, cb) {
@@ -301,8 +301,8 @@ export class OrgClassificationManagementComponent implements OnInit {
             res => {
                 this.alert.addAlert('success', 'Saved');
                 this.mapping = res;
-            }, err => this.alert.addAlert('danger', 'There was an issue saving this record.'));
-    };
+            }, () => this.alert.addAlert('danger', 'There was an issue saving this record.'));
+    }
 
     renameClassification(node) {
         let classificationArray = [node.data.name];
