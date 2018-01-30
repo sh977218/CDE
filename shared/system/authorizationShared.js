@@ -21,7 +21,7 @@ export function hasRole(user, role) {
 
 export function isCuratorOf(user, orgName) {
     if (!user) return false;
-    if (user.siteAdmin) return true;
+    if (isSiteAdmin(user)) return true;
     return (user.orgAdmin && user.orgAdmin.indexOf(orgName) >= 0)
         || (user.orgCurator && user.orgCurator.indexOf(orgName) >= 0);
 }
@@ -31,9 +31,13 @@ export function isOrgCurator(user) {
     return isOrgAdmin(user) || (user.orgCurator && user.orgCurator.length > 0);
 }
 
-export function isOrgAdmin(user) {
+export function isOrgAdmin(user, org = undefined) {
     if (!user) return false;
-    return user.siteAdmin === true || (user.orgAdmin && user.orgAdmin.length > 0);
+    if (canOrgAuthority(user)) return true;
+    if (org)
+        return user.orgAdmin.indexOf(org) >= 0;
+    else
+        return user.orgAdmin && user.orgAdmin.length > 0;
 }
 
 export function isSiteAdmin(user) {

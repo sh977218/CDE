@@ -15,7 +15,7 @@ export class UserService {
         text$.pipe(
             debounceTime(300),
             distinctUntilChanged(),
-            switchMap(term => term.length < 3 || !SharedService.auth.hasRole(this.user, 'OrgAuthority') ? [] :
+            switchMap(term => term.length < 3 || !SharedService.auth.isOrgAdmin(this.user) ? [] :
                 this.http.get<any>('/searchUsers/' + term).pipe(
                     map((r: any) => r.users.map(u => u.username)),
                     catchError(() => of([]))

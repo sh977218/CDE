@@ -61,7 +61,6 @@
             true,
             "spaces"
         ],
-        "invoke-injectable": true,
         "no-attribute-parameter-decorator": true,
         "no-eval": true,
         "no-forward-ref": true,
@@ -81,7 +80,6 @@
             true,
             "always"
         ],
-        "templates-use-public": true,
         "triple-equals": [
             true,
             "allow-null-check"
