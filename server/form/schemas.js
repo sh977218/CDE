@@ -133,20 +133,21 @@ exports.formJson = {
         , numberOfColumns: {type: Number, min: 1, max: 6}
         , displayInvisible: {type: Boolean}
         , repeatFormat: {type: String, default: ''}
-        , uomAliases: Schema.Types.Mixed
+        , uomAliases: {type: Schema.Types.Mixed, default: {}}
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 };
 
-exports.formSchema = new Schema(exports.formJson);
+exports.formSchema = new Schema(exports.formJson, {minimize: false});
 exports.draftSchema = new Schema(exports.formJson, {
     toObject: {
         virtuals: true
     },
     toJSON: {
         virtuals: true
-    }
+    },
+    minimize: false
 });
 exports.draftSchema.virtual('isDraft').get(function () {
     return true;

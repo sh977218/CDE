@@ -21,7 +21,7 @@ public class FormJsonExport extends NlmCdeBaseTest {
                 "{\"title\":\"CRF\",\"uri\":\"https://commondataelements.ninds.nih.gov/Doc/EPI/F1126_Adverse_Event_Tracking_Log.docx\"}",
                 "\"permissibleValue\":\"Yes\"",
                 "\"valueMeaningName\":\"Yes\"",
-                "\"registrationState\":{\"registrationStatus\":\"Qualified\"}",
+                "\"registrationState\":{\"registrationStatus\":\"Qualified\",\"replacedBy\":{}}",
                 "\"stewardOrg\":{\"name\":\"NINDS\"}",
                 "\"naming\":[{\"designation\":\"Adverse Event Tracking Log\""
         };
@@ -29,7 +29,7 @@ public class FormJsonExport extends NlmCdeBaseTest {
         String response = findElement(By.cssSelector("HTML body pre")).getAttribute("innerHTML");
 
         for (String s : toCompare) {
-            Assert.assertTrue(response.contains(s), "Export actually contains: " + response);
+            Assert.assertTrue(response.contains(s), "String:\n" + s + "\nis not with in\n" + response + "\n");
         }
 
         switchTabAndClose(0);

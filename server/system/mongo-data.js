@@ -7,12 +7,11 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const shortid = require("shortid");
 const logging = require('./logging.js');
-const mongo_cde = require('../cde/mongo-cde');
-const mongo_form = require('../form/mongo-form');
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const daoManager = require('./moduleDaoManager');
 const async = require('async');
 const _ = require('lodash');
+const dbLogger = require('./dbLogger');
 
 
 var conn = connHelper.establishConnection(config.database.appData),
@@ -465,6 +464,10 @@ exports.getMessages = function (req, callback) {
         ]
     };
 
+    if (req.user.roles === null || req.user.roles === undefined) {
+        dbLogger.consoleLog("user: " + req.user.username + " has null roles.");
+        req.user.roles = [];
+    }
     req.user.roles.forEach(function (r) {
         var roleFilter = {
             "recipient.recipientType": "role"
