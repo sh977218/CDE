@@ -1,5 +1,5 @@
 <div class="question_view">
-    <div class="text-truncate p-1"
+    <div class="p-1"
          [ngClass]="{'outdated-bg': question.question.cde.outdated && !question.hover,'hover-bg':question.hover}">
         <div *ngIf="!isSubForm && canEdit" class="float-left">
             <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"
