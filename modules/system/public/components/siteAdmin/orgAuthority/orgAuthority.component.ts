@@ -1,10 +1,9 @@
-import { Component } from "@angular/core";
-import "rxjs/add/operator/map";
+import { Component } from '@angular/core';
+
 
 @Component({
-    selector: "cde-org-authority",
-    templateUrl: "orgAuthority.component.html"
+    selector: 'cde-org-authority',
+    templateUrl: 'orgAuthority.component.html'
 })
 export class OrgAuthorityComponent {
-
 }

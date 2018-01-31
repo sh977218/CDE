@@ -1,4 +1,5 @@
-import * as async from 'async';
+import async_forEach from 'async/forEach';
+import async_forEachSeries from 'async/forEachSeries';
 import noop from 'lodash/noop';
 
 
@@ -319,8 +320,8 @@ export function isSubForm(node) {
 
 // callback(error)
 // feCb(fe, cbContinue(error))
-export function iterateFe(fe, callback, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
-    if (fe) this.iterateFes(fe.formElements, callback, formCb, sectionCb, questionCb);
+export function iterateFe(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, callback = undefined) {
+    if (fe) this.iterateFes(fe.formElements, formCb, sectionCb, questionCb, callback);
 }
 
 // cb(fe)
@@ -330,18 +331,18 @@ export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, que
 
 // callback(error)
 // feCb(fe, cbContinue(error))
-export function iterateFes(fes, callback = noop, formCb = noop1, sectionCb = noop1, questionCb = noop1) {
+export function iterateFes(fes, formCb = noop1, sectionCb = noop1, questionCb = noop1, callback = noop) {
     if (Array.isArray(fes)) {
-        async.forEach(fes, (fe, cb) => {
+        async_forEach(fes, (fe, cb) => {
             if (fe.elementType === 'form') {
                 formCb(fe, err => {
                     if (err) cb(err);
-                    else this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
+                    else this.iterateFe(fe, formCb, sectionCb, questionCb, cb);
                 });
             } else if (fe.elementType === 'section') {
                 sectionCb(fe, err => {
                     if (err) cb(err);
-                    else this.iterateFe(fe, cb, formCb, sectionCb, questionCb);
+                    else this.iterateFe(fe, formCb, sectionCb, questionCb, cb);
                 });
             } else {
                 questionCb(fe, cb);
@@ -406,7 +407,7 @@ export function iterateFormElements(fe = {}, option = {}, cb = undefined) {
     if (!fe.formElements) fe.formElements = [];
     if (Array.isArray(fe.formElements)) {
         if (option.async) {
-            async.forEachSeries(fe.formElements, (fe, doneOneFe) => {
+            async_forEachSeries(fe.formElements, (fe, doneOneFe) => {
                 if (fe.elementType === 'section') {
                     if (option.sectionCb) option.sectionCb(fe, doneOneFe);
                     else this.iterateFormElements(fe, option, doneOneFe);

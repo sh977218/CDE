@@ -53,6 +53,7 @@
         ],
         "component-class-suffix": true,
         "component-selector": [true, "element", ["nih", "cde"], "kebab-case"],
+        "curly": [true, "ignore-same-line"],
         "directive-class-suffix": true,
         "directive-selector": [true, "attribute", ["nih", "cde"], "camelCase"],
         "import-destructuring-spacing": true,
@@ -60,7 +61,6 @@
             true,
             "spaces"
         ],
-        "invoke-injectable": true,
         "no-attribute-parameter-decorator": true,
         "no-eval": true,
         "no-forward-ref": true,
@@ -80,7 +80,6 @@
             true,
             "always"
         ],
-        "templates-use-public": true,
         "triple-equals": [
             true,
             "allow-null-check"

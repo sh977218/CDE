@@ -1,23 +1,25 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http, RequestOptions } from '@angular/http';
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
 
 import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
+import { AngularHelperService } from 'widget/angularHelper.service';
 
 
 @Injectable()
 export class ClassificationService {
-
-    constructor(public http: Http,
-                private localStorageService: LocalStorageService,
-                public esService: ElasticService,
-                private alert: AlertService) {
+    constructor(
+        private alert: AlertService,
+        public esService: ElasticService,
+        public http: HttpClient,
+        private localStorageService: LocalStorageService,
+    ) {
     }
 
-    public updateClassificationLocalStorage(item) {
+    updateClassificationLocalStorage(item) {
         let allPossibleCategories = [];
         let accumulateCategories = [];
         item.categories.forEach(i => {
@@ -36,26 +38,26 @@ export class ClassificationService {
     }
 
 
-    public classifyItem(elt, org, classifArray, endPoint, cb) {
+    classifyItem(elt, org, classifArray, endPoint, cb) {
         let postBody = {
             categories: classifArray,
             eltId: elt._id,
             orgName: org
         };
-        this.http.post(endPoint, postBody).subscribe(
+        this.http.post(endPoint, postBody, {responseType: 'text'}).subscribe(
             () => {
                 this.updateClassificationLocalStorage(postBody);
                 cb();
-            }, err => cb(err));
+            }, err => cb(AngularHelperService.httpErrorMessage(err)));
     }
 
-    public removeClassification(elt, org, classifArray, endPoint, cb) {
+    removeClassification(elt, org, classifArray, endPoint, cb) {
         let deleteBody = {
             categories: classifArray,
             eltId: elt._id,
             orgName: org
         };
-        this.http.post(endPoint, deleteBody).map(res => res.json()).subscribe(res => cb(), (err) => cb(err));
+        this.http.post(endPoint, deleteBody).subscribe(res => cb(), (err) => cb(err));
     }
 
     sortClassification(elt) {
@@ -117,14 +119,11 @@ export class ClassificationService {
             page: 1,
             selectedStatuses: this.esService.getUserDefaultStatuses()
         };
-        let ro = new RequestOptions({
-            body: {
-                deleteClassification: deleteClassification,
-                settings: settings,
-            }
-        });
-        this.http.delete('/orgClassification/', ro)
-            .map(res => res.text()).subscribe(
+        let ro = {
+            deleteClassification: deleteClassification,
+            settings: settings,
+        };
+        this.http.post('/orgClassificationDelete/', ro, {responseType: 'text'}).subscribe(
             res => cb(res),
             err => this.alert.addAlert('danger', err));
     }
@@ -141,8 +140,7 @@ export class ClassificationService {
             oldClassification: oldClassification,
             newClassification: newClassification
         };
-        this.http.post('/orgReclassification/', postBody)
-            .map(res => res.text()).subscribe(
+        this.http.post('/orgReclassification/', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
             err => this.alert.addAlert('danger', err));
     }
@@ -158,8 +156,7 @@ export class ClassificationService {
             settings: settings,
             newClassification: newClassification
         };
-        this.http.post('/OrgClassification/rename', postBody)
-            .map(res => res.text()).subscribe(
+        this.http.post('/OrgClassification/rename', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
             err => this.alert.addAlert('danger', err));
     }
@@ -168,10 +165,8 @@ export class ClassificationService {
         let putBody = {
             newClassification: newClassification
         };
-        this.http.put('/orgClassification/', putBody)
-            .map(res => res.text()).subscribe(
+        this.http.put('/orgClassification/', putBody, {responseType: 'text'}).subscribe(
             res => cb(res),
             err => this.alert.addAlert('danger', err));
     }
-
 }

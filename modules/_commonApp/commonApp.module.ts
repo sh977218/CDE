@@ -1,12 +1,12 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ErrorHandler, NgModule } from "@angular/core";
-import { HttpModule } from "@angular/http";
 
 import { FrontExceptionHandler } from '_commonApp/frontExceptionHandler';
 
 
 @NgModule({
     imports: [
-        HttpModule,
+        HttpClientModule,
     ],
     declarations: [
     ],

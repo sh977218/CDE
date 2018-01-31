@@ -6,8 +6,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
 import { CompareModule } from 'compare/compare.module';
-import { DataElementQuickBoardComponent } from 'quickBoard/dataElementQuickBoard/dataElementQuickBoardComponent';
-import { FormQuickBoardComponent } from 'quickBoard/formQuickBoard/formQuickBoardComponent';
+import { DataElementQuickBoardComponent } from 'quickBoard/dataElementQuickBoard/dataElementQuickBoard.component';
+import { FormQuickBoardComponent } from 'quickBoard/formQuickBoard/formQuickBoard.component';
 import { QuickBoardComponent } from 'quickBoard/quickBoard.component';
 import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';

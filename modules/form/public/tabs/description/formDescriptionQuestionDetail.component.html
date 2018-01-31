@@ -1,4 +1,4 @@
-<ng-template [ngTemplateOutlet]="getTemplate()" [ngOutletContext]="{ $implicit: question }"></ng-template>
+<ng-template [ngTemplateOutlet]="getTemplate()" [ngTemplateOutletContext]="{ $implicit: question }"></ng-template>
 
 <ng-template #formDescriptionQuestionTmpl>
     <div class="my-1">
@@ -136,7 +136,7 @@
                             <dd class="col-10">{{r.code}}</dd>
                         </dl>
                     </ng-template>
-                    <input class="form-control skipLogicCondition" [ngbTypeahead]="ucumService.search"
+                    <input [ngbTypeahead]="ucumService.search"
                            [resultTemplate]="rt" [(ngModel)]="newUom" [container]="'body'" [editable]="false"
                            [inputFormatter]="ucumService.formatter" (selectItem)="selectedUom($event);"/>
                 </div>

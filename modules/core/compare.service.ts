@@ -12,36 +12,27 @@ import _uniqWith from 'lodash/uniqWith';
 
 @Injectable()
 export class CompareService {
-    doCompareObject(newer, older, option) {
-        _forEach(option, property => {
-            if (!newer && !older) {
-                property.match = true;
-                property.newer = '';
-                property.older = '';
-                return;
-            }
-            let l = '';
-            if (newer) l = _get(newer, property.property);
-            let r = '';
-            if (older) r = _get(older, property.property);
-            if (!property.data) {
-                property.match = _isEqual(l, r);
-                property.newer = l ? l.toString() : '';
-                property.older = r ? r.toString() : '';
-                if (!newer && !older) property.match = true;
-            } else {
-                this.doCompareObject(l, r, property.data);
-                if (property.data) property.match = !(property.data.filter(p => !p.match).length > 0);
-            }
-        });
-        return option;
-    };
-
     copyValue(obj, data) {
         _forEach(data, d => {
             let value = _get(obj, d.property);
             if (_isEmpty(value)) value = '';
             obj[d.property] = value;
+        });
+    }
+
+    doCompareArray(newer, older, option) {
+        _forEach(option, property => {
+            if (!newer && !older) {
+                property.match = true;
+                property.display = false;
+                return;
+            }
+            if (!property.isEqual) property.isEqual = _isEqual;
+            let l = [];
+            if (newer) l = _get(newer, property.property);
+            let r = [];
+            if (older) r = _get(older, property.property);
+            this.doCompareArrayImpl(l, r, property);
         });
     }
 
@@ -182,20 +173,28 @@ export class CompareService {
         }
     }
 
-    doCompareArray(newer, older, option) {
+    doCompareObject(newer, older, option) {
         _forEach(option, property => {
             if (!newer && !older) {
                 property.match = true;
-                property.display = false;
+                property.newer = '';
+                property.older = '';
                 return;
             }
-            if (!property.isEqual) property.isEqual = _isEqual;
-            let l = [];
+            let l = '';
             if (newer) l = _get(newer, property.property);
-            let r = [];
+            let r = '';
             if (older) r = _get(older, property.property);
-            this.doCompareArrayImpl(l, r, property);
+            if (!property.data) {
+                property.match = _isEqual(l, r);
+                property.newer = l ? l.toString() : '';
+                property.older = r ? r.toString() : '';
+                if (!newer && !older) property.match = true;
+            } else {
+                this.doCompareObject(l, r, property.data);
+                if (property.data) property.match = !(property.data.filter(p => !p.match).length > 0);
+            }
         });
-    }
+        return option;
+    };
 }
-

@@ -34,7 +34,7 @@ public class NativeTableTest extends BaseFormTest {
         clickElement(By.xpath("//div[@id='question_0_1_0']//*[contains(@class,'multipleSelection')]/input"));
 
         goToPreview();
-        findElement(By.xpath("//div[@class='native-table-cell']/label[text()='Mother']"));
+        findElement(By.xpath("//div[contains(@class,'native-table-cell')]/label[text()='Mother']"));
         findElement(By.xpath("//div[contains(@class,'native-table-cell')]//input[@type='checkbox']"));
     }
 }

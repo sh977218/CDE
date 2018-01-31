@@ -1,8 +1,8 @@
 import { NgModule } from "@angular/core";
 import { PreloadAllModules, RouterModule, Routes } from "@angular/router";
 
-import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFoundComponent';
-import { IdentifierSourcesResolve } from "../system/public/components/searchPreferences/identifier-source.resolve.service";
+import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
+import { IdentifierSourcesResolve } from 'system/public/components/searchPreferences/identifier-source.resolve.service';
 
 const appRoutes: Routes = [
     {path: 'api', loadChildren: 'system/public/documentApi.module#DocumentApiModule'},
@@ -31,7 +31,7 @@ const appRoutes: Routes = [
     {
         path: 'searchPreferences',
         resolve: {
-            IdentifierSourcesResolve
+            identifier: IdentifierSourcesResolve
         },
         loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule'
     },

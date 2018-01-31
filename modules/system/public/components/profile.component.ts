@@ -1,12 +1,12 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { Http } from '@angular/http';
-import { CdeForm } from 'core/form.model';
-import { DataElement } from 'core/dataElement.model';
-import { User } from 'core/models.model';
 import _isArray from 'lodash/isArray';
 
-import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
+import { UserService } from '_app/user.service';
+import { DataElement } from 'core/dataElement.model';
+import { CdeForm } from 'core/form.model';
+import { User } from 'core/models.model';
 
 
 @Component({
@@ -21,38 +21,32 @@ export class ProfileComponent {
     orgAdmin: string;
     user: User;
 
-    constructor(private http: Http,
-                private alert: AlertService,
-                private userService: UserService) {
-
-        this.http.get('/viewingHistory/dataElement').map(res => res.json())
-            .subscribe(
-                response => {
-                    this.cdes = response;
-                    if (_isArray(response)) this.cdes.forEach((elt, i, elts) => elts[i] = DataElement.copy(elt));
-                    else this.cdes = [];
-                }, err => this.alert.addAlert('danger', 'Error, unable to retrieve data element view history. ' + err)
-            );
-        this.http.get('/viewingHistory/form').map(res => res.json())
-            .subscribe(
-                response => {
-                    this.forms = response;
-                    if (_isArray(response)) this.forms.forEach((elt, i, elts) => elts[i] = CdeForm.copy(elt));
-                    else this.forms = [];
-                }, err => this.alert.addAlert('danger', 'Error, unable to retrieve form view history. ' + err)
-            );
+    constructor(
+        private alert: AlertService,
+        private http: HttpClient,
+        private userService: UserService,
+    ) {
+        this.http.get('/viewingHistory/dataElement').subscribe(response => {
+            this.cdes = response;
+            if (_isArray(response)) this.cdes.forEach((elt, i, elts) => elts[i] = DataElement.copy(elt));
+            else this.cdes = [];
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error, unable to retrieve data element view history.'));
+        this.http.get('/viewingHistory/form').subscribe(response => {
+            this.forms = response;
+            if (_isArray(response)) this.forms.forEach((elt, i, elts) => elts[i] = CdeForm.copy(elt));
+            else this.forms = [];
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error, unable to retrieve form view history.'));
         this.reloadUser();
     }
 
     saveProfile() {
-        this.http.post('/user/me', this.user)
-            .subscribe(
-                () => {
-                    this.reloadUser();
-                    this.alert.addAlert('success', 'Saved');
-                },
-                err => this.alert.addAlert('danger', 'Error, unable to save')
-            );
+        this.http.post('/user/me', this.user, {responseType: 'text'}).subscribe(
+            () => {
+                this.reloadUser();
+                this.alert.addAlert('success', 'Saved');
+            },
+            () => this.alert.addAlert('danger', 'Error, unable to save')
+        );
     }
 
     reloadUser() {

@@ -12,10 +12,10 @@
                     <div class="form-group">
                         <input id="newOrgCuratorUsername" name="newOrgCuratorUsername" type="text" class="form-control"
                                placeholder="enter user name" [(ngModel)]="newUsername" autocomplete="off"
-                               [ngbTypeahead]="searchTypeahead" required>
+                               [ngbTypeahead]="userService.searchTypeahead" required>
                     </div>
                     <span class="mx-2">a curator for</span>
-                    <div class="form-group">
+                    <div *ngIf="userService.user" class="form-group">
                         <select id="newOrgCuratorOrgName" name="newOrgCuratorOrgName" class="form-control"
                                 [(ngModel)]="newOrgName" required>
                             <option value="">select organization</option>
@@ -46,7 +46,7 @@
                 </table>
             </ng-template>
         </ngb-tab>
-        <ngb-tab title="CDE & Form Management" *ngIf="userService.user?.orgAdmin.length > 1">
+        <ngb-tab title="CDE & Form Management" *ngIf="userService.user && userService.user.orgAdmin.length > 1">
             <ng-template ngbTabContent>
                 <form class="form-inline pt40 pb40" role="form" id="transferStewardForm" name="transferStewardForm"
                       novalidate>
@@ -74,7 +74,7 @@
                 </form>
             </ng-template>
         </ngb-tab>
-        <ngb-tab title="Embedding" *ngIf="userService.user?.orgAdmin.length > 0" id="embeddingTab">
+        <ngb-tab title="Embedding" *ngIf="userService.user && userService.user.orgAdmin.length > 0" id="embeddingTab">
             <ng-template ngbTabContent>
                 <cde-embed></cde-embed>
             </ng-template>

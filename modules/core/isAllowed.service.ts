@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
+
 import { UserService } from '_app/user.service';
 import { SharedService } from 'core/shared.service';
 
+
 @Injectable()
 export class IsAllowedService {
-
     constructor(private userService: UserService) {}
 
     isAllowed (CuratedItem) {
@@ -35,6 +36,10 @@ export class IsAllowedService {
         return SharedService.auth.hasRole(this.userService.user, role);
     }
 
+    static hasRoleStatic (user, role) {
+        return SharedService.auth.hasRole(user, role);
+    }
+
     isSiteAdmin () {
         return SharedService.auth.isSiteAdmin(this.userService.user);
     }
@@ -51,6 +56,4 @@ export class IsAllowedService {
     loggedIn () {
         return !!(this.userService.user && this.userService.user._id);
     }
-
-
 }

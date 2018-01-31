@@ -9,8 +9,7 @@
         <div class="form-group">
             <input class="form-control" id="searchUsersInput" name="searchUsersInput" type="text"
                    placeholder="enter username" autocomplete="off" [(ngModel)]="search.username"
-                   [ngbTypeahead]="searchTypeahead" [resultFormatter]="formatter"
-                   [inputFormatter]="formatter" required>
+                   [ngbTypeahead]="userService.searchTypeahead" required>
         </div>
         <button type="submit" class="btn btn-success ml-1" id="searchUsersSubmit" (click)="searchUsers()">
             Search
