@@ -2,24 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import noop from 'lodash/noop';
 
-import { FormQuestion } from 'core/form.model';
-import { SharedService } from 'core/shared.service';
+import { FormQuestion } from 'shared/form/form.model';
+import { iterateFe } from 'shared/form/formShared';
 
 function noop1(a, cb) { cb(); }
 
 @Injectable()
 export class FormService {
-    static areDerivationRulesSatisfied = SharedService.formShared.areDerivationRulesSatisfied;
-    static convertFormToSection = SharedService.formShared.convertFormToSection;
-    static getLabel = SharedService.formShared.getLabel;
-    static findQuestionByTinyId = SharedService.formShared.findQuestionByTinyId;
-    static isSubForm = SharedService.formShared.isSubForm;
-    static iterateFe = SharedService.formShared.iterateFe;
-    static iterateFeSync = SharedService.formShared.iterateFeSync;
-    static iterateFes = SharedService.formShared.iterateFes;
-    static iterateFesSync = SharedService.formShared.iterateFesSync;
-    static score = SharedService.formShared.score;
-
     constructor(
         private http: HttpClient
     ) {}
@@ -108,7 +97,7 @@ export class FormService {
             }
             cb();
         }
-        FormService.iterateFe(form, formCb, undefined, questionCb, callback);
+        iterateFe(form, formCb, undefined, questionCb, callback);
     }
 
     // cb(err, elt)

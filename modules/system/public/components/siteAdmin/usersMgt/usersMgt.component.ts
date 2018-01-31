@@ -5,7 +5,7 @@ import { Select2OptionData } from 'ng2-select2';
 
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
-import { SharedService } from 'core/shared.service';
+import { SharedService } from '_commonApp/shared.service';
 
 
 @Component({

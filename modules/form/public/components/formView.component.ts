@@ -12,18 +12,17 @@ import { Subscription } from 'rxjs/Subscription';
 import { AlertService } from '_app/alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
+import { areDerivationRulesSatisfied, getLabel, iterateFeSync, iterateFes } from 'shared/form/formShared';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
-import { DataElement } from 'core/dataElement.model';
+import { DataElement } from 'shared/de/dataElement.model';
 import { ExportService } from 'core/export.service';
-import { CdeForm, FormElement, FormElementsContainer } from 'core/form.model';
+import { CdeForm, FormElement, FormElementsContainer } from 'shared/form/form.model';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { Comment } from 'core/models.model';
+import { Comment } from 'shared/models.model';
 import { OrgHelperService } from 'core/orgHelper.service';
-import { SharedService } from 'core/shared.service';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
-import { FormService } from 'nativeRender/form.service';
 import { BrowserService } from 'widget/browser.service';
 import { AngularHelperService } from 'widget/angularHelper.service';
 
@@ -156,7 +155,7 @@ export class FormViewComponent implements OnInit {
         if (this.elt) {
             CdeForm.validate(this.elt);
             this.formId = this.elt._id;
-            this.missingCdes = FormService.areDerivationRulesSatisfied(this.elt);
+            this.missingCdes = areDerivationRulesSatisfied(this.elt);
             this.loadComments(this.elt, null);
         }
         if (cb) cb();
@@ -303,7 +302,7 @@ export class FormViewComponent implements OnInit {
             setTimeout(() => {
                 this.savingText = '';
             }, 3000);
-            this.missingCdes = FormService.areDerivationRulesSatisfied(this.elt);
+            this.missingCdes = areDerivationRulesSatisfied(this.elt);
             this.validate();
             if (cb) cb(res);
         }, err => this.alert.httpErrorMessageAlert(err));
@@ -311,7 +310,7 @@ export class FormViewComponent implements OnInit {
 
     saveForm() {
         let newCdes = [];
-        SharedService.formShared.iterateFes(this.elt.formElements, undefined, undefined, (fe, cb) => {
+        iterateFes(this.elt.formElements, undefined, undefined, (fe, cb) => {
             if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
             if (cb) cb();
         }, () => {
@@ -373,7 +372,7 @@ export class FormViewComponent implements OnInit {
 
         function findExistingErrors(parent: FormElementsContainer, fe: FormElement) {
             if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe)) {
-                validationErrors.push('SkipLogic error on form element "' + FormService.getLabel(fe) + '".');
+                validationErrors.push('SkipLogic error on form element "' + getLabel(fe) + '".');
             }
             if (Array.isArray(fe.formElements)) {
                 fe.formElements.forEach(f => findExistingErrors(fe, f));
@@ -384,6 +383,6 @@ export class FormViewComponent implements OnInit {
     }
 
     validateUoms() {
-        FormService.iterateFeSync(this.elt, );
+        iterateFeSync(this.elt, );
     }
 }

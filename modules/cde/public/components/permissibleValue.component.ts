@@ -8,7 +8,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '_app/alert/alert.service';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { SharedService } from 'core/shared.service';
+import { SharedService } from '_commonApp/shared.service';
 
 
 @Component({

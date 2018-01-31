@@ -8,12 +8,12 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import { debounceTime, map } from 'rxjs/operators';
 
 import { AlertService } from '_app/alert/alert.service';
-import { FormElement, FormSection, SkipLogic } from "core/form.model";
-import { FormattedValue } from 'core/models.model';
-import { FormService } from 'nativeRender/form.service';
-import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
-import { FormDescriptionComponent } from "./formDescription.component";
+import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
+import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { FormElement, FormSection, SkipLogic } from 'shared/form/form.model';
+import { isSubForm } from 'shared/form/formShared';
+import { FormattedValue } from 'shared/models.model';
 
 @Component({
     selector: "cde-form-description-section",
@@ -57,11 +57,11 @@ export class FormDescriptionSectionComponent implements OnInit {
             this.section.skipLogic = new SkipLogic;
 
         if (this.node.data.elementType === "form") {
-            if (FormService.isSubForm(this.node.parent))
-                this.isSubForm = FormService.isSubForm(this.node);
+            if (isSubForm(this.node.parent))
+                this.isSubForm = isSubForm(this.node);
         } else {
-            if (FormService.isSubForm(this.node))
-                this.isSubForm = FormService.isSubForm(this.node);
+            if (isSubForm(this.node))
+                this.isSubForm = isSubForm(this.node);
         }
 
         this.checkRepeatOptions();

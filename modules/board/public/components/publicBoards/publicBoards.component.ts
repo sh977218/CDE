@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
 import { AlertService } from '_app/alert/alert.service';
-import { ElasticQueryResponse } from 'core/models.model';
+import { ElasticQueryResponse } from 'shared/models.model';
 
 
 @Component({

@@ -6,8 +6,8 @@ import * as moment from 'moment/min/moment.min';
 import 'fhirclient';
 
 import { mappings } from '_nativeRenderApp/fhirMapping';
-import { CdeForm } from 'core/form.model';
-import { FormService } from 'nativeRender/form.service';
+import { CdeForm } from 'shared/form/form.model';
+import { iterateFeSync } from 'shared/form/formShared';
 
 @Component({
     selector: 'cde-native-render-standalone',
@@ -93,7 +93,6 @@ export class NativeRenderAppComponent {
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
     constructor(
-        private formService: FormService,
         private http: HttpClient,
     ) {
         let args: any = NativeRenderAppComponent.searchParamsGet();
@@ -227,7 +226,7 @@ export class NativeRenderAppComponent {
         pushFormObservationNames(tinyId);
         this.getForm(tinyId, (err, elt) => {
             if (!err && elt)
-                FormService.iterateFeSync(elt, form => pushFormObservationNames(form.inForm.form.tinyId));
+                iterateFeSync(elt, form => pushFormObservationNames(form.inForm.form.tinyId));
             cb(err, observationNames);
         });
     }
@@ -330,7 +329,7 @@ export class NativeRenderAppComponent {
 
     loadFhirDataForm(form) {
         this.mapIO(form, this.selectedEncounter.observations.map(o => o.raw), 'in');
-        FormService.iterateFeSync(form, this.loadFhirDataForm.bind(this));
+        iterateFeSync(form, this.loadFhirDataForm.bind(this));
     }
 
     loadForm(err = null, elt = null) {
@@ -652,7 +651,7 @@ export class NativeRenderAppComponent {
             this.mapIO(elt, submitFhirObservations, 'out', createFn);
         };
         outputMapIO(this.elt);
-        FormService.iterateFeSync(this.elt, outputMapIO);
+        iterateFeSync(this.elt, outputMapIO);
 
         // identify changed and submit to server
         for (let i = 0; i < submitFhirPending.length; i++) {

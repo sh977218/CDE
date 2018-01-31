@@ -7,15 +7,15 @@ import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
 import { Subscription } from 'rxjs/Subscription';
 
-import * as deValidator from '../../../../shared/cde/deValidator.js';
+import * as deValidator from 'shared/de/deValidator.js';
 import { AlertService } from '_app/alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { DataElement } from 'core/dataElement.model';
+import { DataElement } from 'shared/de/dataElement.model';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { Comment } from 'core/models.model';
+import { Comment } from 'shared/models.model';
 import { OrgHelperService } from 'core/orgHelper.service';
-import { SharedService } from 'core/shared.service';
+import { SharedService } from '_commonApp/shared.service';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 
 

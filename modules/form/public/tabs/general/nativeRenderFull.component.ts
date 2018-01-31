@@ -1,6 +1,6 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { CdeForm, DisplayProfile } from 'core/form.model';
+import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 
 @Component({
     selector: "cde-native-render-full",

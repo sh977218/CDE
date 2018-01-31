@@ -8,10 +8,10 @@ import { debounceTime, distinctUntilChanged, switchMap, take } from 'rxjs/operat
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
-import { DataElement } from 'core/dataElement.model';
-import { CdeForm } from 'core/form.model';
-import { ElasticQueryResponse, Elt, User } from 'core/models.model';
-import { SharedService } from 'core/shared.service';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
+import { ElasticQueryResponse, Elt, User } from 'shared/models.model';
+import { SharedService } from '_commonApp/shared.service';
 import { SearchSettings } from 'search/search.model';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 

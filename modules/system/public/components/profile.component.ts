@@ -4,9 +4,9 @@ import _isArray from 'lodash/isArray';
 
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
-import { DataElement } from 'core/dataElement.model';
-import { CdeForm } from 'core/form.model';
-import { User } from 'core/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
+import { User } from 'shared/models.model';
 
 
 @Component({

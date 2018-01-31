@@ -5,7 +5,7 @@ import { of } from 'rxjs/observable/of';
 import { Observable } from 'rxjs/Observable';
 
 import { IsAllowedService } from 'core/isAllowed.service';
-import { SharedService } from 'core/shared.service';
+import { SharedService } from '_commonApp/shared.service';
 
 
 @Injectable()

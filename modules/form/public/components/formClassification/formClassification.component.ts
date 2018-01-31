@@ -7,7 +7,7 @@ import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { ClassificationService } from 'core/classification.service';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { CdeForm } from 'core/form.model';
+import { CdeForm } from 'shared/form/form.model';
 
 
 @Component({

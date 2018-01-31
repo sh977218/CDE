@@ -2,8 +2,8 @@ import { Component, Input, ViewChild, OnInit, Output, EventEmitter } from '@angu
 import { NgbModalModule, NgbModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
 
 import { AlertService } from '_app/alert/alert.service';
-import { DataElement } from 'core/dataElement.model';
-import { Property } from 'core/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
+import { Property } from 'shared/models.model';
 import { OrgHelperService } from 'core/orgHelper.service';
 
 

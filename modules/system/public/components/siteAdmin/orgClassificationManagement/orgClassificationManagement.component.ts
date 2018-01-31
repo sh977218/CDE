@@ -10,8 +10,8 @@ import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { ClassificationService } from 'core/classification.service';
-import { ElasticQueryResponse } from 'core/models.model';
-import { SharedService } from 'core/shared.service';
+import { ElasticQueryResponse } from 'shared/models.model';
+import { SharedService } from '_commonApp/shared.service';
 
 const actionMapping: IActionMapping = {
     mouse: {

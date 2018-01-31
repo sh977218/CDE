@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { CdeForm, DisplayProfile } from 'core/form.model';
 import { FormViewComponent } from 'form/public/components/formView.component';
-import { FormService } from 'nativeRender/form.service';
 import { UcumService } from 'form/public/ucum.service';
+import { CdeForm, DisplayProfile } from 'shared/form/form.model';
+import { iterateFeSync } from 'shared/form/formShared';
 
 type DisplayProfileVM = {
     aliases: {
@@ -79,7 +79,7 @@ export class DisplayProfileComponent implements OnInit {
             let resourceCount = 0;
             this.uoms.clear();
             this.uomsDate = this.elt.updated;
-            FormService.iterateFeSync(this.elt, undefined, undefined, q => {
+            iterateFeSync(this.elt, undefined, undefined, q => {
                 if (Array.isArray(q.question.uoms))
                     q.question.uoms.forEach(u => {
                         resourceCount++;

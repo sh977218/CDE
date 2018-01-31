@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from "@angular/core";
-import { SharedService } from "core/shared.service";
+import { SharedService } from "_commonApp/shared.service";
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from "_app/user.service";
 import { LoginService } from '_app/login.service';

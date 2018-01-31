@@ -8,8 +8,8 @@ import { debounceTime, map } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 
 import { AlertService } from '_app/alert/alert.service';
-import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'core/form.model';
-import { FormattedValue } from 'core/models.model';
+import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'shared/form/form.model';
+import { FormattedValue } from 'shared/models.model';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
 import { OrgHelperService } from 'core/orgHelper.service';

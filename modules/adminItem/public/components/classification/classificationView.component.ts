@@ -3,7 +3,7 @@ import { IActionMapping } from "angular-tree-component/dist/models/tree-options.
 import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { IsAllowedService } from 'core/isAllowed.service';
-import { SharedService } from 'core/shared.service';
+import { SharedService } from '_commonApp/shared.service';
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 

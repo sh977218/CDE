@@ -1,6 +1,5 @@
 import {
     CdeId,
-    Classification,
     DataSource,
     Elt,
     Instruction,
@@ -10,9 +9,10 @@ import {
     DerivationRule,
     Property,
     ReferenceDocument,
-    RegistrationState, UserReference
-} from 'core/models.model';
-import { FormService } from 'nativeRender/form.service';
+    RegistrationState
+} from 'shared/models.model';
+
+import { iterateFeSync } from 'shared/form/formShared';
 
 export class CdeForm extends Elt implements FormElementsContainer {
     comments: Comment[];
@@ -67,7 +67,7 @@ export class CdeForm extends Elt implements FormElementsContainer {
             if (!dp.uomAliases)
                 dp.uomAliases = {};
         });
-        FormService.iterateFeSync(elt,
+        iterateFeSync(elt,
             form => {
                 if (!Array.isArray(form.formElements))
                     form.formElements = [];
@@ -118,6 +118,7 @@ export interface FormElementsContainer {
 export interface FormElement extends FormElementsContainer {
     _id: ObjectId;
     readonly elementType: string;
+    expanded; // Calculated, used for View TreeComponent
     formElements: FormElement[];
     instructions: Instruction;
     label: string;
@@ -151,6 +152,7 @@ export class FormSection implements FormSectionOrForm {
 export class FormInForm implements FormSectionOrForm {
     _id;
     elementType = 'form';
+    expanded = true; // Calculated, used for View TreeComponent
     forbidMatrix;
     formElements = [];
     instructions;
@@ -169,8 +171,9 @@ export class FormQuestion implements FormElement {
     _id;
     descriptionId: string;
     newCde: boolean = false;
-    elementType = 'question';
     edit: boolean = false;
+    elementType = 'question';
+    expanded = true; // Calculated, used for View TreeComponent
     hover: boolean = false;
     formElements = [];
     hideLabel: boolean;

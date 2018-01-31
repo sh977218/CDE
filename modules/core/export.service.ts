@@ -3,11 +3,11 @@ import * as JSZip from "jszip";
 import * as JXON from "jxon";
 import { saveAs } from "file-saver";
 import { ElasticService } from '_app/elastic.service';
+import { getFormCdes, getFormOdm } from 'shared/form/formShared';
 import { RegistrationValidatorService } from "core/registrationValidator.service";
-import { SharedService } from 'core/shared.service';
+import { SharedService } from '_commonApp/shared.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
-import * as formShared from "../../shared/form/formShared";
 import { HttpClient } from "@angular/common/http";
 
 @Injectable()
@@ -66,7 +66,7 @@ export class ExportService {
                     'odm': function (result) {
                         let zip = new JSZip();
                         result.forEach(function (oneElt) {
-                            SharedService.formShared.getFormOdm(oneElt, function (err, odmElt) {
+                            getFormOdm(oneElt, function (err, odmElt) {
                                 if (!err) zip.file(oneElt.tinyId + ".xml", JXON.jsToString({ODM: odmElt}));
                             });
                         });
@@ -143,7 +143,7 @@ export class ExportService {
         let settings = this.elasticService.searchSettings;
         let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
 
-        for (let qCde of formShared.getFormCdes(form)) {
+        for (let qCde of getFormCdes(form)) {
             const cde = await this.http.get('/de/' + qCde.tinyId).toPromise();
             result += SharedService.exportShared.convertToCsv(
                 SharedService.exportShared.projectCdeForExport(cde, settings.tableViewFields));

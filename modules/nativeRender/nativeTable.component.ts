@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { FormElement, FormQuestion } from 'core/form.model';
+import { FormElement, FormQuestion } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-native-table',

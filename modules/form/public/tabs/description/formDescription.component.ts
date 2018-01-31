@@ -23,7 +23,8 @@ import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
-import { CdeForm, FormSection } from 'core/form.model';
+import { CdeForm, FormElementsContainer, FormSection } from 'shared/form/form.model';
+import { convertFormToSection, isSubForm, iterateFeSync } from 'shared/form/formShared';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
 import { SearchSettings } from 'search/search.model';
@@ -156,13 +157,13 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     private searchTerms = new Subject<string>();
     suggestedCdes = [];
     treeOptions = {
-        allowDrag: element => !FormService.isSubForm(element) || element.data.elementType === 'form' && !FormService.isSubForm(element.parent),
+        allowDrag: element => !isSubForm(element) || element.data.elementType === 'form' && !isSubForm(element.parent),
         allowDrop: (element, {parent, index}) => {
             return element !== parent && parent.data.elementType !== 'question' && (!element
                 || !element.ref && (element.data.elementType !== 'question' || parent.data.elementType === 'section')
                 || element.ref === 'section' || element.ref === 'form' || element.ref === 'pasteSection'
                 || (element.ref === 'question' && parent.data.elementType === 'section')
-            ) && !FormService.isSubForm(parent);
+            ) && !isSubForm(parent);
         },
         actionMapping: {
             mouse: {
@@ -284,8 +285,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     addFormFromSearch(fe, cb = null) {
         this.http.get<CdeForm>('/form/' + fe.tinyId).subscribe(form => {
-            let inForm: any = FormService.convertFormToSection(form);
-            inForm.formElements = form.formElements;
+            let inForm: FormElementsContainer = convertFormToSection(form);
+            if (!inForm) return;
             this.formElementEditing.formElement = inForm;
             this.addFormElement(inForm);
             this.setCurrentEditing(this.formElementEditing.formElements, inForm, this.formElementEditing.index);
@@ -296,7 +297,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     addExpanded(fe) {
         fe.expanded = true;
-        FormService.iterateFeSync(fe, _noop, fe => fe.expanded = true, fe => fe.expanded = true);
+        iterateFeSync(fe, undefined, fe => fe.expanded = true, fe => fe.expanded = true);
     }
 
     addIds(fes, preId) {

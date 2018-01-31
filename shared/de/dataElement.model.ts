@@ -1,4 +1,4 @@
-import { CdeId, DerivationRule, Elt, PermissibleValue } from "core/models.model";
+import { CdeId, DerivationRule, Elt, PermissibleValue } from 'shared/models.model';
 
 
 export class DataElement extends Elt {

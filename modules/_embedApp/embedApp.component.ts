@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import '../../node_modules/feedback/stable/2.0/html2canvas.js';
 
 import { ElasticService } from '_app/elastic.service';
-import { SharedService } from 'core/shared.service';
+import { SharedService } from '_commonApp/shared.service';
 
 
 @Component({

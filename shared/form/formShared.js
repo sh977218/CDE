@@ -37,7 +37,7 @@ export function areDerivationRulesSatisfied(elt) {
 }
 
 export function convertFormToSection(form) {
-    if (form.formElements)
+    if (form && form.formElements)
         return {
             elementType: 'form',
             label: form.naming[0] ? form.naming[0].designation : '',
@@ -54,7 +54,7 @@ export function convertFormToSection(form) {
             }
         };
     else
-        return {};
+        return null;
 }
 
 export function findQuestionByTinyId(tinyId, elt) {
@@ -318,31 +318,31 @@ export function isSubForm(node) {
     return n.data.elementType === 'form';
 }
 
+// feCb(fe, cbContinue(error, skipChildren?: boolean))
 // callback(error)
-// feCb(fe, cbContinue(error))
 export function iterateFe(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, callback = undefined) {
     if (fe) this.iterateFes(fe.formElements, formCb, sectionCb, questionCb, callback);
 }
 
-// cb(fe)
+// cb(fe): skipChildren
 export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
     if (fe) this.iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
 }
 
+// feCb(fe, cbContinue(error, skipChildren?: boolean))
 // callback(error)
-// feCb(fe, cbContinue(error))
 export function iterateFes(fes, formCb = noop1, sectionCb = noop1, questionCb = noop1, callback = noop) {
     if (Array.isArray(fes)) {
         async_forEach(fes, (fe, cb) => {
             if (fe.elementType === 'form') {
-                formCb(fe, err => {
+                formCb(fe, (err, skip = undefined) => {
                     if (err) cb(err);
-                    else this.iterateFe(fe, formCb, sectionCb, questionCb, cb);
+                    else if (!skip) this.iterateFe(fe, formCb, sectionCb, questionCb, cb);
                 });
             } else if (fe.elementType === 'section') {
-                sectionCb(fe, err => {
+                sectionCb(fe, (err, skip = undefined) => {
                     if (err) cb(err);
-                    else this.iterateFe(fe, formCb, sectionCb, questionCb, cb);
+                    else if (!skip) this.iterateFe(fe, formCb, sectionCb, questionCb, cb);
                 });
             } else {
                 questionCb(fe, cb);
@@ -351,16 +351,16 @@ export function iterateFes(fes, formCb = noop1, sectionCb = noop1, questionCb = 
     }
 }
 
-// cb(fe)
+// feCb(fe): skipChildren
 export function iterateFesSync(fes, formCb = noop, sectionCb = noop, questionCb = noop) {
     if (Array.isArray(fes))
         fes.forEach(fe => {
             if (fe.elementType === 'form') {
-                formCb(fe);
-                this.iterateFeSync(fe, formCb, sectionCb, questionCb);
+                if (!formCb(fe))
+                    this.iterateFeSync(fe, formCb, sectionCb, questionCb);
             } else if (fe.elementType === 'section') {
-                sectionCb(fe);
-                this.iterateFeSync(fe, formCb, sectionCb, questionCb);
+                if (!sectionCb(fe))
+                    this.iterateFeSync(fe, formCb, sectionCb, questionCb);
             } else {
                 questionCb(fe);
             }

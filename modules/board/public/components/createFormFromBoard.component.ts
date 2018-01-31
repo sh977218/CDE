@@ -3,7 +3,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { AlertService } from '_app/alert/alert.service';
-import { CdeForm, FormSection } from 'core/form.model';
+import { CdeForm, FormSection } from 'shared/form/form.model';
 import { FormService } from 'nativeRender/form.service';
 
 @Component({

@@ -6,7 +6,7 @@ import { BoardCdeSummaryListComponent } from 'cde/public/components/listView/boa
 import { BoardFormSummaryListComponent } from 'form/public/components/listView/boardFormSummaryList.component';
 import { CdeAccordionListComponent } from 'cde/public/components/listView/cdeAccordionList.component';
 import { ElasticService } from '_app/elastic.service';
-import { Elt } from 'core/models.model';
+import { Elt } from 'shared/models.model';
 import { CdeSummaryListContentComponent } from 'cde/public/components/listView/cdeSummaryListContent.component';
 import { FormAccordionListComponent } from 'form/public/components/listView/formAccordionList.component';
 import { FormSummaryListContentComponent } from 'form/public/components/listView/formSummaryListContent.component';

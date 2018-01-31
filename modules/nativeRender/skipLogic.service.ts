@@ -1,6 +1,8 @@
 import { ErrorHandler, Injectable } from '@angular/core';
-import { FormElement, FormElementsContainer, FormQuestion, SkipLogic } from 'core/form.model';
-import { FormService } from './form.service';
+
+import { FormElement, FormElementsContainer, FormQuestion } from 'shared/form/form.model';
+import { iterateFesSync, score } from 'shared/form/formShared';
+
 
 @Injectable()
 export class SkipLogicService {
@@ -38,7 +40,7 @@ export class SkipLogicService {
             return false;
         }
 
-        let realAnswer = realAnswerObj.question.isScore ? FormService.score(realAnswerObj, nrs.getElt()) : realAnswerObj.question.answer;
+        let realAnswer = realAnswerObj.question.isScore ? score(realAnswerObj, nrs.getElt()) : realAnswerObj.question.answer;
         if (realAnswer === undefined || realAnswer === null ||
             (typeof realAnswer === 'number' && isNaN(realAnswer))) realAnswer = '';
 
@@ -136,7 +138,7 @@ export class SkipLogicService {
 
     static getQuestions(fes: FormElement[], filter = undefined): FormQuestion[] {
         let matchedQuestions = [];
-        FormService.iterateFesSync(fes, undefined, undefined, fe => {
+        iterateFesSync(fes, undefined, undefined, fe => {
             if (!filter || filter(fe))
                matchedQuestions.push(fe);
         });

@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import {
-    CdeForm, DisplayProfile, FormElement, FormQuestion, FormSection, FormSectionOrForm, PermissibleFormValue
-} from 'core/form.model';
-import { FormService } from 'nativeRender/form.service';
+
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import {
+    CdeForm, DisplayProfile, FormElement, FormQuestion, FormSectionOrForm, PermissibleFormValue
+} from 'shared/form/form.model';
+import { iterateFeSync } from 'shared/form/formShared';
+
 
 @Injectable()
 export class NativeRenderService {
@@ -32,7 +34,7 @@ export class NativeRenderService {
         if (!this.elt)
             return;
 
-        FormService.iterateFeSync(this.elt, undefined, undefined, (f: FormQuestion) => {
+        iterateFeSync(this.elt, undefined, undefined, (f: FormQuestion) => {
             // clean up
             if (Array.isArray(f.question.answers)) {
                 for (let i = 0; i < f.question.answers.length; i++) {

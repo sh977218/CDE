@@ -15,7 +15,7 @@ const mongo_data_system = require('./mongo-data')
     , classificationNode = require('./classificationNode')
     , classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared.js')
     , mongo_cde = require('../cde/mongo-cde')
-    , deValidator = require('@std/esm')(module)('../../shared/cde/deValidator')
+    , deValidator = require('@std/esm')(module)('../../shared/de/deValidator')
 ;
 
 exports.save = function (req, res, dao, cb) {

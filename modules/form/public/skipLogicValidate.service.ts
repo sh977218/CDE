@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import _trim from 'lodash/trim';
-import { FormElement, FormElementsContainer, SkipLogic } from 'core/form.model';
+import { FormElement, FormElementsContainer, SkipLogic } from 'shared/form/form.model';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 
 @Injectable()

@@ -19,9 +19,9 @@ import _isEqual from 'lodash/isEqual';
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { CdeForm } from 'core/form.model';
+import { CdeForm } from 'shared/form/form.model';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { SharedService } from 'core/shared.service';
+import { SharedService } from '_commonApp/shared.service';
 
 
 @Component({
