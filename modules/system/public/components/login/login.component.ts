@@ -1,10 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
 import { Router } from '@angular/router';
 
 import { AlertService } from '_app/alert/alert.service';
 import { LoginService } from '_app/login.service';
 import { UserService } from '_app/user.service';
+
 
 @Component({
     selector: 'cde-login',
@@ -52,36 +53,32 @@ import { UserService } from '_app/user.service';
     `]
 })
 export class LoginComponent implements OnInit {
-
     csrf: string;
-    showCaptcha: boolean;
-    username: string;
     password: string;
-    siteKey: string = (window as any).siteKey;
     recaptcha: string;
-
-    constructor(private http: Http,
-                private alert: AlertService,
-                private loginSvc: LoginService,
-                private userService: UserService,
-                private router: Router) {
-    }
+    showCaptcha: boolean;
+    siteKey: string = (window as any).siteKey;
+    username: string;
 
     ngOnInit() {
         this.getCsrf();
     }
 
-    resolved(e) {
-        this.recaptcha = e;
+    constructor(
+        private http: HttpClient,
+        private alert: AlertService,
+        private loginSvc: LoginService,
+        private userService: UserService,
+        private router: Router
+    ) {
     }
 
     getCsrf() {
         delete this.csrf;
-        this.http.get('/csrf').map(r => r.json()).subscribe(response => {
+        this.http.get<any>('/csrf').subscribe(response => {
             this.csrf = response.csrf;
             this.showCaptcha = response.showCaptcha;
-        }, () => {
-        });
+        }, () => {});
     }
 
     login() {
@@ -90,7 +87,7 @@ export class LoginComponent implements OnInit {
             password: this.password,
             _csrf: this.csrf,
             recaptcha: this.recaptcha
-        }).map(r => r.text()).subscribe(res => {
+        }, {responseType: 'text'}).subscribe(res => {
             this.userService.reload();
             if (res === 'OK') {
                 if (this.loginSvc.getPreviousRoute()) {
@@ -111,6 +108,9 @@ export class LoginComponent implements OnInit {
             this.getCsrf();
         });
 
-    };
+    }
 
+    resolved(e) {
+        this.recaptcha = e;
+    }
 }

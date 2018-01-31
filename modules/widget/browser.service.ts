@@ -6,7 +6,7 @@ export class BrowserService {
             event.preventDefault();
             event.stopPropagation();
         }
-    };
+    }
 
     static isIe() {
         let userAgent = window.navigator.userAgent;
@@ -15,9 +15,10 @@ export class BrowserService {
 
     static openUrl(url, event, newTab = false) {
         BrowserService.interruptEvent(event);
-        if (newTab)
+        if (newTab) {
             window.open(url);
-        else
+        } else {
             location.assign(url);
-    };
+        }
+    }
 }

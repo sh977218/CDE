@@ -1,10 +1,10 @@
-import { Http } from "@angular/http";
-import { Component } from "@angular/core";
-import "rxjs/add/operator/map";
+import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+
 
 @Component({
-    selector: "cde-log-audit",
-    templateUrl: "./logAudit.component.html",
+    selector: 'cde-log-audit',
+    templateUrl: './logAudit.component.html',
     styles: [`
         :host >>> .fa.fa-fw.fa-sort{
             color:lightgrey;
@@ -12,57 +12,45 @@ import "rxjs/add/operator/map";
     `]
 })
 export class LogAuditComponent {
-    gridLogEvents: any[] = [];
     currentPage: number = 1;
+    gridLogEvents: any[] = [];
     ipAddress: any;
-    toDate: any;
+    itemsPerPage: number;
     fromDate: any;
     totalItems: number;
-    itemsPerPage: number;
-    propertiesArray = ["date", "ip", "url", "method", "status", "respTime"];
+    toDate: any;
+    sortingBy: any = {date: 'desc'};
     sortMap = {
         date: {
-            title: "Date",
-            property: "date",
+            title: 'Date',
+            property: 'date',
         },
         ip: {
-            title: "IP",
-            property: "remoteAddr",
+            title: 'IP',
+            property: 'remoteAddr',
         },
         url: {
-            title: "URL",
-            property: "url",
+            title: 'URL',
+            property: 'url',
         },
         method: {
-            title: "Method",
-            property: "method",
+            title: 'Method',
+            property: 'method',
         },
         status: {
-            title: "Status",
-            property: "httpStatus",
+            title: 'Status',
+            property: 'httpStatus',
         },
         respTime: {
-            title: "Resp. Time",
-            property: "responseTime",
+            title: 'Resp. Time',
+            property: 'responseTime',
         }
     };
-    sortingBy: any = {date: "desc"};
+    propertiesArray = ['date', 'ip', 'url', 'method', 'status', 'respTime'];
 
-    constructor(private http: Http) {}
-
-    sort(p) {
-        p = this.sortMap[p].property;
-        if (this.sortingBy[p] === "desc") {
-            this.sortingBy[p] = "asc";
-        } else if (this.sortingBy[p] === "desc") {
-            this.sortingBy[p] = "desc";
-        } else {
-            this.sortingBy = {};
-            this.sortingBy[p] = "desc";
-        }
-        this.currentPage = 1;
-        this.searchLogs();
-    }
+    constructor(
+        private http: HttpClient
+    ) {}
 
     searchLogs(newSearch = false) {
         let postBody = {
@@ -75,7 +63,7 @@ export class LogAuditComponent {
             sort: this.sortingBy
         };
         //noinspection TypeScriptValidateTypes
-        this.http.post("/logs", postBody).map(res => res.json())
+        this.http.post<any>('/logs', postBody)
             .subscribe(res => {
                 if (res.totalItems) this.totalItems = res.totalItems;
                 if (res.itemsPerPage) this.itemsPerPage = res.itemsPerPage;
@@ -90,6 +78,19 @@ export class LogAuditComponent {
                     };
                 });
             });
-    };
+    }
 
+    sort(p) {
+        p = this.sortMap[p].property;
+        if (this.sortingBy[p] === 'desc') {
+            this.sortingBy[p] = 'asc';
+        } else if (this.sortingBy[p] === 'desc') {
+            this.sortingBy[p] = 'desc';
+        } else {
+            this.sortingBy = {};
+            this.sortingBy[p] = 'desc';
+        }
+        this.currentPage = 1;
+        this.searchLogs();
+    }
 }

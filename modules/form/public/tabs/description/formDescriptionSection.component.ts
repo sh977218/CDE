@@ -5,7 +5,7 @@ import {
 import { Observable } from "rxjs/Observable";
 import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
-import _isEmpty from 'lodash/isEmpty';
+import { debounceTime, map } from 'rxjs/operators';
 
 import { AlertService } from '_app/alert/alert.service';
 import { FormElement, FormSection, SkipLogic } from "core/form.model";
@@ -97,8 +97,9 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     getSkipLogicOptions = (text$: Observable<string>) =>
-        text$.debounceTime(300).map(term =>
-            this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.section)
+        text$.pipe(
+            debounceTime(300),
+            map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.section)),
         );
 
     getTemplate() {

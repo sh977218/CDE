@@ -1,6 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
-import * as moment from 'moment';
+import * as moment from 'moment/min/moment.min';
 
 import { FormService } from 'nativeRender/form.service';
 import { FormQuestion } from 'core/form.model';
@@ -49,7 +49,10 @@ export class NativeQuestionComponent implements OnInit {
         this.previousUom = this.formElement.question.answerUom;
     }
 
-    constructor(private http: Http, public nrs: NativeRenderService) {
+    constructor(
+        private http: HttpClient,
+        public nrs: NativeRenderService
+    ) {
     }
 
     classColumns(pvIndex, index) {
@@ -103,7 +106,7 @@ export class NativeQuestionComponent implements OnInit {
     // cb(error, number)
     convertUnits(value: number, fromUnit: string, toUnit: string, cb) {
         this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit) + '&to='
-            + encodeURIComponent(toUnit)).map(r => r.json()).subscribe(v => cb(undefined, v), e => cb(e));
+            + encodeURIComponent(toUnit)).subscribe(v => cb(undefined, v), e => cb(e));
     }
 
     isFirstInRow(index) {

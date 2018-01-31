@@ -1,14 +1,10 @@
-import { Component, Inject, Input } from "@angular/core";
-import "rxjs/add/operator/map";
+import { Component, Input } from '@angular/core';
+
 
 @Component({
-    selector: "cde-admin-item-sources",
-    templateUrl: "./sources.component.html"
+    selector: 'cde-admin-item-sources',
+    templateUrl: './sources.component.html'
 })
-
-
 export class SourcesComponent {
-
     @Input() elt: any;
-
 }

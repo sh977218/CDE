@@ -3,7 +3,7 @@
     <div class="form-group">
         <input class="form-control" name="message" [(ngModel)]="newAdmin"
                placeholder="enter username" autocomplete="off"
-               [ngbTypeahead]="searchTypeahead"
+               [ngbTypeahead]="userService.searchTypeahead"
                required/>
     </div>
     <span class="mx-2">a site admin</span>

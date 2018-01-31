@@ -1,5 +1,4 @@
 var mongo_data = require('./mongo-data')
-    , util = require('util')
     , daoManager = require('./moduleDaoManager')
     , usersrvc = require('./usersrvc')
     , async = require('async')

@@ -1,20 +1,21 @@
-import { Component } from "@angular/core";
-import { Http } from "@angular/http";
+import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
 
 @Component({
-    selector: "cde-app-log",
-    templateUrl: "./appLog.component.html",
+    selector: 'cde-app-log',
+    templateUrl: './appLog.component.html',
 })
 export class AppLogComponent {
-
-    gridLogEvents: any[] = [];
     currentPage: number = 1;
-    toDate: any;
     fromDate: any;
-    totalItems: number;
+    gridLogEvents: any[] = [];
     itemsPerPage: number;
+    totalItems: number;
+    toDate: any;
 
-    constructor(private http: Http) {}
+    constructor(
+        private http: HttpClient
+    ) {}
 
     searchLogs() {
         let postBody = {
@@ -23,7 +24,7 @@ export class AppLogComponent {
             fromDate: this.fromDate,
             toDate: this.toDate
         };
-        this.http.post("/applogs", postBody).map(res => res.json()).subscribe(res => {
+        this.http.post<any>('/applogs', postBody).subscribe(res => {
             if (res.totalItems) this.totalItems = res.totalItems;
             if (res.itemsPerPage) this.itemsPerPage = res.itemsPerPage;
             this.gridLogEvents = res.logs.map(log => {
@@ -34,5 +35,5 @@ export class AppLogComponent {
                 };
             });
         });
-    };
+    }
 }

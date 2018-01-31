@@ -1,13 +1,15 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Host, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { Http, Response } from '@angular/http';
 import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
 import _toString from 'lodash/toString';
 
 import { FormElement, FormQuestion } from 'core/form.model';
+import { DataElement } from 'core/dataElement.model';
+import { FormDescriptionComponent } from "form/public/tabs/description/formDescription.component";
 import { FormService } from 'nativeRender/form.service';
-import { FormDescriptionComponent } from "./formDescription.component";
+
 
 @Component({
     selector: 'cde-form-description-question',
@@ -23,28 +25,46 @@ import { FormDescriptionComponent } from "./formDescription.component";
 })
 export class FormDescriptionQuestionComponent implements OnInit {
     @Input() canEdit: boolean = false;
-    @Input() node: TreeNode;
     @Input() index;
+    @Input() node: TreeNode;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
-
     @ViewChild('updateCdeVersionTmpl') updateCdeVersionTmpl: NgbModalModule;
-
     isSubForm = false;
-    updateCdeVersion: any;
-
-    question: FormQuestion;
     parent: FormElement;
-
-    constructor(@Host() public formDescriptionComponent: FormDescriptionComponent,
-                public formService: FormService,
-                private http: Http,
-                public modalService: NgbModal) {
-    }
+    question: FormQuestion;
+    updateCdeVersion: any;
 
     ngOnInit() {
         this.question = this.node.data;
         this.parent = this.node.parent.data;
         this.isSubForm = FormService.isSubForm(this.node);
+    }
+
+    constructor(
+        @Host() public formDescriptionComponent: FormDescriptionComponent,
+        public formService: FormService,
+        private http: HttpClient,
+        public modalService: NgbModal
+    ) {
+    }
+
+    editQuestion(question) {
+        if (!this.isSubForm && this.canEdit) {
+            question.edit = !question.edit;
+            this.formDescriptionComponent.setCurrentEditing(this.parent.formElements, question, this.index);
+        }
+    }
+
+    hoverInQuestion(question) {
+        if (!this.isSubForm && this.canEdit) {
+            question.hover = true;
+        }
+    }
+
+    hoverOutQuestion(question) {
+        if (!this.isSubForm && this.canEdit) {
+            question.hover = false;
+        }
     }
 
     getDatatypeLabel(question) {
@@ -60,14 +80,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
         return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
     }
 
-    removeNode(node) {
-        node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
-        node.treeModel.update();
-        this.stageElt.emit();
-    }
-
     openUpdateCdeVersion(question) {
-        this.http.get('/de/' + question.question.cde.tinyId).map((res: Response) => res.json())
+        this.http.get<DataElement>('/de/' + question.question.cde.tinyId)
             .subscribe(response => {
                 this.formService.convertCdeToQuestion(response, newQuestion => {
                     this.updateCdeVersion = (() => {
@@ -85,15 +99,14 @@ export class FormDescriptionQuestionComponent implements OnInit {
                         newQuestion.question.skipLogic = currentQuestion.question.skipLogic;
                         newQuestion.repeat = currentQuestion.repeat;
 
-                        this.http.get('/de/' + newQuestion.question.cde.tinyId).map((res: Response) => res.json())
+                        this.http.get<DataElement>('/de/' + newQuestion.question.cde.tinyId)
                             .subscribe(newCde => {
                                 let cdeUrl = '/de/' + currentQuestion.question.cde.tinyId;
                                 if (currentQuestion.question.cde.version && currentQuestion.question.cde.version.length > 0)
                                     cdeUrl = cdeUrl + '/version/' + currentQuestion.question.cde.version;
-                                this.http.get(cdeUrl).map((res: Response) => res.json())
-                                    .subscribe((oldCde) => {
-                                        modal.bLabel = !_isEqual(newCde.naming, oldCde.naming);
-                                    });
+                                this.http.get<DataElement>(cdeUrl).subscribe(oldCde => {
+                                    modal.bLabel = !_isEqual(newCde.naming, oldCde.naming);
+                                });
                                 let found = false;
                                 newCde.naming.forEach(result => {
                                     if (result.designation === currentQuestion.label) found = true;
@@ -144,23 +157,9 @@ export class FormDescriptionQuestionComponent implements OnInit {
             });
     }
 
-    hoverInQuestion(question) {
-        if (!this.isSubForm && this.canEdit) {
-            question.hover = true;
-        }
+    removeNode(node) {
+        node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
+        node.treeModel.update();
+        this.stageElt.emit();
     }
-
-    hoverOutQuestion(question) {
-        if (!this.isSubForm && this.canEdit) {
-            question.hover = false;
-        }
-    }
-
-    editQuestion(question) {
-        if (!this.isSubForm && this.canEdit) {
-            question.edit = !question.edit;
-            this.formDescriptionComponent.setCurrentEditing(this.parent.formElements, question, this.index);
-        }
-    }
-
 }

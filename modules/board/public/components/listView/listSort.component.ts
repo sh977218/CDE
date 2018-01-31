@@ -1,7 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
-import { Http } from '@angular/http';
-import { BoardListService } from 'board/public/components/listView/boardList.service';
+
 import { AlertService } from '_app/alert/alert.service';
+import { BoardListService } from 'board/public/components/listView/boardList.service';
+
 
 @Component({
     selector: 'cde-list-sort',
@@ -15,9 +17,10 @@ export class ListSortComponent {
 
     pinModal: any;
 
-    constructor(private boardListService: BoardListService,
-                private http: Http,
-                private alert: AlertService
+    constructor(
+        private alert: AlertService,
+        private boardListService: BoardListService,
+        private http: HttpClient,
     ) {}
 
     moveUp(id) {
@@ -33,11 +36,11 @@ export class ListSortComponent {
     }
 
     movePin(endPoint, pinId) {
-        this.http.post(endPoint, {boardId: this.boardListService.board._id, tinyId: pinId}).subscribe(() => {
+        this.http.post(endPoint, {boardId: this.boardListService.board._id, tinyId: pinId}, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Saved');
             this.boardListService.reload.emit();
-        }, (response) => {
-            this.alert.addAlert('danger', response);
+        }, err => {
+            this.alert.httpErrorMessageAlert(err);
             this.boardListService.reload.emit();
         });
     }

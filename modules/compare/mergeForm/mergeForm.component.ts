@@ -1,22 +1,23 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import "rxjs/add/operator/map";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { MergeFormService } from 'core/mergeForm.service';
-import { IsAllowedService } from 'core/isAllowed.service';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
+
 import { AlertService } from '_app/alert/alert.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { MergeFormService } from 'core/mergeForm.service';
 
 @Component({
-    selector: "cde-merge-form",
+    selector: 'cde-merge-form',
     providers: [NgbActiveModal],
-    templateUrl: "./mergeForm.component.html"
+    templateUrl: './mergeForm.component.html'
 })
 export class MergeFormComponent {
-    @ViewChild("mergeFormContent") public mergeFormContent: NgbModalModule;
     @Input() public left: any;
     @Input() public right: any;
     @Output() doneMerging = new EventEmitter();
-    public modalRef: NgbModalRef;
-    public mergeFields: any = {
+    @ViewChild('mergeFormContent') public mergeFormContent: NgbModalModule;
+    doneMerge: boolean = false;
+    maxNumberQuestions: any;
+    mergeFields: any = {
         naming: true,
         referenceDocuments: true,
         properties: true,
@@ -36,36 +37,24 @@ export class MergeFormComponent {
             retireCde: false
         }
     };
-    public numMergedQuestions: any;
-    public maxNumberQuestions: any;
-    public showProgressBar: boolean = false;
-    public doneMerge: boolean = false;
+    modalRef: NgbModalRef;
+    numMergedQuestions: any;
+    showProgressBar: boolean = false;
 
-    constructor(private alert: AlertService,
-                public mergeFormService: MergeFormService,
-                public isAllowedModel: IsAllowedService,
-                public modalService: NgbModal) {
+    constructor(
+        private alert: AlertService,
+        public isAllowedModel: IsAllowedService,
+        public mergeFormService: MergeFormService,
+        public modalService: NgbModal
+    ) {
     }
 
-    selectAllFormMergerFields() {
-        this.mergeFields.naming = true;
-        this.mergeFields.referenceDocuments = true;
-        this.mergeFields.properties = true;
-        this.mergeFields.ids = true;
-        this.mergeFields.classifications = true;
-        this.mergeFields.questions = true;
-    }
-
-    selectAllCdeMergerFields() {
-        this.mergeFields.cde.naming = true;
-        this.mergeFields.cde.referenceDocuments = true;
-        this.mergeFields.cde.properties = true;
-        this.mergeFields.cde.ids = true;
-        this.mergeFields.cde.attachments = true;
-        this.mergeFields.cde.dataSets = true;
-        this.mergeFields.cde.derivationRules = true;
-        this.mergeFields.cde.sources = true;
-        this.mergeFields.cde.classifications = true;
+    deselectAllCdeMergerFields() {
+        this.mergeFields.cde.naming = false;
+        this.mergeFields.cde.referenceDocuments = false;
+        this.mergeFields.cde.properties = false;
+        this.mergeFields.cde.ids = false;
+        this.mergeFields.cde.classifications = false;
     }
 
     deselectAllFormMergerFields() {
@@ -81,20 +70,7 @@ export class MergeFormComponent {
         this.mergeFields.questions = false;
     }
 
-    deselectAllCdeMergerFields() {
-        this.mergeFields.cde.naming = false;
-        this.mergeFields.cde.referenceDocuments = false;
-        this.mergeFields.cde.properties = false;
-        this.mergeFields.cde.ids = false;
-        this.mergeFields.cde.classifications = false;
-    }
-
-    openMergeFormModal() {
-        this.mergeFormService.validateQuestions(this.left, this.right, this.mergeFields);
-        this.modalRef = this.modalService.open(this.mergeFormContent, {size: "lg"});
-    }
-
-    public doMerge() {
+    doMerge() {
         this.showProgressBar = true;
         this.maxNumberQuestions = this.right.questions.length;
         this.mergeFormService.doMerge(this.left, this.right, this.mergeFields, (index, next) => {
@@ -102,21 +78,21 @@ export class MergeFormComponent {
             next();
         }, (err) => {
             if (err)
-                return this.alert.addAlert("danger", err);
+                return this.alert.addAlert('danger', err);
             else {
                 if (this.mergeFormService.error.ownSourceForm) {
-                    this.left.changeNote = "Merge to tinyId " + this.right.tinyId;
+                    this.left.changeNote = 'Merge to tinyId ' + this.right.tinyId;
                     if (this.isAllowedModel.isAllowed(this.left))
-                        this.left.registrationState.registrationStatus = "Retired";
+                        this.left.registrationState.registrationStatus = 'Retired';
                     this.mergeFormService.saveForm(this.left, (err) => {
-                        if (err) this.alert.addAlert("danger", "Can not save source form.");
+                        if (err) this.alert.addAlert('danger', 'Can not save source form.');
                         else {
-                            this.right.changeNote = "Merge from tinyId " + this.left.tinyId;
+                            this.right.changeNote = 'Merge from tinyId ' + this.left.tinyId;
                             this.mergeFormService.saveForm(this.right, (err) => {
-                                if (err) this.alert.addAlert("danger", "Can not save target form.");
+                                if (err) this.alert.addAlert('danger', 'Can not save target form.');
                                 else {
                                     this.doneMerge = true;
-                                    this.alert.addAlert("success", "Form merged");
+                                    this.alert.addAlert('success', 'Form merged');
                                     setTimeout(() => {
                                         this.showProgressBar = false;
                                         return;
@@ -126,12 +102,12 @@ export class MergeFormComponent {
                         }
                     });
                 } else {
-                    this.right.changeNote = "Merge from tinyId " + this.left.tinyId;
+                    this.right.changeNote = 'Merge from tinyId ' + this.left.tinyId;
                     this.mergeFormService.saveForm(this.right, (err) => {
-                        if (err) this.alert.addAlert("danger", "Can not save target form.");
+                        if (err) this.alert.addAlert('danger', 'Can not save target form.');
                         else {
                             this.doneMerge = true;
-                            this.alert.addAlert("success", "Form merged");
+                            this.alert.addAlert('success', 'Form merged');
                             setTimeout(() => {
                                 this.showProgressBar = false;
                                 this.doneMerging.emit({left: this.left, right: this.right});
@@ -142,5 +118,31 @@ export class MergeFormComponent {
                 }
             }
         });
+    }
+
+    openMergeFormModal() {
+        this.mergeFormService.validateQuestions(this.left, this.right, this.mergeFields);
+        this.modalRef = this.modalService.open(this.mergeFormContent, {size: 'lg'});
+    }
+
+    selectAllCdeMergerFields() {
+        this.mergeFields.cde.naming = true;
+        this.mergeFields.cde.referenceDocuments = true;
+        this.mergeFields.cde.properties = true;
+        this.mergeFields.cde.ids = true;
+        this.mergeFields.cde.attachments = true;
+        this.mergeFields.cde.dataSets = true;
+        this.mergeFields.cde.derivationRules = true;
+        this.mergeFields.cde.sources = true;
+        this.mergeFields.cde.classifications = true;
+    }
+
+    selectAllFormMergerFields() {
+        this.mergeFields.naming = true;
+        this.mergeFields.referenceDocuments = true;
+        this.mergeFields.properties = true;
+        this.mergeFields.ids = true;
+        this.mergeFields.classifications = true;
+        this.mergeFields.questions = true;
     }
 }

@@ -1,9 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Input, ViewChild } from '@angular/core';
-import { Http } from '@angular/http';
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { MyBoardsService } from 'board/public/myBoards.service';
+
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
+import { MyBoardsService } from 'board/public/myBoards.service';
+
 
 @Component({
     selector: 'cde-pin-board-modal',
@@ -12,18 +14,48 @@ import { UserService } from '_app/user.service';
 })
 export class PinBoardModalComponent {
     @Input() module = null;
-    @ViewChild('pinModal') public pinModal: NgbModalModule;
-    @ViewChild('ifYouLoginModal') public ifYouLoginModal: NgbModalModule;
-
-    public modalRef: NgbModalRef;
+    @ViewChild('pinModal') pinModal: NgbModalModule;
+    @ViewChild('ifYouLoginModal') ifYouLoginModal: NgbModalModule;
+    modalRef: NgbModalRef;
     private resolve;
     private reject;
 
-    constructor(public myBoardsSvc: MyBoardsService,
-                public modalService: NgbModal,
-                private alert: AlertService,
-                private http: Http,
-                private userService: UserService) {
+    constructor(
+        private alert: AlertService,
+        private http: HttpClient,
+        public modalService: NgbModal,
+        public myBoardsSvc: MyBoardsService,
+        private userService: UserService,
+    ) {
+    }
+
+    pinMultiple(elts: any, promise: Promise<any>) {
+        promise.then(board => {
+            let url = '/board/id/' + board._id;
+            if (this.module === 'cde') {
+                url += '/dataElements/';
+            }
+            if (this.module === 'form') {
+                url += '/forms/';
+            }
+
+            this.http.put(url, elts, {observe: 'response', responseType: 'text'}).subscribe(r => {
+                this.alert.addAlert(r.status === 200 ? 'success' : 'warning', r.body);
+                this.modalRef.close();
+            }, err => this.alert.httpErrorMessageAlert(err));
+        }, () => {
+        });
+    }
+
+    pinOne(elt: any, promise: Promise<any>) {
+        promise.then(board => {
+            let url = '/pin/' + this.module + '/' + elt.tinyId + '/' + board._id;
+            this.http.put(url, {}, {observe: 'response', responseType: 'text'}).subscribe(r => {
+                this.alert.addAlert(r.status === 200 ? 'success' : 'warning', r.body);
+                this.modalRef.close();
+            }, err => this.alert.httpErrorMessageAlert(err));
+        }, () => {
+        });
     }
 
     open() {
@@ -38,36 +70,6 @@ export class PinBoardModalComponent {
                 this.modalService.open(this.ifYouLoginModal);
                 this.reject();
             }
-        });
-    }
-
-    pinMultiple(elts: any, promise: Promise<any>) {
-        promise.then(board => {
-            let url = "/board/id/" + board._id;
-            if (this.module === "cde")
-                url += "/dataElements/";
-            if (this.module === "form")
-                url += "/forms/";
-
-            this.http.put(url, elts).subscribe((r) => {
-                this.alert.addAlert(r.status === 200 ? "success" : "warning", r.text());
-                this.modalRef.close();
-            }, (err) => {
-                this.alert.addAlert("danger", err);
-            });
-        }, () => {
-        });
-    }
-
-    pinOne(elt: any, promise: Promise<any>) {
-        promise.then(board => {
-            this.http.put('/pin/' + this.module + '/' + elt.tinyId + '/' + board._id, {}).subscribe((r) => {
-                this.alert.addAlert(r.status === 200 ? 'success' : 'warning', r.text());
-                this.modalRef.close();
-            }, (err) => {
-                this.alert.addAlert('danger', err);
-            });
-        }, () => {
         });
     }
 

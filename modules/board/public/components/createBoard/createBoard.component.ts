@@ -1,47 +1,44 @@
-import { Http } from "@angular/http";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { Component, ViewChild } from "@angular/core";
-import "rxjs/add/operator/map";
+import { HttpClient } from '@angular/common/http';
+import { Component, ViewChild } from '@angular/core';
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+
 import { AlertService } from '_app/alert/alert.service';
 import { MyBoardsService } from 'board/public/myBoards.service';
 
+
 @Component({
-    selector: "cde-create-board",
-    templateUrl: "./createBoard.component.html",
+    selector: 'cde-create-board',
+    templateUrl: './createBoard.component.html',
     providers: [NgbActiveModal]
 })
-
 export class CreateBoardComponent {
-
-    constructor(private http: Http,
-                public modalService: NgbModal,
-                private alert: AlertService,
-                private myBoardsSvc: MyBoardsService) {
-    }
-
+    @ViewChild('createBoardModal') public createBoardModal: NgbModalModule;
+    public modalRef: NgbModalRef;
     newBoard: any = {
-        type: "cde"
+        type: 'cde'
     };
 
-    @ViewChild("createBoardModal") public createBoardModal: NgbModalModule;
-    public modalRef: NgbModalRef;
+    constructor(
+        private alert: AlertService,
+        private http: HttpClient,
+        public modalService: NgbModal,
+        private myBoardsSvc: MyBoardsService
+    ) {
+    }
+
+    doCreateBoard() {
+        this.newBoard.shareStatus = 'Private';
+        this.http.post('/board', this.newBoard, {responseType: 'text'}).subscribe(() => {
+            this.myBoardsSvc.waitAndReload();
+            this.modalRef.close();
+            this.alert.addAlert('success', 'Board created.');
+        }, err => this.alert.httpErrorMessageAlert(err));
+    }
 
     openNewBoard() {
         this.newBoard = {
-            type: "cde"
+            type: 'cde'
         };
-        this.modalRef = this.modalService.open(this.createBoardModal, {size: "lg"});
-    };
-
-    doCreateBoard() {
-        this.newBoard.shareStatus = "Private";
-        this.http.post("/board", this.newBoard).subscribe(() => {
-            this.myBoardsSvc.waitAndReload();
-            this.modalRef.close();
-            this.alert.addAlert("success", "Board created.");
-        }, r => {
-            this.alert.addAlert("danger", r.text());
-        });
+        this.modalRef = this.modalService.open(this.createBoardModal, {size: 'lg'});
     }
-
 }

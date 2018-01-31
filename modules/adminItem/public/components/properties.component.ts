@@ -1,30 +1,25 @@
-import { Component, Input, ViewChild, OnInit, Output, EventEmitter } from "@angular/core";
-import { NgbModalModule, NgbModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import "rxjs/add/operator/map";
+import { Component, Input, ViewChild, OnInit, Output, EventEmitter } from '@angular/core';
+import { NgbModalModule, NgbModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
 
-import { Property } from 'core/models.model';
-import { DataElement } from 'core/dataElement.model';
-import { OrgHelperService } from 'core/orgHelper.service';
 import { AlertService } from '_app/alert/alert.service';
+import { DataElement } from 'core/dataElement.model';
+import { Property } from 'core/models.model';
+import { OrgHelperService } from 'core/orgHelper.service';
+
 
 @Component({
-    selector: "cde-properties",
-    templateUrl: "./properties.component.html"
+    selector: 'cde-properties',
+    templateUrl: './properties.component.html'
 })
 export class PropertiesComponent implements OnInit {
-    @ViewChild("newPropertyContent") public newPropertyContent: NgbModalModule;
-    @Input() public elt: DataElement;
-    @Input() public canEdit: boolean = false;
+    @Input() canEdit: boolean = false;
+    @Input() elt: DataElement;
     @Output() onEltChange = new EventEmitter();
+    @ViewChild('newPropertyContent') newPropertyContent: NgbModalModule;
+    modalRef: NgbModalRef;
+    newProperty: Property = new Property();
+    onInitDone: boolean = false;
     orgPropertyKeys: string[] = [];
-    public newProperty: Property = new Property();
-    public modalRef: NgbModalRef;
-    public onInitDone: boolean = false;
-
-    constructor(public modalService: NgbModal,
-                private alert: AlertService,
-                private orgHelperService: OrgHelperService) {
-    }
 
     ngOnInit() {
         this.orgHelperService.reload().then(() => {
@@ -33,22 +28,29 @@ export class PropertiesComponent implements OnInit {
         });
     }
 
-    openNewPropertyModal() {
-        if (this.orgPropertyKeys.length === 0) {
-            this.alert.addAlert("danger", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
-        } else {
-            this.modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
-            this.modalRef.result.then(() => {
-                this.newProperty = new Property();
-            }, () => {
-            });
-        }
+    constructor(
+        private alert: AlertService,
+        public modalService: NgbModal,
+        private orgHelperService: OrgHelperService,
+    ) {
     }
 
     addNewProperty() {
         this.elt.properties.push(this.newProperty);
         this.onEltChange.emit();
         this.modalRef.close();
+    }
+
+    openNewPropertyModal() {
+        if (this.orgPropertyKeys.length === 0) {
+            this.alert.addAlert('danger', 'No valid property keys present, have an Org Admin go to Org Management > List Management to add one');
+        } else {
+            this.modalRef = this.modalService.open(this.newPropertyContent, {size: 'lg'});
+            this.modalRef.result.then(() => {
+                this.newProperty = new Property();
+            }, () => {
+            });
+        }
     }
 
     removePropertyByIndex(index) {
@@ -63,5 +65,4 @@ export class PropertiesComponent implements OnInit {
     setHtml(isHtml) {
         this.newProperty.valueFormat = isHtml ? 'html' : '';
     }
-
 }

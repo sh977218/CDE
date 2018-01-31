@@ -1,9 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import { ElasticQueryResponse } from 'core/models.model';
-import { UserService } from '_app/user.service';
 import { LocalStorageService } from 'angular-2-local-storage';
+
+import { UserService } from '_app/user.service';
+import { ElasticQueryResponse } from 'core/models.model';
 import { SharedService } from 'core/shared.service';
+
 
 @Injectable()
 export class ElasticService {
@@ -19,9 +21,11 @@ export class ElasticService {
 
     searchSettings: any;
 
-    constructor(public http: Http,
-                private userService: UserService,
-                private localStorageService: LocalStorageService) {
+    constructor(
+        public http: HttpClient,
+        private localStorageService: LocalStorageService,
+        private userService: UserService,
+    ) {
         this.loadSearchSettings();
     }
 
@@ -49,7 +53,7 @@ export class ElasticService {
 
     generalSearchQuery(settings, type, cb) {
         let search = (good, bad) => {
-            this.http.post("/elasticSearch/" + type, settings).map(res => res.json()).subscribe(good, bad);
+            this.http.post("/elasticSearch/" + type, settings).subscribe(good, bad);
         };
 
         function success(isRetry, response: ElasticQueryResponse) {
@@ -132,10 +136,10 @@ export class ElasticService {
     }
 
     getExport(query, type, cb) {
-        this.http.post("/elasticSearchExport/" + type, query).map(res => res.json()).subscribe(
+        this.http.post("/elasticSearchExport/" + type, query).subscribe(
             response => cb(null, response),
-            function onError(response) {
-                if (response.status === 503) cb("The server is busy processing similar request, please try again in a minute.");
+            err => {
+                if (err.status === 503) cb("The server is busy processing similar request, please try again in a minute.");
                 else cb("An error occured. This issue has been reported.");
             }
         );
@@ -146,8 +150,9 @@ export class ElasticService {
         let savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
         delete savedSettings.includeRetired;
         this.localStorageService.set("SearchSettings", savedSettings);
-        if (this.userService.user.username)
-            this.http.post("/user/update/searchSettings", savedSettings).subscribe();
+        if (this.userService.user.username) {
+            this.http.post("/user/update/searchSettings", savedSettings, {responseType: 'text'}).subscribe();
+        }
     }
 
     getDefault() {

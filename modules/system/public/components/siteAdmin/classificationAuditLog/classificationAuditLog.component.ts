@@ -1,31 +1,31 @@
-import { Component, OnInit } from "@angular/core";
-import { Http } from "@angular/http";
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
-import "rxjs/add/operator/map";
+type ClassificationAuditLogRecord = any;
+
 
 @Component({
-    selector: "cde-classification-audit-log",
-    templateUrl: "./classificationAuditLog.component.html"
+    selector: 'cde-classification-audit-log',
+    templateUrl: './classificationAuditLog.component.html'
 })
-
 export class ClassificationAuditLogComponent implements OnInit {
-
-    constructor(private http: Http) {}
-
     currentPage: number = 1;
-    records: any[] = [];
+    records: ClassificationAuditLogRecord[] = [];
 
     ngOnInit () {
         this.gotoPage();
     }
 
+    constructor(
+        private http: HttpClient
+    ) {}
+
     gotoPage () {
-        this.http.post("/getClassificationAuditLog", {
+        this.http.post<ClassificationAuditLogRecord[]>('/getClassificationAuditLog', {
             skip: (this.currentPage - 1) * 50,
             limit: 50
-        }).map(r => r.json()).subscribe(response => {
+        }).subscribe(response => {
             this.records = response;
         });
-    };
-
+    }
 }
