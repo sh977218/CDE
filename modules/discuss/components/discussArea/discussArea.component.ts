@@ -27,7 +27,6 @@ const tabMap = {
     rules_tab: 'derivationRules'
 };
 
-
 @Component({
     selector: 'cde-discuss-area',
     templateUrl: './discussArea.component.html',
@@ -79,26 +78,22 @@ const tabMap = {
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         border-radius: 2px;
     }
-    
     .commentBody {
         padding: 8px;
         border-bottom: 1px solid #ddd;
         background: #fff;
         min-height: 36px;
     }
-    
     .commentHeader {
         margin: 0 0 8px 0;
         height: 38px;
         white-space: nowrap;
     }
-    
     .commentMessage {
         word-wrap: break-word;
         color: #333;
         padding: 0;
     }
-    
     .rightSideComments {
         padding: 30px;
         background-color: #f5f5f5;
@@ -221,7 +216,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     addAvatar(username) {
         if (username && !this.avatarUrls[username]) {
-            this.http.get<any>('/user/avatar/' + username).subscribe(res => {
+            this.http.get('/user/avatar/' + username, {responseType: 'text'}).subscribe(res => {
                 this.avatarUrls[username] = res.length > 0 ? res : '/cde/public/assets/img/portrait.png';
             });
         }
@@ -280,8 +275,9 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     }
 
     setCurrentTab($event) {
-        if (this.eltComments)
+        if (this.eltComments) {
             this.eltComments.forEach(c => c.currentComment = !!(c.linkedTab && c.linkedTab === tabMap[$event]));
+        }
     }
 
     updateCommentStatus(commentId, status) {
