@@ -19,25 +19,24 @@ export function hasRole(user, role) {
     if (user.roles && user.roles.indexOf(role) > -1) return true;
 }
 
-export function isCuratorOf(user, orgName) {
+export function isOrgCurator(user, org = undefined) {
     if (!user) return false;
-    if (isSiteAdmin(user)) return true;
-    return (user.orgAdmin && user.orgAdmin.indexOf(orgName) >= 0)
-        || (user.orgCurator && user.orgCurator.indexOf(orgName) >= 0);
-}
-
-export function isOrgCurator(user) {
-    if (!user) return false;
-    return isOrgAdmin(user) || (user.orgCurator && user.orgCurator.length > 0);
+    if (isOrgAdmin(user, org)) return true;
+    if (org) {
+        return user.orgCurator && user.orgCurator.indexOf(org) > -1;
+    } else {
+        return user.orgCurator && user.orgCurator.length > 0;
+    }
 }
 
 export function isOrgAdmin(user, org = undefined) {
     if (!user) return false;
     if (canOrgAuthority(user)) return true;
-    if (org)
-        return user.orgAdmin.indexOf(org) >= 0;
-    else
+    if (org) {
+        return user.orgAdmin && user.orgAdmin.indexOf(org) > -1;
+    } else {
         return user.orgAdmin && user.orgAdmin.length > 0;
+    }
 }
 
 export function isSiteAdmin(user) {

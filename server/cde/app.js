@@ -216,7 +216,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/getCdeAuditLog', function (req, res) {
-        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
+        if (authorizationShared.canOrgAuthority(req.user)) {
             mongo_cde.getCdeAuditLog(req.body, function (err, result) {
                 res.send(result);
             });
@@ -294,7 +294,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/classification/cde', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send("Not Authorized.");
+        if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send("Not Authorized.");
         classificationNode_system.eltClassification(req.body, classificationShared.actions.create, mongo_cde, function (err) {
             if (!err) {
                 res.send({code: 200, msg: "Classification Added"});
@@ -316,7 +316,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/addCdeClassification/', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
+        if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send(invalidateRequest);
         classificationNode_system.addClassification(req.body, mongo_cde, function (err, result) {
@@ -338,7 +338,7 @@ exports.init = function (app, daoManager) {
         });
     });
     app.post("/removeCdeClassification/", function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send({error: "You do not permission to do this."});
+        if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send({error: "You do not permission to do this."});
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send({error: invalidateRequest});
         classificationNode_system.removeClassification(req.body, mongo_cde, function (err, elt) {

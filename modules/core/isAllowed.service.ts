@@ -21,7 +21,7 @@ export class IsAllowedService {
                 return false;
             }
             if (this.userService.userOrgs) {
-                return SharedService.auth.isCuratorOf(this.userService.user, CuratedItem.stewardOrg.name);
+                return SharedService.auth.isOrgCurator(this.userService.user, CuratedItem.stewardOrg.name);
             } else {
                 return false;
             }
@@ -36,10 +36,6 @@ export class IsAllowedService {
         return SharedService.auth.hasRole(this.userService.user, role);
     }
 
-    static hasRoleStatic (user, role) {
-        return SharedService.auth.hasRole(user, role);
-    }
-
     isSiteAdmin () {
         return SharedService.auth.isSiteAdmin(this.userService.user);
     }
@@ -47,11 +43,12 @@ export class IsAllowedService {
     doesUserOwnElt (elt) {
         if (elt.elementType === 'board') {
             return this.userService.user.siteAdmin || (this.userService.user.username === elt.owner.username);
-        } else
+        } else {
             return this.userService.user &&
                 (this.userService.user.siteAdmin || (this.userService.user._id &&
                     (this.userService.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)));
-    };
+        }
+    }
 
     loggedIn () {
         return !!(this.userService.user && this.userService.user._id);

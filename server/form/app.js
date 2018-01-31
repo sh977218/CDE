@@ -161,7 +161,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/addFormClassification/', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
+        if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send(invalidateRequest);
         classificationNode_system.addClassification(req.body, mongo_form, function (err, result) {
@@ -179,7 +179,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post("/removeFormClassification/", function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send({error: "You do not permission to do this."});
+        if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send({error: "You do not permission to do this."});
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send({error: invalidateRequest});
         classificationNode_system.removeClassification(req.body, mongo_form, function (err, elt) {

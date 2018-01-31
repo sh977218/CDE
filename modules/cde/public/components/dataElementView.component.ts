@@ -125,7 +125,7 @@ export class DataElementViewComponent implements OnInit {
                 return false;
             } else {
                 if (this.userService.userOrgs) {
-                    return SharedService.auth.isCuratorOf(this.userService.user, this.elt.stewardOrg.name) &&
+                    return SharedService.auth.isOrgCurator(this.userService.user, this.elt.stewardOrg.name) &&
                         (this.elt.registrationState.registrationStatus === 'Standard' ||
                             this.elt.registrationState.registrationStatus === 'Preferred Standard');
                 } else {
