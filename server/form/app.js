@@ -296,12 +296,13 @@ exports.init = function (app, daoManager) {
         if (!uom || typeof uom !== 'string')
             return res.sendStatus(400);
 
-        let resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
+        let resp = ucum.getSpecifiedUnit(uom, 'validate', true);
         if (!resp || !resp.unit)
             return res.send([]);
         else res.send([{
             name: resp.unit.name_,
-            synonyms: resp.unit.synonyms_.split('; ')
+            synonyms: resp.unit.synonyms_.split('; '),
+            code: resp.unit.csCode_
         }]);
     });
 

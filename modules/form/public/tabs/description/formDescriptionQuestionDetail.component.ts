@@ -274,7 +274,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     newUom = '';
     selectedUom(event) {
         if (event && event.item && event.item.name && event.item.name !== '')
-            this.question.question.uoms = _union(this.question.question.uoms, [event.item.name]);
+            this.question.question.uoms = _union(this.question.question.uoms, [event.item.code]);
         this.onEltChange.emit();
         this.newUom = '';
     }

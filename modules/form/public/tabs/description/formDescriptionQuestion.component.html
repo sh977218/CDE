@@ -1,18 +1,18 @@
 <div class="question_view">
     <div class="p-1"
          [ngClass]="{'outdated-bg': question.question.cde.outdated && !question.hover,'hover-bg':question.hover}">
-        <div *ngIf="!isSubForm && canEdit" class="float-left">
+        <div *ngIf="!isSubForm && canEdit" class="d-inline-block">
             <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"
                [treeDrag]="node" [treeDragEnabled]="node.allowDrag()"></i>
             <i *ngIf="question.skipLogic?.condition?.length > 0" class="fa fa-cog updatedSkipLogicIcon"
                [ngClass]="{'fa-spin': question.updatedSkipLogic}"
                title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
         </div>
-        <div class="font-weight-bold float-left " (click)="editQuestion(question);"
+        <div class="font-weight-bold d-inline-block" (click)="editQuestion(question);"
              [ngClass]="{'hand-cursor':!isSubForm && canEdit}"
              (mouseover)="hoverInQuestion(question)" (mouseout)="hoverOutQuestion(question)">
-            <div *ngIf="question.question.isScore" class="float-left">Score:</div>
-            <div class="float-left questionLabel ml-1" title="{{question.label}}">
+            <span *ngIf="question.question.isScore">Score:</span>
+            <span class="questionLabel ml-1" title="{{question.label}}">
                 <ng-container *ngIf="question.hideLabel">
                     <i class="fa fa-question-circle" ngbTooltip="This question has no label" placement="right"></i>
                     <strong [textContent]="question.question.cde.name"></strong>
@@ -21,18 +21,16 @@
                 <small *ngIf="question.question.partOf" class="text-info">
                     (part of {{question.question.partOf}})
                 </small>
-            </div>
-            <div *ngIf="question.incompleteRule" class="float-left mx-1">(Incomplete Rule)</div>
-            <ng-container *ngIf="question.question.cde.outdated">
-                <div class="float-left mx-1">(Outdated)</div>
-            </ng-container>
+            </span>
+            <span *ngIf="question.incompleteRule" class="mx-1">(Incomplete Rule)</span>
+            <span *ngIf="question.question.cde.outdated" class="mx-1">(Outdated)</span>
         </div>
         <ng-container *ngIf="question.question.cde.outdated">
-            <button class="btn btn-outline-dark btn-sm updateQuestionBtn"
+            <button class="btn btn-outline-dark btn-sm updateQuestionBtn d-inline-block"
                     (click)="openUpdateCdeVersion(question);">Update
             </button>
         </ng-container>
-        <div class="float-left questionDataType mx-1">{{getDatatypeLabel(question)}}</div>
+        <div class="d-inline-block questionDataType mx-1">{{getDatatypeLabel(question)}}</div>
         <div class="float-right">
             <a *ngIf="question.question.cde.tinyId" target="_blank" title="{{question.question.cde.name}}"
                href="/deView?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">

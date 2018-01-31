@@ -51,7 +51,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         let datatype = question.question.datatype;
         if (datatype === 'Number') {
             return '(Number)';
-        } else if (datatype === 'Date') {
+        } else if (datatype === 'Date' || datatype === 'DATE') {
             return '(Date)';
         } else return '';
     }

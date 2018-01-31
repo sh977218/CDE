@@ -50,5 +50,5 @@ export class UcumService {
                 else return this.http.get('/ucumNames?uom=' + encodeURIComponent(term)).map(r => r.json());
             });
 
-    formatter = (x: { name: string, synonyms: [any] }) => '';
+    formatter = (x: { name: string, synonyms: [any], code: string }) => '';
 }

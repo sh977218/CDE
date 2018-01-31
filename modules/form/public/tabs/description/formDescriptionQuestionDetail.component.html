@@ -125,10 +125,19 @@
                         {{uom}}
                     </span>
                     <ng-template #rt let-r="result" let-t="term">
-                        synonyms: {{ r.synonyms | json}}
-                        name: {{ r.name}}
+                        <dl class="row">
+                            <dt class="col-2">synonyms:</dt>
+                            <dd class="col-10">
+                                <span *ngFor="let s of r.synonyms">{{s}} </span>
+                            </dd>
+                            <dt class="col-2">name:</dt>
+                            <dd class="col-10">{{ r.name}}</dd>
+                            <dt class="col-2">code:</dt>
+                            <dd class="col-10">{{r.code}}</dd>
+                        </dl>
                     </ng-template>
-                    <input [ngbTypeahead]="ucumService.search" [resultTemplate]="rt" [(ngModel)]="newUom"
+                    <input class="form-control skipLogicCondition" [ngbTypeahead]="ucumService.search"
+                           [resultTemplate]="rt" [(ngModel)]="newUom" [container]="'body'" [editable]="false"
                            [inputFormatter]="ucumService.formatter" (selectItem)="selectedUom($event);"/>
                 </div>
             </dd>
