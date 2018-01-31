@@ -20,8 +20,7 @@ export class UcumService {
     // cb(names)
     getUnitNames(uom: string, cb) {
         let match = this.uomUnitMap.get(uom);
-        if (match)
-            return cb(match);
+        if (match) return cb(match);
 
         this.http.get('/ucumNames?uom=' + encodeURIComponent(uom)).subscribe(response => {
             if (Array.isArray(response)) {
@@ -34,10 +33,20 @@ export class UcumService {
 
     // cb(errors, units)
     validateUnits(uoms: string[], cb) {
-        if (Array.isArray(uoms) && uoms.length)
-            this.http.get<{errors: string[], units: any[]}>('/ucumValidate?uoms=' + encodeURIComponent(JSON.stringify(uoms)))
+        if (Array.isArray(uoms) && uoms.length) {
+            this.http.get<{ errors: string[], units: any[] }>('/ucumValidate?uoms=' + encodeURIComponent(JSON.stringify(uoms)))
                 .subscribe(response => cb(response.errors, response.units));
-        else
+        } else {
             cb([], []);
+        }
+    }
+
+    validateUoms(question) {
+        question.uomsValid = [];
+        this.validateUnits(question.uoms, errors => {
+            question.uoms.forEach((uom, i) => {
+                question.uomsValid[i] = errors[i];
+            });
+        });
     }
 }

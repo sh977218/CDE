@@ -24,14 +24,19 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() set node(node: TreeNode) {
         this.question = node.data;
         this.parent = node.parent.data;
-        if (!this.question.instructions)
+        if (!this.question.instructions) {
             this.question.instructions = new FormattedValue;
-        if (!this.question.skipLogic)
+        }
+        if (!this.question.skipLogic) {
             this.question.skipLogic = new SkipLogic;
-        if (!this.question.question.uoms)
+        }
+        if (!this.question.question.uoms) {
             this.question.question.uoms = [];
-        if (this.question.question.uoms) this.validateUoms(this.question.question);
-    };
+        }
+        if (this.question.question.uoms) {
+            this.ucumService.validateUoms(this.question.question);
+        }
+    }
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionNameSelectTmpl') formDescriptionNameSelectTmpl: NgbModalModule;
     @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl: TemplateRef<any>;
@@ -68,6 +73,19 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     };
     uomVersion = 0;
+    static inputEvent = new Event('input');
+    public namingSelet2Options: Select2Options = {
+        multiple: true,
+        tags: true
+    };
+    public dataTypeOptions = ['Value List', 'Text', 'Date', 'Number'];
+    datatypeSelect2Options = {
+        multiple: false,
+        tags: true
+    };
+    newCdePv = {};
+    newCdeId = {};
+    newCdeNaming = {};
 
     constructor(
         private alert: AlertService,
@@ -111,15 +129,13 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         if (!_isEqual(this.question.question.uoms, newUoms)) {
             this.question.question.uoms = newUoms;
             this.onEltChange.emit();
-            this.validateUoms(this.question.question);
+            this.ucumService.validateUoms(this.question.question);
         }
     }
 
     getRepeatLabel(fe) {
-        if (!fe.repeat)
-            return '';
-        if (fe.repeat[0] === 'F')
-            return 'over First Question';
+        if (!fe.repeat) return '';
+        if (fe.repeat[0] === 'F') return 'over First Question';
         return parseInt(fe.repeat) + ' times';
     }
 
@@ -142,8 +158,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     getAnswersValue() {
-        if (!this.answersSelected && this.question.question.answers)
+        if (!this.answersSelected && this.question.question.answers) {
             this.answersSelected = this.question.question.answers.map(a => a.permissibleValue);
+        }
         return this.answersSelected;
     }
 
@@ -184,10 +201,11 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     slOptionsRetrigger() {
-        if (this.slInput)
+        if (this.slInput) {
             setTimeout(() => {
                 this.slInput.nativeElement.dispatchEvent(FormDescriptionQuestionDetailComponent.inputEvent);
             }, 0);
+        }
     }
 
     typeaheadSkipLogic(parent, fe, event) {
@@ -196,28 +214,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.onEltChange.emit();
         }
     }
-
-    validateUoms(question) {
-        question.uomsValid = [];
-        this.ucumService.validateUnits(question.uoms, errors => {
-            question.uoms.forEach((uom, i) => {
-                question.uomsValid[i] = errors[i];
-            });
-        });
-    }
-
-    static inputEvent = new Event('input');
-
-    public namingSelet2Options: Select2Options = {
-        multiple: true,
-        tags: true
-    };
-    public dataTypeOptions = ['Value List', 'Text', 'Date', 'Number'];
-
-    datatypeSelect2Options = {
-        multiple: false,
-        tags: true
-    };
 
     changedTags(name, data: { value: string[] }) {
         name.tags = data.value;
@@ -268,15 +264,12 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     addNewCdeId(newCdeId) {
         if (!_isEmpty(newCdeId)) {
-            if (!this.question.question.cde.ids)
+            if (!this.question.question.cde.ids) {
                 this.question.question.cde.ids = [];
+            }
             this.question.question.cde.ids.push(newCdeId);
             this.newCdeId = {};
             this.onEltChange.emit();
         } else this.alert.addAlert('danger', 'Empty identifier.');
     }
-
-    newCdePv = {};
-    newCdeId = {};
-    newCdeNaming = {};
 }

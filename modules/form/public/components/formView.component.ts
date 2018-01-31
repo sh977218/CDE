@@ -382,4 +382,8 @@ export class FormViewComponent implements OnInit {
 
         this.elt.formElements.forEach(fe => findExistingErrors(this.elt, fe));
     }
+
+    validateUoms() {
+        FormService.iterateFeSync(this.elt, );
+    }
 }

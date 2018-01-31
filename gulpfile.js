@@ -56,8 +56,6 @@ gulp.task('copyCode', [], function () {
     let streamArray = [];
 
     ['cde', 'form', 'processManager', 'system', 'board'].forEach(function (module) {
-        streamArray.push(gulp.src('./modules/' + module + '/shared/**/*')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/shared/')));
         streamArray.push(gulp.src('./modules/' + module + '/**/*.png')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/')));
         streamArray.push(gulp.src('./modules/' + module + '/**/*.ico')
