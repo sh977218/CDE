@@ -1,14 +1,14 @@
-import { CommonModule } from "@angular/common";
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { FormsModule } from "@angular/forms";
+import { CommonModule } from '@angular/common';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
 import { CKEditorModule } from 'ng2-ckeditor';
 
 import { CoreModule } from 'core/core.module';
-import { InlineEditComponent } from "./inlineEdit/inlineEdit.component";
-import { InlineAreaEditComponent } from "./inlineEdit/inlineAreaEdit.component";
-import { PlaceHoldEmptyPipe } from "./pipes/placeHoldEmpty.pipe";
-import { TextTruncateComponent } from "./text/textTruncate.component";
+import { InlineEditComponent } from 'widget/inlineEdit/inlineEdit.component';
+import { InlineAreaEditComponent } from 'widget/inlineEdit/inlineAreaEdit.component';
+import { PlaceHoldEmptyPipe } from 'widget/pipes/placeHoldEmpty.pipe';
+import { TextTruncateComponent } from 'widget/text/textTruncate.component';
 import { SortableArrayComponent } from 'widget/sortableArray/sortableArray.component';
 import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.component';
 
@@ -36,7 +36,8 @@ import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.co
         PlaceHoldEmptyPipe,
         SortableArrayComponent,
     ],
-    providers: [],
+    providers: [
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

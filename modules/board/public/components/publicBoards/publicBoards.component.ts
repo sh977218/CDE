@@ -1,25 +1,22 @@
-import { Component, OnInit } from "@angular/core";
-import { Http } from "@angular/http";
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+
 import { AlertService } from '_app/alert/alert.service';
+import { ElasticQueryResponse } from 'core/models.model';
+
 
 @Component({
     selector: 'cde-my-boards',
     templateUrl: './publicBoards.component.html'
 })
 export class PublicBoardsComponent implements OnInit {
-
-    constructor(private alert: AlertService,
-                private http: Http) {
-    }
-
     boards = [];
     filter = {
-        search: "",
+        search: '',
         selectedTags: [],
         selectedTypes: [],
         selectedShareStatus: ['Public'],
         sortBy: 'name',
-        sortDirection: 'asc',
         tags: [],
         types: []
     };
@@ -28,10 +25,16 @@ export class PublicBoardsComponent implements OnInit {
         this.loadPublicBoards();
     }
 
+    constructor(
+        private alert: AlertService,
+        private http: HttpClient
+    ) {
+    }
+
     loadPublicBoards() {
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
-        this.http.post("/boardSearch", this.filter).map(r => r.json()).subscribe(response => {
+        this.http.post<ElasticQueryResponse>('/boardSearch', this.filter).subscribe(response => {
                 this.boards = response.hits.hits.map(h => {
                     h._source._id = h._id;
                     return h._source;
@@ -43,13 +46,12 @@ export class PublicBoardsComponent implements OnInit {
                 this.filter.types.forEach(t => t.checked = (this.filter.selectedTypes.indexOf(t.key) > -1));
 
 
-            }, () => this.alert.addAlert("danger", "An error occured")
+            }, () => this.alert.addAlert('danger', 'An error occured')
         );
-    };
+    }
 
     selectAggregation(aggName, $index) {
         this.filter[aggName][$index].checked = !this.filter[aggName][$index].checked;
         this.loadPublicBoards();
     }
-
 }

@@ -1,11 +1,11 @@
+import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { NativeRenderAppComponent } from '_nativeRenderApp/nativeRenderApp.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-import { NativeRenderAppComponent } from './nativeRenderApp.component';
 
 
 @NgModule({
@@ -13,7 +13,7 @@ import { NativeRenderAppComponent } from './nativeRenderApp.component';
         BrowserModule,
         CommonModule,
         FormsModule,
-        HttpModule,
+        HttpClientModule,
         // core
         // no WidgetModule,
         // internal

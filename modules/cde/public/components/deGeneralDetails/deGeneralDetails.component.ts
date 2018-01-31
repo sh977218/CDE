@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import "rxjs/add/operator/map";
-import { IsAllowedService } from 'core/isAllowed.service';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 
+
 @Component({
-    selector: "cde-de-general-details",
-    templateUrl: "./deGeneralDetails.component.html"
+    selector: 'cde-de-general-details',
+    templateUrl: './deGeneralDetails.component.html'
 })
 export class DeGeneralDetailsComponent {
     @Input() elt: any;
@@ -14,8 +14,10 @@ export class DeGeneralDetailsComponent {
     @Output() onEltChange = new EventEmitter();
     userOrgs = [];
 
-    constructor(public userService: UserService,
-                public orgHelperService: OrgHelperService) {
+    constructor(
+        public userService: UserService,
+        public orgHelperService: OrgHelperService
+    ) {
         this.userService.then(() => this.userOrgs = this.userService.userOrgs);
     }
 

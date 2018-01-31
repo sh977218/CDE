@@ -1,9 +1,11 @@
-import { DerivationRule, Elt } from "core/models.model";
+import { CdeId, DerivationRule, Elt, PermissibleValue } from "core/models.model";
+
 
 export class DataElement extends Elt {
     primaryNameCopy: string;
     derivationRules: DerivationRule[];
     elementType = 'cde';
+    valueDomain: ValueDomain;
 
     static copy(de: any) {
         return Object.assign(new DataElement, de);
@@ -23,4 +25,11 @@ export class DataElement extends Elt {
         if (!Array.isArray(de.derivationRules))
             de.derivationRules = [];
     }
+}
+
+class ValueDomain {
+    datatype: string;
+    identifiers: CdeId[];
+    ids: CdeId[];
+    permissibleValues: PermissibleValue[];
 }

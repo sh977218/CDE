@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 import { DataElement } from 'core/dataElement.model';
 import { ReferenceDocument } from 'core/models.model';
+
 
 @Component({
     selector: "cde-reference-document",
@@ -15,14 +15,22 @@ import { ReferenceDocument } from 'core/models.model';
         }`]
 })
 export class ReferenceDocumentComponent {
-    @ViewChild("newReferenceDocumentContent") public newReferenceDocumentContent: NgbModalModule;
+    @Input() canEdit: boolean = false;
+    @Input() elt: DataElement;
     @Output() onEltChange = new EventEmitter();
-    @Input() public elt: DataElement;
-    @Input() public canEdit: boolean = false;
-    public newReferenceDocument: ReferenceDocument = new ReferenceDocument();
-    public modalRef: NgbModalRef;
+    @ViewChild("newReferenceDocumentContent") public newReferenceDocumentContent: NgbModalModule;
+    newReferenceDocument: ReferenceDocument = new ReferenceDocument();
+    modalRef: NgbModalRef;
 
-    constructor(private modalService: NgbModal) {
+    constructor(
+        private modalService: NgbModal
+    ) {
+    }
+
+    addNewReferenceDocument() {
+        this.elt.referenceDocuments.push(this.newReferenceDocument);
+        this.onEltChange.emit();
+        this.modalRef.close();
     }
 
     openNewReferenceDocumentModal() {
@@ -33,16 +41,9 @@ export class ReferenceDocumentComponent {
         });
     }
 
-    addNewReferenceDocument() {
-        this.elt.referenceDocuments.push(this.newReferenceDocument);
-        this.onEltChange.emit();
-        this.modalRef.close();
-    }
-
     removeReferenceDocumentByIndex(index) {
         this.elt.referenceDocuments.splice(index, 1);
         this.onEltChange.emit();
         this.modalRef.close();
     }
-
 }

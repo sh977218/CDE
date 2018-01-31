@@ -15,15 +15,11 @@ import {
 import { FormService } from 'nativeRender/form.service';
 
 export class CdeForm extends Elt implements FormElementsContainer {
-    archived: boolean = false;
-    changeNote: string;
     comments: Comment[];
     copyright: {
         authority: string,
         text: string,
     };
-    created: Date;
-    createdBy: UserReference;
     displayProfiles: DisplayProfile[];
     elementType: string = 'form';
     formInput: any;
@@ -40,15 +36,11 @@ export class CdeForm extends Elt implements FormElementsContainer {
     origin: string;
     properties: Property[];
     referenceDocuments: ReferenceDocument[];
-    registrationState: RegistrationState;
     stewardOrg: {
         name: string,
     } = {name};
     source: string;
     sources: DataSource;
-    updated: Date;
-    updatedBy: UserReference;
-    version: string;
 
     constructor(label = undefined) {
         super();

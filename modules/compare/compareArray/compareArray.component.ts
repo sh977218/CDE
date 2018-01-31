@@ -1,11 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import 'rxjs/add/operator/map';
-import { CompareService } from 'core/compare.service';
 import _cloneDeep from 'lodash/cloneDeep';
 import _forEach from 'lodash/forEach';
 import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
 
+import { CompareService } from 'core/compare.service';
 
 let compareArrayOption = [
     {

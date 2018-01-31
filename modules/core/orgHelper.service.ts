@@ -1,15 +1,18 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import { SharedService } from 'core/shared.service';
+
 import { UserService } from '_app/user.service';
+import { SharedService } from 'core/shared.service';
 
 @Injectable()
 export class OrgHelperService  {
     orgsDetailedInfo: any;
     private promise: Promise<void>;
 
-    constructor(private http: Http,
-                private userService: UserService) {
+    constructor(
+        private http: HttpClient,
+        private userService: UserService,
+    ) {
         this.reload();
     }
 
@@ -52,8 +55,7 @@ export class OrgHelperService  {
 
     reload() {
         return this.promise = new Promise<void>(resolve => {
-            this.http.get('/listOrgsDetailedInfo')
-                .map(r => r.json())
+            this.http.get<any[]>('/listOrgsDetailedInfo')
                 .subscribe(response => {
                     this.orgsDetailedInfo = {};
                     response.forEach(org => {

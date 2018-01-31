@@ -1,5 +1,5 @@
+import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { Http } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _cloneDeep from 'lodash/cloneDeep';
@@ -9,12 +9,15 @@ import { Subscription } from 'rxjs/Subscription';
 
 import * as deValidator from '../../../../shared/cde/deValidator.js';
 import { AlertService } from '_app/alert/alert.service';
-import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
-import { IsAllowedService } from 'core/isAllowed.service';
-import { OrgHelperService } from 'core/orgHelper.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
-import { SharedService } from 'core/shared.service';
 import { UserService } from '_app/user.service';
+import { DataElement } from 'core/dataElement.model';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { Comment } from 'core/models.model';
+import { OrgHelperService } from 'core/orgHelper.service';
+import { SharedService } from 'core/shared.service';
+import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
+
 
 @Component({
     selector: 'cde-data-element-view',
@@ -28,28 +31,27 @@ import { UserService } from '_app/user.service';
     `]
 })
 export class DataElementViewComponent implements OnInit {
-    @ViewChild('copyDataElementContent') public copyDataElementContent: NgbModalModule;
-    @ViewChild('commentAreaComponent') public commentAreaComponent: DiscussAreaComponent;
-    @ViewChild('tabSet') public tabSet: NgbTabset;
-
-    elt: any;
-    public eltCopy = {};
-    public modalRef: NgbModalRef;
-    displayStatusWarning;
-    hasComments;
+    @ViewChild('commentAreaComponent') commentAreaComponent: DiscussAreaComponent;
+    @ViewChild('copyDataElementContent') copyDataElementContent: NgbModalModule;
+    @ViewChild('tabSet') tabSet: NgbTabset;
     commentMode;
     currentTab = 'general_tab';
-    highlightedTabs = [];
-    drafts = [];
     deId;
+    displayStatusWarning;
+    drafts = [];
+    draftSubscription: Subscription;
+    elt: DataElement;
+    eltCopy = {};
+    hasComments;
+    highlightedTabs = [];
+    modalRef: NgbModalRef;
     orgNamingTags = [];
     tabsCommented = [];
+    savingText: String;
     tinyId;
     url;
-    draftSubscription: Subscription;
-    savingText: String;
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: ActivatedRoute,
                 private router: Router,
                 private ref: ChangeDetectorRef,
@@ -93,7 +95,7 @@ export class DataElementViewComponent implements OnInit {
         let cdeId = this.route.snapshot.queryParams['cdeId'];
         let url = '/de/' + this.route.snapshot.queryParams['tinyId'];
         if (cdeId) url = '/deById/' + cdeId;
-        this.http.get(url).map(res => res.json()).subscribe(res => {
+        this.http.get<DataElement>(url).subscribe(res => {
                 this.elt = res;
                 this.deId = this.elt._id;
                 this.userService.then(() => {
@@ -108,12 +110,12 @@ export class DataElementViewComponent implements OnInit {
     }
 
     loadComments(de, cb) {
-        this.http.get('/comments/eltId/' + de.tinyId)
-            .map(res => res.json()).subscribe(res => {
+        this.http.get<Comment[]>('/comments/eltId/' + de.tinyId)
+            .subscribe(res => {
             this.hasComments = res && (res.length > 0);
             this.tabsCommented = res.map(c => c.linkedTab + '_tab');
             if (cb) cb();
-        }, err => this.alert.addAlert('danger', 'Error loading comments. ' + err));
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
     }
 
     setDisplayStatusWarning() {
@@ -134,7 +136,7 @@ export class DataElementViewComponent implements OnInit {
         this.userService.then(() => {
             this.displayStatusWarning = assignValue();
         });
-    };
+    }
 
     openCopyElementModal() {
         this.eltCopy = _cloneDeep(this.elt);
@@ -176,10 +178,10 @@ export class DataElementViewComponent implements OnInit {
     }
 
     removeAttachment(index) {
-        this.http.post('/attachments/cde/remove', {
+        this.http.post<DataElement>('/attachments/cde/remove', {
             index: index,
             id: this.elt._id
-        }).map(r => r.json()).subscribe(res => {
+        }).subscribe(res => {
             this.elt = res;
             this.alert.addAlert('success', 'Attachment Removed.');
             this.ref.detectChanges();
@@ -187,16 +189,16 @@ export class DataElementViewComponent implements OnInit {
     }
 
     setDefault(index) {
-        this.http.post('/attachments/cde/setDefault',
+        this.http.post<DataElement>('/attachments/cde/setDefault',
             {
                 index: index,
                 state: this.elt.attachments[index].isDefault,
                 id: this.elt._id
-            }).map(r => r.json()).subscribe(res => {
-            this.elt = res;
-            this.alert.addAlert('success', 'Saved');
-            this.ref.detectChanges();
-        });
+            }).subscribe(res => {
+                this.elt = res;
+                this.alert.addAlert('success', 'Saved');
+                this.ref.detectChanges();
+            });
     }
 
     upload(event) {
@@ -207,9 +209,9 @@ export class DataElementViewComponent implements OnInit {
                 formData.append('uploadedFiles', files[i]);
             }
             formData.append('id', this.elt._id);
-            this.http.post('/attachments/cde/add', formData).map(r => r.json()).subscribe(
+            this.http.post<any>('/attachments/cde/add', formData).subscribe(
                 r => {
-                    if (r.message) this.alert.addAlert('info', r.text());
+                    if (r.message) this.alert.addAlert('info', r);
                     else {
                         this.elt = r;
                         this.alert.addAlert('success', 'Attachment added.');
@@ -221,8 +223,8 @@ export class DataElementViewComponent implements OnInit {
     }
 
     loadDraft(cb) {
-        this.http.get('/draftDataElement/' + this.elt.tinyId)
-            .map(res => res.json()).subscribe(res => {
+        this.http.get<any[]>('/draftDataElement/' + this.elt.tinyId)
+            .subscribe(res => {
                 if (res && res.length > 0) {
                     this.drafts = res;
                     this.elt = res[0];
@@ -230,7 +232,15 @@ export class DataElementViewComponent implements OnInit {
                 } else this.drafts = [];
                 if (cb) cb();
             },
-            err => this.alert.addAlert('danger', err));
+            err => this.alert.httpErrorMessageAlert(err));
+    }
+
+    removeDraft() {
+        this.http.delete('/draftDataElement/' + this.elt.tinyId, {responseType: 'text'})
+            .subscribe(res => {
+                this.drafts = [];
+                this.loadDataElement(null);
+            }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     saveDraft(cb) {
@@ -238,13 +248,13 @@ export class DataElementViewComponent implements OnInit {
         this.elt._id = this.deId;
         let username = this.userService.user.username;
         if (this.elt.updatedBy) this.elt.updatedBy.username = username;
-        else this.elt.updatedBy = {username: username};
+        else this.elt.updatedBy = {username: username, userId: undefined};
         if (this.elt.createdBy) this.elt.createdBy.username = username;
-        else this.elt.createdBy = {username: username};
+        else this.elt.createdBy = {username: username, userId: undefined};
         this.elt.updated = new Date();
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
         this.draftSubscription = this.http.post('/draftDataElement/' + this.elt.tinyId, this.elt)
-            .map(res => res.json()).subscribe(res => {
+            .subscribe(res => {
                 this.savingText = 'Saved';
                 setTimeout(() => {
                     this.savingText = '';
@@ -252,25 +262,16 @@ export class DataElementViewComponent implements OnInit {
                 this.elt.isDraft = true;
                 if (!this.drafts.length) this.drafts = [this.elt];
                 if (cb) cb(res);
-            }, err => this.alert.addAlert('danger', err));
+            }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     saveDataElement() {
         this.http.put('/de/' + this.elt.tinyId, this.elt)
-            .map(res => res.json()).subscribe(res => {
+            .subscribe(res => {
             if (res) {
                 this.loadDataElement(() => this.alert.addAlert('success', 'Data Element saved.'));
                 this.loadDraft(null);
             }
-        }, err => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
+        }, () => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
     }
-
-    removeDraft() {
-        this.http.delete('/draftDataElement/' + this.elt.tinyId)
-            .subscribe(res => {
-                this.drafts = [];
-                if (res) this.loadDataElement(null);
-            }, err => this.alert.addAlert('danger', err));
-    }
-
 }

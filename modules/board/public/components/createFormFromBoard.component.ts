@@ -1,5 +1,5 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Input, ViewChild } from '@angular/core';
-import { Http } from '@angular/http';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { AlertService } from '_app/alert/alert.service';
@@ -13,22 +13,22 @@ import { FormService } from 'nativeRender/form.service';
 export class CreateFormFromBoardComponent {
     @Input() board: any;
     @ViewChild('createFormContent') public createFormContent: NgbModalModule;
-
     elt: CdeForm;
     modalRef: NgbModalRef;
 
-    constructor(private alert: AlertService,
-                private formService: FormService,
-                private http: Http,
-                public modalService: NgbModal) {
+    constructor(
+        private alert: AlertService,
+        private formService: FormService,
+        private http: HttpClient,
+        public modalService: NgbModal
+    ) {
     }
 
     openCreateFormModal() {
         if (this.board.pins && this.board.pins.length > 0) {
             this.elt = new CdeForm(this.board.name);
             this.elt.formElements.push(new FormSection);
-            this.http.get('/board/' + this.board._id + '/0/500')
-                .map(res => res.json()).subscribe(
+            this.http.get<any>('/board/' + this.board._id + '/0/500').subscribe(
                 res => {
                     res.elts.forEach(p => {
                         this.formService.convertCdeToQuestion(p, q => {

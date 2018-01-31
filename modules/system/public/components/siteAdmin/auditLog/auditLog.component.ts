@@ -1,33 +1,34 @@
-import { Http } from "@angular/http";
-import { Component } from "@angular/core";
-import "rxjs/add/operator/map";
-import { CdeDiffPopulateService } from "./cdeDiffPopulate.service";
+import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+
+import { CdeDiffPopulateService } from 'system/public/components/siteAdmin/auditLog/cdeDiffPopulate.service';
+
+type AuditLogRecord = any;
 
 @Component({
-    selector: "cde-audit-log",
-    templateUrl: "./auditLog.component.html"
+    selector: 'cde-audit-log',
+    templateUrl: './auditLog.component.html'
 })
-
 export class AuditLogComponent {
+    records: AuditLogRecord[] = [];
+    currentPage: number = 1;
 
-    constructor(private http: Http,
-                private cdeDiff: CdeDiffPopulateService) {
+    constructor(
+        private http: HttpClient,
+        private cdeDiff: CdeDiffPopulateService
+    ) {
         this.gotoPageLocal();
     }
 
-    records: any[] = [];
-    currentPage: number = 1;
-
     gotoPageLocal() {
-        this.http.post("/getCdeAuditLog", {
+        this.http.post<AuditLogRecord[]>('/getCdeAuditLog', {
             skip: (this.currentPage - 1) * 50,
             limit: 50
-        }).map(r => r.json()).subscribe(response => {
+        }).subscribe(response => {
             this.records = response;
             this.records.forEach(rec => {
                 if (rec.diff) rec.diff.forEach(d => this.cdeDiff.makeHumanReadable(d));
             });
         });
-    };
-
+    }
 }

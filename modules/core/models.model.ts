@@ -68,6 +68,12 @@ export class DataSource {
     updated: Date;
 }
 
+export class DiscussionComments {
+    currentCommentsPage: number;
+    latestComments: Comment[];
+    totalItems: number;
+}
+
 export interface ElasticQueryResponse {
     _shards: any;
     aggregations: any; // Elastic aggregated grouping
@@ -92,18 +98,27 @@ export interface ElasticQueryResponse {
 
 export abstract class Elt {
     _id: ObjectId;
+    archived: boolean = false;
+    attachments: Attachment[];
+    changeNote: string;
+    classification: Classification[] = [];
+    created: Date;
+    createdBy: UserReference;
+    isDraft: boolean; // calculated, draft object
+    naming: Naming[];
+    primaryDefinitionCopy: string; // calculated, Elastic
+    properties: Property[];
+    referenceDocuments: ReferenceDocument[];
+    registrationState: RegistrationState;
     stewardOrg: {
         name: string
     };
-    primaryDefinitionCopy: string; // calculated, Elastic
     score: number; // calculated, Elastic _score
     tinyId: string;
+    updated: Date;
+    updatedBy: UserReference;
     usedBy: string[]; // calculated, Classification stewardOrg names
-    naming: Naming[];
-    referenceDocuments: ReferenceDocument[];
-    attachments: Attachment[];
-    properties: Property[];
-    classification: Classification[] = [];
+    version: string;
 
     abstract getEltUrl();
 

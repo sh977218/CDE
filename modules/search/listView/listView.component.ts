@@ -33,7 +33,7 @@ export class ListViewComponent implements OnChanges, OnInit {
     @ViewChild('viewContainer', {read: ViewContainerRef}) viewContainer: ViewContainerRef;
 
     private _listView: string;
-    viewsMap: Map<string, Type<Component>>;
+    viewsMap: Map<string, any>;
     viewComponentRef: any;
     static readonly RESULTVIEWS = ['accordion', 'summary', 'table'];
 

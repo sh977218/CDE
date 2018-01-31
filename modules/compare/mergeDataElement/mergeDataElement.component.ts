@@ -1,21 +1,21 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import "rxjs/add/operator/map";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { MergeCdeService } from 'core/mergeCde.service';
-import { IsAllowedService } from 'core/isAllowed.service';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
+
 import { AlertService } from '_app/alert/alert.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { MergeCdeService } from 'core/mergeCde.service';
+
 
 @Component({
-    selector: "cde-merge-data-element",
+    selector: 'cde-merge-data-element',
     providers: [NgbActiveModal],
-    templateUrl: "./mergeDataElement.component.html"
+    templateUrl: './mergeDataElement.component.html'
 })
 export class MergeDataElementComponent {
-    @ViewChild("mergeDataElementContent") public mergeDataElementContent: NgbModalModule;
     @Input() public source: any;
     @Input() public destination: any;
     @Output() doneMerge = new EventEmitter();
-    public modalRef: NgbModalRef;
+    @ViewChild('mergeDataElementContent') public mergeDataElementContent: NgbModalModule;
     allow = true;
     mergeFields: any = {
         classifications: true,
@@ -29,41 +29,14 @@ export class MergeDataElementComponent {
         derivationRules: false,
         retireCde: true
     };
+    modalRef: NgbModalRef;
 
-    constructor(public modalService: NgbModal,
-                private alert: AlertService,
-                public mergeCdeService: MergeCdeService,
-                public isAllowedModel: IsAllowedService) {
-    }
-
-    checkAllMergerFields() {
-        this.mergeFields.classifications = true;
-        this.mergeFields.ids = true;
-        this.mergeFields.naming = true;
-        this.mergeFields.properties = true;
-        this.mergeFields.attachments = true;
-        this.mergeFields.sources = true;
-        this.mergeFields.referenceDocuments = true;
-        this.mergeFields.dataSets = true;
-        this.mergeFields.derivationRules = true;
-        this.mergeFields.retireCde = true;
-    }
-
-    openMergeDataElementModal() {
-        this.modalRef = this.modalService.open(this.mergeDataElementContent, {size: "lg"});
-    }
-
-    doMerge() {
-        let tinyIdFrom = this.source.tinyId;
-        let tinyIdTo = this.destination.tinyId;
-        this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, this.mergeFields, (err, results) => {
-            if (err) return this.alert.addAlert("danger", err);
-            else {
-                this.alert.addAlert("success", "Finished merging");
-                this.doneMerge.emit({left: results[0], right: results[1]});
-                this.modalRef.close();
-            }
-        });
+    constructor(
+        private alert: AlertService,
+        public isAllowedModel: IsAllowedService,
+        public mergeCdeService: MergeCdeService,
+        public modalService: NgbModal,
+    ) {
     }
 
     allowToMerge() {
@@ -81,5 +54,35 @@ export class MergeDataElementComponent {
             this.mergeFields.derivationRules) {
             this.allow = this.allow && this.isAllowedModel.isAllowed(this.destination);
         }
+    }
+
+    checkAllMergerFields() {
+        this.mergeFields.classifications = true;
+        this.mergeFields.ids = true;
+        this.mergeFields.naming = true;
+        this.mergeFields.properties = true;
+        this.mergeFields.attachments = true;
+        this.mergeFields.sources = true;
+        this.mergeFields.referenceDocuments = true;
+        this.mergeFields.dataSets = true;
+        this.mergeFields.derivationRules = true;
+        this.mergeFields.retireCde = true;
+    }
+
+    doMerge() {
+        let tinyIdFrom = this.source.tinyId;
+        let tinyIdTo = this.destination.tinyId;
+        this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, this.mergeFields, (err, results) => {
+            if (err) return this.alert.addAlert('danger', err);
+            else {
+                this.alert.addAlert('success', 'Finished merging');
+                this.doneMerge.emit({left: results[0], right: results[1]});
+                this.modalRef.close();
+            }
+        });
+    }
+
+    openMergeDataElementModal() {
+        this.modalRef = this.modalService.open(this.mergeDataElementContent, {size: 'lg'});
     }
 }
