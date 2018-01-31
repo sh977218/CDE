@@ -4,7 +4,6 @@ import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
-
 @Injectable()
 export class UcumService {
     uomUnitMap = new Map<string, string[]>();
@@ -34,10 +33,10 @@ export class UcumService {
 
     // cb(errors, units)
     validateUnits(uoms: string[], cb) {
-        if (Array.isArray(uoms) && uoms.length)
+        if (Array.isArray(uoms) && uoms.length) {
             this.http.get<{ errors: string[], units: any[] }>('/ucumValidate?uoms=' + encodeURIComponent(JSON.stringify(uoms)))
                 .subscribe(response => cb(response.errors, response.units));
-        else cb([], []);
+        } else cb([], []);
     }
 
     search = (text$: Observable<string>) =>
@@ -46,9 +45,15 @@ export class UcumService {
             distinctUntilChanged(),
             switchMap(term => {
                 if (term === '') return of([]);
-                else return this.http.get('/ucumNames?uom=' + encodeURIComponent(term));
+                // else return of([{code: 'bogus'}]).merge(this.http.get('/ucumNames?uom=' + encodeURIComponent(term)));
+                else {
+                    return this.http.get('/ucumNames?uom=' + encodeURIComponent(term)).map((r: any[]) => {
+                        if (!r.length) r.push({code: term, warning: "Not a valid UCUM unit"});
+                        return r;
+                    });
+                }
             })
-        );
+        )
 
     formatter = (x: { name: string, synonyms: [any], code: string }) => '';
 

@@ -25,14 +25,11 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() set node(node: TreeNode) {
         this.question = node.data;
         this.parent = node.parent.data;
-        if (!this.question.instructions)
-            this.question.instructions = new FormattedValue;
-        if (!this.question.skipLogic)
-            this.question.skipLogic = new SkipLogic;
-        if (!this.question.question.uoms)
-            this.question.question.uoms = [];
+        if (!this.question.instructions) this.question.instructions = new FormattedValue;
+        if (!this.question.skipLogic) this.question.skipLogic = new SkipLogic;
+        if (!this.question.question.uoms) this.question.question.uoms = [];
         if (this.question.question.uoms) this.validateUoms(this.question.question);
-    };
+    }
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionNameSelectTmpl') formDescriptionNameSelectTmpl: NgbModalModule;
     @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl: TemplateRef<any>;
@@ -107,10 +104,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     getRepeatLabel(fe) {
-        if (!fe.repeat)
-            return '';
-        if (fe.repeat[0] === 'F')
-            return 'over First Question';
+        if (!fe.repeat) return '';
+        if (fe.repeat[0] === 'F') return 'over First Question';
         return parseInt(fe.repeat) + ' times';
     }
 
@@ -118,7 +113,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         text$.pipe(
             debounceTime(300),
             map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question))
-        );
+        )
 
     getTemplate() {
         return (this.canEdit && this.question.edit
@@ -133,8 +128,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     getAnswersValue() {
-        if (!this.answersSelected && this.question.question.answers)
+        if (!this.answersSelected && this.question.question.answers) {
             this.answersSelected = this.question.question.answers.map(a => a.permissibleValue);
+        }
         return this.answersSelected;
     }
 
@@ -175,10 +171,11 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     slOptionsRetrigger() {
-        if (this.slInput)
+        if (this.slInput) {
             setTimeout(() => {
                 this.slInput.nativeElement.dispatchEvent(FormDescriptionQuestionDetailComponent.inputEvent);
             }, 0);
+        }
     }
 
     typeaheadSkipLogic(parent, fe, event) {
@@ -259,8 +256,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     addNewCdeId(newCdeId) {
         if (!_isEmpty(newCdeId)) {
-            if (!this.question.question.cde.ids)
-                this.question.question.cde.ids = [];
+            if (!this.question.question.cde.ids) this.question.question.cde.ids = [];
             this.question.question.cde.ids.push(newCdeId);
             this.newCdeId = {};
             this.onEltChange.emit();
@@ -273,14 +269,17 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     newUom = '';
     selectedUom(event) {
-        if (event && event.item && event.item.name && event.item.name !== '')
+        if (event && event.item && event.item.code && event.item.code !== '') {
             this.question.question.uoms = _union(this.question.question.uoms, [event.item.code]);
+        }
         this.onEltChange.emit();
         this.newUom = '';
+        this.validateUoms(this.question.question);
     }
 
     removeUomByIndex(i) {
         this.question.question.uoms.splice(i, 1);
+        this.validateUoms(this.question.question);
         this.onEltChange.emit();
     }
 }

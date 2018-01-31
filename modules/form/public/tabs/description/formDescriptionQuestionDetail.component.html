@@ -119,25 +119,30 @@
             <dt class="col-2">Units of Measure:</dt>
             <dd class="col-10 questionUom">
                 <div class="border rounded">
-                    <span class="badge badge-success mx-1" *ngFor="let uom of question.question.uoms;let i = index;">
+                    <span class="badge badge-info mx-1" *ngFor="let uom of question.question.uoms;let i = index;">
                         <i class="fa fa-times hand-cursor dark-icon pl-1"
                            (click)="removeUomByIndex(i);"></i>
                         {{uom}}
                     </span>
                     <ng-template #rt let-r="result" let-t="term">
-                        <dl class="row">
+                        <dl class="row" *ngIf="r.name">
                             <dt class="col-2">synonyms:</dt>
-                            <dd class="col-10">
+                            <dd class="col-10 mb-0">
                                 <span *ngFor="let s of r.synonyms">{{s}} </span>
                             </dd>
                             <dt class="col-2">name:</dt>
-                            <dd class="col-10">{{ r.name}}</dd>
+                            <dd class="col-10 mb-0">{{ r.name}}</dd>
                             <dt class="col-2">code:</dt>
-                            <dd class="col-10">{{r.code}}</dd>
+                            <dd class="col-10 mb-0">{{r.code}}</dd>
                         </dl>
+                        <span *ngIf="!r.name">
+                            <i class="fa fa-warning"> {{r.code}} is not a valid UCUM Unit</i>
+                        </span>
                     </ng-template>
-                    <input [ngbTypeahead]="ucumService.search"
-                           [resultTemplate]="rt" [(ngModel)]="newUom" [container]="'body'" [editable]="false"
+
+                    <input [ngbTypeahead]="ucumService.search" class="form-control d-inline-block"
+                           style="max-width: 200px"
+                           [resultTemplate]="rt" [(ngModel)]="newUom" [container]="'body'"
                            [inputFormatter]="ucumService.formatter" (selectItem)="selectedUom($event);"/>
                 </div>
             </dd>
