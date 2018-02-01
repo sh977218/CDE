@@ -9,6 +9,7 @@ const formCtrl = require('./formCtrl');
 const formSvc = require("./formsvc");
 const mongo_form = require('./mongo-form');
 const mongo_data_system = require('../system/mongo-data');
+const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const classificationNode_system = require('../system/classificationNode');
 const adminItemSvc = require('../system/adminItemSvc.js');
 const elastic_system = require('../system/elastic');
@@ -16,7 +17,6 @@ const elastic_system = require('../system/elastic');
 const sharedElastic = require('../system/elastic.js');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const boardsvc = require('../board/boardsvc');
-const usersrvc = require('../system/usersrvc');
 
 // ucum from lhc uses IndexDB
 global.location = {origin: 'localhost'};

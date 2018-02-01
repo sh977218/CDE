@@ -8,11 +8,12 @@ import { debounceTime, distinctUntilChanged, switchMap, take } from 'rxjs/operat
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
-import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm } from 'shared/form/form.model';
-import { ElasticQueryResponse, Elt, User } from 'shared/models.model';
 import { SharedService } from '_commonApp/shared.service';
 import { SearchSettings } from 'search/search.model';
+import { ElasticQueryResponse, Elt, User } from 'shared/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
+import { hasRole } from 'shared/system/authorizationShared';
 import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 
@@ -269,7 +270,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     displayValidation() {
         let org = this.searchSettings.selectedOrg;
         let curatorOf = [].concat(this.userService.user.orgAdmin).concat(this.userService.user.orgCurator);
-        return curatorOf.indexOf(org) > -1 || SharedService.auth.hasRole(this.userService.user, 'OrgAuthority');
+        return curatorOf.indexOf(org) > -1 || hasRole(this.userService.user, 'OrgAuthority');
     }
 
     doSearch() {

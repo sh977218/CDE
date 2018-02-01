@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { UserService } from '_app/user.service';
-import { SharedService } from '_commonApp/shared.service';
+import { isOrgCurator } from 'shared/system/authorizationShared';
 
 @Injectable()
 export class OrgHelperService  {
@@ -75,10 +75,10 @@ export class OrgHelperService  {
         if (!this.orgsDetailedInfo) return false;
         let parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide] && this.orgsDetailedInfo[orgToHide].workingGroupOf;
         let isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";
-        let userIsWorkingGroupCurator = SharedService.auth.isOrgCurator(this.userService.user, orgToHide);
+        let userIsWorkingGroupCurator = isOrgCurator(this.userService.user, orgToHide);
         let userIsCuratorOfParentOrg;
         let isSisterOfWg = false;
-        if (!isNotWorkingGroup) userIsCuratorOfParentOrg = SharedService.auth.isOrgCurator(this.userService.user, parentOrgOfThisClass);
+        if (!isNotWorkingGroup) userIsCuratorOfParentOrg = isOrgCurator(this.userService.user, parentOrgOfThisClass);
         if (!isNotWorkingGroup) {
             if (!this.userService.user.orgAdmin) this.userService.user.orgAdmin = [];
             if (!this.userService.user.orgCurator) this.userService.user.orgCurator = [];

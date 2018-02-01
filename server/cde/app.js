@@ -17,7 +17,6 @@ const appStatus = require('../system/status');
 const multer = require('multer');
 const elastic_system = require('../system/elastic');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
-const usersrvc = require('../system/usersrvc');
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 
 exports.init = function (app, daoManager) {

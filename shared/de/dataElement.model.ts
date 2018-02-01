@@ -27,7 +27,7 @@ export class DataElement extends Elt {
     }
 }
 
-class ValueDomain {
+export class ValueDomain {
     datatype: string;
     identifiers: CdeId[];
     ids: CdeId[];
