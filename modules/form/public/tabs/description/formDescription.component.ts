@@ -73,7 +73,12 @@ const TOOL_BAR_OFF_SET = 55;
             margin-top: 2px;
             white-space: normal;
         }
-
+        
+        :host >>> .node-content-wrapper:hover {
+            background: transparent;
+            box-shadow: inset 0 0 0;
+        }
+        
         .node-content-wrapper.is-dragging-over {
             background-color: #ddffee;
             box-shadow: inset 0 0 1px #999;

@@ -17,7 +17,7 @@ public class TwoLabelsNoVersionTest extends NlmCdeBaseTest {
         textPresent("No Label");
         clickElement(By.cssSelector("#q_select_name_1 button"));
         modalGone();
-        textPresent("Second name for label", By.xpath("//*[@id='question_0_0']//div[contains(@class,'questionLabel')]"));
+        textPresent("Second name for label", By.xpath("//*[@id='question_0_0']//span[contains(@class,'questionLabel')]"));
     }
 
 }

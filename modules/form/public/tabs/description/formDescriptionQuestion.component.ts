@@ -14,7 +14,7 @@ import { FormService } from 'nativeRender/form.service';
 @Component({
     selector: 'cde-form-description-question',
     templateUrl: 'formDescriptionQuestion.component.html',
-    styles: [`            
+    styles: [`
         .outdated-bg {
             background-color: #ffecc5;
             border: 1px;
@@ -69,9 +69,10 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
     getDatatypeLabel(question) {
         let datatype = question.question.datatype;
-        if (datatype === 'Number') {
+        if (!datatype) return '';
+        else if (datatype === 'Number') {
             return '(Number)';
-        } else if (datatype === 'Date') {
+        } else if (datatype.toLowerCase() === 'date') {
             return '(Date)';
         } else return '';
     }
@@ -102,8 +103,9 @@ export class FormDescriptionQuestionComponent implements OnInit {
                         this.http.get<DataElement>('/de/' + newQuestion.question.cde.tinyId)
                             .subscribe(newCde => {
                                 let cdeUrl = '/de/' + currentQuestion.question.cde.tinyId;
-                                if (currentQuestion.question.cde.version && currentQuestion.question.cde.version.length > 0)
+                                if (currentQuestion.question.cde.version && currentQuestion.question.cde.version.length > 0) {
                                     cdeUrl = cdeUrl + '/version/' + currentQuestion.question.cde.version;
+                                }
                                 this.http.get<DataElement>(cdeUrl).subscribe(oldCde => {
                                     modal.bLabel = !_isEqual(newCde.naming, oldCde.naming);
                                 });
@@ -136,8 +138,9 @@ export class FormDescriptionQuestionComponent implements OnInit {
                                     newQuestion.question.cde.permissibleValues);
                                 if (!modal.bValuelist) newQuestion.question.answers = currentQuestion.question.answers;
 
-                                if (currentQuestion.question.defaultAnswer && newQuestion.question.answers.filter(a => a.permissibleValue === currentQuestion.question.defaultAnswer).length > 0)
+                                if (currentQuestion.question.defaultAnswer && newQuestion.question.answers.filter(a => a.permissibleValue === currentQuestion.question.defaultAnswer).length > 0) {
                                     newQuestion.question.defaultAnswer = currentQuestion.question.defaultAnswer;
+                                }
                             } else {
                                 modal.bValuelist = true;
                             }
