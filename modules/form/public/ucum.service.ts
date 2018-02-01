@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import _noop from 'lodash/noop';
 
 
 @Injectable()
@@ -41,12 +42,14 @@ export class UcumService {
         }
     }
 
-    validateUoms(question) {
+    // cb()
+    validateUoms(question, cb = _noop) {
         question.uomsValid = [];
         this.validateUnits(question.uoms, errors => {
             question.uoms.forEach((uom, i) => {
                 question.uomsValid[i] = errors[i];
             });
+            cb();
         });
     }
 }

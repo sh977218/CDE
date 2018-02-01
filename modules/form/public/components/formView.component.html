@@ -42,8 +42,9 @@
             <i class="fa fa-exclamation-triangle"></i>
             The following errors need to be corrected in order to Publish:
             <ul class="list-inline">
-                <li *ngFor="let error of validationErrors;let i = index;">
-                    {{error}}
+                <li *ngFor="let error of validationErrors;let i = index;" class="fake-link"
+                    (click)="scrollToDescriptionId(error.id)">
+                    {{error.message}}
                 </li>
             </ul>
         </div>

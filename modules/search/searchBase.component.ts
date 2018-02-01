@@ -13,6 +13,7 @@ import { CdeForm } from 'shared/form/form.model';
 import { ElasticQueryResponse, Elt, User } from 'shared/models.model';
 import { SharedService } from '_commonApp/shared.service';
 import { SearchSettings } from 'search/search.model';
+import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 
 export const searchStyles: string = `
@@ -190,7 +191,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
         this.doSearch();
         if (!this.embedded)
-            SearchBaseComponent.scrollTo('top');
+            BrowserService.scrollTo('top');
     }
 
     browseTopic(topic) {
@@ -198,7 +199,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
         this.doSearch();
         if (!this.embedded)
-            SearchBaseComponent.scrollTo('top');
+            BrowserService.scrollTo('top');
     }
 
     browseByTopic(event) {
@@ -668,11 +669,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     scrollHistorySave() {
         if (!this.backForwardService.isBackForward)
             window.sessionStorage['nlmcde.scroll.' + this.previousUrl] = window.scrollY;
-    }
-
-    static scrollTo(id) {
-        const element = document.querySelector('#' + id);
-        if (element) element.scrollIntoView();
     }
 
     search() {

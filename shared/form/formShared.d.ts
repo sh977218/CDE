@@ -26,4 +26,6 @@ declare function iterateFeSync(fe: FormElementsContainer, formCb?: informCbSync,
 declare function iterateFes(fes: FormElement[], formCb?: informCb, sectionCb?: sectionCb, questionCb?: quesCb, callback?: cb): void;
 declare function iterateFesSync(fes: FormElement[], formCb?: informCbSync, sectionCb?: sectionCbSync, questionCb?: quesCbSync): void;
 declare function iterateFormElements(fe?: any, option?: any, cb?: any): void;
+declare function noopSkip(_: any, cb: continueCb): void;
+declare function noopSkipSync(_?: any): boolean;
 declare function score(question: FormQuestion, elt: FormElementsContainer): any; // returns number for success and string for failure

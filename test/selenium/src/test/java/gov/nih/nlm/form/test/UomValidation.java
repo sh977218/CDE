@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -46,6 +47,15 @@ public class UomValidation extends BaseFormTest {
         textPresent("international inch");
         selectDisplayProfileByName("No Uom");
         textNotPresent("international inch");
+
+        clickElement(By.id("openSave"));
+        textPresent("Fix errors to Publish");
+        textPresent("errors need to be corrected");
+        textPresent("Unit of Measure error on question \"If Yes, what are the number of CAG repeats on the larger allele\".");
+        clickElement(By.partialLinkText("Unit of Measure error on question \"If Yes, what are the number of CAG repeats on the larger allele\"."));
+        hangon(1);
+        String scrollLocation = (((JavascriptExecutor) driver).executeScript("return window.pageYOffset", "")).toString();
+        Assert.assertTrue(Double.valueOf(scrollLocation).intValue() > 100);
     }
 
 }

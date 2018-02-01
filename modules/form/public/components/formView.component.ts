@@ -12,20 +12,31 @@ import { Subscription } from 'rxjs/Subscription';
 import { AlertService } from '_app/alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { areDerivationRulesSatisfied, getLabel, iterateFeSync, iterateFes } from 'shared/form/formShared';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
-import { DataElement } from 'shared/de/dataElement.model';
 import { ExportService } from 'core/export.service';
-import { CdeForm, FormElement, FormElementsContainer } from 'shared/form/form.model';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { Comment } from 'shared/models.model';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
+import { UcumService } from 'form/public/ucum.service';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm, FormElement, FormElementsContainer } from 'shared/form/form.model';
+import { areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, noopSkip } from 'shared/form/formShared';
+import { Comment } from 'shared/models.model';
 import { BrowserService } from 'widget/browser.service';
 import { AngularHelperService } from 'widget/angularHelper.service';
+import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
 
+class LocatableError {
+    id: string;
+    message: string;
+
+    constructor(m, id) {
+        this.id = id;
+        this.message = m;
+    }
+}
 
 @Component({
     selector: 'cde-form-view',
@@ -60,7 +71,7 @@ export class FormViewComponent implements OnInit {
     orgNamingTags = [];
     savingText: string = '';
     tabsCommented = [];
-    validationErrors: string[] = [];
+    validationErrors: {message: string, id: string}[] = [];
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
@@ -91,7 +102,9 @@ export class FormViewComponent implements OnInit {
                 public userService: UserService,
                 public exportService: ExportService,
                 private route: ActivatedRoute,
-                private router: Router) {
+                private router: Router,
+                private ucumService: UcumService,
+    ) {
     }
 
     beforeChange(event) {
@@ -158,6 +171,7 @@ export class FormViewComponent implements OnInit {
             this.missingCdes = areDerivationRulesSatisfied(this.elt);
             this.loadComments(this.elt, null);
         }
+        FormDescriptionComponent.addIds(this.elt.formElements, '');
         if (cb) cb();
     }
 
@@ -255,14 +269,16 @@ export class FormViewComponent implements OnInit {
     }
 
     publish() {
-        if (this.validate()) {
-            this.saveModal.openSaveModal();
-        } else {
-            this.savingText = 'Fix errors to Publish';
-            setTimeout(() => {
-                this.savingText = '';
-            }, 3000);
-        }
+        this.validate(() => {
+            if (this.validationErrors.length) {
+                this.savingText = 'Fix errors to Publish';
+                setTimeout(() => {
+                    this.savingText = '';
+                }, 3000);
+            } else {
+                this.saveModal.openSaveModal();
+            }
+        });
     }
 
     removeAttachment(event) {
@@ -312,7 +328,7 @@ export class FormViewComponent implements OnInit {
         let newCdes = [];
         iterateFes(this.elt.formElements, undefined, undefined, (fe, cb) => {
             if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
-            if (cb) cb();
+            cb();
         }, () => {
             async_forEach(newCdes, (newCde, doneOneCde) => {
                 this.createDataElement(newCde, doneOneCde);
@@ -325,6 +341,11 @@ export class FormViewComponent implements OnInit {
             });
         });
 
+    }
+
+    scrollToDescriptionId(id: string) {
+        this.currentTab = 'description_tab';
+        setTimeout(BrowserService.scrollTo, 0, id);
     }
 
     setDefault(index) {
@@ -361,10 +382,11 @@ export class FormViewComponent implements OnInit {
         }
     }
 
-    validate() {
+    // cb()
+    validate(cb = _noop): void {
         this.validationErrors.length = 0;
         this.validateSkipLogic();
-        return !this.validationErrors.length;
+        this.validateUoms(cb);
     }
 
     validateSkipLogic() {
@@ -372,7 +394,8 @@ export class FormViewComponent implements OnInit {
 
         function findExistingErrors(parent: FormElementsContainer, fe: FormElement) {
             if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe)) {
-                validationErrors.push('SkipLogic error on form element "' + getLabel(fe) + '".');
+                validationErrors.push(new LocatableError(
+                    'SkipLogic error on form element "' + getLabel(fe) + '".', fe.descriptionId));
             }
             if (Array.isArray(fe.formElements)) {
                 fe.formElements.forEach(f => findExistingErrors(fe, f));
@@ -382,7 +405,16 @@ export class FormViewComponent implements OnInit {
         this.elt.formElements.forEach(fe => findExistingErrors(this.elt, fe));
     }
 
-    validateUoms() {
-        iterateFeSync(this.elt, );
+    // cb()
+    validateUoms(cb) {
+        iterateFe(this.elt, noopSkip, undefined, (q, cb) => {
+            this.ucumService.validateUoms(q.question, () => {
+                if (q.question.uomsValid.some(e => !!e)) {
+                    this.validationErrors.push(new LocatableError(
+                        'Unit of Measure error on question "' + getLabel(q) + '".', q.descriptionId));
+                }
+                cb();
+            });
+        }, cb);
     }
 }

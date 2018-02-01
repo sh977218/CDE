@@ -117,6 +117,7 @@ export interface FormElementsContainer {
 
 export interface FormElement extends FormElementsContainer {
     _id: ObjectId;
+    descriptionId: string;
     readonly elementType: string;
     expanded; // Calculated, used for View TreeComponent
     formElements: FormElement[];
@@ -134,11 +135,12 @@ export interface FormSectionOrForm extends FormElement {
 export class FormSection implements FormSectionOrForm {
     _id;
     edit: boolean;
-    hover: boolean;
+    descriptionId: string;
     elementType = 'section';
     expanded = true; // Calculated, used for View TreeComponent
     forbidMatrix;
     formElements = [];
+    hover: boolean;
     instructions;
     label = '';
     repeat;
@@ -151,6 +153,7 @@ export class FormSection implements FormSectionOrForm {
 
 export class FormInForm implements FormSectionOrForm {
     _id;
+    descriptionId: string;
     elementType = 'form';
     expanded = true; // Calculated, used for View TreeComponent
     forbidMatrix;
@@ -170,7 +173,6 @@ export class FormQuestion implements FormElement {
     }
     _id;
     descriptionId: string;
-    newCde: boolean = false;
     edit: boolean = false;
     elementType = 'question';
     expanded = true; // Calculated, used for View TreeComponent
@@ -180,6 +182,7 @@ export class FormQuestion implements FormElement {
     incompleteRule: boolean;
     instructions: Instruction;
     label = '';
+    newCde: boolean = false;
     question: Question = new Question();
     questionId: string;
     repeat;
@@ -221,6 +224,7 @@ export class Question {
     required: boolean;
     uoms: string[] = [];
     uomsAlias: string[] = []; // calculated, NativeRenderService
+    uomsValid: string[] = []; // calculated, FormDescription
 }
 
 export class QuestionCde {

@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment/min/moment.min';
 
-import { FormService } from 'nativeRender/form.service';
 import { FormQuestion } from 'shared/form/form.model';
-import { NativeRenderService } from './nativeRender.service';
+import { score } from 'shared/form/formShared';
+import { NativeRenderService } from 'nativeRender/nativeRender.service';
 
 
 @Component({
@@ -37,11 +37,10 @@ export class NativeQuestionComponent implements OnInit {
     @Input() numSubQuestions: number;
     @Input() parentValue: any;
     @Input() index: any;
-
-    FormService = FormService;
     hasTime: boolean;
-    static readonly reHasTime = /[hHmsSkaAZ]/;
     previousUom: string;
+    static readonly reHasTime = /[hHmsSkaAZ]/;
+    score = score;
 
     ngOnInit() {
         this.hasTime = this.formElement.question.datatypeDate

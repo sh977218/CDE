@@ -226,7 +226,7 @@ export class NativeRenderAppComponent {
         pushFormObservationNames(tinyId);
         this.getForm(tinyId, (err, elt) => {
             if (!err && elt)
-                iterateFeSync(elt, form => pushFormObservationNames(form.inForm.form.tinyId));
+                iterateFeSync(elt, form => { pushFormObservationNames(form.inForm.form.tinyId); });
             cb(err, observationNames);
         });
     }

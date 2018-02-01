@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import noop from 'lodash/noop';
+import _noop from 'lodash/noop';
 
 import { FormQuestion } from 'shared/form/form.model';
 import { iterateFe } from 'shared/form/formShared';
 
-function noop1(a, cb) { cb(); }
 
 @Injectable()
 export class FormService {
@@ -74,7 +73,7 @@ export class FormService {
 
     // modifies form to add sub-forms
     // callback(err: string)
-    fetchWholeForm(form, callback = noop) {
+    fetchWholeForm(form, callback = _noop) {
         let formCb = (fe, cb) => {
             this.http.get('/form/' + fe.inForm.form.tinyId
                 + (fe.inForm.form.version ? '/version/' + fe.inForm.form.version : ''))
@@ -101,7 +100,7 @@ export class FormService {
     }
 
     // cb(err, elt)
-    getForm(tinyId, id, cb = noop) {
+    getForm(tinyId, id, cb = _noop) {
         let url = '/form/' + tinyId;
         if (id) url = '/formById/' + id;
         this.http.get(url).subscribe(res => {

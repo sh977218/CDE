@@ -23,7 +23,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
-import { CdeForm, FormElementsContainer, FormSection } from 'shared/form/form.model';
+import { CdeForm, FormElement, FormElementsContainer, FormSection } from 'shared/form/form.model';
 import { convertFormToSection, isSubForm, iterateFeSync } from 'shared/form/formShared';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
@@ -139,7 +139,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     @Input() set elt(e: CdeForm) {
         this._elt = e;
         this.addExpanded(e);
-        this.addIds(e.formElements, "");
+        FormDescriptionComponent.addIds(e.formElements, "");
     }
     get elt() {
         return this._elt;
@@ -187,14 +187,14 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                             this.addFormElement(copiedSection);
                         } else {
                             TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
-                            this.addIds(this.elt.formElements, '');
+                            FormDescriptionComponent.addIds(this.elt.formElements, '');
                             this.tree.treeModel.update();
                             this.tree.treeModel.expandAll();
                             this.onEltChange.emit();
                         }
                     } else {
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
-                        this.addIds(this.elt.formElements, '');
+                        FormDescriptionComponent.addIds(this.elt.formElements, '');
                         this.tree.treeModel.update();
                         this.tree.treeModel.expandAll();
                         this.onEltChange.emit();
@@ -265,22 +265,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     ) {
     }
 
-    addIndex(elements, element, i) {
-        elements.splice(i, 0, element);
-        this.addIds(this.elt.formElements, '');
-    }
-
-    addQuestionFromSearch(cde, cb = null) {
-        this.formService.convertCdeToQuestion(cde, question => {
-            question.formElements = [];
-            question.expanded = true;
-            question.edit = true;
-            this.addFormElement(question);
-            this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
-            setTimeout(() => window.document.getElementById(question.descriptionId).scrollIntoView(), 0);
-            this.isModalOpen = false;
-            if (cb) cb();
-        });
+    addExpanded(fe) {
+        fe.expanded = true;
+        let expand = fe => { fe.expanded = true; };
+        iterateFeSync(fe, undefined, expand, expand);
     }
 
     addFormFromSearch(fe, cb = null) {
@@ -295,12 +283,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         });
     }
 
-    addExpanded(fe) {
-        fe.expanded = true;
-        iterateFeSync(fe, undefined, fe => fe.expanded = true, fe => fe.expanded = true);
-    }
-
-    addIds(fes, preId) {
+    static addIds(fes: FormElement[], preId: string): void {
         fes.forEach((fe, i) => {
             let newPreId = preId + '_' + i;
             if (fe.elementType === 'section' || fe.elementType === 'form') {
@@ -309,6 +292,24 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                     this.addIds(fe.formElements, newPreId);
             } else if (fe.elementType === 'question')
                 fe.descriptionId = 'question' + newPreId;
+        });
+    }
+
+    addIndex(elements, element, i) {
+        elements.splice(i, 0, element);
+        FormDescriptionComponent.addIds(this.elt.formElements, '');
+    }
+
+    addQuestionFromSearch(cde, cb = null) {
+        this.formService.convertCdeToQuestion(cde, question => {
+            question.formElements = [];
+            question.expanded = true;
+            question.edit = true;
+            this.addFormElement(question);
+            this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
+            setTimeout(() => window.document.getElementById(question.descriptionId).scrollIntoView(), 0);
+            this.isModalOpen = false;
+            if (cb) cb();
         });
     }
 

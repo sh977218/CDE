@@ -1,13 +1,13 @@
 import async_forEach from 'async/forEach';
 import async_forEachSeries from 'async/forEachSeries';
-import noop from 'lodash/noop';
+import _noop from 'lodash/noop';
 
 
 export function areDerivationRulesSatisfied(elt) {
     let missingCdes = [];
     let allCdes = {};
     let allQuestions = [];
-    this.iterateFeSync(elt, undefined, undefined, (fe) => {
+    iterateFeSync(elt, undefined, undefined, (fe) => {
         if (fe.question.datatype === 'Number' && !Number.isNaN(fe.question.defaultAnswer))
             fe.question.answer = Number.parseFloat(fe.question.defaultAnswer);
         else
@@ -318,31 +318,31 @@ export function isSubForm(node) {
     return n.data.elementType === 'form';
 }
 
-// feCb(fe, cbContinue(error, skipChildren?: boolean))
+// feCb(fe, cbContinue(error, skipChildren?: boolean))  (noopSkip: (_, cb) => cb(undefined, true))
 // callback(error)
 export function iterateFe(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, callback = undefined) {
-    if (fe) this.iterateFes(fe.formElements, formCb, sectionCb, questionCb, callback);
+    if (fe) iterateFes(fe.formElements, formCb, sectionCb, questionCb, callback);
 }
 
-// cb(fe): skipChildren
+// cb(fe): skipChildren  (noopSkipSync: () => true)
 export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
-    if (fe) this.iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
+    if (fe) iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
 }
 
-// feCb(fe, cbContinue(error, skipChildren?: boolean))
+// feCb(fe, cbContinue(error, skipChildren?: boolean))  (noopSkip: (_, cb) => cb(undefined, true))
 // callback(error)
-export function iterateFes(fes, formCb = noop1, sectionCb = noop1, questionCb = noop1, callback = noop) {
+export function iterateFes(fes, formCb = noopCb, sectionCb = noopCb, questionCb = noopCb, callback = _noop) {
     if (Array.isArray(fes)) {
         async_forEach(fes, (fe, cb) => {
             if (fe.elementType === 'form') {
                 formCb(fe, (err, skip = undefined) => {
                     if (err) cb(err);
-                    else if (!skip) this.iterateFe(fe, formCb, sectionCb, questionCb, cb);
+                    else if (!skip) iterateFe(fe, formCb, sectionCb, questionCb, cb);
                 });
             } else if (fe.elementType === 'section') {
                 sectionCb(fe, (err, skip = undefined) => {
                     if (err) cb(err);
-                    else if (!skip) this.iterateFe(fe, formCb, sectionCb, questionCb, cb);
+                    else if (!skip) iterateFe(fe, formCb, sectionCb, questionCb, cb);
                 });
             } else {
                 questionCb(fe, cb);
@@ -351,36 +351,43 @@ export function iterateFes(fes, formCb = noop1, sectionCb = noop1, questionCb = 
     }
 }
 
-// feCb(fe): skipChildren
-export function iterateFesSync(fes, formCb = noop, sectionCb = noop, questionCb = noop) {
+// feCb(fe): skipChildren  (noopSkipSync: () => true)
+export function iterateFesSync(fes, formCb = _noop, sectionCb = _noop, questionCb = _noop) {
     if (Array.isArray(fes))
         fes.forEach(fe => {
             if (fe.elementType === 'form') {
                 if (!formCb(fe))
-                    this.iterateFeSync(fe, formCb, sectionCb, questionCb);
+                    iterateFeSync(fe, formCb, sectionCb, questionCb);
             } else if (fe.elementType === 'section') {
                 if (!sectionCb(fe))
-                    this.iterateFeSync(fe, formCb, sectionCb, questionCb);
+                    iterateFeSync(fe, formCb, sectionCb, questionCb);
             } else {
                 questionCb(fe);
             }
         });
 }
 
-function noop1(a, cb) {
+function noopCb(a, cb) {
     cb();
+}
+
+export function noopSkip(_, cb) {
+    cb(undefined, true);
+}
+
+export function noopSkipSync() {
+    return true;
 }
 
 export function score(question, elt) {
     if (!question.question.isScore)
         return;
     let result = 0;
-    let service = this;
     question.question.cde.derivationRules.forEach(function (derRule) {
         if (derRule.ruleType === 'score') {
             if (derRule.formula === 'sumAll' || derRule.formula === 'mean') {
                 derRule.inputs.forEach(function (cdeTinyId) {
-                    let q = service.findQuestionByTinyId(cdeTinyId, elt);
+                    let q = findQuestionByTinyId(cdeTinyId, elt);
                     if (isNaN(result)) return;
                     if (q) {
                         let answer = q.question.answer;
@@ -410,11 +417,11 @@ export function iterateFormElements(fe = {}, option = {}, cb = undefined) {
             async_forEachSeries(fe.formElements, (fe, doneOneFe) => {
                 if (fe.elementType === 'section') {
                     if (option.sectionCb) option.sectionCb(fe, doneOneFe);
-                    else this.iterateFormElements(fe, option, doneOneFe);
+                    else iterateFormElements(fe, option, doneOneFe);
                 }
                 else if (fe.elementType === 'form') {
                     if (option.formCb) option.formCb(fe, doneOneFe);
-                    else this.iterateFormElements(fe, option, doneOneFe);
+                    else iterateFormElements(fe, option, doneOneFe);
                 }
                 else if (fe.elementType === 'question') {
                     if (option.questionCb) option.questionCb(fe, doneOneFe);
@@ -425,11 +432,11 @@ export function iterateFormElements(fe = {}, option = {}, cb = undefined) {
             fe.formElements.forEach(fe => {
                 if (fe.elementType === 'section') {
                     if (option.sectionCb) option.sectionCb(fe);
-                    else this.iterateFormElements(fe, option);
+                    else iterateFormElements(fe, option);
                 }
                 else if (fe.elementType === 'form') {
                     if (option.formCb) option.formCb(fe);
-                    else this.iterateFormElements(fe, option);
+                    else iterateFormElements(fe, option);
                 }
                 else if (fe.elementType === 'question') {
                     if (option.questionCb) option.questionCb(fe);
