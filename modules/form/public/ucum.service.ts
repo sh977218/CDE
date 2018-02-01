@@ -45,7 +45,6 @@ export class UcumService {
             distinctUntilChanged(),
             switchMap(term => {
                 if (term === '') return of([]);
-                // else return of([{code: 'bogus'}]).merge(this.http.get('/ucumNames?uom=' + encodeURIComponent(term)));
                 else {
                     return this.http.get('/ucumNames?uom=' + encodeURIComponent(term)).map((r: any[]) => {
                         if (!r.length) r.push({code: term, warning: "Not a valid UCUM unit"});
