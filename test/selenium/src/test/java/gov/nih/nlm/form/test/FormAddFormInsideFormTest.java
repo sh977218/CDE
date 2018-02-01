@@ -34,6 +34,12 @@ public class FormAddFormInsideFormTest extends QuestionTest {
         textPresent("Symptomology");
         switchTabAndClose(0);
 
+        goToFormDescription();
+        clickElement(By.partialLinkText("View Form"));
+        switchTab(1);
+        textPresent("Vessel Imaging Angiography", By.cssSelector("h1"));
+        switchTabAndClose(0);
+
         String odmResponse = get(baseUrl + "/form/71zmIkrBtl?type=xml&subtype=odm").asString();
         Assert.assertEquals(odmResponse.contains("Symptomology"), true, "Actual: " + odmResponse);
 
