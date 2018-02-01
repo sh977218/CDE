@@ -22,14 +22,15 @@ public class UomValidation extends BaseFormTest {
 
         startEditQuestionById("question_0_3");
         questionEditAddUom("question_0_3", "kilogram");
+        questionEditRemoveUom("question_0_3", "inches");
         saveEditQuestionById("question_0_3");
-        findElement(By.xpath("//*[contains(@class,'badge-danger')]//*[text()='kilogram']"));
-        textPresent("replaced with kg");
+        textNotPresent("inches");
+        findElement(By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionUom')]//*[text()='kg']"));
 
         goToPreview();
         findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']")).sendKeys("1.25");
         clickElement(By.xpath("(//div[@id='If Yes, what are the number of CAG repeats on the larger allele_3']//input[@name='q4_uom'])[1]"));
-        Assert.assertEquals(findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']")).getAttribute("title"),"1.25");
+        Assert.assertEquals(findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']")).getAttribute("title"), "1.25");
         clickElement(By.xpath("(//div[@id='If Yes, what are the number of CAG repeats on the larger allele_3']//input[@name='q4_uom'])[2]"));
         wait.until(ExpectedConditions.attributeToBe(
                 By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']"),
