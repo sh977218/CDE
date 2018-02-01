@@ -46,6 +46,7 @@ export class TableListComponent implements OnInit {
         if (tableSetup.questionTexts) this.headings.push('Question Texts');
         if (tableSetup.naming) this.headings.push('Other Names');
         if (tableSetup.permissibleValues) this.headings.push('Permissible Values');
+        if (tableSetup.pvCodeNames) this.headings.push('Code Names');
         if (tableSetup.nbOfPVs) this.headings.push('Nb of PVs');
         if (tableSetup.uom) this.headings.push('Unit of Measure');
         if (tableSetup.stewardOrg) this.headings.push('Steward');
@@ -88,6 +89,13 @@ export class TableListComponent implements OnInit {
                     css: 'permissibleValues multiline-ellipsis',
                     datatype: e.valueDomain.datatype,
                     values: TableListComponent.truncatedList(e.valueDomain.permissibleValues, pv => pv.permissibleValue)
+                });
+            }
+            if (tableSetup.pvCodeNames) {
+                row.push({
+                    css: 'permissibleValues multiline-ellipsis',
+                    datatype: e.valueDomain.datatype,
+                    values: TableListComponent.truncatedList(e.valueDomain.permissibleValues, pv => pv.valueMeaningName)
                 });
             }
             if (tableSetup.nbOfPVs) {

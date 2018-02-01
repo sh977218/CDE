@@ -4,7 +4,7 @@ export const exportHeader = {
 };
 
 export const getCdeCsvHeader = function (settings) {
-    var cdeHeader = "Name";
+    let cdeHeader = "Name";
 
     if (settings.questionTexts) {
         cdeHeader += ", Question Texts";
@@ -12,9 +12,14 @@ export const getCdeCsvHeader = function (settings) {
     if (settings.naming) {
         cdeHeader += ", Other Names";
     }
-    if (settings.permissibleValues) {
+    if (settings.permissibleValues || settings.pvCodeNames) {
         cdeHeader += ", Value Type";
+    }
+    if (settings.permissibleValues) {
         cdeHeader += ", Permissible Values";
+    }
+    if (settings.pvCodeNames) {
+        cdeHeader += ",  Code Names";
     }
     if (settings.nbOfPVs) {
         cdeHeader += ", Nb of Permissible Values";
@@ -71,7 +76,7 @@ export const projectFormForExport = function (ele) {
 };
 
 export const projectCdeForExport = function (ele, settings) {
-    var cde = {
+    let cde = {
         name: ele.naming[0].designation
     };
     if (settings.questionTexts) {
@@ -96,15 +101,17 @@ export const projectCdeForExport = function (ele, settings) {
             return n;
         });
     }
-    if (settings.permissibleValues) {
+    if (settings.permissibleValues || settings.pvCodeNames) {
         cde.valueDomainType = ele.valueDomain.datatype;
-        cde.permissibleValues = ele.valueDomain.permissibleValues.slice(0, 50).map(function (pv) {
-            return pv.permissibleValue;
-        });
+    }
+    if (settings.permissibleValues) {
+        cde.permissibleValues = ele.valueDomain.permissibleValues.slice(0, 50).map(pv => pv.permissibleValue);
+    }
+    if (settings.pvCodeNames) {
+        cde.pvCodeNames = ele.valueDomain.permissibleValues.slice(0, 50).map(pv => pv.valueMeaningName);
     }
     if (settings.nbOfPVs) {
-        if (ele.valueDomain.permissibleValues)
-            cde.nbOfPVs = ele.valueDomain.permissibleValues.length | 0;  // jshint ignore:line
+        if (ele.valueDomain.permissibleValues) cde.nbOfPVs = ele.valueDomain.permissibleValues.length | 0;  // jshint ignore:line
     }
     if (settings.uom) {
         cde.uom = ele.valueDomain.uom;
