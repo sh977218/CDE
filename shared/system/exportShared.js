@@ -19,7 +19,7 @@ export const getCdeCsvHeader = function (settings) {
         cdeHeader += ", Permissible Values";
     }
     if (settings.pvCodeNames) {
-        cdeHeader += ",  Code Names";
+        cdeHeader += ", Code Names";
     }
     if (settings.nbOfPVs) {
         cdeHeader += ", Nb of Permissible Values";
