@@ -22,7 +22,7 @@ public class UomValidation extends BaseFormTest {
 
         startEditQuestionById("question_0_3");
         questionEditAddUom("question_0_3", "kilogram");
-        questionEditRemoveUom("question_0_3", "meter");
+        questionEditRemoveUom("question_0_3", "inches");
         saveEditQuestionById("question_0_3");
         textNotPresent("meter");
         findElement(By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionUom')]//*[text()='kg']"));

@@ -69,7 +69,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
     getDatatypeLabel(question) {
         let datatype = question.question.datatype;
-        if (datatype === 'Number') {
+        if (!datatype) return '';
+        else if (datatype === 'Number') {
             return '(Number)';
         } else if (datatype.toLowerCase() === 'date') {
             return '(Date)';
