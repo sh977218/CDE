@@ -83,9 +83,14 @@ public class BaseFormTest extends FormCommentTest {
     }
 
     public void questionEditAddUom(String id, String text) {
-        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'formDescriptionUoms')]//input[contains(@class,'select2-search__field')]"));
-        findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'formDescriptionUoms')]//input[contains(@class,'select2-search__field')]")).sendKeys(text);
-        findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'formDescriptionUoms')]//input[contains(@class,'select2-search__field')]")).sendKeys(Keys.ENTER);
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input"));
+        findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input")).sendKeys(text);
+        hangon(2);
+        findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input")).sendKeys(Keys.ENTER);
+    }
+
+    public void questionEditRemoveUom(String id, String uom) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//span[contains(@class,'badge badge-info') and contains(normalize-space(.),'" + uom + "')]/i"));
     }
 
     public void setRepeat(String sectionId, String repeat) {
