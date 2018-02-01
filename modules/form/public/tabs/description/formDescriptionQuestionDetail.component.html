@@ -118,11 +118,33 @@
         <ng-container *ngIf="question.question.datatype === 'Number' || question.question.datatype === 'Text'">
             <dt class="col-2">Units of Measure:</dt>
             <dd class="col-10 questionUom">
-                <ng-container *ngFor="let q of [uomVersion]">
-                    <select2 class="formDescriptionUoms" [data]="getUoms()" [options]="uomOptions" width="100%"
-                             [value]="question.question.uoms" (valueChanged)="checkUom($event)">
-                    </select2>
-                </ng-container>
+                <div class="border rounded">
+                    <span class="badge badge-info mx-1" *ngFor="let uom of question.question.uoms;let i = index;">
+                        <i class="fa fa-times hand-cursor dark-icon pl-1"
+                           (click)="removeUomByIndex(i);"></i>
+                        {{uom}}
+                    </span>
+                    <ng-template #rt let-r="result" let-t="term">
+                        <dl class="row" *ngIf="r.name">
+                            <dt class="col-2">synonyms:</dt>
+                            <dd class="col-10 mb-0">
+                                <span *ngFor="let s of r.synonyms">{{s}} </span>
+                            </dd>
+                            <dt class="col-2">name:</dt>
+                            <dd class="col-10 mb-0">{{ r.name}}</dd>
+                            <dt class="col-2">code:</dt>
+                            <dd class="col-10 mb-0">{{r.code}}</dd>
+                        </dl>
+                        <span *ngIf="!r.name">
+                            <i class="fa fa-warning"> {{r.code}} is not a valid UCUM Unit</i>
+                        </span>
+                    </ng-template>
+
+                    <input [ngbTypeahead]="ucumService.search" class="form-control d-inline-block"
+                           style="max-width: 200px"
+                           [resultTemplate]="rt" [(ngModel)]="newUom" [container]="'body'"
+                           [inputFormatter]="ucumService.formatter" (selectItem)="selectedUom($event);"/>
+                </div>
             </dd>
         </ng-container>
         <ng-container *ngIf="question.question.datatype === 'Value List'">
