@@ -25,7 +25,7 @@ public class UomValidation extends BaseFormTest {
         questionEditRemoveUom("question_0_3", "meter");
         saveEditQuestionById("question_0_3");
         textNotPresent("meter");
-        findElement(By.xpath("//*[contains(@class,'badge-danger')]//*[text()='kg']"));
+        findElement(By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionUom')]//*[text()='kg']"));
 
         goToPreview();
         findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']")).sendKeys("1.25");
