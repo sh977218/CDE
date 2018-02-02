@@ -37,7 +37,7 @@ public class FormCdeExport extends NlmCdeBaseTest {
                 }
             }
         } catch (IOException e) {
-            Assert.fail("Exception reading SearchExport.csv");
+            Assert.fail("Exception reading FormCdes-Xy910Dz6f.csv");
         }
 
 
