@@ -83,6 +83,13 @@
                 </div>
                 <div class="checkbox indent">
                     <label>
+                        <input id="pvCodeNames" type="checkbox"
+                               [(ngModel)]="searchSettings.tableViewFields.pvCodeNames"> Code Names
+                    </label>
+                    <span class="text-info"><small>(CDE Only)</small></span>
+                </div>
+                <div class="checkbox indent">
+                    <label>
                         <input id="nbOfPVs" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.nbOfPVs">
                         Number of Permissible Values (PVs)
                     </label>

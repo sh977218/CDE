@@ -53,6 +53,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         clickElement(By.id("searchSettings"));
         clickElement(By.id("uom"));
         clickElement(By.id("naming"));
+        clickElement(By.id("pvCodeNames"));
         clickElement(By.id("administrativeStatus"));
         clickElement(By.id("source"));
         clickElement(By.id("updated"));
@@ -76,9 +77,9 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         closeAlert();
 
         String[] expected2 = {
-                "Name, Question Texts, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, NINDS Variable Name, Source, Updated",
-                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - light headedness on stand score\",\"LIGHT HEADEDNESS ON STANDING\",\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - light headedness on stand score\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"MDSUPDRSLiteHeadStndngScore\",\"NINDS\",\"\",\n",
-                "\"Unified Parkinson's Disease Rating Scale (UPDRS) - right hand movements scale\",\"Hand Movements Patient opens and closes hands in rapid succession.\",\"Unified Parkinson's Disease Rating Scale (UPDRS) - right hand movements scale\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"UPDRSRtHndMovScale\",\"NINDS\",\"\""
+                "Name, Question Texts, Other Names, Value Type, Permissible Values, Code Names, Nb of Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, NINDS Variable Name, Source, Updated",
+                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - light headedness on stand score\",\"LIGHT HEADEDNESS ON STANDING\",\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - light headedness on stand score\",\"Value List\",\"0; 1; 2; 3; 4\",\"Normal: No dizzy or foggy feelings; Slight: Dizzy or foggy feelings occur. However, they do not cause me troubles doing things; Mild: Dizzy or foggy feelings cause me to hold on to something, but I do not need to sit or lie back down; Moderate: Dizzy or foggy feelings cause me to sit or lie down to avoid fainting or falling; Severe: Dizzy or foggy feelings cause me to fall or faint.\",\"5\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"MDSUPDRSLiteHeadStndngScore\",\"NINDS\",\"\",\n",
+                "\"Unified Parkinson's Disease Rating Scale (UPDRS) - right hand movements scale\",\"Hand Movements Patient opens and closes hands in rapid succession.\",\"Unified Parkinson's Disease Rating Scale (UPDRS) - right hand movements scale\",\"Value List\",\"0; 1; 2; 3; 4\",\"Normal; Mild slowing and reduction in amplitude; Moderately impaired. Definite and early fatiguing. May have occasional arrests in movement; Severely impaired. Frequent hesitation in initiating movements or arrests in ongoing movement; Can barely perform the task\",\"5\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"UPDRSRtHndMovScale\",\"NINDS\",\"\""
         };
 
         try {

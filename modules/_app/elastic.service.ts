@@ -6,7 +6,6 @@ import { UserService } from '_app/user.service';
 import { ElasticQueryResponse } from 'core/models.model';
 import { SharedService } from 'core/shared.service';
 
-
 @Injectable()
 export class ElasticService {
     defaultSearchSettings = {
@@ -165,6 +164,7 @@ export class ElasticService {
                 "naming": false,
                 "questionTexts": true,
                 "permissibleValues": true,
+                "pvCodeNames": false,
                 "nbOfPVs": true,
                 "uom": false,
                 "stewardOrg": true,
@@ -179,11 +179,11 @@ export class ElasticService {
                 "tinyId": false
             }
         };
-    };
+    }
 
     getDefaultSearchView() {
         return this.searchSettings.defaultSearchView;
-    };
+    }
 
     getUserDefaultStatuses() {
         let overThreshold = false;
@@ -194,7 +194,7 @@ export class ElasticService {
         });
         if (this.searchSettings.includeRetired) result.push("Retired");
         return result;
-    };
+    }
 
     loadSearchSettings() {
         if (!this.searchSettings) {
