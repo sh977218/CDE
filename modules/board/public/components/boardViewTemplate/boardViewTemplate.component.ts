@@ -32,7 +32,6 @@ export class BoardViewTemplateComponent implements OnInit {
 
     tagsChanged ($event) {
         this.board.tags = $event.value;
-        console.log(this.board.tags);
     }
 
 }
