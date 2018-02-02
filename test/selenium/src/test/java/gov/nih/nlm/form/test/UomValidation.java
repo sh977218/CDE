@@ -53,7 +53,7 @@ public class UomValidation extends BaseFormTest {
         textPresent("Fix errors to Publish");
         textPresent("errors need to be corrected");
         textPresent("Unit of Measure error on question \"If Yes, what are the number of CAG repeats on the larger allele\".");
-        clickElement(By.partialLinkText("Unit of Measure error on question \"If Yes, what are the number of CAG repeats on the larger allele\"."));
+        clickElement(By.partialLinkText("If Yes, what are the number of CAG repeats on the larger allele"));
         hangon(1);
         String scrollLocation = (((JavascriptExecutor) driver).executeScript("return window.pageYOffset", "")).toString();
         Assert.assertTrue(Double.valueOf(scrollLocation).intValue() > 100);

@@ -22,7 +22,7 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 import { UcumService } from 'form/public/ucum.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormElementsContainer } from 'shared/form/form.model';
-import { areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, noopSkip } from 'shared/form/formShared';
+import { areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, noopSkipCb } from 'shared/form/formShared';
 import { Comment } from 'shared/models.model';
 import { BrowserService } from 'widget/browser.service';
 import { AngularHelperService } from 'widget/angularHelper.service';
@@ -406,8 +406,8 @@ export class FormViewComponent implements OnInit {
     }
 
     // cb()
-    validateUoms(cb) {
-        iterateFe(this.elt, noopSkip, undefined, (q, cb) => {
+    validateUoms(callback) {
+        iterateFe(this.elt, noopSkipCb, undefined, (q, cb) => {
             this.ucumService.validateUoms(q.question, () => {
                 if (q.question.uomsValid.some(e => !!e)) {
                     this.validationErrors.push(new LocatableError(
@@ -415,6 +415,6 @@ export class FormViewComponent implements OnInit {
                 }
                 cb();
             });
-        }, cb);
+        }, callback);
     }
 }
