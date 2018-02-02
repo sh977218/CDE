@@ -276,10 +276,18 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         iterateFeSync(fe, undefined, expand, expand);
     }
 
+    addFormElement(fe) {
+        this.addIndex(this.formElementEditing.formElements, fe, this.formElementEditing.index);
+        this.tree.treeModel.update();
+        this.tree.treeModel.expandAll();
+        this.onEltChange.emit();
+    }
+
     addFormFromSearch(fe, cb = null) {
         this.http.get<CdeForm>('/form/' + fe.tinyId).subscribe(form => {
             let inForm: FormElementsContainer = convertFormToSection(form);
             if (!inForm) return;
+            this.addExpanded(inForm);
             this.formElementEditing.formElement = inForm;
             this.addFormElement(inForm);
             this.setCurrentEditing(this.formElementEditing.formElements, inForm, this.formElementEditing.index);
@@ -359,13 +367,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.addQuestionFromSearch(newCde, () => {
             c();
         });
-    }
-
-    addFormElement(question) {
-        this.addIndex(this.formElementEditing.formElements, question, this.formElementEditing.index);
-        this.tree.treeModel.update();
-        this.tree.treeModel.expandAll();
-        this.onEltChange.emit();
     }
 
     setCurrentEditing(formElements, formElement, index) {

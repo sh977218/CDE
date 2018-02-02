@@ -40,10 +40,7 @@ export function convertFormToSection(form) {
     if (form && form.formElements)
         return {
             elementType: 'form',
-            label: form.naming[0] ? form.naming[0].designation : '',
-            skipLogic: {
-                condition: ''
-            },
+            formElements: form.formElements,
             inForm: {
                 form: {
                     tinyId: form.tinyId,
@@ -51,7 +48,11 @@ export function convertFormToSection(form) {
                     name: form.naming[0] ? form.naming[0].designation : '',
                     ids: form.ids
                 }
-            }
+            },
+            label: form.naming[0] ? form.naming[0].designation : '',
+            skipLogic: {
+                condition: ''
+            },
         };
     else
         return null;
