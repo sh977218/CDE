@@ -43,6 +43,7 @@ export class CdeAppComponent implements OnInit {
         ($ as any).feedback({
             ajaxURL: '/feedback/report',
             html2canvasURL: '/static/formdata.js',
+            postBrowserInfo: true,
             postHTML: false,
             postURL: true,
             proxy: undefined,
