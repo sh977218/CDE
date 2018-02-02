@@ -14,7 +14,7 @@ export class TableListComponent implements OnInit {
     @Input() set elts(elts: any[]) {
         this._elts = elts;
         this.render();
-    };
+    }
 
     get elts() {
         return this._elts;
@@ -35,35 +35,24 @@ export class TableListComponent implements OnInit {
 
     render() {
         if (!this.esService.searchSettings.tableViewFields) return;
-        if (this.module === 'cde')
-            this.renderCde();
-        else if (this.module === 'form')
-            this.renderForm();
+        if (this.module === 'cde') this.renderCde();
+        else if (this.module === 'form') this.renderForm();
     }
 
     renderCde() {
         let tableSetup = this.esService.searchSettings.tableViewFields;
         this.headings = [];
-        if (tableSetup.name)
-            this.headings.push('Name');
-        if (tableSetup.questionTexts)
-            this.headings.push('Question Texts');
-        if (tableSetup.naming)
-            this.headings.push('Other Names');
-        if (tableSetup.permissibleValues)
-            this.headings.push('Permissible Values');
-        if (tableSetup.nbOfPVs)
-            this.headings.push('Nb of PVs');
-        if (tableSetup.uom)
-            this.headings.push('Unit of Measure');
-        if (tableSetup.stewardOrg)
-            this.headings.push('Steward');
-        if (tableSetup.usedBy)
-            this.headings.push('Used by');
-        if (tableSetup.registrationStatus)
-            this.headings.push('Registration Status');
-        if (tableSetup.administrativeStatus)
-            this.headings.push('Admin Status');
+        if (tableSetup.name) this.headings.push('Name');
+        if (tableSetup.questionTexts) this.headings.push('Question Texts');
+        if (tableSetup.naming) this.headings.push('Other Names');
+        if (tableSetup.permissibleValues) this.headings.push('Permissible Values');
+        if (tableSetup.pvCodeNames) this.headings.push('Code Names');
+        if (tableSetup.nbOfPVs) this.headings.push('Nb of PVs');
+        if (tableSetup.uom) this.headings.push('Unit of Measure');
+        if (tableSetup.stewardOrg) this.headings.push('Steward');
+        if (tableSetup.usedBy) this.headings.push('Used by');
+        if (tableSetup.registrationStatus) this.headings.push('Registration Status');
+        if (tableSetup.administrativeStatus) this.headings.push('Admin Status');
         if (tableSetup.ids) {
             if (tableSetup.identifiers.length > 0) {
                 tableSetup.identifiers.forEach(i => {
@@ -71,66 +60,80 @@ export class TableListComponent implements OnInit {
                 });
             } else this.headings.push('Identifiers');
         }
-        if (tableSetup.source)
-            this.headings.push('Source');
-        if (tableSetup.updated)
-            this.headings.push('Updated');
-        if (tableSetup.tinyId)
-            this.headings.push('NLM ID');
+        if (tableSetup.source) this.headings.push('Source');
+        if (tableSetup.updated) this.headings.push('Updated');
+        if (tableSetup.tinyId) this.headings.push('NLM ID');
 
         this.rows = this.elts.map(e => {
             let row = [];
-            if (tableSetup.name)
+            if (tableSetup.name) {
                 row.push({
                     css: 'name',
                     elt: e
                 });
-            if (tableSetup.questionTexts)
+            }
+            if (tableSetup.questionTexts) {
                 row.push({
                     css: 'naming',
                     values: TableListComponent.truncatedList(TableListComponent.getQuestionTexts(e), n => n.designation),
                 });
-            if (tableSetup.naming)
+            }
+            if (tableSetup.naming) {
                 row.push({
                     css: 'naming',
                     values: TableListComponent.truncatedList(TableListComponent.getOtherNames(e), n => n.designation),
                 });
-            if (tableSetup.permissibleValues)
+            }
+            if (tableSetup.permissibleValues) {
                 row.push({
                     css: 'permissibleValues multiline-ellipsis',
                     datatype: e.valueDomain.datatype,
                     values: TableListComponent.truncatedList(e.valueDomain.permissibleValues, pv => pv.permissibleValue)
                 });
-            if (tableSetup.nbOfPVs)
+            }
+            if (tableSetup.pvCodeNames) {
+                row.push({
+                    css: 'permissibleValues multiline-ellipsis',
+                    datatype: e.valueDomain.datatype,
+                    values: TableListComponent.truncatedList(e.valueDomain.permissibleValues, pv => pv.valueMeaningName)
+                });
+            }
+            if (tableSetup.nbOfPVs) {
                 row.push({
                     css: 'nbOfPVs',
                     value: e.valueDomain.nbOfPVs
                 });
-            if (tableSetup.uom)
+            }
+            if (tableSetup.uom) {
                 row.push({
                     css: 'uom',
                     value: e.valueDomain.uom
                 });
-            if (tableSetup.stewardOrg)
+            }
+            if (tableSetup.stewardOrg) {
                 row.push({
                     css: 'stewardOrg',
                     value: e.stewardOrg.name
                 });
-            if (tableSetup.usedBy)
+            }
+            if (tableSetup.usedBy) {
                 row.push({
                     css: 'usedBy multiline-ellipsis',
                     value: e.usedBy && TableListComponent.lineClip(e.usedBy.join(', '))
                 });
-            if (tableSetup.registrationStatus)
+            }
+            if (tableSetup.registrationStatus) {
                 row.push({
                     css: 'registrationStatus',
                     value: e.registrationState.registrationStatus
                 });
-            if (tableSetup.administrativeStatus)
+            }
+            if (tableSetup.administrativeStatus) {
                 row.push({
                     css: 'administrativeStatus',
                     value: e.registrationState.administrativeStatus
                 });
+            }
             if (tableSetup.ids) {
                 if (tableSetup.identifiers.length > 0) {
                     tableSetup.identifiers.forEach(i => {
@@ -145,26 +148,31 @@ export class TableListComponent implements OnInit {
                             values: value
                         });
                     });
-                } else row.push({
-                    css: 'ids',
-                    values: TableListComponent.truncatedList(e.ids, (e) => e)
-                });
+                } else {
+                    row.push({
+                        css: 'ids',
+                        values: TableListComponent.truncatedList(e.ids, (e) => e)
+                    });
+                }
             }
-            if (tableSetup.source)
+            if (tableSetup.source) {
                 row.push({
                     css: 'source',
                     value: e.source
                 });
-            if (tableSetup.updated)
+            }
+            if (tableSetup.updated) {
                 row.push({
                     css: 'updated',
                     value: e.updated ? new Date(e.updated).toLocaleString('en-US') : null
                 });
-            if (tableSetup.tinyId)
+            }
+            if (tableSetup.tinyId) {
                 row.push({
                     css: '',
                     value: e.tinyId
                 });
+            }
             return row;
         });
     }
@@ -172,18 +180,12 @@ export class TableListComponent implements OnInit {
     renderForm() {
         let tableSetup = this.esService.searchSettings.tableViewFields;
         this.headings = [];
-        if (tableSetup.name)
-            this.headings.push('Name');
-        if (tableSetup.naming)
-            this.headings.push('Other Names');
-        if (tableSetup.stewardOrg)
-            this.headings.push('Steward');
-        if (tableSetup.usedBy)
-            this.headings.push('Used by');
-        if (tableSetup.registrationStatus)
-            this.headings.push('Registration Status');
-        if (tableSetup.administrativeStatus)
-            this.headings.push('Admin Status');
+        if (tableSetup.name) this.headings.push('Name');
+        if (tableSetup.naming) this.headings.push('Other Names');
+        if (tableSetup.stewardOrg) this.headings.push('Steward');
+        if (tableSetup.usedBy) this.headings.push('Used by');
+        if (tableSetup.registrationStatus) this.headings.push('Registration Status');
+        if (tableSetup.administrativeStatus) this.headings.push('Admin Status');
         if (tableSetup.ids) {
             if (tableSetup.identifiers.length > 0) {
                 tableSetup.identifiers.forEach(i => {
@@ -191,47 +193,49 @@ export class TableListComponent implements OnInit {
                 });
             } else this.headings.push('Identifiers');
         }
-        if (tableSetup.numQuestions)
-            this.headings.push('Questions');
-        if (tableSetup.source)
-            this.headings.push('Source');
-        if (tableSetup.updated)
-            this.headings.push('Updated');
-        if (tableSetup.tinyId)
-            this.headings.push('NLM ID');
+        if (tableSetup.numQuestions) this.headings.push('Questions');
+        if (tableSetup.source) this.headings.push('Source');
+        if (tableSetup.updated) this.headings.push('Updated');
+        if (tableSetup.tinyId) this.headings.push('NLM ID');
 
         this.rows = this.elts.map(e => {
             let row = [];
-            if (tableSetup.name)
+            if (tableSetup.name) {
                 row.push({
                     css: 'name',
                     elt: e
                 });
-            if (tableSetup.naming)
+            }
+            if (tableSetup.naming) {
                 row.push({
                     css: 'naming',
                     values: TableListComponent.truncatedList(TableListComponent.getOtherNames(e), n => n.designation),
                 });
-            if (tableSetup.stewardOrg)
+            }
+            if (tableSetup.stewardOrg) {
                 row.push({
                     css: 'stewardOrg',
                     value: e.stewardOrg.name
                 });
-            if (tableSetup.usedBy)
+            }
+            if (tableSetup.usedBy) {
                 row.push({
                     css: 'usedBy multiline-ellipsis',
                     value: e.usedBy && TableListComponent.lineClip(e.usedBy.join(', '))
                 });
-            if (tableSetup.registrationStatus)
+            }
+            if (tableSetup.registrationStatus) {
                 row.push({
                     css: 'registrationStatus',
                     value: e.registrationState.registrationStatus
                 });
-            if (tableSetup.administrativeStatus)
+            }
+            if (tableSetup.administrativeStatus) {
                 row.push({
                     css: 'administrativeStatus',
                     value: e.registrationState.administrativeStatus
                 });
+            }
             if (tableSetup.ids) {
                 if (tableSetup.identifiers.length > 0) {
                     tableSetup.identifiers.forEach(i => {
@@ -246,31 +250,37 @@ export class TableListComponent implements OnInit {
                             values: value
                         });
                     });
-                } else row.push({
-                    css: 'ids',
-                    values: TableListComponent.truncatedList(e.ids, (e) => e)
-                });
+                } else {
+                    row.push({
+                        css: 'ids',
+                        values: TableListComponent.truncatedList(e.ids, (e) => e)
+                    });
+                }
             }
-            if (tableSetup.numQuestions)
+            if (tableSetup.numQuestions) {
                 row.push({
                     css: 'numQuestions',
                     value: e.numQuestions
                 });
-            if (tableSetup.source)
+            }
+            if (tableSetup.source) {
                 row.push({
                     css: 'source',
                     value: e.source
                 });
-            if (tableSetup.updated)
+            }
+            if (tableSetup.updated) {
                 row.push({
                     css: 'updated',
                     value: e.updated ? new Date(e.updated).toLocaleString('en-US') : null
                 });
-            if (tableSetup.tinyId)
+            }
+            if (tableSetup.tinyId) {
                 row.push({
                     css: '',
                     value: e.tinyId
                 });
+            }
             return row;
         });
     }
