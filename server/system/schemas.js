@@ -178,6 +178,7 @@ schemas.userSchema = new mongoose.Schema({
             naming: Boolean,
             questionTexts: Boolean,
             permissibleValues: Boolean,
+            pvCodeNames: Boolean,
             nbOfPVs: Boolean,
             uom: Boolean,
             stewardOrg: Boolean,

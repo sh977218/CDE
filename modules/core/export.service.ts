@@ -20,8 +20,9 @@ export class ExportService {
     }
 
     exportSearchResults(type, module, exportSettings) {
-        if (module === 'form' && (!this.userService.user || !this.userService.user._id))
+        if (module === 'form' && (!this.userService.user || !this.userService.user._id)) {
             return this.alertService.addAlert("danger", "Please login to access this feature");
+        }
 
         try {
             !!new Blob;
@@ -30,23 +31,25 @@ export class ExportService {
                 "Export feature is not supported in this browser. Please try Google Chrome or Mozilla FireFox.");
         }
 
-        if (type !== 'validationRules')
+        if (type !== 'validationRules') {
             this.alertService.addAlert("warning", "Your export is being generated, please wait.");
+        }
 
         this.elasticService.getExport(
             this.elasticService.buildElasticQuerySettings(exportSettings.searchSettings), module || 'cde', (err, result) => {
-                if (err)
+                if (err) {
                     return this.alertService.addAlert("danger",
                         "The server is busy processing similar request, please try again in a minute.");
+                }
 
                 let exporters = {
                     'csv': (result) => {
                         let settings = this.elasticService.searchSettings;
                         let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
-                        result.forEach(function (ele) {
+                        result.forEach(ele =>
                             csv += SharedService.exportShared.convertToCsv(
-                                SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
-                        });
+                                SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields))
+                        );
                         let blob = new Blob([csv], {type: "text/csv"});
                         saveAs(blob, 'SearchExport.csv');
                     },
