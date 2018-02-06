@@ -144,8 +144,8 @@ public class NlmCdeBaseTest {
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
             options.setExperimentalOption("prefs", prefs);
-            caps = DesiredCapabilities.chrome();
-            caps.setCapability(ChromeOptions.CAPABILITY, options);
+//            caps = DesiredCapabilities.chrome();
+//            caps.setCapability(ChromeOptions.CAPABILITY, options);
         } else if ("ie".equals(b)) {
             caps = DesiredCapabilities.internetExplorer();
         } else {
