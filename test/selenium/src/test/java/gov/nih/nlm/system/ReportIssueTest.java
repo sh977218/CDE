@@ -8,20 +8,20 @@ public class ReportIssueTest extends NlmCdeBaseTest {
     @Test
     public void report() {
         goToCdeSearch();
-        findElement(By.cssSelector(".feedback-btn")).click();
+        clickElement(By.cssSelector(".feedback-btn"));
         hangon(1);
         findElement(By.id("feedback-note-tmp")).sendKeys("I don't like this website.");
-        findElement(By.id("feedback-welcome-next")).click();
-        findElement(By.id("feedback-highlighter-next")).click();
-        findElement(By.id("feedback-submit")).click();
+        clickElement(By.id("feedback-welcome-next"));
+        clickElement(By.id("feedback-highlighter-next"));
+        clickElement(By.id("feedback-submit"));
         textPresent("issue was successfully submitted");
-        findElement(By.cssSelector(".feedback-close-btn")).click();
+        clickElement(By.cssSelector(".feedback-close-btn"));
         hangon(1);
 
         loginAs(nlm_username, nlm_password);
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Audit")).click();
-        findElement(By.linkText("Reported Issues")).click();
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Audit"));
+        clickElement(By.linkText("Reported Issues"));
         textPresent("I don't like this website.");
     }
 }

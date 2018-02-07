@@ -333,7 +333,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     getAutocompleteSuggestions = ((text$: Observable<string>) =>
         text$.pipe(debounceTime(500), distinctUntilChanged(), switchMap(term =>
             term.length >= 3 ?
-                this.http.post('/' + this.module + 'Completion/' + encodeURI(term),
+                this.http.post('/' + this.module + 'Completion/' + encodeURIComponent(term),
                     this.elasticService.buildElasticQuerySettings(this.searchSettings)).map(res => {
                     let final = new Set();
                     this.lastTypeahead = {};

@@ -31,6 +31,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -101,6 +102,7 @@ public class NlmCdeBaseTest {
     private int videoRate = 300;
 
     private NgWebDriver ngdriver;
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     private ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
     private Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
@@ -140,10 +142,11 @@ public class NlmCdeBaseTest {
         } else if ("chrome".equals(b)) {
             ChromeOptions options = new ChromeOptions();
             if (u != null) options.addArguments("--user-agent=googleBot");
-            options.addArguments("--start-maximized");
+//            options.addArguments("--start-maximized");
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
             options.setExperimentalOption("prefs", prefs);
+            options.addArguments("start-maximized");
             caps = DesiredCapabilities.chrome();
             caps.setCapability(ChromeOptions.CAPABILITY, options);
         } else if ("ie".equals(b)) {
@@ -204,6 +207,13 @@ public class NlmCdeBaseTest {
         filePerms.add(PosixFilePermission.OTHERS_READ);
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
         takeScreenshotsRecordVideo(m);
+
+        ScheduledFuture<?> countdown = scheduler.schedule(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Test: " + m.getName() + " still running after 5 minutes.");
+            }}, 5, TimeUnit.MINUTES);
+
     }
 
     private void takeScreenshotsRecordVideo(Method m) {
