@@ -520,12 +520,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.totalItems = result.totalNumber;
                 this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
 
-                // Convert Elastic JSON to Elt Object
                 this.elts = result[this.module + 's'];
-                if (this.module === 'cde')
-                    this.elts.forEach((elt, i, elts) => elts[i] = DataElement.copy(elt));
-                if (this.module === 'form')
-                    this.elts.forEach((elt, i, elts) => elts[i] = CdeForm.copy(elt));
 
                 if (this.searchSettings.page === 1 && result.totalNumber > 0) {
                     let maxJump = 0;

@@ -249,7 +249,7 @@ var loadForm = function(file, cb) {
                             version: cde.version,
                             tinyId: cde.tinyId
                         },
-                        uoms: []
+                        unitsOfMeasure: []
                     };
 
                     if (cde.valueDomain.permissibleValues.length > 0) {

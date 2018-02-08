@@ -77,7 +77,7 @@ _.extend(LForms.LFormsConverter.prototype, {
         'formElements.*': this.handleFormElement.bind(this),
         'naming': this.handleNaming.bind(this),
         'answers.*': this.handleAnswers.bind(this),
-        'uoms.*': this.handleUnits.bind(this),
+        'unitsOfMeasure.*': this.handleUnits.bind(this),
         // List out ignorables
         '__v': oboe.drop,
         'attachments': oboe.drop,
@@ -203,8 +203,8 @@ _.extend(LForms.LFormsConverter.prototype, {
           param.answers = q.answers;
         }
         // Handle units
-        if (q.uoms && q.uoms.length > 0) {
-          param.units = q.uoms;
+        if (q.unitsOfMeasure && q.unitsOfMeasure.length > 0) {
+          param.units = q.unitsOfMeasure;
           // Make first unit the default.
           param.units[0].default = true;
         }
@@ -256,7 +256,7 @@ _.extend(LForms.LFormsConverter.prototype, {
   /**
    * Units
    *
-   * @param {Object} param - uoms.*
+   * @param {Object} param - unitsOfMeasure.*
    * @param {Array} path - path of param
    */
   handleUnits: function(param, path) {

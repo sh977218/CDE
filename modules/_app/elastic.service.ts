@@ -5,6 +5,8 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import { UserService } from '_app/user.service';
 import { ElasticQueryResponse } from 'shared/models.model';
 import { SharedService } from '_commonApp/shared.service';
+import { CdeFormElastic } from 'shared/form/form.model';
+import { DataElementElastic } from 'shared/de/dataElement.model';
 
 @Injectable()
 export class ElasticService {
@@ -56,6 +58,14 @@ export class ElasticService {
         };
 
         function success(isRetry, response: ElasticQueryResponse) {
+            // Convert Elastic JSON to Elt Object
+            if (type === 'cde') {
+                response[type + 's'].forEach((elt: DataElementElastic, i, elts) => elts[i] = DataElementElastic.copy(elt));
+            }
+            if (type === 'form') {
+                response[type + 's'].forEach((elt: CdeFormElastic, i, elts) => elts[i] = CdeFormElastic.copy(elt));
+            }
+
             ElasticService.highlightResults(response[type + 's']);
             cb(null, response, isRetry);
         }
@@ -66,7 +76,6 @@ export class ElasticService {
                 cb("Error");
             });
         });
-
     }
 
     static highlight(field1, field2, cde) {

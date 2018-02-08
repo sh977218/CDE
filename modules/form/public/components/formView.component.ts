@@ -164,15 +164,17 @@ export class FormViewComponent implements OnInit {
         );
     }
 
-    formLoaded(cb) {
-        if (this.elt) {
-            CdeForm.validate(this.elt);
+    formLoaded(elt: CdeForm, cb = _noop) {
+        if (elt) {
+            elt = new CdeForm(elt);
+            CdeForm.validate(elt);
+            this.elt = elt;
             this.formId = this.elt._id;
             this.missingCdes = areDerivationRulesSatisfied(this.elt);
             this.loadComments(this.elt, null);
+            FormDescriptionComponent.addIds(this.elt.formElements, '');
         }
-        FormDescriptionComponent.addIds(this.elt.formElements, '');
-        if (cb) cb();
+        cb();
     }
 
     loadComments(form, cb) {
@@ -186,11 +188,10 @@ export class FormViewComponent implements OnInit {
     loadForm(cb = _noop) {
         this.userService.then(() => {
             if (this.userService.user && this.userService.user.username) {
-                this.http.get<any>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(res => {
+                this.http.get<CdeForm[]>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(res => {
                     if (res && res.length > 0 && this.isAllowedModel.isAllowed(res[0])) {
                         this.drafts = res;
-                        this.elt = res[0];
-                        this.formLoaded(cb);
+                        this.formLoaded(res[0], cb);
                     } else {
                         this.drafts = [];
                         this.loadPublished(cb);
@@ -213,8 +214,7 @@ export class FormViewComponent implements OnInit {
         let url = '/form/' + this.route.snapshot.queryParams['tinyId'];
         if (formId) url = '/formById/' + formId;
         this.http.get<CdeForm>(url).subscribe(res => {
-            this.elt = res;
-            this.formLoaded(cb);
+            this.formLoaded(res, cb);
         }, () => this.router.navigate(['/pageNotFound']));
     }
 

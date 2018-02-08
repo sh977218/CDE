@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import _noop from 'lodash/noop';
 
+import { CodeAndSystem } from 'shared/models.model';
 import { FormQuestion } from 'shared/form/form.model';
 import { iterateFe } from 'shared/form/formShared';
 
@@ -32,7 +33,7 @@ export class FormService {
             q.question.cde.ids = cde.ids;
         }
         if (cde.valueDomain.uom) {
-            q.question.uoms.push(cde.valueDomain.uom);
+            q.question.unitsOfMeasure.push(new CodeAndSystem('', cde.valueDomain.uom));
         }
 
         cde.naming.forEach(n => {
@@ -71,6 +72,7 @@ export class FormService {
         return cb(q);
     }
 
+    // TODO: turn into single server endpoint that calls one of the 2 server-side implementations
     // modifies form to add sub-forms
     // callback(err: string)
     fetchWholeForm(form, callback = _noop) {

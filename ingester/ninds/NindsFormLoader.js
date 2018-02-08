@@ -140,7 +140,7 @@ var processFile = function () {
                                 , permissibleValues: []
                             },
                             datatype: "",
-                            uoms: [],
+                            unitsOfMeasure: [],
                             required: {
                                 type: false
                             },

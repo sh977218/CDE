@@ -118,7 +118,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
                         modal.bCde = true;
                         modal.bDatatype = currentQuestion.question.datatype !== newQuestion.question.datatype;
-                        modal.bUom = !_isEqual(currentQuestion.question.uoms, newQuestion.question.uoms);
+                        modal.bUom = !_isEqual(currentQuestion.question.unitsOfMeasure, newQuestion.question.unitsOfMeasure);
 
                         if (newQuestion.question.datatype === 'Number') {
                             if (currentQuestion.question.datatype === 'Number' &&

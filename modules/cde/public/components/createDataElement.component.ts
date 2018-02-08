@@ -152,16 +152,6 @@ export class CreateDataElementComponent implements OnInit {
             this.elasticService.buildElasticQuerySettings(searchSettings), 'cde', (err, result) => {
                 if (err) return;
                 this.suggestedCdes = result.cdes;
-                this.suggestedCdes.forEach(cde => {
-                    cde.getEltUrl = function () {
-                        return '/deView?tinyId=' + this.tinyId;
-                    };
-                    cde.getLabel = function () {
-                        if (this.primaryNameCopy)
-                            return this.primaryNameCopy;
-                        else return this.naming[0].designation;
-                    };
-                });
             });
     }
 

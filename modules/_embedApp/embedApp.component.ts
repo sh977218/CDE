@@ -146,7 +146,6 @@ export class EmbedAppComponent  {
             if (timestamp < this.lastQueryTimeStamp) return;
             this.numPages = Math.ceil(result.totalNumber / this.resultPerPage);
             this.totalItems = result.totalNumber;
-            // $scope[type + 's'] = result[type + 's'];
             this.elts = result[this.searchType + 's'];
             this.took = result.took;
 

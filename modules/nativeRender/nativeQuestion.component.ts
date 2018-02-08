@@ -2,9 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment/min/moment.min';
 
+import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { CodeAndSystem } from 'shared/models.model';
 import { FormQuestion } from 'shared/form/form.model';
 import { score } from 'shared/form/formShared';
-import { NativeRenderService } from 'nativeRender/nativeRender.service';
 
 
 @Component({
@@ -38,7 +39,7 @@ export class NativeQuestionComponent implements OnInit {
     @Input() parentValue: any;
     @Input() index: any;
     hasTime: boolean;
-    previousUom: string;
+    previousUom: CodeAndSystem;
     static readonly reHasTime = /[hHmsSkaAZ]/;
     score = score;
 
@@ -103,9 +104,13 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     // cb(error, number)
-    convertUnits(value: number, fromUnit: string, toUnit: string, cb) {
-        this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit) + '&to='
-            + encodeURIComponent(toUnit)).subscribe(v => cb(undefined, v), e => cb(e));
+    convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb) {
+        if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
+            this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit.code) + '&to='
+                + encodeURIComponent(toUnit.code)).subscribe(v => cb(undefined, v), e => cb(e));
+        } else {
+            cb(undefined, value); // no conversion for other systems
+        }
     }
 
     isFirstInRow(index) {

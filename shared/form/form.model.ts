@@ -1,57 +1,50 @@
 import {
     CdeId,
-    DataSource,
+    CodeAndSystem,
     Elt,
+    FormattedValue,
     Instruction,
-    Naming,
     ObjectId,
     PermissibleValue,
     DerivationRule,
-    Property,
-    ReferenceDocument,
-    RegistrationState
+    copyArray,
 } from 'shared/models.model';
-
 import { iterateFeSync } from 'shared/form/formShared';
 
 export class CdeForm extends Elt implements FormElementsContainer {
-    comments: Comment[];
-    copyright: {
+    copyright: { // mutable
         authority: string,
         text: string,
     };
-    displayProfiles: DisplayProfile[];
+    displayProfiles: DisplayProfile[] = []; // mutable
     elementType: string = 'form';
-    formInput: any;
-    formElements: FormElement[] = [];
-    history: ObjectId[];
-    ids: CdeId[];
-    imported: Date;
+    formInput: any; // volatile, nativeRender and export
+    formElements: FormElement[] = []; // mutable
     isCopyrighted: boolean;
-    isDraft: boolean; // calculated, formView
-    lastMigrationScript: string;
-    naming: Naming[] = [];
     noRenderAllowed: boolean;
-    numQuestions: number; // calculated, Elastic
-    origin: string;
-    properties: Property[];
-    referenceDocuments: ReferenceDocument[];
-    stewardOrg: {
-        name: string,
-    } = {name};
-    source: string;
-    sources: DataSource;
+    numQuestions: number; // volatile, Elastic
 
-    constructor(label = undefined) {
-        super();
-        this.naming.push(new Naming());
-        this.naming[0].designation = label;
-        this.registrationState = new RegistrationState;
-        this.registrationState.registrationStatus = 'Incomplete';
+    constructor(elt: CdeForm = undefined) {
+        super(elt);
+        if (!elt) return;
+
+        // immutable
+        this.formInput = elt.formInput;
+        this.isCopyrighted = elt.isCopyrighted;
+        this.noRenderAllowed = elt.noRenderAllowed;
+        this.numQuestions = elt.numQuestions;
+
+        // mutable
+        this.copyright = {
+            authority: elt.copyright ? elt.copyright.authority : '',
+            text: elt.copyright ? elt.copyright.text : ''
+        };
+        copyArray(elt.displayProfiles, this.displayProfiles, DisplayProfile);
+        copyArray(elt.formElements, this.formElements, FormSection);
     }
 
-    static copy(elt: any) {
-        return Object.assign(new CdeForm, elt);
+    static copy(elt: CdeForm) {
+        return new CdeForm(elt);
     }
 
     getEltUrl() {
@@ -64,8 +57,8 @@ export class CdeForm extends Elt implements FormElementsContainer {
 
     static validate(elt: CdeForm) {
         elt.displayProfiles.forEach(dp => {
-            if (!dp.uomAliases)
-                dp.uomAliases = {};
+            if (!dp.unitsOfMeasureAlias)
+                dp.unitsOfMeasureAlias = [];
         });
         iterateFeSync(elt,
             form => {
@@ -81,8 +74,8 @@ export class CdeForm extends Elt implements FormElementsContainer {
                     q.formElements = [];
                 if (!Array.isArray(q.question.answers))
                     q.question.answers = [];
-                if (!Array.isArray(q.question.uoms))
-                    q.question.uoms = [];
+                if (!Array.isArray(q.question.unitsOfMeasure))
+                    q.question.unitsOfMeasure = [];
                 if (!Array.isArray(q.question.cde.permissibleValues))
                     q.question.cde.permissibleValues = [];
                 if (!Array.isArray(q.question.cde.derivationRules))
@@ -92,11 +85,14 @@ export class CdeForm extends Elt implements FormElementsContainer {
     }
 }
 
-export class DisplayProfile {
-    constructor(name: string) {
-        this.name = name;
+export class CdeFormElastic extends CdeForm {
+    constructor(elt: CdeFormElastic = undefined) {
+        super(elt);
+        if (!elt) return;
     }
+}
 
+export class DisplayProfile {
     _id: ObjectId = null;
     displayCopyright: boolean = true;
     displayInstructions: boolean = true;
@@ -108,7 +104,21 @@ export class DisplayProfile {
     numberOfColumns: number = 4;
     repeatFormat: string = '#.';
     sectionsAsMatrix: boolean = true;
-    uomAliases: any = {};
+    unitsOfMeasureAlias: {alias: string, unitOfMeasure: CodeAndSystem}[] = [];
+
+    constructor(name: string = '') {
+        this.name = name;
+    }
+
+    static copy(profile: DisplayProfile) {
+        let newProfile = Object.assign(new DisplayProfile(), profile);
+        if (Array.isArray(profile.unitsOfMeasureAlias)) {
+            newProfile.unitsOfMeasureAlias = [];
+            profile.unitsOfMeasureAlias.forEach(u => newProfile.unitsOfMeasureAlias.push(
+                {alias: u.alias, unitOfMeasure: CodeAndSystem.copy(u.unitOfMeasure)}));
+        }
+        return newProfile;
+    }
 }
 
 export interface FormElementsContainer {
@@ -149,6 +159,37 @@ export class FormSection implements FormSectionOrForm {
     section: Section;
     skipLogic;
     updatedSkipLogic;
+
+    static copy(fe: FormElement) {
+        let newFe;
+        if (fe.elementType === 'section') {
+            newFe = Object.assign(new FormSection(), fe);
+            if ((fe as FormSection).section) {
+                newFe.section = Section.copy((fe as FormSection).section);
+            }
+        } else if (fe.elementType === 'form') {
+            newFe = Object.assign(new FormInForm(), fe);
+            if ((fe as FormInForm).inForm) {
+                newFe.inForm = InForm.copy((fe as FormInForm).inForm);
+            }
+        } else if (fe.elementType === 'question') {
+            newFe = Object.assign(new FormQuestion(), fe);
+            if ((fe as FormQuestion).question) {
+                newFe.question = Question.copy((fe as FormQuestion).question);
+            }
+        } else {
+            return undefined;
+        }
+        newFe.instructions = Object.assign(new FormattedValue(), fe.instructions);
+        newFe.formElements = [];
+        if (Array.isArray(fe.formElements)) {
+            fe.formElements.forEach((f, i) => {
+                newFe.formElements[i] = FormSection.copy(f);
+            });
+        }
+        newFe.skipLogic = Object.assign(new SkipLogic(), fe.skipLogic);
+        return newFe;
+    }
 }
 
 export class FormInForm implements FormSectionOrForm {
@@ -180,7 +221,7 @@ export class FormQuestion implements FormElement {
     formElements = [];
     hideLabel: boolean;
     incompleteRule: boolean;
-    instructions: Instruction;
+    instructions;
     label = '';
     newCde: boolean = false;
     question: Question = new Question();
@@ -196,35 +237,63 @@ class InForm {
         tinyId: string,
         version: string,
     };
+
+    static copy(inForm: Section) {
+        return Object.assign(new InForm(), inForm ? JSON.parse(JSON.stringify(inForm)) : undefined);
+    }
 }
 
 export class PermissibleFormValue extends PermissibleValue implements FormElementsContainer {
-    formElements: FormElement[];
+    formElements: FormElement[]; // volatile, nativeRender
     index: number;
     nonValuelist: boolean;
+
+    static copy(pv: PermissibleFormValue) {
+        return Object.assign(new PermissibleFormValue(), pv);
+    }
 }
 
 export class Question {
-    answer: any; // input value
-    answerUom: string; // input uom value
-    answerDate: any; // working storage for date part
-    answerTime: any; // working storage for time part
-    answers: PermissibleFormValue[] = [];
+    answer: any; // volatile, input value
+    answerUom: CodeAndSystem; // volatile, input uom value
+    answerDate: any; // volatile, working storage for date part
+    answerTime: any; // volatile, working storage for time part
+    answers: PermissibleFormValue[] = []; // mutable
     cde: QuestionCde = new QuestionCde();
     datatype: string;
-    datatypeDate: QuestionTypeDate;
-    datatypeNumber: QuestionTypeNumber;
-    datatypeText: QuestionTypeText;
+    datatypeDate: QuestionTypeDate; // mutable
+    datatypeNumber: QuestionTypeNumber; // mutable
+    datatypeText: QuestionTypeText; // mutable
     defaultAnswer: string;
     editable: boolean = true;
     invisible: boolean;
     isScore: boolean;
     multiselect: boolean;
-    partOf: string; // display "(part of ...)" in Form Description
+    partOf: string; // volatile, display "(part of ...)" in Form Description
     required: boolean;
-    uoms: string[] = [];
-    uomsAlias: string[] = []; // calculated, NativeRenderService
-    uomsValid: string[] = []; // calculated, FormDescription
+    unitsOfMeasure: CodeAndSystem[] = [];
+    uomsAlias: string[] = []; // volatile, NativeRenderService
+    uomsValid: string[] = []; // volatile, FormDescription
+
+    static copy(question: Question) {
+        let newQuestion = Object.assign(new Question(), question);
+
+        // immutable
+        if (Array.isArray(newQuestion.unitsOfMeasure)) {
+            newQuestion.unitsOfMeasure.forEach((u, i, a) => a[i] = CodeAndSystem.copy(u));
+        }
+
+        // mutable
+        newQuestion.answers = [];
+        copyArray(question.answers, newQuestion.answers, PermissibleFormValue);
+        newQuestion.datatypeDate = QuestionTypeDate.copy(question.datatypeDate);
+        newQuestion.datatypeNumber = QuestionTypeNumber.copy(question.datatypeNumber);
+        newQuestion.datatypeText = QuestionTypeText.copy(question.datatypeText);
+
+        // skip client variables
+
+        return newQuestion;
+    }
 }
 
 export class QuestionCde {
@@ -237,16 +306,32 @@ export class QuestionCde {
     tinyId: string;
     version: string;
     derivationRules: DerivationRule[] = [];
+
+    static copy(a: QuestionCde|any) {
+        if (a instanceof QuestionCde) {
+            return a;
+        } else {
+            return Object.assign(new QuestionCde(), a);
+        }
+    }
 }
 
 class QuestionTypeDate {
     format: string;
+
+    static copy(q: QuestionTypeDate) {
+        return Object.assign(new QuestionTypeDate(), q);
+    }
 }
 
 class QuestionTypeNumber {
     minValue: number;
     maxValue: number;
     precision: number;
+
+    static copy(q: QuestionTypeNumber) {
+        return Object.assign(new QuestionTypeNumber(), q);
+    }
 }
 
 class QuestionTypeText {
@@ -255,9 +340,16 @@ class QuestionTypeText {
     regex: string;
     rule: string;
     showAsTextArea: boolean = false;
+
+    static copy(q: QuestionTypeText) {
+        return Object.assign(new QuestionTypeText(), q);
+    }
 }
 
 class Section {
+    static copy(section: Section) {
+        return Object.assign(new Section(), section);
+    }
 }
 
 export class SkipLogic {

@@ -607,7 +607,7 @@ export class CompareSideBySideComponent implements OnInit {
                         {label: 'Label', property: 'label'},
                         {label: 'Data Type', property: 'question.datatype'},
                         {label: 'CDE', property: 'question.cde.tinyId', url: '/deView?tinyId='},
-                        {label: 'Unit of Measure', property: 'question.uoms'},
+                        {label: 'Unit of Measure', property: 'question.unitsOfMeasure'},
                         {
                             label: 'Answer', property: 'question.answers', properties: {
                             label: 'Permissible Value', property: 'permissibleValue'
@@ -624,7 +624,7 @@ export class CompareSideBySideComponent implements OnInit {
                     if (!_isEqual(a, b) && _isEqual(a.question.cde.tinyId, b.question.cde.tinyId)) {
                         if (!_isEqual(a.label, b.label)) diff.push('label');
                         if (!_isEqual(a.question.datatype, b.question.datatype)) diff.push('question.datatype');
-                        if (!_isEqual(a.question.uoms, b.question.uoms)) diff.push('question.uoms');
+                        if (!_isEqual(a.question.unitsOfMeasure, b.question.unitsOfMeasure)) diff.push('question.unitsOfMeasure');
                         if (!_isEqual(a.question.answers, b.question.answers)) diff.push('question.answers');
                     }
                     return diff;

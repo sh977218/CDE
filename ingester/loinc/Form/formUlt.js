@@ -115,13 +115,13 @@ exports.loadCde = function (element, fe, next) {
                 datatypeNumber: existingCde.valueDomain.datatypeNumber,
                 datatypeText: existingCde.valueDomain.datatypeText,
                 answers: existingCde.valueDomain.permissibleValues,
-                uoms: []
+                unitsOfMeasure: []
             };
             if (question.datatype === 'Text') {
                 question.multiselect = false;
             }
             if (element['Ex UCUM Units']) {
-                question.uoms.push(element['Ex UCUM Units']);
+                question.unitsOfMeasure.push({system: '', code: element['Ex UCUM Units']});
             }
             var formElement = {
                 elementType: 'question',

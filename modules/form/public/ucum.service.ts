@@ -5,9 +5,24 @@ import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
+import { CodeAndSystem } from 'shared/models.model';
+
 
 @Injectable()
 export class UcumService {
+    search = ((text$: Observable<string>) => text$.pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap(term => {
+            if (term === '') return of([]);
+            else {
+                return this.http.get('/ucumNames?uom=' + encodeURIComponent(term)).map((r: any[]) => {
+                    if (!r.length) r.push({code: term, warning: "Not a valid UCUM unit"});
+                    return r;
+                });
+            }
+        })
+    ));
     uomUnitMap = new Map<string, string[]>();
 
     constructor(private http: HttpClient) {
@@ -34,9 +49,9 @@ export class UcumService {
     }
 
     // cb(errors, units)
-    validateUnits(uoms: string[], cb) {
-        if (Array.isArray(uoms) && uoms.length) {
-            this.http.get<{ errors: string[], units: any[] }>('/ucumValidate?uoms=' + encodeURIComponent(JSON.stringify(uoms)))
+    validateUcumUnits(unitsOfMeasure: CodeAndSystem[], cb) {
+        if (Array.isArray(unitsOfMeasure) && unitsOfMeasure.length) {
+            this.http.get<{ errors: string[], units: any[] }>('/ucumValidate?uoms=' + encodeURIComponent(JSON.stringify(unitsOfMeasure.map(u => u.code))))
                 .subscribe(response => cb(response.errors, response.units), () => cb([], []));
         } else {
             cb([], []);
@@ -45,30 +60,15 @@ export class UcumService {
 
     // cb()
     validateUoms(question, cb = _noop) {
+        let ucumUnits = question.unitsOfMeasure.filter(u => u.system === 'UCUM');
         question.uomsValid = [];
-        this.validateUnits(question.uoms, errors => {
-            question.uoms.forEach((uom, i) => {
-                question.uomsValid[i] = errors[i];
+        this.validateUcumUnits(ucumUnits, errors => {
+            ucumUnits.forEach((u, i) => {
+                if (errors[i]) {
+                    question.uomsValid[question.unitsOfMeasure.indexOf(u)] = errors[i];
+                }
             });
             cb();
         });
     }
-
-    search = (text$: Observable<string>) =>
-        text$.pipe(
-            debounceTime(200),
-            distinctUntilChanged(),
-            switchMap(term => {
-                if (term === '') return of([]);
-                else {
-                    return this.http.get('/ucumNames?uom=' + encodeURIComponent(term)).map((r: any[]) => {
-                        if (!r.length) r.push({code: term, warning: "Not a valid UCUM unit"});
-                        return r;
-                    });
-                }
-            })
-        )
-
-    formatter = (x: { name: string, synonyms: [any], code: string }) => '';
-
 }

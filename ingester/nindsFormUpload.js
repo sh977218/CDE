@@ -106,12 +106,12 @@ var doNextForm = function (result) {
                                 cde: {tinyId: result[0].tinyId, version: "" + result[0].version, permissibleValues: []}
                                 , datatype: result[0].valueDomain.datatype
                                 , required: false
-                                , uoms: []
+                                , unitsOfMeasure: []
                                 , answers: []
                             }
                         };
                         if (result[0].valueDomain.uom) {
-                            question.question.uoms.push(result[0].valueDomain.uom);
+                            question.question.unitsOfMeasure.push({system: '', code: result[0].valueDomain.uom});
                         }
                         if (result[0].valueDomain.permissibleValues.length > 0) {
                             result[0].valueDomain.permissibleValues.forEach(function (pv) {
