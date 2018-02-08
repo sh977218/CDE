@@ -105,8 +105,8 @@ export class HistoryComponent implements OnInit {
             if (priorElt.selected && !priorElt.promise) {
                 const prom = this.http.get(
                     this.elt.elementType === 'cde'
-                        ? '/deById/' + this.elt._id
-                        : '/formById/' + this.elt._id).toPromise().then(res => {
+                        ? '/deById/' + priorElt._id
+                        : '/formById/' + priorElt._id).toPromise().then(res => {
                     this.priorElements[index] = res;
                     this.priorElements[index].promise = prom;
                     this.priorElements[index].selected = true;
