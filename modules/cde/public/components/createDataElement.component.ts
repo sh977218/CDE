@@ -12,11 +12,12 @@ import { Subject } from 'rxjs/Subject';
 import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
-import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { DataElement } from 'shared/de/dataElement.model';
-import { IsAllowedService } from 'core/isAllowed.service';
 import { SharedService } from '_commonApp/shared.service';
+import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { Naming } from 'shared/models.model';
 import { SearchSettings } from 'search/search.model';
+import { DataElement } from 'shared/de/dataElement.model';
 
 
 @Component({
@@ -29,7 +30,7 @@ import { SearchSettings } from 'search/search.model';
     `]
 })
 export class CreateDataElementComponent implements OnInit {
-    @Input() elt;
+    @Input() elt: DataElement;
     @Output() close = new EventEmitter<void>();
     @Output() dismiss = new EventEmitter<void>();
     @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
@@ -40,14 +41,10 @@ export class CreateDataElementComponent implements OnInit {
     validationMessage;
 
     ngOnInit() {
-        if (!this.elt)
-            this.elt = {
-                elementType: 'cde',
-                classification: [], stewardOrg: {}, naming: [{
-                    designation: '', definition: '', tags: []
-                }],
-                registrationState: {registrationStatus: 'Incomplete'}
-            };
+        if (!this.elt) {
+            this.elt = new DataElement();
+            this.elt.naming.push(new Naming());
+        }
         this.validationErrors(this.elt);
         let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
         this.searchTerms.pipe(
@@ -62,11 +59,13 @@ export class CreateDataElementComponent implements OnInit {
             })
         ).subscribe(res => {
             let tinyIdList = res.map(r => r._id).slice(0, 5);
-            if (tinyIdList && tinyIdList.length > 0)
+            if (tinyIdList && tinyIdList.length > 0) {
                 this.http.get<any[]>('/deList/' + tinyIdList).subscribe(result => {
                     this.suggestedCdes = result;
                 }, err => this.alert.addAlert('danger', err));
-            else this.suggestedCdes = [];
+            } else {
+                this.suggestedCdes = [];
+            }
         });
     }
 

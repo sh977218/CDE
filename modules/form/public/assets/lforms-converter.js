@@ -261,7 +261,7 @@ _.extend(LForms.LFormsConverter.prototype, {
    */
   handleUnits: function(param, path) {
     var ret = {};
-    ret.name = param;
+    ret.name = param.code;
     return ret;
   },
 

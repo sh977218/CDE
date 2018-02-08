@@ -18,10 +18,11 @@ import _isEqual from 'lodash/isEqual';
 
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
-import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { CdeForm } from 'shared/form/form.model';
-import { IsAllowedService } from 'core/isAllowed.service';
 import { SharedService } from '_commonApp/shared.service';
+import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { Naming } from 'shared/models.model';
+import { CdeForm } from 'shared/form/form.model';
 
 
 @Component({
@@ -35,7 +36,7 @@ import { SharedService } from '_commonApp/shared.service';
     `]
 })
 export class CreateFormComponent implements OnInit {
-    @Input() elt;
+    @Input() elt: CdeForm;
     @Input() extModalRef: NgbModalRef;
     @Output() eltChange = new EventEmitter();
     @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
@@ -43,13 +44,10 @@ export class CreateFormComponent implements OnInit {
     modalRef: NgbModalRef;
 
     ngOnInit() {
-        if (!this.elt) this.elt = {
-            elementType: 'form',
-            classification: [], stewardOrg: {}, naming: [{
-                designation: '', definition: '', tags: []
-            }],
-            registrationState: {registrationStatus: 'Incomplete'}
-        };
+        if (!this.elt) {
+            this.elt = new CdeForm();
+            this.elt.naming.push(new Naming());
+        }
     }
 
     constructor(
@@ -102,7 +100,7 @@ export class CreateFormComponent implements OnInit {
                 this.alert.addAlert('success', 'Classification removed.');
             }
         });
-    };
+    }
 
     openClassifyItemModal() {
         this.modalRef = this.classifyItemComponent.openModal();

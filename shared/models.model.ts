@@ -146,6 +146,7 @@ export abstract class Elt {
     comments: Comment[] = []; // mutable
     created: Date;
     createdBy: UserReference;
+    highlight: any; // volatile, Elastic
     history: ObjectId[];
     ids: CdeId[];
     imported: Date;
@@ -158,10 +159,10 @@ export abstract class Elt {
     primaryNameSuggest: string; // volatile, Elastic
     properties: Property[] = []; // mutable
     referenceDocuments: ReferenceDocument[] = []; // mutable
-    registrationState: RegistrationState;
+    registrationState: RegistrationState = new RegistrationState();
     stewardOrg: {
         name: string,
-    } = {name};
+    } = {name: undefined};
     score: number; // volatile, Elastic _score
     source: string; // obsolete
     sources: DataSource[];
@@ -176,10 +177,12 @@ export abstract class Elt {
 
         // immutable
         this._id = elt._id;
+        this.archived = elt.archived;
         this.attachments = elt.attachments.concat();
         this.changeNote = elt.changeNote;
         this.created = elt.created;
         this.createdBy = elt.createdBy;
+        this.highlight = elt.highlight;
         this.history = elt.history.concat();
         this.ids = elt.ids.concat();
         this.imported = elt.imported;
@@ -243,7 +246,7 @@ export class Naming {
     designation: string;
     languageCode: string;
     source: string;
-    tags: string[];
+    tags: string[] = [];
 
     constructor(designation = '') {
         this.designation = designation;
@@ -286,6 +289,10 @@ export class DerivationRule {
     outputs: Array<String>;
     ruleType: String;
     formula: String;
+
+    static copy(rule: DerivationRule) {
+        return Object.assign(new DerivationRule(), rule);
+    }
 }
 
 export class Property {
@@ -324,7 +331,7 @@ export class RegistrationState {
     registrationStatus: string = 'Incomplete';
     replacedBy: {
         tinyId: string,
-    };
+    } = {tinyId: undefined};
     unresolvedIssue: string;
     untilDate: Date;
 }

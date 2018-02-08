@@ -125,7 +125,7 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     isOneLiner(question, numSubQuestions) {
-        return numSubQuestions && !this.hasLabel(question) && !question.instructions
+        return numSubQuestions && !this.hasLabel(question) && (!question.instructions || !question.instructions.value)
             && question.elementType === 'question' && question.question.datatype !== 'Value List';
     }
 

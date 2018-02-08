@@ -22,8 +22,8 @@ export class DataElement extends Elt {
             }
         }
     };
-    dataSets: DataSet[]; // mutable
-    derivationRules: DerivationRule[]; // mutable
+    dataSets: DataSet[] = []; // mutable
+    derivationRules: DerivationRule[] = []; // mutable
     elementType = 'cde';
     forkOf: string;
     mappingSpecifications: { // mutable

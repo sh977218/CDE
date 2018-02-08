@@ -77,7 +77,7 @@ export class SkipLogicValidateService {
             return ['{{' + q.question.datatype + '}}'];
         }
         if (q.question.datatype === 'Date') {
-            return ['"MM/DD/YYYY"'];
+            return ['"{{MM/DD/YYYY}}"'];
         }
         return [];
     }

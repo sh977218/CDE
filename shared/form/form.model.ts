@@ -24,6 +24,7 @@ export class CdeForm extends Elt implements FormElementsContainer {
     isCopyrighted: boolean;
     noRenderAllowed: boolean;
     numQuestions: number; // volatile, Elastic
+    outdated: boolean; // volatile, server calculated
 
     constructor(elt: CdeForm = undefined) {
         super(elt);
@@ -34,6 +35,7 @@ export class CdeForm extends Elt implements FormElementsContainer {
         this.isCopyrighted = elt.isCopyrighted;
         this.noRenderAllowed = elt.noRenderAllowed;
         this.numQuestions = elt.numQuestions;
+        this.outdated = elt.outdated;
 
         // mutable
         this.copyright = {
@@ -184,7 +186,7 @@ export class FormSection implements FormSectionOrForm {
         } else {
             return undefined;
         }
-        newFe.instructions = Object.assign(new FormattedValue(), fe.instructions);
+        newFe.instructions = fe.instructions ? Object.assign(new FormattedValue(), fe.instructions) : undefined;
         newFe.formElements = [];
         if (Array.isArray(fe.formElements)) {
             fe.formElements.forEach((f, i) => {
@@ -200,7 +202,7 @@ export class FormInForm implements FormSectionOrForm {
     _id;
     descriptionId: string;
     elementType = 'form';
-    expanded = true; // Calculated, used for View TreeComponent
+    expanded = false; // Calculated, used for View TreeComponent
     forbidMatrix;
     formElements = [];
     instructions;
@@ -212,10 +214,6 @@ export class FormInForm implements FormSectionOrForm {
 }
 
 export class FormQuestion implements FormElement {
-    constructor(_newCde?: boolean, _edit?: boolean) {
-        this.newCde = _newCde;
-        this.edit = _edit;
-    }
     _id;
     descriptionId: string;
     edit: boolean = false;
@@ -233,6 +231,11 @@ export class FormQuestion implements FormElement {
     repeat;
     skipLogic;
     updatedSkipLogic;
+
+    constructor(_newCde?: boolean, _edit?: boolean) {
+        this.newCde = _newCde;
+        this.edit = _edit;
+    }
 }
 
 class InForm {
