@@ -4,7 +4,6 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AlertService } from '_app/alert/alert.service';
 
-
 const URL_MAP = {
     'cde': '/deView?cdeId=',
     'form': '/formView?formId='
@@ -51,6 +50,8 @@ export class HistoryComponent implements OnInit {
     showVersioned: boolean = false;
     public priorElements: any[];
     public numberSelected: number = 0;
+    older: any;
+    newer: any;
     public filter = {
         reorder: {
             select: true
@@ -70,8 +71,7 @@ export class HistoryComponent implements OnInit {
         private alert: AlertService,
         private http: HttpClient,
         public modalService: NgbModal
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
         this.elt.viewing = true;
@@ -84,30 +84,44 @@ export class HistoryComponent implements OnInit {
             ).subscribe(res => {
                 this.priorElements = res.reverse();
                 this.priorElements.splice(0, 0, this.elt);
-                this.priorElements.forEach(pe => {
-                    pe.url = URL_MAP[this.elt.elementType] + pe._id;
-                });
+                this.priorElements.forEach(pe => pe.url = URL_MAP[this.elt.elementType] + pe._id);
             }, err => this.alert.httpErrorMessageAlert(err, 'Error retrieving history:'));
         } else {
             this.priorElements = [this.elt];
         }
     }
 
-    selectRow(priorCde) {
-        if (this.numberSelected === 2 && !priorCde.selected) {
-            priorCde.selected = false;
-        } else if (this.numberSelected === 2 && priorCde.selected) {
-            priorCde.selected = false;
+    selectRow(index) {
+        let priorElt = this.priorElements[index];
+        if (this.numberSelected === 2 && !priorElt.selected) {
+            priorElt.selected = false;
+        } else if (this.numberSelected === 2 && priorElt.selected) {
+            priorElt.selected = false;
             this.numberSelected--;
         } else {
-            priorCde.selected = !priorCde.selected;
-            if (priorCde.selected) this.numberSelected++;
+            priorElt.selected = !priorElt.selected;
+            if (priorElt.selected) this.numberSelected++;
             else this.numberSelected--;
+            if (priorElt.selected && !priorElt.promise) {
+                const prom = this.http.get(
+                    this.elt.elementType === 'cde'
+                        ? '/deById/' + this.elt._id
+                        : '/formById/' + this.elt._id).toPromise().then(res => {
+                    this.priorElements[index] = res;
+                    this.priorElements[index].promise = prom;
+                    this.priorElements[index].selected = true;
+                });
+            }
         }
     }
 
     openHistoryCompareModal() {
-        this.modalRef = this.modalService.open(this.compareContent, {size: 'lg'});
+        Promise.all(this.priorElements.filter(pe => !!pe.promise).map(pe => pe.promise)).then(() => {
+            const elts = this.getSelectedElt();
+            this.older = elts[0];
+            this.newer = elts[1];
+            this.modalRef = this.modalService.open(this.compareContent, {size: 'lg'});
+        });
     }
 
     getSelectedElt() {

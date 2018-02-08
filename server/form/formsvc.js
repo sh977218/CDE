@@ -122,15 +122,17 @@ exports.priorForms = function (req, res) {
     mongo_form.byId(id, function (err, form) {
         if (err) res.status(500).send("ERROR - cannot get form by id for prior");
         if (!form) res.status(404).send();
-        mongo_form.byIdList(form.history, function (err, priorForms) {
-            if (err) return res.status(500).send("ERROR - cannot get form prior id list");
-            async.forEachSeries(priorForms, function (priorForm, doneOnePriorForm) {
-                priorForm = priorForm.toObject();
-                fetchWholeForm(priorForm, doneOnePriorForm);
-            }, function doneAllPriorForms() {
-                res.send(priorForms);
-            });
-        });
+        mongo_form.Form.find({}, {"updatedBy.username": 1, updated: 1, "changeNote": 1, version: 1})
+            .where("_id").in(form.history).exec((err, priorForms) => res.send(priorForms));
+        // mongo_form.byIdList(form.history, function (err, priorForms) {
+        //     if (err) return res.status(500).send("ERROR - cannot get form prior id list");
+        //     async.forEachSeries(priorForms, (priorForm, doneOnePriorForm) => {
+        //         priorForm = priorForm.toObject();
+        //         fetchWholeForm(priorForm, doneOnePriorForm);
+        //     }, function doneAllPriorForms() {
+        //         res.send(priorForms);
+        //     });
+        // });
     });
 };
 
