@@ -37,7 +37,7 @@
                                                [title]="formElement.question.answer"
                                                [attr.name]="formElement.questionId"
                                                [(ngModel)]="formElement.question.answer"
-                                               [value]="pv.permissibleValue"
+                                               [attr.value]="pv.permissibleValue"
                                                [required]="formElement.question.required"
                                                [disabled]="!formElement.question.editable"/>
                                         <input *ngIf="formElement.question.multiselect" type="checkbox"
@@ -45,7 +45,7 @@
                                                title="multiple select" [attr.name]="formElement.questionId"
                                                [checked]="nrs.checkboxIsChecked(formElement.question, pv.permissibleValue)"
                                                (change)="nrs.checkboxOnChange($event, formElement.question, pv.permissibleValue)"
-                                               [value]="pv.permissibleValue"
+                                               [attr.value]="pv.permissibleValue"
                                                [required]="formElement.question.required"
                                                [disabled]="!formElement.question.editable"/>
                                         <span [textContent]="nrs.getPvLabel(pv)"></span>
