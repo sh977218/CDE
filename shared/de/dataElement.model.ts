@@ -1,4 +1,5 @@
 import { CdeId, copyArray, DerivationRule, Elt, PermissibleValue } from 'shared/models.model';
+import { CdeFormElastic } from 'shared/form/form.model';
 
 class Concept {
     name: string;
@@ -69,6 +70,13 @@ export class DataElement extends Elt {
 }
 
 export class DataElementElastic extends DataElement {
+    constructor(elt: DataElementElastic = undefined) {
+        super(elt);
+        if (!elt) return;
+    }
+    static copy(elt: DataElementElastic) {
+        return DataElement.copy(elt);
+    }
 }
 
 export class DataSet {

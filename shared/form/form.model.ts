@@ -10,6 +10,7 @@ import {
     copyArray,
 } from 'shared/models.model';
 import { iterateFeSync } from 'shared/form/formShared';
+import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 
 export class CdeForm extends Elt implements FormElementsContainer {
     copyright: { // mutable
@@ -89,6 +90,9 @@ export class CdeFormElastic extends CdeForm {
     constructor(elt: CdeFormElastic = undefined) {
         super(elt);
         if (!elt) return;
+    }
+    static copy(elt: CdeFormElastic) {
+        return CdeForm.copy(elt);
     }
 }
 

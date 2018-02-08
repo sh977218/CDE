@@ -22,6 +22,10 @@ export class CdeId {
     id: string;
     source: string;
     version: string;
+
+    static copy(id: CdeId) {
+        return Object.assign(new CdeId(), id);
+    }
 }
 
 export class Classification {
@@ -262,6 +266,10 @@ export class PermissibleValue {
     valueMeaningCode: string;
     valueMeaningDefinition: string;
     valueMeaningName: string;
+
+    static copy(pv: PermissibleValue) {
+        return Object.assign(new PermissibleValue(), pv);
+    }
 }
 
 enum RuleType {
