@@ -42,7 +42,7 @@ export class FormService {
         if (cde.valueDomain.uom) q.question.uoms.push(cde.valueDomain.uom);
 
         cde.naming.forEach(n => {
-            if (Array.isArray(n.tags) && n.tags.indexOf('Question Text') > -1) q.label = n.designation;
+            if (Array.isArray(n.tags) && n.tags.indexOf('Question Text') > -1 && !q.label) q.label = n.designation;
         });
         if (!q.label) q.label = cde.naming[0].designation;
         if (!q.label) q.hideLabel = true;
