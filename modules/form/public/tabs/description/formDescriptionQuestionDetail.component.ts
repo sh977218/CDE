@@ -271,15 +271,15 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 && u.system === this.newUomSystem).length) {
             this.question.question.unitsOfMeasure.push(new CodeAndSystem(this.newUomSystem, this.newUom));
             this.onEltChange.emit();
-            this.newUom = '';
-            setTimeout(() => this.newUom = '', 0); // the type-ahead seems to fill in the value asynchronously
         }
+        this.newUom = '';
     }
 
     uomAddSelected(event) {
         if (event && event.item && event.item.code && event.item.code !== '') {
             this.newUom = event.item.code;
             this.uomAddNew();
+            setTimeout(() => this.newUom = '', 0); // the type-ahead seems to fill in the value asynchronously
             this.ucumService.validateUoms(this.question.question);
         }
     }

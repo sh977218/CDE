@@ -96,13 +96,13 @@ export class NativeRenderComponent {
         let map = this.nrs.setElt(e);
         if (map)
             this.mapping = map;
-    };
+    }
     @Input() set profile(p: DisplayProfile) {
         this.nrs.setSelectedProfile(p);
-    };
+    }
     @Input() set nativeRenderType(userType) {
         this.nrs.profile && this.nrs.setNativeRenderType(userType);
-    };
+    }
     @Input() submitForm: boolean;
     @Input() showTitle: boolean = true;
 

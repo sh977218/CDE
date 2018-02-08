@@ -112,14 +112,15 @@
                        placeholder="Start typing a question name to find options"
                        [ngbTypeahead]="getSkipLogicOptions"
                        (selectItem)="typeaheadSkipLogic(parent, question, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
-                <span [textContent]="question.skipLogic?.validationError"></span>
+                <span style="color: red">{{question.skipLogic?.validationError}}</span>
             </dd>
         </ng-container>
         <ng-container *ngIf="question.question.datatype === 'Number' || question.question.datatype === 'Text'">
             <dt class="col-2">Units of Measure:</dt>
             <dd class="col-10 questionUom">
                 <div class="border rounded p-1">
-                    <span class="badge badge-info mr-1" *ngFor="let u of question.question.unitsOfMeasure;let i = index;">
+                    <span *ngFor="let u of question.question.unitsOfMeasure;let i = index;"
+                          class="badge badge-info formViewSummaryLabel">
                         <i class="fa fa-times hand-cursor dark-icon pl-1"
                            (click)="removeUomByIndex(i);"></i>
                         <ng-container *ngIf="u.system">{{u.system}}/</ng-container>{{u.code}}
@@ -140,21 +141,30 @@
                         </span>
                     </ng-template>
                     <div class="p-1">
-                        <i class="fa fa-plus"></i>
-                        <select [(ngModel)]="newUomSystem" title="New Unit of Measure System">
+                        Add
+                        <select class="form-control d-inline-block" style="max-width: 100px"
+                                [(ngModel)]="newUomSystem" title="New Unit of Measure System">
                             <option value="UCUM">UCUM</option>
                             <option value="">Other</option>
                         </select>
                         <ng-container *ngIf="newUomSystem === 'UCUM'; else manualUom">
-                            <input [ngbTypeahead]="ucumService.search" class="form-control d-inline-block"
-                                   title="New Unit of Measure Code" style="max-width: 200px"
+                            <input class="form-control d-inline-block" style="max-width: 200px"
+                                   [ngbTypeahead]="ucumService.search" title="New Unit of Measure Code"
                                    [resultTemplate]="rt" [(ngModel)]="newUom" [container]="'body'"
                                    (selectItem)="uomAddSelected($event);"/>
                         </ng-container>
                         <ng-template #manualUom>
                             <input class="form-control d-inline-block" style="max-width: 200px" [(ngModel)]="newUom"/>
-                            <button (click)="uomAddNew()">Add</button>
+                            <button class="btn btn-outline-dark" style="vertical-align: baseline"
+                                    (click)="uomAddNew()"><i class="fa fa-plus"></i></button>
                         </ng-template>
+                        <ng-container *ngFor="let e of question.question.uomsValid; index as i">
+                            <div *ngIf="e" style="color: red">
+                                <ng-container *ngIf="question.question.unitsOfMeasure[i].system"
+                                >{{question.question.unitsOfMeasure[i].system}}/</ng-container
+                                >{{question.question.unitsOfMeasure[i].code}} - {{e}}
+                            </div>
+                        </ng-container>
                     </div>
                 </div>
             </dd>
