@@ -82,11 +82,18 @@ public class BaseFormTest extends FormCommentTest {
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//button[contains(text(),'Confirm')]"));
     }
 
-    public void questionEditAddUom(String id, String text) {
+    public void questionEditAddUom(String id, String type, String text) {
         clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input"));
+        new Select(findElement(By.xpath("//*[@id='\" + id + \"']//*[contains(@class,'questionUom')]//select"))).selectByVisibleText(type);
+        textPresent(type, By.xpath("//*[@id='\" + id + \"']//*[contains(@class,'questionUom')]//select"));
         findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input")).sendKeys(text);
-        hangon(2);
-        findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input")).sendKeys(Keys.ENTER);
+
+        if ("UCUM".equals(type)) {
+            hangon(2);
+            findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input")).sendKeys(Keys.ENTER);
+        } else {
+            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//*[@class='fa fa-plus']"));
+        }
     }
 
     public void questionEditRemoveUom(String id, String uom) {

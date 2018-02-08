@@ -18,7 +18,7 @@ export class FormService {
             throw new Error('Cde ' + cde.tinyId + ' is not valid');
         }
 
-        let q = new FormQuestion;
+        let q = new FormQuestion();
         q.question.cde.derivationRules = cde.derivationRules;
         q.question.cde.name = cde.naming[0] ? cde.naming[0].designation : '';
         q.question.cde.naming = cde.naming;

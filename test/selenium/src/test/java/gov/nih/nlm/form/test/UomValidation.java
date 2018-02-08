@@ -22,10 +22,13 @@ public class UomValidation extends BaseFormTest {
         textPresent("cm");
 
         startEditQuestionById("question_0_3");
-        questionEditAddUom("question_0_3", "kilogram");
+        questionEditAddUom("question_0_3", "UCUM", "kilogram");
+        questionEditAddUom("question_0_3", "Other", "Kilo");
         questionEditRemoveUom("question_0_3", "inches");
         saveEditQuestionById("question_0_3");
         textNotPresent("inches");
+        textPresent("UCUM/kilogram");
+        textPresent("Kilo");
         findElement(By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionUom')]//*[text()='kg']"));
 
         goToPreview();
