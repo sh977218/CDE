@@ -1,5 +1,5 @@
 import { ErrorHandler, Injectable } from '@angular/core';
-import { FormElement, FormElementsContainer, FormQuestion, SkipLogic } from 'core/form.model';
+import { FormElement, FormElementsContainer, FormQuestion } from 'core/form.model';
 import { FormService } from './form.service';
 
 @Injectable()
@@ -7,15 +7,16 @@ export class SkipLogicService {
     constructor(private errorHandler: ErrorHandler) {}
 
     static evaluateSkipLogic(condition: string, parent: FormElementsContainer, fe: FormElement, nrs) {
-        if (!condition)
-            return true;
+        if (!condition) return true;
         let rule = condition.trim();
-        if (rule.indexOf('AND') > -1)
+        if (rule.indexOf('AND') > -1) {
             return this.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), parent, fe, nrs) &&
                 this.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), parent, fe, nrs);
-        if (rule.indexOf('OR') > -1)
+        }
+        if (rule.indexOf('OR') > -1) {
             return (this.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), parent, fe, nrs) ||
                 this.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3), parent, fe, nrs));
+        }
 
         let operatorArr = />=|<=|=|>|<|!=/.exec(rule);
         if (!operatorArr || operatorArr.length <= 0) {
@@ -44,22 +45,18 @@ export class SkipLogicService {
 
         if (expectedAnswer === '' && operator === '=') {
             if (realAnswerObj.question.datatype === 'Number') {
-                if (realAnswer === '' || isNaN(realAnswer))
-                    return true;
+                if (realAnswer === '' || isNaN(realAnswer)) return true;
             } else {
-                if (realAnswer === '' || ('' + realAnswer).trim().length === 0)
-                    return true;
+                if (realAnswer === '' || ('' + realAnswer).trim().length === 0) return true;
             }
         }
-        if (!realAnswer && realAnswer !== '')
-            return false;
+        if (!realAnswer && realAnswer !== '') return false;
         switch (realAnswerObj.question.datatype) {
             case 'Date':
                 // format HTML5 standard YYYY-MM-DD to American DD/MM/YYYY
                 if (realAnswer) {
                     let match = /(\d{4})-(\d{2})-(\d{2})/.exec(realAnswer);
-                    if (match.length === 4)
-                        realAnswer = match[2] + '/' + match[3] + '/' + match[1];
+                    if (match.length === 4) realAnswer = match[2] + '/' + match[3] + '/' + match[1];
                 }
                 if (operator === '=') return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
                 if (operator === '!=') return new Date(realAnswer).getTime() !== new Date(expectedAnswer).getTime();
@@ -85,16 +82,11 @@ export class SkipLogicService {
                 return false;
             case 'Value List':
                 if (operator === '=') {
-                    if (Array.isArray(realAnswer))
-                        return realAnswer.indexOf(expectedAnswer) > -1;
-                    else
-                        return realAnswer === expectedAnswer;
+                    return Array.isArray(realAnswer) ? realAnswer.indexOf(expectedAnswer) > -1 : realAnswer === expectedAnswer;
                 }
                 if (operator === '!=') {
-                    if (Array.isArray(realAnswer))
-                        return realAnswer.length !== 1 || realAnswer[0] !== expectedAnswer;
-                    else
-                        return realAnswer !== expectedAnswer;
+                    return Array.isArray(realAnswer) ? realAnswer.length !== 1 || realAnswer[0] !== expectedAnswer
+                        : realAnswer !== expectedAnswer;
                 }
                 nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for value list. ' + rule);
                 return false;
@@ -121,32 +113,27 @@ export class SkipLogicService {
 
     evalSkipLogicAndClear(parent, fe, nrs) {
         let skipLogicResult = this.evalSkipLogic(parent, fe, nrs);
-        if (!skipLogicResult && fe.question)
-            fe.question.answer = undefined;
+        if (!skipLogicResult && fe.question) fe.question.answer = undefined;
         return skipLogicResult;
     }
 
     static getLabel(q) {
-        if (q.label)
-            return q.label.trim();
-        if (q.question && q.question.cde)
-            return q.question.cde.name.trim();
+        if (q.label) return q.label.trim();
+        if (q.question && q.question.cde) return q.question.cde.name.trim();
         return null; // ERROR: question is malformed, validation should catch this
     }
 
     static getQuestions(fes: FormElement[], filter = undefined): FormQuestion[] {
         let matchedQuestions = [];
         FormService.iterateFesSync(fes, undefined, undefined, fe => {
-            if (!filter || filter(fe))
-               matchedQuestions.push(fe);
+            if (!filter || filter(fe)) matchedQuestions.push(fe);
         });
         return matchedQuestions;
     }
 
     static getQuestionsPrior(parent: FormElementsContainer, fe: FormElement, filter = undefined): FormQuestion[] {
         let index = -1;
-        if (fe)
-            index = parent.formElements.indexOf(fe);
+        if (fe) index = parent.formElements.indexOf(fe);
 
         return this.getQuestions(index > -1 ? parent.formElements.slice(0, index) : parent.formElements, filter);
     }
@@ -154,8 +141,7 @@ export class SkipLogicService {
     static getQuestionPriorByLabel(parent: FormElementsContainer, fe: FormElement, label: string): FormQuestion {
         label = label.trim();
         let matchedQuestions = this.getQuestionsPrior(parent, fe, fe => this.getLabel(fe) === label);
-        if (matchedQuestions.length <= 0)
-            return null;
+        if (matchedQuestions.length <= 0) return null;
         return matchedQuestions[0] as FormQuestion;
     }
 
@@ -189,11 +175,9 @@ export class SkipLogicService {
     static tokenSplitter(str: string) {
         let tokens: any = [];
         tokens.unmatched = '';
-        if (!str)
-            return tokens;
+        if (!str) return tokens;
         str = str.trim();
-        if (!str)
-            return tokens;
+        if (!str) return tokens;
 
         let res = str.match(/^"[^"]+"/);
         if (!res) {
