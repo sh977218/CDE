@@ -25,8 +25,7 @@ export class FormService {
     ) {}
 
     convertCdeToQuestion(cde, cb): FormQuestion {
-        if (!cde || cde.valueDomain === undefined)
-            throw new Error('Cde ' + cde.tinyId + ' is not valid');
+        if (!cde || cde.valueDomain === undefined) throw new Error('Cde ' + cde.tinyId + ' is not valid');
 
         let q = new FormQuestion;
         q.question.cde.derivationRules = cde.derivationRules;
@@ -39,19 +38,14 @@ export class FormService {
         q.question.datatypeDate = cde.valueDomain.datatypeDate;
         q.question.datatypeNumber = cde.valueDomain.datatypeNumber;
         q.question.datatypeText = cde.valueDomain.datatypeText;
-        if (cde.ids)
-            q.question.cde.ids = cde.ids;
-        if (cde.valueDomain.uom)
-            q.question.uoms.push(cde.valueDomain.uom);
+        if (cde.ids) q.question.cde.ids = cde.ids;
+        if (cde.valueDomain.uom) q.question.uoms.push(cde.valueDomain.uom);
 
         cde.naming.forEach(n => {
-            if (Array.isArray(n.tags) && n.tags.indexOf('Question Text') > -1)
-                q.label = n.designation;
+            if (Array.isArray(n.tags) && n.tags.indexOf('Question Text') > -1 && !q.label) q.label = n.designation;
         });
-        if (!q.label)
-            q.label = cde.naming[0].designation;
-        if (!q.label)
-            q.hideLabel = true;
+        if (!q.label) q.label = cde.naming[0].designation;
+        if (!q.label) q.hideLabel = true;
 
         function convertPv(q, cde) {
             cde.valueDomain.permissibleValues.forEach(pv => {
@@ -93,14 +87,15 @@ export class FormService {
                 });
         };
         function questionCb(fe, cb) {
-            if (fe.question.cde.derivationRules)
-                fe.question.cde.derivationRules.forEach(function (derRule) {
+            if (fe.question.cde.derivationRules) {
+                fe.question.cde.derivationRules.forEach(derRule => {
                     delete fe.incompleteRule;
                     if (derRule.ruleType === 'score') {
                         fe.question.isScore = true;
                         fe.question.scoreFormula = derRule.formula;
                     }
                 });
+            }
             cb();
         }
         FormService.iterateFe(form, formCb, undefined, questionCb, callback);

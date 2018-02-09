@@ -133,6 +133,7 @@ export const projectCdeForExport = function (ele, settings) {
     if (settings.ids) {
         if (settings.identifiers.length > 0) {
             settings.identifiers.forEach(i => {
+                cde[i] = "";
                 ele.ids.forEach(id => {
                     if (id.source === i) cde[i] = id.id + (id.version ? " v" + id.version : "");
                 });
