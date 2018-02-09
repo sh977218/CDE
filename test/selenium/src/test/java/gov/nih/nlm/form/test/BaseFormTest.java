@@ -84,8 +84,8 @@ public class BaseFormTest extends FormCommentTest {
 
     public void questionEditAddUom(String id, String type, String text) {
         clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input"));
-        new Select(findElement(By.xpath("//*[@id='\" + id + \"']//*[contains(@class,'questionUom')]//select"))).selectByVisibleText(type);
-        textPresent(type, By.xpath("//*[@id='\" + id + \"']//*[contains(@class,'questionUom')]//select"));
+        new Select(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//select"))).selectByVisibleText(type);
+        textPresent(type, By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//select"));
         findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input")).sendKeys(text);
 
         if ("UCUM".equals(type)) {
