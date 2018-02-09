@@ -66,8 +66,8 @@
                 <span *ngFor="let u of question.question.unitsOfMeasure; let index = index"
                       class="badge badge-info formViewSummaryLabel"
                       [ngClass]="{'badge-danger': (question.question.uomsValid && question.question.uomsValid[index])}">
-                    <ng-container *ngIf="u.system">{{u.system}}/</ng-container>{{u.code}}
-                    <span *ngIf="question.question.uomsValid && question.question.uomsValid[index]">&nbsp;(Error: {{question.question.uomsValid[index]}})</span>
+                    <ng-container *ngIf="u.system">{{u.system}}/</ng-container>{{u.code}}<ng-container
+                        *ngIf="question.question.uomsValid && question.question.uomsValid[index]">&nbsp;(Error: {{question.question.uomsValid[index]}})</ng-container>
                 </span>
             </div>
         </div>

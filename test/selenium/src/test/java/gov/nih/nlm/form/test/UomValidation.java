@@ -27,9 +27,8 @@ public class UomValidation extends BaseFormTest {
         questionEditRemoveUom("question_0_3", "inches");
         saveEditQuestionById("question_0_3");
         textNotPresent("inches");
-        textPresent("UCUM/kg");
-        textPresent("Kilo");
-        findElement(By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionUom')]//*[text()='kg']"));
+        findElement(By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionUom')]//*[text()='UCUM/' and text()='kg']"));
+        findElement(By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionUom')]//*[text()='Kilo']"));
 
         goToPreview();
         findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']")).sendKeys("1.25");
