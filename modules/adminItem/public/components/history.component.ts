@@ -50,8 +50,6 @@ export class HistoryComponent implements OnInit {
     showVersioned: boolean = false;
     public priorElements: any[];
     public numberSelected: number = 0;
-    older: any;
-    newer: any;
     public filter = {
         reorder: {
             select: true
@@ -117,9 +115,6 @@ export class HistoryComponent implements OnInit {
 
     openHistoryCompareModal() {
         Promise.all(this.priorElements.filter(pe => !!pe.promise).map(pe => pe.promise)).then(() => {
-            const elts = this.getSelectedElt();
-            this.older = elts[0];
-            this.newer = elts[1];
             this.modalRef = this.modalService.open(this.compareContent, {size: 'lg'});
         });
     }
