@@ -237,7 +237,6 @@ exports.completionSuggest = function (term, user, settings, indexName, cb) {
 
 exports.regStatusFilter = function (user, settings) {
     // Filter by selected Statuses
-
     if (settings.selectedStatuses.length > 0) {
         return settings.selectedStatuses.map(regStatus => {
             return {"term": {"registrationState.registrationStatus": regStatus}};
@@ -246,7 +245,6 @@ exports.regStatusFilter = function (user, settings) {
         let filterRegStatusTerms = settings.visibleStatuses.map(regStatus => {
             return {"term": {"registrationState.registrationStatus": regStatus}};
         });
-
         // Filter by Steward
         if (user) {
             let curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
@@ -254,11 +252,8 @@ exports.regStatusFilter = function (user, settings) {
                 return {"term": {"stewardOrg.name": o}};
             }));
         }
-
         return filterRegStatusTerms;
-
     }
-
 };
 
 exports.buildElasticSearchQuery = function (user, settings) {
@@ -308,7 +303,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
     let queryStuff = {
         post_filter: settings.filter,
         query: {
-            // Do not retrieve items marked as forks.
             bool: {
                 must: [
                     {
@@ -354,6 +348,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
             queryStuff.query.bool.must[0].dis_max.queries.push({
                 function_score: {
+                    boost: 4,
                     query: {
                         "query_string": {
                             "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"],
