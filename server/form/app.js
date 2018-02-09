@@ -212,7 +212,7 @@ exports.init = function (app, daoManager) {
             && mapping.sections[0].questions[2].question === "Name of laboratory that performed this molecular study"
             && mapping.sections[0].questions[2].name === "q3"
             && mapping.sections[0].questions[2].tinyId === "EdUB2kWmV61"
-            && mapping.sections[0].questions[3].name === "q3"
+            && mapping.sections[0].questions[3].name === "q4"
             && mapping.sections[0].questions[3].tinyId === "JWWpC2baVwK"
         ) {
             if (req.body.formUrl.indexOf(config.publicUrl + "/data") === 0) res.send("<html><body>Form Submitted</body></html>"); else if (config.publicUrl.indexOf('localhost') === -1) {
@@ -225,7 +225,10 @@ exports.init = function (app, daoManager) {
                         return ifaces[ifname].filter(iface => {
                             return req.body.formUrl.indexOf(iface.address + "/data") !== 1;
                         }).length > 0;
-                    })) res.send("<html><body>Form Submitted</body></html>"); else res.status(401).send("<html><body>Not the right input</body></html>");
+                    })) res.send("<html><body>Form Submitted</body></html>");
+                else {
+                    res.status(401).send("<html><body>Not the right input. Actual Input: <p>" + "</p></body></html>");
+                }
             }
         } else {
             res.status(401).send("<html><body>Not the right input</body></html>");
