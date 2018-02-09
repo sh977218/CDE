@@ -37,7 +37,7 @@ export class FormService {
         }
 
         cde.naming.forEach(n => {
-            if (Array.isArray(n.tags) && n.tags.indexOf('Question Text') > -1) {
+            if (Array.isArray(n.tags) && n.tags.indexOf('Question Text') > -1 && !q.label) {
                 q.label = n.designation;
             }
         });
@@ -88,7 +88,7 @@ export class FormService {
         };
         function questionCb(fe, cb) {
             if (fe.question.cde.derivationRules) {
-                fe.question.cde.derivationRules.forEach(function (derRule) {
+                fe.question.cde.derivationRules.forEach(derRule => {
                     delete fe.incompleteRule;
                     if (derRule.ruleType === 'score') {
                         fe.question.isScore = true;
