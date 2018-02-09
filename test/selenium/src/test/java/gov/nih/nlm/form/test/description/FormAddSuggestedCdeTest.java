@@ -9,7 +9,7 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
     public void formAddSuggestedCde() {
         String form = "formAddSuggestedCdeTest";
         String cdeName1 = "brocco";
-        String cdeName2 = "Height measurement method ty";
+        String cdeName2 = "Adverse event track num";
         String cdeName3 = "Gastrointestinal therapy continuous";
         String cdeName4 = "Diary day headache indic";
         mustBeLoggedInAs(nlm_username, nlm_username);
@@ -20,7 +20,7 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
         textPresent("Broccoli (1/2 cup)", By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionLabel')]"));
 
         addCdeByNameBeforeId(cdeName2, "question_0_1", true);
-        textPresent("Measurement type", By.xpath("//*[@id='question_0_2']//*[contains(@class,'questionLabel')]"));
+        textPresent("AE Tracking Number", By.xpath("//*[@id='question_0_2']//*[contains(@class,'questionLabel')]"));
         textPresent("Number", By.xpath("//*[@id='question_0_2']//*[contains(@class,'questionDataType')]"));
 
         addCdeByNameBeforeId(cdeName3, "question_0_2", true);
