@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
-    CdeForm, DisplayProfile, FormElement, FormQuestion, FormSection, FormSectionOrForm, PermissibleFormValue
+    CdeForm, DisplayProfile, FormElement, FormQuestion, FormSection, FormSectionOrForm, PermissibleFormValue, Question
 } from 'core/form.model';
 import { FormService } from 'nativeRender/form.service';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
@@ -26,6 +26,14 @@ export class NativeRenderService {
             this.setNativeRenderType(newType);
 
         return newType;
+    }
+
+    radioButtonSelect(question: Question, value: string) {
+        if (question.required || question.answer !== value) {
+            question.answer = value;
+        } else {
+            question.answer = undefined;
+        }
     }
 
     render() {
@@ -67,6 +75,17 @@ export class NativeRenderService {
             NativeRenderService.transformFormToInline(this.followForm);
             NativeRenderService.assignValueListRows(this.followForm.formElements);
         }
+
+        // Post-Transform Processing
+        FormService.iterateFeSync(this.elt, undefined, undefined, fe => {
+            // let feq = fe as FormQuestion;
+            if (fe.question.uoms && fe.question.uoms.length === 1) {
+                fe.question.answerUom = fe.question.uoms[0];
+            }
+            if (fe.question.answers.length === 1 && fe.question.required && !fe.question.multiselect) {
+                fe.question.answer = fe.question.answers[0].permissibleValue;
+            }
+        });
     }
 
     setNativeRenderType(userType) {
@@ -226,13 +245,9 @@ export class NativeRenderService {
             followEligibleQuestions.push(fe);
 
             // Post-Transform Processing
-            if (fe.elementType === 'section' || fe.elementType === 'form') {
-                if (NativeRenderService.transformFormToInline(fe))
+            if ((fe.elementType === 'section' || fe.elementType === 'form')
+                && NativeRenderService.transformFormToInline(fe)) {
                     (fe as FormSectionOrForm).forbidMatrix = true;
-            } else {
-                let feq = fe as FormQuestion;
-                if (feq.question.uoms && feq.question.uoms.length === 1)
-                    feq.question.answerUom = feq.question.uoms[0];
             }
             if (fe.skipLogic)
                 fe.skipLogic = undefined;

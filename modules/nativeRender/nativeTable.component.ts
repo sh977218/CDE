@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { FormElement, FormQuestion } from 'core/form.model';
+import { FormElement, FormQuestion, Question } from 'core/form.model';
 
 @Component({
     selector: 'cde-native-table',
@@ -25,6 +25,14 @@ export class NativeTableComponent implements OnInit {
 
     ngOnInit() {
         this.render();
+    }
+
+    radioButtonSelect(required: boolean, obj, property, value: string) {
+        if (required || obj[property] !== value) {
+            obj[property] = value;
+        } else {
+            obj[property] = undefined;
+        }
     }
 
     render() {

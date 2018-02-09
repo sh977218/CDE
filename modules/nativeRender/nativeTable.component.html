@@ -33,6 +33,7 @@
                            [name]="ni + q.name"
                            [attr.name]="ni + q.name"
                            [value]="nrs.elt.formInput[ni + q.name]"
+                           [attr.value]="nrs.elt.formInput[ni + q.name]"
                            [(ngModel)]="nrs.elt.formInput[ni + q.name]"/>
                 </div>
                 <div *ngIf="q.type === 'list'" class="radio native-table-cell native-table-list">
@@ -40,8 +41,10 @@
                         <input type="radio"
                                [name]="ni + q.name"
                                [attr.name]="ni + q.name"
-                               [(ngModel)]="nrs.elt.formInput[ni + q.name]"
+                               [ngModel]="nrs.elt.formInput[ni + q.name]"
+                               (click)="radioButtonSelect(q.question.required, nrs.elt.formInput, ni + q.name, $event.target.value)"
                                [value]="a.permissibleValue"
+                               [attr.value]="a.permissibleValue"
                                [required]="q.question.required"
                                [disabled]="!q.question.editable"/>
                         <span [textContent]="nrs.getPvLabel(a)"></span>
@@ -57,6 +60,7 @@
                                [checked]="nrs.checkboxIsChecked(nrs.elt.formInput[ni + q.name], a.permissibleValue, ni)"
                                (change)="nrs.checkboxOnChange($event, nrs.elt.formInput[ni + q.name], a.permissibleValue, ni)"
                                [value]="a.permissibleValue"
+                               [attr.value]="a.permissibleValue"
                                [required]="q.question.required"
                                [disabled]="!q.question.editable"/>
                         <span [textContent]="nrs.getPvLabel(a)"></span>
@@ -80,7 +84,8 @@
                 <div *ngIf="q.type === 'number'" [ngClass]="{'input-group': q.question.uoms.length > 0}" class="native-table-cell" style="min-width: 100px;">
                     <input type="number"
                            class="form-control native-table-box"
-                           [name]="ni + q.name" [title]="ni + q.name"
+                           [title]="ni + q.name"
+                           [name]="ni + q.name"
                            [attr.name]="ni + q.name"
                            [(ngModel)]="nrs.elt.formInput[ni + q.name]"
                            [attr.min]="q.question.datatypeNumber ? q.question.datatypeNumber.minValue : null"
@@ -95,7 +100,8 @@
                                [attr.name]="ni + q.name + '_uom'"
                                [(ngModel)]="nrs.elt.formInput[ni + q.name + '_uom']"
                                [value]="uom"
-                               [required]="q.question.required"
+                               [attr.value]="uom"
+                               [required]="q.question.required || nrs.elt.formInput[ni + q.name]"
                                [disabled]="!q.question.editable"/> {{uom}}</label>
                 </div>
                 <div *ngIf="q.type === 'text'" class="native-table-cell" style="min-width: 80px;">
@@ -115,12 +121,11 @@
                                [attr.name]="ni + q.name + '_uom'"
                                [(ngModel)]="nrs.elt.formInput[ni + q.name + '_uom']"
                                [value]="uom"
-                               [required]="q.question.required"
+                               [attr.value]="uom"
+                               [required]="q.question.required || nrs.elt.formInput[ni + q.name]"
                                [disabled]="!q.question.editable"/> {{uom}}</label>
                 </div>
             </td>
         </tr>
     </tbody>
-    <!--<tfoot>-->
-    <!--</tfoot>-->
 </table>
