@@ -29,7 +29,7 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
             margin: auto;
             padding: 10px 10px;
             margin-top: 5px;
-            max-width: 900px;
+            max-width: 1026px;
             border-radius: 20px;
             border: solid lightgrey 3px;
             overflow-x: scroll;
