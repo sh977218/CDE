@@ -32,19 +32,19 @@ public class FormNativeRenderTest extends NlmCdeBaseTest {
         label.findElement(By.cssSelector("input")).click();
         Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 0);
 
-        // required radio checked and no un-select
-        label = findElement(By.xpath("//*[@id='Cytosine adenine guanine repeat expansion result_0']//label[span[text()='Not known']]"));
-        label.findElement(By.xpath("//input[@type='radio']"));
-        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 1);
-        label.findElement(By.cssSelector("input")).click();
-        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 1);
-
         // single radio is checkbox if not required
+        label = findElement(By.xpath("//*[@id='Cytosine adenine guanine repeat expansion result_0']//label[span[text()='Not known']]"));
+        label.findElement(By.xpath("//input[@type='checkbox']"));
+        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 0);
+
+        // required radio checked and no un-select
         goToFormDescription();
         startEditQuestionById("question_4_0");
         clickElement(By.xpath("//*[@id='question_4_0']//input[@title='Required']"));
         goToPreview();
-        label.findElement(By.xpath("//input[@type='checkbox']"));
-        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 0);
+        label.findElement(By.xpath("//input[@type='radio']"));
+        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 1);
+        label.findElement(By.cssSelector("input")).click();
+        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 1);
     }
 }
