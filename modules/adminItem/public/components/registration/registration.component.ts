@@ -6,8 +6,8 @@ import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { Comment } from 'core/models.model';
-import { SharedService } from 'core/shared.service';
+import { Comment } from 'shared/models.model';
+import { SharedService } from '_commonApp/shared.service';
 
 
 @Component({

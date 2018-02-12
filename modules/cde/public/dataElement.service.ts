@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { DataElement } from 'core/dataElement.model';
+import { DataElement } from 'shared/de/dataElement.model';
 
 @Injectable()
 export class DataElementService {

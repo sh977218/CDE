@@ -247,7 +247,7 @@ exports.init = function (app) {
         let deleteClassification = req.body.deleteClassification;
         let settings = req.body.settings;
         if (!deleteClassification || !settings) return res.status(400).send();
-        if (!usersrvc.isCuratorOf(req.user, deleteClassification.orgName)) return res.status(403).end();
+        if (!authorizationShared.isOrgCurator(req.user, deleteClassification.orgName)) return res.status(403).end();
         mongo_data.jobStatus("deleteClassification", (err, j) => {
             if (err) return res.status(409).send("Error - delete classification is in processing, try again later.");
             if (j) return res.status(401).send();
@@ -264,7 +264,7 @@ exports.init = function (app) {
         let newName = req.body.newClassification.newName;
         let settings = req.body.settings;
         if (!newName || !newClassification || !settings) return res.status(400).send();
-        if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
+        if (!authorizationShared.isOrgCurator(req.user, newClassification.orgName)) return res.status(403).end();
         mongo_data.jobStatus("renameClassification", (err, j) => {
             if (err) return res.status(409).send("Error - rename classification is in processing, try again later.");
             if (j) return res.status(401).send();
@@ -279,7 +279,7 @@ exports.init = function (app) {
     app.put('/orgClassification/', function (req, res) {
         let newClassification = req.body.newClassification;
         if (!newClassification) return res.status(400).send();
-        if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
+        if (!authorizationShared.isOrgCurator(req.user, newClassification.orgName)) return res.status(403).end();
         mongo_data.jobStatus("addClassification", (err, j) => {
             if (err) return res.status(409).send("Error - delete classification is in processing, try again later.");
             if (j) return res.status(401).send();
@@ -296,7 +296,7 @@ exports.init = function (app) {
         let newClassification = req.body.newClassification;
         let settings = req.body.settings;
         if (!oldClassification || !newClassification || !settings) return res.status(400).send();
-        if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
+        if (!authorizationShared.isOrgCurator(req.user, newClassification.orgName)) return res.status(403).end();
         mongo_data.jobStatus("reclassifyClassification", (err, j) => {
             if (err) return res.status(409).send("Error - reclassify classification is in processing, try again later.");
             if (j) return res.status(401).send();
@@ -541,7 +541,7 @@ exports.init = function (app) {
     });
 
     app.post('/addOrg', function (req, res) {
-        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
+        if (authorizationShared.canOrgAuthority(req.user)) {
             orgsvc.addOrg(req, res);
         } else {
             res.status(401).send();
@@ -549,7 +549,7 @@ exports.init = function (app) {
     });
 
     app.post('/updateOrg', function (req, res) {
-        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
+        if (authorizationShared.canOrgAuthority(req.user)) {
             mongo_data.updateOrg(req.body, res);
         } else {
             res.status(401).send();
@@ -588,7 +588,7 @@ exports.init = function (app) {
     });
 
     app.put('/user', function (req, res) {
-        if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
+        if (!authorizationShared.canOrgAuthority(req.user))
             return res.status(401).send("Not Authorized");
         mongo_data.addUser({
             username: req.body.username,
@@ -670,7 +670,7 @@ exports.init = function (app) {
     });
 
     app.post('/updateUserRoles', function (req, res) {
-        if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
+        if (!authorizationShared.canOrgAuthority(req.user))
             return res.status(401).send("Not Authorized");
         usersrvc.updateUserRoles(req.body, function (err) {
             if (err) res.status(500).end();
@@ -685,7 +685,7 @@ exports.init = function (app) {
     });
 
     app.post('/updateUserAvatar', function (req, res) {
-        if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
+        if (!authorizationShared.canOrgAuthority(req.user))
             return res.status(401).send("Not Authorized");
         usersrvc.updateUserAvatar(req.body, function (err) {
             if (err) res.status(500).end();
@@ -694,7 +694,7 @@ exports.init = function (app) {
     });
 
     app.post('/updateTesterStatus', function (req, res) {
-        if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
+        if (!authorizationShared.canOrgAuthority(req.user))
             return res.status(401).send("Not Authorized");
         mongo_data.User.findOne({_id: req.body._id}, function (err, u) {
             u.tester = req.body.tester;
@@ -731,7 +731,7 @@ exports.init = function (app) {
 
     // TODO this works only for CDEs. Forms TODO later.
     app.post('/classification/bulk/tinyId', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(403).send("Not Authorized");
+        if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(403).send("Not Authorized");
         if (!req.body.orgName || !req.body.categories) return res.status(400).send("Bad Request");
         let elements = req.body.elements;
         if (elements.length <= 50)
@@ -799,7 +799,7 @@ exports.init = function (app) {
 
 
     app.post('/getFeedbackIssues', function (req, res) {
-        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
+        if (authorizationShared.canOrgAuthority(req.user)) {
             dbLogger.getFeedbackIssues(req.body, function (err, result) {
                 res.send(result);
             });
@@ -902,7 +902,7 @@ exports.init = function (app) {
     });
 
     app.post('/getClassificationAuditLog', function (req, res) {
-        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
+        if (authorizationShared.canOrgAuthority(req.user)) {
             mongo_data.getClassificationAuditLog(req.body, function (err, result) {
                 if (err) return res.status(500).send();
                 res.send(result);
@@ -1029,7 +1029,7 @@ exports.init = function (app) {
     });
 
     app.post('/disableRule', function (req, res) {
-        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
+        if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
         mongo_data.disableRule(req.body, function (err, org) {
             if (err) res.status(500).send(org);
             else res.send(org);
@@ -1037,7 +1037,7 @@ exports.init = function (app) {
     });
 
     app.post('/enableRule', function (req, res) {
-        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
+        if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
         mongo_data.enableRule(req.body, function (err, org) {
             if (err) res.status(500).send(org);
             else res.send(org);
@@ -1140,7 +1140,7 @@ exports.init = function (app) {
     });
 
     app.post("/syncWithMesh", function (req, res) {
-        if (!config.autoSyncMesh && !authorizationShared.hasRole(req.user, "OrgAuthority"))
+        if (!config.autoSyncMesh && !authorizationShared.canOrgAuthority(req.user))
             return res.status(403).send("Not Authorized");
         elastic.syncWithMesh();
         res.send();

@@ -8,7 +8,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '_app/alert/alert.service';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { SharedService } from 'core/shared.service';
+import { checkPvUnicity, fixDatatype } from 'shared/de/deValidator';
 
 
 @Component({
@@ -24,7 +24,7 @@ export class PermissibleValueComponent {
         this._elt = v;
         let isDatatypeDefined = _indexOf(this.dataTypeOptions, this.elt.valueDomain.datatype);
         if (isDatatypeDefined === -1) this.dataTypeOptions.push(this.elt.valueDomain.datatype);
-        SharedService.deValidator.fixDatatype(this.elt);
+        fixDatatype(this.elt);
         this.elt.allValid = true;
         this.loadValueSet();
         this.initSrcOptions();
@@ -119,12 +119,12 @@ export class PermissibleValueComponent {
 
     changedDatatype(data: { value: string[] }) {
         this.elt.valueDomain.datatype = data.value;
-        SharedService.deValidator.fixDatatype(this.elt);
+        fixDatatype(this.elt);
         this.onEltChange.emit();
     }
 
     checkPvUnicity() {
-        let validObject = SharedService.deValidator.checkPvUnicity(this.elt.valueDomain);
+        let validObject = checkPvUnicity(this.elt.valueDomain);
         this.elt.allValid = validObject['allValid'];
         this.elt.pvNotValidMsg = validObject['pvNotValidMsg'];
     }
@@ -313,7 +313,7 @@ export class PermissibleValueComponent {
 
     savePvDatatype(data: { value: string[] }) {
         this.elt.valueDomain.datatypeValueList.datatype = data;
-        SharedService.deValidator.fixDatatype(this.elt);
+        fixDatatype(this.elt);
         this.onEltChange.emit();
     }
 

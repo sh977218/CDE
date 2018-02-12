@@ -7,7 +7,7 @@ var async = require('async'),
     MigrationFormModel = require('../createMigrationConnection').MigrationFormModel,
     mongo_form = require('../../server/form/mongo-form'),
     FormModel = mongo_form.Form,
-    classificationShared = require('@std/esm')(module)('../../modules/system/shared/classificationShared'),
+    classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared'),
     updateShare = require('../updateShare')
 ;
 

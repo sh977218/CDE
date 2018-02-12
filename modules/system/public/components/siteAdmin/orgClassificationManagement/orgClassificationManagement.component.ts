@@ -10,8 +10,8 @@ import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { ClassificationService } from 'core/classification.service';
-import { ElasticQueryResponse } from 'core/models.model';
-import { SharedService } from 'core/shared.service';
+import { ElasticQueryResponse } from 'shared/models.model';
+import { isOrgAdmin } from 'shared/system/authorizationShared';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -164,7 +164,7 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
     isOrgAdmin() {
-        return SharedService.auth.isOrgAdmin(this.userService.user);
+        return isOrgAdmin(this.userService.user);
     }
 
     onChangeOrg(value, cb) {

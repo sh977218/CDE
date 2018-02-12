@@ -1,12 +1,13 @@
-import { Component, EventEmitter, Output } from "@angular/core";
-import { SharedService } from "core/shared.service";
-import { QuickBoardListService } from '_app/quickBoardList.service';
-import { UserService } from "_app/user.service";
+import { Component, EventEmitter, Output } from '@angular/core';
+
 import { LoginService } from '_app/login.service';
+import { QuickBoardListService } from '_app/quickBoardList.service';
+import { UserService } from '_app/user.service';
+import { canCreateForms, canOrgAuthority, isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
 
 @Component({
-    selector: "cde-navigation",
-    templateUrl: "./navigation.component.html",
+    selector: 'cde-navigation',
+    templateUrl: './navigation.component.html',
     styles: [`
         .navbar-nav > li > a {
             padding-left: 15px;
@@ -17,10 +18,12 @@ import { LoginService } from '_app/login.service';
 export class NavigationComponent {
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();
-
-    authShared = SharedService.auth;
-    smallContext = {$implicit: "collapse"};
-    largeContext = {$implicit: ""};
+    canCreateForms = canCreateForms;
+    canOrgAuthority = canOrgAuthority;
+    isOrgAdmin = isOrgAdmin;
+    isOrgCurator = isOrgCurator;
+    largeContext = {$implicit: ''};
+    smallContext = {$implicit: 'collapse'};
 
     constructor(public userService: UserService,
                 public quickBoardService: QuickBoardListService,

@@ -32,7 +32,7 @@ const questionSchema = new Schema({
         format: String,
         precision: {type: String, enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'], default: 'Day'}
     }
-    , uoms: [String]
+    , unitsOfMeasure: [sharedSchemas.codeAndSystemSchema]
     , required: {type: Boolean, default: false}
     , invisible: {type: Boolean, default: false}
     , editable: {type: Boolean, default: true}
@@ -134,7 +134,7 @@ exports.formJson = {
         , numberOfColumns: {type: Number, min: 1, max: 6}
         , displayInvisible: {type: Boolean}
         , repeatFormat: {type: String, default: ''}
-        , uomAliases: {type: Schema.Types.Mixed, default: {}}
+        , unitsOfMeasureAlias: [{unitOfMeasure: sharedSchemas.codeAndSystemSchema, alias: String}]
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]

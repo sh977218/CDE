@@ -20,7 +20,7 @@
         </tr>
         <ng-container *ngFor="let priorElement of priorElements; let i = index">
             <tr *ngIf="!showVersioned || priorElement?.version !== priorElements[i-1]?.version"
-                (click)="selectRow(priorElement)" [ngClass]="{'isSelected':priorElement.selected}">
+                (click)="selectRow(i)" [ngClass]="{'isSelected':priorElement.selected}">
                 <td>
                     <i class="fa fa-check-square-o" *ngIf="priorElement.selected" aria-hidden="true"></i>
                     <i class="fa fa-square-o" *ngIf="!priorElement.selected" aria-hidden="true"></i>

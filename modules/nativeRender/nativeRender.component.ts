@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { CdeForm, DisplayProfile } from 'core/form.model';
+import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 
@@ -94,15 +94,14 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
 export class NativeRenderComponent {
     @Input() set elt(e: CdeForm) {
         let map = this.nrs.setElt(e);
-        if (map)
-            this.mapping = map;
-    };
+        if (map) this.mapping = map;
+    }
     @Input() set profile(p: DisplayProfile) {
         this.nrs.setSelectedProfile(p);
-    };
+    }
     @Input() set nativeRenderType(userType) {
         this.nrs.profile && this.nrs.setNativeRenderType(userType);
-    };
+    }
     @Input() submitForm: boolean;
     @Input() showTitle: boolean = true;
 

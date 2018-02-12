@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { UserService } from '_app/user.service';
-import { SharedService } from 'core/shared.service';
+import { isOrgCurator, isSiteAdmin, hasRole } from 'shared/system/authorizationShared';
 
 
 @Injectable()
@@ -21,7 +21,7 @@ export class IsAllowedService {
                 return false;
             }
             if (this.userService.userOrgs) {
-                return SharedService.auth.isCuratorOf(this.userService.user, CuratedItem.stewardOrg.name);
+                return isOrgCurator(this.userService.user, CuratedItem.stewardOrg.name);
             } else {
                 return false;
             }
@@ -29,29 +29,26 @@ export class IsAllowedService {
     }
 
     isOrgCurator () {
-        return SharedService.auth.isOrgCurator(this.userService.user);
+        return isOrgCurator(this.userService.user);
     }
 
     hasRole (role) {
-        return SharedService.auth.hasRole(this.userService.user, role);
-    }
-
-    static hasRoleStatic (user, role) {
-        return SharedService.auth.hasRole(user, role);
+        return hasRole(this.userService.user, role);
     }
 
     isSiteAdmin () {
-        return SharedService.auth.isSiteAdmin(this.userService.user);
+        return isSiteAdmin(this.userService.user);
     }
 
     doesUserOwnElt (elt) {
         if (elt.elementType === 'board') {
             return this.userService.user.siteAdmin || (this.userService.user.username === elt.owner.username);
-        } else
+        } else {
             return this.userService.user &&
                 (this.userService.user.siteAdmin || (this.userService.user._id &&
                     (this.userService.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)));
-    };
+        }
+    }
 
     loggedIn () {
         return !!(this.userService.user && this.userService.user._id);

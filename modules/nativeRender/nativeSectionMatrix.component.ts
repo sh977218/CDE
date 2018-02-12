@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { NativeRenderService } from './nativeRender.service';
-import { FormElement } from 'core/form.model';
+import { FormElement } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-native-section-matrix',

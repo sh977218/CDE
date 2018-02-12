@@ -4,8 +4,7 @@ import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from '
 import { of } from 'rxjs/observable/of';
 import { Observable } from 'rxjs/Observable';
 
-import { IsAllowedService } from 'core/isAllowed.service';
-import { SharedService } from 'core/shared.service';
+import { isOrgAdmin } from 'shared/system/authorizationShared';
 
 
 @Injectable()
@@ -15,7 +14,7 @@ export class UserService {
         text$.pipe(
             debounceTime(300),
             distinctUntilChanged(),
-            switchMap(term => term.length < 3 || !SharedService.auth.isOrgAdmin(this.user) ? [] :
+            switchMap(term => term.length < 3 || !isOrgAdmin(this.user) ? [] :
                 this.http.get<any>('/searchUsers/' + term).pipe(
                     map((r: any) => r.users.map(u => u.username)),
                     catchError(() => of([]))

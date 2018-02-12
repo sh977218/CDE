@@ -8,11 +8,13 @@ import { debounceTime, distinctUntilChanged, switchMap, take } from 'rxjs/operat
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
-import { DataElement } from 'core/dataElement.model';
-import { CdeForm } from 'core/form.model';
-import { ElasticQueryResponse, Elt, User } from 'core/models.model';
-import { SharedService } from 'core/shared.service';
+import { SharedService } from '_commonApp/shared.service';
 import { SearchSettings } from 'search/search.model';
+import { ElasticQueryResponse, Elt, User } from 'shared/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
+import { hasRole } from 'shared/system/authorizationShared';
+import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 
 export const searchStyles: string = `
@@ -190,7 +192,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
         this.doSearch();
         if (!this.embedded)
-            SearchBaseComponent.scrollTo('top');
+            BrowserService.scrollTo('top');
     }
 
     browseTopic(topic) {
@@ -198,7 +200,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
         this.doSearch();
         if (!this.embedded)
-            SearchBaseComponent.scrollTo('top');
+            BrowserService.scrollTo('top');
     }
 
     browseByTopic(event) {
@@ -268,7 +270,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     displayValidation() {
         let org = this.searchSettings.selectedOrg;
         let curatorOf = [].concat(this.userService.user.orgAdmin).concat(this.userService.user.orgCurator);
-        return curatorOf.indexOf(org) > -1 || SharedService.auth.hasRole(this.userService.user, 'OrgAuthority');
+        return curatorOf.indexOf(org) > -1 || hasRole(this.userService.user, 'OrgAuthority');
     }
 
     doSearch() {
@@ -518,12 +520,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.totalItems = result.totalNumber;
                 this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
 
-                // Convert Elastic JSON to Elt Object
                 this.elts = result[this.module + 's'];
-                if (this.module === 'cde')
-                    this.elts.forEach((elt, i, elts) => elts[i] = DataElement.copy(elt));
-                if (this.module === 'form')
-                    this.elts.forEach((elt, i, elts) => elts[i] = CdeForm.copy(elt));
 
                 if (this.searchSettings.page === 1 && result.totalNumber > 0) {
                     let maxJump = 0;
@@ -668,11 +665,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     scrollHistorySave() {
         if (!this.backForwardService.isBackForward)
             window.sessionStorage['nlmcde.scroll.' + this.previousUrl] = window.scrollY;
-    }
-
-    static scrollTo(id) {
-        const element = document.querySelector('#' + id);
-        if (element) element.scrollIntoView();
     }
 
     search() {

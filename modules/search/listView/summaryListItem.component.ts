@@ -4,7 +4,7 @@ import {
     SimpleChanges,
     ViewChild, ViewContainerRef
 } from '@angular/core';
-import { Elt } from 'core/models.model';
+import { Elt } from 'shared/models.model';
 
 export interface SummaryComponent {
     elt: Elt;

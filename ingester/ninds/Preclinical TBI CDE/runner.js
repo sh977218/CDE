@@ -186,7 +186,7 @@ function deToQuestion(row, cde) {
             datatypeNumber: cde.valueDomain.datatypeNumber,
             datatypeText: cde.valueDomain.datatypeText,
             datatypeDate: cde.valueDomain.datatypeDate,
-            uoms: cde.valueDomain.uom,
+            unitsOfMeasure: {system: '', code: cde.valueDomain.uom},
             answers: cde.valueDomain.permissibleValues
         },
         formElements: []

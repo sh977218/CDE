@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, EventEmitter, Output } from '@angular/core';
 import { NgbModalModule, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
-import { Naming } from 'core/models.model';
+import { Naming } from 'shared/models.model';
 
 
 @Component({

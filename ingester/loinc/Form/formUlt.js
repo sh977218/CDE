@@ -7,7 +7,7 @@ var DataElementModel = require('../../createNlmcdeConnection').DataElementModel;
 var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 
 var updateShare = require('../../updateShare');
-var classificationShared = require('@std/esm')(module)('../../../modules/system/shared/classificationShared');
+var classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
 var mongo_form = require('../../../server/form/mongo-form');
 var FormModel = mongo_form.Form;
 var CreateElt = require('../Shared/CreateElt');
@@ -115,13 +115,13 @@ exports.loadCde = function (element, fe, next) {
                 datatypeNumber: existingCde.valueDomain.datatypeNumber,
                 datatypeText: existingCde.valueDomain.datatypeText,
                 answers: existingCde.valueDomain.permissibleValues,
-                uoms: []
+                unitsOfMeasure: []
             };
             if (question.datatype === 'Text') {
                 question.multiselect = false;
             }
             if (element['Ex UCUM Units']) {
-                question.uoms.push(element['Ex UCUM Units']);
+                question.unitsOfMeasure.push({system: '', code: element['Ex UCUM Units']});
             }
             var formElement = {
                 elementType: 'question',

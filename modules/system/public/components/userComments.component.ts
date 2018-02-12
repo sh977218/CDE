@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 
 import { UserService } from '_app/user.service';
-import { Comment, DiscussionComments } from 'core/models.model';
+import { Comment, DiscussionComments } from 'shared/models.model';
 
 
 @Component({

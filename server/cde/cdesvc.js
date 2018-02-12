@@ -6,7 +6,7 @@ let mongo_data_system = require('../system/mongo-data');
 let authorization = require("../system/authorization");
 let adminSvc = require('../system/adminItemSvc.js');
 let elastic = require('./elastic');
-let deValidator = require('@std/esm')(module)('../../shared/cde/deValidator');
+let deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 let vsac = require('./vsac-io');
 let exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const dbLogger = require('../system/dbLogger');
@@ -37,9 +37,10 @@ exports.priorDataElements = function (req, res) {
     mongo_cde.byId(id, function (err, dataElement) {
         if (err) return res.status(500).send("ERROR - Cannot get prior DEs");
         if (!dataElement) return res.status(404).send();
-        mongo_data.byIdList(dataElement.history, function (err, priorDataElements) {
+        mongo_data.DataElement.find({}, {"updatedBy.username": 1, updated: 1, "changeNote": 1, version: 1})
+            .where("_id").in(dataElement.history).exec((err, priorDataElements) => {
             if (err) return res.status(500).send("ERROR - Cannot get prior DE list");
-            res.send(priorDataElements);
+            res.send(priorDataElements)
         });
     });
 };

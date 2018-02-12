@@ -3,6 +3,7 @@ var https = require('https')
     , config = require('../system/parseConfig')
     , request = require('request')
 ;
+const dbLogger = require('../system/dbLogger.js');
 
 var authData = querystring.stringify({
     username: config.vsac.username

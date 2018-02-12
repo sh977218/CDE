@@ -1,7 +1,7 @@
 let _ = require('lodash');
 
 let mongo_data = require('../../../server/system/mongo-data');
-let classificationShare = require('@std/esm')(module)('../../../modules/system/shared/classificationShared');
+let classificationShare = require('@std/esm')(module)('../../../shared/system/classificationShared');
 let updateShare = require('../../updateShare');
 
 let importDate = new Date().toJSON();

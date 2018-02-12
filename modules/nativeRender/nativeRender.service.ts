@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
-import {
-    CdeForm, DisplayProfile, FormElement, FormQuestion, FormSection, FormSectionOrForm, PermissibleFormValue
-} from 'core/form.model';
-import { FormService } from 'nativeRender/form.service';
+
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import {
+    CdeForm, DisplayProfile, FormElement, FormQuestion, FormSectionOrForm, PermissibleFormValue
+} from 'shared/form/form.model';
+import { iterateFeSync } from 'shared/form/formShared';
+import { CodeAndSystem } from 'shared/models.model';
+
 
 @Injectable()
 export class NativeRenderService {
@@ -32,7 +35,7 @@ export class NativeRenderService {
         if (!this.elt)
             return;
 
-        FormService.iterateFeSync(this.elt, undefined, undefined, (f: FormQuestion) => {
+        iterateFeSync(this.elt, undefined, undefined, (f: FormQuestion) => {
             // clean up
             if (Array.isArray(f.question.answers)) {
                 for (let i = 0; i < f.question.answers.length; i++) {
@@ -51,14 +54,16 @@ export class NativeRenderService {
             // alias
             if (this.profile) {
                 f.question.uomsAlias = [];
-                f.question.uoms.forEach(u => {
-                    if (this.profile.uomAliases[u])
-                        f.question.uomsAlias.push(this.profile.uomAliases[u]);
-                    else
-                        f.question.uomsAlias.push(u);
+                f.question.unitsOfMeasure.forEach(u => {
+                    let aliases = this.profile.unitsOfMeasureAlias.filter(a => a.unitOfMeasure.compare(u));
+                    if (aliases.length) {
+                        f.question.uomsAlias.push(aliases[0].alias);
+                    } else {
+                        f.question.uomsAlias.push(u.code);
+                    }
                 });
             } else {
-                f.question.uomsAlias = f.question.uoms;
+                f.question.uomsAlias = f.question.unitsOfMeasure.map(u => u.code);
             }
         });
 
@@ -231,8 +236,8 @@ export class NativeRenderService {
                     (fe as FormSectionOrForm).forbidMatrix = true;
             } else {
                 let feq = fe as FormQuestion;
-                if (feq.question.uoms && feq.question.uoms.length === 1)
-                    feq.question.answerUom = feq.question.uoms[0];
+                if (feq.question.unitsOfMeasure && feq.question.unitsOfMeasure.length === 1)
+                    feq.question.answerUom = feq.question.unitsOfMeasure[0];
             }
             if (fe.skipLogic)
                 fe.skipLogic = undefined;
@@ -334,8 +339,9 @@ export class NativeRenderService {
                         if (typeof output[0].section !== 'undefined' && typeof output[0].questions !== 'undefined') {
                             questions = addSection(repeatSection, questions);
                             repeatSection = repeatSection.concat(output);
-                        } else
+                        } else {
                             questions = questions.concat(output);
+                        }
                     }
                 });
                 questions = addSection(repeatSection, questions);
@@ -345,8 +351,7 @@ export class NativeRenderService {
 
         function flattenFormQuestion(fe, sectionHeading, sectionName, repeatNum) {
             let questions = [];
-            if (!fe.questionId)
-                fe.questionId = createId();
+            if (!fe.questionId) fe.questionId = createId();
             let repeats = NativeRenderService.getRepeatNumber(fe);
             for (let i = 0; i < repeats; i++) {
                 let q: any = {
@@ -355,7 +360,9 @@ export class NativeRenderService {
                     'ids': fe.question.cde.ids,
                     'tinyId': fe.question.cde.tinyId
                 };
-                if (fe.question.answerUom) q.answerUom = fe.question.answerUom;
+                if (fe.question.answerUom) {
+                    q.answerUom = fe.question.answerUom;
+                }
                 questions.push(q);
             }
             fe.question.answers && fe.question.answers.forEach(function (a) {

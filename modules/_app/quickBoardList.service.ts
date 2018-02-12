@@ -6,9 +6,9 @@ import _isEmpty from 'lodash/isEmpty';
 import _remove from 'lodash/remove';
 
 import { AlertService } from '_app/alert/alert.service';
-import { DataElement } from 'core/dataElement.model';
-import { CdeForm } from 'core/form.model';
-import { SharedService } from 'core/shared.service';
+import { iterateFes } from 'shared/form/formShared';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
 
 
 @Injectable()
@@ -86,7 +86,7 @@ export class QuickBoardListService {
                             this.forms = res;
                             this.forms.forEach(f => {
                                 f.numQuestions = 0;
-                                SharedService.formShared.iterateFes(f.formElements, undefined, undefined, () => f.numQuestions++);
+                                iterateFes(f.formElements, undefined, undefined, () => f.numQuestions++);
                             });
                             this.number_forms = this.forms.length;
                         }

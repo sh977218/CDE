@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
-import { DataElement } from 'core/dataElement.model';
-import { ReferenceDocument } from 'core/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
+import { ReferenceDocument } from 'shared/models.model';
 
 
 @Component({

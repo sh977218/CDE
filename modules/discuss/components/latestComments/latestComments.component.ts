@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserService } from '_app/user.service';
-import { Comment, DiscussionComments } from 'core/models.model';
+import { Comment, DiscussionComments } from 'shared/models.model';
 
 
 @Component({

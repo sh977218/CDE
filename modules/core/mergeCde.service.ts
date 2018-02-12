@@ -4,7 +4,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from '_app/alert/alert.service';
-import { DataElement } from 'core/dataElement.model';
+import { DataElement } from 'shared/de/dataElement.model';
 import { MergeShareService } from "core/mergeShare.service";
 
 
