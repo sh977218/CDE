@@ -37,9 +37,10 @@ exports.priorDataElements = function (req, res) {
     mongo_cde.byId(id, function (err, dataElement) {
         if (err) return res.status(500).send("ERROR - Cannot get prior DEs");
         if (!dataElement) return res.status(404).send();
-        mongo_data.byIdList(dataElement.history, function (err, priorDataElements) {
+        mongo_data.DataElement.find({}, {"updatedBy.username": 1, updated: 1, "changeNote": 1, version: 1})
+            .where("_id").in(dataElement.history).exec((err, priorDataElements) => {
             if (err) return res.status(500).send("ERROR - Cannot get prior DE list");
-            res.send(priorDataElements);
+            res.send(priorDataElements)
         });
     });
 };

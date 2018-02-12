@@ -60,11 +60,7 @@ export class NativeRenderFullComponent implements OnInit {
     NativeRenderService = NativeRenderService;
 
     ngOnInit() {
-        if (this.elt.displayProfiles.length)
-            this.selectProfile(0);
-    }
-
-    constructor() {
+        if (this.elt.displayProfiles.length) this.selectProfile(0);
     }
 
     selectProfile(profileIndex) {

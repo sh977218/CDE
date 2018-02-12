@@ -21,7 +21,7 @@
              role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Warning:</strong> this form is about to be retired.
-            <a *ngIf="elt.registrationState.replacedBy"
+            <a *ngIf="elt.registrationState.replacedBy?.tinyId"
                routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible
                 Replacement</a>
         </div>

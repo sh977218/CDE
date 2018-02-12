@@ -94,8 +94,7 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
 export class NativeRenderComponent {
     @Input() set elt(e: CdeForm) {
         let map = this.nrs.setElt(e);
-        if (map)
-            this.mapping = map;
+        if (map) this.mapping = map;
     }
     @Input() set profile(p: DisplayProfile) {
         this.nrs.setSelectedProfile(p);
