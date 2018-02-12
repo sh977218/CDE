@@ -7,16 +7,16 @@ import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
 import { Subscription } from 'rxjs/Subscription';
 
-import * as deValidator from '../../../../shared/cde/deValidator.js';
 import { AlertService } from '_app/alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { DataElement } from 'core/dataElement.model';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { Comment } from 'core/models.model';
 import { OrgHelperService } from 'core/orgHelper.service';
-import { SharedService } from 'core/shared.service';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
+import { Comment } from 'shared/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
+import { checkPvUnicity } from 'shared/de/deValidator';
+import { isOrgCurator } from 'shared/system/authorizationShared';
 
 
 @Component({
@@ -101,7 +101,7 @@ export class DataElementViewComponent implements OnInit {
                 this.userService.then(() => {
                     let user = this.userService.user;
                     if (user && user.username)
-                        deValidator.checkPvUnicity(this.elt.valueDomain);
+                        checkPvUnicity(this.elt.valueDomain);
                     this.setDisplayStatusWarning();
                     if (cb) cb(this.elt);
                 });
@@ -125,7 +125,7 @@ export class DataElementViewComponent implements OnInit {
                 return false;
             } else {
                 if (this.userService.userOrgs) {
-                    return SharedService.auth.isCuratorOf(this.userService.user, this.elt.stewardOrg.name) &&
+                    return isOrgCurator(this.userService.user, this.elt.stewardOrg.name) &&
                         (this.elt.registrationState.registrationStatus === 'Standard' ||
                             this.elt.registrationState.registrationStatus === 'Preferred Standard');
                 } else {
@@ -228,7 +228,7 @@ export class DataElementViewComponent implements OnInit {
                 if (res && res.length > 0) {
                     this.drafts = res;
                     this.elt = res[0];
-                    deValidator.checkPvUnicity(this.elt.valueDomain);
+                    checkPvUnicity(this.elt.valueDomain);
                 } else this.drafts = [];
                 if (cb) cb();
             },

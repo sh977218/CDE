@@ -40,7 +40,7 @@ public class FormNativeRenderTest extends NlmCdeBaseTest {
         // required radio checked and no un-select
         goToFormDescription();
         startEditQuestionById("question_4_0");
-        clickElement(By.xpath("//*[@id='question_4_0']//input[@title='Required']"));
+        clickElement(By.xpath("//*[@id='question_4_0']//input[@title='Required']")); // make required
         goToPreview();
         label.findElement(By.xpath("//input[@type='radio']"));
         Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 1);

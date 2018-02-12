@@ -16,6 +16,7 @@ public class NoLabelLogicTest extends BaseFormTest {
         textPresent("Walking speed value");
         goToFormDescription();
         startEditQuestionById("question_0_1");
+        questionEditRemoveUom("question_0_1", "meter per second");
         findElement(By.xpath(locateSkipLogicEditTextareaXpathByQuestionId("question_0_1"))).sendKeys("\"Gender type\" = \"Unknown\"");
         saveEditQuestionById("question_0_1");
         newFormVersion();

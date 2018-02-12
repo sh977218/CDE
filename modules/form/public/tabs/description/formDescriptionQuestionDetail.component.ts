@@ -4,16 +4,15 @@ import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstra
 import { TreeNode } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
-import _union from 'lodash/union';
 import { debounceTime, map } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 
 import { AlertService } from '_app/alert/alert.service';
-import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'core/form.model';
-import { FormattedValue } from 'core/models.model';
+import { OrgHelperService } from 'core/orgHelper.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
-import { OrgHelperService } from 'core/orgHelper.service';
+import { CodeAndSystem, FormattedValue } from 'shared/models.model';
+import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-form-description-question-detail',
@@ -25,10 +24,18 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() set node(node: TreeNode) {
         this.question = node.data;
         this.parent = node.parent.data;
-        if (!this.question.instructions) this.question.instructions = new FormattedValue;
-        if (!this.question.skipLogic) this.question.skipLogic = new SkipLogic;
-        if (!this.question.question.uoms) this.question.question.uoms = [];
-        if (this.question.question.uoms) this.validateUoms(this.question.question);
+        if (!this.question.instructions) {
+            this.question.instructions = new FormattedValue;
+        }
+        if (!this.question.skipLogic) {
+            this.question.skipLogic = new SkipLogic;
+        }
+        if (!this.question.question.unitsOfMeasure) {
+            this.question.question.unitsOfMeasure = [];
+        }
+        if (this.question.question.unitsOfMeasure) {
+            this.ucumService.validateUoms(this.question.question);
+        }
     }
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionNameSelectTmpl') formDescriptionNameSelectTmpl: NgbModalModule;
@@ -50,12 +57,45 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             }
         }
     };
-    namingTags = [];
     answersSelected: Array<string>;
+    dataTypeOptions = ['Value List', 'Text', 'Date', 'Number'];
+    datatypeSelect2Options = {
+        multiple: false,
+        tags: true
+    };
+    getSkipLogicOptions = ((text$: Observable<string>) => text$.pipe(
+        debounceTime(300),
+        map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question))
+    ));
+    static inputEvent = new Event('input');
+    namingTags = [];
     nameSelectModal: any = {};
     nameSelectModalRef: NgbModalRef;
+    namingSelet2Options: Select2Options = {
+        multiple: true,
+        tags: true
+    };
+    newCdePv = {};
+    newCdeId = {};
+    newCdeNaming = {};
+    newUom = '';
+    newUomSystem = 'UCUM';
     question: FormQuestion;
     parent: FormElement;
+    uomOptions: any = {
+        multiple: true,
+        tags: true,
+        language: {
+            noResults: () => {
+                return 'No Units of Measure are listed on the CDE. Type in more followed by ENTER.';
+            }
+        }
+    };
+    uomVersion = 0;
+
+    ngOnInit() {
+        this.namingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
+    }
 
     constructor(
         private alert: AlertService,
@@ -80,8 +120,46 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         };
     }
 
-    ngOnInit() {
-        this.namingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
+    addNewCdeId(newCdeId) {
+        if (!_isEmpty(newCdeId)) {
+            if (!this.question.question.cde.ids) {
+                this.question.question.cde.ids = [];
+            }
+            this.question.question.cde.ids.push(newCdeId);
+            this.newCdeId = {};
+            this.onEltChange.emit();
+        } else {
+            this.alert.addAlert('danger', 'Empty identifier.');
+        }
+    }
+
+    addNewCdeNaming(newCdeNaming) {
+        if (!_isEmpty(newCdeNaming)) {
+            this.question.question.cde.naming.push(newCdeNaming);
+            this.newCdeNaming = {};
+            this.onEltChange.emit();
+        } else this.alert.addAlert('danger', 'Empty name.');
+    }
+
+    addNewCdePv(newCdePv) {
+        if (!_isEmpty(newCdePv)) {
+            this.question.question.cde.permissibleValues.push(newCdePv);
+            this.question.question.answers.push(newCdePv);
+            this.newCdePv = {};
+            this.onEltChange.emit();
+        } else this.alert.addAlert('danger', 'Empty PV.');
+    }
+
+    changedDatatype(data: { value: string }) {
+        this.question.question.cde.datatype = data.value;
+        this.question.question.datatype = data.value;
+        this.question.question.answers = [];
+        this.onEltChange.emit();
+    }
+
+    changedTags(name, data: { value: string[] }) {
+        name.tags = data.value;
+        this.onEltChange.emit();
     }
 
     checkAnswers(answers) {
@@ -92,33 +170,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.answersSelected = this.question.question.answers.map(a => a.permissibleValue);
             this.onEltChange.emit();
         }
-    }
-
-    checkUom(uoms) {
-        let newUoms = (Array.isArray(uoms.value) ? uoms.value.filter(uom => uom !== '') : []);
-        if (!_isEqual(this.question.question.uoms, newUoms)) {
-            this.question.question.uoms = newUoms;
-            this.onEltChange.emit();
-            this.validateUoms(this.question.question);
-        }
-    }
-
-    getRepeatLabel(fe) {
-        if (!fe.repeat) return '';
-        if (fe.repeat[0] === 'F') return 'over First Question';
-        return parseInt(fe.repeat) + ' times';
-    }
-
-    getSkipLogicOptions = (text$: Observable<string>) =>
-        text$.pipe(
-            debounceTime(300),
-            map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question))
-        )
-
-    getTemplate() {
-        return (this.canEdit && this.question.edit
-            ? this.formDescriptionQuestionEditTmpl
-            : this.formDescriptionQuestionTmpl);
     }
 
     getAnswersData() {
@@ -134,10 +185,16 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         return this.answersSelected;
     }
 
-    getUoms() {
-        return this.question.question.uoms.map(uom => {
-            return {id: uom, text: uom};
-        });
+    getRepeatLabel(fe) {
+        if (!fe.repeat) return '';
+        if (fe.repeat[0] === 'F') return 'over First Question';
+        return parseInt(fe.repeat) + ' times';
+    }
+
+    getTemplate() {
+        return (this.canEdit && this.question.edit
+            ? this.formDescriptionQuestionEditTmpl
+            : this.formDescriptionQuestionTmpl);
     }
 
     isScore(formElt) {
@@ -163,10 +220,34 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         });
     }
 
+    removeCdeId(i) {
+        this.question.question.cde.ids.splice(i, 1);
+        this.onEltChange.emit();
+    }
+
+    removeCdeNaming(i) {
+        if (this.question.question.cde.naming.length === 1) {
+            return this.alert.addAlert('danger', 'Data element must have at least one name.');
+        }
+        this.question.question.cde.naming.splice(i, 1);
+        this.onEltChange.emit();
+    }
+
+    removeCdePv(i) {
+        this.question.question.cde.permissibleValues.splice(i, 1);
+        this.onEltChange.emit();
+    }
+
     // TODO : remove me
     removeNode(node) {
         node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
         node.treeModel.update();
+        this.onEltChange.emit();
+    }
+
+    removeUomByIndex(i) {
+        this.question.question.unitsOfMeasure.splice(i, 1);
+        this.ucumService.validateUoms(this.question.question);
         this.onEltChange.emit();
     }
 
@@ -185,101 +266,21 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
-    validateUoms(question) {
-        question.uomsValid = [];
-        this.ucumService.validateUnits(question.uoms, errors => {
-            question.uoms.forEach((uom, i) => {
-                question.uomsValid[i] = errors[i];
-            });
-        });
-    }
-
-    static inputEvent = new Event('input');
-
-    public namingSelet2Options: Select2Options = {
-        multiple: true,
-        tags: true
-    };
-    public dataTypeOptions = ['Value List', 'Text', 'Date', 'Number'];
-
-    datatypeSelect2Options = {
-        multiple: false,
-        tags: true
-    };
-
-    changedTags(name, data: { value: string[] }) {
-        name.tags = data.value;
-        this.onEltChange.emit();
-    }
-
-    changedDatatype(data: { value: string }) {
-        this.question.question.cde.datatype = data.value;
-        this.question.question.datatype = data.value;
-        this.question.question.answers = [];
-        this.onEltChange.emit();
-    }
-
-    removeCdeNaming(i) {
-        if (this.question.question.cde.naming.length === 1) {
-            return this.alert.addAlert('danger', 'Data element must have at least one name.');
+    uomAddNew() {
+        if (!this.question.question.unitsOfMeasure.filter(u => u.code === this.newUom
+                && u.system === this.newUomSystem).length) {
+            this.question.question.unitsOfMeasure.push(new CodeAndSystem(this.newUomSystem, this.newUom));
+            this.onEltChange.emit();
         }
-        this.question.question.cde.naming.splice(i, 1);
-        this.onEltChange.emit();
-    }
-
-    removeCdePv(i) {
-        this.question.question.cde.permissibleValues.splice(i, 1);
-        this.onEltChange.emit();
-    }
-
-    removeCdeId(i) {
-        this.question.question.cde.ids.splice(i, 1);
-        this.onEltChange.emit();
-    }
-
-    addNewCdeNaming(newCdeNaming) {
-        if (!_isEmpty(newCdeNaming)) {
-            this.question.question.cde.naming.push(newCdeNaming);
-            this.newCdeNaming = {};
-            this.onEltChange.emit();
-        } else this.alert.addAlert('danger', 'Empty name.');
-    }
-
-    addNewCdePv(newCdePv) {
-        if (!_isEmpty(newCdePv)) {
-            this.question.question.cde.permissibleValues.push(newCdePv);
-            this.question.question.answers.push(newCdePv);
-            this.newCdePv = {};
-            this.onEltChange.emit();
-        } else this.alert.addAlert('danger', 'Empty PV.');
-    }
-
-    addNewCdeId(newCdeId) {
-        if (!_isEmpty(newCdeId)) {
-            if (!this.question.question.cde.ids) this.question.question.cde.ids = [];
-            this.question.question.cde.ids.push(newCdeId);
-            this.newCdeId = {};
-            this.onEltChange.emit();
-        } else this.alert.addAlert('danger', 'Empty identifier.');
-    }
-
-    newCdePv = {};
-    newCdeId = {};
-    newCdeNaming = {};
-
-    newUom = '';
-    selectedUom(event) {
-        if (event && event.item && event.item.code && event.item.code !== '') {
-            this.question.question.uoms = _union(this.question.question.uoms, [event.item.code]);
-        }
-        this.onEltChange.emit();
         this.newUom = '';
-        this.validateUoms(this.question.question);
     }
 
-    removeUomByIndex(i) {
-        this.question.question.uoms.splice(i, 1);
-        this.validateUoms(this.question.question);
-        this.onEltChange.emit();
+    uomAddSelected(event) {
+        if (event && event.item && event.item.code && event.item.code !== '') {
+            this.newUom = event.item.code;
+            this.uomAddNew();
+            setTimeout(() => this.newUom = '', 0); // the type-ahead seems to fill in the value asynchronously
+            this.ucumService.validateUoms(this.question.question);
+        }
     }
 }

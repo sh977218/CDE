@@ -1,20 +1,19 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { CdeForm, DisplayProfile } from 'core/form.model';
 import { FormViewComponent } from 'form/public/components/formView.component';
-import { FormService } from 'nativeRender/form.service';
 import { UcumService } from 'form/public/ucum.service';
+import { CdeForm, DisplayProfile } from 'shared/form/form.model';
+import { iterateFeSync } from 'shared/form/formShared';
+import { CodeAndSystem } from 'shared/models.model';
 
 type DisplayProfileVM = {
     aliases: {
         date: Date,
         edit: boolean,
-        value: Map<string, string>
     },
     profile: DisplayProfile,
     sample: CdeForm,
     showDelete: boolean,
-    uomAliasesKeys: string[],
 };
 
 @Component({
@@ -32,7 +31,7 @@ export class DisplayProfileComponent implements OnInit {
     @Output() onEltChange = new EventEmitter();
 
     dPVMs: DisplayProfileVM[] = [];
-    uoms = new Map<string, string[]>();
+    uoms: {u: CodeAndSystem, a: string[]}[] = [];
     uomsDate: Date;
     uomsPromise: Promise<void>;
 
@@ -58,12 +57,10 @@ export class DisplayProfileComponent implements OnInit {
             aliases: {
                 date: undefined,
                 edit: false,
-                value: new Map<string, string>(),
             },
             profile: profile,
             sample: DisplayProfileComponent.getSample(),
             showDelete: false,
-            uomAliasesKeys: profile.uomAliases ? Object.keys(profile.uomAliases) : [],
         };
     }
 
@@ -72,25 +69,52 @@ export class DisplayProfileComponent implements OnInit {
     }
 
     getUoms(): Promise<void> {
-        if (this.uomsDate === this.elt.updated)
+        if (this.uomsDate === this.elt.updated) {
             return this.uomsPromise;
+        }
 
         return this.uomsPromise = new Promise<void>(resolve => {
             let resourceCount = 0;
-            this.uoms.clear();
+            this.uoms.length = 0;
             this.uomsDate = this.elt.updated;
-            FormService.iterateFeSync(this.elt, undefined, undefined, q => {
-                if (Array.isArray(q.question.uoms))
-                    q.question.uoms.forEach(u => {
+            iterateFeSync(this.elt, undefined, undefined, q => {
+                if (Array.isArray(q.question.unitsOfMeasure)) {
+                    q.question.unitsOfMeasure.filter(u => u.system === 'UCUM').forEach(u => {
                         resourceCount++;
-                        this.ucumService.getUnitNames(u, names => {
-                            this.uoms.set(u, names);
+                        this.ucumService.getUnitNames(u.code, names => {
+                            this.saveAliases(this.uoms, u, names);
                             if (--resourceCount === 0)
                                 resolve();
                         });
                     });
+                }
             });
         });
+    }
+
+    profileAliasGet(dPVM: DisplayProfileVM, v: CodeAndSystem) {
+        let matches = dPVM.profile.unitsOfMeasureAlias.filter(a => a.unitOfMeasure.compare(v));
+        return matches.length ? matches[0].alias : v.code;
+    }
+
+    profileAliasSet(dPVM: DisplayProfileVM, v: CodeAndSystem, a: string) {
+        if (a === v.code) {
+            let indexes = [];
+            dPVM.profile.unitsOfMeasureAlias.forEach((a, i) => {
+                if (a.unitOfMeasure.code === v.code && a.unitOfMeasure.system === v.system) {
+                    indexes.push(i);
+                }
+            });
+            indexes.reverse().forEach(i => dPVM.profile.unitsOfMeasureAlias.splice(i, 1));
+        } else {
+            let existing = dPVM.profile.unitsOfMeasureAlias.filter(u => u.unitOfMeasure.compare(v));
+            if (existing.length) {
+                existing[0].alias = a;
+            } else {
+                dPVM.profile.unitsOfMeasureAlias.push({unitOfMeasure: v, alias: a});
+            }
+        }
+        this.onEltChange.emit();
     }
 
     profileUomsEditCreate(dPVM: DisplayProfileVM) {
@@ -101,31 +125,34 @@ export class DisplayProfileComponent implements OnInit {
             if (dPVM.aliases && dPVM.aliases.date === this.uomsDate)
                 return;
 
-            let profile = dPVM.profile;
-            dPVM.aliases.date = this.uomsDate;
-            this.uoms.forEach((names, uom) => dPVM.aliases.value.set(uom, ''));
-            for (let key of dPVM.uomAliasesKeys) {
-                let aliases = this.uoms.get(key);
-                if (aliases && aliases.indexOf(profile.uomAliases[key]) > -1)
-                    dPVM.aliases.value.set(key, profile.uomAliases[key]);
-                else
-                    delete profile.uomAliases[key];
+            for (let u of dPVM.profile.unitsOfMeasureAlias) {
+                if (!this.uoms.filter(a => a.u.compare(u.unitOfMeasure))
+                        .map(a => a.a.indexOf(u.alias)).every(r => r > 0)) {
+                    dPVM.profile.unitsOfMeasureAlias.splice(dPVM.profile.unitsOfMeasureAlias.indexOf(u), 1);
+                    this.onEltChange.emit();
+                }
             }
+            dPVM.aliases.date = this.uomsDate;
         });
     }
-
-    profileUomsEditSave(dPVM: DisplayProfileVM, uom: string, value: string) {
-        dPVM.aliases.value.set(uom, value);
-        dPVM.profile.uomAliases[uom] = value;
-        dPVM.uomAliasesKeys = Object.keys(dPVM.profile.uomAliases);
-        this.onEltChange.emit();
-    }
-
 
     removeDisplayProfile(index) {
         this.elt.displayProfiles.splice(index, 1);
         this.dPVMs.splice(index, 1);
         this.onEltChange.emit();
+    }
+
+    saveAliases(aliases: any[], v: CodeAndSystem, a: string[]) {
+        let match = a.indexOf(v.code);
+        if (match > -1) a.splice(match, 1);
+        a.unshift(v.code);
+
+        let existing = aliases.filter(u => u.u.compare(v));
+        if (existing.length) {
+            existing[0].a = a;
+        } else {
+            aliases.push({u: v, a: a});
+        }
     }
 
     setDisplayType(profile: DisplayProfile, $event) {
@@ -187,7 +214,7 @@ export class DisplayProfileComponent implements OnInit {
                                     ],
                                     "editable": true,
                                     "required": false,
-                                    "uoms": [],
+                                    "unitsOfMeasure": [],
                                     "cde": {
                                         "ids": [],
                                         "permissibleValues": [
@@ -254,7 +281,7 @@ export class DisplayProfileComponent implements OnInit {
                                     "editable": true,
                                     "invisible": true,
                                     "required": false,
-                                    "uoms": [],
+                                    "unitsOfMeasure": [],
                                     "cde": {
                                         "ids": [],
                                         "permissibleValues": [
@@ -292,7 +319,7 @@ export class DisplayProfileComponent implements OnInit {
                             "answers": [],
                             "editable": true,
                             "required": false,
-                            "uoms": []
+                            "unitsOfMeasure": []
                         },
                         "cardinality": {
                             "min": 1,
@@ -363,7 +390,7 @@ export class DisplayProfileComponent implements OnInit {
                             ],
                             "editable": true,
                             "required": false,
-                            "uoms": [],
+                            "unitsOfMeasure": [],
                             "cde": {
                                 "ids": [],
                                 "permissibleValues": [
@@ -436,7 +463,7 @@ export class DisplayProfileComponent implements OnInit {
                             "answers": [],
                             "editable": true,
                             "required": false,
-                            "uoms": [],
+                            "unitsOfMeasure": [],
                             "cde": {
                                 "ids": []
                             }
@@ -455,7 +482,7 @@ export class DisplayProfileComponent implements OnInit {
                     "answers": [],
                     "editable": true,
                     "required": false,
-                    "uoms": []
+                    "unitsOfMeasure": []
                 },
                 "cardinality": {
                     "min": 1,

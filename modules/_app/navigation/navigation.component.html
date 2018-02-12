@@ -28,12 +28,12 @@
             </li>
             <li class="nav-item dropdown"
                 [ngClass]="{ active: isPageActive('/createCde') || isPageActive('/createForm')}"
-                *ngIf="authShared.isOrgCurator(userService.user)">
+                *ngIf="isOrgCurator(userService.user)">
                 <a id="createEltLink" class="nav-link dropdown-toggle" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">Create</a>
                 <div class="dropdown-menu" aria-labelledby="createEltLink">
                     <a id="createCDELink" routerLink="/createCde" class="dropdown-item">CDE</a>
-                    <a id="createFormLink" routerLink="/createForm" *ngIf="authShared.canCreateForms(userService.user)"
+                    <a id="createFormLink" routerLink="/createForm" *ngIf="canCreateForms(userService.user)"
                        class="dropdown-item">Form</a>
                 </div>
             </li>
@@ -69,21 +69,21 @@
                         <a routerLink="/profile" id="user_profile" class="dropdown-item" *ngIf="userService.user?._id">Profile</a>
                         <a routerLink="/inbox" id="user_inbox" class="dropdown-item">Inbox</a>
                         <a routerLink="/orgComments" id="org_comments" class="dropdown-item"
-                           *ngIf="authShared.isOrgCurator(userService.user) && !userService.user?.siteAdmin">
+                           *ngIf="isOrgCurator(userService.user) && !userService.user?.siteAdmin">
                             Org Comments</a>
                         <a routerLink="/classificationmanagement" id="user_classifications"
                            class="dropdown-item"
-                           *ngIf="authShared.isOrgCurator(userService.user)">Classifications</a>
+                           *ngIf="isOrgCurator(userService.user)">Classifications</a>
                         <a routerLink="/orgAuthority" id="user_org_authority" class="dropdown-item"
-                           *ngIf="authShared.canOrgAuthority(userService.user)">Org Management</a>
+                           *ngIf="canOrgAuthority(userService.user)">Org Management</a>
                         <a routerLink="/orgaccountmanagement" id="user_account_management"
                            class="dropdown-item"
-                           *ngIf="authShared.isOrgAdmin(userService.user)">Account Management</a>
+                           *ngIf="isOrgAdmin(userService.user)">Account Management</a>
                         <a routerLink="/siteaccountmanagement" id="user_site_management" class="dropdown-item"
                            *ngIf="userService.user?._id && userService.user?.siteAdmin">
                             Site Management</a>
                         <a routerLink="/siteAudit" id="user_audit" class="dropdown-item"
-                           *ngIf="authShared.canOrgAuthority(userService.user)">Audit</a>
+                           *ngIf="canOrgAuthority(userService.user)">Audit</a>
                         <a (click)="loginSvc.logout()" target="_self" id="user_logout" class="dropdown-item"
                            *ngIf="userService.user?._id">Log Out</a>
                     </div>

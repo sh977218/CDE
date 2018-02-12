@@ -11,7 +11,7 @@ const cdediff = require("./cdediff");
 const async = require('async');
 const CronJob = require('cron').CronJob;
 const elastic = require('./elastic');
-const deValidator = require('@std/esm')(module)('../../shared/cde/deValidator');
+const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 const draftSchema = require('./schemas').draftSchema;
 
 exports.type = "cde";

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { FormElement, FormQuestion, Question } from 'core/form.model';
+import { FormElement, FormQuestion } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-native-table',
@@ -133,9 +133,9 @@ export class NativeTableComponent implements OnInit {
                     this.nrs.elt.formInput[i + '-' + sectionName + f.questionId] = [];
                     this.nrs.elt.formInput[i + '-' + sectionName + f.questionId].answer = this.nrs.elt.formInput[i + '-' + sectionName + f.questionId];
                 });
-            if (f.question.uoms && f.question.uoms.length === 1)
+            if (f.question.unitsOfMeasure && f.question.unitsOfMeasure.length === 1)
                 this.tableForm.rows.forEach((r, i) => {
-                    this.nrs.elt.formInput[i + '-' + sectionName + f.questionId + '_uom'] = f.question.uoms[0];
+                    this.nrs.elt.formInput[i + '-' + sectionName + f.questionId + '_uom'] = f.question.unitsOfMeasure[0];
                 });
             f.question.answers.forEach(a => {
                 a.formElements && a.formElements.forEach(sf => {

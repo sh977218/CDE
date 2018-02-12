@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import _trim from 'lodash/trim';
-import { FormElement, FormElementsContainer, SkipLogic } from 'core/form.model';
+import { FormElement, FormElementsContainer, SkipLogic } from 'shared/form/form.model';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 
 @Injectable()
@@ -47,18 +47,19 @@ export class SkipLogicValidateService {
         } else if (tokens.length % 4 === 1) {
             options = ['= ', '< ', '> ', '>= ', '<= ', '!= '];
         } else if (tokens.length % 4 === 2) {
-            options = SkipLogicValidateService.getTypeaheadOptionsAnswer(parent, fe, tokens[tokens.length - 2])
-                .map(a => '"' + a + '" ');
+            options = SkipLogicValidateService.getTypeaheadOptionsAnswer(parent, fe, tokens[tokens.length - 2]);
         } else if (tokens.length % 4 === 3) {
             options = ['AND ', 'OR '];
         }
 
         if (!options) options = [];
         let optionsFiltered = options.filter(o => o.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1);
-        if (optionsFiltered.length > 6)
+        if (optionsFiltered.length > 6) {
             optionsFiltered = optionsFiltered.slice(optionsFiltered.length - 6, optionsFiltered.length);
-        if (optionsFiltered.length > 0)
+        }
+        if (optionsFiltered.length > 0) {
             options = optionsFiltered;
+        }
 
         return options;
     }
@@ -68,22 +69,27 @@ export class SkipLogicValidateService {
         if (!q)
             return [];
 
-        if (q.question.datatype === 'Value List')
-            return q.question.answers.map(a => SkipLogicService.tokenSanitizer(a.permissibleValue));
-        if (q.question.datatype === 'Number')
+        if (q.question.datatype === 'Value List') {
+            return q.question.answers.map(a => SkipLogicService.tokenSanitizer(a.permissibleValue))
+                .map(a => '"' + a + '" ');
+        }
+        if (q.question.datatype === 'Number') {
             return ['{{' + q.question.datatype + '}}'];
-        if (q.question.datatype === 'Date')
-            return ['{{MM/DD/YYYY}}'];
+        }
+        if (q.question.datatype === 'Date') {
+            return ['"{{MM/DD/YYYY}}"'];
+        }
         return [];
     }
 
     typeaheadSkipLogic(parent: FormElementsContainer, fe: FormElement, event): boolean {
         let skipLogic = fe.skipLogic;
         skipLogic.validationError = undefined;
-        if (event && event.item)
+        if (event && event.item) {
             skipLogic.condition = this.previousSkipLogicPriorToSelect + event.item;
-        else
+        } else {
             skipLogic.condition = event;
+        }
 
         return SkipLogicValidateService.validateSkipLogic(parent, fe);
     }
@@ -112,31 +118,38 @@ export class SkipLogicValidateService {
 
     static validateSkipLogicSingleExpression(parent: FormElementsContainer, fe: FormElement, tokens): string {
         let filteredQuestion = SkipLogicService.getQuestionPriorByLabel(parent, fe, _trim(tokens[0], '"'));
-        if (!filteredQuestion)
+        if (!filteredQuestion) {
             return tokens[0] + ' is not a valid question label';
+        }
 
         switch (filteredQuestion.question.datatype) {
             case 'Value List':
                 if (tokens[2].length > 0 && filteredQuestion.question.answers.map(a => '"' + SkipLogicService
-                        .tokenSanitizer(a.permissibleValue) + '"').indexOf(tokens[2]) < 0)
+                        .tokenSanitizer(a.permissibleValue) + '"').indexOf(tokens[2]) < 0) {
                     return tokens[2] + ' is not a valid answer for "' + filteredQuestion.label + '"';
+                }
                 break;
             case 'Number':
-                if (isNaN(tokens[2]))
-                    return tokens[2] + ' is not a valid number for "' + filteredQuestion.label + '". Replace ' + tokens[2] + ' with a valid number.';
+                if (isNaN(tokens[2])) {
+                    return tokens[2] + ' is not a valid number for "' + filteredQuestion.label + '". Replace '
+                        + tokens[2] + ' with a valid number.';
+                }
                 if (filteredQuestion.question.datatypeNumber) {
                     let answerNumber = parseInt(tokens[2]);
                     let max = filteredQuestion.question.datatypeNumber.maxValue;
                     let min = filteredQuestion.question.datatypeNumber.minValue;
-                    if (min !== undefined && answerNumber < min)
+                    if (min !== undefined && answerNumber < min) {
                         return tokens[2] + ' is less than a minimal answer for "' + filteredQuestion.label + '"';
-                    if (max !== undefined && answerNumber > max)
+                    }
+                    if (max !== undefined && answerNumber > max) {
                         return tokens[2] + ' is bigger than a maximal answer for "' + filteredQuestion.label + '"';
+                    }
                 }
                 break;
             case 'Date':
-                if (tokens[2].length > 0 && new Date(tokens[2]).toString() === 'Invalid Date')
+                if (tokens[2].length > 0 && new Date(tokens[2]).toString() === 'Invalid Date') {
                     return tokens[2] + ' is not a valid date for "' + filteredQuestion.label + '".';
+                }
                 break;
         }
         return null;

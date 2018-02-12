@@ -21,4 +21,9 @@ export class BrowserService {
             location.assign(url);
         }
     }
+
+    static scrollTo(id) {
+        const element = document.querySelector('#' + id);
+        if (element) element.scrollIntoView();
+    }
 }

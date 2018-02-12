@@ -1,33 +1,24 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import noop from 'lodash/noop';
+import _noop from 'lodash/noop';
 
-import { FormQuestion } from 'core/form.model';
-import { SharedService } from 'core/shared.service';
+import { CodeAndSystem } from 'shared/models.model';
+import { FormQuestion } from 'shared/form/form.model';
+import { iterateFe } from 'shared/form/formShared';
 
-function noop1(a, cb) { cb(); }
 
 @Injectable()
 export class FormService {
-    static areDerivationRulesSatisfied = SharedService.formShared.areDerivationRulesSatisfied;
-    static convertFormToSection = SharedService.formShared.convertFormToSection;
-    static getLabel = SharedService.formShared.getLabel;
-    static findQuestionByTinyId = SharedService.formShared.findQuestionByTinyId;
-    static isSubForm = SharedService.formShared.isSubForm;
-    static iterateFe = SharedService.formShared.iterateFe;
-    static iterateFeSync = SharedService.formShared.iterateFeSync;
-    static iterateFes = SharedService.formShared.iterateFes;
-    static iterateFesSync = SharedService.formShared.iterateFesSync;
-    static score = SharedService.formShared.score;
-
     constructor(
         private http: HttpClient
     ) {}
 
     convertCdeToQuestion(cde, cb): FormQuestion {
-        if (!cde || cde.valueDomain === undefined) throw new Error('Cde ' + cde.tinyId + ' is not valid');
+        if (!cde || cde.valueDomain === undefined) {
+            throw new Error('Cde ' + cde.tinyId + ' is not valid');
+        }
 
-        let q = new FormQuestion;
+        let q = new FormQuestion();
         q.question.cde.derivationRules = cde.derivationRules;
         q.question.cde.name = cde.naming[0] ? cde.naming[0].designation : '';
         q.question.cde.naming = cde.naming;
@@ -38,13 +29,21 @@ export class FormService {
         q.question.datatypeDate = cde.valueDomain.datatypeDate;
         q.question.datatypeNumber = cde.valueDomain.datatypeNumber;
         q.question.datatypeText = cde.valueDomain.datatypeText;
-        if (cde.ids) q.question.cde.ids = cde.ids;
-        if (cde.valueDomain.uom) q.question.uoms.push(cde.valueDomain.uom);
+        if (cde.ids) {
+            q.question.cde.ids = cde.ids;
+        }
+        if (cde.valueDomain.uom) {
+            q.question.unitsOfMeasure.push(new CodeAndSystem('', cde.valueDomain.uom));
+        }
 
         cde.naming.forEach(n => {
-            if (Array.isArray(n.tags) && n.tags.indexOf('Question Text') > -1 && !q.label) q.label = n.designation;
+            if (Array.isArray(n.tags) && n.tags.indexOf('Question Text') > -1 && !q.label) {
+                q.label = n.designation;
+            }
         });
-        if (!q.label) q.label = cde.naming[0].designation;
+        if (!q.label) {
+            q.label = cde.naming[0].designation;
+        }
         if (!q.label) q.hideLabel = true;
 
         function convertPv(q, cde) {
@@ -73,9 +72,10 @@ export class FormService {
         return cb(q);
     }
 
+    // TODO: turn into single server endpoint that calls one of the 2 server-side implementations
     // modifies form to add sub-forms
     // callback(err: string)
-    fetchWholeForm(form, callback = noop) {
+    fetchWholeForm(form, callback = _noop) {
         let formCb = (fe, cb) => {
             this.http.get('/form/' + fe.inForm.form.tinyId
                 + (fe.inForm.form.version ? '/version/' + fe.inForm.form.version : ''))
@@ -98,11 +98,11 @@ export class FormService {
             }
             cb();
         }
-        FormService.iterateFe(form, formCb, undefined, questionCb, callback);
+        iterateFe(form, formCb, undefined, questionCb, callback);
     }
 
     // cb(err, elt)
-    getForm(tinyId, id, cb = noop) {
+    getForm(tinyId, id, cb = _noop) {
         let url = '/form/' + tinyId;
         if (id) url = '/formById/' + id;
         this.http.get(url).subscribe(res => {

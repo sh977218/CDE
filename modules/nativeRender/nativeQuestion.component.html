@@ -20,7 +20,7 @@
 
         <div attr.id="{{formElement.label}}_{{index}}" [ngClass]="{'native-box': hasLabel(formElement)}">
             <div *ngIf="formElement.question.isScore">Score: <span
-                    [textContent]="FormService.score(formElement, nrs.getElt())"></span></div>
+                    [textContent]="score(formElement, nrs.getElt())"></span></div>
             <div *ngIf="!formElement.question.isScore">
                 <div [ngSwitch]="formElement.question.datatype">
                     <div *ngSwitchCase="'Value List'">
@@ -119,7 +119,7 @@
                                    [attr.max]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.maxValue : null"
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable"/>
-                            <label *ngFor="let uom of formElement.question.uomsAlias"
+                            <label *ngFor="let uom of formElement.question.uomsAlias; index as i"
                                    [title]="formElement.question.answerUom"
                                    [ngClass]="{'nativeRequiredBox': formElement.question.required}"
                                    class="input-group-addon">
@@ -127,8 +127,8 @@
                                        [name]="formElement.questionId + '_uom'"
                                        [attr.name]="formElement.questionId + '_uom'"
                                        [(ngModel)]="formElement.question.answerUom" (ngModelChange)="convert()"
-                                       [value]="uom"
-                                       [attr.value]="uom"
+                                       [value]="formElement.question.unitsOfMeasure[i]"
+                                       [attr.value]="formElement.question.unitsOfMeasure[i]"
                                        [required]="formElement.question.required || formElement.question.answer"
                                        [disabled]="!formElement.question.editable"/> {{uom}}</label>
                         </div>
@@ -141,15 +141,15 @@
                                    [(ngModel)]="formElement.question.answer" [title]="formElement.question.answer"
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable"/>
-                            <label *ngFor="let uom of formElement.question.uomsAlias"
+                            <label *ngFor="let uom of formElement.question.uomsAlias; index as i"
                                    [ngClass]="{'nativeRequiredBox': formElement.question.required}"
                                    class="input-group-addon" [title]="formElement.question.answerUom">
                                 <input type="radio" [title]="formElement.question.answerUom"
                                        [name]="formElement.questionId + '_uom'"
                                        [attr.name]="formElement.questionId + '_uom'"
                                        [(ngModel)]="formElement.question.answerUom" (ngModelChange)="convert()"
-                                       [value]="uom"
-                                       [attr.value]="uom"
+                                       [value]="formElement.question.unitsOfMeasure[i]"
+                                       [attr.value]="formElement.question.unitsOfMeasure[i]"
                                        [required]="formElement.question.required || formElement.question.answer"
                                        [disabled]="!formElement.question.editable"/> {{uom}}</label>
                         </div>

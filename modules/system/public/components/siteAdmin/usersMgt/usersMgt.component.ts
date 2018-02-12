@@ -5,7 +5,7 @@ import { Select2OptionData } from 'ng2-select2';
 
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
-import { SharedService } from 'core/shared.service';
+import { rolesEnum } from 'shared/system/authorizationShared';
 
 
 @Component({
@@ -18,7 +18,7 @@ export class UsersMgtComponent {
     foundUsers: any[] = [];
     modalRef: NgbModalRef;
     newUsername: string;
-    rolesEnum: Select2OptionData[] = SharedService.auth.rolesEnum.map(r => {
+    rolesEnum: Select2OptionData[] = rolesEnum.map(r => {
         return {'id': r, 'text': r};
     });
     search: any = {username: ''};

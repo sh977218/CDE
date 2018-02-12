@@ -9,6 +9,7 @@ const formCtrl = require('./formCtrl');
 const formSvc = require("./formsvc");
 const mongo_form = require('./mongo-form');
 const mongo_data_system = require('../system/mongo-data');
+const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const classificationNode_system = require('../system/classificationNode');
 const adminItemSvc = require('../system/adminItemSvc.js');
 const elastic_system = require('../system/elastic');
@@ -16,7 +17,6 @@ const elastic_system = require('../system/elastic');
 const sharedElastic = require('../system/elastic.js');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const boardsvc = require('../board/boardsvc');
-const usersrvc = require('../system/usersrvc');
 
 // ucum from lhc uses IndexDB
 global.location = {origin: 'localhost'};
@@ -161,7 +161,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/addFormClassification/', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
+        if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send(invalidateRequest);
         classificationNode_system.addClassification(req.body, mongo_form, function (err, result) {
@@ -179,7 +179,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post("/removeFormClassification/", function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send({error: "You do not permission to do this."});
+        if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send({error: "You do not permission to do this."});
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send({error: invalidateRequest});
         classificationNode_system.removeClassification(req.body, mongo_form, function (err, elt) {

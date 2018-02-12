@@ -96,7 +96,7 @@ exports.convertCdeToQuestion = function (data, skipLogicMap, cde) {
             },
             datatype: cde.valueDomain.datatype,
             required: data['Required Field?'] ? data['Required Field?'] : false,
-            uoms: cde.valueDomain.uom ? [cde.valueDomain.uom] : [],
+            unitsOfMeasure: cde.valueDomain.uom ? [{system: '', code:cde.valueDomain.uom}] : [],
             answers: []
         }
     };

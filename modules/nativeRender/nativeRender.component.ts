@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { CdeForm, DisplayProfile } from 'core/form.model';
+import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 

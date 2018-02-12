@@ -4,7 +4,7 @@ let builder = new xml2js.Builder({attrkey: 'attribute'});
 let Readable = require('stream').Readable;
 let mongo_data = require('../server/system/mongo-data');
 let cdediff = require('../server/cde/cdediff');
-let classificationShared = require('@std/esm')(module)('../modules/system/shared/classificationShared');
+let classificationShared = require('@std/esm')(module)('../shared/system/classificationShared');
 
 exports.loaderUser = {
     username: 'batchloader'
