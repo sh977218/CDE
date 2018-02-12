@@ -47,6 +47,7 @@ public class FormNativeRenderTest extends NlmCdeBaseTest {
         startEditQuestionById("question_4_0");
         clickElement(By.xpath("//*[@id='question_4_0']//input[@title='Required']")); // make required
         goToPreview();
+        label = findElement(By.xpath("//*[@id='Cytosine adenine guanine repeat expansion result_0']//label[span[text()='Not known']]"));
         label.findElement(By.xpath("//input[@type='radio']"));
         Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 1);
         label.findElement(By.cssSelector("input")).click();
