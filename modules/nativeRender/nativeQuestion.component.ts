@@ -2,9 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment/min/moment.min';
 
-import { FormService } from 'nativeRender/form.service';
-import { FormQuestion } from 'core/form.model';
-import { NativeRenderService } from './nativeRender.service';
+import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { CodeAndSystem } from 'shared/models.model';
+import { FormQuestion } from 'shared/form/form.model';
+import { score } from 'shared/form/formShared';
 
 
 @Component({
@@ -37,11 +38,10 @@ export class NativeQuestionComponent implements OnInit {
     @Input() numSubQuestions: number;
     @Input() parentValue: any;
     @Input() index: any;
-
-    FormService = FormService;
     hasTime: boolean;
+    previousUom: CodeAndSystem;
     static readonly reHasTime = /[hHmsSkaAZ]/;
-    previousUom: string;
+    score = score;
 
     ngOnInit() {
         this.hasTime = this.formElement.question.datatypeDate
@@ -104,9 +104,13 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     // cb(error, number)
-    convertUnits(value: number, fromUnit: string, toUnit: string, cb) {
-        this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit) + '&to='
-            + encodeURIComponent(toUnit)).subscribe(v => cb(undefined, v), e => cb(e));
+    convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb) {
+        if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
+            this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit.code) + '&to='
+                + encodeURIComponent(toUnit.code)).subscribe(v => cb(undefined, v), e => cb(e));
+        } else {
+            cb(undefined, value); // no conversion for other systems
+        }
     }
 
     isFirstInRow(index) {
@@ -121,7 +125,7 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     isOneLiner(question, numSubQuestions) {
-        return numSubQuestions && !this.hasLabel(question) && !question.instructions
+        return numSubQuestions && !this.hasLabel(question) && (!question.instructions || !question.instructions.value)
             && question.elementType === 'question' && question.question.datatype !== 'Value List';
     }
 

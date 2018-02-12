@@ -102,23 +102,23 @@
                 <div class="col-sm-2 font-weight-bold">Units of Measures:</div>
                 <div class="col-sm-8" id="mdd_q_uoms">
                     <span [ngClass]="{mark: updateCdeVersion.bUom}"
-                          *ngIf="updateCdeVersion.newQuestion.question.uoms.length > 0">
-                        <span *ngFor="let uom of updateCdeVersion.newQuestion.question.uoms; let i = index">
-                              <span id="mq_uom_list_{{i}}"
-                                    [textContent]="updateCdeVersion.newQuestion.question.uoms[i]"></span>
+                          *ngIf="updateCdeVersion.newQuestion.question.unitsOfMeasure.length > 0">
+                        <span *ngFor="let uom of updateCdeVersion.newQuestion.question.unitsOfMeasure; let i = index"
+                              id="mq_uom_list_{{i}}">
+                              <ng-container *ngIf="u.system">{{u.system}}/</ng-container>{{u.code}}
                         </span>
                     </span>
                     <span [ngClass]="{mark: updateCdeVersion.bUom}"
-                          *ngIf="updateCdeVersion.newQuestion.question.uoms.length <= 0">N/A</span>
+                          *ngIf="updateCdeVersion.newQuestion.question.unitsOfMeasure.length <= 0">N/A</span>
                     <span *ngIf="updateCdeVersion.bUom" class="red">
                         ( was
-                        <span *ngIf="updateCdeVersion.currentQuestion.question.uoms.length > 0">
-                            <span *ngFor="let uom of updateCdeVersion.currentQuestion.question.uoms; let i = index">
-                                <span id="mq_old_uom_list_{{i}}"
-                                      [textContent]="updateCdeVersion.currentQuestion.question.uoms[i]"></span>
+                        <ng-container *ngIf="updateCdeVersion.currentQuestion.question.unitsOfMeasure.length > 0">
+                            <span *ngFor="let u of updateCdeVersion.currentQuestion.question.unitsOfMeasure; let i = index"
+                                  id="mq_old_uom_list_{{i}}">
+                                <ng-container *ngIf="u.system">{{u.system}}/</ng-container>{{u.code}}
                             </span>
-                        </span>
-                        <span *ngIf="updateCdeVersion.currentQuestion.question.uoms.length <= 0">N/A</span>
+                        </ng-container>
+                        <ng-container *ngIf="updateCdeVersion.currentQuestion.question.unitsOfMeasure.length <= 0">N/A</ng-container>
                         )
                     </span>
                 </div>

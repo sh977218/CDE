@@ -1,16 +1,6 @@
 var mongo_data = require('./mongo-data')
     , authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared')
     ;
-    
-exports.isCuratorOf = function(user, orgName){
-    if (!user) return false;
-    return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
-};
-
-exports.isAdminOf = function(user, orgName){
-    if (!user) return false;
-    return user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
-};
 
 exports.myOrgs = function(user) {
     if (!user) return [];
@@ -128,7 +118,7 @@ exports.orgCurators = function(req, res) {
 
 
 exports.orgAdmins = function(req, res) {
-    if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
+    if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
 
     let result = {"orgs": []};
     mongo_data.managedOrgs(managedOrgs => {

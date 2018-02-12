@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { NativeRenderService } from './nativeRender.service';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
-import { FormElement } from 'core/form.model';
+import { FormElement } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-native-section',

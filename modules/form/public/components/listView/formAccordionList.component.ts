@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
-import { CdeForm } from 'core/form.model';
-import { Elt } from 'core/models.model';
+import { CdeForm } from 'shared/form/form.model';
+import { Elt } from 'shared/models.model';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 
 @Component({

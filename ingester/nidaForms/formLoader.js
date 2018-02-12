@@ -73,7 +73,7 @@ setTimeout(function() {
                                 , permissibleValues: cde.valueDomain.permissibleValues
                             }
                             , datatype: cde.valueDomain.datatype
-                            //, uoms: [cde.valueDomain.uom]
+                            //, unitsOfMeasure: [{system: '', code: cde.valueDomain.uom}]
                             , answers: cde.valueDomain.permissibleValues
                         }
                     });

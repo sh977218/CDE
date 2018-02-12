@@ -8,7 +8,7 @@ var fs = require('fs'),
     mongo_cde = require('../../server/cde/mongo-cde'),
     mongo_form = require('../../server/form/mongo-form'),
     config = require('config'),
-    classificationShared = require('@std/esm')(module)('../../modules/system/shared/classificationShared'),
+    classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared'),
     mongo_data_system = require('../../server/system/mongo-data'),
     async = require ('async'),
     loinc = JSON.parse(fs.readFileSync(promisDir + '/loinc.json')),
@@ -249,7 +249,7 @@ var loadForm = function(file, cb) {
                             version: cde.version,
                             tinyId: cde.tinyId
                         },
-                        uoms: []
+                        unitsOfMeasure: []
                     };
 
                     if (cde.valueDomain.permissibleValues.length > 0) {

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import '../../node_modules/feedback/stable/2.0/html2canvas.js';
 
 import { ElasticService } from '_app/elastic.service';
-import { SharedService } from 'core/shared.service';
+import { SharedService } from '_commonApp/shared.service';
 
 
 @Component({
@@ -146,7 +146,6 @@ export class EmbedAppComponent  {
             if (timestamp < this.lastQueryTimeStamp) return;
             this.numPages = Math.ceil(result.totalNumber / this.resultPerPage);
             this.totalItems = result.totalNumber;
-            // $scope[type + 's'] = result[type + 's'];
             this.elts = result[this.searchType + 's'];
             this.took = result.took;
 

@@ -99,7 +99,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/classifyCdeBoard', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
+        if (!authorizationShared.isOrgCurator(req.user, req.body.newClassification.orgName)) {
             return res.status(401).send();
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_cde, function (err) {
@@ -108,7 +108,7 @@ exports.init = function (app, daoManager) {
         });
     });
     app.post('/classifyFormBoard', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
+        if (!authorizationShared.isOrgCurator(req.user, req.body.newClassification.orgName)) {
             return res.status(401).send();
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_form, function (err) {

@@ -8,9 +8,9 @@ import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { Comment } from 'core/models.model';
+import { Comment } from 'shared/models.model';
 import { OrgHelperService } from 'core/orgHelper.service';
-import { SharedService } from 'core/shared.service';
+import { SharedService } from '_commonApp/shared.service';
 
 
 @Component({

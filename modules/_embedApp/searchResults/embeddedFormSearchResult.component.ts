@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import * as formShared from "../../../shared/form/formShared";
+
+import { getFormCdes } from 'shared/form/formShared';
 
 @Component({
     selector: "cde-embedded-form-search-result",
@@ -12,7 +13,7 @@ export class EmbeddedFormSearchResultComponent {
     @Input() embed;
 
     concatenateQuestions (form) {
-        return formShared.getFormCdes(form).map(c => c.name).join(",");
-    };
+        return getFormCdes(form).map(c => c.name).join(",");
+    }
 
 }

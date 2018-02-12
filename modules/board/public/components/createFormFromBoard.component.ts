@@ -3,8 +3,9 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { AlertService } from '_app/alert/alert.service';
-import { CdeForm, FormSection } from 'core/form.model';
 import { FormService } from 'nativeRender/form.service';
+import { Naming } from 'shared/models.model';
+import { CdeForm, FormSection } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-create-form-from-board',
@@ -26,8 +27,9 @@ export class CreateFormFromBoardComponent {
 
     openCreateFormModal() {
         if (this.board.pins && this.board.pins.length > 0) {
-            this.elt = new CdeForm(this.board.name);
-            this.elt.formElements.push(new FormSection);
+            this.elt = new CdeForm();
+            this.elt.naming.push(new Naming(this.board.name));
+            this.elt.formElements.push(new FormSection());
             this.http.get<any>('/board/' + this.board._id + '/0/500').subscribe(
                 res => {
                     res.elts.forEach(p => {

@@ -5,10 +5,11 @@ import { TreeNode } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
 import _toString from 'lodash/toString';
 
-import { FormElement, FormQuestion } from 'core/form.model';
-import { DataElement } from 'core/dataElement.model';
-import { FormDescriptionComponent } from "form/public/tabs/description/formDescription.component";
+import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
 import { FormService } from 'nativeRender/form.service';
+import { DataElement } from 'shared/de/dataElement.model';
+import { FormElement, FormQuestion } from 'shared/form/form.model';
+import { isSubForm } from 'shared/form/formShared';
 
 
 @Component({
@@ -20,8 +21,7 @@ import { FormService } from 'nativeRender/form.service';
             border: 1px;
             border-radius: 10px;
         }
-        `
-    ]
+    `]
 })
 export class FormDescriptionQuestionComponent implements OnInit {
     @Input() canEdit: boolean = false;
@@ -37,7 +37,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
     ngOnInit() {
         this.question = this.node.data;
         this.parent = this.node.parent.data;
-        this.isSubForm = FormService.isSubForm(this.node);
+        this.isSubForm = isSubForm(this.node);
     }
 
     constructor(
@@ -118,7 +118,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
                         modal.bCde = true;
                         modal.bDatatype = currentQuestion.question.datatype !== newQuestion.question.datatype;
-                        modal.bUom = !_isEqual(currentQuestion.question.uoms, newQuestion.question.uoms);
+                        modal.bUom = !_isEqual(currentQuestion.question.unitsOfMeasure, newQuestion.question.unitsOfMeasure);
 
                         if (newQuestion.question.datatype === 'Number') {
                             if (currentQuestion.question.datatype === 'Number' &&

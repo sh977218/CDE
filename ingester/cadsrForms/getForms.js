@@ -35,7 +35,7 @@ var request = require('request')
     , async = require('async')
     , mongo_form = require('../../server/form/mongo-form.js')
     , mongo_cde = require('../../server/cde/mongo-cde.js')
-    , classificationShared = require('@std/esm')(module)('../../modules/system/shared/classificationShared')
+    , classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared')
     , mongo_data_system = require('../../server/system/mongo-data')
     ;
 

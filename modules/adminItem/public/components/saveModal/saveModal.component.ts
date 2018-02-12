@@ -4,7 +4,7 @@ import { NgbModalRef, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstra
 import _isEqual from 'lodash/isEqual';
 
 import { AlertService } from '_app/alert/alert.service';
-import { SharedService } from 'core/shared.service';
+import { iterateFormElements } from 'shared/form/formShared';
 
 
 @Component({
@@ -56,7 +56,7 @@ export class SaveModalComponent {
         this.newVersionVersionUnicity();
         if (this.elt) this.elt.changeNote = '';
         if (this.elt.elementType === 'form' && this.elt.isDraft)
-            SharedService.formShared.iterateFormElements(this.elt, {
+            iterateFormElements(this.elt, {
                 async: true,
                 questionCb: (fe, cb) => {
                     if (!fe.question.cde.tinyId) {

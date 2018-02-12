@@ -1,8 +1,8 @@
 var mongo_data = require('./mongo-data')
     , daoManager = require('./moduleDaoManager')
-    , usersrvc = require('./usersrvc')
     , async = require('async')
     ;
+const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 
 exports.managedOrgs = function(req, res) {
     mongo_data.managedOrgs(function(orgs) {
@@ -32,7 +32,7 @@ exports.transferSteward = function(req, res) {
     var results = [];
     var hasError = false;
     
-    if(req.isAuthenticated() && usersrvc.isAdminOf(req.user, req.body.from) && usersrvc.isAdminOf(req.user, req.body.to)) {
+    if(req.isAuthenticated() && authorizationShared.isOrgAdmin(req.user, req.body.from) && authorizationShared.isOrgAdmin(req.user, req.body.to)) {
         async.each(daoManager.getDaoList(), function(dao, oneDone) {
             if (dao.transferSteward) {
                 dao.transferSteward(req.body.from, req.body.to, function(err, result) {

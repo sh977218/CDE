@@ -1,6 +1,6 @@
 const mongo_cde = require('./mongo-cde');
-const  usersvc = require('../system/usersrvc');
-const  classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared.js');
+const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared.js');
+const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared.js');
 
 exports.moveClassifications = function(req, cb) {
     mongo_cde.byTinyIdList([req.body.cdeSource.tinyId, req.body.cdeTarget.tinyId], function(err, cde) {
@@ -13,7 +13,7 @@ exports.moveClassifications = function(req, cb) {
             source = cde[1];
             destination = cde[0];            
         }
-        if (!usersvc.isCuratorOf(req.user, source.stewardOrg.name)) {
+        if (!authorizationShared.isOrgCurator(req.user, source.stewardOrg.name)) {
             cb(403, null);
             return;
         }              

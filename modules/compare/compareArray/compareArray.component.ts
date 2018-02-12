@@ -208,7 +208,7 @@ let formCompareArrayOption = [
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_isEqual(a.question.uoms, b.question.uoms)) {
+                    if (!_isEqual(a.question.unitsOfMeasure, b.question.unitsOfMeasure)) {
                         a.diff.push("question.uom");
                         b.diff.push("question.uom");
                         a.display = true;
@@ -290,7 +290,7 @@ let formCompareArrayOption = [
             {label: 'Element Type', property: 'elementType'},
             {label: 'Form', property: 'inForm.form.tinyId', url: '/formView?tinyId='},
             {label: 'CDE', property: 'question.cde.tinyId', url: '/deView?tinyId='},
-            {label: 'Unit of Measure', property: 'question.uoms'},
+            {label: 'Unit of Measure', property: 'question.unitsOfMeasure'},
             {label: 'repeat', property: 'repeat'},
             {label: 'Skip Logic', property: 'skipLogic.condition'},
             {label: 'Instruction', property: 'instructions.value'},

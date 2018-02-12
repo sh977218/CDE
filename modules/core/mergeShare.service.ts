@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { SharedService } from 'core/shared.service';
+import { SharedService } from '_commonApp/shared.service';
 
 @Injectable()
 export class MergeShareService {

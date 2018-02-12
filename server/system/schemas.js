@@ -18,6 +18,11 @@ schemas.classificationSchema = new mongoose.Schema({
     elements: [csEltSchema]
 }, {_id: false});
 
+schemas.codeAndSystemSchema = new mongoose.Schema({
+    code: String,
+    system: String,
+}, {_id: false});
+
 schemas.permissibleValueSchema = new mongoose.Schema({
     permissibleValue: String,
     valueMeaningName: String,

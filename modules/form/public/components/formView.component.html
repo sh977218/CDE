@@ -43,7 +43,7 @@
             The following errors need to be corrected in order to Publish:
             <ul class="list-inline">
                 <li *ngFor="let error of validationErrors;let i = index;">
-                    {{error}}
+                    <a class="fake-link" (click)="scrollToDescriptionId(error.id)">{{error.message}}</a>
                 </li>
             </ul>
         </div>

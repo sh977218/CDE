@@ -56,8 +56,6 @@ gulp.task('copyCode', [], function () {
     let streamArray = [];
 
     ['cde', 'form', 'processManager', 'system', 'board'].forEach(function (module) {
-        streamArray.push(gulp.src('./modules/' + module + '/shared/**/*')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/shared/')));
         streamArray.push(gulp.src('./modules/' + module + '/**/*.png')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/')));
         streamArray.push(gulp.src('./modules/' + module + '/**/*.ico')
@@ -148,15 +146,11 @@ gulp.task('copyDist', ['buildApp', 'buildEmbed', 'buildNative'], () => {
         .pipe(gulp.dest(config.node.buildDir + '/dist/app')));
 
     // Embed
-    streamArray.push(gulp.src('./dist/embed/*.png')
-        .pipe(gulp.dest(config.node.buildDir + '/dist/embed')));
-    streamArray.push(gulp.src('./dist/embed/*.js')
+    streamArray.push(gulp.src('./dist/embed/*')
         .pipe(gulp.dest(config.node.buildDir + '/dist/embed')));
 
     // Native
-    streamArray.push(gulp.src('./dist/native/*.png')
-        .pipe(gulp.dest(config.node.buildDir + '/dist/native')));
-    streamArray.push(gulp.src('./dist/native/*.js')
+    streamArray.push(gulp.src('./dist/native/*')
         .pipe(gulp.dest(config.node.buildDir + '/dist/native')));
 
     return merge(streamArray);

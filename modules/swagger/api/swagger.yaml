@@ -461,11 +461,17 @@ definitions:
                   type: "boolean"
                 required:
                   type: "boolean"
-                uoms:
+                unitsOfMeasure:
                   type: "array"
                   items:
-                      type: "string"
-                      example: "each"
+                    type: "object"
+                    properties:
+                      code:
+                        type: "string"
+                        example: "m"
+                      system:
+                        type: "string"
+                        example: "UCUM"
             repeat:
               type: "string"
               example: "5"
