@@ -1,6 +1,6 @@
 <table *ngIf="tableForm && canRender && (nrs.getNativeRenderType() === NRS.FOLLOW_UP
  || nrs.getNativeRenderType() === NRS.SHOW_IF)"
-       class="table table-responsive">
+       class="table">
     <thead>
         <tr *ngFor="let s of tableForm.s; let i = index">
             <th *ngFor="let q of s.q"

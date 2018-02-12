@@ -11,22 +11,18 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
             size: 330mm 427mm;
             margin: 14mm;
         }
-
         .container {
             width: 1170px;
         }
-        
         .keep-with-previous {
             page-break-before: avoid;
             break-before: avoid;
         }
-        
         .keep-together {
             page-break-inside: avoid;
             break-inside: avoid;
         }
     }
-
     @media (min-width: 768px) {
         .bot-left {
             position: relative;
@@ -36,14 +32,13 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
             max-width: 900px;
             border-radius: 20px;
             border: solid lightgrey 3px;
+            overflow-x: scroll;
         }
-    
         .noGridPadLarge {
             padding-left: 0;
             padding-right: 0;
         }
     }
-
     @media (max-width: 767px) {
         .noGridPadSmall {
             padding-left: 5px;
