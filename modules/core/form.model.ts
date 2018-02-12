@@ -234,6 +234,7 @@ export class QuestionCde {
 
 class QuestionTypeDate {
     format: string;
+    precision: string;
 }
 
 class QuestionTypeNumber {

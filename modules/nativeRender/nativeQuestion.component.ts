@@ -39,21 +39,33 @@ export class NativeQuestionComponent implements OnInit {
     @Input() index: any;
 
     FormService = FormService;
-    hasTime: boolean;
-    static readonly reHasTime = /[hHmsSkaAZ]/;
     previousUom: string;
 
-    ngOnInit() {
-        this.hasTime = this.formElement.question.datatypeDate
-            ? !!NativeQuestionComponent.reHasTime.exec(this.formElement.question.datatypeDate.format) : false;
+    datePrecisionToType = {
+        Year: 'Number',
+        Month: 'month',
+        Day: 'date',
+        Hour: 'datetime-local',
+        Minute: 'datetime-local',
+        Second: 'datetime-local'
+    };
+    datePrecisionToStep = {
+        Year: null,
+        Month: null,
+        Day: null,
+        Hour: 3600,
+        Minute: null,
+        Second: 1
+    };
+
+    ngOnInit () {
         this.previousUom = this.formElement.question.answerUom;
     }
 
     constructor(
         private http: HttpClient,
         public nrs: NativeRenderService
-    ) {
-    }
+    ) {}
 
     classColumns(pvIndex, index) {
         let result = "";
@@ -79,24 +91,22 @@ export class NativeQuestionComponent implements OnInit {
             }
         }
 
-        if (this.isFirstInRow(pvIndex !== undefined ? pvIndex : index))
-            result += ' clear';
+        if (this.isFirstInRow(pvIndex !== undefined ? pvIndex : index)) result += ' clear';
         return result;
     }
 
     convert() {
         if (this.previousUom && this.formElement.question.answer != null) {
             let value: number;
-            if (typeof(this.formElement.question.answer) === 'string')
-                value = parseFloat(this.formElement.question.answer);
-            else
-                value = this.formElement.question.answer;
+            if (typeof(this.formElement.question.answer) === 'string') value = parseFloat(this.formElement.question.answer);
+            else value = this.formElement.question.answer;
 
             if (typeof(value) === 'number' && !isNaN(value)) {
                 let unit = this.formElement.question.answerUom;
                 this.convertUnits(value, this.previousUom, this.formElement.question.answerUom, (error, result) => {
-                    if (!error && result !== undefined && !isNaN(result) && unit === this.formElement.question.answerUom)
+                    if (!error && result !== undefined && !isNaN(result) && unit === this.formElement.question.answerUom) {
                         this.formElement.question.answer = result;
+                    }
                 });
             }
         }
@@ -110,10 +120,8 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     isFirstInRow(index) {
-        if (this.nrs.profile && this.nrs.profile.numberOfColumns > 0)
-            return index % this.nrs.profile.numberOfColumns === 0;
-        else
-            return index % 4 === 0;
+        if (this.nrs.profile && this.nrs.profile.numberOfColumns > 0) return index % this.nrs.profile.numberOfColumns === 0;
+        else return index % 4 === 0;
     }
 
     hasLabel(question) {
@@ -128,17 +136,15 @@ export class NativeQuestionComponent implements OnInit {
     updateDateTime() {
         let d = this.formElement.question.answerDate;
         let t = this.formElement.question.answerTime;
-        if (!d)
-            return this.formElement.question.answer = '';
-        if (!t)
-            t = {hour: 0, minute: 0, second: 0};
+        if (!d) return this.formElement.question.answer = '';
+        if (!t) t = {hour: 0, minute: 0, second: 0};
 
         let m = moment([d.year, d.month - 1, d.day, t.hour, t.minute, t.second]);
         if (m.isValid()) {
-            if (this.formElement.question.datatypeDate && this.formElement.question.datatypeDate.format)
+            if (this.formElement.question.datatypeDate && this.formElement.question.datatypeDate.format) {
                 this.formElement.question.answer = m.format(this.formElement.question.datatypeDate.format);
-            else
-                this.formElement.question.answer = m.format('YYYY-MM-DDTHH:mm:ssZ');
+            }
+            else this.formElement.question.answer = m.format('YYYY-MM-DDTHH:mm:ssZ');
         } else {
             this.formElement.question.answer = '';
         }

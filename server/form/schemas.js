@@ -29,7 +29,8 @@ const questionSchema = new Schema({
         , rule: String
         , showAsTextArea: {type: Boolean, default: false}
     }, datatypeDate: {
-        format: String
+        format: String,
+        precision: {type: String, enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'], default: 'Day'}
     }
     , uoms: [String]
     , required: {type: Boolean, default: false}
