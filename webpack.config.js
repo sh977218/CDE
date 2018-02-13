@@ -1,4 +1,7 @@
 const prod = process.env.BUILD_ENV === 'production'; // build type from "npm run build"
+const _ = require('lodash');
+const crypto = require('crypto');
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const AotPlugin = require('@ngtools/webpack');
@@ -6,6 +9,7 @@ const { CheckerPlugin } = require('awesome-typescript-loader');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const FileListPlugin = require('file-list-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const OptimizeJsPlugin = require('optimize-js-plugin');
 // let BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -133,6 +137,22 @@ module.exports = {
             new CopyWebpackPlugin([
                 {from: 'modules/_app/assets/'}
             ]),
+            new FileListPlugin({
+                fileName: 'sw.js',
+                itemsFromCompilation: function defaultItemsFromCompilation(compilation){
+                    return _.keys(compilation.assets);
+                },
+                format: function defaultFormat(listItems){
+                    let sw = fs.readFileSync('modules/_app/sw.js', {encoding: 'utf8'});
+                    let version = crypto.createHash('md5').update(sw).digest('hex').substr(0,4);
+                    sw = sw.replace(/{#}/, version);
+                    sw = sw.replace(/{#}/, version);
+                    let location = sw.indexOf('"###"');
+                    let pre = sw.substring(0, location);
+                    let post = sw.substring(location + 5);
+                    return pre + '"/app/' + listItems.join('","/app/') + '"' + post;
+                }
+            }),
             // new BundleAnalyzerPlugin()
         ] : [
             new CleanWebpackPlugin(['dist/app']),

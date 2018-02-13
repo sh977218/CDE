@@ -1,10 +1,6 @@
-var CACHE_NAME = 'cde-cache-v1';
-var CACHE_WHITELIST = ['cde-cache-v1'];
-var urlsToCache = [
-    '/app/offline/offline.html',
-    '/app/offline/offline.png',
-    '/cde/public/assets/img/nih-cde-logo.png',
-];
+var CACHE_NAME = 'cde-cache-{#}';
+var CACHE_WHITELIST = ['cde-cache-{#}'];
+var urlsToCache = ["###"];
 
 self.addEventListener('install', function (event) {
     event.waitUntil(
@@ -28,18 +24,21 @@ self.addEventListener('activate', function(event) {
     );
 });
 
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', function (event) {
     event.respondWith(
-        fetch(event.request).then(function (resp) {
-            if (resp.status === 503) {
-                throw new Error();
-            }
-            return resp;
-        }).catch(function() {
+        caches.match(event.request).then(function (response) {
+            return response
+                || fetch(event.request).then(function (resp) {
+                    if (resp.status === 503) {
+                        throw new Error();
+                    }
+                    return resp;
+                });
+        }).catch(function () {
             var requestURL = new URL(event.request.url);
             if (requestURL.origin === location.origin && urlsToCache.indexOf(requestURL.pathname) > -1) {
                 return caches.match(requestURL.pathname);
-            } else  {
+            } else {
                 return caches.match(urlsToCache[0]);
             }
         })
