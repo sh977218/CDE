@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import {
-    CdeForm, DisplayProfile, FormElement, FormQuestion, FormSectionOrForm, PermissibleFormValue
+    CdeForm, DisplayProfile, FormElement, FormQuestion, FormSectionOrForm, PermissibleFormValue, Question
 } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/formShared';
-import { CodeAndSystem } from 'shared/models.model';
 
 
 @Injectable()
@@ -29,6 +28,14 @@ export class NativeRenderService {
             this.setNativeRenderType(newType);
 
         return newType;
+    }
+
+    radioButtonSelect(question: Question, value: string) {
+        if (question.required || question.answer !== value) {
+            question.answer = value;
+        } else {
+            question.answer = undefined;
+        }
     }
 
     render() {
@@ -72,6 +79,17 @@ export class NativeRenderService {
             NativeRenderService.transformFormToInline(this.followForm);
             NativeRenderService.assignValueListRows(this.followForm.formElements);
         }
+
+        // Post-Transform Processing
+        iterateFeSync(this.elt, undefined, undefined, fe => {
+            // let feq = fe as FormQuestion;
+            if (fe.question.unitsOfMeasure && fe.question.unitsOfMeasure.length === 1) {
+                fe.question.answerUom = fe.question.unitsOfMeasure[0];
+            }
+            if (fe.question.answers.length === 1 && fe.question.required && !fe.question.multiselect) {
+                fe.question.answer = fe.question.answers[0].permissibleValue;
+            }
+        });
     }
 
     setNativeRenderType(userType) {
@@ -231,13 +249,9 @@ export class NativeRenderService {
             followEligibleQuestions.push(fe);
 
             // Post-Transform Processing
-            if (fe.elementType === 'section' || fe.elementType === 'form') {
-                if (NativeRenderService.transformFormToInline(fe))
+            if ((fe.elementType === 'section' || fe.elementType === 'form')
+                && NativeRenderService.transformFormToInline(fe)) {
                     (fe as FormSectionOrForm).forbidMatrix = true;
-            } else {
-                let feq = fe as FormQuestion;
-                if (feq.question.unitsOfMeasure && feq.question.unitsOfMeasure.length === 1)
-                    feq.question.answerUom = feq.question.unitsOfMeasure[0];
             }
             if (fe.skipLogic)
                 fe.skipLogic = undefined;

@@ -27,6 +27,14 @@ export class NativeTableComponent implements OnInit {
         this.render();
     }
 
+    radioButtonSelect(required: boolean, obj, property, value: string) {
+        if (required || obj[property] !== value) {
+            obj[property] = value;
+        } else {
+            obj[property] = undefined;
+        }
+    }
+
     render() {
         this.entry = this.tableForm.s[0].q[0];
         this.sectionNumber = 0;
