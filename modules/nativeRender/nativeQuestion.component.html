@@ -32,24 +32,26 @@
                                            [ngClass]="{'native-question-oneline-l': pv.formElements
                                                           && isOneLiner(pv.formElements[0], pv.formElements.length)}"
                                            [title]="nrs.getPvLabel(pv)">
-                                        <input *ngIf="!formElement.question.multiselect" type="radio"
-                                               class="form-check-input" [name]="formElement.questionId"
-                                               [title]="formElement.question.answer"
-                                               [attr.name]="formElement.questionId"
-                                               [(ngModel)]="formElement.question.answer"
-                                               [attr.value]="pv.permissibleValue"
-                                               [value]="pv.permissibleValue"
-                                               [required]="formElement.question.required"
-                                               [disabled]="!formElement.question.editable"/>
-                                        <input *ngIf="formElement.question.multiselect" type="checkbox"
-                                               class="form-check-input" [name]="formElement.questionId"
-                                               title="multiple select" [attr.name]="formElement.questionId"
-                                               [checked]="nrs.checkboxIsChecked(formElement.question, pv.permissibleValue)"
-                                               (change)="nrs.checkboxOnChange($event, formElement.question, pv.permissibleValue)"
-                                               [attr.value]="pv.permissibleValue"
-                                               [value]="pv.permissibleValue"
-                                               [required]="formElement.question.required"
-                                               [disabled]="!formElement.question.editable"/>
+                                        <ng-container *ngIf="!formElement.question.multiselect && (formElement.question.answers.length > 1 || formElement.question.required); else checkMulti">
+                                            <input type="radio" class="form-check-input"
+                                                   [title]="formElement.question.answer"
+                                                   [name]="formElement.questionId" [attr.name]="formElement.questionId"
+                                                   [ngModel]="formElement.question.answer"
+                                                   (click)="nrs.radioButtonSelect(formElement.question, $event.target.value)"
+                                                   [value]="pv.permissibleValue" [attr.value]="pv.permissibleValue"
+                                                   [required]="formElement.question.required"
+                                                   [disabled]="!formElement.question.editable"/>
+                                        </ng-container>
+                                        <ng-template #checkMulti>
+                                            <input type="checkbox" class="form-check-input"
+                                                   [title]="formElement.question.answer"
+                                                   [name]="formElement.questionId" [attr.name]="formElement.questionId"
+                                                   [checked]="nrs.checkboxIsChecked(formElement.question, pv.permissibleValue)"
+                                                   (change)="nrs.checkboxOnChange($event, formElement.question, pv.permissibleValue)"
+                                                   [value]="pv.permissibleValue" [attr.value]="pv.permissibleValue"
+                                                   [required]="formElement.question.required"
+                                                   [disabled]="!formElement.question.editable"/>
+                                        </ng-template>
                                         <span [textContent]="nrs.getPvLabel(pv)"></span>
                                         <span class="native-value" *ngIf="nrs.profile.displayValues"
                                               [textContent]="nrs.getPvValue(pv)"></span>
@@ -111,7 +113,8 @@
                                        [attr.name]="formElement.questionId + '_uom'"
                                        [(ngModel)]="formElement.question.answerUom" (ngModelChange)="convert()"
                                        [value]="formElement.question.unitsOfMeasure[i]"
-                                       [required]="formElement.question.required"
+                                       [attr.value]="formElement.question.unitsOfMeasure[i]"
+                                       [required]="formElement.question.required || formElement.question.answer"
                                        [disabled]="!formElement.question.editable"/> {{uom}}</label>
                         </div>
                     </div>
@@ -131,7 +134,8 @@
                                        [attr.name]="formElement.questionId + '_uom'"
                                        [(ngModel)]="formElement.question.answerUom" (ngModelChange)="convert()"
                                        [value]="formElement.question.unitsOfMeasure[i]"
-                                       [required]="formElement.question.required"
+                                       [attr.value]="formElement.question.unitsOfMeasure[i]"
+                                       [required]="formElement.question.required || formElement.question.answer"
                                        [disabled]="!formElement.question.editable"/> {{uom}}</label>
                         </div>
                         <!--<div [textContent]="nrs.form.$$element[0][formElement.questionId].validationMessage"></div>-->

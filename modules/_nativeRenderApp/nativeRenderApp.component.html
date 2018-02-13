@@ -48,7 +48,7 @@
             </div>
         </div>
         <div [ngClass]="panelType === 'patient'?'col-xl-9 col-lg-8 col-12':'w-100'">
-            <div style="padding: 5px;max-width: 1000px;margin: 0 auto">
+            <div style="padding: 5px;max-width: 1010px;margin: 0 auto">
                 <h2 *ngIf="!elt && !errorMessage && !summary" class="text-center mt20">Loading...</h2>
                 <h2 *ngIf="errorMessage" class="text-center mt20" style="color: red">{{errorMessage}}</h2>
                 <div *ngIf="summary && patient" style="margin-top: 25px">
