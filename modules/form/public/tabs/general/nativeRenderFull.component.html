@@ -55,10 +55,12 @@
              class="text-center mt20">This form has no content. There is nothing to preview.
         </div>
 
-        <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0" class="bot-left">
-            <cde-native-render [elt]="elt" [profile]="profile" [showTitle]="false"
-                               [nativeRenderType]="overridePrintable ? NativeRenderService.FOLLOW_UP : NativeRenderService.SHOW_IF"
-            ></cde-native-render>
+        <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0" class="bot-left">
+            <div style="max-width: 1000px">
+                <cde-native-render [elt]="elt" [profile]="profile"
+                                   [nativeRenderType]="overridePrintable ? NativeRenderService.FOLLOW_UP : NativeRenderService.SHOW_IF"
+                                   [showTitle]="false"></cde-native-render>
+            </div>
         </div>
     </div>
 </div>
