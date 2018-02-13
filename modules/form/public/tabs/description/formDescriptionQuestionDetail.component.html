@@ -56,7 +56,7 @@
                 <span *ngFor="let pv of question.question.answers" class="badge badge-secondary formViewSummaryLabel"
                       style="background-color: #666" [textContent]="pv?.valueMeaningName"></span>
             </div>
-            <div *ngIf="question.question.datatype === 'Date' && question.question.datatypeDate.precision !== 'Day'"
+            <div *ngIf="question.question.datatype?.toLowerCase() === 'date' && question.question.datatypeDate.precision !== 'Day'"
                  class="defaultAnswer">
                 <span class="formViewQuestionLabel">Precision:</span>
                 <span class="badge badge-secondary formViewSummaryLabel"
@@ -97,7 +97,7 @@
                     [isAllowed]="true" (modelChange)="onEltChange.emit()">
             </cde-inline-area-edit>
         </dd>
-        <ng-container *ngIf="question.question.datatype === 'Date'">
+        <ng-container *ngIf="question.question.datatype?.toLowerCase() === 'date'">
             <dt class="col-2 font-weight-bold">Date Precision:</dt>
             <dd class="col-10">
                 <select [(ngModel)]="question.question.datatypeDate.precision"
