@@ -7,15 +7,19 @@ const baseUrl = "http://localhost:3001";
 async function init () {
     return client.init()
         .url(baseUrl)
+        .timeouts('implicit', 5000);
 }
 
 
 async function login () {
-    return client.click('#login_link')
+    return client
+        .waitForExist("#login_link")
+        .click('#login_link')
+        .waitForExist('#uname')
         .setValue('#uname', "nlm")
         .setValue('#passwd', "nlm")
         .click("#login_button")
-        .waitForExist('#createEltLink')
+        .waitForExist('#createEltLink');
 
 }
 
