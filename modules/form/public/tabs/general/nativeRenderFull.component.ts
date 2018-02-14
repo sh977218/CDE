@@ -32,7 +32,7 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
             max-width: 1026px;
             border-radius: 20px;
             border: solid lightgrey 3px;
-            overflow-x: scroll;
+            /*overflow-x: scroll;*/
         }
         .noGridPadLarge {
             padding-left: 0;
