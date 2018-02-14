@@ -29,10 +29,10 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
             margin: auto;
             padding: 10px 10px;
             margin-top: 5px;
-            max-width: 1026px;
+            max-width: 1032px;
             border-radius: 20px;
             border: solid lightgrey 3px;
-            overflow-x: scroll;
+            overflow-x: auto;
         }
         .noGridPadLarge {
             padding-left: 0;

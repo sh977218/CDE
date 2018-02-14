@@ -87,16 +87,15 @@ export class NativeQuestionComponent implements OnInit {
     convert() {
         if (this.previousUom && this.formElement.question.answer != null) {
             let value: number;
-            if (typeof(this.formElement.question.answer) === 'string')
-                value = parseFloat(this.formElement.question.answer);
-            else
-                value = this.formElement.question.answer;
+            if (typeof(this.formElement.question.answer) === 'string') value = parseFloat(this.formElement.question.answer);
+            else value = this.formElement.question.answer;
 
             if (typeof(value) === 'number' && !isNaN(value)) {
                 let unit = this.formElement.question.answerUom;
                 this.convertUnits(value, this.previousUom, this.formElement.question.answerUom, (error, result) => {
-                    if (!error && result !== undefined && !isNaN(result) && unit === this.formElement.question.answerUom)
+                    if (!error && result !== undefined && !isNaN(result) && unit === this.formElement.question.answerUom) {
                         this.formElement.question.answer = result;
+                    }
                 });
             }
         }
@@ -114,10 +113,8 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     isFirstInRow(index) {
-        if (this.nrs.profile && this.nrs.profile.numberOfColumns > 0)
-            return index % this.nrs.profile.numberOfColumns === 0;
-        else
-            return index % 4 === 0;
+        if (this.nrs.profile && this.nrs.profile.numberOfColumns > 0) return index % this.nrs.profile.numberOfColumns === 0;
+        else return index % 4 === 0;
     }
 
     hasLabel(question) {

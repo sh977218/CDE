@@ -5,6 +5,12 @@ const config = require("config");
 
 const instructionSchema = new Schema({value: String, valueFormat: String}, {_id: false});
 
+const datatypeNumberSchema = new Schema({
+    minValue: Number
+    , maxValue: Number
+    , precision: Number
+}, {_id: false, minimize: false});
+
 const questionSchema = new Schema({
     cde: {
         tinyId: String
@@ -17,11 +23,7 @@ const questionSchema = new Schema({
         , derivationRules: [sharedSchemas.derivationRuleSchema]
     }
     , datatype: String
-    , datatypeNumber: {
-        minValue: Number
-        , maxValue: Number
-        , precision: Number
-    }
+    , datatypeNumber: datatypeNumberSchema
     , datatypeText: {
         minLength: Number
         , maxLength: Number
