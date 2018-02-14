@@ -85,7 +85,7 @@
                     <div class="col-sm-2 font-weight-bold">Max Value:</div>
                     <div class="col-sm-8" id="mdd_maximal">
                     <span [ngClass]="{mark: updateCdeVersion.bNumberMax}">
-                        {{updateCdeVersion.newQuestion.question?.datatypeNumber.maxValue | cdePlaceholder }}</span>
+                        {{updateCdeVersion.newQuestion.question?.datatypeNumber?.maxValue | cdePlaceholder }}</span>
                         <span *ngIf="updateCdeVersion.bNumberMax" class="red">
                         ( was {{ updateCdeVersion.currentQuestion.question?.datatypeNumber?.maxValue }} )</span>
                     </div>
@@ -105,7 +105,7 @@
                           *ngIf="updateCdeVersion.newQuestion.question.unitsOfMeasure.length > 0">
                         <span *ngFor="let uom of updateCdeVersion.newQuestion.question.unitsOfMeasure; let i = index"
                               id="mq_uom_list_{{i}}">
-                              <ng-container *ngIf="u.system">{{u.system}}/</ng-container>{{u.code}}
+                              <ng-container *ngIf="uom.system">{{uom.system}}/</ng-container>{{uom.code}}
                         </span>
                     </span>
                     <span [ngClass]="{mark: updateCdeVersion.bUom}"

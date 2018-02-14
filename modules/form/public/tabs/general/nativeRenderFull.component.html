@@ -56,9 +56,11 @@
         </div>
 
         <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0" class="bot-left">
-            <cde-native-render [elt]="elt" [profile]="profile" [showTitle]="false"
-                               [nativeRenderType]="overridePrintable ? NativeRenderService.FOLLOW_UP : NativeRenderService.SHOW_IF"
-            ></cde-native-render>
+            <div style="max-width: 1000px; margin-left: 15px; margin-right: 15px">
+                <cde-native-render [elt]="elt" [profile]="profile" [showTitle]="false"
+                                   [nativeRenderType]="overridePrintable ? NativeRenderService.FOLLOW_UP : NativeRenderService.SHOW_IF"
+                ></cde-native-render>
+            </div>
         </div>
     </div>
 </div>
