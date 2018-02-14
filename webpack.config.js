@@ -143,10 +143,10 @@ module.exports = {
                     return _.keys(compilation.assets);
                 },
                 format: function defaultFormat(listItems){
-                    let sw = fs.readFileSync('modules/_app/sw.js', {encoding: 'utf8'});
+                    let sw = fs.readFileSync('modules/_app/sw.template.js', {encoding: 'utf8'});
                     let version = crypto.createHash('md5').update(sw).digest('hex').substr(0,4);
-                    sw = sw.replace(/{#}/, version);
-                    sw = sw.replace(/{#}/, version);
+                    sw = sw.replace('{#}', version);
+                    sw = sw.replace('{#}', version);
                     let location = sw.indexOf('"###"');
                     let pre = sw.substring(0, location);
                     let post = sw.substring(location + 5);
@@ -180,6 +180,22 @@ module.exports = {
             new CopyWebpackPlugin([
                 {from: 'modules/_app/assets/'}
             ]),
+            new FileListPlugin({
+                fileName: 'sw.js',
+                itemsFromCompilation: function defaultItemsFromCompilation(compilation){
+                    return _.keys(compilation.assets);
+                },
+                format: function defaultFormat(listItems){
+                    let sw = fs.readFileSync('modules/_app/sw.template.js', {encoding: 'utf8'});
+                    let version = crypto.createHash('md5').update(sw).digest('hex').substr(0,4);
+                    sw = sw.replace(/{#}/, version);
+                    sw = sw.replace(/{#}/, version);
+                    let location = sw.indexOf('"###"');
+                    let pre = sw.substring(0, location);
+                    let post = sw.substring(location + 5);
+                    return pre + '"/app/' + listItems.join('","/app/') + '"' + post;
+                }
+            }),
         ],
     resolve: {
         unsafeCache: false,

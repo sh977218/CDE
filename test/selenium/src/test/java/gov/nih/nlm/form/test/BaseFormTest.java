@@ -89,7 +89,7 @@ public class BaseFormTest extends FormCommentTest {
         findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input")).sendKeys(text);
 
         if ("UCUM".equals(type)) {
-            hangon(2);
+            hangon(3);
             findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input")).sendKeys(Keys.ENTER);
         } else {
             clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//*[@class='fa fa-plus']"));

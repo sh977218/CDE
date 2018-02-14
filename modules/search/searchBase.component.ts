@@ -4,7 +4,7 @@ import {
 import { NavigationStart } from '@angular/router';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import { empty } from 'rxjs/observable/empty';
-import { debounceTime, distinctUntilChanged, switchMap, take } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap, take } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -333,20 +333,27 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     getAutocompleteSuggestions = ((text$: Observable<string>) =>
-        text$.pipe(debounceTime(500), distinctUntilChanged(), switchMap(term =>
-            term.length >= 3 ?
-                this.http.post('/' + this.module + 'Completion/' + encodeURIComponent(term),
-                    this.elasticService.buildElasticQuerySettings(this.searchSettings)).map(res => {
-                    let final = new Set();
-                    this.lastTypeahead = {};
-                    res.forEach(e => {
-                        this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
-                        final.add(e._source.primaryNameSuggest);
-                    });
-                    return Array.from(final);
-                })
-                : empty()
-        ), take(8)));
+        text$.pipe(
+            debounceTime(500),
+            distinctUntilChanged(),
+            switchMap(term =>
+                term.length >= 3 ?
+                    this.http.post('/' + this.module + 'Completion/' + encodeURIComponent(term),
+                        this.elasticService.buildElasticQuerySettings(this.searchSettings)).pipe(
+                        map((res: any[]) => {
+                            let final = new Set();
+                            this.lastTypeahead = {};
+                            res.forEach(e => {
+                                this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
+                                final.add(e._source.primaryNameSuggest);
+                            });
+                            return Array.from(final);
+                        })
+                    )
+                    : empty()
+            ),
+            take(8)
+        ));
 
     getCurrentSelectedClassification() {
         return this.altClassificationFilterMode
