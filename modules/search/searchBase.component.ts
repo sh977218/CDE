@@ -661,7 +661,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     scrollHistoryLoad() {
-        if (this.backForwardService.isBackForward) {
+        if (this.backForwardService.isBackForward || this.router.navigationId === 1) {
             let previousSpot = window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search];
             if (previousSpot != null) SearchBaseComponent.waitScroll(2, previousSpot);
         }

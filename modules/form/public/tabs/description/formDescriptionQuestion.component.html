@@ -103,9 +103,9 @@
                 <div class="col-sm-8" id="mdd_q_uoms">
                     <span [ngClass]="{mark: updateCdeVersion.bUom}"
                           *ngIf="updateCdeVersion.newQuestion.question.unitsOfMeasure.length > 0">
-                        <span *ngFor="let uom of updateCdeVersion.newQuestion.question.unitsOfMeasure; let i = index"
+                        <span *ngFor="let u of updateCdeVersion.newQuestion.question.unitsOfMeasure; let i = index"
                               id="mq_uom_list_{{i}}">
-                              <ng-container *ngIf="uom.system">{{uom.system}}/</ng-container>{{uom.code}}
+                              <ng-container *ngIf="u.system">{{u.system}}/</ng-container>{{u.code}}
                         </span>
                     </span>
                     <span [ngClass]="{mark: updateCdeVersion.bUom}"
