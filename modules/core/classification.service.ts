@@ -57,31 +57,25 @@ export class ClassificationService {
             eltId: elt._id,
             orgName: org
         };
-        this.http.post(endPoint, deleteBody).subscribe(res => cb(), (err) => cb(err));
+        this.http.post(endPoint, deleteBody).subscribe(res => cb(), err => cb(err));
     }
 
     sortClassification(elt) {
-        elt.classification = elt.classification.sort(function (c1, c2) {
-            return c1.stewardOrg.name.localeCompare(c2.stewardOrg.name);
-        });
+        elt.classification = elt.classification.sort((c1, c2) =>
+            c1.stewardOrg.name.localeCompare(c2.stewardOrg.name)
+        );
         let sortSubClassif = function (classif) {
             if (classif.elements) {
-                classif.elements = classif.elements.sort(function (c1, c2) {
-                    return c1.name.localeCompare(c2.name);
-                });
+                classif.elements = classif.elements.sort((c1, c2) =>
+                    c1.name.localeCompare(c2.name)
+                );
             }
         };
         let doRecurse = function (classif) {
             sortSubClassif(classif);
-            if (classif.elements) {
-                classif.elements.forEach(function (subElt) {
-                    doRecurse(subElt);
-                });
-            }
+            if (classif.elements) classif.elements.forEach(doRecurse);
         };
-        elt.classification.forEach(function (classif) {
-            doRecurse(classif);
-        });
+        elt.classification.forEach(doRecurse);
     }
 
     doClassif(currentString, classif, result) {
@@ -101,11 +95,9 @@ export class ClassificationService {
     flattenClassification(elt) {
         let result = [];
         if (elt.classification) {
-            elt.classification.forEach((cl) => {
+            elt.classification.forEach(cl => {
                 if (cl.elements) {
-                    cl.elements.forEach((subCl) => {
-                        this.doClassif(cl.stewardOrg.name, subCl, result);
-                    });
+                    cl.elements.forEach(subCl => this.doClassif(cl.stewardOrg.name, subCl, result));
                 }
             });
         }
