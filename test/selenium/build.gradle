@@ -15,7 +15,6 @@ repositories {
 
 dependencies {
     def seleniumVersion = "3.8.1"
-//    testCompile "com.paulhammant:ngwebdriver:1.0"
 
     testCompile 'com.github.ludetc:ngWebDriver:1.0001'
     testCompile group: 'org.testng', name: 'testng', version: '6.8'
