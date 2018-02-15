@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import {
     Component, ViewChild, Type, ViewContainerRef, EventEmitter, HostListener, OnInit, OnDestroy
 } from '@angular/core';
@@ -11,8 +12,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { SharedService } from '_commonApp/shared.service';
 import { SearchSettings } from 'search/search.model';
 import { ElasticQueryResponse, Elt, User } from 'shared/models.model';
-import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm } from 'shared/form/form.model';
 import { hasRole } from 'shared/system/authorizationShared';
 import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
@@ -117,7 +116,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 protected backForwardService,
                 protected elasticService,
                 protected exportService,
-                protected http,
+                protected http: HttpClient,
                 protected modalService,
                 protected orgHelperService,
                 protected route,
@@ -338,9 +337,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             distinctUntilChanged(),
             switchMap(term =>
                 term.length >= 3 ?
-                    this.http.post('/' + this.module + 'Completion/' + encodeURIComponent(term),
+                    this.http.post<any[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
                         this.elasticService.buildElasticQuerySettings(this.searchSettings)).pipe(
-                        map((res: any[]) => {
+                        map(res => {
                             let final = new Set();
                             this.lastTypeahead = {};
                             res.forEach(e => {

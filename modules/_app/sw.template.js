@@ -33,14 +33,9 @@ self.addEventListener('fetch', function (event) {
                         throw new Error();
                     }
                     return resp;
+                }).catch(function () {
+                    return caches.match('/app/offline/offline.html');
                 });
-        }).catch(function () {
-            var requestURL = new URL(event.request.url);
-            if (requestURL.origin === location.origin && urlsToCache.indexOf(requestURL.pathname) > -1) {
-                return caches.match(requestURL.pathname);
-            } else {
-                return caches.match(urlsToCache[0]);
-            }
         })
     );
 });
