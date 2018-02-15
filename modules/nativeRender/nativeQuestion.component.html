@@ -87,7 +87,7 @@
                                    [title]="formElement.question.answer"
                                    attr.id="{{formElement.label}}_{{index}}_box"
                                    [attr.name]="formElement.questionId+'_date'"
-                                   [(ngModel)]="formElement.question.answerDate" (ngModelChange)="updateDateTime()"
+                                   [(ngModel)]="formElement.question.answer"
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable">
                         </div>

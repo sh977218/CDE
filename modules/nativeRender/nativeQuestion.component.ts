@@ -38,7 +38,7 @@ export class NativeQuestionComponent implements OnInit {
     @Input() parentValue: any;
     @Input() index: any;
     previousUom: CodeAndSystem;
-    static readonly reHasTime = /[hHmsSkaAZ]/;
+    // static readonly reHasTime = /[hHmsSkaAZ]/;
     score = score;
 
     datePrecisionToType = {
@@ -137,20 +137,20 @@ export class NativeQuestionComponent implements OnInit {
             && question.elementType === 'question' && question.question.datatype !== 'Value List';
     }
 
-    updateDateTime() {
-        let d = this.formElement.question.answerDate;
-        let t = this.formElement.question.answerTime;
-        if (!d) return this.formElement.question.answer = '';
-        if (!t) t = {hour: 0, minute: 0, second: 0};
-
-        let m = moment([d.year, d.month - 1, d.day, t.hour, t.minute, t.second]);
-        if (m.isValid()) {
-            if (this.formElement.question.datatypeDate && this.formElement.question.datatypeDate.format) {
-                this.formElement.question.answer = m.format(this.formElement.question.datatypeDate.format);
-            }
-            else this.formElement.question.answer = m.format('YYYY-MM-DDTHH:mm:ssZ');
-        } else {
-            this.formElement.question.answer = '';
-        }
-    }
+    // updateDateTime() {
+    //     let d = this.formElement.question.answerDate;
+    //     let t = this.formElement.question.answerTime;
+    //     if (!d) return this.formElement.question.answer = '';
+    //     if (!t) t = {hour: 0, minute: 0, second: 0};
+    //
+    //     let m = moment([d.year, d.month - 1, d.day, t.hour, t.minute, t.second]);
+    //     if (m.isValid()) {
+    //         if (this.formElement.question.datatypeDate && this.formElement.question.datatypeDate.format) {
+    //             this.formElement.question.answer = m.format(this.formElement.question.datatypeDate.format);
+    //         }
+    //         else this.formElement.question.answer = m.format('YYYY-MM-DDTHH:mm:ssZ');
+    //     } else {
+    //         this.formElement.question.answer = '';
+    //     }
+    // }
 }
