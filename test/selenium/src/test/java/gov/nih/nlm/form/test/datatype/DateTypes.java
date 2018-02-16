@@ -13,7 +13,7 @@ public class DateTypes extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='Person Birth Date_1']//input[@type='month']"));
         findElement(By.xpath("//div[@id='Person Birth Date_2']//input[@type='date']"));
         findElement(By.xpath("//div[@id='Person Birth Date_3']//input[@type='datetime-local' and @step=3600]"));
-        findElement(By.xpath("//div[@id='Person Birth Date_4']//input[@type='datetime-local'"));
+        findElement(By.xpath("//div[@id='Person Birth Date_4']//input[@type='datetime-local']"));
         findElement(By.xpath("//div[@id='Person Birth Date_5']//input[@type='datetime-local' and @step=1]"));
 
         goToFormDescription();
