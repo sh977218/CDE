@@ -1,25 +1,25 @@
 <h1 *ngIf="showTitle"
-    [textContent]="nrs.getElt()?.naming && nrs.getElt().naming[0]?.designation"></h1>
+    [textContent]="nrs.vm?.naming && nrs.vm.naming[0]?.designation"></h1>
 
-<form *ngIf="!endpointUrl && nrs.getElt()" name="sectionLabel" role="form" class="form-horizontal">
-    <cde-native-section *ngIf="nrs.getNativeRenderType() !== NRS.SHOW_IF
-                                  || nrs.skipLogicService.evalSkipLogic(null, nrs.getElt(), nrs)"
-                        [formElement]="nrs.getElt()"></cde-native-section>
+<form *ngIf="!endpointUrl && nrs.vm" name="sectionLabel" role="form" class="form-horizontal">
+    <cde-native-section *ngIf="nrs.nativeRenderType !== NRS.SHOW_IF
+                                  || nrs.skipLogicService.evalSkipLogic(null, nrs.vm, nrs)"
+                        [formElement]="nrs.vm"></cde-native-section>
 </form>
-<form ngNoForm #formData *ngIf="endpointUrl && nrs.getElt()" name="sectionLabel" role="form" class="form-horizontal"
+<form ngNoForm #formData *ngIf="endpointUrl && nrs.vm" name="sectionLabel" role="form" class="form-horizontal"
       [action]="getEndpointUrl()" method="post">
 
-    <cde-native-section *ngIf="nrs.getNativeRenderType() !== NRS.SHOW_IF
-                                  || nrs.skipLogicService.evalSkipLogic(null, nrs.getElt(), nrs)"
-                        [formElement]="nrs.getElt()"></cde-native-section>
+    <cde-native-section *ngIf="nrs.nativeRenderType !== NRS.SHOW_IF
+                                  || nrs.skipLogicService.evalSkipLogic(null, nrs.vm, nrs)"
+                        [formElement]="nrs.vm"></cde-native-section>
 
     <input type="hidden" name="formUrl" [value]="formUrl">
-    <input type="hidden" name="mapping" [value]="mapping">
+    <input type="hidden" name="mapping" [value]="nrs.flatMapping">
     <input type="submit" class="btn  btn-outline-dark w-100" id="button_submit" *ngIf="submitForm"
            style="margin-left: 0; margin-top: 20px; font-weight: bold" [disabled]="formData.$invalid">
 </form>
 
-<small *ngIf="nrs.getElt()?.isCopyrighted && (!nrs.profile || nrs.profile.displayCopyright)"
-       id="copyrightStatement">{{nrs.getElt().copyright.text}}</small>
+<small *ngIf="nrs.vm?.isCopyrighted && (!nrs.profile || nrs.profile.displayCopyright)"
+       id="copyrightStatement">{{nrs.vm.copyright.text}}</small>
 
 <div *ngFor="let error of nrs.getErrors()"><code>{{error}}</code></div>

@@ -39,6 +39,7 @@ export class NativeQuestionComponent implements OnInit {
     @Input() parentValue: any;
     @Input() index: any;
     hasTime: boolean;
+    NRS = NativeRenderService;
     previousUom: CodeAndSystem;
     static readonly reHasTime = /[hHmsSkaAZ]/;
     score = score;

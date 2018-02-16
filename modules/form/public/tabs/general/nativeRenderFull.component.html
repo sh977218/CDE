@@ -56,7 +56,7 @@
         </div>
 
         <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0" class="bot-left">
-            <div style="max-width: 1000px; margin: 15px 10px;">
+            <div style="max-width: 1000px; margin: 10px 15px;">
                 <cde-native-render [elt]="elt" [profile]="profile" [showTitle]="false"
                                    [nativeRenderType]="overridePrintable ? NativeRenderService.FOLLOW_UP : NativeRenderService.SHOW_IF"
                 ></cde-native-render>

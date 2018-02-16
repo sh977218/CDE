@@ -11,23 +11,36 @@ import { iterateFeSync } from 'shared/form/formShared';
 export class NativeRenderService {
     static readonly SHOW_IF: string = 'Dynamic';
     static readonly FOLLOW_UP: string = 'Follow-up';
-    private errors: string[] = [];
-    private overrideNativeRenderType: string = null;
-    private currentNativeRenderType: string;
-
-    profile: DisplayProfile;
+    private _nativeRenderType: string = undefined;
     elt: CdeForm;
-    form: CdeForm;
+    private errors: string[] = [];
     followForm: any;
+    form: CdeForm;
+    flatMapping: any;
+    profile: DisplayProfile;
+    vm: any;
 
     constructor(public skipLogicService: SkipLogicService) {}
 
-    getNativeRenderType() {
-        let newType = this.overrideNativeRenderType || (this.profile && this.profile.displayType);
-        if (newType !== this.currentNativeRenderType)
-            this.setNativeRenderType(newType);
+    static isRadioOrCheckbox(fe: FormQuestion) { // returns true for radio and false for checkbox
+        return !fe.question.multiselect && !(fe.question.answers.length === 1 && !fe.question.required);
+    }
 
-        return newType;
+    static isPreselectedRadio(fe: FormQuestion) {
+        return fe.question.answers.length === 1 && fe.question.required && !fe.question.multiselect;
+    }
+
+    get nativeRenderType() {
+        return this._nativeRenderType;
+    }
+
+    set nativeRenderType(userType) {
+        if (this.elt && this.nativeRenderType !== userType
+            && (userType === NativeRenderService.SHOW_IF || userType === NativeRenderService.FOLLOW_UP)) {
+            this.render(userType);
+            this._nativeRenderType = userType;
+            this.vm = this.nativeRenderType === NativeRenderService.SHOW_IF ? this.elt : this.followForm;
+        }
     }
 
     radioButtonSelect(question: Question, value: string) {
@@ -38,10 +51,11 @@ export class NativeRenderService {
         }
     }
 
-    render() {
+    render(renderType) {
         if (!this.elt)
             return;
 
+        // Pre-Transform Processing
         iterateFeSync(this.elt, undefined, undefined, (f: FormQuestion) => {
             // clean up
             if (Array.isArray(f.question.answers)) {
@@ -72,69 +86,45 @@ export class NativeRenderService {
             } else {
                 f.question.uomsAlias = f.question.unitsOfMeasure.map(u => u.code);
             }
+
+            // answers
+            if (f.question.unitsOfMeasure && f.question.unitsOfMeasure.length === 1) {
+                f.question.answerUom = f.question.unitsOfMeasure[0];
+            }
+            if (NativeRenderService.isPreselectedRadio(f)) {
+                f.question.answer = f.question.answers[0].permissibleValue;
+            }
         });
 
-        if (this.getNativeRenderType() === NativeRenderService.FOLLOW_UP) {
+        if (renderType === NativeRenderService.FOLLOW_UP) {
             this.followForm = NativeRenderService.cloneForm(this.elt);
             NativeRenderService.transformFormToInline(this.followForm);
             NativeRenderService.assignValueListRows(this.followForm.formElements);
         }
-
-        // Post-Transform Processing
-        iterateFeSync(this.elt, undefined, undefined, fe => {
-            // let feq = fe as FormQuestion;
-            if (fe.question.unitsOfMeasure && fe.question.unitsOfMeasure.length === 1) {
-                fe.question.answerUom = fe.question.unitsOfMeasure[0];
-            }
-            if (fe.question.answers.length === 1 && fe.question.required && !fe.question.multiselect) {
-                fe.question.answer = fe.question.answers[0].permissibleValue;
-            }
-        });
     }
 
-    setNativeRenderType(userType) {
-        if (userType === this.profile.displayType)
-            this.overrideNativeRenderType = null;
-        else if (userType === NativeRenderService.SHOW_IF || userType === NativeRenderService.FOLLOW_UP)
-            this.overrideNativeRenderType = userType;
-        else
-            return;
-
-        this.currentNativeRenderType = userType;
-        this.render();
-    }
-    setSelectedProfile(profile = null) {
+    selectProfile(profile = null, overrideType = undefined) {
         if (profile)
             this.profile = profile;
         if (this.elt && this.elt.displayProfiles && this.elt.displayProfiles.length > 0 &&
-            this.elt.displayProfiles.indexOf(this.profile) === -1)
+            this.elt.displayProfiles.indexOf(this.profile) === -1) {
             this.profile = this.elt.displayProfiles[0];
-        if (!this.profile)
-            this.profile = new DisplayProfile("Default Config");
-
-        this.setNativeRenderType(this.profile.displayType);
-    }
-    getElt() {
-        switch (this.getNativeRenderType()) {
-            case NativeRenderService.SHOW_IF:
-                return this.elt;
-            case NativeRenderService.FOLLOW_UP:
-                return this.followForm;
         }
+        if (!this.profile) {
+            this.profile = new DisplayProfile("Default Config");
+        }
+
+        this.nativeRenderType = overrideType || this.profile.displayType;
     }
+
     setElt(elt) {
         if (elt !== this.elt) {
             this.elt = elt;
             this.followForm = null;
             if (!this.elt.formInput)
                 this.elt.formInput = [];
-
-            let mapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
-            this.render();
-            return mapping;
+            this.flatMapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
         }
-
-        return null;
     }
 
     addError(msg: string) {
