@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
 import { CodeAndSystem } from 'shared/models.model';
 
@@ -16,10 +16,12 @@ export class UcumService {
         switchMap(term => {
             if (term === '') return of([]);
             else {
-                return this.http.get('/ucumNames?uom=' + encodeURIComponent(term)).map((r: any[]) => {
-                    if (!r.length) r.push({code: term, warning: "Not a valid UCUM unit"});
-                    return r;
-                });
+                return this.http.get('/ucumNames?uom=' + encodeURIComponent(term)).pipe(
+                    map((r: any[]) => {
+                        if (!r.length) r.push({code: term, warning: "Not a valid UCUM unit"});
+                        return r;
+                    })
+                );
             }
         })
     ));

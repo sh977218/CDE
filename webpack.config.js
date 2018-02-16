@@ -1,4 +1,7 @@
 const prod = process.env.BUILD_ENV === 'production'; // build type from "npm run build"
+const _ = require('lodash');
+const crypto = require('crypto');
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const AotPlugin = require('@ngtools/webpack');
@@ -6,9 +9,20 @@ const { CheckerPlugin } = require('awesome-typescript-loader');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const FileListPlugin = require('file-list-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const OptimizeJsPlugin = require('optimize-js-plugin');
 // let BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+const assets = [
+    '/cde/public/assets/img/NIH-CDE.png',
+    '/cde/public/assets/img/nih-cde-logo-simple.png',
+    '/cde/public/assets/img/nih-cde-logo.png',
+    '/cde/public/assets/img/usagov_logo.gif',
+    '/cde/public/assets/img/NLM-logo.png',
+    '/common/style.css',
+    '/common/core.min.js',
+];
 
 console.log("Are we prod? " + prod);
 
@@ -133,6 +147,23 @@ module.exports = {
             new CopyWebpackPlugin([
                 {from: 'modules/_app/assets/'}
             ]),
+            new FileListPlugin({
+                fileName: 'sw.js',
+                itemsFromCompilation: function defaultItemsFromCompilation(compilation){
+                    return _.keys(compilation.assets);
+                },
+                format: function defaultFormat(listItems){
+                    let sw = fs.readFileSync('modules/_app/sw.template.js', {encoding: 'utf8'});
+                    let filesInsert = listItems.map(e => '/app/' + e).concat(assets).map(e => '"' + e + '"').join(',');
+                    let version = crypto.createHash('md5').update(filesInsert).digest('hex').substr(0,4);
+                    sw = sw.replace('{#}', version);
+                    sw = sw.replace('{#}', version);
+                    let location = sw.indexOf('"###"');
+                    let pre = sw.substring(0, location);
+                    let post = sw.substring(location + 5);
+                    return pre + filesInsert + post;
+                }
+            }),
             // new BundleAnalyzerPlugin()
         ] : [
             new CleanWebpackPlugin(['dist/app']),
@@ -160,6 +191,23 @@ module.exports = {
             new CopyWebpackPlugin([
                 {from: 'modules/_app/assets/'}
             ]),
+            new FileListPlugin({
+                fileName: 'sw.js',
+                itemsFromCompilation: function defaultItemsFromCompilation(compilation){
+                    return _.keys(compilation.assets);
+                },
+                format: function defaultFormat(listItems){
+                    let sw = fs.readFileSync('modules/_app/sw.template.js', {encoding: 'utf8'});
+                    let filesInsert = listItems.map(e => '/app/' + e).concat(assets).map(e => '"' + e + '"').join(',');
+                    let version = crypto.createHash('md5').update(filesInsert).digest('hex').substr(0,4);
+                    sw = sw.replace('{#}', version);
+                    sw = sw.replace('{#}', version);
+                    let location = sw.indexOf('"###"');
+                    let pre = sw.substring(0, location);
+                    let post = sw.substring(location + 5);
+                    return pre + filesInsert + post;
+                }
+            }),
         ],
     resolve: {
         unsafeCache: false,

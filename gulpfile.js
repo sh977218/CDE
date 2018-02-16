@@ -1,6 +1,7 @@
 const gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     config = require('./server/system/parseConfig'),
+    data = require('gulp-data'),
     usemin = require('gulp-usemin'),
     rev = require('gulp-rev'),
     minifyCss = require('gulp-clean-css'),
@@ -163,21 +164,40 @@ gulp.task('usemin', ['copyCode', 'copyDist'], function () {
         {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
         {folder: "./modules/_nativeRenderApp/", filename: "nativeRenderApp.html"}
     ].forEach(item => {
-        streamArray.push(
-            gulp.src(item.folder + item.filename)
-                .pipe(usemin({
-                    jsAttributes: {
-                        defer: false
-                    },
-                    assetsDir: "./dist/",
-                    css: [minifyCss({target: "./dist/app", rebase: true}), 'concat', rev()],
-                    webpcss: ['concat', rev()],
-                    poly: ['concat', rev()],
-                    js: [uglify({mangle: false}), 'concat', rev()],
-                    webp: ['concat', rev()]
-                }))
-                .pipe(gulp.dest(config.node.buildDir + '/dist/'))
-        );
+        let useminOutputs = [];
+
+        function outputFile(file) {
+            useminOutputs.push('/app/' + file.path.substring(file.path.indexOf('\\app\\') + 5));
+            return file;
+        }
+
+        let useminTask = gulp.src(item.folder + item.filename)
+            .pipe(usemin({
+                jsAttributes: {
+                    defer: false
+                },
+                assetsDir: "./dist/",
+                webpcss: ['concat', rev(), data(outputFile)],
+                css: [minifyCss({target: "./dist/app", rebase: true}), 'concat', rev(), data(outputFile)],
+                poly: [uglify({mangle: false}), 'concat', rev(), data(outputFile)],
+                webp: ['concat', rev(), data(outputFile)]
+            }))
+            .pipe(gulp.dest(config.node.buildDir + '/dist/'));
+        streamArray.push(useminTask);
+        useminTask.on('end', function () {
+            if (item.filename === 'index.ejs') {
+                if (useminOutputs.length !== 4) {
+                    throw new Error('service worker creation failed');
+                }
+                gulp.src(config.node.buildDir + '/dist/app/sw.js') // does not preserve order
+                    .pipe(replace('"/app/cde.css"', '"' + useminOutputs[0] + '"'))
+                    .pipe(replace('"/common/style.css"', '"' + useminOutputs[1] + '"'))
+                    .pipe(replace('"/common/core.min.js"', '"' + useminOutputs[2] + '"'))
+                    .pipe(replace('"/app/cde.js"', '"' + useminOutputs[3] + '"'))
+                    .pipe(replace('cde-cache-', 'cde-cache-v'))
+                    .pipe(gulp.dest(config.node.buildDir + '/dist/app/'));
+            }
+        });
     });
     return merge(streamArray);
 });
