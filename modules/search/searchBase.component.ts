@@ -1,18 +1,17 @@
+import { HttpClient } from '@angular/common/http';
 import {
     Component, ViewChild, Type, ViewContainerRef, EventEmitter, HostListener, OnInit, OnDestroy
 } from '@angular/core';
 import { NavigationStart } from '@angular/router';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import { empty } from 'rxjs/observable/empty';
-import { debounceTime, distinctUntilChanged, switchMap, take } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap, take } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { SharedService } from '_commonApp/shared.service';
 import { SearchSettings } from 'search/search.model';
 import { ElasticQueryResponse, Elt, User } from 'shared/models.model';
-import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm } from 'shared/form/form.model';
 import { hasRole } from 'shared/system/authorizationShared';
 import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
@@ -117,7 +116,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 protected backForwardService,
                 protected elasticService,
                 protected exportService,
-                protected http,
+                protected http: HttpClient,
                 protected modalService,
                 protected orgHelperService,
                 protected route,
@@ -333,20 +332,27 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     getAutocompleteSuggestions = ((text$: Observable<string>) =>
-        text$.pipe(debounceTime(500), distinctUntilChanged(), switchMap(term =>
-            term.length >= 3 ?
-                this.http.post('/' + this.module + 'Completion/' + encodeURIComponent(term),
-                    this.elasticService.buildElasticQuerySettings(this.searchSettings)).map(res => {
-                    let final = new Set();
-                    this.lastTypeahead = {};
-                    res.forEach(e => {
-                        this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
-                        final.add(e._source.primaryNameSuggest);
-                    });
-                    return Array.from(final);
-                })
-                : empty()
-        ), take(8)));
+        text$.pipe(
+            debounceTime(500),
+            distinctUntilChanged(),
+            switchMap(term =>
+                term.length >= 3 ?
+                    this.http.post<any[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
+                        this.elasticService.buildElasticQuerySettings(this.searchSettings)).pipe(
+                        map(res => {
+                            let final = new Set();
+                            this.lastTypeahead = {};
+                            res.forEach(e => {
+                                this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
+                                final.add(e._source.primaryNameSuggest);
+                            });
+                            return Array.from(final);
+                        })
+                    )
+                    : empty()
+            ),
+            take(8)
+        ));
 
     getCurrentSelectedClassification() {
         return this.altClassificationFilterMode
@@ -655,7 +661,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     scrollHistoryLoad() {
-        if (this.backForwardService.isBackForward) {
+        if (this.backForwardService.isBackForward || this.router.navigationId === 1) {
             let previousSpot = window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search];
             if (previousSpot != null) SearchBaseComponent.waitScroll(2, previousSpot);
         }

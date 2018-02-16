@@ -27,7 +27,6 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
         .bot-left {
             position: relative;
             margin: auto;
-            padding: 10px 10px;
             margin-top: 5px;
             max-width: 1032px;
             border-radius: 20px;

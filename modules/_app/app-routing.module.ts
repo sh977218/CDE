@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { PreloadAllModules, RouterModule, Routes } from "@angular/router";
+import { RouterModule, Routes } from "@angular/router";
 
 import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
 import { IdentifierSourcesResolve } from 'system/public/components/searchPreferences/identifier-source.resolve.service';
@@ -47,7 +47,6 @@ const appRoutes: Routes = [
             appRoutes,
             {
                 // enableTracing: true, // TODO: dev only
-                preloadingStrategy: PreloadAllModules,
             }
         ),
     ],

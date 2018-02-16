@@ -26,7 +26,7 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         hangon(1);
         int appleOffset = getCurrentYOffset();
         clickElement(By.id(elementId));
-        textPresent("Log In", By.id("login_link"));
+        findElement(By.className("mobileViewH1"));
 
         searchEltAny("patient", "form");
         textPresent("Patient Health Questionnaire");
@@ -34,7 +34,7 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         hangon(1);
         int patientOffset = getCurrentYOffset();
         clickElement(By.id(elementId));
-        textPresent("Log In", By.id("login_link"));
+        findElement(By.className("mobileViewH1"));
 
         searchEltAny("10", "cde");
         textPresent("Test of Memory Malingering (TOMM) - Trial 1 question 10 score");
