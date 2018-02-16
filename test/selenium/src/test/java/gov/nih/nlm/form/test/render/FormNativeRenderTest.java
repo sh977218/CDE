@@ -12,7 +12,7 @@ public class FormNativeRenderTest extends NlmCdeBaseTest {
         textPresent("Outside section form: PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("Inside section form: PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("Are you able to get on and off the toilet?");
-        findElement(By.xpath("//input[@name='q23' AND @type='date]"));
+        findElement(By.xpath("//input[@name='q23' AND @type='date']"));
 
         // question radio un-select
         WebElement label = findElement(By.xpath("//*[@id='Does your health now limit you in doing vigorous activities, " +
