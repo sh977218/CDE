@@ -315,8 +315,8 @@ export class QuestionCde {
 }
 
 class QuestionTypeDate {
-    format: string;
-    precision: string;
+    format?: string;
+    precision?: string;
 
     static copy(q: QuestionTypeDate) {
         return Object.assign(new QuestionTypeDate(), q);
