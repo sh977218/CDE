@@ -86,13 +86,12 @@
                                    step="{{datePrecisionToStep[formElement.question.datatypeDate.precision]}}"
                                    [title]="formElement.question.answer"
                                    attr.id="{{formElement.label}}_{{index}}_box"
-                                   [attr.name]="formElement.questionId+'_date'"
+                                   [name]="formElement.questionId"
+                                   [attr.name]="formElement.questionId" 
                                    [(ngModel)]="formElement.question.answer"
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable">
                         </div>
-                        <input [hidden]="true" [name]="formElement.questionId"
-                               [attr.name]="formElement.questionId" [ngModel]="formElement.question.answer">
                     </div>
                     <div *ngSwitchCase="'number'">
                         <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">

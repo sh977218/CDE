@@ -7,11 +7,12 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class FormNativeRenderTest extends NlmCdeBaseTest {
-    private void loincWidgetFormTests() {
+
+    private void checkForm() {
         textPresent("Outside section form: PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("Inside section form: PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("Are you able to get on and off the toilet?");
-        findElement(By.xpath("//input[@name='q23_date' AND @type='datetime-local]"));
+        findElement(By.xpath("//input[@name='q23' AND @type='date]"));
 
         // question radio un-select
         WebElement label = findElement(By.xpath("//*[@id='Does your health now limit you in doing vigorous activities, " +
@@ -43,7 +44,7 @@ public class FormNativeRenderTest extends NlmCdeBaseTest {
         loginAs(nlm_username, nlm_password);
         String formName = "Loinc Widget Test Form";
         goToFormByName(formName);
-        loincWidgetFormTests();
+        checkForm();
 
         // required radio checked and no un-select
         goToFormDescription();
@@ -61,7 +62,7 @@ public class FormNativeRenderTest extends NlmCdeBaseTest {
         clickElement(By.id("selectRenderButton"));
         clickElement(By.id("button_print_follow"));
         switchTab(1);
-        loincWidgetFormTests();
+        checkForm();
         switchTabAndClose(0);
     }
 }
