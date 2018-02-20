@@ -143,15 +143,11 @@ export class ExportService {
 
 
     async formCdeExport (form) {
-        console.log("in export");
         let settings = this.elasticService.searchSettings;
         let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
 
         for (let qCde of getFormCdes(form)) {
-            console.log("1 cdE");
-            const cde = await this.http.get('/de/' + qCde.tinyId).toPromise().catch(() => {
-                console.log("Caught !!!");
-            });
+            const cde = await this.http.get('/de/' + qCde.tinyId).toPromise().catch(() => {});
             if (!cde) result += "\n";
             else {
                 result += SharedService.exportShared.convertToCsv(

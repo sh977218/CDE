@@ -42,10 +42,8 @@ export class SummaryListItemComponent implements AfterViewInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.elt && this.componentRef)
-            (<SummaryComponent>this.componentRef.instance).elt = this.elt;
-        if (changes.eltIndex && this.componentRef)
-            (<SummaryComponent>this.componentRef.instance).eltIndex = this.eltIndex;
+        if (changes.elt && this.componentRef) (<SummaryComponent>this.componentRef.instance).elt = this.elt;
+        if (changes.eltIndex && this.componentRef) (<SummaryComponent>this.componentRef.instance).eltIndex = this.eltIndex;
     }
 
     loadComponent() {

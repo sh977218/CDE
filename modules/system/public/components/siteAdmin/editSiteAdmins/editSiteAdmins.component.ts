@@ -30,7 +30,7 @@ export class EditSiteAdminsComponent implements OnInit {
         }, () => this.Alert.addAlert('danger', 'There was an issue adding this administrator.')
         );
         this.newAdmin.username = '';
-    };
+    }
 
     getSiteAdmins() {
         this.http.get('/siteAdmins').subscribe(response => this.siteAdmins = response);

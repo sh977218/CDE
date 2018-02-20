@@ -80,8 +80,7 @@ export class NativeTableComponent implements OnInit {
     renderSection(s, level, sectionName, r = 1, c = 0) {
         let sectionStyle = this.getSectionStyle(this.sectionNumber++);
         let section = {header: true, cspan: c, label: s.label, style: sectionStyle.sectionStyle};
-        if (level === 0)
-            section.label = "";
+        if (level === 0) section.label = "";
         this.tableForm.s[level].q.push(section);
         let tcontent = this.getSectionLevel(level + 1);
         let retr = 0;
@@ -124,15 +123,17 @@ export class NativeTableComponent implements OnInit {
                 question: f.question,
                 style: sectionStyle.answerStyle
             });
-            if (f.question.datatype === 'Value List' && f.question.multiselect === true)
+            if (f.question.datatype === 'Value List' && f.question.multiselect === true) {
                 this.tableForm.rows.forEach((r, i) => {
                     this.nrs.elt.formInput[i + '-' + sectionName + f.questionId] = [];
                     this.nrs.elt.formInput[i + '-' + sectionName + f.questionId].answer = this.nrs.elt.formInput[i + '-' + sectionName + f.questionId];
                 });
-            if (f.question.unitsOfMeasure && f.question.unitsOfMeasure.length === 1)
+            }
+            if (f.question.unitsOfMeasure && f.question.unitsOfMeasure.length === 1) {
                 this.tableForm.rows.forEach((r, i) => {
                     this.nrs.elt.formInput[i + '-' + sectionName + f.questionId + '_uom'] = f.question.unitsOfMeasure[0];
                 });
+            }
             f.question.answers.forEach(a => {
                 a.formElements && a.formElements.forEach(sf => {
                     let ret = this.renderFormElement(sf, tcontent, level, retr, r, c, sectionStyle, sectionName);
@@ -146,8 +147,7 @@ export class NativeTableComponent implements OnInit {
     setDepth(r) {
         this.tableForm.s.forEach((s, level) => {
             s.q.forEach(q => {
-                if (!q.header)
-                    q.rspan = r - level;
+                if (!q.header) q.rspan = r - level;
             });
         });
     }

@@ -379,5 +379,5 @@ export class CompareArrayComponent implements OnInit {
                 }
             });
         }
-    };
+    }
 }
