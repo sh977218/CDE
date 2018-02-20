@@ -96,11 +96,13 @@ export class NativeRenderComponent implements OnInit {
         this.nrs.setElt(e);
     }
     @Input() set profile(p: DisplayProfile) {
-        this.ready && this.nrs.selectProfile(this._profile = p, this._nativeRenderType);
+        this._profile = p;
+        this.ready && this.nrs.selectProfile(this._profile, this._nativeRenderType);
     }
     @Input() set nativeRenderType(userType) {
+        this._nativeRenderType = userType;
         if (this.ready) {
-            this.nrs.nativeRenderType = this._nativeRenderType = userType;
+            this.nrs.nativeRenderType = this._nativeRenderType;
         }
     }
     @Input() submitForm: boolean;
