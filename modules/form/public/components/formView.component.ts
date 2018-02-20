@@ -271,10 +271,7 @@ export class FormViewComponent implements OnInit {
     publish() {
         this.validate(() => {
             if (this.validationErrors.length) {
-                this.savingText = 'Fix errors to Publish';
-                setTimeout(() => {
-                    this.savingText = '';
-                }, 3000);
+                this.alert.addAlert("danger", "Please fix all errors before publishing");
             } else {
                 this.saveModal.openSaveModal();
             }
