@@ -56,8 +56,7 @@ export class ClassificationViewComponent {
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual)
-                classificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
         }
         return {
             selectedOrg: orgName,
@@ -71,15 +70,16 @@ export class ClassificationViewComponent {
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual)
-                deleteClassificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) deleteClassificationArray.unshift(_treeNode.data.name);
         }
         this.modalRef = this.modalService.open(this.deleteClassificationContent);
         this.modalRef.result.then(result => {
-            if (result === "confirm") this.confirmDelete.emit({
-                deleteClassificationArray: deleteClassificationArray,
-                deleteOrgName: deleteOrgName
-            });
+            if (result === "confirm") {
+                this.confirmDelete.emit({
+                    deleteClassificationArray: deleteClassificationArray,
+                    deleteOrgName: deleteOrgName
+                });
+            }
         }, () => {
         });
     }

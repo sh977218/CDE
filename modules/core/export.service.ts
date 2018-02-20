@@ -148,7 +148,7 @@ export class ExportService {
         let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
 
         for (let qCde of getFormCdes(form)) {
-            console.log("1 cdE")
+            console.log("1 cdE");
             const cde = await this.http.get('/de/' + qCde.tinyId).toPromise().catch(() => {
                 console.log("Caught !!!");
             });

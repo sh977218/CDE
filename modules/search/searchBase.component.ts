@@ -57,8 +57,9 @@ export const searchStyles: string = `
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @HostListener('window:beforeunload') unload() {
-        if (/^\/(cde|form)\/search$/.exec(location.pathname))
+        if (/^\/(cde|form)\/search$/.exec(location.pathname)) {
             window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
+        }
     }
     @ViewChild('orgDetailsModal') orgDetailsModal: NgbModal;
     @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer: ViewContainerRef;
@@ -102,8 +103,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     view: string;
 
     ngOnDestroy() {
-        if (this.routerSubscription)
-            this.routerSubscription.unsubscribe();
+        if (this.routerSubscription) this.routerSubscription.unsubscribe();
     }
 
     ngOnInit() {
@@ -126,8 +126,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
         this.routerSubscription = this.router.events.subscribe(e => {
             if (this.previousUrl && e instanceof NavigationStart) {
-                if (/^\/(cde|form)\/search/.exec(this.previousUrl))
-                    this.scrollHistorySave();
+                if (/^\/(cde|form)\/search/.exec(this.previousUrl)) this.scrollHistorySave();
                 this.previousUrl = null;
             }
         });
@@ -136,25 +135,19 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     addDatatypeFilter(datatype) {
-        if (!this.searchSettings.datatypes)
-            this.searchSettings.datatypes = [];
+        if (!this.searchSettings.datatypes) this.searchSettings.datatypes = [];
         let index = this.searchSettings.datatypes.indexOf(datatype);
-        if (index > -1)
-            this.searchSettings.datatypes.splice(index, 1);
-        else
-            this.searchSettings.datatypes.push(datatype);
+        if (index > -1) this.searchSettings.datatypes.splice(index, 1);
+        else this.searchSettings.datatypes.push(datatype);
 
         this.doSearch();
     }
 
     addStatusFilter(status) {
-        if (!this.searchSettings.regStatuses)
-            this.searchSettings.regStatuses = [];
+        if (!this.searchSettings.regStatuses) this.searchSettings.regStatuses = [];
         let index = this.searchSettings.regStatuses.indexOf(status);
-        if (index > -1)
-            this.searchSettings.regStatuses.splice(index, 1);
-        else
-            this.searchSettings.regStatuses.push(status);
+        if (index > -1) this.searchSettings.regStatuses.splice(index, 1);
+        else this.searchSettings.regStatuses.push(status);
 
         this.doSearch();
     }
@@ -170,18 +163,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.searchSettings.selectedOrg = orgName;
             }
         } else {
-            if (this.altClassificationFilterMode)
-                this.searchSettings.classificationAlt.length = 0;
-            else
-                this.searchSettings.classification.length = 0;
+            if (this.altClassificationFilterMode) this.searchSettings.classificationAlt.length = 0;
+            else this.searchSettings.classification.length = 0;
         }
         delete this.aggregations.groups;
         if (this.isSearched()) {
             this.doSearch();
-            if (!this.embedded)
-                SearchBaseComponent.focusClassification();
-        } else
-            this.reset();
+            if (!this.embedded) SearchBaseComponent.focusClassification();
+        } else this.reset();
     }
 
     browseOrg(orgName) {
@@ -190,16 +179,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.searchSettings.selectedOrg = orgName;
 
         this.doSearch();
-        if (!this.embedded)
-            BrowserService.scrollTo('top');
+        if (!this.embedded) BrowserService.scrollTo('top');
     }
 
     browseTopic(topic) {
         this.searchSettings.meshTree = topic;
 
         this.doSearch();
-        if (!this.embedded)
-            BrowserService.scrollTo('top');
+        if (!this.embedded) BrowserService.scrollTo('top');
     }
 
     browseByTopic(event) {
@@ -210,8 +197,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     clearSelectedClassifications() {
         this.searchSettings.selectedOrg = null;
-        if (this.searchSettings.classification)
-            this.searchSettings.classification.length = 0;
+        if (this.searchSettings.classification) this.searchSettings.classification.length = 0;
 
         if (this.hasSelectedClassificationsAlt()) {
             this.searchSettings.selectedOrg = this.searchSettings.selectedOrgAlt;
@@ -227,8 +213,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     clearSelectedClassificationsAlt() {
         this.altClassificationFilterMode = false;
         this.searchSettings.selectedOrgAlt = null;
-        if (this.searchSettings.classificationAlt)
-            this.searchSettings.classificationAlt.length = 0;
+        if (this.searchSettings.classificationAlt) this.searchSettings.classificationAlt.length = 0;
 
         this.doSearch();
     }
@@ -306,27 +291,26 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     generateSearchForTerm(pageNumber = null) {
         // TODO: replace with router
         let searchTerms: any = {};
-        if (this.searchSettings.q)
-            searchTerms.q = this.searchSettings.q;
-        if (this.searchSettings.regStatuses && this.searchSettings.regStatuses.length > 0)
+        if (this.searchSettings.q) searchTerms.q = this.searchSettings.q;
+        if (this.searchSettings.regStatuses && this.searchSettings.regStatuses.length > 0) {
             searchTerms.regStatuses = this.searchSettings.regStatuses.join(';');
-        if (this.searchSettings.datatypes && this.searchSettings.datatypes.length > 0)
+        }
+        if (this.searchSettings.datatypes && this.searchSettings.datatypes.length > 0) {
             searchTerms.datatypes = this.searchSettings.datatypes.join(';');
-        if (this.searchSettings.selectedOrg)
-            searchTerms.selectedOrg = this.searchSettings.selectedOrg;
-        if (this.searchSettings.classification && this.searchSettings.classification.length > 0)
+        }
+        if (this.searchSettings.selectedOrg) searchTerms.selectedOrg = this.searchSettings.selectedOrg;
+        if (this.searchSettings.classification && this.searchSettings.classification.length > 0) {
             searchTerms.classification = this.searchSettings.classification.join(';');
-        if (this.searchSettings.selectedOrgAlt)
-            searchTerms.selectedOrgAlt = this.searchSettings.selectedOrgAlt;
-        if (this.altClassificationFilterMode)
-            if (this.searchSettings.classificationAlt && this.searchSettings.classificationAlt.length > 0)
+        }
+        if (this.searchSettings.selectedOrgAlt) searchTerms.selectedOrgAlt = this.searchSettings.selectedOrgAlt;
+        if (this.altClassificationFilterMode) {
+            if (this.searchSettings.classificationAlt && this.searchSettings.classificationAlt.length > 0) {
                 searchTerms.classificationAlt = this.searchSettings.classificationAlt.join(';');
-        if (pageNumber && pageNumber > 1)
-            searchTerms.page = pageNumber;
-        else if (this.searchSettings.page && this.searchSettings.page > 1)
-            searchTerms.page = this.searchSettings.page;
-        if (this.searchSettings.meshTree)
-            searchTerms.topic = this.searchSettings.meshTree;
+            }
+        }
+        if (pageNumber && pageNumber > 1) searchTerms.page = pageNumber;
+        else if (this.searchSettings.page && this.searchSettings.page > 1) searchTerms.page = this.searchSettings.page;
+        if (this.searchSettings.meshTree) searchTerms.topic = this.searchSettings.meshTree;
         if (this.byTopic && !this.isSearched()) searchTerms.byTopic = 1;
         return searchTerms;
     }
@@ -385,15 +369,15 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     // Create string representation of what filters are selected. Use the hasSelected...() first.
     getSelectedClassifications() {
         let result = this.searchSettings.selectedOrg;
-        if (this.searchSettings.classification && this.searchSettings.classification.length > 0)
+        if (this.searchSettings.classification && this.searchSettings.classification.length > 0) {
             result += ' > ' + this.searchSettings.classification.join(' > ');
+        }
         return result;
     }
 
     getSelectedClassificationsAlt() {
         let result = this.searchSettings.selectedOrgAlt;
-        if (this.searchSettings.classificationAlt.length > 0)
-            result += ' > ' + this.searchSettings.classificationAlt.join(' > ');
+        if (this.searchSettings.classificationAlt.length > 0) result += ' > ' + this.searchSettings.classificationAlt.join(' > ');
         return result;
     }
 
@@ -513,8 +497,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
             this.elasticService.generalSearchQuery(settings, this.module, (err: string, result: ElasticQueryResponse, corrected: boolean) => {
                 this.searchedTerm = this.searchSettings.q;
-                if (corrected && this.searchSettings.q)
-                    this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
+                if (corrected && this.searchSettings.q) this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
                 if (err) {
                     this.alert.addAlert('danger', 'There was a problem with your query');
                     this[this.module + 's'] = [];
@@ -617,7 +600,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                         orgsCreatedPromise.then(() => {
                             this.orgHelperService.then(() => {
                                 this.aggregations.orgs.buckets.forEach(org_t => {
-                                    if (this.orgHelperService.orgsDetailedInfo[org_t.key])
+                                    if (this.orgHelperService.orgsDetailedInfo[org_t.key]) {
                                         this.orgs.push({
                                             name: org_t.key,
                                             longName: this.orgHelperService.orgsDetailedInfo[org_t.key].longName,
@@ -626,6 +609,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                                             extraInfo: this.orgHelperService.orgsDetailedInfo[org_t.key].extraInfo,
                                             htmlOverview: this.orgHelperService.orgsDetailedInfo[org_t.key].htmlOverview
                                         });
+                                    }
                                 });
                                 this.orgs.sort(SearchBaseComponent.compareObjName);
                             });
@@ -643,8 +627,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                             this.topics[spli[0]].push({name: spli[1], count: term.doc_count});
                         });
                         for (let prop in this.topics) {
-                            if (this.topics.hasOwnProperty(prop))
-                                this.topicsKeys.push(prop);
+                            if (this.topics.hasOwnProperty(prop)) this.topicsKeys.push(prop);
                         }
                         this.topicsKeys.sort(SearchBaseComponent.compareObjName);
                     }
@@ -669,8 +652,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     scrollHistorySave() {
-        if (!this.backForwardService.isBackForward)
-            window.sessionStorage['nlmcde.scroll.' + this.previousUrl] = window.scrollY;
+        if (!this.backForwardService.isBackForward) window.sessionStorage['nlmcde.scroll.' + this.previousUrl] = window.scrollY;
     }
 
     search() {
@@ -702,10 +684,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     selectElement(e) {
-        if (this.altClassificationFilterMode && !this.searchSettings.classificationAlt)
-            this.searchSettings.classificationAlt = [];
-        if (!this.altClassificationFilterMode && !this.searchSettings.classification)
-            this.searchSettings.classification = [];
+        if (this.altClassificationFilterMode && !this.searchSettings.classificationAlt) this.searchSettings.classificationAlt = [];
+        if (!this.altClassificationFilterMode && !this.searchSettings.classification) this.searchSettings.classification = [];
 
         let classifToSelect = this.altClassificationFilterMode ? this.searchSettings.classificationAlt : this.searchSettings.classification;
         if (classifToSelect.length === 0) {
@@ -739,8 +719,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     switchView(view) {
-        if (this.view === view || view !== 'welcome' && view !== 'results')
-            return;
+        if (this.view === view || view !== 'welcome' && view !== 'results') return;
 
         this.view = view;
         if (this.view === 'welcome') {
@@ -775,18 +754,17 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
         if (this.searchSettings.meshTree) {
             let index = this.searchSettings.meshTree.indexOf(';');
-            if (index > -1)
-                index = this.searchSettings.meshTree.indexOf(';', index + 1);
-            if (index > -1)
-                this.searchSettings.meshTree = this.searchSettings.meshTree.substr(0, index);
+            if (index > -1) index = this.searchSettings.meshTree.indexOf(';', index + 1);
+            if (index > -1) this.searchSettings.meshTree = this.searchSettings.meshTree.substr(0, index);
         }
 
         this.doSearch();
     }
 
     typeaheadSelect (item) {
-        if (!this.embedded)
+        if (!this.embedded) {
             this.router.navigate([this.module === 'form' ? "formView" : "deView"], {queryParams: {tinyId: this.lastTypeahead[item.item]}});
+        }
         else this.reload();
     }
 

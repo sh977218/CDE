@@ -54,12 +54,10 @@ export class NativeTableComponent implements OnInit {
 
     getRows() {
         this.tableForm.rows = [];
-        if (!this.formElement.repeat)
-            throw 'Not a table';
+        if (!this.formElement.repeat) throw 'Not a table';
         if (this.formElement.repeat[0] === 'F') {
             this.firstQuestion = NativeRenderService.getFirstQuestion(this.formElement);
-            if (!this.firstQuestion)
-                return false;
+            if (!this.firstQuestion) return false;
             this.firstQuestion.question.answers.forEach((a, i) => {
                 this.tableForm.rows.push({label: this.nrs.getPvLabel(a)});
                 this.nrs.elt.formInput[i + '-' + this.firstQuestion.questionId] = a.permissibleValue;
@@ -70,10 +68,8 @@ export class NativeTableComponent implements OnInit {
         } else {
             let maxValue = parseInt(this.formElement.repeat);
             let format = '#.';
-            if (this.nrs.profile)
-                format = this.nrs.profile.repeatFormat;
-            if (!format)
-                format = "";
+            if (this.nrs.profile) format = this.nrs.profile.repeatFormat;
+            if (!format) format = "";
             for (let i = 0; i < maxValue; i++) {
                 this.tableForm.rows.push({label: format.replace(/\#/, (i + 1).toString())});
             }
@@ -156,8 +152,7 @@ export class NativeTableComponent implements OnInit {
         });
     }
     getSectionLevel(level) {
-        if (this.tableForm.s.length <= level)
-            this.tableForm.s[level] = {q: []};
+        if (this.tableForm.s.length <= level) this.tableForm.s[level] = {q: []};
         return this.tableForm.s[level];
     }
 
@@ -200,10 +195,8 @@ export class NativeTableComponent implements OnInit {
     static getQuestionType(fe) {
         switch (fe.question.datatype) {
             case 'Value List':
-                if (fe.question.multiselect)
-                    return 'mlist';
-                else
-                    return 'list';
+                if (fe.question.multiselect) return 'mlist';
+                else return 'list';
             case 'Date':
                 return 'date';
             case 'Number':
