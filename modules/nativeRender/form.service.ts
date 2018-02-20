@@ -27,6 +27,7 @@ export class FormService {
         q.question.cde.version = cde.version;
         q.question.datatype = cde.valueDomain.datatype;
         q.question.datatypeDate = cde.valueDomain.datatypeDate;
+        if (!q.question.datatypeDate) q.question.datatypeDate = {};
         q.question.datatypeNumber = cde.valueDomain.datatypeNumber;
         q.question.datatypeText = cde.valueDomain.datatypeText;
         if (cde.ids) {
@@ -62,7 +63,7 @@ export class FormService {
                     .subscribe((result) => {
                         convertPv(q, result);
                         cb(q);
-                    }, err => cb());
+                    }, () => cb());
                 return;
             } else {
                 convertPv(q, cde);

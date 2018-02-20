@@ -20,8 +20,10 @@ public class FormAddCdeTest extends QuestionTest {
         addCdeIdentifierById("question_0_1", "newCde2Source", "newCde2Id", "newCde2Version");
         editCdeDataTypeById("question_0_1", "Date");
 
-        addCdeNameById("question_0_2", "newCde3 second name", "newCde3 second definition", new String[]{"TEST", "Preferred Question Text"});
-        addCdeNameById("question_0_2", "newCde3 third name", "you should not see this definition", new String[]{"Preferred Question Text"});
+        addCdeNameById("question_0_2", "newCde3 second name", "newCde3 second definition",
+                new String[]{"TEST", "Preferred Question Text"});
+        addCdeNameById("question_0_2", "newCde3 third name", "you should not see this definition",
+                new String[]{"Preferred Question Text"});
         deleteCdeNameById("question_0_2", 3);
         addCdeIdentifierById("question_0_2", "newCde3Source", "newCde3Id", "newCde3Version");
         addCdeIdentifierById("question_0_2", "newCde3Source3", "newCde3Id3", "newCde3Version3");

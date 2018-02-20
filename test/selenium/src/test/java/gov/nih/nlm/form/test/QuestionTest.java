@@ -77,7 +77,8 @@ public class QuestionTest extends BaseFormTest {
                 String selectTagXpath = "//span[contains(@class,'select2-results')]/ul//li[text()='" + newTag + "']";
                 clickElement(By.xpath(tagsInputXpath));
                 clickElement(By.xpath(selectTagXpath));
-                textPresent(newTag, By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]//*[@class='newCdeName']//*[contains(@class,'newCdeTags')]//*[@class='select2-selection__rendered']"));
+                textPresent(newTag, By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]" +
+                        "//*[@class='newCdeName']//*[contains(@class,'newCdeTags')]//*[@class='select2-selection__rendered']"));
             }
         }
         clickElement(By.xpath(preXpath + "//*[contains(@class,'fa fa-plus')]"));
