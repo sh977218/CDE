@@ -80,14 +80,14 @@ export class FormTermMappingComponent implements OnInit {
         this.mapping.eltId = this.elt.tinyId;
         this.flatMeshSimpleTrees = [];
         this.http.get<any>('/meshByEltId/' + this.elt.tinyId).subscribe(response => {
-            if (!response)
-                return this.alert.addAlert('danger', 'There was an issue getting Mesh Terms.');
+            if (!response) return this.alert.addAlert('danger', 'There was an issue getting Mesh Terms.');
 
             if (response.eltId) this.mapping = response;
             if (response.flatTrees) {
                 response.flatTrees.forEach(t => {
-                    if (this.flatMeshSimpleTrees.indexOf(t.split(';').pop()) === -1)
+                    if (this.flatMeshSimpleTrees.indexOf(t.split(';').pop()) === -1) {
                         this.flatMeshSimpleTrees.push(t.split(';').pop());
+                    }
                 });
             }
             this.mapping.meshDescriptors.forEach(desc => {
