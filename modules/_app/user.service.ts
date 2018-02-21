@@ -20,7 +20,7 @@ export class UserService {
                     catchError(() => of([]))
                 )
             )
-        );
+        )
     user: any;
     userOrgs: any[] = [];
 
@@ -55,8 +55,7 @@ export class UserService {
         if (this.user.orgAdmin) {
             this.userOrgs = this.user.orgAdmin.slice(0);
             this.user.orgCurator.forEach(c => {
-                if (this.userOrgs.indexOf(c) < 0)
-                    this.userOrgs.push(c);
+                if (this.userOrgs.indexOf(c) < 0) this.userOrgs.push(c);
             });
         }
     }

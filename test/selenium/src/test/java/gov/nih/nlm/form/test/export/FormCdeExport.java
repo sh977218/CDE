@@ -27,6 +27,7 @@ public class FormCdeExport extends NlmCdeBaseTest {
                 "\"Insomnia Severity Index (ISI) - worry distress measurement\",\"How worried distressed are you about your current sleep problem?\",\"Value List\",\"0; 1; 2; 3; 4\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C09382 v3; NINDS Variable Name: ISIWorDistMeasr\""
         };
         try {
+            hangon(2);
             String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/FormCdes-Xy910Dz6f.csv")));
             for (String s : expected) {
                 if (!actual.contains(s)) {
@@ -37,7 +38,8 @@ public class FormCdeExport extends NlmCdeBaseTest {
                 }
             }
         } catch (IOException e) {
-            Assert.fail("Exception reading FormCdes-Xy910Dz6f.csv");
+            e.printStackTrace();
+            Assert.fail("Exception reading FormCdes-Xy910Dz6f.csv -- " + e);
         }
 
 

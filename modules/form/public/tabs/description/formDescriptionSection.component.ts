@@ -51,17 +51,13 @@ export class FormDescriptionSectionComponent implements OnInit {
         this.parent = this.node.parent.data;
         this.section.repeatOption = FormDescriptionSectionComponent.getRepeatOption(this.section);
         this.section.repeatNumber = FormDescriptionSectionComponent.getRepeatNumber(this.section);
-        if (!this.section.instructions)
-            this.section.instructions = new FormattedValue;
-        if (!this.section.skipLogic)
-            this.section.skipLogic = new SkipLogic;
+        if (!this.section.instructions) this.section.instructions = new FormattedValue;
+        if (!this.section.skipLogic) this.section.skipLogic = new SkipLogic;
 
         if (this.node.data.elementType === "form") {
-            if (isSubForm(this.node.parent))
-                this.isSubForm = isSubForm(this.node);
+            if (isSubForm(this.node.parent)) this.isSubForm = isSubForm(this.node);
         } else {
-            if (isSubForm(this.node))
-                this.isSubForm = isSubForm(this.node);
+            if (isSubForm(this.node)) this.isSubForm = isSubForm(this.node);
         }
 
         this.checkRepeatOptions();
@@ -72,9 +68,10 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     checkRepeatOptions() {
-        if (this.section.repeat && this.section.repeat[0] === "F" && !NativeRenderService.getFirstQuestion(this.section))
+        if (this.section.repeat && this.section.repeat[0] === "F" && !NativeRenderService.getFirstQuestion(this.section)) {
             this.alert.addAlert('danger',
                 this.section.label + " Repeat on First Question: Value List is not available.");
+        }
     }
 
     removeNode(node) {
@@ -84,12 +81,9 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     static getRepeatOption(section) {
-        if (!section.repeat)
-            return "";
-        if (section.repeat[0] === "F")
-            return "F";
-        else
-            return "N";
+        if (!section.repeat) return "";
+        if (section.repeat[0] === "F") return "F";
+        else return "N";
     }
 
     static getRepeatNumber(section) {
@@ -100,7 +94,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         text$.pipe(
             debounceTime(300),
             map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.section)),
-        );
+        )
 
     getTemplate() {
         return (this.section.elementType === "section" ? this.formDescriptionSectionTmpl : this.formDescriptionFormTmpl);
@@ -112,8 +106,7 @@ export class FormDescriptionSectionComponent implements OnInit {
             this.onEltChange.emit();
         } else if (section.repeatOption === "N") {
             section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
-            if (section.repeat > 0)
-                this.onEltChange.emit();
+            if (section.repeat > 0) this.onEltChange.emit();
         }
         else {
             section.repeat = undefined;
@@ -123,19 +116,18 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     getRepeatLabel(section) {
-        if (!section.repeat)
-            return "";
-        if (section.repeat[0] === "F")
-            return "over First Question";
+        if (!section.repeat) return "";
+        if (section.repeat[0] === "F") return "over First Question";
 
         return parseInt(section.repeat) + " times";
     }
 
     slOptionsRetrigger() {
-        if (this.slInput)
+        if (this.slInput) {
             setTimeout(() => {
                 this.slInput.nativeElement.dispatchEvent(FormDescriptionSectionComponent.inputEvent);
             }, 0);
+        }
     }
 
     typeaheadSkipLogic(parent, fe, event) {

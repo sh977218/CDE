@@ -54,12 +54,10 @@ export class NativeTableComponent implements OnInit {
 
     getRows() {
         this.tableForm.rows = [];
-        if (!this.formElement.repeat)
-            throw 'Not a table';
+        if (!this.formElement.repeat) throw 'Not a table';
         if (this.formElement.repeat[0] === 'F') {
             this.firstQuestion = NativeRenderService.getFirstQuestion(this.formElement);
-            if (!this.firstQuestion)
-                return false;
+            if (!this.firstQuestion) return false;
             this.firstQuestion.question.answers.forEach((a, i) => {
                 this.tableForm.rows.push({label: this.nrs.getPvLabel(a)});
                 this.nrs.elt.formInput[i + '-' + this.firstQuestion.questionId] = a.permissibleValue;
@@ -70,10 +68,8 @@ export class NativeTableComponent implements OnInit {
         } else {
             let maxValue = parseInt(this.formElement.repeat);
             let format = '#.';
-            if (this.nrs.profile)
-                format = this.nrs.profile.repeatFormat;
-            if (!format)
-                format = "";
+            if (this.nrs.profile) format = this.nrs.profile.repeatFormat;
+            if (!format) format = "";
             for (let i = 0; i < maxValue; i++) {
                 this.tableForm.rows.push({label: format.replace(/\#/, (i + 1).toString())});
             }
@@ -84,8 +80,7 @@ export class NativeTableComponent implements OnInit {
     renderSection(s, level, sectionName, r = 1, c = 0) {
         let sectionStyle = this.getSectionStyle(this.sectionNumber++);
         let section = {header: true, cspan: c, label: s.label, style: sectionStyle.sectionStyle};
-        if (level === 0)
-            section.label = "";
+        if (level === 0) section.label = "";
         this.tableForm.s[level].q.push(section);
         let tcontent = this.getSectionLevel(level + 1);
         let retr = 0;
@@ -157,14 +152,12 @@ export class NativeTableComponent implements OnInit {
     setDepth(r) {
         this.tableForm.s.forEach((s, level) => {
             s.q.forEach(q => {
-                if (!q.header)
-                    q.rspan = r - level;
+                if (!q.header) q.rspan = r - level;
             });
         });
     }
     getSectionLevel(level) {
-        if (this.tableForm.s.length <= level)
-            this.tableForm.s[level] = {q: []};
+        if (this.tableForm.s.length <= level) this.tableForm.s[level] = {q: []};
         return this.tableForm.s[level];
     }
 

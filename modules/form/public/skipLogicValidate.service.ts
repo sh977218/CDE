@@ -19,8 +19,7 @@ export class SkipLogicValidateService {
                     if (i % 4 === 0 && token === '"' + oldLabel + '"') {
                         updateSkipLogic = true;
                         result = true;
-                        if (newLabel)
-                            tokens[i] = '"' + newLabel + '"';
+                        if (newLabel) tokens[i] = '"' + newLabel + '"';
                     }
                 });
                 if (newLabel && updateSkipLogic) {
@@ -66,8 +65,7 @@ export class SkipLogicValidateService {
 
     static getTypeaheadOptionsAnswer(parent: FormElementsContainer, fe: FormElement, questionName: string): string[] {
         let q = SkipLogicService.getQuestionPriorByLabel(parent, fe, questionName.substring(1, questionName.length - 1));
-        if (!q)
-            return [];
+        if (!q) return [];
 
         if (q.question.datatype === 'Value List') {
             return q.question.answers.map(a => SkipLogicService.tokenSanitizer(a.permissibleValue))
@@ -102,8 +100,7 @@ export class SkipLogicValidateService {
             skipLogic.validationError = 'Unexpected token: ' + tokens.unmatched;
             return false;
         }
-        if (tokens.length === 0)
-            return true;
+        if (tokens.length === 0) return true;
         if (tokens.length % 4 !== 3) {
             skipLogic.validationError = 'Unexpected number of tokens in expression ' + tokens.length;
             return false;

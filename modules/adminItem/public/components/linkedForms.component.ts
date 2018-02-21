@@ -19,7 +19,7 @@ export class LinkedFormsComponent {
     modalRef: NgbModalRef;
 
     constructor(private elasticService: ElasticService,
-                public modalService: NgbModal) {};
+                public modalService: NgbModal) {}
 
     getFormText () {
         if (!this.forms || this.forms.length === 0) {

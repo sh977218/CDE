@@ -36,8 +36,7 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     public value: string;
     public localFormat: string;
 
-    constructor(private elementRef: ElementRef) {
-    };
+    constructor(private elementRef: ElementRef) {}
 
     ngOnInit(): void {
         this.value = _cloneDeep(this.model);
@@ -82,7 +81,7 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
             }
         }
         return false;
-    };
+    }
 
     confirmSave() {
         if (InlineAreaEditComponent.isInvalidHtml(this.value)) {

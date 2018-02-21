@@ -20,8 +20,7 @@ export class LinkedBoardsComponent {
         private alert: AlertService,
         private http: HttpClient,
         public modalService: NgbModal,
-    ) {
-    };
+    ) {}
 
     openLinkedBoardsModal() {
         this.http.get<any>('/deBoards/' + this.elt.tinyId).subscribe(response => {

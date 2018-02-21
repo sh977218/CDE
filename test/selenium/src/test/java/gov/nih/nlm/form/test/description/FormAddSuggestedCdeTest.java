@@ -10,7 +10,7 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
         String form = "formAddSuggestedCdeTest";
         String cdeName1 = "brocco";
         String cdeName2 = "Adverse event track num";
-        String cdeName3 = "Gastrointestinal therapy continuous";
+        String cdeName3 = "Gastrointestinal therapy continuous feed start";
         String cdeName4 = "Diary day headache indic";
         mustBeLoggedInAs(nlm_username, nlm_username);
         goToFormByName(form);

@@ -3,7 +3,6 @@ import { Injectable } from "@angular/core";
 
 import { ElasticQueryResponse } from 'shared/models.model';
 
-
 @Injectable()
 export class MyBoardsService {
     boards: any[];
@@ -43,8 +42,7 @@ export class MyBoardsService {
                 this.filter.suggestTags = res.aggregations.tagAgg.buckets.map(t => t.key);
             }
             this.reloading = false;
-            if (type)
-                this.boards = this.boards.filter(b => b.type === type);
+            if (type) this.boards = this.boards.filter(b => b.type === type);
         });
     }
 

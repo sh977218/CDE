@@ -52,7 +52,7 @@ public class UomValidation extends BaseFormTest {
         textNotPresent("international inch");
 
         clickElement(By.id("openSave"));
-        textPresent("Please fix all errors before publishing");
+        checkAlert("Please fix all errors before publishing");
         textPresent("errors need to be corrected");
         textPresent("Unit of Measure error on question \"If Yes, what are the number of CAG repeats on the larger allele\".");
         clickElement(By.partialLinkText("If Yes, what are the number of CAG repeats on the larger allele"));

@@ -147,9 +147,12 @@ export class ExportService {
         let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
 
         for (let qCde of getFormCdes(form)) {
-            const cde = await this.http.get('/de/' + qCde.tinyId).toPromise();
-            result += SharedService.exportShared.convertToCsv(
-                SharedService.exportShared.projectCdeForExport(cde, settings.tableViewFields));
+            const cde = await this.http.get('/de/' + qCde.tinyId).toPromise().catch(() => {});
+            if (!cde) result += "\n";
+            else {
+                result += SharedService.exportShared.convertToCsv(
+                    SharedService.exportShared.projectCdeForExport(cde, settings.tableViewFields));
+            }
         }
 
         if (result) {
