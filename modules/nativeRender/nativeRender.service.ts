@@ -15,7 +15,6 @@ export class NativeRenderService {
     elt: CdeForm;
     private errors: string[] = [];
     followForm: any;
-    form: CdeForm;
     flatMapping: any;
     profile: DisplayProfile;
     vm: any;

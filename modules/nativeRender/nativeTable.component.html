@@ -72,15 +72,13 @@
                 <div *ngIf="q.type === 'date'" class="native-table-cell" style="min-width: 135px;">
                     <div class="input-group">
                         <input class="form-control native-table-box"
+                               type="{{datePrecisionToType[formElement.question.datatypeDate.precision]}}"
+                               step="{{datePrecisionToStep[formElement.question.datatypeDate.precision]}}"
                                [title]="n.label"
                                [name]="ni + q.name"
                                [attr.name]="ni + q.name"
                                [(ngModel)]="nrs.elt.formInput[ni + q.name]"
-                               ngbDatepicker #d1="ngbDatepicker"
                                [required]="q.question.required" [disabled]="!q.question.editable">
-                        <div class="input-group-addon" (click)="d1.toggle()" >
-                            <i class="fa fa-calendar" style="font-size: .95em; vertical-align: 5%" aria-hidden="true"></i>
-                        </div>
                     </div>
                 </div>
                 <div *ngIf="q.type === 'number'" class="native-table-cell" style="min-width: 80px;">
