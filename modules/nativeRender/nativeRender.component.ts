@@ -97,19 +97,19 @@ export class NativeRenderComponent implements OnInit {
         this.ready && this.nrs.render(this.nrs.nativeRenderType);
     }
     @Input() set profile(p: DisplayProfile) {
-        this._profile = p;
-        this.ready && this.nrs.selectProfile(this._profile, this._nativeRenderType);
+        this.profileCache = p;
+        this.ready && this.nrs.selectProfile(this.profileCache, this.nativeRenderTypeCache);
     }
     @Input() set nativeRenderType(userType) {
-        this._nativeRenderType = userType;
+        this.nativeRenderTypeCache = userType;
         if (this.ready) {
-            this.nrs.nativeRenderType = this._nativeRenderType;
+            this.nrs.nativeRenderType = this.nativeRenderTypeCache;
         }
     }
     @Input() submitForm: boolean;
     @Input() showTitle: boolean = true;
-    _nativeRenderType: string;
-    _profile: DisplayProfile;
+    nativeRenderTypeCache: string;
+    profileCache: DisplayProfile;
     endpointUrl: string;
     formUrl: string;
     readonly NRS = NativeRenderService;
@@ -117,7 +117,7 @@ export class NativeRenderComponent implements OnInit {
 
     ngOnInit() {
         this.ready = true;
-        this.nrs.selectProfile(this._profile, this._nativeRenderType);
+        this.nrs.selectProfile(this.profileCache, this.nativeRenderTypeCache);
     }
 
     constructor(private sanitizer: DomSanitizer,
