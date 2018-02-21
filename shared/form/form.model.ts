@@ -10,7 +10,6 @@ import {
     copyArray,
 } from 'shared/models.model';
 import { iterateFeSync } from 'shared/form/formShared';
-import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 
 export class CdeForm extends Elt implements FormElementsContainer {
     copyright: { // mutable
@@ -60,29 +59,21 @@ export class CdeForm extends Elt implements FormElementsContainer {
 
     static validate(elt: CdeForm) {
         elt.displayProfiles.forEach(dp => {
-            if (!dp.unitsOfMeasureAlias)
-                dp.unitsOfMeasureAlias = [];
+            if (!dp.unitsOfMeasureAlias) dp.unitsOfMeasureAlias = [];
         });
         iterateFeSync(elt,
             form => {
-                if (!Array.isArray(form.formElements))
-                    form.formElements = [];
+                if (!Array.isArray(form.formElements)) form.formElements = [];
             },
             section => {
-                if (!Array.isArray(section.formElements))
-                    section.formElements = [];
+                if (!Array.isArray(section.formElements)) section.formElements = [];
             },
             q => {
-                if (!Array.isArray(q.formElements))
-                    q.formElements = [];
-                if (!Array.isArray(q.question.answers))
-                    q.question.answers = [];
-                if (!Array.isArray(q.question.unitsOfMeasure))
-                    q.question.unitsOfMeasure = [];
-                if (!Array.isArray(q.question.cde.permissibleValues))
-                    q.question.cde.permissibleValues = [];
-                if (!Array.isArray(q.question.cde.derivationRules))
-                    q.question.cde.derivationRules = [];
+                if (!Array.isArray(q.formElements)) q.formElements = [];
+                if (!Array.isArray(q.question.answers)) q.question.answers = [];
+                if (!Array.isArray(q.question.unitsOfMeasure)) q.question.unitsOfMeasure = [];
+                if (!Array.isArray(q.question.cde.permissibleValues)) q.question.cde.permissibleValues = [];
+                if (!Array.isArray(q.question.cde.derivationRules)) q.question.cde.derivationRules = [];
             }
         );
     }
@@ -324,7 +315,8 @@ export class QuestionCde {
 }
 
 class QuestionTypeDate {
-    format: string;
+    format?: string;
+    precision?: string;
 
     static copy(q: QuestionTypeDate) {
         return Object.assign(new QuestionTypeDate(), q);

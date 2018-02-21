@@ -56,6 +56,12 @@
                 <span *ngFor="let pv of question.question.answers" class="badge badge-secondary formViewSummaryLabel"
                       style="background-color: #666" [textContent]="pv?.valueMeaningName"></span>
             </div>
+            <div *ngIf="question.question.datatype?.toLowerCase() === 'date' && question.question.datatypeDate.precision !== 'Day'"
+                 class="defaultAnswer">
+                <span class="formViewQuestionLabel">Precision:</span>
+                <span class="badge badge-secondary formViewSummaryLabel"
+                      style="background-color: #666">{{question.question.datatypeDate.precision}}</span>
+            </div>
             <div *ngIf="question.question.defaultAnswer && question.question.defaultAnswer.length > 0"
                  class="defaultAnswer">
                 <span class="formViewQuestionLabel">Default Answer:</span>
@@ -91,6 +97,21 @@
                     [isAllowed]="true" (modelChange)="onEltChange.emit()">
             </cde-inline-area-edit>
         </dd>
+        <ng-container *ngIf="question.question.datatype?.toLowerCase() === 'date'">
+            <dt class="col-2 font-weight-bold">Date Precision:</dt>
+            <dd class="col-10">
+                <select [(ngModel)]="question.question.datatypeDate.precision"
+                        class="form-control" style="width: fit-content">
+                    <option>Year</option>
+                    <option>Month</option>
+                    <option>Day</option>
+                    <option>Hour</option>
+                    <option>Minute</option>
+                    <option>Second</option>
+                </select>
+
+            </dd>
+        </ng-container>
         <dt class="col-2">Required:</dt>
         <dd class="col-10">
             <input type="checkbox" title="Required" [(ngModel)]="question.question.required"

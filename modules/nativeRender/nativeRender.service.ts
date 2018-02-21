@@ -61,13 +61,12 @@ export class NativeRenderService {
             if (Array.isArray(f.question.answers)) {
                 for (let i = 0; i < f.question.answers.length; i++) {
                     let answer = f.question.answers[i];
-                    if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue))
+                    if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue)) {
                         f.question.answers.splice(i--, 1);
+                    }
                     else {
-                        if (answer.formElements)
-                            answer.formElements = undefined;
-                        if (answer.index)
-                            answer.index = undefined;
+                        if (answer.formElements) answer.formElements = undefined;
+                        if (answer.index) answer.index = undefined;
                     }
                 }
             }
@@ -128,8 +127,7 @@ export class NativeRenderService {
     }
 
     addError(msg: string) {
-        if (this.errors.indexOf(msg) === -1)
-            this.errors.push(msg);
+        if (this.errors.indexOf(msg) === -1) this.errors.push(msg);
     }
     hasErrors() {
         return !!this.errors.length;
@@ -148,18 +146,15 @@ export class NativeRenderService {
 
     checkboxOnChange($event: any, model: any, value: any) {
         model = NativeRenderService.checkboxNullCheck(model);
-        if ($event.target.checked)
-            model.answer.push(value);
-        else
-            model.answer.splice(model.answer.indexOf(value), 1);
+        if ($event.target.checked) model.answer.push(value);
+        else model.answer.splice(model.answer.indexOf(value), 1);
     }
     checkboxIsChecked(model: any, value: any) {
         model = NativeRenderService.checkboxNullCheck(model);
         return (model.answer.indexOf(value) !== -1);
     }
     static checkboxNullCheck(model: any) {
-        if (!Array.isArray(model.answer))
-            model.answer = [];
+        if (!Array.isArray(model.answer)) model.answer = [];
         return model;
     }
 
@@ -171,10 +166,8 @@ export class NativeRenderService {
 
     static cloneFes(newFes: FormElement[], oldFes: FormElement[]) {
         for (let i = 0, size = newFes.length; i < size; i++) {
-            if (newFes[i].elementType === 'question')
-                (newFes[i] as FormQuestion).question = (oldFes[i] as FormQuestion).question;
-            else
-                NativeRenderService.cloneFes(newFes[i].formElements, oldFes[i].formElements);
+            if (newFes[i].elementType === 'question') (newFes[i] as FormQuestion).question = (oldFes[i] as FormQuestion).question;
+            else NativeRenderService.cloneFes(newFes[i].formElements, oldFes[i].formElements);
         }
     }
 
@@ -200,8 +193,7 @@ export class NativeRenderService {
                         } else {
                             let answers = parentQ.question.answers.filter(a => a.permissibleValue === match[3]);
                             let answer;
-                            if (answers.length)
-                                answer = answers[0];
+                            if (answers.length) answer = answers[0];
                             if (answer) {
                                 if (!answer.formElements) answer.formElements = [];
                                 answer.formElements.push(fe);
@@ -243,8 +235,7 @@ export class NativeRenderService {
                 && NativeRenderService.transformFormToInline(fe)) {
                     (fe as FormSectionOrForm).forbidMatrix = true;
             }
-            if (fe.skipLogic)
-                fe.skipLogic = undefined;
+            if (fe.skipLogic) fe.skipLogic = undefined;
         }
         return transformed;
     }
@@ -253,10 +244,7 @@ export class NativeRenderService {
         let values = JSON.parse(JSON.stringify(v));
         values.forEach(function (e, i, a) {
             if (e === "") {
-                if (isValuelist)
-                    a[i] = 'none';
-                else
-                    a[i] = 'empty';
+                a[i] = isValuelist ? 'none' : 'empty';
             }
         });
         switch (oper) {
@@ -285,20 +273,18 @@ export class NativeRenderService {
 
     static assignValueListRows(formElements: FormElement[]) {
         formElements && formElements.forEach(function (fe) {
-            if (fe.elementType === 'section' || fe.elementType === 'form')
-                return NativeRenderService.assignValueListRows(fe.formElements);
+            if (fe.elementType === 'section' || fe.elementType === 'form') return NativeRenderService.assignValueListRows(fe.formElements);
 
             if ((fe as FormQuestion).question && (fe as FormQuestion).question.answers) {
                 let index = -1;
                 (fe as FormQuestion).question.answers.forEach(function (pv: PermissibleFormValue, i, a) {
                     if (NativeRenderService.hasOwnRow(pv) || index === -1 && (i + 1 < a.length
-                            && NativeRenderService.hasOwnRow(a[i + 1]) || i + 1 === a.length))
+                            && NativeRenderService.hasOwnRow(a[i + 1]) || i + 1 === a.length)) {
                         pv.index = index = -1;
-                    else
-                        pv.index = ++index;
+                    }
+                    else pv.index = ++index;
 
-                    if (pv.formElements)
-                        NativeRenderService.assignValueListRows(pv.formElements);
+                    if (pv.formElements) NativeRenderService.assignValueListRows(pv.formElements);
                 });
             }
         });
@@ -334,8 +320,7 @@ export class NativeRenderService {
             let questions = [];
             let output: any;
             for (let i = 0; i < repeats; i++) {
-                if (repeats > 1)
-                    repeatNum = ' #' + i;
+                if (repeats > 1) repeatNum = ' #' + i;
                 fe.formElements.forEach( feIter => {
                     output = flattenFormFe(feIter, sectionHeading.concat(feIter.label), sectionName + (repeats > 1 ? i + '-' : ""), repeatNum);
 
@@ -378,10 +363,10 @@ export class NativeRenderService {
         }
 
         function flattenFormFe(fe, sectionHeading, sectionName, repeatNum) {
-            if (fe.elementType === 'question')
-                return flattenFormQuestion(fe, sectionHeading, sectionName, repeatNum);
-            if (fe.elementType === 'section' || fe.elementType === 'form')
+            if (fe.elementType === 'question') return flattenFormQuestion(fe, sectionHeading, sectionName, repeatNum);
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
                 return flattenFormSection(fe, sectionHeading, sectionName, repeatNum);
+            }
         }
     }
 
@@ -389,8 +374,7 @@ export class NativeRenderService {
         let firstQuestion: FormQuestion;
         while (fe) {
             if (fe.elementType !== 'question') {
-                if (!fe.formElements && fe.formElements.length > 0)
-                    break;
+                if (!fe.formElements && fe.formElements.length > 0) break;
                 fe = fe.formElements[0];
             } else {
                 firstQuestion = fe;
@@ -398,8 +382,7 @@ export class NativeRenderService {
             }
         }
 
-        if (!firstQuestion || firstQuestion.question.datatype !== 'Value List')
-            return null;
+        if (!firstQuestion || firstQuestion.question.datatype !== 'Value List') return null;
 
         return firstQuestion;
     }
@@ -408,8 +391,7 @@ export class NativeRenderService {
         if (fe.repeat) {
             if (fe.repeat[0] === 'F') {
                 let firstQ = NativeRenderService.getFirstQuestion(fe);
-                if (firstQ && firstQ.question.answers)
-                    return firstQ.question.answers.length;
+                if (firstQ && firstQ.question.answers) return firstQ.question.answers.length;
                 return 0;
             } else {
                 let maxValue = parseInt(fe.repeat);

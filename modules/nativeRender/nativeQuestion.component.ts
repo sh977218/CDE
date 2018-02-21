@@ -7,7 +7,6 @@ import { CodeAndSystem } from 'shared/models.model';
 import { FormQuestion } from 'shared/form/form.model';
 import { score } from 'shared/form/formShared';
 
-
 @Component({
     selector: 'cde-native-question',
     templateUrl: './nativeQuestion.component.html',
@@ -38,23 +37,36 @@ export class NativeQuestionComponent implements OnInit {
     @Input() numSubQuestions: number;
     @Input() parentValue: any;
     @Input() index: any;
-    hasTime: boolean;
     NRS = NativeRenderService;
     previousUom: CodeAndSystem;
-    static readonly reHasTime = /[hHmsSkaAZ]/;
+    // static readonly reHasTime = /[hHmsSkaAZ]/;
     score = score;
 
-    ngOnInit() {
-        this.hasTime = this.formElement.question.datatypeDate
-            ? !!NativeQuestionComponent.reHasTime.exec(this.formElement.question.datatypeDate.format) : false;
+    datePrecisionToType = {
+        Year: 'Number',
+        Month: 'month',
+        Day: 'date',
+        Hour: 'datetime-local',
+        Minute: 'datetime-local',
+        Second: 'datetime-local'
+    };
+    datePrecisionToStep = {
+        Year: null,
+        Month: null,
+        Day: null,
+        Hour: 3600,
+        Minute: null,
+        Second: 1
+    };
+
+    ngOnInit () {
         this.previousUom = this.formElement.question.answerUom;
     }
 
     constructor(
         private http: HttpClient,
         public nrs: NativeRenderService
-    ) {
-    }
+    ) {}
 
     classColumns(pvIndex, index) {
         let result = "";
@@ -80,8 +92,7 @@ export class NativeQuestionComponent implements OnInit {
             }
         }
 
-        if (this.isFirstInRow(pvIndex !== undefined ? pvIndex : index))
-            result += ' clear';
+        if (this.isFirstInRow(pvIndex !== undefined ? pvIndex : index)) result += ' clear';
         return result;
     }
 
@@ -127,22 +138,20 @@ export class NativeQuestionComponent implements OnInit {
             && question.elementType === 'question' && question.question.datatype !== 'Value List';
     }
 
-    updateDateTime() {
-        let d = this.formElement.question.answerDate;
-        let t = this.formElement.question.answerTime;
-        if (!d)
-            return this.formElement.question.answer = '';
-        if (!t)
-            t = {hour: 0, minute: 0, second: 0};
-
-        let m = moment([d.year, d.month - 1, d.day, t.hour, t.minute, t.second]);
-        if (m.isValid()) {
-            if (this.formElement.question.datatypeDate && this.formElement.question.datatypeDate.format)
-                this.formElement.question.answer = m.format(this.formElement.question.datatypeDate.format);
-            else
-                this.formElement.question.answer = m.format('YYYY-MM-DDTHH:mm:ssZ');
-        } else {
-            this.formElement.question.answer = '';
-        }
-    }
+    // updateDateTime() {
+    //     let d = this.formElement.question.answerDate;
+    //     let t = this.formElement.question.answerTime;
+    //     if (!d) return this.formElement.question.answer = '';
+    //     if (!t) t = {hour: 0, minute: 0, second: 0};
+    //
+    //     let m = moment([d.year, d.month - 1, d.day, t.hour, t.minute, t.second]);
+    //     if (m.isValid()) {
+    //         if (this.formElement.question.datatypeDate && this.formElement.question.datatypeDate.format) {
+    //             this.formElement.question.answer = m.format(this.formElement.question.datatypeDate.format);
+    //         }
+    //         else this.formElement.question.answer = m.format('YYYY-MM-DDTHH:mm:ssZ');
+    //     } else {
+    //         this.formElement.question.answer = '';
+    //     }
+    // }
 }

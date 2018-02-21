@@ -1,7 +1,6 @@
 package gov.nih.nlm.system;
 
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.logging.LogEntries;
@@ -16,9 +15,12 @@ import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 import static gov.nih.nlm.system.NlmCdeBaseTest.driver;
 
@@ -47,6 +49,7 @@ public class ScreenShotListener extends TestListenerAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         try {
             driver.get(NlmCdeBaseTest.baseUrl);
             System.out.println("Alert TEXT: " + driver.switchTo().alert().getText());

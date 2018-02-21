@@ -363,10 +363,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.searchTerms.next(this.newDataElement.naming[0].designation);
     }
 
-    createNewDataElement(newCde = this.newDataElement, c) {
-        this.addQuestionFromSearch(newCde, () => {
-            c();
-        });
+    createNewDataElement(newCde = this.newDataElement, cb) {
+        this.addQuestionFromSearch(newCde, cb);
     }
 
     setCurrentEditing(formElements, formElement, index) {

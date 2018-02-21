@@ -44,10 +44,8 @@ export class DisplayProfileComponent implements OnInit {
 
     addProfile() {
         let newProfile = new DisplayProfile("New Profile");
-        if (!this.elt.displayProfiles)
-            this.elt.displayProfiles = [newProfile];
-        else
-            this.elt.displayProfiles.push(newProfile);
+        if (!this.elt.displayProfiles) this.elt.displayProfiles = [newProfile];
+        else this.elt.displayProfiles.push(newProfile);
         this.dPVMs.push(DisplayProfileComponent.dPVMNew(newProfile));
         this.onEltChange.emit();
     }
@@ -83,8 +81,7 @@ export class DisplayProfileComponent implements OnInit {
                         resourceCount++;
                         this.ucumService.getUnitNames(u.code, names => {
                             this.saveAliases(this.uoms, u, names);
-                            if (--resourceCount === 0)
-                                resolve();
+                            if (--resourceCount === 0) resolve();
                         });
                     });
                 }
@@ -118,12 +115,10 @@ export class DisplayProfileComponent implements OnInit {
     }
 
     profileUomsEditCreate(dPVM: DisplayProfileVM) {
-        if (!dPVM)
-            return;
+        if (!dPVM) return;
 
         this.getUoms().then(() => {
-            if (dPVM.aliases && dPVM.aliases.date === this.uomsDate)
-                return;
+            if (dPVM.aliases && dPVM.aliases.date === this.uomsDate) return;
 
             for (let u of dPVM.profile.unitsOfMeasureAlias) {
                 if (!this.uoms.filter(a => a.u.compare(u.unitOfMeasure))
@@ -460,6 +455,7 @@ export class DisplayProfileComponent implements OnInit {
                         "formElements": [],
                         "question": {
                             "datatype": "DATE",
+                            "datatypeDate": {"precision": "Month"},
                             "answers": [],
                             "editable": true,
                             "required": false,
