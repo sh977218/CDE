@@ -60,7 +60,7 @@ export const getCdeCsvHeader = function (settings) {
 };
 
 export const projectFormForExport = function (ele) {
-    var form = {
+    const form = {
         name: ele.naming[0].designation
         , ids: ele.ids.map(function (id) {
             return id.source + ": " + id.id + (id.version ? " v" + id.version : "");

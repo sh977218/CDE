@@ -92,7 +92,7 @@ export class FormClassificationComponent {
     }
 
     getChildren(formElements, ids) {
-        if (formElements)
+        if (formElements) {
             formElements.forEach(formElement => {
                 if (formElement.elementType === 'section' || formElement.elementType === 'form') {
                     this.getChildren(formElement.formElements, ids);
@@ -103,6 +103,7 @@ export class FormClassificationComponent {
                     });
                 }
             });
+        }
     }
 
     openClassifyItemModal() {

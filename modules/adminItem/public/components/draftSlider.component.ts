@@ -70,9 +70,10 @@ import ToggleSwitch from "../../../../node_modules/js-toggle-switch/dist/toggle-
 })
 export class DraftSliderComponent implements OnInit {
     @Input() set isDraft(isDraft: boolean) {
-        if (isDraft !== undefined && isDraft !== this.draftSliderElem.nativeElement.checked)
+        if (isDraft !== undefined && isDraft !== this.draftSliderElem.nativeElement.checked) {
             setTimeout(() => { this.draftToggle.toggle(); }, 100);
-    };
+        }
+    }
     @Output() isDraftChange = new EventEmitter<boolean>();
     @ViewChild("sliderInput") public draftSliderElem: ElementRef;
     @ViewChild("sliderParent") public draftSliderParent: ElementRef;

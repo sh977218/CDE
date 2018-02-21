@@ -74,8 +74,7 @@ export class ServerStatusComponent implements OnInit {
             this.http.get<any>('/syncWithMesh').subscribe(response => {
                 this.meshSyncs = [];
                 for (let p in response) {
-                    if (response.hasOwnProperty(p))
-                        this.meshSyncs.push(response[p]);
+                    if (response.hasOwnProperty(p)) this.meshSyncs.push(response[p]);
                 }
                 if (response.dataelement.done === response.dataelement.total
                     && response.form.done === response.form.total) {

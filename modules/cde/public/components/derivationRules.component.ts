@@ -59,8 +59,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
 
     canAddScore() {
         if (!this.isAllowedModel.isAllowed(this.elt)) return false;
-        if (this.elt.derivationRules)
-            return this.elt.derivationRules.filter(derRule => derRule.ruleType === 'score').length < 1;
+        if (this.elt.derivationRules) return this.elt.derivationRules.filter(derRule => derRule.ruleType === 'score').length < 1;
         else return true;
     }
 
@@ -70,8 +69,9 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
             this.http.get<any>('/cde/derivationOutputs/' + this.elt.tinyId).subscribe(result => {
                 result.forEach(outputCde => {
                     outputCde.derivationRules.forEach(derRule => {
-                        if (derRule.inputs.indexOf(this.elt.tinyId) > -1)
+                        if (derRule.inputs.indexOf(this.elt.tinyId) > -1) {
                             this.elt.derivationOutputs.push({ruleName: derRule.name, cde: outputCde});
+                        }
                     });
                 });
             });
@@ -115,26 +115,31 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
             return true;
         }
         this.quickBoardService.dataElements.forEach((qbElt: any) => {
-            if (qbElt.tinyId === this.elt.tinyId)
+            if (qbElt.tinyId === this.elt.tinyId) {
                 this.invalidCdeMessage = 'You are trying to add a CDE to itself. Please edit your Quick Board.';
+            }
         });
         this.quickBoardService.dataElements.forEach((qbElt: any) => {
             if (qbElt.valueDomain.datatype === 'Number') return;
-            if (qbElt.valueDomain.datatype === 'Value List')
+            if (qbElt.valueDomain.datatype === 'Value List') {
                 qbElt.valueDomain.permissibleValues.forEach((pv: any) => {
-                    if (isNaN(pv.permissibleValue)) this.invalidCdeMessage = 'CDE ' + qbElt.naming[0].designation +
-                        ' contains a Permissible Value that is not a number. It may not be added to a score.';
+                    if (isNaN(pv.permissibleValue)) {
+                        this.invalidCdeMessage = 'CDE ' + qbElt.naming[0].designation +
+                            ' contains a Permissible Value that is not a number. It may not be added to a score.';
+                    }
                 });
-            else this.invalidCdeMessage = 'CDE ' + qbElt.naming[0].designation +
-                " has a datatype other than 'Number' and may not be added to a score";
+            }
+            else {
+                this.invalidCdeMessage = 'CDE ' + qbElt.naming[0].designation +
+                    " has a datatype other than 'Number' and may not be added to a score";
+            }
         });
     }
 
     updateRules() {
         if (this.elt.derivationRules) {
             this.elt.derivationRules.forEach((dr: any) => {
-                if (dr.inputs[0] !== null)
-                    this.http.post('/cdesByTinyIdList', dr.inputs).subscribe(data => dr.fullCdes = data);
+                if (dr.inputs[0] !== null) this.http.post('/cdesByTinyIdList', dr.inputs).subscribe(data => dr.fullCdes = data);
             });
         }
     }

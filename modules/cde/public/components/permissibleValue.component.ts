@@ -189,18 +189,22 @@ export class PermissibleValueComponent {
             this.pVTypeheadVsacNameList = [];
             this.http.get('/vsacBridge/' + dec.conceptualDomain.vsac.id).subscribe(
                 res => {
-                    let data = res['ns0:RetrieveValueSetResponse'];
-                    if (data) {
-                        this.elt.dataElementConcept.conceptualDomain.vsac.name = data['ns0:ValueSet'][0]['$'].displayName;
-                        this.elt.dataElementConcept.conceptualDomain.vsac.version = data['ns0:ValueSet'][0]['$'].version;
-                        for (let i = 0; i < data['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
-                            let vsac = data['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$'];
-                            this.vsacValueSet.push(vsac);
-                            this.pVTypeheadVsacNameList.push(vsac.displayName);
+                    if (!res || !res['ns0:RetrieveValueSetResponse']) {
+                        this.Alert.addAlert('danger', 'Error: No data retrieved from VSAC.');
+                    } else {
+                        let data = res['ns0:RetrieveValueSetResponse'];
+                        if (data) {
+                            this.elt.dataElementConcept.conceptualDomain.vsac.name = data['ns0:ValueSet'][0]['$'].displayName;
+                            this.elt.dataElementConcept.conceptualDomain.vsac.version = data['ns0:ValueSet'][0]['$'].version;
+                            for (let i = 0; i < data['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
+                                let vsac = data['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$'];
+                                this.vsacValueSet.push(vsac);
+                                this.pVTypeheadVsacNameList.push(vsac.displayName);
+                            }
+                            this.validateVsacWithPv();
+                            this.validatePvWithVsac();
                         }
-                        this.validateVsacWithPv();
-                        this.validatePvWithVsac();
-                    } else this.Alert.addAlert('danger', 'Error: No data retrieved from VSAC.');
+                    }
                 }, () => this.Alert.addAlert('danger', 'Error querying VSAC'));
         }
         this.canLinkPvFunc();

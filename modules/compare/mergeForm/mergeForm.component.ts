@@ -77,13 +77,11 @@ export class MergeFormComponent {
             this.numMergedQuestions = index;
             next();
         }, (err) => {
-            if (err)
-                return this.alert.addAlert('danger', err);
+            if (err) return this.alert.addAlert('danger', err);
             else {
                 if (this.mergeFormService.error.ownSourceForm) {
                     this.left.changeNote = 'Merge to tinyId ' + this.right.tinyId;
-                    if (this.isAllowedModel.isAllowed(this.left))
-                        this.left.registrationState.registrationStatus = 'Retired';
+                    if (this.isAllowedModel.isAllowed(this.left)) this.left.registrationState.registrationStatus = 'Retired';
                     this.mergeFormService.saveForm(this.left, (err) => {
                         if (err) this.alert.addAlert('danger', 'Can not save source form.');
                         else {

@@ -8,7 +8,7 @@
   "display": "fullscreen",
   "icons": [
     {
-      "src": "/cde/public/assets/img/nih-cde-logo.png",
+      "src": "/cde/public/assets/img/NIH-CDE-FHIR.png",
       "sizes": "512x512"
     }
   ]

@@ -25,8 +25,7 @@ export class SaveModalComponent {
         private alert: AlertService,
         public http: HttpClient,
         public modalService: NgbModal,
-    ) {
-    }
+    ) {}
 
     confirmSave() {
         this.modalRef.close();
@@ -36,10 +35,8 @@ export class SaveModalComponent {
     newVersionVersionUnicity(newVersion = null) {
         if (newVersion === null) newVersion = this.elt.version;
         let url;
-        if (this.elt.elementType === 'cde')
-            url = '/de/' + this.elt.tinyId + '/latestVersion/';
-        if (this.elt.elementType === 'form')
-            url = '/form/' + this.elt.tinyId + '/latestVersion/';
+        if (this.elt.elementType === 'cde') url = '/de/' + this.elt.tinyId + '/latestVersion/';
+        if (this.elt.elementType === 'form') url = '/form/' + this.elt.tinyId + '/latestVersion/';
         this.http.get(url, {responseType: 'text'}).subscribe(
             res => {
                 if (res && newVersion && _isEqual(res, newVersion)) {
@@ -55,7 +52,7 @@ export class SaveModalComponent {
         this.newCdes = [];
         this.newVersionVersionUnicity();
         if (this.elt) this.elt.changeNote = '';
-        if (this.elt.elementType === 'form' && this.elt.isDraft)
+        if (this.elt.elementType === 'form' && this.elt.isDraft) {
             iterateFormElements(this.elt, {
                 async: true,
                 questionCb: (fe, cb) => {
@@ -74,6 +71,7 @@ export class SaveModalComponent {
             }, () => {
                 this.modalRef = this.modalService.open(this.updateElementContent, {container: 'body', size: 'lg'});
             });
+        }
         else this.modalRef = this.modalService.open(this.updateElementContent, {container: 'body', size: 'lg'});
     }
 }

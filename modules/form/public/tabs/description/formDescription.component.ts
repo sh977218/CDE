@@ -74,12 +74,10 @@ const TOOL_BAR_OFF_SET = 55;
             margin-top: 2px;
             white-space: normal;
         }
-        
         :host >>> .node-content-wrapper:hover {
             background: transparent;
             box-shadow: inset 0 0 0;
         }
-        
         .node-content-wrapper.is-dragging-over {
             background-color: #ddffee;
             box-shadow: inset 0 0 1px #999;
@@ -138,6 +136,7 @@ const TOOL_BAR_OFF_SET = 55;
         }
     `]
 })
+
 export class FormDescriptionComponent implements OnInit, AfterViewInit {
     private _elt: CdeForm;
     @Input() canEdit: boolean = false;
@@ -219,8 +218,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     doIt() {
-        if (this && this.descToolbox && this.descToolbox.nativeElement)
-            this.descToolbox.nativeElement.style.top = (window.pageYOffset > TOOL_BAR_OFF_SET ? 0 : (TOOL_BAR_OFF_SET - window.pageYOffset)) + 'px';
+        if (this && this.descToolbox && this.descToolbox.nativeElement) {
+            this.descToolbox.nativeElement.style.top = (window.pageYOffset > TOOL_BAR_OFF_SET ? 0
+                : (TOOL_BAR_OFF_SET - window.pageYOffset)) + 'px';
+        }
     }
 
     ngOnInit(): void {
@@ -247,10 +248,11 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             })
         ).subscribe(res => {
             let tinyIdList = res.map(r => r._id).slice(0, 5);
-            if (tinyIdList && tinyIdList.length > 0)
+            if (tinyIdList && tinyIdList.length > 0) {
                 this.http.get<any[]>('/deList/' + tinyIdList).subscribe(result => {
                     this.suggestedCdes = result;
                 }, err => this.alert.httpErrorMessageAlert(err));
+            }
             else this.suggestedCdes = [];
         });
     }
@@ -267,8 +269,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         private http: HttpClient,
         private localStorageService: LocalStorageService,
         public modalService: NgbModal,
-    ) {
-    }
+    ) {}
 
     addExpanded(fe) {
         fe.expanded = true;
@@ -301,10 +302,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             let newPreId = preId + '_' + i;
             if (fe.elementType === 'section' || fe.elementType === 'form') {
                 fe.descriptionId = (fe.elementType === 'section' ? 'section' + newPreId : 'inform' + newPreId);
-                if (fe.formElements && fe.formElements.length > 0)
-                    this.addIds(fe.formElements, newPreId);
-            } else if (fe.elementType === 'question')
-                fe.descriptionId = 'question' + newPreId;
+                if (fe.formElements && fe.formElements.length > 0) this.addIds(fe.formElements, newPreId);
+            } else if (fe.elementType === 'question') fe.descriptionId = 'question' + newPreId;
         });
     }
 

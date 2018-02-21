@@ -28,7 +28,7 @@ export class ServerErrorsComponent implements OnInit {
             this.excludeFilters.push(toAdd.trim());
             this.gotoPage();
         }
-    };
+    }
 
     gotoPage () {
         this.http.post<ServerErrorRecord[]>('/getServerErrors', {
@@ -37,5 +37,5 @@ export class ServerErrorsComponent implements OnInit {
         }).subscribe(response => {
             this.records = response;
         });
-    };
+    }
 }
