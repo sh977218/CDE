@@ -76,7 +76,7 @@
             </div>
             <div class="col-lg-7 col-sm-12">
                 <div class="displayProfileRenderDiv" style="border: dashed 1px; zoom:60%; padding: 0 15px;">
-                    <cde-native-render [elt]="dPVM.sample" [profile]="dPVM.profile"></cde-native-render>
+                    <cde-native-render [elt]="dPVM.sample" [profile]="dPVM.profile" nativeRenderType="default"></cde-native-render>
                 </div>
                 <div class="card mt-1">
                     <div class="card-header hand-cursor hoverEdit" (click)="dPVM.aliases.edit=!dPVM.aliases.edit;dPVM.aliases.edit && profileUomsEditCreate(dPVM)">

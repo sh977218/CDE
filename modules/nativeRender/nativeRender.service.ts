@@ -65,6 +65,12 @@ export class NativeRenderService {
     }
 
     set nativeRenderType(userType) {
+        if (userType === 'default') {
+            if (!this.profile) {
+                this.profileSet();
+            }
+            userType = this.profile.displayType;
+        }
         if (this.nativeRenderType !== userType
             && (userType === NativeRenderService.SHOW_IF || userType === NativeRenderService.FOLLOW_UP)) {
             if (this.elt) {
