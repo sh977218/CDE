@@ -22,6 +22,22 @@ export class NativeRenderService {
 
     constructor(public skipLogicService: SkipLogicService) {}
 
+    getAliases(f: FormQuestion) {
+        if (this.profile) {
+            f.question.uomsAlias = [];
+            f.question.unitsOfMeasure.forEach(u => {
+                let aliases = this.profile.unitsOfMeasureAlias.filter(a => a.unitOfMeasure.compare(u));
+                if (aliases.length) {
+                    f.question.uomsAlias.push(aliases[0].alias);
+                } else {
+                    f.question.uomsAlias.push(u.code);
+                }
+            });
+        } else {
+            f.question.uomsAlias = f.question.unitsOfMeasure.map(u => u.code);
+        }
+    }
+
     static isRadioOrCheckbox(fe: FormQuestion) { // returns true for radio and false for checkbox
         return !fe.question.multiselect && !(fe.question.answers.length === 1 && !fe.question.required);
     }
@@ -71,20 +87,7 @@ export class NativeRenderService {
                 }
             }
 
-            // alias
-            if (this.profile) {
-                f.question.uomsAlias = [];
-                f.question.unitsOfMeasure.forEach(u => {
-                    let aliases = this.profile.unitsOfMeasureAlias.filter(a => a.unitOfMeasure.compare(u));
-                    if (aliases.length) {
-                        f.question.uomsAlias.push(aliases[0].alias);
-                    } else {
-                        f.question.uomsAlias.push(u.code);
-                    }
-                });
-            } else {
-                f.question.uomsAlias = f.question.unitsOfMeasure.map(u => u.code);
-            }
+            this.getAliases(f);
 
             // answers
             if (f.question.unitsOfMeasure && f.question.unitsOfMeasure.length === 1) {
@@ -113,6 +116,7 @@ export class NativeRenderService {
             this.profile = new DisplayProfile("Default Config");
         }
 
+        iterateFeSync(this.elt, undefined, undefined, this.getAliases.bind(this));
         this.nativeRenderType = overrideType || this.profile.displayType;
     }
 

@@ -94,6 +94,7 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
 export class NativeRenderComponent implements OnInit {
     @Input() set elt(e: CdeForm) {
         this.nrs.setElt(e);
+        this.ready && this.nrs.render(this.nrs.nativeRenderType);
     }
     @Input() set profile(p: DisplayProfile) {
         this._profile = p;
