@@ -91,34 +91,21 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
     `],
     providers: [NativeRenderService]
 })
-export class NativeRenderComponent implements OnInit {
+export class NativeRenderComponent {
     @Input() set elt(e: CdeForm) {
-        this.nrs.setElt(e);
-        this.ready && this.nrs.render(this.nrs.nativeRenderType);
+        this.nrs.eltSet(e);
     }
     @Input() set profile(p: DisplayProfile) {
-        this.profileCache = p;
-        this.ready && this.nrs.selectProfile(this.profileCache, this.nativeRenderTypeCache);
+        this.nrs.profileSet(p);
     }
     @Input() set nativeRenderType(userType) {
-        this.nativeRenderTypeCache = userType;
-        if (this.ready) {
-            this.nrs.nativeRenderType = this.nativeRenderTypeCache;
-        }
+        this.nrs.nativeRenderType = userType;
     }
     @Input() submitForm: boolean;
     @Input() showTitle: boolean = true;
-    nativeRenderTypeCache: string;
-    profileCache: DisplayProfile;
     endpointUrl: string;
     formUrl: string;
     readonly NRS = NativeRenderService;
-    ready = false;
-
-    ngOnInit() {
-        this.ready = true;
-        this.nrs.selectProfile(this.profileCache, this.nativeRenderTypeCache);
-    }
 
     constructor(private sanitizer: DomSanitizer,
                 public nrs: NativeRenderService) {

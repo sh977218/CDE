@@ -21,6 +21,21 @@ export class NativeRenderService {
 
     constructor(public skipLogicService: SkipLogicService) {}
 
+    eltSet(elt) {
+        if (elt !== this.elt) {
+            this.elt = elt;
+            this.followForm = null;
+            if (!this.elt.formInput) {
+                this.elt.formInput = [];
+            }
+            this.flatMapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
+            if (this.nativeRenderType) {
+                this.render(this.nativeRenderType);
+                this.vm = this.nativeRenderType === NativeRenderService.SHOW_IF ? this.elt : this.followForm;
+            }
+        }
+    }
+
     getAliases(f: FormQuestion) {
         if (this.profile) {
             f.question.uomsAlias = [];
@@ -50,12 +65,28 @@ export class NativeRenderService {
     }
 
     set nativeRenderType(userType) {
-        if (this.elt && this.nativeRenderType !== userType
+        if (this.nativeRenderType !== userType
             && (userType === NativeRenderService.SHOW_IF || userType === NativeRenderService.FOLLOW_UP)) {
-            this.render(userType);
+            if (this.elt) {
+                this.render(userType);
+            }
             this._nativeRenderType = userType;
             this.vm = this.nativeRenderType === NativeRenderService.SHOW_IF ? this.elt : this.followForm;
         }
+    }
+
+    profileSet(profile = null) {
+        if (profile) {
+            this.profile = profile;
+        }
+        if (this.elt && this.elt.displayProfiles && this.elt.displayProfiles.length > 0 &&
+            this.elt.displayProfiles.indexOf(this.profile) === -1) {
+            this.profile = this.elt.displayProfiles[0];
+        }
+        if (!this.profile) {
+            this.profile = new DisplayProfile("Default Config");
+        }
+        iterateFeSync(this.elt, undefined, undefined, this.getAliases.bind(this));
     }
 
     radioButtonSelect(question: Question, value: string) {
@@ -67,8 +98,9 @@ export class NativeRenderService {
     }
 
     render(renderType) {
-        if (!this.elt)
+        if (!this.elt) {
             return;
+        }
 
         // Pre-Transform Processing
         iterateFeSync(this.elt, undefined, undefined, (f: FormQuestion) => {
@@ -101,31 +133,6 @@ export class NativeRenderService {
             this.followForm = NativeRenderService.cloneForm(this.elt);
             NativeRenderService.transformFormToInline(this.followForm);
             NativeRenderService.assignValueListRows(this.followForm.formElements);
-        }
-    }
-
-    selectProfile(profile = null, overrideType = undefined) {
-        if (profile)
-            this.profile = profile;
-        if (this.elt && this.elt.displayProfiles && this.elt.displayProfiles.length > 0 &&
-            this.elt.displayProfiles.indexOf(this.profile) === -1) {
-            this.profile = this.elt.displayProfiles[0];
-        }
-        if (!this.profile) {
-            this.profile = new DisplayProfile("Default Config");
-        }
-
-        iterateFeSync(this.elt, undefined, undefined, this.getAliases.bind(this));
-        this.nativeRenderType = overrideType || this.profile.displayType;
-    }
-
-    setElt(elt) {
-        if (elt !== this.elt) {
-            this.elt = elt;
-            this.followForm = null;
-            if (!this.elt.formInput)
-                this.elt.formInput = [];
-            this.flatMapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
         }
     }
 
