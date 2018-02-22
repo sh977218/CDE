@@ -150,9 +150,16 @@ export class DisplayProfileComponent implements OnInit {
         }
     }
 
-    setDisplayType(profile: DisplayProfile, $event) {
+    setDisplayType(dPVM: DisplayProfileVM, $event) {
+        let profile = DisplayProfile.copy(dPVM.profile);
         profile.displayType = $event.target.checked ? 'Follow-up' : 'Dynamic';
+        this.substituteProfile(dPVM, profile);
         this.onEltChange.emit();
+    }
+
+    substituteProfile(dPVM: DisplayProfileVM, profile: DisplayProfile) {
+        this.elt.displayProfiles[this.elt.displayProfiles.indexOf(dPVM.profile)] = profile;
+        this.dPVMs.filter(p => p === dPVM)[0].profile = profile;
     }
 
     onChange(p: DisplayProfile, event) {

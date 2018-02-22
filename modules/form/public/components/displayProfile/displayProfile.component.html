@@ -47,7 +47,7 @@
                     <dd class="col-sm-7 ">
                         <input type="checkbox" [disabled]="!canEdit" id="displayType_{{index}}"
                                [checked]="dPVM.profile.displayType === 'Follow-up'"
-                               (change)="setDisplayType(dPVM.profile, $event)">
+                               (change)="setDisplayType(dPVM, $event)">
                     </dd>
                     <dt class="col-sm-5">Number of Columns:</dt>
                     <dd class="col-sm-7 ">
