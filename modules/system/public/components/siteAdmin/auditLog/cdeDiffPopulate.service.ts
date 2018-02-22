@@ -124,14 +124,15 @@ export class CdeDiffPopulateService {
 
     comparePaths (patternPath, realPath) {
         let equal = true;
-        if (patternPath)
+        if (patternPath) {
             patternPath.forEach((el, i) => {
                 if (typeof el === "number" && el === -1) return;
                 if (el === realPath[i]) equal = equal && true;
                 else equal = false;
             });
+        }
         return equal;
-    };
+    }
 
     stringify (obj) {
         try {
@@ -143,12 +144,12 @@ export class CdeDiffPopulateService {
         } catch (e) {
             return "";
         }
-    };
+    }
 
     stringifyClassif (obj) {
         if (obj && obj.elements) return " > " + obj.name + this.stringifyClassif(obj.elements[0]);
         else return "";
-    };
+    }
 
     public makeHumanReadable (change) {
         if (!change) return;
@@ -180,10 +181,11 @@ export class CdeDiffPopulateService {
             if (change.item && change.item.rhs) change.newValue = this.stringifyClassif(change.item.rhs);
             return;
         }
-        if (this.pathFieldMap[change.path.length])
+        if (this.pathFieldMap[change.path.length]) {
             this.pathFieldMap[change.path.length].forEach(pathPair => {
                 if (this.comparePaths(pathPair.path, change.path)) change.fieldName = pathPair.fieldName;
             });
-    };
+        }
+    }
 
 }

@@ -17,10 +17,8 @@ export class NativeSectionComponent {
     }
 
     sectionType() {
-        if (this.formElement.repeat && this.formElement.repeat !== '1')
-            return 'table';
-        if (this.nrs.profile.sectionsAsMatrix && this.canBeDisplayedAsMatrix(this.formElement))
-            return 'matrix';
+        if (this.formElement.repeat && this.formElement.repeat !== '1') return 'table';
+        if (this.nrs.profile.sectionsAsMatrix && this.canBeDisplayedAsMatrix(this.formElement)) return 'matrix';
         return 'section';
     }
 
@@ -36,8 +34,7 @@ export class NativeSectionComponent {
         let result = true;
         let answerHash;
 
-        if (section && section.formElements && section.formElements.length === 0)
-            return false;
+        if (section && section.formElements && section.formElements.length === 0) return false;
         section && section.formElements && section.formElements.forEach(function (formElem) {
             if (formElem.elementType !== 'question') {
                 return result = false;
@@ -45,8 +42,9 @@ export class NativeSectionComponent {
                 if (formElem.question.datatype !== 'Value List') {
                     return result = false;
                 }
-                if (formElem.question.answers.length === 0 || !formElem.question.answers[0].valueMeaningName)
+                if (formElem.question.answers.length === 0 || !formElem.question.answers[0].valueMeaningName) {
                     return result = false;
+                }
                 if (!answerHash) {
                     answerHash = JSON.stringify(formElem.question.answers.map(function (a) {
                         return a.valueMeaningName;
@@ -59,8 +57,7 @@ export class NativeSectionComponent {
                 }
             }
         });
-        if (section.forbidMatrix)
-            return false;
+        if (section.forbidMatrix) return false;
         return result;
     }
 

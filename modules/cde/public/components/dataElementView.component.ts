@@ -100,8 +100,7 @@ export class DataElementViewComponent implements OnInit {
                 this.deId = this.elt._id;
                 this.userService.then(() => {
                     let user = this.userService.user;
-                    if (user && user.username)
-                        checkPvUnicity(this.elt.valueDomain);
+                    if (user && user.username) checkPvUnicity(this.elt.valueDomain);
                     this.setDisplayStatusWarning();
                     if (cb) cb(this.elt);
                 });
@@ -237,7 +236,7 @@ export class DataElementViewComponent implements OnInit {
 
     removeDraft() {
         this.http.delete('/draftDataElement/' + this.elt.tinyId, {responseType: 'text'})
-            .subscribe(res => {
+            .subscribe(() => {
                 this.drafts = [];
                 this.loadDataElement(null);
             }, err => this.alert.httpErrorMessageAlert(err));

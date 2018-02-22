@@ -115,12 +115,12 @@ export class OrgClassificationManagementComponent implements OnInit {
             let _treeNode = node;
             while (_treeNode.parent) {
                 _treeNode = _treeNode.parent;
-                if (!_treeNode.data.virtual)
-                    classificationArray.unshift(_treeNode.data.name);
+                if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
             }
             classificationArray.forEach((c, i) => {
-                if (i < classificationArray.length - 1)
+                if (i < classificationArray.length - 1) {
                     this.selectedClassificationArray = this.selectedClassificationArray.concat('<span> ' + c + ' </span> ->');
+                }
                 else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
             });
         } else this.selectedClassificationArray = ' <strong> ' + this.selectedOrg.name + ' </strong>';
@@ -153,12 +153,13 @@ export class OrgClassificationManagementComponent implements OnInit {
         let indexFn = setInterval(() => {
             this.http.get<any>('/jobStatus/' + type).subscribe(
                 res => {
-                    if (res.done === true)
+                    if (res.done === true) {
                         this.onChangeOrg(this.selectedOrg.name, () => {
                             this.tree.treeModel.update();
                             clearInterval(indexFn);
                             if (cb) cb();
                         });
+                    }
                 });
         }, 5000);
     }
@@ -196,12 +197,12 @@ export class OrgClassificationManagementComponent implements OnInit {
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual)
-                classificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
         }
         classificationArray.forEach((c, i) => {
-            if (i < classificationArray.length - 1)
+            if (i < classificationArray.length - 1) {
                 this.selectedClassificationArray = this.selectedClassificationArray.concat('<span> ' + c + ' </span> ->');
+            }
             else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
         });
         this.modalService.open(this.deleteClassificationContent).result.then(result => {
@@ -229,13 +230,13 @@ export class OrgClassificationManagementComponent implements OnInit {
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual)
-                classificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
         }
         this.mapping.flatClassification = [this.selectedOrg.name].concat(classificationArray).join(';');
         classificationArray.forEach((c, i) => {
-            if (i < classificationArray.length - 1)
+            if (i < classificationArray.length - 1) {
                 this.selectedClassificationArray = this.selectedClassificationArray.concat('<span> ' + c + ' </span> ->');
+            }
             else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
         });
         this.modalService.open(this.mapClassificationMeshContent)
@@ -261,15 +262,16 @@ export class OrgClassificationManagementComponent implements OnInit {
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual)
-                classificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
         }
         classificationArray.forEach((c, i) => {
-            if (i < classificationArray.length - 1)
+            if (i < classificationArray.length - 1) {
                 this.selectedClassificationArray = this.selectedClassificationArray.concat(c + ' / ');
+            }
             else this.selectedClassificationArray = this.selectedClassificationArray.concat(c);
         });
-        this.selectedClassificationArray = 'Classify CDEs in Bulk   <p>Classify all CDEs classified by <strong> ' + this.selectedClassificationArray + ' </strong> with new classification(s).</p>';
+        this.selectedClassificationArray = 'Classify CDEs in Bulk   <p>Classify all CDEs classified by <strong> ' +
+            this.selectedClassificationArray + ' </strong> with new classification(s).</p>';
         this.oldReclassificationArray = classificationArray;
         this.reclassifyComponent.openModal();
     }
@@ -309,8 +311,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual)
-                classificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
         }
         let newClassification = {
             orgName: this.selectedOrg.name,
@@ -329,8 +330,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual)
-                classificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
         }
         return '/cde/search?selectedOrg=' + encodeURIComponent(orgName) +
             '&classification=' + encodeURIComponent(classificationArray.join(';'));

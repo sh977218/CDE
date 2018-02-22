@@ -41,7 +41,7 @@ const URL_MAP = {
             color: black;
             background: #bbffbb;
         }
-        
+
         :host >>> del {
             color: black;
             background: #ffbbbb;
@@ -118,8 +118,9 @@ export class CompareSideBySideComponent implements OnInit {
                 });
                 option.leftNotMatches = _differenceWith(l, r, option.notMatchFn);
                 option.rightNotMatches = _differenceWith(r, l, option.notMatchFn);
-                if (option.leftNotMatches.length > 0 || option.rightNotMatches.length > 0)
+                if (option.leftNotMatches.length > 0 || option.rightNotMatches.length > 0) {
                     option.displayAs.display = true;
+                }
             });
             cb();
         }, err => this.alert.httpErrorMessageAlert(err));
@@ -665,15 +666,17 @@ export class CompareSideBySideComponent implements OnInit {
             let v = value.map(v => _get(v, d.properties.property));
             if (!_isEmpty(v)) return d.properties.label + ': ' + v;
             else return '';
-        } else if (_isArray(value))
+        } else if (_isArray(value)) {
             return JSON.stringify(value);
+               }
         else return value;
     }
 
     openCompareSideBySideContent() {
         let selectedDEs = this.elements.filter(d => d.checked);
-        if (this.elements.length === 2)
+        if (this.elements.length === 2) {
             selectedDEs = this.elements;
+        }
         if (selectedDEs.length !== 2) {
             this.alert.addAlert('warning', 'Please select only two elements to compare.');
             return;
