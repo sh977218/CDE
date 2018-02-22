@@ -12,6 +12,7 @@ export class NativeRenderService {
     static readonly SHOW_IF: string = 'Dynamic';
     static readonly FOLLOW_UP: string = 'Follow-up';
     private _nativeRenderType: string = undefined;
+    private _nativeRenderTypeOn: boolean;
     elt: CdeForm;
     private errors: string[] = [];
     followForm: any;
@@ -66,6 +67,7 @@ export class NativeRenderService {
 
     set nativeRenderType(userType) {
         if (userType === 'default') {
+            this._nativeRenderTypeOn = false;
             if (!this.profile) {
                 this.profileSet();
             }
@@ -93,6 +95,9 @@ export class NativeRenderService {
             this.profile = new DisplayProfile("Default Config");
         }
         iterateFeSync(this.elt, undefined, undefined, this.getAliases.bind(this));
+        if (this._nativeRenderTypeOn === false) {
+            this.nativeRenderType = this.profile.displayType;
+        }
     }
 
     radioButtonSelect(question: Question, value: string) {
@@ -306,7 +311,7 @@ export class NativeRenderService {
         });
     }
 
-    static hasOwnRow(e) {
+    static hasOwnRow(e: PermissibleFormValue): boolean {
         return !!e.formElements;
     }
 
