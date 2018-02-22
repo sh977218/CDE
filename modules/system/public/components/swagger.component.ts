@@ -13,8 +13,7 @@ export class SwaggerComponent implements AfterViewInit {
             if (!window.frames['swaggerFrame']
                 || !window.frames['swaggerFrame'].contentDocument
                 || !window.frames['swaggerFrame'].contentDocument.body
-                || window.frames['swaggerFrame'].contentDocument.body.innerText.indexOf('swagger') === -1)
-                return;
+                || window.frames['swaggerFrame'].contentDocument.body.innerText.indexOf('swagger') === -1) return;
 
             let cssLink = window.document.createElement("link");
             cssLink.href = "/swagger/public/swagger.css";

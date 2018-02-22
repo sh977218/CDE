@@ -105,9 +105,11 @@ export class ClassifyItemModalComponent {
         this.orgClassificationsRecentlyAddView = null;
         if (this.selectedOrg) {
             this.onChangeOrg(this.selectedOrg);
-        } else this.userService.then(() => {
-            if (this.userService.userOrgs.length === 1) this.onChangeOrg(this.userService.userOrgs[0]);
-        });
+        } else {
+            this.userService.then(() => {
+                if (this.userService.userOrgs.length === 1) this.onChangeOrg(this.userService.userOrgs[0]);
+            });
+        }
         return this.modalService.open(this.classifyItemContent);
     }
 }

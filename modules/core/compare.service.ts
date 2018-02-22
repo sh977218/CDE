@@ -196,5 +196,5 @@ export class CompareService {
             }
         });
         return option;
-    };
+    }
 }

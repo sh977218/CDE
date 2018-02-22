@@ -10,7 +10,7 @@ import { UserService } from '_app/user.service';
 @Component({
     selector: 'cde-login',
     templateUrl: 'login.component.html',
-    styles: [`        
+    styles: [`
         .form-signin {
             max-width: 330px;
             padding: 15px;

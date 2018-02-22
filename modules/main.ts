@@ -1,6 +1,5 @@
 import 'zone.js';
-if (!PRODUCTION)
-    require('../node_modules/zone.js/dist/long-stack-trace-zone.js');
+if (!PRODUCTION) require('../node_modules/zone.js/dist/long-stack-trace-zone.js');
 // reflect-metadata needed before enableProdMode for IE
 import 'reflect-metadata';
 
@@ -17,8 +16,7 @@ import '../node_modules/select2/dist/js/select2.js';
 require('expose-loader?select2!select2');
 
 import { enableProdMode } from '@angular/core';
-if (PRODUCTION)
-    enableProdMode();
+if (PRODUCTION) enableProdMode();
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { CdeAppModule } from '_app/app.module';

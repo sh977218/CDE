@@ -11,8 +11,7 @@ export class SdcViewComponent implements OnInit {
     sdcCde: any;
 
     ngOnInit () {
-        if (this.route.snapshot.queryParams['triggerClientError'])
-            throw new Error('An exception has been thown');
+        if (this.route.snapshot.queryParams['triggerClientError']) throw new Error('An exception has been thown');
 
         let cdeId = this.route.snapshot.queryParams['cdeId'];
         this.http.get('/sdc/' + cdeId).subscribe(result => this.sdcCde = result);

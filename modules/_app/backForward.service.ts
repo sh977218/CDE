@@ -8,17 +8,15 @@ export class BackForwardService {
     hasNavigated = false;
 
     constructor(private location: PlatformLocation, private router: Router) {
-        location.onPopState(e => {
+        location.onPopState(() => {
             this.isBackForward = true;
             this.hasNavigated = false;
         });
 
         this.router.events.subscribe(e => {
             if (e instanceof NavigationStart) {
-                if (this.hasNavigated)
-                    this.isBackForward = false;
-                else
-                    this.hasNavigated = true;
+                if (this.hasNavigated) this.isBackForward = false;
+                else this.hasNavigated = true;
             }
         });
     }
