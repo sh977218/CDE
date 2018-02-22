@@ -15,28 +15,26 @@ public class FormNativeRenderTest extends NlmCdeBaseTest {
         findElement(By.xpath("//input[@name='q23' and @type='date']"));
 
         // question radio un-select
-        WebElement label = findElement(By.xpath("//*[@id='Does your health now limit you in doing vigorous activities, " +
+        WebElement input = findElement(By.xpath("//*[@id='Does your health now limit you in doing vigorous activities, " +
                 "such as running, lifting heavy objects, participating in strenuous sports?_0']" +
-                "//label[contains(.,'Not at all')]"));
-        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 0);
-        label.findElement(By.cssSelector("input")).click();
-        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 1);
-        label.findElement(By.cssSelector("input")).click();
-        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 0);
+                "//label[contains(.,'Not at all')]//input"));
+        Assert.assertFalse(input.isSelected());
+        input.click();
+        Assert.assertTrue(input.isSelected());
+        input.click();
+        Assert.assertFalse(input.isSelected());
 
-        // table radio un-select
-        label = findElement(By.xpath("//label[span[text()='Current Smoker']]"));
-        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 0);
-        label.findElement(By.cssSelector("input")).click();
-        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 1);
-        label.findElement(By.cssSelector("input")).click();
-        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 0);
+        input = findElement(By.xpath("//label[span[text()='Current Smoker']]//input"));
+        Assert.assertFalse(input.isSelected());
+        input.click();
+        Assert.assertTrue(input.isSelected());
+        input.click();
+        Assert.assertFalse(input.isSelected());
 
         // single radio is checkbox if not required
-        label = findElement(By.xpath("//*[@id='Cytosine adenine guanine repeat expansion result_0']" +
-                "//label[span[text()='Not known']]"));
-        label.findElement(By.xpath("//input[@type='checkbox']"));
-        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 0);
+        input = findElement(By.xpath("//*[@id='Cytosine adenine guanine repeat expansion result_0']" +
+                "//label[span[text()='Not known']]//input[@type='checkbox']"));
+        Assert.assertFalse(input.isSelected());
     }
 
     @Test
