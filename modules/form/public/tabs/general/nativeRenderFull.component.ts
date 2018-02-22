@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 

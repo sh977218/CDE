@@ -17,7 +17,7 @@ public class FormNativeRenderTest extends NlmCdeBaseTest {
         // question radio un-select
         WebElement label = findElement(By.xpath("//*[@id='Does your health now limit you in doing vigorous activities, " +
                 "such as running, lifting heavy objects, participating in strenuous sports?_0']" +
-                "//label[@title='Not at all']"));
+                "//label[contains(.,'Not at all')]"));
         Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 0);
         label.findElement(By.cssSelector("input")).click();
         Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 1);

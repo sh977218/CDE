@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
@@ -93,25 +93,21 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
 })
 export class NativeRenderComponent {
     @Input() set elt(e: CdeForm) {
-        let map = this.nrs.setElt(e);
-        if (map) this.mapping = map;
+        this.nrs.eltSet(e);
     }
     @Input() set profile(p: DisplayProfile) {
-        this.nrs.setSelectedProfile(p);
+        this.nrs.profileSet(p);
     }
     @Input() set nativeRenderType(userType) {
-        this.nrs.profile && this.nrs.setNativeRenderType(userType);
+        this.nrs.nativeRenderType = userType;
     }
     @Input() submitForm: boolean;
     @Input() showTitle: boolean = true;
-
     endpointUrl: string;
     formUrl: string;
-    mapping: any;
     readonly NRS = NativeRenderService;
 
     constructor(private sanitizer: DomSanitizer,
-                public skipLogicService: SkipLogicService,
                 public nrs: NativeRenderService) {
         this.formUrl = window.location.href;
         this.endpointUrl = (<any>window).endpointUrl;
@@ -119,9 +115,5 @@ export class NativeRenderComponent {
 
     getEndpointUrl() {
         return this.sanitizer.bypassSecurityTrustUrl(this.endpointUrl);
-    }
-
-    setNativeRenderType(userType) {
-        this.nrs.setNativeRenderType(userType);
     }
 }

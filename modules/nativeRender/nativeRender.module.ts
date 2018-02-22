@@ -1,10 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { NgbDatepickerModule, NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap/datepicker/datepicker.module";
-import { NgbTimepickerModule } from "@ng-bootstrap/ng-bootstrap/timepicker/timepicker.module";
 
-import { CdeAmericanDateParserFormatter } from 'core/americanDateParserFormatter';
 import { CommonAppModule } from '_commonApp/commonApp.module';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderComponent } from 'nativeRender/nativeRender.component';
@@ -19,8 +16,6 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
     imports: [
         CommonModule,
         FormsModule,
-        NgbDatepickerModule.forRoot(),
-        NgbTimepickerModule.forRoot(),
         // core
         // no WidgetModule,
         // internal
@@ -40,7 +35,6 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
         NativeRenderComponent,
     ],
     providers: [
-        {provide: NgbDateParserFormatter, useClass: CdeAmericanDateParserFormatter},
         FormService,
         SkipLogicService,
     ],

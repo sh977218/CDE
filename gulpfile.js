@@ -167,7 +167,11 @@ gulp.task('usemin', ['copyCode', 'copyDist'], function () {
         let useminOutputs = [];
 
         function outputFile(file) {
-            useminOutputs.push('/app/' + file.path.substring(file.path.indexOf('\\app\\') + 5));
+            let index = file.path.indexOf('/app/'); // linux
+            if (index === -1) {
+                index = file.path.indexOf('\\app\\'); // windows
+            }
+            useminOutputs.push('/app/' + file.path.substring(index + 5));
             return file;
         }
 

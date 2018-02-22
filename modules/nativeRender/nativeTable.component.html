@@ -1,5 +1,5 @@
-<table *ngIf="tableForm && canRender && (nrs.getNativeRenderType() === NRS.FOLLOW_UP
- || nrs.getNativeRenderType() === NRS.SHOW_IF)"
+<table *ngIf="tableForm && canRender && (nrs.nativeRenderType === NRS.FOLLOW_UP
+ || nrs.nativeRenderType === NRS.SHOW_IF)"
        class="table">
     <thead>
         <tr *ngFor="let s of tableForm.s; let i = index">
@@ -30,6 +30,7 @@
                 <div *ngIf="q.type === 'label'" class="native-table-cell" style="text-align: center">
                     <label [textContent]="n.label"></label>
                     <input type="hidden"
+                           [title]="n.label"
                            [name]="ni + q.name"
                            [attr.name]="ni + q.name"
                            [value]="nrs.elt.formInput[ni + q.name]"
@@ -71,20 +72,19 @@
                 <div *ngIf="q.type === 'date'" class="native-table-cell" style="min-width: 135px;">
                     <div class="input-group">
                         <input class="form-control native-table-box"
-                               [name]="ni + q.name" [title]="ni + q.name"
+                               type="{{datePrecisionToType[formElement.question.datatypeDate.precision]}}"
+                               step="{{datePrecisionToStep[formElement.question.datatypeDate.precision]}}"
+                               [title]="n.label"
+                               [name]="ni + q.name"
                                [attr.name]="ni + q.name"
                                [(ngModel)]="nrs.elt.formInput[ni + q.name]"
-                               ngbDatepicker #d1="ngbDatepicker"
                                [required]="q.question.required" [disabled]="!q.question.editable">
-                        <div class="input-group-addon" (click)="d1.toggle()" >
-                            <i class="fa fa-calendar" style="font-size: .95em; vertical-align: 5%" aria-hidden="true"></i>
-                        </div>
                     </div>
                 </div>
                 <div *ngIf="q.type === 'number'" class="native-table-cell" style="min-width: 80px;">
                     <input type="number"
                            class="form-control native-table-box"
-                           [title]="ni + q.name"
+                           [title]="n.label"
                            [name]="ni + q.name"
                            [attr.name]="ni + q.name"
                            [(ngModel)]="nrs.elt.formInput[ni + q.name]"
@@ -108,7 +108,8 @@
                 <div *ngIf="q.type === 'text'" class="native-table-cell" style="min-width: 80px;">
                     <input type="text"
                            class="form-control native-table-box"
-                           [name]="ni + q.name" [title]="ni + q.name"
+                           [title]="n.label"
+                           [name]="ni + q.name"
                            [attr.name]="ni + q.name"
                            [(ngModel)]="nrs.elt.formInput[ni + q.name]"
                            [required]="q.question.required"
