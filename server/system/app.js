@@ -29,6 +29,7 @@ const async = require('async');
 const request = require('request');
 const CronJob = require('cron').CronJob;
 const _ = require('lodash');
+const ejs = require('ejs');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -42,15 +43,25 @@ exports.init = function (app) {
     } catch (e) {
     }
 
+    let indexHtml = "";
+    ejs.renderFile('modules/system/views/index.ejs', {config: config, version: version}, (err, str) => {
+        indexHtml = str;
+    });
+
     /* for search engine | javascript disabled*/
     function staticHtml(req, res, next) {
         if (req.headers['user-agent'] && req.headers['user-agent'].match(/bot|crawler|spider|crawling/gi)) next();
-        else res.render('index', 'system', {config: config, loggedIn: !!req.user, version: version});
+        else res.send(indexHtml);
     }
 
     app.get("/", [checkHttps, staticHtml], function (req, res) {
         res.render('bot/home', 'system');
     });
+
+    app.get("/site-version", (req, res) => {
+        res.send(version);
+    });
+
     app.get("/home", [checkHttps, staticHtml], function (req, res) {
         res.render('bot/home', 'system');
     });

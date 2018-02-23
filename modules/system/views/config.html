@@ -1,15 +1,11 @@
 <script type="text/javascript">
 	(function () {
-		window.loggedIn = <%= loggedIn %>;
 		window.maxPin = <%= config.maxPin %>;
-		window.formLocalRender = <%= config.modules.forms.localRender %>;
-		window.formLoincRender = <%= config.modules.forms.loincRender %>;
-		window.formLoincRenderUrl = '<%= config.modules.forms.loincRenderUrl %>';
 		window.userAlertTime = <%= config.userAlertTime || 5000 %>;
-		window.debugEnabled = <%= config.debugEnabled || false %>;
 		window.publicUrl = '<%= config.publicUrl %>';
 		window.siteKey = '<%= config.siteKey  %>';
 		window.meshUrl = '<%= config.mesh.baseUrl %>';
+		window.version = '<%= version %>';
 	})();
 </script>
 
