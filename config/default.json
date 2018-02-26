@@ -129,6 +129,7 @@
   "expressToStdout": false,
   "logBufferSize": 1000,
   "viewsIncrementThreshold": 3,
+  "versionCheckIntervalInSeconds": 1800,
   "webtrends": false,
   "antivirus": {
     "ip": "127.0.0.1",

@@ -3,8 +3,12 @@ if (!PRODUCTION) require('../node_modules/zone.js/dist/long-stack-trace-zone.js'
 // reflect-metadata needed before enableProdMode for IE
 import 'reflect-metadata';
 
-import '../node_modules/font-awesome/css/font-awesome.css';
-import '../node_modules/font-awesome-animation/dist/font-awesome-animation.css';
+// import '../node_modules/@fortawesome/fontawesome/index.js';
+// import '../node_modules/font-awesome-animation/dist/font-awesome-animation.css';
+
+import { faCog } from '../node_modules/@fortawesome/fontawesome-free-solid';
+import fontawesome from '../node_modules/@fortawesome/fontawesome';
+fontawesome.library.add(faCog);
 
 // path to node_modules required to override module/components/bootstrap
 import '../node_modules/bootstrap/dist/css/bootstrap.css';

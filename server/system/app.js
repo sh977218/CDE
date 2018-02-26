@@ -43,6 +43,7 @@ exports.init = function (app) {
     } catch (e) {
     }
 
+
     let indexHtml = "";
     ejs.renderFile('modules/system/views/index.ejs', {config: config, version: version}, (err, str) => {
         indexHtml = str;
@@ -61,6 +62,13 @@ exports.init = function (app) {
     app.get("/site-version", (req, res) => {
         res.send(version);
     });
+    if (!config.proxy) {
+        app.post("/site-version", (req, res) => {
+            version = version + ".";
+            res.send();
+        });
+    }
+
 
     app.get("/home", [checkHttps, staticHtml], function (req, res) {
         res.render('bot/home', 'system');
