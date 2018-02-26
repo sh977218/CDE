@@ -18,7 +18,6 @@ export class NotificationsComponent {
                     "please close all instances / tabs of this site and reload this page. ";
                 if (this.notifications.indexOf(note) === -1) this.notifications.push(note);
             }
-        }, (window as any).versionCheckIntervalInSeconds);
+        }, (window as any).versionCheckIntervalInSeconds * 1000);
     }
-
 }
