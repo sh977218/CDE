@@ -41,23 +41,8 @@ export class NativeQuestionComponent implements OnInit {
     previousUom: CodeAndSystem;
     // static readonly reHasTime = /[hHmsSkaAZ]/;
     score = score;
-
-    datePrecisionToType = {
-        Year: 'Number',
-        Month: 'month',
-        Day: 'date',
-        Hour: 'datetime-local',
-        Minute: 'datetime-local',
-        Second: 'datetime-local'
-    };
-    datePrecisionToStep = {
-        Year: null,
-        Month: null,
-        Day: null,
-        Hour: 3600,
-        Minute: null,
-        Second: 1
-    };
+    datePrecisionToType = FormQuestion.datePrecisionToType;
+    datePrecisionToStep = FormQuestion.datePrecisionToStep;
 
     ngOnInit () {
         this.previousUom = this.formElement.question.answerUom;
