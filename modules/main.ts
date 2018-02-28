@@ -4,8 +4,10 @@ if (!PRODUCTION) require('../node_modules/zone.js/dist/long-stack-trace-zone.js'
 import 'reflect-metadata';
 
 import { faCog } from '../node_modules/@fortawesome/fontawesome-free-solid';
+import { faSquare } from '../node_modules/@fortawesome/fontawesome-free-regular';
 import fontawesome from '../node_modules/@fortawesome/fontawesome';
 fontawesome.library.add(faCog);
+fontawesome.library.add(faSquare);
 
 // path to node_modules required to override module/components/bootstrap
 import '../node_modules/bootstrap/dist/css/bootstrap.css';
