@@ -17,11 +17,11 @@ export class NativeTableComponent implements OnInit {
         q: [{type: 'label', style: {}}]
     };
     entry: any;
-    rowNameCounter: number = 0;
     readonly NRS = NativeRenderService;
+    datePrecisionToType = FormQuestion.datePrecisionToType;
+    datePrecisionToStep = FormQuestion.datePrecisionToStep;
 
-    constructor(public nrs: NativeRenderService) {
-    }
+    constructor(public nrs: NativeRenderService) {}
 
     ngOnInit() {
         this.render();
