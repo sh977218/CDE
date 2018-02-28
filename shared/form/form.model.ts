@@ -223,6 +223,23 @@ export class FormQuestion implements FormElement {
     skipLogic;
     updatedSkipLogic;
 
+    static datePrecisionToType = {
+        Year: 'Number',
+        Month: 'month',
+        Day: 'date',
+        Hour: 'datetime-local',
+        Minute: 'datetime-local',
+        Second: 'datetime-local'
+    };
+    static datePrecisionToStep = {
+        Year: null,
+        Month: null,
+        Day: null,
+        Hour: 3600,
+        Minute: null,
+        Second: 1
+    };
+
     constructor(_newCde?: boolean, _edit?: boolean) {
         this.newCde = _newCde;
         this.edit = _edit;
