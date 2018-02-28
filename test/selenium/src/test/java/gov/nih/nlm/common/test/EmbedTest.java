@@ -64,14 +64,14 @@ public class EmbedTest extends NlmCdeBaseTest {
         findElement(By.id("cde.registrationStatus.label")).sendKeys("Status");
 
         clickElement(By.id("saveEmbed"));
-        closeAlert();
+        checkAlert("Saved.");
 
         clickElement(By.id("NINDS.0.editEmbed"));
         clickElement(By.id("previewEnabled"));
 
-        scrollTo(2500);
+        scrollTo(2600);
         driver.switchTo().frame("previewFrame");
-        clickElement(By.id("poweredByNihCde"));
+        findElement(By.id("poweredByNihCde"));
         findElement(By.id("ftsearch-input")).sendKeys("Ethnicity");
         findElement(By.id("search.submit")).click();
 
