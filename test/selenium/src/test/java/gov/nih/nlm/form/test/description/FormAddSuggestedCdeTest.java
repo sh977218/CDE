@@ -10,7 +10,7 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
         String form = "formAddSuggestedCdeTest";
         String cdeName1 = "brocco";
         String cdeName2 = "Adverse event track num";
-        String cdeName3 = "Gastrointestinal therapy continuous feed start";
+        String cdeName3 = "Gastrointestinal therapy feed schedule start";
         String cdeName4 = "Diary day headache indic";
         mustBeLoggedInAs(nlm_username, nlm_username);
         goToFormByName(form);
@@ -24,8 +24,8 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
         textPresent("Number", By.xpath("//*[@id='question_0_2']//*[contains(@class,'questionDataType')]"));
 
         addCdeByNameBeforeId(cdeName3, "question_0_2", true);
-        textPresent("Continuous feeding start time", By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionLabel')]"));
-        textPresent("Date", By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionDataType')]"));
+        textPresent("Start of Feeding Schedule", By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionLabel')]"));
+        textPresent("(Date)", By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionDataType')]"));
 
         addCdeByNameBeforeId(cdeName4, "question_0_3", true);
         textPresent("Headache", By.xpath("//*[@id='question_0_4']//*[contains(@class,'questionLabel')]"));
