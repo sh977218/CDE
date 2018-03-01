@@ -3,7 +3,21 @@ import { HttpClient } from "@angular/common/http";
 
 @Component({
     selector: 'cde-notifications',
-    templateUrl: 'notifications.component.html'
+    templateUrl: 'notifications.component.html',
+    styles: [`
+    .button_badge {
+      background-color: #fa3e3e;
+      border-radius: 4px;
+      color: white;
+
+      padding: 1px 3px;
+      font-size: 10px;
+
+      position: absolute; /* Position the badge within the relatively positioned button */
+      top: 4px;
+      right: 2px;
+    }
+    `]
 })
 export class NotificationsComponent {
 

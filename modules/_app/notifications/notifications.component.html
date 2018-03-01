@@ -1,8 +1,7 @@
 <ng-container *ngIf="notifications.length">
     <a class="nav-link" data-toggle="dropdown">
         <i class="fa fa-bell text-muted"></i>
-        <span class=""
-              style="background:Tomato; font-size: 1.7em; margin-top: 7px">{{notifications.length}}</span>
+        <span class="button_badge">{{notifications.length}}</span>
     </a>
     <div class="dropdown-menu dropdown-menu-right">
         <div class="dropdown-item" *ngFor="let notif of notifications">{{notif}}</div>
