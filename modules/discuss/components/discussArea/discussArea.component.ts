@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
 import { Subject } from 'rxjs/Subject';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import * as io from 'socket.io-client';
@@ -197,7 +197,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
             distinctUntilChanged(),
             map(obj => {
                 this.socket.emit('currentReplying', this.eltId, obj._id);
-                return Observable.of<string[]>([]);
+                return of<string[]>([]);
             })
         ).subscribe(() => {
         });
@@ -211,8 +211,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         private http: HttpClient,
         public isAllowedModel: IsAllowedService,
         public userService: UserService
-    ) {
-    }
+    ) {}
 
     addAvatar(username) {
         if (username && !this.avatarUrls[username]) {

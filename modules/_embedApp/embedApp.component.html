@@ -76,7 +76,7 @@
         </div>
 
         <ngb-pagination [collectionSize]="totalItems" [(page)]="searchSettings.page"
-                        [maxSize]="10"></ngb-pagination>
+                        [maxSize]="10" (pageChange)="search()"></ngb-pagination>
     </div>
 
     <small id="poweredByNihCde">Search provided by the <a target="_blank" href="https://cde.nlm.nih.gov/">NIH CDE

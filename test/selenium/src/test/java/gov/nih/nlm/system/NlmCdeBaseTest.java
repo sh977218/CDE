@@ -424,6 +424,7 @@ public class NlmCdeBaseTest {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
             driver.get(baseUrl + "/" + ("cde".equals(type) ? "deView" : "formView") + "/?tinyId=" + tinyId);
+            findElement(By.id("general_tab"));
             textPresent(name);
         } else {
             try {
