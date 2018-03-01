@@ -6,7 +6,7 @@ import { isOrgCurator } from 'shared/system/authorizationShared';
 
 @Injectable()
 export class OrgHelperService  {
-    orgsDetailedInfo: any;
+    orgsDetailedInfo: any = {};
     private promise: Promise<void>;
 
     constructor(
