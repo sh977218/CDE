@@ -25,7 +25,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
         findElement(By.cssSelector("#datatypeSelect select[disabled]"));
 
-        Assert.assertEquals(findElements(By.xpath("//td[contains(@id, 'pvAction') and not(*)]")).size(), 3);
+        Assert.assertTrue(findElements(By.xpath("//td[contains(@id, 'pvAction') and not(*)]")).size() > 0);
 
         findElement(By.xpath("//*[@id='pvValue_1'][not(//i[contains(@class, 'fa-edit')])]"));
 
