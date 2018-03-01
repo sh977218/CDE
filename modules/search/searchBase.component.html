@@ -110,7 +110,7 @@
             </button>
             <button id="pinAll" (click)="openPinModal()" class="btn mx-1 btn-outline-dark" type="button"
                     [hidden]="totalItems <= 0 || module === 'form'" *ngIf="!embedded">
-                <i class="fa fa-thumbtack hand-cursor"></i> Pin All
+                <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
             </button>
             <button (click)="hideShowFilter()" class="btn mx-1 btn-outline-dark" id="showHideFilters">
                 <div [hidden]="filterMode">
@@ -278,10 +278,10 @@
                              (click)="addStatusFilter(t.key)" role="link"
                              [ngbTooltip]="getRegStatusHelp(t.key)" placement="right" container="body">
                             <ng-container *ngIf="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1; else else06">
-                                <i class="treeItemIcon treeItemIconSelected far fa-check-square"></i>
+                                <i class="treeItemIcon treeItemIconSelected fa fa-check-square-o"></i>
                             </ng-container>
                             <ng-template #else06>
-                                <i class="treeItemIcon far fa-square"></i>
+                                <i class="treeItemIcon fa fa-square-o"></i>
                             </ng-template>
                             <a class="treeItemText">{{t.key}} ({{t.doc_count}})</a>
                         </div>
@@ -294,10 +294,10 @@
                         <div *ngIf="t.doc_count > 0" id="datatype-{{t.key}}" class="treeItem hand-cursor"
                              (click)="addDatatypeFilter(t.key)" role="link">
                             <ng-container *ngIf="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1; else else07">
-                                <i class="treeItemIcon treeItemIconSelected far fa-check-square"></i>
+                                <i class="treeItemIcon treeItemIconSelected fa fa-check-square-o"></i>
                             </ng-container>
                             <ng-template #else07>
-                                <i class="treeItemIcon far fa-square"></i>
+                                <i class="treeItemIcon fa fa-square-o"></i>
                             </ng-template>
                             <a class="treeItemText">{{t.key}} ({{t.doc_count}})</a>
                         </div>
