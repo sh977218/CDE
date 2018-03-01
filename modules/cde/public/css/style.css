@@ -6,6 +6,7 @@ a {
 .homeDescriptionLink {
     color: #0F4E9D;
 }
+
 /* end */
 
 .modal {
@@ -449,4 +450,9 @@ label.input-group-addon {
 
 .text-end {
     text-align: end;
+}
+
+/* fix for Deque Axe */
+#cdeNavigation .nav-link {
+    color: rgba(255, 255, 255, 0.53) !important;
 }
