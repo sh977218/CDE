@@ -17,7 +17,6 @@ public class OrgAuthCanAudit extends NlmCdeBaseTest {
         textPresent("Type of Modification");
 
         clickElement(By.partialLinkText("Classification Audit Log"));
-        clickElement(By.cssSelector("div.card a"));
         findElement(By.xpath("//dt[. = 'User:']"));
 
         clickElement(By.partialLinkText("Reported Issues"));
