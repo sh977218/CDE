@@ -29,8 +29,7 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void addCdeByNameBeforeId(String cdeName, String id, boolean isSuggested) {
-        String dropXpath = "//*[@id='" + id + "']//tree-node-drop-slot[1]";
-        addCde(cdeName, dropXpath, isSuggested);
+        addCde(cdeName, "//*[@id='" + id + "']//tree-node-drop-slot[1]", isSuggested);
     }
 
     public void addCdesByNames(String[] cdeNames) {
@@ -53,8 +52,9 @@ public class QuestionTest extends BaseFormTest {
         (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
         dragAndDrop(sourceElt, targetElt);
         try {
-            if (driver.findElements(By.id("addNewCdeBtn")).size() > 0)
+            if (driver.findElements(By.id("addNewCdeBtn")).size() > 0) {
                 clickElement(By.id("addNewCdeBtn"));
+            }
             textPresent("Create Data Element");
             new Actions(driver).sendKeys(cdeName).build().perform();
             if (!isSuggested) clickElement(By.id("createNewDataElement"));
