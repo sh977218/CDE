@@ -132,8 +132,7 @@ export class NativeRenderAppComponent {
 
     encounterSelected() {
         this.filterObservations();
-        if (!this.selectedEncounter)
-            return;
+        if (!this.selectedEncounter) return;
 
         this.updateProgress();
     }
@@ -167,22 +166,17 @@ export class NativeRenderAppComponent {
 
     static getCodeSystem(uri) {
         let results = this.externalCodeSystems.filter(c => c.uri === uri);
-        if (results.length)
-            return results[0].id;
-        else
-            return 'unknown';
+        if (results.length) return results[0].id;
+        else return 'unknown';
     }
 
     static getCodeSystemOut(system, fe = null) {
         let s = system;
-        if (fe && fe.question && fe.question.cde && Array.isArray(fe.question.cde.ids) && fe.question.cde.ids.length)
-            s = fe.question.cde.ids[0].source;
+        if (fe && fe.question && fe.question.cde && Array.isArray(fe.question.cde.ids) && fe.question.cde.ids.length) s = fe.question.cde.ids[0].source;
 
         let external = this.externalCodeSystems.filter(e => e.id === s);
-        if (external.length)
-            return external[0].uri;
-        else
-            return s;
+        if (external.length) return external[0].uri;
+        else return s;
     }
 
     getForm(tinyId, cb) {
@@ -201,10 +195,8 @@ export class NativeRenderAppComponent {
             && m.code === '*'
             && m.format === 'json'
         );
-        if (maps.length)
-            return maps[0];
-        else
-            return null;
+        if (maps.length) return maps[0];
+        else return null;
     }
 
     getFormObservations(tinyId, cb) {
@@ -231,28 +223,21 @@ export class NativeRenderAppComponent {
     }
 
     static getObservationValue(observation) {
-        if (!observation)
-            return undefined;
-        if (observation.valueCodeableConcept)
-            return this.getCodingsPreview(observation.valueCodeableConcept.coding);
+        if (!observation) return undefined;
+        if (observation.valueCodeableConcept) return this.getCodingsPreview(observation.valueCodeableConcept.coding);
         else if (observation.valueQuantity) {
             let quantity = observation.valueQuantity;
-            if (quantity.value === undefined)
-                return undefined;
+            if (quantity.value === undefined) return undefined;
             return quantity.value + ' ' + quantity.code + '(' + this.getCodeSystem(quantity.system) + ')';
         } else if (observation.component) {
             let value = observation.component.reduce((a, v) => {
                 let vs = this.getObservationValue(v);
-                if (vs === undefined)
-                    return a;
+                if (vs === undefined) return a;
                 return a + this.getCodingsPreview(v.code.coding) + ' = ' + vs + '\n';
             }, '');
-            if (value === '')
-                return undefined;
-            else
-                return value;
-        } else
-            return JSON.stringify(observation);
+            if (value === '') return undefined;
+            else return value;
+        } else return JSON.stringify(observation);
     }
 
     getPatientName() {
@@ -299,19 +284,15 @@ export class NativeRenderAppComponent {
                 }
             ], () => {
                 this.patientEncounters.sort(function (a, b) {
-                    if (a.date > b.date)
-                        return 1;
-                    else if (a.date < b.date)
-                        return -1;
-                    else
-                        return 0;
+                    if (a.date > b.date) return 1;
+                    else if (a.date < b.date) return -1;
+                    else return 0;
                 });
                 this.patientObservations.forEach(o => {
                     if (o.encounter && o.encounter.startsWith('Encounter/')) {
                         let id = o.encounter.substr(10);
                         let encounters = this.patientEncounters.filter(e => e.raw.id === id);
-                        if (encounters.length)
-                            encounters[0].observations.push(o);
+                        if (encounters.length) encounters[0].observations.push(o);
                     }
                 });
                 this.filterObservations();
@@ -320,9 +301,7 @@ export class NativeRenderAppComponent {
     }
 
     loadFhirData() {
-        if (!this.selectedEncounter)
-            return;
-
+        if (!this.selectedEncounter) return;
         this.loadFhirDataForm(this.elt);
     }
 
@@ -335,7 +314,11 @@ export class NativeRenderAppComponent {
         if (err) return this.errorMessage = 'Sorry, we are unable to retrieve this element.';
         this.elt = elt;
         if (!this.selectedProfileName) this.selectedProfile = this.elt.displayProfiles[0];
-        else this.selectedProfile = this.elt.displayProfiles.filter(d => d.name === this.selectedProfileName)[0];
+        else {
+            let selectedProfileArray = this.elt.displayProfiles.filter(d => d.name === this.selectedProfileName);
+            if (selectedProfileArray && selectedProfileArray.length > 0) this.selectedProfile = selectedProfileArray[0];
+            else this.selectedProfile = null;
+        }
         this.loadFhirData();
     }
 
@@ -344,16 +327,14 @@ export class NativeRenderAppComponent {
 
         if (map && mode === 'in') {
             /* tslint:disable */ let encounterFn = eval('(' + map.encounterFn + ')'); /* tslint:enable */
-            if (encounterFn)
-                encounterFn(form, this.selectedEncounter);
+            if (encounterFn) encounterFn(form, this.selectedEncounter);
         }
 
         let resourceObservationMap = {};
         map && map.mapping.forEach(m => {
             let key = m.resourceSystem + ' ' + m.resourceCode;
             if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[key])) {
-                if (m.resourceCode === '*')
-                    resourceObservationMap[key] = observations;
+                if (m.resourceCode === '*') resourceObservationMap[key] = observations;
                 else {
                     let system = NativeRenderAppComponent.getCodeSystemOut(m.resourceSystem);
                     resourceObservationMap[key] = observations.filter(
@@ -397,33 +378,27 @@ export class NativeRenderAppComponent {
         }
         function setValueQuantity(fe, vq, feUom = null) {
             fe.question.answer = vq.value;
-            if (feUom)
-                feUom.question.answer = vq.unit;
-            else
-                fe.question.answerUom = vq.unit;
+            if (feUom) feUom.question.answer = vq.unit;
+            else fe.question.answerUom = vq.unit;
         }
         function getById(form, tinyId, instance = 0) {
             let count = -1;
             let result = null;
             function getByIdRecurse(fe, tinyId) {
                 fe.formElements.forEach(f => {
-                    if (f.elementType === 'section')
-                        getByIdRecurse(f, tinyId);
+                    if (f.elementType === 'section') getByIdRecurse(f, tinyId);
                     else if (f.elementType === 'form') {
                         if (f.inForm.form.tinyId === tinyId) {
                             count++;
-                            if (count >= instance)
-                                return result = f;
+                            if (count >= instance) return result = f;
                         }
                         getByIdRecurse(f, tinyId);
                     } else {
                         if (f.question.cde.tinyId === tinyId) {
                             count++;
-                            if (count >= instance)
-                                return result = f;
+                            if (count >= instance) return result = f;
                             f.question.answers.forEach(a => {
-                                if (a.formElements && !result)
-                                    a.formElements.forEach(sq => !result && getByIdRecurse(sq, tinyId));
+                                if (a.formElements && !result) a.formElements.forEach(sq => !result && getByIdRecurse(sq, tinyId));
                             });
                         }
                     }
@@ -435,23 +410,19 @@ export class NativeRenderAppComponent {
         }
         map && map.mapping.forEach(m => {
             function getByCode(form, instance = 0, system = null, code = null) {
-                if (!system)
-                    system = m.resourceSystem;
-                if (!code)
-                    code = m.resourceCode;
+                if (!system) system = m.resourceSystem;
+                if (!code) code = m.resourceCode;
                 let count = -1;
                 let result = null;
                 function getByCodeRecurse(fe) {
                     fe.formElements.forEach(f => {
-                        if (f.elementType === 'section')
-                            getByCodeRecurse(f);
+                        if (f.elementType === 'section') getByCodeRecurse(f);
                         else if (f.elementType === 'form') {
                             if (f.inForm.form.ids.filter(
                                 id => id.source === system && id.id === code).length
                             ) {
                                 count++;
-                                if (count >= instance)
-                                    return result = f;
+                                if (count >= instance) return result = f;
                             }
                             getByCodeRecurse(f);
                         } else {
@@ -459,11 +430,9 @@ export class NativeRenderAppComponent {
                                 id => id.source === system && id.id === code).length
                             ) {
                                 count++;
-                                if (count >= instance)
-                                    return result = f;
+                                if (count >= instance) return result = f;
                                 f.question.answers.forEach(a => {
-                                    if (a.formElements && !result)
-                                        a.formElements.forEach(sq => !result && getByCodeRecurse(sq));
+                                    if (a.formElements && !result) a.formElements.forEach(sq => !result && getByCodeRecurse(sq));
                                 });
                             }
                         }
@@ -483,10 +452,8 @@ export class NativeRenderAppComponent {
                     let components = res.component.filter(comp => comp.code.coding.some(
                         c => c.system === system && c.code === code
                     ));
-                    if (components.length)
-                        return components[0];
-                    else
-                        return null;
+                    if (components.length) return components[0];
+                    else return null;
                 } else {
                     res.component = {};
                     return res.component;
@@ -497,17 +464,14 @@ export class NativeRenderAppComponent {
                 && (mode === 'in' && m.inFn || mode === 'out' && m.outFn)) {
                 resourceObservationMap[key].forEach(o => {
                     /* tslint:disable */ let resFn = eval('(' + m.resourcePropertyObj + ')'); /* tslint:enable */
-                    if (!resFn)
-                        resFn = obj => obj;
+                    if (!resFn) resFn = obj => obj;
 
                     if (mode === 'in') {
                         /* tslint:disable */ let inFn = eval('(' + m.inFn + ')'); /* tslint:enable */
-                        if (inFn)
-                            inFn(form, resFn(o)[m.resourceProperty]);
+                        if (inFn) inFn(form, resFn(o)[m.resourceProperty]);
                     } else if (mode === 'out') {
                         /* tslint:disable */ let outFn = eval('(' + m.outFn + ')'); /* tslint:enable */
-                        if (outFn)
-                            resFn(o)[m.resourceProperty] = outFn(form);
+                        if (outFn) resFn(o)[m.resourceProperty] = outFn(form);
                     }
                 });
             }
@@ -520,8 +484,7 @@ export class NativeRenderAppComponent {
             type: 'Encounter',
             data: JSON.stringify(this.newEncounterGet())
         }).then(response => {
-            if (response.data && response.data.resourceType === 'Encounter')
-                this.encounterAdd(response.data);
+            if (response.data && response.data.resourceType === 'Encounter') this.encounterAdd(response.data);
             this.newEncounterReset();
         });
     }
@@ -543,8 +506,7 @@ export class NativeRenderAppComponent {
         };
         encounter.period.start = encounter.period.end = this.newEncounterDate;
         encounter.subject.reference = 'Patient/' + this.patient.id;
-        if (this.patientOrganization)
-            encounter.serviceProvider.reference = 'Organization/' + this.patientOrganization.id;
+        if (this.patientOrganization) encounter.serviceProvider.reference = 'Organization/' + this.patientOrganization.id;
         delete encounter.id;
         return encounter;
     }
@@ -605,10 +567,8 @@ export class NativeRenderAppComponent {
         let params: any = {};
         location.search && location.search.substr(1).split('&').forEach(e => {
             let p = e.split('=');
-            if (p.length === 2)
-                params[p[0]] = decodeURI(p[1]);
-            else
-                params[p[0]] = null;
+            if (p.length === 2) params[p[0]] = decodeURI(p[1]);
+            else params[p[0]] = null;
         });
         return params;
     }
@@ -627,8 +587,7 @@ export class NativeRenderAppComponent {
             observation.context.reference = 'Encounter/' + this.selectedEncounter.raw.id;
             observation.issued = this.selectedEncounter.date;
             observation.subject.reference = 'Patient/' + this.patient.id;
-            if (obsCode)
-                observation.code = NativeRenderAppComponent.getCoding(obsCode.system, obsCode.code);
+            if (obsCode) observation.code = NativeRenderAppComponent.getCoding(obsCode.system, obsCode.code);
             if (compCodes.length) {
                 observation.component = [];
                 compCodes.forEach(c => {
@@ -636,13 +595,14 @@ export class NativeRenderAppComponent {
                 });
             }
             let category = NativeRenderAppComponent.fhirObservations[obsCode.system + ' ' + obsCode.code];
-            if (category)
+            if (category) {
                 observation.category.push({
                     coding: [{
                         system: 'http://hl7.org/fhir/observation-category',
                         code: category.categoryCode
                     }]
                 });
+            }
 
             submitFhirObservations.push(observation);
             submitFhirPending.push({before: null, after: observation});
@@ -665,47 +625,36 @@ export class NativeRenderAppComponent {
         }
         // TODO: refresh before copy from server and compare again to prevent save with conflict
         async_forEach(submitFhirPending, (p, done) => {
-            if (p.before)
+            if (p.before) {
                 this.smart.api.update({
                     data: JSON.stringify(p.after),
                     id: p.after.id,
                     type: p.after.resourceType
                 }).then(response => {
-                    // let match = this.patientObservations.filter(o => o.raw === p.before);
-                    // if (match.length) {
-                    //     let index = this.patientObservations.indexOf(match[0]);
-                    //     if (index > -1)
-                    //         this.patientObservations[i] = response.data;
-                    // }
-                    if (!response || !response.data)
-                        return done('Not saved ' + p.after.id);
+                    if (!response || !response.data) return done('Not saved ' + p.after.id);
                     let obs = NativeRenderAppComponent.observationAdd(response.data);
                     let index = this.patientObservations.findIndex(o => o.raw === p.before);
-                    if (index > -1)
-                        this.patientObservations[index] = obs;
+                    if (index > -1) this.patientObservations[index] = obs;
                     index = this.selectedEncounter.observations.findIndex(o => o.raw === p.before);
-                    if (index > -1)
-                        this.selectedEncounter.observations[index] = obs;
+                    if (index > -1) this.selectedEncounter.observations[index] = obs;
                     done();
                 });
-            else
+            } else {
                 this.smart.patient.api.create({
                     baseUrl: 'https://sb-fhir-stu3.smarthealthit.org/smartstu3/data/',
                     data: JSON.stringify(p.after),
                     type: 'Observation'
                 }).then(response => {
-                    if (!response || !response.data)
-                        return done('Not saved ' + p.after.id);
+                    if (!response || !response.data) return done('Not saved ' + p.after.id);
                     let obs = NativeRenderAppComponent.observationAdd(response.data);
                     this.patientObservations.push(obs);
                     this.selectedEncounter.observations.push(obs);
                     done();
                 });
+            }
         }, (err: string) => {
-            if (err)
-                this.saveMessage = err;
-            else
-                this.saveMessage = 'Saved.';
+            if (err) this.saveMessage = err;
+            else this.saveMessage = 'Saved.';
             setTimeout(() => this.saveMessage = null, 5000);
 
             this.loadFhirData();
@@ -715,7 +664,7 @@ export class NativeRenderAppComponent {
 
     updateProgress() {
         this.patientForms.forEach(f => {
-            if (f.tinyId)
+            if (f.tinyId) {
                 this.getFormObservations(f.tinyId, (err, names) => {
                     f.observed = this.selectedEncounter.observations.filter(
                         o => o.raw.code.coding.some(c => names.indexOf(c.system + ' ' + c.code) > -1)
@@ -723,7 +672,7 @@ export class NativeRenderAppComponent {
                     f.total = names.length;
                     f.percent = 100 * f.observed / f.total;
                 });
-            else {
+            } else {
                 f.observed = 0;
                 f.total = 0;
                 f.percent = 0;
