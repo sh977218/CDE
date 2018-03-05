@@ -10,7 +10,7 @@ public class CreateForm extends BaseClassificationTest {
 
     @Test
     @Parameters("Create Form Test Name")
-    public void createForm(String formName) {
+    public void createForm(String formName, boolean checkEs) {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String formDef = "Fill out carefully!";
         String formV = "0.1alpha";
@@ -32,6 +32,14 @@ public class CreateForm extends BaseClassificationTest {
         goToGeneralDetail();
         textPresent(formName);
         textPresent(formDef);
+
+        if (checkEs) {
+            waitForESUpdate();
+
+            goToFormByName(formName);
+            goToGeneralDetail();
+            textPresent(formDef);
+        }
     }
 
 }

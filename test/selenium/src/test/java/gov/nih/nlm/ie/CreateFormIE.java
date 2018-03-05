@@ -12,7 +12,7 @@ public class CreateFormIE extends NlmCdeBaseTest {
     @Test
     @SelectBrowser
     public void createFormIE() {
-        parentTest.createForm("Create IEForm Name");
+        parentTest.createForm("Create IEForm Name", false);
     }
 
 }
