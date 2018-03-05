@@ -172,7 +172,7 @@
                                          [isAllowed]="canEdit"
                                          (modelChange)="onEltChange.emit();"></cde-inline-edit>
                     </td>
-                    <td>
+                    <td id="pvAction_{{i}}">
                         <ng-container *ngIf="pv.notValid">
                             <span class="btn-outline-dark fa fa-warning text-danger" id="pv-{{i}}-notValid"></span>
                         </ng-container>
