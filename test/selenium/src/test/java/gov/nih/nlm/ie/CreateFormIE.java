@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class CreateFormIE extends NlmCdeBaseTest {
 
-    CreateForm parentTest = new CreateForm();
+    private CreateForm parentTest = new CreateForm();
 
     @Test
     @SelectBrowser
