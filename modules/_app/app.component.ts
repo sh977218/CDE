@@ -13,7 +13,7 @@ import { BackForwardService } from '_app/backForward.service';
     `
 })
 export class CdeAppComponent implements OnInit {
-    name = "Angular 2";
+    name = "Angular 5";
 
     ngOnInit() {
         let description = '<div id="feedback-welcome"><div class="h3">Report a problem</div>' +
@@ -59,8 +59,7 @@ export class CdeAppComponent implements OnInit {
             feedbackButton: '.feedback-btn',
             showDescriptionModal: true,
             isDraggable: true,
-            onScreenshotTaken: function () {
-            },
+            onScreenshotTaken: function () {},
             tpl: {
                 description: description,
                 highlighter: highlighter,
@@ -68,14 +67,12 @@ export class CdeAppComponent implements OnInit {
                 submitSuccess: submitSuccess,
                 submitError: submitError
             },
-            onClose: function () {
-            },
+            onClose: function () {},
             screenshotStroke: true,
             highlightElement: false,
             initialBox: true
         });
     }
 
-    constructor(backForwardService: BackForwardService) {
-    }
+    constructor(backForwardService: BackForwardService) {}
 }

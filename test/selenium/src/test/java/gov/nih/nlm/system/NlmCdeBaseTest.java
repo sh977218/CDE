@@ -1089,6 +1089,7 @@ public class NlmCdeBaseTest {
         findElement(By.xpath("//*[@id='newValue']//textarea")).sendKeys(value);
         if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Rich Text')]"));
         else clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Plain Text')]"));
+        hangon(1);
         clickElement(By.id("createNewPropertyBtn"));
         modalGone();
     }

@@ -7,12 +7,12 @@ import org.testng.annotations.Test;
 
 public class CreateFormIE extends NlmCdeBaseTest {
 
-    CreateForm parentTest = new CreateForm();
+    private CreateForm parentTest = new CreateForm();
 
     @Test
     @SelectBrowser
     public void createFormIE() {
-        parentTest.createForm("Create IEForm Name");
+        parentTest.createForm("Create IEForm Name", false);
     }
 
 }

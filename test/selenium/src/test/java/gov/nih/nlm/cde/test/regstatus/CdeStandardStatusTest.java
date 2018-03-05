@@ -21,20 +21,21 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         String prefix = "//*[@id='permissibleValueDiv']//*[@id='";
         String postfix = "']";
         goToPermissibleValues();
-        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='datatypeSelect']//i")).size(), 0);
+        textPresent("Values Allowed");
 
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-0" + postfix)).size(), 0);
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-1" + postfix)).size(), 0);
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-2" + postfix)).size(), 0);
+        findElement(By.cssSelector("#datatypeSelect select[disabled]"));
 
-        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='pv-1']//i[contains(@class, 'fa-edit')]")).size(), 0);
-        Assert.assertEquals(driver.findElements(By.id("openAddPermissibleValueModelBtn")).size(), 0);
-        Assert.assertEquals(driver.findElements(By.id("updateOIDBtn")).size(), 0);
+        Assert.assertTrue(findElements(By.xpath("//td[contains(@id, 'pvAction') and not(*)]")).size() > 0);
+
+        findElement(By.xpath("//*[@id='pvValue_1'][not(//i[contains(@class, 'fa-edit')])]"));
+
+        findElement(By.xpath("//div[not(//button[@id = 'openAddPermissibleValueModelBtn'])]"));
+        findElement(By.xpath("//div[not(//a[@id = 'updateOIDBtn'])]"));
 
         // Can't edit naming
         goToNaming();
-        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='designation_0']//i[contains(@class, 'fa-edit')]")).size(), 0);
-        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='definition_0']//i[contains(@class, 'fa-edit')]")).size(), 0);
+        findElement(By.xpath("//*[@id='designation_0' and not(//i[contains(@class, 'fa-edit')])]"));
+        findElement(By.xpath("//*[@id='definition_0' and not(//i[contains(@class, 'fa-edit')])]"));
         Assert.assertFalse(driver.findElements(By.xpath("//*[@id='tags_0']//input")).get(0).isEnabled());
 
         // Can edit classifications

@@ -71,6 +71,8 @@ public class EmbedTest extends NlmCdeBaseTest {
 
         scrollTo(2600);
         driver.switchTo().frame("previewFrame");
+        // https://bugs.chromium.org/p/chromedriver/issues/detail?id=2198
+        hangon(2);
         findElement(By.id("poweredByNihCde"));
         findElement(By.id("ftsearch-input")).sendKeys("Ethnicity");
         findElement(By.id("search.submit")).click();
