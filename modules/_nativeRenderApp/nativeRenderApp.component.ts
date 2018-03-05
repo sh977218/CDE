@@ -57,7 +57,8 @@ export class NativeRenderAppComponent {
     saveMessage: string = null;
     selectedEncounter: any;
     selectedObservations = []; // display data only
-    selectedProfile: string;
+    selectedProfile;
+    selectedProfileName;
     showData = false;
     smart;
     submitForm: boolean;
@@ -92,13 +93,11 @@ export class NativeRenderAppComponent {
     };
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
-    constructor(
-        private http: HttpClient,
-    ) {
+    constructor(private http: HttpClient) {
         let args: any = NativeRenderAppComponent.searchParamsGet();
-        this.selectedProfile = args.selectedProfile;
         this.submitForm = args.submit !== undefined;
         this.panelType = args.panelType;
+        this.selectedProfileName = args.selectedProfile;
 
         if ((<any>window).formElt) {
             let elt = JSON.parse(JSON.stringify((<any>window).formElt));
@@ -335,6 +334,8 @@ export class NativeRenderAppComponent {
     loadForm(err = null, elt = null) {
         if (err) return this.errorMessage = 'Sorry, we are unable to retrieve this element.';
         this.elt = elt;
+        if (!this.selectedProfileName) this.selectedProfile = this.elt.displayProfiles[0];
+        else this.selectedProfile = this.elt.displayProfiles.filter(d => d.name === this.selectedProfileName)[0];
         this.loadFhirData();
     }
 
