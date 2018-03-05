@@ -210,7 +210,8 @@ public class NlmCdeBaseTest {
             @Override
             public void run() {
                 System.out.println("Test: " + m.getName() + " still running after 5 minutes.");
-            }}, 5, TimeUnit.MINUTES);
+            }
+        }, 5, TimeUnit.MINUTES);
 
     }
 
@@ -491,6 +492,7 @@ public class NlmCdeBaseTest {
             System.out.println("Failing to find, trying again: " + name);
             findElement(By.id("ftsearch-input")).clear();
             findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
+            textPresent(name, By.id("ftsearch-input"));
             clickElement(By.id("search.submit"));
             textPresent("1 results for");
         }
