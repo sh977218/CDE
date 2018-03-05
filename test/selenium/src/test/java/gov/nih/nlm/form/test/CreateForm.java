@@ -32,12 +32,6 @@ public class CreateForm extends BaseClassificationTest {
         goToGeneralDetail();
         textPresent(formName);
         textPresent(formDef);
-
-        waitForESUpdate();
-
-        goToFormByName(formName);
-        goToGeneralDetail();
-        textPresent(formDef);
     }
 
 }
