@@ -44,7 +44,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Browse by Topic"));
         hangon(1);
         scrollToView(By.xpath("//span[contains(normalize-space(text()),'Health Care Economics and Organizations')]"));
-        textPresent("Health Care Economics and Organizations (111");
+        textPresent("Health Care Economics and Organizations (11");
         clickElement(By.xpath("//span[contains(normalize-space(text()),'Health Care Economics and Organizations')]"));
         clickElement(By.id("topic-Organizations"));
         clickElement(By.id("topic-Government"));
