@@ -20,6 +20,7 @@ import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
+import { NotificationsComponent } from "./notifications/notifications.component";
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import { OrgHelperService } from 'core/orgHelper.service';
         AlertComponent,
         CdeAppComponent,
         NavigationComponent,
+        NotificationsComponent,
         PageNotFoundComponent,
         TruncateLongNamePipe,
     ],

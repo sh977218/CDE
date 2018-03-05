@@ -6,7 +6,7 @@ import * as moment from 'moment/min/moment.min';
 import 'fhirclient';
 
 import { mappings } from '_nativeRenderApp/fhirMapping';
-import { CdeForm } from 'shared/form/form.model';
+import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/formShared';
 
 @Component({
@@ -57,8 +57,8 @@ export class NativeRenderAppComponent {
     saveMessage: string = null;
     selectedEncounter: any;
     selectedObservations = []; // display data only
-    selectedProfile;
-    selectedProfileName;
+    selectedProfile: DisplayProfile;
+    selectedProfileName: string;
     showData = false;
     smart;
     submitForm: boolean;
@@ -95,27 +95,25 @@ export class NativeRenderAppComponent {
 
     constructor(private http: HttpClient) {
         let args: any = NativeRenderAppComponent.searchParamsGet();
+        this.selectedProfileName = args.selectedProfile;
         this.submitForm = args.submit !== undefined;
         this.panelType = args.panelType;
-        this.selectedProfileName = args.selectedProfile;
 
         if ((<any>window).formElt) {
             let elt = JSON.parse(JSON.stringify((<any>window).formElt));
             this.loadForm(null, elt);
         } else {
-            if (args.tinyId)
-                this.getForm(args.tinyId, this.methodLoadForm);
-            else
-                this.summary = true;
+            if (args.tinyId) this.getForm(args.tinyId, this.methodLoadForm);
+            else this.summary = true;
 
-            if (args.state)
-                this.loadFhir();
-            else if (args.iss)
+            if (args.state) this.loadFhir();
+            else if (args.iss) {
                 (<any>window).FHIR.oauth2.authorize({
                     'client_id': '7d291805-3ec8-42a5-ba7d-bb7ef1558c71',
                     'redirect_uri': 'http://localhost:3001/form/public/html/nativeRenderStandalone.html?panelType=patient',
                     'scope':  'patient/*.*'
                 });
+            }
         }
     }
 
@@ -172,7 +170,9 @@ export class NativeRenderAppComponent {
 
     static getCodeSystemOut(system, fe = null) {
         let s = system;
-        if (fe && fe.question && fe.question.cde && Array.isArray(fe.question.cde.ids) && fe.question.cde.ids.length) s = fe.question.cde.ids[0].source;
+        if (fe && fe.question && fe.question.cde && Array.isArray(fe.question.cde.ids) && fe.question.cde.ids.length) {
+            s = fe.question.cde.ids[0].source;
+        }
 
         let external = this.externalCodeSystems.filter(e => e.id === s);
         if (external.length) return external[0].uri;
@@ -216,8 +216,7 @@ export class NativeRenderAppComponent {
         let observationNames = [];
         pushFormObservationNames(tinyId);
         this.getForm(tinyId, (err, elt) => {
-            if (!err && elt)
-                iterateFeSync(elt, form => { pushFormObservationNames(form.inForm.form.tinyId); });
+            if (!err && elt) iterateFeSync(elt, form => { pushFormObservationNames(form.inForm.form.tinyId); });
             cb(err, observationNames);
         });
     }
@@ -277,8 +276,9 @@ export class NativeRenderAppComponent {
                 cb => {
                     this.smart.patient.api.search({type: 'Organization'})
                         .then((results, refs) => {
-                            if (results && results.data && results.data.entry && results.data.entry.length)
+                            if (results && results.data && results.data.entry && results.data.entry.length) {
                                 this.patientOrganization = results.data.entry[0].resource;
+                            }
                             cb();
                         });
                 }
@@ -302,6 +302,7 @@ export class NativeRenderAppComponent {
 
     loadFhirData() {
         if (!this.selectedEncounter) return;
+
         this.loadFhirDataForm(this.elt);
     }
 
@@ -398,7 +399,9 @@ export class NativeRenderAppComponent {
                             count++;
                             if (count >= instance) return result = f;
                             f.question.answers.forEach(a => {
-                                if (a.formElements && !result) a.formElements.forEach(sq => !result && getByIdRecurse(sq, tinyId));
+                                if (a.formElements && !result) {
+                                    a.formElements.forEach(sq => !result && getByIdRecurse(sq, tinyId));
+                                }
                             });
                         }
                     }
@@ -419,7 +422,7 @@ export class NativeRenderAppComponent {
                         if (f.elementType === 'section') getByCodeRecurse(f);
                         else if (f.elementType === 'form') {
                             if (f.inForm.form.ids.filter(
-                                id => id.source === system && id.id === code).length
+                                    id => id.source === system && id.id === code).length
                             ) {
                                 count++;
                                 if (count >= instance) return result = f;
@@ -427,12 +430,14 @@ export class NativeRenderAppComponent {
                             getByCodeRecurse(f);
                         } else {
                             if (f.question.cde.ids.filter(
-                                id => id.source === system && id.id === code).length
+                                    id => id.source === system && id.id === code).length
                             ) {
                                 count++;
                                 if (count >= instance) return result = f;
                                 f.question.answers.forEach(a => {
-                                    if (a.formElements && !result) a.formElements.forEach(sq => !result && getByCodeRecurse(sq));
+                                    if (a.formElements && !result) {
+                                        a.formElements.forEach(sq => !result && getByCodeRecurse(sq));
+                                    }
                                 });
                             }
                         }
@@ -631,6 +636,12 @@ export class NativeRenderAppComponent {
                     id: p.after.id,
                     type: p.after.resourceType
                 }).then(response => {
+                    // let match = this.patientObservations.filter(o => o.raw === p.before);
+                    // if (match.length) {
+                    //     let index = this.patientObservations.indexOf(match[0]);
+                    //     if (index > -1)
+                    //         this.patientObservations[i] = response.data;
+                    // }
                     if (!response || !response.data) return done('Not saved ' + p.after.id);
                     let obs = NativeRenderAppComponent.observationAdd(response.data);
                     let index = this.patientObservations.findIndex(o => o.raw === p.before);
@@ -639,7 +650,8 @@ export class NativeRenderAppComponent {
                     if (index > -1) this.selectedEncounter.observations[index] = obs;
                     done();
                 });
-            } else {
+            }
+            else {
                 this.smart.patient.api.create({
                     baseUrl: 'https://sb-fhir-stu3.smarthealthit.org/smartstu3/data/',
                     data: JSON.stringify(p.after),
@@ -672,7 +684,8 @@ export class NativeRenderAppComponent {
                     f.total = names.length;
                     f.percent = 100 * f.observed / f.total;
                 });
-            } else {
+            }
+            else {
                 f.observed = 0;
                 f.total = 0;
                 f.percent = 0;

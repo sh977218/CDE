@@ -1,6 +1,5 @@
 import 'zone.js';
-if (!PRODUCTION)
-    require('../../node_modules/zone.js/dist/long-stack-trace-zone.js');
+if (!PRODUCTION) require('../../node_modules/zone.js/dist/long-stack-trace-zone.js');
 // reflect-metadata needed before enableProdMode for IE
 import 'reflect-metadata';
 
@@ -12,8 +11,7 @@ import '../../node_modules/bootstrap/dist/js/bootstrap.js';
 require('expose-loader?bootstrap!bootstrap');
 
 import { enableProdMode } from '@angular/core';
-if (PRODUCTION)
-    enableProdMode();
+if (PRODUCTION) enableProdMode();
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { NativeRenderAppModule } from '_nativeRenderApp/nativeRenderApp.module';

@@ -8,7 +8,6 @@ import { OrgAdminComponent } from 'system/public/components/siteAdmin/orgAdmin/o
 import { UsersMgtComponent } from 'system/public/components/siteAdmin/usersMgt/usersMgt.component';
 import { WidgetModule } from 'widget/widget.module';
 
-
 @NgModule({
     imports: [
         CommonModule,

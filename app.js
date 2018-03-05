@@ -243,7 +243,7 @@ app.use((req, res, next) => {
     if (req.originalUrl === "/docs" || req.originalUrl === "/api-docs" || req.originalUrl.indexOf("/docs/") === 0) {
         return next();
     }
-    res.render('index', 'system', {config: config, loggedIn: !!req.user, version: 'version'});
+    res.render('index', 'system', {config: config, version: 'version'});
 });
 
 
