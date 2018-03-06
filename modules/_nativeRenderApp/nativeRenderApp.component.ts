@@ -6,7 +6,7 @@ import * as moment from 'moment/min/moment.min';
 import 'fhirclient';
 
 import { mappings } from '_nativeRenderApp/fhirMapping';
-import { CdeForm } from 'shared/form/form.model';
+import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/formShared';
 
 @Component({
@@ -57,7 +57,8 @@ export class NativeRenderAppComponent {
     saveMessage: string = null;
     selectedEncounter: any;
     selectedObservations = []; // display data only
-    selectedProfile: string;
+    selectedProfile: DisplayProfile;
+    selectedProfileName: string;
     showData = false;
     smart;
     submitForm: boolean;
@@ -92,11 +93,9 @@ export class NativeRenderAppComponent {
     };
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
-    constructor(
-        private http: HttpClient,
-    ) {
+    constructor(private http: HttpClient) {
         let args: any = NativeRenderAppComponent.searchParamsGet();
-        this.selectedProfile = args.selectedProfile;
+        this.selectedProfileName = args.selectedProfile;
         this.submitForm = args.submit !== undefined;
         this.panelType = args.panelType;
 
@@ -315,6 +314,12 @@ export class NativeRenderAppComponent {
     loadForm(err = null, elt = null) {
         if (err) return this.errorMessage = 'Sorry, we are unable to retrieve this element.';
         this.elt = elt;
+        if (!this.selectedProfileName) this.selectedProfile = this.elt.displayProfiles[0];
+        else {
+            let selectedProfileArray = this.elt.displayProfiles.filter(d => d.name === this.selectedProfileName);
+            if (selectedProfileArray && selectedProfileArray.length > 0) this.selectedProfile = selectedProfileArray[0];
+            else this.selectedProfile = null;
+        }
         this.loadFhirData();
     }
 
@@ -417,7 +422,7 @@ export class NativeRenderAppComponent {
                         if (f.elementType === 'section') getByCodeRecurse(f);
                         else if (f.elementType === 'form') {
                             if (f.inForm.form.ids.filter(
-                                id => id.source === system && id.id === code).length
+                                    id => id.source === system && id.id === code).length
                             ) {
                                 count++;
                                 if (count >= instance) return result = f;
@@ -425,7 +430,7 @@ export class NativeRenderAppComponent {
                             getByCodeRecurse(f);
                         } else {
                             if (f.question.cde.ids.filter(
-                                id => id.source === system && id.id === code).length
+                                    id => id.source === system && id.id === code).length
                             ) {
                                 count++;
                                 if (count >= instance) return result = f;
