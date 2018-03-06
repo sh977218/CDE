@@ -50,6 +50,7 @@ export class NativeRenderFullComponent implements OnInit {
     @Input() elt: CdeForm;
     profile: DisplayProfile;
     selectedProfileName;
+    selectedProfileNameDecode;
     overridePrintable: boolean = true;
     NativeRenderService = NativeRenderService;
 
@@ -60,6 +61,7 @@ export class NativeRenderFullComponent implements OnInit {
     selectProfile(profileIndex) {
         this.profile = this.elt.displayProfiles[profileIndex];
         this.selectedProfileName = this.elt.displayProfiles[profileIndex].name;
+        this.selectedProfileNameDecode = decodeURIComponent(this.selectedProfileName);
         this.overridePrintable = this.elt.displayProfiles[profileIndex].displayType === this.NativeRenderService.FOLLOW_UP;
     }
 }
