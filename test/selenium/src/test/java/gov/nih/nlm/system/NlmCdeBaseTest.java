@@ -313,7 +313,6 @@ public class NlmCdeBaseTest {
     }
 
     protected void mustBeLoggedInAs(String username, String password) {
-        goHome();
         doLogin(username, password);
         goToCdeSearch();
     }
