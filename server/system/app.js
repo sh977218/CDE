@@ -30,6 +30,7 @@ const request = require('request');
 const CronJob = require('cron').CronJob;
 const _ = require('lodash');
 const ejs = require('ejs');
+const browser = require('browser-detect');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -48,14 +49,21 @@ exports.init = function (app) {
     ejs.renderFile('modules/system/views/index.ejs', {config: config, version: version}, (err, str) => {
         indexHtml = str;
     });
+    let indexLegacyHtml = "";
+    ejs.renderFile('modules/system/views/index-legacy.ejs', {config: config, version: version}, (err, str) => {
+        indexLegacyHtml = str;
+    });
 
     /* for search engine | javascript disabled*/
-    function staticHtml(req, res, next) {
-        if (req.headers['user-agent'] && req.headers['user-agent'].match(/bot|crawler|spider|crawling/gi)) next();
-        else res.send(indexHtml);
+    function robotHtml(req, res, next) {
+        let modernBrowsers = ['chrome', 'firefox', 'edge'];
+        let userAgent = req.headers['user-agent'];
+        if (userAgent && userAgent.match(/bot|crawler|spider|crawling/gi)) next();
+        else if (modernBrowsers.indexOf(result.name) > -1) res.send(indexHtml);
+        else res.send(indexLegacyHtml);
     }
 
-    app.get("/", [checkHttps, staticHtml], function (req, res) {
+    app.get("/", [checkHttps, robotHtml], function (req, res) {
         res.render('bot/home', 'system');
     });
 
@@ -70,10 +78,10 @@ exports.init = function (app) {
     }
 
 
-    app.get("/home", [checkHttps, staticHtml], function (req, res) {
+    app.get("/home", [checkHttps, robotHtml], function (req, res) {
         res.render('bot/home', 'system');
     });
-    app.get("/cde/search", [checkHttps, staticHtml], function (req, res) {
+    app.get("/cde/search", [checkHttps, robotHtml], function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
         if (!pageString) pageString = "1";
@@ -116,7 +124,7 @@ exports.init = function (app) {
             });
         } else res.render('bot/cdeSearch', 'system');
     });
-    app.get("/deView", [checkHttps, staticHtml], function (req, res) {
+    app.get("/deView", [checkHttps, robotHtml], function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
         mongo_cde.byTinyIdAndVersion(tinyId, version, (err, cde) => {
@@ -130,7 +138,7 @@ exports.init = function (app) {
             else res.render('bot/deView', 'system', {elt: cde});
         });
     });
-    app.get("/form/search", [checkHttps, staticHtml], function (req, res) {
+    app.get("/form/search", [checkHttps, robotHtml], function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
         if (!pageString) pageString = "1";
@@ -173,7 +181,7 @@ exports.init = function (app) {
             });
         } else res.render('bot/formSearch', 'system');
     });
-    app.get("/formView", [checkHttps, staticHtml], function (req, res) {
+    app.get("/formView", [checkHttps, robotHtml], function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
         mongo_form.byTinyIdAndVersion(tinyId, version, (err, cde) => {
