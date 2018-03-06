@@ -13,6 +13,9 @@ import { canCreateForms, canOrgAuthority, isOrgAdmin, isOrgCurator } from 'share
             padding-left: 15px;
             padding-right: 15px;
         }
+        :not(.active) > #menu_cdes_link, :not(.active) > #menu_forms_link, :not(.active) > #menu_qb_link, :not(.active) > #boardsMenu, :not(.active) > #createEltLink, :not(.active) > #menu_help_link, :not(.active) > #username_link, :not(.active) > #login_link {
+            color: rgba(255, 255, 255, 0.53);
+        }
     `]
 })
 export class NavigationComponent {

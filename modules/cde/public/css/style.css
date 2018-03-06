@@ -451,8 +451,3 @@ label.input-group-addon {
 .text-end {
     text-align: end;
 }
-
-/* fix for Deque Axe */
-:not(.active) > #menu_cdes_link, :not(.active) > #menu_forms_link, :not(.active) > #menu_qb_link, :not(.active) > #boardsMenu, :not(.active) > #createEltLink, :not(.active) > #menu_help_link, :not(.active) > #username_link, :not(.active) > #login_link {
-    color: rgba(255, 255, 255, 0.53);
-}
