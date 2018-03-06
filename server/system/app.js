@@ -54,16 +54,23 @@ exports.init = function (app) {
         indexLegacyHtml = str;
     });
 
-    /* for search engine | javascript disabled*/
+    /* for search engine | javascript disabled */
     function robotHtml(req, res, next) {
-        let modernBrowsers = ['chrome', 'firefox', 'edge'];
         let userAgent = req.headers['user-agent'];
         if (userAgent && userAgent.match(/bot|crawler|spider|crawling/gi)) next();
-        else if (modernBrowsers.indexOf(result.name) > -1) res.send(indexHtml);
+        else res.send(indexHtml);
+    }
+
+    /* for IE Opera Safari | emit vendor.js */
+    function legacyBrowserHtml(req,res,next){
+        let modernBrowsers = ['chrome', 'firefox', 'edge'];
+        let userAgent = req.headers['user-agent'];
+        let browserName = browser(userAgent);
+        if (modernBrowsers.indexOf(browserName.name) > -1) next();
         else res.send(indexLegacyHtml);
     }
 
-    app.get("/", [checkHttps, robotHtml], function (req, res) {
+    app.get("/", [checkHttps, robotHtml, legacyBrowserHtml], function (req, res) {
         res.render('bot/home', 'system');
     });
 
