@@ -44,33 +44,34 @@ exports.init = function (app) {
     } catch (e) {
     }
 
-
     let indexHtml = "";
     ejs.renderFile('modules/system/views/index.ejs', {config: config, version: version}, (err, str) => {
         indexHtml = str;
-    });
-    let indexLegacyHtml = "";
-    ejs.renderFile('modules/system/views/index-legacy.ejs', {config: config, version: version}, (err, str) => {
-        indexLegacyHtml = str;
     });
 
     /* for search engine | javascript disabled */
     function robotHtml(req, res, next) {
         let userAgent = req.headers['user-agent'];
-        if (userAgent && userAgent.match(/bot|crawler|spider|crawling/gi)) next();
+        if (userAgent && userAgent.match(/bot|crawler|spider|crawling/gi))
+            next();
         else res.send(indexHtml);
     }
 
     /* for IE Opera Safari | emit vendor.js */
-    function legacyBrowserHtml(req,res,next){
-        let modernBrowsers = ['chrome', 'firefox', 'edge'];
-        let userAgent = req.headers['user-agent'];
-        let browserName = browser(userAgent);
+    const modernBrowsers = ['chrome', 'firefox', 'edge'];
+    let indexLegacyHtml = "";
+    ejs.renderFile('modules/system/views/index-legacy.ejs', {config: config, version: version}, (err, str) => {
+        indexLegacyHtml = str;
+    });
+
+    function legacyBrowser(req, res, next) {
+        let browserName = browser(req.headers['user-agent']);
         if (modernBrowsers.indexOf(browserName.name) > -1) next();
         else res.send(indexLegacyHtml);
     }
 
-    app.get("/", [checkHttps, robotHtml, legacyBrowserHtml], function (req, res) {
+
+    app.get("/", [robotHtml, legacyBrowser], function (req, res) {
         res.render('bot/home', 'system');
     });
 
@@ -85,10 +86,11 @@ exports.init = function (app) {
     }
 
 
-    app.get("/home", [checkHttps, robotHtml], function (req, res) {
+    app.get("/home", [robotHtml, legacyBrowser], function (req, res) {
         res.render('bot/home', 'system');
     });
-    app.get("/cde/search", [checkHttps, robotHtml], function (req, res) {
+
+    app.get("/cde/search", [robotHtml], function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
         if (!pageString) pageString = "1";
@@ -131,7 +133,7 @@ exports.init = function (app) {
             });
         } else res.render('bot/cdeSearch', 'system');
     });
-    app.get("/deView", [checkHttps, robotHtml], function (req, res) {
+    app.get("/deView", [robotHtml], function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
         mongo_cde.byTinyIdAndVersion(tinyId, version, (err, cde) => {
@@ -145,7 +147,7 @@ exports.init = function (app) {
             else res.render('bot/deView', 'system', {elt: cde});
         });
     });
-    app.get("/form/search", [checkHttps, robotHtml], function (req, res) {
+    app.get("/form/search", [robotHtml], function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
         if (!pageString) pageString = "1";
@@ -188,7 +190,7 @@ exports.init = function (app) {
             });
         } else res.render('bot/formSearch', 'system');
     });
-    app.get("/formView", [checkHttps, robotHtml], function (req, res) {
+    app.get("/formView", [robotHtml], function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
         mongo_form.byTinyIdAndVersion(tinyId, version, (err, cde) => {
@@ -243,33 +245,23 @@ exports.init = function (app) {
         timeZone: "America/New_York"
     }).start();
 
-    function checkHttps(req, res, next) {
-        if (config.proxy) {
-            if (req.protocol !== 'https') {
-                if (req.query.gotohttps === "1")
-                    res.send("Missing X-Forward-Proto Header");
-                else res.redirect(config.publicUrl + "?gotohttps=1");
-            } else next();
-        } else next();
-    }
-
     ["/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404",
         "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
-        app.get(path, checkHttps, function (req, res) {
+        app.get(path, function (req, res) {
             res.render('index', 'system', {config: config, loggedIn: !!req.user, version: version});
         });
     });
 
-    app.get('/nativeRender', checkHttps, function (req, res) {
+    app.get('/nativeRender', function (req, res) {
         res.sendFile(path.join(__dirname, '../../modules/_nativeRenderApp', 'nativeRenderApp.html'), undefined, function (err) {
             if (err)
                 res.sendStatus(404);
         });
     });
 
-    app.get('/sw.js', checkHttps, function (req, res) {
+    app.get('/sw.js', function (req, res) {
         res.sendFile(path.join(__dirname, '../../dist/app', 'sw.js'), undefined, function (err) {
             if (err)
                 res.sendStatus(404);
