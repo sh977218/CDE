@@ -71,7 +71,7 @@ exports.init = function (app) {
     }
 
 
-    app.get("/", [robotHtml, legacyBrowser], function (req, res) {
+    app.get("/", [legacyBrowser, robotHtml], function (req, res) {
         res.render('bot/home', 'system');
     });
 
@@ -86,7 +86,7 @@ exports.init = function (app) {
     }
 
 
-    app.get("/home", [robotHtml, legacyBrowser], function (req, res) {
+    app.get("/home", [legacyBrowser, robotHtml], function (req, res) {
         res.render('bot/home', 'system');
     });
 
