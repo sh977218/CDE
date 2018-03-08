@@ -202,9 +202,7 @@
             <button class="btn  btn-outline-dark" (click)="cancel()" *ngIf="selection.cde || selection.form">
                 <i class="fa fa-close"></i> Cancel</button>
 
-            <br><br>
-
-            <div> preview:
+            <div *ngIf="selection?._id" class="mt15"> preview:
                 <span class="btn-group">
                 <button id="previewEnabled" class="btn  " [ngClass]="{'btn-success':previewOn}"
                         (click)="enablePreview(true)"> On
@@ -214,14 +212,12 @@
                 </button>
             </span>
             </div>
-
         </form>
 
         <iframe *ngIf="previewOn" width="{{selection.width}}" height="{{selection.height}}"
-                [src]="getPreview()" name="previewFrame"></iframe>
+                [src]="previewSrc" name="previewFrame"></iframe>
 
     </div>
-
 </div>
 
 

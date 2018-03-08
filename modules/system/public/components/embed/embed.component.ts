@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
@@ -25,6 +25,7 @@ export class EmbedComponent implements OnInit {
     selectedOrg: any;
     selection: any;
     showDelete: boolean;
+    previewSrc: SafeResourceUrl;
 
     ngOnInit() {
         this.reloadEmbeds();
@@ -92,10 +93,9 @@ export class EmbedComponent implements OnInit {
 
     enablePreview (b) {
         this.previewOn = b;
-    }
-
-    getPreview () {
-        return this.sanitizer.bypassSecurityTrustResourceUrl('/embedded/public/html/index.html?id=' + this.selection._id);
+        if (b) {
+            this.previewSrc = this.sanitizer.bypassSecurityTrustResourceUrl('/embedded/public/html/index.html?id=' + this.selection._id);
+        }
     }
 
     reloadEmbeds ()  {
