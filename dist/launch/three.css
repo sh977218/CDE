@@ -1,0 +1,29 @@
+.sectionPage[_ngcontent-c1] {
+
+}
+.slideContent[_ngcontent-c1] {
+    display: block;
+    margin: auto;
+    height: 500px;
+    max-height: 50vh;
+}
+.carousel-caption[_ngcontent-c1] {
+    background-color: rgba(255, 255, 255, .8);
+    color: #000;
+    text-shadow: none;
+}
+.carousel-caption[_ngcontent-c1]   h3[_ngcontent-c1] {
+    font-weight: 900;
+}
+[_nghost-c1]     .carousel-control-next, [_nghost-c1]     .carousel-control-prev {
+    display: none;
+
+
+}
+[_nghost-c1]     .carousel-indicators li {
+    background-color: #fff;
+    border: 1px solid #0275d8;
+}
+[_nghost-c1]     .carousel-indicators li.active {
+    background-color: #0275d8;
+}

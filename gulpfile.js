@@ -1,18 +1,20 @@
-const gulp = require('gulp'),
-    uglify = require('gulp-uglify'),
-    config = require('./server/system/parseConfig'),
-    data = require('gulp-data'),
-    usemin = require('gulp-usemin'),
-    rev = require('gulp-rev'),
-    minifyCss = require('gulp-clean-css'),
-    install = require('gulp-install'),
-    replace = require('gulp-replace'),
-    fs = require('fs'),
-    esInit = require('./server/system/elasticSearchInit'),
-    git = require('gulp-git'),
-    run = require('gulp-run'),
-    merge = require('merge-stream')
-;
+const config = require('./server/system/parseConfig');
+const data = require('gulp-data');
+const del = require('del');
+const esInit = require('./server/system/elasticSearchInit');
+const fs = require('fs');
+const git = require('gulp-git');
+const gulp = require('gulp');
+const htmlmin = require('gulp-htmlmin');
+const install = require('gulp-install');
+const merge = require('merge-stream');
+const minifyCss = require('gulp-clean-css');
+const replace = require('gulp-replace');
+const rename = require("gulp-rename");
+const rev = require('gulp-rev');
+const run = require('gulp-run');
+const uglify = require('gulp-uglify');
+const usemin = require('gulp-usemin');
 
 require('es6-promise').polyfill();
 
@@ -154,6 +156,12 @@ gulp.task('copyDist', ['buildApp', 'buildEmbed', 'buildNative'], () => {
     streamArray.push(gulp.src('./dist/native/*')
         .pipe(gulp.dest(config.node.buildDir + '/dist/native')));
 
+    // Launch optimization
+    streamArray.push(gulp.src('./modules/system/views/home-launch.ejs')
+        .pipe(gulp.dest(config.node.buildDir + '/modules/system/views')));
+    streamArray.push(gulp.src('./dist/launch/*')
+        .pipe(gulp.dest(config.node.buildDir + '/dist/launch')));
+
     return merge(streamArray);
 });
 
@@ -232,6 +240,36 @@ gulp.task('es', function () {
         });
     });
     setTimeout(() => process.exit(0), 3000);
+});
+
+// buildHome Procedure:
+// 1. In Chrome, load the Home page on Production and not logged.
+// 2. In the Devtool Elements Tab, right click the specified tag and click "Copy Element" to copy the following:
+//     a. Copy the last three <style> tags to one.css, two.css and three.css.
+//     b. Copy <nih-cde> to nihcde.html.index
+// 3. Check that the main app is built and run "gulp buildHome".
+// 4. Check-in the resulting png files and home-launch.ejs into git while removing old versions.
+// 5. To update the production build, run "gulp".
+gulp.task('buildHome', [], function () {
+    return del(['dist/launch/*.png', 'dist/launch/home-*.css', 'dist/launch/vendor-*.js']).then(() => {
+        gulp.src('./dist/app/*.png')
+            .pipe(gulp.dest('dist/launch'));
+        return gulp.src('./modules/system/views/home.ejs')
+            .pipe(replace('<NIHCDECONTENT/>', fs.readFileSync('./dist/launch/nihcde.html', {encoding: 'utf8'})))
+            .pipe(usemin({
+                jsAttributes: {
+                    async: true,
+                    defer: false
+                },
+                html: [ htmlmin({ collapseWhitespace: true, minifyJS: true, processScripts: ['application/ld+json'], processConditionalComments: true, removeComments: true }) ],
+                assetsDir: "./dist/",
+                inlinecss: [minifyCss, 'concat'],
+                inlinejs: [uglify({mangle: false}), 'concat'],
+            }))
+            .pipe(gulp.dest('./dist/'))
+            .pipe(rename('home-launch.ejs'))
+            .pipe(gulp.dest('./modules/system/views'));
+    });
 });
 
 gulp.task('default', ['copyNpmDeps', 'prepareVersion', 'copyUsemin']);

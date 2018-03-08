@@ -11,7 +11,6 @@ import { TourService } from 'home/tour.service';
             display: block;
             margin: auto;
             height: 500px;
-            max-height: 50vh;
         }
         .carousel-caption {
             background-color: rgba(255, 255, 255, .8);

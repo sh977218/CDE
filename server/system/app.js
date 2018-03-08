@@ -55,7 +55,24 @@ exports.init = function (app) {
         else res.send(indexHtml);
     }
 
-    app.get("/", [staticHtml], function (req, res) {
+    let homeHtml = "";
+    ejs.renderFile('modules/system/views/home-launch.ejs', {config: config, version: version}, (err, str) => {
+        homeHtml = str;
+    });
+
+    function staticHomeHtml(req, res, next) {
+        if (req.headers['user-agent'] && req.headers['user-agent'].match(/bot|crawler|spider|crawling/gi)) {
+            next();
+        } else {
+            if (req.user) {
+                res.send(indexHtml);
+            } else {
+                res.send(homeHtml);
+            }
+        }
+    }
+
+    app.get("/", [staticHomeHtml], function (req, res) {
         res.render('bot/home', 'system');
     });
 
@@ -81,7 +98,7 @@ exports.init = function (app) {
         }
     });
 
-    app.get("/home", [staticHtml], function (req, res) {
+    app.get("/home", [staticHomeHtml], function (req, res) {
         res.render('bot/home', 'system');
     });
     app.get("/cde/search", [staticHtml], function (req, res) {
@@ -244,7 +261,7 @@ exports.init = function (app) {
         "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
         app.get(path, function (req, res) {
-            res.render('index', 'system', {config: config, loggedIn: !!req.user, version: version});
+            res.send(indexHtml);
         });
     });
 
