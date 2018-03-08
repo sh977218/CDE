@@ -54,7 +54,7 @@ exports.init = function (app) {
         let userAgent = req.headers['user-agent'];
         let isSEO = userAgent && userAgent.match(/bot|crawler|spider|crawling/gi);
         if (isSEO) next();
-        else res.send(indexHtml);
+        else legacyBrowser(req, res, next);
     }
 
     /* for IE Opera Safari, emit vendor.js */
@@ -63,6 +63,13 @@ exports.init = function (app) {
     ejs.renderFile('modules/system/views/index-legacy.ejs', {config: config, version: version}, (err, str) => {
         indexLegacyHtml = str;
     });
+
+    function legacyBrowser(req, res, next) {
+        let browserName = browser(req.headers['user-agent']);
+        if (browserName && modernBrowsers.indexOf(browserName.name) > -1) next();
+        else res.send(indexLegacyHtml);
+    }
+
     app.get(["/", "/home"], function (req, res) {
         let userAgent = req.headers['user-agent'];
         let isSEO = userAgent && userAgent.match(/bot|crawler|spider|crawling/gi);
