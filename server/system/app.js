@@ -85,7 +85,6 @@ exports.init = function (app) {
         });
     }
 
-
     app.get("/home", [legacyBrowser, robotHtml], function (req, res) {
         res.render('bot/home', 'system');
     });
@@ -147,6 +146,7 @@ exports.init = function (app) {
             else res.render('bot/deView', 'system', {elt: cde});
         });
     });
+
     app.get("/form/search", [robotHtml], function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
@@ -190,6 +190,7 @@ exports.init = function (app) {
             });
         } else res.render('bot/formSearch', 'system');
     });
+
     app.get("/formView", [robotHtml], function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
