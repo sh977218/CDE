@@ -980,6 +980,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void setVisibleStatus(String id) {
+        goToSearch("cde");
         goHome();
         clickElement(By.id("searchSettings"));
         clickElement(By.id(id));
