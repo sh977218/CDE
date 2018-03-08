@@ -49,29 +49,28 @@ exports.init = function (app) {
         indexHtml = str;
     });
 
-    /* for search engine | javascript disabled */
+    /* for search engine and javascript disabled */
     function staticHtml(req, res, next) {
         let userAgent = req.headers['user-agent'];
-        if (userAgent && userAgent.match(/bot|crawler|spider|crawling/gi)) next();
-        else legacyBrowser(req, res, next);
+        let isSEO = userAgent && userAgent.match(/bot|crawler|spider|crawling/gi);
+        if (isSEO) next();
+        else res.send(indexHtml);
     }
 
-    /* for IE Opera Safari | emit vendor.js */
+    /* for IE Opera Safari, emit vendor.js */
     const modernBrowsers = ['chrome', 'firefox', 'edge'];
     let indexLegacyHtml = "";
     ejs.renderFile('modules/system/views/index-legacy.ejs', {config: config, version: version}, (err, str) => {
         indexLegacyHtml = str;
     });
-
-    function legacyBrowser(req, res, next) {
-        let browserName = browser(req.headers['user-agent']);
-        if (browserName && modernBrowsers.indexOf(browserName.name) > -1) next();
+    app.get(["/", "/home"], function (req, res) {
+        let userAgent = req.headers['user-agent'];
+        let isSEO = userAgent && userAgent.match(/bot|crawler|spider|crawling/gi);
+        let browserName = browser(userAgent);
+        let isModernBrowser = browserName && modernBrowsers.indexOf(browserName.name) > -1;
+        if (isSEO) res.render('bot/home', 'system');
+        else if (isModernBrowser) res.send(indexHtml);
         else res.send(indexLegacyHtml);
-    }
-
-
-    app.get("/", [legacyBrowser, staticHtml], function (req, res) {
-        res.render('bot/home', 'system');
     });
 
     app.get("/site-version", (req, res) => {
@@ -94,10 +93,6 @@ exports.init = function (app) {
         } else {
             res.status(401).send();
         }
-    });
-
-    app.get("/home", [legacyBrowser, staticHtml], function (req, res) {
-        res.render('bot/home', 'system');
     });
 
     app.get("/cde/search", [staticHtml], function (req, res) {
