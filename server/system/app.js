@@ -139,7 +139,7 @@ exports.init = function (app) {
                         });
                 });
             } else res.render('bot/cdeSearch', 'system');
-        } else res.send(indexHtml);
+        } else res.send(indexLegacyHtml);
     });
     app.get("/deView", function (req, res) {
         let tinyId = req.query.tinyId;
@@ -154,7 +154,7 @@ exports.init = function (app) {
             } else {
                 let isSEO = isSearchEngine(req);
                 if (isSEO) res.render('bot/deView', 'system', {elt: cde});
-                else res.send(indexHtml);
+                else res.send(indexLegacyHtml);
             }
         });
     });
@@ -203,7 +203,7 @@ exports.init = function (app) {
                         });
                 });
             } else res.render('bot/formSearch', 'system');
-        } else res.send(indexHtml);
+        } else res.send(indexLegacyHtml);
     });
 
     app.get("/formView", function (req, res) {
@@ -219,7 +219,7 @@ exports.init = function (app) {
             } else {
                 let isSEO = isSearchEngine(req);
                 if (isSEO) res.render('bot/formView', 'system', {elt: cde});
-                else res.send(indexHtml);
+                else res.send(indexLegacyHtml);
             }
         });
     });
