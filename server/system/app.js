@@ -50,7 +50,7 @@ exports.init = function (app) {
     });
 
     /* for search engine | javascript disabled */
-    function robotHtml(req, res, next) {
+    function staticHtml(req, res, next) {
         let userAgent = req.headers['user-agent'];
         if (userAgent && userAgent.match(/bot|crawler|spider|crawling/gi))
             next();
@@ -71,7 +71,7 @@ exports.init = function (app) {
     }
 
 
-    app.get("/", [legacyBrowser, robotHtml], function (req, res) {
+    app.get("/", [legacyBrowser, staticHtml], function (req, res) {
         res.render('bot/home', 'system');
     });
 
@@ -85,11 +85,11 @@ exports.init = function (app) {
         });
     }
 
-    app.get("/home", [legacyBrowser, robotHtml], function (req, res) {
+    app.get("/home", [legacyBrowser, staticHtml], function (req, res) {
         res.render('bot/home', 'system');
     });
 
-    app.get("/cde/search", [robotHtml], function (req, res) {
+    app.get("/cde/search", [staticHtml], function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
         if (!pageString) pageString = "1";
@@ -132,7 +132,7 @@ exports.init = function (app) {
             });
         } else res.render('bot/cdeSearch', 'system');
     });
-    app.get("/deView", [robotHtml], function (req, res) {
+    app.get("/deView", [staticHtml], function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
         mongo_cde.byTinyIdAndVersion(tinyId, version, (err, cde) => {
@@ -147,7 +147,7 @@ exports.init = function (app) {
         });
     });
 
-    app.get("/form/search", [robotHtml], function (req, res) {
+    app.get("/form/search", [staticHtml], function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
         if (!pageString) pageString = "1";
@@ -191,7 +191,7 @@ exports.init = function (app) {
         } else res.render('bot/formSearch', 'system');
     });
 
-    app.get("/formView", [robotHtml], function (req, res) {
+    app.get("/formView", [staticHtml], function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
         mongo_form.byTinyIdAndVersion(tinyId, version, (err, cde) => {
