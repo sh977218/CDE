@@ -50,11 +50,10 @@ exports.init = function (app) {
     });
 
     /* for search engine and javascript disabled */
-    function staticHtml(req, res, next) {
+    function isSearchEngine(req) {
         let userAgent = req.headers['user-agent'];
         let isSEO = userAgent && userAgent.match(/bot|crawler|spider|crawling/gi);
-        if (isSEO) next();
-        else legacyBrowser(req, res, next);
+        return isSEO;
     }
 
     /* for IE Opera Safari, emit vendor.js */
@@ -63,12 +62,6 @@ exports.init = function (app) {
     ejs.renderFile('modules/system/views/index-legacy.ejs', {config: config, version: version}, (err, str) => {
         indexLegacyHtml = str;
     });
-
-    function legacyBrowser(req, res, next) {
-        let browserName = browser(req.headers['user-agent']);
-        if (browserName && modernBrowsers.indexOf(browserName.name) > -1) next();
-        else res.send(indexLegacyHtml);
-    }
 
     app.get(["/", "/home"], function (req, res) {
         let userAgent = req.headers['user-agent'];
@@ -102,50 +95,53 @@ exports.init = function (app) {
         }
     });
 
-    app.get("/cde/search", [staticHtml], function (req, res) {
+    app.get("/cde/search", function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
         if (!pageString) pageString = "1";
-        if (selectedOrg) {
-            let pageNum = _.toInteger(pageString);
-            let pageSize = 20;
-            let cond = {
-                'classification.stewardOrg.name': selectedOrg,
-                'archived': false,
-                'registrationState.registrationStatus': 'Qualified'
-            };
-            mongo_cde.DataElement.count(cond, (err, totalCount) => {
-                if (err) {
-                    res.status(500).send("ERROR - Static Html Error, /cde/search");
-                    logging.errorLogger.error("Error: Static Html Error", {
-                        stack: err.stack,
-                        origin: req.url
-                    });
-                } else
-                    mongo_cde.DataElement.find(cond, 'tinyId naming', {
-                        skip: pageSize * (pageNum - 1),
-                        limit: pageSize
-                    }, (err, cdes) => {
-                        if (err) {
-                            res.status(500).send("ERROR - Static Html Error, /cde/search");
-                            logging.errorLogger.error("Error: Static Html Error", {
-                                stack: err.stack,
-                                origin: req.url
-                            });
-                        } else {
-                            let totalPages = totalCount / pageSize;
-                            if (totalPages % 1 > 0) totalPages = totalPages + 1;
-                            res.render('bot/cdeSearchOrg', 'system', {
-                                cdes: cdes,
-                                totalPages: totalPages,
-                                selectedOrg: selectedOrg
-                            });
-                        }
-                    });
-            });
-        } else res.render('bot/cdeSearch', 'system');
+        let isSEO = isSearchEngine(req);
+        if (isSEO) {
+            if (selectedOrg) {
+                let pageNum = _.toInteger(pageString);
+                let pageSize = 20;
+                let cond = {
+                    'classification.stewardOrg.name': selectedOrg,
+                    'archived': false,
+                    'registrationState.registrationStatus': 'Qualified'
+                };
+                mongo_cde.DataElement.count(cond, (err, totalCount) => {
+                    if (err) {
+                        res.status(500).send("ERROR - Static Html Error, /cde/search");
+                        logging.errorLogger.error("Error: Static Html Error", {
+                            stack: err.stack,
+                            origin: req.url
+                        });
+                    } else
+                        mongo_cde.DataElement.find(cond, 'tinyId naming', {
+                            skip: pageSize * (pageNum - 1),
+                            limit: pageSize
+                        }, (err, cdes) => {
+                            if (err) {
+                                res.status(500).send("ERROR - Static Html Error, /cde/search");
+                                logging.errorLogger.error("Error: Static Html Error", {
+                                    stack: err.stack,
+                                    origin: req.url
+                                });
+                            } else {
+                                let totalPages = totalCount / pageSize;
+                                if (totalPages % 1 > 0) totalPages = totalPages + 1;
+                                res.render('bot/cdeSearchOrg', 'system', {
+                                    cdes: cdes,
+                                    totalPages: totalPages,
+                                    selectedOrg: selectedOrg
+                                });
+                            }
+                        });
+                });
+            } else res.render('bot/cdeSearch', 'system');
+        } else res.send(indexHtml);
     });
-    app.get("/deView", [staticHtml], function (req, res) {
+    app.get("/deView", function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
         mongo_cde.byTinyIdAndVersion(tinyId, version, (err, cde) => {
@@ -155,56 +151,62 @@ exports.init = function (app) {
                     stack: err.stack,
                     origin: req.url
                 });
+            } else {
+                let isSEO = isSearchEngine(req);
+                if (isSEO) res.render('bot/deView', 'system', {elt: cde});
+                else res.send(indexHtml);
             }
-            else res.render('bot/deView', 'system', {elt: cde});
         });
     });
 
-    app.get("/form/search", [staticHtml], function (req, res) {
+    app.get("/form/search", function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
         if (!pageString) pageString = "1";
-        if (selectedOrg) {
-            let pageNum = _.toInteger(pageString);
-            let pageSize = 20;
-            let cond = {
-                'classification.stewardOrg.name': selectedOrg,
-                'archived': false,
-                'registrationState.registrationStatus': 'Qualified'
-            };
-            mongo_form.Form.count(cond, (err, totalCount) => {
-                if (err) {
-                    res.status(500).send("ERROR - Static Html Error, /form/search");
-                    logging.errorLogger.error("Error: Static Html Error", {
-                        stack: err.stack,
-                        origin: req.url
-                    });
-                } else
-                    mongo_form.Form.find(cond, 'tinyId naming', {
-                        skip: pageSize * (pageNum - 1),
-                        limit: pageSize
-                    }, (err, forms) => {
-                        if (err) {
-                            res.status(500).send("ERROR - Static Html Error, /form/search");
-                            logging.errorLogger.error("Error: Static Html Error", {
-                                stack: err.stack,
-                                origin: req.url
-                            });
-                        } else {
-                            let totalPages = totalCount / pageSize;
-                            if (totalPages % 1 > 0) totalPages = totalPages + 1;
-                            res.render('bot/formSearchOrg', 'system', {
-                                forms: forms,
-                                totalPages: totalPages,
-                                selectedOrg: selectedOrg
-                            });
-                        }
-                    });
-            });
-        } else res.render('bot/formSearch', 'system');
+        let isSEO = isSearchEngine(req);
+        if (isSEO) {
+            if (selectedOrg) {
+                let pageNum = _.toInteger(pageString);
+                let pageSize = 20;
+                let cond = {
+                    'classification.stewardOrg.name': selectedOrg,
+                    'archived': false,
+                    'registrationState.registrationStatus': 'Qualified'
+                };
+                mongo_form.Form.count(cond, (err, totalCount) => {
+                    if (err) {
+                        res.status(500).send("ERROR - Static Html Error, /form/search");
+                        logging.errorLogger.error("Error: Static Html Error", {
+                            stack: err.stack,
+                            origin: req.url
+                        });
+                    } else
+                        mongo_form.Form.find(cond, 'tinyId naming', {
+                            skip: pageSize * (pageNum - 1),
+                            limit: pageSize
+                        }, (err, forms) => {
+                            if (err) {
+                                res.status(500).send("ERROR - Static Html Error, /form/search");
+                                logging.errorLogger.error("Error: Static Html Error", {
+                                    stack: err.stack,
+                                    origin: req.url
+                                });
+                            } else {
+                                let totalPages = totalCount / pageSize;
+                                if (totalPages % 1 > 0) totalPages = totalPages + 1;
+                                res.render('bot/formSearchOrg', 'system', {
+                                    forms: forms,
+                                    totalPages: totalPages,
+                                    selectedOrg: selectedOrg
+                                });
+                            }
+                        });
+                });
+            } else res.render('bot/formSearch', 'system');
+        } else res.send(indexHtml);
     });
 
-    app.get("/formView", [staticHtml], function (req, res) {
+    app.get("/formView", function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
         mongo_form.byTinyIdAndVersion(tinyId, version, (err, cde) => {
@@ -214,8 +216,11 @@ exports.init = function (app) {
                     stack: err.stack,
                     origin: req.url
                 });
+            } else {
+                let isSEO = isSearchEngine(req);
+                if (isSEO) res.render('bot/formView', 'system', {elt: cde});
+                else res.send(indexHtml);
             }
-            else res.render('bot/formView', 'system', {elt: cde});
         });
     });
 
