@@ -69,6 +69,17 @@ exports.init = function (app) {
         });
     }
 
+    // @TODO Remove me
+    app.get("/testProxy", (req, res) => {
+        if (authorizationShared.isSiteAdmin(req.user)) {
+            request.get(req.query.url, (err, resp, body) => {
+                if (err) return res.send(err);
+                else return res.send(body);
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
 
     app.get("/home", [staticHtml], function (req, res) {
         res.render('bot/home', 'system');
