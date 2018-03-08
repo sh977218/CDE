@@ -90,6 +90,16 @@ setInterval(function releaseHackers() {
     });
 }, releaseHackersFrequency);
 
+app.use(function checkHttps(req, res, next) {
+    if (config.proxy) {
+        if (req.protocol !== 'https') {
+            if (req.query.gotohttps === "1")
+                res.send("Missing X-Forward-Proto Header");
+            else res.redirect(config.publicUrl + "?gotohttps=1");
+        } else next();
+    } else next();
+});
+
 app.use(function banHackers(req, res, next) {
     banEndsWith.forEach(function (ban) {
         if (req.originalUrl.slice(-(ban.length)) === ban) {

@@ -55,7 +55,7 @@ exports.init = function (app) {
         else res.send(indexHtml);
     }
 
-    app.get("/", [checkHttps, staticHtml], function (req, res) {
+    app.get("/", [staticHtml], function (req, res) {
         res.render('bot/home', 'system');
     });
 
@@ -70,10 +70,10 @@ exports.init = function (app) {
     }
 
 
-    app.get("/home", [checkHttps, staticHtml], function (req, res) {
+    app.get("/home", [staticHtml], function (req, res) {
         res.render('bot/home', 'system');
     });
-    app.get("/cde/search", [checkHttps, staticHtml], function (req, res) {
+    app.get("/cde/search", [staticHtml], function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
         if (!pageString) pageString = "1";
@@ -116,7 +116,7 @@ exports.init = function (app) {
             });
         } else res.render('bot/cdeSearch', 'system');
     });
-    app.get("/deView", [checkHttps, staticHtml], function (req, res) {
+    app.get("/deView", [staticHtml], function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
         mongo_cde.byTinyIdAndVersion(tinyId, version, (err, cde) => {
@@ -130,7 +130,7 @@ exports.init = function (app) {
             else res.render('bot/deView', 'system', {elt: cde});
         });
     });
-    app.get("/form/search", [checkHttps, staticHtml], function (req, res) {
+    app.get("/form/search", [staticHtml], function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
         if (!pageString) pageString = "1";
@@ -173,7 +173,7 @@ exports.init = function (app) {
             });
         } else res.render('bot/formSearch', 'system');
     });
-    app.get("/formView", [checkHttps, staticHtml], function (req, res) {
+    app.get("/formView", [staticHtml], function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
         mongo_form.byTinyIdAndVersion(tinyId, version, (err, cde) => {
@@ -228,33 +228,23 @@ exports.init = function (app) {
         timeZone: "America/New_York"
     }).start();
 
-    function checkHttps(req, res, next) {
-        if (config.proxy) {
-            if (req.protocol !== 'https') {
-                if (req.query.gotohttps === "1")
-                    res.send("Missing X-Forward-Proto Header");
-                else res.redirect(config.publicUrl + "?gotohttps=1");
-            } else next();
-        } else next();
-    }
-
     ["/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404",
         "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
-        app.get(path, checkHttps, function (req, res) {
+        app.get(path, function (req, res) {
             res.render('index', 'system', {config: config, loggedIn: !!req.user, version: version});
         });
     });
 
-    app.get('/nativeRender', checkHttps, function (req, res) {
+    app.get('/nativeRender', function (req, res) {
         res.sendFile(path.join(__dirname, '../../modules/_nativeRenderApp', 'nativeRenderApp.html'), undefined, function (err) {
             if (err)
                 res.sendStatus(404);
         });
     });
 
-    app.get('/sw.js', checkHttps, function (req, res) {
+    app.get('/sw.js', function (req, res) {
         res.sendFile(path.join(__dirname, '../../dist/app', 'sw.js'), undefined, function (err) {
             if (err)
                 res.sendStatus(404);
