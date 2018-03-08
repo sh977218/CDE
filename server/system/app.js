@@ -66,9 +66,11 @@ exports.init = function (app) {
 
     function legacyBrowser(req, res, next) {
         let browserName = browser(req.headers['user-agent']);
-        console.log("browserName: " + browserName.name);
         if (browserName && modernBrowsers.indexOf(browserName.name) > -1) next();
-        else res.send(indexLegacyHtml);
+        else {
+            console.log("Legacy browserName: " + browserName.name);
+            res.send(indexLegacyHtml);
+        }
     }
 
 
