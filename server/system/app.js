@@ -52,9 +52,8 @@ exports.init = function (app) {
     /* for search engine | javascript disabled */
     function staticHtml(req, res, next) {
         let userAgent = req.headers['user-agent'];
-        if (userAgent && userAgent.match(/bot|crawler|spider|crawling/gi))
-            next();
-        else res.send(indexHtml);
+        if (userAgent && userAgent.match(/bot|crawler|spider|crawling/gi)) next();
+        else legacyBrowser(req, res, next);
     }
 
     /* for IE Opera Safari | emit vendor.js */
@@ -67,10 +66,7 @@ exports.init = function (app) {
     function legacyBrowser(req, res, next) {
         let browserName = browser(req.headers['user-agent']);
         if (browserName && modernBrowsers.indexOf(browserName.name) > -1) next();
-        else {
-            console.log("Legacy browserName: " + browserName.name);
-            res.send(indexLegacyHtml);
-        }
+        else res.send(indexLegacyHtml);
     }
 
 
