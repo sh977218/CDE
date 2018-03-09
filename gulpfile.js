@@ -251,11 +251,11 @@ gulp.task('es', function () {
 
 // Procedure calling task in README
 gulp.task('buildHome', [], function () {
-    return del(['dist/launch/*.png', 'dist/launch/home-*.css', 'dist/launch/vendor-*.js']).then(() => {
+    return del(['dist/launch/*.png']).then(() => {
         gulp.src('./dist/app/*.png')
             .pipe(gulp.dest('dist/launch'));
         return gulp.src('./modules/system/views/home.ejs')
-            .pipe(replace('<NIHCDECONTENT/>', fs.readFileSync('./dist/launch/nihcde.html', {encoding: 'utf8'})))
+            .pipe(replace('<NIHCDECONTENT/>', fs.readFileSync('./modules/_app/staticHome/nihcde.html', {encoding: 'utf8'})))
             .pipe(usemin({
                 jsAttributes: {
                     async: true,

@@ -70,8 +70,9 @@ public class TourTest extends NlmCdeBaseTest {
 
     @Test
     public void takeTourTest() {
-        goHomeStatic();
-        checkTour();
+//        goHomeStatic();
+//        checkTour();
+        goToSearch("cde");
         goHome();
         checkTour();
     }
