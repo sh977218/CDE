@@ -692,6 +692,13 @@ public class NlmCdeBaseTest {
         findElement(By.cssSelector(".carousel-indicators"));
     }
 
+    protected void goHomeStatic() {
+        mustBeLoggedOut();
+        driver.get(baseUrl + "/home");
+        textPresent("has been designed to provide access", By.id("introduction"));
+        findElement(By.cssSelector(".carousel-indicators"));
+    }
+
     protected void goToCdeSearch() {
         goToSearch("cde");
     }

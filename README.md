@@ -102,7 +102,7 @@ Next, you need to set up the various front end files used in the project.
 (Note: if you are having trouble with gulp not installing all the bower components, delete your bower_components file, and try again)
 
 ```sh
-$/cde/> gulp bower wiredep
+$/cde/> gulp
 ```
 
 If you get an error message here, complaining that you don’t have gulp, run 
@@ -110,6 +110,17 @@ If you get an error message here, complaining that you don’t have gulp, run
 ```sh
 $/cde/>  npm -install -g gulp
 ```
+
+## Compile Static Homepage
+1. In Chrome, load the Home page on Production and not logged.
+2. In the Devtool Elements Tab, right click the specified tag and click "Copy Element" to copy the following:
+
+   a. Copy the last three \<style> tags to one.css, two.css and three.css.
+
+   b. Copy <nih-cde> to nihcde.html.index.
+3. Check that the main app is built and run "gulp buildHome".
+4. Check-in the resulting css, html, png files and home-launch.ejs into git while removing old versions.
+5. To update the production build, run "gulp".
 
 
 ## Run Node from the cde project directory
@@ -124,7 +135,7 @@ $> node app
 
 
 
-## Test
+# Test
 
 
 

@@ -249,14 +249,7 @@ gulp.task('es', function () {
     setTimeout(() => process.exit(0), 3000);
 });
 
-// buildHome Procedure:
-// 1. In Chrome, load the Home page on Production and not logged.
-// 2. In the Devtool Elements Tab, right click the specified tag and click "Copy Element" to copy the following:
-//     a. Copy the last three <style> tags to one.css, two.css and three.css.
-//     b. Copy <nih-cde> to nihcde.html.index
-// 3. Check that the main app is built and run "gulp buildHome".
-// 4. Check-in the resulting png files and home-launch.ejs into git while removing old versions.
-// 5. To update the production build, run "gulp".
+// Procedure calling task in README
 gulp.task('buildHome', [], function () {
     return del(['dist/launch/*.png', 'dist/launch/home-*.css', 'dist/launch/vendor-*.js']).then(() => {
         gulp.src('./dist/app/*.png')
