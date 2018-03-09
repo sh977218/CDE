@@ -90,6 +90,16 @@ setInterval(function releaseHackers() {
     });
 }, releaseHackersFrequency);
 
+app.use(function checkHttps(req, res, next) {
+    if (config.proxy) {
+        if (req.protocol !== 'https') {
+            if (req.query.gotohttps === "1")
+                res.send("Missing X-Forward-Proto Header");
+            else res.redirect(config.publicUrl + "?gotohttps=1");
+        } else next();
+    } else next();
+});
+
 app.use(function banHackers(req, res, next) {
     banEndsWith.forEach(function (ban) {
         if (req.originalUrl.slice(-(ban.length)) === ban) {
@@ -180,7 +190,8 @@ let expressLogger = morganLogger(JSON.stringify(logFormat), {stream: winstonStre
 
 if (config.expressLogFile) {
     const Rotate = require('winston-logrotate').Rotate;
-    let logger = new (winston.Logger)({ transports: [new Rotate({
+    let logger = new (winston.Logger)({
+        transports: [new Rotate({
             file: config.expressLogFile
         })]
     });
@@ -239,7 +250,7 @@ app.use('/robots.txt', express.static(path.join(__dirname, '/modules/system/publ
 
 // final route -> 404
 app.use((req, res, next) => {
-    // swagger does something i dont get. This will let swagger work
+    // swagger does something i don't get. This will let swagger work
     if (req.originalUrl === "/docs" || req.originalUrl === "/api-docs" || req.originalUrl.indexOf("/docs/") === 0) {
         return next();
     }

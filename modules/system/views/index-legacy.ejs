@@ -13,21 +13,30 @@
     <meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk">
     <meta name="theme-color" content="#004496">
 
-    <!-- build:webpcss /app/cde.css -->
+    <!-- build:webpcssLegacy /app/cde.css -->
     <link href="/app/cde.css" rel="stylesheet" type="text/css" media="all"/>
     <!-- endbuild -->
 
     <link rel="manifest" href="app/manifest.webmanifest">
 
-    <!-- build:css /app/styles-cde.css -->
+    <!-- build:cssLegacy /app/styles-cde.css -->
     <link href="/common/style.css" rel="stylesheet" type="text/css" media="all"/>
+    <!-- endbuild -->
+
+    <!-- build:polyLegacy /app/vendor.js -->
+    <!-- Polyfills for legacy browsers -->
+    <script type="text/javascript" src="/common/core.min.js"></script>
+    <script type="text/javascript" src="/common/Intl.min.js"></script>
+    <script type="text/javascript" src="/common/en.js"></script>
+    <script type="text/javascript" src="/common/classList.min.js"></script>
+    <script type="text/javascript" src="/common/web-animations.min.js"></script>
     <!-- endbuild -->
 
     <%- include config.html %>
 
 </head>
 
-<body role="main" id="top">
+<body role="application" id="top">
 
 <div itemscope>
 
@@ -61,7 +70,7 @@
     })();
 </script>
 
-<!-- build:webp /app/cde.js -->
+<!-- build:webpLegacy /app/cde.js -->
 <script src="/app/cde.js"></script>
 <!-- endbuild -->
 

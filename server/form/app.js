@@ -215,9 +215,9 @@ exports.init = function (app, daoManager) {
             && mapping.sections[0].questions[3].name === "q4"
             && mapping.sections[0].questions[3].tinyId === "JWWpC2baVwK"
         ) {
-            if (req.body.formUrl.indexOf(config.publicUrl + "/data") === 0) res.send("<html><body>Form Submitted</body></html>"); else if (config.publicUrl.indexOf('localhost') === -1) {
+            if (req.body.formUrl.indexOf(config.publicUrl + "/data") === 0) res.send('<html lang="en"><body>Form Submitted</body></html>'); else if (config.publicUrl.indexOf('localhost') === -1) {
                 dns.lookup(/\/\/.*:/.exec(req.body.formUrl), (err, result) => {
-                    if (!err && req.body.formUrl.indexOf(result + "/data") === 0) res.send("<html><body>Form Submitted</body></html>"); else res.status(401).send("<html><body>Not the right input</body></html>");
+                    if (!err && req.body.formUrl.indexOf(result + "/data") === 0) res.send('<html lang="en"><body>Form Submitted</body></html>"); else res.status(401).send("<html lang="en"><body>Not the right input</body></html>');
                 });
             } else {
                 let ifaces = os.networkInterfaces();
@@ -225,13 +225,13 @@ exports.init = function (app, daoManager) {
                         return ifaces[ifname].filter(iface => {
                             return req.body.formUrl.indexOf(iface.address + "/data") !== 1;
                         }).length > 0;
-                    })) res.send("<html><body>Form Submitted</body></html>");
+                    })) res.send('<html lang="en"><body>Form Submitted</body></html>');
                 else {
-                    res.status(401).send("<html><body>Not the right input. Actual Input: <p>" + "</p></body></html>");
+                    res.status(401).send('<html lang="en"><body>Not the right input. Actual Input: <p>' + '</p></body></html>');
                 }
             }
         } else {
-            res.status(401).send("<html><body>Not the right input</body></html>");
+            res.status(401).send('<html lang="en"><body>Not the right input</body></html>');
         }
     });
 

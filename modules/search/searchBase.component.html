@@ -10,7 +10,7 @@
             <div class="col-12 col-md-10 mx-auto">
                 <form #quickSearchForm="ngForm" id="quickSearchForm" class="input-group" novalidate method="GET">
                     <input name="q" id="ftsearch-input" class="form-control search-query" type="text"
-                           [(ngModel)]="searchSettings.q" aria-labelledby="l1" maxlength="500"
+                           [(ngModel)]="searchSettings.q" maxlength="500"
                            [ngbTypeahead]="getAutocompleteSuggestions" [focusFirst]="false"
                            (selectItem)="typeaheadSelect($event)">
                     <button id="search.submit" (click)="termSearch()" type="submit"
