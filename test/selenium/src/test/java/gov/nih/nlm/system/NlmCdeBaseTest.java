@@ -687,7 +687,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void goHome() {
-        driver.get(baseUrl + "/home");
+        clickElement(By.id("homeLink"));
         textPresent("has been designed to provide access", By.id("introduction"));
         findElement(By.cssSelector(".carousel-indicators"));
     }
@@ -980,7 +980,6 @@ public class NlmCdeBaseTest {
     }
 
     protected void setVisibleStatus(String id) {
-        goToSearch("cde");
         goHome();
         clickElement(By.id("searchSettings"));
         clickElement(By.id(id));
