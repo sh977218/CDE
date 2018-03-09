@@ -10,6 +10,7 @@ public class NewSiteVersion extends NlmCdeBaseTest {
 
     @Test
     public void newSiteVersion() {
+        goToSearch("cde");
         goHome();
         ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated
                 (By.id("notifications")));

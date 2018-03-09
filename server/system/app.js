@@ -77,12 +77,16 @@ exports.init = function (app) {
         if (isSearchEngine(req)) {
             res.render('bot/home', 'system');
         } else {
-            if (req.user) {
+            if (req.user || req.query.tour) {
                 res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
             } else {
                 res.send(homeHtml);
             }
         }
+    });
+
+    app.get('/tour', function(req, res) {
+        res.redirect('/home?tour=yes');
     });
 
     app.get("/site-version", (req, res) => {
