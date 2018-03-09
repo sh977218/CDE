@@ -980,6 +980,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void setVisibleStatus(String id) {
+        goToSearch("cde");
         goHome();
         clickElement(By.id("searchSettings"));
         clickElement(By.id(id));
@@ -994,6 +995,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void loadDefaultSettings() {
+        goToSearch("cde");
         clickElement(By.id("searchSettings"));
         clickElement(By.id("loadDefaultSettings"));
         checkAlert("Default settings loaded");
