@@ -145,8 +145,12 @@
                 </div>
                 <div class="checkbox indent">
                     <label><input id="numQuestions" type="checkbox"
-                                  [(ngModel)]="searchSettings.tableViewFields.numQuestions"> Nb of Questions <span
+                                  [(ngModel)]="searchSettings.tableViewFields.numQuestions"> Nb of Questions<span
                             class="text-info"><small>(Form Only)</small></span></label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="linkedForms" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.linkedForms">
+                        Linked Forms</label>
                 </div>
             </div>
         </div>

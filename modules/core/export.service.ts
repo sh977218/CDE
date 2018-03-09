@@ -9,6 +9,7 @@ import { SharedService } from '_commonApp/shared.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
 import { HttpClient } from "@angular/common/http";
+import { CdeForm } from "../../shared/form/form.model";
 
 @Injectable()
 export class ExportService {
@@ -43,39 +44,56 @@ export class ExportService {
                 }
 
                 let exporters = {
-                    'csv': (result) => {
+                    'csv': async result => {
                         let settings = this.elasticService.searchSettings;
                         let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
-                        result.forEach(ele =>
+                        if (settings.tableViewFields.linkedForms) {
+                            if (result.length < 50) {
+                                for (let r of result) {
+                                    let forms = await new Promise<Array<CdeForm>>(resolve => {
+                                        let lfSettings = this.elasticService.buildElasticQuerySettings({
+                                            q: r.tinyId
+                                            , page: 1
+                                            , classification: []
+                                            , classificationAlt: []
+                                            , regStatuses: []
+                                        });
+                                        this.elasticService.generalSearchQuery(lfSettings, 'form', (err, esRes) => {
+                                            resolve(esRes.forms);
+                                        });
+                                    });
+                                    if (forms.length) {
+                                        r.linkedForms = forms.map(f => f.tinyId).join(", ");
+                                    }
+                                }
+                            } else {
+
+                            }
+                        }
+                        result.forEach(r => {
                             csv += SharedService.exportShared.convertToCsv(
-                                SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields))
-                        );
+                                SharedService.exportShared.projectCdeForExport(r, settings.tableViewFields));
+                        });
                         let blob = new Blob([csv], {type: "text/csv"});
                         saveAs(blob, 'SearchExport.csv');
                     },
-                    'json': function (result) {
+                    'json': result => {
                         let blob = new Blob([JSON.stringify(result)], {type: "application/json"});
                         saveAs(blob, "SearchExport.json");
                     },
-                    'xml': function (result) {
+                    'xml': result => {
                         let zip = new JSZip();
-                        result.forEach(function (oneElt) {
-                            zip.file(oneElt.tinyId + ".xml", JXON.jsToString({element: oneElt}));
-                        });
-                        zip.generateAsync({type: "blob"}).then((content) => {
-                            saveAs(content, "SearchExport_XML.zip");
-                        } );
+                        result.forEach(oneElt => zip.file(oneElt.tinyId + ".xml", JXON.jsToString({element: oneElt})));
+                        zip.generateAsync({type: "blob"}).then(content => saveAs(content, "SearchExport_XML.zip"));
                     },
-                    'odm': function (result) {
+                    'odm': result => {
                         let zip = new JSZip();
-                        result.forEach(function (oneElt) {
-                            getFormOdm(oneElt, function (err, odmElt) {
+                        result.forEach(oneElt => {
+                            getFormOdm(oneElt, (err, odmElt) => {
                                 if (!err) zip.file(oneElt.tinyId + ".xml", JXON.jsToString({ODM: odmElt}));
                             });
                         });
-                        zip.generateAsync({type: "blob"}).then((content) => {
-                            saveAs(content, "SearchExport_ODM.zip");
-                        });
+                        zip.generateAsync({type: "blob"}).then(content => saveAs(content, "SearchExport_ODM.zip"));
                     },
                     'validationRules': (result) => {
                         let orgName = exportSettings.searchSettings.selectedOrg;
@@ -102,12 +120,6 @@ export class ExportService {
                 };
 
                 if (result) {
-                    // @TODO remove after convert newTags
-                    result.forEach(r => {
-                        r.naming.forEach(n => {
-                            delete n.newTags;
-                        });
-                    });
                     let exporter = exporters[type];
                     if (!exporter) {
                         this.alertService.addAlert("danger", "This export format is not supported.");
@@ -124,23 +136,19 @@ export class ExportService {
     quickBoardExport(elts) {
         let settings = this.elasticService.searchSettings;
         let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
-        elts.forEach(function (ele) {
+        elts.forEach(ele => {
             result += SharedService.exportShared.convertToCsv(
                 SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
         });
 
         if (result) {
-            let blob = new Blob([result], {
-                type: "text/csv"
-            });
+            let blob = new Blob([result], {type: "text/csv"});
             saveAs(blob, 'QuickBoardExport' + '.csv');
             this.alertService.addAlert("success", "Export downloaded.");
         } else {
             this.alertService.addAlert("danger", "Something went wrong, please try again in a minute.");
         }
     }
-
-
 
     async formCdeExport (form) {
         let settings = this.elasticService.searchSettings;
