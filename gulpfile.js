@@ -169,6 +169,7 @@ gulp.task('usemin', ['copyCode', 'copyDist'], function () {
     let streamArray = [];
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
+        {folder: "./modules/system/views/", filename: "index-legacy.ejs"},
         {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
         {folder: "./modules/_nativeRenderApp/", filename: "nativeRenderApp.html"}
     ].forEach(item => {
@@ -190,15 +191,20 @@ gulp.task('usemin', ['copyCode', 'copyDist'], function () {
                 },
                 assetsDir: "./dist/",
                 webpcss: ['concat', rev(), data(outputFile)],
+                webpcssLegacy: ['concat', rev()],
                 css: [minifyCss({target: "./dist/app", rebase: true}), 'concat', rev(), data(outputFile)],
+                cssLegacy: [minifyCss({target: "./dist/app", rebase: true}), 'concat', rev()],
                 poly: [uglify({mangle: false}), 'concat', rev(), data(outputFile)],
-                webp: ['concat', rev(), data(outputFile)]
+                polyLegacy: [uglify({mangle: false}), 'concat', rev()],
+                webp: ['concat', rev(), data(outputFile)],
+                webpLegacy: ['concat', rev()]
             }))
             .pipe(gulp.dest(config.node.buildDir + '/dist/'));
         streamArray.push(useminTask);
         useminTask.on('end', function () {
             if (item.filename === 'index.ejs') {
-                if (useminOutputs.length !== 4) {
+                if (useminOutputs.length !== 3) {
+                    console.log("useminOutputs:"+ useminOutputs);
                     throw new Error('service worker creation failed');
                 }
                 gulp.src(config.node.buildDir + '/dist/app/sw.js') // does not preserve order
@@ -219,6 +225,7 @@ gulp.task('copyUsemin', ['usemin'], function () {
     [
         {folder: "./modules/system/views/bot/"},
         {folder: "./modules/system/views/", filename: "index.ejs"},
+        {folder: "./modules/system/views/", filename: "index-legacy.ejs"},
         {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
         {folder: "./modules/_nativeRenderApp/", filename: "nativeRenderApp.html"}
     ].forEach(item => {

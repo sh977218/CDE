@@ -191,7 +191,8 @@ let expressLogger = morganLogger(JSON.stringify(logFormat), {stream: winstonStre
 
 if (config.expressLogFile) {
     const Rotate = require('winston-logrotate').Rotate;
-    let logger = new (winston.Logger)({ transports: [new Rotate({
+    let logger = new (winston.Logger)({
+        transports: [new Rotate({
             file: config.expressLogFile
         })]
     });
@@ -250,7 +251,7 @@ app.use('/robots.txt', express.static(path.join(__dirname, '/modules/system/publ
 
 // final route -> 404
 app.use((req, res, next) => {
-    // swagger does something i dont get. This will let swagger work
+    // swagger does something i don't get. This will let swagger work
     if (req.originalUrl === "/docs" || req.originalUrl === "/api-docs" || req.originalUrl.indexOf("/docs/") === 0) {
         return next();
     }
