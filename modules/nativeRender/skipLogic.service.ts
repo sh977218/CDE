@@ -146,7 +146,7 @@ export class SkipLogicService {
         label = label.trim();
         let matchedQuestions = this.getQuestionsPrior(parent, fe, fe => this.getLabel(fe) === label);
         if (matchedQuestions.length <= 0) return null;
-        return matchedQuestions[0] as FormQuestion;
+        return matchedQuestions[matchedQuestions.length - 1] as FormQuestion;
     }
 
     static getShowIfQ(fes: FormElement[], fe: FormElement): any[] {

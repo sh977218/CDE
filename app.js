@@ -156,6 +156,7 @@ app.use("/app", express.static(path.join(__dirname, '/dist/app')));
 app.use("/common", express.static(path.join(__dirname, '/dist/common')));
 app.use("/components", express.static(path.join(__dirname, '/dist/components')));
 app.use("/embed", express.static(path.join(__dirname, '/dist/embed')));
+app.use("/launch", express.static(path.join(__dirname, '/dist/launch')));
 app.use("/native", express.static(path.join(__dirname, '/dist/native')));
 
 
