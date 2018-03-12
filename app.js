@@ -91,7 +91,7 @@ setInterval(function releaseHackers() {
 }, releaseHackersFrequency);
 
 app.use(function checkHttps(req, res, next) {
-    if (config.proxy) {
+    if (config.proxy && req.originalUrl !== "/status/cde") {
         if (req.protocol !== 'https') {
             if (req.query.gotohttps === "1")
                 res.send("Missing X-Forward-Proto Header");
