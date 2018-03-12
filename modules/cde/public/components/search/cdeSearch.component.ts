@@ -12,7 +12,6 @@ import { ExportService } from 'core/export.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { SearchBaseComponent, searchStyles } from 'search/searchBase.component';
 
-
 @Component({
     selector: 'cde-cde-search',
     styles: [searchStyles],
@@ -24,7 +23,6 @@ export class CdeSearchComponent extends SearchBaseComponent {
     @Output() add = new EventEmitter<any>();
 
     module = 'cde';
-    pinComponent: any = PinBoardModalComponent;
 
     constructor(
         protected _componentFactoryResolver: ComponentFactoryResolver,

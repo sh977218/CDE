@@ -130,7 +130,8 @@
                      style="left: auto;right: 0;">
                     <ng-container *ngIf="userService?.user?._id || module === 'cde'">
                         <a *ngFor="let key of keys(exporters)" id="{{exporters[key].id}}" class="dropdown-item"
-                           (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})">{{exporters[key].display}}</a>
+                           (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})"
+                        >{{exporters[key].display}}</a>
                     </ng-container>
                     <a *ngIf="userService?.user && displayValidation()" id="exportValidRule" class="dropdown-item"
                        (click)="openValidRulesModal()"> Validation Rules</a>

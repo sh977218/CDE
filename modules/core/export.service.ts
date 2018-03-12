@@ -10,6 +10,9 @@ import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
 import { HttpClient } from "@angular/common/http";
 import { CdeForm } from "../../shared/form/form.model";
+import intersectionWith from 'lodash/intersectionWith';
+
+
 
 @Injectable()
 export class ExportService {
@@ -67,7 +70,37 @@ export class ExportService {
                                     }
                                 }
                             } else {
-
+                                // retrieve all forms, with CDE tiny IDs only
+                                let lfSettings = this.elasticService.buildElasticQuerySettings({
+                                    page: 1
+                                    , classification: []
+                                    , classificationAlt: []
+                                    , regStatuses: []
+                                });
+                                let esResp = await this.http.post("/scrollExport/form", lfSettings).toPromise();
+                                let intersectOnBatch = function(esResp) {
+                                    if ((esResp as any).hits.hits.length) {
+                                        for (let hit of (esResp as any).hits.hits) {
+                                            let esForm = hit._source;
+                                            let formCdes = getFormCdes(esForm);
+                                            let interArr = intersectionWith(result, formCdes, (a, b) => a.tinyId === b.tinyId);
+                                            interArr.forEach(matchId => {
+                                                 let foundCdes = result.filter(c => c.tinyId === matchId.tinyId);
+                                                 foundCdes.forEach(c => {
+                                                    if (c.linkedForms) c.linkedForms = c.linkedForms + ", " + esForm.tinyId;
+                                                    else c.linkedForms = esForm.tinyId;
+                                                 });
+                                            });
+                                        }
+                                        return true;
+                                    } else return false;
+                                };
+                                let keepScrolling = true;
+                                while (keepScrolling) {
+                                    console.log("next 100");
+                                    keepScrolling = intersectOnBatch(esResp);
+                                    esResp = await this.http.get("/scrollExport/" + (esResp as any)._scroll_id).toPromise();
+                                }
                             }
                         }
                         result.forEach(r => {
@@ -76,15 +109,18 @@ export class ExportService {
                         });
                         let blob = new Blob([csv], {type: "text/csv"});
                         saveAs(blob, 'SearchExport.csv');
+                        this.alertService.addAlert("success", "Export downloaded.");
                     },
                     'json': result => {
                         let blob = new Blob([JSON.stringify(result)], {type: "application/json"});
                         saveAs(blob, "SearchExport.json");
+                        this.alertService.addAlert("success", "Export downloaded.");
                     },
                     'xml': result => {
                         let zip = new JSZip();
                         result.forEach(oneElt => zip.file(oneElt.tinyId + ".xml", JXON.jsToString({element: oneElt})));
                         zip.generateAsync({type: "blob"}).then(content => saveAs(content, "SearchExport_XML.zip"));
+                        this.alertService.addAlert("success", "Export downloaded.");
                     },
                     'odm': result => {
                         let zip = new JSZip();
@@ -94,6 +130,7 @@ export class ExportService {
                             });
                         });
                         zip.generateAsync({type: "blob"}).then(content => saveAs(content, "SearchExport_ODM.zip"));
+                        this.alertService.addAlert("success", "Export downloaded.");
                     },
                     'validationRules': (result) => {
                         let orgName = exportSettings.searchSettings.selectedOrg;
@@ -125,7 +162,6 @@ export class ExportService {
                         this.alertService.addAlert("danger", "This export format is not supported.");
                     } else {
                         exporter(result);
-                        if (type !== 'validationRules') this.alertService.addAlert("success", "Export downloaded.");
                     }
                 } else {
                     this.alertService.addAlert("danger", "There was no data to export.");

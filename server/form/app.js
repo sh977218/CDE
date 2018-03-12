@@ -1,6 +1,4 @@
 const _ = require('lodash');
-const express = require('express');
-const path = require('path');
 const dns = require('dns');
 const os = require('os');
 const multer = require('multer');
@@ -103,6 +101,21 @@ exports.init = function (app, daoManager) {
     });
     app.post('/comments/form/remove', function (req, res) {
         adminItemSvc.removeComment(req, res, mongo_form);
+    });
+
+    app.post('/scrollExport/form', (req, res) => {
+        let query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
+        elastic_system.scrollExport(query, "form", (err, response) => {
+            if (err) res.status(400).send();
+            else res.send(response);
+        })
+    });
+
+    app.get('/scrollExport/:scrollId', (req, res) => {
+        elastic_system.scrollNext(req.params.scrollId, (err, response) => {
+            if (err) res.status(400).send();
+            else res.send(response);
+        })
     });
 
     app.post('/elasticSearchExport/form', (req, res) => {

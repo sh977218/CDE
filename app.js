@@ -59,7 +59,7 @@ app.use(bodyParser.urlencoded({extended: false, limit: "5mb"}));
 app.use(bodyParser.json({limit: "16mb"}));
 app.use(methodOverride());
 app.use(cookieParser());
-var expressSettings = {
+const expressSettings = {
     store: mongo_data_system.sessionStore,
     secret: config.sessionKey,
     proxy: config.proxy,
@@ -76,10 +76,10 @@ var getRealIp = function (req) {
 var blackIps = [];
 var timedBlackIps = [];
 app.use(ipfilter(blackIps, {errorMessage: "You are not authorized. Please contact support if you believe you should not see this error."}));
-var banEndsWith = config.banEndsWith || [];
-var banStartsWith = config.banStartsWith || [];
+const banEndsWith = config.banEndsWith || [];
+const banStartsWith = config.banStartsWith || [];
 
-var releaseHackersFrequency = 3 * 60 * 1000;
+const releaseHackersFrequency = 3 * 60 * 1000;
 setInterval(function releaseHackers() {
     blackIps.length = 0;
     timedBlackIps = timedBlackIps.filter(function (rec) {
@@ -125,9 +125,7 @@ app.use(function preventSessionCreation(req, res, next) {
     if ((req.cookies['connect.sid'] || req.originalUrl === "/login" || req.originalUrl === "/csrf") && !this.isFile(req)) {
         var initExpressSession = session(expressSettings);
         initExpressSession(req, res, next);
-    } else {
-        next();
-    }
+    } else next();
 
 });
 
@@ -136,12 +134,8 @@ app.use(function (req, res, next) {
         if (req.headers.host === "cde.nlm.nih.gov") {
             if (req.user && req.user.tester) {
                 localRedirectProxy.web(req, res, {target: config.internalRules.redirectTo}, next);
-            } else {
-                return next();
-            }
-        } else {
-            return next();
-        }
+            } else return next();
+        } else return next();
     } catch (e) {
         return next();
     }
@@ -158,7 +152,6 @@ app.use("/components", express.static(path.join(__dirname, '/dist/components')))
 app.use("/embed", express.static(path.join(__dirname, '/dist/embed')));
 app.use("/native", express.static(path.join(__dirname, '/dist/native')));
 
-
 ["/embedded/public", "/_embedApp/public"].forEach(p => {
     app.use(p, (req, res, next) => {
             res.removeHeader("x-frame-options");
@@ -171,7 +164,7 @@ app.use("/native", express.static(path.join(__dirname, '/dist/native')));
 app.use(flash());
 auth.init(app);
 
-var logFormat = {
+const logFormat = {
     remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status",
     date: ":date", referrer: ":referrer", responseTime: ":response-time"
 };
@@ -226,11 +219,9 @@ express.response.render = function (view, module, msg) {
 };
 
 try {
-    var cdeModule = require(path.join(__dirname, './server/cde/app.js'));
-    cdeModule.init(app, daoManager);
+    require(path.join(__dirname, './server/cde/app.js')).init(app, daoManager);
 
-    var systemModule = require(path.join(__dirname, './server/system/app.js'));
-    systemModule.init(app, daoManager);
+    require(path.join(__dirname, './server/system/app.js')).init(app, daoManager);
 
     var formModule = require(path.join(__dirname, './server/form/app.js'));
     formModule.init(app, daoManager);
