@@ -51,18 +51,18 @@
                 <span *ngIf="question.instructions.valueFormat !== 'html'"
                       [textContent]="question.instructions.value"></span>
             </div>
-            <div class="answerList" *ngIf="question.question.answers && question.question.answers.length > 0">
+            <div class="answerList" *ngIf="question.question.datatype === 'Value List' && question.question.answers && question.question.answers.length > 0">
                 <span class="formViewQuestionLabel">Answer Choices:</span>
                 <span *ngFor="let pv of question.question.answers" class="badge badge-secondary formViewSummaryLabel"
                       style="background-color: #666" [textContent]="pv?.valueMeaningName"></span>
             </div>
-            <div *ngIf="question.question.datatype?.toLowerCase() === 'date' && question.question.datatypeDate.precision !== 'Day'"
+            <div *ngIf="question.question.datatype === 'Date' && question.question.datatypeDate.precision !== 'Day'"
                  class="defaultAnswer">
                 <span class="formViewQuestionLabel">Precision:</span>
                 <span class="badge badge-secondary formViewSummaryLabel"
                       style="background-color: #666">{{question.question.datatypeDate.precision}}</span>
             </div>
-            <div *ngIf="question.question.defaultAnswer && question.question.defaultAnswer.length > 0"
+            <div *ngIf="question.question.datatype === 'Value List' && question.question.defaultAnswer && question.question.defaultAnswer.length > 0"
                  class="defaultAnswer">
                 <span class="formViewQuestionLabel">Default Answer:</span>
                 <span class="badge badge-secondary formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
@@ -97,7 +97,7 @@
                     [isAllowed]="true" (modelChange)="onEltChange.emit()">
             </cde-inline-area-edit>
         </dd>
-        <ng-container *ngIf="question.question.datatype?.toLowerCase() === 'date'">
+        <ng-container *ngIf="question.question.datatype === 'Date'">
             <dt class="col-2 font-weight-bold">Date Precision:</dt>
             <dd class="col-10">
                 <select [(ngModel)]="question.question.datatypeDate.precision"

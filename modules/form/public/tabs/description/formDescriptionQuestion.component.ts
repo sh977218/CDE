@@ -72,7 +72,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         if (!datatype) return '';
         else if (datatype === 'Number') {
             return '(Number)';
-        } else if (datatype.toLowerCase() === 'date') {
+        } else if (datatype === 'Date') {
             return '(Date)';
         } else return '';
     }
