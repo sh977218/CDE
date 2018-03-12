@@ -285,7 +285,7 @@ exports.init = function (app) {
         "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
         app.get(path, function (req, res) {
-            res.send(indexHtml);
+            res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
         });
     });
 
