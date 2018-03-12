@@ -91,7 +91,7 @@ setInterval(function releaseHackers() {
 }, releaseHackersFrequency);
 
 app.use(function checkHttps(req, res, next) {
-    if (config.proxy) {
+    if (config.proxy && req.originalUrl !== "/status/cde") {
         if (req.protocol !== 'https') {
             if (req.query.gotohttps === "1")
                 res.send("Missing X-Forward-Proto Header");
@@ -150,6 +150,7 @@ app.use("/app", express.static(path.join(__dirname, '/dist/app')));
 app.use("/common", express.static(path.join(__dirname, '/dist/common')));
 app.use("/components", express.static(path.join(__dirname, '/dist/components')));
 app.use("/embed", express.static(path.join(__dirname, '/dist/embed')));
+app.use("/launch", express.static(path.join(__dirname, '/dist/launch')));
 app.use("/native", express.static(path.join(__dirname, '/dist/native')));
 
 ["/embedded/public", "/_embedApp/public"].forEach(p => {

@@ -5,7 +5,8 @@
 .nide
 bin
 dependencies/
-dist
+dist/*
+!dist/launch/
 dump/
 migration/
 nbproject

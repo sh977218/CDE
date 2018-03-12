@@ -1,0 +1,140 @@
+<nih-cde>
+    <cde-navigation _nghost-c0=""><nav _ngcontent-c0="" class="navbar navbar-expand-md navbar-dark bg-dark">
+        <a _ngcontent-c0="" class="navbar-brand" id="homeLink" href="/home">
+            <img _ngcontent-c0="" alt="Home" src="/cde/public/assets/img/nih-cde-logo-simple.png">
+        </a>
+        <button _ngcontent-c0="" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+            <span _ngcontent-c0="" class="navbar-toggler-icon"></span>
+        </button>
+        <div _ngcontent-c0="" class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul _ngcontent-c0="" class="navbar-nav mr-auto">
+                <li _ngcontent-c0="" class="nav-item">
+                    <a _ngcontent-c0="" class="nav-link" id="menu_cdes_link" href="/cde/search">CDEs</a>
+                </li>
+                <li _ngcontent-c0="" class="nav-item">
+                    <a _ngcontent-c0="" class="nav-link" id="menu_forms_link" href="/form/search">Forms</a>
+                </li>
+                <!----><li _ngcontent-c0="" class="nav-item">
+                <a _ngcontent-c0="" class="nav-link" id="boardsMenu" href="/boardList">Boards</a>
+            </li>
+                <!---->
+                <!---->
+                <li _ngcontent-c0="" class="nav-item">
+                    <a _ngcontent-c0="" class="nav-link" id="menu_qb_link" href="/quickBoard">Quick Board (0)</a>
+                </li>
+                <li _ngcontent-c0="" class="nav-item dropdown">
+                    <a _ngcontent-c0="" aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown" id="menu_help_link">Help</a>
+                    <div _ngcontent-c0="" aria-labelledby="menu_help_link" class="dropdown-menu">
+                        <a _ngcontent-c0="" class="dropdown-item" id="apiDocumentationLink" href="/api">API Documentation</a>
+                    </div>
+                </li>
+            </ul>
+            <div _ngcontent-c0="" class="navbar-nav ml-auto">
+                <ul _ngcontent-c0="" class="navbar-nav float-right" data-userloaded="loaded-true">
+                    <!---->
+                    <!----><li _ngcontent-c0="" class="nav-item">
+                    <a _ngcontent-c0="" class="nav-link" id="login_link" title="Log in" href="/login">
+                        Log In</a>
+                </li>
+                    <!---->
+                    <li _ngcontent-c0="" class="nav-item">
+                        <a _ngcontent-c0="" class="nav-link" title="open search setting" href="/searchPreferences">
+                            <i _ngcontent-c0="" class="fa fa-cog text-muted" id="searchSettings"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    </cde-navigation>
+    <router-outlet></router-outlet><cde-home _nghost-c1=""><section _ngcontent-c1="" class="sectionPage" style="background-color: #eee; padding: 10px; padding-bottom: 40px">
+    <div _ngcontent-c1="" class="" style="padding: 2rem 1rem; margin-bottom: 0;">
+        <div _ngcontent-c1="" class=" mt-0 mt-sm-5">
+            <div _ngcontent-c1="" class="row align-items-center">
+                <div _ngcontent-c1="" class="col-lg-3 col-12 ">
+                    <img _ngcontent-c1="" alt="NIH Common Data Elements (CDE) logo" class="img-fluid" src="/cde/public/assets/img/NIH-CDE.png" style="margin-bottom: 20px">
+                    <div _ngcontent-c1="" id="introduction">
+                        <p _ngcontent-c1="">The NIH Common Data Elements (CDE) Repository has been designed to provide access to
+                            structured
+                            human and machine-readable definitions of data elements that have been recommended or
+                            required by
+                            NIH Institutes and Centers and other organizations for use in research and for other
+                            purposes.
+                        </p>
+                        <p _ngcontent-c1="">
+                            Visit the
+                            <a _ngcontent-c1="" class="homeDescriptionLink" href="http://cde.nih.gov" rel="noopener" target="_blank">NIH
+                                CDE Resource Portal</a>
+                            for contextual information about the repository.
+                        </p>
+                    </div>
+                </div>
+                <!----><div _ngcontent-c1="" class="col-lg-6 d-none d-sm-inline-block">
+                <ngb-carousel _ngcontent-c1="" id="featureCarousel" class="carousel slide" data-ride="carousel" style="margin: auto; display: block;" tabindex="0">
+                    <ol class="carousel-indicators">
+                        <!----><li id="ngb-slide-0" data-target="#featureCarousel" data-slide-to="0" class="active"></li><li id="ngb-slide-1" data-target="#featureCarousel" data-slide-to="1" class=""></li><li id="ngb-slide-2" data-target="#featureCarousel" data-slide-to="2" class=""></li><li id="ngb-slide-3" data-target="#featureCarousel" data-slide-to="3" class=""></li><li id="ngb-slide-4" data-target="#featureCarousel" data-slide-to="4" class=""></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <!----><div class="carousel-item active">
+                        <!---->
+                        <img _ngcontent-c1="" alt="Discuss" class="slideContent" src="/launch/0543801f8813422db13c99892d9e7af2.png">
+                        <div _ngcontent-c1="" class="carousel-caption">
+                            <h3 _ngcontent-c1="">Search, Discuss and Collaborate</h3>
+                        </div>
+
+                    </div><div class="carousel-item">
+                        <!---->
+                        <img _ngcontent-c1="" alt="Draft of a Form" class="slideContent" src="/launch/54caa3ceddabf14736f3db15de31c313.png">
+                        <div _ngcontent-c1="" class="carousel-caption">
+                            <h3 _ngcontent-c1="">Create, Draft and Share</h3>
+                        </div>
+
+                    </div><div class="carousel-item">
+                        <!---->
+                        <img _ngcontent-c1="" alt="More Like This" class="slideContent" src="/launch/db01e423438fbccf26b667b92e25ce01.png">
+                        <div _ngcontent-c1="" class="carousel-caption">
+                            <h3 _ngcontent-c1="">Compare and Harmonize</h3>
+                        </div>
+
+                    </div><div class="carousel-item">
+                        <!---->
+                        <img _ngcontent-c1="" alt="History" class="slideContent" src="/launch/8601d12cb18a9471207ea4496daf1818.png">
+                        <div _ngcontent-c1="" class="carousel-caption">
+                            <h3 _ngcontent-c1="">Track Changes Across Versions</h3>
+                        </div>
+
+                    </div><div class="carousel-item">
+                        <!---->
+                        <img _ngcontent-c1="" alt="Screenshot of finding and using forms" class="slideContent" src="/launch/1b3349f5e7745ddb6f46874d43d5343d.png">
+                        <div _ngcontent-c1="" class="carousel-caption">
+                            <h3 _ngcontent-c1="">Export and Publish in Multiple Formats</h3>
+                        </div>
+
+                    </div>
+                    </div>
+                    <a class="carousel-control-prev" role="button">
+                        <span aria-hidden="true" class="carousel-control-prev-icon"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" role="button">
+                        <span aria-hidden="true" class="carousel-control-next-icon"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </ngb-carousel>
+            </div>
+                <div _ngcontent-c1="" class="col-lg-3 col-12 btn-group-vertical" id="searchDiv">
+                    <a _ngcontent-c1="" class="btn  btn-outline-dark my-1" id="browseCdes" href="/cde/search">
+                        <i _ngcontent-c1="" class="fa fa-search"></i> Browse CDEs</a>
+                    <a _ngcontent-c1="" class="btn  btn-outline-dark my-1" id="browseForms" href="/form/search">
+                        <i _ngcontent-c1="" class="fa fa-search"></i> Browse Forms</a>
+                    <a _ngcontent-c1="" class="btn  btn-outline-dark my-1 hand-cursor" id="takeATourBtn" href="/tour">
+                        <i _ngcontent-c1="" class="fa fa-flag faa-wrench faa-slow animated"></i> Interactive Tour
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+</cde-home>
+
+</nih-cde>
