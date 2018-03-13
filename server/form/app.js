@@ -66,9 +66,7 @@ exports.init = function (app, daoManager) {
     });
     /* ---------- PUT NEW REST API above ---------- */
     app.get('/elasticSearch/form/count', function (req, res) {
-        return elastic_system.nbOfForms(function (err, result) {
-            res.send("" + result);
-        });
+        elastic_system.nbOfForms((err, result) => res.send("" + result));
     });
 
     app.post('/attachments/form/setDefault', function (req, res) {

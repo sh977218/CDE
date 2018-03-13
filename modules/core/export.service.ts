@@ -7,7 +7,7 @@ import { getFormCdes, getFormOdm } from 'shared/form/formShared';
 import { RegistrationValidatorService } from "core/registrationValidator.service";
 import { SharedService } from '_commonApp/shared.service';
 import { UserService } from '_app/user.service';
-import { AlertService } from '_app/alert/alert.service';
+import { Alert, AlertService } from '_app/alert/alert.service';
 import { HttpClient } from "@angular/common/http";
 import { CdeForm } from "../../shared/form/form.model";
 import intersectionWith from 'lodash/intersectionWith';
@@ -16,14 +16,27 @@ import intersectionWith from 'lodash/intersectionWith';
 
 @Injectable()
 export class ExportService {
+
+    progressAlert: Alert;
+
     constructor(private alertService: AlertService,
                 private registrationValidatorService: RegistrationValidatorService,
                 private elasticService: ElasticService,
                 protected userService: UserService,
-                protected http: HttpClient) {
+                protected http: HttpClient) {}
+
+    exportProgressCb (msg, terminate?) {
+        if (!this.progressAlert || this.progressAlert.expired) {
+            this.progressAlert = this.alertService.addAlert("success", msg);
+            this.progressAlert.persistant = true;
+        } else {
+            this.progressAlert.setMessage(msg);
+        }
+        if (terminate) this.progressAlert.persistant = false;
     }
 
     exportSearchResults(type, module, exportSettings) {
+
         if (module === 'form' && (!this.userService.user || !this.userService.user._id)) {
             return this.alertService.addAlert("danger", "Please login to access this feature");
         }
@@ -36,9 +49,9 @@ export class ExportService {
         }
 
         if (type !== 'validationRules') {
-            this.alertService.addAlert("warning", "Your export is being generated, please wait.");
+            this.exportProgressCb("Your export is being generated, please wait.");
         }
-
+        this.exportProgressCb("Fetching " + module + "s. Please wait...");
         this.elasticService.getExport(
             this.elasticService.buildElasticQuerySettings(exportSettings.searchSettings), module || 'cde', (err, result) => {
                 if (err) {
@@ -65,12 +78,9 @@ export class ExportService {
                                             resolve(esRes.forms);
                                         });
                                     });
-                                    if (forms.length) {
-                                        r.linkedForms = forms.map(f => f.tinyId).join(", ");
-                                    }
+                                    if (forms.length) r.linkedForms = forms.map(f => f.tinyId).join(", ");
                                 }
                             } else {
-                                // retrieve all forms, with CDE tiny IDs only
                                 let lfSettings = this.elasticService.buildElasticQuerySettings({
                                     page: 1
                                     , classification: []
@@ -78,9 +88,13 @@ export class ExportService {
                                     , regStatuses: []
                                 });
                                 let esResp = await this.http.post("/scrollExport/form", lfSettings).toPromise();
-                                let intersectOnBatch = function(esResp) {
+                                let totalNbOfForms = 0;
+                                let formCounter = 0;
+                                let intersectOnBatch = esResp => {
                                     if ((esResp as any).hits.hits.length) {
+                                        totalNbOfForms = (esResp as any).hits.total;
                                         for (let hit of (esResp as any).hits.hits) {
+                                            formCounter++;
                                             let esForm = hit._source;
                                             let formCdes = getFormCdes(esForm);
                                             let interArr = intersectionWith(result, formCdes, (a, b) => a.tinyId === b.tinyId);
@@ -91,13 +105,13 @@ export class ExportService {
                                                     else c.linkedForms = esForm.tinyId;
                                                  });
                                             });
+                                            this.exportProgressCb("Attaching linked forms " + Math.trunc(100 * formCounter / totalNbOfForms) + "%");
                                         }
                                         return true;
                                     } else return false;
                                 };
                                 let keepScrolling = true;
                                 while (keepScrolling) {
-                                    console.log("next 100");
                                     keepScrolling = intersectOnBatch(esResp);
                                     esResp = await this.http.get("/scrollExport/" + (esResp as any)._scroll_id).toPromise();
                                 }
@@ -109,12 +123,12 @@ export class ExportService {
                         });
                         let blob = new Blob([csv], {type: "text/csv"});
                         saveAs(blob, 'SearchExport.csv');
-                        this.alertService.addAlert("success", "Export downloaded.");
+                        this.exportProgressCb("Export downloaded.", true);
                     },
                     'json': result => {
                         let blob = new Blob([JSON.stringify(result)], {type: "application/json"});
                         saveAs(blob, "SearchExport.json");
-                        this.alertService.addAlert("success", "Export downloaded.");
+                        this.exportProgressCb("Export downloaded.", true);
                     },
                     'xml': result => {
                         let zip = new JSZip();
@@ -209,6 +223,5 @@ export class ExportService {
             this.alertService.addAlert("danger", "Something went wrong, please try again in a minute.");
         }
     }
-
 
 }

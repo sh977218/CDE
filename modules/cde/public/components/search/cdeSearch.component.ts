@@ -23,6 +23,7 @@ export class CdeSearchComponent extends SearchBaseComponent {
     @Output() add = new EventEmitter<any>();
 
     module = 'cde';
+    pinComponent: any = PinBoardModalComponent;
 
     constructor(
         protected _componentFactoryResolver: ComponentFactoryResolver,

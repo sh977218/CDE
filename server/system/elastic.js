@@ -42,10 +42,9 @@ exports.nbOfCdes = function (cb) {
         cb(err, result.count);
     });
 };
+
 exports.nbOfForms = function (cb) {
-    esClient.count({index: config.elastic.formIndex.name}, function (err, result) {
-        cb(err, result.count);
-    });
+    esClient.count({index: config.elastic.formIndex.name}, (err, result) => cb(err, result.count));
 };
 
 function EsInjector(esClient, indexName, documentType) {
