@@ -29,10 +29,13 @@
             <ng-container *ngSwitchCase="'Value List'">
             </ng-container>
             <ng-container *ngSwitchCase="'Date'">
-                <dt class="col-3 text-right">Date Format:</dt>
+                <dt class="col-3 text-right">Precision:</dt>
                 <dd class="col-9">
-                    <cde-inline-edit id="datatypeDateFormat" [(model)]="elt.valueDomain.datatypeDate.format"
-                                     (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+                    <select2 id="datatypeDatePrecision" [data]="datatypeDatePrecisionOptions" [options]="options"
+                             [value]="elt.valueDomain.datatypeDate.precision"
+                             (valueChanged)="this.elt.valueDomain.datatype = $event.value; this.onEltChange.emit()"
+                             width="100%" [disabled]="!canEdit">
+                    </select2>
                 </dd>
             </ng-container>
             <ng-container *ngSwitchCase="'Number'">

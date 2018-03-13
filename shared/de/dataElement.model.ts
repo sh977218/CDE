@@ -31,9 +31,9 @@ export class DataElement extends Elt {
         script: string,
         spec_type: string,
     }[] = [];
-    objectClass: Concepts; // mutable
-    property: Concepts; // mutable
-    valueDomain: ValueDomain; // mutable
+    objectClass: Concepts = new Concepts(); // mutable
+    property: Concepts = new Concepts(); // mutable
+    valueDomain: ValueDomain = new ValueDomain(); // mutable
     views: number;
 
     constructor(elt: DataElement = undefined) {
@@ -66,6 +66,14 @@ export class DataElement extends Elt {
         if (!Array.isArray(de.derivationRules)) {
             de.derivationRules = [];
         }
+        if (!de.valueDomain) de.valueDomain = new ValueDomain();
+        if (!de.valueDomain.datatypeDate) de.valueDomain.datatypeDate = new QuestionTypeDate();
+        if (!de.valueDomain.datatypeNumber) de.valueDomain.datatypeNumber = new QuestionTypeNumber();
+        if (!de.valueDomain.datatypeText) de.valueDomain.datatypeText = new QuestionTypeText();
+        if (!de.valueDomain.datatypeValueList) de.valueDomain.datatypeValueList = new QuestionTypeValueList();
+        if (QuestionTypeDate.PrecisionEnum.indexOf(de.valueDomain.datatypeDate.precision) === -1) {
+            de.valueDomain.datatypeDate.precision = QuestionTypeDate.PrecisionDefault;
+        }
     }
 }
 
@@ -79,6 +87,47 @@ export class DataElementElastic extends DataElement {
     }
 }
 
+export class QuestionTypeDate {
+    precision?: string = 'Day';
+
+    static PrecisionEnum = ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'];
+    static PrecisionDefault = 'Day';
+
+    static copy(q: QuestionTypeDate) {
+        return Object.assign(new QuestionTypeDate(), q);
+    }
+}
+
+export class QuestionTypeNumber {
+    minValue: number;
+    maxValue: number;
+    precision: number;
+
+    static copy(q: QuestionTypeNumber) {
+        return Object.assign(new QuestionTypeNumber(), q);
+    }
+}
+
+export class QuestionTypeText {
+    minLength: number;
+    maxLength: number;
+    regex: string;
+    rule: string;
+    showAsTextArea: boolean = false;
+
+    static copy(q: QuestionTypeText) {
+        return Object.assign(new QuestionTypeText(), q);
+    }
+}
+
+export class QuestionTypeValueList {
+    datatype: string;
+
+    static copy(q: QuestionTypeValueList) {
+        return Object.assign(new QuestionTypeValueList(), q);
+    }
+}
+
 export class DataSet {
     id: string;
     notes: string;
@@ -88,12 +137,22 @@ export class DataSet {
 
 export class ValueDomain {
     datatype: string;
-    identifiers: CdeId[];
-    ids: CdeId[];
-    permissibleValues: PermissibleValue[];
+    datatypeDate: QuestionTypeDate = new QuestionTypeDate();
+    datatypeNumber: QuestionTypeNumber = new QuestionTypeNumber();
+    datatypeText: QuestionTypeText = new QuestionTypeText();
+    datatypeValueList: QuestionTypeValueList = new QuestionTypeValueList(); // unused, along with 2 more such objects
+    identifiers: CdeId[] = [];
+    ids: CdeId[] = [];
+    permissibleValues: PermissibleValue[] = [];
+    uom: string;
+    vsacOid: string;
 
     static copy(v: ValueDomain) {
         let newValueDomain = Object.assign(new ValueDomain(), v);
+        newValueDomain.datatypeDate = QuestionTypeDate.copy(v.datatypeDate);
+        newValueDomain.datatypeNumber = QuestionTypeNumber.copy(v.datatypeNumber);
+        newValueDomain.datatypeText = QuestionTypeText.copy(v.datatypeText);
+        newValueDomain.datatypeValueList = QuestionTypeValueList.copy(v.datatypeValueList);
         newValueDomain.identifiers = [];
         copyArray(v.identifiers, newValueDomain.identifiers, CdeId);
         newValueDomain.ids = [];

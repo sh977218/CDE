@@ -62,7 +62,7 @@
                 <span class="badge badge-secondary formViewSummaryLabel"
                       style="background-color: #666">{{question.question.datatypeDate.precision}}</span>
             </div>
-            <div *ngIf="question.question.datatype === 'Value List' && question.question.defaultAnswer && question.question.defaultAnswer.length > 0"
+            <div *ngIf="question.question.defaultAnswer && question.question.defaultAnswer.length > 0"
                  class="defaultAnswer">
                 <span class="formViewQuestionLabel">Default Answer:</span>
                 <span class="badge badge-secondary formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
@@ -100,7 +100,7 @@
         <ng-container *ngIf="question.question.datatype === 'Date'">
             <dt class="col-2 font-weight-bold">Date Precision:</dt>
             <dd class="col-10">
-                <select [(ngModel)]="question.question.datatypeDate.precision"
+                <select [(ngModel)]="question.question.datatypeDate.precision" (change)="onEltChange.emit()"
                         class="form-control" style="width: fit-content">
                     <option>Year</option>
                     <option>Month</option>

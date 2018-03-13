@@ -9,6 +9,7 @@ import { Subject } from 'rxjs/Subject';
 import { AlertService } from '_app/alert/alert.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { checkPvUnicity, fixDatatype } from 'shared/de/deValidator';
+import { QuestionTypeDate } from 'shared/de/dataElement.model';
 
 
 @Component({
@@ -50,6 +51,7 @@ export class PermissibleValueComponent {
     @ViewChild('newPermissibleValueContent') public newPermissibleValueContent: NgbModalModule;
     canLinkPv = false;
     containsKnownSystem: boolean = false;
+    datatypeDatePrecisionOptions = QuestionTypeDate.PrecisionEnum;
     dataTypeOptions = ['Value List', 'Text', 'Date', 'Number', 'Externally Defined'];
     dataTypeValueListOptions = ['Text', 'Date', 'Number'];
     editMode;
