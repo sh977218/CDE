@@ -133,6 +133,7 @@ public class EltIdMaps {
         eltMap.put("Socioeconomic Status", "XyMzLyBHYl");
         eltMap.put("Stroke Symptoms/Comorbid Events", "7kqGIJBBKg");
         eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");
+        eltMap.put("Surgical and Procedural Interventions", "myoQ8JBHFe");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
         eltMap.put("Type, Place, Cause and Mechanism of Injury", "XyqIIyrBtx");
         eltMap.put("Two Dimensional Speckle Tracking Echocardiography Imaging", "7kKLUkHBtl");

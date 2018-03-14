@@ -56,7 +56,7 @@
     </div>
 
     <h3><i class="fa fa-table"></i> Table View Fields</h3>
-    <span>I want my <i class="fa fa-table"></i> Table View to include these fields </span>
+    <span>I want my <i class="fa fa-table"></i> Table View and CSV Exports to include these fields </span>
     <div class="form-group">
         <div class="row">
             <div class="col-lg-4">
@@ -145,12 +145,12 @@
                 </div>
                 <div class="checkbox indent">
                     <label><input id="numQuestions" type="checkbox"
-                                  [(ngModel)]="searchSettings.tableViewFields.numQuestions"> Nb of Questions<span
+                                  [(ngModel)]="searchSettings.tableViewFields.numQuestions"> Nb of Questions <span
                             class="text-info"><small>(Form Only)</small></span></label>
                 </div>
                 <div class="checkbox indent">
                     <label><input id="linkedForms" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.linkedForms">
-                        Linked Forms</label>
+                        Linked Forms <span class="text-info"><small>(CDE Only)</small></span></label>
                 </div>
             </div>
         </div>

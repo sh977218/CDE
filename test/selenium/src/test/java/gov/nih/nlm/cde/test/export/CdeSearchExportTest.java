@@ -26,10 +26,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         clickElement(By.id("search.submit"));
         clickElement(By.id("export"));
         clickElement(By.id("csvExport"));
-        textPresent("export is being generated");
-        textPresent("Export downloaded.");
-        closeAlert();
-        closeAlert();
+        checkAlert("Export downloaded.");
 
         String[] expected = {
                 "Name, Question Texts, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",
@@ -72,9 +69,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
             clickElement(By.id("csvExport"));
         }
 
-        textPresent("export is being generated");
-        textPresent("Export downloaded.");
-        closeAlert();
+        checkAlert("Export downloaded.");
 
         String[] expected2 = {
                 "Name, Question Texts, Other Names, Value Type, Permissible Values, Code Names, Nb of Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, NINDS Variable Name, Source, Updated",
