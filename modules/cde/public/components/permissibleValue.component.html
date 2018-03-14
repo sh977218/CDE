@@ -33,7 +33,7 @@
                 <dd class="col-9">
                     <select2 id="datatypeDatePrecision" [data]="datatypeDatePrecisionOptions" [options]="options"
                              [value]="elt.valueDomain.datatypeDate.precision"
-                             (valueChanged)="this.elt.valueDomain.datatype = $event.value; this.onEltChange.emit()"
+                             (valueChanged)="elt.valueDomain.datatypeDate.precision = $event.value; this.onEltChange.emit()"
                              width="100%" [disabled]="!canEdit">
                     </select2>
                 </dd>

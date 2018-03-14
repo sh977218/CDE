@@ -60,7 +60,7 @@
                 <div class="col-sm-2 font-weight-bold">Label:</div>
                 <div class="col-sm-8" id="mdd_question_title">
                     <span [ngClass]="{mark: updateCdeVersion.bLabel}">{{updateCdeVersion.newQuestion.label | cdePlaceholder}}</span>
-                    <span *ngIf="updateCdeVersion.bLabel" class="red">( was {{ updateCdeVersion.currentQuestion.label }} )</span>
+                    <span *ngIf="updateCdeVersion.bLabel" class="text-danger">( was {{ updateCdeVersion.currentQuestion.label }} )</span>
                 </div>
             </div>
             <div class="row">
@@ -68,7 +68,7 @@
                 <div class="col-sm-8" id="mdd_datatype">
                     <span [ngClass]="{mark: updateCdeVersion.bDatatype}">{{updateCdeVersion.newQuestion.question.datatype | cdePlaceholder }}</span>
                     <span *ngIf="bDatatype"
-                          class="red">( was {{updateCdeVersion.currentQuestion.question.datatype}} )</span>
+                          class="text-danger">( was {{updateCdeVersion.currentQuestion.question.datatype}} )</span>
                 </div>
             </div>
             <div *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Date'">
@@ -77,7 +77,7 @@
                     <div class="col-sm-8" id="mdd_dprecision">
                     <span [ngClass]="{mark: updateCdeVersion.bDatePrecision}">
                         {{updateCdeVersion.newQuestion.question?.datatypeDate?.precision | cdePlaceholder }}</span>
-                        <span *ngIf="updateCdeVersion.bDatePrecision" class="red">
+                        <span *ngIf="updateCdeVersion.bDatePrecision" class="text-danger">
                         ( was {{ updateCdeVersion.currentQuestion.question?.datatypeDate?.precision }} )</span>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                     <div class="col-sm-8" id="mdd_minimal">
                     <span [ngClass]="{mark: updateCdeVersion.bNumberMin}">
                         {{updateCdeVersion.newQuestion.question?.datatypeNumber?.minValue | cdePlaceholder }}</span>
-                        <span *ngIf="updateCdeVersion.bNumberMin" class="red">
+                        <span *ngIf="updateCdeVersion.bNumberMin" class="text-danger">
                         ( was {{ updateCdeVersion.currentQuestion.question?.datatypeNumber?.minValue }} )</span>
                     </div>
                 </div>
@@ -97,7 +97,7 @@
                     <div class="col-sm-8" id="mdd_maximal">
                     <span [ngClass]="{mark: updateCdeVersion.bNumberMax}">
                         {{updateCdeVersion.newQuestion.question?.datatypeNumber?.maxValue | cdePlaceholder }}</span>
-                        <span *ngIf="updateCdeVersion.bNumberMax" class="red">
+                        <span *ngIf="updateCdeVersion.bNumberMax" class="text-danger">
                         ( was {{ updateCdeVersion.currentQuestion.question?.datatypeNumber?.maxValue }} )</span>
                     </div>
                 </div>
@@ -121,7 +121,7 @@
                     </span>
                     <span [ngClass]="{mark: updateCdeVersion.bUom}"
                           *ngIf="updateCdeVersion.newQuestion.question.unitsOfMeasure.length <= 0">N/A</span>
-                    <span *ngIf="updateCdeVersion.bUom" class="red">
+                    <span *ngIf="updateCdeVersion.bUom" class="text-danger">
                         ( was
                         <ng-container *ngIf="updateCdeVersion.currentQuestion.question.unitsOfMeasure.length > 0">
                             <span *ngFor="let u of updateCdeVersion.currentQuestion.question.unitsOfMeasure; let i = index"
@@ -151,7 +151,7 @@
                         <label id="mq_defaultAnswer_text"
                                [textContent]="updateCdeVersion.newQuestion.question.defaultAnswer"></label>
                     </span>
-                    <span *ngIf="updateCdeVersion.bDefault" class="red">
+                    <span *ngIf="updateCdeVersion.bDefault" class="text-danger">
                         ( was
                             <span *ngIf="updateCdeVersion.currentQuestion.question.datatype === 'Value List'">
                                 <select [ngModel]="updateCdeVersion.currentQuestion.question.defaultAnswer"
@@ -175,13 +175,12 @@
                        target="_blank"><i class="fa fa-eye"></i>
                         <span id="mdd_question_cde_name">{{updateCdeVersion.newQuestion.question.cde.name}}</span>
                     </a>
-                    <span *ngIf="updateCdeVersion.bCde" class="red">( was
-                    <a style="color: red"
-                       href="/deView?tinyId={{updateCdeVersion.currentQuestion.question.cde.tinyId}}&version={{updateCdeVersion.currentQuestion.question.cde.version}}"
-                       target="_blank"><i class="fa fa-eye"></i>
-                        <span id="mdd_old_question_cde_name">{{updateCdeVersion.currentQuestion.question.cde.name}}</span>
-                    </a> )
-                </span>
+                    <span *ngIf="updateCdeVersion.bCde" class="text-danger">( was
+                        <a href="/deView?tinyId={{updateCdeVersion.currentQuestion.question.cde.tinyId}}&version={{updateCdeVersion.currentQuestion.question.cde.version}}"
+                           target="_blank"><i class="fa fa-eye"></i>
+                            <span id="mdd_old_question_cde_name">{{updateCdeVersion.currentQuestion.question.cde.name}}</span>
+                        </a> )
+                    </span>
                 </div>
             </div>
             <div class="row answerList" *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Value List'">
@@ -190,7 +189,7 @@
                     <div [ngClass]="{mark: updateCdeVersion.bValuelist}"
                          *ngFor="let pv of updateCdeVersion.newQuestion.question.answers"
                          [textContent]="pv.valueMeaningName"></div>
-                    <span *ngIf="updateCdeVersion.bValuelist" class="red">( was
+                    <span *ngIf="updateCdeVersion.bValuelist" class="text-danger">( was
                         <span class="mark" *ngFor="let pv of updateCdeVersion.currentQuestion.question.answers"
                               [textContent]="pv.valueMeaningName"></span> )
                     </span>

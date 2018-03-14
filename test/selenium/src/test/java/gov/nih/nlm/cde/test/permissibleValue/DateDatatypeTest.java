@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.permissibleValue;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
 public class DateDatatypeTest extends NlmCdeBaseTest {
@@ -16,9 +17,7 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
         goToPermissibleValues();
         changeDatatype(datatype);
 
-        clickElement(By.xpath("//*[@id='datatypeDateFormat']//i"));
-        findElement(By.xpath("//*[@id='datatypeDateFormat']//input")).sendKeys("format1");
-        clickElement(By.xpath("//*[@id='datatypeDateFormat']//button[contains(@class,'fa fa-check')]"));
+        new Select(findElement(By.id("datatypeDatePrecision"))).selectByVisibleText("Month");
         newCdeVersion();
 
         goToHistory();
@@ -29,16 +28,13 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToPermissibleValues();
-        clickElement(By.xpath("//*[@id='datatypeDateFormat']//i"));
-        findElement(By.xpath("//*[@id='datatypeDateFormat']//input")).clear();
-        findElement(By.xpath("//*[@id='datatypeDateFormat']//input")).sendKeys("format2");
-        clickElement(By.xpath("//*[@id='datatypeDateFormat']//button[contains(@class,'fa fa-check')]"));
+        new Select(findElement(By.id("datatypeDatePrecision"))).selectByVisibleText("Year");
         newCdeVersion();
 
         goToCdeByName(cdeName);
         goToHistory();
         selectHistoryAndCompare(1, 2);
-        textPresent("format2", By.xpath("//*[@id='Data Type Date Format']//ins"));
-        textPresent("format1", By.xpath("//*[@id='Data Type Date Format']//del"));
+        textPresent("Year", By.xpath("//*[@id='Data Type Date Precision']//ins"));
+        textPresent("Month", By.xpath("//*[@id='Data Type Date Precision]//del"));
     }
 }

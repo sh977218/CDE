@@ -59,6 +59,7 @@ export class CdeForm extends Elt implements FormElementsContainer {
     }
 
     static validate(elt: CdeForm) {
+        if (!(elt instanceof CdeForm)) elt = new CdeForm(elt);
         elt.displayProfiles.forEach(dp => {
             if (!dp.unitsOfMeasureAlias) dp.unitsOfMeasureAlias = [];
         });
@@ -76,10 +77,17 @@ export class CdeForm extends Elt implements FormElementsContainer {
             },
             q => {
                 feValid(q);
+                if (!q.question) q.question = new Question();
                 if (!Array.isArray(q.question.answers)) q.question.answers = [];
                 if (!Array.isArray(q.question.unitsOfMeasure)) q.question.unitsOfMeasure = [];
+                if (!q.question.cde) q.question.cde = new QuestionCde();
                 if (!Array.isArray(q.question.cde.permissibleValues)) q.question.cde.permissibleValues = [];
                 if (!Array.isArray(q.question.cde.derivationRules)) q.question.cde.derivationRules = [];
+                if (!q.question.datatypeDate) q.question.datatypeDate = new QuestionTypeDate();
+                if (!q.question.datatypeNumber) q.question.datatypeNumber = new QuestionTypeNumber();
+                if (!q.question.datatypeText) q.question.datatypeText = new QuestionTypeText();
+                if (!Array.isArray(q.question.uomsAlias)) q.question.uomsAlias = [];
+                if (!Array.isArray(q.question.uomsValid)) q.question.uomsValid = [];
             }
         );
     }

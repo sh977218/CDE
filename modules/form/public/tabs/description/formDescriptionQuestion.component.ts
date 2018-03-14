@@ -105,7 +105,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         if (newCde.naming.some(n => n.designation === currentQuestion.label)) {
             newQuestion.label = currentQuestion.label;
         }
-        if (currentQuestion.question.datatypeDate) {
+        if (oldCde.valueDomain.datatypeDate.precision !== currentQuestion.question.datatypeDate.precision) {
             newQuestion.question.datatypeDate.precision = currentQuestion.question.datatypeDate.precision;
         }
 
@@ -135,7 +135,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
                 }
                 break;
             case 'Date':
-                if (oldCde.valueDomain.datatypeDate.precision === currentQuestion.question.datatypeDate.precision &&
+                if (newCde.valueDomain.datatypeDate.precision !== oldCde.valueDomain.datatypeDate.precision  &&
                     newCde.valueDomain.datatypeDate.precision !== currentQuestion.question.datatypeDate.precision) {
                     modal.bDatePrecision = true;
                 }
