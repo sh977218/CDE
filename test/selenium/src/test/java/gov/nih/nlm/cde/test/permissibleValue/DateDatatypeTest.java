@@ -14,9 +14,9 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
+
         goToPermissibleValues();
         changeDatatype(datatype);
-
         new Select(findElement(By.id("datatypeDatePrecision"))).selectByVisibleText("Month");
         newCdeVersion();
 
@@ -24,7 +24,7 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
         selectHistoryAndCompare(1, 2);
         textPresent("Date", By.xpath("//*[@id='Data Type']//ins"));
         textPresent("Value List", By.xpath("//*[@id='Data Type']//del"));
-        textPresent("format1", By.xpath("//*[@id='Data Type Date Format']//ins"));
+        textPresent("Month", By.xpath("//*[@id='Data Type Date Precision']//ins"));
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToPermissibleValues();
