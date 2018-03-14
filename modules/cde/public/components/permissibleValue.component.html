@@ -31,11 +31,11 @@
             <ng-container *ngSwitchCase="'Date'">
                 <dt class="col-3 text-right">Precision:</dt>
                 <dd class="col-9">
-                    <select2 id="datatypeDatePrecision" [data]="datatypeDatePrecisionOptions" [options]="options"
-                             [value]="elt.valueDomain.datatypeDate.precision"
-                             (valueChanged)="elt.valueDomain.datatypeDate.precision = $event.value; this.onEltChange.emit()"
-                             width="100%" [disabled]="!canEdit">
-                    </select2>
+                    <select id="datatypeDatePrecision" class="form-control"
+                            [(ngModel)]="elt.valueDomain.datatypeDate.precision" (change)="this.onEltChange.emit()"
+                            [disabled]="!canEdit">
+                        <option *ngFor="let o of datatypeDatePrecisionOptions" [value]="o">{{o}}</option>
+                    </select>
                 </dd>
             </ng-container>
             <ng-container *ngSwitchCase="'Number'">

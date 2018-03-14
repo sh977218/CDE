@@ -171,7 +171,7 @@ export class FormViewComponent implements OnInit {
             elt = new CdeForm(elt);
             CdeForm.validate(elt);
             this.elt = elt;
-            this.loadComments(this.elt, null);
+            this.loadComments(this.elt);
             this.formId = this.elt._id;
             this.missingCdes = areDerivationRulesSatisfied(this.elt);
             FormDescriptionComponent.addIds(this.elt.formElements, '');
@@ -179,11 +179,11 @@ export class FormViewComponent implements OnInit {
         }
     }
 
-    loadComments(form, cb) {
+    loadComments(form, cb = _noop) {
         this.http.get<Comment[]>('/comments/eltId/' + form.tinyId).subscribe(res => {
             this.hasComments = res && (res.length > 0);
             this.tabsCommented = res.map(c => c.linkedTab + '_tab');
-            if (cb) cb();
+            cb();
         }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
     }
 

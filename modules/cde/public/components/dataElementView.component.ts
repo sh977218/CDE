@@ -92,7 +92,7 @@ export class DataElementViewComponent implements OnInit {
             elt = new DataElement(elt);
             DataElement.validate(elt);
             this.elt = elt;
-            this.loadComments(this.elt, null);
+            this.loadComments(this.elt);
             this.deId = this.elt._id;
             if (this.userService.user && this.userService.user.username) {
                 checkPvUnicity(this.elt.valueDomain);
@@ -102,12 +102,12 @@ export class DataElementViewComponent implements OnInit {
         }
     }
 
-    loadComments(de, cb) {
+    loadComments(de, cb = _noop) {
         this.http.get<Comment[]>('/comments/eltId/' + de.tinyId)
             .subscribe(res => {
             this.hasComments = res && (res.length > 0);
             this.tabsCommented = res.map(c => c.linkedTab + '_tab');
-            if (cb) cb();
+            cb();
         }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
     }
 
@@ -126,7 +126,7 @@ export class DataElementViewComponent implements OnInit {
                 err => {
                     // do not load elt
                     this.alert.httpErrorMessageAlert(err);
-                    cb();
+                    this.eltLoaded(null, cb);
                 }
             );
         } else {
@@ -249,7 +249,7 @@ export class DataElementViewComponent implements OnInit {
         this.http.delete('/draftDataElement/' + this.elt.tinyId, {responseType: 'text'})
             .subscribe(() => {
                 this.drafts = [];
-                this.loadDataElement(null);
+                this.loadDataElement();
             }, err => this.alert.httpErrorMessageAlert(err));
     }
 
