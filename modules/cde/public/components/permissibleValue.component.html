@@ -29,14 +29,6 @@
             <ng-container *ngSwitchCase="'Value List'">
             </ng-container>
             <ng-container *ngSwitchCase="'Date'">
-                <dt class="col-3 text-right">Precision:</dt>
-                <dd class="col-9">
-                    <select id="datatypeDatePrecision" class="form-control"
-                            [(ngModel)]="elt.valueDomain.datatypeDate.precision" (change)="this.onEltChange.emit()"
-                            [disabled]="!canEdit">
-                        <option *ngFor="let o of datatypeDatePrecisionOptions" [value]="o">{{o}}</option>
-                    </select>
-                </dd>
             </ng-container>
             <ng-container *ngSwitchCase="'Number'">
                 <dt class="col-3 text-right">Minimum Value:</dt>

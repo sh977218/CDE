@@ -72,7 +72,6 @@ var deJson = {
             precision: {type: Number, description: "Any precision for this number. Typically an integer for a float"}
         },
         datatypeDate: {
-            precision: {type: String, enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'], default: 'Day'}
         },
         datatypeTime: { // time only, periodic?
             format: {type: String, description: "Any format that someone may want to enforce"}
