@@ -96,6 +96,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
     openUpdateCdeVersionMerge(newQuestion, currentQuestion, newCde, oldCde) {
         newQuestion.instructions = currentQuestion.instructions;
+        newQuestion.question.datatypeDate.precision = currentQuestion.question.datatypeDate.precision;
         newQuestion.question.editable = currentQuestion.question.editable;
         newQuestion.question.invisible = currentQuestion.question.invisible;
         newQuestion.question.multiselect = currentQuestion.question.multiselect;
@@ -104,9 +105,6 @@ export class FormDescriptionQuestionComponent implements OnInit {
         newQuestion.skipLogic = currentQuestion.skipLogic;
         if (newCde.naming.some(n => n.designation === currentQuestion.label)) {
             newQuestion.label = currentQuestion.label;
-        }
-        if (oldCde.valueDomain.datatypeDate.precision !== currentQuestion.question.datatypeDate.precision) {
-            newQuestion.question.datatypeDate.precision = currentQuestion.question.datatypeDate.precision;
         }
 
         let modal: any = {
@@ -132,12 +130,6 @@ export class FormDescriptionQuestionComponent implements OnInit {
                     }
                 } else {
                     modal.bValuelist = true;
-                }
-                break;
-            case 'Date':
-                if (newCde.valueDomain.datatypeDate.precision !== oldCde.valueDomain.datatypeDate.precision  &&
-                    newCde.valueDomain.datatypeDate.precision !== currentQuestion.question.datatypeDate.precision) {
-                    modal.bDatePrecision = true;
                 }
                 break;
             case 'Number':
