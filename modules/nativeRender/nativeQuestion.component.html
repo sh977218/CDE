@@ -19,11 +19,11 @@
         </div>
 
         <div attr.id="{{formElement.label}}_{{index}}" [ngClass]="{'native-box': hasLabel(formElement)}">
-            <div *ngIf="formElement.question.isScore">Score: <span
-                    [textContent]="score(formElement, nrs.vm)"></span></div>
-            <div *ngIf="!formElement.question.isScore">
-                <div [ngSwitch]="formElement.question.datatype?.toLowerCase()">
-                    <div *ngSwitchCase="'value list'">
+            <ng-container *ngIf="formElement.question.isScore">Score: <span
+                    [textContent]="score(formElement, nrs.vm)"></span></ng-container>
+            <ng-container *ngIf="!formElement.question.isScore">
+                <ng-container [ngSwitch]="formElement.question.datatype">
+                    <ng-container *ngSwitchCase="'Value List'">
                         <div class="row">
                             <div *ngFor="let pv of formElement.question.answers; let i = index"
                                  [ngClass]="classColumns(pv.index, i)" class="col-12">
@@ -53,8 +53,8 @@
                                         <span class="native-value" *ngIf="nrs.profile.displayValues"
                                               [textContent]="nrs.getPvValue(pv)"></span>
                                     </label>
-                                    <div *ngIf="pv?.formElements">
-                                        <div *ngFor="let fe of pv.formElements; let j = index">
+                                    <ng-container *ngIf="pv?.formElements">
+                                        <ng-container *ngFor="let fe of pv.formElements; let j = index">
                                             <div *ngIf="nrs.nativeRenderType !== nrs.SHOW_IF
                                                || nrs.skipLogicService.evalSkipLogicAndClear(pv, fe, nrs)"
                                                  [ngClass]="{'native-question-oneline-r': isOneLiner(pv.formElements[0], pv.formElements.length),
@@ -70,13 +70,13 @@
                                                         [formElement]="fe"
                                                         [numSubQuestions]="pv.formElements.length"></cde-native-section>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </ng-container>
+                                    </ng-container>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div *ngSwitchCase="'date'" class="row">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'Date'" class="row">
                         <div class="col-12" >
                             <input class="form-control"
                                    type="{{datePrecisionToType[formElement.question.datatypeDate.precision]}}"
@@ -89,8 +89,8 @@
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable">
                         </div>
-                    </div>
-                    <div *ngSwitchCase="'number'">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'Number'">
                         <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
                             <input type="number" class="form-control"
                                    [title]="formElement.label"
@@ -114,8 +114,8 @@
                                        [required]="formElement.question.required || formElement.question.answer"
                                        [disabled]="!formElement.question.editable"/> {{uom}}</label>
                         </div>
-                    </div>
-                    <div *ngSwitchDefault>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
                         <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
                             <input type="text" class="form-control"
                                    [title]="formElement.label"
@@ -138,12 +138,12 @@
                                        [disabled]="!formElement.question.editable"/> {{uom}}</label>
                         </div>
                         <!--<div [textContent]="nrs.form.$$element[0][formElement.questionId].validationMessage"></div>-->
-                    </div>
-                </div>
-            </div>
-            <div *ngFor="let pv of formElement.question.answers; let i = index">
-                <div *ngIf="pv.nonValuelist && pv.formElements">
-                    <div *ngFor="let fe of pv.formElements; let j = index">
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+            <ng-container *ngFor="let pv of formElement.question.answers; let i = index">
+                <ng-container *ngIf="pv.nonValuelist && pv.formElements">
+                    <ng-container *ngFor="let fe of pv.formElements; let j = index">
                         <div *ngIf="nrs.nativeRenderType !== this.nrs.SHOW_IF
                                         || nrs.skipLogicService.evalSkipLogicAndClear(pv, fe, nrs)"
                              [ngClass]="{'native-question-oneline-r': isOneLiner(pv.formElements[0], pv.formElements.length)}"
@@ -160,9 +160,9 @@
                                     [formElement]="fe"
                                     [numSubQuestions]="pv.formElements.length"></cde-native-section>
                         </div>
-                    </div>
-                </div>
-            </div>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
         </div>
     </fieldset>
 </div>
