@@ -21,9 +21,9 @@
     <cde-native-table *ngIf="sectionType() === 'table'" [formElement]="formElement"></cde-native-table>
     <cde-native-section-matrix *ngIf="sectionType() === 'matrix'"
                                [formElement]="formElement" [numSubQuestions]="numSubQuestions"></cde-native-section-matrix>
-    <div *ngIf="sectionType() === 'section'">
-        <div *ngFor="let element of formElement.formElements; let i = index">
-            <div *ngIf="nrs.skipLogicService.evalSkipLogicAndClear(formElement, element, nrs)">
+    <ng-container *ngIf="sectionType() === 'section'">
+        <ng-container *ngFor="let element of formElement.formElements; let i = index">
+            <ng-container *ngIf="nrs.skipLogicService.evalSkipLogicAndClear(formElement, element, nrs)">
                 <div *ngIf="element.elementType === 'question'" [ngClass]="{'keep-with-previous':i===0,
                          'native-box': !formElement.label && formElement.instructions && formElement.instructions.value}"
                      class="native-question-header native-question-answers">
@@ -33,7 +33,7 @@
                 <cde-native-section *ngIf="element.elementType === 'section' || element.elementType === 'form'"
                                     [formElements]="formElement.formElements" [formElement]="element"
                                     [numSubQuestions]="numSubQuestions"></cde-native-section>
-            </div>
-        </div>
-    </div>
+            </ng-container>
+        </ng-container>
+    </ng-container>
 </div>

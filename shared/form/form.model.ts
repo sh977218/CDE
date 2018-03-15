@@ -9,6 +9,7 @@ import {
     DerivationRule,
     copyArray,
 } from 'shared/models.model';
+import { QuestionTypeDate, QuestionTypeNumber, QuestionTypeText } from 'shared/de/dataElement.model';
 import { iterateFeSync } from 'shared/form/formShared';
 
 export class CdeForm extends Elt implements FormElementsContainer {
@@ -58,22 +59,35 @@ export class CdeForm extends Elt implements FormElementsContainer {
     }
 
     static validate(elt: CdeForm) {
+        if (!(elt instanceof CdeForm)) elt = new CdeForm(elt);
         elt.displayProfiles.forEach(dp => {
             if (!dp.unitsOfMeasureAlias) dp.unitsOfMeasureAlias = [];
         });
+        function feValid(fe: FormElement) {
+            if (!Array.isArray(fe.formElements)) fe.formElements = [];
+            if (!fe.instructions) fe.instructions = new FormattedValue();
+            if (!fe.skipLogic) fe.skipLogic = new SkipLogic();
+        }
         iterateFeSync(elt,
             form => {
-                if (!Array.isArray(form.formElements)) form.formElements = [];
+                feValid(form);
             },
             section => {
-                if (!Array.isArray(section.formElements)) section.formElements = [];
+                feValid(section);
             },
             q => {
-                if (!Array.isArray(q.formElements)) q.formElements = [];
+                feValid(q);
+                if (!q.question) q.question = new Question();
                 if (!Array.isArray(q.question.answers)) q.question.answers = [];
                 if (!Array.isArray(q.question.unitsOfMeasure)) q.question.unitsOfMeasure = [];
+                if (!q.question.cde) q.question.cde = new QuestionCde();
                 if (!Array.isArray(q.question.cde.permissibleValues)) q.question.cde.permissibleValues = [];
                 if (!Array.isArray(q.question.cde.derivationRules)) q.question.cde.derivationRules = [];
+                if (!q.question.datatypeDate) q.question.datatypeDate = new QuestionTypeDate();
+                if (!q.question.datatypeNumber) q.question.datatypeNumber = new QuestionTypeNumber();
+                if (!q.question.datatypeText) q.question.datatypeText = new QuestionTypeText();
+                if (!Array.isArray(q.question.uomsAlias)) q.question.uomsAlias = [];
+                if (!Array.isArray(q.question.uomsValid)) q.question.uomsValid = [];
             }
         );
     }
@@ -154,7 +168,7 @@ export class FormSection implements FormSectionOrForm {
     repeatNumber: number;
     repeatOption: string;
     section: Section;
-    skipLogic;
+    skipLogic = new SkipLogic();
     updatedSkipLogic;
 
     static copy(fe: FormElement) {
@@ -200,7 +214,7 @@ export class FormInForm implements FormSectionOrForm {
     inForm: InForm;
     label = '';
     repeat;
-    skipLogic;
+    skipLogic = new SkipLogic();
     updatedSkipLogic;
 }
 
@@ -220,7 +234,7 @@ export class FormQuestion implements FormElement {
     question: Question = new Question();
     questionId: string;
     repeat;
-    skipLogic;
+    skipLogic = new SkipLogic();
     updatedSkipLogic;
 
     static datePrecisionToType = {
@@ -276,10 +290,10 @@ export class Question {
     answers: PermissibleFormValue[] = []; // mutable
     cde: QuestionCde = new QuestionCde();
     datatype: string;
-    datatypeDate: QuestionTypeDate; // mutable
-    datatypeNumber: QuestionTypeNumber; // mutable
-    datatypeText: QuestionTypeText; // mutable
-    defaultAnswer: string;
+    datatypeDate: QuestionTypeDate = new QuestionTypeDate(); // mutable
+    datatypeNumber: QuestionTypeNumber = new QuestionTypeNumber(); // mutable
+    datatypeText: QuestionTypeText = new QuestionTypeText(); // mutable
+    defaultAnswer: string; // all datatypes, defaulted by areDerivationRulesSatisfied
     editable: boolean = true;
     invisible: boolean;
     isScore: boolean;
@@ -328,37 +342,6 @@ export class QuestionCde {
         } else {
             return Object.assign(new QuestionCde(), a);
         }
-    }
-}
-
-class QuestionTypeDate {
-    format?: string;
-    precision?: string;
-
-    static copy(q: QuestionTypeDate) {
-        return Object.assign(new QuestionTypeDate(), q);
-    }
-}
-
-class QuestionTypeNumber {
-    minValue: number;
-    maxValue: number;
-    precision: number;
-
-    static copy(q: QuestionTypeNumber) {
-        return Object.assign(new QuestionTypeNumber(), q);
-    }
-}
-
-class QuestionTypeText {
-    minLength: number;
-    maxLength: number;
-    regex: string;
-    rule: string;
-    showAsTextArea: boolean = false;
-
-    static copy(q: QuestionTypeText) {
-        return Object.assign(new QuestionTypeText(), q);
     }
 }
 

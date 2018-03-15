@@ -491,23 +491,23 @@ function createQuestionCode(param) {
 function createDataType(question) {
   var ret = 'ST';
   if(question && question.datatype) {
-    switch(question.datatype.toLowerCase()) {
-      case 'character':
+    switch(question.datatype) {
+      case 'Character':
         ret = 'ST';
         break;
-      case 'value list':
+      case 'Value List':
         ret = 'CNE';
         break;
-      case 'integer':
+      case 'Integer':
         ret = 'INT';
         break;
-      case 'number':
+      case 'Number':
         ret = 'REAL';
         break;
-      case 'float':
+      case 'Float':
         ret = 'REAL';
         break;
-      case 'date':
+      case 'Date':
         ret = 'DT';
         break;
       default:

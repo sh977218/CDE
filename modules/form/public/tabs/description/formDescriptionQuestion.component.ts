@@ -72,7 +72,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         if (!datatype) return '';
         else if (datatype === 'Number') {
             return '(Number)';
-        } else if (datatype.toLowerCase() === 'date') {
+        } else if (datatype === 'Date') {
             return '(Date)';
         } else return '';
     }
@@ -82,82 +82,75 @@ export class FormDescriptionQuestionComponent implements OnInit {
     }
 
     openUpdateCdeVersion(question) {
-        this.http.get<DataElement>('/de/' + question.question.cde.tinyId)
-            .subscribe(response => {
-                this.formService.convertCdeToQuestion(response, newQuestion => {
-                    this.updateCdeVersion = (() => {
-                        let modal: any = {
-                            currentQuestion: question,
-                            newQuestion: newQuestion
-                        };
-                        let currentQuestion = question;
-
-                        newQuestion.question.editable = currentQuestion.question.editable;
-                        newQuestion.question.instructions = currentQuestion.question.instructions;
-                        newQuestion.question.invisible = currentQuestion.question.invisible;
-                        newQuestion.question.multiselect = currentQuestion.question.multiselect;
-                        newQuestion.question.required = currentQuestion.question.required;
-                        newQuestion.question.skipLogic = currentQuestion.question.skipLogic;
-                        newQuestion.repeat = currentQuestion.repeat;
-
-                        this.http.get<DataElement>('/de/' + newQuestion.question.cde.tinyId)
-                            .subscribe(newCde => {
-                                let cdeUrl = '/de/' + currentQuestion.question.cde.tinyId;
-                                if (currentQuestion.question.cde.version && currentQuestion.question.cde.version.length > 0) {
-                                    cdeUrl = cdeUrl + '/version/' + currentQuestion.question.cde.version;
-                                }
-                                this.http.get<DataElement>(cdeUrl).subscribe(oldCde => {
-                                    modal.bLabel = !_isEqual(newCde.naming, oldCde.naming);
-                                });
-                                let found = false;
-                                newCde.naming.forEach(result => {
-                                    if (result.designation === currentQuestion.label) found = true;
-                                });
-                                if (found) newQuestion.label = currentQuestion.label;
-                            });
-
-                        modal.bCde = true;
-                        modal.bDatatype = currentQuestion.question.datatype !== newQuestion.question.datatype;
-                        modal.bUom = !_isEqual(currentQuestion.question.unitsOfMeasure, newQuestion.question.unitsOfMeasure);
-
-                        if (newQuestion.question.datatype === 'Number') {
-                            if (currentQuestion.question.datatype === 'Number' &&
-                                currentQuestion.question.datatypeNumber &&
-                                newQuestion.question.datatypeNumber) {
-                                modal.bNumberMin = currentQuestion.question.datatypeNumber.minValue
-                                    !== newQuestion.question.datatypeNumber.minValue;
-                                modal.bNumberMax = currentQuestion.question.datatypeNumber.maxValue
-                                    !== newQuestion.question.datatypeNumber.maxValue;
-                            } else {
-                                modal.bNumberMin = modal.bNumberMax = true;
-                            }
-                        }
-                        if (newQuestion.question.datatype === 'Value List') {
-                            if (currentQuestion.question.datatype === 'Value List') {
-                                modal.bValuelist = !_isEqual(currentQuestion.question.cde.permissibleValues,
-                                    newQuestion.question.cde.permissibleValues);
-                                if (!modal.bValuelist) newQuestion.question.answers = currentQuestion.question.answers;
-
-                                if (currentQuestion.question.defaultAnswer && newQuestion.question.answers.filter(a => a.permissibleValue === currentQuestion.question.defaultAnswer).length > 0) {
-                                    newQuestion.question.defaultAnswer = currentQuestion.question.defaultAnswer;
-                                }
-                            } else {
-                                modal.bValuelist = true;
-                            }
-                        }
-                        modal.bDefault = _toString(currentQuestion.question.defaultAnswer) !== _toString(newQuestion.question.defaultAnswer);
-
-                        return modal;
-                    })();
-
-                    this.modalService.open(this.updateCdeVersionTmpl, {size: 'lg'}).result.then(() => {
-                        question.question = newQuestion.question;
-                        question.label = newQuestion.label;
-                        this.stageElt.emit();
-                    }, () => {
+        this.http.get<DataElement>('/de/' + question.question.cde.tinyId).subscribe(response => {
+            this.formService.convertCdeToQuestion(response, newQuestion => {
+                this.http.get<DataElement>('/de/' + newQuestion.question.cde.tinyId).subscribe(newCde => {
+                    let oldUrl = '/de/' + question.question.cde.tinyId + '/version/' + question.question.cde.version;
+                    this.http.get<DataElement>(oldUrl).subscribe(oldCde => {
+                        this.openUpdateCdeVersionMerge(newQuestion, question, newCde, oldCde);
                     });
                 });
             });
+        });
+    }
+
+    openUpdateCdeVersionMerge(newQuestion, currentQuestion, newCde, oldCde) {
+        newQuestion.instructions = currentQuestion.instructions;
+        newQuestion.question.datatypeDate.precision = currentQuestion.question.datatypeDate.precision;
+        newQuestion.question.editable = currentQuestion.question.editable;
+        newQuestion.question.invisible = currentQuestion.question.invisible;
+        newQuestion.question.multiselect = currentQuestion.question.multiselect;
+        newQuestion.question.required = currentQuestion.question.required;
+        newQuestion.repeat = currentQuestion.repeat;
+        newQuestion.skipLogic = currentQuestion.skipLogic;
+        if (newCde.naming.some(n => n.designation === currentQuestion.label)) {
+            newQuestion.label = currentQuestion.label;
+        }
+
+        let modal: any = {
+            currentQuestion: currentQuestion,
+            newQuestion: newQuestion
+        };
+        modal.bCde = true;
+        modal.bLabel = !_isEqual(newCde.naming, oldCde.naming);
+        modal.bDatatype = currentQuestion.question.datatype !== newQuestion.question.datatype;
+        modal.bDefault = _toString(currentQuestion.question.defaultAnswer) !== _toString(newQuestion.question.defaultAnswer);
+        modal.bUom = !_isEqual(currentQuestion.question.unitsOfMeasure, newQuestion.question.unitsOfMeasure);
+
+        switch (newQuestion.question.datatype) {
+            case 'Value List':
+                if (currentQuestion.question.datatype === 'Value List') {
+                    modal.bValuelist = !_isEqual(currentQuestion.question.cde.permissibleValues,
+                        newQuestion.question.cde.permissibleValues);
+                    if (!modal.bValuelist) newQuestion.question.answers = currentQuestion.question.answers;
+
+                    if (currentQuestion.question.defaultAnswer && newQuestion.question.answers.filter(
+                            a => a.permissibleValue === currentQuestion.question.defaultAnswer).length > 0) {
+                        newQuestion.question.defaultAnswer = currentQuestion.question.defaultAnswer;
+                    }
+                } else {
+                    modal.bValuelist = true;
+                }
+                break;
+            case 'Number':
+                if (currentQuestion.question.datatype === 'Number' &&
+                    currentQuestion.question.datatypeNumber && newQuestion.question.datatypeNumber) {
+                    modal.bNumberMin = currentQuestion.question.datatypeNumber.minValue
+                        !== newQuestion.question.datatypeNumber.minValue;
+                    modal.bNumberMax = currentQuestion.question.datatypeNumber.maxValue
+                        !== newQuestion.question.datatypeNumber.maxValue;
+                } else {
+                    modal.bNumberMin = modal.bNumberMax = true;
+                }
+                break;
+        }
+
+        this.updateCdeVersion =  modal;
+        this.modalService.open(this.updateCdeVersionTmpl, {size: 'lg'}).result.then(() => {
+            currentQuestion.question = newQuestion.question;
+            currentQuestion.label = newQuestion.label;
+            this.stageElt.emit();
+        }, () => {});
     }
 
     removeNode(node) {
