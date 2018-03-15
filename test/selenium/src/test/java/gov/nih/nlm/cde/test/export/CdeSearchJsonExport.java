@@ -15,9 +15,6 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
 
     @Test
     public void cdeSearchExport() {
-        mustBeLoggedOut();
-        loadDefaultSettings();
-
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         textPresent("All Statuses");
@@ -44,7 +41,7 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
             }
         } catch (IOException e) {
             Assert.fail("Exception reading SearchExport.json");
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

@@ -48,7 +48,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
             }
         } catch (IOException e) {
             Assert.fail("Exception reading " + fileLoc);
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         clickElement(By.id("searchSettings"));
         clickElement(By.id("uom"));
