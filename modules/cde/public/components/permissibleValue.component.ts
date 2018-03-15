@@ -19,8 +19,7 @@ import { checkPvUnicity, fixDatatype } from 'shared/de/deValidator';
 export class PermissibleValueComponent {
     @Input() canEdit;
     _elt: any;
-    @Input()
-    set elt(v: any) {
+    @Input() set elt(v: any) {
         this._elt = v;
         let isDatatypeDefined = _indexOf(this.dataTypeOptions, this.elt.valueDomain.datatype);
         if (isDatatypeDefined === -1) this.dataTypeOptions.push(this.elt.valueDomain.datatype);
@@ -30,9 +29,7 @@ export class PermissibleValueComponent {
         this.initSrcOptions();
         this.canLinkPvFunc();
         if (!this.elt.dataElementConcept.conceptualDomain) {
-            this.elt.dataElementConcept.conceptualDomain = {
-                vsac: {}
-            };
+            this.elt.dataElementConcept.conceptualDomain = {vsac: {}};
         }
 
         this.searchTerms.pipe(debounceTime(300), distinctUntilChanged(), switchMap(term => term
@@ -211,20 +208,21 @@ export class PermissibleValueComponent {
     }
 
     lookupAsSource(src) {
-        let __this = this;
         if (!this.SOURCES[src].selected) this.SOURCES[src].codes = {};
         else this.dupCodesForSameSrc(src);
         let targetSource = this.SOURCES[src].source;
         this.elt.valueDomain.permissibleValues.forEach(pv => {
-            __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: '', meaning: 'Retrieving...'};
+            this.SOURCES[src].codes[pv.valueMeaningCode] = {code: '', meaning: 'Retrieving...'};
             let code = pv.valueMeaningCode;
             let source;
             if (pv.codeSystemName) {
-                source = this.SOURCES[pv.codeSystemName].source;
+                if (this.SOURCES[pv.codeSystemName]) {
+                    source = this.SOURCES[pv.codeSystemName].source;
+                }
             }
             if (code && source) {
                 if (src === 'UMLS' && source === 'UMLS') {
-                    __this.SOURCES[src].codes[pv.valueMeaningCode] = {
+                    this.SOURCES[src].codes[pv.valueMeaningCode] = {
                         code: pv.valueMeaningCode,
                         meaning: pv.valueMeaningName
                     };
@@ -234,35 +232,35 @@ export class PermissibleValueComponent {
                             res => {
                                 if (res.result.length > 0) {
                                     res.result.forEach((r) => {
-                                        __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
+                                        this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                                     });
-                                } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                            }, err => this.Alert.httpErrorMessageAlert(err));
+                                } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
+                            }, err => this.Alert.addAlert('danger', "Error query UMLS."));
 
                 }
                 else if (source === 'UMLS') {
                     this.http.get<any>('/umlsAtomsBridge/' + code + '/' + targetSource)
                         .subscribe(
                             res => {
-                                let l = res.result.filter(r => r.termType === __this.SOURCES[src].termType);
+                                let l = res.result.filter(r => r.termType === this.SOURCES[src].termType);
                                 if (l[0]) {
-                                    __this.SOURCES[src].codes[pv.valueMeaningCode] = {
+                                    this.SOURCES[src].codes[pv.valueMeaningCode] = {
                                         code: l[0].ui,
                                         meaning: l[0].name
                                     };
-                                } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                            }, err => this.Alert.httpErrorMessageAlert(err));
+                                } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
+                            }, err => this.Alert.addAlert('danger', "Error query UMLS."));
                 } else {
                     this.http.get<any>('/crossWalkingVocabularies/' + source + '/' + code + '/' + targetSource)
                         .subscribe(res => {
                             if (res.result.length > 0) {
                                 res.result.forEach((r) => {
-                                    __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
+                                    this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                                 });
-                            } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
+                            } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
                         }, );
                 }
-            } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
+            } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
         });
     }
 

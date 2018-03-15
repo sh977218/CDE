@@ -81,11 +81,6 @@ exports.ticketValidate = function (tkt, cb) {
         return cb('ticketValidate: Request timeout. Abort if not done!');
     });
 
-    // Emit timeout event if no response within GLOBALS.REQ_TIMEOUT seconds
-    setTimeout(function () {
-        req.emit("timeout");
-    }, helper.GLOBALS.REQ_TIMEOUT);
-
     req.end();
 };
 

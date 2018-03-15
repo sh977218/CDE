@@ -1,23 +1,23 @@
-var https = require('https')
-    , querystring = require('querystring')
-    , config = require('../system/parseConfig')
-    , request = require('request')
-;
+const https = require('https');
+const querystring = require('querystring');
+const config = require('config');
+const request = require('request');
+
 const dbLogger = require('../system/dbLogger.js');
 
-var authData = querystring.stringify({
+const authData = querystring.stringify({
     username: config.vsac.username
     , password: config.vsac.password
 });
 
-var ticketData = querystring.stringify({
+const ticketData = querystring.stringify({
     service: config.uts.service
 });
 
-var vsacHost = config.vsac.host;
-var vsacPort = config.vsac.port;
+const vsacHost = config.vsac.host;
+const vsacPort = config.vsac.port;
 
-var tgtOptions = {
+const tgtOptions = {
     host: vsacHost,
     hostname: vsacHost,
     port: vsacPort,
@@ -33,7 +33,7 @@ var tgtOptions = {
 };
 
 
-var ticketOptions = {
+const ticketOptions = {
     host: vsacHost,
     hostname: vsacHost,
     port: vsacPort,
@@ -48,7 +48,7 @@ var ticketOptions = {
     }
 };
 
-var valueSetOptions = {
+const valueSetOptions = {
     host: vsacHost,
     port: vsacPort,
     path: config.vsac.valueSet.path,
@@ -58,11 +58,11 @@ var valueSetOptions = {
     rejectUnauthorized: false
 };
 
-var vsacTGT = '';
+let vsacTGT = '';
 
 exports.getTGT = function (cb) {
-    var req = https.request(tgtOptions, function (res) {
-        var output = '';
+    let req = https.request(tgtOptions, function (res) {
+        let output = '';
         res.setEncoding('utf8');
         res.on('data', function (chunk) {
             output += chunk;
