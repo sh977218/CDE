@@ -133,6 +133,7 @@ public class EltIdMaps {
         eltMap.put("Section Test Form", "XJFylVmN_");
         eltMap.put("Socioeconomic Status", "XyMzLyBHYl");
         eltMap.put("Stroke Symptoms/Comorbid Events", "7kqGIJBBKg");
+        eltMap.put("Stroke Types and Subtypes", "QkX81HrFx");
         eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");
         eltMap.put("Surgical and Procedural Interventions", "myoQ8JBHFe");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
