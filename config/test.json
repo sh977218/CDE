@@ -6,20 +6,6 @@
   "pmRunOnStartup": [],
   "viewsIncrementThreshold": 1,
   "autoSyncMesh": true,
-  "database": {
-    "local": {
-      "db": "local",
-      "username": "siteRootAdmin",
-      "password": "password",
-      "options": {
-        "auth": {"authdb": "admin"}
-      }
-    }
-  },
-  "vsac": {
-    "username": "cdevsac",
-    "password": "DO_NOT_TRY_TO_GUESS"
-  },
   "elastic": {
     "index": {"name": "cdetest"},
     "formIndex": {"name": "formtest"},
