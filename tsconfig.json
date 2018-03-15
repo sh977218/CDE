@@ -14,7 +14,7 @@
     "moduleResolution": "node",
     "noImplicitAny": false,
     "pretty": false,
-    "sourceMap": false,
+    "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "es5",
     "typeRoots": [
