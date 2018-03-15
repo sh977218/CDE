@@ -10,6 +10,8 @@ const authData = querystring.stringify({
     , password: config.vsac.password + "."
 });
 
+console.log(config.vsac.username + " " + config.vsac.password);
+
 const ticketData = querystring.stringify({
     service: config.uts.service
 });
