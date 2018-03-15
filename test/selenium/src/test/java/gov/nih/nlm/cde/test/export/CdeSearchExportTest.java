@@ -34,18 +34,20 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
                 "\"Unified Parkinson's Disease Rating Scale (UPDRS) - symptomatic orthostasis indicator\",\"Does the patient have symptomatic orthostasis?\",\"Value List\",\"0; 1\",\"2\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C09927 v3; NINDS Variable Name: UPDRSSymOrtInd\""
         };
 
+
+        String fileLoc = downloadFolder + "/SearchExport.csv";
         try {
-            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/SearchExport.csv")));
+            String actual = new String(Files.readAllBytes(Paths.get(fileLoc)));
             for (String s : expected) {
                 if (!actual.contains(s)) {
                     Files.copy(
-                            Paths.get(downloadFolder + "/SearchExport.csv"),
+                            Paths.get(fileLoc),
                             Paths.get(tempFolder + "/ExportTest-searchExport.csv"), REPLACE_EXISTING);
                     Assert.fail("missing line in export : " + s);
                 }
             }
         } catch (IOException e) {
-            Assert.fail("Exception reading SearchExport.csv");
+            Assert.fail("Exception reading " + fileLoc + " ---- " + e.getMessage());
         }
         clickElement(By.id("searchSettings"));
         clickElement(By.id("uom"));

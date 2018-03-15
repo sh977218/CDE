@@ -39,7 +39,7 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/SearchExport_XML.zip"),
                             Paths.get(tempFolder + "/SearchExport_XML.zip"), REPLACE_EXISTING);
-                    Assert.fail("missing line " + s + " in export : " + s + " \n---- Actual: " + actual);
+                    Assert.fail("missing line " + s + "\n---- Actual: " + actual);
                 }
             }
         } catch (Exception e) {

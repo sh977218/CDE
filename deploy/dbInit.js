@@ -130,6 +130,6 @@ users.forEach(function(u) {
     db.users.insert(u);
 });
 
-db.users.update({username: 'formLinkedForms'}, {$set: {"searchSettings.linkedForms": true}});
+db.users.update({username: 'formLinkedForms'}, {$set: {"searchSettings.tableViewFields.linkedForms": true}});
 
 db.users.insert({username: 'oldUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: [], searchSettings: oldSettings});
