@@ -43,7 +43,8 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
                 }
             }
         } catch (IOException e) {
-            Assert.fail("Exception reading SearchExport.json -- " + e.getMessage());
+            Assert.fail("Exception reading SearchExport.json");
+            e.printStackTrace();
         }
     }
 
