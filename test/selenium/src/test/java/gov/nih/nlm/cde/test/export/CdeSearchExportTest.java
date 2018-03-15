@@ -47,7 +47,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
                 }
             }
         } catch (IOException e) {
-            Assert.fail("Exception reading " + fileLoc + " ---- " + e.getMessage());
+            Assert.fail("Exception reading " + fileLoc + " ---- " + e.getStackTrace());
         }
         clickElement(By.id("searchSettings"));
         clickElement(By.id("uom"));

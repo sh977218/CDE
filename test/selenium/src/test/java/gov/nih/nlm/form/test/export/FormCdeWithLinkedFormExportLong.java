@@ -14,7 +14,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class FormCdeWithLinkedFormExportLong extends NlmCdeBaseTest {
 
     @Test
-    public void formCdeWithLinkedFormsExportShort() {
+    public void formCdeWithLinkedFormsExportLong() {
         mustBeLoggedInAs("formLinkedForms", password);
 
         goToFormByName("Stroke Types and Subtypes");
@@ -26,7 +26,7 @@ public class FormCdeWithLinkedFormExportLong extends NlmCdeBaseTest {
         checkAlert("Export downloaded.");
 
         String[] expected = {
-            "\"Baltimore-Washington Cooperative Young Stroke Study (BWCYSS) - standard sub type\",\"\",\"Text\",\"\",\"0\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C14228 v3; NINDS Variable Name: BWCYSSStandardSubTyp\",\"QkX81HrFx\","
+            "\"Baltimore-Washington Cooperative Young Stroke Study (BWCYSS) - standard sub type\",\"\",\"Text\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C14228 v3; NINDS Variable Name: BWCYSSStandardSubTyp\",\"QkX81HrFx\","
         };
 
         try {
