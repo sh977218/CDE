@@ -38,11 +38,11 @@ export class NativeQuestionComponent implements OnInit {
     @Input() parentValue: any;
     @Input() index: any;
     NRS = NativeRenderService;
+    datePrecisionToType = FormQuestion.datePrecisionToType;
+    datePrecisionToStep = FormQuestion.datePrecisionToStep;
     previousUom: CodeAndSystem;
     // static readonly reHasTime = /[hHmsSkaAZ]/;
     score = score;
-    datePrecisionToType = FormQuestion.datePrecisionToType;
-    datePrecisionToStep = FormQuestion.datePrecisionToStep;
 
     ngOnInit () {
         this.previousUom = this.formElement.question.answerUom;

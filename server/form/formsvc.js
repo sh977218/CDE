@@ -32,7 +32,7 @@ function fetchWholeForm(form, callback) {
                     let tinyId = fe.inForm.form.tinyId;
                     let version = fe.inForm.form.version;
                     mongo_form.byTinyIdAndVersion(tinyId, version, function (err, result) {
-                        if (err) return cb("Retrieving form tinyId: " + fe.inForm.form.tinyId + " version: " + fe.inForm.form.version + " has error: " + err);
+                        if (err) return doneOne("Retrieving form tinyId: " + fe.inForm.form.tinyId + " version: " + fe.inForm.form.version + " has error: " + err);
                         result = result.toObject();
                         fe.formElements = result.formElements;
                         loopFormElements(fe, function () {
@@ -47,7 +47,7 @@ function fetchWholeForm(form, callback) {
                 let tinyId = fe.question.cde.tinyId;
                 let version = fe.question.cde.version ? fe.question.cde.version : null;
                 mongo_cde.DataElement.findOne({tinyId: tinyId, archived: false}, {version: 1}, (err, elt) => {
-                    if (err || !elt) cb(err);
+                    if (err || !elt) doneOne(err);
                     else {
                         let systemDeVersion = elt.version ? elt.version : null;
                         if (!_.isEqual(version, systemDeVersion)) {
@@ -59,8 +59,8 @@ function fetchWholeForm(form, callback) {
 
                 });
             }
-        }, function doneAll() {
-            cb();
+        }, function doneAll(err) {
+            cb(err);
         });
     };
     if (!form) return callback();
@@ -192,10 +192,10 @@ exports.draftForms = function (req, res) {
             fetchWholeForm(form, function (err) {
                 if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
                 else doneOneForm();
-            })
+            });
         }, () => {
             res.send(forms);
-        })
+        });
     });
 };
 exports.saveDraftForm = function (req, res) {

@@ -94,7 +94,7 @@ export class SkipLogicService {
                 }
                 nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for value list. ' + rule);
                 return false;
-            default:
+            default: // external, text treatment
                 if (operator === '=') return realAnswer === expectedAnswer;
                 if (operator === '!=') return realAnswer !== expectedAnswer;
                 nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type external. ' + rule);

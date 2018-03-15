@@ -98,7 +98,7 @@ exports.draftForms = function (tinyId, cb) {
         archived: false,
         elementType: 'form'
     };
-    FormDraft.find(cond, cb);
+    FormDraft.find(cond, (err, forms) => cb(err, forms.map(f => f.toObject())));
 };
 
 exports.saveDraftForm = function (elt, cb) {

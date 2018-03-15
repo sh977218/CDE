@@ -26,12 +26,14 @@ export class NotificationsComponent {
 
     constructor(private http: HttpClient) {
         setInterval(async () => {
-            const latestVersion = await this.http.get("/site-version", {responseType: 'text'}).toPromise();
-            if (latestVersion !== this.currentVersion) {
-                let note = "A new version of this site is available. To enjoy the new features, \n" +
-                    "please close all instances / tabs of this site and reload this page. ";
-                if (this.notifications.indexOf(note) === -1) this.notifications.push(note);
-            }
+            try {
+                const latestVersion = await this.http.get("/site-version", {responseType: 'text'}).toPromise();
+                if (latestVersion !== this.currentVersion) {
+                    let note = "A new version of this site is available. To enjoy the new features, \n" +
+                        "please close all instances / tabs of this site then load again. ";
+                    if (this.notifications.indexOf(note) === -1) this.notifications.push(note);
+                }
+            } catch (e) {}
         }, (window as any).versionCheckIntervalInSeconds * 1000);
     }
 }

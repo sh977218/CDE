@@ -55,17 +55,24 @@ export const checkPvUnicity = function (valueDomain) {
 };
 
 export const fixDatatype = function (elt) {
-    if (!elt.valueDomain.datatype) elt.valueDomain.datatype = "Text";
-    if (elt.valueDomain.datatype.toLowerCase() === "value list" && !elt.valueDomain.datatypeValueList)
+    if (!elt.valueDomain.datatype) {
+        elt.valueDomain.datatype = "Text";
+    }
+    if (elt.valueDomain.datatype === "Value List" && !elt.valueDomain.datatypeValueList) {
         elt.valueDomain.datatypeValueList = {};
-    if (elt.valueDomain.datatype.toLowerCase() === "number" && !elt.valueDomain.datatypeNumber)
+    }
+    if (elt.valueDomain.datatype === "Number" && !elt.valueDomain.datatypeNumber) {
         elt.valueDomain.datatypeNumber = {};
-    if (elt.valueDomain.datatype.toLowerCase() === "text" && !elt.valueDomain.datatypeText)
+    }
+    if (elt.valueDomain.datatype === "Text" && !elt.valueDomain.datatypeText) {
         elt.valueDomain.datatypeText = {};
-    if (elt.valueDomain.datatype.toLowerCase() === "date" && !elt.valueDomain.datatypeDate)
+    }
+    if (elt.valueDomain.datatype === "Date" && !elt.valueDomain.datatypeDate) {
         elt.valueDomain.datatypeDate = {};
-    if (elt.valueDomain.datatype.toLowerCase() === "externally defined" && !elt.valueDomain.datatypeExternallyDefined)
+    }
+    if (elt.valueDomain.datatype === "Externally Defined" && !elt.valueDomain.datatypeExternallyDefined) {
         elt.valueDomain.datatypeExternallyDefined = {};
+    }
 };
 
 export const wipeDatatype = function (elt) {
@@ -79,20 +86,20 @@ export const wipeDatatype = function (elt) {
         uom: elt.valueDomain.uom,
         vsacOid: elt.valueDomain.vsacOid
     };
-    if (elt.valueDomain.datatype.toLowerCase() === "value list") {
+    if (elt.valueDomain.datatype === "Value List") {
         valueDomain.datatype = "Value List";
         valueDomain.permissibleValues = elt.valueDomain.permissibleValues;
         valueDomain.datatypeValueList = elt.valueDomain.datatypeValueList;
-    } else if (elt.valueDomain.datatype.toLowerCase() === "number") {
+    } else if (elt.valueDomain.datatype === "Number") {
         valueDomain.datatype = "Number";
         valueDomain.datatypeNumber = elt.valueDomain.datatypeNumber;
-    } else if (elt.valueDomain.datatype.toLowerCase() === "text") {
+    } else if (elt.valueDomain.datatype === "Text") {
         valueDomain.datatype = "Text";
         valueDomain.datatypeText = elt.valueDomain.datatypeText;
-    } else if (elt.valueDomain.datatype.toLowerCase() === "date") {
+    } else if (elt.valueDomain.datatype === "Date") {
         valueDomain.datatype = "Date";
         valueDomain.datatypeDate = elt.valueDomain.datatypeDate;
-    } else if (elt.valueDomain.datatype.toLowerCase() === "externally defined") {
+    } else if (elt.valueDomain.datatype === "Externally Defined") {
         valueDomain.datatype = "Externally Defined";
         valueDomain.datatypeExternallyDefined = elt.valueDomain.datatypeExternallyDefined;
     } else {

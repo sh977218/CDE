@@ -12,7 +12,8 @@ public class SinglePermissibleValue extends BaseFormTest {
         String formName = "Cancer Screening Test";
         goToFormByName(formName);
         textPresent("Female Patient Screening", By.xpath("//div[label/span[text()='Female Gender']]"));
-        textPresent("Breast Carcinoma Estrogen Receptor Status", By.xpath("//div[label/span[text()='Female Gender']]//table"));
+        textPresent("Breast Carcinoma Estrogen Receptor Status",
+                By.xpath("//div[label/span[text()='Female Gender']]//*[@id='formRenderSection_Female Patient Screening']"));
 
         goToPreview();
         togglePrintableLogic();
