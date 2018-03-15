@@ -7,10 +7,8 @@ const dbLogger = require('../system/dbLogger.js');
 
 const authData = querystring.stringify({
     username: config.vsac.username
-    , password: config.vsac.password + "."
+    , password: config.vsac.password
 });
-
-console.log(config.vsac.username + " " + config.vsac.password);
 
 const ticketData = querystring.stringify({
     service: config.uts.service
