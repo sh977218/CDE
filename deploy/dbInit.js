@@ -104,6 +104,7 @@ var users = [
     , {username: 'classifyBoardUser', password: 'pass', orgAdmin: ["TEST"], orgCurator: [], quota: 1073741824, viewHistory: [], roles: []}
     , {username: 'tagBoardUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
     , {username: 'cdevsac', password: 'umls', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: []}
+    , {username: 'formLinkedForms', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: []}
 ];
 
 users.forEach(function(u) {
@@ -128,5 +129,7 @@ users.forEach(function(u) {
     };
     db.users.insert(u);
 });
+
+db.users.update({username: 'formLinkedForms'}, {$set: {"searchSettings.tableViewFields.linkedForms": true}});
 
 db.users.insert({username: 'oldUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: [], searchSettings: oldSettings});

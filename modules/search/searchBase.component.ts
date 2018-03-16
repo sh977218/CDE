@@ -479,11 +479,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.http.post('/pinEntireSearchToBoard', data, {responseType: 'text'}).subscribe(() => {
                 this.alert.addAlert('success', 'All elements pinned.');
                 this.http.post('/myBoards', filter).subscribe();
-            }, () => {
-                this.alert.addAlert('danger', 'Not all elements were not pinned!');
-            });
-        }, () => {
-        });
+            }, () => this.alert.addAlert('danger', 'Not all elements were not pinned!'));
+        }, () => {});
     }
 
     redirect(params: string[]) {

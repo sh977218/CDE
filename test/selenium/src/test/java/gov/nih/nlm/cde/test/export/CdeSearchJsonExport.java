@@ -15,9 +15,6 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
 
     @Test
     public void cdeSearchExport() {
-        mustBeLoggedOut();
-        loadDefaultSettings();
-
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         textPresent("All Statuses");
@@ -25,10 +22,7 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
         clickElement(By.id("search.submit"));
         clickElement(By.id("export"));
         clickElement(By.id("jsonExport"));
-        textPresent("export is being generated");
         textPresent("Export downloaded.");
-        closeAlert();
-        closeAlert();
 
         String[] expected = {
                 "{\"tinyId\":\"03UmDCNQ4x7\",\"imported\":\"2015-09-21T18:20:26.298Z\",\"source\":\"NINDS\",\"version\":\"3\"",
@@ -47,6 +41,7 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
             }
         } catch (IOException e) {
             Assert.fail("Exception reading SearchExport.json");
+            throw new RuntimeException(e);
         }
     }
 

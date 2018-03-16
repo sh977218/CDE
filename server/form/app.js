@@ -1,6 +1,4 @@
 const _ = require('lodash');
-const express = require('express');
-const path = require('path');
 const dns = require('dns');
 const os = require('os');
 const multer = require('multer');
@@ -68,9 +66,7 @@ exports.init = function (app, daoManager) {
     });
     /* ---------- PUT NEW REST API above ---------- */
     app.get('/elasticSearch/form/count', function (req, res) {
-        return elastic_system.nbOfForms(function (err, result) {
-            res.send("" + result);
-        });
+        elastic_system.nbOfForms((err, result) => res.send("" + result));
     });
 
     app.post('/attachments/form/setDefault', function (req, res) {
@@ -105,7 +101,22 @@ exports.init = function (app, daoManager) {
         adminItemSvc.removeComment(req, res, mongo_form);
     });
 
-    app.post('/elasticSearchExport/form', function (req, res) {
+    app.post('/scrollExport/form', (req, res) => {
+        let query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
+        elastic_system.scrollExport(query, "form", (err, response) => {
+            if (err) res.status(400).send();
+            else res.send(response);
+        })
+    });
+
+    app.get('/scrollExport/:scrollId', (req, res) => {
+        elastic_system.scrollNext(req.params.scrollId, (err, response) => {
+            if (err) res.status(400).send();
+            else res.send(response);
+        })
+    });
+
+    app.post('/elasticSearchExport/form', (req, res) => {
         let query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         let exporters = {
             json: {
@@ -113,7 +124,7 @@ exports.init = function (app, daoManager) {
                     let firstElt = true;
                     res.type('application/json');
                     res.write("[");
-                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                    elastic_system.elasticSearchExport((err, elt) => {
                         if (err) return res.status(500).send("ERROR - cannot search export");
                         else if (elt) {
                             if (!firstElt) res.write(',');

@@ -2,16 +2,21 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs/Subject";
 import { AngularHelperService } from 'widget/angularHelper.service';
 
-
-class Alert {
+export class Alert {
     id: number;
     message: string;
     type: string;
+    expired: Boolean;
+    persistant: Boolean;
 
     constructor (_type: string, _message: string) {
         this.type = _type;
         this.message = _message;
         this.id = new Date().getTime();
+    }
+
+    public setMessage(msg) {
+        this.message = msg;
     }
 }
 
@@ -24,12 +29,21 @@ export class AlertService {
         let alertTime = (window as any).userAlertTime;
         this._alertSubject.subscribe(oneAlert => {
             this.allAlerts.push(oneAlert);
-            if (alertTime > 1) setTimeout(() => this.remove(oneAlert.id), alertTime);
+            let timeoutFunc = () => {
+                if (oneAlert.persistant) {
+                    setTimeout(timeoutFunc, alertTime);
+                } else this.remove(oneAlert.id);
+            };
+            if (alertTime > 1) {
+                setTimeout(timeoutFunc, alertTime);
+            }
         });
     }
 
     addAlert(type: string, message: string) {
-        this._alertSubject.next(new Alert(type, message));
+        const newAlert = new Alert(type, message);
+        this._alertSubject.next(newAlert);
+        return newAlert;
     }
 
     httpErrorMessageAlert(err, info: string = '') {
@@ -40,6 +54,7 @@ export class AlertService {
     remove (alertId: number) {
         this.allAlerts.forEach((a, i) => {
             if (a.id === alertId) {
+                this.allAlerts[i].expired = true;
                 this.allAlerts.splice(i, 1);
             }
         });

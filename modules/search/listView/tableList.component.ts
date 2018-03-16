@@ -26,8 +26,7 @@ export class TableListComponent implements OnInit {
     headings: string[];
     rows: any[];
 
-    constructor(public esService: ElasticService) {
-    }
+    constructor(public esService: ElasticService) {}
 
     ngOnInit() {
         this.render();
@@ -54,15 +53,13 @@ export class TableListComponent implements OnInit {
         if (tableSetup.registrationStatus) this.headings.push('Registration Status');
         if (tableSetup.administrativeStatus) this.headings.push('Admin Status');
         if (tableSetup.ids) {
-            if (tableSetup.identifiers.length > 0) {
-                tableSetup.identifiers.forEach(i => {
-                    this.headings.push(i);
-                });
-            } else this.headings.push('Identifiers');
+            if (tableSetup.identifiers.length > 0) tableSetup.identifiers.forEach(i => this.headings.push(i));
+            else this.headings.push('Identifiers');
         }
         if (tableSetup.source) this.headings.push('Source');
         if (tableSetup.updated) this.headings.push('Updated');
         if (tableSetup.tinyId) this.headings.push('NLM ID');
+        if (tableSetup.linkedForms) this.headings.push('Forms');
 
         this.rows = this.elts.map(e => {
             let row = [];
@@ -171,6 +168,27 @@ export class TableListComponent implements OnInit {
                 row.push({
                     css: '',
                     value: e.tinyId
+                });
+            }
+            if (tableSetup.linkedForms) {
+                let lfSettings = this.esService.buildElasticQuerySettings({
+                    q: e.tinyId
+                    , page: 1
+                    , classification: []
+                    , classificationAlt: []
+                    , regStatuses: []
+                });
+
+                let values = [];
+                this.esService.generalSearchQuery(lfSettings, 'form', (err, result) => {
+                    if (result.forms) {
+                        if (result.forms.length > 5) result.forms.length = 5;
+                        result.forms.forEach(crf => values.push({name: crf.primaryNameCopy, tinyId: crf.tinyId}));
+                    }
+                    row.push({
+                        css: 'linkedForms',
+                        values: values
+                    });
                 });
             }
             return row;

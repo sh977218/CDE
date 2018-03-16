@@ -36,7 +36,6 @@ async function updateOneStatus () {
         .waitForExist("div.alert button.close")
         .click("div.alert button.close")
         ;
-
 }
 
 async function runScript () {
