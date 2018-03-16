@@ -65,6 +65,7 @@ export class ExportService {
                 let esResp = await this.http.post("/scrollExport/form", lfSettings).toPromise();
                 let totalNbOfForms = 0;
                 let formCounter = 0;
+                let nonEmptyResults = result.filter(r => r !== undefined);
                 let intersectOnBatch = esResp => {
                     if ((esResp as any).hits.hits.length) {
                         totalNbOfForms = (esResp as any).hits.total;
@@ -73,7 +74,7 @@ export class ExportService {
                             let esForm = hit._source;
                             let formCdes = getFormCdes(esForm);
                             let interArr = intersectionWith(
-                                result.filter(r => r !== undefined),
+                                nonEmptyResults,
                                 formCdes,
                                 (a, b) => a.tinyId === b.tinyId);
                             interArr.forEach(matchId => {

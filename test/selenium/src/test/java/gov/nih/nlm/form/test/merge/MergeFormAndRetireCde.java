@@ -20,6 +20,7 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
         clickElement(By.id("retireCde"));
         scrollToViewById("mergeFormBtn");
         clickElement(By.id("mergeFormBtn"));
+        closeAlert();
 
         textNotPresent("Retired", By.id("leftQuestion_0"));
         textNotPresent("Retired", By.id("leftQuestion_1"));
