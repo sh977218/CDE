@@ -20,7 +20,6 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
         clickElement(By.id("retireCde"));
         scrollToViewById("mergeFormBtn");
         clickElement(By.id("mergeFormBtn"));
-        closeAlert();
 
         textNotPresent("Retired", By.id("leftQuestion_0"));
         textNotPresent("Retired", By.id("leftQuestion_1"));
@@ -47,7 +46,7 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
         textPresent("Description: Kroenke K, Spitzer RL, Williams JB. The PHQ-9: validity of a brief depression severity measure. J Gen Intern Med. 2001 Sep;16(9):606-13.");
         goToProperties();
         textPresent("CopyrightStarted");
-         goToIdentifiers();
+        goToIdentifiers();
         textPresent("44249-1");
         textPresent("F0374");
         goToHistory();

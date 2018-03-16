@@ -20,7 +20,7 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
         textPresent("All Statuses");
         clickElement(By.id("export"));
         clickElement(By.id("xmlExport"));
-        checkAlert("Export downloaded.");
+        textPresent("Export downloaded.");
 
         String[] expected = {
                 "</definition><languageCode>EN-US</languageCode><tags>Health",
