@@ -29,10 +29,7 @@ export class CdeId {
 }
 
 export class Classification {
-    elements: {
-        elements: any[],
-        name: string,
-    }[] = [];
+    elements: ClassficationElements[] = [];
     stewardOrg: {
         name: string
     };
@@ -41,6 +38,11 @@ export class Classification {
     static copy(c: Classification) {
         return Object.assign(new Classification(), c ? JSON.parse(JSON.stringify(c)) : undefined);
     }
+}
+
+class ClassficationElements {
+    elements: any[] = [];
+    name: string;
 }
 
 export class CodeAndSystem {
@@ -260,6 +262,31 @@ export class Naming {
     }
 }
 
+export class Organization {
+    cdeStatusValidationRules: StatusValidationRules[];
+    classifications: ClassficationElements[];
+    emailAddress: string;
+    extraInfo: string;
+    htmlOverview: string;
+    longName: string;
+    mailAddress: string;
+    name: string;
+    nameContexts: any[];
+    nameTags: any[];
+    phoneNumber: string;
+    propertyKeys: any[];
+    uri: string;
+    workingGroupOf: string;
+
+    validate() {
+        if (!this.cdeStatusValidationRules) this.cdeStatusValidationRules = [];
+        if (!this.classifications) this.classifications = [];
+        if (!this.nameContexts) this.nameContexts = [];
+        if (!this.nameTags) this.nameTags = [];
+        if (!this.propertyKeys) this.propertyKeys = [];
+    }
+}
+
 export type ObjectId = string;
 
 export class PermissibleValue {
@@ -284,11 +311,11 @@ enum Formula {
 }
 
 export class DerivationRule {
-    name: String;
-    inputs: Array<String>;
-    outputs: Array<String>;
-    ruleType: String;
-    formula: String;
+    name: string;
+    inputs: string[];
+    outputs: string[];
+    ruleType: string;
+    formula: string;
 
     static copy(rule: DerivationRule) {
         return Object.assign(new DerivationRule(), rule);
@@ -336,12 +363,24 @@ export class RegistrationState {
     untilDate: Date;
 }
 
+class StatusValidationRules {
+    field: string;
+    id: number;
+    rule: {
+        regex: string
+    } = { regex: undefined };
+    ruleName: string;
+    occurence: string; // enum: ["exactlyOne", "atLeastOne", "all"]
+    targetStatus: string; // enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]
+}
+
 export class User {
     _id: ObjectId;
     accessToken: string;
     avatarUrl: string;
     email: string;
     formViewHistory: string[];
+    hasMail: boolean;
     lastLogin: Date;
     lockCounter: number;
     knownIPs: string[];

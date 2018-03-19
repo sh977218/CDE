@@ -17,7 +17,6 @@ export class OrgAccountManagementComponent implements OnInit {
 
     ngOnInit () {
         this.getOrgCurators();
-        this.userService.then(() => {});
     }
 
     constructor(

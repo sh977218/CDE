@@ -26,8 +26,8 @@ export class CdeAccordionListComponent {
     constructor(private userService: UserService,
                 public quickBoard: QuickBoardListService) {
 
-        this.userService.then(() => {
-            this.user = this.userService.user;
+        this.userService.then(user => {
+            this.user = user;
         });
     }
 }

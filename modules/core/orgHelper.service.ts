@@ -3,11 +3,14 @@ import { Injectable } from '@angular/core';
 
 import { UserService } from '_app/user.service';
 import { isOrgCurator } from 'shared/system/authorizationShared';
+import { Organization } from 'shared/models.model';
+
+type OrgDetailedInfo = any;
 
 @Injectable()
 export class OrgHelperService  {
-    orgsDetailedInfo: any = {};
-    private promise: Promise<void>;
+    orgsDetailedInfo: OrgDetailedInfo = {};
+    private promise: Promise<OrgDetailedInfo>;
 
     constructor(
         private http: HttpClient,
@@ -54,19 +57,18 @@ export class OrgHelperService  {
     }
 
     reload() {
-        return this.promise = new Promise<void>(resolve => {
-            this.http.get<any[]>('/listOrgsDetailedInfo')
+        return this.promise = new Promise<OrgDetailedInfo>((resolve, reject) => {
+            this.http.get<Organization[]>('/listOrgsDetailedInfo')
                 .subscribe(response => {
                     this.orgsDetailedInfo = {};
                     response.forEach(org => {
                         if (org) {
-                            if (!org.propertyKeys) org.propertyKeys = [];
-                            if (!org.nameTags) org.nameTags = [];
+                            org.validate();
                             this.orgsDetailedInfo[org.name] = org;
                         }
                     });
-                    resolve();
-                });
+                    resolve(this.orgsDetailedInfo);
+                }, reject);
         });
     }
 
@@ -92,7 +94,7 @@ export class OrgHelperService  {
         return isNotWorkingGroup || userIsWorkingGroupCurator || userIsCuratorOfParentOrg || isSisterOfWg;
     }
 
-    then(cb) {
+    then(cb): Promise<OrgDetailedInfo> {
         return this.promise.then(cb);
     }
 }

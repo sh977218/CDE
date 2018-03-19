@@ -3,7 +3,7 @@ export const exportHeader = {
     redCapHeader: 'Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation\n'
 };
 
-export const getCdeCsvHeader = function (settings) {
+export function getCdeCsvHeader(settings) {
     let cdeHeader = "Name";
 
     if (settings.questionTexts) {
@@ -60,9 +60,9 @@ export const getCdeCsvHeader = function (settings) {
     }
     cdeHeader += "\n";
     return cdeHeader;
-};
+}
 
-export const projectFormForExport = function (ele) {
+export function projectFormForExport(ele) {
     const form = {
         name: ele.naming[0].designation
         , ids: ele.ids.map(function (id) {
@@ -76,9 +76,9 @@ export const projectFormForExport = function (ele) {
         return c.stewardOrg.name;
     });
     return form;
-};
+}
 
-export const projectCdeForExport = function (ele, settings) {
+export function projectCdeForExport(ele, settings) {
     let cde = {
         name: ele.naming[0].designation
     };
@@ -159,16 +159,16 @@ export const projectCdeForExport = function (ele, settings) {
     }
 
     return cde;
-};
+}
 
-export const convertToCsv = function (ele) {
-    var sanitize = function (v) {
+export function convertToCsv(ele) {
+    let sanitize = function (v) {
         return v.trim ? v.trim().replace(/\"/g, "\"\"") : v;
     };
-    var row = "";
+    let row = "";
     Object.keys(ele).forEach(function (key) {
         row += "\"";
-        var value = ele[key];
+        let value = ele[key];
         if (Array.isArray(value)) {
             row += value.map(function (value) {
                 return sanitize(value);
@@ -179,17 +179,17 @@ export const convertToCsv = function (ele) {
         row += "\",";
     });
     return row + "\n";
-};
+}
 
-export const stripBsonIds = function (elt) {
+export function stripBsonIds(elt) {
     delete elt._id;
     delete elt.updated;
     delete elt.history;
     if (elt.updatedBy) delete elt.updatedBy.userId;
     return elt;
-};
+}
 
-export const nocacheMiddleware = function (req, res, next) {
+export function nocacheMiddleware(req, res, next) {
     if (req && req.headers['user-agent']) {
         if (req.headers['user-agent'].indexOf("Chrome") < 0 || req.headers['user-agent'].indexOf("Firefox") < 0) {
             res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
@@ -200,5 +200,5 @@ export const nocacheMiddleware = function (req, res, next) {
     if (next) {
         next();
     }
-};
+}
 

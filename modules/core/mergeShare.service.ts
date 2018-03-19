@@ -1,12 +1,12 @@
-import { Injectable } from "@angular/core";
-import { SharedService } from '_commonApp/shared.service';
+import { Injectable } from '@angular/core';
+
+import { transferClassifications } from 'shared/system/classificationShared';
 
 @Injectable()
 export class MergeShareService {
-    constructor() {
-    }
+    constructor() {}
 
-    public mergeArrayByProperty(arrayFrom, arrayTo, property) {
+    mergeArrayByProperty(arrayFrom, arrayTo, property) {
         arrayFrom[property].forEach((objFrom) => {
             let exist = arrayTo[property].filter((objTo) => {
                 return JSON.stringify(objTo) === JSON.stringify(objFrom);
@@ -15,8 +15,7 @@ export class MergeShareService {
         });
     }
 
-    public mergeClassifications(mergeFrom, mergeTo) {
-        SharedService.classificationShared.transferClassifications(mergeFrom, mergeTo);
+    mergeClassifications(mergeFrom, mergeTo) {
+        transferClassifications(mergeFrom, mergeTo);
     }
-
 }

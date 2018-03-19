@@ -50,12 +50,12 @@ export class ProfileComponent {
     }
 
     reloadUser() {
-        this.userService.then(() => {
-            if (this.userService.user.username) {
-                this.hasQuota = this.userService.user.quota;
-                this.orgCurator = this.userService.user.orgCurator.toString().replace(/,/g, ', ');
-                this.orgAdmin = this.userService.user.orgAdmin.toString().replace(/,/g, ', ');
-                this.user = this.userService.user;
+        this.userService.then(user => {
+            if (user.username) {
+                this.hasQuota = user.quota;
+                this.orgCurator = user.orgCurator.toString().replace(/,/g, ', ');
+                this.orgAdmin = user.orgAdmin.toString().replace(/,/g, ', ');
+                this.user = user;
             }
         });
     }
