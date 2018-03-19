@@ -687,6 +687,13 @@ public class NlmCdeBaseTest {
     }
 
     protected void goHome() {
+        clickElement(By.id("homeLink"));
+        textPresent("has been designed to provide access", By.id("introduction"));
+        findElement(By.cssSelector(".carousel-indicators"));
+    }
+
+    protected void goHomeStatic() {
+        mustBeLoggedOut();
         driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access", By.id("introduction"));
         findElement(By.cssSelector(".carousel-indicators"));
@@ -980,6 +987,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void setVisibleStatus(String id) {
+        goToSearch("cde");
         goHome();
         clickElement(By.id("searchSettings"));
         clickElement(By.id(id));
@@ -994,6 +1002,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void loadDefaultSettings() {
+        goToSearch("cde");
         clickElement(By.id("searchSettings"));
         clickElement(By.id("loadDefaultSettings"));
         checkAlert("Default settings loaded");

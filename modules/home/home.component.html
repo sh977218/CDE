@@ -57,14 +57,13 @@
                     </ngb-carousel>
                 </div>
                 <div class="col-lg-3 col-12 btn-group-vertical" id='searchDiv'>
-                    <a routerLink="/cde/search" id="browseCdes" class="btn  btn-outline-dark my-1">
+                    <a routerLink="/cde/search" id="browseCdes" class="btn btn-outline-dark my-1">
                         <i class="fa fa-search"></i> Browse CDEs</a>
-                    <a routerLink="/form/search" id="browseForms" class="btn  btn-outline-dark my-1">
+                    <a routerLink="/form/search" id="browseForms" class="btn btn-outline-dark my-1">
                         <i class="fa fa-search"></i> Browse Forms</a>
-                    <button id="takeATourBtn" class="btn  btn-outline-dark my-1 hand-cursor"
-                            (click)="takeATour();">
+                    <a (click)="takeATour()" id="takeATourBtn" class="btn btn-outline-dark my-1 hand-cursor">
                         <i class="fa fa-flag faa-wrench faa-slow animated"></i> Interactive Tour
-                    </button>
+                    </a>
                 </div>
 
             </div>

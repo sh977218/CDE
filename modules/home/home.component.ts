@@ -1,5 +1,6 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { TourService } from 'home/tour.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'cde-home',
@@ -11,7 +12,6 @@ import { TourService } from 'home/tour.service';
             display: block;
             margin: auto;
             height: 500px;
-            max-height: 50vh;
         }
         .carousel-caption {
             background-color: rgba(255, 255, 255, .8);
@@ -37,7 +37,7 @@ import { TourService } from 'home/tour.service';
     templateUrl: 'home.component.html'
 })
 
-export class HomeComponent {
+export class HomeComponent implements OnInit {
     displayCarousel: Boolean = (window.screen.width > 575);
 
     @HostListener('window:resize', ['$event'])
@@ -45,8 +45,16 @@ export class HomeComponent {
         this.displayCarousel = (window.screen.width > 575);
     }
 
+    ngOnInit() {
+        if (this.route.snapshot.queryParams.tour) {
+            this.takeATour();
+            this.router.navigate(['/home']);
+        }
+    }
+
+    constructor(private route: ActivatedRoute, private router: Router) {}
+
     takeATour() {
         TourService.takeATour();
     }
-
 }

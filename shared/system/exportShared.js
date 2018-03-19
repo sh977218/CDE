@@ -55,6 +55,9 @@ export const getCdeCsvHeader = function (settings) {
     if (settings.tinyId) {
         cdeHeader += ", NLM ID";
     }
+    if (settings.linkedForms) {
+        cdeHeader += ", Forms";
+    }
     cdeHeader += "\n";
     return cdeHeader;
 };
@@ -150,6 +153,9 @@ export const projectCdeForExport = function (ele, settings) {
     }
     if (settings.tinyId) {
         cde.tinyId = ele.tinyId;
+    }
+    if (settings.linkedForms) {
+        cde.linkedForms = ele.linkedForms;
     }
 
     return cde;

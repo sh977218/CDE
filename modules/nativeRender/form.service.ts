@@ -13,7 +13,7 @@ export class FormService {
         private http: HttpClient
     ) {}
 
-    convertCdeToQuestion(cde, cb): FormQuestion {
+    convertCdeToQuestion(cde, cb: (q?: FormQuestion) => (void)): void {
         if (!cde || cde.valueDomain === undefined) {
             throw new Error('Cde ' + cde.tinyId + ' is not valid');
         }
@@ -64,13 +64,13 @@ export class FormService {
                         convertPv(q, result);
                         cb(q);
                     }, () => cb());
-                return;
             } else {
                 convertPv(q, cde);
+                cb(q);
             }
+        } else {
+            cb(q);
         }
-
-        return cb(q);
     }
 
     // TODO: turn into single server endpoint that calls one of the 2 server-side implementations

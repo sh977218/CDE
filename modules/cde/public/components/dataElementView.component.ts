@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
+import _noop from 'lodash/noop';
 import _uniqWith from 'lodash/uniqWith';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -65,14 +66,9 @@ export class DataElementViewComponent implements OnInit {
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
-            this.loadDataElement(de => {
-                this.userService.then(() => {
+            this.userService.then(() => {
+                this.loadDataElement(() => {
                     this.orgHelperService.then(() => {
-                        let user = this.userService.user;
-                        if (user && user.username) {
-                            this.loadComments(de, null);
-                            this.loadDraft(() => {});
-                        }
                         let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
                         this.elt.naming.forEach(n => {
                             n.tags.forEach(t => allNamingTags.push(t));
@@ -91,34 +87,65 @@ export class DataElementViewComponent implements OnInit {
         return this.isAllowedModel.isAllowed(this.elt) && (this.drafts.length === 0 || this.elt.isDraft);
     }
 
-    loadDataElement(cb) {
-        let cdeId = this.route.snapshot.queryParams['cdeId'];
-        let url = '/de/' + this.route.snapshot.queryParams['tinyId'];
-        if (cdeId) url = '/deById/' + cdeId;
-        this.http.get<DataElement>(url).subscribe(res => {
-                this.elt = res;
-                this.deId = this.elt._id;
-                this.userService.then(() => {
-                    let user = this.userService.user;
-                    if (user && user.username) checkPvUnicity(this.elt.valueDomain);
-                    this.setDisplayStatusWarning();
-                    if (cb) cb(this.elt);
-                });
-            }, () => this.router.navigate(['/pageNotFound'])
-        );
+    eltLoaded(elt: DataElement, cb = _noop) {
+        if (elt) {
+            elt = new DataElement(elt);
+            DataElement.validate(elt);
+            this.elt = elt;
+            this.loadComments(this.elt);
+            this.deId = this.elt._id;
+            if (this.userService.user && this.userService.user.username) {
+                checkPvUnicity(this.elt.valueDomain);
+            }
+            this.setDisplayStatusWarning();
+            cb();
+        }
     }
 
-    loadComments(de, cb) {
+    loadComments(de, cb = _noop) {
         this.http.get<Comment[]>('/comments/eltId/' + de.tinyId)
             .subscribe(res => {
             this.hasComments = res && (res.length > 0);
             this.tabsCommented = res.map(c => c.linkedTab + '_tab');
-            if (cb) cb();
+            cb();
         }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
     }
 
+    loadDataElement(cb = _noop) {
+        if (this.userService.user && this.userService.user.username) {
+            this.http.get<DataElement[]>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
+                res => {
+                    if (res && res.length > 0 && this.isAllowedModel.isAllowed(res[0])) {
+                        this.drafts = res;
+                        this.eltLoaded(res[0], cb);
+                    } else {
+                        this.drafts = [];
+                        this.loadPublished(cb);
+                    }
+                },
+                err => {
+                    // do not load elt
+                    this.alert.httpErrorMessageAlert(err);
+                    this.eltLoaded(null, cb);
+                }
+            );
+        } else {
+            this.loadPublished(cb);
+        }
+    }
+
+    loadPublished(cb = _noop) {
+        let cdeId = this.route.snapshot.queryParams['cdeId'];
+        let url = '/de/' + this.route.snapshot.queryParams['tinyId'];
+        if (cdeId) url = '/deById/' + cdeId;
+        this.http.get<DataElement>(url).subscribe(
+            res => this.eltLoaded(res, cb),
+            () => this.router.navigate(['/pageNotFound'])
+        );
+    }
+
     setDisplayStatusWarning() {
-        let assignValue = () => {
+        this.displayStatusWarning = (() => {
             if (!this.elt) return false;
             if (this.elt.archived || this.userService.user.siteAdmin) {
                 return false;
@@ -131,10 +158,7 @@ export class DataElementViewComponent implements OnInit {
                     return false;
                 }
             }
-        };
-        this.userService.then(() => {
-            this.displayStatusWarning = assignValue();
-        });
+        })();
     }
 
     openCopyElementModal() {
@@ -221,24 +245,11 @@ export class DataElementViewComponent implements OnInit {
         }
     }
 
-    loadDraft(cb) {
-        this.http.get<any[]>('/draftDataElement/' + this.elt.tinyId)
-            .subscribe(res => {
-                if (res && res.length > 0) {
-                    this.drafts = res;
-                    this.elt = res[0];
-                    checkPvUnicity(this.elt.valueDomain);
-                } else this.drafts = [];
-                if (cb) cb();
-            },
-            err => this.alert.httpErrorMessageAlert(err));
-    }
-
     removeDraft() {
         this.http.delete('/draftDataElement/' + this.elt.tinyId, {responseType: 'text'})
             .subscribe(() => {
                 this.drafts = [];
-                this.loadDataElement(null);
+                this.loadDataElement();
             }, err => this.alert.httpErrorMessageAlert(err));
     }
 
@@ -269,7 +280,6 @@ export class DataElementViewComponent implements OnInit {
             .subscribe(res => {
             if (res) {
                 this.loadDataElement(() => this.alert.addAlert('success', 'Data Element saved.'));
-                this.loadDraft(null);
             }
         }, () => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
     }

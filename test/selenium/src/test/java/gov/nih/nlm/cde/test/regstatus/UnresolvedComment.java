@@ -11,7 +11,6 @@ public class UnresolvedComment extends CdeCommentTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Cancer history indicator");
 
-
         clickElement(By.id("editStatus"));
         textPresent("Update Registration Status");
         textNotPresent("There are unresolved comments");
@@ -21,10 +20,8 @@ public class UnresolvedComment extends CdeCommentTest {
 
         clickElement(By.id("editStatus"));
         textPresent("Update Registration Status");
-        textPresent("There are unresolved comments");
-        closeAlert();
         clickElement(By.id("cancelRegStatus"));
-
+        checkAlert("There are unresolved comments");
     }
 
 

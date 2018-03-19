@@ -75,19 +75,21 @@ export class FormViewComponent implements OnInit {
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
-            this.loadForm(() => {
-                this.orgHelperService.then(() => {
-                    let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
-                    this.elt.naming.forEach(n => {
-                        n.tags.forEach(t => {
-                            allNamingTags.push(t);
+            this.userService.then(() => {
+                this.loadForm(() => {
+                    this.orgHelperService.then(() => {
+                        let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
+                        this.elt.naming.forEach(n => {
+                            n.tags.forEach(t => {
+                                allNamingTags.push(t);
+                            });
                         });
-                    });
-                    this.orgNamingTags = _uniqWith(allNamingTags, _isEqual).map(t => {
-                        return {id: t, text: t};
+                        this.orgNamingTags = _uniqWith(allNamingTags, _isEqual).map(t => {
+                            return {id: t, text: t};
+                        });
+                        this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
                     });
                 });
-                this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
             });
         });
     }
@@ -169,26 +171,26 @@ export class FormViewComponent implements OnInit {
             elt = new CdeForm(elt);
             CdeForm.validate(elt);
             this.elt = elt;
+            this.loadComments(this.elt);
             this.formId = this.elt._id;
             this.missingCdes = areDerivationRulesSatisfied(this.elt);
-            this.loadComments(this.elt, null);
             FormDescriptionComponent.addIds(this.elt.formElements, '');
+            cb();
         }
-        cb();
     }
 
-    loadComments(form, cb) {
+    loadComments(form, cb = _noop) {
         this.http.get<Comment[]>('/comments/eltId/' + form.tinyId).subscribe(res => {
             this.hasComments = res && (res.length > 0);
             this.tabsCommented = res.map(c => c.linkedTab + '_tab');
-            if (cb) cb();
+            cb();
         }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
     }
 
     loadForm(cb = _noop) {
-        this.userService.then(() => {
-            if (this.userService.user && this.userService.user.username) {
-                this.http.get<CdeForm[]>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(res => {
+        if (this.userService.user && this.userService.user.username) {
+            this.http.get<CdeForm[]>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(
+                res => {
                     if (res && res.length > 0 && this.isAllowedModel.isAllowed(res[0])) {
                         this.drafts = res;
                         this.formLoaded(res[0], cb);
@@ -196,13 +198,16 @@ export class FormViewComponent implements OnInit {
                         this.drafts = [];
                         this.loadPublished(cb);
                     }
-                }, err => {
+                },
+                err => {
                     // do not load form
                     this.alert.httpErrorMessageAlert(err);
-                    cb();
-                });
-            } else this.loadPublished(cb);
-        });
+                    this.formLoaded(null, cb);
+                }
+            );
+        } else {
+            this.loadPublished(cb);
+        }
     }
 
     loadHighlightedTabs($event) {
@@ -213,9 +218,10 @@ export class FormViewComponent implements OnInit {
         let formId = this.route.snapshot.queryParams['formId'];
         let url = '/form/' + this.route.snapshot.queryParams['tinyId'];
         if (formId) url = '/formById/' + formId;
-        this.http.get<CdeForm>(url).subscribe(res => {
-            this.formLoaded(res, cb);
-        }, () => this.router.navigate(['/pageNotFound']));
+        this.http.get<CdeForm>(url).subscribe(
+            res => this.formLoaded(res, cb),
+            () => this.router.navigate(['/pageNotFound'])
+        );
     }
 
     openCopyElementModal() {

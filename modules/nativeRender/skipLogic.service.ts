@@ -94,7 +94,7 @@ export class SkipLogicService {
                 }
                 nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for value list. ' + rule);
                 return false;
-            default:
+            default: // external, text treatment
                 if (operator === '=') return realAnswer === expectedAnswer;
                 if (operator === '!=') return realAnswer !== expectedAnswer;
                 nrs.addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type external. ' + rule);
@@ -146,7 +146,7 @@ export class SkipLogicService {
         label = label.trim();
         let matchedQuestions = this.getQuestionsPrior(parent, fe, fe => this.getLabel(fe) === label);
         if (matchedQuestions.length <= 0) return null;
-        return matchedQuestions[0] as FormQuestion;
+        return matchedQuestions[matchedQuestions.length - 1] as FormQuestion;
     }
 
     static getShowIfQ(fes: FormElement[], fe: FormElement): any[] {

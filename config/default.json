@@ -32,8 +32,8 @@
     "/cgi-bin"
   ],
   "vsac": {
-    "username": "user",
-    "password": "pass",
+    "username": "cdevsac",
+    "password": "DO_NOT_TRY_TO_GUESS",
     "host": "vsac.nlm.nih.gov",
     "ticket": {
       "path": "/vsac/ws/Ticket"

@@ -49,11 +49,21 @@ exports.init = function (app) {
         indexHtml = str;
     });
 
+    let homeHtml = "";
+    ejs.renderFile('modules/system/views/home-launch.ejs', {config: config, version: version}, (err, str) => {
+        homeHtml = str;
+    });
+
+    function isModernBrowser(req) {
+        let userAgent = req.headers['user-agent'];
+        let browserName = browser(userAgent);
+        return browserName && modernBrowsers.indexOf(browserName.name) > -1;
+    }
+
     /* for search engine and javascript disabled */
     function isSearchEngine(req) {
         let userAgent = req.headers['user-agent'];
-        let isSEO = userAgent && userAgent.match(/bot|crawler|spider|crawling/gi);
-        return isSEO;
+        return userAgent && userAgent.match(/bot|crawler|spider|crawling/gi);
     }
 
     /* for IE Opera Safari, emit vendor.js */
@@ -64,13 +74,19 @@ exports.init = function (app) {
     });
 
     app.get(["/", "/home"], function (req, res) {
-        let userAgent = req.headers['user-agent'];
-        let isSEO = userAgent && userAgent.match(/bot|crawler|spider|crawling/gi);
-        let browserName = browser(userAgent);
-        let isModernBrowser = browserName && modernBrowsers.indexOf(browserName.name) > -1;
-        if (isSEO) res.render('bot/home', 'system');
-        else if (isModernBrowser) res.send(indexHtml);
-        else res.send(indexLegacyHtml);
+        if (isSearchEngine(req)) {
+            res.render('bot/home', 'system');
+        } else {
+            if (req.user || req.query.tour) {
+                res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
+            } else {
+                res.send(homeHtml);
+            }
+        }
+    });
+
+    app.get('/tour', function(req, res) {
+        res.redirect('/home?tour=yes');
     });
 
     app.get("/site-version", (req, res) => {
@@ -269,7 +285,7 @@ exports.init = function (app) {
         "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
         app.get(path, function (req, res) {
-            res.render('index', 'system', {config: config, loggedIn: !!req.user, version: version});
+            res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
         });
     });
 

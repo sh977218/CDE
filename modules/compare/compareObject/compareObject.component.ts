@@ -39,7 +39,7 @@ export class CompareObjectComponent implements OnInit {
         }, {
             label: "Data Type Date", match: false, property: "valueDomain.datatypeDate",
             data: [
-                {label: "Data Type Date Format", match: false, property: "format"}
+                {label: "Data Type Date Precision", match: false, property: "precision"}
             ]
         }, {
             label: "Data Type Time", match: false, property: "valueDomain.datatypeTime",

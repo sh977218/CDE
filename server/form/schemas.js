@@ -31,7 +31,6 @@ const questionSchema = new Schema({
         , rule: String
         , showAsTextArea: {type: Boolean, default: false}
     }, datatypeDate: {
-        format: String,
         precision: {type: String, enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'], default: 'Day'}
     }
     , unitsOfMeasure: [sharedSchemas.codeAndSystemSchema]

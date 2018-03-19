@@ -5,8 +5,6 @@ const logging = require('./logging');
 const regStatusShared = require('@std/esm')(module)('../../shared/system/regStatusShared'); //jshint ignore:line
 const usersvc = require("./usersrvc");
 const elasticsearch = require('elasticsearch');
-const cdeElastic = require('../cde/elastic');
-const formElastic = require('../form/elastic');
 const esInit = require('./elasticSearchInit');
 const dbLogger = require('./dbLogger.js');
 const mongo_cde = require("../cde/mongo-cde");
@@ -44,10 +42,9 @@ exports.nbOfCdes = function (cb) {
         cb(err, result.count);
     });
 };
+
 exports.nbOfForms = function (cb) {
-    esClient.count({index: config.elastic.formIndex.name}, function (err, result) {
-        cb(err, result.count);
-    });
+    esClient.count({index: config.elastic.formIndex.name}, (err, result) => cb(err, result.count));
 };
 
 function EsInjector(esClient, indexName, documentType) {
@@ -800,8 +797,8 @@ exports.elasticSearchExport = function (dataCb, query, type) {
         }
         else {
             for (let i = 0; i < response.hits.hits.length; i++) {
-                let thisCde = response.hits.hits[i]._source;
-                dataCb(null, thisCde);
+                let thisElt = response.hits.hits[i]._source;
+                dataCb(null, thisElt);
             }
             scrollThrough(response);
         }
@@ -820,6 +817,21 @@ exports.elasticSearchExport = function (dataCb, query, type) {
             processScroll(response);
         }
     });
+};
+
+exports.scrollExport = function (query, type, cb) {
+    query.size = 100;
+    delete query.aggregations;
+
+    let search = JSON.parse(JSON.stringify(searchTemplate[type]));
+    search.scroll = '1m';
+    search.body = query;
+
+    esClient.search(search, cb);
+};
+
+exports.scrollNext = function (scrollId, cb) {
+    esClient.scroll({scrollId: scrollId, scroll: '1m'}, cb);
 };
 
 exports.queryMostViewed = {

@@ -7,19 +7,108 @@ import { getFormCdes, getFormOdm } from 'shared/form/formShared';
 import { RegistrationValidatorService } from "core/registrationValidator.service";
 import { SharedService } from '_commonApp/shared.service';
 import { UserService } from '_app/user.service';
-import { AlertService } from '_app/alert/alert.service';
+import { Alert, AlertService } from '_app/alert/alert.service';
 import { HttpClient } from "@angular/common/http";
+import { CdeForm } from "../../shared/form/form.model";
+import intersectionWith from 'lodash/intersectionWith';
+
+
 
 @Injectable()
 export class ExportService {
+
+    progressAlert: Alert;
+
     constructor(private alertService: AlertService,
                 private registrationValidatorService: RegistrationValidatorService,
                 private elasticService: ElasticService,
                 protected userService: UserService,
-                protected http: HttpClient) {
+                protected http: HttpClient) {}
+
+    exportProgressCb (msg, terminate?) {
+        if (!this.progressAlert || this.progressAlert.expired) {
+            this.progressAlert = this.alertService.addAlert("success", msg);
+            this.progressAlert.persistant = true;
+        } else {
+            this.progressAlert.setMessage(msg);
+        }
+        if (terminate) this.progressAlert.persistant = false;
+    }
+
+    async resultToCsv (result) {
+        let settings = this.elasticService.searchSettings;
+        let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
+        if (settings.tableViewFields.linkedForms) {
+            if (result.length < 50) {
+                for (let r of result) {
+                    if (r !== undefined) {
+                        let forms = await new Promise<Array<CdeForm>>(resolve => {
+                            let lfSettings = this.elasticService.buildElasticQuerySettings({
+                                q: r.tinyId
+                                , page: 1
+                                , classification: []
+                                , classificationAlt: []
+                                , regStatuses: []
+                            });
+                            this.elasticService.generalSearchQuery(lfSettings, 'form', (err, esRes) => resolve(esRes.forms));
+                        });
+                        if (forms.length) r.linkedForms = forms.map(f => f.tinyId).join(", ");
+                    }
+                }
+            } else {
+                let lfSettings = this.elasticService.buildElasticQuerySettings({
+                    page: 1
+                    , classification: []
+                    , classificationAlt: []
+                    , regStatuses: []
+                });
+                let esResp = await this.http.post("/scrollExport/form", lfSettings).toPromise();
+                let totalNbOfForms = 0;
+                let formCounter = 0;
+                let nonEmptyResults = result.filter(r => r !== undefined);
+                let intersectOnBatch = esResp => {
+                    if ((esResp as any).hits.hits.length) {
+                        totalNbOfForms = (esResp as any).hits.total;
+                        for (let hit of (esResp as any).hits.hits) {
+                            formCounter++;
+                            let esForm = hit._source;
+                            let formCdes = getFormCdes(esForm);
+                            let interArr = intersectionWith(
+                                nonEmptyResults,
+                                formCdes,
+                                (a, b) => a.tinyId === b.tinyId);
+                            interArr.forEach(matchId => {
+                                let foundCdes = result.filter(c => c.tinyId === matchId.tinyId);
+                                foundCdes.forEach(c => {
+                                    if (c.linkedForms) c.linkedForms = c.linkedForms + ", " + esForm.tinyId;
+                                    else c.linkedForms = esForm.tinyId;
+                                });
+                            });
+                            this.exportProgressCb("Attaching linked forms " + Math.trunc(100 * formCounter / totalNbOfForms) + "%");
+                        }
+                        return true;
+                    } else return false;
+                };
+                let keepScrolling = true;
+                while (keepScrolling) {
+                    keepScrolling = intersectOnBatch(esResp);
+                    esResp = await this.http.get("/scrollExport/" + (esResp as any)._scroll_id).toPromise();
+                }
+            }
+        }
+        result.forEach(r => {
+            if (!r) {
+                csv += "\n";
+            } else {
+                csv += SharedService.exportShared.convertToCsv(
+                    SharedService.exportShared.projectCdeForExport(r, settings.tableViewFields));
+            }
+        });
+        return csv;
     }
 
     exportSearchResults(type, module, exportSettings) {
+
         if (module === 'form' && (!this.userService.user || !this.userService.user._id)) {
             return this.alertService.addAlert("danger", "Please login to access this feature");
         }
@@ -32,9 +121,9 @@ export class ExportService {
         }
 
         if (type !== 'validationRules') {
-            this.alertService.addAlert("warning", "Your export is being generated, please wait.");
+            this.exportProgressCb("Your export is being generated, please wait.");
         }
-
+        this.exportProgressCb("Fetching " + module + "s. Please wait...");
         this.elasticService.getExport(
             this.elasticService.buildElasticQuerySettings(exportSettings.searchSettings), module || 'cde', (err, result) => {
                 if (err) {
@@ -43,39 +132,32 @@ export class ExportService {
                 }
 
                 let exporters = {
-                    'csv': (result) => {
-                        let settings = this.elasticService.searchSettings;
-                        let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
-                        result.forEach(ele =>
-                            csv += SharedService.exportShared.convertToCsv(
-                                SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields))
-                        );
+                    'csv': async result => {
+                        let csv = await this.resultToCsv(result);
                         let blob = new Blob([csv], {type: "text/csv"});
                         saveAs(blob, 'SearchExport.csv');
+                        this.exportProgressCb("Export downloaded.", true);
                     },
-                    'json': function (result) {
+                    'json': result => {
                         let blob = new Blob([JSON.stringify(result)], {type: "application/json"});
                         saveAs(blob, "SearchExport.json");
+                        this.exportProgressCb("Export downloaded.", true);
                     },
-                    'xml': function (result) {
+                    'xml': result => {
                         let zip = new JSZip();
-                        result.forEach(function (oneElt) {
-                            zip.file(oneElt.tinyId + ".xml", JXON.jsToString({element: oneElt}));
-                        });
-                        zip.generateAsync({type: "blob"}).then((content) => {
-                            saveAs(content, "SearchExport_XML.zip");
-                        } );
+                        result.forEach(oneElt => zip.file(oneElt.tinyId + ".xml", JXON.jsToString({element: oneElt})));
+                        zip.generateAsync({type: "blob"}).then(content => saveAs(content, "SearchExport_XML.zip"));
+                        this.alertService.addAlert("success", "Export downloaded.");
                     },
-                    'odm': function (result) {
+                    'odm': result => {
                         let zip = new JSZip();
-                        result.forEach(function (oneElt) {
-                            getFormOdm(oneElt, function (err, odmElt) {
+                        result.forEach(oneElt => {
+                            getFormOdm(oneElt, (err, odmElt) => {
                                 if (!err) zip.file(oneElt.tinyId + ".xml", JXON.jsToString({ODM: odmElt}));
                             });
                         });
-                        zip.generateAsync({type: "blob"}).then((content) => {
-                            saveAs(content, "SearchExport_ODM.zip");
-                        });
+                        zip.generateAsync({type: "blob"}).then(content => saveAs(content, "SearchExport_ODM.zip"));
+                        this.alertService.addAlert("success", "Export downloaded.");
                     },
                     'validationRules': (result) => {
                         let orgName = exportSettings.searchSettings.selectedOrg;
@@ -109,62 +191,40 @@ export class ExportService {
                         });
                     });
                     let exporter = exporters[type];
-                    if (!exporter) {
-                        this.alertService.addAlert("danger", "This export format is not supported.");
-                    } else {
-                        exporter(result);
-                        if (type !== 'validationRules') this.alertService.addAlert("success", "Export downloaded.");
-                    }
-                } else {
-                    this.alertService.addAlert("danger", "There was no data to export.");
-                }
+                    if (!exporter) this.alertService.addAlert("danger", "This export format is not supported.");
+                    else exporter(result);
+                } else this.alertService.addAlert("danger", "There was no data to export.");
             });
     }
 
-    quickBoardExport(elts) {
-        let settings = this.elasticService.searchSettings;
-        let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
-        elts.forEach(function (ele) {
-            result += SharedService.exportShared.convertToCsv(
-                SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
-        });
-
-        if (result) {
-            let blob = new Blob([result], {
-                type: "text/csv"
-            });
+    async quickBoardExport(elts) {
+        this.exportProgressCb("Fetching cdes. Please wait...");
+        let csv = await this.resultToCsv(elts);
+        if (csv) {
+            let blob = new Blob([csv], {type: "text/csv"});
             saveAs(blob, 'QuickBoardExport' + '.csv');
-            this.alertService.addAlert("success", "Export downloaded.");
+            this.exportProgressCb("Export downloaded.", true);
         } else {
             this.alertService.addAlert("danger", "Something went wrong, please try again in a minute.");
         }
     }
-
-
 
     async formCdeExport (form) {
-        let settings = this.elasticService.searchSettings;
-        let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
-
+        this.exportProgressCb("Fetching cdes. Please wait...");
+        let elts = [];
         for (let qCde of getFormCdes(form)) {
             const cde = await this.http.get('/de/' + qCde.tinyId).toPromise().catch(() => {});
-            if (!cde) result += "\n";
-            else {
-                result += SharedService.exportShared.convertToCsv(
-                    SharedService.exportShared.projectCdeForExport(cde, settings.tableViewFields));
-            }
+            elts.push(cde);
         }
 
-        if (result) {
-            let blob = new Blob([result], {
-                type: "text/csv"
-            });
+        let csv = await this.resultToCsv(elts);
+        if (csv) {
+            let blob = new Blob([csv], {type: "text/csv"});
             saveAs(blob, 'FormCdes-' + form.tinyId + '.csv');
-            this.alertService.addAlert("success", "Export downloaded.");
+            this.exportProgressCb("Export downloaded.", true);
         } else {
             this.alertService.addAlert("danger", "Something went wrong, please try again in a minute.");
         }
     }
-
 
 }

@@ -58,17 +58,23 @@ public class TourTest extends NlmCdeBaseTest {
         textPresent(expectedText);
     }
 
-    @Test
-    public void takeTourTest() {
-        mustBeLoggedOut();
-        goHome();
+    private void checkTour() {
         clickElement(By.id("takeATourBtn"));
+        hangon(1);
         textPresent(steps[0]);
         for (int i = 1; i < steps.length; i++) {
             String expectedText = steps[i];
             getNext(expectedText.trim());
         }
         clickElement(By.xpath("//button[@data-role='end']"));
+    }
+
+    @Test
+    public void takeTourTest() {
+        goHomeStatic();
+        checkTour();
+        goHome();
+        checkTour();
     }
 
 }

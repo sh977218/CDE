@@ -41,8 +41,6 @@ public class FormCdeExport extends NlmCdeBaseTest {
             e.printStackTrace();
             Assert.fail("Exception reading FormCdes-Xy910Dz6f.csv -- " + e);
         }
-
-
     }
 
 }
