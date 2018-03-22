@@ -79,6 +79,7 @@
     "tar-fs": "0.5.2",
     "trim": "0.0.1",
     "ucum": "https://github.com/ivanovgp/ucum-lhc.git",
+    "useragent": "2.3.0",
     "winston": "0.9.0",
     "winston-logrotate": "1.0.1",
     "xml2js": "0.4.17",

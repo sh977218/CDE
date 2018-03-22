@@ -31,6 +31,7 @@ const CronJob = require('cron').CronJob;
 const _ = require('lodash');
 const ejs = require('ejs');
 const browser = require('browser-detect');
+const useragent = require('useragent');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -848,10 +849,15 @@ exports.init = function (app) {
         }
     });
 
-    app.post('/getClientErrors', function (req, res) {
+    app.post('/getClientErrors', (req, res) => {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            dbLogger.getClientErrors(req.body, function (err, result) {
-                res.send(result);
+            dbLogger.getClientErrors(req.body, (err, result) => {
+                res.send(result.map(r => {
+                    let l = r.toObject();
+                   l.agent = useragent.parse(r.userAgent).toAgent();
+                   l.ua = useragent.is(r.userAgent);
+                   return l;
+                }));
             });
         } else {
             res.status(401).send();

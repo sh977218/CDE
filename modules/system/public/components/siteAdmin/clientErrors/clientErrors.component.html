@@ -1,3 +1,23 @@
+
+<div class="row">
+    <div class="col-3">
+        <label>Chrome</label>
+        <input type="checkbox" [(ngModel)]="browserInclude.chrome" (ngModelChange)="filter()">
+    </div>
+    <div class="col-3">
+        <label>Firefox</label>
+        <input type="checkbox" [(ngModel)]="browserInclude.firefox" (ngModelChange)="filter()">
+    </div>
+    <div class="col-3">
+        <label>IE</label>
+        <input type="checkbox" [(ngModel)]="browserInclude.ie" (ngModelChange)="filter()">
+    </div>
+    <div class="col-3">
+        <label>Edge</label>
+        <input type="checkbox" [(ngModel)]="browserInclude.edge" (ngModelChange)="filter()">
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -7,10 +27,11 @@
         </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let err of records">
+    <tr *ngFor="let err of filteredRecords">
         <td class="fake-link" (click)="openErrorDetail(err);" id="{{errorType}}Error_{{errIndex}}">
             {{err.date | date:'MM/dd/yyyy @h:mma'}}
         </td>
+        <td> {{err.agent}}</td>
         <td> {{err.name | slice:0:80 }}</td>
         <td> {{err.message | slice:0:80 }}</td>
     </tr>
@@ -22,39 +43,43 @@
 
 <ng-template #errorDetailModal id="errorDetailModal">
     <div class="modal-header">
-        <h4 class="modal-title">Error Detail</h4>
+        <h4 class="modal-title">Error Details</h4>
     </div>
     <div class="modal-body">
         <div class="row">
-            <label>Date:</label>
+            <strong>Date: </strong>
             <div>{{error.date | date:'MM/dd/yyyy @h:mma'}}</div>
         </div>
         <div class="row">
-            <label>Name:</label>
+            <strong>Name: </strong>
             <div>{{error.name}}</div>
         </div>
         <div class="row">
-            <label>Message:</label>
+            <strong>Message: </strong>
             <div>{{error.message}}</div>
         </div>
         <div class="row">
-            <label>User:</label>
+            <strong>User: </strong>
             <div>{{error.user}}</div>
         </div>
         <div class="row">
-            <label>IP:</label>
+            <strong>IP: </strong>
             <div>{{error.ip}}</div>
         </div>
         <div class="row">
-            <label>Browser:</label>
+            <strong>Browser: </strong>
+            <div>{{error.agent}}</div>
+        </div>
+        <div class="row">
+            <strong>User Agent: </strong>
             <div>{{error.userAgent}}</div>
         </div>
         <div class="row">
-            <label>URL:</label>
+            <strong>URL: </strong>
             <div>{{error.url}}</div>
         </div>
         <div class="row">
-            <label>Stack:</label>
+            <strong>Stack: </strong>
             <div>{{error.stack}}</div>
         </div>
     </div>
