@@ -7,9 +7,15 @@ const PATH = 'S:/MLB/CDE/SleepData/';
 
 let FOLDERS = fs.readdirSync(PATH);
 
-for (let folder of FOLDERS) {
-    new LoadSleepDataByFolder.LoadSleepDataByFolder().run(PATH + folder + '/', () => {
-        deCount++;
-        console.log('deCount: ' + deCount);
-    });
+
+
+async function doIt() {
+    let totalCount = 0;
+    for (let folder of FOLDERS) {
+        // new LoadSleepDataByFolder.LoadSleepDataByFolder().run(PATH + folder + '/', () => {
+        totalCount += await LoadSleepDataByFolder.run(PATH + folder + '/');
+        console.log(totalCount);
+    }
 }
+
+doIt();

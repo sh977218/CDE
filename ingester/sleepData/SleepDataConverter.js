@@ -70,9 +70,9 @@ var UOM_MAP = {
     'days per week': ''
 };
 
-exports.SleepDataConverter = function () {
-
-};
+// exports.SleepDataConverter = function () {
+//
+// };
 
 exports.SleepDataConverter.prototype.convert = function (sleep, DOMAINS) {
 
@@ -120,6 +120,7 @@ exports.SleepDataConverter.prototype.convert = function (sleep, DOMAINS) {
     } else if (type === 'text' || type === 'string' || type === 'identifier') {
         cde.valueDomain.datatype = 'Text';
     } else unmappedType.push(type);
+
     return cde;
 };
 

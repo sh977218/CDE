@@ -90,30 +90,40 @@ function saveCde(cde) {
     });
 }
 
-async function runner(folder, doneOne) {
-    let DOMAINS = await loadDomains(folder);
-    console.log('DOMAINS: ' + DOMAINS);
+exports.run = function runner(folder) {
+    return new Promise(async (resolve, reject) => {
+        let DOMAINS = await loadDomains(folder);
+        console.log('DOMAINS: ' + DOMAINS);
 
-    let VARIABLES = await loadVariables(folder);
-    for (let variable of VARIABLES) {
-        let cde = new SleepDataConverter().convert(variable, DOMAINS);
-        let existingCdes = await findCdeById(cde.ids[0].id);
-        if (existingCdes.length === 0) {
-            let newCde = await saveCde(cde);
-            if (newCde) doneOne();
-        } else throw new Error('Found ' + existingCdes.length + ' existing Cdes. ' + cde.ids[0].id);
-    }
-    if (unmappedUnits)
-        console.log('unmappedUnits: ' + _.uniq(unmappedUnits));
-    if (unmappedType)
-        console.log('unmappedType: ' + _.uniq(unmappedType));
-}
+        let count = 0;
+        let VARIABLES = await loadVariables(folder);
+        let slc = new SleepDataConverter();
+        for (let variable of VARIABLES) {
+            let cde = slc.convert(variable, DOMAINS);
+            let existingCdes = await findCdeById(cde.ids[0].id);
+            if (existingCdes.length === 0) {
+                let newCde = await saveCde(cde);
+                if (newCde) count++;
+            } else {
+                reject('Found ' + existingCdes.length + ' existing Cdes. ' + cde.ids[0].id);
+            }
+                // throw new Error('Found ' + existingCdes.length + ' existing Cdes. ' + cde.ids[0].id);
+        }
 
-exports.LoadSleepDataByFolder = function () {
-};
-exports.LoadSleepDataByFolder.prototype.run = function (folder, doneOne) {
-    runner(folder, doneOne).catch(err => {
-        console.log(err);
+        if (slc.unmappedUnits) console.log('unmappedUnits: ' + _.uniq(unmappedUnits));
+        if (unmappedType)
+        //     console.log('unmappedType: ' + _.uniq(unmappedType));
+        resolve(count);
     });
 };
+
+// exports.run = (folder, doneOne)
+//
+// exports.LoadSleepDataByFolder = function () {
+// };
+// exports.LoadSleepDataByFolder.prototype.run = function (folder, doneOne) {
+//     runner(folder, doneOne).catch(err => {
+//         console.log(err);
+//     });
+// };
 
