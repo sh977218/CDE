@@ -90,40 +90,46 @@ function saveCde(cde) {
     });
 }
 
-exports.run = function runner(folder) {
+function updateCde(cde) {
+    return new Promise((resolve, reject) => {
+        cde.save((err, newCde) => {
+            if (err) reject(err);
+            else resolve(newCde);
+        });
+    });
+}
+
+exports.run = function runner(PATH, FOLDER) {
+    let folder = PATH + FOLDER + '/';
+    let classification = FOLDER.replace('&ReplaceWithForwardSlash&', '/');
     return new Promise(async (resolve, reject) => {
         let DOMAINS = await loadDomains(folder);
-        console.log('DOMAINS: ' + DOMAINS);
-
         let count = 0;
         let VARIABLES = await loadVariables(folder);
         let slc = new SleepDataConverter();
         for (let variable of VARIABLES) {
-            let cde = slc.convert(variable, DOMAINS);
+            let cde = slc.convert(variable, classification, DOMAINS);
             let existingCdes = await findCdeById(cde.ids[0].id);
             if (existingCdes.length === 0) {
                 let newCde = await saveCde(cde);
                 if (newCde) count++;
-            } else {
-                reject('Found ' + existingCdes.length + ' existing Cdes. ' + cde.ids[0].id);
-            }
-                // throw new Error('Found ' + existingCdes.length + ' existing Cdes. ' + cde.ids[0].id);
+            } else if (existingCdes.length === 1) {
+                let existingCde = existingCdes[0];
+                let existingCdeObj;
+                if (existingCde.toObject) existingCdeObj = existingCde.toObject();
+                let isValueDomainEqual = _.isEqual(cde.valueDomain, existingCdeObj.valueDomain);
+                let isNamingEqual = _.isEqual(cde.naming, existingCdeObj.naming);
+                existingCde.properties = _.uniqBy(existingCde.properties.concat(cde.properties), 'key');
+                if (isNamingEqual && isValueDomainEqual) resolve();
+                else {
+                    if (!isNamingEqual) existingCde.naming = cde.naming;
+                    if (!isValueDomainEqual) existingCde.valueDomain = cde.valueDomain;
+                    let newCde = await updateCde(existingCde);
+                    if (newCde) count++;
+                }
+            } else reject('Existing Cdes ' + existingCdes.length + ': ' + cde.ids[0].id);
         }
-
-        if (slc.unmappedUnits) console.log('unmappedUnits: ' + _.uniq(unmappedUnits));
-        if (unmappedType)
-        //     console.log('unmappedType: ' + _.uniq(unmappedType));
         resolve(count);
     });
 };
-
-// exports.run = (folder, doneOne)
-//
-// exports.LoadSleepDataByFolder = function () {
-// };
-// exports.LoadSleepDataByFolder.prototype.run = function (folder, doneOne) {
-//     runner(folder, doneOne).catch(err => {
-//         console.log(err);
-//     });
-// };
 
