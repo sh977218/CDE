@@ -108,6 +108,7 @@ exports.run = function runner(PATH, FOLDER) {
         let VARIABLES = await loadVariables(folder);
         let slc = new SleepDataConverter();
         for (let variable of VARIABLES) {
+            if (variable.id === 'caffeine') console.log(folder);
             let cde = slc.convert(variable, classification, DOMAINS);
             let existingCdes = await findCdeById(cde.ids[0].id);
             if (existingCdes.length === 0) {
@@ -117,15 +118,25 @@ exports.run = function runner(PATH, FOLDER) {
                 let existingCde = existingCdes[0];
                 let existingCdeObj;
                 if (existingCde.toObject) existingCdeObj = existingCde.toObject();
-                let isValueDomainEqual = _.isEqual(cde.valueDomain, existingCdeObj.valueDomain);
+
+                let isDataTypeEqual = _.isEqual(cde.valueDomain.datatype, existingCdeObj.valueDomain.datatype);
+                let isPVsEqual = _.isEqual(cde.valueDomain.permissibleValue, existingCdeObj.valueDomain.permissibleValue);
+                let isValueDomainEqual = isDataTypeEqual && isPVsEqual;
                 let isNamingEqual = _.isEqual(cde.naming, existingCdeObj.naming);
                 existingCde.properties = _.uniqBy(existingCde.properties.concat(cde.properties), 'key');
+                existingCde.classification.elements = _.uniqBy(existingCde.classification[0].elements.concat(cde.classification[0].elements), 'name');
+                existingCde.markModified('classification');
                 if (isNamingEqual && isValueDomainEqual) resolve();
                 else {
-                    if (!isNamingEqual) existingCde.naming = cde.naming;
-                    if (!isValueDomainEqual) existingCde.valueDomain = cde.valueDomain;
-                    let newCde = await updateCde(existingCde);
-                    if (newCde) count++;
+                    if (!isNamingEqual) existingCde.naming = _.uniqWith(existingCde.naming.concat(cde.naming), (a, b) => {
+                        return a.designation === b.designation && a.definition === b.definition;
+                    });
+                    if (!isValueDomainEqual) {
+                        console.log('folder: ' + folder + ' variable: ' + variable.display_name);
+                        throw new Error('CDEs have different value domain.');
+                        existingCde.valueDomain = cde.valueDomain;
+                    }
+                    await updateCde(existingCde);
                 }
             } else reject('Existing Cdes ' + existingCdes.length + ': ' + cde.ids[0].id);
         }
