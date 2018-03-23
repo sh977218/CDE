@@ -42,7 +42,10 @@ export class CompareService {
 
         _forEach(newer, (l, leftIndex) => {
             let rightArrayCopy = _slice(older, beginIndex);
-            let rightIndex = _findIndex(rightArrayCopy, o => option.isEqual(o, l));
+            let rightIndex = _findIndex(rightArrayCopy, o => {
+                let temp = option.isEqual(o, l);
+                return temp;
+            });
             if (rightIndex === -1) {
                 if (leftIndex === newer.length - 1) {
                     option.result.push({
@@ -189,7 +192,10 @@ export class CompareService {
                 property.match = _isEqual(l, r);
                 property.newer = l ? l.toString() : '';
                 property.older = r ? r.toString() : '';
-                if (!newer && !older) property.match = true;
+                if (!newer && !older) {
+                    property.display = false;
+                    property.match = true;
+                }
             } else {
                 this.doCompareObject(l, r, property.data);
                 if (property.data) property.match = !(property.data.filter(p => !p.match).length > 0);
