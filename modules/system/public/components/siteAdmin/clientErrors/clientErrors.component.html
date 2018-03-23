@@ -1,20 +1,19 @@
-
 <div class="row">
     <div class="col-3">
         <label>Chrome</label>
-        <input type="checkbox" [(ngModel)]="browserInclude.chrome" (ngModelChange)="filter()">
+        <input id="chrome" type="checkbox" [(ngModel)]="browserInclude.chrome" (ngModelChange)="filter()">
     </div>
     <div class="col-3">
         <label>Firefox</label>
-        <input type="checkbox" [(ngModel)]="browserInclude.firefox" (ngModelChange)="filter()">
+        <input id="firefox" type="checkbox" [(ngModel)]="browserInclude.firefox" (ngModelChange)="filter()">
     </div>
     <div class="col-3">
         <label>IE</label>
-        <input type="checkbox" [(ngModel)]="browserInclude.ie" (ngModelChange)="filter()">
+        <input id="ie" type="checkbox" [(ngModel)]="browserInclude.ie" (ngModelChange)="filter()">
     </div>
     <div class="col-3">
         <label>Edge</label>
-        <input type="checkbox" [(ngModel)]="browserInclude.edge" (ngModelChange)="filter()">
+        <input id="edge" type="checkbox" [(ngModel)]="browserInclude.edge" (ngModelChange)="filter()">
     </div>
 </div>
 
@@ -23,17 +22,20 @@
         <tr>
             <th>Date</th>
             <th>Name</th>
+            <th>Agent</th>
             <th>Message</th>
+            <th>URL</th>
         </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let err of filteredRecords">
+    <tr *ngFor="let err of filteredRecords; let errIndex = index">
         <td class="fake-link" (click)="openErrorDetail(err);" id="{{errorType}}Error_{{errIndex}}">
             {{err.date | date:'MM/dd/yyyy @h:mma'}}
         </td>
         <td> {{err.agent}}</td>
         <td> {{err.name | slice:0:80 }}</td>
         <td> {{err.message | slice:0:80 }}</td>
+        <td> {{err.url}}</td>
     </tr>
     </tbody>
 </table>
@@ -47,40 +49,40 @@
     </div>
     <div class="modal-body">
         <div class="row">
-            <strong>Date: </strong>
-            <div>{{error.date | date:'MM/dd/yyyy @h:mma'}}</div>
+            <strong class="col-1">Date: </strong>
+            <div class="col-11">{{error.date | date:'MM/dd/yyyy @h:mma'}}</div>
         </div>
         <div class="row">
-            <strong>Name: </strong>
-            <div>{{error.name}}</div>
+            <strong class="col-1">Name: </strong>
+            <div class="col-11">{{error.name}}</div>
         </div>
         <div class="row">
-            <strong>Message: </strong>
-            <div>{{error.message}}</div>
+            <strong class="col-1">Message: </strong>
+            <div class="col-11">{{error.message}}</div>
         </div>
         <div class="row">
-            <strong>User: </strong>
-            <div>{{error.user}}</div>
+            <strong class="col-1">User: </strong>
+            <div class="col-11">{{error.user}}</div>
         </div>
         <div class="row">
-            <strong>IP: </strong>
-            <div>{{error.ip}}</div>
+            <strong class="col-1">IP: </strong>
+            <div class="col-11">{{error.ip}}</div>
         </div>
         <div class="row">
-            <strong>Browser: </strong>
-            <div>{{error.agent}}</div>
+            <strong class="col-1">Browser: </strong>
+            <div class="col-11">{{error.agent}}</div>
         </div>
         <div class="row">
-            <strong>User Agent: </strong>
-            <div>{{error.userAgent}}</div>
+            <strong class="col-1">User Agent: </strong>
+            <div class="col-11">{{error.userAgent}}</div>
         </div>
         <div class="row">
-            <strong>URL: </strong>
-            <div>{{error.url}}</div>
+            <strong class="col-1">URL: </strong>
+            <div class="col-11">{{error.url}}</div>
         </div>
         <div class="row">
-            <strong>Stack: </strong>
-            <div>{{error.stack}}</div>
+            <strong class="col-1">Stack: </strong>
+            <div class="col-11">{{error.stack}}</div>
         </div>
     </div>
 </ng-template>

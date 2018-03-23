@@ -37,6 +37,12 @@ export class ClientErrorsComponent implements OnInit {
             limit: 50
         }).subscribe(response => {
             this.records = response;
+            this.records.forEach(r => {
+                if (r.url) {
+                    r.url = r.url.substr(8);
+                    r.url = r.url.substr(r.url.indexOf("/"));
+                }
+            });
             this.filter();
         });
     }
