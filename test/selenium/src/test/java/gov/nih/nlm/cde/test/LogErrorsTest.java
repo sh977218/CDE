@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.system.SelectBrowser;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -27,8 +28,15 @@ public class LogErrorsTest extends NlmCdeBaseTest {
     }
 
     @Test
+    @SelectBrowser()
+    public void createIEError () {
+        driver.get(baseUrl + "/sdcview?triggerClientError=1&fullPath=true&inIE=true");
+        textPresent("SDC Attributes");
+    }
+
+
+    @Test(dependsOnMethods = {"createIEError"})
     public void logClientErrors() {
-        mustBeLoggedInAs(test_username, password);
         driver.get(baseUrl + "/sdcview?triggerClientError=1&fullPath=true");
         textPresent("SDC Attributes");
 
@@ -38,5 +46,11 @@ public class LogErrorsTest extends NlmCdeBaseTest {
 
         clickElement(By.linkText("Client Errors"));
         textPresent("An exception has been thown");
+
+        textNotPresent("IE 11");
+        textNotPresent("inIE=true");
+        clickElement(By.id("ie"));
+        textPresent("IE 11");
+        textPresent("inIE=true");
     }
 }
