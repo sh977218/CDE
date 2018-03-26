@@ -189,10 +189,7 @@ export class CompareService {
                 property.match = _isEqual(l, r);
                 property.newer = l ? l.toString() : '';
                 property.older = r ? r.toString() : '';
-                if (!newer && !older) {
-                    property.display = false;
-                    property.match = true;
-                }
+                if (!newer && !older) property.match = true;
             } else {
                 this.doCompareObject(l, r, property.data);
                 if (property.data) property.match = !(property.data.filter(p => !p.match).length > 0);
