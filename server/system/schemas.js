@@ -216,7 +216,8 @@ schemas.userSchema = new mongoose.Schema({
     },
     accessToken: String,
     refreshToken: String,
-    avatarUrl: String, publishedForms: [{
+    avatarUrl: String,
+    publishedForms: [{
         name: String,
         id: mongoose.Schema.Types.ObjectId
     }]
@@ -451,7 +452,9 @@ schemas.logSchema = new mongoose.Schema({ // express
 schemas.logErrorSchema = new mongoose.Schema({ // everything server and express
     message: String,
     date: {type: Date, index: true},
-    origin: String, stack: String, details: String,
+    details: String,
+    origin: String,
+    stack: String,
     request: {
         url: String,
         method: String,

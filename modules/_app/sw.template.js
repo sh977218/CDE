@@ -42,12 +42,6 @@ self.addEventListener('fetch', function (event) {
 
 
 self.addEventListener('push', function(event) {
-    if (event.data) {
-        console.log('This push event has data: ', event.data.text());
-    } else {
-        console.log('This push event has no data.');
-    }
-
     const title = 'New Feedback Message';
     const options = {
         body: (event.data ? event.data.text() : 'Full detail available in the Audit Log.'),

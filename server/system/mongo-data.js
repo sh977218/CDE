@@ -145,11 +145,11 @@ exports.getAdministratorPushRegistrations = function(callback) {
 exports.updatePushRegistration = function (reg, callback) {
     this.pushByIds(reg.endpoint, reg.userId, (err, registration) => {
         if (err || registration) {
-            return callback(registration);
+            return callback(err, registration);
         }
 
         reg.loggedIn = true;
-        new PushRegistration(reg).save().then(callback, () => callback());
+        new PushRegistration(reg).save(callback);
     });
 };
 exports.pushByIds = function (endpoint, userId, callback) {

@@ -282,51 +282,57 @@ exports.init = function (app) {
     });
 
     app.get('/nativeRender', function (req, res) {
-        res.sendFile(path.join(__dirname, '../../modules/_nativeRenderApp', 'nativeRenderApp.html'), undefined, function (err) {
-            if (err)
+        res.sendFile(path.join(__dirname, '../../modules/_nativeRenderApp', 'nativeRenderApp.html'), undefined, err => {
+            if (err) {
                 res.sendStatus(404);
+            }
         });
     });
 
     app.get('/sw.js', function (req, res) {
-        res.sendFile(path.join(__dirname, '../../dist/app', 'sw.js'), undefined, function (err) {
-            if (err)
+        res.sendFile(path.join(__dirname, '../../dist/app', 'sw.js'), undefined, err => {
+            if (err) {
                 res.sendStatus(404);
+            }
         });
     });
 
     app.post('/pushRegistration', function (req, res) {
         if (!req.user) {
-            return res.status(400).end('Error: must be logged in to use this feature.');
+            return res.status(401).send();
         }
         if (!pushNotification.isValidSaveRequest(req, res)) {
-            return res.status(400).end('Error: your browser does not support push notifications.');
+            return res.status(400).send('Error: your browser does not support push notifications.');
         }
 
         req.body.userId = req.user._id;
 
-        mongo_data.updatePushRegistration(req.body, function (reg) {
-            if (!reg) {
-                return res.status(500).send('Error: adding push inbox registration.');
+        mongo_data.updatePushRegistration(req.body, (err, registration) => {
+            if (err || !registration) {
+                pushNotification.processError(res, err, 'Error: adding push inbox registration.');
+                return;
             }
-            res.send(reg.features);
+            res.send(registration.features);
         });
     });
 
     app.delete('/pushRegistration', function (req, res) {
         if (req.user && req.body.endpoint) {
             mongo_data.pushDelete(req.body.endpoint, req.user._id, err => {
-                if (err) res.status(500).end('Error: did not remove.');
-                else res.send();
+                if (err) {
+                    pushNotification.processError(res, err, 'Error: did not remove.');
+                    return;
+                }
+                res.send();
             });
         } else {
-            res.status(400).end('Required parameters missing.')
+            res.status(400).send('Required parameters missing.')
         }
     });
 
     app.post('/pushRegistrationUpdate', function (req, res) {
         if (!req.body.endpoint) {
-            return res.status(400).end('Error: no subscription');
+            return res.status(400).send('Error: no subscription');
         }
         pushNotification.updateStatus(req, res);
     });

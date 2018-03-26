@@ -1,15 +1,13 @@
-const dbLogger = require('./dbLogger.js');
-const mongo_data = require('./mongo-data');
 const webpush = require('web-push');
 
-const vapidKeys = {
-    publicKey: 'BMkcEZwp4FAtBNKF46gUMZsu9AU7Xpi5lbWR_Q0ng-Pm2uSznyjCO9_pBOsOown3WaNlQPR6GhwNdB5W0TisO5M',
-    privateKey: 'KdsCVQ3PgL8Lck7iuMBABSVelhrYQbLFzD4ARUvZloc'
-};
+const config = require('./parseConfig');
+const dbLogger = require('./dbLogger.js');
+const mongo_data = require('./mongo-data');
+
 webpush.setVapidDetails(
     'mailto:web-push-book@gauntface.com',
-    vapidKeys.publicKey,
-    vapidKeys.privateKey
+    config.webpush.vapidKeys.publicKey,
+    config.webpush.vapidKeys.privateKey
 );
 
 exports.isValidSaveRequest = (req, res) => {
@@ -42,10 +40,15 @@ exports.triggerPushMsg = (pushReg, dataToSend) => {
 
 function handleError(res, cb, err, ...args) {
     if (err) {
-        return res.status(500).end();
+        return exports.processError(res, err);
     }
     cb(...args);
 }
+
+exports.processError = function (res, err, message = '') {
+    res.status(500).send(message);
+    dbLogger.logError(err);
+};
 
 exports.updateStatus = (req, res) => {
     if (req.user) {
