@@ -42,10 +42,7 @@ export class CompareService {
 
         _forEach(newer, (l, leftIndex) => {
             let rightArrayCopy = _slice(older, beginIndex);
-            let rightIndex = _findIndex(rightArrayCopy, o => {
-                let temp = option.isEqual(o, l);
-                return temp;
-            });
+            let rightIndex = _findIndex(rightArrayCopy, o => option.isEqual(o, l));
             if (rightIndex === -1) {
                 if (leftIndex === newer.length - 1) {
                     option.result.push({
