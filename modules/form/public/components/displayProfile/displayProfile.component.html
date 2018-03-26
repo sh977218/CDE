@@ -78,6 +78,7 @@
                         <input class="form-control" [(ngModel)]="dPVM.profile.maxNumberAnswers" type="number" min="0"
                                [disabled]="!canEdit" id="displayMaxNumberAnswers_{{index}}"
                                (change)="onEltChange.emit();">
+                        (0 for displaying all answers as checkboxes)
                     </dd>
                 </dl>
             </div>
