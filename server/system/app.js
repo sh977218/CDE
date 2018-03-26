@@ -30,7 +30,6 @@ const request = require('request');
 const CronJob = require('cron').CronJob;
 const _ = require('lodash');
 const ejs = require('ejs');
-const browser = require('browser-detect');
 const useragent = require('useragent');
 
 exports.init = function (app) {
@@ -55,10 +54,9 @@ exports.init = function (app) {
         homeHtml = str;
     });
 
-    function isModernBrowser(req) {
-        let userAgent = req.headers['user-agent'];
-        let browserName = browser(userAgent);
-        return browserName && modernBrowsers.indexOf(browserName.name) > -1;
+    function isModernBrowser (req) {
+        let ua = useragent.is(req.headers['user-agent']);
+        return ua.chrome || ua.firefox || ua.edge;
     }
 
     /* for search engine and javascript disabled */
@@ -68,31 +66,23 @@ exports.init = function (app) {
     }
 
     /* for IE Opera Safari, emit vendor.js */
-    const modernBrowsers = ['chrome', 'firefox', 'edge'];
     let indexLegacyHtml = "";
     ejs.renderFile('modules/system/views/index-legacy.ejs', {config: config, version: version}, (err, str) => {
         indexLegacyHtml = str;
     });
 
     app.get(["/", "/home"], function (req, res) {
-        if (isSearchEngine(req)) {
-            res.render('bot/home', 'system');
-        } else {
-            if (req.user || req.query.tour) {
-                res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
-            } else {
-                res.send(homeHtml);
-            }
+        if (isSearchEngine(req)) res.render('bot/home', 'system');
+        else {
+            if (req.user || req.query.tour) res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
+            else res.send(homeHtml);
         }
     });
 
-    app.get('/tour', function(req, res) {
-        res.redirect('/home?tour=yes');
-    });
+    app.get('/tour', (req, res) => res.redirect('/home?tour=yes'));
 
-    app.get("/site-version", (req, res) => {
-        res.send(version);
-    });
+    app.get("/site-version", (req, res) => res.send(version));
+
     if (!config.proxy) {
         app.post("/site-version", (req, res) => {
             version = version + ".";

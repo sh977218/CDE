@@ -1,13 +1,13 @@
 <div class="row">
-    <div class="col-3">
+    <div class="col-4 col-md-3">
         <label>Chrome</label>
         <input id="chrome" type="checkbox" [(ngModel)]="browserInclude.chrome" (ngModelChange)="filter()">
     </div>
-    <div class="col-3">
+    <div class="col-3 col-md-3">
         <label>Firefox</label>
         <input id="firefox" type="checkbox" [(ngModel)]="browserInclude.firefox" (ngModelChange)="filter()">
     </div>
-    <div class="col-3">
+    <div class="col-2">
         <label>IE</label>
         <input id="ie" type="checkbox" [(ngModel)]="browserInclude.ie" (ngModelChange)="filter()">
     </div>
@@ -17,7 +17,10 @@
     </div>
 </div>
 
-<table class="table">
+
+
+
+<table class="table table-responsive">
     <thead>
         <tr>
             <th>Date</th>
@@ -49,40 +52,40 @@
     </div>
     <div class="modal-body">
         <div class="row">
-            <strong class="col-1">Date: </strong>
-            <div class="col-11">{{error.date | date:'MM/dd/yyyy @h:mma'}}</div>
+            <strong class="col-2 col-md-1">Date: </strong>
+            <div class="col-10 col-md-11">{{error.date | date:'MM/dd/yyyy @h:mma'}}</div>
         </div>
         <div class="row">
-            <strong class="col-1">Name: </strong>
-            <div class="col-11">{{error.name}}</div>
+            <strong class="col-2 col-md-1">Name: </strong>
+            <div class="col-10 col-md-11">{{error.name}}</div>
         </div>
         <div class="row">
-            <strong class="col-1">Message: </strong>
-            <div class="col-11">{{error.message}}</div>
+            <strong class="col-2 col-md-1">Message: </strong>
+            <div class="col-10 col-md-11" >{{error.message}}</div>
         </div>
         <div class="row">
-            <strong class="col-1">User: </strong>
-            <div class="col-11">{{error.user}}</div>
+            <strong class="col-2 col-md-1">User: </strong>
+            <div class="col-10 col-md-11">{{error.user}}</div>
         </div>
         <div class="row">
-            <strong class="col-1">IP: </strong>
-            <div class="col-11">{{error.ip}}</div>
+            <strong class="col-2 col-md-1">IP: </strong>
+            <div class="col-10 col-md-11">{{error.ip}}</div>
         </div>
         <div class="row">
-            <strong class="col-1">Browser: </strong>
-            <div class="col-11">{{error.agent}}</div>
+            <strong class="col-2 col-md-1">Browser: </strong>
+            <div class="col-10 col-md-11">{{error.agent}}</div>
         </div>
         <div class="row">
-            <strong class="col-1">User Agent: </strong>
-            <div class="col-11">{{error.userAgent}}</div>
+            <strong class="col-2 col-md-1">User Agent: </strong>
+            <div class="col-10 col-md-11">{{error.userAgent}}</div>
         </div>
         <div class="row">
-            <strong class="col-1">URL: </strong>
-            <div class="col-11">{{error.url}}</div>
+            <strong class="col-2 col-md-1">URL: </strong>
+            <div class="col-10 col-md-11">{{error.url}}</div>
         </div>
         <div class="row">
-            <strong class="col-1">Stack: </strong>
-            <div class="col-11">{{error.stack}}</div>
+            <strong class="col-2 col-md-1">Stack: </strong>
+            <div class="col-10 col-md-11">{{error.stack}}</div>
         </div>
     </div>
 </ng-template>

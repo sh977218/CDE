@@ -40,7 +40,6 @@
     "csv-parser": "1.11.0",
     "deep-copy": "1.0.0",
     "deep-diff": "0.3.0",
-    "browser-detect": "0.2.22",
     "ejs": "2.5.7",
     "elasticsearch": "13.0.1",
     "event-stream": "3.3.0",
