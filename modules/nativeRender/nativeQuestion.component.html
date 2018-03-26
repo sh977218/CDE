@@ -79,7 +79,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngIf="nrs.profile.maxNumberAnswers">
-                                <select multiple>
+                                <select multiple [(ngModel)]="formElement.question.answer">
                                     <option *ngFor="let pv of formElement.question.answers"
                                             [value]="pv.permissibleValue">{{pv.valueMeaningName}}
                                     </option>
