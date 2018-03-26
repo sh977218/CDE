@@ -185,12 +185,10 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
         }
     } else if (type === 'numeric' || type === 'integer') {
         cde.valueDomain.datatype = 'Number';
-    } else if (type === 'time') {
+    } else if (type === 'time' || type === 'Date') {
         cde.valueDomain.datatype = 'Date';
     } else if (type === 'text' || type === 'string' || type === 'identifier') {
         cde.valueDomain.datatype = 'Text';
-    } else if (type === 'date') {
-        cde.valueDomain.datatype = 'Date';
     } else console.log('unmapped type: ' + type);
 
     let labels = sleep.labels.trim();
