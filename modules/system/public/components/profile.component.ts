@@ -7,6 +7,7 @@ import { UserService } from '_app/user.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { User } from 'shared/models.model';
+import { PushNotificationSubscriptionService } from '_app/PushNotificationSubscriptionService';
 
 
 @Component({
@@ -20,6 +21,8 @@ export class ProfileComponent {
     orgCurator: string;
     orgAdmin: string;
     user: User;
+    subscriptionStatusClient = PushNotificationSubscriptionService.subscriptionCheckClient;
+    subscriptionStatusServer: string;
 
     constructor(
         private alert: AlertService,
@@ -39,14 +42,34 @@ export class ProfileComponent {
         this.reloadUser();
     }
 
-    saveProfile() {
-        this.http.post('/user/me', this.user, {responseType: 'text'}).subscribe(
+    checkSubscriptionServerStatus() {
+        this.checkSubscriptionServerStatusEndpoint().then(
             () => {
-                this.reloadUser();
-                this.alert.addAlert('success', 'Saved');
+                PushNotificationSubscriptionService.lastUser = this.user._id;
+                this.subscriptionStatusServer = 'Subscribed';
             },
-            () => this.alert.addAlert('danger', 'Error, unable to save')
+            err => {
+                this.subscriptionStatusServer = (err !== 'Network Error' ? 'Not Subscribed' : 'Network Error');
+            }
         );
+    }
+
+    checkSubscriptionServerStatusEndpoint(): Promise<void> {
+        if (PushNotificationSubscriptionService.lastEndpoint) {
+            return PushNotificationSubscriptionService.subscriptionServerUpdate(this.user._id)
+                .catch(() => {
+                    PushNotificationSubscriptionService.lastEndpoint = '';
+                    return this.checkSubscriptionServerStatusNoEndpoint();
+                });
+        } else {
+            return this.checkSubscriptionServerStatusNoEndpoint();
+        }
+    }
+
+    checkSubscriptionServerStatusNoEndpoint(): Promise<void> {
+        return PushNotificationSubscriptionService.getEndpoint().then(() => {
+            return PushNotificationSubscriptionService.subscriptionServerUpdate(this.user._id);
+        });
     }
 
     reloadUser() {
@@ -65,5 +88,27 @@ export class ProfileComponent {
             return p._id !== pf._id;
         });
         this.saveProfile();
+    }
+
+    saveProfile() {
+        this.http.post('/user/me', this.user, {responseType: 'text'}).subscribe(
+            () => {
+                this.reloadUser();
+                this.alert.addAlert('success', 'Saved');
+            },
+            () => this.alert.addAlert('danger', 'Error, unable to save')
+        );
+    }
+
+    pushSubscribe() {
+        PushNotificationSubscriptionService.subscriptionNew(this.user._id).then(() => {
+            this.subscriptionStatusServer = 'Subscribed';
+        });
+    }
+
+    pushUnsubscribe() {
+        PushNotificationSubscriptionService.subscriptionDelete(this.user._id).then( () => {
+            this.subscriptionStatusServer = 'Not Subscribed';
+        });
     }
 }

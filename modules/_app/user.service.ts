@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
+import { PushNotificationSubscriptionService } from '_app/PushNotificationSubscriptionService';
 import { User } from 'shared/models.model';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
 
@@ -39,7 +41,7 @@ export class UserService {
         }[c.element.eltType] + c.element.eltId;
     }
 
-    reload () {
+    reload() {
         this.promise = new Promise<User>((resolve, reject) => {
             this.http.get<User>('/user/me').subscribe(response => {
                 this.user = response;
@@ -48,6 +50,7 @@ export class UserService {
                 resolve(this.user);
             }, reject);
         });
+        this.promise.then(user => PushNotificationSubscriptionService.subscriptionServerUpdate(user && user._id).catch(_noop));
     }
 
     setOrganizations() {

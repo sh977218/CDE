@@ -39,3 +39,44 @@ self.addEventListener('fetch', function (event) {
         })
     );
 });
+
+
+self.addEventListener('push', function(event) {
+    if (event.data) {
+        console.log('This push event has data: ', event.data.text());
+    } else {
+        console.log('This push event has no data.');
+    }
+
+    const title = 'New Feedback Message';
+    const options = {
+        body: (event.data ? event.data.text() : 'Full detail available in the Audit Log.'),
+        icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
+        badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+        tag: 'cde-feedback',
+        actions: [
+            {
+                action: 'audit-action',
+                title: 'View',
+                icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+            },
+            {
+                action: 'profile-action',
+                title: 'Edit Subscription',
+                icon: '/cde/public/assets/img/portrait.png'
+            }
+        ]
+    };
+    event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+
+    if (event.action === 'audit-action') {
+        clients.openWindow('/siteAudit');
+    }
+    else if (event.action === 'profile-action') {
+        clients.openWindow('/profile');
+    }
+}, false);

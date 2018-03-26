@@ -63,7 +63,7 @@ export class OrgHelperService  {
                     this.orgsDetailedInfo = {};
                     response.forEach(org => {
                         if (org) {
-                            org.validate();
+                            Organization.validate(org);
                             this.orgsDetailedInfo[org.name] = org;
                         }
                     });

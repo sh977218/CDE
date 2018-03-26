@@ -16,6 +16,7 @@ const dbLogger = require('./dbLogger');
 
 var conn = connHelper.establishConnection(config.database.appData),
     Org = conn.model('Org', schemas.orgSchema),
+    PushRegistration = conn.model('PushRegistration', schemas.pushRegistration),
     User = conn.model('User', schemas.userSchema),
     Message = conn.model('Message', schemas.message),
     MeshClassification = conn.model('meshClassification', schemas.meshClassification),
@@ -130,6 +131,45 @@ exports.org_autocomplete = function (name, callback) {
 
 exports.orgNames = function (callback) {
     Org.find({}, {name: true, _id: false}).exec(callback);
+};
+
+exports.getAdministratorPushRegistrations = function(callback) {
+    User.find({siteAdmin: true}).exec((err, users) => {
+        let userIds = users.map(u => u._id.toString());
+        PushRegistration.find({}).exec((err, registrations) => {
+            callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
+        });
+    });
+};
+
+exports.updatePushRegistration = function (reg, callback) {
+    this.pushByIds(reg.endpoint, reg.userId, (err, registration) => {
+        if (err || registration) {
+            return callback(registration);
+        }
+
+        reg.loggedIn = true;
+        new PushRegistration(reg).save().then(callback, () => callback());
+    });
+};
+exports.pushByIds = function (endpoint, userId, callback) {
+    PushRegistration.findOne({'subscription.endpoint': endpoint, userId: userId}, callback);
+};
+exports.pushByIdsCount = function (endpoint, userId, callback) {
+    PushRegistration.count({'subscription.endpoint': endpoint, userId: userId}, callback);
+};
+
+exports.pushDelete = function (endpoint, userId, callback) {
+    this.pushByIds(endpoint, userId, (err, registration) => {
+        if (err) {
+            return callback(err);
+        }
+        PushRegistration.remove({_id: registration._id}, err => callback(err));
+    });
+};
+
+exports.pushEndpointUpdate = function (endpoint, commandObj, callback) {
+    PushRegistration.update({'subscription.endpoint': endpoint}, commandObj, {multi: true}, callback);
 };
 
 exports.userByName = function (name, callback) {

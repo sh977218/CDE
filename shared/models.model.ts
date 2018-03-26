@@ -278,12 +278,12 @@ export class Organization {
     uri: string;
     workingGroupOf: string;
 
-    validate() {
-        if (!this.cdeStatusValidationRules) this.cdeStatusValidationRules = [];
-        if (!this.classifications) this.classifications = [];
-        if (!this.nameContexts) this.nameContexts = [];
-        if (!this.nameTags) this.nameTags = [];
-        if (!this.propertyKeys) this.propertyKeys = [];
+    static validate(o: Organization) {
+        if (!o.cdeStatusValidationRules) o.cdeStatusValidationRules = [];
+        if (!o.classifications) o.classifications = [];
+        if (!o.nameContexts) o.nameContexts = [];
+        if (!o.nameTags) o.nameTags = [];
+        if (!o.propertyKeys) o.propertyKeys = [];
     }
 }
 

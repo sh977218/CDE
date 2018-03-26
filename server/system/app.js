@@ -6,6 +6,7 @@ const config = require('./parseConfig');
 const dbLogger = require('./dbLogger.js');
 const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
+const pushNotification = require('./pushNotification');
 const usersrvc = require('./usersrvc');
 const orgClassificationSvc = require('./orgClassificationSvc');
 const path = require('path');
@@ -294,6 +295,42 @@ exports.init = function (app) {
         });
     });
 
+    app.post('/pushRegistration', function (req, res) {
+        if (!req.user) {
+            return res.status(400).end('Error: must be logged in to use this feature.');
+        }
+        if (!pushNotification.isValidSaveRequest(req, res)) {
+            return res.status(400).end('Error: your browser does not support push notifications.');
+        }
+
+        req.body.userId = req.user._id;
+
+        mongo_data.updatePushRegistration(req.body, function (reg) {
+            if (!reg) {
+                return res.status(500).send('Error: adding push inbox registration.');
+            }
+            res.send(reg.features);
+        });
+    });
+
+    app.delete('/pushRegistration', function (req, res) {
+        if (req.user && req.body.endpoint) {
+            mongo_data.pushDelete(req.body.endpoint, req.user._id, err => {
+                if (err) res.status(500).end('Error: did not remove.');
+                else res.send();
+            });
+        } else {
+            res.status(400).end('Required parameters missing.')
+        }
+    });
+
+    app.post('/pushRegistrationUpdate', function (req, res) {
+        if (!req.body.endpoint) {
+            return res.status(400).end('Error: no subscription');
+        }
+        pushNotification.updateStatus(req, res);
+    });
+
     // delete org classification
     app.post('/orgClassificationDelete/', (req, res) => {
         let deleteClassification = req.body.deleteClassification;
@@ -304,7 +341,7 @@ exports.init = function (app) {
             if (err) return res.status(409).send("Error - delete classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.deleteOrgClassification(req.user, deleteClassification, settings, err => {
-                if (err) logging.log(err);
+                if (err) dbLogger.logError(err);
             });
             res.send("Deleting in progress.");
         });
@@ -321,7 +358,7 @@ exports.init = function (app) {
             if (err) return res.status(409).send("Error - rename classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.renameOrgClassification(req.user, newClassification, settings, err => {
-                if (err) logging.log(err);
+                if (err) dbLogger.logError(err);
             });
             res.send("Renaming in progress.");
         });
@@ -1023,6 +1060,10 @@ exports.init = function (app) {
 
     app.post('/feedback/report', function (req, res) {
         dbLogger.saveFeedback(req, function () {
+            mongo_data.getAdministratorPushRegistrations(registrations => {
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, req.body.feedback
+                    ? JSON.parse(req.body.feedback).note : ''));
+            });
             res.send({});
         });
     });
