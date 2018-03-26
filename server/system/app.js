@@ -1060,9 +1060,9 @@ exports.init = function (app) {
 
     app.post('/feedback/report', function (req, res) {
         dbLogger.saveFeedback(req, function () {
+            let note = req.body.feedback ? JSON.parse(req.body.feedback).note : '';
             mongo_data.getAdministratorPushRegistrations(registrations => {
-                registrations.forEach(r => pushNotification.triggerPushMsg(r, req.body.feedback
-                    ? JSON.parse(req.body.feedback).note : ''));
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, note));
             });
             res.send({});
         });

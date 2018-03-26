@@ -125,8 +125,7 @@ export class BoardViewComponent implements OnInit {
             let settings = this.esService.searchSettings;
             let csv = getCdeCsvHeader(settings.tableViewFields);
             response.elts.forEach(ele => {
-                csv += convertToCsv(
-                    projectCdeForExport(ele, settings.tableViewFields));
+                csv += convertToCsv(projectCdeForExport(ele, settings.tableViewFields));
             });
             if (csv) {
                 let blob = new Blob([csv], {
