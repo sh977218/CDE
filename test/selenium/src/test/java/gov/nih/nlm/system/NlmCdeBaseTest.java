@@ -137,9 +137,9 @@ public class NlmCdeBaseTest {
         }
         MutableCapabilities caps;
         if ("firefox".equals(b)) {
-            DesiredCapabilities desired = DesiredCapabilities.firefox();
-            desired.setBrowserName(b);
-            caps = desired;
+            DesiredCapabilities options = DesiredCapabilities.firefox();
+            options.setBrowserName(b);
+            caps = options;
         } else if ("chrome".equals(b)) {
             ChromeOptions options = new ChromeOptions();
             if (u != null) options.addArguments("--user-agent=googleBot");
@@ -148,15 +148,16 @@ public class NlmCdeBaseTest {
             options.setExperimentalOption("prefs", prefs);
             options.addArguments("disable-shared-workers");
             options.addArguments("start-maximized");
+            options.addArguments("unsafely-treat-insecure-origin-as-secure");
             caps = options;
         } else if ("ie".equals(b)) {
-            DesiredCapabilities desired = DesiredCapabilities.internetExplorer();
-            desired.setBrowserName(b);
-            caps = desired;
+            DesiredCapabilities options = DesiredCapabilities.internetExplorer();
+            options.setBrowserName(b);
+            caps = options;
         } else {
-            DesiredCapabilities desired = DesiredCapabilities.chrome();
-            desired.setBrowserName(b);
-            caps = desired;
+            DesiredCapabilities options = DesiredCapabilities.chrome();
+            options.setBrowserName(b);
+            caps = options;
         }
 
         LoggingPreferences loggingPreferences = new LoggingPreferences();
