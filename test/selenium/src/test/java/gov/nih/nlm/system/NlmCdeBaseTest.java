@@ -135,9 +135,11 @@ public class NlmCdeBaseTest {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver");
         }
-        DesiredCapabilities caps;
+        MutableCapabilities caps;
         if ("firefox".equals(b)) {
-            caps = DesiredCapabilities.firefox();
+            DesiredCapabilities desired = DesiredCapabilities.firefox();
+            desired.setBrowserName(b);
+            caps = desired;
         } else if ("chrome".equals(b)) {
             ChromeOptions options = new ChromeOptions();
             if (u != null) options.addArguments("--user-agent=googleBot");
@@ -146,19 +148,21 @@ public class NlmCdeBaseTest {
             options.setExperimentalOption("prefs", prefs);
             options.addArguments("disable-shared-workers");
             options.addArguments("start-maximized");
-            caps = DesiredCapabilities.chrome();
-            caps.setCapability(ChromeOptions.CAPABILITY, options);
+            caps = options;
         } else if ("ie".equals(b)) {
-            caps = DesiredCapabilities.internetExplorer();
+            DesiredCapabilities desired = DesiredCapabilities.internetExplorer();
+            desired.setBrowserName(b);
+            caps = desired;
         } else {
-            caps = DesiredCapabilities.chrome();
+            DesiredCapabilities desired = DesiredCapabilities.chrome();
+            desired.setBrowserName(b);
+            caps = desired;
         }
 
         LoggingPreferences loggingPreferences = new LoggingPreferences();
         loggingPreferences.enable(LogType.BROWSER, Level.ALL);
         caps.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
 
-        caps.setBrowserName(b);
         baseUrl = System.getProperty("testUrl");
         String hubUrl = System.getProperty("hubUrl");
 
