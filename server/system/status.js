@@ -78,12 +78,12 @@ app_status.isElasticUp = function(cb) {
     });
 };
 
-var startupDate = new Date();
+let startupDate = new Date();
 app_status.getStatus = function(done) {
     app_status.isElasticUp(function() {
         if (app_status.statusReport.elastic.up) {
             app_status.statusReport.elastic.indices = [];
-            var condition = {archived: false};
+            let condition = {archived: false};
             async.series([
                 function(done) {
                     mongo_cde.count(condition, function (err, deCount) {
@@ -123,19 +123,6 @@ app_status.getStatus = function(done) {
                             done();
                         });
                     });
-                },
-                function (done) {
-                    mongo_storedQuery.count({}, function (err, storedQueryCount) {
-                        esInit.indices[3].totalCount = storedQueryCount;
-                        app_status.checkElasticCount(storedQueryCount, config.elastic.storedQueryIndex.name, "storedquery", function (up, message) {
-                            app_status.statusReport.elastic.indices.push({
-                                name: config.elastic.storedQueryIndex.name,
-                                up: up,
-                                message: message
-                            });
-                            done();
-                        });
-                    });
                 }
             ], function() {
                 mongo_data_system.updateClusterHostStatus({
@@ -148,13 +135,13 @@ app_status.getStatus = function(done) {
     });
 };
 
-var currentActiveNodes;
-var lastReport;
+let currentActiveNodes;
+let lastReport;
 setInterval(function() {
     app_status.getStatus(function() {
-        var newReport = JSON.stringify(app_status.statusReport);
+        let newReport = JSON.stringify(app_status.statusReport);
         if (!!lastReport && newReport !== lastReport) {
-            var emailContent = {
+            let emailContent = {
                 subject: "ElasticSearch Status Change " + config.name
                 , body: newReport
             };

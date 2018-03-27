@@ -118,10 +118,6 @@ exports.daoMap = {
     "board": {
         condition: {},
         dao: mongo_board
-    },
-    "storedQuery": {
-        condition: {},
-        dao: mongo_storedQuery
     }
 };
 

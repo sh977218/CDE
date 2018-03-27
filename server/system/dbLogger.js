@@ -32,31 +32,6 @@ exports.consoleLog = function (message, level) {
     });
 };
 
-function sqEsUpdate(elt) {
-    if (elt) {
-        esInit.storedQueryRiverFunction(elt.toObject(), function (doc) {
-            if (doc) {
-                delete doc._id;
-                esClient.index({
-                    index: config.elastic.storedQueryIndex.name,
-                    type: "storedquery",
-                    id: elt._id.toString(),
-                    body: doc
-                }, function (err) {
-                    if (err) {
-                        exports.logError({
-                            message: "Unable to Index document: " + doc.tinyId,
-                            origin: "storedQuery.elastic.updateOrInsert",
-                            stack: err,
-                            details: ""
-                        });
-                    }
-                });
-            }
-        });
-    }
-}
-
 exports.storeQuery = function (settings, callback) {
     var storedQuery = {
         searchTerm: settings.searchTerm ? settings.searchTerm : ""
@@ -81,7 +56,6 @@ exports.storeQuery = function (settings, callback) {
                         {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
                         storedQuery,
                         function (err, newObject) {
-                            sqEsUpdate(newObject);
                             if (err) noDbLogger.noDbLogger.info(err);
                             if (callback) callback(err);
                         }
