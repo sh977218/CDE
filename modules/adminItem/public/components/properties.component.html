@@ -47,10 +47,10 @@
             <div class="form-group">
                 <label for="newValue">Value</label>
                 <div id="newValue">
-                    <button type="button" class="btn  btn-outline-dark btn-xs" (click)="newProperty.valueFormat = '';">
+                    <button type="button" class="btn btn-outline-dark btn-xs" (click)="newProperty.valueFormat = '';">
                         Plain Text
                     </button>
-                    <button type="button" class="btn  btn-outline-dark btn-xs" (click)="newProperty.valueFormat = 'html';">
+                    <button type="button" class="btn btn-outline-dark btn-xs" (click)="newProperty.valueFormat = 'html';">
                         Rich Text
                     </button>
                     <textarea name="definition" *ngIf="newProperty.valueFormat !== 'html'"
@@ -67,7 +67,7 @@
             </div>
         </div>
         <div class="modal-footer" id="newPropertyModalFooter">
-            <button class="btn  btn-outline-dark" (click)="c('Close click')" id="cancelNewPropertyBtn" type="button">
+            <button class="btn btn-outline-dark" (click)="c('Close click')" id="cancelNewPropertyBtn" type="button">
                 Cancel
             </button>
             <button class="btn  btn-warning" [disabled]="!newPropertyForm.form.valid" id="createNewPropertyBtn"

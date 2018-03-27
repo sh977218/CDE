@@ -19,6 +19,12 @@
                                          [isAllowed]="canEdit"
                                          (modelChange)="onEltChange.emit();"></cde-inline-edit>
                     </dd>
+                    <dt class="col-sm-5">Display Printable Logic:</dt>
+                    <dd class="col-sm-7 ">
+                        <input type="checkbox" [disabled]="!canEdit" id="displayType_{{index}}"
+                               [checked]="dPVM.profile.displayType === 'Follow-up'"
+                               (change)="setDisplayType(dPVM, $event)">
+                    </dd>
                     <dt class="col-sm-5">Sections as matrices:</dt>
                     <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="dPVM.profile.sectionsAsMatrix" [disabled]="!canEdit"
@@ -43,12 +49,6 @@
                     <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="dPVM.profile.displayNumbering" [disabled]="!canEdit"
                                id="displayNumbering_{{index}}" (change)="onEltChange.emit();">
-                    </dd>
-                    <dt class="col-sm-5">Display Printable Logic:</dt>
-                    <dd class="col-sm-7 ">
-                        <input type="checkbox" [disabled]="!canEdit" id="displayType_{{index}}"
-                               [checked]="dPVM.profile.displayType === 'Follow-up'"
-                               (change)="setDisplayType(dPVM, $event)">
                     </dd>
                     <dt class="col-sm-5">Number of Columns:</dt>
                     <dd class="col-sm-7 ">
@@ -78,7 +78,7 @@
                         <input class="form-control" [(ngModel)]="dPVM.profile.maxNumberAnswers" type="number" min="0"
                                [disabled]="!canEdit" id="displayMaxNumberAnswers_{{index}}"
                                (change)="onEltChange.emit();">
-                        (0 for displaying all answers as checkboxes)
+                        (0 for displaying all answers as checkbox/radio, effect )
                     </dd>
                 </dl>
             </div>
@@ -121,6 +121,7 @@
                 </div>
             </div>
         </div>
+        <hr/>
     </div>
     <button *ngIf="canEdit" class="btn   btn-outline-dark" value="add" (click)="addProfile()"
             id="addDisplayProfile"><i class="fa fa-plus"> </i> Add Profile
