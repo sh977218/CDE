@@ -144,6 +144,7 @@ public class NlmCdeBaseTest {
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
             options.setExperimentalOption("prefs", prefs);
+            options.addArguments("disable-shared-workers");
             options.addArguments("start-maximized");
             caps = DesiredCapabilities.chrome();
             caps.setCapability(ChromeOptions.CAPABILITY, options);

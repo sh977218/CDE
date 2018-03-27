@@ -159,6 +159,21 @@ schemas.orgJson = orgJson;
 
 schemas.orgSchema = new mongoose.Schema(orgJson);
 
+schemas.pushRegistration = new mongoose.Schema({
+    loggedIn: Boolean,
+    subscription: {
+        endpoint: String,
+        expirationTime: String,
+        keys: {
+            auth: String,
+            p256dh: String
+        }
+    },
+    userId: String,
+    features: [String],
+});
+schemas.pushRegistration.set('collection', 'pushRegistration');
+
 schemas.userSchema = new mongoose.Schema({
     username: {type: String, unique: true},
     email: String,
@@ -201,7 +216,8 @@ schemas.userSchema = new mongoose.Schema({
     },
     accessToken: String,
     refreshToken: String,
-    avatarUrl: String, publishedForms: [{
+    avatarUrl: String,
+    publishedForms: [{
         name: String,
         id: mongoose.Schema.Types.ObjectId
     }]
@@ -416,13 +432,13 @@ schemas.meshClassification = new mongoose.Schema({
     flatTrees: [String]
 });
 
-schemas.consoleLogSchema = new mongoose.Schema({
+schemas.consoleLogSchema = new mongoose.Schema({ // everything server except express
     date: {type: Date, index: true, default: Date.now()},
     message: String,
     level: {type: String, enum: ['debug', 'info', 'warning', 'error'], default: 'info'}
 }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
 
-schemas.logSchema = new mongoose.Schema({
+schemas.logSchema = new mongoose.Schema({ // express
     level: String,
     remoteAddr: {type: String, index: true},
     url: String,
@@ -433,10 +449,12 @@ schemas.logSchema = new mongoose.Schema({
     responseTime: {type: Number, index: true}
 }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
 
-schemas.logErrorSchema = new mongoose.Schema({
+schemas.logErrorSchema = new mongoose.Schema({ // everything server and express
     message: String,
     date: {type: Date, index: true},
-    origin: String, stack: String, details: String,
+    details: String,
+    origin: String,
+    stack: String,
     request: {
         url: String,
         method: String,

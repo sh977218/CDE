@@ -1,16 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
+import { PushNotificationSubscriptionService } from '_app/PushNotificationSubscriptionService';
+import { User } from 'shared/models.model';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
 
 
 @Injectable()
 export class UserService {
-    private promise: Promise<void>;
-    searchTypeahead = (text$: Observable<string>) =>
+    private promise: Promise<User>;
+    searchTypeahead = ((text$: Observable<string>) =>
         text$.pipe(
             debounceTime(300),
             distinctUntilChanged(),
@@ -20,9 +23,9 @@ export class UserService {
                     catchError(() => of([]))
                 )
             )
-        )
-    user: any;
-    userOrgs: any[] = [];
+        ));
+    user: User;
+    userOrgs: string[] = [];
 
     constructor(
         private http: HttpClient,
@@ -38,20 +41,19 @@ export class UserService {
         }[c.element.eltType] + c.element.eltId;
     }
 
-    reload () {
-        this.promise = new Promise<void>(resolve => {
-            this.http.get('/user/me').subscribe(response => {
+    reload() {
+        this.promise = new Promise<User>((resolve, reject) => {
+            this.http.get<User>('/user/me').subscribe(response => {
                 this.user = response;
                 this.setOrganizations();
-                this.http.get<any>('/mailStatus').subscribe(response => {
-                    if (response.count > 0) this.user.hasMail = true;
-                }, () => {});
-                resolve();
-            }, () => {});
+                this.http.get<any>('/mailStatus').subscribe(response => this.user.hasMail = response.count > 0);
+                resolve(this.user);
+            }, reject);
         });
+        this.promise.then(user => PushNotificationSubscriptionService.subscriptionServerUpdate(user && user._id).catch(_noop));
     }
 
-    setOrganizations () {
+    setOrganizations() {
         if (this.user.orgAdmin) {
             this.userOrgs = this.user.orgAdmin.slice(0);
             this.user.orgCurator.forEach(c => {
@@ -60,7 +62,7 @@ export class UserService {
         }
     }
 
-    then (cb) {
+    then(cb): Promise<User> {
         return this.promise.then(cb);
     }
 }

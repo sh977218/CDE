@@ -1,11 +1,14 @@
-import { Component, OnInit } from "@angular/core";
-import "feedback/stable/2.0/html2canvas.js";
-import "feedback/stable/2.0/feedback.js";
-import "feedback/stable/2.0/feedback.min.css";
+import { Component, OnInit } from '@angular/core';
+import 'feedback/stable/2.0/html2canvas.js';
+import 'feedback/stable/2.0/feedback.js';
+import 'feedback/stable/2.0/feedback.min.css';
+
 import { BackForwardService } from '_app/backForward.service';
+import { UserService } from '_app/user.service';
+import { PushNotificationSubscriptionService } from '_app/PushNotificationSubscriptionService';
 
 @Component({
-    selector: "nih-cde",
+    selector: 'nih-cde',
     template: `
         <cde-navigation></cde-navigation>
         <router-outlet></router-outlet>
@@ -71,7 +74,15 @@ export class CdeAppComponent implements OnInit {
             highlightElement: false,
             initialBox: true
         });
+
+        window.addEventListener('load', () => {
+            if ('serviceWorker' in navigator) {
+                this.userService.then(user => {
+                    PushNotificationSubscriptionService.updateExisting(user._id);
+                });
+            }
+        });
     }
 
-    constructor(backForwardService: BackForwardService) {}
+    constructor(backForwardService: BackForwardService, private userService: UserService) {}
 }

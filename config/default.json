@@ -142,12 +142,18 @@
   "pmRunOnStartup": [],
   "multer": {"inMemory": true},
   "prodDump": {
-    "enabled": true
-  , "url": "https://local-cde-1.nlm.nih.gov/cde/public/assets/dailyDump.tz"
+    "enabled": true,
+    "url": "https://local-cde-1.nlm.nih.gov/cde/public/assets/dailyDump.tz"
+  },
+  "pmNodeProcess": "node",
+  "captchaCode" : "Override actual here.",
+  "siteKey" : "6LdAmh4TAAAAABf_PCxKsd4ikR-S5pSSa25PGqUV",
+  "useCaptcha" : true,
+  "sessionKey":  "Kfji76R",
+  "webpush": {
+    "vapidKeys": {
+      "publicKey": 'BMkcEZwp4FAtBNKF46gUMZsu9AU7Xpi5lbWR_Q0ng-Pm2uSznyjCO9_pBOsOown3WaNlQPR6GhwNdB5W0TisO5M',
+      "privateKey": 'KdsCVQ3PgL8Lck7iuMBABSVelhrYQbLFzD4ARUvZloc'
+    }
   }
-  , "pmNodeProcess": "node"
-  , "captchaCode" : "Override actual here."
-  , "siteKey" : "6LdAmh4TAAAAABf_PCxKsd4ikR-S5pSSa25PGqUV"
-  , "useCaptcha" : true
-  , "sessionKey":  "Kfji76R"
 }

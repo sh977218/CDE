@@ -8,9 +8,9 @@ import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { Comment } from 'shared/models.model';
 import { OrgHelperService } from 'core/orgHelper.service';
-import { SharedService } from '_commonApp/shared.service';
+import { Comment } from 'shared/models.model';
+import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'shared/system/exportShared';
 
 
 @Component({
@@ -123,10 +123,9 @@ export class BoardViewComponent implements OnInit {
     exportBoard() {
         this.http.get<any>('/board/' + this.board._id + '/0/500/?type=csv').subscribe(response => {
             let settings = this.esService.searchSettings;
-            let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
+            let csv = getCdeCsvHeader(settings.tableViewFields);
             response.elts.forEach(ele => {
-                csv += SharedService.exportShared.convertToCsv(
-                    SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
+                csv += convertToCsv(projectCdeForExport(ele, settings.tableViewFields));
             });
             if (csv) {
                 let blob = new Blob([csv], {
@@ -191,9 +190,9 @@ export class BoardViewComponent implements OnInit {
                     });
                 });
 
-                this.userService.then(() => {
+                this.userService.then(user => {
                     this.board.users.forEach(u => {
-                        if (u.username === this.userService.user.username &&
+                        if (u.username === user.username &&
                             u.role === 'reviewer' && u.status.approval === 'approved' &&
                             new Date(this.board.updatedDate) >= new Date(u.status.reviewedDate)) {
                             this.isModifiedSinceReview = true;
@@ -201,7 +200,7 @@ export class BoardViewComponent implements OnInit {
                     });
                     this.canReview = this.isReviewActive() &&
                         this.board.users.filter(
-                            u => u.role === 'reviewer' && u.username && u.username.toLowerCase() === this.userService.user.username.toLowerCase()
+                            u => u.role === 'reviewer' && u.username && u.username.toLowerCase() === user.username.toLowerCase()
                         ).length > 0;
                 });
 

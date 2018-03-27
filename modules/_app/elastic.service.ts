@@ -4,9 +4,9 @@ import { LocalStorageService } from 'angular-2-local-storage';
 
 import { UserService } from '_app/user.service';
 import { ElasticQueryResponse } from 'shared/models.model';
-import { SharedService } from '_commonApp/shared.service';
-import { CdeFormElastic } from 'shared/form/form.model';
 import { DataElementElastic } from 'shared/de/dataElement.model';
+import { CdeFormElastic } from 'shared/form/form.model';
+import { orderedList } from 'shared/system/regStatusShared';
 
 @Injectable()
 export class ElasticService {
@@ -196,7 +196,7 @@ export class ElasticService {
 
     getUserDefaultStatuses() {
         let overThreshold = false;
-        let result = SharedService.regStatusShared.orderedList.filter(status => {
+        let result = orderedList.filter(status => {
             if (overThreshold) return false;
             overThreshold = this.searchSettings.lowestRegistrationStatus === status;
             return true;
@@ -210,8 +210,7 @@ export class ElasticService {
             this.searchSettings = this.localStorageService.get("SearchSettings");
             if (!this.searchSettings) this.searchSettings = this.getDefault();
 
-            this.userService.then(() => {
-                let user = this.userService.user;
+            this.userService.then(user => {
                 if (user.username) {
                     if (!user.searchSettings) {
                         user.searchSettings = this.getDefault();

@@ -9,7 +9,7 @@ import { CompareService } from 'core/compare.service';
 let compareArrayOption = [
     {
         label: "Reference Documents",
-        equal: function (a, b) {
+        isEqual: function (a, b) {
             if (_isEmpty(a.diff)) a.diff = [];
             if (_isEmpty(b.diff)) b.diff = [];
             let result = _isEqual(a.title, b.title);

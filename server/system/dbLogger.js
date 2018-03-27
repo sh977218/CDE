@@ -24,7 +24,7 @@ var StoredQueryModel = mongo_storedQuery.StoredQueryModel;
 var FeedbackModel = conn.model('FeedbackIssue', schemas_system.feedbackIssueSchema);
 var consoleLogModel = conn.model('consoleLogs', schemas_system.consoleLogSchema);
 
-exports.consoleLog = function (message, level) {
+exports.consoleLog = function (message, level) { // no express errors see dbLogger.log(message)
     new consoleLogModel({
         message: message, level: level
     }).save(err => {
@@ -70,7 +70,7 @@ exports.storeQuery = function (settings, callback) {
     }
 };
 
-exports.log = function (message, callback) {
+exports.log = function (message, callback) { // express only, all others dbLogger.consoleLog(message);
     if (isNaN(message.responseTime)) {
         delete message.responseTime;
     }
@@ -83,7 +83,7 @@ exports.log = function (message, callback) {
     }
 };
 
-exports.logError = function (message, callback) {
+exports.logError = function (message, callback) { // all server errors, express and not
     message.date = new Date();
     var logEvent = new LogErrorModel(message);
     logEvent.save(function (err) {
