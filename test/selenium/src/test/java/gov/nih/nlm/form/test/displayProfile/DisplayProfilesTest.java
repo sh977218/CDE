@@ -23,7 +23,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic", 6, true, 0);
         createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Follow-up", 1, false, 0);
         createDisplayProfile(3, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5, false, 0);
-        createDisplayProfile(4, "multiple select", false, false, false, false, "Follow-up", 5, false, 3);
+        createDisplayProfile(4, "Multiple Select", false, false, false, false, "Dynamic", 5, false, 3);
         scrollToTop();
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
         textPresent("1", By.xpath("//div[@id='profile_0']//table/tbody/tr[1]/td[6]/span"));
@@ -66,8 +66,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         Assert.assertEquals(findElement(By.xpath("//*[*[normalize-space()='I was irritated more than people knew']]//*[normalize-space(.)='Never']")).getLocation().y,
                 findElement(By.xpath("//*[*[normalize-space()='I was irritated more than people knew']]//*[normalize-space(.)='Always']")).getLocation().y
         );
-        
-        selectDisplayProfileByName("multiple select");
+
+        selectDisplayProfileByName("Multiple Select");
         hangon(1);
         new Select(findElement(By.xpath("///div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Never");
         new Select(findElement(By.xpath("///div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Rarely");
