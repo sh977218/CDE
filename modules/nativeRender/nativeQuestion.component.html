@@ -24,11 +24,6 @@
                 <ng-container [ngSwitch]="formElement.question.datatype">
                     <ng-container *ngSwitchCase="'Value List'">
                         <div class="row">
-                            <div>
-                                nrs.profile.maxNumberAnswers: {{nrs.profile.maxNumberAnswers}}
-                                formElement.question.answers.length: {{formElement.question.answers.length}}
-                                formElement.question.multiselect:{{formElement.question.multiselect}}
-                            </div>
                             <ng-container
                                     *ngIf="nrs.profile.displayType === 'Follow-up' || !nrs.profile?.maxNumberAnswers">
                                 <div *ngFor="let pv of formElement.question.answers; let i = index"
@@ -87,7 +82,6 @@
                             <ng-container
                                     *ngIf="nrs.profile.displayType !== 'Follow-up' && nrs.profile?.maxNumberAnswers > 0">
                                 <ng-container *ngIf="formElement.question.multiselect">
-                                    1111
                                     <select multiple [(ngModel)]="formElement.question.answer">
                                         <option *ngFor="let pv of formElement.question.answers"
                                                 [value]="pv.permissibleValue">{{pv.valueMeaningName}}
@@ -95,7 +89,6 @@
                                     </select>
                                 </ng-container>
                                 <ng-container *ngIf="!formElement.question.multiselect">
-                                    2222
                                     <select [(ngModel)]="formElement.question.answer">
                                         <option *ngFor="let pv of formElement.question.answers"
                                                 [value]="pv.permissibleValue">{{pv.valueMeaningName}}

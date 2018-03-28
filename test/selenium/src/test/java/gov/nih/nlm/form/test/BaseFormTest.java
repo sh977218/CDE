@@ -193,7 +193,7 @@ public class BaseFormTest extends FormCommentTest {
 
 
     protected void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions,
-                                        boolean numbering, String dispType, int numberOfColumns, boolean displayInvisible) {
+                                        boolean numbering, String dispType, int numberOfColumns, boolean displayInvisible, int maxNumberAnswers) {
         textPresent("Add Profile");
         clickElement(By.id("addDisplayProfile"));
         clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//i[@title='Edit']"));
@@ -209,6 +209,11 @@ public class BaseFormTest extends FormCommentTest {
         new Select(findElement(By.id("nc_" + index))).selectByVisibleText(String.valueOf(numberOfColumns));
 
         if (displayInvisible) clickElement(By.id("displayInvisible_" + index));
+
+        if (maxNumberAnswers >= 0) {
+            findElement(By.id("displayMaxNumberAnswers_" + index)).clear();
+            findElement(By.id("displayMaxNumberAnswers_" + index)).sendKeys(String.valueOf(maxNumberAnswers));
+        }
     }
 
 }

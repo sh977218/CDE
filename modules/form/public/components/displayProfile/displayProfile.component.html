@@ -16,8 +16,8 @@
                     <dt class="col-sm-5">Name:</dt>
                     <dd id="dd_origin_nlm" class="col-sm-7 ">
                         <cde-inline-edit id="profileNameEdit_{{index}}" [(model)]="dPVM.profile.name"
-                                         [isAllowed]="canEdit"
-                                         (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                                         [isAllowed]="canEdit" (modelChange)="onEltChange.emit();">
+                        </cde-inline-edit>
                     </dd>
                     <dt class="col-sm-5">Display Printable Logic:</dt>
                     <dd class="col-sm-7 ">
