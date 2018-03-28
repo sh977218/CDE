@@ -28,12 +28,18 @@ exports.isValidSaveRequest = (req, res) => {
 exports.triggerPushMsg = (pushReg, dataToSend) => {
     return webpush.sendNotification(pushReg.subscription, dataToSend)
         .catch(err => {
+            console.log(err);
             if (err.name === 'WebPushError' && err.message === 'Received unexpected response code') { // endpoint gone
                 pushReg.remove()
                     // .then(() => dbLogger.consoleLog('PushNotification trigger removed: ' + pushReg.userId + ' ' + pushReg.subscription.endpoint))
                     .catch(dbLogger.logError);
             } else { // currently unknown error
-                dbLogger.logError(err);
+                dbLogger.logError({
+                    message: "Error pushing notification: " + dataToSend,
+                    origin: "pushNotification.triggerPushMsg",
+                    stack: err,
+                    details: ""
+                });
             }
         });
 };

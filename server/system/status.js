@@ -1,17 +1,17 @@
-var config = require('./parseConfig')
-    , mongo_cde = require('../cde/mongo-cde')
-    , mongo_form = require('../form/mongo-form')
-    , mongo_board = require('../board/mongo-board')
-    , mongo_storedQuery = require('../cde/mongo-storedQuery')
-    , mongo_data_system = require('./mongo-data')
-    , elastic = require('./elastic')
-    , esInit = require('./elasticSearchInit')
-    , email = require('./email')
-    , async = require('async')
-    , moment = require('moment')
-;
+const config = require('./parseConfig');
+const mongo_cde = require('../cde/mongo-cde');
+const mongo_form = require('../form/mongo-form');
+const mongo_board = require('../board/mongo-board');
+const mongo_storedQuery = require('../cde/mongo-storedQuery');
+const mongo_data_system = require('./mongo-data');
+const elastic = require('./elastic');
+const esInit = require('./elasticSearchInit');
+const email = require('./email');
+const async = require('async');
+const moment = require('moment');
+const pushNotification = require('./pushNotification');
 
-var app_status = this;
+let app_status = this;
 
 app_status.statusReport = {
     elastic: {
@@ -137,30 +137,49 @@ app_status.getStatus = function(done) {
 
 let currentActiveNodes;
 let lastReport;
-setInterval(function() {
-    app_status.getStatus(function() {
+setInterval(() => {
+    app_status.getStatus(() => {
         let newReport = JSON.stringify(app_status.statusReport);
         if (!!lastReport && newReport !== lastReport) {
             let emailContent = {
                 subject: "ElasticSearch Status Change " + config.name
                 , body: newReport
             };
-            mongo_data_system.siteadmins(function(err, users) {
-                email.emailUsers(emailContent, users, function() {});
+            console.log("ERROR NEED TO SENT TO ADMINS");
+
+            let msg = {
+                title: 'Elastic Search Index Issue',
+                options: {
+                    body: ("Status reports not normal"),
+                    icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
+                    badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+                    tag: 'cde-es-issue',
+                    actions: [
+                        {
+                            action: 'site-mgt-action',
+                            title: 'View',
+                            icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+                        }
+                    ]
+                }
+            };
+
+            mongo_data_system.getAdministratorPushRegistrations(registrations => {
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
             });
+
         }
         lastReport = newReport;
 
-        var timeDiff = config.status.timeouts.statusCheck / 1000 + 30;
+        let timeDiff = config.status.timeouts.statusCheck / 1000 + 30;
         mongo_data_system.getClusterHostStatuses(function (err, statuses) {
-            var now = moment();
-            var activeNodes = statuses.filter( function (s) {
-                return now.diff(moment(s.lastUpdate), 'seconds') < timeDiff;
-            }).map( s => s.hostname + ":" + s.port).sort();
+            let now = moment();
+            let activeNodes = statuses.filter(s => now.diff(moment(s.lastUpdate), 'seconds') < timeDiff)
+                .map( s => s.hostname + ":" + s.port).sort();
             if (!currentActiveNodes) currentActiveNodes = activeNodes;
             else {
                 if (!(currentActiveNodes.length === activeNodes.length && currentActiveNodes.every ((v,i)=> v === activeNodes[i]))) {
-                    var emailContent = {
+                    let emailContent = {
                         subject: "Server Configuration Change"
                         , body: "Server Configuration Change from " + currentActiveNodes + " to " + activeNodes
                     };
