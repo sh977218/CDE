@@ -33,6 +33,17 @@ const _ = require('lodash');
 const ejs = require('ejs');
 const useragent = require('useragent');
 
+function loggedInMiddleware(req, res, next) {
+    if (!req.user) {
+        // TODO: should consider adding to error log
+        return res.status(401).send();
+    }
+    if (next) {
+        next();
+    }
+}
+exports.loggedInMiddleware = loggedInMiddleware;
+
 exports.init = function (app) {
     let getRealIp = function (req) {
         if (req._remoteAddress) return req._remoteAddress;
@@ -297,45 +308,10 @@ exports.init = function (app) {
         });
     });
 
-    app.post('/pushRegistration', function (req, res) {
-        if (!req.user) {
-            return res.status(401).send();
-        }
-        if (!pushNotification.isValidSaveRequest(req, res)) {
-            return res.status(400).send('Error: your browser does not support push notifications.');
-        }
-
-        req.body.userId = req.user._id;
-
-        mongo_data.updatePushRegistration(req.body, (err, registration) => {
-            if (err || !registration) {
-                pushNotification.processError(res, err, 'Error: adding push inbox registration.');
-                return;
-            }
-            res.send(registration.features);
-        });
-    });
-
-    app.delete('/pushRegistration', function (req, res) {
-        if (req.user && req.body.endpoint) {
-            mongo_data.pushDelete(req.body.endpoint, req.user._id, err => {
-                if (err) {
-                    pushNotification.processError(res, err, 'Error: did not remove.');
-                    return;
-                }
-                res.send();
-            });
-        } else {
-            res.status(400).send('Required parameters missing.')
-        }
-    });
-
-    app.post('/pushRegistrationUpdate', function (req, res) {
-        if (!req.body.endpoint) {
-            return res.status(400).send('Error: no subscription');
-        }
-        pushNotification.updateStatus(req, res);
-    });
+    app.post('/pushRegistration', [loggedInMiddleware], pushNotification.create);
+    app.delete('/pushRegistration', [loggedInMiddleware], pushNotification.delete);
+    app.post('/pushRegistrationSubscribe', [loggedInMiddleware], pushNotification.subscribe);
+    app.post('/pushRegistrationUpdate', pushNotification.updateStatus);
 
     // delete org classification
     app.post('/orgClassificationDelete/', (req, res) => {
@@ -1067,7 +1043,7 @@ exports.init = function (app) {
     app.post('/feedback/report', function (req, res) {
         dbLogger.saveFeedback(req, function () {
             let note = req.body.feedback ? JSON.parse(req.body.feedback).note : '';
-            mongo_data.getAdministratorPushRegistrations(registrations => {
+            mongo_data.pushGetAdministratorRegistrations(registrations => {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, note));
             });
             res.send({});

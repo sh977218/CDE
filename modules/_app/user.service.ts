@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
-import { PushNotificationSubscriptionService } from '_app/PushNotificationSubscriptionService';
+import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { User } from 'shared/models.model';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
 

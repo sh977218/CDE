@@ -5,7 +5,7 @@ import 'feedback/stable/2.0/feedback.min.css';
 
 import { BackForwardService } from '_app/backForward.service';
 import { UserService } from '_app/user.service';
-import { PushNotificationSubscriptionService } from '_app/PushNotificationSubscriptionService';
+import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 
 @Component({
     selector: 'nih-cde',
@@ -76,7 +76,7 @@ export class CdeAppComponent implements OnInit {
         });
 
         window.addEventListener('load', () => {
-            if (window.location.protocol === 'https:' && 'serviceWorker' in navigator) {
+            if ((window.location.protocol === 'https:' || window.location.hostname === 'localhost') && 'serviceWorker' in navigator) {
                 this.userService.then(user => {
                     PushNotificationSubscriptionService.updateExisting(user._id);
                 });

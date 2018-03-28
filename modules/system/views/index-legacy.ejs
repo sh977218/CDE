@@ -83,7 +83,7 @@
 <![endif]-->
 
 <script type="text/javascript">
-    if (window.location.protocol === 'https:' && 'serviceWorker' in navigator) {
+    if ((window.location.protocol === 'https:' || window.location.hostname === 'localhost') && 'serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             navigator.serviceWorker.register('/sw.js').then(function(registration) {}, function(err) {});
         });

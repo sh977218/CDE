@@ -1,35 +1,37 @@
-const schemas = require('./schemas');
-const mongoose = require('mongoose');
-const config = require('./parseConfig');
-const Grid = require('gridfs-stream');
-const connHelper = require('./connections');
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
-const shortid = require("shortid");
-const logging = require('./logging.js');
-const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
-const daoManager = require('./moduleDaoManager');
-const async = require('async');
 const _ = require('lodash');
+const async = require('async');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const shortid = require('shortid');
+const Grid = require('gridfs-stream');
+const MongoStore = require('connect-mongo')(session);
+
+const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
+const connHelper = require('./connections');
 const dbLogger = require('./dbLogger');
+const logging = require('./logging.js');
+const daoManager = require('./moduleDaoManager');
+const config = require('./parseConfig');
+const schemas = require('./schemas');
 
 
-var conn = connHelper.establishConnection(config.database.appData),
-    Org = conn.model('Org', schemas.orgSchema),
-    PushRegistration = conn.model('PushRegistration', schemas.pushRegistration),
-    User = conn.model('User', schemas.userSchema),
-    Message = conn.model('Message', schemas.message),
-    MeshClassification = conn.model('meshClassification', schemas.meshClassification),
-    ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema),
-    ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus),
-    JobQueue = conn.model('JobQueue', schemas.jobQueue),
-    Embeds = conn.model('Embed', schemas.embedSchema),
-    Comment = conn.model('Comment', schemas.commentSchema),
-    gfs = Grid(conn.db, mongoose.mongo),
-    sessionStore = new MongoStore({
-        mongooseConnection: conn,
-        touchAfter: 3600
-    });
+const conn = connHelper.establishConnection(config.database.appData);
+const ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus);
+const Comment = conn.model('Comment', schemas.commentSchema);
+const Embeds = conn.model('Embed', schemas.embedSchema);
+const JobQueue = conn.model('JobQueue', schemas.jobQueue);
+const Message = conn.model('Message', schemas.message);
+const MeshClassification = conn.model('meshClassification', schemas.meshClassification);
+const Org = conn.model('Org', schemas.orgSchema);
+const PushRegistration = conn.model('PushRegistration', schemas.pushRegistration);
+const User = conn.model('User', schemas.userSchema);
+const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema);
+
+const gfs = Grid(conn.db, mongoose.mongo);
+const sessionStore = new MongoStore({
+    mongooseConnection: conn,
+    touchAfter: 3600
+});
 
 exports.sessionStore = sessionStore;
 exports.Message = Message;
@@ -133,30 +135,28 @@ exports.orgNames = function (callback) {
     Org.find({}, {name: true, _id: false}).exec(callback);
 };
 
-exports.getAdministratorPushRegistrations = function(callback) {
-    User.find({siteAdmin: true}).exec((err, users) => {
-        let userIds = users.map(u => u._id.toString());
-        PushRegistration.find({}).exec((err, registrations) => {
-            callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
-        });
-    });
+exports.pushesByEndpoint = function (endpoint, callback) {
+    PushRegistration.find({'subscription.endpoint': endpoint}, callback);
 };
 
-exports.updatePushRegistration = function (reg, callback) {
-    this.pushByIds(reg.endpoint, reg.userId, (err, registration) => {
-        if (err || registration) {
-            return callback(err, registration);
-        }
-
-        reg.loggedIn = true;
-        new PushRegistration(reg).save(callback);
-    });
+exports.pushById = function (id, callback) {
+    PushRegistration.findOne({_id: id}, callback);
 };
+
 exports.pushByIds = function (endpoint, userId, callback) {
     PushRegistration.findOne({'subscription.endpoint': endpoint, userId: userId}, callback);
 };
+
 exports.pushByIdsCount = function (endpoint, userId, callback) {
     PushRegistration.count({'subscription.endpoint': endpoint, userId: userId}, callback);
+};
+
+exports.pushByPublicKey = function (publicKey, callback) {
+    PushRegistration.findOne({'vapidKeys.publicKey': publicKey}, callback);
+};
+
+exports.pushCreate = function (push, callback) {
+    new PushRegistration(push).save(callback);
 };
 
 exports.pushDelete = function (endpoint, userId, callback) {
@@ -170,6 +170,15 @@ exports.pushDelete = function (endpoint, userId, callback) {
 
 exports.pushEndpointUpdate = function (endpoint, commandObj, callback) {
     PushRegistration.update({'subscription.endpoint': endpoint}, commandObj, {multi: true}, callback);
+};
+
+exports.pushGetAdministratorRegistrations = function(callback) {
+    User.find({siteAdmin: true}).exec((err, users) => {
+        let userIds = users.map(u => u._id.toString());
+        PushRegistration.find({}).exec((err, registrations) => {
+            callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
+        });
+    });
 };
 
 exports.userByName = function (name, callback) {
