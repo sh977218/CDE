@@ -39,22 +39,23 @@ export class PushNotificationSubscriptionService {
             });
     }
 
-    static getEndpoint(): Promise<void> {
+    static async getEndpoint(): Promise<void> {
         if (this.lastEndpoint) {
             return Promise.resolve();
         } else {
-            // generate new endpoint
-            return this.registration.then(registration => {
-                return registration.pushManager.getSubscription()
-                    .then((pushSubscription: PushSubscription) => {
-                        if (pushSubscription && pushSubscription.endpoint) {
-                            this.lastEndpoint = pushSubscription.endpoint;
-                            return Promise.resolve();
-                        } else {
-                            return Promise.reject('No subscription.');
-                        }
-                    });
-            });
+            try {
+                // generate new endpoint
+                let registration = await this.registration;
+                let pushSubscription: PushSubscription = await registration.pushManager.getSubscription();
+                if (pushSubscription && pushSubscription.endpoint) {
+                    this.lastEndpoint = pushSubscription.endpoint;
+                    return Promise.resolve();
+                } else {
+                    return Promise.reject('No subscription.');
+                }
+            } catch (e) {
+                return this.fetchError(e);
+            }
         }
     }
 
@@ -87,65 +88,65 @@ export class PushNotificationSubscriptionService {
         return PushNotificationSubscriptionService.lastEndpoint && !!PushNotificationSubscriptionService.lastUser;
     }
 
-    static subscriptionDelete(userId: string): Promise<void> {
+    static async subscriptionDelete(userId: string): Promise<void> {
         if (userId && this.lastEndpoint && this.lastUser) {
-            return fetch('./pushRegistration', {
-                method: 'delete',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    endpoint: this.lastEndpoint,
-                    features: ['all']
-                }),
-            })
-                .then(() => {
-                    this.lastEndpoint = '';
-                    this.lastUser = '';
-                    return Promise.resolve();
-                }, this.fetchError);
+            try {
+                await fetch('./pushRegistration', {
+                    method: 'delete',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        endpoint: this.lastEndpoint,
+                        features: ['all']
+                    }),
+                });
+                this.lastEndpoint = '';
+                this.lastUser = '';
+                return Promise.resolve();
+            } catch (e) {
+                return this.fetchError(e);
+            }
         } else {
             return Promise.reject('Not Subscribed');
         }
     }
 
-    static subscriptionNew(userId: string): Promise<PushSubscription> {
-        return this.askNotificationPermission().then(() => {
-            return this.registration.then(registration => {
-                return registration.pushManager.getSubscription().then((pushSubscription: PushSubscription) => {
-                    return fetch('./pushRegistration', {
-                        method: 'post',
-                        headers: {
-                            'Content-type': 'application/json',
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify({
-                            features: ['all'],
-                            subscription: pushSubscription,
-                        }),
-                    })
-                        .then((res: Response) => res.json(), this.fetchError)
-                        .then(res => {
-                            if (res.subscribed) {
-                                return pushSubscription;
-                            }
-                            if (!res.applicationServerKey) {
-                                return Promise.reject('');
-                            }
-                            if (pushSubscription) {
-                                return pushSubscription.unsubscribe().then(() => {
-                                    PushNotificationSubscriptionService.subscriptionNewCreate(registration, res.applicationServerKey, userId);
-                                });
-                            }
-                            return PushNotificationSubscriptionService.subscriptionNewCreate(registration, res.applicationServerKey, userId);
-                        });
-                });
+    static async subscriptionNew(userId: string): Promise<PushSubscription> {
+        try {
+            await this.askNotificationPermission();
+            let registration = await this.registration;
+            let pushSubscription: PushSubscription = await registration.pushManager.getSubscription();
+            let response: Response = await fetch('./pushRegistration', {
+                method: 'post',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    features: ['all'],
+                    subscription: pushSubscription,
+                }),
             });
-        });
+            let res = await response.json();
+            if (res.subscribed) {
+                return pushSubscription;
+            }
+            if (!res.applicationServerKey) {
+                return Promise.reject('');
+            }
+            if (pushSubscription) {
+                await pushSubscription.unsubscribe();
+                return PushNotificationSubscriptionService.subscriptionNewCreate(registration, res.applicationServerKey, userId);
+            }
+            return PushNotificationSubscriptionService.subscriptionNewCreate(registration, res.applicationServerKey, userId);
+        } catch (e) {
+            return this.fetchError(e);
+        }
     }
 
-    static subscriptionNewCreate(registration, applicationServerKey, userId) {
+    static async subscriptionNewCreate(registration, applicationServerKey, userId) {
         function urlBase64ToUint8Array(base64String) {
             const padding = '='.repeat((4 - base64String.length % 4) % 4);
             const base64 = (base64String + padding)
@@ -155,83 +156,81 @@ export class PushNotificationSubscriptionService {
             const rawData = window.atob(base64);
             return Uint8Array.from(Array.from(rawData).map((char) => char.charCodeAt(0)));
         }
-        return registration.pushManager.subscribe({
-            applicationServerKey: urlBase64ToUint8Array(applicationServerKey),
-            userVisibleOnly: true,
-        })
-            .then((pushSubscription: PushSubscription) => {
-                if (!pushSubscription || !pushSubscription.getKey || !pushSubscription.endpoint) {
-                    return;
-                }
-                fetch('./pushRegistrationSubscribe', {
-                    method: 'post',
-                    headers: {
-                        'Content-type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        applicationServerKey: applicationServerKey,
-                        features: ['all'],
-                        subscription: pushSubscription,
-                    }),
-                })
-                    .then(() => {
-                        this.lastEndpoint = pushSubscription.endpoint;
-                        this.lastUser = userId;
-                    }, this.fetchError);
-                return pushSubscription;
+        try {
+            let pushSubscription: PushSubscription = await registration.pushManager.subscribe({
+                applicationServerKey: urlBase64ToUint8Array(applicationServerKey),
+                userVisibleOnly: true,
             });
-    }
-
-    static subscriptionServerUpdate(userId): Promise<void> {
-        if (this.lastEndpoint) {
-            return fetch('./pushRegistrationUpdate', {
+            if (!pushSubscription || !pushSubscription.getKey || !pushSubscription.endpoint) {
+                return;
+            }
+            await fetch('./pushRegistrationSubscribe', {
                 method: 'post',
                 headers: {
-                    'Content-type': 'application/json'
+                    'Content-type': 'application/json',
                 },
                 credentials: 'include',
                 body: JSON.stringify({
-                    endpoint: this.lastEndpoint,
-                    features: ['all']
+                    applicationServerKey: applicationServerKey,
+                    features: ['all'],
+                    subscription: pushSubscription,
                 }),
-            })
-                .catch(err => {
-                    if (err === 'Not Found.') {
-                        this.lastEndpoint = '';
-                        this.lastUser = '';
-                    }
-                    return Promise.reject('Network Error');
-                })
-                .then((res: Response) => res.json(), this.fetchError)
-                .then(body => {
-                    if (body && body.exists === false) {
-                        this.lastEndpoint = '';
-                        this.lastUser = '';
-                        return Promise.reject('This subscription does not exist.');
-                    } else if (body && body.status === true) {
-                        this.lastUser = userId;
-                        return Promise.resolve();
-                    } else if (body && body.status === false) {
-                        this.lastUser = '';
-                        return Promise.reject('This subscription does not exist.');
-                    } else {
-                        return Promise.reject('Network Error');
-                    }
+            });
+            this.lastEndpoint = pushSubscription.endpoint;
+            this.lastUser = userId;
+            return pushSubscription;
+        } catch (e) {
+            return this.fetchError(e);
+        }
+    }
+
+    static async subscriptionServerUpdate(userId): Promise<void> {
+        if (this.lastEndpoint) {
+            try {
+                let response: Response = await fetch('./pushRegistrationUpdate', {
+                    method: 'post',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        endpoint: this.lastEndpoint,
+                        features: ['all']
+                    }),
                 });
+                let body = await response.json();
+                if (body && body.exists === false) {
+                    this.lastEndpoint = '';
+                    this.lastUser = '';
+                    return Promise.reject('This subscription does not exist.');
+                } else if (body && body.status === true) {
+                    this.lastUser = userId;
+                    return Promise.resolve();
+                } else if (body && body.status === false) {
+                    this.lastUser = '';
+                    return Promise.reject('This subscription does not exist.');
+                } else {
+                    return Promise.reject('Network Error');
+                }
+            } catch (e) {
+                if (e === 'Not Found.') {
+                    this.lastEndpoint = '';
+                    this.lastUser = '';
+                }
+                return Promise.reject('Network Error');
+            }
         } else {
             return Promise.reject('Not Subscribed.');
         }
     }
 
-    static updateExisting(userId: string) {
-        navigator.serviceWorker.register('/sw.js')
-            .then(
-                registration => {
-                    this.registrationResolve(registration);
-                    this.subscriptionServerUpdate(userId).catch(_noop);
-                },
-                this.registrationReject
-            );
+    static async updateExisting(userId: string) {
+        try {
+            let registration = await navigator.serviceWorker.register('/sw.js');
+            this.registrationResolve(registration);
+            this.subscriptionServerUpdate(userId).catch(_noop);
+        } catch (err) {
+            this.registrationReject();
+        }
     }
 }
