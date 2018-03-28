@@ -69,9 +69,9 @@ public class DisplayProfilesTest extends BaseFormTest {
 
         selectDisplayProfileByName("Multiple Select");
         hangon(1);
-        new Select(findElement(By.xpath("///div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Never");
-        new Select(findElement(By.xpath("///div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Rarely");
-        new Select(findElement(By.xpath("///div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Often");
+        new Select(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Never");
+        new Select(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Rarely");
+        new Select(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Often");
         new Select(findElement(By.xpath("//div[@id='I felt angry_1']//select"))).selectByVisibleText("Sometimes");
 
 
