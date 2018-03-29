@@ -5,6 +5,7 @@ import { TreeNode } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
 import _toString from 'lodash/toString';
 
+import { DataElementService } from 'cde/public/dataElement.service';
 import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
 import { FormService } from 'nativeRender/form.service';
 import { DataElement } from 'shared/de/dataElement.model';
@@ -41,6 +42,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
     }
 
     constructor(
+        private dataElementService: DataElementService,
         @Host() public formDescriptionComponent: FormDescriptionComponent,
         public formService: FormService,
         private http: HttpClient,
@@ -81,20 +83,17 @@ export class FormDescriptionQuestionComponent implements OnInit {
         return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
     }
 
-    openUpdateCdeVersion(question) {
-        this.http.get<DataElement>('/de/' + question.question.cde.tinyId).subscribe(response => {
-            this.formService.convertCdeToQuestion(response, newQuestion => {
-                this.http.get<DataElement>('/de/' + newQuestion.question.cde.tinyId).subscribe(newCde => {
-                    let oldUrl = '/de/' + question.question.cde.tinyId + '/version/' + question.question.cde.version;
-                    this.http.get<DataElement>(oldUrl).subscribe(oldCde => {
-                        this.openUpdateCdeVersionMerge(newQuestion, question, newCde, oldCde);
-                    });
+    openUpdateCdeVersion(question: FormQuestion) {
+        this.dataElementService.fetchDe(question.question.cde.tinyId).then(newCde => {
+            this.dataElementService.fetchDe(question.question.cde.tinyId, question.question.cde.version).then(oldCde => {
+                this.formService.convertCdeToQuestion(newCde, newQuestion => {
+                    this.openUpdateCdeVersionMerge(newQuestion, question, newCde, oldCde);
                 });
             });
         });
     }
 
-    openUpdateCdeVersionMerge(newQuestion, currentQuestion, newCde, oldCde) {
+    openUpdateCdeVersionMerge(newQuestion: FormQuestion, currentQuestion: FormQuestion, newCde: DataElement, oldCde: DataElement) {
         newQuestion.instructions = currentQuestion.instructions;
         newQuestion.question.datatypeDate.precision = currentQuestion.question.datatypeDate.precision;
         newQuestion.question.editable = currentQuestion.question.editable;
@@ -150,7 +149,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
             currentQuestion.question = newQuestion.question;
             currentQuestion.label = newQuestion.label;
             this.stageElt.emit();
-        }, () => {});
+        });
     }
 
     removeNode(node) {

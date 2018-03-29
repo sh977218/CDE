@@ -1,21 +1,22 @@
-import { CommonModule } from "@angular/common";
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { CommonModule } from '@angular/common';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
-import { Select2Module } from "ng2-select2";
-import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
-import "angular-tree-component/dist/angular-tree-component.css";
+import { Select2Module } from 'ng2-select2';
+import { TreeModule } from 'angular-tree-component/dist/angular-tree-component';
+import 'angular-tree-component/dist/angular-tree-component.css';
 
-import { AdminItemModule } from "adminItem/public/adminItem.module";
-import { BoardModule } from "board/public/board.module";
-import { CdeAccordionListComponent } from 'cde/public/components/listView/cdeAccordionList.component';
-import { CdeGeneralDetailsComponent } from "cde/public/components/summary/cdeGeneralDetails.component";
+import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { BoardModule } from 'board/public/board.module';
+import { DataElementService } from 'cde/public/dataElement.service';
 import { CreateDataElementComponent } from 'cde/public/components/createDataElement.component';
+import { CdeAccordionListComponent } from 'cde/public/components/listView/cdeAccordionList.component';
+import { CdeGeneralDetailsComponent } from 'cde/public/components/summary/cdeGeneralDetails.component';
+import { ValueDomainSummaryComponent } from 'cde/public/components/summary/valueDomainSummary.component';
 import { DiscussModule } from 'discuss/discuss.module';
 import { SearchModule } from 'search/search.module';
-import { ValueDomainSummaryComponent } from "cde/public/components/summary/valueDomainSummary.component";
-import { WidgetModule } from "widget/widget.module";
+import { WidgetModule } from 'widget/widget.module';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { WidgetModule } from "widget/widget.module";
         ValueDomainSummaryComponent,
     ],
     providers: [
+        DataElementService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

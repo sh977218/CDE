@@ -1,5 +1,5 @@
 <div class="sectionTitle">
-    <div class="text-truncate p-1" [ngClass]="{'hover-bg':section.hover}">
+    <div class="text-truncate p-1" [ngClass]="{'outdated-bg': formSection?.inForm?.form?.outdated && !section.hover,'hover-bg':section.hover}">
         <div *ngIf="!isSubForm && canEdit" class="float-left">
             <i class="fa fa-arrows fa-lg question-move-handle ml-1"
                [treeDrag]="node" [treeDragEnabled]="node.allowDrag()"></i>
@@ -14,8 +14,15 @@
              class="font-weight-bold float-left hand-cursor sectionLabel ml-1"
              (mouseover)="hoverInSection(section)" (mouseout)="hoverOutSection(section)"
              (click)="editSection(section); section.updatedSkipLogic = false">
-            <span *ngIf="section.elementType === 'form'">Embedded Form: </span>{{section.label | cdePlaceholder}}
+            <span *ngIf="section.elementType === 'form'">Embedded Form:</span>
+            {{section.label | cdePlaceholder}}
+            <span *ngIf="formSection?.inForm?.form?.outdated" class="mx-1">(Outdated)</span>
         </div>
+        <ng-container *ngIf="formSection?.inForm?.form?.outdated">
+            <button class="btn btn-outline-dark btn-sm updateQuestionBtn d-inline-block"
+                    (click)="openUpdateFormVersion(section);">Update
+            </button>
+        </ng-container>
         <div *ngIf="!isSubForm && canEdit" class="float-right">
             <a *ngIf="section.elementType === 'form' && section.inForm.form.tinyId" target="_blank"
                title="{{section.inForm.form.name}}"
@@ -160,5 +167,43 @@
                 </span>
             </div>
         </div>
+    </div>
+</ng-template>
+
+<ng-template #updateFormVersionTmpl let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>Confirm Changes:</h3>
+    </div>
+    <div class="modal-body">
+        <i *ngIf="reloading" class="fa fa-spinner fa-spin"></i>
+        <div>
+            <div class="row">
+                <div class="col-sm-2 font-weight-bold">Label:</div>
+                <div class="col-sm-8" id="mdd_question_title">
+                    <span [ngClass]="{mark: updateFormVersion.bLabel}">{{updateFormVersion.newSection.label | cdePlaceholder}}</span>
+                    <span *ngIf="updateFormVersion.bLabel" class="text-danger">( was {{ updateFormVersion.currentSection.label }} )</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 font-weight-bold">Form:</div>
+                <div class="col-sm-8" id="mdd_d_cde">
+                    <a [ngClass]="{mark: updateFormVersion.bForm}"
+                       href="/deView?tinyId={{updateFormVersion.newSection.inForm.form.tinyId}}&version={{updateFormVersion.newSection.inForm.form.version}}"
+                       target="_blank"><i class="fa fa-eye"></i>
+                        <span id="mdd_question_cde_name">{{updateFormVersion.newSection.inForm.form.name}}</span>
+                    </a>
+                    <span *ngIf="updateFormVersion.bForm" class="text-danger">( was
+                        <a href="/deView?tinyId={{updateFormVersion.currentSection.inForm.form.tinyId}}&version={{updateFormVersion.currentSection.inForm.form.version}}"
+                           target="_blank"><i class="fa fa-eye"></i>
+                            <span id="mdd_old_question_cde_name">{{updateFormVersion.currentSection.inForm.form.name}}</span>
+                        </a> )
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn  btn-warning" (click)="c()" id="okSelect">OK</button>
+        <button class="btn  btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
     </div>
 </ng-template>
