@@ -65,11 +65,9 @@ export class HistoryComponent implements OnInit {
         }
     };
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public modalService: NgbModal
-    ) {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public modalService: NgbModal) {
     }
 
     ngOnInit(): void {
