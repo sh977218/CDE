@@ -85,7 +85,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
     openUpdateCdeVersion(question: FormQuestion) {
         this.dataElementService.fetchDe(question.question.cde.tinyId).then(newCde => {
-            this.dataElementService.fetchDe(question.question.cde.tinyId, question.question.cde.version).then(oldCde => {
+            let oldVersion = question.question.cde.version ? question.question.cde.version : '';
+            this.dataElementService.fetchDe(question.question.cde.tinyId, oldVersion).then(oldCde => {
                 this.formService.convertCdeToQuestion(newCde, newQuestion => {
                     this.openUpdateCdeVersionMerge(newQuestion, question, newCde, oldCde);
                 });

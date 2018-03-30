@@ -149,8 +149,8 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     openUpdateFormVersion(formSection: FormInForm) {
-        let oldVersion = formSection.inForm.form.version ? formSection.inForm.form.version : '';
         this.formService.fetchForm(formSection.inForm.form.tinyId).then(newForm => {
+            let oldVersion = formSection.inForm.form.version ? formSection.inForm.form.version : '';
             this.formService.fetchForm(formSection.inForm.form.tinyId, oldVersion).then(oldForm => {
                 this.openUpdateFormVersionMerge(convertFormToSection(newForm), formSection, newForm, oldForm);
             });
