@@ -52,7 +52,7 @@
                     </dd>
                     <dt class="col-sm-5">Number of Columns:</dt>
                     <dd class="col-sm-7 ">
-                        <select [ngModel]="dPVM.profile.numberOfColumns" id="nc_{{index}}"
+                        <select [ngModel]="dPVM.profile.numberOfColumns" id="nc_{{index}}" class="form-control"
                                 (ngModelChange)="onChange(dPVM.profile,$event)">
                             <option value=1>1</option>
                             <option value=2>2</option>
@@ -73,14 +73,20 @@
                                [disabled]="!canEdit" id="displayRepeatFormat_{{index}}" (change)="onEltChange.emit();">
                         (Use # in place of number. Ex: "#." for "1.")
                     </dd>
-                    <dt class="col-sm-5">Max Number Answers:</dt>
-                    <dd class="col-sm-7 ">
-                        <input class="form-control" [(ngModel)]="dPVM.profile.maxNumberAnswers" type="number" min="0"
-                               [disabled]="!canEdit" id="displayMaxNumberAnswers_{{index}}"
-                               (change)="onEltChange.emit();">
-                        (0 for displaying all answers as checkbox/radio, effect )
-                    </dd>
                 </dl>
+                <fieldset class="row cdeFieldset" [disabled]="dPVM.profile.displayType === 'Follow-up'">
+                    <legend>Electronic View Only <small *ngIf="dPVM.profile.displayType === 'Follow-up'">(Uncheck printable logic to enable)</small></legend>
+                    <dl class="row">
+                        <dt class="col-sm-5">Use dropdown if more than ... answers</dt>
+                        <dd class="col-sm-7 ">
+                            <input class="form-control" [(ngModel)]="dPVM.profile.answerDropdownLimit" type="number" min="0"
+                                   [disabled]="!canEdit" id="displayMaxNumberAnswers_{{index}}"
+                                   (change)="onEltChange.emit();">
+                            (0 to display all answers as checkbox)
+                        </dd>
+
+                    </dl>
+                </fieldset>
             </div>
             <div class="col-lg-7 col-sm-12">
                 <div class="displayProfileRenderDiv" style="border: dashed 1px; zoom:60%; padding: 0 15px;">
@@ -108,7 +114,7 @@
                                      id="alias-{{u.u.system}}-{{u.u.code}}">
                                     <ng-container *ngIf="u.u.system">{{u.u.system}}/</ng-container>
                                     {{u.u.code}}:
-                                    <select [ngModel]="profileAliasGet(dPVM, u.u)"
+                                    <select [ngModel]="profileAliasGet(dPVM, u.u)" class="form-control"
                                             (ngModelChange)="profileAliasSet(dPVM, u.u, $event)">
                                         <option *ngFor="let option of u.a">{{option}}</option>
                                     </select>

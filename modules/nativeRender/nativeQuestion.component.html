@@ -25,7 +25,7 @@
                     <ng-container *ngSwitchCase="'Value List'">
                         <div class="row">
                             <ng-container
-                                    *ngIf="nrs.profile.displayType === 'Follow-up' || !nrs.profile?.maxNumberAnswers">
+                                    *ngIf="nrs.profile.displayType === 'Follow-up' || !nrs.profile?.answerDropdownLimit">
                                 <div *ngFor="let pv of formElement.question.answers; let i = index"
                                      [ngClass]="classColumns(pv.index, i)" class="col-12">
                                     <div *ngIf="!pv.nonValuelist" class="form-check">
@@ -79,23 +79,24 @@
                                 </div>
                             </ng-container>
 
-                            <ng-container
-                                    *ngIf="nrs.profile.displayType !== 'Follow-up' && nrs.profile?.maxNumberAnswers > 0">
+
+                            <div class="native-box"
+                                    *ngIf="nrs.profile.displayType !== 'Follow-up' && nrs.profile?.answerDropdownLimit > 0">
                                 <ng-container *ngIf="formElement.question.multiselect">
-                                    <select multiple [(ngModel)]="formElement.question.answer">
+                                    <select multiple [(ngModel)]="formElement.question.answer" class="form-control">
                                         <option *ngFor="let pv of formElement.question.answers"
                                                 [value]="pv.permissibleValue">{{pv.valueMeaningName}}
                                         </option>
                                     </select>
                                 </ng-container>
                                 <ng-container *ngIf="!formElement.question.multiselect">
-                                    <select [(ngModel)]="formElement.question.answer">
+                                    <select [(ngModel)]="formElement.question.answer" class="form-control">
                                         <option *ngFor="let pv of formElement.question.answers"
                                                 [value]="pv.permissibleValue">{{pv.valueMeaningName}}
                                         </option>
                                     </select>
                                 </ng-container>
-                            </ng-container>
+                            </div>
                         </div>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Date'" class="row">
