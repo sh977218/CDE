@@ -15,7 +15,9 @@
              (mouseover)="hoverInSection(section)" (mouseout)="hoverOutSection(section)"
              (click)="editSection(section); section.updatedSkipLogic = false">
             <span *ngIf="section.elementType === 'form'">Embedded Form:</span>
-            {{section.label | cdePlaceholder}}
+            <span class="ml-1" title="{{section.label}}">
+                <strong>{{section.label | cdePlaceholder}}</strong>
+            </span>
             <span *ngIf="formSection?.inForm?.form?.outdated" class="mx-1">(Outdated)</span>
         </div>
         <ng-container *ngIf="formSection?.inForm?.form?.outdated">
@@ -179,14 +181,14 @@
         <div>
             <div class="row">
                 <div class="col-sm-2 font-weight-bold">Label:</div>
-                <div class="col-sm-8" id="mdd_question_title">
+                <div class="col-sm-8" id="mdd_section_title">
                     <span [ngClass]="{mark: updateFormVersion.bLabel}">{{updateFormVersion.newSection.label | cdePlaceholder}}</span>
                     <span *ngIf="updateFormVersion.bLabel" class="text-danger">( was {{ updateFormVersion.currentSection.label }} )</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-2 font-weight-bold">Form:</div>
-                <div class="col-sm-8" id="mdd_d_cde">
+                <div class="col-sm-8" id="mdd_d_form">
                     <a [ngClass]="{mark: updateFormVersion.bForm}"
                        href="/deView?tinyId={{updateFormVersion.newSection.inForm.form.tinyId}}&version={{updateFormVersion.newSection.inForm.form.version}}"
                        target="_blank"><i class="fa fa-eye"></i>

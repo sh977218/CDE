@@ -76,7 +76,7 @@ export class FormService {
 
     fetchForm(tinyId, version = undefined): Promise<CdeForm> {
         return new Promise<CdeForm>((resolve, reject) => {
-            if (version) {
+            if (version || version === '') {
                 this.http.get<CdeForm>('/form/' + tinyId + '/version/' + version).subscribe(resolve, reject);
             } else {
                 this.http.get<CdeForm>('/form/' + tinyId).subscribe(resolve, reject);
