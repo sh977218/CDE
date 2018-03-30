@@ -69,7 +69,8 @@ export class HistoryComponent implements OnInit {
         private alert: AlertService,
         private http: HttpClient,
         public modalService: NgbModal
-    ) {}
+    ) {
+    }
 
     ngOnInit(): void {
         this.elt.viewing = true;
@@ -100,7 +101,7 @@ export class HistoryComponent implements OnInit {
             priorElt.selected = !priorElt.selected;
             if (priorElt.selected) this.numberSelected++;
             else this.numberSelected--;
-            if (index > 0 && priorElt.selected && !priorElt.promise) {
+            if (priorElt.selected && !priorElt.promise) {
                 const prom = this.http.get(
                     this.elt.elementType === 'cde'
                         ? '/deById/' + priorElt._id
