@@ -79,7 +79,7 @@
                                 </div>
                             </ng-container>
 
-                            <div class="native-box"
+                            <div class="col-12 native-box"
                                  *ngIf="nrs.profile.displayType === 'Dynamic' && nrs.profile?.answerDropdownLimit > 0 && nrs.profile?.answerDropdownLimit <= formElement.question?.answers.length">
                                 <ng-container *ngIf="formElement.question.multiselect">
                                     <select multiple [(ngModel)]="formElement.question.answer" class="form-control">
