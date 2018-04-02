@@ -75,7 +75,10 @@ exports.byTinyIdVersion = function (tinyId, version, cb) {
 };
 
 exports.byTinyIdAndVersion = function (tinyId, version, callback) {
-    Form.find({tinyId: tinyId, version: version}).sort({'updated': -1}).limit(1).exec(function (err, elts) {
+    let query = {tinyId: tinyId};
+    if (version) query.version = version;
+    else query.$or = [{version: null}, {version: ''}];
+    Form.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
         if (err) callback(err);
         else if (elts.length) callback("", elts[0]);
         else callback("", null);
