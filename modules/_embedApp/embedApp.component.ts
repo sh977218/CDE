@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import '../../node_modules/feedback/stable/2.0/html2canvas.js';
 
 import { ElasticService } from '_app/elastic.service';
-import { SharedService } from '_commonApp/shared.service';
+import { orderedList } from 'shared/system/regStatusShared';
 
 
 @Component({
@@ -128,10 +128,10 @@ export class EmbedAppComponent  {
         let timestamp = new Date().getTime();
         this.lastQueryTimeStamp = timestamp;
 
-        for (let i = 0; i < SharedService.regStatusShared.orderedList.length; i++) {
-            this.searchSettings.regStatuses.push(SharedService.regStatusShared.orderedList[i]);
-            if (SharedService.regStatusShared.orderedList[i] === embed4Type.minStatus) {
-                i = SharedService.regStatusShared.orderedList.length;
+        for (let i = 0; i < orderedList.length; i++) {
+            this.searchSettings.regStatuses.push(orderedList[i]);
+            if (orderedList[i] === embed4Type.minStatus) {
+                i = orderedList.length;
             }
         }
 

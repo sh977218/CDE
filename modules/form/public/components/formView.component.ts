@@ -75,20 +75,16 @@ export class FormViewComponent implements OnInit {
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
-            this.userService.then(() => {
-                this.loadForm(() => {
-                    this.orgHelperService.then(() => {
-                        let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
-                        this.elt.naming.forEach(n => {
-                            n.tags.forEach(t => {
-                                allNamingTags.push(t);
-                            });
-                        });
-                        this.orgNamingTags = _uniqWith(allNamingTags, _isEqual).map(t => {
-                            return {id: t, text: t};
-                        });
-                        this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+            this.loadForm(() => {
+                this.orgHelperService.then(orgsDetailedInfo => {
+                    let allNamingTags = orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
+                    this.elt.naming.forEach(n => {
+                        n.tags.forEach(t => allNamingTags.push(t));
                     });
+                    this.orgNamingTags = _uniqWith(allNamingTags, _isEqual).map(t => {
+                        return {id: t, text: t};
+                    });
+                    this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
                 });
             });
         });
@@ -188,26 +184,28 @@ export class FormViewComponent implements OnInit {
     }
 
     loadForm(cb = _noop) {
-        if (this.userService.user && this.userService.user.username) {
-            this.http.get<CdeForm[]>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(
-                res => {
-                    if (res && res.length > 0 && this.isAllowedModel.isAllowed(res[0])) {
-                        this.drafts = res;
-                        this.formLoaded(res[0], cb);
-                    } else {
-                        this.drafts = [];
-                        this.loadPublished(cb);
+        this.userService.then(user => {
+            if (user && user.username) {
+                this.http.get<CdeForm[]>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(
+                    res => {
+                        if (res && res.length > 0 && this.isAllowedModel.isAllowed(res[0])) {
+                            this.drafts = res;
+                            this.formLoaded(res[0], cb);
+                        } else {
+                            this.drafts = [];
+                            this.loadPublished(cb);
+                        }
+                    },
+                    err => {
+                        // do not load form
+                        this.alert.httpErrorMessageAlert(err);
+                        this.formLoaded(null, cb);
                     }
-                },
-                err => {
-                    // do not load form
-                    this.alert.httpErrorMessageAlert(err);
-                    this.formLoaded(null, cb);
-                }
-            );
-        } else {
-            this.loadPublished(cb);
-        }
+                );
+            } else {
+                this.loadPublished(cb);
+            }
+        });
     }
 
     loadHighlightedTabs($event) {
