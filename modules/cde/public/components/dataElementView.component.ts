@@ -69,7 +69,8 @@ export class DataElementViewComponent implements OnInit {
             this.userService.then(() => {
                 this.loadDataElement(() => {
                     this.orgHelperService.then(() => {
-                        let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
+                        let org = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name];
+                        let allNamingTags = org ? org.nameTags : [];
                         this.elt.naming.forEach(n => {
                             n.tags.forEach(t => allNamingTags.push(t));
                         });
