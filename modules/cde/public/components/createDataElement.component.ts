@@ -12,12 +12,12 @@ import { Subject } from 'rxjs/Subject';
 import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
-import { SharedService } from '_commonApp/shared.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { Naming } from 'shared/models.model';
 import { SearchSettings } from 'search/search.model';
 import { DataElement } from 'shared/de/dataElement.model';
+import { classifyItem, findSteward, removeCategory } from 'shared/system/classificationShared';
 
 
 @Component({
@@ -91,7 +91,7 @@ export class CreateDataElementComponent implements OnInit {
             orgName: event.selectedOrg
         };
         let eltCopy = _cloneDeep(this.elt);
-        SharedService.classificationShared.classifyItem(eltCopy, event.selectedOrg, event.classificationArray);
+        classifyItem(eltCopy, event.selectedOrg, event.classificationArray);
         this.updateClassificationLocalStorage(postBody);
         this.elt = eltCopy;
         this.modalRef.close();
@@ -104,8 +104,8 @@ export class CreateDataElementComponent implements OnInit {
 
     confirmDelete(event) {
         let eltCopy = _cloneDeep(this.elt);
-        let steward = SharedService.classificationShared.findSteward(eltCopy, event.deleteOrgName);
-        SharedService.classificationShared.removeCategory(steward.object, event.deleteClassificationArray, err => {
+        let steward = findSteward(eltCopy, event.deleteOrgName);
+        removeCategory(steward.object, event.deleteClassificationArray, err => {
             if (err) this.alert.addAlert('danger', err);
             else {
                 for (let i = eltCopy.classification.length - 1; i >= 0; i--) {

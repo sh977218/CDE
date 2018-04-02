@@ -1,22 +1,23 @@
-import { Injectable } from "@angular/core";
-import * as JSZip from "jszip";
-import * as JXON from "jxon";
-import { saveAs } from "file-saver";
-import { ElasticService } from '_app/elastic.service';
-import { getFormCdes, getFormOdm } from 'shared/form/formShared';
-import { RegistrationValidatorService } from "core/registrationValidator.service";
-import { SharedService } from '_commonApp/shared.service';
-import { UserService } from '_app/user.service';
-import { Alert, AlertService } from '_app/alert/alert.service';
-import { HttpClient } from "@angular/common/http";
-import { CdeForm } from "../../shared/form/form.model";
-import intersectionWith from 'lodash/intersectionWith';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import * as JSZip from 'jszip';
+import * as JXON from 'jxon';
+import { saveAs } from 'file-saver';
+import _intersectionWith from 'lodash/intersectionWith';
+import _noop from 'lodash/noop';
 
+import { Alert, AlertService } from '_app/alert/alert.service';
+import { ElasticService } from '_app/elastic.service';
+import { UserService } from '_app/user.service';
+import { RegistrationValidatorService } from 'core/registrationValidator.service';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
+import { getFormCdes, getFormOdm } from 'shared/form/formShared';
+import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'shared/system/exportShared';
 
 
 @Injectable()
 export class ExportService {
-
     progressAlert: Alert;
 
     constructor(private alertService: AlertService,
@@ -27,7 +28,7 @@ export class ExportService {
 
     exportProgressCb (msg, terminate?) {
         if (!this.progressAlert || this.progressAlert.expired) {
-            this.progressAlert = this.alertService.addAlert("success", msg);
+            this.progressAlert = this.alertService.addAlert('success', msg);
             this.progressAlert.persistant = true;
         } else {
             this.progressAlert.setMessage(msg);
@@ -37,7 +38,7 @@ export class ExportService {
 
     async resultToCsv (result) {
         let settings = this.elasticService.searchSettings;
-        let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
+        let csv = getCdeCsvHeader(settings.tableViewFields);
         if (settings.tableViewFields.linkedForms) {
             if (result.length < 50) {
                 for (let r of result) {
@@ -52,7 +53,7 @@ export class ExportService {
                             });
                             this.elasticService.generalSearchQuery(lfSettings, 'form', (err, esRes) => resolve(esRes.forms));
                         });
-                        if (forms.length) r.linkedForms = forms.map(f => f.tinyId).join(", ");
+                        if (forms.length) r.linkedForms = forms.map(f => f.tinyId).join(', ');
                     }
                 }
             } else {
@@ -62,7 +63,7 @@ export class ExportService {
                     , classificationAlt: []
                     , regStatuses: []
                 });
-                let esResp = await this.http.post("/scrollExport/form", lfSettings).toPromise();
+                let esResp = await this.http.post('/scrollExport/form', lfSettings).toPromise();
                 let totalNbOfForms = 0;
                 let formCounter = 0;
                 let nonEmptyResults = result.filter(r => r !== undefined);
@@ -73,18 +74,18 @@ export class ExportService {
                             formCounter++;
                             let esForm = hit._source;
                             let formCdes = getFormCdes(esForm);
-                            let interArr = intersectionWith(
+                            let interArr = _intersectionWith(
                                 nonEmptyResults,
                                 formCdes,
                                 (a, b) => a.tinyId === b.tinyId);
                             interArr.forEach(matchId => {
                                 let foundCdes = result.filter(c => c.tinyId === matchId.tinyId);
                                 foundCdes.forEach(c => {
-                                    if (c.linkedForms) c.linkedForms = c.linkedForms + ", " + esForm.tinyId;
+                                    if (c.linkedForms) c.linkedForms = c.linkedForms + ', ' + esForm.tinyId;
                                     else c.linkedForms = esForm.tinyId;
                                 });
                             });
-                            this.exportProgressCb("Attaching linked forms " + Math.trunc(100 * formCounter / totalNbOfForms) + "%");
+                            this.exportProgressCb('Attaching linked forms ' + Math.trunc(100 * formCounter / totalNbOfForms) + '%');
                         }
                         return true;
                     } else return false;
@@ -92,16 +93,15 @@ export class ExportService {
                 let keepScrolling = true;
                 while (keepScrolling) {
                     keepScrolling = intersectOnBatch(esResp);
-                    esResp = await this.http.get("/scrollExport/" + (esResp as any)._scroll_id).toPromise();
+                    esResp = await this.http.get('/scrollExport/' + (esResp as any)._scroll_id).toPromise();
                 }
             }
         }
         result.forEach(r => {
             if (!r) {
-                csv += "\n";
+                csv += '\n';
             } else {
-                csv += SharedService.exportShared.convertToCsv(
-                    SharedService.exportShared.projectCdeForExport(r, settings.tableViewFields));
+                csv += convertToCsv(projectCdeForExport(r, settings.tableViewFields));
             }
         });
         return csv;
@@ -110,54 +110,54 @@ export class ExportService {
     exportSearchResults(type, module, exportSettings) {
 
         if (module === 'form' && (!this.userService.user || !this.userService.user._id)) {
-            return this.alertService.addAlert("danger", "Please login to access this feature");
+            return this.alertService.addAlert('danger', 'Please login to access this feature');
         }
 
         try {
             !!new Blob;
         } catch (e) {
-            return this.alertService.addAlert("danger",
-                "Export feature is not supported in this browser. Please try Google Chrome or Mozilla FireFox.");
+            return this.alertService.addAlert('danger',
+                'Export feature is not supported in this browser. Please try Google Chrome or Mozilla FireFox.');
         }
 
         if (type !== 'validationRules') {
-            this.exportProgressCb("Your export is being generated, please wait.");
+            this.exportProgressCb('Your export is being generated, please wait.');
         }
-        this.exportProgressCb("Fetching " + module + "s. Please wait...");
+        this.exportProgressCb('Fetching ' + module + 's. Please wait...');
         this.elasticService.getExport(
             this.elasticService.buildElasticQuerySettings(exportSettings.searchSettings), module || 'cde', (err, result) => {
                 if (err) {
-                    return this.alertService.addAlert("danger",
-                        "The server is busy processing similar request, please try again in a minute.");
+                    return this.alertService.addAlert('danger',
+                        'The server is busy processing similar request, please try again in a minute.');
                 }
 
                 let exporters = {
                     'csv': async result => {
                         let csv = await this.resultToCsv(result);
-                        let blob = new Blob([csv], {type: "text/csv"});
+                        let blob = new Blob([csv], {type: 'text/csv'});
                         saveAs(blob, 'SearchExport.csv');
-                        this.exportProgressCb("Export downloaded.", true);
+                        this.exportProgressCb('Export downloaded.', true);
                     },
                     'json': result => {
-                        let blob = new Blob([JSON.stringify(result)], {type: "application/json"});
-                        saveAs(blob, "SearchExport.json");
-                        this.exportProgressCb("Export downloaded.", true);
+                        let blob = new Blob([JSON.stringify(result)], {type: 'application/json'});
+                        saveAs(blob, 'SearchExport.json');
+                        this.exportProgressCb('Export downloaded.', true);
                     },
                     'xml': result => {
                         let zip = new JSZip();
-                        result.forEach(oneElt => zip.file(oneElt.tinyId + ".xml", JXON.jsToString({element: oneElt})));
-                        zip.generateAsync({type: "blob"}).then(content => saveAs(content, "SearchExport_XML.zip"));
-                        this.alertService.addAlert("success", "Export downloaded.");
+                        result.forEach(oneElt => zip.file(oneElt.tinyId + '.xml', JXON.jsToString({element: oneElt})));
+                        zip.generateAsync({type: 'blob'}).then(content => saveAs(content, 'SearchExport_XML.zip'));
+                        this.alertService.addAlert('success', 'Export downloaded.');
                     },
                     'odm': result => {
                         let zip = new JSZip();
                         result.forEach(oneElt => {
                             getFormOdm(oneElt, (err, odmElt) => {
-                                if (!err) zip.file(oneElt.tinyId + ".xml", JXON.jsToString({ODM: odmElt}));
+                                if (!err) zip.file(oneElt.tinyId + '.xml', JXON.jsToString({ODM: odmElt}));
                             });
                         });
-                        zip.generateAsync({type: "blob"}).then(content => saveAs(content, "SearchExport_ODM.zip"));
-                        this.alertService.addAlert("success", "Export downloaded.");
+                        zip.generateAsync({type: 'blob'}).then(content => saveAs(content, 'SearchExport_ODM.zip'));
+                        this.alertService.addAlert('success', 'Export downloaded.');
                     },
                     'validationRules': (result) => {
                         let orgName = exportSettings.searchSettings.selectedOrg;
@@ -191,40 +191,44 @@ export class ExportService {
                         });
                     });
                     let exporter = exporters[type];
-                    if (!exporter) this.alertService.addAlert("danger", "This export format is not supported.");
-                    else exporter(result);
-                } else this.alertService.addAlert("danger", "There was no data to export.");
+                    if (!exporter) {
+                        this.alertService.addAlert('danger', 'This export format is not supported.');
+                    } else {
+                        exporter(result);
+                    }
+                } else {
+                    this.alertService.addAlert('danger', 'There was no data to export.');
+                }
             });
     }
 
     async quickBoardExport(elts) {
-        this.exportProgressCb("Fetching cdes. Please wait...");
+        this.exportProgressCb('Fetching cdes. Please wait...');
         let csv = await this.resultToCsv(elts);
         if (csv) {
-            let blob = new Blob([csv], {type: "text/csv"});
+            let blob = new Blob([csv], {type: 'text/csv'});
             saveAs(blob, 'QuickBoardExport' + '.csv');
-            this.exportProgressCb("Export downloaded.", true);
+            this.exportProgressCb('Export downloaded.', true);
         } else {
-            this.alertService.addAlert("danger", "Something went wrong, please try again in a minute.");
+            this.alertService.addAlert('danger', 'Something went wrong, please try again in a minute.');
         }
     }
 
     async formCdeExport (form) {
-        this.exportProgressCb("Fetching cdes. Please wait...");
+        this.exportProgressCb('Fetching cdes. Please wait...');
         let elts = [];
         for (let qCde of getFormCdes(form)) {
-            const cde = await this.http.get('/de/' + qCde.tinyId).toPromise().catch(() => {});
+            const cde = await this.http.get<DataElement>('/de/' + qCde.tinyId).toPromise().catch(_noop);
             elts.push(cde);
         }
 
         let csv = await this.resultToCsv(elts);
         if (csv) {
-            let blob = new Blob([csv], {type: "text/csv"});
+            let blob = new Blob([csv], {type: 'text/csv'});
             saveAs(blob, 'FormCdes-' + form.tinyId + '.csv');
-            this.exportProgressCb("Export downloaded.", true);
+            this.exportProgressCb('Export downloaded.', true);
         } else {
-            this.alertService.addAlert("danger", "Something went wrong, please try again in a minute.");
+            this.alertService.addAlert('danger', 'Something went wrong, please try again in a minute.');
         }
     }
-
 }

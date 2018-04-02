@@ -135,29 +135,35 @@ public class NlmCdeBaseTest {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver");
         }
-        DesiredCapabilities caps;
+        MutableCapabilities caps;
         if ("firefox".equals(b)) {
-            caps = DesiredCapabilities.firefox();
+            DesiredCapabilities options = DesiredCapabilities.firefox();
+            options.setBrowserName(b);
+            caps = options;
         } else if ("chrome".equals(b)) {
             ChromeOptions options = new ChromeOptions();
             if (u != null) options.addArguments("--user-agent=googleBot");
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
             options.setExperimentalOption("prefs", prefs);
+            options.addArguments("disable-shared-workers");
             options.addArguments("start-maximized");
-            caps = DesiredCapabilities.chrome();
-            caps.setCapability(ChromeOptions.CAPABILITY, options);
+            options.addArguments("unsafely-treat-insecure-origin-as-secure");
+            caps = options;
         } else if ("ie".equals(b)) {
-            caps = DesiredCapabilities.internetExplorer();
+            DesiredCapabilities options = DesiredCapabilities.internetExplorer();
+            options.setBrowserName(b);
+            caps = options;
         } else {
-            caps = DesiredCapabilities.chrome();
+            DesiredCapabilities options = DesiredCapabilities.chrome();
+            options.setBrowserName(b);
+            caps = options;
         }
 
         LoggingPreferences loggingPreferences = new LoggingPreferences();
         loggingPreferences.enable(LogType.BROWSER, Level.ALL);
         caps.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
 
-        caps.setBrowserName(b);
         baseUrl = System.getProperty("testUrl");
         String hubUrl = System.getProperty("hubUrl");
 

@@ -6,6 +6,7 @@ const config = require('./parseConfig');
 const dbLogger = require('./dbLogger.js');
 const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
+const pushNotification = require('./pushNotification');
 const usersrvc = require('./usersrvc');
 const orgClassificationSvc = require('./orgClassificationSvc');
 const path = require('path');
@@ -31,6 +32,17 @@ const CronJob = require('cron').CronJob;
 const _ = require('lodash');
 const ejs = require('ejs');
 const useragent = require('useragent');
+
+function loggedInMiddleware(req, res, next) {
+    if (!req.user) {
+        // TODO: should consider adding to error log
+        return res.status(401).send();
+    }
+    if (next) {
+        next();
+    }
+}
+exports.loggedInMiddleware = loggedInMiddleware;
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -281,18 +293,25 @@ exports.init = function (app) {
     });
 
     app.get('/nativeRender', function (req, res) {
-        res.sendFile(path.join(__dirname, '../../modules/_nativeRenderApp', 'nativeRenderApp.html'), undefined, function (err) {
-            if (err)
+        res.sendFile(path.join(__dirname, '../../modules/_nativeRenderApp', 'nativeRenderApp.html'), undefined, err => {
+            if (err) {
                 res.sendStatus(404);
+            }
         });
     });
 
     app.get('/sw.js', function (req, res) {
-        res.sendFile(path.join(__dirname, '../../dist/app', 'sw.js'), undefined, function (err) {
-            if (err)
+        res.sendFile(path.join(__dirname, '../../dist/app', 'sw.js'), undefined, err => {
+            if (err) {
                 res.sendStatus(404);
+            }
         });
     });
+
+    app.post('/pushRegistration', [loggedInMiddleware], pushNotification.create);
+    app.delete('/pushRegistration', [loggedInMiddleware], pushNotification.delete);
+    app.post('/pushRegistrationSubscribe', [loggedInMiddleware], pushNotification.subscribe);
+    app.post('/pushRegistrationUpdate', pushNotification.updateStatus);
 
     // delete org classification
     app.post('/orgClassificationDelete/', (req, res) => {
@@ -304,7 +323,7 @@ exports.init = function (app) {
             if (err) return res.status(409).send("Error - delete classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.deleteOrgClassification(req.user, deleteClassification, settings, err => {
-                if (err) logging.log(err);
+                if (err) dbLogger.logError(err);
             });
             res.send("Deleting in progress.");
         });
@@ -321,7 +340,7 @@ exports.init = function (app) {
             if (err) return res.status(409).send("Error - rename classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.renameOrgClassification(req.user, newClassification, settings, err => {
-                if (err) logging.log(err);
+                if (err) dbLogger.logError(err);
             });
             res.send("Renaming in progress.");
         });
@@ -1023,6 +1042,10 @@ exports.init = function (app) {
 
     app.post('/feedback/report', function (req, res) {
         dbLogger.saveFeedback(req, function () {
+            let note = req.body.feedback ? JSON.parse(req.body.feedback).note : '';
+            mongo_data.pushGetAdministratorRegistrations(registrations => {
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, note));
+            });
             res.send({});
         });
     });
