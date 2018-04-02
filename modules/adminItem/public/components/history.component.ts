@@ -104,11 +104,11 @@ export class HistoryComponent implements OnInit {
                     this.elt.elementType === 'cde'
                         ? '/deById/' + priorElt._id
                         : '/formById/' + priorElt._id).toPromise();
-                this.priorElements[index].promise = prom;
                 prom.then(res => {
                     this.priorElements[index] = res;
                     this.priorElements[index].url = URL_MAP[this.priorElements[index].elementType] +
                         this.priorElements[index]._id;
+                    this.priorElements[index].promise = prom;
                     this.priorElements[index].selected = true;
                 });
             }

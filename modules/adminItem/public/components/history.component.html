@@ -18,6 +18,19 @@
             <th>Version</th>
             <th>View</th>
         </tr>
+        <tr *ngIf="elt.isDraft">
+            <td>
+                <i class="fa fa-check-square-o" *ngIf="elt.selected" aria-hidden="true"></i>
+                <i class="fa fa-square-o" *ngIf="!elt.selected" aria-hidden="true"></i>
+            </td>
+            <td>
+                {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
+            </td>
+            <td>{{elt.updatedBy?.username}}</td>
+            <td>{{elt.changeNote}}</td>
+            <td>{{elt.version}}</td>
+            <th>View Draft</th>
+        </tr>
         <ng-container *ngFor="let priorElement of priorElements; let i = index">
             <tr *ngIf="!showVersioned || priorElement?.version !== priorElements[i-1]?.version"
                 (click)="selectRow(i)" [ngClass]="{'isSelected':priorElement.selected}">
@@ -76,7 +89,8 @@
                            [(filter)]="filter"></cde-compare-array>
     </div>
     <div class="modal-footer">
-        <button class="btn  btn-outline-dark" id="closeHistoryCompareModal" (click)="c('Close click')" type="button">Close
+        <button class="btn  btn-outline-dark" id="closeHistoryCompareModal" (click)="c('Close click')" type="button">
+            Close
         </button>
     </div>
 </ng-template>
