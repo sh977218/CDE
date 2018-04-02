@@ -53,10 +53,10 @@ export class StatusValidationRulesComponent implements OnInit {
     userOrgsArray: string[] = [];
 
     ngOnInit() {
-        this.orgHelperService.then(() => {
-            this.orgNames = Object.keys(this.orgHelperService.orgsDetailedInfo);
-            Object.keys(this.orgHelperService.orgsDetailedInfo).forEach(orgName => {
-                this.userOrgs[orgName] = this.orgHelperService.orgsDetailedInfo[orgName].cdeStatusValidationRules;
+        this.orgHelperService.then(orgsDetailedInfo => {
+            this.orgNames = Object.keys(orgsDetailedInfo);
+            Object.keys(orgsDetailedInfo).forEach(orgName => {
+                this.userOrgs[orgName] = orgsDetailedInfo[orgName].cdeStatusValidationRules;
             });
             this.userOrgsArray = Object.keys(this.userOrgs).sort();
         });

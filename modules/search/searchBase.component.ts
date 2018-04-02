@@ -9,10 +9,10 @@ import { debounceTime, distinctUntilChanged, map, switchMap, take } from 'rxjs/o
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
-import { SharedService } from '_commonApp/shared.service';
 import { SearchSettings } from 'search/search.model';
 import { ElasticQueryResponse, Elt, User } from 'shared/models.model';
 import { hasRole } from 'shared/system/authorizationShared';
+import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 
@@ -271,9 +271,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     private filterOutWorkingGroups(cb) {
         this.orgHelperService.then(() => {
-            this.userService.then(() => {
+            this.userService.then(user => {
                 this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter(bucket =>
-                    this.orgHelperService.showWorkingGroup(bucket.key) || this.userService.user.siteAdmin
+                    this.orgHelperService.showWorkingGroup(bucket.key) || user.siteAdmin
                 );
                 cb();
             });
@@ -356,14 +356,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     getRegStatusHelp(key) {
         let result = '';
-        SharedService.regStatusShared.statusList.forEach(function (s) { // jshint ignore:line
+        statusList.forEach(function (s) { // jshint ignore:line
             if (s.name === key) result = s.help;
         });
         return result;
     }
 
     static getRegStatusIndex(rg) {
-        return SharedService.regStatusShared.orderedList.indexOf(rg.key);
+        return orderedList.indexOf(rg.key);
     }
 
     // Create string representation of what filters are selected. Use the hasSelected...() first.
@@ -488,7 +488,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     reload() {
-        this.userService.then(() => {
+        this.userService.then(user => {
             let timestamp = new Date().getTime();
             this.lastQueryTimeStamp = timestamp;
             let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
@@ -528,7 +528,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
                 this.elts.forEach(elt => {
                     this.orgHelperService.then(() => {
-                        elt.usedBy = this.orgHelperService.getUsedBy(elt, this.userService.user);
+                        elt.usedBy = this.orgHelperService.getUsedBy(elt, user);
                     });
                 });
 
@@ -569,8 +569,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
                 let orgsCreatedPromise = new Promise(resolve => {
                     this.filterOutWorkingGroups(() => {
-                        this.orgHelperService.then(() => this.orgHelperService.addLongNameToOrgs(
-                            this.aggregations.orgs.buckets, this.orgHelperService.orgsDetailedInfo));
+                        this.orgHelperService.then(orgsDetailedInfo => {
+                            this.orgHelperService.addLongNameToOrgs(this.aggregations.orgs.buckets, orgsDetailedInfo);
+                        });
                         this.aggregations.orgs.buckets.sort(function (a, b) {
                             let A = a.key.toLowerCase();
                             let B = b.key.toLowerCase();
@@ -595,16 +596,16 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
                     if (this.aggregations) {
                         orgsCreatedPromise.then(() => {
-                            this.orgHelperService.then(() => {
+                            this.orgHelperService.then(orgsDetailedInfo => {
                                 this.aggregations.orgs.buckets.forEach(org_t => {
-                                    if (this.orgHelperService.orgsDetailedInfo[org_t.key]) {
+                                    if (orgsDetailedInfo[org_t.key]) {
                                         this.orgs.push({
                                             name: org_t.key,
-                                            longName: this.orgHelperService.orgsDetailedInfo[org_t.key].longName,
+                                            longName: orgsDetailedInfo[org_t.key].longName,
                                             count: org_t.doc_count,
-                                            source: this.orgHelperService.orgsDetailedInfo[org_t.key].uri,
-                                            extraInfo: this.orgHelperService.orgsDetailedInfo[org_t.key].extraInfo,
-                                            htmlOverview: this.orgHelperService.orgsDetailedInfo[org_t.key].htmlOverview
+                                            source: orgsDetailedInfo[org_t.key].uri,
+                                            extraInfo: orgsDetailedInfo[org_t.key].extraInfo,
+                                            htmlOverview: orgsDetailedInfo[org_t.key].htmlOverview
                                         });
                                     }
                                 });

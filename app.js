@@ -147,6 +147,7 @@ app.use("/swagger/public", express.static(path.join(__dirname, '/modules/swagger
 app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
 
 app.use("/app", express.static(path.join(__dirname, '/dist/app')));
+app.use("/app/offline", express.static(path.join(__dirname, '/dist/app/offline')));
 app.use("/common", express.static(path.join(__dirname, '/dist/common')));
 app.use("/components", express.static(path.join(__dirname, '/dist/components')));
 app.use("/embed", express.static(path.join(__dirname, '/dist/embed')));
