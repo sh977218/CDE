@@ -71,7 +71,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         new Select(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Rarely");
         new Select(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Often");
         new Select(findElement(By.xpath("//div[@id='I felt angry_1']//select"))).selectByVisibleText("Sometimes");
-        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='I felt annoyed_4']//div//input[@type='radio']")).size(), 3);
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='Adverse Event Ongoing Event Indicator_0']//div//input[@type='radio']")).size(), 2);
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage_1']//div//input[@type='radio']")).size(), 3);
 
         clickElement(By.id("displayProfiles_tab"));
 
