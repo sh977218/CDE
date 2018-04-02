@@ -7,7 +7,7 @@ import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { Comment } from 'shared/models.model';
-import { SharedService } from '_commonApp/shared.service';
+import { statusList } from 'shared/system/regStatusShared';
 
 
 @Component({
@@ -71,7 +71,7 @@ export class RegistrationComponent implements OnInit {
     }
 
     setHelpMessage(newValue) {
-        SharedService.regStatusShared.statusList.forEach((status) => {
+        statusList.forEach((status) => {
             if (status.name === newValue) this.helpMessage = status.curHelp;
         });
     }
