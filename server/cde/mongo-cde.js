@@ -137,6 +137,11 @@ exports.desByConcept = function (concept, callback) {
         });
 };
 
+exports.byTinyIdVersion = function (tinyId, version, cb) {
+    if (version) this.byTinyIdAndVersion(tinyId, version, cb);
+    else this.byTinyId(tinyId, cb);
+};
+
 exports.byTinyIdAndVersion = function (tinyId, version, callback) {
     let query = {tinyId: tinyId};
     if (version) query.version = version;

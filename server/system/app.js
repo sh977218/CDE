@@ -163,7 +163,7 @@ exports.init = function (app) {
     app.get("/deView", function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
-        mongo_cde.byTinyIdAndVersion(tinyId, version, (err, cde) => {
+        mongo_cde.byTinyIdVersion(tinyId, version, (err, cde) => {
             if (err) {
                 res.status(500).send("ERROR - Static Html Error, /deView");
                 logging.errorLogger.error("Error: Static Html Error", {
@@ -228,7 +228,7 @@ exports.init = function (app) {
     app.get("/formView", function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
-        mongo_form.byTinyIdAndVersion(tinyId, version, (err, cde) => {
+        mongo_form.byTinyIdVersion(tinyId, version, (err, cde) => {
             if (err) {
                 res.status(500).send("ERROR - Static Html Error, /formView");
                 logging.errorLogger.error("Error: Static Html Error", {

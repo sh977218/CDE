@@ -71,7 +71,8 @@ exports.byTinyId = function (tinyId, cb) {
 };
 
 exports.byTinyIdVersion = function (tinyId, version, cb) {
-    this.byTinyIdAndVersion(tinyId, version, cb);
+    if (version) this.byTinyIdAndVersion(tinyId, version, cb);
+    else this.byTinyId(tinyId, cb);
 };
 
 exports.byTinyIdAndVersion = function (tinyId, version, callback) {
