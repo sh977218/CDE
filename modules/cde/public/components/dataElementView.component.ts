@@ -52,18 +52,6 @@ export class DataElementViewComponent implements OnInit {
     tinyId;
     url;
 
-    constructor(private http: HttpClient,
-                private route: ActivatedRoute,
-                private router: Router,
-                private ref: ChangeDetectorRef,
-                public modalService: NgbModal,
-                public isAllowedModel: IsAllowedService,
-                private orgHelperService: OrgHelperService,
-                public quickBoardService: QuickBoardListService,
-                private alert: AlertService,
-                public userService: UserService) {
-    }
-
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
             this.userService.then(() => {
@@ -82,6 +70,18 @@ export class DataElementViewComponent implements OnInit {
                 });
             });
         });
+    }
+
+    constructor(private http: HttpClient,
+                private route: ActivatedRoute,
+                private router: Router,
+                private ref: ChangeDetectorRef,
+                public modalService: NgbModal,
+                public isAllowedModel: IsAllowedService,
+                private orgHelperService: OrgHelperService,
+                public quickBoardService: QuickBoardListService,
+                private alert: AlertService,
+                public userService: UserService) {
     }
 
     canEdit () {
@@ -113,26 +113,28 @@ export class DataElementViewComponent implements OnInit {
     }
 
     loadDataElement(cb = _noop) {
-        if (this.userService.user && this.userService.user.username) {
-            this.http.get<DataElement[]>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
-                res => {
-                    if (res && res.length > 0 && this.isAllowedModel.isAllowed(res[0])) {
-                        this.drafts = res;
-                        this.eltLoaded(res[0], cb);
-                    } else {
-                        this.drafts = [];
-                        this.loadPublished(cb);
+        this.userService.then(user => {
+            if (user && user.username) {
+                this.http.get<DataElement[]>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
+                    res => {
+                        if (res && res.length > 0 && this.isAllowedModel.isAllowed(res[0])) {
+                            this.drafts = res;
+                            this.eltLoaded(res[0], cb);
+                        } else {
+                            this.drafts = [];
+                            this.loadPublished(cb);
+                        }
+                    },
+                    err => {
+                        // do not load elt
+                        this.alert.httpErrorMessageAlert(err);
+                        this.eltLoaded(null, cb);
                     }
-                },
-                err => {
-                    // do not load elt
-                    this.alert.httpErrorMessageAlert(err);
-                    this.eltLoaded(null, cb);
-                }
-            );
-        } else {
-            this.loadPublished(cb);
-        }
+                );
+            } else {
+                this.loadPublished(cb);
+            }
+        });
     }
 
     loadPublished(cb = _noop) {
@@ -146,20 +148,22 @@ export class DataElementViewComponent implements OnInit {
     }
 
     setDisplayStatusWarning() {
-        this.displayStatusWarning = (() => {
-            if (!this.elt) return false;
-            if (this.elt.archived || this.userService.user.siteAdmin) {
-                return false;
-            } else {
-                if (this.userService.userOrgs) {
-                    return isOrgCurator(this.userService.user, this.elt.stewardOrg.name) &&
-                        (this.elt.registrationState.registrationStatus === 'Standard' ||
-                            this.elt.registrationState.registrationStatus === 'Preferred Standard');
-                } else {
+        this.userService.then(user => {
+            this.displayStatusWarning = (() => {
+                if (!this.elt) return false;
+                if (this.elt.archived || user.siteAdmin) {
                     return false;
+                } else {
+                    if (this.userService.userOrgs) {
+                        return isOrgCurator(user, this.elt.stewardOrg.name) &&
+                            (this.elt.registrationState.registrationStatus === 'Standard' ||
+                                this.elt.registrationState.registrationStatus === 'Preferred Standard');
+                    } else {
+                        return false;
+                    }
                 }
-            }
-        })();
+            })();
+        });
     }
 
     openCopyElementModal() {

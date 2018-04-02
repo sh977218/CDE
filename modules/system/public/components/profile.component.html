@@ -2,7 +2,7 @@
     <h1>User Profile</h1>
 
     <div class="row">
-        <div class="col-6">
+        <div class="col-12">
             <h2>General Info</h2>
             <dl class="row">
                 <dt class="col-sm-3">Username:</dt>
@@ -20,13 +20,24 @@
                 <dd id="curatorFor" class="col-sm-9">{{orgCurator}}</dd>
                 <dt class="col-sm-3">Admin for:</dt>
                 <dd id="adminFor" class="col-sm-9">{{orgAdmin}}</dd>
+                <dt class="col-sm-3">Server Event Subscription Status:</dt>
+                <dd class="col-sm-9">
+                    <span class="align-middle">
+                        {{subscriptionStatusServer || (subscriptionStatusClient()?'Subscribed':'Not Subscribed')}}
+                    </span>
+                    <button class="btn btn-outline-dark" (click)="checkSubscriptionServerStatus()">Check Server <i *ngIf="subscriptionStatusServer" class="fa fa-check-square-o"></i></button>
+                    <button *ngIf="subscriptionStatusServer === 'Not Subscribed'"
+                            class="btn btn-outline-dark" (click)="pushSubscribe()">Subscribe</button>
+                    <button *ngIf="subscriptionStatusServer === 'Subscribed'"
+                            class="btn btn-outline-dark" (click)="pushUnsubscribe()">Unsubscribe</button>
+                </dd>
             </dl>
         </div>
     </div>
     <hr>
 
     <div *ngIf="user.publishedForms.length > 0" class="row">
-        <div class="col-6">
+        <div class="col-12">
             <h2>Your Published Forms</h2>
             <ul class="list-group">
                 <li class="list-group-item" *ngFor="let pf of user.publishedForms">
