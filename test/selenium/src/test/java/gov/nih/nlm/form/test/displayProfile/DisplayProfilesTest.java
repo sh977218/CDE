@@ -15,15 +15,13 @@ public class DisplayProfilesTest extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToFormDescription();
-        startEditQuestionById("question_0_3");
-        clickElement(By.xpath("//div[@id='question_0_3']//*[contains(@class,'editQuestionInvisible')]/input"));
 
         clickElement(By.id("displayProfiles_tab"));
         createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up", 1, false, 0);
         createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic", 6, true, 0);
         createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Follow-up", 1, false, 0);
         createDisplayProfile(3, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5, false, 0);
-        createDisplayProfile(4, "Multiple Select", false, false, false, false, "Dynamic", 5, false, 3);
+        createDisplayProfile(4, "Multiple Select", false, false, false, false, "Dynamic", 5, false, 4);
         scrollToTop();
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
         textPresent("1", By.xpath("//div[@id='profile_0']//table/tbody/tr[1]/td[6]/span"));
@@ -73,7 +71,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         new Select(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Rarely");
         new Select(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Often");
         new Select(findElement(By.xpath("//div[@id='I felt angry_1']//select"))).selectByVisibleText("Sometimes");
-
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='I felt annoyed_4']//div//input[@type='radio']")).size(), 3);
 
         clickElement(By.id("displayProfiles_tab"));
 
