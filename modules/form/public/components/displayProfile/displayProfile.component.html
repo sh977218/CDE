@@ -80,7 +80,7 @@
                         <dt class="col-sm-5">Use dropdown if more than ... answers</dt>
                         <dd class="col-sm-7 ">
                             <input class="form-control" [(ngModel)]="dPVM.profile.answerDropdownLimit" type="number" min="0"
-                                   [disabled]="!canEdit" id="displayMaxNumberAnswers_{{index}}"
+                                   [disabled]="!canEdit" id="displayAnswerDropdownLimit_{{index}}"
                                    (change)="onEltChange.emit();">
                             (0 to display all answers as checkbox)
                         </dd>
