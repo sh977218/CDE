@@ -177,6 +177,24 @@ exports.byTinyIdVersion = function (req, res) {
     });
 };
 
+exports.byTinyIdAndVersion = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    let version = req.params.version;
+    mongo_form.byTinyIdAndVersion(tinyId, version, function (err, form) {
+        if (err) return res.status(500).send();
+        if (!form) return res.status(404).send();
+        form = form.toObject();
+        fetchWholeForm(form, function (err, wholeForm) {
+            if (err) return res.status(500).send("ERROR - form by id / version");
+            wipeRenderDisallowed(wholeForm, req, function (err) {
+                if (err) return res.status(500).send("ERROR - form by id version wipe");
+                res.send(wholeForm);
+            });
+        });
+    });
+};
+
 exports.draftForms = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();

@@ -76,6 +76,17 @@ exports.byTinyIdVersion = function (req, res) {
     });
 };
 
+exports.byTinyIdAndVersion = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    let version = req.params.version;
+    mongo_cde.byTinyIdAndVersion(tinyId, version, function (err, dataElement) {
+        if (err) return res.status(500).send("ERROR - cannot get CDE by tinyId / Version");
+        if (!dataElement) return res.status(404).send();
+        res.send(dataElement);
+    });
+};
+
 exports.draftDataElements = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();

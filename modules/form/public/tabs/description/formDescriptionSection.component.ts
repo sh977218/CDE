@@ -8,7 +8,6 @@ import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
-import _toString from 'lodash/toString';
 import { Observable } from "rxjs/Observable";
 import { debounceTime, map } from 'rxjs/operators';
 
@@ -177,7 +176,7 @@ export class FormDescriptionSectionComponent implements OnInit {
             currentSection.inForm = newSection.inForm;
             currentSection.label = newSection.label;
             this.onEltChange.emit();
-        });
+        }, _noop);
     }
 
     removeNode(node) {

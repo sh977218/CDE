@@ -3,6 +3,7 @@ import { Component, EventEmitter, Host, Input, OnInit, Output, ViewChild } from 
 import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
+import _noop from 'lodash/noop';
 import _toString from 'lodash/toString';
 
 import { DataElementService } from 'cde/public/dataElement.service';
@@ -150,7 +151,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
             currentQuestion.question = newQuestion.question;
             currentQuestion.label = newQuestion.label;
             this.stageElt.emit();
-        });
+        }, _noop);
     }
 
     removeNode(node) {

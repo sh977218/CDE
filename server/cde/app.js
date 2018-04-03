@@ -26,7 +26,7 @@ exports.init = function (app, daoManager) {
     app.get("/deById/:id/priorDataElements/", exportShared.nocacheMiddleware, cdesvc.priorDataElements);
 
     app.get("/de/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
-    app.get("/de/:tinyId/version/:version?", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
+    app.get("/de/:tinyId/version/:version?", exportShared.nocacheMiddleware, cdesvc.byTinyIdAndVersion);
     app.get("/deList/:tinyIdList?", exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
 
     app.get("/draftDataElement/:tinyId", cdesvc.draftDataElements);
