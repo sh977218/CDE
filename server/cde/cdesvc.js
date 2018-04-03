@@ -37,7 +37,13 @@ exports.priorDataElements = function (req, res) {
         if (err) return res.status(500).send("ERROR - Cannot get prior DEs");
         if (!dataElement) return res.status(404).send();
         let history = dataElement.history.concat([dataElement._id]).reverse();
-        mongo_cde.DataElement.find({}, {"updatedBy.username": 1, updated: 1, "changeNote": 1, version: 1})
+        mongo_cde.DataElement.find({}, {
+            "updatedBy.username": 1,
+            updated: 1,
+            "changeNote": 1,
+            version: 1,
+            elementType: 1
+        })
             .where("_id").in(history).exec((err, priorDataElements) => {
             if (err) return res.status(500).send("ERROR - Cannot get prior DE list");
             mongo_data.sortArrayByArray(dataElement, history);
@@ -94,6 +100,14 @@ exports.draftDataElements = function (req, res) {
     mongo_cde.draftDataElements(tinyId, function (err, dataElements) {
         if (err) return res.status(500).send("ERROR - get draft data element. " + tinyId);
         res.send(dataElements);
+    });
+};
+exports.draftDataElementById = function (req, res) {
+    let id = req.params.id;
+    if (!id) return res.status(400).send();
+    mongo_cde.draftDataElementById(id, function (err, dataElement) {
+        if (err) return res.status(500).send("ERROR - get draft data element. " + tinyId);
+        res.send(dataElement);
     });
 };
 

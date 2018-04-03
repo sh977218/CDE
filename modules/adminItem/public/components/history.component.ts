@@ -100,11 +100,20 @@ export class HistoryComponent implements OnInit {
             priorElt.selected = !priorElt.selected;
             if (priorElt.selected) this.numberSelected++;
             else this.numberSelected--;
-            if (!priorElt.isDraft && priorElt.selected && !priorElt.promise) {
-                const prom = this.http.get(
-                    this.elt.elementType === 'cde'
-                        ? '/deById/' + priorElt._id
-                        : '/formById/' + priorElt._id).toPromise();
+            if (priorElt.selected && !priorElt.promise) {
+                let temp = {
+                    false: {
+                        cde: '/deById/',
+                        form: '/formById/'
+                    },
+                    true: {
+                        cde: '/draftDataElementById/',
+                        form: '/draftFormById/'
+                    }
+                };
+                if (!priorElt.isDraft) priorElt.isDraft = false;
+                let url = temp[priorElt.isDraft][priorElt.elementType] + priorElt._id;
+                const prom = this.http.get(url).toPromise();
                 prom.then(res => {
                     this.priorElements[index] = res;
                     this.priorElements[index].url = URL_MAP[this.priorElements[index].elementType] +

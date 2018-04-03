@@ -93,6 +93,12 @@ exports.draftDataElements = function (tinyId, cb) {
     };
     DataElementDraft.find(cond, cb);
 };
+exports.draftDataElementById = function (id, cb) {
+    let cond = {
+        _id: id
+    };
+    DataElementDraft.findOne(cond, cb);
+};
 exports.saveDraftDataElement = function (elt, cb) {
     delete elt.__v;
     DataElementDraft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);

@@ -95,6 +95,14 @@ exports.draftForms = function (tinyId, cb) {
     FormDraft.find(cond, (err, forms) => cb(err, forms.map(f => f.toObject())));
 };
 
+exports.draftFormById = function (id, cb) {
+    let cond = {
+        _id: id,
+        elementType: 'form'
+    };
+    FormDraft.findOne(cond, (err, form) => cb(err, form.toObject()));
+};
+
 exports.saveDraftForm = function (elt, cb) {
     delete elt.__v;
     FormDraft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);

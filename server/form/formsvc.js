@@ -3,6 +3,7 @@ const _ = require("lodash");
 const mongo_cde = require("../cde/mongo-cde");
 const mongo_form = require("./mongo-form");
 const mongo_data = require("../system/mongo-data");
+const formShared = require('@std/esm')(module)('../../shared/form/formShared');
 const authorization = require("../system/authorization");
 const nih = require("./nihForm");
 const sdc = require("./sdcForm");
@@ -45,7 +46,10 @@ function fetchWholeForm(form, callback) {
         },
         undefined,
         (q, cb) => {
-            mongo_cde.DataElement.findOne({tinyId: q.question.cde.tinyId, archived: false}, {version: 1}, (err, elt) => {
+            mongo_cde.DataElement.findOne({
+                tinyId: q.question.cde.tinyId,
+                archived: false
+            }, {version: 1}, (err, elt) => {
                 if (err || !elt) {
                     return cb(err);
                 }
@@ -117,7 +121,7 @@ exports.priorForms = function (req, res) {
         if (err) res.status(500).send("ERROR - cannot get form by id for prior");
         if (!form) res.status(404).send();
         let history = form.history.concat([form._id]).reverse();
-        mongo_form.Form.find({}, {"updatedBy.username": 1, updated: 1, "changeNote": 1, version: 1})
+        mongo_form.Form.find({}, {"updatedBy.username": 1, updated: 1, "changeNote": 1, version: 1, elementType: 1})
             .where("_id").in(history).exec((err, priorForms) => {
             mongo_data.sortArrayByArray(priorForms, history);
             res.send(priorForms);
@@ -211,6 +215,18 @@ exports.draftForms = function (req, res) {
             });
         }, () => {
             res.send(forms);
+        });
+    });
+};
+exports.draftFormById = function (req, res) {
+    let id = req.params.id;
+    if (!id) return res.status(400).send();
+    mongo_form.draftFormById(id, function (err, form) {
+        if (err) return res.status(500).send("ERROR - get draft form. " + id);
+        if (!form) return res.status(404).send();
+        fetchWholeForm(form, function (err) {
+            if (err) return res.status(500).send("ERROR - get draft form. " + id);
+            else res.send(form);
         });
     });
 };
