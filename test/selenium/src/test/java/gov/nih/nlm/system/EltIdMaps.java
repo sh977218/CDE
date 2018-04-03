@@ -92,6 +92,7 @@ public class EltIdMaps {
         eltMap.put("Functional Imaging", "my7XySBtg");
         eltMap.put("Form Cde Update Test", "X1ghWjntf");
         eltMap.put("Form Delete Test", "QyT6ElOKLl");
+        eltMap.put("Form Form Update Test", "7kAWJ9gHB");
         eltMap.put("Form History Test", "QkGEqKVNZ");
         eltMap.put("Form History Compare Test", "XJQfsXNjz");
         eltMap.put("formAddCdeTest", "7kkK62xR4");

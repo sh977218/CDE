@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import _noop from 'lodash/noop';
 
 import { CodeAndSystem } from 'shared/models.model';
-import { FormQuestion } from 'shared/form/form.model';
+import { CdeForm, FormQuestion } from 'shared/form/form.model';
 import { iterateFe } from 'shared/form/formShared';
 
 
@@ -13,6 +13,7 @@ export class FormService {
         private http: HttpClient
     ) {}
 
+    // TODO: use Mongo cde and move to shared, currently open to using Elastic cde
     convertCdeToQuestion(cde, cb: (q?: FormQuestion) => (void)): void {
         if (!cde || cde.valueDomain === undefined) {
             throw new Error('Cde ' + cde.tinyId + ' is not valid');
@@ -63,7 +64,7 @@ export class FormService {
                     .subscribe((result) => {
                         convertPv(q, result);
                         cb(q);
-                    }, () => cb());
+                    }, cb);
             } else {
                 convertPv(q, cde);
                 cb(q);
@@ -71,6 +72,16 @@ export class FormService {
         } else {
             cb(q);
         }
+    }
+
+    fetchForm(tinyId, version = undefined): Promise<CdeForm> {
+        return new Promise<CdeForm>((resolve, reject) => {
+            if (version || version === '') {
+                this.http.get<CdeForm>('/form/' + tinyId + '/version/' + version).subscribe(resolve, reject);
+            } else {
+                this.http.get<CdeForm>('/form/' + tinyId).subscribe(resolve, reject);
+            }
+        });
     }
 
     // TODO: turn into single server endpoint that calls one of the 2 server-side implementations

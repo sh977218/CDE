@@ -17,16 +17,14 @@
                 <strong [textContent]="question.question.cde.name"></strong>
             </ng-container>
             <strong *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}}</strong>
-            <small *ngIf="question.question.partOf" class="text-info">
-                (part of {{question.question.partOf}})
-            </small>
+            <small *ngIf="question.question.partOf" class="text-info">(part of {{question.question.partOf}})</small>
         </span>
         <span *ngIf="question.incompleteRule" class="mx-1">(Incomplete Rule)</span>
         <span *ngIf="question.question.cde.outdated" class="mx-1">(Outdated)</span>
     </div>
     <ng-container *ngIf="question.question.cde.outdated">
         <button class="btn btn-outline-dark btn-sm updateQuestionBtn d-inline-block"
-                (click)="openUpdateCdeVersion(question);">Update
+                (click)="openUpdateCdeVersion(question);" [disabled]="!canEdit">Update
         </button>
     </ng-container>
     <div class="d-inline-block questionDataType mx-1">{{getDatatypeLabel(question)}}</div>
