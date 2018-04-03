@@ -874,14 +874,10 @@ exports.init = function (app) {
     });
 
 
-    app.post('/getFeedbackIssues', function (req, res) {
+    app.post('/getFeedbackIssues', (req, res) => {
         if (authorizationShared.canOrgAuthority(req.user)) {
-            dbLogger.getFeedbackIssues(req.body, function (err, result) {
-                res.send(result);
-            });
-        } else {
-            res.status(401).send();
-        }
+            dbLogger.getFeedbackIssues(req.body, (err, result) => res.send(result));
+        } else res.status(401).send();
     });
 
     app.post('/logClientException', (req, res) => {
