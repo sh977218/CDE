@@ -17,7 +17,6 @@
                   [innerHtml]="formElement.instructions.value"></span>
             <span *ngIf="formElement.instructions.valueFormat !== 'html'" class="text-muted">{{formElement.instructions.value}}</span>
         </div>
-
         <div attr.id="{{formElement.label}}_{{index}}" [ngClass]="{'native-box': hasLabel(formElement)}">
             <ng-container *ngIf="formElement.question.isScore">Score: <span
                     [textContent]="score(formElement, nrs.vm)"></span></ng-container>
@@ -25,59 +24,82 @@
                 <ng-container [ngSwitch]="formElement.question.datatype">
                     <ng-container *ngSwitchCase="'Value List'">
                         <div class="row">
-                            <div *ngFor="let pv of formElement.question.answers; let i = index"
-                                 [ngClass]="classColumns(pv.index, i)" class="col-12">
-                                <div *ngIf="!pv.nonValuelist" class="form-check">
-                                    <label class="form-check-label native-valuelist-label"
-                                           [ngClass]="{'native-question-oneline-l': pv.formElements
+                            <ng-container
+                                    *ngIf="nrs.profile.displayType === 'Follow-up' || !nrs.profile || !nrs.profile.answerDropdownLimit || (nrs.profile.answerDropdownLimit > formElement.question?.answers.length)">
+                                <div *ngFor="let pv of formElement.question.answers; let i = index"
+                                     [ngClass]="classColumns(pv.index, i)" class="col-12">
+                                    <div *ngIf="!pv.nonValuelist" class="form-check">
+                                        <label class="form-check-label native-valuelist-label"
+                                               [ngClass]="{'native-question-oneline-l': pv.formElements
                                                           && isOneLiner(pv.formElements[0], pv.formElements.length)}">
-                                        <ng-container *ngIf="NRS.isRadioOrCheckbox(formElement); else checkMulti">
-                                            <input type="radio" class="form-check-input"
-                                                   [name]="formElement.questionId" [attr.name]="formElement.questionId"
-                                                   [ngModel]="formElement.question.answer"
-                                                   (click)="nrs.radioButtonSelect(formElement.question, $event.target.value)"
-                                                   [value]="pv.permissibleValue" [attr.value]="pv.permissibleValue"
-                                                   [required]="formElement.question.required"
-                                                   [disabled]="!formElement.question.editable"/>
-                                        </ng-container>
-                                        <ng-template #checkMulti>
-                                            <input type="checkbox" class="form-check-input"
-                                                   [name]="formElement.questionId" [attr.name]="formElement.questionId"
-                                                   [checked]="nrs.checkboxIsChecked(formElement.question, pv.permissibleValue)"
-                                                   (change)="nrs.checkboxOnChange($event, formElement.question, pv.permissibleValue)"
-                                                   [value]="pv.permissibleValue" [attr.value]="pv.permissibleValue"
-                                                   [required]="formElement.question.required"
-                                                   [disabled]="!formElement.question.editable"/>
-                                        </ng-template>
-                                        <span [textContent]="nrs.getPvLabel(pv)"></span>
-                                        <span class="native-value" *ngIf="nrs.profile.displayValues"
-                                              [textContent]="nrs.getPvValue(pv)"></span>
-                                    </label>
-                                    <ng-container *ngIf="pv?.formElements">
-                                        <ng-container *ngFor="let fe of pv.formElements; let j = index">
-                                            <div *ngIf="nrs.nativeRenderType !== nrs.SHOW_IF
+                                            <ng-container *ngIf="NRS.isRadioOrCheckbox(formElement); else checkMulti">
+                                                <input type="radio" class="form-check-input"
+                                                       [name]="formElement.questionId"
+                                                       [attr.name]="formElement.questionId"
+                                                       [ngModel]="formElement.question.answer"
+                                                       (click)="nrs.radioButtonSelect(formElement.question, $event.target.value)"
+                                                       [value]="pv.permissibleValue" [attr.value]="pv.permissibleValue"
+                                                       [required]="formElement.question.required"
+                                                       [disabled]="!formElement.question.editable"/>
+                                            </ng-container>
+                                            <ng-template #checkMulti>
+                                                <input type="checkbox" class="form-check-input"
+                                                       [name]="formElement.questionId"
+                                                       [attr.name]="formElement.questionId"
+                                                       [checked]="nrs.checkboxIsChecked(formElement.question, pv.permissibleValue)"
+                                                       (change)="nrs.checkboxOnChange($event, formElement.question, pv.permissibleValue)"
+                                                       [value]="pv.permissibleValue" [attr.value]="pv.permissibleValue"
+                                                       [required]="formElement.question.required"
+                                                       [disabled]="!formElement.question.editable"/>
+                                            </ng-template>
+                                            <span [textContent]="nrs.getPvLabel(pv)"></span>
+                                            <span class="native-value" *ngIf="nrs.profile.displayValues"
+                                                  [textContent]="nrs.getPvValue(pv)"></span>
+                                        </label>
+                                        <ng-container *ngIf="pv?.formElements">
+                                            <ng-container *ngFor="let fe of pv.formElements; let j = index">
+                                                <div *ngIf="nrs.nativeRenderType !== nrs.SHOW_IF
                                                || nrs.skipLogicService.evalSkipLogicAndClear(pv, fe, nrs)"
-                                                 [ngClass]="{'native-question-oneline-r': isOneLiner(pv.formElements[0], pv.formElements.length),
+                                                     [ngClass]="{'native-question-oneline-r': isOneLiner(pv.formElements[0], pv.formElements.length),
                                                             'native-box': pv.formElements && !isOneLiner(fe, pv.formElements.length)}"
-                                                 class="native-question-header">
-                                                <cde-native-question *ngIf="fe.elementType === 'question'"
-                                                                     [formElement]="fe"
-                                                                     [numSubQuestions]="pv.formElements.length"
-                                                                     [index]="i"></cde-native-question>
-                                                <cde-native-section
-                                                        *ngIf="fe.elementType === 'section' || fe.elementType === 'form'"
-                                                        [formElements]="pv.formElements"
-                                                        [formElement]="fe"
-                                                        [numSubQuestions]="pv.formElements.length"></cde-native-section>
-                                            </div>
+                                                     class="native-question-header">
+                                                    <cde-native-question *ngIf="fe.elementType === 'question'"
+                                                                         [formElement]="fe"
+                                                                         [numSubQuestions]="pv.formElements.length"
+                                                                         [index]="i"></cde-native-question>
+                                                    <cde-native-section
+                                                            *ngIf="fe.elementType === 'section' || fe.elementType === 'form'"
+                                                            [formElements]="pv.formElements"
+                                                            [formElement]="fe"
+                                                            [numSubQuestions]="pv.formElements.length"></cde-native-section>
+                                                </div>
+                                            </ng-container>
                                         </ng-container>
-                                    </ng-container>
+                                    </div>
                                 </div>
+                            </ng-container>
+
+                            <div class="col-12 native-box"
+                                 *ngIf="nrs.profile.displayType === 'Dynamic' && nrs.profile?.answerDropdownLimit > 0 && nrs.profile?.answerDropdownLimit <= formElement.question?.answers.length">
+                                <ng-container *ngIf="formElement.question.multiselect">
+                                    <select multiple [(ngModel)]="formElement.question.answer" class="form-control">
+                                        <option *ngFor="let pv of formElement.question.answers"
+                                                [value]="pv.permissibleValue">{{pv.valueMeaningName}}
+                                        </option>
+                                    </select>
+                                </ng-container>
+                                <ng-container *ngIf="!formElement.question.multiselect">
+                                    <select [(ngModel)]="formElement.question.answer" class="form-control">
+                                        <option *ngFor="let pv of formElement.question.answers"
+                                                [value]="pv.permissibleValue">{{pv.valueMeaningName}}
+                                        </option>
+                                    </select>
+                                </ng-container>
                             </div>
                         </div>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Date'" class="row">
-                        <div class="col-12" >
+                        <div class="col-12">
                             <input class="form-control"
                                    type="{{datePrecisionToType[formElement.question.datatypeDate.precision]}}"
                                    step="{{datePrecisionToStep[formElement.question.datatypeDate.precision]}}"

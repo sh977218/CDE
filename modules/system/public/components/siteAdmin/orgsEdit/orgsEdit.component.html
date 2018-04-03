@@ -57,7 +57,8 @@
         </td>
         <td>
         <span *ngIf="editWG[c.name]">
-            <select class="form-control" [(ngModel)]="editWG[c.name].tempWG">
+            <select style="width: 120px" class="form-control" [(ngModel)]="editWG[c.name].tempWG">
+                <option></option>
                 <option *ngFor="let o of orgs">{{o.name}}</option>
             </select>
             <i id="wgEditok" class="fa fa-check"
