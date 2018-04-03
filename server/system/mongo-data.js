@@ -172,7 +172,7 @@ exports.pushEndpointUpdate = function (endpoint, commandObj, callback) {
     PushRegistration.update({'subscription.endpoint': endpoint}, commandObj, {multi: true}, callback);
 };
 
-exports.pushGetAdministratorRegistrations = function(callback) {
+exports.pushGetAdministratorRegistrations = function (callback) {
     User.find({siteAdmin: true}).exec((err, users) => {
         let userIds = users.map(u => u._id.toString());
         PushRegistration.find({}).exec((err, registrations) => {
@@ -391,8 +391,8 @@ exports.addAttachment = function (file, user, comment, elt, cb) {
 
             if (file.scanned) streamDescription.metadata.status = "scanned";
             else if (user.roles && user.roles.filter((r) => {
-                    return r === "AttachmentReviewer";
-                }).length > 0) {
+                return r === "AttachmentReviewer";
+            }).length > 0) {
                 streamDescription.metadata.status = 'approved';
             } else streamDescription.metadata.status = "uploaded";
 
@@ -624,5 +624,15 @@ exports.enableRule = function (params, cb) {
         delete params.rule._id;
         org.cdeStatusValidationRules.push(params.rule);
         org.save(cb);
+    });
+};
+
+exports.sortArrayByArray = function (unSortArray, targetArray) {
+    unSortArray.sort((a, b) => {
+        let aId = a._id;
+        let bId = b._id;
+        let aIndex = _.findIndex(targetArray, aId);
+        let bIndex = _.findIndex(targetArray, bId);
+        return aIndex - bIndex;
     });
 };

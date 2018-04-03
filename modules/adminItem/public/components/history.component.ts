@@ -5,8 +5,8 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from '_app/alert/alert.service';
 
 const URL_MAP = {
-    'cde': '/deView?cdeId=',
-    'form': '/formView?formId='
+    cde: '/deView?cdeId=',
+    form: '/formView?formId='
 };
 
 @Component({
@@ -71,21 +71,22 @@ export class HistoryComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.elt.viewing = true;
-        delete this.elt.selected;
         let url = '/deById/' + this.elt._id + '/priorDataElements';
         if (this.elt.elementType === 'form') {
             url = '/formById/' + this.elt._id + '/priorForms';
         }
-        if (this.elt.history && this.elt.history.length > 0) {
-            this.http.get<any[]>(url).subscribe(res => {
-                this.priorElements = res.reverse();
-                this.priorElements.splice(0, 0, this.elt);
-                this.priorElements.forEach(pe => pe.url = URL_MAP[this.elt.elementType] + pe._id);
-            }, err => this.alert.httpErrorMessageAlert(err, 'Error retrieving history:'));
-        } else {
-            this.priorElements = [this.elt];
-        }
+        this.http.get<any[]>(url).subscribe(res => {
+            this.priorElements = res;
+            this.priorElements.forEach(pe => {
+                if (!pe.isDraft) {
+                    pe.url = URL_MAP[this.elt.elementType] + pe._id;
+                }
+            });
+            if (this.elt.isDraft && this.canEdit) {
+                this.priorElements = [this.elt].concat(this.priorElements);
+            }
+            this.priorElements[0].viewing = true;
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error retrieving history:'));
     }
 
     selectRow(index) {
@@ -99,7 +100,7 @@ export class HistoryComponent implements OnInit {
             priorElt.selected = !priorElt.selected;
             if (priorElt.selected) this.numberSelected++;
             else this.numberSelected--;
-            if (priorElt.selected && !priorElt.promise) {
+            if (!priorElt.isDraft && priorElt.selected && !priorElt.promise) {
                 const prom = this.http.get(
                     this.elt.elementType === 'cde'
                         ? '/deById/' + priorElt._id
