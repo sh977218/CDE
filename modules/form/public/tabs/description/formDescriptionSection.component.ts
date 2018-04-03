@@ -1,23 +1,36 @@
+import { HttpClient } from '@angular/common/http';
 import {
     Component, ElementRef, EventEmitter, Host, Input, OnInit, Output, TemplateRef,
     ViewChild
 } from "@angular/core";
-import { Observable } from "rxjs/Observable";
+import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
+import _isEqual from 'lodash/isEqual';
+import _noop from 'lodash/noop';
+import { Observable } from "rxjs/Observable";
 import { debounceTime, map } from 'rxjs/operators';
 
 import { AlertService } from '_app/alert/alert.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
+import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { FormElement, FormSection, SkipLogic } from 'shared/form/form.model';
-import { isSubForm } from 'shared/form/formShared';
 import { FormattedValue } from 'shared/models.model';
+import { CdeForm, FormElement, FormInForm, FormSection, SkipLogic } from 'shared/form/form.model';
+import { convertFormToSection, isSubForm } from 'shared/form/formShared';
+
 
 @Component({
     selector: "cde-form-description-section",
-    templateUrl: "formDescriptionSection.component.html"
+    templateUrl: "formDescriptionSection.component.html",
+    styles: [`
+        .outdated-bg {
+            background-color: #ffecc5;
+            border: 1px;
+            border-radius: 10px;
+        }
+    `]
 })
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
@@ -25,29 +38,39 @@ export class FormDescriptionSectionComponent implements OnInit {
     @Input() index;
     @Input() node: TreeNode;
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
-
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
     @ViewChild("slInput") slInput: ElementRef;
-
+    @ViewChild('updateFormVersionTmpl') updateFormVersionTmpl: NgbModalModule;
+    getSkipLogicOptions = ((text$: Observable<string>) =>
+        text$.pipe(
+            debounceTime(300),
+            map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.section)),
+        ));
+    static inputEvent = new Event('input');
     isSubForm = false;
     parent: FormElement;
-    section: FormSection;
-
+    section: FormSection|FormInForm;
+    formSection: FormInForm;
     repeatOptions = [
         {label: "", value: ""},
         {label: "Set Number of Times", value: "N"},
         {label: "Over first question", value: "F"}
     ];
+    updateFormVersion: any;
 
-    constructor(@Host() public formDescriptionComponent: FormDescriptionComponent,
+    constructor(private alert: AlertService,
+                @Host() public formDescriptionComponent: FormDescriptionComponent,
+                private formService: FormService,
+                private http: HttpClient,
                 private localStorageService: LocalStorageService,
-                private alert: AlertService,
+                public modalService: NgbModal,
                 public skipLogicValidateService: SkipLogicValidateService) {
     }
 
     ngOnInit() {
         this.section = this.node.data;
+        this.formSection = this.section && this.section.elementType === 'form' ? this.section as FormInForm : null;
         this.parent = this.node.parent.data;
         this.section.repeatOption = FormDescriptionSectionComponent.getRepeatOption(this.section);
         this.section.repeatNumber = FormDescriptionSectionComponent.getRepeatNumber(this.section);
@@ -74,10 +97,28 @@ export class FormDescriptionSectionComponent implements OnInit {
         }
     }
 
-    removeNode(node) {
-        node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
-        node.treeModel.update();
-        this.onEltChange.emit();
+    copySection(section) {
+        this.localStorageService.set("sectionCopied", section);
+        section.isCopied = "copied";
+        this.elt.isCopied = "copied";
+        setTimeout(() => {
+            section.isCopied = "clear";
+            delete this.elt.isCopied;
+        }, 3000);
+    }
+
+    editSection(section) {
+        if (!this.isSubForm && this.canEdit) {
+            section.edit = !section.edit;
+            this.formDescriptionComponent.setCurrentEditing(this.parent.formElements, section, this.index);
+        }
+    }
+
+    getRepeatLabel(section) {
+        if (!section.repeat) return "";
+        if (section.repeat[0] === "F") return "over First Question";
+
+        return parseInt(section.repeat) + " times";
     }
 
     static getRepeatOption(section) {
@@ -90,14 +131,58 @@ export class FormDescriptionSectionComponent implements OnInit {
         return parseInt(section.repeat);
     }
 
-    getSkipLogicOptions = (text$: Observable<string>) =>
-        text$.pipe(
-            debounceTime(300),
-            map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.section)),
-        )
-
     getTemplate() {
         return (this.section.elementType === "section" ? this.formDescriptionSectionTmpl : this.formDescriptionFormTmpl);
+    }
+
+    hoverInSection(section) {
+        if (!this.isSubForm && this.canEdit) {
+            section.hover = true;
+        }
+    }
+
+    hoverOutSection(section) {
+        if (!this.isSubForm && this.canEdit) {
+            section.hover = false;
+        }
+    }
+
+    openUpdateFormVersion(formSection: FormInForm) {
+        this.formService.fetchForm(formSection.inForm.form.tinyId).then(newForm => {
+            let oldVersion = formSection.inForm.form.version ? formSection.inForm.form.version : '';
+            this.formService.fetchForm(formSection.inForm.form.tinyId, oldVersion).then(oldForm => {
+                this.openUpdateFormVersionMerge(convertFormToSection(newForm), formSection, newForm, oldForm);
+            });
+        });
+    }
+
+    openUpdateFormVersionMerge(newSection: FormInForm, currentSection: FormInForm, newForm: CdeForm, oldForm: CdeForm) {
+        newSection.instructions = currentSection.instructions;
+        newSection.repeat = currentSection.repeat;
+        newSection.skipLogic = currentSection.skipLogic;
+        if (newForm.naming.some(n => n.designation === currentSection.label)) {
+            newSection.label = currentSection.label;
+        }
+
+        let modal: any = {
+            currentSection: currentSection,
+            newSection: newSection
+        };
+        modal.bForm = true;
+        modal.bLabel = !_isEqual(newForm.naming, oldForm.naming);
+
+        this.updateFormVersion =  modal;
+        this.modalService.open(this.updateFormVersionTmpl, {size: 'lg'}).result.then(() => {
+            currentSection.inForm = newSection.inForm;
+            currentSection.label = newSection.label;
+            this.onEltChange.emit();
+        }, _noop);
+    }
+
+    removeNode(node) {
+        node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
+        node.treeModel.update();
+        this.onEltChange.emit();
     }
 
     setRepeat(section) {
@@ -115,13 +200,6 @@ export class FormDescriptionSectionComponent implements OnInit {
         this.checkRepeatOptions();
     }
 
-    getRepeatLabel(section) {
-        if (!section.repeat) return "";
-        if (section.repeat[0] === "F") return "over First Question";
-
-        return parseInt(section.repeat) + " times";
-    }
-
     slOptionsRetrigger() {
         if (this.slInput) {
             setTimeout(() => {
@@ -134,37 +212,6 @@ export class FormDescriptionSectionComponent implements OnInit {
         if (fe.skipLogic && fe.skipLogic.condition !== event) {
             this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
             this.onEltChange.emit();
-        }
-    }
-
-    static inputEvent = new Event('input');
-
-    copySection(section) {
-        this.localStorageService.set("sectionCopied", section);
-        section.isCopied = "copied";
-        this.elt.isCopied = "copied";
-        setTimeout(() => {
-            section.isCopied = "clear";
-            delete this.elt.isCopied;
-        }, 3000);
-    }
-
-    hoverInSection(section) {
-        if (!this.isSubForm && this.canEdit) {
-            section.hover = true;
-        }
-    }
-
-    hoverOutSection(section) {
-        if (!this.isSubForm && this.canEdit) {
-            section.hover = false;
-        }
-    }
-
-    editSection(section) {
-        if (!this.isSubForm && this.canEdit) {
-            section.edit = !section.edit;
-            this.formDescriptionComponent.setCurrentEditing(this.parent.formElements, section, this.index);
         }
     }
 }

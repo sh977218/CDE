@@ -1,3 +1,23 @@
+export function canEditMiddleware(req, res, next) {
+    if (!canEditCuratedItem(req.user, req.body)) {
+        // TODO: should consider adding to error log
+        return res.status(401).send();
+    }
+    if (next) {
+        next();
+    }
+}
+
+export function loggedInMiddleware(req, res, next) {
+    if (!req.user) {
+        // TODO: should consider adding to error log
+        return res.status(401).send();
+    }
+    if (next) {
+        next();
+    }
+}
+
 export const rolesEnum = ["DocumentationEditor", "BoardPublisher", "CommentAuthor",
     "CommentReviewer", "AttachmentReviewer", "OrgAuthority", "FormEditor"];
 
@@ -7,6 +27,19 @@ export function canComment(user) {
 
 export function canCreateForms(user) {
     return hasRole(user, "FormEditor");
+}
+
+export function canEditCuratedItem(user, item) {
+    if (!item) return false;
+    if (item.archived) return false;
+    if (isSiteAdmin(user)) {
+        return true;
+    }
+    if (item.registrationState.registrationStatus === "Standard" ||
+        item.registrationState.registrationStatus === "Preferred Standard") {
+        return false;
+    }
+    return isOrgCurator(user, item.stewardOrg.name);
 }
 
 export function canOrgAuthority(user) {
