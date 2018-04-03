@@ -33,17 +33,6 @@ const _ = require('lodash');
 const ejs = require('ejs');
 const useragent = require('useragent');
 
-function loggedInMiddleware(req, res, next) {
-    if (!req.user) {
-        // TODO: should consider adding to error log
-        return res.status(401).send();
-    }
-    if (next) {
-        next();
-    }
-}
-exports.loggedInMiddleware = loggedInMiddleware;
-
 exports.init = function (app) {
     let getRealIp = function (req) {
         if (req._remoteAddress) return req._remoteAddress;
@@ -308,9 +297,9 @@ exports.init = function (app) {
         });
     });
 
-    app.post('/pushRegistration', [loggedInMiddleware], pushNotification.create);
-    app.delete('/pushRegistration', [loggedInMiddleware], pushNotification.delete);
-    app.post('/pushRegistrationSubscribe', [loggedInMiddleware], pushNotification.subscribe);
+    app.post('/pushRegistration', [authorizationShared.loggedInMiddleware], pushNotification.create);
+    app.delete('/pushRegistration', [authorizationShared.loggedInMiddleware], pushNotification.delete);
+    app.post('/pushRegistrationSubscribe', [authorizationShared.loggedInMiddleware], pushNotification.subscribe);
     app.post('/pushRegistrationUpdate', pushNotification.updateStatus);
 
     // delete org classification

@@ -24,7 +24,7 @@
     </div>
     <ng-container *ngIf="question.question.cde.outdated">
         <button class="btn btn-outline-dark btn-sm updateQuestionBtn d-inline-block"
-                (click)="openUpdateCdeVersion(question);">Update
+                (click)="openUpdateCdeVersion(question);" [disabled]="!canEdit">Update
         </button>
     </ng-container>
     <div class="d-inline-block questionDataType mx-1">{{getDatatypeLabel(question)}}</div>

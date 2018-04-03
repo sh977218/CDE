@@ -22,7 +22,7 @@
         </div>
         <ng-container *ngIf="formSection?.inForm?.form?.outdated">
             <button class="btn btn-outline-dark btn-sm updateQuestionBtn d-inline-block"
-                    (click)="openUpdateFormVersion(section);">Update
+                    (click)="openUpdateFormVersion(section);" [disabled]="!canEdit">Update
             </button>
         </ng-container>
         <div *ngIf="!isSubForm && canEdit" class="float-right">
