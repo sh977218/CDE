@@ -114,6 +114,7 @@ export class DisplayProfile {
     name: String;
     numberOfColumns: number = 4;
     repeatFormat: string = '#.';
+    answerDropdownLimit: number;
     sectionsAsMatrix: boolean = true;
     unitsOfMeasureAlias: {alias: string, unitOfMeasure: CodeAndSystem}[] = [];
 
