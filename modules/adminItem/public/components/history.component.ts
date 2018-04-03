@@ -73,12 +73,12 @@ export class HistoryComponent implements OnInit {
     ngOnInit(): void {
         this.elt.viewing = true;
         delete this.elt.selected;
+        let url = '/deById/' + this.elt._id + '/priorDataElements';
+        if (this.elt.elementType === 'form') {
+            url = '/formById/' + this.elt._id + '/priorForms';
+        }
         if (this.elt.history && this.elt.history.length > 0) {
-            this.http.get<any[]>(
-                this.elt.elementType === 'cde'
-                    ? '/deById/' + this.elt._id + '/priorDataElements'
-                    : '/formById/' + this.elt._id + '/priorForms'
-            ).subscribe(res => {
+            this.http.get<any[]>(url).subscribe(res => {
                 this.priorElements = res.reverse();
                 this.priorElements.splice(0, 0, this.elt);
                 this.priorElements.forEach(pe => pe.url = URL_MAP[this.elt.elementType] + pe._id);
