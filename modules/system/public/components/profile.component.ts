@@ -7,7 +7,7 @@ import { UserService } from '_app/user.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { User } from 'shared/models.model';
-import { PushNotificationSubscriptionService } from '_app/PushNotificationSubscriptionService';
+import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 
 
 @Component({

@@ -160,6 +160,7 @@ schemas.orgJson = orgJson;
 schemas.orgSchema = new mongoose.Schema(orgJson);
 
 schemas.pushRegistration = new mongoose.Schema({
+    features: [String],
     loggedIn: Boolean,
     subscription: {
         endpoint: String,
@@ -170,7 +171,10 @@ schemas.pushRegistration = new mongoose.Schema({
         }
     },
     userId: String,
-    features: [String],
+    vapidKeys: {
+        privateKey: String,
+        publicKey: String
+    }
 });
 schemas.pushRegistration.set('collection', 'pushRegistration');
 

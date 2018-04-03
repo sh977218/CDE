@@ -149,11 +149,5 @@
   "captchaCode" : "Override actual here.",
   "siteKey" : "6LdAmh4TAAAAABf_PCxKsd4ikR-S5pSSa25PGqUV",
   "useCaptcha" : true,
-  "sessionKey":  "Kfji76R",
-  "webpush": {
-    "vapidKeys": {
-      "publicKey": 'BMkcEZwp4FAtBNKF46gUMZsu9AU7Xpi5lbWR_Q0ng-Pm2uSznyjCO9_pBOsOown3WaNlQPR6GhwNdB5W0TisO5M',
-      "privateKey": 'KdsCVQ3PgL8Lck7iuMBABSVelhrYQbLFzD4ARUvZloc'
-    }
-  }
+  "sessionKey":  "Kfji76R"
 }

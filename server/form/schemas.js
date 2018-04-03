@@ -135,6 +135,7 @@ exports.formJson = {
         , numberOfColumns: {type: Number, min: 1, max: 6}
         , displayInvisible: {type: Boolean}
         , repeatFormat: {type: String, default: ''}
+        , answerDropdownLimit: {type: Number, min: 0}
         , unitsOfMeasureAlias: [{unitOfMeasure: sharedSchemas.codeAndSystemSchema, alias: String}]
         , _id: false
     }]
