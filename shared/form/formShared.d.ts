@@ -1,5 +1,5 @@
 import {
-    FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, QuestionCde
+    CdeForm, FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, QuestionCde
 } from 'shared/form/form.model';
 
 type informCb = (fe: FormInForm, continueCb: continueCb) => void;
@@ -13,7 +13,7 @@ type continueCb = (error?: string, skipChildren?: boolean) => void;
 type cb = (error?: string) => void;
 
 declare function areDerivationRulesSatisfied(elt: FormElementsContainer): {tinyId: string}[];
-declare function convertFormToSection(elt: FormElementsContainer): FormElementsContainer;
+declare function convertFormToSection(elt: CdeForm): FormInForm;
 declare function findQuestionByTinyId(tinyId: string, elt: FormElementsContainer): FormQuestion;
 declare function flattenFormElement(fe: FormElement): FormElement[];
 declare function getFormCdes(form: FormElementsContainer): QuestionCde[];

@@ -33,17 +33,6 @@ const _ = require('lodash');
 const ejs = require('ejs');
 const useragent = require('useragent');
 
-function loggedInMiddleware(req, res, next) {
-    if (!req.user) {
-        // TODO: should consider adding to error log
-        return res.status(401).send();
-    }
-    if (next) {
-        next();
-    }
-}
-exports.loggedInMiddleware = loggedInMiddleware;
-
 exports.init = function (app) {
     let getRealIp = function (req) {
         if (req._remoteAddress) return req._remoteAddress;
@@ -163,7 +152,7 @@ exports.init = function (app) {
     app.get("/deView", function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
-        mongo_cde.byTinyIdAndVersion(tinyId, version, (err, cde) => {
+        mongo_cde.byTinyIdVersion(tinyId, version, (err, cde) => {
             if (err) {
                 res.status(500).send("ERROR - Static Html Error, /deView");
                 logging.errorLogger.error("Error: Static Html Error", {
@@ -228,7 +217,7 @@ exports.init = function (app) {
     app.get("/formView", function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
-        mongo_form.byTinyIdAndVersion(tinyId, version, (err, cde) => {
+        mongo_form.byTinyIdVersion(tinyId, version, (err, cde) => {
             if (err) {
                 res.status(500).send("ERROR - Static Html Error, /formView");
                 logging.errorLogger.error("Error: Static Html Error", {
@@ -308,9 +297,9 @@ exports.init = function (app) {
         });
     });
 
-    app.post('/pushRegistration', [loggedInMiddleware], pushNotification.create);
-    app.delete('/pushRegistration', [loggedInMiddleware], pushNotification.delete);
-    app.post('/pushRegistrationSubscribe', [loggedInMiddleware], pushNotification.subscribe);
+    app.post('/pushRegistration', [authorizationShared.loggedInMiddleware], pushNotification.create);
+    app.delete('/pushRegistration', [authorizationShared.loggedInMiddleware], pushNotification.delete);
+    app.post('/pushRegistrationSubscribe', [authorizationShared.loggedInMiddleware], pushNotification.subscribe);
     app.post('/pushRegistrationUpdate', pushNotification.updateStatus);
 
     // delete org classification
@@ -874,14 +863,10 @@ exports.init = function (app) {
     });
 
 
-    app.post('/getFeedbackIssues', function (req, res) {
+    app.post('/getFeedbackIssues', (req, res) => {
         if (authorizationShared.canOrgAuthority(req.user)) {
-            dbLogger.getFeedbackIssues(req.body, function (err, result) {
-                res.send(result);
-            });
-        } else {
-            res.status(401).send();
-        }
+            dbLogger.getFeedbackIssues(req.body, (err, result) => res.send(result));
+        } else res.status(401).send();
     });
 
     app.post('/logClientException', (req, res) => {

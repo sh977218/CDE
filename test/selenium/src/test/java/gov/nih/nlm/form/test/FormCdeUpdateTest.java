@@ -11,7 +11,7 @@ public class FormCdeUpdateTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Form Cde Update Test";
         goToFormByName(formName);
-        textPresent("Some CDEs in this form have newer versions.");
+        textPresent("Some referenced items in this form have newer versions.");
         goToFormDescription();
         textPresent("(Outdated)", By.id("question_0_0"));
         textPresent("Select Multiple", By.id("question_0_0"));

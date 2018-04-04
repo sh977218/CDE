@@ -18,56 +18,51 @@ function setResponseXmlHeader(res) {
     res.setHeader("Content-Type", "application/xml");
 }
 
+// callback(err, form)
 function fetchWholeForm(form, callback) {
-    let formOutdated = false;
-    let maxDepth = 8;
-    let depth = 0;
-    let loopFormElements = function (f, cb) {
-        if (!f) return cb();
-        if (!f.formElements) f.formElements = [];
-        async.forEachSeries(f.formElements, function (fe, doneOne) {
-            if (fe.elementType === "form") {
-                depth++;
-                if (depth < maxDepth) {
-                    let tinyId = fe.inForm.form.tinyId;
-                    let version = fe.inForm.form.version;
-                    mongo_form.byTinyIdAndVersion(tinyId, version, function (err, result) {
-                        if (err) return doneOne("Retrieving form tinyId: " + fe.inForm.form.tinyId + " version: " + fe.inForm.form.version + " has error: " + err);
-                        result = result.toObject();
-                        fe.formElements = result.formElements;
-                        loopFormElements(fe, function () {
-                            depth--;
-                            doneOne();
-                        });
-                    });
-                } else doneOne();
-            } else if (fe.elementType === "section") {
-                loopFormElements(fe, doneOne);
-            } else {
-                let tinyId = fe.question.cde.tinyId;
-                let version = fe.question.cde.version ? fe.question.cde.version : null;
-                mongo_cde.DataElement.findOne({tinyId: tinyId, archived: false}, {version: 1}, (err, elt) => {
-                    if (err || !elt) doneOne(err);
-                    else {
-                        let systemDeVersion = elt.version ? elt.version : null;
-                        if (!_.isEqual(version, systemDeVersion)) {
-                            fe.question.cde.outdated = true;
-                            formOutdated = true;
-                        }
-                        doneOne();
-                    }
-
-                });
-            }
-        }, function doneAll(err) {
-            cb(err);
-        });
-    };
     if (!form) return callback();
-    loopFormElements(form, function (err) {
-        if (formOutdated) form.outdated = true;
-        callback(err, form);
-    });
+    formShared.iterateFe(form,
+        (f, cb) => {
+            let inFormInfo = f.inForm.form;
+            mongo_form.byTinyIdAndVersion(inFormInfo.tinyId, inFormInfo.version, function (err, result) {
+                if (err) {
+                    return cb("Retrieving form tinyId: " + inFormInfo.tinyId + " version: " + inFormInfo.version + " has error: " + err);
+                }
+                result = result.toObject();
+                f.formElements = result.formElements;
+                mongo_form.Form.findOne({tinyId: inFormInfo.tinyId, archived: false}, {version: 1}, (err, elt) => {
+                    if (err || !elt) {
+                        return cb(err);
+                    }
+                    let version = inFormInfo.version ? inFormInfo.version : null;
+                    let currentVersion = elt.version ? elt.version : null;
+                    if (version !== currentVersion) {
+                        inFormInfo.outdated = true;
+                        form.outdated = true;
+                    }
+                    cb();
+                });
+            });
+        },
+        undefined,
+        (q, cb) => {
+            mongo_cde.DataElement.findOne({tinyId: q.question.cde.tinyId, archived: false}, {version: 1}, (err, elt) => {
+                if (err || !elt) {
+                    return cb(err);
+                }
+                let version = q.question.cde.version ? q.question.cde.version : null;
+                let currentVersion = elt.version ? elt.version : null;
+                if (version !== currentVersion) {
+                    q.question.cde.outdated = true;
+                    form.outdated = true;
+                }
+                cb();
+            });
+        },
+        err => {
+            callback(err, form);
+        }
+    );
 }
 
 function wipeRenderDisallowed(form, req, cb) {
@@ -169,6 +164,24 @@ exports.byTinyIdVersion = function (req, res) {
     if (!tinyId) return res.status(400).send();
     let version = req.params.version;
     mongo_form.byTinyIdVersion(tinyId, version, function (err, form) {
+        if (err) return res.status(500).send();
+        if (!form) return res.status(404).send();
+        form = form.toObject();
+        fetchWholeForm(form, function (err, wholeForm) {
+            if (err) return res.status(500).send("ERROR - form by id / version");
+            wipeRenderDisallowed(wholeForm, req, function (err) {
+                if (err) return res.status(500).send("ERROR - form by id version wipe");
+                res.send(wholeForm);
+            });
+        });
+    });
+};
+
+exports.byTinyIdAndVersion = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    let version = req.params.version;
+    mongo_form.byTinyIdAndVersion(tinyId, version, function (err, form) {
         if (err) return res.status(500).send();
         if (!form) return res.status(404).send();
         form = form.toObject();

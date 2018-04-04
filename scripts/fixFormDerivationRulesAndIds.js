@@ -15,7 +15,7 @@ function loopFormElements(f, cb) {
         } else if (fe.elementType === "form") {
             let tinyId = fe.question.cde.tinyId;
             let version = fe.question.cde.version ? fe.question.cde.version : null;
-            mongo_form.byTinyIdVersion(tinyId, version, function (err, form) {
+            mongo_form.byTinyIdAndVersion(tinyId, version, function (err, form) {
                 if (err || !form) cb(err);
                 else {
                     let systemForm = form.toObject();

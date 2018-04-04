@@ -26,8 +26,8 @@ export class FeedbackIssuesComponent implements OnInit {
 
     gotoPage () {
         this.http.post<FeedbackErrorRecord[]>('/getFeedbackIssues', {
-            skip: (this.currentPage - 1) * 50,
-            limit: 50
+            skip: (this.currentPage - 1) * 5,
+            limit: 5
         }).subscribe(response => {
             this.records = response;
         });

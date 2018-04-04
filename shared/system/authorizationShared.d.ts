@@ -1,8 +1,14 @@
 import { User } from 'shared/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
+
+declare function canEditMiddleware(req, res, next): void;
+declare function loggedInMiddleware(req, res, next): void;
 
 declare const rolesEnum: string[];
 declare function canComment(user: User): boolean;
 declare function canCreateForms(user: User): boolean;
+declare function canEditCuratedItem(user: User, item: DataElement|CdeForm): boolean;
 declare function canOrgAuthority(user: User): boolean;
 declare function hasRole(user: User, role: string): boolean;
 declare function isOrgCurator(user: User, org?: string): boolean;
