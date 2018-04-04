@@ -31,7 +31,7 @@
                 <td>{{priorElement.updatedBy?.username}}</td>
                 <td>{{priorElement.changeNote}}</td>
                 <td>
-                    <ng-container *ngIf="priorElement.isDraft">This is a draft version</ng-container>
+                    <ng-container *ngIf="priorElement.isDraft">draft: </ng-container>
                     {{priorElement.version}}
                 </td>
                 <td>

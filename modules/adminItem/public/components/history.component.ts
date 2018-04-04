@@ -98,6 +98,7 @@ export class HistoryComponent implements OnInit {
                 this.priorElements = [this.elt].concat(this.priorElements);
             }
             this.priorElements[0].viewing = true;
+            this.priorElements[0].selected = false;
         }, err => this.alert.httpErrorMessageAlert(err, 'Error retrieving history:'));
     }
 
