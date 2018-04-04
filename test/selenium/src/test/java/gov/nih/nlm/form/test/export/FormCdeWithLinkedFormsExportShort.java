@@ -27,7 +27,10 @@ public class FormCdeWithLinkedFormsExportShort extends NlmCdeBaseTest {
         checkAlert("Export downloaded.");
 
         String[] expected = {
-                "\"Surgical or therapeutic procedure other text\",\"Other, specify\",\"Text\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C18765 v1; NINDS Variable Name: SurgTherapProcedurOTH\",\"myoQ8JBHFe, XkYXUyHStg, my57Uyrrtg, 7ymaXyrHYl, 7k0Q1rHYe, mkDmUyBBFe\","
+                "\"Surgical or therapeutic procedure other text\",\"Other, specify\",\"Text\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C18765 v1; NINDS Variable Name: SurgTherapProcedurOTH\""
+        };
+        String[] expectedTinyId = {
+                "myoQ8JBHFe", "XkYXUyHStg", "my57Uyrrtg", "7ymaXyrHYl", "7k0Q1rHYe", "mkDmUyBBFe"
         };
 
         try {
@@ -35,6 +38,14 @@ public class FormCdeWithLinkedFormsExportShort extends NlmCdeBaseTest {
             String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/FormCdes-myoQ8JBHFe.csv")));
             for (String s : expected) {
                 if (!actual.contains(s)) {
+                    Files.copy(
+                            Paths.get(downloadFolder + "/FormCdes-myoQ8JBHFe.csv"),
+                            Paths.get(tempFolder + "/ExportTest-FormCdes-myoQ8JBHFe.csv"), REPLACE_EXISTING);
+                    Assert.fail("missing line in export : " + s + "\nActual: " + actual);
+                }
+            }
+            for (String t : expectedTinyId) {
+                if (!actual.contains(t)) {
                     Files.copy(
                             Paths.get(downloadFolder + "/FormCdes-myoQ8JBHFe.csv"),
                             Paths.get(tempFolder + "/ExportTest-FormCdes-myoQ8JBHFe.csv"), REPLACE_EXISTING);
