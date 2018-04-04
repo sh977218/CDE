@@ -43,8 +43,7 @@ exports.priorDataElements = function (req, res) {
             "changeNote": 1,
             version: 1,
             elementType: 1
-        })
-            .where("_id").in(history).exec((err, priorDataElements) => {
+        }).where("_id").in(history).exec((err, priorDataElements) => {
             if (err) return res.status(500).send("ERROR - Cannot get prior DE list");
             mongo_data.sortArrayByArray(priorDataElements, history);
             res.send(priorDataElements)
