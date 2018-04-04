@@ -1027,7 +1027,28 @@ exports.init = function (app) {
 
     app.post('/feedback/report', function (req, res) {
         dbLogger.saveFeedback(req, function () {
-            let note = req.body.feedback ? JSON.parse(req.body.feedback).note : '';
+            let msg = {
+                title: 'New Feedback Message\'',
+                options: {
+                    body: (req.body.feedback ? JSON.parse(req.body.feedback).note : ''),
+                    icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
+                    badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+                    tag: 'cde-feedback',
+                    actions: [
+                        {
+                            action: 'audit-action',
+                            title: 'View',
+                            icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+                        },
+                        {
+                            action: 'profile-action',
+                            title: 'Edit Subscription',
+                            icon: '/cde/public/assets/img/portrait.png'
+                        }
+                    ]
+                }
+            };
+
             mongo_data.pushGetAdministratorRegistrations(registrations => {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, note));
             });

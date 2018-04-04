@@ -145,8 +145,6 @@ setInterval(() => {
                 subject: "ElasticSearch Status Change " + config.name
                 , body: newReport
             };
-            console.log("ERROR NEED TO SENT TO ADMINS");
-
             let msg = {
                 title: 'Elastic Search Index Issue',
                 options: {
