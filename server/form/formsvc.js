@@ -207,10 +207,9 @@ exports.draftForm = function (req, res) {
     if (!tinyId) return res.status(400).send();
     mongo_form.draftForm(tinyId, function (err, form) {
         if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
-        if (!form) return res.status(404).send();
         fetchWholeForm(form, function (err) {
             if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
-            else res.send(form);
+            res.send(form);
         });
     });
 };
@@ -219,10 +218,9 @@ exports.draftFormById = function (req, res) {
     if (!id) return res.status(400).send();
     mongo_form.draftFormById(id, function (err, form) {
         if (err) return res.status(500).send("ERROR - get draft form. " + id);
-        if (!form) return res.status(404).send();
         fetchWholeForm(form, function (err) {
             if (err) return res.status(500).send("ERROR - get draft form. " + id);
-            else res.send(form);
+            res.send(form);
         });
     });
 };

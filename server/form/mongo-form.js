@@ -92,7 +92,7 @@ exports.draftForm = function (tinyId, cb) {
         archived: false,
         elementType: 'form'
     };
-    FormDraft.findOne(cond, (err, form) => cb(err, form.toObject()));
+    FormDraft.findOne(cond, cb);
 };
 
 exports.draftFormById = function (id, cb) {
@@ -100,7 +100,7 @@ exports.draftFormById = function (id, cb) {
         _id: id,
         elementType: 'form'
     };
-    FormDraft.findOne(cond, (err, form) => cb(err, form.toObject()));
+    FormDraft.findOne(cond, cb);
 };
 
 exports.saveDraftForm = function (elt, cb) {
