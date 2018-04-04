@@ -118,7 +118,6 @@ exports.triggerPushMsg = (push, dataToSend) => {
     );
     return webpush.sendNotification(push.subscription, dataToSend)
         .catch(err => {
-            console.log(err);
             if (err.name === 'WebPushError' && err.message === 'Received unexpected response code') { // endpoint gone
                 push.remove()
                     // .then(() => dbLogger.consoleLog('PushNotification trigger removed: ' + pushReg.userId + ' ' + pushReg.subscription.endpoint))
