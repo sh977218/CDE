@@ -20,8 +20,7 @@ const assets = [
     '/cde/public/assets/img/nih-cde-logo.png',
     '/cde/public/assets/img/usagov_logo.gif',
     '/cde/public/assets/img/NLM-logo.png',
-    '/common/style.css',
-    '/common/core.min.js',
+    '/app/styles-cde.css'
 ];
 
 console.log("Are we prod? " + prod);

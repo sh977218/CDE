@@ -18,7 +18,9 @@ export class DeGeneralDetailsComponent {
         public userService: UserService,
         public orgHelperService: OrgHelperService
     ) {
-        this.userService.then(() => this.userOrgs = this.userService.userOrgs);
+        this.userService.then(() => {
+            this.userOrgs = this.userService.userOrgs;
+        });
     }
 
     changeStewardOrg(event) {
