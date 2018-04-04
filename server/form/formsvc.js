@@ -202,19 +202,15 @@ exports.byTinyIdAndVersion = function (req, res) {
     });
 };
 
-exports.draftForms = function (req, res) {
+exports.draftForm = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_form.draftForms(tinyId, function (err, forms) {
+    mongo_form.draftForm(tinyId, function (err, form) {
         if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
-        if (!forms) return res.status(404).send();
-        async.forEachSeries(forms, (form, doneOneForm) => {
-            fetchWholeForm(form, function (err) {
-                if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
-                else doneOneForm();
-            });
-        }, () => {
-            res.send(forms);
+        if (!form) return res.status(404).send();
+        fetchWholeForm(form, function (err) {
+            if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
+            else res.send(form);
         });
     });
 };

@@ -94,12 +94,12 @@ exports.byTinyIdAndVersion = function (req, res) {
     });
 };
 
-exports.draftDataElements = function (req, res) {
+exports.draftDataElement = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_cde.draftDataElements(tinyId, function (err, dataElements) {
+    mongo_cde.draftDataElement(tinyId, function (err, dataElement) {
         if (err) return res.status(500).send("ERROR - get draft data element. " + tinyId);
-        res.send(dataElements);
+        res.send(dataElement);
     });
 };
 exports.draftDataElementById = function (req, res) {

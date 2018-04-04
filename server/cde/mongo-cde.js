@@ -86,12 +86,12 @@ exports.byTinyIdList = function (tinyIdList, callback) {
         });
 };
 
-exports.draftDataElements = function (tinyId, cb) {
+exports.draftDataElement = function (tinyId, cb) {
     let cond = {
         tinyId: tinyId,
         archived: false
     };
-    DataElementDraft.find(cond, cb);
+    DataElementDraft.findOne(cond, cb);
 };
 exports.draftDataElementById = function (id, cb) {
     let cond = {

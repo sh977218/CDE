@@ -29,7 +29,7 @@ exports.init = function (app, daoManager) {
     app.get("/de/:tinyId/version/:version?", exportShared.nocacheMiddleware, cdesvc.byTinyIdAndVersion);
     app.get("/deList/:tinyIdList?", exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
 
-    app.get("/draftDataElement/:tinyId", cdesvc.draftDataElements);
+    app.get("/draftDataElement/:tinyId", cdesvc.draftDataElement);
     app.get("/draftDataElementById/:id", cdesvc.draftDataElementById);
     app.post("/draftDataElement/:tinyId", [authorizationShared.canEditMiddleware], cdesvc.saveDraftDataElement);
     app.delete("/draftDataElement/:tinyId", [authorizationShared.canEditMiddleware], cdesvc.deleteDraftDataElement);

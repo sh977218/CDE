@@ -9,6 +9,18 @@ const URL_MAP = {
     form: '/formView?formId='
 };
 
+const ELEMENT_URL_MAP = {
+    false: {
+        cde: '/deById/',
+        form: '/formById/'
+    },
+    true: {
+        cde: '/draftDataElementById/',
+        form: '/draftFormById/'
+    }
+};
+
+
 @Component({
     selector: 'cde-history',
     templateUrl: './history.component.html',
@@ -101,18 +113,8 @@ export class HistoryComponent implements OnInit {
             if (priorElt.selected) this.numberSelected++;
             else this.numberSelected--;
             if (priorElt.selected && !priorElt.promise) {
-                let temp = {
-                    false: {
-                        cde: '/deById/',
-                        form: '/formById/'
-                    },
-                    true: {
-                        cde: '/draftDataElementById/',
-                        form: '/draftFormById/'
-                    }
-                };
                 if (!priorElt.isDraft) priorElt.isDraft = false;
-                let url = temp[priorElt.isDraft][priorElt.elementType] + priorElt._id;
+                let url = ELEMENT_URL_MAP[priorElt.isDraft][priorElt.elementType] + priorElt._id;
                 const prom = this.http.get(url).toPromise();
                 prom.then(res => {
                     this.priorElements[index] = res;
