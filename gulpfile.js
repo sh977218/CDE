@@ -253,6 +253,8 @@ gulp.task('buildHome', [], function () {
     return del(['dist/launch/*.png']).then(() => {
         gulp.src('./dist/app/*.png')
             .pipe(gulp.dest('dist/launch'));
+        gulp.src('./dist/app/*.webp')
+            .pipe(gulp.dest('dist/launch'));
         return gulp.src('./modules/system/views/home.ejs')
             .pipe(replace('<NIHCDECONTENT/>', fs.readFileSync('./modules/_app/staticHome/nihcde.html', {encoding: 'utf8'})))
             .pipe(usemin({

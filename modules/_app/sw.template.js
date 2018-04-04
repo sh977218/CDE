@@ -45,19 +45,19 @@ self.addEventListener('push', function(event) {
     const title = 'New Feedback Message';
     const options = {
         body: (event.data ? event.data.text() : 'Full detail available in the Audit Log.'),
-        icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
-        badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+        icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+        badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
         tag: 'cde-feedback',
         actions: [
             {
                 action: 'audit-action',
                 title: 'View',
-                icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+                icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
             },
             {
                 action: 'profile-action',
                 title: 'Edit Subscription',
-                icon: '/cde/public/assets/img/portrait.png'
+                icon: '/cde/public/assets/img/min/portrait.png'
             }
         ]
     };

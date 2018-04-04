@@ -117,7 +117,7 @@ $/cde/>  npm -install -g gulp
 
    a. Copy the last three \<style> tags to one.css, two.css and three.css.
 
-   b. Copy <nih-cde> to nihcde.html.index.
+   b. Copy <nih-cde> to nihcde.html. Replace slide paths to /launch/ relative path.
 3. Check that the main app is built and run "gulp buildHome".
 4. Check-in the resulting css, html, png files and home-launch.ejs into git while removing old versions.
 5. To update the production build, run "gulp".
