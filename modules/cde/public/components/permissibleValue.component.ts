@@ -341,4 +341,8 @@ export class PermissibleValueComponent {
             && this.elt.dataElementConcept.conceptualDomain.vsac.version
             && this.elt.dataElementConcept.conceptualDomain.vsac.id;
     }
+
+    importPermissibleValues() {
+
+    }
 }
