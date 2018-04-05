@@ -1,15 +1,15 @@
-let async = require("async");
-let _ = require("lodash");
-let mongo_cde = require("../cde/mongo-cde");
-let mongo_form = require("./mongo-form");
-let mongo_data_system = require("../system/mongo-data");
-let authorization = require("../system/authorization");
-let formShared = require('@std/esm')(module)('../../shared/form/formShared');
-let nih = require("./nihForm");
-let sdc = require("./sdcForm");
-let odm = require("./odmForm");
-let redCap = require("./redCapForm");
-let publishForm = require("./publishForm");
+const async = require("async");
+const _ = require("lodash");
+const mongo_cde = require("../cde/mongo-cde");
+const mongo_form = require("./mongo-form");
+const mongo_data = require("../system/mongo-data");
+const formShared = require('@std/esm')(module)('../../shared/form/formShared');
+const authorization = require("../system/authorization");
+const nih = require("./nihForm");
+const sdc = require("./sdcForm");
+const odm = require("./odmForm");
+const redCap = require("./redCapForm");
+const publishForm = require("./publishForm");
 const dbLogger = require('../system/dbLogger');
 
 function setResponseXmlHeader(res) {
@@ -46,7 +46,10 @@ function fetchWholeForm(form, callback) {
         },
         undefined,
         (q, cb) => {
-            mongo_cde.DataElement.findOne({tinyId: q.question.cde.tinyId, archived: false}, {version: 1}, (err, elt) => {
+            mongo_cde.DataElement.findOne({
+                tinyId: q.question.cde.tinyId,
+                archived: false
+            }, {version: 1}, (err, elt) => {
                 if (err || !elt) {
                     return cb(err);
                 }
@@ -106,7 +109,7 @@ exports.byId = function (req, res) {
                     redCap.getZipRedCap(wholeForm, res);
                 else res.send(wholeForm);
             });
-            mongo_data_system.addToViewHistory(wholeForm, req.user);
+            mongo_data.addToViewHistory(wholeForm, req.user);
         });
     });
 };
@@ -117,8 +120,12 @@ exports.priorForms = function (req, res) {
     mongo_form.byId(id, function (err, form) {
         if (err) res.status(500).send("ERROR - cannot get form by id for prior");
         if (!form) res.status(404).send();
-        mongo_form.Form.find({}, {"updatedBy.username": 1, updated: 1, "changeNote": 1, version: 1})
-            .where("_id").in(form.history).exec((err, priorForms) => res.send(priorForms));
+        let history = form.history.concat([form._id]).reverse();
+        mongo_form.Form.find({}, {"updatedBy.username": 1, updated: 1, "changeNote": 1, version: 1, elementType: 1})
+            .where("_id").in(history).exec((err, priorForms) => {
+            mongo_data.sortArrayByArray(priorForms, history);
+            res.send(priorForms);
+        });
     });
 };
 
@@ -154,7 +161,7 @@ exports.byTinyId = function (req, res) {
                     redCap.getZipRedCap(wholeForm, res);
                 else res.send(wholeForm);
             });
-            mongo_data_system.addToViewHistory(wholeForm, req.user);
+            mongo_data.addToViewHistory(wholeForm, req.user);
         });
     });
 };
@@ -195,19 +202,25 @@ exports.byTinyIdAndVersion = function (req, res) {
     });
 };
 
-exports.draftForms = function (req, res) {
+exports.draftForm = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_form.draftForms(tinyId, function (err, forms) {
+    mongo_form.draftForm(tinyId, function (err, form) {
         if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
-        if (!forms) return res.status(404).send();
-        async.forEachSeries(forms, (form, doneOneForm) => {
-            fetchWholeForm(form, function (err) {
-                if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
-                else doneOneForm();
-            });
-        }, () => {
-            res.send(forms);
+        fetchWholeForm(form, function (err) {
+            if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
+            res.send(form);
+        });
+    });
+};
+exports.draftFormById = function (req, res) {
+    let id = req.params.id;
+    if (!id) return res.status(400).send();
+    mongo_form.draftFormById(id, function (err, form) {
+        if (err) return res.status(500).send("ERROR - get draft form. " + id);
+        fetchWholeForm(form, function (err) {
+            if (err) return res.status(500).send("ERROR - get draft form. " + id);
+            res.send(form);
         });
     });
 };
@@ -247,7 +260,7 @@ exports.byTinyIdList = function (req, res) {
     tinyIdList = tinyIdList.split(",");
     mongo_form.byTinyIdList(tinyIdList, function (err, forms) {
         if (err) res.status(500).send("ERROR - form by idList");
-        res.send(forms.map(mongo_data_system.formatElt));
+        res.send(forms.map(mongo_data.formatElt));
     });
 };
 
@@ -298,7 +311,7 @@ exports.updateForm = function (req, res) {
         if (!item) return res.status(404).send();
         authorization.allowUpdate(user, item, function (err) {
             if (err) return res.status(500).send("ERROR - cannot allow to update form");
-            mongo_data_system.orgByName(item.stewardOrg.name, function (err, org) {
+            mongo_data.orgByName(item.stewardOrg.name, function (err, org) {
                 let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) return res.status(403).send("Not authorized"); else {
                     let elt = req.body;
