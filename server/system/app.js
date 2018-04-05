@@ -1050,7 +1050,7 @@ exports.init = function (app) {
             };
 
             mongo_data.pushGetAdministratorRegistrations(registrations => {
-                registrations.forEach(r => pushNotification.triggerPushMsg(r, note));
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
             });
             res.send({});
         });
