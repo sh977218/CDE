@@ -1,14 +1,13 @@
-let xml2js = require('xml2js');
-let js2xml = require('js2xmlparser');
-let mongo_data = require('./mongo-cde');
-let mongo_cde = require('./mongo-cde');
-let mongo_data_system = require('../system/mongo-data');
-let authorization = require("../system/authorization");
-let adminSvc = require('../system/adminItemSvc.js');
-let elastic = require('./elastic');
-let deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
-let vsac = require('./vsac-io');
-let exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
+const xml2js = require('xml2js');
+const js2xml = require('js2xmlparser');
+const mongo_cde = require('./mongo-cde');
+const mongo_data = require('../system/mongo-data');
+const authorization = require("../system/authorization");
+const adminSvc = require('../system/adminItemSvc.js');
+const elastic = require('./elastic');
+const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
+const vsac = require('./vsac-io');
+const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const dbLogger = require('../system/dbLogger');
 
 exports.byId = function (req, res) {
@@ -26,8 +25,8 @@ exports.byId = function (req, res) {
             return res.send(js2xml("dataElement", exportShared.stripBsonIds(cde)));
         }
         res.send(dataElement);
-        mongo_data.inCdeView(dataElement);
-        mongo_data_system.addToViewHistory(dataElement, req.user);
+        mongo_cde.inCdeView(dataElement);
+        mongo_data.addToViewHistory(dataElement, req.user);
     });
 };
 
@@ -37,9 +36,16 @@ exports.priorDataElements = function (req, res) {
     mongo_cde.byId(id, function (err, dataElement) {
         if (err) return res.status(500).send("ERROR - Cannot get prior DEs");
         if (!dataElement) return res.status(404).send();
-        mongo_data.DataElement.find({}, {"updatedBy.username": 1, updated: 1, "changeNote": 1, version: 1})
-            .where("_id").in(dataElement.history).exec((err, priorDataElements) => {
+        let history = dataElement.history.concat([dataElement._id]).reverse();
+        mongo_cde.DataElement.find({}, {
+            "updatedBy.username": 1,
+            updated: 1,
+            "changeNote": 1,
+            version: 1,
+            elementType: 1
+        }).where("_id").in(history).exec((err, priorDataElements) => {
             if (err) return res.status(500).send("ERROR - Cannot get prior DE list");
+            mongo_data.sortArrayByArray(priorDataElements, history);
             res.send(priorDataElements)
         });
     });
@@ -60,8 +66,8 @@ exports.byTinyId = function (req, res) {
             return res.send(js2xml("dataElement", exportShared.stripBsonIds(cde)));
         }
         res.send(dataElement);
-        mongo_data.inCdeView(dataElement);
-        mongo_data_system.addToViewHistory(dataElement, req.user);
+        mongo_cde.inCdeView(dataElement);
+        mongo_data.addToViewHistory(dataElement, req.user);
     });
 };
 
@@ -87,12 +93,20 @@ exports.byTinyIdAndVersion = function (req, res) {
     });
 };
 
-exports.draftDataElements = function (req, res) {
+exports.draftDataElement = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_cde.draftDataElements(tinyId, function (err, dataElements) {
+    mongo_cde.draftDataElement(tinyId, function (err, dataElement) {
         if (err) return res.status(500).send("ERROR - get draft data element. " + tinyId);
-        res.send(dataElements);
+        res.send(dataElement);
+    });
+};
+exports.draftDataElementById = function (req, res) {
+    let id = req.params.id;
+    if (!id) return res.status(400).send();
+    mongo_cde.draftDataElementById(id, function (err, dataElement) {
+        if (err) return res.status(500).send("ERROR - get draft data element. " + tinyId);
+        res.send(dataElement);
     });
 };
 
@@ -133,7 +147,7 @@ exports.byTinyIdList = function (req, res) {
     tinyIdList = tinyIdList.split(",");
     mongo_cde.byTinyIdList(tinyIdList, function (err, dataElements) {
         if (err) return res.status(500).send("ERROR - Cannot get De by idlist");
-        res.send(dataElements.map(mongo_data_system.formatElt));
+        res.send(dataElements.map(mongo_data.formatElt));
     });
 };
 
@@ -169,7 +183,7 @@ exports.updateDataElement = function (req, res) {
         if (!item) return res.status(404).send();
         authorization.allowUpdate(req.user, item, function (err) {
             if (err) return res.status(500).send("ERROR - update - cannot allow");
-            mongo_data_system.orgByName(item.stewardOrg.name, function (err, org) {
+            mongo_data.orgByName(item.stewardOrg.name, function (err, org) {
                 let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0 &&
                     allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1)
@@ -222,20 +236,20 @@ exports.viewHistory = function (req, res) {
 exports.show = function (req, res, cb) {
     let cdeId = req.params.id;
     if (!cdeId) return res.send("No Data Element Id");
-    mongo_data.byId(cdeId, function (err, cde) {
+    mongo_cde.byId(cdeId, function (err, cde) {
         cb(cde);
         // Following have no callback because it's no big deal if it fails.
         if (cde) {
-            mongo_data.inCdeView(cde);
+            mongo_cde.inCdeView(cde);
             if (req.isAuthenticated()) {
-                mongo_data.addToViewHistory(cde, req.user);
+                mongo_cde.addToViewHistory(cde, req.user);
             }
         }
     });
 };
 
 exports.save = function (req, res) {
-    adminSvc.save(req, res, mongo_data, function () {
+    adminSvc.save(req, res, mongo_cde, function () {
         elastic.fetchPVCodeSystemList();
     });
 };
@@ -286,12 +300,12 @@ exports.checkEligibleToRetire = function (req, res, elt, cb) {
         res.status(403).send("Not authorized");
     } else {
         if ((elt.registrationState.registrationStatus === "Standard" ||
-                elt.registrationState.registrationStatus === "Preferred Standard") &&
+            elt.registrationState.registrationStatus === "Preferred Standard") &&
             !req.user.siteAdmin) {
             res.status(403).send("This record is already standard.");
         } else {
             if ((elt.registrationState.registrationStatus !== "Standard" &&
-                    elt.registrationState.registrationStatus !== " Preferred Standard") &&
+                elt.registrationState.registrationStatus !== " Preferred Standard") &&
                 (elt.registrationState.registrationStatus === "Standard" ||
                     elt.registrationState.registrationStatus === "Preferred Standard") &&
                 !req.user.siteAdmin) {

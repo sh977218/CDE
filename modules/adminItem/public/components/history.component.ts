@@ -5,9 +5,21 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from '_app/alert/alert.service';
 
 const URL_MAP = {
-    'cde': '/deView?cdeId=',
-    'form': '/formView?formId='
+    cde: '/deView?cdeId=',
+    form: '/formView?formId='
 };
+
+const ELEMENT_URL_MAP = {
+    false: {
+        cde: '/deById/',
+        form: '/formById/'
+    },
+    true: {
+        cde: '/draftDataElementById/',
+        form: '/draftFormById/'
+    }
+};
+
 
 @Component({
     selector: 'cde-history',
@@ -65,28 +77,29 @@ export class HistoryComponent implements OnInit {
         }
     };
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public modalService: NgbModal
-    ) {}
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public modalService: NgbModal) {
+    }
 
     ngOnInit(): void {
-        this.elt.viewing = true;
-        delete this.elt.selected;
-        if (this.elt.history && this.elt.history.length > 0) {
-            this.http.get<any[]>(
-                this.elt.elementType === 'cde'
-                    ? '/deById/' + this.elt._id + '/priorDataElements'
-                    : '/formById/' + this.elt._id + '/priorForms'
-            ).subscribe(res => {
-                this.priorElements = res.reverse();
-                this.priorElements.splice(0, 0, this.elt);
-                this.priorElements.forEach(pe => pe.url = URL_MAP[this.elt.elementType] + pe._id);
-            }, err => this.alert.httpErrorMessageAlert(err, 'Error retrieving history:'));
-        } else {
-            this.priorElements = [this.elt];
+        let url = '/deById/' + this.elt._id + '/priorDataElements';
+        if (this.elt.elementType === 'form') {
+            url = '/formById/' + this.elt._id + '/priorForms';
         }
+        this.http.get<any[]>(url).subscribe(res => {
+            this.priorElements = res;
+            this.priorElements.forEach(pe => {
+                if (!pe.isDraft) {
+                    pe.url = URL_MAP[this.elt.elementType] + pe._id;
+                }
+            });
+            if (this.elt.isDraft && this.canEdit) {
+                this.priorElements = [this.elt].concat(this.priorElements);
+            }
+            this.priorElements[0].viewing = true;
+            this.priorElements[0].selected = false;
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error retrieving history:'));
     }
 
     selectRow(index) {
@@ -100,16 +113,15 @@ export class HistoryComponent implements OnInit {
             priorElt.selected = !priorElt.selected;
             if (priorElt.selected) this.numberSelected++;
             else this.numberSelected--;
-            if (index > 0 && priorElt.selected && !priorElt.promise) {
-                const prom = this.http.get(
-                    this.elt.elementType === 'cde'
-                        ? '/deById/' + priorElt._id
-                        : '/formById/' + priorElt._id).toPromise();
-                this.priorElements[index].promise = prom;
+            if (priorElt.selected && !priorElt.promise) {
+                if (!priorElt.isDraft) priorElt.isDraft = false;
+                let url = ELEMENT_URL_MAP[priorElt.isDraft][priorElt.elementType] + priorElt._id;
+                const prom = this.http.get(url).toPromise();
                 prom.then(res => {
                     this.priorElements[index] = res;
                     this.priorElements[index].url = URL_MAP[this.priorElements[index].elementType] +
                         this.priorElements[index]._id;
+                    this.priorElements[index].promise = prom;
                     this.priorElements[index].selected = true;
                 });
             }
