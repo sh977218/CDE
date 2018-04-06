@@ -40,9 +40,11 @@ export class PermissibleValueComponent {
             } else this.umlsTerms = [];
         });
     }
+
     get elt(): any {
         return this._elt;
     }
+
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newPermissibleValueContent') public newPermissibleValueContent: NgbModalModule;
     canLinkPv = false;
@@ -69,11 +71,10 @@ export class PermissibleValueComponent {
         'SNOMEDCT US': {source: 'SNOMEDCT_US', termType: 'PT', codes: {}, selected: false, disabled: true}
     };
 
-    constructor(
-        private Alert: AlertService,
-        public isAllowedModel: IsAllowedService,
-        public http: HttpClient,
-        public modalService: NgbModal,
+    constructor(private Alert: AlertService,
+                public isAllowedModel: IsAllowedService,
+                public http: HttpClient,
+                public modalService: NgbModal,
     ) {
     }
 
@@ -258,7 +259,7 @@ export class PermissibleValueComponent {
                                     this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                                 });
                             } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                        }, );
+                        },);
                 }
             } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
         });
@@ -342,7 +343,17 @@ export class PermissibleValueComponent {
             && this.elt.dataElementConcept.conceptualDomain.vsac.id;
     }
 
-    importPermissibleValues() {
-
+    importPv(de) {
+        let vd = de.valueDomain;
+        if (vd && vd.datatype) {
+            if (vd.datatype === 'Value List') {
+                if (vd.permissibleValues.length > 0) {
+                    this.elt.valueDomain.permissibleValues = this.elt.valueDomain.permissibleValues.concat(vd.permissibleValues);
+                    this.runManualValidation();
+                    this.initSrcOptions();
+                    this.onEltChange.emit();
+                } else this.Alert.addAlert('danger', 'No PV found in this element.');
+            } else this.Alert.addAlert('danger', 'Only Value List can be imported.');
+        } else this.Alert.addAlert('danger', 'No Data Type Found.');
     }
 }

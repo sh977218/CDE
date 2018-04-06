@@ -203,17 +203,20 @@
                         (click)="removeAllPermissibleValues()">
                     <i class="fa fa-trash-o"></i> Remove All Values
                 </button>
-                <button class="btn btn-outline-dark" role="button" id="importPermissibleValueBtn"
-                        title="Import Permissible Value"
-                        (click)="importPermissibleValues()">
-                    <i class="fa fa-trash-o"></i> Import Permissible Values
+                <button type="button" class="btn btn-outline-dark" data-toggle="collapse"
+                        data-target="#importPvSearchDiv">Import PV
                 </button>
+
+                <cde-cde-search id="importPvSearchDiv" class="pt-1 collapse" addMode="true" [embedded]="true"
+                                (add)="importPv($event);">
+                </cde-cde-search>
+
             </ng-container>
         </div>
 
         <h4>VSAC Value Set</h4>
         <a href="https://vsac.nlm.nih.gov" target="_blank">Lookup Value Sets here.</a>
-
+111
         <div *ngIf="vsacMappingExists()">
             <dl class="dl-horizontal">
                 <dt>Value Set Name:</dt>

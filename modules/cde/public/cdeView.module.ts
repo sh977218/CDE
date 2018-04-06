@@ -10,6 +10,7 @@ import 'angular-tree-component/dist/angular-tree-component.css';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { BoardModule } from 'board/public/board.module';
 import { CdeModule } from 'cde/public/cde.module';
+import { CdeSearchModule } from 'cde/public/cdeSearch.module';
 import { ConceptsComponent } from 'cde/public/components/concepts.component';
 import { DatasetsComponent } from 'cde/public/components/datasets/datasets.component';
 import { DataElementViewComponent } from 'cde/public/components/dataElementView.component';
@@ -42,6 +43,7 @@ const appRoutes: Routes = [
         AdminItemModule,
         BoardModule,
         CdeModule,
+        CdeSearchModule,
         DiscussModule,
         FormSearchModule,
     ],
