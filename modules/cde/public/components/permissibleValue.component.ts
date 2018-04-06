@@ -9,6 +9,7 @@ import { Subject } from 'rxjs/Subject';
 import { AlertService } from '_app/alert/alert.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { checkPvUnicity, fixDatatype } from 'shared/de/deValidator';
+import { SearchSettings } from 'search/search.model';
 
 
 @Component({
@@ -47,6 +48,7 @@ export class PermissibleValueComponent {
 
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newPermissibleValueContent') public newPermissibleValueContent: NgbModalModule;
+    @ViewChild('importPermissibleValueContent') public importPermissibleValueContent: NgbModalModule;
     canLinkPv = false;
     containsKnownSystem: boolean = false;
     dataTypeOptions = ['Value List', 'Text', 'Date', 'Number', 'Externally Defined'];
@@ -74,8 +76,7 @@ export class PermissibleValueComponent {
     constructor(private Alert: AlertService,
                 public isAllowedModel: IsAllowedService,
                 public http: HttpClient,
-                public modalService: NgbModal,
-    ) {
+                public modalService: NgbModal) {
     }
 
     addAllVsac() {
@@ -236,7 +237,7 @@ export class PermissibleValueComponent {
                                         this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                                     });
                                 } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                            }, err => this.Alert.addAlert('danger', "Error query UMLS."));
+                            }, () => this.Alert.addAlert('danger', "Error query UMLS."));
 
                 }
                 else if (source === 'UMLS') {
@@ -259,7 +260,8 @@ export class PermissibleValueComponent {
                                     this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                                 });
                             } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                        },);
+                        }, () => {
+                        });
                 }
             } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
         });
@@ -343,6 +345,15 @@ export class PermissibleValueComponent {
             && this.elt.dataElementConcept.conceptualDomain.vsac.id;
     }
 
+
+    openImportPermissibleValueModal() {
+        this.modalRef = this.modalService.open(this.importPermissibleValueContent, {size: 'lg'});
+    }
+
+    searchSettings: SearchSettings = {
+        datatypes: ["Value List"]
+    };
+
     importPv(de) {
         let vd = de.valueDomain;
         if (vd && vd.datatype) {
@@ -352,6 +363,7 @@ export class PermissibleValueComponent {
                     this.runManualValidation();
                     this.initSrcOptions();
                     this.onEltChange.emit();
+                    this.modalRef.close();
                 } else this.Alert.addAlert('danger', 'No PV found in this element.');
             } else this.Alert.addAlert('danger', 'Only Value List can be imported.');
         } else this.Alert.addAlert('danger', 'No Data Type Found.');
