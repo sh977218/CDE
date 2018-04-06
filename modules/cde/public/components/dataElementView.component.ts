@@ -281,8 +281,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     saveDataElement() {
-        this.http.put('/de/' + this.elt.tinyId, this.elt)
-            .subscribe(res => {
+        this.http.put('/de/' + this.elt.tinyId, this.elt).subscribe(res => {
             if (res) {
                 this.loadDataElement(() => this.alert.addAlert('success', 'Data Element saved.'));
             }

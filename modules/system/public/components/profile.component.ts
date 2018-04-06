@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import _isArray from 'lodash/isArray';
+import _noop from 'lodash/noop';
 
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
@@ -69,7 +70,7 @@ export class ProfileComponent {
     checkSubscriptionServerStatusNoEndpoint(): Promise<void> {
         return PushNotificationSubscriptionService.getEndpoint().then(() => {
             return PushNotificationSubscriptionService.subscriptionServerUpdate(this.user._id);
-        });
+        }, _noop);
     }
 
     reloadUser() {
@@ -103,7 +104,7 @@ export class ProfileComponent {
     pushSubscribe() {
         PushNotificationSubscriptionService.subscriptionNew(this.user._id).then(() => {
             this.subscriptionStatusServer = 'Subscribed';
-        });
+        }, _noop);
     }
 
     pushUnsubscribe() {
