@@ -203,6 +203,7 @@ exports.draftForm = function (req, res) {
     if (!tinyId) return res.status(400).send();
     mongo_form.draftForm(tinyId, function (err, form) {
         if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
+        if (!form) return res.send();
         fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
             res.send(wholeForm);
@@ -214,6 +215,7 @@ exports.draftFormById = function (req, res) {
     if (!id) return res.status(400).send();
     mongo_form.draftFormById(id, function (err, form) {
         if (err) return res.status(500).send("ERROR - get draft form. " + id);
+        if (!form) return res.send();
         fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - get draft form. " + id);
             res.send(wholeForm);
@@ -274,6 +276,7 @@ exports.publishForm = function (req, res) {
     if (!id) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(401).send("Not Authorized");
     mongo_form.byId(id, function (err, form) {
+        if (!form) return res.status(500).send("ERROR - form not found");
         fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - fetch whole for publish");
             publishForm.getFormForPublishing(wholeForm, req, res);
