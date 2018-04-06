@@ -1,28 +1,26 @@
-var mongoose = require('mongoose')
-    , config = require('./parseConfig')
-    , connHelper = require('./connections')
-    , logging = require('./logging')
-    , mongo_data_system = require('./mongo-data')
-    , mongo_storedQuery = require('../cde/mongo-storedQuery')
-    , email = require('./email')
-    , schemas_system = require('./schemas')
-    , elasticsearch = require('elasticsearch')
-    , esInit = require('./elasticSearchInit')
-    , moment = require('moment')
-    , noDbLogger = require('./noDbLogger')
-    ;
+const config = require('./parseConfig');
+const connHelper = require('./connections');
+const logging = require('./logging');
+const mongo_data_system = require('./mongo-data');
+const mongo_storedQuery = require('../cde/mongo-storedQuery');
+const email = require('./email');
+const schemas_system = require('./schemas');
+const elasticsearch = require('elasticsearch');
+const moment = require('moment');
+const noDbLogger = require('./noDbLogger');
+const pushNotification = require('./pushNotification');
 
-var esClient = new elasticsearch.Client({
+const esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
-var conn = connHelper.establishConnection(config.database.log);
+const conn = connHelper.establishConnection(config.database.log);
 
-var LogModel = conn.model('DbLogger', schemas_system.logSchema);
-var LogErrorModel = conn.model('DbErrorLogger', schemas_system.logErrorSchema);
-var ClientErrorModel = conn.model('DbClientErrorLogger', schemas_system.clientErrorSchema);
-var StoredQueryModel = mongo_storedQuery.StoredQueryModel;
-var FeedbackModel = conn.model('FeedbackIssue', schemas_system.feedbackIssueSchema);
-var consoleLogModel = conn.model('consoleLogs', schemas_system.consoleLogSchema);
+const LogModel = conn.model('DbLogger', schemas_system.logSchema);
+const LogErrorModel = conn.model('DbErrorLogger', schemas_system.logErrorSchema);
+const ClientErrorModel = conn.model('DbClientErrorLogger', schemas_system.clientErrorSchema);
+const StoredQueryModel = mongo_storedQuery.StoredQueryModel;
+const FeedbackModel = conn.model('FeedbackIssue', schemas_system.feedbackIssueSchema);
+const consoleLogModel = conn.model('consoleLogs', schemas_system.consoleLogSchema);
 
 exports.consoleLog = function (message, level) { // no express errors see dbLogger.log(message)
     new consoleLogModel({
@@ -33,7 +31,7 @@ exports.consoleLog = function (message, level) { // no express errors see dbLogg
 };
 
 exports.storeQuery = function (settings, callback) {
-    var storedQuery = {
+    const storedQuery = {
         searchTerm: settings.searchTerm ? settings.searchTerm : ""
         , date: new Date()
         , regStatuses: settings.selectedStatuses
@@ -71,12 +69,10 @@ exports.storeQuery = function (settings, callback) {
 };
 
 exports.log = function (message, callback) { // express only, all others dbLogger.consoleLog(message);
-    if (isNaN(message.responseTime)) {
-        delete message.responseTime;
-    }
+    if (isNaN(message.responseTime)) delete message.responseTime;
+
     if (message.httpStatus !== "304") {
-        var logEvent = new LogModel(message);
-        logEvent.save(function (err) {
+        new LogModel(message).save(err => {
             if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
             callback(err);
         });
@@ -85,26 +81,64 @@ exports.log = function (message, callback) { // express only, all others dbLogge
 
 exports.logError = function (message, callback) { // all server errors, express and not
     message.date = new Date();
-    var logEvent = new LogErrorModel(message);
-    logEvent.save(function (err) {
+    new LogErrorModel(message).save(err => {
         if (err) noDbLogger.noDbLogger.info("ERROR: ");
+        let msg = {
+            title: 'Server Side Error',
+            options: {
+                body: ("Server Side Error: " + message.message.substr(0, 30)),
+                icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
+                badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+                tag: 'cde-server-side',
+                actions: [
+                    {
+                        action: 'audit-action',
+                        title: 'View',
+                        icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+                    }
+                ]
+            }
+        };
+
+        mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+            registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
+        });
         if (callback) callback(err);
     });
 };
 
 exports.logClientError = function (req, callback) {
-    var getRealIp = function (req) {
+    let getRealIp = function (req) {
         if (req._remoteAddress) return req._remoteAddress;
         if (req.ip) return req.ip;
     };
-    var exc = req.body;
+    let exc = req.body;
     exc.userAgent = req.headers['user-agent'];
     exc.date = new Date();
     exc.ip = getRealIp(req);
     if (req.user) exc.username = req.user.username;
-    let logEvent = new ClientErrorModel(exc);
-    logEvent.save(err => {
+    new ClientErrorModel(exc).save(err => {
         if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
+        let msg = {
+            title: 'Client Side Error',
+            options: {
+                body: ("Client Side Error: " + exc.message.substr(0, 30)),
+                icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
+                badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+                tag: 'cde-client-side',
+                actions: [
+                    {
+                        action: 'audit-action',
+                        title: 'View',
+                        icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+                    }
+                ]
+            }
+        };
+
+        mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+            registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
+        });
         callback(err);
     });
 };
@@ -122,8 +156,8 @@ exports.getLogs = function (body, callback) {
     let modal = LogModel.find();
     if (body.fromDate) modal.where("date").gte(moment(body.fromDate));
     if (body.toDate) modal.where("date").lte(moment(body.toDate));
-    LogModel.count({}, function (err, count) {
-        modal.sort(sort).limit(itemsPerPage).skip(skip).exec(function (err, logs) {
+    LogModel.count({}, (err, count) => {
+        modal.sort(sort).limit(itemsPerPage).skip(skip).exec((err, logs) => {
             let result = {itemsPerPage: itemsPerPage, logs: logs, sort: sort};
             if (!body.totalItems) result.totalItems = count;
             callback(err, result);
@@ -153,7 +187,7 @@ exports.appLogs = function (body, callback) {
 exports.getServerErrors = function (params, callback) {
     if (!params.limit) params.limit = 20;
     if (!params.skip) params.skip = 0;
-    var filter = {};
+    const filter = {};
     if (params.excludeOrigin && params.excludeOrigin.length > 0) {
         filter.origin = {$nin: params.excludeOrigin};
     }
@@ -162,9 +196,7 @@ exports.getServerErrors = function (params, callback) {
         .sort('-date')
         .skip(params.skip)
         .limit(params.limit)
-        .exec(function (err, logs) {
-            callback(err, logs);
-        });
+        .exec(callback);
 };
 
 exports.getClientErrors = function (params, callback) {
@@ -173,9 +205,7 @@ exports.getClientErrors = function (params, callback) {
         .sort('-date')
         .skip(params.skip)
         .limit(params.limit)
-        .exec(function (err, logs) {
-            callback(err, logs);
-        });
+        .exec(callback);
 };
 
 exports.getFeedbackIssues = function (params, callback) {
@@ -184,13 +214,11 @@ exports.getFeedbackIssues = function (params, callback) {
         .sort('-date')
         .skip(params.skip)
         .limit(params.limit)
-        .exec(function (err, logs) {
-            callback(err, logs);
-        });
+        .exec(callback);
 };
 
 exports.usageByDay = function (callback) {
-    var d = new Date();
+    let d = new Date();
     d.setDate(d.getDate() - 3);
     //noinspection JSDuplicatedDeclaration
     LogModel.aggregate(
