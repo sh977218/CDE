@@ -196,14 +196,6 @@ exports.createFormIndexJson = {
     }
 };
 
-exports.storedQueryRiverFunction = function (elt, cb) {
-    elt.selectedElements1.forEach(function (se, i) {
-        elt['classifLevel' + i] = se;
-    });
-    if (elt.searchTerm && elt.searchTerm.length > 0) elt.search_suggest = elt.searchTerm;
-    return cb(elt);
-};
-
 exports.riverFunction = function (_elt, cb) {
     if (_elt.archived) return cb();
 
@@ -355,33 +347,6 @@ exports.createBoardIndexJson = {
     }
 };
 
-
-exports.createStoredQueryIndexJson = {
-    "mappings": {
-        "storedquery": {
-            "properties": {
-                "selectedOrg1": {"type": "string", "index": "not_analyzed"}
-                , "selectedOrg2": {"type": "string", "index": "not_analyzed"}
-                , "selectedElements1": {"type": "string", "index": "not_analyzed"}
-                , "selectedElements2": {"type": "string", "index": "not_analyzed"}
-                , "regStatuses": {"type": "string", "index": "not_analyzed"}
-                , "datatypes": {"type": "string", "index": "not_analyzed"}
-                , "classifLevel0": {"type": "string", "index": "not_analyzed"}
-                , "classifLevel1": {"type": "string", "index": "not_analyzed"}
-                , "classifLevel2": {"type": "string", "index": "not_analyzed"}
-                , "classifLevel3": {"type": "string", "index": "not_analyzed"}
-                , "classifLevel4": {"type": "string", "index": "not_analyzed"}
-                , "searchTerm": {"type": "string", "analyzer": "stop"}
-                , "search_suggest": {"type": "completion"}
-            }
-        }
-    }, settings: {
-        index: {
-            "number_of_replicas": config.elastic.number_of_replicas
-        }
-    }
-};
-
 var shortHash = function (content) {
     return hash.createHash('md5')
         .update(JSON.stringify(content)).digest("hex")
@@ -396,9 +361,6 @@ if (config.elastic.formIndex.name === "auto") {
 }
 if (config.elastic.boardIndex.name === "auto") {
     config.elastic.boardIndex.name = "board_" + shortHash(exports.createBoardIndexJson);
-}
-if (config.elastic.storedQueryIndex.name === "auto") {
-    config.elastic.storedQueryIndex.name = "sq_" + shortHash(exports.createStoredQueryIndexJson);
 }
 
 exports.indices = [
@@ -418,12 +380,6 @@ exports.indices = [
         name: "board",
         indexName: config.elastic.boardIndex.name,
         indexJson: exports.createBoardIndexJson
-    },
-    {
-        name: "storedQuery",
-        indexName: config.elastic.storedQueryIndex.name,
-        indexJson: exports.createStoredQueryIndexJson,
-        filter: exports.storedQueryRiverFunction
     }
 ];
 

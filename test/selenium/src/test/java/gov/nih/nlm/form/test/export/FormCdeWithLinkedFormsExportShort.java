@@ -27,7 +27,8 @@ public class FormCdeWithLinkedFormsExportShort extends NlmCdeBaseTest {
         checkAlert("Export downloaded.");
 
         String[] expected = {
-                "\"Surgical or therapeutic procedure other text\",\"Other, specify\",\"Text\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C18765 v1; NINDS Variable Name: SurgTherapProcedurOTH\",\"myoQ8JBHFe, XkYXUyHStg, my57Uyrrtg, 7ymaXyrHYl, 7k0Q1rHYe, mkDmUyBBFe\","
+                "\"Surgical or therapeutic procedure other text\",\"Other, specify\",\"Text\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C18765 v1; NINDS Variable Name: SurgTherapProcedurOTH\"",
+                "myoQ8JBHFe", "XkYXUyHStg", "my57Uyrrtg", "7ymaXyrHYl", "7k0Q1rHYe", "mkDmUyBBFe"
         };
 
         try {
