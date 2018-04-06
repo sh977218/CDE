@@ -71,7 +71,7 @@ export class FormViewComponent implements OnInit {
     orgNamingTags = [];
     savingText: string = '';
     tabsCommented = [];
-    validationErrors: {message: string, id: string}[] = [];
+    validationErrors: { message: string, id: string }[] = [];
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
@@ -186,11 +186,11 @@ export class FormViewComponent implements OnInit {
     loadForm(cb = _noop) {
         this.userService.then(user => {
             if (user && user.username) {
-                this.http.get<CdeForm[]>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(
+                this.http.get<CdeForm>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(
                     res => {
-                        if (res && res.length > 0 && this.isAllowedModel.isAllowed(res[0])) {
-                            this.drafts = res;
-                            this.formLoaded(res[0], cb);
+                        if (res && this.isAllowedModel.isAllowed(res)) {
+                            this.drafts = [res];
+                            this.formLoaded(res, cb);
                         } else {
                             this.drafts = [];
                             this.loadPublished(cb);
@@ -356,10 +356,10 @@ export class FormViewComponent implements OnInit {
                 state: this.elt.attachments[index].isDefault,
                 id: this.elt._id
             }).subscribe(res => {
-                this.elt = res;
-                this.alert.addAlert('success', 'Saved');
-                this.ref.detectChanges();
-            });
+            this.elt = res;
+            this.alert.addAlert('success', 'Saved');
+            this.ref.detectChanges();
+        });
     }
 
     upload(event) {

@@ -84,7 +84,7 @@ export class DataElementViewComponent implements OnInit {
                 public userService: UserService) {
     }
 
-    canEdit () {
+    canEdit() {
         return this.isAllowedModel.isAllowed(this.elt) && (this.drafts.length === 0 || this.elt.isDraft);
     }
 
@@ -106,20 +106,20 @@ export class DataElementViewComponent implements OnInit {
     loadComments(de, cb = _noop) {
         this.http.get<Comment[]>('/comments/eltId/' + de.tinyId)
             .subscribe(res => {
-            this.hasComments = res && (res.length > 0);
-            this.tabsCommented = res.map(c => c.linkedTab + '_tab');
-            cb();
-        }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
+                this.hasComments = res && (res.length > 0);
+                this.tabsCommented = res.map(c => c.linkedTab + '_tab');
+                cb();
+            }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
     }
 
     loadDataElement(cb = _noop) {
         this.userService.then(user => {
             if (user && user.username) {
-                this.http.get<DataElement[]>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
+                this.http.get<DataElement>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
                     res => {
-                        if (res && res.length > 0 && this.isAllowedModel.isAllowed(res[0])) {
-                            this.drafts = res;
-                            this.eltLoaded(res[0], cb);
+                        if (res && this.isAllowedModel.isAllowed(res)) {
+                            this.drafts = [res];
+                            this.eltLoaded(res, cb);
                         } else {
                             this.drafts = [];
                             this.loadPublished(cb);
@@ -223,10 +223,10 @@ export class DataElementViewComponent implements OnInit {
                 state: this.elt.attachments[index].isDefault,
                 id: this.elt._id
             }).subscribe(res => {
-                this.elt = res;
-                this.alert.addAlert('success', 'Saved');
-                this.ref.detectChanges();
-            });
+            this.elt = res;
+            this.alert.addAlert('success', 'Saved');
+            this.ref.detectChanges();
+        });
     }
 
     upload(event) {

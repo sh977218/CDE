@@ -86,13 +86,21 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
     });
 };
 
-exports.draftForms = function (tinyId, cb) {
+exports.draftForm = function (tinyId, cb) {
     let cond = {
         tinyId: tinyId,
         archived: false,
         elementType: 'form'
     };
-    FormDraft.find(cond, (err, forms) => cb(err, forms.map(f => f.toObject())));
+    FormDraft.findOne(cond, cb);
+};
+
+exports.draftFormById = function (id, cb) {
+    let cond = {
+        _id: id,
+        elementType: 'form'
+    };
+    FormDraft.findOne(cond, cb);
 };
 
 exports.saveDraftForm = function (elt, cb) {
