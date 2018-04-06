@@ -58,7 +58,6 @@
     "index": {"name": "auto"},
     "formIndex": {"name": "auto"},
     "boardIndex": {"name": "auto"},
-    "storedQueryIndex": {"name": "auto"},
     "number_of_replicas" : 2
   },
   "database": {
