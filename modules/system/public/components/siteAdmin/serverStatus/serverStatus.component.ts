@@ -1,15 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
-
 import { AlertService } from '_app/alert/alert.service';
-
 
 @Component({
     selector: 'cde-server-status',
     templateUrl: './serverStatus.component.html'
 })
-export class ServerStatusComponent implements OnInit {
+export class ServerStatusComponent {
     @ViewChild('confirmReindex') public confirmReindex: NgbModalModule;
     esIndices: any;
     indexToReindex: number;
@@ -17,20 +15,12 @@ export class ServerStatusComponent implements OnInit {
     meshSyncs: any;
     statuses: any[] = [];
 
-    ngOnInit() {
-        this.refreshStatus();
-    }
-
     constructor(
         private Alert: AlertService,
         private http: HttpClient,
         public modalService: NgbModal,
-    ) {}
-
-    getNodeStatus (status) {
-        if (status.nodeStatus === 'Running' && (new Date().getTime() - new Date(status.lastUpdate).getTime()) > (45 * 1000)) {
-            return 'Not Responding';
-        } else return status.nodeStatus;
+    ) {
+        this.refreshStatus();
     }
 
     okReIndex () {
