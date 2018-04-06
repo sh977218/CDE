@@ -53,5 +53,5 @@ exports.allowCreate = function (user, elt, cb) {
 };
 
 exports.allowUpdate = function (user, item, cb) {
-    return cb(authorizationShared.canEditCuratedItem(user, item) ? 'Not authorized' : undefined);
+    return cb(authorizationShared.canEditCuratedItem(user, item) ? undefined : 'Not authorized');
 };
