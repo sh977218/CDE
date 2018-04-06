@@ -35,6 +35,20 @@
     <%- include googleAnalytics.html %>
 
     <NIHCDECONTENT/>
+    <script>
+        [].forEach.call(document.querySelectorAll('source[data-srcset]'),    function(img) {
+            img.setAttribute('srcset', img.getAttribute('data-srcset'));
+            img.onload = function() {
+                img.removeAttribute('data-srcset');
+            };
+        });
+        [].forEach.call(document.querySelectorAll('img[data-src]'),    function(img) {
+            img.setAttribute('src', img.getAttribute('data-src'));
+            img.onload = function() {
+                img.removeAttribute('data-src');
+            };
+        });
+    </script>
 
     <%- include footer.html %>
 
