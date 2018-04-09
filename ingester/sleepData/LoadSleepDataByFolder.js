@@ -14,9 +14,6 @@ console.log = function (d) {
     log_stdout.write(util.format(d) + '\n');
 };
 
-let unmappedUnits = [];
-let unmappedType = [];
-
 const CSV_COND = {
     columns: true,
     rtrim: true,
@@ -37,6 +34,21 @@ function mapDomains(rows) {
             }
         });
     });
+    return map;
+}
+
+function mapVariables(rows) {
+    let map = _.groupBy(rows, 'id');
+    Object.keys(map).forEach(key => {
+        if (map[key].length !== 1) throw new Error(key + " length is not 1.");
+        else map[key] = map[key][0];
+    });
+
+    return map;
+}
+
+function mapMappings(rows) {
+    let map = _.groupBy(rows, 'id');
     return map;
 }
 
@@ -65,10 +77,24 @@ function loadVariables(folder) {
     return new Promise((resolve, reject) => {
         csv.parse(fs.readFileSync(variablesFile), CSV_COND, (err, rows) => {
             if (err) reject(err);
-            else resolve(rows);
+            else resolve(mapVariables(rows));
         })
     });
+}
 
+function loadMappings(folder) {
+    let allFiles = fs.readdirSync(folder);
+    let variablesFile;
+    for (let file of allFiles) {
+        if (file.indexOf('mappings.csv') > -1)
+            variablesFile = folder + file;
+    }
+    return new Promise((resolve, reject) => {
+        csv.parse(fs.readFileSync(variablesFile), CSV_COND, (err, rows) => {
+            if (err) reject(err);
+            else resolve(mapMappings(rows));
+        })
+    });
 }
 
 function findCdeById(id) {
@@ -106,6 +132,7 @@ exports.run = function runner(PATH, FOLDER) {
         let DOMAINS = await loadDomains(folder);
         let count = 0;
         let VARIABLES = await loadVariables(folder);
+        let MAPPINGS = await loadMappings(folder);
         let slc = new SleepDataConverter();
         for (let variable of VARIABLES) {
             if (variable.id === 'caffeine') console.log(folder);

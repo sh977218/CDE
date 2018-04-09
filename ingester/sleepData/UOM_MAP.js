@@ -1,17 +1,14 @@
-let KNOWN_UOM_MAP = {
-    'days': 'd',
-    'years': 'a',
-    'milliseconds': 'ms',
-    'milliseconds squared': 'ms2',
-
-};
-let UNKNOWN_UOM_MAP = {
+exports.UOM_MAP = {
     '': '',
+    'days': '',
+    'years': '',
+    'milliseconds': '',
+    'milliseconds squared': '',
+    'percent': '',
     'days from index date': '',
     'number of events': '',
     'seconds from start of recording': '',
     'beats per minute': '',
-    'percent': '',
     'car accidents': '',
     'millimeters of mercury': '',
     'naps': '',
@@ -144,5 +141,3 @@ let UNKNOWN_UOM_MAP = {
     'counts per minute': '',
     'decibels': ''
 };
-
-exports.UOM_MAP = Object.assign(KNOWN_UOM_MAP, UNKNOWN_UOM_MAP);
