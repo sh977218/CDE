@@ -6,6 +6,7 @@ const config = require('./parseConfig');
 const dbLogger = require('./dbLogger.js');
 const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
+const pushNotification = require('./pushNotification');
 const usersrvc = require('./usersrvc');
 const orgClassificationSvc = require('./orgClassificationSvc');
 const path = require('path');
@@ -151,7 +152,7 @@ exports.init = function (app) {
     app.get("/deView", function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
-        mongo_cde.byTinyIdAndVersion(tinyId, version, (err, cde) => {
+        mongo_cde.byTinyIdVersion(tinyId, version, (err, cde) => {
             if (err) {
                 res.status(500).send("ERROR - Static Html Error, /deView");
                 logging.errorLogger.error("Error: Static Html Error", {
@@ -216,7 +217,7 @@ exports.init = function (app) {
     app.get("/formView", function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
-        mongo_form.byTinyIdAndVersion(tinyId, version, (err, cde) => {
+        mongo_form.byTinyIdVersion(tinyId, version, (err, cde) => {
             if (err) {
                 res.status(500).send("ERROR - Static Html Error, /formView");
                 logging.errorLogger.error("Error: Static Html Error", {
@@ -281,18 +282,25 @@ exports.init = function (app) {
     });
 
     app.get('/nativeRender', function (req, res) {
-        res.sendFile(path.join(__dirname, '../../modules/_nativeRenderApp', 'nativeRenderApp.html'), undefined, function (err) {
-            if (err)
+        res.sendFile(path.join(__dirname, '../../modules/_nativeRenderApp', 'nativeRenderApp.html'), undefined, err => {
+            if (err) {
                 res.sendStatus(404);
+            }
         });
     });
 
     app.get('/sw.js', function (req, res) {
-        res.sendFile(path.join(__dirname, '../../dist/app', 'sw.js'), undefined, function (err) {
-            if (err)
+        res.sendFile(path.join(__dirname, '../../dist/app', 'sw.js'), undefined, err => {
+            if (err) {
                 res.sendStatus(404);
+            }
         });
     });
+
+    app.post('/pushRegistration', [authorizationShared.loggedInMiddleware], pushNotification.create);
+    app.delete('/pushRegistration', [authorizationShared.loggedInMiddleware], pushNotification.delete);
+    app.post('/pushRegistrationSubscribe', [authorizationShared.loggedInMiddleware], pushNotification.subscribe);
+    app.post('/pushRegistrationUpdate', pushNotification.updateStatus);
 
     // delete org classification
     app.post('/orgClassificationDelete/', (req, res) => {
@@ -304,7 +312,7 @@ exports.init = function (app) {
             if (err) return res.status(409).send("Error - delete classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.deleteOrgClassification(req.user, deleteClassification, settings, err => {
-                if (err) logging.log(err);
+                if (err) dbLogger.logError(err);
             });
             res.send("Deleting in progress.");
         });
@@ -321,7 +329,7 @@ exports.init = function (app) {
             if (err) return res.status(409).send("Error - rename classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.renameOrgClassification(req.user, newClassification, settings, err => {
-                if (err) logging.log(err);
+                if (err) dbLogger.logError(err);
             });
             res.send("Renaming in progress.");
         });
@@ -855,14 +863,10 @@ exports.init = function (app) {
     });
 
 
-    app.post('/getFeedbackIssues', function (req, res) {
+    app.post('/getFeedbackIssues', (req, res) => {
         if (authorizationShared.canOrgAuthority(req.user)) {
-            dbLogger.getFeedbackIssues(req.body, function (err, result) {
-                res.send(result);
-            });
-        } else {
-            res.status(401).send();
-        }
+            dbLogger.getFeedbackIssues(req.body, (err, result) => res.send(result));
+        } else res.status(401).send();
     });
 
     app.post('/logClientException', (req, res) => {
@@ -1023,6 +1027,31 @@ exports.init = function (app) {
 
     app.post('/feedback/report', function (req, res) {
         dbLogger.saveFeedback(req, function () {
+            let msg = {
+                title: 'New Feedback Message\'',
+                options: {
+                    body: (req.body.feedback ? JSON.parse(req.body.feedback).note : ''),
+                    icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+                    badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
+                    tag: 'cde-feedback',
+                    actions: [
+                        {
+                            action: 'audit-action',
+                            title: 'View',
+                            icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
+                        },
+                        {
+                            action: 'profile-action',
+                            title: 'Edit Subscription',
+                            icon: '/cde/public/assets/img/min/portrait.png'
+                        }
+                    ]
+                }
+            };
+
+            mongo_data.pushGetAdministratorRegistrations(registrations => {
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
+            });
             res.send({});
         });
     });

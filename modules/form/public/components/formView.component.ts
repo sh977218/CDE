@@ -71,24 +71,20 @@ export class FormViewComponent implements OnInit {
     orgNamingTags = [];
     savingText: string = '';
     tabsCommented = [];
-    validationErrors: {message: string, id: string}[] = [];
+    validationErrors: { message: string, id: string }[] = [];
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
-            this.userService.then(() => {
-                this.loadForm(() => {
-                    this.orgHelperService.then(() => {
-                        let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
-                        this.elt.naming.forEach(n => {
-                            n.tags.forEach(t => {
-                                allNamingTags.push(t);
-                            });
-                        });
-                        this.orgNamingTags = _uniqWith(allNamingTags, _isEqual).map(t => {
-                            return {id: t, text: t};
-                        });
-                        this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+            this.loadForm(() => {
+                this.orgHelperService.then(orgsDetailedInfo => {
+                    let allNamingTags = orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
+                    this.elt.naming.forEach(n => {
+                        n.tags.forEach(t => allNamingTags.push(t));
                     });
+                    this.orgNamingTags = _uniqWith(allNamingTags, _isEqual).map(t => {
+                        return {id: t, text: t};
+                    });
+                    this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
                 });
             });
         });
@@ -188,26 +184,28 @@ export class FormViewComponent implements OnInit {
     }
 
     loadForm(cb = _noop) {
-        if (this.userService.user && this.userService.user.username) {
-            this.http.get<CdeForm[]>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(
-                res => {
-                    if (res && res.length > 0 && this.isAllowedModel.isAllowed(res[0])) {
-                        this.drafts = res;
-                        this.formLoaded(res[0], cb);
-                    } else {
-                        this.drafts = [];
-                        this.loadPublished(cb);
+        this.userService.then(user => {
+            if (user && user.username) {
+                this.http.get<CdeForm>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(
+                    res => {
+                        if (res && this.isAllowedModel.isAllowed(res)) {
+                            this.drafts = [res];
+                            this.formLoaded(res, cb);
+                        } else {
+                            this.drafts = [];
+                            this.loadPublished(cb);
+                        }
+                    },
+                    err => {
+                        // do not load form
+                        this.alert.httpErrorMessageAlert(err);
+                        this.formLoaded(null, cb);
                     }
-                },
-                err => {
-                    // do not load form
-                    this.alert.httpErrorMessageAlert(err);
-                    this.formLoaded(null, cb);
-                }
-            );
-        } else {
-            this.loadPublished(cb);
-        }
+                );
+            } else {
+                this.loadPublished(cb);
+            }
+        });
     }
 
     loadHighlightedTabs($event) {
@@ -336,11 +334,11 @@ export class FormViewComponent implements OnInit {
             async_forEach(newCdes, (newCde, doneOneCde) => {
                 this.createDataElement(newCde, doneOneCde);
             }, () => {
-                this.http.put('/form/' + this.elt.tinyId, this.elt).subscribe(
-                    res => {
-                        if (res) this.loadForm(() => this.alert.addAlert('success', 'Form saved.'));
-                    }, () => this.router.navigate(['/pageNotFound'])
-                );
+                this.http.put('/form/' + this.elt.tinyId, this.elt).subscribe(res => {
+                    if (res) {
+                        this.loadForm(() => this.alert.addAlert('success', 'Form saved.'));
+                    }
+                }, () => this.router.navigate(['/pageNotFound']));
             });
         });
 
@@ -358,10 +356,10 @@ export class FormViewComponent implements OnInit {
                 state: this.elt.attachments[index].isDefault,
                 id: this.elt._id
             }).subscribe(res => {
-                this.elt = res;
-                this.alert.addAlert('success', 'Saved');
-                this.ref.detectChanges();
-            });
+            this.elt = res;
+            this.alert.addAlert('success', 'Saved');
+            this.ref.detectChanges();
+        });
     }
 
     upload(event) {

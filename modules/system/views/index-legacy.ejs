@@ -83,7 +83,7 @@
 <![endif]-->
 
 <script type="text/javascript">
-    if ('serviceWorker' in navigator) {
+    if ((window.location.protocol === 'https:' || window.location.hostname === 'localhost') && 'serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             navigator.serviceWorker.register('/sw.js').then(function(registration) {}, function(err) {});
         });
@@ -105,7 +105,7 @@
             },
           "description" : "NIH Common Data Elements Repository",
           "url": "https://cde.nlm.nih.gov",
-          "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
+          "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/min/NIH-CDE.png"
           }
 </script>
 

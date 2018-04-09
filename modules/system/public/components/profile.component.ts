@@ -1,12 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import _isArray from 'lodash/isArray';
+import _noop from 'lodash/noop';
 
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { User } from 'shared/models.model';
+import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 
 
 @Component({
@@ -20,6 +22,8 @@ export class ProfileComponent {
     orgCurator: string;
     orgAdmin: string;
     user: User;
+    subscriptionStatusClient = PushNotificationSubscriptionService.subscriptionCheckClient;
+    subscriptionStatusServer: string;
 
     constructor(
         private alert: AlertService,
@@ -39,6 +43,54 @@ export class ProfileComponent {
         this.reloadUser();
     }
 
+    checkSubscriptionServerStatus() {
+        this.checkSubscriptionServerStatusEndpoint().then(
+            () => {
+                PushNotificationSubscriptionService.lastUser = this.user._id;
+                this.subscriptionStatusServer = 'Subscribed';
+            },
+            err => {
+                this.subscriptionStatusServer = (err !== 'Network Error' ? 'Not Subscribed' : 'Network Error');
+            }
+        );
+    }
+
+    checkSubscriptionServerStatusEndpoint(): Promise<void> {
+        if (PushNotificationSubscriptionService.lastEndpoint) {
+            return PushNotificationSubscriptionService.subscriptionServerUpdate(this.user._id)
+                .catch(() => {
+                    PushNotificationSubscriptionService.lastEndpoint = '';
+                    return this.checkSubscriptionServerStatusNoEndpoint();
+                });
+        } else {
+            return this.checkSubscriptionServerStatusNoEndpoint();
+        }
+    }
+
+    checkSubscriptionServerStatusNoEndpoint(): Promise<void> {
+        return PushNotificationSubscriptionService.getEndpoint().then(() => {
+            return PushNotificationSubscriptionService.subscriptionServerUpdate(this.user._id);
+        }, _noop);
+    }
+
+    reloadUser() {
+        this.userService.then(user => {
+            if (user.username) {
+                this.hasQuota = user.quota;
+                this.orgCurator = user.orgCurator.toString().replace(/,/g, ', ');
+                this.orgAdmin = user.orgAdmin.toString().replace(/,/g, ', ');
+                this.user = user;
+            }
+        });
+    }
+
+    removePublishedForm(pf) {
+        this.user.publishedForms = this.user.publishedForms.filter(function (p: any) {
+            return p._id !== pf._id;
+        });
+        this.saveProfile();
+    }
+
     saveProfile() {
         this.http.post('/user/me', this.user, {responseType: 'text'}).subscribe(
             () => {
@@ -49,21 +101,15 @@ export class ProfileComponent {
         );
     }
 
-    reloadUser() {
-        this.userService.then(() => {
-            if (this.userService.user.username) {
-                this.hasQuota = this.userService.user.quota;
-                this.orgCurator = this.userService.user.orgCurator.toString().replace(/,/g, ', ');
-                this.orgAdmin = this.userService.user.orgAdmin.toString().replace(/,/g, ', ');
-                this.user = this.userService.user;
-            }
-        });
+    pushSubscribe() {
+        PushNotificationSubscriptionService.subscriptionNew(this.user._id).then(() => {
+            this.subscriptionStatusServer = 'Subscribed';
+        }, _noop);
     }
 
-    removePublishedForm(pf) {
-        this.user.publishedForms = this.user.publishedForms.filter(function (p: any) {
-            return p._id !== pf._id;
+    pushUnsubscribe() {
+        PushNotificationSubscriptionService.subscriptionDelete(this.user._id).then( () => {
+            this.subscriptionStatusServer = 'Not Subscribed';
         });
-        this.saveProfile();
     }
 }

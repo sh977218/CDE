@@ -194,7 +194,7 @@ gulp.task('usemin', ['copyCode', 'copyDist'], function () {
                 webpcssLegacy: ['concat', rev()],
                 css: [minifyCss({target: "./dist/app", rebase: true}), 'concat', rev(), data(outputFile)],
                 cssLegacy: [minifyCss({target: "./dist/app", rebase: true}), 'concat', rev()],
-                poly: [uglify({mangle: false}), 'concat', rev(), data(outputFile)],
+                poly: [uglify({mangle: false}), 'concat', rev()],
                 polyLegacy: [uglify({mangle: false}), 'concat', rev()],
                 webp: ['concat', rev(), data(outputFile)],
                 webpLegacy: ['concat', rev()]
@@ -209,9 +209,8 @@ gulp.task('usemin', ['copyCode', 'copyDist'], function () {
                 }
                 gulp.src(config.node.buildDir + '/dist/app/sw.js') // does not preserve order
                     .pipe(replace('"/app/cde.css"', '"' + useminOutputs[0] + '"'))
-                    .pipe(replace('"/common/style.css"', '"' + useminOutputs[1] + '"'))
-                    .pipe(replace('"/common/core.min.js"', '"' + useminOutputs[2] + '"'))
-                    .pipe(replace('"/app/cde.js"', '"' + useminOutputs[3] + '"'))
+                    .pipe(replace('"/app/styles-cde.css"', '"' + useminOutputs[1] + '"'))
+                    .pipe(replace('"/app/cde.js"', '"' + useminOutputs[2] + '"'))
                     .pipe(replace('cde-cache-', 'cde-cache-v'))
                     .pipe(gulp.dest(config.node.buildDir + '/dist/app/'));
             }
@@ -253,6 +252,8 @@ gulp.task('es', function () {
 gulp.task('buildHome', [], function () {
     return del(['dist/launch/*.png']).then(() => {
         gulp.src('./dist/app/*.png')
+            .pipe(gulp.dest('dist/launch'));
+        gulp.src('./dist/app/*.webp')
             .pipe(gulp.dest('dist/launch'));
         return gulp.src('./modules/system/views/home.ejs')
             .pipe(replace('<NIHCDECONTENT/>', fs.readFileSync('./modules/_app/staticHome/nihcde.html', {encoding: 'utf8'})))

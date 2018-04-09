@@ -86,12 +86,18 @@ exports.byTinyIdList = function (tinyIdList, callback) {
         });
 };
 
-exports.draftDataElements = function (tinyId, cb) {
+exports.draftDataElement = function (tinyId, cb) {
     let cond = {
         tinyId: tinyId,
         archived: false
     };
-    DataElementDraft.find(cond, cb);
+    DataElementDraft.findOne(cond, cb);
+};
+exports.draftDataElementById = function (id, cb) {
+    let cond = {
+        _id: id
+    };
+    DataElementDraft.findOne(cond, cb);
 };
 exports.saveDraftDataElement = function (elt, cb) {
     delete elt.__v;
@@ -137,23 +143,20 @@ exports.desByConcept = function (concept, callback) {
         });
 };
 
+exports.byTinyIdVersion = function (tinyId, version, cb) {
+    if (version) this.byTinyIdAndVersion(tinyId, version, cb);
+    else this.byTinyId(tinyId, cb);
+};
+
 exports.byTinyIdAndVersion = function (tinyId, version, callback) {
-    var query = {'tinyId': tinyId};
-    if (version) {
-        query.version = version;
-        DataElement.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
-            if (err)
-                callback(err);
-            else if (elts.length) callback("", elts[0]);
-            else callback("", null);
-        });
-    } else {
-        query.archived = false;
-        DataElement.findOne(query).exec(function (err, elt) {
-            if (err) callback(err);
-            else callback("", elt);
-        });
-    }
+    let query = {tinyId: tinyId};
+    if (version) query.version = version;
+    else query.$or = [{version: null}, {version: ''}];
+    DataElement.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
+        if (err) callback(err);
+        else if (elts.length) callback("", elts[0]);
+        else callback("", null);
+    });
 };
 
 exports.eltByTinyId = function (tinyId, callback) {

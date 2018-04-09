@@ -1,17 +1,17 @@
-var config = require('./parseConfig')
-    , mongo_cde = require('../cde/mongo-cde')
-    , mongo_form = require('../form/mongo-form')
-    , mongo_board = require('../board/mongo-board')
-    , mongo_storedQuery = require('../cde/mongo-storedQuery')
-    , mongo_data_system = require('./mongo-data')
-    , elastic = require('./elastic')
-    , esInit = require('./elasticSearchInit')
-    , email = require('./email')
-    , async = require('async')
-    , moment = require('moment')
-;
+const config = require('./parseConfig');
+const mongo_cde = require('../cde/mongo-cde');
+const mongo_form = require('../form/mongo-form');
+const mongo_board = require('../board/mongo-board');
+const mongo_storedQuery = require('../cde/mongo-storedQuery');
+const mongo_data_system = require('./mongo-data');
+const elastic = require('./elastic');
+const esInit = require('./elasticSearchInit');
+const email = require('./email');
+const async = require('async');
+const moment = require('moment');
+const pushNotification = require('./pushNotification');
 
-var app_status = this;
+let app_status = this;
 
 app_status.statusReport = {
     elastic: {
@@ -78,12 +78,12 @@ app_status.isElasticUp = function(cb) {
     });
 };
 
-var startupDate = new Date();
+let startupDate = new Date();
 app_status.getStatus = function(done) {
     app_status.isElasticUp(function() {
         if (app_status.statusReport.elastic.up) {
             app_status.statusReport.elastic.indices = [];
-            var condition = {archived: false};
+            let condition = {archived: false};
             async.series([
                 function(done) {
                     mongo_cde.count(condition, function (err, deCount) {
@@ -123,19 +123,6 @@ app_status.getStatus = function(done) {
                             done();
                         });
                     });
-                },
-                function (done) {
-                    mongo_storedQuery.count({}, function (err, storedQueryCount) {
-                        esInit.indices[3].totalCount = storedQueryCount;
-                        app_status.checkElasticCount(storedQueryCount, config.elastic.storedQueryIndex.name, "storedquery", function (up, message) {
-                            app_status.statusReport.elastic.indices.push({
-                                name: config.elastic.storedQueryIndex.name,
-                                up: up,
-                                message: message
-                            });
-                            done();
-                        });
-                    });
                 }
             ], function() {
                 mongo_data_system.updateClusterHostStatus({
@@ -148,32 +135,49 @@ app_status.getStatus = function(done) {
     });
 };
 
-var currentActiveNodes;
-var lastReport;
-setInterval(function() {
-    app_status.getStatus(function() {
-        var newReport = JSON.stringify(app_status.statusReport);
+let currentActiveNodes;
+let lastReport;
+setInterval(() => {
+    app_status.getStatus(() => {
+        let newReport = JSON.stringify(app_status.statusReport);
         if (!!lastReport && newReport !== lastReport) {
-            var emailContent = {
+            let emailContent = {
                 subject: "ElasticSearch Status Change " + config.name
                 , body: newReport
             };
-            mongo_data_system.siteadmins(function(err, users) {
-                email.emailUsers(emailContent, users, function() {});
+            let msg = {
+                title: 'Elastic Search Index Issue',
+                options: {
+                    body: ("Status reports not normal"),
+                    icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
+                    badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+                    tag: 'cde-es-issue',
+                    actions: [
+                        {
+                            action: 'site-mgt-action',
+                            title: 'View',
+                            icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+                        }
+                    ]
+                }
+            };
+
+            mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
             });
+
         }
         lastReport = newReport;
 
-        var timeDiff = config.status.timeouts.statusCheck / 1000 + 30;
+        let timeDiff = config.status.timeouts.statusCheck / 1000 + 30;
         mongo_data_system.getClusterHostStatuses(function (err, statuses) {
-            var now = moment();
-            var activeNodes = statuses.filter( function (s) {
-                return now.diff(moment(s.lastUpdate), 'seconds') < timeDiff;
-            }).map( s => s.hostname + ":" + s.port).sort();
+            let now = moment();
+            let activeNodes = statuses.filter(s => now.diff(moment(s.lastUpdate), 'seconds') < timeDiff)
+                .map( s => s.hostname + ":" + s.port).sort();
             if (!currentActiveNodes) currentActiveNodes = activeNodes;
             else {
                 if (!(currentActiveNodes.length === activeNodes.length && currentActiveNodes.every ((v,i)=> v === activeNodes[i]))) {
-                    var emailContent = {
+                    let emailContent = {
                         subject: "Server Configuration Change"
                         , body: "Server Configuration Change from " + currentActiveNodes + " to " + activeNodes
                     };

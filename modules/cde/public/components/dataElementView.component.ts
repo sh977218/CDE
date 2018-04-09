@@ -52,24 +52,13 @@ export class DataElementViewComponent implements OnInit {
     tinyId;
     url;
 
-    constructor(private http: HttpClient,
-                private route: ActivatedRoute,
-                private router: Router,
-                private ref: ChangeDetectorRef,
-                public modalService: NgbModal,
-                public isAllowedModel: IsAllowedService,
-                private orgHelperService: OrgHelperService,
-                public quickBoardService: QuickBoardListService,
-                private alert: AlertService,
-                public userService: UserService) {
-    }
-
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
             this.userService.then(() => {
                 this.loadDataElement(() => {
                     this.orgHelperService.then(() => {
-                        let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
+                        let org = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name];
+                        let allNamingTags = org ? org.nameTags : [];
                         this.elt.naming.forEach(n => {
                             n.tags.forEach(t => allNamingTags.push(t));
                         });
@@ -83,7 +72,19 @@ export class DataElementViewComponent implements OnInit {
         });
     }
 
-    canEdit () {
+    constructor(private http: HttpClient,
+                private route: ActivatedRoute,
+                private router: Router,
+                private ref: ChangeDetectorRef,
+                public modalService: NgbModal,
+                public isAllowedModel: IsAllowedService,
+                private orgHelperService: OrgHelperService,
+                public quickBoardService: QuickBoardListService,
+                private alert: AlertService,
+                public userService: UserService) {
+    }
+
+    canEdit() {
         return this.isAllowedModel.isAllowed(this.elt) && (this.drafts.length === 0 || this.elt.isDraft);
     }
 
@@ -105,33 +106,35 @@ export class DataElementViewComponent implements OnInit {
     loadComments(de, cb = _noop) {
         this.http.get<Comment[]>('/comments/eltId/' + de.tinyId)
             .subscribe(res => {
-            this.hasComments = res && (res.length > 0);
-            this.tabsCommented = res.map(c => c.linkedTab + '_tab');
-            cb();
-        }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
+                this.hasComments = res && (res.length > 0);
+                this.tabsCommented = res.map(c => c.linkedTab + '_tab');
+                cb();
+            }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
     }
 
     loadDataElement(cb = _noop) {
-        if (this.userService.user && this.userService.user.username) {
-            this.http.get<DataElement[]>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
-                res => {
-                    if (res && res.length > 0 && this.isAllowedModel.isAllowed(res[0])) {
-                        this.drafts = res;
-                        this.eltLoaded(res[0], cb);
-                    } else {
-                        this.drafts = [];
-                        this.loadPublished(cb);
+        this.userService.then(user => {
+            if (user && user.username) {
+                this.http.get<DataElement>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
+                    res => {
+                        if (res && this.isAllowedModel.isAllowed(res)) {
+                            this.drafts = [res];
+                            this.eltLoaded(res, cb);
+                        } else {
+                            this.drafts = [];
+                            this.loadPublished(cb);
+                        }
+                    },
+                    err => {
+                        // do not load elt
+                        this.alert.httpErrorMessageAlert(err);
+                        this.eltLoaded(null, cb);
                     }
-                },
-                err => {
-                    // do not load elt
-                    this.alert.httpErrorMessageAlert(err);
-                    this.eltLoaded(null, cb);
-                }
-            );
-        } else {
-            this.loadPublished(cb);
-        }
+                );
+            } else {
+                this.loadPublished(cb);
+            }
+        });
     }
 
     loadPublished(cb = _noop) {
@@ -145,20 +148,22 @@ export class DataElementViewComponent implements OnInit {
     }
 
     setDisplayStatusWarning() {
-        this.displayStatusWarning = (() => {
-            if (!this.elt) return false;
-            if (this.elt.archived || this.userService.user.siteAdmin) {
-                return false;
-            } else {
-                if (this.userService.userOrgs) {
-                    return isOrgCurator(this.userService.user, this.elt.stewardOrg.name) &&
-                        (this.elt.registrationState.registrationStatus === 'Standard' ||
-                            this.elt.registrationState.registrationStatus === 'Preferred Standard');
-                } else {
+        this.userService.then(user => {
+            this.displayStatusWarning = (() => {
+                if (!this.elt) return false;
+                if (this.elt.archived || user.siteAdmin) {
                     return false;
+                } else {
+                    if (this.userService.userOrgs) {
+                        return isOrgCurator(user, this.elt.stewardOrg.name) &&
+                            (this.elt.registrationState.registrationStatus === 'Standard' ||
+                                this.elt.registrationState.registrationStatus === 'Preferred Standard');
+                    } else {
+                        return false;
+                    }
                 }
-            }
-        })();
+            })();
+        });
     }
 
     openCopyElementModal() {
@@ -218,10 +223,10 @@ export class DataElementViewComponent implements OnInit {
                 state: this.elt.attachments[index].isDefault,
                 id: this.elt._id
             }).subscribe(res => {
-                this.elt = res;
-                this.alert.addAlert('success', 'Saved');
-                this.ref.detectChanges();
-            });
+            this.elt = res;
+            this.alert.addAlert('success', 'Saved');
+            this.ref.detectChanges();
+        });
     }
 
     upload(event) {
@@ -276,8 +281,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     saveDataElement() {
-        this.http.put('/de/' + this.elt.tinyId, this.elt)
-            .subscribe(res => {
+        this.http.put('/de/' + this.elt.tinyId, this.elt).subscribe(res => {
             if (res) {
                 this.loadDataElement(() => this.alert.addAlert('success', 'Data Element saved.'));
             }

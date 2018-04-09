@@ -26,12 +26,13 @@ exports.init = function (app, daoManager) {
     app.get("/deById/:id/priorDataElements/", exportShared.nocacheMiddleware, cdesvc.priorDataElements);
 
     app.get("/de/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
-    app.get("/de/:tinyId/version/:version?", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
+    app.get("/de/:tinyId/version/:version?", exportShared.nocacheMiddleware, cdesvc.byTinyIdAndVersion);
     app.get("/deList/:tinyIdList?", exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
 
-    app.get("/draftDataElement/:tinyId", cdesvc.draftDataElements);
-    app.post("/draftDataElement/:tinyId", cdesvc.saveDraftDataElement);
-    app.delete("/draftDataElement/:tinyId", cdesvc.deleteDraftDataElement);
+    app.get("/draftDataElement/:tinyId", cdesvc.draftDataElement);
+    app.get("/draftDataElementById/:id", cdesvc.draftDataElementById);
+    app.post("/draftDataElement/:tinyId", [authorizationShared.canEditMiddleware], cdesvc.saveDraftDataElement);
+    app.delete("/draftDataElement/:tinyId", [authorizationShared.canEditMiddleware], cdesvc.deleteDraftDataElement);
 
     app.get("/de/:tinyId/latestVersion/", exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
 
@@ -258,7 +259,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
         let term = req.params.term;
-        elastic_system.completionSuggest(term, req.user, req.body,config.elastic.index.name, resp => {
+        elastic_system.completionSuggest(term, req.user, req.body, config.elastic.index.name, resp => {
             resp.hits.hits.forEach(r => r._index = undefined);
             res.send(resp.hits.hits);
         });

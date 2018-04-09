@@ -114,6 +114,7 @@ export class DisplayProfile {
     name: String;
     numberOfColumns: number = 4;
     repeatFormat: string = '#.';
+    answerDropdownLimit: number;
     sectionsAsMatrix: boolean = true;
     unitsOfMeasureAlias: {alias: string, unitOfMeasure: CodeAndSystem}[] = [];
 
@@ -138,15 +139,15 @@ export interface FormElementsContainer {
 
 export interface FormElement extends FormElementsContainer {
     _id: ObjectId;
-    descriptionId: string;
+    descriptionId: string; // calculated formView view model
     readonly elementType: string;
-    expanded; // Calculated, used for View TreeComponent
+    expanded; // calculated, formDescription view model
     formElements: FormElement[];
     instructions: Instruction;
     label: string;
     repeat: string;
     skipLogic: SkipLogic;
-    updatedSkipLogic: boolean; // calculated, formDescription
+    updatedSkipLogic: boolean; // calculated, formDescription view model
 }
 
 export interface FormSectionOrForm extends FormElement {
@@ -155,21 +156,21 @@ export interface FormSectionOrForm extends FormElement {
 
 export class FormSection implements FormSectionOrForm {
     _id;
-    edit: boolean;
-    descriptionId: string;
+    edit: boolean; // calculated, formDescription view model
+    descriptionId: string; // calculated, formView view model
     elementType = 'section';
-    expanded = true; // Calculated, used for View TreeComponent
-    forbidMatrix;
+    expanded = true; // calculated, formDescription view model
+    forbidMatrix; // calculated, nativeRender view model
     formElements = [];
-    hover: boolean;
+    hover: boolean; // calculated, formDescription view model
     instructions;
     label = '';
     repeat;
-    repeatNumber: number;
-    repeatOption: string;
+    repeatNumber: number; // calculated, formDescription view model
+    repeatOption: string; // calculated, formDescription view model
     section: Section;
     skipLogic = new SkipLogic();
-    updatedSkipLogic;
+    updatedSkipLogic; // calculated, formDescription view model
 
     static copy(fe: FormElement) {
         let newFe;
@@ -205,37 +206,40 @@ export class FormSection implements FormSectionOrForm {
 
 export class FormInForm implements FormSectionOrForm {
     _id;
-    descriptionId: string;
+    descriptionId: string; // calculated, formView view model
+    edit: boolean; // calculated, formDescription view model
     elementType = 'form';
-    expanded = false; // Calculated, used for View TreeComponent
-    forbidMatrix;
+    expanded = false; // calculated, formDescription view model
+    forbidMatrix; // calculated, nativeRender view model
     formElements = [];
+    hover: boolean; // calculated, formDescription view model
     instructions;
     inForm: InForm;
     label = '';
     repeat;
+    repeatNumber: number; // calculated, formDescription view model
+    repeatOption: string; // calculated, formDescription view model
     skipLogic = new SkipLogic();
-    updatedSkipLogic;
+    updatedSkipLogic; // calculated, formDescription view model
 }
 
 export class FormQuestion implements FormElement {
     _id;
-    descriptionId: string;
-    edit: boolean = false;
+    descriptionId: string; // calculated, formView view model
+    edit: boolean = false; // calculated, formDescription view model
     elementType = 'question';
-    expanded = true; // Calculated, used for View TreeComponent
-    hover: boolean = false;
+    expanded = true; // calculated, formDescription view model
     formElements = [];
-    hideLabel: boolean;
+    hideLabel: boolean; // calculated, formView view model
+    hover: boolean = false; // calculated, formDescription view model
     incompleteRule: boolean;
     instructions;
     label = '';
-    newCde: boolean = false;
     question: Question = new Question();
-    questionId: string;
+    questionId: string; // calculated, nativeRender view model
     repeat;
     skipLogic = new SkipLogic();
-    updatedSkipLogic;
+    updatedSkipLogic; // calculated, formDescription view model
 
     static datePrecisionToType = {
         Year: 'Number',
@@ -253,19 +257,15 @@ export class FormQuestion implements FormElement {
         Minute: null,
         Second: 1
     };
-
-    constructor(_newCde?: boolean, _edit?: boolean) {
-        this.newCde = _newCde;
-        this.edit = _edit;
-    }
 }
 
 class InForm {
     form: {
         name: string
+        outdated: boolean; // calculated, by server for client
         tinyId: string,
         version: string,
-    };
+    } = {name: '', outdated: false, tinyId: '', version: ''};
 
     static copy(inForm: Section) {
         return Object.assign(new InForm(), inForm ? JSON.parse(JSON.stringify(inForm)) : undefined);
@@ -331,7 +331,7 @@ export class QuestionCde {
     naming = [];
     datatype = 'Text';
     permissibleValues: PermissibleValue[] = [];
-    outdated: boolean = false;
+    outdated: boolean = false; // calculated, by server for client
     tinyId: string;
     version: string;
     derivationRules: DerivationRule[] = [];

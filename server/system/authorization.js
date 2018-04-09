@@ -53,13 +53,5 @@ exports.allowCreate = function (user, elt, cb) {
 };
 
 exports.allowUpdate = function (user, item, cb) {
-    if (item.archived === true)
-        return cb("Element is archived.");
-    if (user.orgCurator.indexOf(item.stewardOrg.name) < 0 && user.orgAdmin.indexOf(item.stewardOrg.name) < 0 && !user.siteAdmin)
-        return cb("Not authorized");
-    if ((item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard") && !user.siteAdmin)
-        return cb("This record is already standard.");
-    if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") && (item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard") && !user.siteAdmin)
-        return cb("Not authorized");
-    else return cb();
+    return cb(authorizationShared.canEditCuratedItem(user, item) ? undefined : 'Not authorized');
 };

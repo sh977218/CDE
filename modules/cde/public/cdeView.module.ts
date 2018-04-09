@@ -1,28 +1,27 @@
-import { CommonModule } from "@angular/common";
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { CommonModule } from '@angular/common';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { Select2Module } from "ng2-select2";
-import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
-import "angular-tree-component/dist/angular-tree-component.css";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { Select2Module } from 'ng2-select2';
+import { TreeModule } from 'angular-tree-component/dist/angular-tree-component';
+import 'angular-tree-component/dist/angular-tree-component.css';
 
-import { AdminItemModule } from "adminItem/public/adminItem.module";
-import { BoardModule } from "board/public/board.module";
-import { CdeClassificationComponent } from "./components/cdeClassification/cdeClassification.component";
+import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { BoardModule } from 'board/public/board.module';
 import { CdeModule } from 'cde/public/cde.module';
-import { ConceptsComponent } from "./components/concepts.component";
-import { DatasetsComponent } from "./components/datasets/datasets.component";
-import { DataElementService } from "./dataElement.service";
-import { DataElementViewComponent } from "./components/dataElementView.component";
-import { DerivationRulesComponent } from "./components/derivationRules.component";
-import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
+import { ConceptsComponent } from 'cde/public/components/concepts.component';
+import { DatasetsComponent } from 'cde/public/components/datasets/datasets.component';
+import { DataElementViewComponent } from 'cde/public/components/dataElementView.component';
+import { DerivationRulesComponent } from 'cde/public/components/derivationRules.component';
+import { MoreLikeThisComponent } from 'cde/public/components/mlt/moreLikeThis.component';
+import { PermissibleValueComponent } from 'cde/public/components/permissibleValue.component';
+import { CdeClassificationComponent } from './components/cdeClassification/cdeClassification.component';
+import { DeGeneralDetailsComponent } from 'cde/public/components/deGeneralDetails/deGeneralDetails.component';
+import { ValidRulesComponent } from 'cde/public/components/validationRules/validRules.component';
 import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
-import { MoreLikeThisComponent } from "./components/mlt/moreLikeThis.component";
-import { PermissibleValueComponent } from "./components/permissibleValue.component";
-import { ValidRulesComponent } from "./components/validationRules/validRules.component";
-import { WidgetModule } from "widget/widget.module";
+import { WidgetModule } from 'widget/widget.module';
 
 
 const appRoutes: Routes = [
@@ -61,7 +60,6 @@ const appRoutes: Routes = [
     entryComponents: [],
     exports: [],
     providers: [
-        DataElementService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -39,3 +39,19 @@ self.addEventListener('fetch', function (event) {
         })
     );
 });
+
+
+self.addEventListener('push', function(event) {
+    try {
+        let obj = JSON.parse(event.data.text());
+        event.waitUntil(self.registration.showNotification(obj.title, obj.options));
+    } catch (e) {}
+});
+
+self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+
+    if (event.action === 'audit-action') clients.openWindow('/siteAudit');
+    else if (event.action === 'profile-action') clients.openWindow('/profile');
+    else if (event.action === 'site-mgt-action') clients.openWindow('/status/cde');
+}, false);

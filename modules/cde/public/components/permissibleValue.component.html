@@ -224,9 +224,9 @@
         <div *ngIf="isAllowedModel.loggedIn()">
             <div>{{vsacError}}</div>
             <div *ngIf="!editMode">
-                <a *ngIf="canEdit" class="btn  btn-outline-dark"
+                <a *ngIf="canEdit" class="btn btn-outline-dark"
                    id="updateOIDBtn" (click)="editMode=true">Update O.I.D</a>
-                <a *ngIf="canEdit && vsacMappingExists()" class="btn  btn-outline-dark"
+                <a *ngIf="canEdit && vsacMappingExists()" class="btn btn-outline-dark"
                    id="removeVSButton" (click)="removeVSMapping()">Remove Mapping</a>
             </div>
             <div *ngIf="editMode">
@@ -309,7 +309,7 @@
             </div>
         </div>
         <div class="modal-footer" id="newPermissibleValueModalFooter">
-            <button class="btn  btn-outline-dark" (click)="c('Close click')" id="cancelNewPermissibleValueBtn"
+            <button class="btn btn-outline-dark" (click)="c('Close click')" id="cancelNewPermissibleValueBtn"
                     name="cancelNewPermissibleValueBtn"
                     type="button">Cancel
             </button>
