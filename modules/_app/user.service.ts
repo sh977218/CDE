@@ -50,7 +50,7 @@ export class UserService {
                 resolve(this.user);
             }, reject);
         });
-        this.promise.then(user => PushNotificationSubscriptionService.subscriptionServerUpdate(user && user._id).catch(_noop));
+        this.promise.then(user => PushNotificationSubscriptionService.subscriptionServerUpdate(user && user._id)).catch(_noop);
     }
 
     setOrganizations() {

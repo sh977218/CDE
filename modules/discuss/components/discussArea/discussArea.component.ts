@@ -216,7 +216,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     addAvatar(username) {
         if (username && !this.avatarUrls[username]) {
             this.http.get('/user/avatar/' + username, {responseType: 'text'}).subscribe(res => {
-                this.avatarUrls[username] = res.length > 0 ? res : '/cde/public/assets/img/portrait.png';
+                this.avatarUrls[username] = res.length > 0 ? res : '/cde/public/assets/img/min/portrait.png';
             });
         }
     }
