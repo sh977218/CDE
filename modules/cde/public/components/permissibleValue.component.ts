@@ -365,7 +365,7 @@ export class PermissibleValueComponent {
                     this.onEltChange.emit();
                     this.modalRef.close();
                 } else this.Alert.addAlert('danger', 'No PV found in this element.');
-            } else this.Alert.addAlert('danger', 'Only Value List can be imported.');
-        } else this.Alert.addAlert('danger', 'No Data Type Found.');
+            } else this.Alert.addAlert('danger', 'Only Value Lists can be imported.');
+        } else this.Alert.addAlert('danger', 'No Datatype found.');
     }
 }
