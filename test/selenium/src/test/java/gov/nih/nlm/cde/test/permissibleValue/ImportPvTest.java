@@ -18,22 +18,22 @@ public class ImportPvTest extends NlmCdeBaseTest {
         checkElementDoesNotExistByLocator(By.id("openSave"));
         clickElement(By.id("deleteDraftBtn"));
 
+        clickElement(By.id("openImportPVModalBtn"));
         importPvByTinyId("CK8F0tHZ5wp");
         textNotPresent("There are validation errors. Duplicate Permissible Value");
         goToHistory();
         selectHistoryAndCompare(1, 2);
-        textPresent("American Indian or Alaska Native", By.xpath("//*[@id='Value List']//*[contains(@class,'arrayObjAdd')]"));
-        textPresent("Asian", By.xpath("//*[@id='Value List']//*[contains(@class,'arrayObjAdd')]"));
-        textPresent("White", By.xpath("//*[@id='Value List']//*[contains(@class,'arrayObjAdd')]"));
-        textPresent("Black or African American", By.xpath("//*[@id='Value List']//*[contains(@class,'arrayObjAdd')]"));
-        textPresent("Not Reported", By.xpath("//*[@id='Value List']//*[contains(@class,'arrayObjAdd')]"));
-        textPresent("Unknown", By.xpath("//*[@id='Value List']//*[contains(@class,'arrayObjAdd')]"));
-        textPresent("Native Hawaiian or other Pacific Islander", By.xpath("//*[@id='Value List']//*[contains(@class,'arrayObjAdd')]"));
+
+        String[] ethnicity = {"American Indian or Alaska Native", "Asian", "White", "Black or African American", "Not Reported", "Unknown", "Native Hawaiian or other Pacific Islander"};
+        for (int i = 0; i < ethnicity.length; i++) {
+            textPresent(ethnicity[i], By.xpath("(//*[@id='Value List']//*[contains(@class,'arrayObjAdd')])[" + ++i + "]"));
+        }
     }
 
     private void importPvByTinyId(String tinyId) {
         findElement(By.id("ftsearch-input")).sendKeys(tinyId);
         hangon(1);
+        clickElement(By.id("search.submit"));
         clickElement(By.xpath("//*[@id='acc_link_0']/preceding-sibling::button"));
     }
 
