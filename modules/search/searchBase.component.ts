@@ -265,8 +265,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     fakeNextPageLink() {
         let p = (this.totalItemsLimited / this.resultPerPage > 1)
-            ? (this.searchSettings.page ? this.searchSettings.page : 1) + 1
-            : 1;
+            ? (this.searchSettings.page ? this.searchSettings.page : 1) + 1 : 1;
         return this.generateSearchForTerm(p);
     }
 
