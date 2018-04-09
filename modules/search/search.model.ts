@@ -3,10 +3,10 @@ export class SearchSettings {
     classificationAlt?: string[] = [];
     datatypes?: string[];
     meshTree?: string;
-    page?: Number = 1;
+    page?: number = 1;
     q?: string;
     regStatuses?: string[];
-    resultPerPage?: Number = 20;
+    resultPerPage?: number = 20;
     selectedOrg?: string;
     selectedOrgAlt?: string;
 }
