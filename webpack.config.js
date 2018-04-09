@@ -15,11 +15,11 @@ const OptimizeJsPlugin = require('optimize-js-plugin');
 // let BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const assets = [
-    '/cde/public/assets/img/NIH-CDE.png',
-    '/cde/public/assets/img/nih-cde-logo-simple.png',
-    '/cde/public/assets/img/nih-cde-logo.png',
-    '/cde/public/assets/img/usagov_logo.gif',
-    '/cde/public/assets/img/NLM-logo.png',
+    '/cde/public/assets/img/min/NIH-CDE.png',
+    '/cde/public/assets/img/min/nih-cde-logo-simple.png',
+    '/cde/public/assets/img/min/nih-cde-logo.png',
+    '/cde/public/assets/img/min/usagov_logo.png',
+    '/cde/public/assets/img/min/NLM-logo.png',
     '/app/styles-cde.css'
 ];
 
@@ -70,8 +70,8 @@ module.exports = {
                 })
             },
             {test: /\.css$/, exclude: /node_modules/, use: ['style-loader?insertAt=top', 'css-loader']},
-            {test: /\.html$/, use: [{loader: 'html-loader', options: {minimize: false}}]},
-            {test: /\.(eot|png|svg|ttf|woff|woff2)$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]},
+            {test: /\.html$/, use: [{loader: 'html-loader', options: {attrs: ['img:src', 'source:srcset'], minimize: false}}]},
+            {test: /\.(eot|png|svg|ttf|webp|woff|woff2)$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]},
         ]
     },
     plugins: prod ?

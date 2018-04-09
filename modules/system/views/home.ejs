@@ -35,6 +35,29 @@
     <%- include googleAnalytics.html %>
 
     <NIHCDECONTENT/>
+    <script>
+        var imagesLoaded = false;
+        function loadImages(q) {
+            if (!imagesLoaded && q.matches) {
+                [].forEach.call(document.querySelectorAll('source[data-srcset]'),    function(img) {
+                    img.setAttribute('srcset', img.getAttribute('data-srcset'));
+                    img.onload = function() {
+                        img.removeAttribute('data-srcset');
+                    };
+                });
+                [].forEach.call(document.querySelectorAll('img[data-src]'),    function(img) {
+                    img.setAttribute('src', img.getAttribute('data-src'));
+                    img.onload = function() {
+                        img.removeAttribute('data-src');
+                    };
+                });
+                imagesLoaded = true;
+            }
+        }
+        var matcher = window.matchMedia("(min-width: 576px)");
+        loadImages(matcher);
+        matcher.addListener(loadImages);
+    </script>
 
     <%- include footer.html %>
 
@@ -145,7 +168,7 @@
             },
           "description" : "NIH Common Data Elements Repository",
           "url": "https://cde.nlm.nih.gov",
-          "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
+          "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/min/NIH-CDE.png"
           }
 </script>
 
