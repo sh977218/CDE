@@ -34,10 +34,12 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
         )
     }
 
-    if (sleep.id.length === 1) {
+    if (sleep && sleep.id && sleep.id.length === 1) {
         cde.ids.push({
             id: sleep.id[0]
         })
+    } else {
+        console.log('a');
     }
 
     let pArray = [{key: 'equipment', value: sleep.equipment},
@@ -55,23 +57,25 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
     let shhs = sleep.shhs;
     if (shhs[0]) {
         let variable = VARIABLES[shhs[0]];
-        let type = variable.type.trim();
-        if (type === 'choices') {
-            cde.valueDomain.datatype = 'Value List';
-            let domain = sleep.domain;
-            if (domain) {
-                cde.valueDomain.permissibleValues = DOMAINS[domain];
-            }
-        } else if (type === 'numeric' || type === 'integer') {
-            cde.valueDomain.datatype = 'Number';
-        } else if (type === 'time' || type === 'Date') {
-            cde.valueDomain.datatype = 'Date';
-        } else if (type === 'text' || type === 'string' || type === 'identifier') {
-            cde.valueDomain.datatype = 'Text';
-        } else console.log('unmapped type: ' + type);
+        if (variable) {
+            let type = variable.type.trim();
+            if (type === 'choices') {
+                cde.valueDomain.datatype = 'Value List';
+                let domain = sleep.domain;
+                if (domain) {
+                    cde.valueDomain.permissibleValues = DOMAINS[domain];
+                }
+            } else if (type === 'numeric' || type === 'integer') {
+                cde.valueDomain.datatype = 'Number';
+            } else if (type === 'time' || type === 'Date') {
+                cde.valueDomain.datatype = 'Date';
+            } else if (type === 'text' || type === 'string' || type === 'identifier') {
+                cde.valueDomain.datatype = 'Text';
+            } else console.log('unmapped type: ' + type);
 
-        let units = variable.units;
-        cde.valueDomain.uom = units.trim();
+            let units = variable.units;
+            cde.valueDomain.uom = units.trim();
+        }
     }
 
     return cde;
