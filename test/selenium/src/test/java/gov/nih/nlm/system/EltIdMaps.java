@@ -111,6 +111,7 @@ public class EltIdMaps {
         eltMap.put("Neurological Assessment: TBI Symptoms and Signs", "mkqnEJHrtl");
         eltMap.put("No Label Logic", "myMbx38V7");
         eltMap.put("Non Editable Questions", "m16LQuUCG");
+        eltMap.put("Non-Pathology Findings", "mJQiShWEW");
         eltMap.put("Not Equals Test", "QJBWLKc47");
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
         eltMap.put("Patient Health Questionnaire-2 (PHQ-2)", "XJzVz1TZDe");

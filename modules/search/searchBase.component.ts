@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import {
-    Component, ViewChild, Type, ViewContainerRef, EventEmitter, HostListener, OnInit, OnDestroy
+    Component, ViewChild, Type, ViewContainerRef, EventEmitter, HostListener, Input, OnInit, OnDestroy
 } from '@angular/core';
 import { NavigationStart } from '@angular/router';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
@@ -56,6 +56,7 @@ export const searchStyles: string = `
 `;
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
+    @Input() searchSettingsInput?: SearchSettings;
     @HostListener('window:beforeunload') unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname)) {
             window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
@@ -264,8 +265,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     fakeNextPageLink() {
         let p = (this.totalItemsLimited / this.resultPerPage > 1)
-            ? (this.searchSettings.page ? this.searchSettings.page : 1) + 1
-            : 1;
+            ? (this.searchSettings.page ? this.searchSettings.page : 1) + 1 : 1;
         return this.generateSearchForTerm(p);
     }
 
@@ -491,6 +491,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.userService.then(user => {
             let timestamp = new Date().getTime();
             this.lastQueryTimeStamp = timestamp;
+            if (this.searchSettingsInput) Object.assign(this.searchSettings, this.searchSettingsInput);
             let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
             this.elasticService.generalSearchQuery(settings, this.module, (err: string, result: ElasticQueryResponse, corrected: boolean) => {
                 this.searchedTerm = this.searchSettings.q;
