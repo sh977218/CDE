@@ -9,6 +9,7 @@ import { Subject } from 'rxjs/Subject';
 import { AlertService } from '_app/alert/alert.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { checkPvUnicity, fixDatatype } from 'shared/de/deValidator';
+import { SearchSettings } from 'search/search.model';
 
 
 @Component({
@@ -40,11 +41,14 @@ export class PermissibleValueComponent {
             } else this.umlsTerms = [];
         });
     }
+
     get elt(): any {
         return this._elt;
     }
+
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newPermissibleValueContent') public newPermissibleValueContent: NgbModalModule;
+    @ViewChild('importPermissibleValueContent') public importPermissibleValueContent: NgbModalModule;
     canLinkPv = false;
     containsKnownSystem: boolean = false;
     dataTypeOptions = ['Value List', 'Text', 'Date', 'Number', 'Externally Defined'];
@@ -69,12 +73,14 @@ export class PermissibleValueComponent {
         'SNOMEDCT US': {source: 'SNOMEDCT_US', termType: 'PT', codes: {}, selected: false, disabled: true}
     };
 
-    constructor(
-        private Alert: AlertService,
-        public isAllowedModel: IsAllowedService,
-        public http: HttpClient,
-        public modalService: NgbModal,
-    ) {
+    searchSettings: SearchSettings = {
+        datatypes: ["Value List"]
+    };
+
+    constructor(private Alert: AlertService,
+                public isAllowedModel: IsAllowedService,
+                public http: HttpClient,
+                public modalService: NgbModal) {
     }
 
     addAllVsac() {
@@ -179,6 +185,21 @@ export class PermissibleValueComponent {
         return temp.length > 0;
     }
 
+    importPv(de) {
+        let vd = de.valueDomain;
+        if (vd && vd.datatype) {
+            if (vd.datatype === 'Value List') {
+                if (vd.permissibleValues.length > 0) {
+                    this.elt.valueDomain.permissibleValues = this.elt.valueDomain.permissibleValues.concat(vd.permissibleValues);
+                    this.runManualValidation();
+                    this.initSrcOptions();
+                    this.onEltChange.emit();
+                    this.modalRef.close();
+                } else this.Alert.addAlert('danger', 'No PV found in this element.');
+            } else this.Alert.addAlert('danger', 'Only Value Lists can be imported.');
+        } else this.Alert.addAlert('danger', 'No Datatype found.');
+    }
+
     loadValueSet() {
         let dec = this.elt.dataElementConcept;
         if (dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id) {
@@ -235,7 +256,7 @@ export class PermissibleValueComponent {
                                         this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                                     });
                                 } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                            }, err => this.Alert.addAlert('danger', "Error query UMLS."));
+                            }, () => this.Alert.addAlert('danger', "Error query UMLS."));
 
                 }
                 else if (source === 'UMLS') {
@@ -258,7 +279,8 @@ export class PermissibleValueComponent {
                                     this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                                 });
                             } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                        }, );
+                        }, () => {
+                        });
                 }
             } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
         });
@@ -266,6 +288,10 @@ export class PermissibleValueComponent {
 
     lookupUmls() {
         this.searchTerms.next(this.newPermissibleValue.valueMeaningName);
+    }
+
+    openImportPermissibleValueModal() {
+        this.modalRef = this.modalService.open(this.importPermissibleValueContent, {size: 'lg'});
     }
 
     openNewPermissibleValueModal() {
