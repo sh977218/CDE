@@ -1,19 +1,15 @@
 let mongo_data = require('../../server/system/mongo-data');
-let UOM_MAP = require('./UOM_MAP').UOM_MAP;
 
 exports.SleepDataConverter = function () {
 };
 
-exports.SleepDataConverter.prototype.convert = function (sleep, classification, DOMAINS) {
+exports.SleepDataConverter.prototype.convert = function (sleep, classification, VARIABLES, DOMAINS) {
     let cde = {
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {name: 'NSRR'},
         registrationState: {registrationStatus: 'Incomplete'},
-        naming: [{
-            designation: sleep.display_name,
-            definition: sleep.description
-        }],
-        ids: [{id: sleep.id}],
+        naming: [],
+        ids: [],
         properties: [],
         valueDomain: {
             uom: '',
@@ -28,32 +24,56 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
         }]
     };
 
-    let units = sleep.units;
-    let uom = UOM_MAP[units.trim()];
-    if (uom) cde.valueDomain.uom = uom;
-    else if (uom !== '') console.log('unmapped unit: ' + units);
+    let names = sleep.display_name;
+    let definitions = sleep.definition;
+    if (names.length >= 1 && definitions.length >= 1) {
+        cde.naming.push({
+                designation: names[0],
+                definition: definitions[0]
+            }
+        )
+    }
 
-    let type = sleep.type.trim();
-    if (type === 'choices') {
-        cde.valueDomain.datatype = 'Value List';
-        let domain = sleep.domain;
-        if (domain) {
-            cde.valueDomain.permissibleValues = DOMAINS[domain];
+    if (sleep.id.length === 1) {
+        cde.ids.push({
+            id: sleep.id[0]
+        })
+    }
+
+    let pArray = [{key: 'equipment', value: sleep.equipment},
+        {key: 'formula', value: sleep.formula},
+        {key: 'time', value: sleep.time}];
+    pArray.forEach(p => {
+        if (p.value.length > 0) {
+            cde.properties.push({
+                key: p.key,
+                value: p.value.join(',')
+            });
         }
-    } else if (type === 'numeric' || type === 'integer') {
-        cde.valueDomain.datatype = 'Number';
-    } else if (type === 'time' || type === 'Date') {
-        cde.valueDomain.datatype = 'Date';
-    } else if (type === 'text' || type === 'string' || type === 'identifier') {
-        cde.valueDomain.datatype = 'Text';
-    } else console.log('unmapped type: ' + type);
+    });
 
-    let labels = sleep.labels.trim();
-    if (labels)
-        cde.properties.push({
-            key: 'labels',
-            value: sleep.labels
-        });
+    let shhs = sleep.shhs;
+    if (shhs[0]) {
+        let variable = VARIABLES[shhs[0]];
+        let type = variable.type.trim();
+        if (type === 'choices') {
+            cde.valueDomain.datatype = 'Value List';
+            let domain = sleep.domain;
+            if (domain) {
+                cde.valueDomain.permissibleValues = DOMAINS[domain];
+            }
+        } else if (type === 'numeric' || type === 'integer') {
+            cde.valueDomain.datatype = 'Number';
+        } else if (type === 'time' || type === 'Date') {
+            cde.valueDomain.datatype = 'Date';
+        } else if (type === 'text' || type === 'string' || type === 'identifier') {
+            cde.valueDomain.datatype = 'Text';
+        } else console.log('unmapped type: ' + type);
+
+        let units = variable.units;
+        cde.valueDomain.uom = units.trim();
+    }
+
     return cde;
 };
 

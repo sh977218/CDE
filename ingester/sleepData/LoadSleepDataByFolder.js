@@ -49,6 +49,19 @@ function mapVariables(rows) {
 
 function mapMappings(rows) {
     let map = _.groupBy(rows, 'id');
+    Object.keys(map).forEach(key => {
+        let temp = map[key];
+        if (temp.length !== 1) {
+            for (let i = 1; i < temp.length; i++) {
+                Object.keys(temp[0]).forEach(k => {
+                    let target = temp[0][k];
+                    let source = temp[i][k];
+                    temp[0][k] = _.uniq([target].concat([source]));
+                });
+            }
+        }
+        map[key] = temp[0];
+    });
     return map;
 }
 
@@ -84,13 +97,13 @@ function loadVariables(folder) {
 
 function loadMappings(folder) {
     let allFiles = fs.readdirSync(folder);
-    let variablesFile;
+    let mappingsFile;
     for (let file of allFiles) {
         if (file.indexOf('mappings.csv') > -1)
-            variablesFile = folder + file;
+            mappingsFile = folder + file;
     }
     return new Promise((resolve, reject) => {
-        csv.parse(fs.readFileSync(variablesFile), CSV_COND, (err, rows) => {
+        csv.parse(fs.readFileSync(mappingsFile), CSV_COND, (err, rows) => {
             if (err) reject(err);
             else resolve(mapMappings(rows));
         })
@@ -129,43 +142,44 @@ exports.run = function runner(PATH, FOLDER) {
     let folder = PATH + FOLDER + '/';
     let classification = FOLDER.replace('&ReplaceWithForwardSlash&', '/');
     return new Promise(async (resolve, reject) => {
-        let DOMAINS = await loadDomains(folder);
         let count = 0;
+        let DOMAINS = await loadDomains(folder);
         let VARIABLES = await loadVariables(folder);
         let MAPPINGS = await loadMappings(folder);
         let slc = new SleepDataConverter();
-        for (let variable of VARIABLES) {
-            if (variable.id === 'caffeine') console.log(folder);
-            let cde = slc.convert(variable, classification, DOMAINS);
-            let existingCdes = await findCdeById(cde.ids[0].id);
-            if (existingCdes.length === 0) {
-                let newCde = await saveCde(cde);
-                if (newCde) count++;
-            } else if (existingCdes.length === 1) {
-                let existingCde = existingCdes[0];
-                let existingCdeObj;
-                if (existingCde.toObject) existingCdeObj = existingCde.toObject();
+        for (let mapping in MAPPINGS) {
+            if (MAPPINGS.hasOwnProperty(mapping)) {
+                let cde = slc.convert(MAPPINGS[mapping], classification, VARIABLES, DOMAINS);
+                let existingCdes = await findCdeById(cde.ids[0].id);
+                if (existingCdes.length === 0) {
+                    let newCde = await saveCde(cde);
+                    if (newCde) count++;
+                } else if (existingCdes.length === 1) {
+                    let existingCde = existingCdes[0];
+                    let existingCdeObj;
+                    if (existingCde.toObject) existingCdeObj = existingCde.toObject();
 
-                let isDataTypeEqual = _.isEqual(cde.valueDomain.datatype, existingCdeObj.valueDomain.datatype);
-                let isPVsEqual = _.isEqual(cde.valueDomain.permissibleValue, existingCdeObj.valueDomain.permissibleValue);
-                let isValueDomainEqual = isDataTypeEqual && isPVsEqual;
-                let isNamingEqual = _.isEqual(cde.naming, existingCdeObj.naming);
-                existingCde.properties = _.uniqBy(existingCde.properties.concat(cde.properties), 'key');
-                existingCde.classification.elements = _.uniqBy(existingCde.classification[0].elements.concat(cde.classification[0].elements), 'name');
-                existingCde.markModified('classification');
-                if (isNamingEqual && isValueDomainEqual) resolve();
-                else {
-                    if (!isNamingEqual) existingCde.naming = _.uniqWith(existingCde.naming.concat(cde.naming), (a, b) => {
-                        return a.designation === b.designation && a.definition === b.definition;
-                    });
-                    if (!isValueDomainEqual) {
-                        console.log('folder: ' + folder + ' variable: ' + variable.display_name);
-                        throw new Error('CDEs have different value domain.');
-                        existingCde.valueDomain = cde.valueDomain;
+                    let isDataTypeEqual = _.isEqual(cde.valueDomain.datatype, existingCdeObj.valueDomain.datatype);
+                    let isPVsEqual = _.isEqual(cde.valueDomain.permissibleValue, existingCdeObj.valueDomain.permissibleValue);
+                    let isValueDomainEqual = isDataTypeEqual && isPVsEqual;
+                    let isNamingEqual = _.isEqual(cde.naming, existingCdeObj.naming);
+                    existingCde.properties = _.uniqBy(existingCde.properties.concat(cde.properties), 'key');
+                    existingCde.classification.elements = _.uniqBy(existingCde.classification[0].elements.concat(cde.classification[0].elements), 'name');
+                    existingCde.markModified('classification');
+                    if (isNamingEqual && isValueDomainEqual) resolve();
+                    else {
+                        if (!isNamingEqual) existingCde.naming = _.uniqWith(existingCde.naming.concat(cde.naming), (a, b) => {
+                            return a.designation === b.designation && a.definition === b.definition;
+                        });
+                        if (!isValueDomainEqual) {
+                            console.log('folder: ' + folder + ' variable: ' + variable.display_name);
+                            throw new Error('CDEs have different value domain.');
+                            existingCde.valueDomain = cde.valueDomain;
+                        }
+                        await updateCde(existingCde);
                     }
-                    await updateCde(existingCde);
-                }
-            } else reject('Existing Cdes ' + existingCdes.length + ': ' + cde.ids[0].id);
+                } else reject('Existing Cdes ' + existingCdes.length + ': ' + cde.ids[0].id);
+            }
         }
         resolve(count);
     });
