@@ -275,17 +275,19 @@ exports.init = function (app) {
     ["/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404",
         "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
-        "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
-        app.get(path, function (req, res) {
-            res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
+        "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(path => {
+        app.get(path, (req, res) => res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml));
+    });
+
+    app.get('/fhir/form', (req, res) => {
+        res.sendFile(path.join(__dirname, '../../modules/_fhirApp', 'fhirApp.html'), undefined, err => {
+            if (err) res.sendStatus(404);
         });
     });
 
-    app.get('/nativeRender', function (req, res) {
+    app.get('/nativeRender', (req, res) => {
         res.sendFile(path.join(__dirname, '../../modules/_nativeRenderApp', 'nativeRenderApp.html'), undefined, err => {
-            if (err) {
-                res.sendStatus(404);
-            }
+            if (err) res.sendStatus(404);
         });
     });
 
