@@ -1,4 +1,5 @@
 const _ = require('lodash');
+
 const config = require('../system/parseConfig');
 const schemas = require('./schemas');
 const mongo_data_system = require('../system/mongo-data');
@@ -27,21 +28,6 @@ exports.Form = Form;
 exports.FormDraft = FormDraft;
 
 exports.elastic = elastic;
-
-exports.trimWholeForm = function (form) {
-    let loopFormElements = function (form, cb) {
-        if (!form) return cb();
-        if (!form.formElements) form.formElements = [];
-        form.formElements.forEach(fe => {
-            if (fe.elementType === "form") {
-                fe.formElements = [];
-            } else if (fe.elementType === "section") {
-                loopFormElements(fe);
-            }
-        });
-    };
-    loopFormElements(form);
-};
 
 exports.byId = function (id, cb) {
     Form.findById(id, cb);

@@ -18,7 +18,7 @@
             <th>Version</th>
             <th>View</th>
         </tr>
-        <ng-container *ngFor="let priorElement of priorElements; let i = index">
+        <ng-container *ngFor="let priorElement of priorElements; index as i; first as first">
             <tr *ngIf="!showVersioned || priorElement?.version !== priorElements[i-1]?.version"
                 (click)="selectRow(i)" [ngClass]="{'isSelected':priorElement.selected}">
                 <td>
@@ -31,19 +31,19 @@
                 <td>{{priorElement.updatedBy?.username}}</td>
                 <td>{{priorElement.changeNote}}</td>
                 <td>
-                    <ng-container *ngIf="priorElement.isDraft">draft: </ng-container>
-                    {{priorElement.version}}
+                    <ng-container *ngIf="priorElement.isDraft; else version">DRAFT</ng-container>
+                    <ng-template #version>{{priorElement.version}}</ng-template>
                 </td>
                 <td>
                     <div id="prior-{{i}}">
-                        <ng-container *ngIf="priorElement.viewing">
+                        <ng-container *ngIf="first; else notViewing">
                             Viewing
                         </ng-container>
-                        <ng-container *ngIf="!priorElement.viewing">
+                        <ng-template #notViewing>
                             <a [href]="priorElement.url" target="_blank">
                                 <span class="fa fa-eye fa-2x gray"></span>
                             </a>
-                        </ng-container>
+                        </ng-template>
                     </div>
                 </td>
             </tr>

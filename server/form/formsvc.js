@@ -1,5 +1,6 @@
 const async = require("async");
 const _ = require("lodash");
+
 const mongo_cde = require("../cde/mongo-cde");
 const mongo_form = require("./mongo-form");
 const mongo_data = require("../system/mongo-data");
@@ -272,16 +273,20 @@ exports.latestVersionByTinyId = function (req, res) {
 };
 
 exports.publishForm = function (req, res) {
-    let id = req.params.id;
-    if (!id) return res.status(400).send();
-    if (!req.isAuthenticated()) return res.status(401).send("Not Authorized");
-    mongo_form.byId(id, function (err, form) {
-        if (!form) return res.status(500).send("ERROR - form not found");
-        fetchWholeForm(form.toObject(), function (err, wholeForm) {
-            if (err) return res.status(500).send("ERROR - fetch whole for publish");
+    if (!req.params.id) {
+        return res.status(400).send();
+    }
+    if (!req.isAuthenticated()) {
+        return res.status(401).send();
+    }
+    mongo_form.byId(req.params.id, dbLogger.withError(res, 'form not found', form => {
+        if (!form) {
+            return res.status(400).send('form not found');
+        }
+        fetchWholeForm(form.toObject(), dbLogger.withError(res, 'fetch whole for publish', wholeForm => {
             publishForm.getFormForPublishing(wholeForm, req, res);
-        });
-    });
+        }));
+    }));
 };
 
 exports.createForm = function (req, res) {
@@ -303,27 +308,27 @@ exports.updateForm = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
-    let user = req.user;
     mongo_form.byTinyId(tinyId, function (err, item) {
-        if (err) return res.status(400).send();
+        if (err) return res.status(500).send("ERROR - update find by tinyId");
         if (!item) return res.status(404).send();
-        authorization.allowUpdate(user, item, function (err) {
-            if (err) return res.status(500).send("ERROR - cannot allow to update form");
+        authorization.allowUpdate(req.user, item, function (err) {
+            if (err) return res.status(500).send("ERROR - update - cannot allow");
             mongo_data.orgByName(item.stewardOrg.name, function (err, org) {
                 let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
-                if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) return res.status(403).send("Not authorized"); else {
-                    let elt = req.body;
-                    mongo_form.trimWholeForm(elt);
-                    mongo_form.update(elt, req.user, function (err, response) {
-                        if (err) return res.status(500).send("ERROR - cannot update form. ");
-                        mongo_form.deleteDraftForm(elt.tinyId, err => {
-                            if (err) return res.status(500).send("ERROR - cannot delete draft. ");
-                            res.send(response);
-                        });
-                    });
+                if (org && org.workingGroupOf && org.workingGroupOf.length > 0
+                    && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) {
+                    return res.status(403).send("Not authorized");
                 }
+                let elt = req.body;
+                formShared.trimWholeForm(elt);
+                mongo_form.update(elt, req.user, function (err, response) {
+                    if (err) return res.status(500).send("ERROR - cannot update form. ");
+                    mongo_form.deleteDraftForm(elt.tinyId, err => {
+                        if (err) return res.status(500).send("ERROR - cannot delete draft. ");
+                        res.send(response);
+                    });
+                });
             });
         });
     });
 };
-

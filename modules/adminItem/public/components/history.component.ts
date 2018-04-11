@@ -1,24 +1,32 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import _noop from 'lodash/noop';
 
 import { AlertService } from '_app/alert/alert.service';
+import { ITEM_MAP } from 'shared/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
 
-const URL_MAP = {
-    cde: '/deView?cdeId=',
-    form: '/formView?formId='
-};
+class HistoryDe extends DataElement {
+    promise?: Promise<History>;
+    selected?: boolean;
+    url?: string;
+    user?: string;
+}
 
-const ELEMENT_URL_MAP = {
-    false: {
-        cde: '/deById/',
-        form: '/formById/'
-    },
-    true: {
-        cde: '/draftDataElementById/',
-        form: '/draftFormById/'
-    }
-};
+class HistoryForm extends CdeForm {
+    promise?: Promise<History>;
+    selected?: boolean;
+    url?: string;
+    user?: string;
+}
+
+type History = HistoryDe | HistoryForm;
+
+function createHistory(elt: DataElement | CdeForm): History {
+    return Object.create(elt.elementType === 'cde' ? DataElement.copy(elt as DataElement) : CdeForm.copy(elt as CdeForm));
+}
 
 
 @Component({
@@ -56,11 +64,11 @@ const ELEMENT_URL_MAP = {
 })
 export class HistoryComponent implements OnInit {
     @ViewChild('compareContent') public compareContent: NgbModal;
-    @Input() public elt: any;
+    @Input() public elt: DataElement | CdeForm;
     @Input() public canEdit: boolean = false;
     public modalRef: NgbActiveModal;
     showVersioned: boolean = false;
-    public priorElements: any[];
+    public priorElements: History[];
     public numberSelected: number = 0;
     public filter = {
         reorder: {
@@ -83,22 +91,16 @@ export class HistoryComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        let url = '/deById/' + this.elt._id + '/priorDataElements';
-        if (this.elt.elementType === 'form') {
-            url = '/formById/' + this.elt._id + '/priorForms';
-        }
-        this.http.get<any[]>(url).subscribe(res => {
+        let url = ITEM_MAP[this.elt.elementType].apiById + this.elt._id + ITEM_MAP[this.elt.elementType].apiById_prior;
+        this.http.get<History[]>(url).subscribe(res => {
             this.priorElements = res;
             this.priorElements.forEach(pe => {
-                if (!pe.isDraft) {
-                    pe.url = URL_MAP[this.elt.elementType] + pe._id;
-                }
+                pe.url = ITEM_MAP[this.elt.elementType].viewById + pe._id;
             });
             if (this.elt.isDraft && this.canEdit) {
-                this.priorElements = [this.elt].concat(this.priorElements);
+                this.priorElements.unshift(createHistory(this.elt));
+                this.priorElements[0].selected = false;
             }
-            this.priorElements[0].viewing = true;
-            this.priorElements[0].selected = false;
         }, err => this.alert.httpErrorMessageAlert(err, 'Error retrieving history:'));
     }
 
@@ -113,25 +115,21 @@ export class HistoryComponent implements OnInit {
             priorElt.selected = !priorElt.selected;
             if (priorElt.selected) this.numberSelected++;
             else this.numberSelected--;
-            if (priorElt.selected && !priorElt.promise) {
-                if (!priorElt.isDraft) priorElt.isDraft = false;
-                let url = ELEMENT_URL_MAP[priorElt.isDraft][priorElt.elementType] + priorElt._id;
-                const prom = this.http.get(url).toPromise();
-                prom.then(res => {
-                    this.priorElements[index] = res;
-                    this.priorElements[index].url = URL_MAP[this.priorElements[index].elementType] +
-                        this.priorElements[index]._id;
-                    this.priorElements[index].promise = prom;
-                    this.priorElements[index].selected = true;
-                });
-            }
         }
     }
 
     openHistoryCompareModal() {
-        Promise.all(this.priorElements.filter(pe => !!pe.promise).map(pe => pe.promise)).then(() => {
-            this.modalRef = this.modalService.open(this.compareContent, {size: 'lg'});
-        });
+        Promise.all(this.priorElements.filter(pe => pe.selected && !pe.tinyId).map(priorElt => {
+            let url = ITEM_MAP[priorElt.elementType][priorElt.isDraft ? 'apiDraftById' : 'apiById'] + priorElt._id;
+            return this.http.get<History>(url).toPromise().then(res => {
+                res.url = ITEM_MAP[res.elementType].viewById + res._id;
+                res.selected = true;
+                this.priorElements[this.priorElements.indexOf(priorElt)] = res;
+            });
+        }))
+            .then(() => {
+                this.modalRef = this.modalService.open(this.compareContent, {size: 'lg'});
+            }, _noop);
     }
 
     getSelectedElt() {

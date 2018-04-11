@@ -143,6 +143,30 @@ exports.logClientError = function (req, callback) {
     });
 };
 
+// substitute for (err, ...) => {}
+// handles the error scenario properly leaving only data parameters for the callback
+exports.withError = function (res, errorMessage, cb) {
+    function errorHandler(res, errorMessage, cb, err, ...args) {
+        if (err) {
+            return exports.respondError(res, err, errorMessage);
+        }
+        cb(...args);
+    }
+    return errorHandler.bind(undefined, res, errorMessage, cb);
+};
+
+exports.logIfError = function (err) {
+    if (err) {
+        exports.logError(err);
+    }
+};
+
+// handle server errors properly
+exports.respondError = function(res, err, message = '') {
+    res.status(500).send(message);
+    exports.logError(err);
+};
+
 exports.getLogs = function (body, callback) {
     let sort = {"date": "desc"};
     if (body.sort) sort = body.sort;

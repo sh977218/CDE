@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import _noop from 'lodash/noop';
 
+import { DataElementService } from 'cde/public/dataElement.service';
 import { CodeAndSystem } from 'shared/models.model';
 import { CdeForm, FormQuestion } from 'shared/form/form.model';
 import { iterateFe } from 'shared/form/formShared';
@@ -10,7 +11,8 @@ import { iterateFe } from 'shared/form/formShared';
 @Injectable()
 export class FormService {
     constructor(
-        private http: HttpClient
+        private dataElementService: DataElementService,
+        private http: HttpClient,
     ) {}
 
     // TODO: use Mongo cde and move to shared, currently open to using Elastic cde
@@ -60,11 +62,10 @@ export class FormService {
         if (cde.valueDomain.permissibleValues.length > 0) {
             // elastic only store 10 pv, retrieve pv when have more than 9 pv.
             if (cde.valueDomain.permissibleValues.length > 9) {
-                this.http.get('/de/' + cde.tinyId + '/version/' + (cde.version ? cde.version : ''))
-                    .subscribe((result) => {
-                        convertPv(q, result);
-                        cb(q);
-                    }, cb);
+                this.dataElementService.fetchDe(cde.tinyId, cde.version || '').then(result => {
+                    convertPv(q, result);
+                    cb(q);
+                }, cb);
             } else {
                 convertPv(q, cde);
                 cb(q);
@@ -84,19 +85,24 @@ export class FormService {
         });
     }
 
+    fetchFormById(id): Promise<CdeForm> {
+        return new Promise<CdeForm>((resolve, reject) => {
+            this.http.get('/formById/' + id).subscribe(resolve, reject);
+        });
+    }
+
     // TODO: turn into single server endpoint that calls one of the 2 server-side implementations
     // modifies form to add sub-forms
     // callback(err: string)
     fetchWholeForm(form, callback = _noop) {
         let formCb = (fe, cb) => {
-            this.http.get('/form/' + fe.inForm.form.tinyId
-                + (fe.inForm.form.version ? '/version/' + fe.inForm.form.version : ''))
-                .subscribe(function (response: any) {
+            this.fetchForm(fe.inForm.form.tinyId, fe.inForm.form.version || '').then(
+                response => {
                     fe.formElements = response.formElements;
                     cb();
-                }, function (err) {
-                    cb(err.statusText);
-                });
+                },
+                err => cb(err.statusText)
+            );
         };
         function questionCb(fe, cb) {
             if (fe.question.cde.derivationRules) {
@@ -111,14 +117,5 @@ export class FormService {
             cb();
         }
         iterateFe(form, formCb, undefined, questionCb, callback);
-    }
-
-    // cb(err, elt)
-    getForm(tinyId, id, cb = _noop) {
-        let url = '/form/' + tinyId;
-        if (id) url = '/formById/' + id;
-        this.http.get(url).subscribe(res => {
-            cb(null, res);
-        }, cb);
     }
 }
