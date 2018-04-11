@@ -159,14 +159,16 @@ exports.run = function runner(PATH, FOLDER) {
         for (let mapping in MAPPINGS) {
             if (MAPPINGS.hasOwnProperty(mapping)) {
                 let cde = slc.convert(MAPPINGS[mapping], classification, VARIABLES, DOMAINS);
-                if (cde.ids.length !== 1 || !cde.ids[0].id) {
+                if (cde.ids.length === 0 || !cde.ids[0].id) {
                     console.log('skip');
                 } else {
-
                     let existingCdes = await findCdeById(cde.ids[0].id);
                     if (existingCdes.length === 0) {
                         let newCde = await saveCde(cde);
-                        if (newCde) count++;
+                        if (newCde) {
+                            count++;
+                            console.log('count: ' + count);
+                        }
                     } else if (existingCdes.length === 1) {
                         let existingCde = existingCdes[0];
                         let existingCdeObj;

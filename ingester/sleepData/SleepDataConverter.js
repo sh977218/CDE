@@ -36,20 +36,32 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
 
     if (sleep && sleep.id && sleep.id.length === 1) {
         cde.ids.push({
+            source: 'NSSR',
             id: sleep.id[0]
         })
     } else {
         console.log('a');
     }
+    sleep.shhs.forEach(s => {
+        cde.ids.push({
+            source: 'NSSR_shhs',
+            id: s
+        })
+    });
 
-    let pArray = [{key: 'equipment', value: sleep.equipment},
+    let pArray = [
+        {key: 'equipment', value: sleep.equipment},
         {key: 'formula', value: sleep.formula},
-        {key: 'time', value: sleep.time}];
+        {key: 'time', value: sleep.time},
+        {key: 'method', value: sleep.method},
+        {key: 'source', value: sleep.source}
+    ];
     pArray.forEach(p => {
-        if (p.value.length > 0) {
+        let pValue = p.value.join(',');
+        if (pValue.length > 0) {
             cde.properties.push({
                 key: p.key,
-                value: p.value.join(',')
+                value: pValue
             });
         }
     });
@@ -58,10 +70,17 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
     if (shhs[0]) {
         let variable = VARIABLES[shhs[0]];
         if (variable) {
+            cde.naming.push({
+                    designation: variable.display_name,
+                    definition: variable.description,
+                    tags: ['Question Text']
+                }
+            );
+
             let type = variable.type.trim();
             if (type === 'choices') {
                 cde.valueDomain.datatype = 'Value List';
-                let domain = sleep.domain;
+                let domain = variable.domain;
                 if (domain) {
                     cde.valueDomain.permissibleValues = DOMAINS[domain];
                 }
@@ -77,6 +96,10 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
             cde.valueDomain.uom = units.trim();
         }
     }
+
+    sleep.category.forEach(c => {
+        cde.classification[0].elements[0].elements.push({name: c, elements: []})
+    });
 
     return cde;
 };
