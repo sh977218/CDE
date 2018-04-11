@@ -45,7 +45,7 @@ export class FhirStandaloneComponent {
     `],
     templateUrl: './fhirApp.component.html'
 })
-export class FhirAppComponent implements OnInit {
+export class FhirAppComponent {
     elt: CdeForm;
     errorMessage: string;
     methodLoadForm = this.loadForm.bind(this);
@@ -70,7 +70,6 @@ export class FhirAppComponent implements OnInit {
     selectedProfileName: string;
     showData = false;
     smart;
-    submitForm: boolean;
     summary = false;
     static externalCodeSystems = [
         {id: 'LOINC', uri: 'http://loinc.org'},
@@ -102,16 +101,11 @@ export class FhirAppComponent implements OnInit {
     };
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
-    ngOnInit () {
+    constructor(private http: HttpClient,
+                private route: ActivatedRoute
+    ) {
         let queryParams = this.route.snapshot.queryParams;
         this.selectedProfileName = queryParams['selectedProfile'];
-        // this.submitForm = args.submit !== undefined;
-        // this.panelType = args.panelType;
-
-        // if ((<any>window).formElt) {
-        //     let elt = JSON.parse(JSON.stringify((<any>window).formElt));
-        //     this.loadForm(null, elt);
-        // } else {
         if (queryParams['tinyId']) this.getForm(queryParams['tinyId'], this.methodLoadForm);
         else this.summary = true;
 
@@ -123,14 +117,6 @@ export class FhirAppComponent implements OnInit {
                 'scope':  'patient/*.*'
             });
         }
-        // }
-
-    }
-
-    constructor(private http: HttpClient,
-                private route: ActivatedRoute
-    ) {
-        // let args: any = NativeRenderAppComponent.searchParamsGet();
     }
 
     encounterAdd(encounter) {
@@ -199,9 +185,7 @@ export class FhirAppComponent implements OnInit {
         this.http.get<CdeForm>('/form/' + tinyId).subscribe(elt => {
             CdeForm.validate(elt);
             cb(null, elt);
-        }, (err) => {
-            cb(err.statusText);
-        });
+        }, err => cb(err.statusText));
     }
 
     static getFormMap(tinyId) {
@@ -273,7 +257,7 @@ export class FhirAppComponent implements OnInit {
             async_parallel([
                 cb => {
                     this.smart.patient.api.fetchAll({type: 'Encounter'})
-                        .then((results, refs) => {
+                        .then(results => {
                             results.forEach(encounter => {
                                 this.encounterAdd(encounter);
                             });
@@ -282,7 +266,7 @@ export class FhirAppComponent implements OnInit {
                 },
                 cb => {
                     this.smart.patient.api.fetchAll({type: 'Observation'})
-                        .then((results, refs) => {
+                        .then(results => {
                             results.forEach(observation =>
                                 this.patientObservations.push(FhirAppComponent.observationAdd(observation))
                             );
@@ -291,7 +275,7 @@ export class FhirAppComponent implements OnInit {
                 },
                 cb => {
                     this.smart.patient.api.search({type: 'Organization'})
-                        .then((results, refs) => {
+                        .then(results => {
                             if (results && results.data && results.data.entry && results.data.entry.length) {
                                 this.patientOrganization = results.data.entry[0].resource;
                             }

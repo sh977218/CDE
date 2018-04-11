@@ -38,11 +38,12 @@ export class NativeRenderAppComponent {
     selectedProfile: DisplayProfile;
     selectedProfileName: string;
     summary = false;
+    submitForm: boolean;
 
     constructor(private http: HttpClient) {
         let args: any = NativeRenderAppComponent.searchParamsGet();
         this.selectedProfileName = args.selectedProfile;
-
+        this.submitForm = args.submit !== undefined;
         if ((<any>window).formElt) {
             let elt = JSON.parse(JSON.stringify((<any>window).formElt));
             this.loadForm(null, elt);
