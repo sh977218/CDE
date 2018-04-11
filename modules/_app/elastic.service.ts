@@ -22,11 +22,9 @@ export class ElasticService {
 
     searchSettings: any;
 
-    constructor(
-        public http: HttpClient,
-        private localStorageService: LocalStorageService,
-        private userService: UserService,
-    ) {
+    constructor(public http: HttpClient,
+                private localStorageService: LocalStorageService,
+                private userService: UserService) {
         this.loadSearchSettings();
     }
 
