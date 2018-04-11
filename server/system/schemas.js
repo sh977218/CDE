@@ -231,12 +231,18 @@ schemas.orgSchema.set('collection', 'orgs');
 schemas.userSchema.set('collection', 'users');
 
 schemas.namingSchema = new mongoose.Schema({
-    designation: {type: String},
-    definition: {type: String},
+    designation: String,
+    definition: String,
     definitionFormat: String,
     languageCode: String,
     tags: [String],
-    source: {type: String}
+    source: String
+}, {_id: false});
+schemas.definitionSchema = new mongoose.Schema({
+    definition: String,
+    definitionFormat: String,
+    languageCode: String,
+    tags: [String]
 }, {_id: false});
 
 let attachmentSchema = {

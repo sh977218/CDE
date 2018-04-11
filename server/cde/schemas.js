@@ -15,6 +15,7 @@ var deJson = {
         type: [sharedSchemas.namingSchema],
         description: "Any string used by which CDE is known, addressed or referred to"
     },
+    definitions: [sharedSchemas.definitionSchema],
     source: {type: String, description: "This field is replaced with sources"},
     sources: {
         type: [sharedSchemas.sourceSchema],
@@ -71,8 +72,7 @@ var deJson = {
             maxValue: Number,
             precision: {type: Number, description: "Any precision for this number. Typically an integer for a float"}
         },
-        datatypeDate: {
-        },
+        datatypeDate: {},
         datatypeTime: { // time only, periodic?
             format: {type: String, description: "Any format that someone may want to enforce"}
         },
