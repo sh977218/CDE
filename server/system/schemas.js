@@ -241,7 +241,6 @@ schemas.namingSchema = new mongoose.Schema({
 schemas.definitionSchema = new mongoose.Schema({
     definition: String,
     definitionFormat: String,
-    languageCode: String,
     tags: [String]
 }, {_id: false});
 
