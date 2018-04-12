@@ -1,16 +1,14 @@
 <div class="container-fluid">
-    <div class="row">
-        <div class="w-100">
-            <div style="padding: 5px;max-width: 1010px;margin: 0 auto">
-                <h2 *ngIf="!elt && !errorMessage && !summary" class="text-center mt20">Loading...</h2>
-                <h2 *ngIf="errorMessage" class="text-center mt20" style="color: red">{{errorMessage}}</h2>
-                <ng-container *ngIf="!summary && elt">
-                    <cde-native-render [elt]="elt" [submitForm]="submitForm"
-                                       [profile]="selectedProfile"
-                                       nativeRenderType="default">
-                    </cde-native-render>
-                </ng-container>
-            </div>
+    <div class="w-100">
+        <div style="padding: 5px;max-width: 1010px;margin: 0 auto">
+            <h2 *ngIf="!elt && !errorMessage && !summary" class="text-center mt20">Loading...</h2>
+            <h2 *ngIf="errorMessage" class="text-center mt20" style="color: red">{{errorMessage}}</h2>
+            <ng-container *ngIf="!summary && elt">
+                <cde-native-render [elt]="elt" [submitForm]="submitForm"
+                                   [profile]="selectedProfile"
+                                   nativeRenderType="default">
+                </cde-native-render>
+            </ng-container>
         </div>
     </div>
 </div>

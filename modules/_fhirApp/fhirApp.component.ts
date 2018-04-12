@@ -8,16 +8,7 @@ import 'fhirclient';
 import { mappings } from '_nativeRenderApp/fhirMapping';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/formShared';
-import { ActivatedRoute } from "@angular/router";
-
-@Component({
-    selector: 'cde-fhir-standalone',
-    template: `
-        <router-outlet></router-outlet>
-    `
-})
-export class FhirStandaloneComponent {
-}
+import { NativeRenderAppComponent } from "../_nativeRenderApp/nativeRenderApp.component";
 
 @Component({
     selector: 'cde-fhir-form',
@@ -101,10 +92,9 @@ export class FhirAppComponent {
     };
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
-    constructor(private http: HttpClient,
-                private route: ActivatedRoute
-    ) {
-        let queryParams = this.route.snapshot.queryParams;
+    constructor(private http: HttpClient) {
+
+        let queryParams: any = NativeRenderAppComponent.searchParamsGet();
         this.selectedProfileName = queryParams['selectedProfile'];
         if (queryParams['tinyId']) this.getForm(queryParams['tinyId'], this.methodLoadForm);
         else this.summary = true;
@@ -559,6 +549,16 @@ export class FhirAppComponent {
             encounter: observation.context ? observation.context.reference : undefined,
             raw: observation
         };
+    }
+
+    static searchParamsGet(): string[] {
+        let params: any = {};
+        location.search && location.search.substr(1).split('&').forEach(e => {
+            let p = e.split('=');
+            if (p.length === 2) params[p[0]] = decodeURI(p[1]);
+            else params[p[0]] = null;
+        });
+        return params;
     }
 
     submitFhir() {
