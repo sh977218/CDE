@@ -6,8 +6,8 @@ const mongo_data = require('../server/system/mongo-data');
 let count = 0;
 
 function run() {
-//    let DAOs = [DataElement, Form];
-    let DAOs = [DataElement];
+    let DAOs = [DataElement, Form];
+//    let DAOs = [DataElement];
     DAOs.forEach(dao => {
         let cursor = dao.find({}).cursor();
         cursor.eachAsync(elt => {
