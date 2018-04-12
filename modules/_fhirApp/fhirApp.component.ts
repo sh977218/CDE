@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import async_forEach from 'async/forEach';
 import async_parallel from 'async/parallel';
 import * as moment from 'moment/min/moment.min';
@@ -109,11 +109,11 @@ export class FhirAppComponent {
         if (queryParams['tinyId']) this.getForm(queryParams['tinyId'], this.methodLoadForm);
         else this.summary = true;
 
-        if (queryParams['state']) this.loadFhir();
+        if (queryParams['state']) this.loadPatientData();
         else if (queryParams['iss']) {
             (<any>window).FHIR.oauth2.authorize({
-                'client_id': '7d291805-3ec8-42a5-ba7d-bb7ef1558c71',
-                'redirect_uri': 'http://localhost:3001/form/public/html/nativeRenderStandalone.html',
+                'client_id': 'e17575b9-f89b-49c1-a9c2-52c68f1d273c',
+                'redirect_uri': 'http://localhost:3001/fhir/form',
                 'scope':  'patient/*.*'
             });
         }
@@ -246,18 +246,15 @@ export class FhirAppComponent {
         }
     }
 
-    loadFhir() {
+    loadPatientData() {
         (<any>window).FHIR.oauth2.ready(smart => {
             this.smart = smart;
-            this.smart.patient.read()
-                .then(pt => {
-                    this.patient = pt;
-                });
+            this.smart.patient.read().then(pt => this.patient = pt);
 
             async_parallel([
                 cb => {
                     this.smart.patient.api.fetchAll({type: 'Encounter'})
-                        .then(results => {
+                        .then((results, refs) => {
                             results.forEach(encounter => {
                                 this.encounterAdd(encounter);
                             });
@@ -283,7 +280,7 @@ export class FhirAppComponent {
                         });
                 }
             ], () => {
-                this.patientEncounters.sort(function (a, b) {
+                this.patientEncounters.sort((a, b) => {
                     if (a.date > b.date) return 1;
                     else if (a.date < b.date) return -1;
                     else return 0;
@@ -421,17 +418,13 @@ export class FhirAppComponent {
                     fe.formElements.forEach(f => {
                         if (f.elementType === 'section') getByCodeRecurse(f);
                         else if (f.elementType === 'form') {
-                            if (f.inForm.form.ids.filter(
-                                    id => id.source === system && id.id === code).length
-                            ) {
+                            if (f.inForm.form.ids.filter(id => id.source === system && id.id === code).length) {
                                 count++;
                                 if (count >= instance) return result = f;
                             }
                             getByCodeRecurse(f);
                         } else {
-                            if (f.question.cde.ids.filter(
-                                    id => id.source === system && id.id === code).length
-                            ) {
+                            if (f.question.cde.ids.filter(id => id.source === system && id.id === code).length) {
                                 count++;
                                 if (count >= instance) return result = f;
                                 f.question.answers.forEach(a => {
@@ -563,20 +556,10 @@ export class FhirAppComponent {
                 : JSON.stringify(observation),
             value: this.getObservationValue(observation),
             date: observation.issued,
-            encounter: observation.context.reference,
+            encounter: observation.context ? observation.context.reference : undefined,
             raw: observation
         };
     }
-
-    // static searchParamsGet(): string[] {
-    //     let params: any = {};
-    //     location.search && location.search.substr(1).split('&').forEach(e => {
-    //         let p = e.split('=');
-    //         if (p.length === 2) params[p[0]] = decodeURI(p[1]);
-    //         else params[p[0]] = null;
-    //     });
-    //     return params;
-    // }
 
     submitFhir() {
         let submitFhirPending = [];
@@ -635,12 +618,6 @@ export class FhirAppComponent {
                     id: p.after.id,
                     type: p.after.resourceType
                 }).then(response => {
-                    // let match = this.patientObservations.filter(o => o.raw === p.before);
-                    // if (match.length) {
-                    //     let index = this.patientObservations.indexOf(match[0]);
-                    //     if (index > -1)
-                    //         this.patientObservations[i] = response.data;
-                    // }
                     if (!response || !response.data) return done('Not saved ' + p.after.id);
                     let obs = FhirAppComponent.observationAdd(response.data);
                     let index = this.patientObservations.findIndex(o => o.raw === p.before);
