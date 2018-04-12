@@ -13,7 +13,7 @@ public class DeleteDataElementDraftTest extends NlmCdeBaseTest {
         goToNaming();
         addNewName("draft designation", "draft definition", false, new String[]{"Health"});
         textPresent("Draft");
-        clickElement(By.id("deleteDraftBtn"));
+        deleteDraft();
         textNotPresent("Draft");
         textNotPresent("draft definition");
     }

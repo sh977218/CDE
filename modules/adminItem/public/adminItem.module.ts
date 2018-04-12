@@ -27,6 +27,7 @@ import { ClassificationViewComponent } from "./components/classification/classif
 import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.component";
 import { CreateFormComponent } from 'adminItem/public/components/createForm.component';
 import { SaveModalComponent } from "./components/saveModal/saveModal.component";
+import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/deleteModal.component';
 
 
 @NgModule({
@@ -59,6 +60,7 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
         ReferenceDocumentComponent,
         RegistrationComponent,
         SaveModalComponent,
+        DeleteModalComponent,
         SourcesComponent,
     ],
     exports: [
@@ -76,6 +78,7 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
         ReferenceDocumentComponent,
         RegistrationComponent,
         SaveModalComponent,
+        DeleteModalComponent,
         SourcesComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
