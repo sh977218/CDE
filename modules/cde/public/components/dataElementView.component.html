@@ -86,7 +86,7 @@
                     (click)="saveModal.openSaveModal();">
                 <i class="fa fa-globe fa-lg mr-1"></i>Publish
             </button>
-            <button class="btn  btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
+            <button class="btn btn-danger" id="deleteDraftBtn" (click)="deleteModal.openDeleteModal();">
                 <i class="fa fa-trash fa-lg mr-1"></i>Delete Draft
             </button>
             <br>Changed by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
@@ -226,6 +226,7 @@
          role="alert">There are validation errors. {{elt.valueDomain.pvNotValidMsg}}
     </div>
     <cde-save-modal #saveModal [elt]="elt" (save)="saveDataElement()"></cde-save-modal>
+    <cde-delete-modal #deleteModal (confirm)="removeDraft();"></cde-delete-modal>
 </div>
 
 <ng-template #copyDataElementContent id="copyDataElementModal" let-c="close" let-d="dismiss">
