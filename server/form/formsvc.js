@@ -83,8 +83,7 @@ exports.byId = function (req, res) {
     mongo_form.byId(id, function (err, form) {
         if (err) return res.status(500).send("ERROR - cannot get form by id");
         if (!form) return res.status(404).send();
-        form = form.toObject();
-        fetchWholeForm(form, function (err, wholeForm) {
+        fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - cannot fetch whole form");
             wipeRenderDisallowed(wholeForm, req, function (err) {
                 if (err) return res.status(500).send("ERROR - cannot wipe form data");
@@ -135,8 +134,7 @@ exports.byTinyId = function (req, res) {
     mongo_form.byTinyId(tinyId, function (err, form) {
         if (err) return res.status(500).send("ERROR - get form by tinyid");
         if (!form) return res.status(404).send();
-        form = form.toObject();
-        fetchWholeForm(form, function (err, wholeForm) {
+        fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - form by tinyId whole form");
             wipeRenderDisallowed(wholeForm, req, function (err) {
                 if (err) return res.status(500).send("ERROR - form by tinyId - wipe");
@@ -173,8 +171,7 @@ exports.byTinyIdVersion = function (req, res) {
     mongo_form.byTinyIdVersion(tinyId, version, function (err, form) {
         if (err) return res.status(500).send();
         if (!form) return res.status(404).send();
-        form = form.toObject();
-        fetchWholeForm(form, function (err, wholeForm) {
+        fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - form by id / version");
             wipeRenderDisallowed(wholeForm, req, function (err) {
                 if (err) return res.status(500).send("ERROR - form by id version wipe");
@@ -191,8 +188,7 @@ exports.byTinyIdAndVersion = function (req, res) {
     mongo_form.byTinyIdAndVersion(tinyId, version, function (err, form) {
         if (err) return res.status(500).send();
         if (!form) return res.status(404).send();
-        form = form.toObject();
-        fetchWholeForm(form, function (err, wholeForm) {
+        fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - form by id / version");
             wipeRenderDisallowed(wholeForm, req, function (err) {
                 if (err) return res.status(500).send("ERROR - form by id version wipe");
@@ -207,9 +203,10 @@ exports.draftForm = function (req, res) {
     if (!tinyId) return res.status(400).send();
     mongo_form.draftForm(tinyId, function (err, form) {
         if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
-        fetchWholeForm(form, function (err) {
+        if (!form) return res.send();
+        fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
-            res.send(form);
+            res.send(wholeForm);
         });
     });
 };
@@ -218,9 +215,10 @@ exports.draftFormById = function (req, res) {
     if (!id) return res.status(400).send();
     mongo_form.draftFormById(id, function (err, form) {
         if (err) return res.status(500).send("ERROR - get draft form. " + id);
-        fetchWholeForm(form, function (err) {
+        if (!form) return res.send();
+        fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - get draft form. " + id);
-            res.send(form);
+            res.send(wholeForm);
         });
     });
 };
@@ -278,8 +276,8 @@ exports.publishForm = function (req, res) {
     if (!id) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(401).send("Not Authorized");
     mongo_form.byId(id, function (err, form) {
-        form = form.toObject();
-        fetchWholeForm(form, function (err, wholeForm) {
+        if (!form) return res.status(500).send("ERROR - form not found");
+        fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - fetch whole for publish");
             publishForm.getFormForPublishing(wholeForm, req, res);
         });

@@ -216,7 +216,8 @@ public class NlmCdeBaseTest {
             @Override
             public void run() {
                 System.out.println("Test: " + m.getName() + " still running after 5 minutes.");
-            }}, 5, TimeUnit.MINUTES);
+            }
+        }, 5, TimeUnit.MINUTES);
 
     }
 
@@ -1634,6 +1635,12 @@ public class NlmCdeBaseTest {
         if (topic != null) textPresent(topic, By.id("topic_crumb"));
         if (status != null) textPresent(status, By.id("status_crumb"));
         if (datetype != null) textPresent(datetype, By.id("datatype_crumb"));
+    }
 
+    protected void deleteDraft() {
+        clickElement(By.id("deleteDraftBtn"));
+        textPresent("Delete Draft?");
+        clickElement(By.id("confirmDeleteBtn"));
+        textNotPresent("Delete Draft?");
     }
 }

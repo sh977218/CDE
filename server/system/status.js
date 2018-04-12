@@ -162,7 +162,7 @@ setInterval(() => {
                 }
             };
 
-            mongo_data_system.getAdministratorPushRegistrations(registrations => {
+            mongo_data_system.pushGetAdministratorRegistrations(registrations => {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
             });
 
