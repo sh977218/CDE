@@ -139,10 +139,10 @@
     <div class="pull-right text-end">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
-            <button class="btn  btn-success" id="openSave" (click)="publish()">
+            <button class="btn btn-success" id="openSave" (click)="publish()">
                 <i class="fa fa-globe fa-lg"></i> Publish
             </button>
-            <button class="btn  btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
+            <button class="btn btn-danger" id="deleteDraftBtn" (click)="deleteModal.openDeleteModal();">
                 <i class="fa fa-trash fa-lg"></i> Delete Draft
             </button>
             <br>Changed by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
@@ -283,6 +283,7 @@
         </div>
     </div>
     <cde-save-modal #saveModal [elt]="elt" (save)="saveForm()" (onEltChange)="saveDraft();"></cde-save-modal>
+    <cde-delete-modal #deleteModal (confirm)="removeDraft();"></cde-delete-modal>
 </div>
 
 <ng-template #copyFormContent id="copyFormModal" let-c="close" let-d="dismiss">

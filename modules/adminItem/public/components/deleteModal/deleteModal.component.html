@@ -1,0 +1,11 @@
+<ng-template #deleteElementContent id="deleteElementModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="deleteElementModalHeader">
+        <h4 class="modal-title">Delete Draft?</h4>
+    </div>
+    <div class="modal-body" id="deleteElementModalBody">
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-outline-dark" id="cancelDeleteBtn" (click)="c('cancel')" type="button">Cancel</button>
+        <button class="btn btn-warning" id="confirmDeleteBtn" (click)="confirmDelete();" type="button">Delete</button>
+    </div>
+</ng-template>
