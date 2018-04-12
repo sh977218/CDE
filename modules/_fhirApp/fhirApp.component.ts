@@ -8,7 +8,6 @@ import 'fhirclient';
 import { mappings } from '_nativeRenderApp/fhirMapping';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/formShared';
-import { NativeRenderAppComponent } from "../_nativeRenderApp/nativeRenderApp.component";
 
 @Component({
     selector: 'cde-fhir-form',
@@ -94,7 +93,7 @@ export class FhirAppComponent {
 
     constructor(private http: HttpClient) {
 
-        let queryParams: any = NativeRenderAppComponent.searchParamsGet();
+        let queryParams: any = FhirAppComponent.searchParamsGet();
         this.selectedProfileName = queryParams['selectedProfile'];
         if (queryParams['tinyId']) this.getForm(queryParams['tinyId'], this.methodLoadForm);
         else this.summary = true;
