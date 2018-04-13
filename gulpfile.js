@@ -137,11 +137,15 @@ gulp.task('buildNative', ['createDist'], () => {
     return run('npm run buildNative').exec();
 });
 
+gulp.task('buildFhir', ['createDist'], () => {
+    return run('npm run buildFhir').exec();
+});
+
 gulp.task('buildEmbed', ['createDist'], () => {
     return run('npm run buildEmbed').exec();
 });
 
-gulp.task('copyDist', ['buildApp', 'buildEmbed', 'buildNative'], () => {
+gulp.task('copyDist', ['buildApp', 'buildEmbed', 'buildNative', 'buildFhir'], () => {
     let streamArray = [];
 
     // App
@@ -155,6 +159,10 @@ gulp.task('copyDist', ['buildApp', 'buildEmbed', 'buildNative'], () => {
     // Native
     streamArray.push(gulp.src('./dist/native/*')
         .pipe(gulp.dest(config.node.buildDir + '/dist/native')));
+
+    // Fhir
+    streamArray.push(gulp.src('./dist/fhir/*')
+        .pipe(gulp.dest(config.node.buildDir + '/dist/fhir')));
 
     // Launch optimization
     streamArray.push(gulp.src('./modules/system/views/home-launch.ejs')
@@ -171,7 +179,8 @@ gulp.task('usemin', ['copyCode', 'copyDist'], function () {
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/system/views/", filename: "index-legacy.ejs"},
         {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
-        {folder: "./modules/_nativeRenderApp/", filename: "nativeRenderApp.html"}
+        {folder: "./modules/_nativeRenderApp/", filename: "nativeRenderApp.html"},
+        {folder: "./modules/_fhirApp/", filename: "fhirApp.html"}
     ].forEach(item => {
         let useminOutputs = [];
 
@@ -226,7 +235,8 @@ gulp.task('copyUsemin', ['usemin'], function () {
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/system/views/", filename: "index-legacy.ejs"},
         {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
-        {folder: "./modules/_nativeRenderApp/", filename: "nativeRenderApp.html"}
+        {folder: "./modules/_nativeRenderApp/", filename: "nativeRenderApp.html"},
+        {folder: "./modules/_fhirApp/", filename: "fhirApp.html"}
     ].forEach(item => {
         streamArray.push(gulp.src(config.node.buildDir + '/dist/' + item.filename)
             .pipe(gulp.dest(config.node.buildDir + "/" + item.folder)));

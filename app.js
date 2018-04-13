@@ -153,6 +153,7 @@ app.use("/components", express.static(path.join(__dirname, '/dist/components')))
 app.use("/embed", express.static(path.join(__dirname, '/dist/embed')));
 app.use("/launch", express.static(path.join(__dirname, '/dist/launch')));
 app.use("/native", express.static(path.join(__dirname, '/dist/native')));
+app.use("/fhir", express.static(path.join(__dirname, '/dist/fhir')));
 
 ["/embedded/public", "/_embedApp/public"].forEach(p => {
     app.use(p, (req, res, next) => {
