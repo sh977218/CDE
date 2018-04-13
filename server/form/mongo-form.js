@@ -14,6 +14,7 @@ var conn = connHelper.establishConnection(config.database.appData);
 schemas.formSchema.pre('save', function (next) {
     var self = this;
     self.definitions = mongo_data.copyDefinition(self.naming);
+    self.designations = mongo_data.copyDesignation(self.naming);
     try {
         elastic.updateOrInsert(self);
     } catch (exception) {

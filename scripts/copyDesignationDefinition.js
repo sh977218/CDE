@@ -22,7 +22,9 @@ function run() {
         cursor.eachAsync(elt => {
             return new Promise((resolve, reject) => {
                 let definitions = mongo_data.copyDefinition(elt.naming);
+                let designations = mongo_data.copyDesignation(elt.naming);
                 elt.definitions = definitions;
+                elt.designations = designations;
                 elt.save(err => {
                     if (err) reject(err);
                     DAO.count++;

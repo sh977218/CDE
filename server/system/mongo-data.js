@@ -637,6 +637,38 @@ exports.sortArrayByArray = function (unSortArray, targetArray) {
     });
 };
 
+exports.copyDesignation = function (namings) {
+    let designations = [];
+    let designationArray = namings.map(n => {
+        let result = {};
+        if (!_.isEmpty(n.designation)) result.designation = n.designation;
+        if (!_.isEmpty(n.tags)) result.tags = n.tags;
+        return result;
+    });
+    let map = _.groupBy(designationArray, 'designation');
+    Object.keys(map).forEach(k => {
+        let obj1 = map[k];
+        let temp = {
+            designation: [],
+            tags: []
+        };
+        obj1.forEach(m => {
+            if (m.designation)
+                temp.designation = _.uniq(temp.designation.concat([m.designation]));
+            if (m.tags)
+                temp.tags = _.uniq(temp.tags.concat(m.tags))
+        });
+        if (temp.designation.length > 1) {
+            throw Error('designation length > 1');
+        }
+        let designation = {
+            designation: temp.designation[0],
+            tags: temp.tags
+        };
+        designations.push(designation);
+    });
+    return designations;
+};
 exports.copyDefinition = function (namings) {
     let definitions = [];
     let definitionArray = namings.map(n => {
@@ -656,12 +688,12 @@ exports.copyDefinition = function (namings) {
         };
         obj1.forEach(m => {
             if (m.definition)
-                temp.definition = _.uniq(temp.definition.concat([m.definition]))
+                temp.definition = _.uniq(temp.definition.concat([m.definition]));
             if (m.definitionFormat)
                 temp.definitionFormat = _.uniq(temp.definitionFormat.concat([m.definitionFormat]))
             if (m.tags)
                 temp.tags = _.uniq(temp.tags.concat(m.tags))
-        })
+        });
         if (temp.definition.length > 1) {
             throw Error('definition length > 1');
         }

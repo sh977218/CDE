@@ -85,6 +85,7 @@ exports.formJson = {
     elementType: {type: String, default: 'form', enum: ['form']},
     tinyId: {type: String, index: true},
     naming: [sharedSchemas.namingSchema],
+    designations: [sharedSchemas.designationSchema],
     definitions: [sharedSchemas.definitionSchema],
     stewardOrg: {
         name: String

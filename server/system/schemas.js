@@ -243,6 +243,10 @@ schemas.definitionSchema = new mongoose.Schema({
     definitionFormat: String,
     tags: [String]
 }, {_id: false});
+schemas.designationSchema = new mongoose.Schema({
+    designation: String,
+    tags: [String]
+}, {_id: false});
 
 let attachmentSchema = {
     fileid: {type: String, index: true},

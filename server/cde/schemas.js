@@ -15,6 +15,7 @@ var deJson = {
         type: [sharedSchemas.namingSchema],
         description: "Any string used by which CDE is known, addressed or referred to"
     },
+    designations: [sharedSchemas.designationSchema],
     definitions: [sharedSchemas.definitionSchema],
     source: {type: String, description: "This field is replaced with sources"},
     sources: {
