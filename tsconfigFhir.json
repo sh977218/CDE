@@ -1,0 +1,58 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "allowJs": false,
+    "allowUnreachableCode": true,
+    "baseUrl": "./modules",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "module": "ES2015",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "pretty": false,
+    "sourceMap": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@angular",
+      "node_modules/@types"
+    ]
+  },
+  "angularCompilerOptions": {
+  },
+  "awesomeTypescriptLoaderOptions": {
+    "useWebpackText": true
+  },
+  "exclude": [
+    "build",
+    "deploy",
+    "dist",
+    "ingester",
+    "modules/_app",
+    "modules/_embedApp",
+    "modules/adminItem",
+    "modules/board",
+    "modules/cde",
+    "modules/compare",
+    "modules/core",
+    "modules/discuss",
+    "modules/embedded",
+    "modules/form",
+    "modules/home",
+    "modules/processManager",
+    "modules/quickBoard",
+    "modules/search",
+    "modules/system",
+    "modules/swagger",
+    "modules/widget",
+    "node_modules",
+    "protractor",
+    "scripts",
+    "server",
+    "test"
+  ]
+}
