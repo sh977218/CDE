@@ -109,7 +109,7 @@ let questionsInSection = {};
 let doSection = function (parent, section) {
     let newSection = {
         "@ID": "NA_" + Math.random(),
-        "@title": section.label
+        "@title": section.label ? section.label : ''
     };
     let subSection = parent.ele({Section: newSection});
     if (section.formElements && section.formElements.length > 0) {
