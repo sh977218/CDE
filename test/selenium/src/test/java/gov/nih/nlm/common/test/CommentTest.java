@@ -219,7 +219,11 @@ public abstract class CommentTest extends CommonTest {
 
         clickElement(By.id("replyTextarea_0"));
         hangon(1);
-        findElement(By.id("replyTextarea_0")).sendKeys(replyText);
+        try {
+            findElement(By.id("replyTextarea_0")).sendKeys(replyText);
+        } catch (Exception e) {
+            findElement(By.id("replyTextarea_0")).sendKeys(replyText);
+        }
         hangon(1);
         clickElement(By.id("replyBtn_0"));
         textNotPresent(replyText);
