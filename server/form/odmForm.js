@@ -126,11 +126,11 @@ exports.getFormOdm = function (form, cb) {
                 Question: {
                     TranslatedText: {
                         '$xml:lang': 'en',
-                        '_': _.escape(q1.label)
+                        '_': _.escape(q1.label ? s1.label : '')
                     }
                 },
                 '$DataType': omdDatatype,
-                '$Name': _.escape(q1.label),
+                '$Name': _.escape(q1.label ? s1.label : ''),
                 '$OID': oid
             };
             if (q1.question.answers) {
@@ -154,7 +154,7 @@ exports.getFormOdm = function (form, cb) {
                     let codeList = {
                         '$DataType': omdDatatype,
                         '$OID': 'CL_' + oid,
-                        '$Name': q1.label
+                        '$Name': q1.label ? s1.label : ''
                     };
                     codeList.CodeListItem = q1.question.answers.map(function (pv) {
                         let cl = {
@@ -184,13 +184,13 @@ exports.getFormOdm = function (form, cb) {
         });
 
         sections.push({
-            '$Name': s1.label,
+            '$Name': s1.label ? s1.label : '',
             '$OID': oid,
             '$Repeating': 'No',
             Description: {
                 TranslatedText: {
                     '$xml:lang': 'en',
-                    '_': s1.label
+                    '_': s1.label ? s1.label : ''
                 }
             },
             ItemRef: childrenOids.map(function (oid, i) {
