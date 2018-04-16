@@ -1,21 +1,21 @@
 const _ = require('lodash');
 const DataElement = require('../server/cde/mongo-cde').DataElement;
+const DataElementDraft = require('../server/cde/mongo-cde').DataElementDraft;
 const Form = require('../server/form/mongo-form').Form;
+const FormDraft = require('../server/form/mongo-form').FormDraft;
 const mongo_data = require('../server/system/mongo-data');
 
 function run() {
     let DAOs = [
-/*
+
         {
-            name: 'de',
+            name: 'de draft',
             count: 0,
-            dao: DataElement
-        },
-*/
-        {
-            name: 'form',
+            dao: DataElementDraft
+        }, {
+            name: 'form draft',
             count: 0,
-            dao: Form
+            dao: FormDraft
         }
     ];
 
@@ -33,6 +33,7 @@ function run() {
                 elt.save(err => {
                     if (err) {
                         console.log(err);
+                        console.log(elt.tinyId);
                         reject(err);
                     } else {
                         DAO.count++;
@@ -43,8 +44,7 @@ function run() {
             });
         }).then(err => {
             if (err) throw err;
-            console.log("Finished all.");
-            process.exit(1);
+            console.log("Finished " + DAO.name + " Count: " + DAO.count);
         });
     })
 }
