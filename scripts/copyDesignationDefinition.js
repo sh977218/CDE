@@ -7,11 +7,20 @@ const mongo_data = require('../server/system/mongo-data');
 
 function run() {
     let DAOs = [
-
+        {
+            name: 'de',
+            count: 0,
+            dao: DataElement
+        },
         {
             name: 'de draft',
             count: 0,
             dao: DataElementDraft
+        },
+        {
+            name: 'form',
+            count: 0,
+            dao: Form
         }, {
             name: 'form draft',
             count: 0,
