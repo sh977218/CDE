@@ -38,7 +38,7 @@ function addQuestion(parent, question) {
                 let title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
                 let q = {
                     "@ID": "NA_" + Math.random(),
-                    "@title": title
+                    "@title": title ? title : ''
                 };
                 if (answer.codeSystemName) {
                     q["CodedValue"] = {

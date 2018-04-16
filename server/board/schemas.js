@@ -1,36 +1,38 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
+
+const sharedSchemas = require('../system/schemas.js');
 
 var schemas = {};
 
 var pinSchema = new mongoose.Schema({
-    name: String
+    name: sharedSchemas.stringType
     , pinnedDate: Date
-    , deTinyId: String
-    , deName: String
-    , formTinyId: String
-    , formName: String
+    , deTinyId: sharedSchemas.stringType
+    , deName: sharedSchemas.stringType
+    , formTinyId: sharedSchemas.stringType
+    , formName: sharedSchemas.stringType
 }, {_id: false});
 
 schemas.pinningBoardSchema = new mongoose.Schema({
-    elementType: {default: 'board', type: String},
-    name: String,
-    description: String,
-    type: {type: String, default: 'cde', enum: ['cde', 'form']},
-    tags: [String],
-    shareStatus: String,
+    elementType: Object.assign({default: 'board'}, sharedSchemas.stringType),
+    name: sharedSchemas.stringType,
+    description: sharedSchemas.stringType,
+    type: Object.assign({default: 'cde', enum: ['cde', 'form']}, sharedSchemas.stringType),
+    tags: [sharedSchemas.stringType],
+    shareStatus: sharedSchemas.stringType,
     createdDate: Date,
     updatedDate: Date,
     owner: {
         userId: mongoose.Schema.Types.ObjectId,
-        username: String
+        username: sharedSchemas.stringType
     },
     pins: [pinSchema],
     users: [{
-        username: String,
-        role: {type: String, default: 'viewer', enum: ['viewer', 'reviewer']},
+        username: sharedSchemas.stringType,
+        role: Object.assign({default: 'viewer', enum: ['viewer', 'reviewer']}, sharedSchemas.stringType),
         lastViewed: Date,
         status: {
-            approval: {type: String, default: 'invited', enum: ['invited', 'approved', 'disapproved']},
+            approval: Object.assign({default: 'invited', enum: ['invited', 'approved', 'disapproved']}, sharedSchemas.stringType),
             reviewedDate: Date
         }
     }],

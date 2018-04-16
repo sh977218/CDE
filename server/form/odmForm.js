@@ -176,7 +176,7 @@ exports.getFormOdm = function (form, cb) {
                 }
             }
         });
-        let oid = _crypto.createHash('md5').update(s1.label).digest('hex');
+        let oid = _crypto.createHash('md5').update(s1.label ? s1.label : '').digest('hex');
         odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
             '$ItemGroupOID': oid,
             '$Mandatory': 'Yes',

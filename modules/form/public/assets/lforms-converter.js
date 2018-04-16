@@ -260,6 +260,7 @@ _.extend(LForms.LFormsConverter.prototype, {
    * @param {Array} path - path of param
    */
   handleUnits: function(param, path) {
+    if (!param || !param.code) return oboe.drop();
     var ret = {};
     ret.name = param.code;
     return ret;
@@ -273,6 +274,7 @@ _.extend(LForms.LFormsConverter.prototype, {
    * @param {Array} path - path of param
    */
   handleAnswers: function(param, path) {
+    if (!param || !param.valueMeaningName || !param.permissibleValue) return oboe.drop();
     renameKey(param, 'permissibleValue', 'code');
     renameKey(param, 'valueMeaningName', 'text');
     delete param.valueMeaningDefinition;
@@ -460,7 +462,9 @@ function createQuestionCode(param) {
   if(param.elementType === 'section' || param.elementType === 'form') {
     // No id for headers. Make up something.
     ret.questionCodeSystem = null;
-    ret.questionCode = param.label.replace(/\s/g, '_');
+    if (param.label) {
+      ret.questionCode = param.label.replace(/\s/g, '_');
+    }
   }
   else if (param.elementType === 'question') {
     var idList = param.question.cde.ids;

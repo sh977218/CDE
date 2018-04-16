@@ -9,7 +9,12 @@ import {
     DerivationRule,
     copyArray,
 } from 'shared/models.model';
-import { QuestionTypeDate, QuestionTypeNumber, QuestionTypeText } from 'shared/de/dataElement.model';
+import {
+    DatatypeContainer,
+    QuestionTypeDate,
+    QuestionTypeNumber,
+    QuestionTypeText,
+} from 'shared/de/dataElement.model';
 import { iterateFeSync } from 'shared/form/formShared';
 
 export class CdeForm extends Elt implements FormElementsContainer {
@@ -71,9 +76,15 @@ export class CdeForm extends Elt implements FormElementsContainer {
         iterateFeSync(elt,
             form => {
                 feValid(form);
+                if (!form.inForm) {
+                    form.inForm = new InForm(); // or delete subForm
+                }
             },
             section => {
                 feValid(section);
+                // if (!section.section) {
+                //     section.section = new Section();
+                // }
             },
             q => {
                 feValid(q);
@@ -282,17 +293,13 @@ export class PermissibleFormValue extends PermissibleValue implements FormElemen
     }
 }
 
-export class Question {
+export class Question extends DatatypeContainer {
     answer: any; // volatile, input value
     answerUom: CodeAndSystem; // volatile, input uom value
     answerDate: any; // volatile, working storage for date part
     answerTime: any; // volatile, working storage for time part
     answers: PermissibleFormValue[] = []; // mutable
     cde: QuestionCde = new QuestionCde();
-    datatype: string;
-    datatypeDate: QuestionTypeDate = new QuestionTypeDate(); // mutable
-    datatypeNumber: QuestionTypeNumber = new QuestionTypeNumber(); // mutable
-    datatypeText: QuestionTypeText = new QuestionTypeText(); // mutable
     defaultAnswer: string; // all datatypes, defaulted by areDerivationRulesSatisfied
     editable: boolean = true;
     invisible: boolean;
@@ -306,6 +313,7 @@ export class Question {
 
     static copy(question: Question) {
         let newQuestion = Object.assign(new Question(), question);
+        super.copy(newQuestion, question);
 
         // immutable
         if (Array.isArray(newQuestion.unitsOfMeasure)) {
@@ -315,9 +323,6 @@ export class Question {
         // mutable
         newQuestion.answers = [];
         copyArray(question.answers, newQuestion.answers, PermissibleFormValue);
-        newQuestion.datatypeDate = QuestionTypeDate.copy(question.datatypeDate);
-        newQuestion.datatypeNumber = QuestionTypeNumber.copy(question.datatypeNumber);
-        newQuestion.datatypeText = QuestionTypeText.copy(question.datatypeText);
 
         // skip client variables
 

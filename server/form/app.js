@@ -32,22 +32,22 @@ function allowXOrigin(req, res, next) {
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_form);
 
+    app.get("/form/:tinyId", [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyId);
+    app.get("/form/:tinyId/latestVersion/", exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
+    app.get("/form/:tinyId/version/:version?", [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyIdAndVersion);
+    app.post("/form/:id?", formSvc.createForm);
+    app.put("/form/:tinyId", formSvc.updateForm);
+
     app.get("/formById/:id", exportShared.nocacheMiddleware, formSvc.byId);
     app.get("/formById/:id/priorForms/", exportShared.nocacheMiddleware, formSvc.priorForms);
 
-    app.get("/form/:tinyId", [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyId);
-    app.get("/form/:tinyId/version/:version?", [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyIdAndVersion);
     app.get("/formList/:tinyIdList?", exportShared.nocacheMiddleware, formSvc.byTinyIdList);
 
     app.get("/draftForm/:tinyId", formSvc.draftForm);
-    app.get("/draftFormById/:id",formSvc.draftFormById);
     app.post("/draftForm/:tinyId", [authorizationShared.canEditMiddleware], formSvc.saveDraftForm);
     app.delete("/draftForm/:tinyId", [authorizationShared.canEditMiddleware], formSvc.deleteDraftForm);
 
-    app.get("/form/:tinyId/latestVersion/", exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
-
-    app.post("/form/:id?", formSvc.createForm);
-    app.put("/form/:tinyId", formSvc.updateForm);
+    app.get("/draftFormById/:id",formSvc.draftFormById);
 
     app.post('/form/publish/:id', formSvc.publishForm);
 

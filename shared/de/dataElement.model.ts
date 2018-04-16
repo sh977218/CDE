@@ -1,5 +1,5 @@
 import { CdeId, copyArray, DerivationRule, Elt, PermissibleValue } from 'shared/models.model';
-import { CdeFormElastic } from 'shared/form/form.model';
+import { fixDatatype } from 'shared/de/deValidator';
 
 class Concept {
     name: string;
@@ -67,11 +67,8 @@ export class DataElement extends Elt {
             de.derivationRules = [];
         }
         if (!de.valueDomain) de.valueDomain = new ValueDomain();
-        if (!de.valueDomain.datatypeDate) de.valueDomain.datatypeDate = new QuestionTypeDate();
-        if (!de.valueDomain.datatypeNumber) de.valueDomain.datatypeNumber = new QuestionTypeNumber();
-        if (!de.valueDomain.datatypeText) de.valueDomain.datatypeText = new QuestionTypeText();
-        if (!de.valueDomain.datatypeValueList) de.valueDomain.datatypeValueList = new QuestionTypeValueList();
-        if (QuestionTypeDate.PrecisionEnum.indexOf(de.valueDomain.datatypeDate.precision) === -1) {
+        fixDatatype(de);
+        if (de.valueDomain.datatype === 'Date' && QuestionTypeDate.PrecisionEnum.indexOf(de.valueDomain.datatypeDate.precision) === -1) {
             de.valueDomain.datatypeDate.precision = QuestionTypeDate.PrecisionDefault;
         }
     }
@@ -98,10 +95,20 @@ export class QuestionTypeDate {
     }
 }
 
+export class QuestionTypeExternallyDefined {
+    link?: string;
+    description?: string;
+    descriptionFormat?: string;
+
+    static copy(q: QuestionTypeExternallyDefined) {
+        return Object.assign(new QuestionTypeExternallyDefined(), q);
+    }
+}
+
 export class QuestionTypeNumber {
-    minValue: number;
-    maxValue: number;
-    precision: number;
+    minValue?: number;
+    maxValue?: number;
+    precision?: number;
 
     static copy(q: QuestionTypeNumber) {
         return Object.assign(new QuestionTypeNumber(), q);
@@ -109,11 +116,11 @@ export class QuestionTypeNumber {
 }
 
 export class QuestionTypeText {
-    minLength: number;
-    maxLength: number;
-    regex: string;
-    rule: string;
-    showAsTextArea: boolean = false;
+    minLength?: number;
+    maxLength?: number;
+    regex?: string;
+    rule?: string;
+    showAsTextArea?: boolean;
 
     static copy(q: QuestionTypeText) {
         return Object.assign(new QuestionTypeText(), q);
@@ -121,7 +128,7 @@ export class QuestionTypeText {
 }
 
 export class QuestionTypeValueList {
-    datatype: string;
+    datatype?: string;
 
     static copy(q: QuestionTypeValueList) {
         return Object.assign(new QuestionTypeValueList(), q);
@@ -135,12 +142,42 @@ export class DataSet {
     studyUri: string;
 }
 
-export class ValueDomain {
+export class DatatypeContainer {
     datatype: string;
-    datatypeDate: QuestionTypeDate = new QuestionTypeDate();
-    datatypeNumber: QuestionTypeNumber = new QuestionTypeNumber();
-    datatypeText: QuestionTypeText = new QuestionTypeText();
-    datatypeValueList: QuestionTypeValueList = new QuestionTypeValueList(); // unused, along with 2 more such objects
+    datatypeDate?: QuestionTypeDate; // mutable
+    datatypeExternallyDefined?: QuestionTypeExternallyDefined; // mutable
+    datatypeNumber?: QuestionTypeNumber; // mutable
+    datatypeText?: QuestionTypeText; // mutable
+    datatypeValueList?: QuestionTypeValueList; // mutable, unused, along with 2 more such objects
+
+    static copy(newContainer: any, container: any) {
+        switch (newContainer.datatype) {
+            case 'Value List':
+                newContainer.datatypeValueList = container.datatypeValueList
+                    ? QuestionTypeValueList.copy(container.datatypeValueList) : new QuestionTypeValueList();
+                break;
+            case 'Date':
+                newContainer.datatypeDate = container.datatypeDate
+                    ? QuestionTypeDate.copy(container.datatypeDate) : new QuestionTypeDate();
+                break;
+            case 'Number':
+                newContainer.datatypeNumber = container.datatypeNumber
+                    ? QuestionTypeNumber.copy(container.datatypeNumber) : new QuestionTypeNumber();
+                break;
+            case 'Externally Defined':
+                newContainer.datatypeExternallyDefined = container.datatypeExternallyDefined
+                    ? QuestionTypeExternallyDefined.copy(container.datatypeExternallyDefined)
+                    : new QuestionTypeExternallyDefined();
+                break;
+            case 'Text':
+            default:
+                newContainer.datatypeText = container.datatypeText
+                    ? QuestionTypeText.copy(container.datatypeText) : new QuestionTypeText();
+        }
+    }
+}
+
+export class ValueDomain extends DatatypeContainer {
     identifiers: CdeId[] = [];
     ids: CdeId[] = [];
     permissibleValues: PermissibleValue[] = [];
@@ -149,16 +186,14 @@ export class ValueDomain {
 
     static copy(v: ValueDomain) {
         let newValueDomain = Object.assign(new ValueDomain(), v);
-        newValueDomain.datatypeDate = QuestionTypeDate.copy(v.datatypeDate);
-        newValueDomain.datatypeNumber = QuestionTypeNumber.copy(v.datatypeNumber);
-        newValueDomain.datatypeText = QuestionTypeText.copy(v.datatypeText);
-        newValueDomain.datatypeValueList = QuestionTypeValueList.copy(v.datatypeValueList);
-        newValueDomain.identifiers = [];
+        super.copy(newValueDomain, v);
+
         copyArray(v.identifiers, newValueDomain.identifiers, CdeId);
         newValueDomain.ids = [];
         copyArray(v.ids, newValueDomain.ids, CdeId);
         newValueDomain.permissibleValues = [];
         copyArray(v.permissibleValues, newValueDomain.permissibleValues, PermissibleValue);
+
         return newValueDomain;
     }
 }
