@@ -5,11 +5,13 @@ const mongo_data = require('../server/system/mongo-data');
 
 function run() {
     let DAOs = [
-        {
-            name: 'de',
-            count: 0,
-            dao: DataElement
-        },
+        /*
+                {
+                    name: 'de',
+                    count: 0,
+                    dao: DataElement
+                },
+        */
         {
             name: 'form',
             count: 0,
@@ -25,11 +27,15 @@ function run() {
                 let designations = mongo_data.copyDesignation(elt.naming);
                 elt.definitions = definitions;
                 elt.designations = designations;
+                elt.markModified('definitions');
+                elt.markModified('designations');
                 elt.save(err => {
                     if (err) reject(err);
-                    DAO.count++;
-                    console.log(DAO.name + "Count: " + DAO.count);
-                    resolve();
+                    else {
+                        DAO.count++;
+                        console.log(DAO.name + "Count: " + DAO.count);
+                        resolve();
+                    }
                 });
             });
         }).then(err => {

@@ -706,7 +706,8 @@ exports.copyDefinition = function (namings) {
         };
         if (temp.definitionFormat.length > 0)
             definition.definitionFormat = temp.definitionFormat[0];
-        definitions.push(definition);
+        if (definition.definition && definition.definition !== 'N/A')
+            definitions.push(definition);
     });
     return definitions;
 };
