@@ -839,11 +839,9 @@ exports.init = function (app) {
         }
     });
 
-    app.post('/getServerErrors', function (req, res) {
+    app.post('/getServerErrors', (req, res) => {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            dbLogger.getServerErrors(req.body, function (err, result) {
-                res.send(result);
-            });
+            dbLogger.getServerErrors(req.body, (err, result) => res.send(result));
         } else {
             res.status(401).send();
         }
