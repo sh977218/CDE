@@ -208,7 +208,7 @@ export class PermissibleValueComponent {
             this.http.get('/vsacBridge/' + dec.conceptualDomain.vsac.id).subscribe(
                 res => {
                     if (!res || !res['ns0:RetrieveValueSetResponse']) {
-                        this.Alert.addAlert('danger', 'Error: No data retrieved from VSAC.');
+                        this.Alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + dec.conceptualDomain.vsac.id);
                     } else {
                         let data = res['ns0:RetrieveValueSetResponse'];
                         if (data) {
