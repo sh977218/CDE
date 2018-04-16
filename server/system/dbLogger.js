@@ -144,6 +144,7 @@ exports.logClientError = function (req, callback) {
 };
 
 // substitute for (err, ...) => {}
+// used as cb (...) => {}
 // handles the error scenario properly leaving only data parameters for the callback
 exports.withError = function (res, errorMessage, cb) {
     function errorHandler(res, errorMessage, cb, err, ...args) {
@@ -155,16 +156,21 @@ exports.withError = function (res, errorMessage, cb) {
     return errorHandler.bind(undefined, res, errorMessage, cb);
 };
 
-exports.logIfError = function (err) {
+exports.logIfError = function (err, message = '') {
     if (err) {
-        exports.logError(err);
+        exports.logError({
+            message: message ? message : 'Internal Error',
+            origin: 'dblogger',
+            stack: err,
+            details: ''
+        });
     }
 };
 
 // handle server errors properly
 exports.respondError = function(res, err, message = '') {
     res.status(500).send(message);
-    exports.logError(err);
+    exports.logIfError(err, message);
 };
 
 exports.getLogs = function (body, callback) {
