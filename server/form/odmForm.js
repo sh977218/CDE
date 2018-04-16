@@ -166,7 +166,7 @@ exports.getFormOdm = function (form, cb) {
                                 }
                             }
                         };
-                        if (pv.valueMeaningCode) cl.Alias = {
+                        if (pv.valueMeaningCode && pv.codeSystemName) cl.Alias = {
                             '$Context': pv.codeSystemName,
                             '$Name': pv.valueMeaningCode
                         };
