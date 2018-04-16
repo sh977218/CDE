@@ -40,9 +40,9 @@ function addQuestion(parent, question) {
                     "@ID": "NA_" + Math.random(),
                     "@title": title ? title : ''
                 };
-                if (answer.codeSystemName) {
+                if (answer.valueMeaningCode && answer.codeSystemName) {
                     q["CodedValue"] = {
-                        "Code": {"@val": answer.valueMeaningCode ? answer.valueMeaningCode : ''},
+                        "Code": {"@val": answer.valueMeaningCode},
                         "CodeSystem": {
                             "CodeSystemName": {"@val": answer.codeSystemName}
                         }
