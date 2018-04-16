@@ -42,7 +42,7 @@ function addQuestion(parent, question) {
                 };
                 if (answer.codeSystemName) {
                     q["CodedValue"] = {
-                        "Code": {"@val": answer.valueMeaningCode},
+                        "Code": {"@val": answer.valueMeaningCode ? answer.valueMeaningCode : ''},
                         "CodeSystem": {
                             "CodeSystemName": {"@val": answer.codeSystemName}
                         }
