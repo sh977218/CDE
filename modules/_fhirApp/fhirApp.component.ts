@@ -9,6 +9,8 @@ import { mappings } from '_nativeRenderApp/fhirMapping';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/formShared';
 
+import _intersectionWith from 'lodash/intersectionWith';
+
 @Component({
     selector: 'cde-fhir-form',
     styles: [`
@@ -61,6 +63,9 @@ export class FhirAppComponent {
     showData = false;
     smart;
     summary = false;
+    fhirToCdeCodeMap = {
+        'http://loinc.org': "LOINC"
+    };
     static externalCodeSystems = [
         {id: 'LOINC', uri: 'http://loinc.org'},
         {id: 'UNITS', uri: 'http://unitsofmeasure.org/'},
@@ -243,10 +248,8 @@ export class FhirAppComponent {
             async_parallel([
                 cb => {
                     this.smart.patient.api.fetchAll({type: 'Encounter'})
-                        .then((results, refs) => {
-                            results.forEach(encounter => {
-                                this.encounterAdd(encounter);
-                            });
+                        .then(results => {
+                            results.forEach(encounter => this.encounterAdd(encounter));
                             cb();
                         });
                 },
@@ -289,12 +292,16 @@ export class FhirAppComponent {
     loadFhirData() {
         if (!this.selectedEncounter) return;
 
-        this.loadFhirDataForm(this.elt);
+        this.loadFhirDataToForm(this.elt);
     }
 
-    loadFhirDataForm(form) {
-        this.mapIO(form, this.selectedEncounter.observations.map(o => o.raw), 'in');
-        iterateFeSync(form, this.loadFhirDataForm.bind(this));
+    // loadFhirDataForm(form) {
+    //     this.mapIO(form, this.selectedEncounter.observations.map(o => o.raw), 'in');
+    //     iterateFeSync(form, this.loadFhirDataForm.bind(this));
+    // }
+    loadFhirDataToForm(formElt) {
+        // this.mapInputElt(formElt, this.selectedEncounter.observations.map(o => o.raw));
+        iterateFeSync(formElt, this.loadFhirDataToForm.bind(this), this.loadFhirDataToForm.bind(this), this.mapInputQuestion.bind(this));
     }
 
     loadForm(err = null, elt = null) {
@@ -307,6 +314,23 @@ export class FhirAppComponent {
             else this.selectedProfile = null;
         }
         this.loadFhirData();
+    }
+
+
+    mapInputQuestion (formElt) {
+        let observations = this.selectedEncounter.observations.map(o => o.raw);
+        observations.forEach(o => {
+            let matchedCodes = _intersectionWith(
+                o.code.coding,
+                formElt.question.cde.ids,
+                (a, b) =>  this.fhirToCdeCodeMap[a['system']] === b['source'] && a['code'] === b['id']);
+            if (matchedCodes.length) {
+                formElt.question.answer = o.valueQuantity.value;
+                // TODO add UOM
+                // if (feUom) feUom.question.answer = vq.unit;
+                // else fe.question.answerUom = vq.unit;
+            }
+        });
     }
 
     mapIO(form, observations, mode, createCb = null) {
