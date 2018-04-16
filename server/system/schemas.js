@@ -231,22 +231,22 @@ schemas.orgSchema.set('collection', 'orgs');
 schemas.userSchema.set('collection', 'users');
 
 schemas.namingSchema = new mongoose.Schema({
-    designation: String,
-    definition: String,
+    designation: {type: String},
+    definition: {type: String},
     definitionFormat: String,
     languageCode: String,
     tags: [String],
-    source: String
+    source: {type: String}
+}, {_id: false});
+
+schemas.designationSchema = new mongoose.Schema({
+    designation: String,
+    tags: [String]
 }, {_id: false});
 
 schemas.definitionSchema = new mongoose.Schema({
     definition: String,
     definitionFormat: String,
-    tags: [String]
-}, {_id: false});
-
-schemas.designationSchema = new mongoose.Schema({
-    designation: String,
     tags: [String]
 }, {_id: false});
 

@@ -6,41 +6,40 @@ const config = require("config");
 const instructionSchema = new Schema({value: String, valueFormat: String}, {_id: false});
 
 const datatypeNumberSchema = new Schema({
-    minValue: Number,
-    maxValue: Number,
-    precision: Number
+    minValue: Number
+    , maxValue: Number
+    , precision: Number
 }, {_id: false, minimize: false});
 
 const questionSchema = new Schema({
     cde: {
-        tinyId: String,
-        name: String,
-        naming: [],
-        datatype: String,
-        version: String,
-        permissibleValues: [sharedSchemas.permissibleValueSchema],
-        ids: [sharedSchemas.idSchema],
-        derivationRules: [sharedSchemas.derivationRuleSchema]
-    },
-    datatype: String,
-    datatypeNumber: datatypeNumberSchema,
-    datatypeText: {
-        minLength: Number,
-        maxLength: Number,
-        regex: String,
-        rule: String,
-        showAsTextArea: {type: Boolean, default: false}
-    },
-    datatypeDate: {
+        tinyId: String
+        , name: String
+        , naming: []
+        , datatype: String
+        , version: String
+        , permissibleValues: [sharedSchemas.permissibleValueSchema]
+        , ids: [sharedSchemas.idSchema]
+        , derivationRules: [sharedSchemas.derivationRuleSchema]
+    }
+    , datatype: String
+    , datatypeNumber: datatypeNumberSchema
+    , datatypeText: {
+        minLength: Number
+        , maxLength: Number
+        , regex: String
+        , rule: String
+        , showAsTextArea: {type: Boolean, default: false}
+    }, datatypeDate: {
         precision: {type: String, enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'], default: 'Day'}
-    },
-    unitsOfMeasure: [sharedSchemas.codeAndSystemSchema],
-    required: {type: Boolean, default: false},
-    invisible: {type: Boolean, default: false},
-    editable: {type: Boolean, default: true},
-    multiselect: Boolean,
-    answers: [sharedSchemas.permissibleValueSchema],
-    defaultAnswer: String
+    }
+    , unitsOfMeasure: [sharedSchemas.codeAndSystemSchema]
+    , required: {type: Boolean, default: false}
+    , invisible: {type: Boolean, default: false}
+    , editable: {type: Boolean, default: true}
+    , multiselect: Boolean
+    , answers: [sharedSchemas.permissibleValueSchema]
+    , defaultAnswer: String
 }, {_id: false});
 
 let inFormSchema = new Schema({
@@ -82,67 +81,67 @@ for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
 }
 
 exports.formJson = {
-    elementType: {type: String, default: 'form', enum: ['form']},
-    tinyId: {type: String, index: true},
-    naming: [sharedSchemas.namingSchema],
-    designations: [sharedSchemas.designationSchema],
-    definitions: [sharedSchemas.definitionSchema],
-    stewardOrg: {
+    elementType: {type: String, default: 'form', enum: ['form']}
+    , tinyId: {type: String, index: true}
+    , naming: [sharedSchemas.namingSchema]
+    , designations: [sharedSchemas.designationSchema]
+    , definitions: [sharedSchemas.definitionSchema]
+    , stewardOrg: {
         name: String
-    },
-    source: String,
-    sources: [sharedSchemas.sourceSchema],
-    version: String,
-    registrationState: sharedSchemas.registrationStateSchema,
-    properties: [sharedSchemas.propertySchema],
-    ids: [
+    }
+    , source: String
+    , sources: [sharedSchemas.sourceSchema]
+    , version: String
+    , registrationState: sharedSchemas.registrationStateSchema
+    , properties: [sharedSchemas.propertySchema]
+    , ids: [
         {source: String, id: String, version: String, _id: false}
-    ],
-    isCopyrighted: {type: Boolean},
-    noRenderAllowed: {type: Boolean},
-    copyright: {
+    ]
+    , isCopyrighted: {type: Boolean}
+    , noRenderAllowed: {type: Boolean}
+    , copyright: {
         type: {
-            authority: String,
-            text: String
+            authority: String
+            , text: String
         },
         default: {text: null}
-    },
-    origin: String,
-    attachments: [sharedSchemas.attachmentSchema],
-    comments: [sharedSchemas.commentSchema],
-    history: [mongoose.Schema.Types.ObjectId],
-    changeNote: String,
-    lastMigrationScript: String,
-    created: Date,
-    updated: Date,
-    imported: Date,
-    createdBy: {
-        userId: mongoose.Schema.Types.ObjectId,
-        username: String
-    },
-    updatedBy: {
-        userId: mongoose.Schema.Types.ObjectId,
-        username: String
-    },
-    formElements: [innerFormEltSchema],
-    archived: {type: Boolean, default: false, index: true},
-    classification: [sharedSchemas.classificationSchema],
-    displayProfiles: [{
-        name: String,
-        sectionsAsMatrix: {type: Boolean},
-        displayCopyright: {type: Boolean},
-        displayValues: {type: Boolean},
-        displayInstructions: {type: Boolean},
-        displayNumbering: {type: Boolean},
-        displayType: {type: String, enum: ['Dynamic', 'Follow-up'], default: 'Dynamic'},
-        numberOfColumns: {type: Number, min: 1, max: 6},
-        displayInvisible: {type: Boolean},
-        repeatFormat: {type: String, default: ''},
-        answerDropdownLimit: {type: Number, min: 0},
-        unitsOfMeasureAlias: [{unitOfMeasure: sharedSchemas.codeAndSystemSchema, alias: String}],
-        _id: false
-    }],
-    referenceDocuments: [sharedSchemas.referenceDocumentSchema]
+    }
+    , origin: String
+    , attachments: [sharedSchemas.attachmentSchema]
+    , comments: [sharedSchemas.commentSchema]
+    , history: [mongoose.Schema.Types.ObjectId]
+    , changeNote: String
+    , lastMigrationScript: String
+    , created: Date
+    , updated: Date
+    , imported: Date
+    , createdBy: {
+        userId: mongoose.Schema.Types.ObjectId
+        , username: String
+    }
+    , updatedBy: {
+        userId: mongoose.Schema.Types.ObjectId
+        , username: String
+    }
+    , formElements: [innerFormEltSchema]
+    , archived: {type: Boolean, default: false, index: true}
+    , classification: [sharedSchemas.classificationSchema]
+    , displayProfiles: [{
+        name: String
+        , sectionsAsMatrix: {type: Boolean}
+        , displayCopyright: {type: Boolean}
+        , displayValues: {type: Boolean}
+        , displayInstructions: {type: Boolean}
+        , displayNumbering: {type: Boolean}
+        , displayType: {type: String, enum: ['Dynamic', 'Follow-up'], default: 'Dynamic'}
+        , numberOfColumns: {type: Number, min: 1, max: 6}
+        , displayInvisible: {type: Boolean}
+        , repeatFormat: {type: String, default: ''}
+        , answerDropdownLimit: {type: Number, min: 0}
+        , unitsOfMeasureAlias: [{unitOfMeasure: sharedSchemas.codeAndSystemSchema, alias: String}]
+        , _id: false
+    }]
+    , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 };
 
 exports.formSchema = new Schema(exports.formJson, {minimize: false});

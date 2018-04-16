@@ -73,7 +73,8 @@ var deJson = {
             maxValue: Number,
             precision: {type: Number, description: "Any precision for this number. Typically an integer for a float"}
         },
-        datatypeDate: {},
+        datatypeDate: {
+        },
         datatypeTime: { // time only, periodic?
             format: {type: String, description: "Any format that someone may want to enforce"}
         },
