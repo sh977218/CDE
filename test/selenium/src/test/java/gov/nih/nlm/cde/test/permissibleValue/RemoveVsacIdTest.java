@@ -15,11 +15,11 @@ public class RemoveVsacIdTest extends NlmCdeBaseTest {
         goToPermissibleValues();
         clickElement(By.id("updateOIDBtn"));
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
+        hangon(.5);
         clickElement(By.id("vsacIdCheck"));
         textPresent("2135-2");
         textPresent("2186-5");
         newCdeVersion();
-        hangon(1);
 
         goToCdeByName(cdeName);
         goToPermissibleValues();
