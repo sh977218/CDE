@@ -42,14 +42,14 @@ exports.boardRefresh = function (cb) {
 
 exports.boardUpdateOrInsert = function (elt) {
     if (elt) {
-        let doc = elt.toObject();
+        var doc = elt.toObject();
         delete doc._id;
         esClient.index({
             index: config.elastic.boardIndex.name,
             type: "board",
             id: elt._id.toString(),
             body: doc
-        }, err => {
+        }, function (err) {
             if (err) {
                 dbLogger.logError({
                     message: "Unable to index board: " + elt._id.toString(),
@@ -68,7 +68,7 @@ exports.boardDelete = function (elt) {
             index: config.elastic.boardIndex.name,
             type: "board",
             id: elt._id.toString()
-        }, err => {
+        }, function (err) {
             if (err) {
                 dbLogger.logError({
                     message: "Unable to delete board: " + elt._id.toString(),
@@ -87,7 +87,7 @@ exports.dataElementDelete = function (elt, cb) {
             index: config.elastic.index.name,
             type: "dataelement",
             id: elt.tinyId
-        }, err => {
+        }, function (err) {
             if (err) {
                 dbLogger.logError({
                     message: "Unable to delete dataelement: " + elt.tinyId,
@@ -112,7 +112,7 @@ exports.elasticsearch = function (user, settings, cb) {
             }
         });
     }
-    if (settings.includeAggregations) {
+    if (settings.includeAggregations)
         query.aggregations.datatype = {
             "filter": settings.filterDatatype,
             "aggs": {
@@ -127,11 +127,9 @@ exports.elasticsearch = function (user, settings, cb) {
                 }
             }
         };
-    }
 
-    if (!settings.fullRecord) {
+    if (!settings.fullRecord)
         query._source = {excludes: ["flatProperties", "properties", "classification.elements", "formElements"]};
-    }
 
     sharedElastic.elasticsearch('cde', query, settings, function (err, result) {
         if (result && result.cdes && result.cdes.length > 0) {
@@ -153,9 +151,9 @@ const mltConf = {
 };
 
 exports.morelike = function (id, callback) {
-    let from = 0;
-    let limit = 20;
-    let mltPost = {
+    var from = 0;
+    var limit = 20;
+    var mltPost = {
         "query": {
             "bool": {
                 "must": {
@@ -205,7 +203,7 @@ exports.morelike = function (id, callback) {
                 });
             callback("Error");
         } else {
-            let result = {
+            var result = {
                 cdes: []
                 , pages: Math.ceil(response.hits.total / limit)
                 , page: Math.ceil(from / limit)
@@ -224,7 +222,7 @@ exports.morelike = function (id, callback) {
 };
 
 exports.DataElementDistinct = function (field, cb) {
-    let distinctQuery = {
+    var distinctQuery = {
         "size": 0,
         "aggs": {
             "aggregationsName": {
@@ -244,10 +242,13 @@ exports.DataElementDistinct = function (field, cb) {
             logging.errorLogger.error("Error DataElementDistinct", {
                 origin: "cde.elastic.DataElementDistinct",
                 stack: new Error().stack,
-                details: "query " + JSON.stringify(distinctQuery) + " --- error " + error + " response " + JSON.stringify(response)
+                details: "query " + JSON.stringify(distinctQuery) + "error " + error + "response" + JSON.stringify(response)
             });
         } else {
-            cb(response.aggregations.aggregationsName.buckets.map(b => b.key));
+            let list = response.aggregations.aggregationsName.buckets.map(function (b) {
+                return b.key;
+            });
+            cb(list);
         }
     });
 };
