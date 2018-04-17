@@ -29,3 +29,4 @@ declare function iterateFormElements(fe?: any, option?: any, cb?: any): void;
 declare function noopSkipCb(_: any, cb: continueCb): void;
 declare function noopSkipSync(_?: any): boolean;
 declare function score(question: FormQuestion, elt: FormElementsContainer): any; // returns number for success and string for failure
+declare function trimWholeForm(elt: CdeForm): void;

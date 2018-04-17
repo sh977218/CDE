@@ -99,18 +99,16 @@
                         </div>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Date'" class="row">
-                        <div class="col-12">
-                            <input class="form-control"
-                                   type="{{datePrecisionToType[formElement.question.datatypeDate.precision]}}"
-                                   step="{{datePrecisionToStep[formElement.question.datatypeDate.precision]}}"
-                                   [title]="formElement.label"
-                                   attr.id="{{formElement.label}}_{{index}}_box"
-                                   [name]="formElement.questionId"
-                                   [attr.name]="formElement.questionId"
-                                   [(ngModel)]="formElement.question.answer"
-                                   [required]="formElement.question.required"
-                                   [disabled]="!formElement.question.editable">
-                        </div>
+                        <input class="form-control"
+                               type="{{datePrecisionToType[formElement.question.datatypeDate.precision]}}"
+                               step="{{datePrecisionToStep[formElement.question.datatypeDate.precision]}}"
+                               [title]="formElement.label"
+                               attr.id="{{formElement.label}}_{{index}}_box"
+                               [name]="formElement.questionId"
+                               [attr.name]="formElement.questionId"
+                               [(ngModel)]="formElement.question.answer"
+                               [required]="formElement.question.required"
+                               [disabled]="!formElement.question.editable"/>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Number'">
                         <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">

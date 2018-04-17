@@ -177,7 +177,7 @@ exports.createDataElement = function (req, res) {
 exports.updateDataElement = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    if (!req.isAuthenticated()) return res.status(403).send("You are not authorized to do this.");
+    if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
     mongo_cde.byTinyId(tinyId, function (err, item) {
         if (err) return res.status(500).send("ERROR - update find by tinyId");
         if (!item) return res.status(404).send();
@@ -185,9 +185,10 @@ exports.updateDataElement = function (req, res) {
             if (err) return res.status(500).send("ERROR - update - cannot allow");
             mongo_data.orgByName(item.stewardOrg.name, function (err, org) {
                 let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
-                if (org && org.workingGroupOf && org.workingGroupOf.length > 0 &&
-                    allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1)
-                    return res.status(403).send("You are not authorized to do this.");
+                if (org && org.workingGroupOf && org.workingGroupOf.length > 0
+                    && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) {
+                    return res.status(403).send("Not authorized");
+                }
                 let elt = req.body;
                 elt.classification = item.classification;
                 elt.attachments = item.attachments;

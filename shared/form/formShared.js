@@ -448,3 +448,37 @@ export function iterateFormElements(fe = {}, option = {}, cb = undefined) {
     } else cb();
 }
 
+export function trimWholeForm(elt) {
+    iterateFeSync(elt, f => {
+        f.formElements = []; // remove subForm content
+    }, undefined, q => {
+        if (!q.question) return;
+        switch (q.question.datatype) {
+            case 'Value List':
+                if (q.question.datatypeDate) q.question.datatypeDate = undefined;
+                if (q.question.datatypeNumber) q.question.datatypeNumber = undefined;
+                if (q.question.datatypeText) q.question.datatypeText = undefined;
+                if (q.question.datatypeExternallyDefined) q.question.datatypeExternallyDefined = undefined;
+                break;
+            case 'Date':
+                if (q.question.datatypeValueList) q.question.datatypeValueList = undefined;
+                if (q.question.datatypeNumber) q.question.datatypeNumber = undefined;
+                if (q.question.datatypeText) q.question.datatypeText = undefined;
+                if (q.question.datatypeExternallyDefined) q.question.datatypeExternallyDefined = undefined;
+                break;
+            case 'Number':
+                if (q.question.datatypeValueList) q.question.datatypeValueList = undefined;
+                if (q.question.datatypeDate) q.question.datatypeDate = undefined;
+                if (q.question.datatypeText) q.question.datatypeText = undefined;
+                if (q.question.datatypeExternallyDefined) q.question.datatypeExternallyDefined = undefined;
+                break;
+            case 'Text':
+                /* falls through */
+            default:
+                if (q.question.datatypeValueList) q.question.datatypeValueList = undefined;
+                if (q.question.datatypeDate) q.question.datatypeDate = undefined;
+                if (q.question.datatypeNumber) q.question.datatypeNumber = undefined;
+                if (q.question.datatypeExternallyDefined) q.question.datatypeExternallyDefined = undefined;
+        }
+    });
+}

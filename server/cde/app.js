@@ -22,22 +22,22 @@ const authorizationShared = require('@std/esm')(module)("../../shared/system/aut
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_cde);
 
+    app.get("/de/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
+    app.get("/de/:tinyId/latestVersion/", exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
+    app.get("/de/:tinyId/version/:version?", exportShared.nocacheMiddleware, cdesvc.byTinyIdAndVersion);
+    app.post("/de/:id?", cdesvc.createDataElement);
+    app.put("/de/:tinyId", cdesvc.updateDataElement);
+
     app.get("/deById/:id", exportShared.nocacheMiddleware, cdesvc.byId);
     app.get("/deById/:id/priorDataElements/", exportShared.nocacheMiddleware, cdesvc.priorDataElements);
 
-    app.get("/de/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
-    app.get("/de/:tinyId/version/:version?", exportShared.nocacheMiddleware, cdesvc.byTinyIdAndVersion);
     app.get("/deList/:tinyIdList?", exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
 
     app.get("/draftDataElement/:tinyId", cdesvc.draftDataElement);
-    app.get("/draftDataElementById/:id", cdesvc.draftDataElementById);
     app.post("/draftDataElement/:tinyId", [authorizationShared.canEditMiddleware], cdesvc.saveDraftDataElement);
     app.delete("/draftDataElement/:tinyId", [authorizationShared.canEditMiddleware], cdesvc.deleteDraftDataElement);
 
-    app.get("/de/:tinyId/latestVersion/", exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
-
-    app.post("/de/:id?", cdesvc.createDataElement);
-    app.put("/de/:tinyId", cdesvc.updateDataElement);
+    app.get("/draftDataElementById/:id", cdesvc.draftDataElementById);
 
     app.get('/vsacBridge/:vsacId', exportShared.nocacheMiddleware, cdesvc.vsacId);
 

@@ -11,7 +11,7 @@ export function canEditMiddleware(req, res, next) {
 export function loggedInMiddleware(req, res, next) {
     if (!req.user) {
         // TODO: should consider adding to error log
-        return res.status(401).send();
+        return res.status(403).send();
     }
     if (next) {
         next();
