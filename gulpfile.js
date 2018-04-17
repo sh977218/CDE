@@ -149,15 +149,15 @@ gulp.task('copyDist', ['buildApp', 'buildEmbed', 'buildNative', 'buildFhir'], ()
     let streamArray = [];
 
     // App
-    streamArray.push(gulp.src('./dist/app/*')
+    streamArray.push(gulp.src('./dist/app/**/*')
         .pipe(gulp.dest(config.node.buildDir + '/dist/app')));
 
     // Embed
-    streamArray.push(gulp.src('./dist/embed/*')
+    streamArray.push(gulp.src('./dist/embed/**/*')
         .pipe(gulp.dest(config.node.buildDir + '/dist/embed')));
 
     // Native
-    streamArray.push(gulp.src('./dist/native/*')
+    streamArray.push(gulp.src('./dist/native/**/*')
         .pipe(gulp.dest(config.node.buildDir + '/dist/native')));
 
     // Fhir

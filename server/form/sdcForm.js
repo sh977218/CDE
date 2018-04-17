@@ -38,9 +38,9 @@ function addQuestion(parent, question) {
                 let title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
                 let q = {
                     "@ID": "NA_" + Math.random(),
-                    "@title": title
+                    "@title": title ? title : ''
                 };
-                if (answer.codeSystemName) {
+                if (answer.valueMeaningCode && answer.codeSystemName) {
                     q["CodedValue"] = {
                         "Code": {"@val": answer.valueMeaningCode},
                         "CodeSystem": {
@@ -109,7 +109,7 @@ let questionsInSection = {};
 let doSection = function (parent, section) {
     let newSection = {
         "@ID": "NA_" + Math.random(),
-        "@title": section.label
+        "@title": section.label ? section.label : ''
     };
     let subSection = parent.ele({Section: newSection});
     if (section.formElements && section.formElements.length > 0) {

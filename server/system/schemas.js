@@ -5,101 +5,107 @@ const regStatusShared = require('@std/esm')(module)("../../shared/system/regStat
 
 let schemas = {};
 
+function deleteEmpty (v) {
+    if(v === null || v === ''){
+        return undefined;
+    }
+    return v;
+}
+const stringType = schemas.stringType = {type: String, set: deleteEmpty};
+const stringIndexType = schemas.stringIndexType = Object.assign({index: true}, stringType);
+
 let csEltSchema = new mongoose.Schema({
     elements: [],
-    name: {type: String, index: true}
+    name: stringIndexType
 }, {_id: false});
 
 schemas.classificationSchema = new mongoose.Schema({
     stewardOrg: {
-        name: {type: String, index: true}
+        name: stringIndexType
     },
     workingGroup: Boolean,
     elements: [csEltSchema]
 }, {_id: false});
 
 schemas.codeAndSystemSchema = new mongoose.Schema({
-    code: String,
-    system: String,
+    code: stringType,
+    system: stringType,
 }, {_id: false});
 
 schemas.permissibleValueSchema = new mongoose.Schema({
-    permissibleValue: String,
-    valueMeaningName: String,
-    valueMeaningCode: String,
-    valueMeaningDefinition: String,
-    codeSystemName: String,
-    codeSystemVersion: String
+    permissibleValue: stringType,
+    valueMeaningName: stringType,
+    valueMeaningCode: stringType,
+    valueMeaningDefinition: stringType,
+    codeSystemName: stringType,
+    codeSystemVersion: stringType
 }, {_id: false});
 
 
 schemas.derivationRuleSchema = new mongoose.Schema({
-    name: String,
-    inputs: {type: [String], index: true, description: "Information operated on by rule"},
-    outputs: {description: "Information produced by rule", type: [String]},
-    ruleType: {type: String, enum: ['score', 'panel']},
-    formula: {type: String, enum: ['sumAll', 'mean']}
+    name: stringType,
+    inputs: {type: [stringType], index: true}, // Information operated on by rule
+    outputs: [stringType], // Information produced by rule
+    ruleType: Object.assign({enum: ['score', 'panel']}, stringType),
+    formula: Object.assign({enum: ['sumAll', 'mean']}, stringType)
 }, {_id: true});
 
 
 schemas.sourceSchema = new mongoose.Schema({
-    sourceName: String,
-    created: {type: Date, description: "Date created in source"},
-    updated: {type: Date, description: "Date updated in source"},
-    registrationStatus: {
-        type: String,
-        description: "Relative standing of official record status in steward's workflow"
-    },
-    datatype: {type: String, description: "May contain the source datatype"},
+    sourceName: stringType,
+    created: Date, // Date created in source
+    updated: Date, // Date updated in source
+    registrationStatus: stringType, // Relative standing of official record status in steward's workflow
+    datatype: stringType, // May contain the source datatype
     copyright: {
-        value: {type: String, description: "Content of a copyright statement or terms of use"},
-        valueFormat: {type: String, description: "If 'html', interpret as HTML"}
+        value: stringType, // Content of a copyright statement or terms of use
+        valueFormat: stringType // If 'html', interpret as HTML
     }
 }, {_id: false});
 
 let commonEmbedSchema = {
-    nameLabel: String,
+    nameLabel: stringType,
     pageSize: Number,
     primaryDefinition: {
         show: {type: Boolean, default: false},
-        label: String,
-        style: String
+        label: stringType,
+        style: stringType
     },
     registrationStatus: {
         show: {type: Boolean, default: false},
-        label: String
+        label: stringType
     },
-    lowestRegistrationStatus: {type: String, enum: regStatusShared.orderedList},
+    lowestRegistrationStatus: Object.assign({enum: regStatusShared.orderedList}, stringType),
     properties: [
         {
-            label: String,
-            key: String,
+            label: stringType,
+            key: stringType,
             limit: Number
         }
     ],
     otherNames: [{
-        label: String,
-        contextName: String
+        label: stringType,
+        contextName: stringType
     }],
     classifications: [{
-        label: String,
-        startsWith: String,
-        exclude: String,
+        label: stringType,
+        startsWith: stringType,
+        exclude: stringType,
         selectedOnly: Boolean
     }],
     ids: [
         {
-            idLabel: String,
-            source: String,
+            idLabel: stringType,
+            source: stringType,
             version: Boolean,
-            versionLabel: String
+            versionLabel: stringType
         }
     ]
 };
 
 let embedJson = {
-    org: String,
-    name: String,
+    org: stringType,
+    name: stringType,
     height: Number,
     width: Number,
     cde: commonEmbedSchema,
@@ -108,7 +114,7 @@ let embedJson = {
 embedJson.cde.permissibleValues = Boolean;
 embedJson.cde.linkedForms = {
     show: {type: Boolean, default: false},
-    label: String
+    label: stringType
 };
 embedJson.form.sdcLink = {type: Boolean, default: false};
 embedJson.form.nbOfQuestions = {type: Boolean, default: false};
@@ -117,28 +123,27 @@ embedJson.form.cdes = {type: Boolean, default: false};
 schemas.embedSchema = new mongoose.Schema(embedJson);
 
 schemas.statusValidationRuleSchema = new mongoose.Schema({
-    field: String,
+    field: stringType,
     id: Number,
-    targetStatus: {
-        type: String,
+    targetStatus: Object.assign({
         enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]
-    },
-    ruleName: String,
+    }, stringType),
+    ruleName: stringType,
     rule: {
-        regex: String
+        regex: stringType
     },
-    occurence: {type: String, enum: ["exactlyOne", "atLeastOne", "all"]}
+    occurence: Object.assign({enum: ["exactlyOne", "atLeastOne", "all"]}, stringType)
 });
 
 let orgJson = {
-    name: String,
-    longName: String,
-    mailAddress: String,
-    emailAddress: String,
-    phoneNumber: String,
-    uri: String,
+    name: stringType,
+    longName: stringType,
+    mailAddress: stringType,
+    emailAddress: stringType,
+    phoneNumber: stringType,
+    uri: stringType,
     classifications: [csEltSchema],
-    workingGroupOf: String,
+    workingGroupOf: stringType,
     propertyKeys: {
         type: Array,
         default: []
@@ -151,52 +156,52 @@ let orgJson = {
         type: Array,
         default: []
     },
-    extraInfo: String,
+    extraInfo: stringType,
     cdeStatusValidationRules: [schemas.statusValidationRuleSchema],
-    htmlOverview: String
+    htmlOverview: stringType
 };
 schemas.orgJson = orgJson;
 
 schemas.orgSchema = new mongoose.Schema(orgJson);
 
 schemas.pushRegistration = new mongoose.Schema({
-    features: [String],
+    features: [stringType],
     loggedIn: Boolean,
     subscription: {
-        endpoint: String,
-        expirationTime: String,
+        endpoint: stringType,
+        expirationTime: stringType,
         keys: {
-            auth: String,
-            p256dh: String
+            auth: stringType,
+            p256dh: stringType
         }
     },
-    userId: String,
+    userId: stringType,
     vapidKeys: {
-        privateKey: String,
-        publicKey: String
+        privateKey: stringType,
+        publicKey: stringType
     }
 });
 schemas.pushRegistration.set('collection', 'pushRegistration');
 
 schemas.userSchema = new mongoose.Schema({
-    username: {type: String, unique: true},
-    email: String,
-    password: String,
+    username: Object.assign({unique: true}, stringType),
+    email: stringType,
+    password: stringType,
     lastLogin: Date,
     lockCounter: Number,
-    orgAdmin: [String],
-    orgCurator: [String],
+    orgAdmin: [stringType],
+    orgCurator: [stringType],
     siteAdmin: Boolean,
     tester: Boolean,
     quota: Number,
-    viewHistory: [String],
-    formViewHistory: [String],
-    knownIPs: [String],
-    roles: [{type: String, enum: authorizationShared.rolesEnum}],
+    viewHistory: [stringType],
+    formViewHistory: [stringType],
+    knownIPs: [stringType],
+    roles: [Object.assign({enum: authorizationShared.rolesEnum}, stringType)],
     searchSettings: {
         version: Number,
-        defaultSearchView: {type: String, enum: ["accordion", "table", "summary"]},
-        lowestRegistrationStatus: String,
+        defaultSearchView: Object.assign({enum: ["accordion", "table", "summary"]}, stringType),
+        lowestRegistrationStatus: stringType,
         tableViewFields: {
             name: {type: Boolean, default: true},
             naming: Boolean,
@@ -210,7 +215,7 @@ schemas.userSchema = new mongoose.Schema({
             registrationStatus: Boolean,
             administrativeStatus: Boolean,
             ids: Boolean,
-            identifiers: [String],
+            identifiers: [stringType],
             source: Boolean,
             updated: Boolean,
             numQuestions: Boolean,
@@ -218,11 +223,11 @@ schemas.userSchema = new mongoose.Schema({
             linkedForms: Boolean
         }
     },
-    accessToken: String,
-    refreshToken: String,
-    avatarUrl: String,
+    accessToken: stringType,
+    refreshToken: stringType,
+    avatarUrl: stringType,
     publishedForms: [{
-        name: String,
+        name: stringType,
         id: mongoose.Schema.Types.ObjectId
     }]
 });
@@ -231,22 +236,22 @@ schemas.orgSchema.set('collection', 'orgs');
 schemas.userSchema.set('collection', 'users');
 
 schemas.namingSchema = new mongoose.Schema({
-    designation: {type: String},
-    definition: {type: String},
-    definitionFormat: String,
-    languageCode: String,
-    tags: [String],
-    source: {type: String}
+    designation: stringType,
+    definition: stringType,
+    definitionFormat: stringType,
+    languageCode: stringType,
+    tags: [stringType],
+    source: stringType
 }, {_id: false});
 
 let attachmentSchema = {
-    fileid: {type: String, index: true},
-    filename: String,
-    filetype: String,
+    fileid: stringIndexType,
+    filename: stringType,
+    filetype: stringType,
     uploadDate: Date,
-    comment: String,
+    comment: stringType,
     uploadedBy: {
-        userId: mongoose.Schema.Types.ObjectId, username: {type: String, index: true}
+        userId: mongoose.Schema.Types.ObjectId, username: stringIndexType
     },
     filesize: Number,
     isDefault: Boolean,
@@ -257,53 +262,51 @@ let attachmentSchema = {
 schemas.attachmentSchema = new mongoose.Schema(attachmentSchema, {_id: false});
 
 schemas.registrationStateSchema = {
-    registrationStatus: {type: String, enum: regStatusShared.orderedList},
+    registrationStatus: Object.assign({enum: regStatusShared.orderedList}, stringType),
     effectiveDate: Date,
     untilDate: Date,
-    administrativeNote: String,
-    unresolvedIssue: String,
-    administrativeStatus: {
-        type: String, description: "Relative standing of CDE as it relates to steward's administrative workflow"
-    },
-    replacedBy: {tinyId: {type: String, description: "tinyId of replacement CDE"}}
+    administrativeNote: stringType,
+    unresolvedIssue: stringType,
+    administrativeStatus: stringType, // Relative standing of CDE as it relates to steward's administrative workflow
+    replacedBy: {tinyId: stringType} // tinyId of replacement CDE
 };
 
-schemas.propertySchema = {key: String, value: String, source: String, valueFormat: String, _id: false};
+schemas.propertySchema = {key: stringType, value: stringType, source: stringType, valueFormat: stringType, _id: false};
 
-schemas.idSchema = {source: String, id: String, version: String, _id: false};
+schemas.idSchema = {source: stringType, id: stringType, version: stringType, _id: false};
 
 schemas.commentSchema = new mongoose.Schema({
-    text: String,
-    user: String,
-    username: String,
+    text: stringType,
+    user: stringType,
+    username: stringType,
     created: Date,
     pendingApproval: Boolean,
-    linkedTab: String,
-    status: {type: String, enum: ["active", "resolved", "deleted"], default: "active"},
+    linkedTab: stringType,
+    status: Object.assign({enum: ["active", "resolved", "deleted"], default: "active"}, stringType),
     replies: [{
-        text: String,
-        user: String,
-        username: String,
+        text: stringType,
+        user: stringType,
+        username: stringType,
         created: Date,
         pendingApproval: Boolean,
-        status: {type: String, enum: ["active", "resolved", "deleted"], default: "active"}
+        status: Object.assign({enum: ["active", "resolved", "deleted"], default: "active"}, stringType)
     }],
     element: {
-        eltType: {type: String, enum: ["cde", "form", "board"]},
-        eltId: String
+        eltType: Object.assign({enum: ["cde", "form", "board"]}, stringType),
+        eltId: stringType
     }
 });
 
 schemas.helpItemSchema = new mongoose.Schema({
-    permalink: String,
-    title: String,
-    tags: [String]
+    permalink: stringType,
+    title: stringType,
+    tags: [stringType]
 });
 
 
 let requestSchema = {
-    source: {tinyId: String, id: String},
-    destination: {tinyId: String},
+    source: {tinyId: stringType, id: stringType},
+    destination: {tinyId: stringType},
     mergeFields: {
         ids: Boolean,
         naming: Boolean,
@@ -315,201 +318,201 @@ let requestSchema = {
 
 let commentApprovalSchema = {
     element: {
-        eltId: String,
-        name: String,
-        eltType: {type: String, enum: ["cde", "form", "board"]}
+        eltId: stringType,
+        name: stringType,
+        eltType: Object.assign({enum: ["cde", "form", "board"]}, stringType)
     },
     comment: {
-        commentId: String,
+        commentId: stringType,
         replyIndex: Number,
-        text: String
+        text: stringType
     }
 };
 let boardApprovalSchema = {
     element: {
-        eltId: String,
-        name: String,
-        eltType: {type: String, enum: ["cde", "form", "board"]}
+        eltId: stringType,
+        name: stringType,
+        eltType: Object.assign({enum: ["cde", "form", "board"]})
     }
 };
 
 schemas.message = new mongoose.Schema({
     recipient: {
-        recipientType: {type: String, enum: ["user", "stewardOrg", "role"]}, name: String
+        name: stringType,
+        recipientType: Object.assign({enum: ["user", "stewardOrg", "role"]}, stringType),
     },
-    author: {authorType: String, name: String},
+    author: {authorType: stringType, name: stringType},
     date: Date,
-    type: {
-        type: String,
+    type: Object.assign({
         enum: ["CommentApproval", "AttachmentApproval", "CommentReply", "BoardApproval"]
-    },
+    }, stringType),
     typeRequest: requestSchema,
     typeCommentApproval: commentApprovalSchema,
     typeAttachmentApproval: attachmentSchema,
     typeCommentReply: commentApprovalSchema,
     typeBoardApproval: boardApprovalSchema,
     states: [{
-        action: {type: String, enum: ["Approved", "Filed"]},
-        date: Date, comment: String
+        action: Object.assign({enum: ["Approved", "Filed"]}, stringType),
+        date: Date, comment: stringType
     }]
 });
 
 schemas.message.set('collection', 'messages');
 
 schemas.clusterStatus = mongoose.Schema({
-    hostname: String,
+    hostname: stringType,
     port: Number,
     pmPort: Number,
-    nodeStatus: {type: String, enum: ["Running", "Stopped"]},
+    nodeStatus: Object.assign({enum: ["Running", "Stopped"]}, stringType),
     lastUpdate: Date,
     startupDate: Date,
     elastic: {
         up: Boolean,
-        message: String,
+        message: stringType,
         indices: [{
-            name: String,
+            name: stringType,
             up: Boolean,
-            message: String
+            message: stringType
         }]
     }
 });
 schemas.jobQueue = mongoose.Schema({
-    type: String,
-    status: {type: String, enum: ["Running"]},
-    error: String
+    type: stringType,
+    status: Object.assign({enum: ["Running"]}, stringType),
+    error: stringType
 });
 
 schemas.fs_files = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    filename: String,
-    contentType: String,
+    filename: stringType,
+    contentType: stringType,
     length: Number,
     chunkSize: Number,
     uploadDate: Date,
-    aliases: String,
+    aliases: stringType,
     metadata: {
-        status: String
+        status: stringType
     },
-    md5: String
+    md5: stringType
 });
 
 schemas.referenceDocumentSchema = {
-    docType: String,
-    document: String,
-    referenceDocumentId: String,
-    text: String,
-    uri: String,
-    providerOrg: String,
-    title: String,
-    languageCode: String,
-    source: String,
+    docType: stringType,
+    document: stringType,
+    referenceDocumentId: stringType,
+    text: stringType,
+    uri: stringType,
+    providerOrg: stringType,
+    title: stringType,
+    languageCode: stringType,
+    source: stringType,
     _id: false
 };
 schemas.dataSetSchema = {
-    source: String,
-    id: String,
-    studyUri: String,
-    notes: String
+    source: stringType,
+    id: stringType,
+    studyUri: stringType,
+    notes: stringType
 };
 schemas.classificationAudit = new mongoose.Schema({
     date: {type: Date, default: Date.now, index: true}, user: {
-        username: String
+        username: stringType
     },
     elements: [{
-        tinyId: String,
-        version: String,
+        tinyId: stringType,
+        version: stringType,
         _id: mongoose.Schema.Types.ObjectId,
-        name: String,
-        status: {type: String, enum: regStatusShared.orderedList},
-        eltType: {type: String, enum: ["cde", "form"]}
+        name: stringType,
+        status: Object.assign({enum: regStatusShared.orderedList}, stringType),
+        eltType: Object.assign({enum: ["cde", "form"]}, stringType)
     }],
-    newname: String,
-    action: {type: String, enum: ["add", "delete", "rename", "reclassify"]},
-    path: [String]
+    newname: stringType,
+    action: Object.assign({enum: ["add", "delete", "rename", "reclassify"]}, stringType),
+    path: [stringType]
 });
 
 
 schemas.meshClassification = new mongoose.Schema({
-    flatClassification: String,
-    eltId: String,
-    meshDescriptors: [String],
-    flatTrees: [String]
+    flatClassification: stringType,
+    eltId: stringType,
+    meshDescriptors: [stringType],
+    flatTrees: [stringType]
 });
 
 schemas.consoleLogSchema = new mongoose.Schema({ // everything server except express
     date: {type: Date, index: true, default: Date.now()},
-    message: String,
-    level: {type: String, enum: ['debug', 'info', 'warning', 'error'], default: 'info'}
+    message: stringType,
+    level: Object.assign({enum: ['debug', 'info', 'warning', 'error'], default: 'info'}, stringType)
 }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
 
 schemas.logSchema = new mongoose.Schema({ // express
-    level: String,
-    remoteAddr: {type: String, index: true},
-    url: String,
-    method: String,
-    httpStatus: String,
+    level: stringType,
+    remoteAddr: stringIndexType,
+    url: stringType,
+    method: stringType,
+    httpStatus: stringType,
     date: {type: Date, index: true},
-    referrer: String,
+    referrer: stringType,
     responseTime: {type: Number, index: true}
 }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
 
 schemas.logErrorSchema = new mongoose.Schema({ // everything server and express
-    message: String,
+    message: stringType,
     date: {type: Date, index: true},
-    details: String,
-    origin: String,
-    stack: String,
+    details: stringType,
+    origin: stringType,
+    stack: stringType,
     request: {
-        url: String,
-        method: String,
-        params: String,
-        body: String,
-        username: String,
-        userAgent: String,
-        ip: String
+        url: stringType,
+        method: stringType,
+        params: stringType,
+        body: stringType,
+        username: stringType,
+        userAgent: stringType,
+        ip: stringType
     }
 }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
 
 schemas.clientErrorSchema = new mongoose.Schema({
-    message: String,
+    message: stringType,
     date: {type: Date, index: true},
-    origin: String,
-    name: String,
-    stack: String,
-    userAgent: String,
-    url: String,
-    username: String,
-    ip: String
+    origin: stringType,
+    name: stringType,
+    stack: stringType,
+    userAgent: stringType,
+    url: stringType,
+    username: stringType,
+    ip: stringType
 }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
 
 schemas.storedQuerySchema = new mongoose.Schema({
-    searchTerm: {type: String, lowercase: true, trim: true},
+    searchTerm: Object.assign({lowercase: true, trim: true}, stringType),
     date: {type: Date, default: Date.now},
-    searchToken: String,
-    username: String,
-    remoteAddr: String,
+    searchToken: stringType,
+    username: stringType,
+    remoteAddr: stringType,
     isSiteAdmin: Boolean,
-    regStatuses: [String],
-    selectedOrg1: String,
-    selectedOrg2: String,
-    selectedElements1: [String],
-    selectedElements2: [String]
+    regStatuses: [stringType],
+    selectedOrg1: stringType,
+    selectedOrg2: stringType,
+    selectedElements1: [stringType],
+    selectedElements2: [stringType]
 }, {safe: {w: 0}});
 
 schemas.feedbackIssueSchema = new mongoose.Schema({
     date: {type: Date, default: Date.now, index: true},
     user: {
-        username: String,
-        ip: String
+        username: stringType,
+        ip: stringType
     },
     screenshot: {
-        id: String,
-        content: String
+        id: stringType,
+        content: stringType
     },
-    rawHtml: String,
-    userMessage: String,
-    browser: String,
-    reportedUrl: String
+    rawHtml: stringType,
+    userMessage: stringType,
+    browser: stringType,
+    reportedUrl: stringType
 });
 
 schemas.classificationAudit.set('collection', 'classificationAudit');
