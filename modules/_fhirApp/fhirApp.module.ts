@@ -6,6 +6,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { FhirAppComponent } from "./fhirApp.component";
 import { NativeRenderModule } from "../nativeRender/nativeRender.module";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
     imports: [
@@ -14,6 +15,7 @@ import { NativeRenderModule } from "../nativeRender/nativeRender.module";
         FormsModule,
         HttpClientModule,
         NativeRenderModule,
+        NgbModule.forRoot(),
     ],
     declarations: [
         FhirAppComponent,

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import async_forEach from 'async/forEach';
 import async_parallel from 'async/parallel';
 import * as moment from 'moment/min/moment.min';
@@ -10,6 +10,8 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/formShared';
 
 import _intersectionWith from 'lodash/intersectionWith';
+import { CodeAndSystem } from "../../shared/models.model";
+import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: 'cde-fhir-form',
@@ -60,11 +62,11 @@ export class FhirAppComponent {
     selectedObservations = []; // display data only
     selectedProfile: DisplayProfile;
     selectedProfileName: string;
-    showData = false;
     smart;
     summary = false;
     fhirToCdeCodeMap = {
-        'http://loinc.org': "LOINC"
+        'http://loinc.org': "LOINC",
+        'http://unitsofmeasure.org': "UCUM"
     };
     static externalCodeSystems = [
         {id: 'LOINC', uri: 'http://loinc.org'},
@@ -96,7 +98,10 @@ export class FhirAppComponent {
     };
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
-    constructor(private http: HttpClient) {
+    @ViewChild('viewObsModal') viewObsModal: NgbModalModule;
+
+    constructor(private http: HttpClient,
+                public modalService: NgbModal) {
 
         let queryParams: any = FhirAppComponent.searchParamsGet();
         this.selectedProfileName = queryParams['selectedProfile'];
@@ -161,7 +166,7 @@ export class FhirAppComponent {
     static getCodeSystem(uri) {
         let results = this.externalCodeSystems.filter(c => c.uri === uri);
         if (results.length) return results[0].id;
-        else return 'unknown';
+        else return 'no code system';
     }
 
     static getCodeSystemOut(system, fe = null) {
@@ -328,7 +333,7 @@ export class FhirAppComponent {
                 formElt.question.answer = o.valueQuantity.value;
                 // TODO add UOM
                 // if (feUom) feUom.question.answer = vq.unit;
-                // else fe.question.answerUom = vq.unit;
+                formElt.question.answerUom = new CodeAndSystem(this.fhirToCdeCodeMap[o.valueQuantity.system], o.valueQuantity.unit);
             }
         });
     }
@@ -572,6 +577,10 @@ export class FhirAppComponent {
             encounter: observation.context ? observation.context.reference : undefined,
             raw: observation
         };
+    }
+
+    openViewObs () {
+        this.modalService.open(this.viewObsModal, {size: 'lg'});
     }
 
     static searchParamsGet(): string[] {
