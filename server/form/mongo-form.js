@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 const config = require('../system/parseConfig');
 const schemas = require('./schemas');
-const mongo_data_system = require('../system/mongo-data');
+const mongo_data = require('../system/mongo-data');
 const connHelper = require('../system/connections');
 const logging = require('../system/logging');
 const elastic = require('./elastic');
@@ -14,6 +14,8 @@ var conn = connHelper.establishConnection(config.database.appData);
 
 schemas.formSchema.pre('save', function (next) {
     var self = this;
+    self.definitions = mongo_data.copyDefinition(self.naming);
+    self.designations = mongo_data.copyDesignation(self.naming);
     try {
         elastic.updateOrInsert(self);
     } catch (exception) {
@@ -43,7 +45,7 @@ exports.byTinyIdList = function (tinyIdList, callback) {
         .in(tinyIdList)
         .exec((err, forms) => {
             let result = [];
-            forms.forEach(mongo_data_system.formatElt);
+            forms.forEach(mongo_data.formatElt);
             _.forEach(tinyIdList, t => {
                 let c = _.find(forms, form => form.tinyId === t);
                 if (c) result.push(c);
@@ -185,7 +187,7 @@ exports.create = function (form, user, callback) {
         };
     }
     newForm.created = Date.now();
-    newForm.tinyId = mongo_data_system.generateTinyId();
+    newForm.tinyId = mongo_data.generateTinyId();
     newForm.createdBy = {
         userId: user._id
         , username: user.username
@@ -204,7 +206,7 @@ exports.byOtherId = function (source, id, cb) {
 };
 
 exports.userTotalSpace = function (name, callback) {
-    mongo_data_system.userTotalSpace(Form, name, callback);
+    mongo_data.userTotalSpace(Form, name, callback);
 };
 
 exports.query = function (query, callback) {
