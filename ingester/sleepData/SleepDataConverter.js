@@ -21,7 +21,8 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
                 name: 'NSRR',
             },
             elements: [{name: classification, elements: []}]
-        }]
+        }],
+        dataSets: [{studyUri: "https://sleepdata.org/datasets/shhs"}]
     };
 
     let names = sleep.display_name;
@@ -98,7 +99,9 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
     }
 
     sleep.category.forEach(c => {
-        cde.classification[0].elements[0].elements.push({name: c, elements: []})
+        let dashIndex = c.indexOf('-');
+        if (dashIndex > -1) c = c.substr(dashIndex + 1, c.length);
+        cde.classification[0].elements[0].elements.push({name: c.trim(), elements: []})
     });
 
     return cde;
