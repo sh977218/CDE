@@ -9,6 +9,7 @@ import { FormElement } from 'shared/form/form.model';
 export class NativeSectionMatrixComponent {
     @Input() formElement: FormElement;
     @Input() numSubQuestions: number;
+    NRS = NativeRenderService;
 
     constructor(public nrs: NativeRenderService) {
     }

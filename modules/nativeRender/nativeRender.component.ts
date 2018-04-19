@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { CdeForm, DisplayProfile } from 'shared/form/form.model';
+
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 
 @Component({
     selector: "cde-native-render",
@@ -101,7 +101,10 @@ export class NativeRenderComponent {
     @Input() set nativeRenderType(userType) {
         this.nrs.nativeRenderType = userType;
     }
-    @Input() submitForm: boolean;
+    @Input() set submitForm(flag: boolean) {
+        this.nrs.submitForm = flag;
+        this.nrs.eltSet(this.nrs.elt);
+    }
     @Input() showTitle: boolean = true;
     endpointUrl: string;
     formUrl: string;

@@ -74,19 +74,6 @@
                         (Use # in place of number. Ex: "#." for "1.")
                     </dd>
                 </dl>
-                <fieldset class="row cdeFieldset" [disabled]="dPVM.profile.displayType === 'Follow-up'">
-                    <legend>Electronic View Only <small *ngIf="dPVM.profile.displayType === 'Follow-up'">(Uncheck printable logic to enable)</small></legend>
-                    <dl class="row">
-                        <dt class="col-sm-5">Use dropdown if more than ... answers</dt>
-                        <dd class="col-sm-7 ">
-                            <input class="form-control" [(ngModel)]="dPVM.profile.answerDropdownLimit" type="number" min="0"
-                                   [disabled]="!canEdit" id="displayAnswerDropdownLimit_{{index}}"
-                                   (change)="onEltChange.emit();">
-                            (0 to display all answers as checkbox)
-                        </dd>
-
-                    </dl>
-                </fieldset>
             </div>
             <div class="col-lg-7 col-sm-12">
                 <div class="displayProfileRenderDiv" style="border: dashed 1px; zoom:60%; padding: 0 15px;">
@@ -125,6 +112,17 @@
                         </ng-container>
                     </div>
                 </div>
+                <fieldset class="row cdeFieldset">
+                    <legend>Dynamic View Only Settings</legend>
+                    <dl class="row">
+                        <dt class="col-sm-5">Multiple choice answer limit</dt>
+                        <dd class="col-sm-7 ">
+                            <input class="form-control" [(ngModel)]="dPVM.profile.answerDropdownLimit"
+                                   type="number" min="0" [disabled]="!canEdit"
+                                   id="displayAnswerDropdownLimit_{{index}}" (change)="onEltChange.emit();">
+                        </dd>
+                    </dl>
+                </fieldset>
             </div>
         </div>
         <hr/>

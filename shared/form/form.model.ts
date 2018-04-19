@@ -59,10 +59,6 @@ export class CdeForm extends Elt implements FormElementsContainer {
         return '/formView?tinyId=' + this.tinyId;
     }
 
-    getLabel() {
-        return this.naming[0].designation;
-    }
-
     static validate(elt: CdeForm) {
         if (!(elt instanceof CdeForm)) elt = new CdeForm(elt);
         elt.displayProfiles.forEach(dp => {
@@ -125,7 +121,7 @@ export class DisplayProfile {
     name: String;
     numberOfColumns: number = 4;
     repeatFormat: string = '#.';
-    answerDropdownLimit: number;
+    answerDropdownLimit: number = 10;
     sectionsAsMatrix: boolean = true;
     unitsOfMeasureAlias: {alias: string, unitOfMeasure: CodeAndSystem}[] = [];
 
@@ -153,6 +149,7 @@ export interface FormElement extends FormElementsContainer {
     descriptionId: string; // calculated formView view model
     readonly elementType: string;
     expanded; // calculated, formDescription view model
+    feId?: string; // calculated, nativeRender view model
     formElements: FormElement[];
     instructions: Instruction;
     label: string;
@@ -171,6 +168,7 @@ export class FormSection implements FormSectionOrForm {
     descriptionId: string; // calculated, formView view model
     elementType = 'section';
     expanded = true; // calculated, formDescription view model
+    feId?: string; // calculated, nativeRender view model
     forbidMatrix; // calculated, nativeRender view model
     formElements = [];
     hover: boolean; // calculated, formDescription view model
@@ -221,6 +219,7 @@ export class FormInForm implements FormSectionOrForm {
     edit: boolean; // calculated, formDescription view model
     elementType = 'form';
     expanded = false; // calculated, formDescription view model
+    feId?: string; // calculated, nativeRender view model
     forbidMatrix; // calculated, nativeRender view model
     formElements = [];
     hover: boolean; // calculated, formDescription view model
@@ -240,6 +239,7 @@ export class FormQuestion implements FormElement {
     edit: boolean = false; // calculated, formDescription view model
     elementType = 'question';
     expanded = true; // calculated, formDescription view model
+    feId?: string; // calculated, nativeRender view model
     formElements = [];
     hideLabel: boolean; // calculated, formView view model
     hover: boolean = false; // calculated, formDescription view model
@@ -247,7 +247,6 @@ export class FormQuestion implements FormElement {
     instructions;
     label = '';
     question: Question = new Question();
-    questionId: string; // calculated, nativeRender view model
     repeat;
     skipLogic = new SkipLogic();
     updatedSkipLogic; // calculated, formDescription view model
@@ -283,7 +282,7 @@ class InForm {
     }
 }
 
-export class PermissibleFormValue extends PermissibleValue implements FormElementsContainer {
+export class PermissibleFormValue extends PermissibleValue implements FormElementsContainer { // view model
     formElements: FormElement[]; // volatile, nativeRender
     index: number;
     nonValuelist: boolean;
@@ -330,7 +329,7 @@ export class Question extends DatatypeContainer {
     }
 }
 
-export class QuestionCde {
+export class QuestionCde { // copied from original data element, not configurable
     ids: CdeId[] = [];
     name: string;
     naming = [];
