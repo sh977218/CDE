@@ -89,7 +89,7 @@
             <button class="btn btn-danger" id="deleteDraftBtn" (click)="deleteModal.openDeleteModal();">
                 <i class="fa fa-trash fa-lg mr-1"></i>Delete Draft
             </button>
-            <br><span class="fake-link hand-cursor" (click)="viewChanges();">Changed</span> by
+            <br><span id="viewChangesBtn" class="fake-link hand-cursor" (click)="viewChanges();">Changed</span> by
             {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
             <cde-compare-history #compareHistoryModal [(newer)]="newer" [(older)]="older"></cde-compare-history>
         </ng-container>
