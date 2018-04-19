@@ -1,8 +1,5 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
-import { CompareService } from 'core/compare.service';
-import { ClassificationService } from 'core/classification.service';
 
 @Component({
     selector: "cde-compare-history",
@@ -36,7 +33,7 @@ import { ClassificationService } from 'core/classification.service';
     `],
     providers: [NgbActiveModal]
 })
-export class CompareHistoryComponent implements OnInit {
+export class CompareHistoryComponent {
 
     @Input() older;
     @Input() newer;
@@ -58,15 +55,10 @@ export class CompareHistoryComponent implements OnInit {
         }
     };
 
-    constructor(public modalService: NgbModal,
-                public compareService: CompareService,
-                public ClassificationService: ClassificationService) {
+    constructor(public modalService: NgbModal) {
     }
 
-    ngOnInit(): void {
-    }
-
-    openHistoryCompareModal() {
+    public open() {
         this.modalRef = this.modalService.open(this.compareContent, {size: 'lg'});
     }
 }

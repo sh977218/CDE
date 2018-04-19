@@ -1,8 +1,3 @@
-<button *ngIf="older && newer" class="btn btn-outline-dark" id="historyCompareBtn"
-        (click)="openHistoryCompareModal()">
-    <i class="fa fa-files-o"></i> Compare
-</button>
-
 <ng-template #compareContent let-c="close" let-d="dismiss" class="hugeModal">
     <div class="modal-header">
         <div class="col-3">
@@ -26,9 +21,9 @@
             <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.edited.select">
         </div>
     </div>
-    <div class="modal-body" *ngIf="getSelectedElt() && getSelectedElt().length == 2">
-        <cde-compare-object [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-object>
-        <cde-compare-array [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"
+    <div class="modal-body" *ngIf="newer && older">
+        <cde-compare-object [newer]="newer" [older]="older"></cde-compare-object>
+        <cde-compare-array [newer]="newer" [older]="older"
                            [(filter)]="filter"></cde-compare-array>
     </div>
     <div class="modal-footer">
