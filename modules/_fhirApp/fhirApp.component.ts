@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ViewChild } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import async_forEach from 'async/forEach';
 import async_parallel from 'async/parallel';
 import * as moment from 'moment/min/moment.min';
@@ -10,8 +10,8 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/formShared';
 
 import _intersectionWith from 'lodash/intersectionWith';
-import { CodeAndSystem } from "../../shared/models.model";
-import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
     selector: 'cde-fhir-form',
@@ -62,11 +62,15 @@ export class FhirAppComponent {
     selectedObservations = []; // display data only
     selectedProfile: DisplayProfile;
     selectedProfileName: string;
+    submitFhirPending = [];
+    submitFhirObservations = [];
     smart;
     summary = false;
     fhirToCdeCodeMap = {
         'http://loinc.org': "LOINC",
-        'http://unitsofmeasure.org': "UCUM"
+        "LOINC": 'http://loinc.org',
+        'http://unitsofmeasure.org': "UCUM",
+        'UCUM': "http://unitsofmeasure.org"
     };
     static externalCodeSystems = [
         {id: 'LOINC', uri: 'http://loinc.org'},
@@ -98,10 +102,8 @@ export class FhirAppComponent {
     };
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
-    @ViewChild('viewObsModal') viewObsModal: NgbModalModule;
-
     constructor(private http: HttpClient,
-                public modalService: NgbModal) {
+                public dialog: MatDialog) {
 
         let queryParams: any = FhirAppComponent.searchParamsGet();
         this.selectedProfileName = queryParams['selectedProfile'];
@@ -296,16 +298,11 @@ export class FhirAppComponent {
 
     loadFhirData() {
         if (!this.selectedEncounter) return;
-
         this.loadFhirDataToForm(this.elt);
     }
 
-    // loadFhirDataForm(form) {
-    //     this.mapIO(form, this.selectedEncounter.observations.map(o => o.raw), 'in');
-    //     iterateFeSync(form, this.loadFhirDataForm.bind(this));
-    // }
+
     loadFhirDataToForm(formElt) {
-        // this.mapInputElt(formElt, this.selectedEncounter.observations.map(o => o.raw));
         iterateFeSync(formElt, this.loadFhirDataToForm.bind(this), this.loadFhirDataToForm.bind(this), this.mapInputQuestion.bind(this));
     }
 
@@ -321,9 +318,9 @@ export class FhirAppComponent {
         this.loadFhirData();
     }
 
-
     mapInputQuestion (formElt) {
         let observations = this.selectedEncounter.observations.map(o => o.raw);
+        formElt.question.cde.ids.push({source: "https://cde.nlm.nih.gov", id: formElt.question.cde.tinyId});
         observations.forEach(o => {
             let matchedCodes = _intersectionWith(
                 o.code.coding,
@@ -331,172 +328,243 @@ export class FhirAppComponent {
                 (a, b) =>  this.fhirToCdeCodeMap[a['system']] === b['source'] && a['code'] === b['id']);
             if (matchedCodes.length) {
                 formElt.question.answer = o.valueQuantity.value;
-                // TODO add UOM
-                // if (feUom) feUom.question.answer = vq.unit;
-                formElt.question.answerUom = new CodeAndSystem(this.fhirToCdeCodeMap[o.valueQuantity.system], o.valueQuantity.unit);
-            }
-        });
-    }
-
-    mapIO(form, observations, mode, createCb = null) {
-        let map = FhirAppComponent.getFormMap(form.tinyId ? form.tinyId : form.inForm.form.tinyId);
-
-        if (map && mode === 'in') {
-            /* tslint:disable */ let encounterFn = eval('(' + map.encounterFn + ')'); /* tslint:enable */
-            if (encounterFn) encounterFn(form, this.selectedEncounter);
-        }
-
-        let resourceObservationMap = {};
-        map && map.mapping.forEach(m => {
-            let key = m.resourceSystem + ' ' + m.resourceCode;
-            if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[key])) {
-                if (m.resourceCode === '*') resourceObservationMap[key] = observations;
-                else {
-                    let system = FhirAppComponent.getCodeSystemOut(m.resourceSystem);
-                    resourceObservationMap[key] = observations.filter(
-                        o => o.code.coding.some(
-                            c => c.system === system && c.code === m.resourceCode
-                        )
-                    );
-                    if (createCb && resourceObservationMap[key].length === 0) {
-                        let filtered = map.mapping
-                            .filter(mo => mo.resourceComponentSystem && mo.resourceComponentCode
-                                && mo.resourceSystem === m.resourceSystem && mo.resourceCode === m.resourceCode)
-                            .map(mo => [
-                                mo.resourceComponentSystem + ' ' + mo.resourceComponentCode,
-                                {system: mo.resourceComponentSystem, code: mo.resourceComponentCode}
-                            ]);
-                        let components = Array.from((new Map(filtered)).values());
-                        resourceObservationMap[key].push(
-                            createCb({system: m.resourceSystem, code: m.resourceCode}, components));
-                    }
-                }
-            }
-        });
-
-        // update observations
-        let patient = this.patient;
-        let encounter = this.selectedEncounter;
-        function parseDateTime(fe) {
-            let m = moment(fe.question.answer);
-            if (m.isValid()) {
-                fe.question.answerDate = {year: m.year(), month: m.month() + 1, day: m.date()};
-                fe.question.answerTime = {hour: m.hour(), minute: m.minute(), second: m.second()};
-            }
-        }
-        function getValueQuantity(fe, uomSystem, uomCode = null, feUom = null) {
-            return {
-                value: fe.question.answer,
-                unit: fe.question.answerUom || feUom && feUom.question.answer || uomCode,
-                system: FhirAppComponent.getCodeSystemOut(uomSystem),
-                code: fe.question.answerUom || feUom && feUom.question.answer || uomCode
-            };
-        }
-        function setValueQuantity(fe, vq, feUom = null) {
-            fe.question.answer = vq.value;
-            if (feUom) feUom.question.answer = vq.unit;
-            else fe.question.answerUom = vq.unit;
-        }
-        function getById(form, tinyId, instance = 0) {
-            let count = -1;
-            let result = null;
-            function getByIdRecurse(fe, tinyId) {
-                fe.formElements.forEach(f => {
-                    if (f.elementType === 'section') getByIdRecurse(f, tinyId);
-                    else if (f.elementType === 'form') {
-                        if (f.inForm.form.tinyId === tinyId) {
-                            count++;
-                            if (count >= instance) return result = f;
-                        }
-                        getByIdRecurse(f, tinyId);
-                    } else {
-                        if (f.question.cde.tinyId === tinyId) {
-                            count++;
-                            if (count >= instance) return result = f;
-                            f.question.answers.forEach(a => {
-                                if (a.formElements && !result) {
-                                    a.formElements.forEach(sq => !result && getByIdRecurse(sq, tinyId));
-                                }
-                            });
-                        }
-                    }
-                    if (result) return;
-                });
-            }
-            getByIdRecurse(form, tinyId);
-            return result;
-        }
-        map && map.mapping.forEach(m => {
-            function getByCode(form, instance = 0, system = null, code = null) {
-                if (!system) system = m.resourceSystem;
-                if (!code) code = m.resourceCode;
-                let count = -1;
-                let result = null;
-                function getByCodeRecurse(fe) {
-                    fe.formElements.forEach(f => {
-                        if (f.elementType === 'section') getByCodeRecurse(f);
-                        else if (f.elementType === 'form') {
-                            if (f.inForm.form.ids.filter(id => id.source === system && id.id === code).length) {
-                                count++;
-                                if (count >= instance) return result = f;
-                            }
-                            getByCodeRecurse(f);
-                        } else {
-                            if (f.question.cde.ids.filter(id => id.source === system && id.id === code).length) {
-                                count++;
-                                if (count >= instance) return result = f;
-                                f.question.answers.forEach(a => {
-                                    if (a.formElements && !result) {
-                                        a.formElements.forEach(sq => !result && getByCodeRecurse(sq));
-                                    }
-                                });
-                            }
-                        }
-                        if (result) return;
-                    });
-                }
-                getByCodeRecurse(form);
-                return result;
-            }
-            function getSubByCode(form, instance = 0) {
-                return getByCode(getByCode(form), 0, m.resourceComponentSystem, m.resourceComponentCode);
-            }
-            function getComponent(res) {
-                let system = FhirAppComponent.getCodeSystemOut(m.resourceComponentSystem);
-                let code = m.resourceComponentCode;
-                if (res.component) {
-                    let components = res.component.filter(comp => comp.code.coding.some(
-                        c => c.system === system && c.code === code
-                    ));
-                    if (components.length) return components[0];
-                    else return null;
-                } else {
-                    res.component = {};
-                    return res.component;
-                }
-            }
-            let key = m.resourceSystem + ' ' + m.resourceCode;
-            if (m.resource === 'Observation' && resourceObservationMap[key]
-                && (mode === 'in' && m.inFn || mode === 'out' && m.outFn)) {
-                resourceObservationMap[key].forEach(o => {
-                    /* tslint:disable */ let resFn = eval('(' + m.resourcePropertyObj + ')'); /* tslint:enable */
-                    if (!resFn) resFn = obj => obj;
-
-                    if (mode === 'in') {
-                        /* tslint:disable */ let inFn = eval('(' + m.inFn + ')'); /* tslint:enable */
-                        if (inFn) inFn(form, resFn(o)[m.resourceProperty]);
-                    } else if (mode === 'out') {
-                        /* tslint:disable */ let outFn = eval('(' + m.outFn + ')'); /* tslint:enable */
-                        if (outFn) resFn(o)[m.resourceProperty] = outFn(form);
-                    }
+                formElt.question.unitsOfMeasure.forEach(feUom => {
+                   if (feUom.system === this.fhirToCdeCodeMap[o.valueQuantity.system]
+                    && feUom.code === o.valueQuantity.unit) {
+                       formElt.question.answerUom = feUom;
+                   }
                 });
             }
         });
     }
+
+
+    updateObservation (formElt) {
+        let observations = this.selectedEncounter.observations.map(o => o.raw);
+        // formElt.question.cde.ids.push({source: "https://cde.nlm.nih.gov", id: formElt.question.cde.tinyId});
+        observations.forEach(o => {
+            let copy = JSON.parse(JSON.stringify(o));
+            let matchedCodes = _intersectionWith(
+                o.code.coding,
+                formElt.question.cde.ids,
+                (a, b) =>  {
+                    let result = this.fhirToCdeCodeMap[a['system']] === b['source'] && a['code'] === b['id'];
+                    if (result) console.log("match");
+                    return result;
+                });
+
+            if (matchedCodes.length) {
+                copy.valueQuantity.value = formElt.question.answer;
+                if (formElt.question.answerUom) {
+                    copy.valueQuantity.system = this.fhirToCdeCodeMap[formElt.question.answerUom.system];
+                    copy.valueQuantity.unit = formElt.question.answerUom.code;
+
+                }
+                this.submitFhirObservations.push(copy);
+                this.submitFhirPending.push({before: o, after: copy});
+            }
+            // else {
+            //     let obsCode = {
+            //         system: "https://cde.nlm.nih.gov",
+            //         code: formElt.question.cde.tinyId
+            //     };
+            //     formElt.question.cde.ids.forEach(id => {
+            //         if (id.source === 'LOINC') {
+            //             obsCode.system = this.fhirToCdeCodeMap['LOINC'];
+            //             obsCode.code = id.id;
+            //         }
+            //     });
+            //     this.createObs(obsCode, []);
+            // }
+        });
+    }
+
+    createObs (obsCode = null, compCodes = []) {
+        let observation = FhirAppComponent.newObservationGet();
+        observation.context.reference = 'Encounter/' + this.selectedEncounter.raw.id;
+        observation.issued = this.selectedEncounter.date;
+        observation.subject.reference = 'Patient/' + this.patient.id;
+        if (obsCode) observation.code = FhirAppComponent.getCoding(obsCode.system, obsCode.code);
+        if (compCodes.length) {
+            observation.component = [];
+            compCodes.forEach(c => {
+                observation.component.push({code: FhirAppComponent.getCoding(c.system, c.code)});
+            });
+        }
+        let category = FhirAppComponent.fhirObservations[obsCode.system + ' ' + obsCode.code];
+        if (category) {
+            observation.category.push({
+                coding: [{
+                    system: 'http://hl7.org/fhir/observation-category',
+                    code: category.categoryCode
+                }]
+            });
+        }
+
+        this.submitFhirObservations.push(observation);
+        this.submitFhirPending.push({before: null, after: observation});
+        return observation;
+    }
+
+    // mapIO(form, observations, mode, createCb = null) {
+    //     let map = FhirAppComponent.getFormMap(form.tinyId ? form.tinyId : form.inForm.form.tinyId);
+    //
+    //     if (map && mode === 'in') {
+    //         /* tslint:disable */ let encounterFn = eval('(' + map.encounterFn + ')'); /* tslint:enable */
+    //         if (encounterFn) encounterFn(form, this.selectedEncounter);
+    //     }
+    //
+    //     let resourceObservationMap = {};
+    //     map && map.mapping.forEach(m => {
+    //         let key = m.resourceSystem + ' ' + m.resourceCode;
+    //         if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[key])) {
+    //             if (m.resourceCode === '*') resourceObservationMap[key] = observations;
+    //             else {
+    //                 let system = FhirAppComponent.getCodeSystemOut(m.resourceSystem);
+    //                 resourceObservationMap[key] = observations.filter(
+    //                     o => o.code.coding.some(
+    //                         c => c.system === system && c.code === m.resourceCode
+    //                     )
+    //                 );
+    //                 if (createCb && resourceObservationMap[key].length === 0) {
+    //                     let filtered = map.mapping
+    //                         .filter(mo => mo.resourceComponentSystem && mo.resourceComponentCode
+    //                             && mo.resourceSystem === m.resourceSystem && mo.resourceCode === m.resourceCode)
+    //                         .map(mo => [
+    //                             mo.resourceComponentSystem + ' ' + mo.resourceComponentCode,
+    //                             {system: mo.resourceComponentSystem, code: mo.resourceComponentCode}
+    //                         ]);
+    //                     let components = Array.from((new Map(filtered)).values());
+    //                     resourceObservationMap[key].push(
+    //                         createCb({system: m.resourceSystem, code: m.resourceCode}, components));
+    //                 }
+    //             }
+    //         }
+    //     });
+    //
+    //     // update observations
+    //     let patient = this.patient;
+    //     let encounter = this.selectedEncounter;
+    //     function parseDateTime(fe) {
+    //         let m = moment(fe.question.answer);
+    //         if (m.isValid()) {
+    //             fe.question.answerDate = {year: m.year(), month: m.month() + 1, day: m.date()};
+    //             fe.question.answerTime = {hour: m.hour(), minute: m.minute(), second: m.second()};
+    //         }
+    //     }
+    //     function getValueQuantity(fe, uomSystem, uomCode = null, feUom = null) {
+    //         return {
+    //             value: fe.question.answer,
+    //             unit: fe.question.answerUom || feUom && feUom.question.answer || uomCode,
+    //             system: FhirAppComponent.getCodeSystemOut(uomSystem),
+    //             code: fe.question.answerUom || feUom && feUom.question.answer || uomCode
+    //         };
+    //     }
+    //     function setValueQuantity(fe, vq, feUom = null) {
+    //         fe.question.answer = vq.value;
+    //         if (feUom) feUom.question.answer = vq.unit;
+    //         else fe.question.answerUom = vq.unit;
+    //     }
+    //     function getById(form, tinyId, instance = 0) {
+    //         let count = -1;
+    //         let result = null;
+    //         function getByIdRecurse(fe, tinyId) {
+    //             fe.formElements.forEach(f => {
+    //                 if (f.elementType === 'section') getByIdRecurse(f, tinyId);
+    //                 else if (f.elementType === 'form') {
+    //                     if (f.inForm.form.tinyId === tinyId) {
+    //                         count++;
+    //                         if (count >= instance) return result = f;
+    //                     }
+    //                     getByIdRecurse(f, tinyId);
+    //                 } else {
+    //                     if (f.question.cde.tinyId === tinyId) {
+    //                         count++;
+    //                         if (count >= instance) return result = f;
+    //                         f.question.answers.forEach(a => {
+    //                             if (a.formElements && !result) {
+    //                                 a.formElements.forEach(sq => !result && getByIdRecurse(sq, tinyId));
+    //                             }
+    //                         });
+    //                     }
+    //                 }
+    //                 if (result) return;
+    //             });
+    //         }
+    //         getByIdRecurse(form, tinyId);
+    //         return result;
+    //     }
+    //     map && map.mapping.forEach(m => {
+    //         function getByCode(form, instance = 0, system = null, code = null) {
+    //             if (!system) system = m.resourceSystem;
+    //             if (!code) code = m.resourceCode;
+    //             let count = -1;
+    //             let result = null;
+    //             function getByCodeRecurse(fe) {
+    //                 fe.formElements.forEach(f => {
+    //                     if (f.elementType === 'section') getByCodeRecurse(f);
+    //                     else if (f.elementType === 'form') {
+    //                         if (f.inForm.form.ids.filter(id => id.source === system && id.id === code).length) {
+    //                             count++;
+    //                             if (count >= instance) return result = f;
+    //                         }
+    //                         getByCodeRecurse(f);
+    //                     } else {
+    //                         if (f.question.cde.ids.filter(id => id.source === system && id.id === code).length) {
+    //                             count++;
+    //                             if (count >= instance) return result = f;
+    //                             f.question.answers.forEach(a => {
+    //                                 if (a.formElements && !result) {
+    //                                     a.formElements.forEach(sq => !result && getByCodeRecurse(sq));
+    //                                 }
+    //                             });
+    //                         }
+    //                     }
+    //                     if (result) return;
+    //                 });
+    //             }
+    //             getByCodeRecurse(form);
+    //             return result;
+    //         }
+    //         function getSubByCode(form, instance = 0) {
+    //             return getByCode(getByCode(form), 0, m.resourceComponentSystem, m.resourceComponentCode);
+    //         }
+    //         function getComponent(res) {
+    //             let system = FhirAppComponent.getCodeSystemOut(m.resourceComponentSystem);
+    //             let code = m.resourceComponentCode;
+    //             if (res.component) {
+    //                 let components = res.component.filter(comp => comp.code.coding.some(
+    //                     c => c.system === system && c.code === code
+    //                 ));
+    //                 if (components.length) return components[0];
+    //                 else return null;
+    //             } else {
+    //                 res.component = {};
+    //                 return res.component;
+    //             }
+    //         }
+    //         let key = m.resourceSystem + ' ' + m.resourceCode;
+    //         if (m.resource === 'Observation' && resourceObservationMap[key]
+    //             && (mode === 'in' && m.inFn || mode === 'out' && m.outFn)) {
+    //             resourceObservationMap[key].forEach(o => {
+    //                 /* tslint:disable */ let resFn = eval('(' + m.resourcePropertyObj + ')'); /* tslint:enable */
+    //                 if (!resFn) resFn = obj => obj;
+    //
+    //                 if (mode === 'in') {
+    //                     /* tslint:disable */ let inFn = eval('(' + m.inFn + ')'); /* tslint:enable */
+    //                     if (inFn) inFn(form, resFn(o)[m.resourceProperty]);
+    //                 } else if (mode === 'out') {
+    //                     /* tslint:disable */ let outFn = eval('(' + m.outFn + ')'); /* tslint:enable */
+    //                     if (outFn) resFn(o)[m.resourceProperty] = outFn(form);
+    //                 }
+    //             });
+    //         }
+    //     });
+    // }
 
     newEncounterAdd() {
         this.smart.patient.api.create({
-            baseUrl: 'https://sb-fhir-stu3.smarthealthit.org/smartstu3/data/',
+            baseUrl: 'https://api-v5-stu3.hspconsortium.org/LLatLO/data/',
             type: 'Encounter',
             data: JSON.stringify(this.newEncounterGet())
         }).then(response => {
@@ -520,7 +588,7 @@ export class FhirAppComponent {
                 reference: null
             }
         };
-        encounter.period.start = encounter.period.end = this.newEncounterDate;
+        encounter.period.start = encounter.period.end = this.newEncounterDate + ":00-00:00";
         encounter.subject.reference = 'Patient/' + this.patient.id;
         if (this.patientOrganization) encounter.serviceProvider.reference = 'Organization/' + this.patientOrganization.id;
         delete encounter.id;
@@ -539,9 +607,6 @@ export class FhirAppComponent {
     newEncounterVerify() {
         if (!this.newEncounterType || !this.newEncounterDate) {
             this.newEncounterErrorMessage = 'Error: Type and Date are required.';
-            this.newEncounterValid = false;
-        } else if (!FhirAppComponent.isTime.exec(this.newEncounterDate)) {
-            this.newEncounterErrorMessage = 'Error: Invalid date format. Needs to be in format YYYY-MM-DDTHH:MM:SS-HH:MM';
             this.newEncounterValid = false;
         } else {
             this.newEncounterErrorMessage = '';
@@ -580,7 +645,10 @@ export class FhirAppComponent {
     }
 
     openViewObs () {
-        this.modalService.open(this.viewObsModal, {size: 'lg'});
+        this.dialog.open(ViewFhirObservationDialogComponent, {
+            width: '700px',
+            data: { selectedObservations: this.selectedObservations}
+        });
     }
 
     static searchParamsGet(): string[] {
@@ -593,57 +661,27 @@ export class FhirAppComponent {
         return params;
     }
 
+    prepareObservations(formElt) {
+        iterateFeSync(formElt, this.prepareObservations.bind(this),
+            this.prepareObservations.bind(this), this.updateObservation.bind(this));
+    }
+
     submitFhir() {
-        let submitFhirPending = [];
-        let submitFhirObservations = [];
-        this.selectedEncounter.observations.forEach(o => {
-            let copy = JSON.parse(JSON.stringify(o.raw));
-            submitFhirObservations.push(copy);
-            submitFhirPending.push({before: o.raw, after: copy});
-        });
+        this.submitFhirPending = [];
+        this.submitFhirObservations = [];
 
-        let createFn = (obsCode = null, compCodes = []) => {
-            let observation = FhirAppComponent.newObservationGet();
-            observation.context.reference = 'Encounter/' + this.selectedEncounter.raw.id;
-            observation.issued = this.selectedEncounter.date;
-            observation.subject.reference = 'Patient/' + this.patient.id;
-            if (obsCode) observation.code = FhirAppComponent.getCoding(obsCode.system, obsCode.code);
-            if (compCodes.length) {
-                observation.component = [];
-                compCodes.forEach(c => {
-                    observation.component.push({code: FhirAppComponent.getCoding(c.system, c.code)});
-                });
-            }
-            let category = FhirAppComponent.fhirObservations[obsCode.system + ' ' + obsCode.code];
-            if (category) {
-                observation.category.push({
-                    coding: [{
-                        system: 'http://hl7.org/fhir/observation-category',
-                        code: category.categoryCode
-                    }]
-                });
-            }
-
-            submitFhirObservations.push(observation);
-            submitFhirPending.push({before: null, after: observation});
-            return observation;
-        };
-        let outputMapIO = (elt) => {
-            this.mapIO(elt, submitFhirObservations, 'out', createFn);
-        };
-        outputMapIO(this.elt);
-        iterateFeSync(this.elt, outputMapIO);
+        this.prepareObservations(this.elt);
 
         // identify changed and submit to server
-        for (let i = 0; i < submitFhirPending.length; i++) {
-            let p = submitFhirPending[i];
+        for (let i = 0; i < this.submitFhirPending.length; i++) {
+            let p = this.submitFhirPending[i];
             if (FhirAppComponent.getObservationValue(p.before) === FhirAppComponent.getObservationValue(p.after)) {
-                submitFhirPending.splice(i, 1);
+                this.submitFhirPending.splice(i, 1);
                 i--;
             }
         }
         // TODO: refresh before copy from server and compare again to prevent save with conflict
-        async_forEach(submitFhirPending, (p, done) => {
+        async_forEach(this.submitFhirPending, (p, done) => {
             if (p.before) {
                 this.smart.api.update({
                     data: JSON.stringify(p.after),
@@ -701,3 +739,37 @@ export class FhirAppComponent {
         });
     }
 }
+
+@Component({
+    selector: 'nih-view-fhir-obs',
+    template: `
+        <div mat-dialog-content>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Observation</th>
+                    <th>Value</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let o of data.selectedObservations">
+                    <td>{{o.code}}</td>
+                    <td><pre>{{o.value}}</pre></td>
+                    <td>{{o.date}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div mat-dialog-actions>
+            <button mat-raised-button color="basic" mat-dialog-close cdkFocusInitial>Close</button>
+        </div>
+    `,
+})
+export class ViewFhirObservationDialogComponent {
+    constructor(
+        public dialogRef: MatDialogRef<ViewFhirObservationDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+}
+

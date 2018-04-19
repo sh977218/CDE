@@ -4,24 +4,46 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { FhirAppComponent } from "./fhirApp.component";
+import { FhirAppComponent, ViewFhirObservationDialogComponent } from "./fhirApp.component";
 import { NativeRenderModule } from "../nativeRender/nativeRender.module";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+
+import {
+    MatButtonModule,
+    MatCardModule,
+    MatDialogModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatProgressSpinnerModule,
+    MatRadioModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatToolbarModule
+} from '@angular/material';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+
 
 @NgModule({
     imports: [
+        BrowserAnimationsModule,
         BrowserModule,
         CommonModule,
         FormsModule,
         HttpClientModule,
         NativeRenderModule,
-        NgbModule.forRoot(),
+        MatIconModule,
+        MatInputModule,
+        MatButtonModule,
+        MatProgressSpinnerModule,
+        MatDialogModule,
     ],
     declarations: [
         FhirAppComponent,
+        ViewFhirObservationDialogComponent,
     ],
     entryComponents: [
         FhirAppComponent,
+        ViewFhirObservationDialogComponent,
     ],
     bootstrap: [FhirAppComponent]
 })
