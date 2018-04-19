@@ -1,7 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import _noop from 'lodash/noop';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { AlertService } from '_app/alert/alert.service';
 import { ITEM_MAP } from 'shared/models.model';
@@ -28,66 +26,19 @@ function createHistory(elt: DataElement | CdeForm): History {
     return Object.create(elt.elementType === 'cde' ? DataElement.copy(elt as DataElement) : CdeForm.copy(elt as CdeForm));
 }
 
-
 @Component({
     selector: 'cde-history',
-    templateUrl: './history.component.html',
-    styles: [`
-        caption {
-            caption-side: top;
-        }
-
-        .color-box {
-            width: 10px;
-            height: 10px;
-        }
-
-        .isSelected {
-            background-color: #f5f5f5;
-        }
-
-        #reorderIcon{
-            background-color: #fad000;
-        }
-        #addIcon{
-            background-color: #008000;
-        }
-        #removeIcon{
-            background-color: #a94442;
-        }
-        #editIcon{
-            background-color: #0000ff;
-        }
-
-    `],
-    providers: [NgbActiveModal]
+    templateUrl: './history.component.html'
 })
 export class HistoryComponent implements OnInit {
-    @ViewChild('compareContent') public compareContent: NgbModal;
     @Input() public elt: DataElement | CdeForm;
     @Input() public canEdit: boolean = false;
-    public modalRef: NgbActiveModal;
     showVersioned: boolean = false;
     public priorElements: History[];
     public numberSelected: number = 0;
-    public filter = {
-        reorder: {
-            select: true
-        },
-        add: {
-            select: true
-        },
-        remove: {
-            select: true
-        },
-        edited: {
-            select: true
-        }
-    };
 
     constructor(private alert: AlertService,
-                private http: HttpClient,
-                public modalService: NgbModal) {
+                private http: HttpClient) {
     }
 
     ngOnInit(): void {
@@ -126,10 +77,7 @@ export class HistoryComponent implements OnInit {
                 res.selected = true;
                 this.priorElements[this.priorElements.indexOf(priorElt)] = res;
             });
-        }))
-            .then(() => {
-                this.modalRef = this.modalService.open(this.compareContent, {size: 'lg'});
-            }, _noop);
+        }));
     }
 
     getSelectedElt() {

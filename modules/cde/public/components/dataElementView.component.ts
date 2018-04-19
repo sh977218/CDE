@@ -287,4 +287,8 @@ export class DataElementViewComponent implements OnInit {
             }
         }, () => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
     }
+
+    viewChanges() {
+
+    }
 }
