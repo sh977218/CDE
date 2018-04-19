@@ -82,7 +82,7 @@
     <div class="pull-right text-end">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
-            <button *ngIf="elt.valueDomain.allValid" class="btn  btn-success" id="openSave"
+            <button *ngIf="elt.valueDomain.allValid" class="btn btn-success" id="openSave"
                     (click)="saveModal.openSaveModal();">
                 <i class="fa fa-globe fa-lg mr-1"></i>Publish
             </button>
@@ -91,6 +91,7 @@
             </button>
             <br><span class="fake-link hand-cursor" (click)="viewChanges();">Changed</span> by
             {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
+            <cde-compare-history #compareHistoryModal [(newer)]="newer" [(older)]="older"></cde-compare-history>
         </ng-container>
     </div>
     <div class="py-2 clearfix"></div>

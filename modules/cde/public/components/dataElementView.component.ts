@@ -7,6 +7,8 @@ import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
 import _uniqWith from 'lodash/uniqWith';
 import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { AlertService } from '_app/alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
@@ -18,6 +20,7 @@ import { Comment } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity } from 'shared/de/deValidator';
 import { isOrgCurator } from 'shared/system/authorizationShared';
+import { CompareHistoryComponent } from 'compare/compareHistory/compareHistory.component';
 
 
 @Component({
@@ -35,6 +38,8 @@ export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent') commentAreaComponent: DiscussAreaComponent;
     @ViewChild('copyDataElementContent') copyDataElementContent: NgbModalModule;
     @ViewChild('tabSet') tabSet: NgbTabset;
+    @ViewChild('compareHistoryModal') public compareHistoryModal: CompareHistoryComponent;
+
     commentMode;
     currentTab = 'general_tab';
     deId;
@@ -288,7 +293,20 @@ export class DataElementViewComponent implements OnInit {
         }, () => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
     }
 
-    viewChanges() {
+    newer;
+    older;
 
+    viewChanges() {
+        let tinyId = this.route.snapshot.queryParams['tinyId'];
+        let draftEltObs = this.http.get<DataElement>('/draftDataElement/' + tinyId);
+        let publishedEltObs = this.http.get<DataElement>('/de/' + tinyId);
+        forkJoin([draftEltObs, publishedEltObs]).subscribe(res => {
+            if (res.length = 2) {
+                this.newer = res[0];
+                this.older = res[1];
+                this.compareHistoryModal.open();
+            } else this.alert.addAlert('danger', 'Error loading view changes. ');
+        }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err))
+        ;
     }
 }
