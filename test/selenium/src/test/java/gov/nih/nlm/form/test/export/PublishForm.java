@@ -21,9 +21,9 @@ public class PublishForm extends NlmCdeBaseTest {
         clickElement(By.linkText("Profile"));
         clickElement(By.linkText("My Published Form"));
         switchTab(1);
-        findElement(By.name("q1")).sendKeys("1");
-        findElement(By.name("q2")).sendKeys("2");
-        findElement(By.name("q3")).sendKeys("Lab Name");
+        findElement(By.name("0-0")).sendKeys("1");
+        findElement(By.name("0-1")).sendKeys("2");
+        findElement(By.name("0-2")).sendKeys("Lab Name");
         clickElement(By.xpath("//label[contains(.,'Female Gender')]"));
         clickElement(By.id("button_submit"));
         textPresent("Form Submitted");

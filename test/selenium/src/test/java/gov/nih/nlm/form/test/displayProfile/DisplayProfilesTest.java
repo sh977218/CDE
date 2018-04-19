@@ -26,8 +26,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
         textPresent("1", By.xpath("//div[@id='profile_0']//table/tbody/tr[1]/td[6]/span"));
         Assert.assertTrue(
-                findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_1']//label/span[text()='1st Grade']")).getLocation().y + 8 <
-                        findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_1']//label/span[text()='2nd Grade']")).getLocation().y
+                findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_0-1']//label/span[text()='1st Grade']")).getLocation().y + 8 <
+                        findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_0-1']//label/span[text()='2nd Grade']")).getLocation().y
         );
         scrollToViewById("profile_3");
         Assert.assertEquals(

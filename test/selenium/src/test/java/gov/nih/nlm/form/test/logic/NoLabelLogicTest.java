@@ -25,7 +25,7 @@ public class NoLabelLogicTest extends BaseFormTest {
         textPresent("Walking speed value");
         togglePrintableLogic();
         textNotPresent("Walking speed value");
-        clickElement(By.xpath("//span[. ='Unknown']"));
+        clickElement(By.xpath("//" + byValueListValueXPath("Unknown")));
         textPresent("Walking speed value");
     }
 

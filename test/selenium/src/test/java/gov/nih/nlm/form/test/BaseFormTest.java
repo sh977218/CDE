@@ -74,6 +74,10 @@ public class BaseFormTest extends FormCommentTest {
         textPresent(title, By.id(sectionId));
     }
 
+    public String byValueListValueXPath(String value) {
+        return"label[contains(.,'" + value + "')]";
+    }
+
     public void editSectionTitle(String sectionId, String title) {
         clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//i[contains(@class,'fa-edit')]"));
         String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input";

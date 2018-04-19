@@ -47,7 +47,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         findElement(By.xpath("//*[*[normalize-space()='Indicate date of reference scan']]//*//span[text()='If 10/11/2016: ']"));
         findElement(By.xpath("//*[*[normalize-space()='Indicate date of reference scan']]//*//span[text()='If more than 10/11/2016: ']"));
         findElement(By.xpath("//*[*[normalize-space()='Indicate date of reference scan']]//*//span[text()='If less than 10/11/2016: ']"));
-        findElement(By.xpath("//*[@id='Macula volume (OS)_1']"));
+        findElement(By.xpath("//*[@id='Macula volume (OS)_0-3']"));
         textPresent("left eye");
 
         togglePrintableLogic();
@@ -55,7 +55,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         textNotPresent("Macula volume (OD)");
         textNotPresent("Macula volume (OS)");
         textNotPresent("Laterality Type");
-        WebElement dateElt = findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input"));
+        WebElement dateElt = findElement(By.xpath("//*[@id='Indicate date of reference scan_0-1']//input"));
 
         dateElt.sendKeys("10112016");
         textPresent("Macula volume (OD)");
