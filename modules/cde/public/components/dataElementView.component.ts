@@ -7,7 +7,6 @@ import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
 import _uniqWith from 'lodash/uniqWith';
 import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { AlertService } from '_app/alert/alert.service';
@@ -306,7 +305,6 @@ export class DataElementViewComponent implements OnInit {
                 this.older = res[1];
                 this.compareHistoryModal.open();
             } else this.alert.addAlert('danger', 'Error loading view changes. ');
-        }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err))
-        ;
+        }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err));
     }
 }

@@ -8,6 +8,7 @@ import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
 import _uniqWith from 'lodash/uniqWith';
 import { Subscription } from 'rxjs/Subscription';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { AlertService } from '_app/alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
@@ -27,6 +28,7 @@ import { Comment } from 'shared/models.model';
 import { BrowserService } from 'widget/browser.service';
 import { AngularHelperService } from 'widget/angularHelper.service';
 import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
+import { CompareHistoryComponent } from 'compare/compareHistory/compareHistory.component';
 
 class LocatableError {
     id: string;
@@ -55,6 +57,8 @@ export class FormViewComponent implements OnInit {
     @ViewChild('mltPinModalCde') public mltPinModalCde: PinBoardModalComponent;
     @ViewChild('exportPublishModal') public exportPublishModal: NgbModalModule;
     @ViewChild('saveModal') public saveModal: SaveModalComponent;
+    @ViewChild('compareHistoryModal') public compareHistoryModal: CompareHistoryComponent;
+
     browserService = BrowserService;
     commentMode;
     currentTab = 'preview_tab';
@@ -418,4 +422,22 @@ export class FormViewComponent implements OnInit {
             });
         }, callback);
     }
+
+
+    newer;
+    older;
+
+    viewChanges() {
+        let tinyId = this.route.snapshot.queryParams['tinyId'];
+        let draftEltObs = this.http.get<DataElement>('/draftForm/' + tinyId);
+        let publishedEltObs = this.http.get<DataElement>('/form/' + tinyId);
+        forkJoin([draftEltObs, publishedEltObs]).subscribe(res => {
+            if (res.length = 2) {
+                this.newer = res[0];
+                this.older = res[1];
+                this.compareHistoryModal.open();
+            } else this.alert.addAlert('danger', 'Error loading view changes. ');
+        }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err));
+    }
+
 }
