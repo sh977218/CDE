@@ -17,12 +17,12 @@ public class DateTypes extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='Person Birth Date_5']//input[@type='datetime-local' and @step=1]"));
 
         goToFormDescription();
-        textPresent("Year", By.id("question_0_0"));
-        textPresent("Month", By.id("question_0_1"));
-        textNotPresent("Day", By.id("question_0_2"));
-        textPresent("Hour", By.id("question_0_3"));
-        textPresent("Minute", By.id("question_0_4"));
-        textPresent("Second", By.id("question_0_5"));
+        textPresent("Year", By.id("question_0-0"));
+        textPresent("Month", By.id("question_0-1"));
+        textNotPresent("Day", By.id("question_0-2"));
+        textPresent("Hour", By.id("question_0-3"));
+        textPresent("Minute", By.id("question_0-4"));
+        textPresent("Second", By.id("question_0-5"));
 
     }
 

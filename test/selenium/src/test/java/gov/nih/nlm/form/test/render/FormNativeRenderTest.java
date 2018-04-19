@@ -46,8 +46,8 @@ public class FormNativeRenderTest extends NlmCdeBaseTest {
 
         // required radio checked and no un-select
         goToFormDescription();
-        startEditQuestionById("question_4_0");
-        clickElement(By.xpath("//*[@id='question_4_0']//input[@title='Required']")); // make required
+        startEditQuestionById("question_4-0");
+        clickElement(By.xpath("//*[@id='question_4-0']//input[@title='Required']")); // make required
         hangon(2);
         goToPreview();
         WebElement label = findElement(By.xpath("//*[@id='Cytosine adenine guanine repeat expansion result_0']" +

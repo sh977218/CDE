@@ -2,6 +2,16 @@ import async_forEach from 'async/forEach';
 import async_forEachSeries from 'async/forEachSeries';
 import _noop from 'lodash/noop';
 
+export function addFormIds(parent, parentId = '') {
+    if (Array.isArray(parent.formElements)) {
+        parent.formElements.forEach((fe, i) => {
+            fe.feId = parentId ? parentId + '-' + i : '' + i;
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                addFormIds(fe, fe.feId);
+            }
+        });
+    }
+}
 
 export function areDerivationRulesSatisfied(elt) {
     let missingCdes = [];

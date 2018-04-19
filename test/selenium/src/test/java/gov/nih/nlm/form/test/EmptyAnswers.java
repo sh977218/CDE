@@ -11,11 +11,11 @@ public class EmptyAnswers extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("Stroke Symptoms/Comorbid Events");
         goToFormDescription();
-        textPresent("Answer Choices:", By.id("question_0_0"));
-        startEditQuestionById("question_0_0");
-        clickElement(By.cssSelector("#question_0_0 .formDescriptionAnswerList .select2-selection__clear"));
-        saveEditQuestionById("question_0_0");
-        textNotPresent("Answer Choices:", By.id("question_0_0"));
+        textPresent("Answer Choices:", By.id("question_0-0"));
+        startEditQuestionById("question_0-0");
+        clickElement(By.cssSelector("#question_0-0 .formDescriptionAnswerList .select2-selection__clear"));
+        saveEditQuestionById("question_0-0");
+        textNotPresent("Answer Choices:", By.id("question_0-0"));
     }
 
 }

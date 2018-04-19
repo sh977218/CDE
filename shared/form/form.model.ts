@@ -146,10 +146,9 @@ export interface FormElementsContainer {
 
 export interface FormElement extends FormElementsContainer {
     _id: ObjectId;
-    descriptionId: string; // calculated formView view model
     readonly elementType: string;
     expanded; // calculated, formDescription view model
-    feId?: string; // calculated, nativeRender view model
+    feId?: string; // calculated, nativeRender and formView view model
     formElements: FormElement[];
     instructions: Instruction;
     label: string;
@@ -165,10 +164,9 @@ export interface FormSectionOrForm extends FormElement {
 export class FormSection implements FormSectionOrForm {
     _id;
     edit: boolean; // calculated, formDescription view model
-    descriptionId: string; // calculated, formView view model
     elementType = 'section';
     expanded = true; // calculated, formDescription view model
-    feId?: string; // calculated, nativeRender view model
+    feId?: string; // calculated, nativeRender and formView view model
     forbidMatrix; // calculated, nativeRender view model
     formElements = [];
     hover: boolean; // calculated, formDescription view model
@@ -215,11 +213,10 @@ export class FormSection implements FormSectionOrForm {
 
 export class FormInForm implements FormSectionOrForm {
     _id;
-    descriptionId: string; // calculated, formView view model
     edit: boolean; // calculated, formDescription view model
     elementType = 'form';
     expanded = false; // calculated, formDescription view model
-    feId?: string; // calculated, nativeRender view model
+    feId?: string; // calculated, nativeRender and formView view model
     forbidMatrix; // calculated, nativeRender view model
     formElements = [];
     hover: boolean; // calculated, formDescription view model
@@ -235,11 +232,10 @@ export class FormInForm implements FormSectionOrForm {
 
 export class FormQuestion implements FormElement {
     _id;
-    descriptionId: string; // calculated, formView view model
     edit: boolean = false; // calculated, formDescription view model
     elementType = 'question';
     expanded = true; // calculated, formDescription view model
-    feId?: string; // calculated, nativeRender view model
+    feId?: string; // calculated, nativeRender and formView view model
     formElements = [];
     hideLabel: boolean; // calculated, formView view model
     hover: boolean = false; // calculated, formDescription view model

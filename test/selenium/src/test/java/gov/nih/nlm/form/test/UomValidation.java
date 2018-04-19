@@ -21,14 +21,14 @@ public class UomValidation extends BaseFormTest {
         textPresent("m");
         textPresent("cm");
 
-        startEditQuestionById("question_0_3");
-        questionEditAddUom("question_0_3", "UCUM", "kilogram");
-        questionEditAddUom("question_0_3", "Other", "Kilo");
-        questionEditRemoveUom("question_0_3", "inches");
-        saveEditQuestionById("question_0_3");
+        startEditQuestionById("question_0-3");
+        questionEditAddUom("question_0-3", "UCUM", "kilogram");
+        questionEditAddUom("question_0-3", "Other", "Kilo");
+        questionEditRemoveUom("question_0-3", "inches");
+        saveEditQuestionById("question_0-3");
         textNotPresent("inches");
-        findElement(By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionUom')]//*[text()='UCUM/' and text()='kg']"));
-        findElement(By.xpath("//*[@id='question_0_3']//*[contains(@class,'questionUom')]//*[text()='Kilo']"));
+        findElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[text()='UCUM/' and text()='kg']"));
+        findElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[text()='Kilo']"));
 
         goToPreview();
         findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_3_box']")).sendKeys("1.25");

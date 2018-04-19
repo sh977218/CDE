@@ -21,13 +21,13 @@ public class UpdateSkipLogicWhenEditLabel extends BaseFormTest {
         textPresent("Reason for premature intervention discontinuation");
         goToFormDescription();
 
-        startEditQuestionById("question_0_0");
-        clickElement(By.xpath("//*[@id='question_0_0']//i[contains(@class,'changeQuestionLabelIcon')]"));
+        startEditQuestionById("question_0-0");
+        clickElement(By.xpath("//*[@id='question_0-0']//i[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("There is skip logic using this label. It will be updated.");
         clickElement(By.xpath("//*[@id='q_select_name_0']//button"));
-        String cssClass = findElement(By.xpath("//*[@id='question_0_4']//i[contains(@class,'updatedSkipLogicIcon')]")).getAttribute("class");
+        String cssClass = findElement(By.xpath("//*[@id='question_0-4']//i[contains(@class,'updatedSkipLogicIcon')]")).getAttribute("class");
         Assert.assertEquals(cssClass.contains("fa-spin"), true);
-        saveEditQuestionById("question_0_0");
+        saveEditQuestionById("question_0-0");
 
         newFormVersion();
         goToFormByName(formName);

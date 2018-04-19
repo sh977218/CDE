@@ -5,7 +5,7 @@ import { pvGetDisplayValue, pvGetLabel } from 'shared/de/deShared';
 import {
     CdeForm, DisplayProfile, FormElement, FormQuestion, FormSectionOrForm, PermissibleFormValue, Question
 } from 'shared/form/form.model';
-import { iterateFeSync } from 'shared/form/formShared';
+import { addFormIds, iterateFeSync } from 'shared/form/formShared';
 
 
 @Injectable()
@@ -147,7 +147,7 @@ export class NativeRenderService {
         });
 
         // assign name ids of format 'prefix_section#-section#-question#_suffix'
-        NativeRenderService.addIds(this.elt, '');
+        addFormIds(this.elt);
         if (renderType === NativeRenderService.FOLLOW_UP) {
             this.followForm = NativeRenderService.cloneForm(this.elt);
             NativeRenderService.transformFormToInline(this.followForm);
@@ -177,18 +177,6 @@ export class NativeRenderService {
     static checkboxNullCheck(model: any) {
         if (!Array.isArray(model.answer)) model.answer = [];
         return model;
-    }
-
-    static addIds(parent, parentId) {
-        let feSize = (parent.formElements ? parent.formElements.length : 0);
-        for (let i = 0; i < feSize; i++) {
-            let fe = parent.formElements[i];
-            let feId = parentId ? parentId + '-' + i : '' + i;
-            fe.feId = feId;
-            if (fe.elementType === 'section' || fe.elementType === 'form') {
-                NativeRenderService.addIds(fe, feId);
-            }
-        }
     }
 
     static cloneForm(form: CdeForm): CdeForm {

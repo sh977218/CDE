@@ -13,28 +13,28 @@ public class EditSkipLogic extends BaseFormTest {
         String formName = "PROMIS SF v1.0-Fatigue 8a";
         goToFormByName(formName);
         goToFormDescription();
-        scrollToInfiniteById("question_3_2");
+        scrollToInfiniteById("question_3-2");
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        textPresent("Never", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
-        textPresent("Rarely", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
-        textPresent("Sometimes", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
-        textPresent("Often", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
-        textPresent("Always", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
+        textPresent("Never", By.xpath("//*[@id='question_3-2']//*[contains(@class,'answerList')]"));
+        textPresent("Rarely", By.xpath("//*[@id='question_3-2']//*[contains(@class,'answerList')]"));
+        textPresent("Sometimes", By.xpath("//*[@id='question_3-2']//*[contains(@class,'answerList')]"));
+        textPresent("Often", By.xpath("//*[@id='question_3-2']//*[contains(@class,'answerList')]"));
+        textPresent("Always", By.xpath("//*[@id='question_3-2']//*[contains(@class,'answerList')]"));
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToFormDescription();
-        scrollToInfiniteById("question_3_2");
+        scrollToInfiniteById("question_3-2");
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        textPresent("Never", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
-        textPresent("Rarely", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
-        textPresent("Sometimes", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
-        textPresent("Often", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
-        textPresent("Always", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
+        textPresent("Never", By.xpath("//*[@id='question_3-2']//*[contains(@class,'answerList')]"));
+        textPresent("Rarely", By.xpath("//*[@id='question_3-2']//*[contains(@class,'answerList')]"));
+        textPresent("Sometimes", By.xpath("//*[@id='question_3-2']//*[contains(@class,'answerList')]"));
+        textPresent("Often", By.xpath("//*[@id='question_3-2']//*[contains(@class,'answerList')]"));
+        textPresent("Always", By.xpath("//*[@id='question_3-2']//*[contains(@class,'answerList')]"));
 
-        startEditQuestionById("question_3_2");
-        (new Actions(driver)).moveToElement(findElement(By.id("question_3_2"))).perform(); // scroll into view
-        String inputXpath = locateSkipLogicEditTextareaXpathByQuestionId("question_3_2");
+        startEditQuestionById("question_3-2");
+        (new Actions(driver)).moveToElement(findElement(By.id("question_3-2"))).perform(); // scroll into view
+        String inputXpath = locateSkipLogicEditTextareaXpathByQuestionId("question_3-2");
         editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1, true,
                 "Unexpected number of tokens in expression 1");
         editSkipLogic(inputXpath, "=", 6, 1, true, "Unexpected number of tokens in expression 2");
@@ -47,7 +47,7 @@ public class EditSkipLogic extends BaseFormTest {
         editSkipLogic(inputXpath, "=", 6, 1, true, "Unexpected number of tokens in expression 6");
         editSkipLogic(inputXpath, "\"2\"", 5, 2, false, "Unexpected number of tokens in expression 2");
 
-        saveEditQuestionById("question_3_2");
+        saveEditQuestionById("question_3-2");
         newFormVersion();
 
         goToFormByName(formName);
