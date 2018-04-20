@@ -78,7 +78,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
-    </div>
+    </div>11
     <div class="pull-right text-end">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
@@ -91,7 +91,6 @@
             </button>
             <br><span id="viewChangesBtn" class="fake-link hand-cursor" (click)="viewChanges();">Changed</span> by
             {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
-            <cde-compare-history #compareHistoryModal [(newer)]="newer" [(older)]="older"></cde-compare-history>
         </ng-container>
     </div>
     <div class="py-2 clearfix"></div>
@@ -243,3 +242,4 @@
 </ng-template>
 
 <cde-pin-board-modal #mltPinModal module="cde"></cde-pin-board-modal>
+

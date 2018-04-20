@@ -147,7 +147,6 @@
             </button>
             <br><span id="viewChangesBtn" class="fake-link hand-cursor" (click)="viewChanges();">Changed</span>
             by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
-            <cde-compare-history #compareHistoryModal [(newer)]="newer" [(older)]="older"></cde-compare-history>
         </ng-container>
     </div>
     <div class="py-2 clearfix"></div>

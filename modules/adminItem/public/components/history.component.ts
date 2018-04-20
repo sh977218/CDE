@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AlertService } from '_app/alert/alert.service';
 import { ITEM_MAP } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
-import { CompareHistoryComponent } from 'compare/compareHistory/compareHistory.component';
+import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 
 class HistoryDe extends DataElement {
     promise?: Promise<History>;
@@ -37,10 +38,11 @@ export class HistoryComponent implements OnInit {
     showVersioned: boolean = false;
     public priorElements: History[];
     public numberSelected: number = 0;
-    @ViewChild('compareHistoryModal') public compareHistoryModal: CompareHistoryComponent;
+    @ViewChild('compareHistoryModal') public compareHistoryModal: CompareHistoryContentComponent;
 
 
-    constructor(private alert: AlertService,
+    constructor(public modalService: NgbModal,
+                private alert: AlertService,
                 private http: HttpClient) {
     }
 
@@ -84,9 +86,11 @@ export class HistoryComponent implements OnInit {
                 this.priorElements[this.priorElements.indexOf(priorElt)] = res;
             });
         })).then(() => {
-            this.newer = this.priorElements.filter(p => p.selected)[0];
-            this.older = this.priorElements.filter(p => p.selected)[1];
-            this.compareHistoryModal.open();
+            let newer = this.priorElements.filter(p => p.selected)[0];
+            let older = this.priorElements.filter(p => p.selected)[1];
+            const modalRef = this.modalService.open(CompareHistoryContentComponent, {size: 'lg'});
+            modalRef.componentInstance.newer = newer;
+            modalRef.componentInstance.older = older;
         }, err => this.alert.addAlert('danger', 'Error open history compare modal.' + err));
     }
 

@@ -28,7 +28,7 @@ import { Comment } from 'shared/models.model';
 import { BrowserService } from 'widget/browser.service';
 import { AngularHelperService } from 'widget/angularHelper.service';
 import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
-import { CompareHistoryComponent } from 'compare/compareHistory/compareHistory.component';
+import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 
 class LocatableError {
     id: string;
@@ -57,7 +57,6 @@ export class FormViewComponent implements OnInit {
     @ViewChild('mltPinModalCde') public mltPinModalCde: PinBoardModalComponent;
     @ViewChild('exportPublishModal') public exportPublishModal: NgbModalModule;
     @ViewChild('saveModal') public saveModal: SaveModalComponent;
-    @ViewChild('compareHistoryModal') public compareHistoryModal: CompareHistoryComponent;
 
     browserService = BrowserService;
     commentMode;
@@ -423,19 +422,17 @@ export class FormViewComponent implements OnInit {
         }, callback);
     }
 
-
-    newer;
-    older;
-
     viewChanges() {
         let tinyId = this.route.snapshot.queryParams['tinyId'];
         let draftEltObs = this.http.get<DataElement>('/draftForm/' + tinyId);
         let publishedEltObs = this.http.get<DataElement>('/form/' + tinyId);
         forkJoin([draftEltObs, publishedEltObs]).subscribe(res => {
             if (res.length = 2) {
-                this.newer = res[0];
-                this.older = res[1];
-                this.compareHistoryModal.open();
+                let newer = res[0];
+                let older = res[1];
+                const modalRef = this.modalService.open(CompareHistoryContentComponent, {size: 'lg'});
+                modalRef.componentInstance.newer = newer;
+                modalRef.componentInstance.older = older;
             } else this.alert.addAlert('danger', 'Error loading view changes. ');
         }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err));
     }

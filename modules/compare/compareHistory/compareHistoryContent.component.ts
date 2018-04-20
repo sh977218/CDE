@@ -1,9 +1,9 @@
-import { Component, Input, ViewChild } from '@angular/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: "cde-compare-history",
-    templateUrl: "./compareHistory.component.html",
+    templateUrl: "./compareHistoryContent.component.html",
     styles: [`
         caption {
             caption-side: top;
@@ -31,14 +31,9 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
             background-color: #0000ff;
         }
     `],
-    providers: [NgbActiveModal]
+    providers: []
 })
-export class CompareHistoryComponent {
-
-    @Input() older;
-    @Input() newer;
-    @ViewChild('compareContent') public compareContent: NgbModal;
-    public modalRef: NgbActiveModal;
+export class CompareHistoryContentComponent {
 
     public filter = {
         reorder: {
@@ -55,10 +50,6 @@ export class CompareHistoryComponent {
         }
     };
 
-    constructor(public modalService: NgbModal) {
-    }
-
-    public open() {
-        this.modalRef = this.modalService.open(this.compareContent, {size: 'lg'});
+    constructor(public activeModal: NgbActiveModal) {
     }
 }
