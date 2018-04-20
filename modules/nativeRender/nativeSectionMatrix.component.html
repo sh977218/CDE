@@ -2,7 +2,7 @@
     <thead>
     <tr>
         <th></th>
-        <th *ngFor="let a of formElement.formElements[0].question.answers" [textContent]="a.valueMeaningName"></th>
+        <th *ngFor="let a of formElement.formElements[0].question.answers">{{NRS.getPvLabel(a)}}</th>
     </tr>
     </thead>
     <tbody>
@@ -10,14 +10,13 @@
         [hidden]="!(!q.question.invisible || q.question.invisible && nrs.profile.displayInvisible)">
         <td>
             <label [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}"
-                   class="native-question-label"
-                   [textContent]="q.label"></label>
+                   class="native-question-label">{{q.label}}</label>
         </td>
         <td *ngFor="let qa of q.question.answers">
-            <input type="radio" [title]="qa.permissibleValue" [name]="q.questionId" [attr.name]="q.questionId"
+            <input type="radio" [title]="qa.permissibleValue" [name]="q.feId" [attr.name]="q.feId"
                    [ngModel]="q.question.answer" (click)="nrs.radioButtonSelect(q.question, $event.target.value)"
                    [value]="qa.permissibleValue" [attr.value]="qa.permissibleValue">
-            <span class="native-value" *ngIf="nrs.profile.displayValues" [textContent]="nrs.getPvValue(qa)"></span>
+            <span class="native-value" *ngIf="nrs.profile.displayValues">{{NRS.getPvDisplayValue(qa)}}</span>
         </td>
     </tr>
     </tbody>

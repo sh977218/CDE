@@ -14,11 +14,11 @@ public class FormFormUpdateTest extends NlmCdeBaseTest {
         textPresent("Some referenced items in this form have newer versions.");
 
         goToFormDescription();
-        textPresent("Substance User", By.id("inform_0_1"));
-        textPresent("(Outdated)", By.id("inform_0_1"));
-        textPresent("Repeats: 5 times", By.id("inform_0_1"));
-        textPresent("Show if: \"Neoadjuvant Therapy\" = \"Yes (specify type)\"", By.id("inform_0_1"));
-        clickElement(By.xpath("//*[@id='inform_0_1']//button[contains(@class,'updateQuestionBtn')]"));
+        textPresent("Substance User", By.id("form_0-1"));
+        textPresent("(Outdated)", By.id("form_0-1"));
+        textPresent("Repeats: 5 times", By.id("form_0-1"));
+        textPresent("Show if: \"Neoadjuvant Therapy\" = \"Yes (specify type)\"", By.id("form_0-1"));
+        clickElement(By.xpath("//*[@id='form_0-1']//button[contains(@class,'updateQuestionBtn')]"));
         textPresent("Substance User", By.id("mdd_section_title"));
         textPresent("was", By.id("mdd_section_title"));
         textPresent("was", By.id("mdd_d_form"));
@@ -27,7 +27,7 @@ public class FormFormUpdateTest extends NlmCdeBaseTest {
 
         goToFormByName(formName);
         goToFormDescription();
-        textNotPresent("(Outdated)", By.id("inform_0_1"));
-        textNotPresent("Substance User", By.id("inform_0_1"));
+        textNotPresent("(Outdated)", By.id("form_0-1"));
+        textNotPresent("Substance User", By.id("form_0-1"));
     }
 }

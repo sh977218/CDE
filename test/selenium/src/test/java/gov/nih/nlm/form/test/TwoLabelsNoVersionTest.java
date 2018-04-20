@@ -12,12 +12,12 @@ public class TwoLabelsNoVersionTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
         goToFormDescription();
-        startEditQuestionById("question_0_0");
-        clickElement(By.xpath("//*[@id='question_0_0']//i[contains(@class,'changeQuestionLabelIcon')]"));
+        startEditQuestionById("question_0-0");
+        clickElement(By.xpath("//*[@id='question_0-0']//i[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("No Label");
         clickElement(By.cssSelector("#q_select_name_1 button"));
         modalGone();
-        textPresent("Second name for label", By.xpath("//*[@id='question_0_0']//span[contains(@class,'questionLabel')]"));
+        textPresent("Second name for label", By.xpath("//*[@id='question_0-0']//span[contains(@class,'questionLabel')]"));
     }
 
 }

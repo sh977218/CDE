@@ -35,8 +35,7 @@ import { score } from 'shared/form/formShared';
 export class NativeQuestionComponent implements OnInit {
     @Input() formElement: FormQuestion;
     @Input() numSubQuestions: number;
-    @Input() parentValue: any;
-    @Input() index: any;
+    @Input() parentValue: string;
     NRS = NativeRenderService;
     datePrecisionToType = FormQuestion.datePrecisionToType;
     datePrecisionToStep = FormQuestion.datePrecisionToStep;

@@ -2,7 +2,7 @@
  || nrs.nativeRenderType === NRS.SHOW_IF)"
        class="table">
     <thead>
-        <tr *ngFor="let s of tableForm.s; let i = index">
+        <tr *ngFor="let s of tableForm.s; index as i">
             <th *ngFor="let q of s.q"
                 [attr.colspan]="q.cspan"
                 [attr.rowspan]="q.rspan"
@@ -17,7 +17,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let n of tableForm.rows; let ni = index">
+        <tr *ngFor="let n of tableForm.rows; index as ni">
             <td *ngFor="let q of tableForm.q"
                 style="height: 10px;max-width: 300px;max-height: 200px;"
                 [style.padding]="q.type === 'label' && !n.label ? 0 : null"
@@ -48,9 +48,9 @@
                                [attr.value]="a.permissibleValue"
                                [required]="q.question.required"
                                [disabled]="!q.question.editable"/>
-                        <span [textContent]="nrs.getPvLabel(a)"></span>
+                        <span [textContent]="NRS.getPvLabel(a)"></span>
                         <span class="native-value" *ngIf="nrs.profile.displayValues"
-                              [textContent]="nrs.getPvValue(a)"></span>
+                              [textContent]="NRS.getPvDisplayValue(a)"></span>
                     </label>
                 </div>
                 <div *ngIf="q.type === 'mlist'" class="checkbox native-table-cell native-table-list">
@@ -64,9 +64,9 @@
                                [attr.value]="a.permissibleValue"
                                [required]="q.question.required"
                                [disabled]="!q.question.editable"/>
-                        <span [textContent]="nrs.getPvLabel(a)"></span>
+                        <span [textContent]="NRS.getPvLabel(a)"></span>
                         <span class="native-value" *ngIf="nrs.profile.displayValues"
-                              [textContent]="nrs.getPvValue(a)"></span>
+                              [textContent]="NRS.getPvDisplayValue(a)"></span>
                     </label>
                 </div>
                 <div *ngIf="q.type === 'date'" class="native-table-cell" style="min-width: 135px;">
