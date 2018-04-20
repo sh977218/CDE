@@ -50,7 +50,12 @@
         </div>
         <div class="'col-xl-9 col-lg-8 col-12'">
             <div style="padding: 5px;max-width: 1010px;margin: 0 auto">
-                <h2 *ngIf="ioInProgress || !elt && !errorMessage && !summary" class="text-center mt20">Loading...</h2>
+                <h2 *ngIf="ioInProgress || !elt && !errorMessage && !summary" class="text-center mt20">
+                    Loading Patient Data from FHIR Server
+                    <span style="text-align: -webkit-center">
+                        <mat-spinner></mat-spinner>
+                    </span>
+                </h2>
                 <h2 *ngIf="errorMessage" class="text-center mt20" style="color: red">{{errorMessage}}</h2>
                 <div *ngIf="!ioInProgress && summary && patient" style="margin-top: 25px">
                     <h1>Encounters:</h1>
@@ -122,13 +127,17 @@
                         </tfoot>
                     </table>
                 </div>
+
+
                 <ng-container *ngIf="!summary && elt">
                     <cde-native-render [elt]="elt" [submitForm]="true"
                                        [profile]="selectedProfile"
                                        nativeRenderType="default">
                     </cde-native-render>
-                    <button mat-raised-button color="primary" type="submit" id="button_submit" (click)="submitFhir()"
-                           style="margin-left: 0; margin-top: 20px; font-weight: bold; width: 100px">
+                    <button mat-raised-button color="primary" [disabled]="saving"
+                            type="submit" id="button_submit" (click)="submitFhir()" style="margin-left: 0; margin-top: 20px; font-weight: bold; width: 100px">
+                        <!--<mat-spinner [diameter]="20" color="warn"></mat-spinner>-->
+                        <mat-icon *ngIf="saving" class="spin">refresh</mat-icon>
                         Submit
                     </button>
                     {{saveMessage}}

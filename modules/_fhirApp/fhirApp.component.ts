@@ -36,6 +36,16 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
             padding: 4px 8px 2px 8px;
             vertical-align: baseline;
         }
+        .spin {
+            animation-duration: 1s;
+            animation-name: spin;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+        }
+        @keyframes spin {
+            from {transform:rotate(0deg);}
+            to {transform:rotate(360deg);}
+        }
     `],
     templateUrl: './fhirApp.component.html'
 })
@@ -43,12 +53,12 @@ export class FhirAppComponent {
     elt: CdeForm;
     errorMessage: string;
     methodLoadForm = this.loadForm.bind(this);
-    newEncounter = false;
+    newEncounter: boolean;
     newEncounterDate: string;
     newEncounterErrorMessage: string;
     newEncounterReason: string;
     newEncounterType: string = 'Outpatient Encounter';
-    newEncounterValid = false;
+    newEncounterValid: boolean;
     patient: any;
     patientForms: any = [
         {name: 'FHIR: Vital Signs', tinyId: 'Xk8LrBb7V'},
@@ -66,7 +76,8 @@ export class FhirAppComponent {
     submitFhirObservations = [];
     smart;
     ioInProgress: boolean;
-    summary = false;
+    saving: boolean;
+    summary: boolean;
     fhirToCdeCodeMap = {
         'http://loinc.org': "LOINC",
         "LOINC": 'http://loinc.org',
@@ -77,30 +88,30 @@ export class FhirAppComponent {
         {id: 'LOINC', uri: 'http://loinc.org'},
         {id: 'UNITS', uri: 'http://unitsofmeasure.org/'},
     ];
-    static externalCodesDetail = {
-        LOINC: {
-            '18262-6': 'Low Density Lipoprotein Cholesterol',
-            '2085-9': 'High Density Lipoprotein Cholesterol',
-            '2093-3': 'Total Cholesterol',
-            '2571-8': 'Triglycerides',
-            '29463-7': 'Body Weight',
-            '39156-5': 'Body Mass Index',
-            '55284-4': 'Blood Pressure',
-            '8302-2': 'Body Height',
-            '8462-4': 'Diastolic Blood Pressure',
-            '8480-6': 'Systolic Blood Pressure'
-        }
-    };
-    static fhirObservations = {
-        'LOINC 18262-6': {categoryCode: 'laboratory'},
-        'LOINC 2085-9': {categoryCode: 'laboratory'},
-        'LOINC 2093-3': {categoryCode: 'laboratory'},
-        'LOINC 2571-8': {categoryCode: 'laboratory'},
-        'LOINC 29463-7': {categoryCode: 'vital-signs'},
-        'LOINC 39156-5': {categoryCode: 'vital-signs'},
-        'LOINC 55284-4': {categoryCode: 'vital-signs'},
-        'LOINC 8302-2': {categoryCode: 'vital-signs'}
-    };
+    // static externalCodesDetail = {
+    //     LOINC: {
+    //         '18262-6': 'Low Density Lipoprotein Cholesterol',
+    //         '2085-9': 'High Density Lipoprotein Cholesterol',
+    //         '2093-3': 'Total Cholesterol',
+    //         '2571-8': 'Triglycerides',
+    //         '29463-7': 'Body Weight',
+    //         '39156-5': 'Body Mass Index',
+    //         '55284-4': 'Blood Pressure',
+    //         '8302-2': 'Body Height',
+    //         '8462-4': 'Diastolic Blood Pressure',
+    //         '8480-6': 'Systolic Blood Pressure'
+    //     }
+    // };
+    // static fhirObservations = {
+    //     'LOINC 18262-6': {categoryCode: 'laboratory'},
+    //     'LOINC 2085-9': {categoryCode: 'laboratory'},
+    //     'LOINC 2093-3': {categoryCode: 'laboratory'},
+    //     'LOINC 2571-8': {categoryCode: 'laboratory'},
+    //     'LOINC 29463-7': {categoryCode: 'vital-signs'},
+    //     'LOINC 39156-5': {categoryCode: 'vital-signs'},
+    //     'LOINC 55284-4': {categoryCode: 'vital-signs'},
+    //     'LOINC 8302-2': {categoryCode: 'vital-signs'}
+    // };
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
     constructor(private http: HttpClient,
@@ -672,6 +683,8 @@ export class FhirAppComponent {
     }
 
     submitFhir() {
+        this.saving = true;
+
         this.submitFhirPending = [];
         this.submitFhirObservations = [];
 
@@ -700,7 +713,7 @@ export class FhirAppComponent {
                     index = this.selectedEncounter.observations.findIndex(o => o.raw === p.before);
                     if (index > -1) this.selectedEncounter.observations[index] = obs;
                     done();
-                });
+                }, done);
             }
             else {
                 this.smart.patient.api.create({
@@ -722,9 +735,13 @@ export class FhirAppComponent {
 
             this.loadFhirData();
             this.updateProgress();
+            this.saving = false;
         });
     }
 
+
+
+    // TODO this is not working yet
     updateProgress() {
         this.patientForms.forEach(f => {
             if (f.tinyId) {

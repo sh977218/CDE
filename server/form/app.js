@@ -312,17 +312,17 @@ exports.init = function (app, daoManager) {
 
     app.get('/ucumNames', (req, res) => {
         let uom = req.query.uom;
-        if (!uom || typeof uom !== 'string')
-            return res.sendStatus(400);
+        if (!uom || typeof uom !== 'string') return res.sendStatus(400);
 
         let resp = ucum.getSpecifiedUnit(uom, 'validate', true);
-        if (!resp || !resp.unit)
-            return res.send([]);
-        else res.send([{
-            name: resp.unit.name_,
-            synonyms: resp.unit.synonyms_.split('; '),
-            code: resp.unit.csCode_
-        }]);
+        if (!resp || !resp.unit) return res.send([]);
+        else {
+            res.send([{
+                name: resp.unit.name_,
+                synonyms: resp.unit.synonyms_.split('; '),
+                code: resp.unit.csCode_
+            }]);
+        }
     });
 
     app.get('/ucumValidate', (req, res) => {
