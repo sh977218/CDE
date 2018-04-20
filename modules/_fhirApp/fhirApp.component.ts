@@ -65,6 +65,7 @@ export class FhirAppComponent {
     submitFhirPending = [];
     submitFhirObservations = [];
     smart;
+    ioInProgress: boolean;
     summary = false;
     fhirToCdeCodeMap = {
         'http://loinc.org': "LOINC",
@@ -252,6 +253,7 @@ export class FhirAppComponent {
             this.smart = smart;
             this.smart.patient.read().then(pt => this.patient = pt);
 
+            this.ioInProgress = true;
             async_parallel([
                 cb => {
                     this.smart.patient.api.fetchAll({type: 'Encounter'})
@@ -292,6 +294,7 @@ export class FhirAppComponent {
                     }
                 });
                 this.filterObservations();
+                this.ioInProgress = false;
             });
         });
     }
@@ -300,7 +303,6 @@ export class FhirAppComponent {
         if (!this.selectedEncounter) return;
         this.loadFhirDataToForm(this.elt);
     }
-
 
     loadFhirDataToForm(formElt) {
         iterateFeSync(formElt, this.loadFhirDataToForm.bind(this), this.loadFhirDataToForm.bind(this), this.mapInputQuestion.bind(this));
@@ -363,6 +365,7 @@ export class FhirAppComponent {
                 this.submitFhirObservations.push(copy);
                 this.submitFhirPending.push({before: o, after: copy});
             }
+            // TODO
             // else {
             //     let obsCode = {
             //         system: "https://cde.nlm.nih.gov",
@@ -391,15 +394,17 @@ export class FhirAppComponent {
                 observation.component.push({code: FhirAppComponent.getCoding(c.system, c.code)});
             });
         }
-        let category = FhirAppComponent.fhirObservations[obsCode.system + ' ' + obsCode.code];
-        if (category) {
-            observation.category.push({
-                coding: [{
-                    system: 'http://hl7.org/fhir/observation-category',
-                    code: category.categoryCode
-                }]
-            });
-        }
+
+        // TODO what is this?
+        // let category = FhirAppComponent.fhirObservations[obsCode.system + ' ' + obsCode.code];
+        // if (category) {
+        //     observation.category.push({
+        //         coding: [{
+        //             system: 'http://hl7.org/fhir/observation-category',
+        //             code: category.categoryCode
+        //         }]
+        //     });
+        // }
 
         this.submitFhirObservations.push(observation);
         this.submitFhirPending.push({before: null, after: observation});

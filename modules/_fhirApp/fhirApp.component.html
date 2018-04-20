@@ -50,9 +50,9 @@
         </div>
         <div class="'col-xl-9 col-lg-8 col-12'">
             <div style="padding: 5px;max-width: 1010px;margin: 0 auto">
-                <h2 *ngIf="!elt && !errorMessage && !summary" class="text-center mt20">Loading...</h2>
+                <h2 *ngIf="ioInProgress || !elt && !errorMessage && !summary" class="text-center mt20">Loading...</h2>
                 <h2 *ngIf="errorMessage" class="text-center mt20" style="color: red">{{errorMessage}}</h2>
-                <div *ngIf="summary && patient" style="margin-top: 25px">
+                <div *ngIf="!ioInProgress && summary && patient" style="margin-top: 25px">
                     <h1>Encounters:</h1>
                     <table class="table">
                         <thead>
@@ -65,7 +65,7 @@
                         </thead>
                         <tbody>
                         <tr *ngFor="let e of patientEncounters" [class.isSelected]="e === selectedEncounter"
-                            (click)="selectedEncounter = selectedEncounter === e ? null : e; encounterSelected()">
+                            (click)="selectedEncounter = e; encounterSelected()">
                             <td>
                                 <mat-icon *ngIf="e === selectedEncounter">check_box</mat-icon>
                                 <mat-icon *ngIf="e !== selectedEncounter">check_box_outline_blank</mat-icon>
