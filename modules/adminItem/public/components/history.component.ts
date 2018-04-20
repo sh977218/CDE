@@ -38,8 +38,6 @@ export class HistoryComponent implements OnInit {
     showVersioned: boolean = false;
     public priorElements: History[];
     public numberSelected: number = 0;
-    @ViewChild('compareHistoryModal') public compareHistoryModal: CompareHistoryContentComponent;
-
 
     constructor(public modalService: NgbModal,
                 private alert: AlertService,

@@ -34,6 +34,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
     providers: []
 })
 export class CompareHistoryContentComponent {
+    newer;
+    older;
 
     public filter = {
         reorder: {

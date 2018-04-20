@@ -301,10 +301,8 @@ export class DataElementViewComponent implements OnInit {
                 let newer = res[0];
                 let older = res[1];
                 const modalRef = this.modalService.open(CompareHistoryContentComponent, {size: 'lg'});
-                setTimeout(()=>{
-                    modalRef.componentInstance.newer = newer;
-                    modalRef.componentInstance.older = older;
-                },5000);
+                modalRef.componentInstance.newer = newer;
+                modalRef.componentInstance.older = older;
 
             } else this.alert.addAlert('danger', 'Error loading view changes. ');
         }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err));
