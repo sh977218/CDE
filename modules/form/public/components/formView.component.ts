@@ -397,7 +397,7 @@ export class FormViewComponent implements OnInit {
         function findExistingErrors(parent: FormElementsContainer, fe: FormElement) {
             if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe)) {
                 validationErrors.push(new LocatableError(
-                    'SkipLogic error on form element "' + getLabel(fe) + '".', fe.feId));
+                    'SkipLogic error on form element "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
             }
             if (Array.isArray(fe.formElements)) {
                 fe.formElements.forEach(f => findExistingErrors(fe, f));
@@ -413,7 +413,7 @@ export class FormViewComponent implements OnInit {
             this.ucumService.validateUoms(q.question, () => {
                 if (q.question.uomsValid.some(e => !!e)) {
                     this.validationErrors.push(new LocatableError(
-                        'Unit of Measure error on question "' + getLabel(q) + '".', q.feId));
+                        'Unit of Measure error on question "' + getLabel(q) + '".', q.elementType + '_' + q.feId));
                 }
                 cb();
             });

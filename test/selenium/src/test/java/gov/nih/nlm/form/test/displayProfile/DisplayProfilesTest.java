@@ -26,13 +26,13 @@ public class DisplayProfilesTest extends BaseFormTest {
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
         textPresent("1", By.xpath("//div[@id='profile_0']//table/tbody/tr[1]/td[6]/span"));
         Assert.assertTrue(
-                findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_0-1']//label/span[text()='1st Grade']")).getLocation().y + 8 <
-                        findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_0-1']//label/span[text()='2nd Grade']")).getLocation().y
+                findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_0-1']//" + byValueListValueXPath("1st Grade"))).getLocation().y + 8 <
+                        findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_0-1']//" + byValueListValueXPath("2nd Grade"))).getLocation().y
         );
         scrollToViewById("profile_3");
         Assert.assertEquals(
-                findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//*/span[text()='1st Grade']")).getLocation().y,
-                findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//*/span[text()='5th Grade']")).getLocation().y
+                findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//" + byValueListValueXPath("1st Grade"))).getLocation().y,
+                findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//" + byValueListValueXPath("5th Grade"))).getLocation().y
         );
         newFormVersion();
 
@@ -56,23 +56,23 @@ public class DisplayProfilesTest extends BaseFormTest {
         hangon(1);
         assertNoElt(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']"));
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
-        Assert.assertTrue(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//*/span[text()[contains(., 'Never')]]")).getLocation().y + 8 <
-                findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//*/span[text()[contains(., 'Rarely')]]")).getLocation().y
+        Assert.assertTrue(findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//" + byValueListValueXPath("Never"))).getLocation().y + 8 <
+                findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//" + byValueListValueXPath("Rarely"))).getLocation().y
         );
         selectDisplayProfileByName("No Matrix No Values Wider");
         hangon(1);
-        Assert.assertEquals(findElement(By.xpath("//*[*[normalize-space()='I was irritated more than people knew']]//*[normalize-space(.)='Never']")).getLocation().y,
-                findElement(By.xpath("//*[*[normalize-space()='I was irritated more than people knew']]//*[normalize-space(.)='Always']")).getLocation().y
+        Assert.assertEquals(findElement(By.xpath("//*[*[normalize-space()='I was irritated more than people knew']]//" + byValueListValueXPath("Never"))).getLocation().y,
+                findElement(By.xpath("//*[*[normalize-space()='I was irritated more than people knew']]//" + byValueListValueXPath("Always"))).getLocation().y
         );
 
         selectDisplayProfileByName("Multiple Select");
         hangon(1);
-        new Select(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Never");
-        new Select(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Rarely");
-        new Select(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//select"))).selectByVisibleText("Often");
-        new Select(findElement(By.xpath("//div[@id='I felt angry_1']//select"))).selectByVisibleText("Sometimes");
-        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='Adverse Event Ongoing Event Indicator_0']//div//input[@type='radio']")).size(), 2);
-        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage_1']//div//input[@type='radio']")).size(), 3);
+        new Select(findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//select"))).selectByVisibleText("Never");
+        new Select(findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//select"))).selectByVisibleText("Rarely");
+        new Select(findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//select"))).selectByVisibleText("Often");
+        new Select(findElement(By.xpath("//div[@id='I felt angry_0-1']//select"))).selectByVisibleText("Sometimes");
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='Adverse Event Ongoing Event Indicator_1-0']//div//input[@type='radio']")).size(), 2);
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage_1-1']//div//input[@type='radio']")).size(), 3);
 
         clickElement(By.id("displayProfiles_tab"));
 

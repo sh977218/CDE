@@ -25,7 +25,7 @@ public class EmptyLogic extends BaseFormTest {
 
         // Value Lists
         textPresent("Pulmonary function test not done reason");
-        findElement(By.xpath("//div[@id='Image Acquisition Event Yes No Not Done Indicator_2']//label/span[normalize-space()='No: C49487']")).click();
+        findElement(By.xpath("//div[@id='Image Acquisition Event Yes No Not Done Indicator_0-2']//" + byValueListValueXPath("No: C49487"))).click();
         textNotPresent("Pulmonary function test not done reason");
 
         // Numbers

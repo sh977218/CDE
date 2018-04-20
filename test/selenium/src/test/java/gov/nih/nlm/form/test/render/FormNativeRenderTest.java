@@ -1,12 +1,13 @@
 package gov.nih.nlm.form.test.render;
 
+import gov.nih.nlm.form.test.BaseFormTest;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class FormNativeRenderTest extends NlmCdeBaseTest {
+public class FormNativeRenderTest extends BaseFormTest {
 
     private void checkForm() {
         textPresent("Outside section form: PROMIS SF v1.0 - Phys. Function 10a");
@@ -16,8 +17,8 @@ public class FormNativeRenderTest extends NlmCdeBaseTest {
 
         // question radio un-select
         WebElement input = findElement(By.xpath("//*[@id='Does your health now limit you in doing vigorous activities, " +
-                "such as running, lifting heavy objects, participating in strenuous sports?_0']" +
-                "//label[contains(.,'Not at all')]//input"));
+                "such as running, lifting heavy objects, participating in strenuous sports?_0-0-0']//"
+                + byValueListValueXPath("Not at all") + "//input"));
         Assert.assertFalse(input.isSelected());
         input.click();
         Assert.assertTrue(input.isSelected());
@@ -32,8 +33,8 @@ public class FormNativeRenderTest extends NlmCdeBaseTest {
         Assert.assertFalse(input.isSelected());
 
         // single radio is checkbox if not required
-        input = findElement(By.xpath("//*[@id='Cytosine adenine guanine repeat expansion result_0']" +
-                "//label[span[text()='Not known']]//input[@type='checkbox']"));
+        input = findElement(By.xpath("//*[@id='Cytosine adenine guanine repeat expansion result_4-0']//"
+                + byValueListValueXPath("Not known") + "//input[@type='checkbox']"));
         Assert.assertFalse(input.isSelected());
     }
 
@@ -50,8 +51,8 @@ public class FormNativeRenderTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='question_4-0']//input[@title='Required']")); // make required
         hangon(2);
         goToPreview();
-        WebElement label = findElement(By.xpath("//*[@id='Cytosine adenine guanine repeat expansion result_0']" +
-                "//label[span[text()='Not known']]"));
+        WebElement label = findElement(By.xpath("//*[@id='Cytosine adenine guanine repeat expansion result_4-0']//"
+                + byValueListValueXPath("Not known")));
         label.findElement(By.xpath("//input[@type='radio']"));
         Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 1);
         label.findElement(By.cssSelector("input")).click();

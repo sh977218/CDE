@@ -56,10 +56,10 @@ public class EditSkipLogic extends BaseFormTest {
 
         togglePrintableLogic();
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_3-0']//*/span[normalize-space()='Not at all']"));
-        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_3-1']//*/span[normalize-space()='A little bit']"));
+        clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_3-0']//" + byValueListValueXPath("Not at all")));
+        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_3-1']//" + byValueListValueXPath("A little bit")));
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_3-1']//*/span[normalize-space()='Not at all']"));
+        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_3-1']//" + byValueListValueXPath("Not at all")));
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
     }
 
