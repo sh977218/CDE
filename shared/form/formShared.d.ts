@@ -12,6 +12,7 @@ type sectionCbSync = (fe: FormSection) => (boolean|void); // returns skipChildre
 type continueCb = (error?: string, skipChildren?: boolean) => void;
 type cb = (error?: string) => void;
 
+declare function addFormIds(parent: CdeForm, parentId?: string): void;
 declare function areDerivationRulesSatisfied(elt: FormElementsContainer): {tinyId: string}[];
 declare function convertFormToSection(elt: CdeForm): FormInForm;
 declare function findQuestionByTinyId(tinyId: string, elt: FormElementsContainer): FormQuestion;

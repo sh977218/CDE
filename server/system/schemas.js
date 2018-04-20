@@ -244,6 +244,17 @@ schemas.namingSchema = new mongoose.Schema({
     source: stringType
 }, {_id: false});
 
+schemas.designationSchema = new mongoose.Schema({
+    designation: String,
+    tags: [String]
+}, {_id: false});
+
+schemas.definitionSchema = new mongoose.Schema({
+    definition: String,
+    definitionFormat: String,
+    tags: [String]
+}, {_id: false});
+
 let attachmentSchema = {
     fileid: stringIndexType,
     filename: stringType,

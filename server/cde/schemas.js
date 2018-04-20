@@ -12,6 +12,8 @@ var conceptSchema = new Schema({
 var deJson = {
     elementType: Object.assign({default: 'cde', enum: ['cde']}, sharedSchemas.stringType),
     naming: [sharedSchemas.namingSchema], // Any string used by which CDE is known, addressed or referred to
+    designations: [sharedSchemas.designationSchema],
+    definitions: [sharedSchemas.definitionSchema],
     source: sharedSchemas.stringType, // This field is replaced with sources
     sources: [sharedSchemas.sourceSchema], // Name of system from which CDE was imported or obtained from
     origin: sharedSchemas.stringType, // Name of system where CDE is derived
@@ -56,11 +58,12 @@ var deJson = {
             maxLength: Number, // To indicate limits on length
             regex: sharedSchemas.stringType, // To indicate a regular expression that someone may want to match on
             rule: sharedSchemas.stringType, // Any rule may go here
+            showAsTextArea: {type: Boolean, default: false} // multi-line
         },
         datatypeNumber: {
             minValue: Number,
             maxValue: Number,
-            precision: Number, // Any precision for this number. Typically an integer for a float
+            precision: Number, // Any precision for this number. Typically an integer for a float. Limit to 10^precision
         },
         datatypeDate: {
         },

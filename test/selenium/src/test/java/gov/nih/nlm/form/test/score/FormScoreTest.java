@@ -20,13 +20,13 @@ public class FormScoreTest extends QuestionTest {
         textPresent("id: cu-0EyndDn2");
         textPresent("id: 5h29ApPjjzE");
         textPresent("id: h7pThcFJv2r");
-        textPresent("(Incomplete Rule)", By.id("question_0_0"));
+        textPresent("(Incomplete Rule)", By.id("question_0-0"));
 
         addQuestionToSection("ALS Severity Score (ALSSS) - upper extremity dress hygiene score", 0);
         textNotPresent("id: cu-0EyndDn2");
         textPresent("id: 5h29ApPjjzE");
         textPresent("id: h7pThcFJv2r");
-        textPresent("(Incomplete Rule)", By.id("question_0_1"));
+        textPresent("(Incomplete Rule)", By.id("question_0-1"));
 
         addQuestionToSection("ALS Severity Score (ALSSS) - lower extremity walk score", 0);
         addQuestionToSection("ALS Severity Score (ALSSS) - swallow score", 0);
@@ -34,7 +34,7 @@ public class FormScoreTest extends QuestionTest {
         textNotPresent("id: cu-0EyndDn2");
         textNotPresent("id: 5h29ApPjjzE");
         textNotPresent("id: h7pThcFJv2r");
-        textNotPresent("Incomplete Rule", By.id("question_0_2"));
+        textNotPresent("Incomplete Rule", By.id("question_0-2"));
 
         textPresent("Swallowing (part of score)");
         textPresent("Lower extremity and walking (part of score)");

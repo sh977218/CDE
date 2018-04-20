@@ -51,8 +51,6 @@ function mapVariables(rows) {
 function mapMappings(rows) {
     let map = _.groupBy(rows, 'id');
     Object.keys(map).forEach(key => {
-        if (key === 'asthmahist')
-            console.log('a');
         let temp = map[key];
         Object.keys(temp[0]).forEach(k => {
             let target = temp[0][k];
@@ -68,8 +66,6 @@ function mapMappings(rows) {
             }
         }
         map[key] = _.clone(temp[0]);
-        if (Array.isArray(temp[0]['category'][0]))
-            console.log('a');
     });
     return map;
 }

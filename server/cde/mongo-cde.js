@@ -24,6 +24,8 @@ schemas.dataElementSchema.post('remove', function (doc, next) {
 });
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
+    self.definitions = mongo_data_system.copyDefinition(self.naming);
+    self.designations = mongo_data_system.copyDesignation(self.naming);
     var cdeError = deValidator.checkPvUnicity(self.valueDomain);
     if (cdeError && cdeError.pvNotValidMsg) {
         logging.errorLogger.error(cdeError);
