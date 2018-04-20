@@ -24,7 +24,7 @@ import { Subject } from 'rxjs/Subject';
 import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { CdeForm, FormElement, FormElementsContainer, FormSection } from 'shared/form/form.model';
-import { convertFormToSection, isSubForm, iterateFeSync } from 'shared/form/formShared';
+import { addFormIds, convertFormToSection, isSubForm, iterateFeSync } from 'shared/form/formShared';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
 import { SearchSettings } from 'search/search.model';
@@ -143,7 +143,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     @Input() set elt(e: CdeForm) {
         this._elt = e;
         this.addExpanded(e);
-        FormDescriptionComponent.addIds(e.formElements, "");
+        addFormIds(e);
     }
     get elt() {
         return this._elt;
@@ -191,14 +191,14 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                             this.addFormElement(copiedSection);
                         } else {
                             TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
-                            FormDescriptionComponent.addIds(this.elt.formElements, '');
+                            addFormIds(this.elt);
                             this.tree.treeModel.update();
                             this.tree.treeModel.expandAll();
                             this.onEltChange.emit();
                         }
                     } else {
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
-                        FormDescriptionComponent.addIds(this.elt.formElements, '');
+                        addFormIds(this.elt);
                         this.tree.treeModel.update();
                         this.tree.treeModel.expandAll();
                         this.onEltChange.emit();
@@ -297,19 +297,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         });
     }
 
-    static addIds(fes: FormElement[], preId: string): void {
-        fes.forEach((fe, i) => {
-            let newPreId = preId + '_' + i;
-            if (fe.elementType === 'section' || fe.elementType === 'form') {
-                fe.descriptionId = (fe.elementType === 'section' ? 'section' + newPreId : 'inform' + newPreId);
-                if (fe.formElements && fe.formElements.length > 0) this.addIds(fe.formElements, newPreId);
-            } else if (fe.elementType === 'question') fe.descriptionId = 'question' + newPreId;
-        });
-    }
-
     addIndex(elements, element, i) {
         elements.splice(i, 0, element);
-        FormDescriptionComponent.addIds(this.elt.formElements, '');
+        addFormIds(this.elt);
     }
 
     addQuestionFromSearch(cde, cb = null) {
@@ -319,7 +309,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             question.edit = true;
             this.addFormElement(question);
             this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
-            setTimeout(() => window.document.getElementById(question.descriptionId).scrollIntoView(), 0);
+            setTimeout(() => window.document.getElementById(question.feId).scrollIntoView(), 0);
             this.isModalOpen = false;
             if (cb) cb();
         });

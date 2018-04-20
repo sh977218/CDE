@@ -1,10 +1,11 @@
 package gov.nih.nlm.form.test.export;
 
+import gov.nih.nlm.form.test.BaseFormTest;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class PublishForm extends NlmCdeBaseTest {
+public class PublishForm extends BaseFormTest {
 
     @Test
     public void publishForm() {
@@ -21,10 +22,10 @@ public class PublishForm extends NlmCdeBaseTest {
         clickElement(By.linkText("Profile"));
         clickElement(By.linkText("My Published Form"));
         switchTab(1);
-        findElement(By.name("q1")).sendKeys("1");
-        findElement(By.name("q2")).sendKeys("2");
-        findElement(By.name("q3")).sendKeys("Lab Name");
-        clickElement(By.xpath("//label[contains(.,'Female Gender')]"));
+        findElement(By.name("0-0")).sendKeys("1");
+        findElement(By.name("0-1")).sendKeys("2");
+        findElement(By.name("0-2")).sendKeys("Lab Name");
+        clickElement(By.xpath("//" + byValueListValueXPath("Female Gender")));
         clickElement(By.id("button_submit"));
         textPresent("Form Submitted");
         switchTabAndClose(0);

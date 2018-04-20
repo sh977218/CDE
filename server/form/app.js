@@ -209,11 +209,11 @@ exports.init = function (app, daoManager) {
     // This is for tests only
     app.post('/sendMockFormData', function (req, res) {
         let mapping = JSON.parse(req.body.mapping);
-        if (req.body.q1 === "1" && req.body.q2 === "2"
-            && req.body.q3 === "Lab Name"
-            && req.body.q4 === "FEMALE"
+        if (req.body["0-0"] === "1" && req.body["0-1"] === "2"
+            && req.body["0-2"] === "Lab Name"
+            && req.body["0-3"] === "FEMALE"
             && mapping.sections[0].questions[0].question === "Number of CAG repeats on a larger allele"
-            && mapping.sections[0].questions[0].name === "q1"
+            && mapping.sections[0].questions[0].name === "0-0"
             && mapping.sections[0].questions[0].ids[0].source === "NINDS"
             && mapping.sections[0].questions[0].ids[0].id === "C14936"
             && mapping.sections[0].questions[0].ids[0].version === "3"
@@ -222,9 +222,9 @@ exports.init = function (app, daoManager) {
             && mapping.sections[0].questions[0].tinyId === "VTO0Feb6NSC"
             && mapping.sections[0].questions[1].tinyId === "uw_koHkZ_JT"
             && mapping.sections[0].questions[2].question === "Name of laboratory that performed this molecular study"
-            && mapping.sections[0].questions[2].name === "q3"
+            && mapping.sections[0].questions[2].name === "0-2"
             && mapping.sections[0].questions[2].tinyId === "EdUB2kWmV61"
-            && mapping.sections[0].questions[3].name === "q4"
+            && mapping.sections[0].questions[3].name === "0-3"
             && mapping.sections[0].questions[3].tinyId === "JWWpC2baVwK"
         ) {
             if (req.body.formUrl.indexOf(config.publicUrl + "/data") === 0) res.send('<html lang="en"><body>Form Submitted</body></html>'); else if (config.publicUrl.indexOf('localhost') === -1) {

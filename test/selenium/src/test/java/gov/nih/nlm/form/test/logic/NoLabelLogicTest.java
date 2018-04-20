@@ -15,17 +15,17 @@ public class NoLabelLogicTest extends BaseFormTest {
         textPresent("Undifferentiated/Indeterminant/Intersex");
         textPresent("Walking speed value");
         goToFormDescription();
-        startEditQuestionById("question_0_1");
-        questionEditRemoveUom("question_0_1", "meter per second");
-        findElement(By.xpath(locateSkipLogicEditTextareaXpathByQuestionId("question_0_1"))).sendKeys("\"Gender type\" = \"Unknown\"");
-        saveEditQuestionById("question_0_1");
+        startEditQuestionById("question_0-1");
+        questionEditRemoveUom("question_0-1", "meter per second");
+        findElement(By.xpath(locateSkipLogicEditTextareaXpathByQuestionId("question_0-1"))).sendKeys("\"Gender type\" = \"Unknown\"");
+        saveEditQuestionById("question_0-1");
         newFormVersion();
         textPresent("Show if: \"Gender type\" = \"Unknown\"");
         goToPreview();
         textPresent("Walking speed value");
         togglePrintableLogic();
         textNotPresent("Walking speed value");
-        clickElement(By.xpath("//span[. ='Unknown']"));
+        clickElement(By.xpath("//" + byValueListValueXPath("Unknown")));
         textPresent("Walking speed value");
     }
 
