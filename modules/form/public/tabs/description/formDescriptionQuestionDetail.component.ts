@@ -21,6 +21,7 @@ import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'shar
 export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() canEdit: boolean = false;
     @Input() elt;
+
     @Input() set node(node: TreeNode) {
         this.question = node.data;
         this.parent = node.parent.data;
@@ -37,10 +38,12 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.ucumService.validateUoms(this.question.question);
         }
     }
+
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionNameSelectTmpl') formDescriptionNameSelectTmpl: NgbModalModule;
     @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl: TemplateRef<any>;
     @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl: TemplateRef<any>;
+    @ViewChild('editAnswerModal') editAnswerModal: NgbModalModule;
     @ViewChild('slInput') slInput: ElementRef;
     answersOptions: any = {
         allowClear: true,
@@ -268,7 +271,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     uomAddNew() {
         if (!this.question.question.unitsOfMeasure.filter(u => u.code === this.newUom
-                && u.system === this.newUomSystem).length) {
+            && u.system === this.newUomSystem).length) {
             this.question.question.unitsOfMeasure.push(new CodeAndSystem(this.newUomSystem, this.newUom));
             this.onEltChange.emit();
         }
@@ -281,6 +284,14 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.uomAddNew();
             setTimeout(() => this.newUom = '', 0); // the type-ahead seems to fill in the value asynchronously
             this.ucumService.validateUoms(this.question.question);
+        }
+    }
+
+    openEditAnswerModal(q) {
+        if (q.question.answers.length > 0) {
+            let temp = this.modalService.open(this.editAnswerModal, {size: 'lg'});
+            temp.componentInstance.name = 'haha';
+            console.log('a');
         }
     }
 }

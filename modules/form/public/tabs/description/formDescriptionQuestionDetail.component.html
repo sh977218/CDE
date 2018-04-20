@@ -51,7 +51,8 @@
                 <span *ngIf="question.instructions.valueFormat !== 'html'"
                       [textContent]="question.instructions.value"></span>
             </div>
-            <div class="answerList" *ngIf="question.question.datatype === 'Value List' && question.question.answers && question.question.answers.length > 0">
+            <div class="answerList"
+                 *ngIf="question.question.datatype === 'Value List' && question.question.answers && question.question.answers.length > 0">
                 <span class="formViewQuestionLabel">Answer Choices:</span>
                 <span *ngFor="let pv of question.question.answers" class="badge badge-secondary formViewSummaryLabel"
                       style="background-color: #666" [textContent]="pv?.valueMeaningName"></span>
@@ -182,8 +183,10 @@
                         <ng-container *ngFor="let e of question.question.uomsValid; index as i">
                             <div *ngIf="e" style="color: red">
                                 <ng-container *ngIf="question.question.unitsOfMeasure[i].system"
-                                >{{question.question.unitsOfMeasure[i].system}}/</ng-container
-                                >{{question.question.unitsOfMeasure[i].code}} - {{e}}
+                                >{{question.question.unitsOfMeasure[i].system}}/
+                                </ng-container
+                                >
+                                {{question.question.unitsOfMeasure[i].code}} - {{e}}
                             </div>
                         </ng-container>
                     </div>
@@ -196,7 +199,11 @@
                 <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect"
                        (change)="onEltChange.emit()"/>
             </dd>
-            <dt class="col-2">Answer List:</dt>
+            <dt class="col-2">Answer List
+                <i *ngIf="question.question.answers.length > 0" class="fa fa-pencil hand-cursor"
+                   (click)="openEditAnswerModal(question)"></i>:
+            </dt>
+
             <dd class="col-10 answerList">
                 <select2 class="formDescriptionAnswerList" [data]="getAnswersData()" [value]="getAnswersValue()"
                          [options]="answersOptions" width="100%"
@@ -429,6 +436,21 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn  btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
+        <button class="btn btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
     </div>
 </ng-template>
+
+<ng-template #editAnswerModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>Edit Answer</h3>
+    </div>
+    <div class="modal-body">
+        {{name}}
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="d()" id="saveEditAnswerBtn">Save</button>
+        <button class="btn btn-warning" (click)="d()" id="cancelEditAnswerBtn">Cancel</button>
+    </div>
+</ng-template>
+
+11

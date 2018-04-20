@@ -98,7 +98,7 @@
     "@angular/platform-browser": "5.2.1",
     "@angular/platform-browser-dynamic": "5.2.1",
     "@angular/router": "5.2.1",
-    "@ng-bootstrap/ng-bootstrap": "1.0.0-beta.5",
+    "@ng-bootstrap/ng-bootstrap": "^1.1.2",
     "@ngtools/webpack": "1.9.5",
     "@types/async": "2.0.47",
     "@types/jasmine": "2.6.0",
