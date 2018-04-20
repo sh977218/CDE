@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeModule } from 'angular-tree-component';
 import "angular-tree-component/dist/angular-tree-component.css";
+import { NgSelectModule } from '@ng-select/ng-select';
 import { Select2Module } from 'ng2-select2';
 import { HotkeyModule } from 'angular2-hotkeys';
 
@@ -28,6 +29,7 @@ import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
 import { WidgetModule } from 'widget/widget.module';
+import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -39,6 +41,7 @@ const appRoutes: Routes = [
         FormsModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
+        NgSelectModule,
         Select2Module,
         HotkeyModule.forRoot(),
         TreeModule,
@@ -64,8 +67,11 @@ const appRoutes: Routes = [
         FormGeneralDetailsComponent,
         FormTermMappingComponent,
         NativeRenderFullComponent,
+        QuestionAnswerEditContentComponent
     ],
-    entryComponents: [],
+    entryComponents: [
+        QuestionAnswerEditContentComponent
+    ],
     exports: [],
     providers: [
         SkipLogicValidateService,

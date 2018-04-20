@@ -13,6 +13,7 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 import { UcumService } from 'form/public/ucum.service';
 import { CodeAndSystem, FormattedValue } from 'shared/models.model';
 import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'shared/form/form.model';
+import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
 
 @Component({
     selector: 'cde-form-description-question-detail',
@@ -58,6 +59,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             noResults: () => {
                 return 'No Answer List entries are listed on the CDE.';
             }
+        },
+        formatResult: () => {
+            return true;
         }
     };
     answersSelected: Array<string>;
@@ -289,9 +293,13 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     openEditAnswerModal(q) {
         if (q.question.answers.length > 0) {
-            let temp = this.modalService.open(this.editAnswerModal, {size: 'lg'});
-            temp.componentInstance.name = 'haha';
-            console.log('a');
+            const modalRef = this.modalService.open(QuestionAnswerEditContentComponent, {size: 'lg'});
+            modalRef.componentInstance.answers = q.question.answers;
+            modalRef.componentInstance.onSaved.subscribe((answers) => {
+                q.question.answers = answers;
+                this.onEltChange.emit();
+                modalRef.close();
+            });
         }
     }
 }

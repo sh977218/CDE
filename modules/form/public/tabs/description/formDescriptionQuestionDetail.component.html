@@ -199,16 +199,25 @@
                 <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect"
                        (change)="onEltChange.emit()"/>
             </dd>
-            <dt class="col-2">Answer List
+            <dt class="col-2">Answer List111
                 <i *ngIf="question.question.answers.length > 0" class="fa fa-pencil hand-cursor"
                    (click)="openEditAnswerModal(question)"></i>:
             </dt>
 
             <dd class="col-10 answerList">
+                <ng-select
+                        [items]="getAnswersData() | async"
+                        [multiple]="true"
+                        bindLabel="text"
+                        placeholder="Select Answer"
+                        [(ngModel)]="question.question.answers">
+                </ng-select>
+<!--
                 <select2 class="formDescriptionAnswerList" [data]="getAnswersData()" [value]="getAnswersValue()"
                          [options]="answersOptions" width="100%"
                          (valueChanged)="checkAnswers($event)">
                 </select2>
+-->
             </dd>
         </ng-container>
         <dt class="col-2">Default Answer:</dt>
@@ -439,18 +448,3 @@
         <button class="btn btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
     </div>
 </ng-template>
-
-<ng-template #editAnswerModal let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h3>Edit Answer</h3>
-    </div>
-    <div class="modal-body">
-        {{name}}
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-warning" (click)="d()" id="saveEditAnswerBtn">Save</button>
-        <button class="btn btn-warning" (click)="d()" id="cancelEditAnswerBtn">Cancel</button>
-    </div>
-</ng-template>
-
-11
