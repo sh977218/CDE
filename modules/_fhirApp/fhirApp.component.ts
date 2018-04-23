@@ -12,6 +12,7 @@ import { iterateFeSync } from 'shared/form/formShared';
 import _intersectionWith from 'lodash/intersectionWith';
 
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
+import { CdeId } from "../../shared/models.model";
 
 @Component({
     selector: 'cde-fhir-form',
@@ -54,7 +55,7 @@ export class FhirAppComponent {
     errorMessage: string;
     methodLoadForm = this.loadForm.bind(this);
     newEncounter: boolean;
-    newEncounterDate: string;
+    newEncounterDate: string = new Date().toISOString().slice(0, 16);
     newEncounterErrorMessage: string;
     newEncounterReason: string;
     newEncounterType: string = 'Outpatient Encounter';
@@ -85,34 +86,13 @@ export class FhirAppComponent {
         'http://unitsofmeasure.org': "UCUM",
         'UCUM': "http://unitsofmeasure.org"
     };
-    static externalCodeSystems = [
+    externalCodeSystems = [
         {id: 'LOINC', uri: 'http://loinc.org'},
-        {id: 'UNITS', uri: 'http://unitsofmeasure.org/'},
+        {id: 'UCUM', uri: 'http://unitsofmeasure.org'}
     ];
-    // static externalCodesDetail = {
-    //     LOINC: {
-    //         '18262-6': 'Low Density Lipoprotein Cholesterol',
-    //         '2085-9': 'High Density Lipoprotein Cholesterol',
-    //         '2093-3': 'Total Cholesterol',
-    //         '2571-8': 'Triglycerides',
-    //         '29463-7': 'Body Weight',
-    //         '39156-5': 'Body Mass Index',
-    //         '55284-4': 'Blood Pressure',
-    //         '8302-2': 'Body Height',
-    //         '8462-4': 'Diastolic Blood Pressure',
-    //         '8480-6': 'Systolic Blood Pressure'
-    //     }
-    // };
-    // static fhirObservations = {
-    //     'LOINC 18262-6': {categoryCode: 'laboratory'},
-    //     'LOINC 2085-9': {categoryCode: 'laboratory'},
-    //     'LOINC 2093-3': {categoryCode: 'laboratory'},
-    //     'LOINC 2571-8': {categoryCode: 'laboratory'},
-    //     'LOINC 29463-7': {categoryCode: 'vital-signs'},
-    //     'LOINC 39156-5': {categoryCode: 'vital-signs'},
-    //     'LOINC 55284-4': {categoryCode: 'vital-signs'},
-    //     'LOINC 8302-2': {categoryCode: 'vital-signs'}
-    // };
+
+    codeToDisplay = {};
+
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
 
@@ -134,6 +114,7 @@ export class FhirAppComponent {
             });
         }
     }
+
 
     encounterAdd(encounter) {
         this.patientEncounters.push({
@@ -158,35 +139,19 @@ export class FhirAppComponent {
             ? this.selectedEncounter.observations : this.patientObservations;
     }
 
-    static getCoding(system, code) {
-        // let text = this.getCodeDisplay(system, code);
-        return {
-            coding: [{
-                system: this.getCodeSystemOut(system),
-                code: code,
-                // display: text
-            }],
-            // text: text
-        };
-    }
-
-    static getCodingsPreview(coding) {
+    getCodingsPreview(coding) {
         return coding.reduce(
             (a, v) => a += v.display + ' ' + this.getCodeSystem(v.system) + ':' + v.code + '\n', ''
         );
     }
 
-    // static getCodeDisplay(system, code) {
-    //     return this.externalCodesDetail[system][code];
-    // }
-
-    static getCodeSystem(uri) {
+    getCodeSystem(uri) {
         let results = this.externalCodeSystems.filter(c => c.uri === uri);
         if (results.length) return results[0].id;
         else return 'no code system';
     }
 
-    static getCodeSystemOut(system, fe = null) {
+    getCodeSystemOut(system, fe = null) {
         let s = system;
         if (fe && fe.question && fe.question.cde && Array.isArray(fe.question.cde.ids) && fe.question.cde.ids.length) {
             s = fe.question.cde.ids[0].source;
@@ -197,7 +162,6 @@ export class FhirAppComponent {
         else return s;
     }
 
-
     getForm(tinyId, cb) {
         if (!this.selectedEncounter) {
             return this.snackBar.open("Select an encounter to open a form.", "", {duration: 2000});
@@ -205,6 +169,7 @@ export class FhirAppComponent {
 
         this.http.get<CdeForm>('/form/' + tinyId).subscribe(elt => {
             CdeForm.validate(elt);
+
             cb(null, elt);
         }, err => cb(err.statusText));
     }
@@ -221,34 +186,52 @@ export class FhirAppComponent {
     }
 
     getFormObservations(tinyId, cb) {
-        function pushFormObservationNames(tinyId) {
+        let pushFormObservationNames = tinyId => {
             let map = FhirAppComponent.getFormMap(tinyId);
             map && map.mapping.forEach(m => {
                 let key = m.resourceSystem + ' ' + m.resourceCode;
                 if (m.resource === 'Observation' && !resourceObservationMap[key] && m.resourceCode !== '*') {
                     resourceObservationMap[key] = true;
-                    observationNames.push(FhirAppComponent.getCodeSystemOut(m.resourceSystem)
+                    observationNames.push(this.getCodeSystemOut(m.resourceSystem)
                         + ' ' + m.resourceCode);
                 }
+
             });
-        }
+        };
 
         let resourceObservationMap = {};
         let observationNames = [];
         pushFormObservationNames(tinyId);
         this.getForm(tinyId, (err, elt) => {
-            if (!err && elt) iterateFeSync(elt, form => { pushFormObservationNames(form.inForm.form.tinyId); });
+            if (!err && elt) {
+                iterateFeSync(elt, form => pushFormObservationNames(form.inForm.form.tinyId), () => {}, q => {
+                    q.question.cde.ids.forEach(id => {
+                        if (id.source === 'LOINC') {
+                            this.http.get("/umlsCuiFromSrc/" + id.id + "/LNC").subscribe((r: any) => {
+                                if (r && r.result && r.result.results.length) {
+                                    this.codeToDisplay[id.source + ":" + id.id] = r.result.results[0].name.split(":")[0];
+                                    console.log(this.codeToDisplay);
+                                }
+                            });
+                        }
+                    });
+                    let localCdeId = new CdeId();
+                    localCdeId.source = "https://cde.nlm.nih.gov";
+                    localCdeId.id = q.question.cde.tinyId;
+                    q.question.cde.ids.push(localCdeId);
+                });
+            }
             cb(err, observationNames);
         });
     }
 
-    static getObservationValue(observation) {
+    getObservationValue(observation) {
         if (!observation) return undefined;
         if (observation.valueCodeableConcept) return this.getCodingsPreview(observation.valueCodeableConcept.coding);
         else if (observation.valueQuantity) {
             let quantity = observation.valueQuantity;
             if (quantity.value === undefined) return undefined;
-            return quantity.value + ' ' + quantity.code + '(' + this.getCodeSystem(quantity.system) + ')';
+            return quantity.value + ' ' + (quantity.code || "(no unit)") + ' (' + this.getCodeSystem(quantity.system) + ')';
         } else if (observation.component) {
             let value = observation.component.reduce((a, v) => {
                 let vs = this.getObservationValue(v);
@@ -267,7 +250,6 @@ export class FhirAppComponent {
             return name.family + ', ' + name.given.join(' ');
         }
     }
-    
 
     loadPatientData() {
         (<any>window).FHIR.oauth2.ready(smart => {
@@ -287,7 +269,7 @@ export class FhirAppComponent {
                     this.smart.patient.api.fetchAll({type: 'Observation'})
                         .then(results => {
                             results.forEach(observation =>
-                                this.patientObservations.push(FhirAppComponent.observationAdd(observation))
+                                this.patientObservations.push(this.observationAdd(observation))
                             );
                             cb();
                         });
@@ -390,23 +372,14 @@ export class FhirAppComponent {
             }
         });
         if (!foundObs && formElt.question.answer) {
-            let obsCode = {
-                system: "https://cde.nlm.nih.gov",
-                code: formElt.question.cde.tinyId
-            };
-            formElt.question.cde.ids.forEach(id => {
-                if (id.source === 'LOINC') {
-                    obsCode.system = this.fhirToCdeCodeMap['LOINC'];
-                    obsCode.code = id.id;
-                }
-            });
-            let observation = this.createObs(obsCode, []);
+            let observation = this.createObs(formElt);
             observation.valueQuantity = {
                 value: formElt.question.answer
             };
             if (formElt.question.answerUom) {
                 observation.valueQuantity.system = this.fhirToCdeCodeMap[formElt.question.answerUom.system];
                 observation.valueQuantity.unit = formElt.question.answerUom.code;
+                observation.valueQuantity.code = formElt.question.answerUom.code;
             }
 
             this.submitFhirObservations.push(observation);
@@ -415,12 +388,36 @@ export class FhirAppComponent {
     }
 
 
-    createObs (obsCode = null, compCodes = []) {
+    createObs (formElt) {
+        let obsCode = {
+            system: "https://cde.nlm.nih.gov",
+            code: formElt.question.cde.tinyId,
+            display: formElt.question.cde.name
+        };
+        formElt.question.cde.ids.forEach(id => {
+            if (id.source === 'LOINC') {
+                obsCode.system = this.fhirToCdeCodeMap['LOINC'];
+                obsCode.code = id.id;
+                obsCode.display = this.codeToDisplay[id.source + ":" + id.id];
+            }
+        });
+
         let observation = FhirAppComponent.newObservationGet();
         observation.context.reference = 'Encounter/' + this.selectedEncounter.raw.id;
         observation.issued = this.selectedEncounter.date;
         observation.subject.reference = 'Patient/' + this.patient.id;
-        if (obsCode) observation.code = FhirAppComponent.getCoding(obsCode.system, obsCode.code);
+
+        // if (obsCode) observation.code = this.getCoding(obsCode.system, obsCode.code);
+        if (obsCode) {
+            observation.code = {
+                coding: [{
+                    system: this.getCodeSystemOut(obsCode.system),
+                    code: obsCode.code,
+                    display: obsCode.display
+                }],
+                text: obsCode.display
+            };
+        }
 
         // if (compCodes.length) {
         //     observation.component = [];
@@ -429,8 +426,6 @@ export class FhirAppComponent {
         //     });
         // }
 
-
-        // TODO what is this?
         // let category = FhirAppComponent.fhirObservations[obsCode.system + ' ' + obsCode.code];
         // if (category) {
         //     observation.category.push({
@@ -670,7 +665,7 @@ export class FhirAppComponent {
         };
     }
 
-    static observationAdd(observation) {
+    observationAdd(observation) {
         return {
             code: observation.code
                 ? this.getCodingsPreview(observation.code.coding)
@@ -714,7 +709,7 @@ export class FhirAppComponent {
         // identify changed and submit to server
         for (let i = 0; i < this.submitFhirPending.length; i++) {
             let p = this.submitFhirPending[i];
-            if (FhirAppComponent.getObservationValue(p.before) === FhirAppComponent.getObservationValue(p.after)) {
+            if (this.getObservationValue(p.before) === this.getObservationValue(p.after)) {
                 this.submitFhirPending.splice(i, 1);
                 i--;
             }
@@ -728,7 +723,7 @@ export class FhirAppComponent {
                     type: p.after.resourceType
                 }).then(response => {
                     if (!response || !response.data) return done('Not saved ' + p.after.id);
-                    let obs = FhirAppComponent.observationAdd(response.data);
+                    let obs = this.observationAdd(response.data);
                     let index = this.patientObservations.findIndex(o => o.raw === p.before);
                     if (index > -1) this.patientObservations[index] = obs;
                     index = this.selectedEncounter.observations.findIndex(o => o.raw === p.before);
@@ -743,7 +738,7 @@ export class FhirAppComponent {
                     type: 'Observation'
                 }).then(response => {
                     if (!response || !response.data) return done('Not saved ' + p.after.id);
-                    let obs = FhirAppComponent.observationAdd(response.data);
+                    let obs = this.observationAdd(response.data);
                     this.patientObservations.push(obs);
                     this.selectedEncounter.observations.push(obs);
                     done();

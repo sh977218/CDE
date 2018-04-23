@@ -84,7 +84,7 @@
                         <tfoot>
                             <tr [hidden]="newEncounter">
                                 <td colspan="4">
-                                    <button mat-raised-button (click)="newEncounter = true">
+                                    <button mat-raised-button (click)="newEncounter = true; newEncounterVerify()">
                                         <mat-icon>add</mat-icon>Add
                                     </button>
                                 </td>
