@@ -17,7 +17,7 @@ import {
     MatProgressSpinnerModule,
     MatRadioModule,
     MatSelectModule,
-    MatSidenavModule,
+    MatSidenavModule, MatSnackBarModule,
     MatToolbarModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -36,6 +36,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
         MatButtonModule,
         MatProgressSpinnerModule,
         MatDialogModule,
+        MatSnackBarModule,
     ],
     declarations: [
         FhirAppComponent,

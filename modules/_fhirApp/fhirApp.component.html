@@ -138,6 +138,7 @@
                             type="submit" id="button_submit" (click)="submitFhir()" style="margin-left: 0; margin-top: 20px; font-weight: bold; width: 100px">
                         <!--<mat-spinner [diameter]="20" color="warn"></mat-spinner>-->
                         <mat-icon *ngIf="saving" class="spin">refresh</mat-icon>
+                        <mat-icon *ngIf="saved">done</mat-icon>
                         Submit
                     </button>
                     {{saveMessage}}

@@ -11,7 +11,7 @@ import { iterateFeSync } from 'shared/form/formShared';
 
 import _intersectionWith from 'lodash/intersectionWith';
 
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 
 @Component({
     selector: 'cde-fhir-form',
@@ -77,6 +77,7 @@ export class FhirAppComponent {
     smart;
     ioInProgress: boolean;
     saving: boolean;
+    saved: boolean;
     summary: boolean;
     fhirToCdeCodeMap = {
         'http://loinc.org': "LOINC",
@@ -115,7 +116,8 @@ export class FhirAppComponent {
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
     constructor(private http: HttpClient,
-                public dialog: MatDialog) {
+                public dialog: MatDialog,
+                public snackBar: MatSnackBar) {
 
         let queryParams: any = FhirAppComponent.searchParamsGet();
         this.selectedProfileName = queryParams['selectedProfile'];
@@ -156,14 +158,14 @@ export class FhirAppComponent {
     }
 
     static getCoding(system, code) {
-        let text = this.getCodeDisplay(system, code);
+        // let text = this.getCodeDisplay(system, code);
         return {
             coding: [{
                 system: this.getCodeSystemOut(system),
                 code: code,
-                display: text
+                // display: text
             }],
-            text: text
+            // text: text
         };
     }
 
@@ -173,9 +175,9 @@ export class FhirAppComponent {
         );
     }
 
-    static getCodeDisplay(system, code) {
-        return this.externalCodesDetail[system][code];
-    }
+    // static getCodeDisplay(system, code) {
+    //     return this.externalCodesDetail[system][code];
+    // }
 
     static getCodeSystem(uri) {
         let results = this.externalCodeSystems.filter(c => c.uri === uri);
@@ -194,7 +196,12 @@ export class FhirAppComponent {
         else return s;
     }
 
+
     getForm(tinyId, cb) {
+        if (!this.selectedEncounter) {
+            return this.snackBar.open("Select an encounter to open a form.", "", {duration: 2000});
+        }
+
         this.http.get<CdeForm>('/form/' + tinyId).subscribe(elt => {
             CdeForm.validate(elt);
             cb(null, elt);
@@ -354,6 +361,7 @@ export class FhirAppComponent {
 
     updateObservation (formElt) {
         let observations = this.selectedEncounter.observations.map(o => o.raw);
+        let foundObs = false;
         // formElt.question.cde.ids.push({source: "https://cde.nlm.nih.gov", id: formElt.question.cde.tinyId});
         observations.forEach(o => {
             let copy = JSON.parse(JSON.stringify(o));
@@ -373,25 +381,36 @@ export class FhirAppComponent {
                     copy.valueQuantity.unit = formElt.question.answerUom.code;
 
                 }
+                foundObs = true;
                 this.submitFhirObservations.push(copy);
                 this.submitFhirPending.push({before: o, after: copy});
             }
-            // TODO
-            // else {
-            //     let obsCode = {
-            //         system: "https://cde.nlm.nih.gov",
-            //         code: formElt.question.cde.tinyId
-            //     };
-            //     formElt.question.cde.ids.forEach(id => {
-            //         if (id.source === 'LOINC') {
-            //             obsCode.system = this.fhirToCdeCodeMap['LOINC'];
-            //             obsCode.code = id.id;
-            //         }
-            //     });
-            //     this.createObs(obsCode, []);
-            // }
         });
+        if (!foundObs && formElt.question.answer) {
+            let obsCode = {
+                system: "https://cde.nlm.nih.gov",
+                code: formElt.question.cde.tinyId
+            };
+            formElt.question.cde.ids.forEach(id => {
+                if (id.source === 'LOINC') {
+                    obsCode.system = this.fhirToCdeCodeMap['LOINC'];
+                    obsCode.code = id.id;
+                }
+            });
+            let observation = this.createObs(obsCode, []);
+            observation.valueQuantity = {
+                value: formElt.question.answer
+            };
+            if (formElt.question.answerUom) {
+                observation.valueQuantity.system = this.fhirToCdeCodeMap[formElt.question.answerUom.system];
+                observation.valueQuantity.unit = formElt.question.answerUom.code;
+            }
+
+            this.submitFhirObservations.push(observation);
+            this.submitFhirPending.push({before: null, after: observation});
+        }
     }
+
 
     createObs (obsCode = null, compCodes = []) {
         let observation = FhirAppComponent.newObservationGet();
@@ -399,12 +418,14 @@ export class FhirAppComponent {
         observation.issued = this.selectedEncounter.date;
         observation.subject.reference = 'Patient/' + this.patient.id;
         if (obsCode) observation.code = FhirAppComponent.getCoding(obsCode.system, obsCode.code);
-        if (compCodes.length) {
-            observation.component = [];
-            compCodes.forEach(c => {
-                observation.component.push({code: FhirAppComponent.getCoding(c.system, c.code)});
-            });
-        }
+
+        // if (compCodes.length) {
+        //     observation.component = [];
+        //     compCodes.forEach(c => {
+        //         observation.component.push({code: FhirAppComponent.getCoding(c.system, c.code)});
+        //     });
+        // }
+
 
         // TODO what is this?
         // let category = FhirAppComponent.fhirObservations[obsCode.system + ' ' + obsCode.code];
@@ -417,8 +438,6 @@ export class FhirAppComponent {
         //     });
         // }
 
-        this.submitFhirObservations.push(observation);
-        this.submitFhirPending.push({before: null, after: observation});
         return observation;
     }
 
@@ -678,8 +697,7 @@ export class FhirAppComponent {
     }
 
     prepareObservations(formElt) {
-        iterateFeSync(formElt, this.prepareObservations.bind(this),
-            this.prepareObservations.bind(this), this.updateObservation.bind(this));
+        iterateFeSync(formElt, undefined, undefined, this.updateObservation.bind(this));
     }
 
     submitFhir() {
@@ -730,15 +748,14 @@ export class FhirAppComponent {
             }
         }, (err: string) => {
             if (err) this.saveMessage = err;
-            else this.saveMessage = 'Saved.';
-            setTimeout(() => this.saveMessage = null, 5000);
+            else this.saved = true;
+            setTimeout(() => this.saved = false, 5000);
 
+            this.saving = false;
             this.loadFhirData();
             this.updateProgress();
-            this.saving = false;
         });
     }
-
 
 
     // TODO this is not working yet
