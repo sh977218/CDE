@@ -40,7 +40,7 @@ export class NativeTableComponent implements OnInit {
         this.sectionNumber = 0;
         if (this.getRows()) {
             this.canRender = true;
-            let ret = this.renderSection(this.formElement, 0, "");
+            let ret = this.renderSection(this.formElement, 0);
             this.setDepth(ret.r + 1);
 
             this.entry.cspan = 1;
@@ -59,11 +59,11 @@ export class NativeTableComponent implements OnInit {
             this.firstQuestion = NativeRenderService.getFirstQuestion(this.formElement);
             if (!this.firstQuestion) return false;
             this.firstQuestion.question.answers.forEach((a, i) => {
-                this.tableForm.rows.push({label: this.nrs.getPvLabel(a)});
-                this.nrs.elt.formInput[i + '-' + this.firstQuestion.questionId] = a.permissibleValue;
+                this.tableForm.rows.push({label: NativeRenderService.getPvLabel(a)});
+                this.nrs.elt.formInput[i + '_' + this.firstQuestion.feId] = a.permissibleValue;
             });
             this.entry.label = this.firstQuestion.label;
-            this.tableForm.q[0].name = '-' + this.firstQuestion.questionId;
+            this.tableForm.q[0].name = '_' + this.firstQuestion.feId;
             this.tableForm.q[0].question = this.firstQuestion.question;
         } else {
             let maxValue = parseInt(this.formElement.repeat);
@@ -71,13 +71,13 @@ export class NativeTableComponent implements OnInit {
             if (this.nrs.profile) format = this.nrs.profile.repeatFormat;
             if (!format) format = "";
             for (let i = 0; i < maxValue; i++) {
-                this.tableForm.rows.push({label: format.replace(/\#/, (i + 1).toString())});
+                this.tableForm.rows.push({label: format.replace(/#/, (i + 1).toString())});
             }
         }
         return true;
     }
 
-    renderSection(s, level, sectionName, r = 1, c = 0) {
+    renderSection(s, level, r = 1, c = 0) {
         let sectionStyle = this.getSectionStyle(this.sectionNumber++);
         let section = {header: true, cspan: c, label: s.label, style: sectionStyle.sectionStyle};
         if (level === 0) section.label = "";
@@ -85,7 +85,7 @@ export class NativeTableComponent implements OnInit {
         let tcontent = this.getSectionLevel(level + 1);
         let retr = 0;
         s.formElements && s.formElements.forEach(f =>  {
-            let ret = this.renderFormElement(f, tcontent, level, retr, r, c, sectionStyle, sectionName);
+            let ret = this.renderFormElement(f, tcontent, level, retr, r, c, sectionStyle);
             retr = ret.retr;
             c = ret.c;
         });
@@ -93,22 +93,22 @@ export class NativeTableComponent implements OnInit {
         section.cspan = c;
         return {r: r, c: c};
     }
-    renderFormElement(f, tcontent, level, retr, r, c, sectionStyle, sectionName) {
+    renderFormElement(f, tcontent, level, retr, r, c, sectionStyle) {
         if (f.elementType === 'section' || f.elementType === 'form') {
             if (!f.repeat) {
-                let ret = this.renderSection(f, level + 1, sectionName);
+                let ret = this.renderSection(f, level + 1);
                 c += ret.c;
                 retr = Math.max(retr, ret.r);
             } else if (f.repeat[0] === 'F') {
-                NativeRenderService.getFirstQuestion(f).question.answers.forEach((a, i) => {
-                    let ret = this.renderSection(f, level + 1, sectionName + i + '-');
+                NativeRenderService.getFirstQuestion(f).question.answers.forEach(() => {
+                    let ret = this.renderSection(f, level + 1);
                     c += ret.c;
                     retr = Math.max(retr, ret.r);
                 });
             } else {
                 let maxValue = parseInt(f.repeat);
                 for (let i = 0; i < maxValue; i++) {
-                    let ret = this.renderSection(f, level + 1, sectionName + i + '-');
+                    let ret = this.renderSection(f, level + 1);
                     c += ret.c;
                     retr = Math.max(retr, ret.r);
                 }
@@ -119,29 +119,29 @@ export class NativeTableComponent implements OnInit {
             tcontent.q.push({rspan: r, label: f.label, style: sectionStyle.questionStyle});
             this.tableForm.q.push({
                 type: NativeTableComponent.getQuestionType(f),
-                name: '-' + sectionName + f.questionId,
+                name: '_' + f.feId,
                 question: f.question,
                 style: sectionStyle.answerStyle
             });
             if (f.question.datatype === 'Value List' && !NativeRenderService.isRadioOrCheckbox(f)) {
                 this.tableForm.rows.forEach((r, i) => {
-                    this.nrs.elt.formInput[i + '-' + sectionName + f.questionId] = [];
-                    this.nrs.elt.formInput[i + '-' + sectionName + f.questionId].answer = this.nrs.elt.formInput[i + '-' + sectionName + f.questionId];
+                    this.nrs.elt.formInput[i + '_' + f.feId] = [];
+                    this.nrs.elt.formInput[i + '_' + f.feId].answer = this.nrs.elt.formInput[i + '_' + f.feId];
                 });
             }
             if (f.question.datatype === 'Value List' && NativeRenderService.isPreselectedRadio(f)) {
                 this.tableForm.rows.forEach((r, i) => {
-                    this.nrs.elt.formInput[i + '-' + sectionName + f.questionId] = f.question.answers[0].permissibleValue;
+                    this.nrs.elt.formInput[i + '_' + f.feId] = f.question.answers[0].permissibleValue;
                 });
             }
             if (f.question.unitsOfMeasure && f.question.unitsOfMeasure.length === 1) {
                 this.tableForm.rows.forEach((r, i) => {
-                    this.nrs.elt.formInput[i + '-' + sectionName + f.questionId + '_uom'] = f.question.unitsOfMeasure[0];
+                    this.nrs.elt.formInput[i + '_' + f.feId + '_uom'] = f.question.unitsOfMeasure[0];
                 });
             }
             f.question.answers.forEach(a => {
                 a.formElements && a.formElements.forEach(sf => {
-                    let ret = this.renderFormElement(sf, tcontent, level, retr, r, c, sectionStyle, sectionName);
+                    let ret = this.renderFormElement(sf, tcontent, level, retr, r, c, sectionStyle);
                     retr = ret.retr;
                     c = ret.c;
                 });

@@ -145,7 +145,8 @@
             <button class="btn btn-danger" id="deleteDraftBtn" (click)="deleteModal.openDeleteModal();">
                 <i class="fa fa-trash fa-lg"></i> Delete Draft
             </button>
-            <br>Changed by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
+            <br><span id="viewChangesBtn" class="fake-link hand-cursor" (click)="viewChanges();">Changed</span>
+            by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
         </ng-container>
     </div>
     <div class="py-2 clearfix"></div>

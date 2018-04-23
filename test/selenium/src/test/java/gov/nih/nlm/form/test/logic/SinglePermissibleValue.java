@@ -11,9 +11,9 @@ public class SinglePermissibleValue extends BaseFormTest {
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Cancer Screening Test";
         goToFormByName(formName);
-        textPresent("Female Patient Screening", By.xpath("//div[label/span[text()='Female Gender']]"));
+        textPresent("Female Patient Screening", By.xpath("//div[" + byValueListValueXPath("Female Gender") + "]"));
         textPresent("Breast Carcinoma Estrogen Receptor Status",
-                By.xpath("//div[label/span[text()='Female Gender']]//*[@id='formRenderSection_Female Patient Screening']"));
+                By.xpath("//div[" + byValueListValueXPath("Female Gender") + "]//*[@id='formRenderSection_Female Patient Screening']"));
 
         goToPreview();
         togglePrintableLogic();
@@ -21,7 +21,7 @@ public class SinglePermissibleValue extends BaseFormTest {
         textNotPresent("Breast Carcinoma Estrogen Receptor Status");
         findElement(By.xpath("//*[*[text()='Frontal Systems Behavior Scale (FrSBE) - Disinhibition subscale T score']]//input")).sendKeys("200");
         textPresent("Patient Gender Category");
-        clickElement(By.xpath("//*[*[normalize-space()='Patient Gender Category']]//*/span[text()='Female Gender']"));
+        clickElement(By.xpath("//*[*[normalize-space()='Patient Gender Category']]//" + byValueListValueXPath("Female Gender")));
         textPresent("Female Patient Screening");
     }
 

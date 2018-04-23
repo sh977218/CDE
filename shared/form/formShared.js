@@ -2,18 +2,29 @@ import async_forEach from 'async/forEach';
 import async_forEachSeries from 'async/forEachSeries';
 import _noop from 'lodash/noop';
 
+export function addFormIds(parent, parentId = '') {
+    if (Array.isArray(parent.formElements)) {
+        parent.formElements.forEach((fe, i) => {
+            fe.feId = parentId ? parentId + '-' + i : '' + i;
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                addFormIds(fe, fe.feId);
+            }
+        });
+    }
+}
 
 export function areDerivationRulesSatisfied(elt) {
     let missingCdes = [];
     let allCdes = {};
     let allQuestions = [];
-    iterateFeSync(elt, undefined, undefined, (fe) => {
-        if (fe.question.datatype === 'Number' && !Number.isNaN(fe.question.defaultAnswer))
-            fe.question.answer = Number.parseFloat(fe.question.defaultAnswer);
-        else
-            fe.question.answer = fe.question.defaultAnswer;
-        allCdes[fe.question.cde.tinyId] = fe.question;
-        allQuestions.push(fe);
+    iterateFeSync(elt, undefined, undefined, (q) => {
+        if (q.question.datatype === 'Number') {
+            q.question.answer = Number.parseFloat(q.question.defaultAnswer);
+        } else {
+            q.question.answer = q.question.defaultAnswer;
+        }
+        allCdes[q.question.cde.tinyId] = q.question;
+        allQuestions.push(q);
     });
     allQuestions.forEach(quest => {
         if (quest.question.cde.derivationRules)

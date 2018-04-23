@@ -19,7 +19,7 @@ public class FormDragQuestionDropTest extends QuestionTest {
 
         String cdeName = "Frontal Systems Behavior Scale (FrSBE) - Disinhibition subscale T score";
         addQuestionToSection(cdeName, 0);
-        textPresent("Disinhibition subscale T score", By.id("question_0_0"));
+        textPresent("Disinhibition subscale T score", By.id("question_0-0"));
 
         WebElement sourceElt = findElement(By.xpath("//*[@id='section_2']//i[contains(@class,'fa fa-arrows')]"));
         WebElement targetElt = findElement(By.xpath("//*[@id='section_1']//*[contains(@class,'node-content-wrapper')]"));
@@ -35,7 +35,7 @@ public class FormDragQuestionDropTest extends QuestionTest {
 
         goToFormByName(formName);
         goToFormDescription();
-        textPresent("At least: 25", By.xpath("//*[@id='question_0_0']"));
-        textPresent("At most: 239", By.xpath("//*[@id='question_0_0']"));
+        textPresent("At least: 25", By.xpath("//*[@id='question_0-0']"));
+        textPresent("At most: 239", By.xpath("//*[@id='question_0-0']"));
     }
 }

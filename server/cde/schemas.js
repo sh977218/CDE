@@ -58,11 +58,12 @@ var deJson = {
             maxLength: Number, // To indicate limits on length
             regex: sharedSchemas.stringType, // To indicate a regular expression that someone may want to match on
             rule: sharedSchemas.stringType, // Any rule may go here
+            showAsTextArea: {type: Boolean, default: false} // multi-line
         },
         datatypeNumber: {
             minValue: Number,
             maxValue: Number,
-            precision: Number, // Any precision for this number. Typically an integer for a float
+            precision: Number, // Any precision for this number. Typically an integer for a float. Limit to 10^precision
         },
         datatypeDate: {
         },

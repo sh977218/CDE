@@ -45,6 +45,10 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         closeAlert();
         modalGone();
 
+        clickElement(By.id("viewChangesBtn"));
+        textPresent(newStatus, By.xpath("//*[@id='Status']//ins"));
+        textPresent(oldStatus, By.xpath("//*[@id='Status']//del"));
+        clickElement(By.id("closeHistoryCompareModal"));
         goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent(newStatus, By.xpath("//*[@id='Status']//ins"));
@@ -60,6 +64,11 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         clickElement(By.id("createNewIdentifierBtn"));
         modalGone();
 
+        clickElement(By.id("viewChangesBtn"));
+        textPresent("Origin 1", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent("Identifier 1", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent("Version 1", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));
+        clickElement(By.id("closeHistoryCompareModal"));
         goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent("Origin 1", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));

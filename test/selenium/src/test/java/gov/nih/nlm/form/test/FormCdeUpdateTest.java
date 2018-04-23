@@ -13,9 +13,9 @@ public class FormCdeUpdateTest extends NlmCdeBaseTest {
         goToFormByName(formName);
         textPresent("Some referenced items in this form have newer versions.");
         goToFormDescription();
-        textPresent("(Outdated)", By.id("question_0_0"));
-        textPresent("Select Multiple", By.id("question_0_0"));
-        clickElement(By.xpath("//*[@id='question_0_0']//button[contains(@class,'updateQuestionBtn')]"));
+        textPresent("(Outdated)", By.id("question_0-0"));
+        textPresent("Select Multiple", By.id("question_0-0"));
+        clickElement(By.xpath("//*[@id='question_0-0']//button[contains(@class,'updateQuestionBtn')]"));
         textPresent("FormCdeUpdateTest", By.id("mdd_question_title"));
         textPresent("1", By.id("mdd_q_defaultAnswer"));
         textPresent("was", By.id("mdd_d_cde"));
@@ -25,7 +25,7 @@ public class FormCdeUpdateTest extends NlmCdeBaseTest {
 
         goToFormByName(formName);
         goToFormDescription();
-        textNotPresent("(Outdated)", By.id("question_0_0"));
-        textPresent("Select Multiple", By.id("question_0_0"));
+        textNotPresent("(Outdated)", By.id("question_0-0"));
+        textPresent("Select Multiple", By.id("question_0-0"));
     }
 }

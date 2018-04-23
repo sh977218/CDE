@@ -20,7 +20,7 @@ public class SectionInSectionTest extends BaseFormTest {
         questionTest.addQuestionToSection("Smoking History Ind", 0);
         questionTest.addQuestionToSection("First-Line Therapy Chemotherapy Regimen Name", 1);
         WebElement sourceElt = findElement(By.xpath("//div[@id=\"section_view_1\"]//i[contains(@class,\"section-move-handle\")]"));
-        WebElement targetElt = findElement(By.xpath("//div[@id=\"section_drop_area_0\"]//*[@id=\"question_accordion_0_0\"]"));
+        WebElement targetElt = findElement(By.xpath("//div[@id=\"section_drop_area_0\"]//*[@id=\"question_accordion_0-0\"]"));
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
         hangon(1);
 

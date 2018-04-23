@@ -19,24 +19,24 @@ public class FormEditTest extends BaseFormTest {
     }
 
     private void editQuestion() {
-        scrollToViewById("question_0_0");
-        startEditQuestionById("question_0_0");
-        clickElement(By.xpath("//*[@id='question_0_0']//i[contains(@class,'changeQuestionLabelIcon')]"));
+        scrollToViewById("question_0-0");
+        startEditQuestionById("question_0-0");
+        clickElement(By.xpath("//*[@id='question_0-0']//i[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("Select a question label from a CDE Name");
         clickElement(By.xpath("//*[@id='q_select_name_1']/div/button"));
 
         String newQuestionInstruction = "New Question Instruction";
-        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstruction')]//i[contains(@class,'fa-edit')]"));
+        clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'editQuestionInstruction')]//i[contains(@class,'fa-edit')]"));
         textPresent("Plain Text");
         textPresent("Rich Text");
         textPresent("Confirm");
-        findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstruction')]//textarea")).clear();
-        findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstruction')]//textarea")).sendKeys(newQuestionInstruction);
-        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstruction')]//button[contains(text(),'Confirm')]"));
+        findElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'editQuestionInstruction')]//textarea")).clear();
+        findElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'editQuestionInstruction')]//textarea")).sendKeys(newQuestionInstruction);
+        clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'editQuestionInstruction')]//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
 
-        saveEditQuestionById("question_0_0");
-        textPresent("Data unknown text", By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionLabel')]"));
-        textPresent(newQuestionInstruction, By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionInstruction')]"));
+        saveEditQuestionById("question_0-0");
+        textPresent("Data unknown text", By.xpath("//*[@id='question_0-0']//*[contains(@class,'questionLabel')]"));
+        textPresent(newQuestionInstruction, By.xpath("//*[@id='question_0-0']//*[contains(@class,'questionInstruction')]"));
     }
 }

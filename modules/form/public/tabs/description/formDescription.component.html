@@ -39,7 +39,7 @@
         <ng-container *ngFor="let eltIter of [elt]">
             <tree-root #tree [nodes]="eltIter.formElements" [options]="treeOptions">
                 <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
-                    <div class="tree-node tree-node-level-{{ node.level }}" [id]="node.data.descriptionId"
+                    <div class="tree-node tree-node-level-{{ node.level }}" [id]="node.data.elementType + '_' + node.data.feId"
                          [class]="node.getClass()"
                          [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
                          [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"

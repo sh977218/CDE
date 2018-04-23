@@ -15,30 +15,30 @@ public class NotEqualsLogic extends BaseFormTest {
 
         // test numbers
         textPresent("Spinal surgery indicator");
-        findElement(By.name("q1")).sendKeys("1");
+        findElement(By.name("0-0")).sendKeys("1");
         textPresent("Spinal surgery indicator");
-        findElement(By.name("q1")).sendKeys("11");
+        findElement(By.name("0-0")).sendKeys("11");
         textNotPresent("Spinal surgery indicator");
 
         scrollDownBy(500);
 
         // test date
         textPresent("Diagnosis age type");
-        findElement(By.name("q3")).sendKeys("01012016");
+        findElement(By.name("0-2")).sendKeys("01012016");
         textPresent("Diagnosis age type");
-        findElement(By.name("q3")).sendKeys("01012015");
+        findElement(By.name("0-2")).sendKeys("01012015");
         textNotPresent("Diagnosis age type");
 
         // text and empty logic
         textPresent("Birth Weight");
         textPresent("Scale for the Assessment of Positive Symptoms (SAPS) - incoherence word salad schizophasia scale");
-        findElement(By.name("q5")).sendKeys("Swe");
+        findElement(By.name("0-4")).sendKeys("Swe");
         textPresent("Scale for the Assessment of Positive Symptoms (SAPS) - incoherence word salad schizophasia scale");
         textPresent("Birth Weight");
-        findElement(By.name("q5")).sendKeys("den");
+        findElement(By.name("0-4")).sendKeys("den");
         textNotPresent("Birth Weight");
-        findElement(By.name("q5")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("q5")).clear();
+        findElement(By.name("0-4")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("0-4")).clear();
         textPresent("Scale for the Assessment of Positive Symptoms (SAPS) - incoherence word salad schizophasia scale");
 
         // value list

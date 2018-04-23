@@ -26,10 +26,11 @@ import { FormTermMappingComponent } from './components/formTermMapping/formTermM
 import { FormViewComponent } from './components/formView.component';
 import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
+import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
 import { WidgetModule } from 'widget/widget.module';
-import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
+import { CompareModule } from 'compare/compare.module';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -51,6 +52,7 @@ const appRoutes: Routes = [
         AdminItemModule,
         BoardModule,
         CdeSearchModule,
+        CompareModule,
         DiscussModule,
         FormSearchModule,
         NativeRenderModule,
