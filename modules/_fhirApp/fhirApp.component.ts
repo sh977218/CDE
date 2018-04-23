@@ -1,11 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, ViewChild } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import async_forEach from 'async/forEach';
 import async_parallel from 'async/parallel';
-import * as moment from 'moment/min/moment.min';
 import 'fhirclient';
 
-import { mappings } from '_nativeRenderApp/fhirMapping';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/formShared';
 
@@ -62,8 +60,8 @@ export class FhirAppComponent {
     newEncounterValid: boolean;
     patient: any;
     patientForms: any = [
-        {name: 'FHIR: Vital Signs', tinyId: 'Xk8LrBb7V'},
-        {name: 'FHIR: Laboratory Cholesterol', tinyId: 'X1_IXy_L4'}
+        // {name: 'FHIR: Vital Signs', tinyId: 'Xk8LrBb7V'},
+        // {name: 'FHIR: Laboratory Cholesterol', tinyId: 'X1_IXy_L4'}
     ];
     patientEncounters = [];
     patientObservations = [];
@@ -90,6 +88,7 @@ export class FhirAppComponent {
         {id: 'LOINC', uri: 'http://loinc.org'},
         {id: 'UCUM', uri: 'http://unitsofmeasure.org'}
     ];
+    formIds: string;
 
     codeToDisplay = {};
 
@@ -103,8 +102,15 @@ export class FhirAppComponent {
         let queryParams: any = FhirAppComponent.searchParamsGet();
         this.selectedProfileName = queryParams['selectedProfile'];
 
-        this.patientForms.forEach(f => {
+        let formIds = queryParams['fIds'];
+
+        this.formIds = formIds;
+        formIds.split(";").forEach(f => {
             this.http.get<CdeForm>('/form/' + f.tinyId).subscribe(form => {
+                this.patientForms.push({
+                    tinyId: form.tinyId,
+                    name: form.naming[0].designation
+                });
                 iterateFeSync(form, () => {}, () => {}, q => {
                     q.question.cde.ids.forEach(id => {
                         if (id.source === 'LOINC') {
@@ -197,58 +203,6 @@ export class FhirAppComponent {
             cb(null, elt);
         }, err => cb(err.statusText));
     }
-
-    static getFormMap(tinyId) {
-        let maps = mappings.filter(m => m.form === tinyId
-            && m.type === 'external'
-            && m.system === 'http://hl7.org/fhir'
-            && m.code === '*'
-            && m.format === 'json'
-        );
-        if (maps.length) return maps[0];
-        else return null;
-    }
-
-    // getFormObservations(tinyId, cb) {
-    //     // let pushFormObservationNames = tinyId => {
-    //     //     let map = FhirAppComponent.getFormMap(tinyId);
-    //     //     map && map.mapping.forEach(m => {
-    //     //         let key = m.resourceSystem + ' ' + m.resourceCode;
-    //     //         if (m.resource === 'Observation' && !resourceObservationMap[key] && m.resourceCode !== '*') {
-    //     //             resourceObservationMap[key] = true;
-    //     //             observationNames.push(this.getCodeSystemOut(m.resourceSystem)
-    //     //                 + ' ' + m.resourceCode);
-    //     //         }
-    //     //
-    //     //     });
-    //     // };
-    //     //
-    //     let resourceObservationMap = {};
-    //     let observationNames = [];
-    //     // pushFormObservationNames(tinyId);
-    //     this.getForm(tinyId, (err, elt) => {
-    //         if (!err && elt) {
-    //             // iterateFeSync(elt, form => pushFormObservationNames(form.inForm.form.tinyId), () => {}, q => {
-    //             iterateFeSync(elt, () => {}, () => {}, q => {
-    //                 q.question.cde.ids.forEach(id => {
-    //                     if (id.source === 'LOINC') {
-    //                         this.http.get("/umlsCuiFromSrc/" + id.id + "/LNC").subscribe((r: any) => {
-    //                             if (r && r.result && r.result.results.length) {
-    //                                 this.codeToDisplay[id.source + ":" + id.id] = r.result.results[0].name.split(":")[0];
-    //                                 console.log(this.codeToDisplay);
-    //                             }
-    //                         });
-    //                     }
-    //                 });
-    //                 let localCdeId = new CdeId();
-    //                 localCdeId.source = "https://cde.nlm.nih.gov";
-    //                 localCdeId.id = q.question.cde.tinyId;
-    //                 q.question.cde.ids.push(localCdeId);
-    //             });
-    //         }
-    //         cb(err, observationNames);
-    //     });
-    // }
 
     getObservationValue(observation) {
         if (!observation) return undefined;

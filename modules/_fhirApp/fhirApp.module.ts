@@ -9,19 +9,13 @@ import { NativeRenderModule } from "../nativeRender/nativeRender.module";
 
 import {
     MatButtonModule,
-    MatCardModule,
     MatDialogModule,
     MatIconModule,
     MatInputModule,
-    MatListModule,
     MatProgressSpinnerModule,
-    MatRadioModule,
-    MatSelectModule,
-    MatSidenavModule, MatSnackBarModule,
-    MatToolbarModule
+    MatSnackBarModule,
 } from '@angular/material';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-
 
 @NgModule({
     imports: [
