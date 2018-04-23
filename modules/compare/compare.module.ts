@@ -12,6 +12,7 @@ import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSid
 import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataElement.component';
 import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
 import { WidgetModule } from 'widget/widget.module';
+import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 
 @NgModule({
     imports: [
@@ -28,18 +29,21 @@ import { WidgetModule } from 'widget/widget.module';
         CdeSortableComponent,
         CompareSideBySideComponent,
         CompareArrayComponent,
+        CompareHistoryContentComponent,
         CompareObjectComponent,
         MergeDataElementComponent,
         MergeFormComponent,
     ],
     entryComponents: [
         CompareArrayComponent,
-        CompareObjectComponent
+        CompareObjectComponent,
+        CompareHistoryContentComponent
     ],
     providers: [],
     exports: [
         CompareSideBySideComponent,
         CompareArrayComponent,
+        CompareHistoryContentComponent,
         CompareObjectComponent,
     ],
     schemas: []

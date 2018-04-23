@@ -23,6 +23,7 @@ import { ValidRulesComponent } from 'cde/public/components/validationRules/valid
 import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { WidgetModule } from 'widget/widget.module';
+import { CompareModule } from 'compare/compare.module';
 
 
 const appRoutes: Routes = [
@@ -44,6 +45,7 @@ const appRoutes: Routes = [
         BoardModule,
         CdeModule,
         CdeSearchModule,
+        CompareModule,
         DiscussModule,
         FormSearchModule,
     ],
@@ -61,8 +63,7 @@ const appRoutes: Routes = [
     ],
     entryComponents: [],
     exports: [],
-    providers: [
-    ],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CdeViewModule {

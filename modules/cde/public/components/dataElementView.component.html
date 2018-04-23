@@ -82,14 +82,15 @@
     <div class="pull-right text-end">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
-            <button *ngIf="elt.valueDomain.allValid" class="btn  btn-success" id="openSave"
+            <button *ngIf="elt.valueDomain.allValid" class="btn btn-success" id="openSave"
                     (click)="saveModal.openSaveModal();">
                 <i class="fa fa-globe fa-lg mr-1"></i>Publish
             </button>
             <button class="btn btn-danger" id="deleteDraftBtn" (click)="deleteModal.openDeleteModal();">
                 <i class="fa fa-trash fa-lg mr-1"></i>Delete Draft
             </button>
-            <br>Changed by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
+            <br><span id="viewChangesBtn" class="fake-link hand-cursor" (click)="viewChanges();">Changed</span> by
+            {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
         </ng-container>
     </div>
     <div class="py-2 clearfix"></div>
@@ -241,3 +242,4 @@
 </ng-template>
 
 <cde-pin-board-modal #mltPinModal module="cde"></cde-pin-board-modal>
+
