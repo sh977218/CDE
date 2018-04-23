@@ -4,6 +4,7 @@
 </div>
 <div class="modal-body">
     <table class="table table-border">
+        <thead>
         <tr>
             <th>Value</th>
             <th>Code Name</th>
@@ -12,6 +13,8 @@
             <th>Code System</th>
             <th></th>
         </tr>
+        </thead>
+        <tbody>
         <tr *ngFor="let answer of answers;let i=index">
             <td>{{answer.permissibleValue}}</td>
             <td>{{answer.valueMeaningName}}</td>
@@ -22,6 +25,7 @@
                 <cde-sortable-array [theArray]="answers" [index]="i"></cde-sortable-array>
             </td>
         </tr>
+        </tbody>
     </table>
 </div>
 <div class="modal-footer">

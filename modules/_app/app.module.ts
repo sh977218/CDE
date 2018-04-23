@@ -21,7 +21,7 @@ import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { NotificationsComponent } from "./notifications/notifications.component";
-
+import { DataTypeService } from 'core/dataType.service';
 
 @NgModule({
     imports: [
@@ -49,11 +49,12 @@ import { NotificationsComponent } from "./notifications/notifications.component"
     providers: [
         AlertService,
         BackForwardService,
+        DataTypeService,
         ElasticService, // TODO: create shared CoreModule loaded async and provide to all lazy routes
         LoginService,
         QuickBoardListService,
         UserService,
-        OrgHelperService,
+        OrgHelperService
     ],
     exports: [
         PageNotFoundComponent,

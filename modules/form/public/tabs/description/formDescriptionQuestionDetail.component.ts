@@ -6,8 +6,11 @@ import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
 import { debounceTime, map } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/delay';
 
 import { AlertService } from '_app/alert/alert.service';
+import { DataTypeService } from 'core/dataType.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
@@ -46,42 +49,14 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl: TemplateRef<any>;
     @ViewChild('editAnswerModal') editAnswerModal: NgbModalModule;
     @ViewChild('slInput') slInput: ElementRef;
-    answersOptions: any = {
-        allowClear: true,
-        multiple: true,
-        closeOnSelect: true,
-        placeholder: {
-            id: '',
-            placeholder: 'Leave blank to ...'
-        },
-        tags: true,
-        language: {
-            noResults: () => {
-                return 'No Answer List entries are listed on the CDE.';
-            }
-        },
-        formatResult: () => {
-            return true;
-        }
-    };
     answersSelected: Array<string>;
-    dataTypeOptions = ['Value List', 'Text', 'Date', 'Number'];
-    datatypeSelect2Options = {
-        multiple: false,
-        tags: true
-    };
     getSkipLogicOptions = ((text$: Observable<string>) => text$.pipe(
         debounceTime(300),
         map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question))
     ));
     static inputEvent = new Event('input');
-    namingTags = [];
     nameSelectModal: any = {};
     nameSelectModalRef: NgbModalRef;
-    namingSelet2Options: Select2Options = {
-        multiple: true,
-        tags: true
-    };
     newCdePv = {};
     newCdeId = {};
     newCdeNaming = {};
@@ -89,29 +64,20 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     newUomSystem = 'UCUM';
     question: FormQuestion;
     parent: FormElement;
-    uomOptions: any = {
-        multiple: true,
-        tags: true,
-        language: {
-            noResults: () => {
-                return 'No Units of Measure are listed on the CDE. Type in more followed by ENTER.';
-            }
-        }
-    };
-    uomVersion = 0;
 
-    ngOnInit() {
-        this.namingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
-    }
+    dataType$ = [];
+    answerList$ = [];
+    defaultAnswerList$ = [];
+    tag$ = [];
 
     constructor(
         private alert: AlertService,
         private http: HttpClient,
         public modalService: NgbModal,
+        private dataTypeService: DataTypeService,
         private orgHelperService: OrgHelperService,
         public skipLogicValidateService: SkipLogicValidateService,
-        private ucumService: UcumService,
-    ) {
+        private ucumService: UcumService) {
         this.nameSelectModal.okSelect = (naming = null) => {
             if (!naming) {
                 this.nameSelectModal.question.label = '';
@@ -125,6 +91,25 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             }
             this.nameSelectModalRef.close();
         };
+    }
+
+    ngOnInit() {
+        this.answerList$ = this.question.question.cde.permissibleValues.map(answer => {
+            answer['id'] = answer.permissibleValue;
+            return answer;
+        });
+        this.syncAnswerList();
+        this.dataType$ = this.dataTypeService.getDataElementDataType();
+        this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.forEach((t, i) => {
+            this.tag$.push({id: i, name: t});
+        });
+    }
+
+    private syncAnswerList() {
+        this.defaultAnswerList$ = this.question.question.answers.map(answer => {
+            answer['id'] = answer.permissibleValue;
+            return answer;
+        });
     }
 
     addNewCdeId(newCdeId) {
@@ -157,18 +142,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         } else this.alert.addAlert('danger', 'Empty PV.');
     }
 
-    changedDatatype(data: { value: string }) {
-        this.question.question.cde.datatype = data.value;
-        this.question.question.datatype = data.value;
-        this.question.question.answers = [];
-        this.onEltChange.emit();
-    }
-
-    changedTags(name, data: { value: string[] }) {
-        name.tags = data.value;
-        this.onEltChange.emit();
-    }
-
     checkAnswers(answers) {
         let newAnswers = (Array.isArray(answers.value) ? answers.value.filter(answer => answer !== '') : []);
         if (!_isEqual(this.answersSelected, newAnswers)) {
@@ -179,17 +152,17 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
-    getAnswersData() {
-        return this.question.question.cde.permissibleValues.map(answer => {
-            return {id: answer.permissibleValue, text: answer.valueMeaningName};
-        });
+    onAnswerListAdd() {
+        this.syncAnswerList();
+        this.onEltChange.emit();
     }
 
-    getAnswersValue() {
-        if (!this.answersSelected && this.question.question.answers) {
-            this.answersSelected = this.question.question.answers.map(a => a.permissibleValue);
+    onAnswerListRemove(removedAnswer) {
+        if (removedAnswer && removedAnswer.value.valueMeaningName === this.question.question.defaultAnswer) {
+            this.question.question.defaultAnswer = '';
         }
-        return this.answersSelected;
+        this.syncAnswerList();
+        this.onEltChange.emit();
     }
 
     getRepeatLabel(fe) {
