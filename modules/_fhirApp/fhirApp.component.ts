@@ -131,6 +131,10 @@ export class FhirAppComponent {
         this.filterObservations();
         if (!this.selectedEncounter) return;
 
+
+        this.patientForms.forEach(f => {
+            this.loadFhirDataToForm(f);
+        });
         this.updateProgress();
     }
 
@@ -186,25 +190,26 @@ export class FhirAppComponent {
     }
 
     getFormObservations(tinyId, cb) {
-        let pushFormObservationNames = tinyId => {
-            let map = FhirAppComponent.getFormMap(tinyId);
-            map && map.mapping.forEach(m => {
-                let key = m.resourceSystem + ' ' + m.resourceCode;
-                if (m.resource === 'Observation' && !resourceObservationMap[key] && m.resourceCode !== '*') {
-                    resourceObservationMap[key] = true;
-                    observationNames.push(this.getCodeSystemOut(m.resourceSystem)
-                        + ' ' + m.resourceCode);
-                }
-
-            });
-        };
-
+        // let pushFormObservationNames = tinyId => {
+        //     let map = FhirAppComponent.getFormMap(tinyId);
+        //     map && map.mapping.forEach(m => {
+        //         let key = m.resourceSystem + ' ' + m.resourceCode;
+        //         if (m.resource === 'Observation' && !resourceObservationMap[key] && m.resourceCode !== '*') {
+        //             resourceObservationMap[key] = true;
+        //             observationNames.push(this.getCodeSystemOut(m.resourceSystem)
+        //                 + ' ' + m.resourceCode);
+        //         }
+        //
+        //     });
+        // };
+        //
         let resourceObservationMap = {};
         let observationNames = [];
-        pushFormObservationNames(tinyId);
+        // pushFormObservationNames(tinyId);
         this.getForm(tinyId, (err, elt) => {
             if (!err && elt) {
-                iterateFeSync(elt, form => pushFormObservationNames(form.inForm.form.tinyId), () => {}, q => {
+                // iterateFeSync(elt, form => pushFormObservationNames(form.inForm.form.tinyId), () => {}, q => {
+                iterateFeSync(elt, () => {}, () => {}, q => {
                     q.question.cde.ids.forEach(id => {
                         if (id.source === 'LOINC') {
                             this.http.get("/umlsCuiFromSrc/" + id.id + "/LNC").subscribe((r: any) => {
@@ -438,163 +443,7 @@ export class FhirAppComponent {
 
         return observation;
     }
-
-    // mapIO(form, observations, mode, createCb = null) {
-    //     let map = FhirAppComponent.getFormMap(form.tinyId ? form.tinyId : form.inForm.form.tinyId);
-    //
-    //     if (map && mode === 'in') {
-    //         /* tslint:disable */ let encounterFn = eval('(' + map.encounterFn + ')'); /* tslint:enable */
-    //         if (encounterFn) encounterFn(form, this.selectedEncounter);
-    //     }
-    //
-    //     let resourceObservationMap = {};
-    //     map && map.mapping.forEach(m => {
-    //         let key = m.resourceSystem + ' ' + m.resourceCode;
-    //         if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[key])) {
-    //             if (m.resourceCode === '*') resourceObservationMap[key] = observations;
-    //             else {
-    //                 let system = FhirAppComponent.getCodeSystemOut(m.resourceSystem);
-    //                 resourceObservationMap[key] = observations.filter(
-    //                     o => o.code.coding.some(
-    //                         c => c.system === system && c.code === m.resourceCode
-    //                     )
-    //                 );
-    //                 if (createCb && resourceObservationMap[key].length === 0) {
-    //                     let filtered = map.mapping
-    //                         .filter(mo => mo.resourceComponentSystem && mo.resourceComponentCode
-    //                             && mo.resourceSystem === m.resourceSystem && mo.resourceCode === m.resourceCode)
-    //                         .map(mo => [
-    //                             mo.resourceComponentSystem + ' ' + mo.resourceComponentCode,
-    //                             {system: mo.resourceComponentSystem, code: mo.resourceComponentCode}
-    //                         ]);
-    //                     let components = Array.from((new Map(filtered)).values());
-    //                     resourceObservationMap[key].push(
-    //                         createCb({system: m.resourceSystem, code: m.resourceCode}, components));
-    //                 }
-    //             }
-    //         }
-    //     });
-    //
-    //     // update observations
-    //     let patient = this.patient;
-    //     let encounter = this.selectedEncounter;
-    //     function parseDateTime(fe) {
-    //         let m = moment(fe.question.answer);
-    //         if (m.isValid()) {
-    //             fe.question.answerDate = {year: m.year(), month: m.month() + 1, day: m.date()};
-    //             fe.question.answerTime = {hour: m.hour(), minute: m.minute(), second: m.second()};
-    //         }
-    //     }
-    //     function getValueQuantity(fe, uomSystem, uomCode = null, feUom = null) {
-    //         return {
-    //             value: fe.question.answer,
-    //             unit: fe.question.answerUom || feUom && feUom.question.answer || uomCode,
-    //             system: FhirAppComponent.getCodeSystemOut(uomSystem),
-    //             code: fe.question.answerUom || feUom && feUom.question.answer || uomCode
-    //         };
-    //     }
-    //     function setValueQuantity(fe, vq, feUom = null) {
-    //         fe.question.answer = vq.value;
-    //         if (feUom) feUom.question.answer = vq.unit;
-    //         else fe.question.answerUom = vq.unit;
-    //     }
-    //     function getById(form, tinyId, instance = 0) {
-    //         let count = -1;
-    //         let result = null;
-    //         function getByIdRecurse(fe, tinyId) {
-    //             fe.formElements.forEach(f => {
-    //                 if (f.elementType === 'section') getByIdRecurse(f, tinyId);
-    //                 else if (f.elementType === 'form') {
-    //                     if (f.inForm.form.tinyId === tinyId) {
-    //                         count++;
-    //                         if (count >= instance) return result = f;
-    //                     }
-    //                     getByIdRecurse(f, tinyId);
-    //                 } else {
-    //                     if (f.question.cde.tinyId === tinyId) {
-    //                         count++;
-    //                         if (count >= instance) return result = f;
-    //                         f.question.answers.forEach(a => {
-    //                             if (a.formElements && !result) {
-    //                                 a.formElements.forEach(sq => !result && getByIdRecurse(sq, tinyId));
-    //                             }
-    //                         });
-    //                     }
-    //                 }
-    //                 if (result) return;
-    //             });
-    //         }
-    //         getByIdRecurse(form, tinyId);
-    //         return result;
-    //     }
-    //     map && map.mapping.forEach(m => {
-    //         function getByCode(form, instance = 0, system = null, code = null) {
-    //             if (!system) system = m.resourceSystem;
-    //             if (!code) code = m.resourceCode;
-    //             let count = -1;
-    //             let result = null;
-    //             function getByCodeRecurse(fe) {
-    //                 fe.formElements.forEach(f => {
-    //                     if (f.elementType === 'section') getByCodeRecurse(f);
-    //                     else if (f.elementType === 'form') {
-    //                         if (f.inForm.form.ids.filter(id => id.source === system && id.id === code).length) {
-    //                             count++;
-    //                             if (count >= instance) return result = f;
-    //                         }
-    //                         getByCodeRecurse(f);
-    //                     } else {
-    //                         if (f.question.cde.ids.filter(id => id.source === system && id.id === code).length) {
-    //                             count++;
-    //                             if (count >= instance) return result = f;
-    //                             f.question.answers.forEach(a => {
-    //                                 if (a.formElements && !result) {
-    //                                     a.formElements.forEach(sq => !result && getByCodeRecurse(sq));
-    //                                 }
-    //                             });
-    //                         }
-    //                     }
-    //                     if (result) return;
-    //                 });
-    //             }
-    //             getByCodeRecurse(form);
-    //             return result;
-    //         }
-    //         function getSubByCode(form, instance = 0) {
-    //             return getByCode(getByCode(form), 0, m.resourceComponentSystem, m.resourceComponentCode);
-    //         }
-    //         function getComponent(res) {
-    //             let system = FhirAppComponent.getCodeSystemOut(m.resourceComponentSystem);
-    //             let code = m.resourceComponentCode;
-    //             if (res.component) {
-    //                 let components = res.component.filter(comp => comp.code.coding.some(
-    //                     c => c.system === system && c.code === code
-    //                 ));
-    //                 if (components.length) return components[0];
-    //                 else return null;
-    //             } else {
-    //                 res.component = {};
-    //                 return res.component;
-    //             }
-    //         }
-    //         let key = m.resourceSystem + ' ' + m.resourceCode;
-    //         if (m.resource === 'Observation' && resourceObservationMap[key]
-    //             && (mode === 'in' && m.inFn || mode === 'out' && m.outFn)) {
-    //             resourceObservationMap[key].forEach(o => {
-    //                 /* tslint:disable */ let resFn = eval('(' + m.resourcePropertyObj + ')'); /* tslint:enable */
-    //                 if (!resFn) resFn = obj => obj;
-    //
-    //                 if (mode === 'in') {
-    //                     /* tslint:disable */ let inFn = eval('(' + m.inFn + ')'); /* tslint:enable */
-    //                     if (inFn) inFn(form, resFn(o)[m.resourceProperty]);
-    //                 } else if (mode === 'out') {
-    //                     /* tslint:disable */ let outFn = eval('(' + m.outFn + ')'); /* tslint:enable */
-    //                     if (outFn) resFn(o)[m.resourceProperty] = outFn(form);
-    //                 }
-    //             });
-    //         }
-    //     });
-    // }
-
+    
     newEncounterAdd() {
         this.smart.patient.api.create({
             baseUrl: 'https://api-v5-stu3.hspconsortium.org/LLatLO/data/',
@@ -755,24 +604,21 @@ export class FhirAppComponent {
         });
     }
 
-
-    // TODO this is not working yet
     updateProgress() {
+
         this.patientForms.forEach(f => {
-            if (f.tinyId) {
-                this.getFormObservations(f.tinyId, (err, names) => {
-                    f.observed = this.selectedEncounter.observations.filter(
-                        o => o.raw.code.coding.some(c => names.indexOf(c.system + ' ' + c.code) > -1)
-                    ).length;
-                    f.total = names.length;
-                    f.percent = 100 * f.observed / f.total;
-                });
-            }
-            else {
+            this.getForm(f.tinyId, (err, form) => {
+                this.loadFhirDataToForm(form);
                 f.observed = 0;
                 f.total = 0;
                 f.percent = 0;
-            }
+                iterateFeSync(form, () => {}, () => {}, q => {
+                     f.total++;
+                     if (q.question.answer) f.observed++;
+                });
+                f.percent = 100 * f.observed / f.total;
+            });
+
         });
     }
 }
