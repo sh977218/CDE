@@ -115,6 +115,7 @@ export class FhirAppComponent {
     // };
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
+
     constructor(private http: HttpClient,
                 public dialog: MatDialog,
                 public snackBar: MatSnackBar) {
@@ -262,9 +263,11 @@ export class FhirAppComponent {
     getPatientName() {
         if (this.patient) {
             let name = this.patient.name.filter(name => name.use === 'official')[0];
+            if (!name) name = this.patient.name[0];
             return name.family + ', ' + name.given.join(' ');
         }
     }
+    
 
     loadPatientData() {
         (<any>window).FHIR.oauth2.ready(smart => {
