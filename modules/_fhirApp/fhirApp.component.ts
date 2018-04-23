@@ -79,7 +79,7 @@ export class FhirAppComponent {
     ioInProgress: boolean;
     saving: boolean;
     saved: boolean;
-    summary: boolean;
+    summary: boolean = true;
     fhirToCdeCodeMap = {
         'http://loinc.org': "LOINC",
         "LOINC": 'http://loinc.org',
@@ -102,8 +102,29 @@ export class FhirAppComponent {
 
         let queryParams: any = FhirAppComponent.searchParamsGet();
         this.selectedProfileName = queryParams['selectedProfile'];
-        if (queryParams['tinyId']) this.getForm(queryParams['tinyId'], this.methodLoadForm);
-        else this.summary = true;
+
+        this.patientForms.forEach(f => {
+            this.http.get<CdeForm>('/form/' + f.tinyId).subscribe(form => {
+                iterateFeSync(form, () => {}, () => {}, q => {
+                    q.question.cde.ids.forEach(id => {
+                        if (id.source === 'LOINC') {
+                            this.http.get("/umlsCuiFromSrc/" + id.id + "/LNC").subscribe((r: any) => {
+                                if (r && r.result && r.result.results.length) {
+                                    this.codeToDisplay[id.source + ":" + id.id] = r.result.results[0].name.split(":")[0];
+                                }
+                            });
+                        }
+                    });
+                    let localCdeId = new CdeId();
+                    localCdeId.source = "https://cde.nlm.nih.gov";
+                    localCdeId.id = q.question.cde.tinyId;
+                    q.question.cde.ids.push(localCdeId);
+                });
+            });
+        });
+
+        // if (queryParams['tinyId']) this.getForm(queryParams['tinyId'], this.methodLoadForm);
+        // else this.summary = true;
 
         if (queryParams['state']) this.loadPatientData();
         else if (queryParams['iss']) {
@@ -173,7 +194,6 @@ export class FhirAppComponent {
 
         this.http.get<CdeForm>('/form/' + tinyId).subscribe(elt => {
             CdeForm.validate(elt);
-
             cb(null, elt);
         }, err => cb(err.statusText));
     }
@@ -189,46 +209,46 @@ export class FhirAppComponent {
         else return null;
     }
 
-    getFormObservations(tinyId, cb) {
-        // let pushFormObservationNames = tinyId => {
-        //     let map = FhirAppComponent.getFormMap(tinyId);
-        //     map && map.mapping.forEach(m => {
-        //         let key = m.resourceSystem + ' ' + m.resourceCode;
-        //         if (m.resource === 'Observation' && !resourceObservationMap[key] && m.resourceCode !== '*') {
-        //             resourceObservationMap[key] = true;
-        //             observationNames.push(this.getCodeSystemOut(m.resourceSystem)
-        //                 + ' ' + m.resourceCode);
-        //         }
-        //
-        //     });
-        // };
-        //
-        let resourceObservationMap = {};
-        let observationNames = [];
-        // pushFormObservationNames(tinyId);
-        this.getForm(tinyId, (err, elt) => {
-            if (!err && elt) {
-                // iterateFeSync(elt, form => pushFormObservationNames(form.inForm.form.tinyId), () => {}, q => {
-                iterateFeSync(elt, () => {}, () => {}, q => {
-                    q.question.cde.ids.forEach(id => {
-                        if (id.source === 'LOINC') {
-                            this.http.get("/umlsCuiFromSrc/" + id.id + "/LNC").subscribe((r: any) => {
-                                if (r && r.result && r.result.results.length) {
-                                    this.codeToDisplay[id.source + ":" + id.id] = r.result.results[0].name.split(":")[0];
-                                    console.log(this.codeToDisplay);
-                                }
-                            });
-                        }
-                    });
-                    let localCdeId = new CdeId();
-                    localCdeId.source = "https://cde.nlm.nih.gov";
-                    localCdeId.id = q.question.cde.tinyId;
-                    q.question.cde.ids.push(localCdeId);
-                });
-            }
-            cb(err, observationNames);
-        });
-    }
+    // getFormObservations(tinyId, cb) {
+    //     // let pushFormObservationNames = tinyId => {
+    //     //     let map = FhirAppComponent.getFormMap(tinyId);
+    //     //     map && map.mapping.forEach(m => {
+    //     //         let key = m.resourceSystem + ' ' + m.resourceCode;
+    //     //         if (m.resource === 'Observation' && !resourceObservationMap[key] && m.resourceCode !== '*') {
+    //     //             resourceObservationMap[key] = true;
+    //     //             observationNames.push(this.getCodeSystemOut(m.resourceSystem)
+    //     //                 + ' ' + m.resourceCode);
+    //     //         }
+    //     //
+    //     //     });
+    //     // };
+    //     //
+    //     let resourceObservationMap = {};
+    //     let observationNames = [];
+    //     // pushFormObservationNames(tinyId);
+    //     this.getForm(tinyId, (err, elt) => {
+    //         if (!err && elt) {
+    //             // iterateFeSync(elt, form => pushFormObservationNames(form.inForm.form.tinyId), () => {}, q => {
+    //             iterateFeSync(elt, () => {}, () => {}, q => {
+    //                 q.question.cde.ids.forEach(id => {
+    //                     if (id.source === 'LOINC') {
+    //                         this.http.get("/umlsCuiFromSrc/" + id.id + "/LNC").subscribe((r: any) => {
+    //                             if (r && r.result && r.result.results.length) {
+    //                                 this.codeToDisplay[id.source + ":" + id.id] = r.result.results[0].name.split(":")[0];
+    //                                 console.log(this.codeToDisplay);
+    //                             }
+    //                         });
+    //                     }
+    //                 });
+    //                 let localCdeId = new CdeId();
+    //                 localCdeId.source = "https://cde.nlm.nih.gov";
+    //                 localCdeId.id = q.question.cde.tinyId;
+    //                 q.question.cde.ids.push(localCdeId);
+    //             });
+    //         }
+    //         cb(err, observationNames);
+    //     });
+    // }
 
     getObservationValue(observation) {
         if (!observation) return undefined;
@@ -358,11 +378,8 @@ export class FhirAppComponent {
             let matchedCodes = _intersectionWith(
                 o.code.coding,
                 formElt.question.cde.ids,
-                (a, b) =>  {
-                    let result = this.fhirToCdeCodeMap[a['system']] === b['source'] && a['code'] === b['id'];
-                    if (result) console.log("match");
-                    return result;
-                });
+                (a, b) => this.fhirToCdeCodeMap[a['system']] === b['source'] && a['code'] === b['id']
+            );
 
             if (matchedCodes.length) {
                 copy.valueQuantity.value = formElt.question.answer;
@@ -391,7 +408,6 @@ export class FhirAppComponent {
             this.submitFhirPending.push({before: null, after: observation});
         }
     }
-
 
     createObs (formElt) {
         let obsCode = {
@@ -443,7 +459,7 @@ export class FhirAppComponent {
 
         return observation;
     }
-    
+
     newEncounterAdd() {
         this.smart.patient.api.create({
             baseUrl: 'https://api-v5-stu3.hspconsortium.org/LLatLO/data/',
@@ -526,7 +542,9 @@ export class FhirAppComponent {
         };
     }
 
-    openViewObs () {
+    openViewObs (e) {
+        this.selectedEncounter = e;
+        this.encounterSelected();
         this.dialog.open(ViewFhirObservationDialogComponent, {
             width: '700px',
             data: { selectedObservations: this.selectedObservations}
@@ -605,7 +623,6 @@ export class FhirAppComponent {
     }
 
     updateProgress() {
-
         this.patientForms.forEach(f => {
             this.getForm(f.tinyId, (err, form) => {
                 this.loadFhirDataToForm(form);

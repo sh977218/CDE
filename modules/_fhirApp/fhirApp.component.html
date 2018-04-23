@@ -74,7 +74,7 @@
                             <td>
                                 <mat-icon *ngIf="e === selectedEncounter">check_box</mat-icon>
                                 <mat-icon *ngIf="e !== selectedEncounter">check_box_outline_blank</mat-icon>
-                                <mat-icon (click)="openViewObs()">open_in_new</mat-icon>
+                                <mat-icon (click)="openViewObs(e)">open_in_new</mat-icon>
                             </td>
                             <td>{{e.type}}</td>
                             <td>{{e.reason}}</td>
