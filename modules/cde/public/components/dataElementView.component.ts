@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
 import _uniqWith from 'lodash/uniqWith';
 import { Subscription } from 'rxjs/Subscription';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { AlertService } from '_app/alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
@@ -18,6 +19,7 @@ import { Comment } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity } from 'shared/de/deValidator';
 import { isOrgCurator } from 'shared/system/authorizationShared';
+import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 
 
 @Component({
@@ -29,12 +31,14 @@ import { isOrgCurator } from 'shared/system/authorizationShared';
                 font-size: 20px;
             }
         }
-    `]
+    `],
+    providers: []
 })
 export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent') commentAreaComponent: DiscussAreaComponent;
     @ViewChild('copyDataElementContent') copyDataElementContent: NgbModalModule;
     @ViewChild('tabSet') tabSet: NgbTabset;
+
     commentMode;
     currentTab = 'general_tab';
     deId;
@@ -286,5 +290,21 @@ export class DataElementViewComponent implements OnInit {
                 this.loadDataElement(() => this.alert.addAlert('success', 'Data Element saved.'));
             }
         }, () => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
+    }
+
+    viewChanges() {
+        let tinyId = this.route.snapshot.queryParams['tinyId'];
+        let draftEltObs = this.http.get<DataElement>('/draftDataElement/' + tinyId);
+        let publishedEltObs = this.http.get<DataElement>('/de/' + tinyId);
+        forkJoin([draftEltObs, publishedEltObs]).subscribe(res => {
+            if (res.length = 2) {
+                let newer = res[0];
+                let older = res[1];
+                const modalRef = this.modalService.open(CompareHistoryContentComponent, {size: 'lg'});
+                modalRef.componentInstance.newer = newer;
+                modalRef.componentInstance.older = older;
+
+            } else this.alert.addAlert('danger', 'Error loading view changes. ');
+        }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err));
     }
 }

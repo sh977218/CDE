@@ -28,6 +28,7 @@ import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
 import { WidgetModule } from 'widget/widget.module';
+import { CompareModule } from 'compare/compare.module';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -48,6 +49,7 @@ const appRoutes: Routes = [
         AdminItemModule,
         BoardModule,
         CdeSearchModule,
+        CompareModule,
         DiscussModule,
         FormSearchModule,
         NativeRenderModule,

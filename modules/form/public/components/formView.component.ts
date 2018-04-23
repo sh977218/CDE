@@ -8,6 +8,7 @@ import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
 import _uniqWith from 'lodash/uniqWith';
 import { Subscription } from 'rxjs/Subscription';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { AlertService } from '_app/alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
@@ -18,6 +19,7 @@ import { ExportService } from 'core/export.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
+import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
 import { Comment } from 'shared/models.model';
@@ -56,6 +58,7 @@ export class FormViewComponent implements OnInit {
     @ViewChild('mltPinModalCde') public mltPinModalCde: PinBoardModalComponent;
     @ViewChild('exportPublishModal') public exportPublishModal: NgbModalModule;
     @ViewChild('saveModal') public saveModal: SaveModalComponent;
+
     browserService = BrowserService;
     commentMode;
     currentTab = 'preview_tab';
@@ -419,4 +422,20 @@ export class FormViewComponent implements OnInit {
             });
         }, callback);
     }
+
+    viewChanges() {
+        let tinyId = this.route.snapshot.queryParams['tinyId'];
+        let draftEltObs = this.http.get<DataElement>('/draftForm/' + tinyId);
+        let publishedEltObs = this.http.get<DataElement>('/form/' + tinyId);
+        forkJoin([draftEltObs, publishedEltObs]).subscribe(res => {
+            if (res.length = 2) {
+                let newer = res[0];
+                let older = res[1];
+                const modalRef = this.modalService.open(CompareHistoryContentComponent, {size: 'lg'});
+                modalRef.componentInstance.newer = newer;
+                modalRef.componentInstance.older = older;
+            } else this.alert.addAlert('danger', 'Error loading view changes. ');
+        }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err));
+    }
+
 }
