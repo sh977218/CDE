@@ -44,9 +44,9 @@ export class MergeCdeService {
                             cdeFrom.registrationState.registrationStatus = "Retired";
                         }
                         cdeTo.changeNote = "Merged from tinyId " + cdeFrom.tinyId;
-                        let putDeFromObservable = this.putDeByTinyId(cdeFrom);
-                        let putDeToObservable = this.putDeByTinyId(cdeTo);
-                        forkJoin([putDeFromObservable, putDeToObservable]).subscribe(results => {
+                        let putFullDeFromObservable = this.putFullDeByTinyId(cdeFrom);
+                        let putFullDeToObservable = this.putFullDeByTinyId(cdeTo);
+                        forkJoin([putFullDeFromObservable, putFullDeToObservable]).subscribe(results => {
                             cb(null, results);
                         }, err => cb("Unable to mergeCde " + tinyIdFrom + ". Err:" + err));
                     });
@@ -59,9 +59,12 @@ export class MergeCdeService {
         return this.http.get<DataElement>("/de/" + tinyId);
     }
 
-
     putDeByTinyId(elt) {
         return this.http.put("/de/" + elt.tinyId, elt);
+    }
+
+    putFullDeByTinyId(elt) {
+        return this.http.post('/deFull/' + elt.tinyId, elt);
     }
 
     retireSource(source, destination, cb) {
