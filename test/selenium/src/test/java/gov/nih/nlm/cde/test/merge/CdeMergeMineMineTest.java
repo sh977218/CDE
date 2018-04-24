@@ -15,5 +15,26 @@ public class CdeMergeMineMineTest extends NlmCdeBaseTest {
         clickElement(By.id("checkAllMergeFieldsBtn"));
         clickElement(By.id("doMergeBtn"));
         textPresent("Retired", By.xpath("//*[@id='Status']//*[contains(@class,'noLeftPadding')]"));
+
+        goToCdeByName(cdeName2);
+        goToNaming();
+        textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
+        textPresent("CTC Adverse Event Colitis Gra");
+        textPresent("Colitis Grade");
+        goToIdentifiers();
+        textPresent("2005490");
+        goToProperties();
+        textPresent("MyKey2");
+        goToReferenceDocuments();
+        textPresent("Colitis ref doc");
+        goToConcepts();
+        textPresent("Common Toxicity Criteria Adverse Event Colitis");
+        textPresent("Common Terminology Criteria for Adverse Events");
+        textPresent("Hypophosphatemia");
+        goToClassification();
+        textPresent("Common Terminology Criteria for Adverse Events v3.0");
+        textPresent("Submission and Reporting");
+        textPresent("All Candidates");
+        textPresent("caBIG");
     }
 }

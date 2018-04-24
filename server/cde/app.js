@@ -4,6 +4,7 @@ const boardsvc = require('../board/boardsvc');
 const mongo_cde = require('./mongo-cde');
 const mongo_data_system = require('../system/mongo-data');
 const classificationNode_system = require('../system/classificationNode');
+const classificationNode = require('./classificationNode');
 const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared');
 const vsac = require('./vsac-io');
 const config = require('../system/parseConfig');
@@ -27,7 +28,6 @@ exports.init = function (app, daoManager) {
     app.post("/de/:id?", cdesvc.createDataElement);
     app.put("/de/:tinyId", cdesvc.updateDataElement);
     app.put("/deFull/:tinyId", cdesvc.updateDataElementFull);
-    app.put("/de/:tinyId/full", cdesvc.updateDataElementFull);
 
     app.get("/deById/:id", exportShared.nocacheMiddleware, cdesvc.byId);
     app.get("/deById/:id/priorDataElements/", exportShared.nocacheMiddleware, cdesvc.priorDataElements);
