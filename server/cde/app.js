@@ -4,7 +4,6 @@ const boardsvc = require('../board/boardsvc');
 const mongo_cde = require('./mongo-cde');
 const mongo_data_system = require('../system/mongo-data');
 const classificationNode_system = require('../system/classificationNode');
-const classificationNode = require('./classificationNode');
 const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared');
 const vsac = require('./vsac-io');
 const config = require('../system/parseConfig');
@@ -89,13 +88,6 @@ exports.init = function (app, daoManager) {
     app.get('/elasticSearch/count', function (req, res) {
         return elastic_system.nbOfCdes(function (err, result) {
             res.send("" + result);
-        });
-    });
-
-    app.post('/classification/cde/moveclassif', function (req, res) {
-        classificationNode.moveClassifications(req, function (err, cde) {
-            if (err) return res.status(500).send("ERROR moving classification");
-            res.send(cde);
         });
     });
 
