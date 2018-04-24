@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { FhirAppComponent, ViewFhirObservationDialogComponent } from "./fhirApp.component";
+import { FhirAppComponent, FhirStandaloneComponent, ViewFhirObservationDialogComponent } from "./fhirApp.component";
 import { NativeRenderModule } from "../nativeRender/nativeRender.module";
 
 import {
@@ -16,6 +16,12 @@ import {
     MatSnackBarModule,
 } from '@angular/material';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { RouterModule, Routes } from "@angular/router";
+
+const appRoutes: Routes = [
+    {path: 'form/:config', component: FhirAppComponent},
+];
+
 
 @NgModule({
     imports: [
@@ -31,16 +37,19 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
         MatProgressSpinnerModule,
         MatDialogModule,
         MatSnackBarModule,
+        RouterModule.forRoot(appRoutes),
     ],
     declarations: [
         FhirAppComponent,
+        FhirStandaloneComponent,
         ViewFhirObservationDialogComponent,
+
     ],
     entryComponents: [
         FhirAppComponent,
         ViewFhirObservationDialogComponent,
     ],
-    bootstrap: [FhirAppComponent]
+    bootstrap: [FhirStandaloneComponent]
 })
 export class FhirAppModule {
 }

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
+import { ActivatedRoute } from "@angular/router";
 import async_forEach from 'async/forEach';
 import async_parallel from 'async/parallel';
 import 'fhirclient';
@@ -11,6 +12,12 @@ import _intersectionWith from 'lodash/intersectionWith';
 
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { CdeId } from "../../shared/models.model";
+
+@Component({
+    selector: 'cde-fhir-standalone',
+    template: "<router-outlet></router-outlet>"
+})
+export class FhirStandaloneComponent {}
 
 @Component({
     selector: 'cde-fhir-form',
@@ -88,46 +95,46 @@ export class FhirAppComponent {
         {id: 'LOINC', uri: 'http://loinc.org'},
         {id: 'UCUM', uri: 'http://unitsofmeasure.org'}
     ];
-    formIds: string;
 
     codeToDisplay = {};
 
-    static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
-
-
     constructor(private http: HttpClient,
                 public dialog: MatDialog,
-                public snackBar: MatSnackBar) {
+                public snackBar: MatSnackBar,
+                private route: ActivatedRoute) {
 
-        let queryParams: any = FhirAppComponent.searchParamsGet();
+        let queryParams = this.route.snapshot.queryParams;
         this.selectedProfileName = queryParams['selectedProfile'];
 
         let formIds = queryParams['fIds'];
 
-        this.formIds = formIds;
-        formIds.split(";").forEach(f => {
-            this.http.get<CdeForm>('/form/' + f.tinyId).subscribe(form => {
-                this.patientForms.push({
-                    tinyId: form.tinyId,
-                    name: form.naming[0].designation
-                });
-                iterateFeSync(form, () => {}, () => {}, q => {
-                    q.question.cde.ids.forEach(id => {
-                        if (id.source === 'LOINC') {
-                            this.http.get("/umlsCuiFromSrc/" + id.id + "/LNC").subscribe((r: any) => {
-                                if (r && r.result && r.result.results.length) {
-                                    this.codeToDisplay[id.source + ":" + id.id] = r.result.results[0].name.split(":")[0];
-                                }
-                            });
-                        }
+        console.log(this.route.snapshot.paramMap.get("config"));
+
+        if (formIds) {
+            formIds.split(";").forEach(f => {
+                this.http.get<CdeForm>('/form/' + f.tinyId).subscribe(form => {
+                    this.patientForms.push({
+                        tinyId: form.tinyId,
+                        name: form.naming[0].designation
                     });
-                    let localCdeId = new CdeId();
-                    localCdeId.source = "https://cde.nlm.nih.gov";
-                    localCdeId.id = q.question.cde.tinyId;
-                    q.question.cde.ids.push(localCdeId);
+                    iterateFeSync(form, () => {}, () => {}, q => {
+                        q.question.cde.ids.forEach(id => {
+                            if (id.source === 'LOINC') {
+                                this.http.get("/umlsCuiFromSrc/" + id.id + "/LNC").subscribe((r: any) => {
+                                    if (r && r.result && r.result.results.length) {
+                                        this.codeToDisplay[id.source + ":" + id.id] = r.result.results[0].name.split(":")[0];
+                                    }
+                                });
+                            }
+                        });
+                        let localCdeId = new CdeId();
+                        localCdeId.source = "https://cde.nlm.nih.gov";
+                        localCdeId.id = q.question.cde.tinyId;
+                        q.question.cde.ids.push(localCdeId);
+                    });
                 });
             });
-        });
+        }
 
         // if (queryParams['tinyId']) this.getForm(queryParams['tinyId'], this.methodLoadForm);
         // else this.summary = true;
@@ -503,16 +510,6 @@ export class FhirAppComponent {
             width: '700px',
             data: { selectedObservations: this.selectedObservations}
         });
-    }
-
-    static searchParamsGet(): string[] {
-        let params: any = {};
-        location.search && location.search.substr(1).split('&').forEach(e => {
-            let p = e.split('=');
-            if (p.length === 2) params[p[0]] = decodeURI(p[1]);
-            else params[p[0]] = null;
-        });
-        return params;
     }
 
     prepareObservations(formElt) {

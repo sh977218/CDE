@@ -19,6 +19,7 @@ const conn = connHelper.establishConnection(config.database.appData);
 const ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus);
 const Comment = conn.model('Comment', schemas.commentSchema);
 const Embeds = conn.model('Embed', schemas.embedSchema);
+const FhirApps = conn.model('FhirApp', schemas.fhirAppSchema);
 const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 const Message = conn.model('Message', schemas.message);
 const MeshClassification = conn.model('meshClassification', schemas.meshClassification);
