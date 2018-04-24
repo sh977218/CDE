@@ -12,7 +12,7 @@ public class FhirQuestionnaireExport extends BaseFormTest {
         mustBeLoggedInAs(reguser_username, password);
         String response = get(baseUrl + "/formById/590cc0da5b9fd620f835b547?subtype=fhirQuestionnaire").asString();
         String[] expectedResults = {
-                "\"system\": \"http://localhost:3001/schema/form\"",
+                "/schema/form",
                 "/deView?tinyId=c15vK97pK5X",
                 "\"valueString\": \"Female\"",
                 "\"linkId\": \"0-2\"",
