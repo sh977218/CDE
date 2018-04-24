@@ -20,10 +20,5 @@ public class FhirQuestionnaireExport extends BaseFormTest {
         for (String expectedResult : expectedResults) {
             Assert.assertTrue(response.contains(expectedResult), "missing: " + expectedResult + "\n Actual: \n " + response);
         }
-        for (int i = 0; i < expectedResults.length - 2; i++) {
-            String twoLines = expectedResults[i] + "\n" + expectedResults[i + 1];
-            Assert.assertTrue(response.replaceAll("\\s+", "").contains(twoLines.replaceAll("\\s+", "")),
-                    "missing: " + twoLines);
-        }
     }
 }
