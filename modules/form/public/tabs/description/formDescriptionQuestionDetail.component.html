@@ -254,7 +254,7 @@
                                              (modelChange)="onEltChange.emit();"></cde-inline-edit>
                         </td>
                         <td>
-                            <ng-select [(ngModel)]="tags" [items]="cdeNaming.tags" [hideSelected]="true"
+                            <ng-select [(ngModel)]="cdeNaming.tags" [items]="tag$" [hideSelected]="true"
                                        multiple="true" bindLabel="name" (change)="onEltChange.emit();">
                             </ng-select>
                         </td>
@@ -266,7 +266,7 @@
                         <td><input [(ngModel)]="newCdeNaming.designation" class="w-100 newCdeDesignation"/></td>
                         <td><input [(ngModel)]="newCdeNaming.definition" class="w-100 newCdeDefinition"/></td>
                         <td>
-                            <ng-select [(ngModel)]="tags" [items]="newCdeNaming.tags" [hideSelected]="true"
+                            <ng-select [(ngModel)]="newCdeNaming.tags" [items]="tag$" [hideSelected]="true"
                                        multiple="true" bindLabel="name" (change)="onEltChange.emit();">
                             </ng-select>
                         </td>
@@ -412,7 +412,7 @@
                     </dd>
                     <dt class="col-2"> Tags:</dt>
                     <dd class="col-10">
-                        <ng-select [(ngModel)]="tags" [items]="naming.tags" [hideSelected]="true"
+                        <ng-select [(ngModel)]="naming.tags" [items]="tag$" [hideSelected]="true"
                                    multiple="true" bindLabel="name" (change)="onEltChange.emit();">
                         </ng-select>
                     </dd>
