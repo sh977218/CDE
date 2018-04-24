@@ -66,10 +66,7 @@ export class FhirAppComponent {
     newEncounterType: string = 'Outpatient Encounter';
     newEncounterValid: boolean;
     patient: any;
-    patientForms: any = [
-        // {name: 'FHIR: Vital Signs', tinyId: 'Xk8LrBb7V'},
-        // {name: 'FHIR: Laboratory Cholesterol', tinyId: 'X1_IXy_L4'}
-    ];
+    patientForms: any = [];
     patientEncounters = [];
     patientObservations = [];
     patientOrganization: any;
@@ -382,7 +379,6 @@ export class FhirAppComponent {
         observation.issued = this.selectedEncounter.date;
         observation.subject.reference = 'Patient/' + this.patient.id;
 
-        // if (obsCode) observation.code = this.getCoding(obsCode.system, obsCode.code);
         if (obsCode) {
             observation.code = {
                 coding: [{
@@ -393,23 +389,6 @@ export class FhirAppComponent {
                 text: obsCode.display
             };
         }
-
-        // if (compCodes.length) {
-        //     observation.component = [];
-        //     compCodes.forEach(c => {
-        //         observation.component.push({code: FhirAppComponent.getCoding(c.system, c.code)});
-        //     });
-        // }
-
-        // let category = FhirAppComponent.fhirObservations[obsCode.system + ' ' + obsCode.code];
-        // if (category) {
-        //     observation.category.push({
-        //         coding: [{
-        //             system: 'http://hl7.org/fhir/observation-category',
-        //             code: category.categoryCode
-        //         }]
-        //     });
-        // }
 
         return observation;
     }
