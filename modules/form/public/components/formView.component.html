@@ -99,6 +99,10 @@
                     <li class="dropdown-item">
                         <span id='formCdesExport' (click)="exportService.formCdeExport(elt)">CDE Dictionary (CSV)</span>
                     </li>
+                    <li class="dropdown-item">
+                        <a id="asQuestionnaire" href="formById/{{elt._id}}?subtype=fhirQuestionnaire">FHIR Questionnaire</a>
+                        <a href="https://www.hl7.org/fhir/questionnaire.html" target="_blank"><i class="fa fa-info-circle"></i></a>
+                    </li>
                 </ng-container>
                 <a class="dropdown-item" *ngIf="!isAllowedModel.loggedIn()" href="login">
                     Please login to export forms.</a>

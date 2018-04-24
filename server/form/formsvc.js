@@ -1,6 +1,7 @@
 const async = require("async");
 const _ = require("lodash");
 
+const config = require('../system/parseConfig');
 const mongo_cde = require("../cde/mongo-cde");
 const mongo_form = require("./mongo-form");
 const mongo_data = require("../system/mongo-data");
@@ -11,6 +12,7 @@ const sdc = require("./sdcForm");
 const odm = require("./odmForm");
 const redCap = require("./redCapForm");
 const publishForm = require("./publishForm");
+const toQuestionnaire = require('@std/esm')(module)('../../shared/mapping/fhir/to/toQuestionnaire');
 const dbLogger = require('../system/dbLogger');
 
 function setResponseXmlHeader(res) {
@@ -90,24 +92,33 @@ exports.byId = function (req, res) {
                 if (err) return res.status(500).send("ERROR - cannot wipe form data");
                 if (req.query.type === 'xml') {
                     setResponseXmlHeader(res);
-                    if (req.query.subtype === 'odm')
+                    if (req.query.subtype === 'odm') {
                         odm.getFormOdm(wholeForm, function (err, xmlForm) {
                             if (err) return res.status(500).send("ERROR - canont get form as odm");
                             res.setHeader("Content-Type", "text/xml");
                             return res.send(xmlForm);
                         });
-                    else if (req.query.subtype === 'sdc')
+                    } else if (req.query.subtype === 'sdc') {
                         sdc.formToSDC(wholeForm, req.query.renderer, function (err, sdcForm) {
                             if (err) return res.send(err);
                             return res.send(sdcForm);
                         });
-                    else nih.getFormNih(wholeForm, function (err, xmlForm) {
+                    } else {
+                        nih.getFormNih(wholeForm, function (err, xmlForm) {
                             if (err) return res.status(500).send("ERROR - cannot get json export");
                             return res.send(xmlForm);
                         });
-                } else if (req.query.type && req.query.type.toLowerCase() === 'redcap')
+                    }
+                } else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
                     redCap.getZipRedCap(wholeForm, res);
-                else res.send(wholeForm);
+                } else {
+                    if (req.query.subtype === 'fhirQuestionnaire') {
+                        formShared.addFormIds(wholeForm);
+                        res.send(toQuestionnaire.formToQuestionnaire(wholeForm, null, config));
+                    } else {
+                        res.send(wholeForm);
+                    }
+                }
             });
             mongo_data.addToViewHistory(wholeForm, req.user);
         });
@@ -223,6 +234,7 @@ exports.draftFormById = function (req, res) {
         });
     });
 };
+
 exports.saveDraftForm = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
