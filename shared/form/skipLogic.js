@@ -3,13 +3,13 @@ import { iterateFesSync, score } from 'shared/form/formShared';
 export function evaluateSkipLogic(condition, parent, fe, nrs) {
     if (!condition) return true;
     let rule = condition.trim();
-    if (rule.indexOf('AND') > -1) {
-        return evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), parent, fe, nrs) &&
-            evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), parent, fe, nrs);
-    }
     if (rule.indexOf('OR') > -1) {
         return (evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), parent, fe, nrs) ||
             evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3), parent, fe, nrs));
+    }
+    if (rule.indexOf('AND') > -1) {
+        return evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), parent, fe, nrs) &&
+            evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), parent, fe, nrs);
     }
 
     let operatorArr = />=|<=|=|>|<|!=/.exec(rule);

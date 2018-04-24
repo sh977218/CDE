@@ -48,7 +48,7 @@ public class EditSkipLogic extends BaseFormTest {
         editSkipLogic(inputXpath, "=", 6, 1, true, "Unexpected number of tokens in expression 6");
         editSkipLogic(inputXpath, "\"2\"", 5, 2, false, "Unexpected number of tokens in expression 6");
 
-        editSkipLogic(inputXpath, "AND", 2, 1, true, "Unexpected number of tokens in expression 8");
+        editSkipLogic(inputXpath, "OR", 2, 2, true, "Unexpected number of tokens in expression 8");
 
         editSkipLogic(inputXpath, "\"To what degree did your fatigue interfere with your physical functioning?\"", 2, 2,
                 true, "Unexpected number of tokens in expression 9");
@@ -72,6 +72,11 @@ public class EditSkipLogic extends BaseFormTest {
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
         clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_3-1']//" + byValueListValueXPath("Not at all")));
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
+        clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_3-0']//" + byValueListValueXPath("A little bit")));
+        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_3-1']//" + byValueListValueXPath("A little bit")));
+        textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
+        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_3-1']//" + byValueListValueXPath("Somewhat")));
+        textPresent("How often did you have to push yourself to get things done because of your fatigue?");
     }
 
 }

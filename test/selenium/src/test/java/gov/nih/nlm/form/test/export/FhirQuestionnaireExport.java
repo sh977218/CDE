@@ -14,8 +14,8 @@ public class FhirQuestionnaireExport extends BaseFormTest {
         String[] expectedResults = {
                 "/schema/form",
                 "/deView?tinyId=c15vK97pK5X",
-                "\"valueString\": \"Female\"",
-                "\"linkId\": \"0-2\"",
+                "\"valueString\":\"Female\"",
+                "\"linkId\":\"0-2\"",
         };
         for (String expectedResult : expectedResults) {
             Assert.assertTrue(response.contains(expectedResult), "missing: " + expectedResult + "\n Actual: \n " + response);
