@@ -126,6 +126,24 @@ exports.embeds = {
     }
 };
 
+exports.fhirApps = {
+    save: (embed, cb) => {
+        if (embed._id) {
+            let _id = embed._id;
+            delete embed._id;
+            FhirApps.update({_id: _id}, embed, cb);
+        } else {
+            new FhirApps(embed).save(cb);
+        }
+    },
+    find: (crit, cb) => {
+        FhirApps.find(crit, cb);
+    },
+    delete: (id, cb) => {
+        FhirApps.remove({_id: id}, cb);
+    }
+};
+
 exports.org_autocomplete = function (name, callback) {
     Org.find({"name": new RegExp(name, 'i')}, function (err, orgs) {
         callback(orgs);

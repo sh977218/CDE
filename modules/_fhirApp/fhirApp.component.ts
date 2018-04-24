@@ -106,12 +106,8 @@ export class FhirAppComponent {
         let queryParams = this.route.snapshot.queryParams;
         this.selectedProfileName = queryParams['selectedProfile'];
 
-        let formIds = queryParams['fIds'];
-
-        console.log(this.route.snapshot.paramMap.get("config"));
-
-        if (formIds) {
-            formIds.split(";").forEach(f => {
+        this.http.get("/fhirApp/" + this.route.snapshot.paramMap.get("config")).subscribe((fhirApp: any) => {
+            fhirApp.forms.forEach(f => {
                 this.http.get<CdeForm>('/form/' + f.tinyId).subscribe(form => {
                     this.patientForms.push({
                         tinyId: form.tinyId,
@@ -134,16 +130,14 @@ export class FhirAppComponent {
                     });
                 });
             });
-        }
+        });
 
-        // if (queryParams['tinyId']) this.getForm(queryParams['tinyId'], this.methodLoadForm);
-        // else this.summary = true;
 
         if (queryParams['state']) this.loadPatientData();
         else if (queryParams['iss']) {
             (<any>window).FHIR.oauth2.authorize({
                 'client_id': 'e17575b9-f89b-49c1-a9c2-52c68f1d273c',
-                'redirect_uri': 'http://localhost:3001/fhir/form',
+                'redirect_uri': '/' + this.route.snapshot.paramMap.get("config"),
                 'scope':  'patient/*.*'
             });
         }
@@ -333,7 +327,6 @@ export class FhirAppComponent {
     updateObservation (formElt) {
         let observations = this.selectedEncounter.observations.map(o => o.raw);
         let foundObs = false;
-        // formElt.question.cde.ids.push({source: "https://cde.nlm.nih.gov", id: formElt.question.cde.tinyId});
         observations.forEach(o => {
             let copy = JSON.parse(JSON.stringify(o));
             let matchedCodes = _intersectionWith(
