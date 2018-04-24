@@ -8,15 +8,14 @@ import static com.jayway.restassured.RestAssured.get;
 
 public class FhirQuestionnaireExport extends BaseFormTest {
     @Test
-    public void odmExport() {
+    public void questionnaireExport() {
         mustBeLoggedInAs(reguser_username, password);
-        String response = get(baseUrl + "/formById/5ade4d7f0dd7102890f863fb?subtype=fhirQuestionnaire").asString();
+        String response = get(baseUrl + "/formById/590cc0da5b9fd620f835b547?subtype=fhirQuestionnaire").asString();
         String[] expectedResults = {
                 "\"system\": \"http://localhost:3001/schema/form\"",
-                "\"definition\": \"http://localhost:3001/deView?tinyId=c15vK97pK5X\"",
-                "\"valueString\": \"Cannot evaluate\"",
+                "/deView?tinyId=c15vK97pK5X",
+                "\"valueString\": \"Female\"",
                 "\"linkId\": \"0-2\"",
-                "\"question\": \"0-0\"",
         };
         for (String expectedResult : expectedResults) {
             Assert.assertTrue(response.contains(expectedResult), "missing: " + expectedResult + "\n Actual: \n " + response);
