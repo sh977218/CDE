@@ -32,8 +32,8 @@ public class CdeMergeMineMineTest extends NlmCdeBaseTest {
         textPresent("Common Terminology Criteria for Adverse Events");
         textPresent("Hypophosphatemia");
         goToClassification();
-        textPresent("Common Terminology Criteria for Adverse Events v3.0");
-        textPresent("Submission and Reporting");
+        textPresent("TEST");
+        textPresent("NLM CDE Dev Team Test");
         textPresent("All Candidates");
         textPresent("caBIG");
     }

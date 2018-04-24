@@ -93,6 +93,13 @@ exports.init = function (app, daoManager) {
         });
     });
 
+    app.post('/classification/cde/moveclassif', function (req, res) {
+        classificationNode.moveClassifications(req, function (err, cde) {
+            if (err) return res.status(500).send("ERROR moving classification");
+            res.send(cde);
+        });
+    });
+
     app.post('/attachments/cde/add', multer(config.multer), function (req, res) {
         adminItemSvc.addAttachment(req, res, mongo_cde);
     });
