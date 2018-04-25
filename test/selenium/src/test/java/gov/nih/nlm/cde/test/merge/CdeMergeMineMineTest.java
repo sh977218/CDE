@@ -27,10 +27,6 @@ public class CdeMergeMineMineTest extends NlmCdeBaseTest {
         textPresent("MyKey2");
         goToReferenceDocuments();
         textPresent("Colitis ref doc");
-        goToConcepts();
-        textPresent("Common Toxicity Criteria Adverse Event Colitis");
-        textPresent("Common Terminology Criteria for Adverse Events");
-        textPresent("Hypophosphatemia");
         goToClassification();
         textPresent("TEST");
         textPresent("NLM CDE Dev Team Test");
