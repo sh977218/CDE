@@ -74,11 +74,10 @@ public class QuestionTest extends BaseFormTest {
         if (newTags != null) {
             String tagsInputXpath = preXpath + "//*[contains(@class,'newCdeTags')]//input";
             for (String newTag : newTags) {
-                String selectTagXpath = "//span[contains(@class,'select2-results')]/ul//li[text()='" + newTag + "']";
+                String selectTagXpath = "//ng-dropdown-panel//div[contains(@class,'ng-option') and contains(., '" + newTag + "')]";
                 clickElement(By.xpath(tagsInputXpath));
                 clickElement(By.xpath(selectTagXpath));
-                textPresent(newTag, By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]" +
-                        "//*[@class='newCdeName']//*[contains(@class,'newCdeTags')]//*[@class='select2-selection__rendered']"));
+                textPresent(newTag, By.xpath(preXpath + "//*[contains(@class,'newCdeTags')]"));
             }
         }
         clickElement(By.xpath(preXpath + "//*[contains(@class,'fa fa-plus')]"));
