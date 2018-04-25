@@ -338,7 +338,7 @@ export class FormViewComponent implements OnInit {
             async_forEach(newCdes, (newCde, doneOneCde) => {
                 this.createDataElement(newCde, doneOneCde);
             }, () => {
-                this.http.put('/form/' + this.elt.tinyId, this.elt).subscribe(res => {
+                this.http.put('/formPublish/' + this.elt.tinyId, this.elt).subscribe(res => {
                     if (res) {
                         this.loadForm(() => this.alert.addAlert('success', 'Form saved.'));
                     }
