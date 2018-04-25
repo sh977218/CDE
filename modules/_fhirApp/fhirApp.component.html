@@ -49,12 +49,10 @@
             </div>
         </div>
         <div class="'col-xl-9 col-lg-8 col-12'">
-            <div style="padding: 5px;max-width: 1010px;margin: 0 auto">
+            <div style="padding: 5px; max-width: 1010px; margin: 0 auto">
                 <h2 *ngIf="ioInProgress || !elt && !errorMessage && !summary" class="text-center mt20">
                     Loading Patient Data from FHIR Server
-                    <span style="text-align: -webkit-center">
-                        <mat-spinner></mat-spinner>
-                    </span>
+                    <mat-spinner style="margin: auto"></mat-spinner>
                 </h2>
                 <h2 *ngIf="errorMessage" class="text-center mt20" style="color: red">{{errorMessage}}</h2>
                 <div *ngIf="!ioInProgress && summary && patient" style="margin-top: 25px">
