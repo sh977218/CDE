@@ -4,6 +4,7 @@ import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstra
 import { TreeNode } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
+import _clone from 'lodash/clone';
 import { debounceTime, map } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -269,7 +270,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             const modalRef = this.modalService.open(QuestionAnswerEditContentComponent, {size: 'lg'});
             modalRef.componentInstance.answers = q.question.answers;
             modalRef.componentInstance.onSaved.subscribe((answers) => {
-                q.question.answers = answers;
+                q.question.answers = _clone(answers);
                 this.onEltChange.emit();
                 modalRef.close();
             });

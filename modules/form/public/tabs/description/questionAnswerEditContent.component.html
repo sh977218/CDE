@@ -1,4 +1,3 @@
-<script src="../../../../../../../Users/huangs8/cde/modules/form/public/components/formView.component.ts"></script>
 <div class="modal-header">
     <h3>Edit Answer</h3>
 </div>
@@ -29,6 +28,8 @@
     </table>
 </div>
 <div class="modal-footer">
+    <button class="btn btn-outline-dark" (click)="activeModal.close('Close click');" id="cancelEditAnswerBtn">
+        Cancel
+    </button>
     <button class="btn btn-warning" (click)="onSaved.emit(answers);" id="saveEditAnswerBtn">Save</button>
-    <button class="btn btn-warning" (click)="activeModal.close('Close click');" id="cancelEditAnswerBtn">Cancel</button>
 </div>

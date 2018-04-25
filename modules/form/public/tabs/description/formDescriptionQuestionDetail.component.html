@@ -207,7 +207,7 @@
             <dd class="col-10 answerList">
                 <ng-select [(ngModel)]="question.question.answers" [items]="answerList$"
                            [multiple]="true" bindLabel="valueMeaningName" placeholder="Select Answer"
-                           (add)="onAnswerListAdd();" (remove)="onAnswerListRemove($event);">
+                           [appendTo]="'body'" (add)="onAnswerListAdd();" (remove)="onAnswerListRemove($event);">
                 </ng-select>
             </dd>
         </ng-container>
@@ -216,7 +216,7 @@
             <ng-container *ngIf="question.question.datatype === 'Value List'">
                 <ng-select [(ngModel)]="question.question.defaultAnswer" [items]="defaultAnswerList$"
                            bindLabel="valueMeaningName" bindValue="valueMeaningName" placeholder="Select Default Answer"
-                           (change)="onEltChange.emit()">
+                           [appendTo]="'body'" (change)="onEltChange.emit()">
                 </ng-select>
             </ng-container>
             <ng-container *ngIf="question.question.datatype !== 'Value List'">
@@ -255,7 +255,8 @@
                         </td>
                         <td>
                             <ng-select [(ngModel)]="cdeNaming.tags" [items]="tag$" [hideSelected]="true"
-                                       multiple="true" bindLabel="name" (change)="onEltChange.emit();">
+                                       multiple="true" bindLabel="name" [appendTo]="'body'"
+                                       (change)="onEltChange.emit();">
                             </ng-select>
                         </td>
                         <td>
@@ -267,7 +268,8 @@
                         <td><input [(ngModel)]="newCdeNaming.definition" class="w-100 newCdeDefinition"/></td>
                         <td>
                             <ng-select [(ngModel)]="newCdeNaming.tags" [items]="tag$" [hideSelected]="true"
-                                       multiple="true" bindLabel="name" (change)="onEltChange.emit();">
+                                       multiple="true" bindLabel="name" [appendTo]="'body'"
+                                       (change)="onEltChange.emit();">
                             </ng-select>
                         </td>
                         <td>
@@ -319,7 +321,7 @@
             <dd class="col-10 cdeDataType">
                 <ng-select [(ngModel)]="question.question.cde.datatype"
                            [items]="dataType$" bindValue="value"
-                           placeholder="Select data type"
+                           placeholder="Select data type" [appendTo]="'body'"
                            (change)="onEltChange.emit()">
                 </ng-select>
             </dd>
@@ -413,7 +415,7 @@
                     <dt class="col-2"> Tags:</dt>
                     <dd class="col-10">
                         <ng-select [(ngModel)]="naming.tags" [items]="tag$" [hideSelected]="true"
-                                   multiple="true" bindLabel="name" (change)="onEltChange.emit();">
+                                   multiple="true" bindLabel="name" [appendTo]="'body'" (change)="onEltChange.emit();">
                         </ng-select>
                     </dd>
                 </dl>
