@@ -10,7 +10,7 @@ export function containerToItemType(container) { // http://hl7.org/fhir/item-typ
             if (Array.isArray(container.unitsOfMeasure) && container.unitsOfMeasure.length || container.uom) {
                 return 'quantity';
             }
-            return typeof(container.datatypeNumber.precision) !== 'number' || container.datatypeNumber.precision < 0
+            return !container.datatypeNumber || typeof(container.datatypeNumber.precision) !== 'number' || container.datatypeNumber.precision < 0
                 ? 'decimal' : 'integer';
         default:
             return container.datatypeText && container.datatypeText.showAsTextArea ? 'text' : 'string';
@@ -59,7 +59,7 @@ export function valueToQuantity(container, value, comparator, uomIndex) {
     }
 }
 
-export function valueToTypedValue(container, type, value, comparator = '>=', uomIndex = 0) {
+export function valueToTypedValue(container, type, value, comparator = '=', uomIndex = 0) {
     switch (type) {
         case 'choice':
             return containerValueListToCoding(container, value);

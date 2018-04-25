@@ -15,13 +15,14 @@ import { capString } from 'shared/system/util';
 export function formToQuestionnaire(form, options, config) {
     let Q = {
         code: form.fhir && form.fhir.code ? form.fhir.code : undefined, // TODO: to be implemented by form tagging
-        contact: { name: 'CDE Repository', telecom: {system: 'url', value: config.publicUrl}},
+        contact: [{ name: 'CDE Repository', telecom: [{system: 'url', value: config.publicUrl}]}],
         copyright: form.copyright && form.copyright.text ? form.copyright.text || form.copyright.authority : undefined,
-        date: form.updated || form.created,
+        date: form.updated ? form.updated.toISOString() : form.created.toISOString(),
         identifier: [newIdentifier(config.publicUrl + '/schema/form', form.tinyId, 'official')],
         item: [],
         name: form.naming[0].designation,
         publisher: 'NIH, National Library of Medicine, Common Data Elements Repository',
+        resourceType: 'Questionnaire',
         status: regStatusToPublicationStatus(form.registrationState.registrationStatus),
         subjectType: ['Encounter'], // Required, Other Values: Bundle ResearchStudy ResearchSubject ...
         title: form.naming[0].designation,
@@ -62,17 +63,25 @@ export function feToQuestionnaireItem(form, fe, options, config) {
             item.option = [];
             fe.question.answers.forEach(a => item.option.push({valueString: pvGetLabel(a)}));
         }
-        if ((item.type === 'choice' || item.type === 'open-choice') && fe.skipLogic && fe.skipLogic.condition) {
+        if (fe.skipLogic && fe.skipLogic.condition) {
             let tokens = tokenSplitter(fe.skipLogic.condition);
             if (tokens.length >= 3) {
-                let q = getQuestionPriorByLabel(form, fe, tokens[0].substring(1, tokens[0].length - 1));
-                if (q) {
-                    item.enableWhen = {
-                        question: q.feId,
-                    };
-                    let qType = containerToItemType(q.question);
-                    item.enableWhen['answer' + capString(itemTypeToItemDatatype(qType))] = valueToTypedValue(q.question,
-                        qType, tokens[2].substring(1, tokens[2].length - 1), tokens[1]);
+                item.enableWhen = [];
+                for (let i = 0, size = tokens.length; i + 3 <= size; i+=4) {
+                    let q = getQuestionPriorByLabel(form, fe, tokens[i].substring(1, tokens[i].length - 1));
+                    if (q) {
+                        let when = {
+                            question: q.feId,
+                        };
+                        if (['""', ''].indexOf(tokens[i + 2]) > -1) {
+                            when.hasAnswer = false;
+                        } else {
+                            let qType = containerToItemType(q.question);
+                            when['answer' + capString(itemTypeToItemDatatype(qType))] = valueToTypedValue(q.question,
+                                qType, tokens[i + 2].substring(1, tokens[i + 2].length - 1), tokens[i + 1]);
+                        }
+                        item.enableWhen.push(when);
+                    }
                 }
             }
         }
