@@ -25,11 +25,9 @@ export class ProfileComponent {
     subscriptionStatusClient = PushNotificationSubscriptionService.subscriptionCheckClient;
     subscriptionStatusServer: string;
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        private userService: UserService,
-    ) {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                private userService: UserService) {
         this.http.get('/viewingHistory/dataElement').subscribe(response => {
             this.cdes = response;
             if (_isArray(response)) this.cdes.forEach((elt, i, elts) => elts[i] = DataElement.copy(elt));
@@ -108,7 +106,7 @@ export class ProfileComponent {
     }
 
     pushUnsubscribe() {
-        PushNotificationSubscriptionService.subscriptionDelete(this.user._id).then( () => {
+        PushNotificationSubscriptionService.subscriptionDelete(this.user._id).then(() => {
             this.subscriptionStatusServer = 'Not Subscribed';
         });
     }

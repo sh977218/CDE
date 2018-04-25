@@ -308,6 +308,30 @@ exports.updateForm = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
+    let elt = req.body;
+    authorization.allowUpdate(req.user, elt, function (err) {
+        if (err) return res.status(500).send("ERROR - update - cannot allow");
+        mongo_data.orgByName(elt.stewardOrg.name, function (err, org) {
+            let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
+            if (org && org.workingGroupOf && org.workingGroupOf.length > 0
+                && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
+                return res.status(403).send("Not authorized");
+            }
+            formShared.trimWholeForm(elt);
+            mongo_form.update(elt, req.user, function (err, response) {
+                if (err) return res.status(500).send("ERROR - cannot update form. ");
+                mongo_form.deleteDraftForm(elt.tinyId, err => {
+                    if (err) return res.status(500).send("ERROR - cannot delete draft. ");
+                    res.send(response);
+                });
+            });
+        });
+    });
+};
+exports.publishTheForm = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
     mongo_form.byTinyId(tinyId, function (err, item) {
         if (err) return res.status(500).send("ERROR - update find by tinyId");
         if (!item) return res.status(404).send();
@@ -320,6 +344,8 @@ exports.updateForm = function (req, res) {
                     return res.status(403).send("Not authorized");
                 }
                 let elt = req.body;
+                elt.classification = item.classification;
+                elt.attachments = item.attachments;
                 formShared.trimWholeForm(elt);
                 mongo_form.update(elt, req.user, function (err, response) {
                     if (err) return res.status(500).send("ERROR - cannot update form. ");

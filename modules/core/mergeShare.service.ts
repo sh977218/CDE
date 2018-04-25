@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { transferClassifications } from 'shared/system/classificationShared';
 
 @Injectable()

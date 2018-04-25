@@ -178,6 +178,30 @@ exports.updateDataElement = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
+    let elt = req.body;
+    authorization.allowUpdate(req.user, elt, function (err) {
+        if (err) return res.status(500).send("ERROR - update - cannot allow");
+        deValidator.wipeDatatype(elt);
+        mongo_data.orgByName(elt.stewardOrg.name, function (err, org) {
+            let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
+            if (org && org.workingGroupOf && org.workingGroupOf.length > 0
+                && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
+                return res.status(403).send("Not authorized");
+            }
+            mongo_cde.update(elt, req.user, function (err, response) {
+                if (err) return res.status(500).send("ERROR - cannot update de");
+                mongo_cde.deleteDraftDataElement(elt.tinyId, err => {
+                    if (err) return res.status(500).send("ERROR - cannot delete draft. ");
+                    res.send(response);
+                });
+            });
+        });
+    });
+};
+exports.publishDataElement = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
     mongo_cde.byTinyId(tinyId, function (err, item) {
         if (err) return res.status(500).send("ERROR - update find by tinyId");
         if (!item) return res.status(404).send();

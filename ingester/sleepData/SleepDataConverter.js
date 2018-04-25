@@ -22,7 +22,10 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
             },
             elements: [{name: classification, elements: []}]
         }],
-        dataSets: [{studyUri: "https://sleepdata.org/datasets/shhs"}]
+        dataSets: [{
+            stringType: 'Sleep Data',
+            studyUri: "https://sleepdata.org/datasets/shhs"
+        }]
     };
 
     let names = sleep.display_name;
