@@ -172,7 +172,7 @@ export function tokenSplitter(str) {
     tokens.push(res[0]);
     str = str.substring(res[0].length).trim();
 
-    res = str.match(/^"?([^"]*)"?/);
+    res = str.match(/(^"?([^"]+)"?)|("")/);
     if (!res) {
         tokens.unmatched = str;
         return tokens;
