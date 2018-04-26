@@ -279,7 +279,7 @@ exports.init = function (app) {
         app.get(path, (req, res) => res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml));
     });
 
-    app.get('/fhir/form', (req, res) => {
+    app.get('/fhir/form/:param', (req, res) => {
         res.sendFile(path.join(__dirname, '../../modules/_fhirApp', 'fhirApp.html'), undefined, err => {
             if (err) res.sendStatus(404);
         });
@@ -1023,6 +1023,39 @@ exports.init = function (app) {
             if (err) res.status(500).send();
             else res.send(embeds);
         });
+    });
+
+    app.get('/fhirApps', (req, res) => {
+        mongo_data.fhirApps.find({}, (err, apps) => {
+            if (err) res.status(500).send();
+            else res.send(apps);
+        });
+    });
+    app.get('/fhirApp/:id', (req, res) => {
+        mongo_data.fhirApps.find({_id: req.params.id}, (err, apps) => {
+            if (err) res.status(500).send();
+            else res.send(apps[0]);
+        });
+    });
+    app.post('/fhirApp', (req, res) => {
+        if (req.user && req.user.siteAdmin) {
+            mongo_data.fhirApps.save(req.body, (err, app) => {
+                if (err) res.status(500).send("There was an error saving this App.");
+                else res.send(app);
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
+    app.delete('/fhirApp/:id', (req, res) => {
+        if (req.user && req.user.siteAdmin) {
+            mongo_data.fhirApps.delete(req.params.id, err => {
+                if (err) res.status(500).send("There was an error removing this App.");
+                else res.send();
+            });
+        } else {
+            res.status(401).send();
+        }
     });
 
     app.post('/feedback/report', function (req, res) {

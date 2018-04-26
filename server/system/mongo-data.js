@@ -19,6 +19,7 @@ const conn = connHelper.establishConnection(config.database.appData);
 const ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus);
 const Comment = conn.model('Comment', schemas.commentSchema);
 const Embeds = conn.model('Embed', schemas.embedSchema);
+const FhirApps = conn.model('FhirApp', schemas.fhirAppSchema);
 const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 const Message = conn.model('Message', schemas.message);
 const MeshClassification = conn.model('meshClassification', schemas.meshClassification);
@@ -122,6 +123,24 @@ exports.embeds = {
     },
     delete: function (id, cb) {
         Embeds.remove({_id: id}, cb);
+    }
+};
+
+exports.fhirApps = {
+    save: (embed, cb) => {
+        if (embed._id) {
+            let _id = embed._id;
+            delete embed._id;
+            FhirApps.update({_id: _id}, embed, cb);
+        } else {
+            new FhirApps(embed).save(cb);
+        }
+    },
+    find: (crit, cb) => {
+        FhirApps.find(crit, cb);
+    },
+    delete: (id, cb) => {
+        FhirApps.remove({_id: id}, cb);
     }
 };
 
