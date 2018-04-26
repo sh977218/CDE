@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 
-import { mappings } from '_nativeRenderApp/fhirMapping';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 
 @Component({
@@ -58,17 +57,6 @@ export class NativeRenderAppComponent {
             CdeForm.validate(elt);
             cb(null, elt);
         }, (err) => cb(err.statusText));
-    }
-
-    static getFormMap(tinyId) {
-        let maps = mappings.filter(m => m.form === tinyId
-            && m.type === 'external'
-            && m.system === 'http://hl7.org/fhir'
-            && m.code === '*'
-            && m.format === 'json'
-        );
-        if (maps.length) return maps[0];
-        else return null;
     }
 
     loadForm(err = null, elt = null) {

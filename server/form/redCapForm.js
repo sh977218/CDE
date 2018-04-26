@@ -43,8 +43,8 @@ function loopForm(form) {
 function formatSkipLogic(text, map) {
     if (text) {
         text = text.replace(/ AND /g, ' and ').replace(/ OR /g, ' or ');
-        return text.replace(/"[A-z0-9 ()-]+" [=|<|>] "[A-z0-9 \(\)-]+"/g, function (segment) {
-            return segment.replace(/"[A-z0-9 \(\)-]+"/, function (s) {
+        return text.replace(/"[A-z0-9 ()-]+" [=|<|>] "[A-z0-9 \(\)-]+"/g, segment => {
+            return segment.replace(/"[A-z0-9 \(\)-]+"/, s => {
                 s = s.replace(/"/g, '');
                 return '[' + map[s] + ']';
             });
@@ -54,7 +54,7 @@ function formatSkipLogic(text, map) {
 
 function getRedCap(form) {
     let instrumentResult = '';
-    let loopFormElements = function (fe) {
+    let loopFormElements = fe => {
         let sectionsAsMatrix = form.displayProfiles && form.displayProfiles[0] && form.displayProfiles[0].sectionsAsMatrix;
         let sectionHeader = '';
         if (fe.elementType === 'section') {
@@ -62,18 +62,18 @@ function getRedCap(form) {
         }
         if (sectionsAsMatrix) {
             let answers = JSON.stringify(fe.formElements[0].question.answers);
-            fe.formElements.forEach(function (e) {
+            fe.formElements.forEach(e => {
                 if (answers !== JSON.stringify(e.question.answers) || e.question.answers.length === 0) {
                     sectionsAsMatrix = false;
                 }
             });
         }
-        fe.formElements.forEach(function (e, i) {
+        fe.formElements.forEach((e, i) => {
             if (e.elementType === 'question') {
                 let q = e.question;
                 let questionSkipLogic = '';
-                if (e.skipLogic)
-                    questionSkipLogic = e.skipLogic.condition;
+                if (e.skipLogic) questionSkipLogic = e.skipLogic.condition;
+                if (!q.cde.tinyId) q.cde.tinyId = "missing question cde";
                 let variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' + q.cde.tinyId.toLowerCase();
                 if (existingVariables[variableName]) {
                     let index = existingVariables[variableName];

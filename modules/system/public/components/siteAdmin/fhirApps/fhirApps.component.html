@@ -1,0 +1,25 @@
+<div *ngIf="!fhirApps || !fhirApps.length">
+    No Fhir Apps
+</div>
+
+<div *ngIf="fhirApps?.length">
+    <table>
+        <tr *ngFor="let app of fhirApps">
+            <td><i class="fa fa-trash-o" (click)="deleteApp(app)"></i></td>
+            <td>{{app._id}}</td>
+            <td>
+                <label> Client Id:
+                    <input [(ngModel)]="app.clientId" class="form-control" (change)="saveApp(app)">
+                </label>
+            </td>
+            <td>
+                <label>Forms (separate with ,)
+                    <input class="form-control" (change)="formsUpdated($event, app)" [value]="getFormIds(app)">
+                </label>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<button class="btn btn-primary" (click)="newApp()"><i class="fa fa-plus"></i> Add</button>
