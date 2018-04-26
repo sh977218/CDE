@@ -74,9 +74,8 @@ public class QuestionTest extends BaseFormTest {
         if (newTags != null) {
             String tagsInputXpath = preXpath + "//*[contains(@class,'newCdeTags')]//input";
             for (String newTag : newTags) {
-                String selectTagXpath = "//ng-dropdown-panel//div[contains(@class,'ng-option') and contains(., '" + newTag + "')]";
                 clickElement(By.xpath(tagsInputXpath));
-                clickElement(By.xpath(selectTagXpath));
+                selectNgSelectDropdownByText(newTag);
                 textPresent(newTag, By.xpath(preXpath + "//*[contains(@class,'newCdeTags')]"));
             }
         }
