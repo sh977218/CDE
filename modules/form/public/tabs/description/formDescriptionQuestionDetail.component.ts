@@ -75,7 +75,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         private alert: AlertService,
         private http: HttpClient,
         public modalService: NgbModal,
-        private dataTypeService: DataTypeService,
         private orgHelperService: OrgHelperService,
         public skipLogicValidateService: SkipLogicValidateService,
         private ucumService: UcumService) {
@@ -100,7 +99,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             return answer;
         });
         this.syncAnswerList();
-        this.dataType$ = this.dataTypeService.getDataElementDataType();
+        this.dataType$ = DataTypeService.getDataElementDataType();
         this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.forEach((t, i) => {
             this.tag$.push({id: i, name: t});
         });
