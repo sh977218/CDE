@@ -198,7 +198,7 @@
                 <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect"
                        (change)="onEltChange.emit()"/>
             </dd>
-            <dt class="col-2">Answer List
+            <dt class="col-2 answerListLabel">Answer List
                 <i *ngIf="question.question.answers.length > 0" class="fa fa-pencil hand-cursor"
                    (click)="openEditAnswerModal(question)"></i>:
             </dt>
