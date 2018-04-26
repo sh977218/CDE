@@ -111,8 +111,8 @@ public class QuestionTest extends BaseFormTest {
     public void editCdeDataTypeById(String questionId, String dataType) {
         boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]")).size() > 0;
         if (!isQuestionOpen) startEditQuestionById(questionId);
-        clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeDataType')]//span[contains(@class,'select2-selection--single')]"));
-        clickElement(By.xpath("(//*[contains(@class,'select2-dropdown')]//*[contains(@class,'select2-results')]//ul//li)[text()='" + dataType + "']"));
+        clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeDataType')]/ng-select//input"));
+        clickElement(By.xpath("//ng-dropdown-panel//div[contains(@class,'ng-option') and contains(., '" + dataType + "')]"));
     }
 
     public void addCdePvById(String questionId, String pv, String codeName, String code, String codeSystem, String codeDescription) {
