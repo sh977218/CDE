@@ -3,7 +3,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AlertService } from '_app/alert/alert.service';
-import { ITEM_MAP } from 'shared/models.model';
+import { ITEM_MAP } from 'shared/item';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';

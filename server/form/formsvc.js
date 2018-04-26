@@ -1,6 +1,10 @@
-const async = require("async");
-const _ = require("lodash");
+const Ajv = require('ajv');
+const async = require('async');
+const fs = require('fs');
+const _ = require('lodash');
+const path = require('path');
 
+const config = require('../system/parseConfig');
 const mongo_cde = require("../cde/mongo-cde");
 const mongo_form = require("./mongo-form");
 const mongo_data = require("../system/mongo-data");
@@ -11,7 +15,16 @@ const sdc = require("./sdcForm");
 const odm = require("./odmForm");
 const redCap = require("./redCapForm");
 const publishForm = require("./publishForm");
+const toQuestionnaire = require('@std/esm')(module)('../../shared/mapping/fhir/to/toQuestionnaire');
 const dbLogger = require('../system/dbLogger');
+
+const ajv = new Ajv({schemaId: 'auto'}); // current FHIR schema uses legacy JSON Schema version 4
+ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
+fs.readdirSync(path.resolve(__dirname, '../../shared/mapping/fhir/schema/')).forEach(file => {
+    if (file.indexOf('.schema.json') > -1) {
+        ajv.addSchema(require('../../shared/mapping/fhir/schema/' + file));
+    }
+});
 
 function setResponseXmlHeader(res) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -90,24 +103,44 @@ exports.byId = function (req, res) {
                 if (err) return res.status(500).send("ERROR - cannot wipe form data");
                 if (req.query.type === 'xml') {
                     setResponseXmlHeader(res);
-                    if (req.query.subtype === 'odm')
+                    if (req.query.subtype === 'odm') {
                         odm.getFormOdm(wholeForm, function (err, xmlForm) {
                             if (err) return res.status(500).send("ERROR - canont get form as odm");
                             res.setHeader("Content-Type", "text/xml");
                             return res.send(xmlForm);
                         });
-                    else if (req.query.subtype === 'sdc')
+                    } else if (req.query.subtype === 'sdc') {
                         sdc.formToSDC(wholeForm, req.query.renderer, function (err, sdcForm) {
                             if (err) return res.send(err);
                             return res.send(sdcForm);
                         });
-                    else nih.getFormNih(wholeForm, function (err, xmlForm) {
+                    } else {
+                        nih.getFormNih(wholeForm, function (err, xmlForm) {
                             if (err) return res.status(500).send("ERROR - cannot get json export");
                             return res.send(xmlForm);
                         });
-                } else if (req.query.type && req.query.type.toLowerCase() === 'redcap')
+                    }
+                } else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
                     redCap.getZipRedCap(wholeForm, res);
-                else res.send(wholeForm);
+                } else {
+                    if (req.query.subtype === 'fhirQuestionnaire') {
+                        formShared.addFormIds(wholeForm);
+                        if (req.query.hasOwnProperty('validate')) {
+                            let p = path.resolve(__dirname, '../../shared/mapping/fhir/schema/Questionnaire.schema.json');
+                            fs.readFile(p, (err, data) => {
+                                if (err || !data) return dbLogger.respondError(res, err, 'schema missing');
+                                let result = ajv.validate(JSON.parse(data),
+                                    toQuestionnaire.formToQuestionnaire(wholeForm, null, config));
+                                res.send({valid: result, errors: ajv.errors});
+                            });
+                        } else {
+                            res.send(toQuestionnaire.formToQuestionnaire(wholeForm, null, config));
+                        }
+
+                    } else {
+                        res.send(wholeForm);
+                    }
+                }
             });
             mongo_data.addToViewHistory(wholeForm, req.user);
         });
@@ -223,6 +256,7 @@ exports.draftFormById = function (req, res) {
         });
     });
 };
+
 exports.saveDraftForm = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
@@ -308,6 +342,30 @@ exports.updateForm = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
+    let elt = req.body;
+    authorization.allowUpdate(req.user, elt, function (err) {
+        if (err) return res.status(500).send("ERROR - update - cannot allow");
+        mongo_data.orgByName(elt.stewardOrg.name, function (err, org) {
+            let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
+            if (org && org.workingGroupOf && org.workingGroupOf.length > 0
+                && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
+                return res.status(403).send("Not authorized");
+            }
+            formShared.trimWholeForm(elt);
+            mongo_form.update(elt, req.user, function (err, response) {
+                if (err) return res.status(500).send("ERROR - cannot update form. ");
+                mongo_form.deleteDraftForm(elt.tinyId, err => {
+                    if (err) return res.status(500).send("ERROR - cannot delete draft. ");
+                    res.send(response);
+                });
+            });
+        });
+    });
+};
+exports.publishTheForm = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
     mongo_form.byTinyId(tinyId, function (err, item) {
         if (err) return res.status(500).send("ERROR - update find by tinyId");
         if (!item) return res.status(404).send();
@@ -320,6 +378,8 @@ exports.updateForm = function (req, res) {
                     return res.status(403).send("Not authorized");
                 }
                 let elt = req.body;
+                elt.classification = item.classification;
+                elt.attachments = item.attachments;
                 formShared.trimWholeForm(elt);
                 mongo_form.update(elt, req.user, function (err, response) {
                     if (err) return res.status(500).send("ERROR - cannot update form. ");

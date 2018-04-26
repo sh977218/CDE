@@ -6,6 +6,7 @@ import {
     CdeForm, DisplayProfile, FormElement, FormQuestion, FormSectionOrForm, PermissibleFormValue, Question
 } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/formShared';
+import { getShowIfQ } from 'shared/form/skipLogic';
 
 
 @Injectable()
@@ -198,7 +199,7 @@ export class NativeRenderService {
         let feSize = (form.formElements ? form.formElements.length : 0);
         for (let i = 0; i < feSize; i++) {
             let fe = form.formElements[i];
-            let qs = SkipLogicService.getShowIfQ(followEligibleQuestions, fe);
+            let qs = getShowIfQ(followEligibleQuestions, fe);
             if (qs.length > 0) {
                 let substitution = 0;
                 let parentQ = qs[0][0];
