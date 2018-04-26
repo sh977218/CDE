@@ -267,7 +267,8 @@
                         <td><input [(ngModel)]="newCdeNaming.definition" class="w-100 newCdeDefinition"/></td>
                         <td class="newCdeTags">
                             <ng-select [(ngModel)]="newCdeNaming.tags" [items]="tag$" [hideSelected]="true"
-                                       multiple="true" bindLabel="name" [appendTo]="'body'" [hideSelected]="true">
+                                       multiple="true" bindLabel="name" bindValue="name" [appendTo]="'body'"
+                                       [hideSelected]="true">
                             </ng-select>
                         </td>
                         <td>

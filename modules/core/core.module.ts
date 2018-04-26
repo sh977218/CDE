@@ -10,14 +10,12 @@ import { MergeShareService } from 'core/mergeShare.service';
 import { CompareService } from 'core/compare.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { RegistrationValidatorService } from 'core/registrationValidator.service';
-import { DataTypeService } from 'core/dataType.service';
 
 @NgModule({
     imports: [],
     providers: [
         ClassificationService,
         CompareService,
-        DataTypeService,
         ExportService,
         IsAllowedService,
         MergeCdeService,
