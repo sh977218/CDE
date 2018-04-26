@@ -127,7 +127,8 @@ exports.getAtomsFromUMLS = function (cui, source, res) {
 exports.umlsCuiFromSrc = function (id, src, res) {
     this.getTicket(function (oneTimeTicket) {
         let url = config.umls.wsHost + "/rest/search/current?string=" + id +
-            "&searchType=exact&inputType=sourceUi&sabs=" + src + "&ticket=" + oneTimeTicket;
+            "&searchType=exact&inputType=sourceUi&sabs=" + src +
+            "&includeObsolete=true&includeSuppressible=true&ticket=" + oneTimeTicket;
         request.get({url: url, strictSSL: false}).pipe(res);
     });
 };

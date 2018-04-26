@@ -12,6 +12,7 @@ import { SiteManagementComponent } from 'system/public/components/siteAdmin/site
 import { DiscussModule } from 'discuss/discuss.module';
 import { SystemModule } from 'system/public/system.module';
 import { WidgetModule } from 'widget/widget.module';
+import { FhirAppsComponent } from "./components/siteAdmin/fhirApps/fhirApps.component";
 
 const appRoutes: Routes = [
     {path: '', component: SiteManagementComponent},
@@ -33,6 +34,7 @@ const appRoutes: Routes = [
     ],
     declarations: [
         EditSiteAdminsComponent,
+        FhirAppsComponent,
         ServerStatusComponent,
         SiteManagementComponent,
     ],
