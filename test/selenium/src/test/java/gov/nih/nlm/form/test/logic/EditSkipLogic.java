@@ -35,6 +35,7 @@ public class EditSkipLogic extends BaseFormTest {
         startEditQuestionById("question_3-2");
         (new Actions(driver)).moveToElement(findElement(By.id("question_3-2"))).perform(); // scroll into view
         String inputXpath = locateSkipLogicEditTextareaXpathByQuestionId("question_3-2");
+
         editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1, true,
                 "Unexpected number of tokens in expression 1");
         editSkipLogic(inputXpath, "=", 6, 1, true, "Unexpected number of tokens in expression 2");
@@ -45,7 +46,14 @@ public class EditSkipLogic extends BaseFormTest {
         editSkipLogic(inputXpath, "\"To what degree did your fatigue interfere with your physical functioning?\"", 2, 2,
                 true, "Unexpected number of tokens in expression 5");
         editSkipLogic(inputXpath, "=", 6, 1, true, "Unexpected number of tokens in expression 6");
-        editSkipLogic(inputXpath, "\"2\"", 5, 2, false, "Unexpected number of tokens in expression 2");
+        editSkipLogic(inputXpath, "\"2\"", 5, 2, false, "Unexpected number of tokens in expression 6");
+
+        editSkipLogic(inputXpath, "OR", 2, 2, true, "Unexpected number of tokens in expression 8");
+
+        editSkipLogic(inputXpath, "\"To what degree did your fatigue interfere with your physical functioning?\"", 2, 2,
+                true, "Unexpected number of tokens in expression 9");
+        editSkipLogic(inputXpath, "=", 6, 1, true, "Unexpected number of tokens in expression 10");
+        editSkipLogic(inputXpath, "\"3\"", 5, 3, false, "Unexpected number of tokens in expression 10");
 
         saveEditQuestionById("question_3-2");
         newFormVersion();
@@ -53,6 +61,9 @@ public class EditSkipLogic extends BaseFormTest {
         goToFormByName(formName);
         textPresent("How often did you have to push yourself to get things done because of your fatigue?",
                 By.xpath("//*[*[normalize-space()='To what degree did your fatigue interfere with your physical functioning?']]//*[normalize-space()='How often did you have to push yourself to get things done because of your fatigue?']"));
+        clickElement(By.cssSelector("input[name='3-2_fake1']"));
+        findElement(By.cssSelector("input[name='3-2']:checked"));
+        findElement(By.cssSelector("input[name='3-2_fake1']:checked"));
 
         togglePrintableLogic();
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
@@ -61,6 +72,11 @@ public class EditSkipLogic extends BaseFormTest {
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
         clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_3-1']//" + byValueListValueXPath("Not at all")));
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
+        clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_3-0']//" + byValueListValueXPath("A little bit")));
+        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_3-1']//" + byValueListValueXPath("A little bit")));
+        textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
+        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_3-1']//" + byValueListValueXPath("Somewhat")));
+        textPresent("How often did you have to push yourself to get things done because of your fatigue?");
     }
 
 }

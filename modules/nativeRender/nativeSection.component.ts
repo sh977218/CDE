@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
-import { NativeRenderService } from './nativeRender.service';
-import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { Component, Input } from '@angular/core';
+
+import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { FormElement } from 'shared/form/form.model';
 
 @Component({
@@ -12,8 +12,7 @@ export class NativeSectionComponent {
     @Input() formElement: FormElement;
     @Input() numSubQuestions: number;
 
-    constructor(public skipLogicService: SkipLogicService,
-                public nrs: NativeRenderService) {
+    constructor(public nrs: NativeRenderService) {
     }
 
     sectionType() {
