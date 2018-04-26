@@ -94,9 +94,7 @@ export class OrgHelperService  {
         return isNotWorkingGroup || userIsWorkingGroupCurator || userIsCuratorOfParentOrg || isSisterOfWg;
     }
 
-    then(cb): Promise<OrgDetailedInfo> {
-        return this.promise.then(cb);
+    then(cb, errorCb = undefined): Promise<any> {
+        return this.promise.then(cb, errorCb);
     }
 }
-
-

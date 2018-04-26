@@ -89,7 +89,7 @@ export class FormViewComponent implements OnInit {
                         return {id: t, text: t};
                     });
                     this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
-                });
+                }, _noop);
             });
         });
     }
@@ -189,26 +189,24 @@ export class FormViewComponent implements OnInit {
 
     loadForm(cb = _noop) {
         this.userService.then(user => {
-            if (user && user.username) {
-                this.http.get<CdeForm>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(
-                    res => {
-                        if (res && this.isAllowedModel.isAllowed(res)) {
-                            this.drafts = [res];
-                            this.formLoaded(res, cb);
-                        } else {
-                            this.drafts = [];
-                            this.loadPublished(cb);
-                        }
-                    },
-                    err => {
-                        // do not load form
-                        this.alert.httpErrorMessageAlert(err);
-                        this.formLoaded(null, cb);
+            this.http.get<CdeForm>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(
+                res => {
+                    if (res && this.isAllowedModel.isAllowed(res)) {
+                        this.drafts = [res];
+                        this.formLoaded(res, cb);
+                    } else {
+                        this.drafts = [];
+                        this.loadPublished(cb);
                     }
-                );
-            } else {
-                this.loadPublished(cb);
-            }
+                },
+                err => {
+                    // do not load form
+                    this.alert.httpErrorMessageAlert(err);
+                    this.formLoaded(null, cb);
+                }
+            );
+        }, () => {
+            this.loadPublished(cb);
         });
     }
 

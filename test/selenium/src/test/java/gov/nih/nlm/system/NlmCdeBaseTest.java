@@ -695,6 +695,10 @@ public class NlmCdeBaseTest {
 
     protected void goHome() {
         clickElement(By.id("homeLink"));
+        isHome();
+    }
+
+    protected void isHome() {
         textPresent("has been designed to provide access", By.id("introduction"));
         findElement(By.cssSelector(".carousel-indicators"));
     }

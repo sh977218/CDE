@@ -18,29 +18,26 @@ export function containerToItemType(container) { // http://hl7.org/fhir/item-typ
 }
 
 export function containerValueListToCoding(container, value) {
-    let coding = {
-        code: value
-    };
     let pvs = Array.isArray(container.answers) ? container.answers : container.permissibleValues;
     let matches = pvs.filter(a => a.permissibleValue === value);
     if (matches.length) {
-        let match = matches[0];
-        if (match.codeSystemName) {
-            coding.system = match.codeSystemName;
-        }
-        if (match.codeSystemVersion) {
-            coding.version = match.codeSystemVersion;
-        }
-        if (match.valueMeaningName) {
-            coding.display = match.valueMeaningName;
-        }
+        return permissibleValueToCoding(matches[0]);
     }
-    return coding;
+    return {code: value};
 }
 
 export function itemTypeToItemDatatype(type) {
     if ('choice') return 'Coding';
     return type;
+}
+
+export function permissibleValueToCoding(pv) {
+    return {
+        code: pv.permissibleValue,
+        display: pv.valueMeaningName && pv.valueMeaningName !== pv.permissibleValue ? pv.valueMeaningName : undefined,
+        system: pv.codeSystemName || undefined,
+        version: pv.codeSystemVersion || undefined,
+    };
 }
 
 export function valueToQuantity(container, value, comparator, uomIndex) {

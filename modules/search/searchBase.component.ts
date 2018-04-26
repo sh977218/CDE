@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 import { NavigationStart } from '@angular/router';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import _noop from 'lodash/noop';
 import { empty } from 'rxjs/observable/empty';
 import { debounceTime, distinctUntilChanged, map, switchMap, take } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
@@ -270,14 +271,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     private filterOutWorkingGroups(cb) {
-        this.orgHelperService.then(() => {
-            this.userService.then(user => {
+        this.userService.then(user => {
+            this.orgHelperService.then(() => {
                 this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter(bucket =>
                     this.orgHelperService.showWorkingGroup(bucket.key) || user.siteAdmin
                 );
                 cb();
-            });
-        });
+            }, _noop);
+        }, _noop);
     }
 
     static focusClassification() {
@@ -530,7 +531,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.elts.forEach(elt => {
                     this.orgHelperService.then(() => {
                         elt.usedBy = this.orgHelperService.getUsedBy(elt, user);
-                    });
+                    }, _noop);
                 });
 
                 this.aggregations = result.aggregations;
@@ -572,7 +573,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     this.filterOutWorkingGroups(() => {
                         this.orgHelperService.then(orgsDetailedInfo => {
                             this.orgHelperService.addLongNameToOrgs(this.aggregations.orgs.buckets, orgsDetailedInfo);
-                        });
+                        }, _noop);
                         this.aggregations.orgs.buckets.sort(function (a, b) {
                             let A = a.key.toLowerCase();
                             let B = b.key.toLowerCase();
@@ -611,7 +612,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                                     }
                                 });
                                 this.orgs.sort(SearchBaseComponent.compareObjName);
-                            });
+                            }, _noop);
                         });
                     }
 
@@ -633,7 +634,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 }
                 this.scrollHistoryLoad();
             });
-        });
+        }, _noop);
     }
 
     reset() {

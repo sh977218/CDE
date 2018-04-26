@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import _noop from 'lodash/noop';
 
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
@@ -20,7 +21,7 @@ export class DeGeneralDetailsComponent {
     ) {
         this.userService.then(() => {
             this.userOrgs = this.userService.userOrgs;
-        });
+        }, _noop);
     }
 
     changeStewardOrg(event) {

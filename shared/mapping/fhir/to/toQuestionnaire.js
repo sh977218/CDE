@@ -1,8 +1,7 @@
 import { ITEM_MAP } from 'shared/item';
-import { pvGetLabel } from 'shared/de/deShared';
 import { getQuestionPriorByLabel, tokenSplitter } from 'shared/form/skipLogic';
 import {
-    containerToItemType, itemTypeToItemDatatype, valueToTypedValue
+    containerToItemType, itemTypeToItemDatatype, permissibleValueToCoding, valueToTypedValue
 } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { regStatusToPublicationStatus, sourceToUriMap} from 'shared/mapping/fhir/to/enumToValueSet';
 import { newIdentifier} from 'shared/mapping/fhir/to/toFhir';
@@ -47,7 +46,7 @@ export function feToQuestionnaireItem(form, fe, options, config) {
             linkId: fe.feId,
             readOnly: !fe.question.editable || undefined,
             required: fe.question.required || undefined,
-            repeats: !!fe.repeat,
+            repeats: !!fe.repeat || undefined,
             text: fe.label || undefined,
             type: containerToItemType(fe.question),
         };
@@ -61,7 +60,7 @@ export function feToQuestionnaireItem(form, fe, options, config) {
         }
         if (Array.isArray(fe.question.answers) && fe.question.answers.length) {
             item.option = [];
-            fe.question.answers.forEach(a => item.option.push({valueString: pvGetLabel(a)}));
+            fe.question.answers.forEach(a => item.option.push({valueCoding: permissibleValueToCoding(a)}));
         }
         if (fe.skipLogic && fe.skipLogic.condition) {
             let tokens = tokenSplitter(fe.skipLogic.condition);

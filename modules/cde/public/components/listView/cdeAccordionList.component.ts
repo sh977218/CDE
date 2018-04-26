@@ -1,9 +1,11 @@
-import { Component, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import _noop from 'lodash/noop';
+
+import { QuickBoardListService } from '_app/quickBoardList.service';
+import { UserService } from '_app/user.service';
+import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { Elt, User } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { PinBoardModalComponent } from "board/public/components/pins/pinBoardModal.component";
-import { UserService } from "_app/user.service";
-import { QuickBoardListService } from '_app/quickBoardList.service';
 
 @Component({
     selector: 'cde-cde-accordion-list',
@@ -28,6 +30,6 @@ export class CdeAccordionListComponent {
 
         this.userService.then(user => {
             this.user = user;
-        });
+        }, _noop);
     }
 }

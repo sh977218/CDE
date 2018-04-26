@@ -70,9 +70,9 @@ export class DataElementViewComponent implements OnInit {
                             return {id: t, text: t};
                         });
                         this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
-                    });
+                    }, _noop);
                 });
-            });
+            }, _noop);
         });
     }
 
@@ -118,26 +118,24 @@ export class DataElementViewComponent implements OnInit {
 
     loadDataElement(cb = _noop) {
         this.userService.then(user => {
-            if (user && user.username) {
-                this.http.get<DataElement>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
-                    res => {
-                        if (res && this.isAllowedModel.isAllowed(res)) {
-                            this.drafts = [res];
-                            this.eltLoaded(res, cb);
-                        } else {
-                            this.drafts = [];
-                            this.loadPublished(cb);
-                        }
-                    },
-                    err => {
-                        // do not load elt
-                        this.alert.httpErrorMessageAlert(err);
-                        this.eltLoaded(null, cb);
+            this.http.get<DataElement>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
+                res => {
+                    if (res && this.isAllowedModel.isAllowed(res)) {
+                        this.drafts = [res];
+                        this.eltLoaded(res, cb);
+                    } else {
+                        this.drafts = [];
+                        this.loadPublished(cb);
                     }
-                );
-            } else {
-                this.loadPublished(cb);
-            }
+                },
+                err => {
+                    // do not load elt
+                    this.alert.httpErrorMessageAlert(err);
+                    this.eltLoaded(null, cb);
+                }
+            );
+        }, () => {
+            this.loadPublished(cb);
         });
     }
 
@@ -167,7 +165,7 @@ export class DataElementViewComponent implements OnInit {
                     }
                 }
             })();
-        });
+        }, _noop);
     }
 
     openCopyElementModal() {

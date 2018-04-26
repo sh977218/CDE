@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import _noop from 'lodash/noop';
 
 import { OrgHelperService } from 'core/orgHelper.service';
 
@@ -59,7 +60,7 @@ export class StatusValidationRulesComponent implements OnInit {
                 this.userOrgs[orgName] = orgsDetailedInfo[orgName].cdeStatusValidationRules;
             });
             this.userOrgsArray = Object.keys(this.userOrgs).sort();
-        });
+        }, _noop);
     }
 
     constructor(

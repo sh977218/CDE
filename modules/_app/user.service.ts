@@ -43,6 +43,12 @@ export class UserService {
             this.http.get<User>('/user/me').subscribe(response => {
                 this.user = response;
                 this.setOrganizations();
+                if (this.user && !this.user.username) {
+                    this.user = null;
+                }
+                if (!this.user) {
+                    return reject('not logged in');
+                }
                 this.http.get<any>('/mailStatus').subscribe(response => this.user.hasMail = response.count > 0);
                 resolve(this.user);
             }, reject);
@@ -59,7 +65,7 @@ export class UserService {
         }
     }
 
-    then(cb): Promise<User> {
-        return this.promise.then(cb);
+    then(cb, errorCb = undefined): Promise<any> {
+        return this.promise.then(cb, errorCb);
     }
 }

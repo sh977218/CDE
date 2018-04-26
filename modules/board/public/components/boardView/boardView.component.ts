@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import _noop from 'lodash/noop';
 import { saveAs } from 'file-saver';
 
 import { AlertService } from '_app/alert/alert.service';
@@ -202,7 +203,7 @@ export class BoardViewComponent implements OnInit {
                         this.board.users.filter(
                             u => u.role === 'reviewer' && u.username && u.username.toLowerCase() === user.username.toLowerCase()
                         ).length > 0;
-                });
+                }, _noop);
 
                 this.getReviewers();
 

@@ -73,13 +73,11 @@ export class ProfileComponent {
 
     reloadUser() {
         this.userService.then(user => {
-            if (user.username) {
-                this.hasQuota = user.quota;
-                this.orgCurator = user.orgCurator.toString().replace(/,/g, ', ');
-                this.orgAdmin = user.orgAdmin.toString().replace(/,/g, ', ');
-                this.user = user;
-            }
-        });
+            this.hasQuota = user.quota;
+            this.orgCurator = user.orgCurator.toString().replace(/,/g, ', ');
+            this.orgAdmin = user.orgAdmin.toString().replace(/,/g, ', ');
+            this.user = user;
+        }, _noop);
     }
 
     removePublishedForm(pf) {

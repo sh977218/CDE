@@ -21,6 +21,9 @@ public class UserTest extends NlmCdeBaseTest {
 
         enterUsernamePasswordSubmit("bad-username", "bad-password", "Failed to log in.");
         enterUsernamePasswordSubmit(ctepCurator_username, password, "ctepCurator");
+
+        driver.get(baseUrl + "/profile");
+        isHome();
     }
 
     @Test

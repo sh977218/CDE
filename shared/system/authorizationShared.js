@@ -48,7 +48,7 @@ export function canOrgAuthority(user) {
 
 export function hasRole(user, role) {
     if (!user) return false;
-    if (user.siteAdmin) return true;
+    if (isSiteAdmin(user)) return true;
     if (user.roles && user.roles.indexOf(role) > -1) return true;
 }
 

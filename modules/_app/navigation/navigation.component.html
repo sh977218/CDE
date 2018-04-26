@@ -66,11 +66,10 @@
                        aria-haspopup="true" aria-expanded="false"
                        [textContent]="userService.user?.username | cdeTruncateLongName"></a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="username_link">
-                        <a routerLink="/profile" id="user_profile" class="dropdown-item" *ngIf="userService.user?._id">Profile</a>
+                        <a routerLink="/profile" id="user_profile" class="dropdown-item">Profile</a>
                         <a routerLink="/inbox" id="user_inbox" class="dropdown-item">Inbox</a>
                         <a routerLink="/orgComments" id="org_comments" class="dropdown-item"
-                           *ngIf="isOrgCurator(userService.user) && !userService.user?.siteAdmin">
-                            Org Comments</a>
+                           *ngIf="isOrgCurator(userService.user)">Org Comments</a>
                         <a routerLink="/classificationmanagement" id="user_classifications"
                            class="dropdown-item"
                            *ngIf="isOrgCurator(userService.user)">Classifications</a>
@@ -80,12 +79,10 @@
                            class="dropdown-item"
                            *ngIf="isOrgAdmin(userService.user)">Account Management</a>
                         <a routerLink="/siteaccountmanagement" id="user_site_management" class="dropdown-item"
-                           *ngIf="userService.user?._id && userService.user?.siteAdmin">
-                            Site Management</a>
+                           *ngIf="isSiteAdmin(userService.user)">Site Management</a>
                         <a routerLink="/siteAudit" id="user_audit" class="dropdown-item"
                            *ngIf="canOrgAuthority(userService.user)">Audit</a>
-                        <a (click)="loginSvc.logout()" target="_self" id="user_logout" class="dropdown-item"
-                           *ngIf="userService.user?._id">Log Out</a>
+                        <a (click)="loginSvc.logout()" target="_self" id="user_logout" class="dropdown-item">Log Out</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown" id="notifications">
