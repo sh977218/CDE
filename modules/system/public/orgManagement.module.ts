@@ -8,6 +8,7 @@ import { WidgetModule } from 'widget/widget.module';
 import { EmbedComponent } from 'system/public/components/embed/embed.component';
 import { OrgAccountManagementComponent } from 'system/public/components/siteAdmin/orgAccountManagement/orgAccountManagement.component';
 import { SystemModule } from 'system/public/system.module';
+import { DraftsListOrgComponent } from "./components/draftsList/draftsListOrg.component";
 
 const appRoutes: Routes = [
     {path: '', component: OrgAccountManagementComponent},
@@ -27,6 +28,7 @@ const appRoutes: Routes = [
     declarations: [
         EmbedComponent,
         OrgAccountManagementComponent,
+        DraftsListOrgComponent,
     ],
     entryComponents: [
     ],
