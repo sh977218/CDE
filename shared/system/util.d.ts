@@ -1,0 +1,1 @@
+declare function capString(s: string): string;

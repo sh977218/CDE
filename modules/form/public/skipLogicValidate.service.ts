@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import _trim from 'lodash/trim';
 import { FormElement, FormElementsContainer, SkipLogic } from 'shared/form/form.model';
-import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import {
+    getLabel, getQuestionPriorByLabel, getQuestionsPrior, tokenSanitizer, tokenSplitter
+} from 'shared/form/skipLogic';
 
 @Injectable()
 export class SkipLogicValidateService {
@@ -14,7 +16,7 @@ export class SkipLogicValidateService {
         section.formElements.forEach((fe) => {
             if (fe.skipLogic && fe.skipLogic.condition) {
                 let updateSkipLogic = false;
-                let tokens = SkipLogicService.tokenSplitter(fe.skipLogic.condition);
+                let tokens = tokenSplitter(fe.skipLogic.condition);
                 tokens.forEach((token, i) => {
                     if (i % 4 === 0 && token === '"' + oldLabel + '"') {
                         updateSkipLogic = true;
@@ -35,14 +37,14 @@ export class SkipLogicValidateService {
         if (!currentContent) currentContent = '';
         if (!fe.skipLogic) fe.skipLogic = new SkipLogic();
 
-        let tokens = SkipLogicService.tokenSplitter(currentContent);
+        let tokens = tokenSplitter(currentContent);
         this.previousSkipLogicPriorToSelect = currentContent.substr(0, currentContent.length - tokens.unmatched.length);
 
         let options: string[];
         if (tokens.length % 4 === 0) {
-            options = SkipLogicService.getQuestionsPrior(parent, fe)
+            options = getQuestionsPrior(parent, fe)
                 .filter(q => q.question.datatype !== 'Value List' || q.question.answers && q.question.answers.length > 0)
-                .map(q => '"' + SkipLogicService.getLabel(q) + '" ');
+                .map(q => '"' + getLabel(q) + '" ');
         } else if (tokens.length % 4 === 1) {
             options = ['= ', '< ', '> ', '>= ', '<= ', '!= '];
         } else if (tokens.length % 4 === 2) {
@@ -64,11 +66,11 @@ export class SkipLogicValidateService {
     }
 
     static getTypeaheadOptionsAnswer(parent: FormElementsContainer, fe: FormElement, questionName: string): string[] {
-        let q = SkipLogicService.getQuestionPriorByLabel(parent, fe, questionName.substring(1, questionName.length - 1));
+        let q = getQuestionPriorByLabel(parent, fe, questionName.substring(1, questionName.length - 1));
         if (!q) return [];
 
         if (q.question.datatype === 'Value List') {
-            return q.question.answers.map(a => SkipLogicService.tokenSanitizer(a.permissibleValue))
+            return q.question.answers.map(a => tokenSanitizer(a.permissibleValue))
                 .map(a => '"' + a + '" ');
         }
         if (q.question.datatype === 'Number') {
@@ -95,7 +97,7 @@ export class SkipLogicValidateService {
     static validateSkipLogic(parent: FormElementsContainer, fe: FormElement): boolean {
         // skip logic object should exist
         let skipLogic = fe.skipLogic;
-        let tokens = SkipLogicService.tokenSplitter(skipLogic.condition);
+        let tokens = tokenSplitter(skipLogic.condition);
         if (tokens.unmatched) {
             skipLogic.validationError = 'Unexpected token: ' + tokens.unmatched;
             return false;
@@ -114,15 +116,15 @@ export class SkipLogicValidateService {
     }
 
     static validateSkipLogicSingleExpression(parent: FormElementsContainer, fe: FormElement, tokens): string {
-        let filteredQuestion = SkipLogicService.getQuestionPriorByLabel(parent, fe, _trim(tokens[0], '"'));
+        let filteredQuestion = getQuestionPriorByLabel(parent, fe, _trim(tokens[0], '"'));
         if (!filteredQuestion) {
             return tokens[0] + ' is not a valid question label';
         }
 
         switch (filteredQuestion.question.datatype) {
             case 'Value List':
-                if (tokens[2].length > 0 && filteredQuestion.question.answers.map(a => '"' + SkipLogicService
-                        .tokenSanitizer(a.permissibleValue) + '"').indexOf(tokens[2]) < 0) {
+                if (tokens[2].length > 0 && filteredQuestion.question.answers.map(a => '"' +
+                        tokenSanitizer(a.permissibleValue) + '"').indexOf(tokens[2]) < 0) {
                     return tokens[2] + ' is not a valid answer for "' + filteredQuestion.label + '"';
                 }
                 break;
