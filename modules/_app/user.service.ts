@@ -34,21 +34,28 @@ export class UserService {
         this.reload();
     }
 
+    catch(cb): Promise<User> {
+        return this.promise.catch(cb);
+    }
+
+    clear() {
+        this.user = null;
+        this.userOrgs.length = 0;
+    }
+
     static getEltLink(c) {
         return ITEM_MAP[c.element.eltType].view + c.element.eltId;
     }
 
     reload() {
+        this.clear();
         this.promise = new Promise<User>((resolve, reject) => {
             this.http.get<User>('/user/me').subscribe(response => {
+                if (!response || !response.username) {
+                    return reject();
+                }
                 this.user = response;
                 this.setOrganizations();
-                if (this.user && !this.user.username) {
-                    this.user = null;
-                }
-                if (!this.user) {
-                    return reject('not logged in');
-                }
                 this.http.get<any>('/mailStatus').subscribe(response => this.user.hasMail = response.count > 0);
                 resolve(this.user);
             }, reject);

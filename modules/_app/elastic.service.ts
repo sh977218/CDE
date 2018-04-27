@@ -208,18 +208,17 @@ export class ElasticService {
             this.searchSettings = this.localStorageService.get("SearchSettings");
             if (!this.searchSettings) this.searchSettings = this.getDefault();
 
-            let onComplete = () => {
-                if (this.searchSettings.version !== this.getDefault().version) {
-                    this.searchSettings = this.getDefault();
-                }
-            };
             this.userService.then(user => {
                 if (!user.searchSettings) {
                     user.searchSettings = this.getDefault();
                 }
                 this.searchSettings = user.searchSettings;
-                onComplete();
-            }, onComplete);
+                if (this.searchSettings.version !== this.getDefault().version) {
+                    this.searchSettings = this.getDefault();
+                }
+            }, () => {
+                this.searchSettings = this.getDefault();
+            });
         }
     }
 }

@@ -61,7 +61,7 @@ export class BoardViewComponent implements OnInit {
         public esService: ElasticService,
         private http: HttpClient,
         private modalService: NgbModal,
-        private orgHelper: OrgHelperService,
+        private orgHelperService: OrgHelperService,
         private route: ActivatedRoute,
         protected userService: UserService,
     ) {
@@ -198,22 +198,24 @@ export class BoardViewComponent implements OnInit {
                             new Date(this.board.updatedDate) >= new Date(u.status.reviewedDate)) {
                             this.isModifiedSinceReview = true;
                         }
+                        if (u.lastViewed) u.lastViewedLocal = new Date(u.lastViewed).toLocaleDateString();
+                        if (u.username === user.username) {
+                            this.boardStatus = u.status.approval;
+                        }
                     });
                     this.canReview = this.isReviewActive() &&
                         this.board.users.filter(
                             u => u.role === 'reviewer' && u.username && u.username.toLowerCase() === user.username.toLowerCase()
                         ).length > 0;
+                    this.orgHelperService.then(() => {
+                        this.elts.forEach(elt => {
+                            elt.usedBy = this.orgHelperService.getUsedBy(elt);
+                        });
+                    }, _noop);
                 }, _noop);
 
                 this.getReviewers();
 
-                this.elts.forEach(elt => elt.usedBy = this.orgHelper.getUsedBy(elt));
-                this.board.users.filter(u => {
-                    if (u.lastViewed) u.lastViewedLocal = new Date(u.lastViewed).toLocaleDateString();
-                    if (u.username === this.userService.user.username) {
-                        this.boardStatus = u.status.approval;
-                    }
-                });
                 this.http.get<Comment[]>('/comments/eltId/' + this.board._id).subscribe(
                     res => this.hasComments = res && (res.length > 0),
                     () => this.alert.addAlert('danger', 'Error on loading comments. ')
