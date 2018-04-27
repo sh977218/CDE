@@ -100,7 +100,14 @@ export class DataElementViewComponent implements OnInit {
             if (this.userService.user && this.userService.user.username) {
                 checkPvUnicity(this.elt.valueDomain);
             }
-            this.setDisplayStatusWarning();
+            this.displayStatusWarning = (() => {
+                if (!this.elt || this.elt.archived || this.userService.user && this.userService.user.siteAdmin) {
+                    return false;
+                }
+                return isOrgCurator(this.userService.user, this.elt.stewardOrg.name) &&
+                    (this.elt.registrationState.registrationStatus === 'Standard' ||
+                        this.elt.registrationState.registrationStatus === 'Preferred Standard');
+            })();
             cb();
         }
     }
@@ -145,17 +152,6 @@ export class DataElementViewComponent implements OnInit {
             res => this.eltLoaded(res, cb),
             () => this.router.navigate(['/pageNotFound'])
         );
-    }
-
-    setDisplayStatusWarning() {
-        this.displayStatusWarning = (() => {
-            if (!this.elt || this.elt.archived || this.userService.user.siteAdmin) {
-                return false;
-            }
-            return isOrgCurator(this.userService.user, this.elt.stewardOrg.name) &&
-                (this.elt.registrationState.registrationStatus === 'Standard' ||
-                    this.elt.registrationState.registrationStatus === 'Preferred Standard');
-        })();
     }
 
     openCopyElementModal() {

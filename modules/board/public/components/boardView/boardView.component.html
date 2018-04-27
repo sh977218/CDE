@@ -39,7 +39,7 @@
                         </ng-container>
                     </div>
                 </div>
-                <button *ngIf="userService.user.username === board.owner.username"
+                <button *ngIf="userService.user && userService.user.username === board.owner.username"
                         class="btn btn-outline-dark"
                         id="shareBoardBtn" (click)="shareBoard()">
                     <i class="fa fa-link"></i> Share
