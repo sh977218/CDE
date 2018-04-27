@@ -22,7 +22,6 @@ import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { NotificationsComponent } from "./notifications/notifications.component";
 
-
 @NgModule({
     imports: [
         BrowserModule,
@@ -53,7 +52,7 @@ import { NotificationsComponent } from "./notifications/notifications.component"
         LoginService,
         QuickBoardListService,
         UserService,
-        OrgHelperService,
+        OrgHelperService
     ],
     exports: [
         PageNotFoundComponent,

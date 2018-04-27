@@ -8,13 +8,11 @@ import { MergeCdeService } from 'core/mergeCde.service';
 import { MergeFormService } from 'core/mergeForm.service';
 import { MergeShareService } from 'core/mergeShare.service';
 import { CompareService } from 'core/compare.service';
-import { OrgHelperService } from 'core/orgHelper.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { RegistrationValidatorService } from 'core/registrationValidator.service';
 
 @NgModule({
-    imports: [
-    ],
+    imports: [],
     providers: [
         ClassificationService,
         CompareService,
@@ -26,8 +24,7 @@ import { RegistrationValidatorService } from 'core/registrationValidator.service
         {provide: NgbDateParserFormatter, useClass: CdeAmericanDateParserFormatter},
         RegistrationValidatorService,
     ],
-    exports: [
-    ]
+    exports: []
 })
 export class CoreModule {
 }

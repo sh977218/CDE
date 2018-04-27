@@ -4,15 +4,20 @@ import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstra
 import { TreeNode } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
+import _clone from 'lodash/clone';
 import { debounceTime, map } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/delay';
 
 import { AlertService } from '_app/alert/alert.service';
+import { DataTypeService } from 'core/dataType.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
 import { CodeAndSystem, FormattedValue } from 'shared/models.model';
 import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'shared/form/form.model';
+import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
 
 @Component({
     selector: 'cde-form-description-question-detail',
@@ -21,6 +26,7 @@ import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'shar
 export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() canEdit: boolean = false;
     @Input() elt;
+
     @Input() set node(node: TreeNode) {
         this.question = node.data;
         this.parent = node.parent.data;
@@ -37,44 +43,21 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.ucumService.validateUoms(this.question.question);
         }
     }
+
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionNameSelectTmpl') formDescriptionNameSelectTmpl: NgbModalModule;
     @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl: TemplateRef<any>;
     @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl: TemplateRef<any>;
+    @ViewChild('editAnswerModal') editAnswerModal: NgbModalModule;
     @ViewChild('slInput') slInput: ElementRef;
-    answersOptions: any = {
-        allowClear: true,
-        multiple: true,
-        closeOnSelect: true,
-        placeholder: {
-            id: '',
-            placeholder: 'Leave blank to ...'
-        },
-        tags: true,
-        language: {
-            noResults: () => {
-                return 'No Answer List entries are listed on the CDE.';
-            }
-        }
-    };
     answersSelected: Array<string>;
-    dataTypeOptions = ['Value List', 'Text', 'Date', 'Number'];
-    datatypeSelect2Options = {
-        multiple: false,
-        tags: true
-    };
     getSkipLogicOptions = ((text$: Observable<string>) => text$.pipe(
         debounceTime(300),
         map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question))
     ));
     static inputEvent = new Event('input');
-    namingTags = [];
     nameSelectModal: any = {};
     nameSelectModalRef: NgbModalRef;
-    namingSelet2Options: Select2Options = {
-        multiple: true,
-        tags: true
-    };
     newCdePv = {};
     newCdeId = {};
     newCdeNaming = {};
@@ -82,20 +65,11 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     newUomSystem = 'UCUM';
     question: FormQuestion;
     parent: FormElement;
-    uomOptions: any = {
-        multiple: true,
-        tags: true,
-        language: {
-            noResults: () => {
-                return 'No Units of Measure are listed on the CDE. Type in more followed by ENTER.';
-            }
-        }
-    };
-    uomVersion = 0;
 
-    ngOnInit() {
-        this.namingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
-    }
+    dataType$ = [];
+    answerList$ = [];
+    defaultAnswerList$ = [];
+    tag$ = [];
 
     constructor(
         private alert: AlertService,
@@ -103,8 +77,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         public modalService: NgbModal,
         private orgHelperService: OrgHelperService,
         public skipLogicValidateService: SkipLogicValidateService,
-        private ucumService: UcumService,
-    ) {
+        private ucumService: UcumService) {
         this.nameSelectModal.okSelect = (naming = null) => {
             if (!naming) {
                 this.nameSelectModal.question.label = '';
@@ -118,6 +91,25 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             }
             this.nameSelectModalRef.close();
         };
+    }
+
+    ngOnInit() {
+        this.answerList$ = this.question.question.cde.permissibleValues.map(answer => {
+            answer['id'] = answer.permissibleValue;
+            return answer;
+        });
+        this.syncAnswerList();
+        this.dataType$ = DataTypeService.getDataElementDataType();
+        this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.forEach((t, i) => {
+            this.tag$.push({id: i, name: t});
+        });
+    }
+
+    private syncAnswerList() {
+        this.defaultAnswerList$ = this.question.question.answers.map(answer => {
+            answer['id'] = answer.permissibleValue;
+            return answer;
+        });
     }
 
     addNewCdeId(newCdeId) {
@@ -150,18 +142,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         } else this.alert.addAlert('danger', 'Empty PV.');
     }
 
-    changedDatatype(data: { value: string }) {
-        this.question.question.cde.datatype = data.value;
-        this.question.question.datatype = data.value;
-        this.question.question.answers = [];
-        this.onEltChange.emit();
-    }
-
-    changedTags(name, data: { value: string[] }) {
-        name.tags = data.value;
-        this.onEltChange.emit();
-    }
-
     checkAnswers(answers) {
         let newAnswers = (Array.isArray(answers.value) ? answers.value.filter(answer => answer !== '') : []);
         if (!_isEqual(this.answersSelected, newAnswers)) {
@@ -172,17 +152,17 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
-    getAnswersData() {
-        return this.question.question.cde.permissibleValues.map(answer => {
-            return {id: answer.permissibleValue, text: answer.valueMeaningName};
-        });
+    onAnswerListAdd() {
+        this.syncAnswerList();
+        this.onEltChange.emit();
     }
 
-    getAnswersValue() {
-        if (!this.answersSelected && this.question.question.answers) {
-            this.answersSelected = this.question.question.answers.map(a => a.permissibleValue);
+    onAnswerListRemove(removedAnswer) {
+        if (removedAnswer && removedAnswer.value.valueMeaningName === this.question.question.defaultAnswer) {
+            this.question.question.defaultAnswer = '';
         }
-        return this.answersSelected;
+        this.syncAnswerList();
+        this.onEltChange.emit();
     }
 
     getRepeatLabel(fe) {
@@ -268,7 +248,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     uomAddNew() {
         if (!this.question.question.unitsOfMeasure.filter(u => u.code === this.newUom
-                && u.system === this.newUomSystem).length) {
+            && u.system === this.newUomSystem).length) {
             this.question.question.unitsOfMeasure.push(new CodeAndSystem(this.newUomSystem, this.newUom));
             this.onEltChange.emit();
         }
@@ -281,6 +261,18 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.uomAddNew();
             setTimeout(() => this.newUom = '', 0); // the type-ahead seems to fill in the value asynchronously
             this.ucumService.validateUoms(this.question.question);
+        }
+    }
+
+    openEditAnswerModal(q) {
+        if (q.question.answers.length > 0) {
+            const modalRef = this.modalService.open(QuestionAnswerEditContentComponent, {size: 'lg'});
+            modalRef.componentInstance.answers = q.question.answers;
+            modalRef.componentInstance.onSaved.subscribe((answers) => {
+                q.question.answers = _clone(answers);
+                this.onEltChange.emit();
+                modalRef.close();
+            });
         }
     }
 }

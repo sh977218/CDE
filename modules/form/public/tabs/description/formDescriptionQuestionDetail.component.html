@@ -51,7 +51,8 @@
                 <span *ngIf="question.instructions.valueFormat !== 'html'"
                       [textContent]="question.instructions.value"></span>
             </div>
-            <div class="answerList" *ngIf="question.question.datatype === 'Value List' && question.question.answers && question.question.answers.length > 0">
+            <div class="answerList"
+                 *ngIf="question.question.datatype === 'Value List' && question.question.answers && question.question.answers.length > 0">
                 <span class="formViewQuestionLabel">Answer Choices:</span>
                 <span *ngFor="let pv of question.question.answers" class="badge badge-secondary formViewSummaryLabel"
                       style="background-color: #666" [textContent]="pv?.valueMeaningName"></span>
@@ -181,9 +182,10 @@
                         </ng-template>
                         <ng-container *ngFor="let e of question.question.uomsValid; index as i">
                             <div *ngIf="e" style="color: red">
-                                <ng-container *ngIf="question.question.unitsOfMeasure[i].system"
-                                >{{question.question.unitsOfMeasure[i].system}}/</ng-container
-                                >{{question.question.unitsOfMeasure[i].code}} - {{e}}
+                                <ng-container *ngIf="question.question.unitsOfMeasure[i].system">
+                                    {{question.question.unitsOfMeasure[i].system}}/
+                                </ng-container>
+                                {{question.question.unitsOfMeasure[i].code}} - {{e}}
                             </div>
                         </ng-container>
                     </div>
@@ -196,23 +198,25 @@
                 <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect"
                        (change)="onEltChange.emit()"/>
             </dd>
-            <dt class="col-2">Answer List:</dt>
+            <dt class="col-2 answerListLabel">Answer List
+                <i *ngIf="question.question.answers.length > 0" class="fa fa-pencil hand-cursor"
+                   (click)="openEditAnswerModal(question)"></i>:
+            </dt>
             <dd class="col-10 answerList">
-                <select2 class="formDescriptionAnswerList" [data]="getAnswersData()" [value]="getAnswersValue()"
-                         [options]="answersOptions" width="100%"
-                         (valueChanged)="checkAnswers($event)">
-                </select2>
+                <ng-select [(ngModel)]="question.question.answers" [items]="answerList$"
+                           [multiple]="true" bindLabel="valueMeaningName" placeholder="Select Answer"
+                           [appendTo]="'body'" [hideSelected]="true" (add)="onAnswerListAdd();"
+                           (remove)="onAnswerListRemove($event);" (clear)="onEltChange.emit();">
+                </ng-select>
             </dd>
         </ng-container>
         <dt class="col-2">Default Answer:</dt>
         <dd class="col-10 defaultAnswer">
             <ng-container *ngIf="question.question.datatype === 'Value List'">
-                <select title="Default" class="form-control"
-                        [(ngModel)]="question.question.defaultAnswer" (change)="onEltChange.emit()">
-                    <option value=""></option>
-                    <option *ngFor="let pv of question.question.answers " [value]="pv.permissibleValue"
-                            [textContent]="pv?.valueMeaningName"></option>
-                </select>
+                <ng-select [(ngModel)]="question.question.defaultAnswer" [items]="defaultAnswerList$"
+                           bindLabel="valueMeaningName" bindValue="valueMeaningName" placeholder="Select Default Answer"
+                           [appendTo]="'body'" [hideSelected]="true" (change)="onEltChange.emit()">
+                </ng-select>
             </ng-container>
             <ng-container *ngIf="question.question.datatype !== 'Value List'">
                 <cde-inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true"
@@ -249,11 +253,10 @@
                                              (modelChange)="onEltChange.emit();"></cde-inline-edit>
                         </td>
                         <td>
-                            <select2 [data]="namingTags" [value]="cdeNaming.tags"
-                                     [options]="namingSelet2Options"
-                                     [disabled]="false" width="100%"
-                                     (valueChanged)="changedTags(cdeName,$event)">
-                            </select2>
+                            <ng-select [(ngModel)]="cdeNaming.tags" [items]="tag$" [hideSelected]="true"
+                                       multiple="true" bindLabel="name" [appendTo]="'body'" [hideSelected]="true"
+                                       (change)="onEltChange.emit();">
+                            </ng-select>
                         </td>
                         <td>
                             <i class="fa fa-trash hand-cursor" (click)="removeCdeNaming(i);"></i>
@@ -262,12 +265,11 @@
                     <tr class="newCdeName">
                         <td><input [(ngModel)]="newCdeNaming.designation" class="w-100 newCdeDesignation"/></td>
                         <td><input [(ngModel)]="newCdeNaming.definition" class="w-100 newCdeDefinition"/></td>
-                        <td>
-                            <select2 class="newCdeTags" [data]="namingTags" [value]="newCdeNaming.tags"
-                                     [options]="namingSelet2Options"
-                                     [disabled]="false" width="100%"
-                                     (valueChanged)="changedTags(newCdeNaming,$event)">
-                            </select2>
+                        <td class="newCdeTags">
+                            <ng-select [(ngModel)]="newCdeNaming.tags" [items]="tag$" [hideSelected]="true"
+                                       multiple="true" bindLabel="name" bindValue="name" [appendTo]="'body'"
+                                       [hideSelected]="true">
+                            </ng-select>
                         </td>
                         <td>
                             <i class="fa fa-plus hand-cursor" (click)="addNewCdeNaming(newCdeNaming);"></i>
@@ -275,7 +277,6 @@
                     </tr>
                     </tbody>
                 </table>
-
             </dd>
             <dt class="col-2">CDE Identifiers:</dt>
             <dd class="col-10 cdeIdentifier">
@@ -297,6 +298,7 @@
                         <td>
                             <cde-inline-edit [(model)]="cdeId.id" [isAllowed]="true"
                                              (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                        </td>
                         <td>
                             <cde-inline-edit [(model)]="cdeId.version" [isAllowed]="true"
                                              (modelChange)="onEltChange.emit();"></cde-inline-edit>
@@ -309,19 +311,18 @@
                         <td><input [(ngModel)]="newCdeId.source" class="w-100 newCdeSource"/></td>
                         <td><input [(ngModel)]="newCdeId.id" class="w-100 newCdeId"/></td>
                         <td><input [(ngModel)]="newCdeId.version" class="w-100 newCdeVersion"/></td>
-                        <td>
-                            <i class="fa fa-plus hand-cursor" (click)="addNewCdeId(newCdeId);"></i>
-                        </td>
+                        <td><i class="fa fa-plus hand-cursor" (click)="addNewCdeId(newCdeId);"></i></td>
                     </tr>
                     </tbody>
                 </table>
             </dd>
             <dt class="col-2">CDE Datatype:</dt>
             <dd class="col-10 cdeDataType">
-                <select2 [data]="dataTypeOptions" [value]="question.question.cde.datatype"
-                         [options]="datatypeSelect2Options"
-                         width="100%" (valueChanged)="changedDatatype($event)">
-                </select2>
+                <ng-select [(ngModel)]="question.question.cde.datatype"
+                           [items]="dataType$" bindValue="value"
+                           placeholder="Select data type" [appendTo]="'body'" [hideSelected]="true"
+                           (change)="onEltChange.emit()">
+                </ng-select>
             </dd>
             <ng-container *ngIf="question.question.cde.datatype==='Value List'">
                 <dt class="col-2">CDE Permissible Values:</dt>
@@ -412,9 +413,10 @@
                     </dd>
                     <dt class="col-2"> Tags:</dt>
                     <dd class="col-10">
-                        <select2 [data]="namingTags" [value]="naming.tags" [options]="namingSelet2Options" width="100%"
-                                 (valueChanged)="changedTags(naming,$event)">
-                        </select2>
+                        <ng-select [(ngModel)]="naming.tags" [items]="tag$" [hideSelected]="true"
+                                   multiple="true" bindLabel="name" [appendTo]="'body'" [hideSelected]="true"
+                                   (change)="onEltChange.emit();">
+                        </ng-select>
                     </dd>
                 </dl>
             </div>
@@ -429,6 +431,6 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn  btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
+        <button class="btn btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
     </div>
 </ng-template>
