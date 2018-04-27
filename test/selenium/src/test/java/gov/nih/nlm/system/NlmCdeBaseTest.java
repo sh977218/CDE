@@ -1647,4 +1647,8 @@ public class NlmCdeBaseTest {
         clickElement(By.id("confirmDeleteBtn"));
         textNotPresent("Delete Draft?");
     }
+
+    protected void selectNgSelectDropdownByText(String text) {
+        clickElement(By.xpath("//ng-dropdown-panel//div[contains(@class,'ng-option') and contains(., '" + text + "')]"));
+    }
 }

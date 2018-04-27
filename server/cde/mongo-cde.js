@@ -222,6 +222,13 @@ exports.create = function (cde, user, callback) {
     newDe.createdBy.username = user.username;
     newDe.tinyId = mongo_data_system.generateTinyId();
     newDe.save((err, newElt) => {
+        if (err) {
+            logging.errorLogger.error("Error: Cannot create CDE", {
+                origin: "cde.mongo-cde.create.1",
+                stack: new Error().stack,
+                details: "elt " + JSON.stringify(newElt)
+            });
+        }
         callback(err, newElt);
         auditModifications(null, newElt, user);
     });
