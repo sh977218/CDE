@@ -1,11 +1,12 @@
 ## Generated
 *.orig
+*.pem
 *.sqlite
 .esm-cache
 .nide
 bin
 dependencies/
-dist/*
+dist/
 !dist/launch/
 dump/
 migration/

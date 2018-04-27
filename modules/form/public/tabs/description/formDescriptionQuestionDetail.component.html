@@ -63,7 +63,7 @@
                 <span class="badge badge-secondary formViewSummaryLabel"
                       style="background-color: #666">{{question.question.datatypeDate.precision}}</span>
             </div>
-            <div *ngIf="question.question.defaultAnswer && question.question.defaultAnswer.length > 0"
+            <div *ngIf="question.question.defaultAnswer"
                  class="defaultAnswer">
                 <span class="formViewQuestionLabel">Default Answer:</span>
                 <span class="badge badge-secondary formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
