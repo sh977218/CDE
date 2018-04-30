@@ -13,7 +13,7 @@ public class EmptyAnswers extends NlmCdeBaseTest {
         goToFormDescription();
         textPresent("Answer Choices:", By.id("question_0-0"));
         startEditQuestionById("question_0-0");
-        clickElement(By.cssSelector("#question_0-0 .formDescriptionAnswerList .select2-selection__clear"));
+        clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'answerList')]/ng-select//*[@title='Clear all']"));
         saveEditQuestionById("question_0-0");
         textNotPresent("Answer Choices:", By.id("question_0-0"));
     }
