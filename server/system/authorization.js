@@ -37,7 +37,6 @@ exports.boardOwnership = function (req, res, boardId, next) {
     });
 };
 
-
 exports.allowCreate = function (user, elt, cb) {
     if (!elt.stewardOrg.name) return cb("Missing Steward");
     if (user.orgCurator.indexOf(elt.stewardOrg.name) < 0 &&

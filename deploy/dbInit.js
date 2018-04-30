@@ -52,6 +52,7 @@ var users = [
     , {username: 'promis', password: 'pass', orgAdmin: ["PROMIS / Neuro-QOL"], quota: 1073741826, viewHistory: [], roles: ["FormEditor"]}
     , {username: 'userToPromote', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'reguser', password: 'pass', quota: 1073741824, viewHistory: []}
+    , {username: 'ctepAdmin', password: 'pass', orgAdmin: ["CTEP"], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
     , {username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
     , {username: 'ctepOnlyCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
     , {username: 'createUser', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
@@ -72,6 +73,7 @@ var users = [
     , {username: 'classMgtUser', password: 'pass', orgCurator: ["CTEP","NINDS", "PS&CC", "ACRIN"], orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []}
     , {username: 'phri', password: 'pass', orgCurator: ["PHRI"], orgAdmin: ["PHRI"], quota: 1073741824, viewHistory: []}
     , {username: 'ninds', password: 'pass', orgCurator: [], orgAdmin: ["NINDS"], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
+    , {username: 'nindsCurator', password: 'pass', orgCurator: ["NINDS"], orgAdmin: [], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
     , {username: 'acrin', password: 'pass', orgCurator: ["ACRIN"], orgAdmin: [], quota: 1073741824, viewHistory: []}
     , {username: 'grdr', password: 'pass', orgCurator: [], orgAdmin: ["GRDR"], quota: 1073741824, viewHistory: []}
     , {username: 'eyegene', password: 'pass', orgCurator: [], orgAdmin: ["EyeGene"], quota: 1073741824, viewHistory: []}

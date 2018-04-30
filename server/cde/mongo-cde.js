@@ -110,6 +110,11 @@ exports.deleteDraftDataElement = function (tinyId, cb) {
     DataElementDraft.remove({tinyId: tinyId}, cb);
 };
 
+exports.draftsList = (criteria, cb) => {
+    DataElementDraft.find(criteria, {"updatedBy.username": 1, "updated": 1, "naming.designation": 1, tinyId: 1})
+        .sort({"updated": -1}).exec(cb);
+};
+
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
 exports.getPrimaryName = function (elt) {
