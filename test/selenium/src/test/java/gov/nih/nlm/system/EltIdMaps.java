@@ -54,6 +54,7 @@ public class EltIdMaps {
         eltMap.put("Patient Visual Change Chief Complaint Indicator", "q3bWgQN1wCq");
         eltMap.put("Pattern Transfer Retrieval Storage Data Research Activity Consortium or Network Or Professional Organization or Group Funding Mechanism FundingMechanismCode", "qPsdBFBSTRc");
         eltMap.put("Person Birth Date", "2yWPshAKKN7");
+        eltMap.put("Person Elevated Urine Protein Measurement Clinical Trial Eligibility Criteria Yes No Indicator", "HrVtaZ7EtxQ");
         eltMap.put("Person Mother Onset Menopause Age Value", "qKGWuJZ1zxz");
         eltMap.put("Principal Investigator State java.lang.String", "71Tn0ywTKNO");
         eltMap.put("Psychiatric history clinical depression past year indicator", "ryD6agS7yuQ");

@@ -8,7 +8,7 @@
             </td>
             <td>{{draftCde.tinyId}}</td>
             <td>{{draftCde.updatedBy?.username}}</td>
-            <td>{{draftCde.updated}}</td>
+            <td>{{draftCde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
         </tr>
     </table>
 </ng-container>
