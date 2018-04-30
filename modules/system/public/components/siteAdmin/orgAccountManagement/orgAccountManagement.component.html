@@ -74,6 +74,11 @@
                 </form>
             </ng-template>
         </ngb-tab>
+        <ngb-tab title="Drafts" id="draftsTab">
+            <ng-template ngbTabContent>
+                <cde-drafts-org-list></cde-drafts-org-list>
+            </ng-template>
+        </ngb-tab>
         <ngb-tab title="Embedding" *ngIf="userService.user && userService.user.orgAdmin.length > 0" id="embeddingTab">
             <ng-template ngbTabContent>
                 <cde-embed></cde-embed>

@@ -10,7 +10,7 @@ import { UserCommentsComponent } from "./components/userComments.component";
 import { WidgetModule } from 'widget/widget.module';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { BoardModule } from 'board/public/board.module';
-
+import { DraftsListMyComponent } from "./components/draftsList/draftsListMy.component";
 
 const appRoutes: Routes = [
     {path: '', component: ProfileComponent},
@@ -32,6 +32,7 @@ const appRoutes: Routes = [
     declarations: [
         ProfileComponent,
         UserCommentsComponent,
+        DraftsListMyComponent,
     ],
     entryComponents: [],
     exports: [],
