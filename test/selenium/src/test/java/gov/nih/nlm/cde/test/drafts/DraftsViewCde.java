@@ -8,7 +8,7 @@ public class DraftsViewCde extends NlmCdeBaseTest {
 
     @Test
     public void draftsViewCde() {
-        mustBeLoggedInAs("ctepCuratorOnly", password);
+        mustBeLoggedInAs("ctepOnlyCurator", password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
         findElement(By.linkText("Person Elevated Urine Protein Measurement Clinical Trial Eligibility Criteria Yes No Indicator"));

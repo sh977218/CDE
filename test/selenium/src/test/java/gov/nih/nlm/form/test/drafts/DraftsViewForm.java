@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class DraftsViewForm extends NlmCdeBaseTest {
 
     @Test
-    public void draftsViewCde() {
+    public void draftsViewForm() {
         mustBeLoggedInAs("nindsCurator", password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
