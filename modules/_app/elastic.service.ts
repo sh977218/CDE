@@ -217,7 +217,9 @@ export class ElasticService {
                     this.searchSettings = this.getDefault();
                 }
             }, () => {
-                this.searchSettings = this.getDefault();
+                if (this.searchSettings.version !== this.getDefault().version) {
+                    this.searchSettings = this.getDefault();
+                }
             });
         }
     }
