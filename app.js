@@ -90,7 +90,8 @@ setInterval(function releaseHackers() {
     });
 }, releaseHackersFrequency);
 
-app.use(function checkHttps(req, res, next) {
+// check https
+app.use((req, res, next) => {
     if (config.proxy && req.originalUrl !== "/status/cde") {
         if (req.protocol !== 'https') {
             if (req.query.gotohttps === "1")
@@ -101,7 +102,7 @@ app.use(function checkHttps(req, res, next) {
 });
 
 app.use(function banHackers(req, res, next) {
-    banEndsWith.forEach(function (ban) {
+    banEndsWith.forEach(ban =>  {
         if (req.originalUrl.slice(-(ban.length)) === ban) {
             blackIps.push(getRealIp(req));
             timedBlackIps.push({ip: getRealIp(req), date: Date.now()});
