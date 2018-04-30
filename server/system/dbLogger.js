@@ -5,14 +5,10 @@ const mongo_data_system = require('./mongo-data');
 const mongo_storedQuery = require('../cde/mongo-storedQuery');
 const email = require('./email');
 const schemas_system = require('./schemas');
-const elasticsearch = require('elasticsearch');
 const moment = require('moment');
 const noDbLogger = require('./noDbLogger');
 const pushNotification = require('./pushNotification');
 
-const esClient = new elasticsearch.Client({
-    hosts: config.elastic.hosts
-});
 const conn = connHelper.establishConnection(config.database.log);
 
 const LogModel = conn.model('DbLogger', schemas_system.logSchema);
@@ -21,6 +17,41 @@ const ClientErrorModel = conn.model('DbClientErrorLogger', schemas_system.client
 const StoredQueryModel = mongo_storedQuery.StoredQueryModel;
 const FeedbackModel = conn.model('FeedbackIssue', schemas_system.feedbackIssueSchema);
 const consoleLogModel = conn.model('consoleLogs', schemas_system.consoleLogSchema);
+const TrafficFilterModel = conn.model('trafficFilter', schemas_system.trafficFilterSchema);
+
+let initTrafficFilter = cb => {
+    TrafficFilterModel.remove({}).exec(() => {
+       new TrafficFilterModel({ipList: []}).save(cb);
+    });
+};
+exports.getTrafficFilter = function (cb) {
+    TrafficFilterModel.findOne({}).exec((err, theOne) => {
+       if (err || !theOne) initTrafficFilter((err2, newOne) => cb(newOne));
+       else cb(theOne);
+    });
+};
+exports.banIp = function (ip, reason) {
+    TrafficFilterModel.findOne({}).exec((err, theOne) => {
+      if (err) {
+          exports.logError({
+              message: "Unable ban IP ",
+              origin: "dbLogger.banIp",
+              stack: err,
+              details: ""
+          });
+      } else {
+        let foundIndex = theOne.ipList.findIndex(r => r.ip === ip);
+        if (foundIndex > -1) {
+            theOne.ipList[foundIndex].strikes++;
+            theOne.ipList[foundIndex].reason = reason;
+            theOne.ipList[foundIndex].date = Date.now();
+        } else {
+            theOne.ipList.push({ip: ip, reason: reason});
+        }
+        theOne.save();
+      }
+    });
+};
 
 exports.consoleLog = function (message, level) { // no express errors see dbLogger.log(message)
     new consoleLogModel({
@@ -53,7 +84,7 @@ exports.storeQuery = function (settings, callback) {
                     StoredQueryModel.findOneAndUpdate(
                         {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
                         storedQuery,
-                        function (err, newObject) {
+                         err => {
                             if (err) noDbLogger.noDbLogger.info(err);
                             if (callback) callback(err);
                         }
@@ -183,7 +214,7 @@ exports.getLogs = function (body, callback) {
     let skip = (currentPage - 1) * itemsPerPage;
     let query = {};
     if (body.ip) query = {ip: body.ipAddress};
-    let modal = LogModel.find();
+    let modal = LogModel.find(query);
     if (body.fromDate) modal.where("date").gte(moment(body.fromDate));
     if (body.toDate) modal.where("date").lte(moment(body.toDate));
     LogModel.count({}, (err, count) => {
@@ -201,7 +232,6 @@ exports.appLogs = function (body, callback) {
     let itemsPerPage = 500;
     if (body.itemsPerPage) itemsPerPage = Number.parseInt(body.itemsPerPage);
     let skip = (currentPage - 1) * itemsPerPage;
-    let query = {};
     let modal = consoleLogModel.find();
     if (body.fromDate) modal.where("date").gte(moment(body.fromDate));
     if (body.toDate) modal.where("date").lte(moment(body.toDate));
@@ -275,8 +305,8 @@ exports.usageByDay = function (callback) {
 };
 
 exports.saveFeedback = function (req, cb) {
-    var report = JSON.parse(req.body.feedback);
-    var issue = new FeedbackModel({
+    let report = JSON.parse(req.body.feedback);
+    let issue = new FeedbackModel({
         user: {username: req.user && req.user._doc ? req.user._doc.username : null}
         , rawHtml: report.html
         , reportedUrl: report.url
@@ -287,7 +317,7 @@ exports.saveFeedback = function (req, cb) {
     issue.save(function (err) {
         if (cb) cb(err);
     });
-    var emailContent = {
+    let emailContent = {
         subject: "Issue reported by a user"
         , body: report.note
     };

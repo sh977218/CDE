@@ -1346,4 +1346,24 @@ exports.init = function (app) {
         });
     });
 
+    app.get('/activeBans', (req, res) => {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            dbLogger.getTrafficFilter(list => res.send(list));
+        } else res.status(401).send();
+    });
+
+    app.post('/removeBan', (req, res) => {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            dbLogger.getTrafficFilter(elt => {
+                let foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
+                if (foundIndex > -1) {
+                    elt.ipList.splice(foundIndex, 1);
+                    elt.save(() => res.send());
+                } else {
+                   res.send();
+                }
+            });
+        } else res.status(401).send();
+    });
+
 };

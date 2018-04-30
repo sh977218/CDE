@@ -20,13 +20,14 @@ const compress = require('compression');
 const helmet = require('helmet');
 const ioServer = require('./server/system/ioServer');
 const winston = require('winston');
+const dbLogger = require('./server/system/dbLogger');
 
 require('./server/system/elastic').initEs();
 
 require('log-buffer')(config.logBufferSize || 4096);
 console.log(process.versions.node);
 
-var app = express();
+let app = express();
 
 app.use(helmet());
 app.use(auth.ticketAuth);
@@ -34,7 +35,7 @@ app.use(compress());
 
 app.use(require('hsts')({maxAge: 31536000000}));
 
-var localRedirectProxy = httpProxy.createProxyServer({});
+let localRedirectProxy = httpProxy.createProxyServer({});
 
 process.on('uncaughtException', function (err) {
     console.log("ERROR1: " + err);
@@ -68,27 +69,28 @@ const expressSettings = {
     cookie: {httpOnly: true, secure: config.proxy}
 };
 
-var getRealIp = function (req) {
+let getRealIp = function (req) {
     if (req._remoteAddress) return req._remoteAddress;
     if (req.ip) return req.ip;
 };
 
-var blackIps = [];
-var timedBlackIps = [];
+let blackIps = [];
 app.use(ipfilter(blackIps, {errorMessage: "You are not authorized. Please contact support if you believe you should not see this error."}));
 const banEndsWith = config.banEndsWith || [];
 const banStartsWith = config.banStartsWith || [];
 
-const releaseHackersFrequency = 3 * 60 * 1000;
-setInterval(function releaseHackers() {
-    blackIps.length = 0;
-    timedBlackIps = timedBlackIps.filter(function (rec) {
-        if ((Date.now() - rec.date) < releaseHackersFrequency) {
-            blackIps.push(rec.ip);
-            return rec;
-        }
+const releaseHackersFrequency = 5 * 60 * 1000;
+const keepHackerForDuration = 1000 * 60 * 60* 24;
+// every minute, get latest list.
+setInterval(() => {
+    dbLogger.getTrafficFilter(record => {
+        blackIps.length = 0;
+        // release IPs, but keep track for a day
+        record.ipList = record.ipList.filter(ipElt => ((Date.now() - ipElt.date) < (keepHackerForDuration * ipElt.strikes)));
+        record.save();
+        blackIps = record.ipList.filter(ipElt => ((Date.now() - ipElt.date) < releaseHackersFrequency * ipElt.strikes)).map(r => r.ip);
     });
-}, releaseHackersFrequency);
+}, 60 * 1000);
 
 // check https
 app.use((req, res, next) => {
@@ -104,14 +106,16 @@ app.use((req, res, next) => {
 app.use(function banHackers(req, res, next) {
     banEndsWith.forEach(ban =>  {
         if (req.originalUrl.slice(-(ban.length)) === ban) {
-            blackIps.push(getRealIp(req));
-            timedBlackIps.push({ip: getRealIp(req), date: Date.now()});
+            let ip = getRealIp(req);
+            dbLogger.banIp(ip, req.originalUrl);
+            blackIps.push(ip);
         }
     });
-    banStartsWith.forEach(function (ban) {
+    banStartsWith.forEach(ban => {
         if (req.originalUrl.substr(0, ban.length) === ban) {
-            blackIps.push(getRealIp(req));
-            timedBlackIps.push({ip: getRealIp(req), date: Date.now()});
+            let ip = getRealIp(req);
+            dbLogger.banIp(ip, req.originalUrl);
+            blackIps.push(ip);
         }
     });
     next();
@@ -124,8 +128,7 @@ app.use(function preventSessionCreation(req, res, next) {
         return req.originalUrl.substr(req.originalUrl.length - 4, 4) === ".gif";
     };
     if ((req.cookies['connect.sid'] || req.originalUrl === "/login" || req.originalUrl === "/csrf") && !this.isFile(req)) {
-        var initExpressSession = session(expressSettings);
-        initExpressSession(req, res, next);
+        session(expressSettings)(req, res, next);
     } else next();
 
 });
@@ -200,23 +203,19 @@ if (config.expressLogFile) {
     app.use(morganLogger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":response-time ms"', {stream: fileStream}));
 }
 
-var connections = 0;
-setInterval(function () {
-    connections = 0;
-}, 60000);
+let connections = 0;
+setInterval(() => connections = 0, 60000);
 
 app.use(function (req, res, next) {
-    var maxLogsPerMinute = config.maxLogsPerMinute || 1000;
+    let maxLogsPerMinute = config.maxLogsPerMinute || 1000;
     connections++;
-    if (connections > maxLogsPerMinute) {
-        return next();
-    } else
-        expressLogger(req, res, next);
+    if (connections > maxLogsPerMinute) return next();
+    else expressLogger(req, res, next);
 });
 
 app.set('views', path.join(__dirname, './modules'));
 
-var originalRender = express.response.render;
+let originalRender = express.response.render;
 express.response.render = function (view, module, msg) {
     if (!module) module = "cde";
     originalRender.call(this, path.join(__dirname, '/modules/' + module + "/views/" + view), msg);
@@ -227,13 +226,13 @@ try {
 
     require(path.join(__dirname, './server/system/app.js')).init(app, daoManager);
 
-    var formModule = require(path.join(__dirname, './server/form/app.js'));
+    let formModule = require(path.join(__dirname, './server/form/app.js'));
     formModule.init(app, daoManager);
 
-    var boardModule = require(path.join(__dirname, './server/board/app.js'));
+    let boardModule = require(path.join(__dirname, './server/board/app.js'));
     boardModule.init(app, daoManager);
 
-    var swaggerModule = require(path.join(__dirname, './modules/swagger/index.js'));
+    let swaggerModule = require(path.join(__dirname, './modules/swagger/index.js'));
     swaggerModule.init(app);
 } catch (e) {
     console.log(e.stack);
@@ -257,11 +256,9 @@ app.use(function (err, req, res, next) {
     console.log("ERROR3: " + err);
     console.log(err.stack);
     if (req && req.body && req.body.password) req.body.password = "";
-    var meta = {
-        stack: err.stack
-        ,
-        origin: "app.express.error"
-        ,
+    let meta = {
+        stack: err.stack,
+        origin: "app.express.error",
         request: {
             username: req.user ? req.user.username : null,
             method: req.method,
@@ -281,11 +278,8 @@ app.use(function (err, req, res, next) {
     next();
 });
 
-
-var thisExports = exports;
-
 domain.run(function () {
-    var server = http.createServer(app);
+    let server = http.createServer(app);
     exports.server = server;
     server.listen(app.get('port'), function () {
         console.log('Express server listening on port ' + app.get('port'));

@@ -534,6 +534,16 @@ schemas.feedbackIssueSchema = new mongoose.Schema({
     reportedUrl: stringType
 });
 
+schemas.trafficFilterSchema = new mongoose.Schema({
+   ipList: [{
+       ip: String,
+       date: {type: Date, default: Date.now()},
+       reason: String,
+       strikes: {type: Number, default: 1},
+       _id: false
+   }]
+});
+
 schemas.classificationAudit.set('collection', 'classificationAudit');
 
 schemas.fs_files.set('collection', 'fs.files');

@@ -16,6 +16,7 @@ import { LogAuditComponent } from 'system/public/components/siteAdmin/logAudit/l
 import { ServerErrorsComponent } from 'system/public/components/siteAdmin/serverErrors/serverErrors.component';
 import { SiteAuditComponent } from 'system/public/components/siteAdmin/siteAudit/siteAudit.component';
 import { WidgetModule } from 'widget/widget.module';
+import { ActiveBansComponent } from "./components/siteAdmin/activeBans/activeBans.component";
 
 
 const appRoutes: Routes = [
@@ -33,6 +34,7 @@ const appRoutes: Routes = [
         // internal
     ],
     declarations: [
+        ActiveBansComponent,
         AppLogComponent,
         AuditLogComponent,
         CamelCaseToHumanPipe,
