@@ -355,11 +355,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void mustBeLoggedOut() {
-        findElement(By.xpath("//*[@data-userloaded='loaded-false']"));
+        findElement(By.xpath("//*[@data-userloaded]"));
         List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
         if (loginLinkList.size() == 0) {
             logout();
         }
+        findElement(By.xpath("//*[@data-userloaded='loaded-false']"));
     }
 
     protected int getNumberOfResults() {
