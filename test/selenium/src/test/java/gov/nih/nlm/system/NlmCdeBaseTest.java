@@ -307,7 +307,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void doLogin(String username, String password) {
-        findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
+        findElement(By.xpath("//*[@data-userloaded]"));
         List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
         if (loginLinkList.size() > 0) {
             loginAs(username, password);
@@ -355,7 +355,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void mustBeLoggedOut() {
-        findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
+        findElement(By.xpath("//*[@data-userloaded='loaded-false']"));
         List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
         if (loginLinkList.size() == 0) {
             logout();
