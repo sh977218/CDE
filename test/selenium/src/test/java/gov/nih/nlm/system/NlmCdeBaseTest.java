@@ -307,7 +307,6 @@ public class NlmCdeBaseTest {
     }
 
     protected void doLogin(String username, String password) {
-        findElement(By.xpath("//*[@data-userloaded]"));
         List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
         if (loginLinkList.size() > 0) {
             loginAs(username, password);
@@ -355,12 +354,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void mustBeLoggedOut() {
-        findElement(By.xpath("//*[@data-userloaded]"));
         List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
         if (loginLinkList.size() == 0) {
             logout();
         }
-        findElement(By.xpath("//*[@data-userloaded='loaded-false']"));
+        textNotPresent("", By.id("username_link"));
+        findElement(By.id("login_link"));
     }
 
     protected int getNumberOfResults() {
@@ -903,7 +902,6 @@ public class NlmCdeBaseTest {
                     + e.getMessage());
             System.out.println("*************checkText:" + checkText);
             goHome();
-            findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
             WebElement loginLinkList = driver.findElement(By.id("login_link"));
             if (loginLinkList.isDisplayed()) {
                 findElement(By.id("login_link")).click();

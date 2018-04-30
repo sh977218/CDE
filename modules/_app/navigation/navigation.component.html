@@ -50,18 +50,20 @@
             </li>
         </ul>
         <div class="navbar-nav ml-auto">
-            <ul class="navbar-nav float-right" attr.data-userloaded="loaded-{{userService.user?true:false}}">
+            <ul class="navbar-nav float-right">
                 <li class="nav-item" *ngIf="userService.user?.hasMail">
                     <a routerLink="/inbox" class="nav-link">
                         <i id="incomingMessage" class="fa fa-envelope text-danger"></i>
                     </a>
                 </li>
-                <li class="nav-item" [ngClass]="{active: isPageActive('/login')}" *ngIf="!userService.user?._id">
-                    <a (click)="loginSvc.goToLogin()" id="login_link" class="nav-link" title="Log in"
-                       routerLink="/login">
-                        Log In</a>
-                </li>
-                <li class="nav-item dropdown" *ngIf="userService.user?._id">
+                <ng-template #loginLink>
+                    <li class="nav-item" [ngClass]="{active: isPageActive('/login')}">
+                        <a (click)="loginSvc.goToLogin()" id="login_link" class="nav-link" title="Log in"
+                           routerLink="/login">
+                            Log In</a>
+                    </li>
+                </ng-template>
+                <li class="nav-item dropdown" *ngIf="userService.user; else loginLink">
                     <a id="username_link" class="nav-link dropdown-toggle" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false"
                        [textContent]="userService.user?.username | cdeTruncateLongName"></a>
