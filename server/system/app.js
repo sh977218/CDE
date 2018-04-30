@@ -1346,4 +1346,47 @@ exports.init = function (app) {
         });
     });
 
+    app.get('/allDrafts', (req, res) => {
+        if (req.user && req.user.siteAdmin) {
+            mongo_cde.draftsList({}, (err, draftCdes) => {
+                if (err) return res.status(500).send("Error Retrieving Draft CDEs");
+                mongo_form.draftsList({}, (err, draftForms) => {
+                    if (err) return res.status(500).send("Error Retrieving Draft Forms");
+                    return res.send({draftCdes: draftCdes, draftForms: draftForms});
+                });
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
+
+    app.get('/orgDrafts', (req, res) => {
+        if (authorizationShared.isOrgCurator(req.user)) {
+            mongo_cde.draftsList({"stewardOrg.name": {$in: usersrvc.myOrgs(req.user)}}, (err, draftCdes) => {
+                if (err) return res.status(500).send("Error Retrieving Draft CDEs");
+                mongo_form.draftsList({"stewardOrg.name": {$in: usersrvc.myOrgs(req.user)}}, (err, draftForms) => {
+                    if (err) return res.status(500).send("Error Retrieving Draft Forms");
+                    return res.send({draftCdes: draftCdes, draftForms: draftForms});
+                });
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
+
+    app.get('/myDrafts', (req, res) => {
+        if (authorizationShared.isOrgCurator(req.user)) {
+            mongo_cde.draftsList({"updatedBy.username": req.user.username}, (err, draftCdes) => {
+                if (err) return res.status(500).send("Error Retrieving Draft CDEs");
+                mongo_form.draftsList({"updatedBy.username": req.user.username}, (err, draftForms) => {
+                    if (err) return res.status(500).send("Error Retrieving Draft Forms");
+                    return res.send({draftCdes: draftCdes, draftForms: draftForms});
+                });
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
+
+
 };
