@@ -23,7 +23,7 @@ public class UserTest extends NlmCdeBaseTest {
         enterUsernamePasswordSubmit(ctepCurator_username, password, "ctepCurator");
 
         driver.get(baseUrl + "/profile");
-        isHome();
+        isLogin();
     }
 
     @Test

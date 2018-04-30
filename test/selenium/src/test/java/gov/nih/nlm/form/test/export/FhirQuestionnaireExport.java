@@ -10,7 +10,9 @@ public class FhirQuestionnaireExport extends BaseFormTest {
     @Test
     public void questionnaireExport() {
         mustBeLoggedInAs(reguser_username, password);
+        hangon(5);
         String response = get(baseUrl + "/formById/58497234bb2d48e00466acd7?subtype=fhirQuestionnaire").asString();
+        hangon(5);
         String[] expectedResults = {
                 "/schema/form",
                 "/deView?tinyId=OtsN78xANu1",

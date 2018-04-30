@@ -731,6 +731,10 @@ public class NlmCdeBaseTest {
     protected void logout() {
         clickElement(By.id("username_link"));
         clickElement(By.id("user_logout"));
+        isLogin();
+    }
+
+    protected void isLogin() {
         findElement(By.id("login_link"));
         textPresent("Please Log In");
     }

@@ -128,16 +128,17 @@
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="export"
                      style="left: auto;right: 0;">
-                    <ng-container *ngIf="userService?.user?._id || module === 'cde'">
+                    <ng-container *ngIf="userService.user || module === 'cde'; else exportFormNotAuthorized">
                         <a *ngFor="let key of keys(exporters)" id="{{exporters[key].id}}" class="dropdown-item"
 
                            (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})"
                         >{{exporters[key].display}}</a>
                     </ng-container>
-                    <a *ngIf="userService?.user && displayValidation()" id="exportValidRule" class="dropdown-item"
+                    <ng-template #exportFormNotAuthorized>
+                        <a routerLink="/login" class="dropdown-item">Please login to export forms.</a>
+                    </ng-template>
+                    <a *ngIf="userService.user && displayValidation()" id="exportValidRule" class="dropdown-item"
                        (click)="openValidRulesModal()"> Validation Rules</a>
-                    <a *ngIf="!userService?.user?._id && module !== 'cde'" routerLink="/login"
-                       class="dropdown-item">Please login to export forms.</a>
                 </div>
             </div>
         </div>
