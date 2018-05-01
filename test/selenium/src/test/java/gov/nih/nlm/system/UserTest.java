@@ -12,18 +12,24 @@ public class UserTest extends NlmCdeBaseTest {
     public void wrongLogin() {
         mustBeLoggedOut();
         goToCdeSearch();
+
         try {
             clickElement(By.linkText("Log In"));
         } catch (TimeoutException e) {
             logout();
             clickElement(By.linkText("Log In"));
         }
-
         enterUsernamePasswordSubmit("bad-username", "bad-password", "Failed to log in.");
-        enterUsernamePasswordSubmit(ctepCurator_username, password, "ctepCurator");
-
         driver.get(baseUrl + "/profile");
         isLogin();
+
+        try {
+            clickElement(By.linkText("Log In"));
+        } catch (TimeoutException e) {
+            logout();
+            clickElement(By.linkText("Log In"));
+        }
+        enterUsernamePasswordSubmit(ctepCurator_username, password, "ctepCurator");
     }
 
     @Test
