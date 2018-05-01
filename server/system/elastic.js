@@ -478,9 +478,9 @@ exports.buildElasticSearchQuery = function (user, settings) {
                 }
             };
             if (selectionString === "") {
-                flatClassifications.terms.include = settings[orgVariableName] + ";[^;]+";
+                flatClassifications.terms.include =  escapeRegExp(settings[orgVariableName]) + ";[^;]+";
             } else {
-                flatClassifications.terms.include = settings[orgVariableName] + ';' + escapeRegExp(selectionString) + ";[^;]+";
+                flatClassifications.terms.include =  escapeRegExp(settings[orgVariableName]) + ';' + escapeRegExp(selectionString) + ";[^;]+";
             }
             queryStuff.aggregations[variableName] = {
                 "filter": settings.filter,
