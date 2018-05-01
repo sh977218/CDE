@@ -58,20 +58,18 @@ export class DataElementViewComponent implements OnInit {
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
-            this.userService.then(() => {
-                this.loadDataElement(() => {
-                    this.orgHelperService.then(() => {
-                        let org = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name];
-                        let allNamingTags = org ? org.nameTags : [];
-                        this.elt.naming.forEach(n => {
-                            n.tags.forEach(t => allNamingTags.push(t));
-                        });
-                        this.orgNamingTags = _uniqWith(allNamingTags, _isEqual).map(t => {
-                            return {id: t, text: t};
-                        });
-                        this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+            this.loadDataElement(() => {
+                this.orgHelperService.then(() => {
+                    let org = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name];
+                    let allNamingTags = org ? org.nameTags : [];
+                    this.elt.naming.forEach(n => {
+                        n.tags.forEach(t => allNamingTags.push(t));
                     });
-                });
+                    this.orgNamingTags = _uniqWith(allNamingTags, _isEqual).map(t => {
+                        return {id: t, text: t};
+                    });
+                    this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+                }, _noop);
             });
         });
     }
@@ -102,7 +100,14 @@ export class DataElementViewComponent implements OnInit {
             if (this.userService.user && this.userService.user.username) {
                 checkPvUnicity(this.elt.valueDomain);
             }
-            this.setDisplayStatusWarning();
+            this.displayStatusWarning = (() => {
+                if (!this.elt || this.elt.archived || this.userService.user && this.userService.user.siteAdmin) {
+                    return false;
+                }
+                return isOrgCurator(this.userService.user, this.elt.stewardOrg.name) &&
+                    (this.elt.registrationState.registrationStatus === 'Standard' ||
+                        this.elt.registrationState.registrationStatus === 'Preferred Standard');
+            })();
             cb();
         }
     }
@@ -118,26 +123,24 @@ export class DataElementViewComponent implements OnInit {
 
     loadDataElement(cb = _noop) {
         this.userService.then(user => {
-            if (user && user.username) {
-                this.http.get<DataElement>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
-                    res => {
-                        if (res && this.isAllowedModel.isAllowed(res)) {
-                            this.drafts = [res];
-                            this.eltLoaded(res, cb);
-                        } else {
-                            this.drafts = [];
-                            this.loadPublished(cb);
-                        }
-                    },
-                    err => {
-                        // do not load elt
-                        this.alert.httpErrorMessageAlert(err);
-                        this.eltLoaded(null, cb);
+            this.http.get<DataElement>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
+                res => {
+                    if (res && this.isAllowedModel.isAllowed(res)) {
+                        this.drafts = [res];
+                        this.eltLoaded(res, cb);
+                    } else {
+                        this.drafts = [];
+                        this.loadPublished(cb);
                     }
-                );
-            } else {
-                this.loadPublished(cb);
-            }
+                },
+                err => {
+                    // do not load elt
+                    this.alert.httpErrorMessageAlert(err);
+                    this.eltLoaded(null, cb);
+                }
+            );
+        }, () => {
+            this.loadPublished(cb);
         });
     }
 
@@ -149,25 +152,6 @@ export class DataElementViewComponent implements OnInit {
             res => this.eltLoaded(res, cb),
             () => this.router.navigate(['/pageNotFound'])
         );
-    }
-
-    setDisplayStatusWarning() {
-        this.userService.then(user => {
-            this.displayStatusWarning = (() => {
-                if (!this.elt) return false;
-                if (this.elt.archived || user.siteAdmin) {
-                    return false;
-                } else {
-                    if (this.userService.userOrgs) {
-                        return isOrgCurator(user, this.elt.stewardOrg.name) &&
-                            (this.elt.registrationState.registrationStatus === 'Standard' ||
-                                this.elt.registrationState.registrationStatus === 'Preferred Standard');
-                    } else {
-                        return false;
-                    }
-                }
-            })();
-        });
     }
 
     openCopyElementModal() {

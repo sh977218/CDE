@@ -19,13 +19,17 @@
 </ng-template>
 
 <ng-template #formOptions>
-    <li class="dropdown-item" *ngIf="userService?.user?._id">
-        <a (click)="exportType.emit('json')">JSON File</a>
-    </li>
-    <li class="dropdown-item" *ngIf="userService?.user?._id">
-        <a id="xmlExport" (click)="exportType.emit('xml')">XML File</a>
-    </li>
-    <li class="dropdown-item" *ngIf="!userService?.user?._id">
-        <a routerLink="/login">Please login to export forms.</a>
-    </li>
+    <ng-container *ngIf="userService.user; else exportNotAuthorized">
+        <li class="dropdown-item" >
+            <a (click)="exportType.emit('json')">JSON File</a>
+        </li>
+        <li class="dropdown-item">
+            <a id="xmlExport" (click)="exportType.emit('xml')">XML File</a>
+        </li>
+    </ng-container>
+    <ng-template #exportNotAuthorized>
+        <li class="dropdown-item">
+            <a routerLink="/login">Please login to export forms.</a>
+        </li>
+    </ng-template>
 </ng-template>

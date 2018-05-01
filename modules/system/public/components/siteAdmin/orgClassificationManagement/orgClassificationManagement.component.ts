@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IActionMapping, TreeComponent } from 'angular-tree-component';
+import _noop from 'lodash/noop';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -72,7 +73,7 @@ export class OrgClassificationManagementComponent implements OnInit {
                     this.onInitDone = true;
                 });
             } else this.onInitDone = true;
-        });
+        }, _noop);
 
         this.searchTerms.pipe(
             debounceTime(300),

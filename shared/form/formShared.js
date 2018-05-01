@@ -330,7 +330,7 @@ export function isSubForm(node) {
     return n.data.elementType === 'form';
 }
 
-// feCb(fe, cbContinue(error, skipChildren?: boolean))  (noopSkipCb: (_, cb) => cb(undefined, true))
+// feCb(fe, cbContinue(error, skipChildren?: boolean))  (noopSkipCb: (dummy, cb) => cb(undefined, true))
 // callback(error)
 export function iterateFe(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, callback = undefined) {
     if (fe) iterateFes(fe.formElements, formCb, sectionCb, questionCb, callback);
@@ -341,7 +341,7 @@ export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, que
     if (fe) iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
 }
 
-// feCb(fe, cbContinue(error, skipChildren?: boolean))  (noopSkipCb: (_, cb) => cb(undefined, true))
+// feCb(fe, cbContinue(error, skipChildren?: boolean))  (noopSkipCb: (dummy, cb) => cb(undefined, true))
 // callback(error)
 export function iterateFes(fes, formCb = noopCb, sectionCb = noopCb, questionCb = noopCb, callback = _noop) {
     if (Array.isArray(fes)) {
@@ -379,11 +379,11 @@ export function iterateFesSync(fes, formCb = _noop, sectionCb = _noop, questionC
         });
 }
 
-function noopCb(_, cb) {
+function noopCb(dummy, cb) {
     cb();
 }
 
-export function noopSkipCb(_, cb) {
+export function noopSkipCb(dummy, cb) {
     cb(undefined, true);
 }
 

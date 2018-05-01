@@ -1,6 +1,7 @@
 import { Component, ViewChild, Input, Output, EventEmitter } from "@angular/core";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import _noop from 'lodash/noop';
 
 import { UserService } from '_app/user.service';
 import { IsAllowedService } from 'core/isAllowed.service';
@@ -25,6 +26,7 @@ export class ClassificationViewComponent {
     @Output() confirmDelete = new EventEmitter();
     public modalRef: NgbModalRef;
     deleteClassificationString;
+    orgHelperLoaded = false;
 
     public options = {
         idField: "name",
@@ -38,30 +40,12 @@ export class ClassificationViewComponent {
     constructor(public modalService: NgbModal,
                 public isAllowedModel: IsAllowedService,
                 protected userService: UserService,
-                private orgHelper: OrgHelperService) {
+                private orgHelperService: OrgHelperService) {
+        this.orgHelperService.then(() => this.orgHelperLoaded = true, _noop);
     }
 
     getClassifLink () {
         return '/' + this.elt.elementType + '/search';
-    }
-
-    showWorkingGroups = function (stewardClassifications) {
-        return this.orgHelper.showWorkingGroup(stewardClassifications.stewardOrg.name, this.userService.user) ||
-            isSiteAdmin(this.userService.user);
-    };
-
-
-    searchByClassificationParams(node, orgName) {
-        let classificationArray = [node.data.name];
-        let _treeNode = node;
-        while (_treeNode.parent) {
-            _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
-        }
-        return {
-            selectedOrg: orgName,
-            classification: classificationArray.join(";")
-        };
     }
 
     openDeleteClassificationModal(node, deleteOrgName) {
@@ -84,4 +68,21 @@ export class ClassificationViewComponent {
         });
     }
 
+    searchByClassificationParams(node, orgName) {
+        let classificationArray = [node.data.name];
+        let _treeNode = node;
+        while (_treeNode.parent) {
+            _treeNode = _treeNode.parent;
+            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
+        }
+        return {
+            selectedOrg: orgName,
+            classification: classificationArray.join(";")
+        };
+    }
+
+    showWorkingGroups(stewardClassifications) {
+        return this.orgHelperLoaded ? this.orgHelperService.showWorkingGroup(stewardClassifications.stewardOrg.name) ||
+            isSiteAdmin(this.userService.user) : false;
+    }
 }

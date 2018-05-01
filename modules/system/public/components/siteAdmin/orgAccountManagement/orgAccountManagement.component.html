@@ -46,7 +46,7 @@
                 </table>
             </ng-template>
         </ngb-tab>
-        <ngb-tab title="CDE & Form Management" *ngIf="userService.user && userService.user.orgAdmin.length > 1">
+        <ngb-tab title="CDE & Form Management" *ngIf="userService.user?.orgAdmin.length > 1">
             <ng-template ngbTabContent>
                 <form class="form-inline pt40 pb40" role="form" id="transferStewardForm" name="transferStewardForm"
                       novalidate>
@@ -79,7 +79,7 @@
                 <cde-drafts-org-list></cde-drafts-org-list>
             </ng-template>
         </ngb-tab>
-        <ngb-tab title="Embedding" *ngIf="userService.user && userService.user.orgAdmin.length > 0" id="embeddingTab">
+        <ngb-tab title="Embedding" *ngIf="userService.user?.orgAdmin.length > 0" id="embeddingTab">
             <ng-template ngbTabContent>
                 <cde-embed></cde-embed>
             </ng-template>

@@ -307,7 +307,6 @@ public class NlmCdeBaseTest {
     }
 
     protected void doLogin(String username, String password) {
-        findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
         List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
         if (loginLinkList.size() > 0) {
             loginAs(username, password);
@@ -355,11 +354,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void mustBeLoggedOut() {
-        findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
         List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
         if (loginLinkList.size() == 0) {
             logout();
         }
+        textNotPresent("", By.id("username_link"));
+        findElement(By.id("login_link"));
     }
 
     protected int getNumberOfResults() {
@@ -695,6 +695,10 @@ public class NlmCdeBaseTest {
 
     protected void goHome() {
         clickElement(By.id("homeLink"));
+        isHome();
+    }
+
+    protected void isHome() {
         textPresent("has been designed to provide access", By.id("introduction"));
         findElement(By.cssSelector(".carousel-indicators"));
     }
@@ -727,6 +731,10 @@ public class NlmCdeBaseTest {
     protected void logout() {
         clickElement(By.id("username_link"));
         clickElement(By.id("user_logout"));
+        isLogin();
+    }
+
+    protected void isLogin() {
         findElement(By.id("login_link"));
         textPresent("Please Log In");
     }
@@ -898,7 +906,6 @@ public class NlmCdeBaseTest {
                     + e.getMessage());
             System.out.println("*************checkText:" + checkText);
             goHome();
-            findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
             WebElement loginLinkList = driver.findElement(By.id("login_link"));
             if (loginLinkList.isDisplayed()) {
                 findElement(By.id("login_link")).click();

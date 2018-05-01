@@ -156,7 +156,7 @@ export class ElasticService {
         let savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
         delete savedSettings.includeRetired;
         this.localStorageService.set("SearchSettings", savedSettings);
-        if (this.userService.user.username) {
+        if (this.userService.user && this.userService.user.username) {
             this.http.post("/user/update/searchSettings", savedSettings, {responseType: 'text'}).subscribe();
         }
     }
@@ -209,12 +209,14 @@ export class ElasticService {
             if (!this.searchSettings) this.searchSettings = this.getDefault();
 
             this.userService.then(user => {
-                if (user.username) {
-                    if (!user.searchSettings) {
-                        user.searchSettings = this.getDefault();
-                    }
-                    this.searchSettings = user.searchSettings;
+                if (!user.searchSettings) {
+                    user.searchSettings = this.getDefault();
                 }
+                this.searchSettings = user.searchSettings;
+                if (this.searchSettings.version !== this.getDefault().version) {
+                    this.searchSettings = this.getDefault();
+                }
+            }, () => {
                 if (this.searchSettings.version !== this.getDefault().version) {
                     this.searchSettings = this.getDefault();
                 }

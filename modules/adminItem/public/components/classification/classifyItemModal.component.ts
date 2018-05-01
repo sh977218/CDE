@@ -4,6 +4,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-boots
 import { LocalStorageService } from "angular-2-local-storage/dist";
 import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
+import _noop from 'lodash/noop';
 
 import { UserService } from '_app/user.service';
 import { ClassificationService } from 'core/classification.service';
@@ -108,7 +109,7 @@ export class ClassifyItemModalComponent {
         } else {
             this.userService.then(() => {
                 if (this.userService.userOrgs.length === 1) this.onChangeOrg(this.userService.userOrgs[0]);
-            });
+            }, _noop);
         }
         return this.modalService.open(this.classifyItemContent);
     }

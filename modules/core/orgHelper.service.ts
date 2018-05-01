@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import _noop from 'lodash/noop';
 
 import { UserService } from '_app/user.service';
-import { isOrgCurator } from 'shared/system/authorizationShared';
 import { Organization } from 'shared/models.model';
+import { isOrgCurator } from 'shared/system/authorizationShared';
 
 type OrgDetailedInfo = any;
 
@@ -14,7 +15,7 @@ export class OrgHelperService  {
 
     constructor(
         private http: HttpClient,
-        private userService: UserService,
+        private userService: UserService, // only used for synchronous showWorkingGroup
     ) {
         this.reload();
     }
@@ -25,6 +26,10 @@ export class OrgHelperService  {
                 v.longName = this.orgsDetailedInfo[v.key].longName;
             }
         });
+    }
+
+    catch(cb): Promise<OrgDetailedInfo> {
+        return this.promise.catch(cb);
     }
 
     createOrgDetailedInfoHtml(orgName) {
@@ -58,45 +63,42 @@ export class OrgHelperService  {
 
     reload() {
         return this.promise = new Promise<OrgDetailedInfo>((resolve, reject) => {
-            this.http.get<Organization[]>('/listOrgsDetailedInfo')
-                .subscribe(response => {
-                    this.orgsDetailedInfo = {};
-                    response.forEach(org => {
-                        if (org) {
-                            Organization.validate(org);
-                            this.orgsDetailedInfo[org.name] = org;
-                        }
-                    });
-                    resolve(this.orgsDetailedInfo);
-                }, reject);
+            let userPromise = this.userService.catch(_noop);
+            this.http.get<Organization[]>('/listOrgsDetailedInfo').subscribe(response => {
+                this.orgsDetailedInfo = {};
+                response.forEach(org => {
+                    if (org) {
+                        Organization.validate(org);
+                        this.orgsDetailedInfo[org.name] = org;
+                    }
+                });
+                userPromise.then(() => resolve(this.orgsDetailedInfo));
+            }, reject);
         });
     }
 
     showWorkingGroup(orgToHide) {
-        if (!this.userService.user) return false;
         if (!this.orgsDetailedInfo) return false;
         let parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide] && this.orgsDetailedInfo[orgToHide].workingGroupOf;
-        let isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";
-        let userIsWorkingGroupCurator = isOrgCurator(this.userService.user, orgToHide);
-        let userIsCuratorOfParentOrg;
+        if (typeof(parentOrgOfThisClass) === "undefined") return true;
+
+        if (!this.userService.user) return false;
+        if (isOrgCurator(this.userService.user, orgToHide)) return true;
+        if (isOrgCurator(this.userService.user, parentOrgOfThisClass)) return true;
+
         let isSisterOfWg = false;
-        if (!isNotWorkingGroup) userIsCuratorOfParentOrg = isOrgCurator(this.userService.user, parentOrgOfThisClass);
-        if (!isNotWorkingGroup) {
-            if (!this.userService.user.orgAdmin) this.userService.user.orgAdmin = [];
-            if (!this.userService.user.orgCurator) this.userService.user.orgCurator = [];
-            let userOrgs = [].concat(this.userService.user.orgAdmin, this.userService.user.orgCurator);
-            let userWgsParentOrgs = userOrgs.filter(org => this.orgsDetailedInfo[org] && this.orgsDetailedInfo[org].workingGroupOf)
-                .map(org => this.orgsDetailedInfo[org].workingGroupOf);
-            userWgsParentOrgs.forEach(parentOrg => {
+        if (!this.userService.user.orgAdmin) this.userService.user.orgAdmin = [];
+        if (!this.userService.user.orgCurator) this.userService.user.orgCurator = [];
+        this.userService.user.orgAdmin.concat(this.userService.user.orgCurator)
+            .filter(org => this.orgsDetailedInfo[org] && this.orgsDetailedInfo[org].workingGroupOf)
+            .map(org => this.orgsDetailedInfo[org].workingGroupOf)
+            .forEach(parentOrg => {
                 if (parentOrg === parentOrgOfThisClass) isSisterOfWg = true;
             });
-        }
-        return isNotWorkingGroup || userIsWorkingGroupCurator || userIsCuratorOfParentOrg || isSisterOfWg;
+        return isSisterOfWg;
     }
 
-    then(cb): Promise<OrgDetailedInfo> {
-        return this.promise.then(cb);
+    then(cb, errorCb = undefined): Promise<any> {
+        return this.promise.then(cb, errorCb);
     }
 }
-
-

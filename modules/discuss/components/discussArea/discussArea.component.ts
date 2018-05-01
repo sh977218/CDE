@@ -183,7 +183,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         this.socket.on('commentUpdated', () => this.loadComments());
         this.socket.on('userTyping', data => {
             this.eltComments.forEach(c => {
-                if (c._id === data.commentId && data.username !== this.userService.user.username) {
+                if (c._id === data.commentId && this.userService.user && data.username !== this.userService.user.username) {
                     if (this.subscriptions[c._id]) this.subscriptions[c._id].unsubscribe();
                     c.currentlyReplying = true;
                     this.subscriptions[c._id] = TimerObservable.create(10000)
