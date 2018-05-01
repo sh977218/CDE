@@ -251,7 +251,7 @@ exports.regStatusFilter = function (user, settings) {
 
 exports.buildElasticSearchQuery = function (user, settings) {
     function escapeRegExp(str) {
-        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&").replace("<", "");
     }
 
     // Increase ranking score for high registration status
