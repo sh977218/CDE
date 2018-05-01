@@ -68,7 +68,7 @@ export class ProfileComponent {
     checkSubscriptionServerStatusNoEndpoint(): Promise<void> {
         return PushNotificationSubscriptionService.getEndpoint().then(() => {
             return PushNotificationSubscriptionService.subscriptionServerUpdate(this.user._id);
-        }, _noop);
+        });
     }
 
     reloadUser() {

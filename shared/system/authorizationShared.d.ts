@@ -2,9 +2,6 @@ import { User } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 
-declare function canEditMiddleware(req, res, next): void;
-declare function loggedInMiddleware(req, res, next): void;
-
 declare const rolesEnum: string[];
 declare function canComment(user: User): boolean;
 declare function canCreateForms(user: User): boolean;

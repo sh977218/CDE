@@ -169,7 +169,7 @@ exports.logIfError = function (err, message = '') {
 
 // handle server errors properly
 exports.respondError = function(res, err, message = '') {
-    res.status(500).send(message);
+    if (res) res.status(500).send(message);
     exports.logIfError(err, message);
 };
 

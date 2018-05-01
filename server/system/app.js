@@ -1,4 +1,20 @@
+const async = require('async');
+const spawn = require('child_process').spawn;
+const CronJob = require('cron').CronJob;
+const csrf = require('csurf');
+const ejs = require('ejs');
+const fs = require('fs');
+const _ = require('lodash');
+const multer = require('multer');
 const passport = require('passport');
+const path = require('path');
+const request = require('request');
+const tar = require('tar-fs');
+const useragent = require('useragent');
+const zlib = require('zlib');
+
+const authorization = require('./authorization');
+const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_data = require('./mongo-data');
@@ -9,29 +25,15 @@ const orgsvc = require('./orgsvc');
 const pushNotification = require('./pushNotification');
 const usersrvc = require('./usersrvc');
 const orgClassificationSvc = require('./orgClassificationSvc');
-const path = require('path');
 const adminItemSvc = require("./adminItemSvc");
-const csrf = require('csurf');
-const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const daoManager = require('./moduleDaoManager');
-const fs = require('fs');
-const multer = require('multer');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
-const tar = require('tar-fs');
-const zlib = require('zlib');
-const spawn = require('child_process').spawn;
-const authorization = require('./authorization');
 const esInit = require('./elasticSearchInit');
 const elastic = require('./elastic.js');
 const cdeElastic = require('../cde/elastic.js');
 const formElastic = require('../form/elastic.js');
 const app_status = require("./status.js");
-const async = require('async');
-const request = require('request');
-const CronJob = require('cron').CronJob;
-const _ = require('lodash');
-const ejs = require('ejs');
-const useragent = require('useragent');
+
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -299,9 +301,10 @@ exports.init = function (app) {
         });
     });
 
-    app.post('/pushRegistration', [authorizationShared.loggedInMiddleware], pushNotification.create);
-    app.delete('/pushRegistration', [authorizationShared.loggedInMiddleware], pushNotification.delete);
-    app.post('/pushRegistrationSubscribe', [authorizationShared.loggedInMiddleware], pushNotification.subscribe);
+    pushNotification.checkDatabase();
+    app.post('/pushRegistration', [authorization.loggedInMiddleware], pushNotification.create);
+    app.delete('/pushRegistration', [authorization.loggedInMiddleware], pushNotification.delete);
+    app.post('/pushRegistrationSubscribe', [authorization.loggedInMiddleware], pushNotification.subscribe);
     app.post('/pushRegistrationUpdate', pushNotification.updateStatus);
 
     // delete org classification

@@ -1,8 +1,28 @@
 const _ = require('lodash');
 const webpush = require('web-push');
 
+const config = require('./parseConfig');
 const dbLogger = require('./dbLogger.js');
 const mongo_data = require('./mongo-data');
+
+exports.checkDatabase = (callback = _.noop) => {
+    // if error then no callback and no push notifications
+    mongo_data.pushById('000000000000000000000000', dbLogger.withError(undefined, '', push => {
+        function createDbTag() {
+            mongo_data.pushCreate({_id: mongo_data.pushObjectId('000000000000000000000000'), userId: config.publicUrl},
+                dbLogger.withError(undefined, '', callback));
+        }
+        if (!push) {
+            createDbTag();
+            return;
+        }
+        if (push.userId !== config.publicUrl) {
+            mongo_data.pushClearDb(dbLogger.withError(undefined, 'could not remove', createDbTag));
+            return;
+        }
+        callback();
+    }));
+};
 
 exports.create = (req, res) => {
     if (!req.user || !req.user._id) {

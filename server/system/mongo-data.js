@@ -154,6 +154,8 @@ exports.orgNames = function (callback) {
     Org.find({}, {name: true, _id: false}).exec(callback);
 };
 
+exports.pushObjectId = mongoose.Types.ObjectId;
+
 exports.pushesByEndpoint = function (endpoint, callback) {
     PushRegistration.find({'subscription.endpoint': endpoint}, callback);
 };
@@ -174,6 +176,10 @@ exports.pushByPublicKey = function (publicKey, callback) {
     PushRegistration.findOne({'vapidKeys.publicKey': publicKey}, callback);
 };
 
+exports.pushClearDb = function (callback) {
+    PushRegistration.remove({}, callback);
+};
+
 exports.pushCreate = function (push, callback) {
     new PushRegistration(push).save(callback);
 };
@@ -183,7 +189,7 @@ exports.pushDelete = function (endpoint, userId, callback) {
         if (err) {
             return callback(err);
         }
-        PushRegistration.remove({_id: registration._id}, err => callback(err));
+        PushRegistration.remove({_id: registration._id}, callback);
     });
 };
 

@@ -1,3 +1,7 @@
+const multer = require('multer');
+
+const authorization = require('../system/authorization');
+const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const cdesvc = require('./cdesvc');
 const cdediff = require('./cdediff');
 const boardsvc = require('../board/boardsvc');
@@ -10,14 +14,10 @@ const vsac = require('./vsac-io');
 const config = require('../system/parseConfig');
 const elastic = require('./elastic');
 const adminItemSvc = require('../system/adminItemSvc.js');
-const path = require('path');
-const express = require('express');
 const sdc = require("./sdc.js");
 const appStatus = require('../system/status');
-const multer = require('multer');
 const elastic_system = require('../system/elastic');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
-const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_cde);
@@ -35,8 +35,8 @@ exports.init = function (app, daoManager) {
     app.get("/deList/:tinyIdList?", exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
 
     app.get("/draftDataElement/:tinyId", cdesvc.draftDataElement);
-    app.post("/draftDataElement/:tinyId", [authorizationShared.canEditMiddleware], cdesvc.saveDraftDataElement);
-    app.delete("/draftDataElement/:tinyId", [authorizationShared.canEditMiddleware], cdesvc.deleteDraftDataElement);
+    app.post("/draftDataElement/:tinyId", [authorization.canEditMiddleware], cdesvc.saveDraftDataElement);
+    app.delete("/draftDataElement/:tinyId", [authorization.canEditMiddleware], cdesvc.deleteDraftDataElement);
 
     app.get("/draftDataElementById/:id", cdesvc.draftDataElementById);
 
