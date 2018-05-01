@@ -8,7 +8,8 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {name: 'NSRR'},
         registrationState: {registrationStatus: 'Incomplete'},
-        naming: [],
+        designations: [],
+        definitions: [],
         ids: [],
         properties: [],
         valueDomain: {
@@ -28,16 +29,22 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
         }]
     };
 
-    let names = sleep.display_name;
-    let definitions = sleep.definition;
-    if (names.length >= 1 && definitions.length >= 1) {
-        cde.naming.push({
-                designation: names[0],
-                definition: definitions[0]
+    let designations = sleep.display_name;
+    if (designations.length >= 1 && designations.length >= 1) {
+        cde.designations.push({
+                designation: designations[0],
+                tags: []
             }
         )
     }
-
+    let definitions = sleep.definition;
+    if (definitions.length >= 1 && definitions.length >= 1) {
+        cde.definitions.push({
+                definition: definitions[0],
+                tags: []
+            }
+        )
+    }
     if (sleep && sleep.id && sleep.id.length === 1) {
         cde.ids.push({
             source: 'NSSR',
@@ -74,8 +81,12 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
     if (shhs[0]) {
         let variable = VARIABLES[shhs[0]];
         if (variable) {
-            cde.naming.push({
+            cde.designations.push({
                     designation: variable.display_name,
+                    tags: ['Question Text']
+                }
+            );
+            cde.definitions.push({
                     definition: variable.description,
                     tags: ['Question Text']
                 }

@@ -172,14 +172,18 @@ exports.run = function runner(PATH, FOLDER) {
                         let isDataTypeEqual = _.isEqual(cde.valueDomain.datatype, existingCdeObj.valueDomain.datatype);
                         let isPVsEqual = _.isEqual(cde.valueDomain.permissibleValue, existingCdeObj.valueDomain.permissibleValue);
                         let isValueDomainEqual = isDataTypeEqual && isPVsEqual;
-                        let isNamingEqual = _.isEqual(cde.naming, existingCdeObj.naming);
+                        let isDesignationsEqual = _.isEqual(cde.designations, existingCdeObj.designations);
+                        let isDefinitionsEqual = _.isEqual(cde.definitions, existingCdeObj.definitions);
                         existingCde.properties = _.uniqBy(existingCde.properties.concat(cde.properties), 'key');
                         existingCde.classification.elements = _.uniqBy(existingCde.classification[0].elements.concat(cde.classification[0].elements), 'name');
                         existingCde.markModified('classification');
-                        if (isNamingEqual && isValueDomainEqual) resolve();
+                        if (isDesignationsEqual && isDefinitionsEqual && isValueDomainEqual) resolve();
                         else {
-                            if (!isNamingEqual) existingCde.naming = _.uniqWith(existingCde.naming.concat(cde.naming), (a, b) => {
-                                return a.designation === b.designation && a.definition === b.definition;
+                            if (!isDesignationsEqual) existingCde.designations = _.uniqWith(existingCde.designations.concat(cde.designations), (a, b) => {
+                                return a.designation === b.designation;
+                            });
+                            if (!isDefinitionsEqual) existingCde.definitions = _.uniqWith(existingCde.definitions.concat(cde.definitions), (a, b) => {
+                                return a.definition === b.definition;
                             });
                             if (!isValueDomainEqual) {
                                 console.log('folder: ' + folder + ' mapping: ' + mapping.display_name);
