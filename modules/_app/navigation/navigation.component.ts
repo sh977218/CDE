@@ -3,7 +3,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { LoginService } from '_app/login.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { canCreateForms, canOrgAuthority, isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
+import {
+    canCreateForms, canOrgAuthority, isOrgAdmin, isOrgCurator, isSiteAdmin
+} from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-navigation',
@@ -25,6 +27,7 @@ export class NavigationComponent {
     canOrgAuthority = canOrgAuthority;
     isOrgAdmin = isOrgAdmin;
     isOrgCurator = isOrgCurator;
+    isSiteAdmin = isSiteAdmin;
     largeContext = {$implicit: ''};
     smallContext = {$implicit: 'collapse'};
 

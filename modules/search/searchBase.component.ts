@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 import { NavigationStart } from '@angular/router';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import _noop from 'lodash/noop';
 import { empty } from 'rxjs/observable/empty';
 import { debounceTime, distinctUntilChanged, map, switchMap, take } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
@@ -11,7 +12,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { SearchSettings } from 'search/search.model';
 import { ElasticQueryResponse, Elt, User } from 'shared/models.model';
-import { hasRole } from 'shared/system/authorizationShared';
+import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
@@ -270,13 +271,13 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     private filterOutWorkingGroups(cb) {
-        this.orgHelperService.then(() => {
-            this.userService.then(user => {
+        this.userService.catch(_noop).then(user => {
+            this.orgHelperService.then(() => {
                 this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter(bucket =>
-                    this.orgHelperService.showWorkingGroup(bucket.key) || user.siteAdmin
+                    this.orgHelperService.showWorkingGroup(bucket.key) || isSiteAdmin(user)
                 );
                 cb();
-            });
+            }, cb);
         });
     }
 
@@ -488,151 +489,149 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     reload() {
-        this.userService.then(user => {
-            let timestamp = new Date().getTime();
-            this.lastQueryTimeStamp = timestamp;
-            if (this.searchSettingsInput) Object.assign(this.searchSettings, this.searchSettingsInput);
-            let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
-            this.elasticService.generalSearchQuery(settings, this.module, (err: string, result: ElasticQueryResponse, corrected: boolean) => {
-                this.searchedTerm = this.searchSettings.q;
-                if (corrected && this.searchSettings.q) this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
-                if (err) {
-                    this.alert.addAlert('danger', 'There was a problem with your query');
-                    this[this.module + 's'] = [];
-                    return;
-                }
-                if (timestamp < this.lastQueryTimeStamp) return;
-                this.numPages = Math.ceil(result.totalNumber / this.resultPerPage);
-                this.took = result.took;
-                this.totalItems = result.totalNumber;
-                this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
+        let timestamp = new Date().getTime();
+        this.lastQueryTimeStamp = timestamp;
+        if (this.searchSettingsInput) Object.assign(this.searchSettings, this.searchSettingsInput);
+        let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
+        this.elasticService.generalSearchQuery(settings, this.module, (err: string, result: ElasticQueryResponse, corrected: boolean) => {
+            this.searchedTerm = this.searchSettings.q;
+            if (corrected && this.searchSettings.q) this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
+            if (err) {
+                this.alert.addAlert('danger', 'There was a problem with your query');
+                this[this.module + 's'] = [];
+                return;
+            }
+            if (timestamp < this.lastQueryTimeStamp) return;
+            this.numPages = Math.ceil(result.totalNumber / this.resultPerPage);
+            this.took = result.took;
+            this.totalItems = result.totalNumber;
+            this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
 
-                this.elts = result[this.module + 's'];
+            this.elts = result[this.module + 's'];
 
-                if (this.searchSettings.page === 1 && result.totalNumber > 0) {
-                    let maxJump = 0;
-                    let maxJumpIndex = 100;
-                    this.elts.map((e, i) => {
-                        if (!this.elts[i + 1]) return;
-                        let jump = e.score - this.elts[i + 1].score;
-                        if (jump > maxJump) {
-                            maxJump = jump;
-                            maxJumpIndex = i + 1;
-                        }
-                    });
+            if (this.searchSettings.page === 1 && result.totalNumber > 0) {
+                let maxJump = 0;
+                let maxJumpIndex = 100;
+                this.elts.map((e, i) => {
+                    if (!this.elts[i + 1]) return;
+                    let jump = e.score - this.elts[i + 1].score;
+                    if (jump > maxJump) {
+                        maxJump = jump;
+                        maxJumpIndex = i + 1;
+                    }
+                });
 
-                    if (maxJump > (result.maxScore / 4)) this.cutoffIndex = maxJumpIndex;
-                    else this.cutoffIndex = 100;
-                } else {
-                    this.cutoffIndex = 100;
-                }
+                if (maxJump > (result.maxScore / 4)) this.cutoffIndex = maxJumpIndex;
+                else this.cutoffIndex = 100;
+            } else {
+                this.cutoffIndex = 100;
+            }
 
+            this.orgHelperService.then(() => {
                 this.elts.forEach(elt => {
-                    this.orgHelperService.then(() => {
-                        elt.usedBy = this.orgHelperService.getUsedBy(elt, user);
-                    });
+                    elt.usedBy = this.orgHelperService.getUsedBy(elt);
                 });
+            }, _noop);
 
-                this.aggregations = result.aggregations;
+            this.aggregations = result.aggregations;
 
-                if (result.aggregations !== undefined) {
-                    if (result.aggregations.flatClassifications !== undefined) {
-                        this.aggregations.flatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets.map(function (c) {
+            if (result.aggregations !== undefined) {
+                if (result.aggregations.flatClassifications !== undefined) {
+                    this.aggregations.flatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets.map(function (c) {
+                        return {name: c.key.split(';').pop(), count: c.doc_count};
+                    });
+                } else {
+                    this.aggregations.flatClassifications = [];
+                }
+
+                if (result.aggregations.flatClassificationsAlt !== undefined) {
+                    this.aggregations.flatClassificationsAlt = result.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(function (c) {
+                        return {name: c.key.split(';').pop(), count: c.doc_count};
+                    });
+                } else {
+                    this.aggregations.flatClassificationsAlt = [];
+                }
+
+                if (result.aggregations.meshTrees !== undefined) {
+                    if (this.searchSettings.meshTree) {
+                        this.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map(function (c) {
                             return {name: c.key.split(';').pop(), count: c.doc_count};
                         });
                     } else {
-                        this.aggregations.flatClassifications = [];
-                    }
-
-                    if (result.aggregations.flatClassificationsAlt !== undefined) {
-                        this.aggregations.flatClassificationsAlt = result.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(function (c) {
-                            return {name: c.key.split(';').pop(), count: c.doc_count};
+                        this.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map(function (c) {
+                            return {name: c.key.split(';')[0], count: c.doc_count};
                         });
-                    } else {
-                        this.aggregations.flatClassificationsAlt = [];
                     }
-
-                    if (result.aggregations.meshTrees !== undefined) {
-                        if (this.searchSettings.meshTree) {
-                            this.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map(function (c) {
-                                return {name: c.key.split(';').pop(), count: c.doc_count};
-                            });
-                        } else {
-                            this.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map(function (c) {
-                                return {name: c.key.split(';')[0], count: c.doc_count};
-                            });
-                        }
-                    } else {
-                        this.aggregations.topics = [];
-                    }
-
+                } else {
+                    this.aggregations.topics = [];
                 }
 
-                let orgsCreatedPromise = new Promise(resolve => {
-                    this.filterOutWorkingGroups(() => {
-                        this.orgHelperService.then(orgsDetailedInfo => {
-                            this.orgHelperService.addLongNameToOrgs(this.aggregations.orgs.buckets, orgsDetailedInfo);
-                        });
-                        this.aggregations.orgs.buckets.sort(function (a, b) {
-                            let A = a.key.toLowerCase();
-                            let B = b.key.toLowerCase();
-                            if (B > A) return -1;
-                            if (A === B) return 0;
-                            return 1;
-                        });
-                        resolve();
+            }
+
+            let orgsCreatedPromise = new Promise(resolve => {
+                this.filterOutWorkingGroups(() => {
+                    this.orgHelperService.then(orgsDetailedInfo => {
+                        this.orgHelperService.addLongNameToOrgs(this.aggregations.orgs.buckets, orgsDetailedInfo);
+                    }, _noop);
+                    this.aggregations.orgs.buckets.sort(function (a, b) {
+                        let A = a.key.toLowerCase();
+                        let B = b.key.toLowerCase();
+                        if (B > A) return -1;
+                        if (A === B) return 0;
+                        return 1;
                     });
+                    resolve();
                 });
-
-                this.aggregations.flatClassifications.sort(SearchBaseComponent.compareObjName);
-                this.aggregations.flatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
-                this.aggregations.statuses.statuses.buckets.sort(function (a, b) {
-                    return SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b);
-                });
-                this.aggregations.topics.sort(SearchBaseComponent.compareObjName);
-
-                this.switchView(this.isSearched() ? 'results' : 'welcome');
-                if (this.view === 'welcome') {
-                    this.orgs = [];
-
-                    if (this.aggregations) {
-                        orgsCreatedPromise.then(() => {
-                            this.orgHelperService.then(orgsDetailedInfo => {
-                                this.aggregations.orgs.buckets.forEach(org_t => {
-                                    if (orgsDetailedInfo[org_t.key]) {
-                                        this.orgs.push({
-                                            name: org_t.key,
-                                            longName: orgsDetailedInfo[org_t.key].longName,
-                                            count: org_t.doc_count,
-                                            source: orgsDetailedInfo[org_t.key].uri,
-                                            extraInfo: orgsDetailedInfo[org_t.key].extraInfo,
-                                            htmlOverview: orgsDetailedInfo[org_t.key].htmlOverview
-                                        });
-                                    }
-                                });
-                                this.orgs.sort(SearchBaseComponent.compareObjName);
-                            });
-                        });
-                    }
-
-                    this.topics = {};
-                    this.topicsKeys = [];
-                    if (this.aggregations) {
-                        this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach(term => {
-                            let spli = term.key.split(';');
-                            if (!this.topics[spli[0]]) {
-                                this.topics[spli[0]] = [];
-                            }
-                            this.topics[spli[0]].push({name: spli[1], count: term.doc_count});
-                        });
-                        for (let prop in this.topics) {
-                            if (this.topics.hasOwnProperty(prop)) this.topicsKeys.push(prop);
-                        }
-                        this.topicsKeys.sort(SearchBaseComponent.compareObjName);
-                    }
-                }
-                this.scrollHistoryLoad();
             });
+
+            this.aggregations.flatClassifications.sort(SearchBaseComponent.compareObjName);
+            this.aggregations.flatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
+            this.aggregations.statuses.statuses.buckets.sort(function (a, b) {
+                return SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b);
+            });
+            this.aggregations.topics.sort(SearchBaseComponent.compareObjName);
+
+            this.switchView(this.isSearched() ? 'results' : 'welcome');
+            if (this.view === 'welcome') {
+                this.orgs = [];
+
+                if (this.aggregations) {
+                    orgsCreatedPromise.then(() => {
+                        this.orgHelperService.then(orgsDetailedInfo => {
+                            this.aggregations.orgs.buckets.forEach(org_t => {
+                                if (orgsDetailedInfo[org_t.key]) {
+                                    this.orgs.push({
+                                        name: org_t.key,
+                                        longName: orgsDetailedInfo[org_t.key].longName,
+                                        count: org_t.doc_count,
+                                        source: orgsDetailedInfo[org_t.key].uri,
+                                        extraInfo: orgsDetailedInfo[org_t.key].extraInfo,
+                                        htmlOverview: orgsDetailedInfo[org_t.key].htmlOverview
+                                    });
+                                }
+                            });
+                            this.orgs.sort(SearchBaseComponent.compareObjName);
+                        }, _noop);
+                    });
+                }
+
+                this.topics = {};
+                this.topicsKeys = [];
+                if (this.aggregations) {
+                    this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach(term => {
+                        let spli = term.key.split(';');
+                        if (!this.topics[spli[0]]) {
+                            this.topics[spli[0]] = [];
+                        }
+                        this.topics[spli[0]].push({name: spli[1], count: term.doc_count});
+                    });
+                    for (let prop in this.topics) {
+                        if (this.topics.hasOwnProperty(prop)) this.topicsKeys.push(prop);
+                    }
+                    this.topicsKeys.sort(SearchBaseComponent.compareObjName);
+                }
+            }
+            this.scrollHistoryLoad();
         });
     }
 

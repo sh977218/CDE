@@ -3,9 +3,10 @@
 </h4>
 
 <div *ngIf="!elt.isDraft">
-    <br/>
-    <div *ngIf="!(userService.user?._id)">Please <a routerLink="/login">log in</a> to comment.</div>
-    <div *ngIf="userService.user?._id">
+    <ng-template #commentNotAuthorized>
+        <div class="ml-2 my-4">Please <a routerLink="/login">log in</a> to comment.</div>
+    </ng-template>
+    <div *ngIf="userService.user; else commentNotAuthorized" class="my-4">
         <form #commentForm="ngForm" name="commentForm" id="commentForm" novalidate>
             <label class="sr-only" for="commentTextArea">Comments</label>
             <textarea name="commentTextArea" id="commentTextArea" class="form-control" rows="3"
@@ -14,7 +15,6 @@
                    value="Post Comment" (click)="addComment()" [disabled]="!commentForm.form.valid"/>
         </form>
     </div>
-    <br/>
 
     <ng-container *ngFor="let comment of eltComments; let commentIndex = index">
         <div class="comment" id="comment_{{commentIndex}}"
@@ -219,7 +219,7 @@
                 </div>
             </div>
             <span class="replying padding10" *ngIf="comment.currentlyReplying">Someone is typing</span>
-            <div data-type="reply" class="replyInputDiv" *ngIf="userService.user?._id">
+            <div data-type="reply" class="replyInputDiv" *ngIf="userService.user">
                 <textarea class="replyInputTextarea" id="replyTextarea_{{commentIndex}}" name="replyTextArea"
                           rows="1" [(ngModel)]="tempReplies[comment._id]"
                           placeholder="Reply to this comment" (ngModelChange)="changeOnReply(comment)">

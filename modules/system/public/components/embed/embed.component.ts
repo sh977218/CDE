@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import _noop from 'lodash/noop';
 
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
@@ -103,7 +104,7 @@ export class EmbedComponent implements OnInit {
             this.userService.userOrgs.forEach(o => {
                 this.http.get('/embeds/' + encodeURIComponent(o)).subscribe(response => this.embeds[o] = response);
             });
-        });
+        }, _noop);
     }
 
     remove (e) {

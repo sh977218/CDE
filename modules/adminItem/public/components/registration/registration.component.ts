@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, ViewChild, OnInit } from '@angular/core';
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import _noop from 'lodash/noop';
 
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
@@ -57,13 +58,15 @@ export class RegistrationComponent implements OnInit {
             this.validRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
 
             this.http.get<any>('/org/' + encodeURIComponent(this.elt.stewardOrg.name)).subscribe(res => {
-                if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
-                    this.validRegStatuses = this.validRegStatuses.concat(['Recorded', 'Qualified']);
-                    if (this.userService.user.siteAdmin) {
-                        this.validRegStatuses = this.validRegStatuses.concat(['Standard', 'Preferred Standard']);
+                this.userService.catch(_noop).then(user => {
+                    if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
+                        this.validRegStatuses = this.validRegStatuses.concat(['Recorded', 'Qualified']);
+                        if (user && user.siteAdmin) {
+                            this.validRegStatuses = this.validRegStatuses.concat(['Standard', 'Preferred Standard']);
+                        }
                     }
-                }
-                this.validRegStatuses.reverse();
+                    this.validRegStatuses.reverse();
+                });
             });
 
             this.modalRef = this.modalService.open(this.regStatusEditModal, {size: 'lg'});

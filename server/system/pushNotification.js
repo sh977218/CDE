@@ -5,6 +5,9 @@ const dbLogger = require('./dbLogger.js');
 const mongo_data = require('./mongo-data');
 
 exports.create = (req, res) => {
+    if (!req.user || !req.user._id) {
+        return res.status(400).send('Required parameters missing.');
+    }
     if (!req.body.subscription || !req.body.subscription.endpoint) {
         return exports.createUnsubscribed(req, res);
     }
@@ -50,14 +53,14 @@ exports.createUnsubscribed = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-    if (!req.body.endpoint) {
+    if (!req.body.endpoint || !req.user || !req.user._id) {
         return res.status(400).send('Required parameters missing.');
     }
     mongo_data.pushDelete(req.body.endpoint, req.user._id, dbLogger.withError(res, 'could not remove', res.send));
 };
 
 exports.subscribe = (req, res) => {
-    if (!req.body.applicationServerKey) {
+    if (!req.body.applicationServerKey || !req.user || !req.user._id) {
         return res.status(400).send('Required parameters missing.');
     }
     if (!req.body || !req.body.subscription || !req.body.subscription.endpoint) {
