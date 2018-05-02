@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { RouterModule } from '@angular/router';
 import { Select2Module } from 'ng2-select2';
 import { TreeModule } from 'angular-tree-component/dist/angular-tree-component';
@@ -24,6 +25,7 @@ import { WidgetModule } from 'widget/widget.module';
         CommonModule,
         FormsModule,
         NgbModule,
+        NgSelectModule,
         RouterModule,
         Select2Module,
         TreeModule,

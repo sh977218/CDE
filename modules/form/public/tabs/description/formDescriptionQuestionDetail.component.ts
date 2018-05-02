@@ -71,13 +71,13 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     defaultAnswerList$ = [];
     tag$ = [];
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public modalService: NgbModal,
-        private orgHelperService: OrgHelperService,
-        public skipLogicValidateService: SkipLogicValidateService,
-        private ucumService: UcumService) {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public modalService: NgbModal,
+                private orgHelperService: OrgHelperService,
+                public skipLogicValidateService: SkipLogicValidateService,
+                private ucumService: UcumService) {
+        this.dataType$ = DataTypeService.getDeDataType$();
         this.nameSelectModal.okSelect = (naming = null) => {
             if (!naming) {
                 this.nameSelectModal.question.label = '';
@@ -99,7 +99,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             return answer;
         });
         this.syncAnswerList();
-        this.dataType$ = DataTypeService.getDataElementDataType();
         this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.forEach((t, i) => {
             this.tag$.push({id: i, name: t});
         });
