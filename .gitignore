@@ -39,6 +39,8 @@ config/qa-live.json
 config/qa-mig.json
 config/migration.json
 config/peter.json
+mongo.pem.txt
+mongo-rootca.pem.txt
 
 ## Logs
 cde.log

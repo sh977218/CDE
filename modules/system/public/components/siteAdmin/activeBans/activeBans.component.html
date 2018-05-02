@@ -1,0 +1,14 @@
+<table class="table table-responsive">
+    <tr>
+        <th>IP</th>
+        <th>Date</th>
+        <th>Strikes</th>
+        <th>Reason</th>
+    </tr>
+    <tr *ngFor="let elt of ipList">
+        <td>{{elt.ip}} <i class="fa fa-trash-o" (click)="remove(elt.ip)"></i></td>
+        <td>{{elt.date | date : 'MMM d, y, h:mm a'}}</td>
+        <td>{{elt.strikes}}</td>
+        <td>{{elt.reason}}</td>
+    </tr>
+</table>
