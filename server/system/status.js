@@ -166,7 +166,7 @@ setInterval(() => {
 
             mongo_data_system.pushGetAdministratorRegistrations((err, registrations) => {
                 if (err) {
-                    return dbLogger.logIfError(err);
+                    return dbLogger.logIfMongoError(err);
                 }
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
             });
