@@ -8,6 +8,7 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {name: 'NSRR'},
         registrationState: {registrationStatus: 'Incomplete'},
+        naming: [],
         designations: [],
         definitions: [],
         ids: [],
@@ -32,18 +33,24 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
     let designations = sleep.display_name;
     if (designations.length >= 1 && designations.length >= 1) {
         cde.designations.push({
-                designation: designations[0],
-                tags: []
-            }
-        )
+            designation: designations[0],
+            tags: []
+        });
     }
     let definitions = sleep.definition;
     if (definitions.length >= 1 && definitions.length >= 1) {
         cde.definitions.push({
-                definition: definitions[0],
-                tags: []
-            }
-        )
+            definition: definitions[0],
+            tags: []
+        });
+    }
+
+    if (designations.length >= 1 && definitions.length >= 1) {
+        cde.naming.push({
+            designation: designations[0],
+            definition: definitions[0],
+            tags: []
+        });
     }
     if (sleep && sleep.id && sleep.id.length === 1) {
         cde.ids.push({
@@ -82,15 +89,19 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
         let variable = VARIABLES[shhs[0]];
         if (variable) {
             cde.designations.push({
-                    designation: variable.display_name,
-                    tags: ['Question Text']
-                }
-            );
+                designation: variable.display_name,
+                tags: ['Question Text']
+            });
             cde.definitions.push({
-                    definition: variable.description,
-                    tags: ['Question Text']
-                }
-            );
+                definition: variable.description,
+                tags: ['Question Text']
+            });
+
+            cde.naming.push({
+                designation: variable.display_name,
+                definition: variable.description,
+                tags: ['Question Text']
+            });
 
             let type = variable.type.trim();
             if (type === 'choices') {
@@ -119,5 +130,6 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
     });
 
     return cde;
-};
+}
+;
 
