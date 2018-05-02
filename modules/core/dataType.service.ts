@@ -8,7 +8,7 @@ export class DataTypeService {
         return this.dataElementDataType;
     }
 
-    public static getDeDataType$() {
+    public static getDataTypeItemList() {
         return this.dataElementDataType.map(d => {
             return {label: d, value: d};
         });

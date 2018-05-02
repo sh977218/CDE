@@ -70,14 +70,14 @@ export class PermissibleValueComponent {
         datatypes: ["Value List"]
     };
 
-    dataType$ = [];
+    dataTypeList = [];
 
 
     constructor(public http: HttpClient,
                 public modalService: NgbModal,
                 private Alert: AlertService,
                 public isAllowedModel: IsAllowedService) {
-        this.dataType$ = DataTypeService.getDeDataType$();
+        this.dataTypeList = DataTypeService.getDataTypeItemList();
     }
 
     addAllVsac() {

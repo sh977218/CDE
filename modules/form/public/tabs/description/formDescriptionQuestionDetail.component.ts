@@ -66,7 +66,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     question: FormQuestion;
     parent: FormElement;
 
-    dataType$ = [];
+    dataTypeList = [];
     answerList$ = [];
     defaultAnswerList$ = [];
     tag$ = [];
@@ -77,7 +77,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 private orgHelperService: OrgHelperService,
                 public skipLogicValidateService: SkipLogicValidateService,
                 private ucumService: UcumService) {
-        this.dataType$ = DataTypeService.getDeDataType$();
+        this.dataTypeList = DataTypeService.getDataTypeItemList();
         this.nameSelectModal.okSelect = (naming = null) => {
             if (!naming) {
                 this.nameSelectModal.question.label = '';
