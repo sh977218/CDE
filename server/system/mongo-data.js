@@ -34,6 +34,7 @@ const sessionStore = new MongoStore({
     touchAfter: 3600
 });
 
+exports.ObjectId = mongoose.Types.ObjectId;
 exports.sessionStore = sessionStore;
 exports.Message = Message;
 exports.mongoose_connection = conn;
@@ -154,8 +155,6 @@ exports.orgNames = function (callback) {
     Org.find({}, {name: true, _id: false}).exec(callback);
 };
 
-exports.pushObjectId = mongoose.Types.ObjectId;
-
 exports.pushesByEndpoint = function (endpoint, callback) {
     PushRegistration.find({'subscription.endpoint': endpoint}, callback);
 };
@@ -199,8 +198,14 @@ exports.pushEndpointUpdate = function (endpoint, commandObj, callback) {
 
 exports.pushGetAdministratorRegistrations = function (callback) {
     User.find({siteAdmin: true}).exec((err, users) => {
+        if (err) {
+            return callback(err);
+        }
         let userIds = users.map(u => u._id.toString());
         PushRegistration.find({}).exec((err, registrations) => {
+            if (err) {
+                return callback(err);
+            }
             callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
         });
     });

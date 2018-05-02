@@ -9,7 +9,7 @@ exports.checkDatabase = (callback = _.noop) => {
     // if error then no callback and no push notifications
     mongo_data.pushById('000000000000000000000000', dbLogger.withError(undefined, '', push => {
         function createDbTag() {
-            mongo_data.pushCreate({_id: mongo_data.pushObjectId('000000000000000000000000'), userId: config.publicUrl},
+            mongo_data.pushCreate({_id: mongo_data.ObjectId('000000000000000000000000'), userId: config.publicUrl},
                 dbLogger.withError(undefined, '', callback));
         }
         if (!push) {

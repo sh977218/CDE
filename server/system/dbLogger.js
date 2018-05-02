@@ -100,7 +100,10 @@ exports.logError = function (message, callback) { // all server errors, express 
             }
         };
 
-        mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+        mongo_data_system.pushGetAdministratorRegistrations((err, registrations) => {
+            if (err) {
+                return; // no log to prevent re-trigger
+            }
             registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
         });
         if (callback) callback(err);
@@ -136,7 +139,10 @@ exports.logClientError = function (req, callback) {
             }
         };
 
-        mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+        mongo_data_system.pushGetAdministratorRegistrations((err, registrations) => {
+            if (err) {
+                return exports.logIfError(err);
+            }
             registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
         });
         callback(err);
