@@ -479,7 +479,21 @@ exports.init = function (app) {
         })[0];
     }
 
-    app.post('/login', csrf(), function (req, res, next) {
+    function myCsrf (req, res, next) {
+        if (!req.body._csrf) return res.status(401).send();
+        csrf()(req, res, next);
+    }
+    const validLoginBody = ["username", "password", "_csrf", "recaptcha"];
+    app.post('/login', myCsrf, (req, res, next) => {
+        if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
+            dbLogger.banIp(getRealIp(req), "Invalid Login body");
+            return res.status(401).send();
+        }
+        if (req.params.length) {
+            dbLogger.banIp(getRealIp(req), "Passing params to /login");
+            return res.status(401).send();
+        }
+
         let failedIp = findFailedIp(getRealIp(req));
         async.series([
                 function checkCaptcha(captchaDone) {
@@ -1346,6 +1360,26 @@ exports.init = function (app) {
         });
     });
 
+    app.get('/activeBans', (req, res) => {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            dbLogger.getTrafficFilter(list => res.send(list));
+        } else res.status(401).send();
+    });
+
+    app.post('/removeBan', (req, res) => {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            dbLogger.getTrafficFilter(elt => {
+                let foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
+                if (foundIndex > -1) {
+                    elt.ipList.splice(foundIndex, 1);
+                    elt.save(() => res.send());
+                } else {
+                   res.send();
+                }
+            });
+        } else res.status(401).send();
+    });
+
     app.get('/allDrafts', (req, res) => {
         if (req.user && req.user.siteAdmin) {
             mongo_cde.draftsList({}, (err, draftCdes) => {
@@ -1387,6 +1421,5 @@ exports.init = function (app) {
             res.status(401).send();
         }
     });
-
 
 };
