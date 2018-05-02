@@ -12,23 +12,17 @@ export class ListManagementComponent implements OnInit {
     orgs: any[];
     allPropertyKeys: String[] = [];
     allTags: String[] = [];
-    public options: Select2Options;
 
-    ngOnInit () {
+    ngOnInit() {
         this.getOrgs();
-        this.options = {
-            multiple: true,
-            tags: true
-        };
     }
 
-    constructor(
-        private http: HttpClient,
-        private Alert: AlertService,
-        private orgHelperService: OrgHelperService
-    ) {}
+    constructor(private http: HttpClient,
+                private Alert: AlertService,
+                private orgHelperService: OrgHelperService) {
+    }
 
-    getOrgs () {
+    getOrgs() {
         this.http.get<any>('/managedOrgs').subscribe(response => {
             this.orgs = response.orgs;
             this.orgs.forEach(o => {
@@ -47,21 +41,9 @@ export class ListManagementComponent implements OnInit {
         });
     }
 
-    propsChanged(o, data: {value: string[]}) {
-        if (!data.value) data.value = [];
-        o.propertyKeys = data.value;
-        this.saveOrg(o);
-    }
-
-    saveOrg (org) {
-        this.http.post('/updateOrg', org).subscribe(() => {
-            this.orgHelperService.reload().then(() => this.Alert.addAlert('success', 'Org Updated'));
-        }, () => this.Alert.addAlert('danger', 'Error. Unable to save.'));
-    }
-
-    tagsChanged(o, data: {value: string[]}) {
-        if (!data.value) data.value = [];
-        o.nameTags = data.value;
-        this.saveOrg(o);
+    saveOrg(org) {
+        this.http.post('/updateOrg', org)
+            .subscribe(() => this.orgHelperService.reload().then(() => this.Alert.addAlert('success', 'Org Updated')),
+                () => this.Alert.addAlert('danger', 'Error. Unable to save.'));
     }
 }

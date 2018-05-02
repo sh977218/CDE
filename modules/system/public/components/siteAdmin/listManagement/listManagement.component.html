@@ -9,14 +9,14 @@
             {{o.name}}
         </td>
         <td>
-            <select2 [data]="allPropertyKeys" [value]="o.currentPropertyKeys" [options]="options"
-                     width="100%" (valueChanged)="propsChanged(o, $event)">
-            </select2>
+            <ng-select [(ngModel)]="o.currentPropertyKeys" [items]="allPropertyKeys" [multiple]="true"
+                       [appendTo]="'body'" [hideSelected]="true" (change)="saveOrg(o);">
+            </ng-select>
         </td>
         <td>
-            <select2 [data]="allTags" [value]="o.currentTags" [options]="options"
-                     width="100%" (valueChanged)="tagsChanged(o, $event)">
-            </select2>
+            <ng-select [(ngModel)]="o.currentTags" [items]="allTags" [multiple]="true" [appendTo]="'body'"
+                       [hideSelected]="true" (change)="saveOrg(o);">
+            </ng-select>
         </td>
 
     </tr>
