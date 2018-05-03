@@ -34,6 +34,7 @@ const sessionStore = new MongoStore({
     touchAfter: 3600
 });
 
+exports.ObjectId = mongoose.Types.ObjectId;
 exports.sessionStore = sessionStore;
 exports.Message = Message;
 exports.mongoose_connection = conn;
@@ -174,6 +175,10 @@ exports.pushByPublicKey = function (publicKey, callback) {
     PushRegistration.findOne({'vapidKeys.publicKey': publicKey}, callback);
 };
 
+exports.pushClearDb = function (callback) {
+    PushRegistration.remove({}, callback);
+};
+
 exports.pushCreate = function (push, callback) {
     new PushRegistration(push).save(callback);
 };
@@ -183,7 +188,7 @@ exports.pushDelete = function (endpoint, userId, callback) {
         if (err) {
             return callback(err);
         }
-        PushRegistration.remove({_id: registration._id}, err => callback(err));
+        PushRegistration.remove({_id: registration._id}, callback);
     });
 };
 
@@ -193,8 +198,14 @@ exports.pushEndpointUpdate = function (endpoint, commandObj, callback) {
 
 exports.pushGetAdministratorRegistrations = function (callback) {
     User.find({siteAdmin: true}).exec((err, users) => {
+        if (err) {
+            return callback(err);
+        }
         let userIds = users.map(u => u._id.toString());
         PushRegistration.find({}).exec((err, registrations) => {
+            if (err) {
+                return callback(err);
+            }
             callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
         });
     });
