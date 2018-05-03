@@ -319,7 +319,7 @@
             <dt class="col-2">CDE Datatype:</dt>
             <dd class="col-10 cdeDataType">
                 <ng-select [(ngModel)]="question.question.cde.datatype"
-                           [items]="dataType$" bindValue="value"
+                           [items]="dataTypeList" bindValue="value"
                            placeholder="Select data type" [appendTo]="'body'" [hideSelected]="true"
                            (change)="onEltChange.emit()">
                 </ng-select>
