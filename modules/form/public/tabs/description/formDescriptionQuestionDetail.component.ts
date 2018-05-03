@@ -239,6 +239,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     typeaheadSkipLogic(parent, fe, event) {
+        console.log('a');
         if (fe.skipLogic && fe.skipLogic.condition !== event) {
             this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
             this.onEltChange.emit();
