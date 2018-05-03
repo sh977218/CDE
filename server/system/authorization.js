@@ -1,6 +1,26 @@
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const mongo_board = require('../board/mongo-board');
 
+exports.canEditMiddleware = function (req, res, next) {
+    if (!authorizationShared.canEditCuratedItem(req.user, req.body)) {
+        // TODO: should consider adding to error log
+        return res.status(401).send();
+    }
+    if (next) {
+        next();
+    }
+}
+
+exports.loggedInMiddleware = function (req, res, next) {
+    if (!req.user) {
+        // TODO: should consider adding to error log
+        return res.status(403).send();
+    }
+    if (next) {
+        next();
+    }
+}
+
 exports.checkOwnership = function (dao, id, req, cb) {
     if (!req.isAuthenticated()) return cb("You are not authorized.", null);
     dao.byId(id, function (err, elt) {

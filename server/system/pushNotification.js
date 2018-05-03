@@ -1,8 +1,28 @@
 const _ = require('lodash');
 const webpush = require('web-push');
 
+const config = require('./parseConfig');
 const dbLogger = require('./dbLogger.js');
 const mongo_data = require('./mongo-data');
+
+exports.checkDatabase = (callback = _.noop) => {
+    // if error then no callback and no push notifications
+    mongo_data.pushById('000000000000000000000000', dbLogger.withMongoError(undefined, '', push => {
+        function createDbTag() {
+            mongo_data.pushCreate({_id: mongo_data.ObjectId('000000000000000000000000'), userId: config.publicUrl},
+                dbLogger.withMongoError(undefined, '', callback));
+        }
+        if (!push) {
+            createDbTag();
+            return;
+        }
+        if (push.userId !== config.publicUrl) {
+            mongo_data.pushClearDb(dbLogger.withMongoError(undefined, 'could not remove', createDbTag));
+            return;
+        }
+        callback();
+    }));
+};
 
 exports.create = (req, res) => {
     if (!req.user || !req.user._id) {
@@ -11,7 +31,7 @@ exports.create = (req, res) => {
     if (!req.body.subscription || !req.body.subscription.endpoint) {
         return exports.createUnsubscribed(req, res);
     }
-    mongo_data.pushesByEndpoint(req.body.subscription.endpoint, dbLogger.withError(res, '', pushes => {
+    mongo_data.pushesByEndpoint(req.body.subscription.endpoint, dbLogger.withMongoError(res, '', pushes => {
         if (!pushes || !pushes.length) {
             return exports.createUnsubscribed(req, res);
         }
@@ -20,7 +40,7 @@ exports.create = (req, res) => {
             let push = ownPushes[0];
             if (!push.loggedIn) {
                 push.loggedIn = true;
-                push.save(dbLogger.withError(res, '', () => {
+                push.save(dbLogger.withMongoError(res, '', () => {
                     res.send({subscribed: true});
                 }));
             } else {
@@ -30,7 +50,7 @@ exports.create = (req, res) => {
             pushes.forEach(push => {
                 if (push.loggedIn) {
                     push.loggedIn = false;
-                    push.save(dbLogger.logIfError);
+                    push.save(dbLogger.logIfMongoError);
                 }
             });
             mongo_data.pushCreate({
@@ -39,7 +59,7 @@ exports.create = (req, res) => {
                 subscription: req.body.subscription,
                 userId: req.user._id,
                 vapidKeys: pushes[0].vapidKeys,
-            }, dbLogger.withError(res, '', () => {
+            }, dbLogger.withMongoError(res, '', () => {
                 res.send({subscribed: true});
             }));
         }
@@ -47,7 +67,7 @@ exports.create = (req, res) => {
 };
 
 exports.createUnsubscribed = (req, res) => {
-    mongo_data.pushCreate({vapidKeys: webpush.generateVAPIDKeys()}, dbLogger.withError(res, '', push => {
+    mongo_data.pushCreate({vapidKeys: webpush.generateVAPIDKeys()}, dbLogger.withMongoError(res, '', push => {
         res.send({applicationServerKey: push.vapidKeys.publicKey, subscribed: false});
     }));
 };
@@ -56,7 +76,7 @@ exports.delete = (req, res) => {
     if (!req.body.endpoint || !req.user || !req.user._id) {
         return res.status(400).send('Required parameters missing.');
     }
-    mongo_data.pushDelete(req.body.endpoint, req.user._id, dbLogger.withError(res, 'could not remove', res.send));
+    mongo_data.pushDelete(req.body.endpoint, req.user._id, dbLogger.withMongoError(res, 'could not remove', res.send));
 };
 
 exports.subscribe = (req, res) => {
@@ -71,7 +91,7 @@ exports.subscribe = (req, res) => {
             }
         });
     }
-    mongo_data.pushByPublicKey(req.body.applicationServerKey, dbLogger.withError(res, '', push => {
+    mongo_data.pushByPublicKey(req.body.applicationServerKey, dbLogger.withMongoError(res, '', push => {
         if (!push) {
             return res.status(400).send('push registration must be created before it is subscribed to.');
         }
@@ -79,7 +99,7 @@ exports.subscribe = (req, res) => {
         push.loggedIn = true;
         push.subscription = req.body.subscription;
         push.userId = req.user._id;
-        push.save(dbLogger.withError(res, '', push => {
+        push.save(dbLogger.withMongoError(res, '', push => {
             res.send(push.features);
         }));
     }));
@@ -116,20 +136,20 @@ exports.updateStatus = (req, res) => {
     }
     if (req.user) {
         // start
-        mongo_data.pushByIds(req.body.endpoint, req.user._id, dbLogger.withError(res, '', push => {
-            mongo_data.pushByIdsCount(req.body.endpoint, undefined, dbLogger.withError(res, '', countExists => {
+        mongo_data.pushByIds(req.body.endpoint, req.user._id, dbLogger.withMongoError(res, '', push => {
+            mongo_data.pushByIdsCount(req.body.endpoint, undefined, dbLogger.withMongoError(res, '', countExists => {
                 function respond() {
                     res.send({status: !!push, exist: !!countExists});
                 }
                 if (!push || push.loggedIn) {
                     return respond();
                 }
-                push.update({$set: {loggedIn : true}}, undefined, dbLogger.withError(res, '', respond));
+                push.update({$set: {loggedIn : true}}, undefined, dbLogger.withMongoError(res, '', respond));
             }));
         }));
     } else {
         // stop
-        mongo_data.pushEndpointUpdate(req.body.endpoint, {$set: {loggedIn : false}}, dbLogger.withError(res, '', () => {
+        mongo_data.pushEndpointUpdate(req.body.endpoint, {$set: {loggedIn : false}}, dbLogger.withMongoError(res, '', () => {
             res.send({status: false, exist: true});
         }));
     }
