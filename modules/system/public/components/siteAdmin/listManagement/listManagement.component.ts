@@ -28,11 +28,9 @@ export class ListManagementComponent implements OnInit {
             this.orgs.forEach(o => {
                 if (o.propertyKeys) {
                     this.allPropertyKeys = this.allPropertyKeys.concat(o.propertyKeys);
-                    o.currentPropertyKeys = o.propertyKeys.map(r => r);
                 }
                 if (o.nameTags) {
                     this.allTags = this.allTags.concat(o.nameTags);
-                    o.currentTags = o.nameTags.map(r => r);
                 }
             });
             this.orgs.sort((a, b) => a.name - b.name);

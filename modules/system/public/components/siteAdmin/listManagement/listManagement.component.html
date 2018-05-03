@@ -5,16 +5,14 @@
         <th>Tags:</th>
     </tr>
     <tr *ngFor="let o of orgs" id="orgListName-{{o.name}}">
+        <td>{{o.name}}</td>
         <td>
-            {{o.name}}
-        </td>
-        <td>
-            <ng-select [(ngModel)]="o.currentPropertyKeys" [items]="allPropertyKeys" [multiple]="true"
+            <ng-select [(ngModel)]="o.propertyKeys" [items]="allPropertyKeys" [multiple]="true"
                        [appendTo]="'body'" [hideSelected]="true" (change)="saveOrg(o);">
             </ng-select>
         </td>
         <td>
-            <ng-select [(ngModel)]="o.currentTags" [items]="allTags" [multiple]="true" [appendTo]="'body'"
+            <ng-select [(ngModel)]="o.nameTags" [items]="allTags" [multiple]="true" [appendTo]="'body'"
                        [hideSelected]="true" (change)="saveOrg(o);">
             </ng-select>
         </td>
