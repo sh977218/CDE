@@ -128,7 +128,7 @@ exports.byId = function (req, res) {
                         if (req.query.hasOwnProperty('validate')) {
                             let p = path.resolve(__dirname, '../../shared/mapping/fhir/schema/Questionnaire.schema.json');
                             fs.readFile(p, (err, data) => {
-                                if (err || !data) return dbLogger.respondError(res, err, 'schema missing');
+                                if (err || !data) return dbLogger.respondError(res, err, 'schema missing', {origin: 'formsvc'});
                                 let result = ajv.validate(JSON.parse(data),
                                     toQuestionnaire.formToQuestionnaire(wholeForm, null, config));
                                 res.send({valid: result, errors: ajv.errors});
@@ -313,11 +313,11 @@ exports.publishForm = function (req, res) {
     if (!req.isAuthenticated()) {
         return res.status(401).send();
     }
-    mongo_form.byId(req.params.id, dbLogger.withError(res, 'form not found', form => {
+    mongo_form.byId(req.params.id, dbLogger.withMongoError(res, 'form not found', form => {
         if (!form) {
             return res.status(400).send('form not found');
         }
-        fetchWholeForm(form.toObject(), dbLogger.withError(res, 'fetch whole for publish', wholeForm => {
+        fetchWholeForm(form.toObject(), dbLogger.withMongoError(res, 'fetch whole for publish', wholeForm => {
             publishForm.getFormForPublishing(wholeForm, req, res);
         }));
     }));

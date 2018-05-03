@@ -2,12 +2,14 @@ const _ = require('lodash');
 const dns = require('dns');
 const os = require('os');
 const multer = require('multer');
+
+const authorization = require('../system/authorization');
+const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const config = require('../system/parseConfig');
 const formCtrl = require('./formCtrl');
 const formSvc = require("./formsvc");
 const mongo_form = require('./mongo-form');
 const mongo_data_system = require('../system/mongo-data');
-const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const classificationNode_system = require('../system/classificationNode');
 const adminItemSvc = require('../system/adminItemSvc.js');
 const elastic_system = require('../system/elastic');
@@ -45,8 +47,8 @@ exports.init = function (app, daoManager) {
     app.get("/formList/:tinyIdList?", exportShared.nocacheMiddleware, formSvc.byTinyIdList);
 
     app.get("/draftForm/:tinyId", formSvc.draftForm);
-    app.post("/draftForm/:tinyId", [authorizationShared.canEditMiddleware], formSvc.saveDraftForm);
-    app.delete("/draftForm/:tinyId", [authorizationShared.canEditMiddleware], formSvc.deleteDraftForm);
+    app.post("/draftForm/:tinyId", [authorization.canEditMiddleware], formSvc.saveDraftForm);
+    app.delete("/draftForm/:tinyId", [authorization.canEditMiddleware], formSvc.deleteDraftForm);
 
     app.get("/draftFormById/:id",formSvc.draftFormById);
 
