@@ -10,7 +10,7 @@ function addQuestion(parent, question) {
         newQuestion["@title"] = question.label;
     }
     if (question.instructions && question.instructions.value) {
-        newQuestion.Property = {"@type": "instruction", "@val": question.instructions.value};
+        newQuestion.Property = {"@propName": "instruction", "@val": question.instructions.value};
     }
     let questionEle = parent.ele({Question: newQuestion});
     if (question.question.cde.ids.length > 0) {
@@ -67,9 +67,7 @@ function doQuestion(parent, question) {
     try {
         if (question.skipLogic && question.skipLogic.condition.length > 0) {
             if (question.skipLogic.condition.match('".+" = ".+"')) {
-                let terms = question.skipLogic.condition.match(/"[^"]+"/g).map(function (t) {
-                    return t.substr(1, t.length - 2);
-                });
+                let terms = question.skipLogic.condition.match(/"[^"]+"/g).map(t => t.substr(1, t.length - 2));
                 if (terms.length === 2) {
                     let qToAddTo = questionsInSection[terms[0]];
                     // below is xmlBuilder ele. This seems to be the way to find child inside element
@@ -99,9 +97,7 @@ function doQuestion(parent, question) {
     } catch (e) {
     }
 
-    if (!embed) {
-        addQuestion(parent, question);
-    }
+    if (!embed) addQuestion(parent, question);
 }
 
 let questionsInSection = {};
@@ -129,6 +125,7 @@ exports.formToSDC = function (form, renderer, cb) {
     let formDesign = builder.create({
         "FormDesign": {
             "@xmlns": "urn:ihe:qrph:sdc:2016",
+            "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "@xsi:schemaLocation": "http://healthIT.gov/sdc SDCFormDesign.xsd",
             "@ID": form.tinyId + "v" + form.version,
