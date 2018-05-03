@@ -605,9 +605,19 @@ exports.init = function (app) {
     });
 
 
-    app.get('/siteadmins', function (req, res) {
+    app.get('/siteAdmins', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data.siteadmins(function (err, users) {
+            mongo_data.siteAdmins(function (err, users) {
+                res.send(users);
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
+
+    app.get('/orgAdmins', function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            mongo_data.orgAdmins(function (err, users) {
                 res.send(users);
             });
         } else {
