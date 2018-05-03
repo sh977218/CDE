@@ -65,8 +65,7 @@ var deJson = {
             maxValue: Number,
             precision: Number, // Any precision for this number. Typically an integer for a float. Limit to 10^precision
         },
-        datatypeDate: {
-        },
+        datatypeDate: {},
         datatypeTime: { // time only, periodic?
             format: sharedSchemas.stringType, // Any format that someone may want to enforce
         },
@@ -75,9 +74,7 @@ var deJson = {
             description: sharedSchemas.stringType,
             descriptionFormat: sharedSchemas.stringType, // if 'html', then parse with HTML
         },
-        datatypeValueList: {
-            datatype: sharedSchemas.stringType, // Any datatype for a value list, typically string or number
-        },
+        datatypeValueList: {},
         permissibleValues: [sharedSchemas.permissibleValueSchema]
     },
     history: [Schema.Types.ObjectId],
@@ -88,7 +85,12 @@ var deJson = {
     properties: [sharedSchemas.propertySchema], // Attribute not otherwise documented by structured CDE record
     ids: [sharedSchemas.idSchema], // Identifier used to establish or indicate what CDE is within a specific context
     dataSets: [sharedSchemas.dataSetSchema], // A list of datasets that use this CDE
-    mappingSpecifications: [{content: sharedSchemas.stringType, spec_type: sharedSchemas.stringType, script: sharedSchemas.stringType, _id: false}], // Deprecated
+    mappingSpecifications: [{
+        content: sharedSchemas.stringType,
+        spec_type: sharedSchemas.stringType,
+        script: sharedSchemas.stringType,
+        _id: false
+    }], // Deprecated
     comments: [sharedSchemas.commentSchema],
     archived: {type: Boolean, default: false, index: true}, // Indication of historical record. True for previous versions.
     forkOf: sharedSchemas.stringType, // May point to a tinyID if the CDE is a fork

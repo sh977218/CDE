@@ -454,7 +454,7 @@ export function iterateFormElements(fe = {}, option = {}, cb = undefined) {
                     if (option.questionCb) option.questionCb(fe);
                 }
             });
-            cb();
+            if (cb) cb();
         }
     } else cb();
 }
@@ -484,7 +484,7 @@ export function trimWholeForm(elt) {
                 if (q.question.datatypeExternallyDefined) q.question.datatypeExternallyDefined = undefined;
                 break;
             case 'Text':
-                /* falls through */
+            /* falls through */
             default:
                 if (q.question.datatypeValueList) q.question.datatypeValueList = undefined;
                 if (q.question.datatypeDate) q.question.datatypeDate = undefined;

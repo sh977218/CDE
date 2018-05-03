@@ -10,8 +10,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     public void fullDetail() {
         goToCdeByName("Genotype Therapy Basis Mutation");
         textPresent("Genotype Therapy Basis Mutation Analysis Indicator");
-        textPresent("Text descriptor to indicate whether "
-                + "genotype directed therapy was based on mutation testing");
+        textPresent("Text descriptor to indicate whether genotype directed therapy was based on mutation testing");
         textPresent("Qualified");
         goToPermissibleValues();
         textPresent("Unknown");
@@ -29,7 +28,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textPresent("CCR Implementation", By.xpath("//*[@id='CCR Implementation']"));
         textPresent("caBIG", By.xpath("//*[@id='C3D Domain,caBIG']"));
 
-         goToIdentifiers();
+        goToIdentifiers();
         textPresent("3157849");
         Assert.assertEquals("1", findElement(By.id("dd_version_nlm")).getText());
     }

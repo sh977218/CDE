@@ -1,34 +1,39 @@
-var mongo_data = require('./mongo-cde');
+const mongo_data = require('./mongo-cde');
 
-var sdcExport = function(req, res, cde) {
+function sdcExport(req, res, cde) {
 
-    var sdcRecord = {
-        scopedIdentifier: "cde.nlm.nih.gov/" + cde.tinyId + "/" + cde.version
-        , identifier: cde.tinyId
-        , version: cde.version
-        , name: cde.naming[0].designation
-        , definition: cde.naming[0].definition
-        , context: cde.stewardOrg.name
-        , registrationStatus: cde.registrationState.registrationStatus
-        , creationDate: cde.created
-        , lastChangeDate: cde.updated
-        , submittingOrganization: ''
-        , stewardOrganization: {name: cde.stewardOrg.name, contactName: ''}
-        , registrationOrganization: ''
-        , valueDomain: {name: cde.valueDomain.name}
-        , origin: cde.origin
-        , valueSet: {id: cde.valueDomain.vsacOid, name: "see vsac", administrativeStatus: "see vsac", lastChangeDate: "see vsac"}
+    let sdcRecord = {
+        scopedIdentifier: "cde.nlm.nih.gov/" + cde.tinyId + "/" + cde.version,
+        identifier: cde.tinyId,
+        version: cde.version,
+        name: cde.naming[0].designation,
+        definition: cde.naming[0].definition,
+        context: cde.stewardOrg.name,
+        registrationStatus: cde.registrationState.registrationStatus,
+        creationDate: cde.created,
+        lastChangeDate: cde.updated,
+        submittingOrganization: '',
+        stewardOrganization: {name: cde.stewardOrg.name, contactName: ''},
+        registrationOrganization: '',
+        valueDomain: {name: cde.valueDomain.name},
+        origin: cde.origin,
+        valueSet: {
+            id: cde.valueDomain.vsacOid,
+            name: "see vsac",
+            administrativeStatus: "see vsac",
+            lastChangeDate: "see vsac"
+        }
     };
-    for (var i = 0; i < cde.naming.length; i++) {
+    for (let i = 0; i < cde.naming.length; i++) {
         try {
             if (!sdcRecord.preferredQuestionText && cde.naming[i].tags.filter(function (t) {
-                    return t.toLowerCase() === "preferred question text";
-                }).length > 0) {
+                return t.toLowerCase() === "preferred question text";
+            }).length > 0) {
                 sdcRecord.preferredQuestionText = cde.naming[i].designation;
             }
             if (!sdcRecord.alternateQuestionText && cde.naming[i].tags.filter(function (t) {
-                    return t.toLowerCase() === "alternate question text";
-                }).length > 0) {
+                return t.toLowerCase() === "alternate question text";
+            }).length > 0) {
                 sdcRecord.alternateQuestionText = cde.naming[i].designation;
             }
         } catch (e) {
@@ -36,9 +41,9 @@ var sdcExport = function(req, res, cde) {
         }
     }
     if (!sdcRecord.preferredQuestionText) {
-        cde.naming.forEach(function(n) {
+        cde.naming.forEach(function (n) {
             try {
-                if (!sdcRecord.preferredQuestionText && n.context.contextName.toLowerCase() === "question text") {
+                if (!sdcRecord.preferredQuestionText && n.tags.indexOf("Question Text") !== -1) {
                     sdcRecord.preferredQuestionText = n.designation;
                 }
             } catch (e) {
@@ -59,7 +64,12 @@ var sdcExport = function(req, res, cde) {
         sdcRecord.valueDomain.datatype = cde.valueDomain.datatype;
         sdcRecord.valueDomain.type = 'described';
     } else {
-        sdcRecord.valueDomain.datatype = cde.valueDomain.datatypeValueList.datatype;
+        let pvDatatype = 'Text';
+        if (cde.valueDomain.permissibleValues.length > 0) {
+            if (cde.valueDomain.permissibleValues[0].permissibleValue)
+                pvDatatype = typeof cde.valueDomain.permissibleValues[0].permissibleValue;
+        }
+        sdcRecord.valueDomain.datatype = pvDatatype;
         sdcRecord.valueDomain.type = 'enumerated';
     }
     sdcRecord.valueDomain.unitOfMeasure = cde.valueDomain.uom;
@@ -67,10 +77,10 @@ var sdcExport = function(req, res, cde) {
 };
 
 exports.byId = function (req, res) {
-    mongo_data.byId(req.params.id, function(err, cde) {
+    mongo_data.byId(req.params.id, function (err, cde) {
         if (err) return res.status(500).send("Error");
         if (!cde) return res.status(404).send("No such Element");
-        sdcExport(req, res, cde); 
+        sdcExport(req, res, cde);
     });
 };
 
@@ -81,8 +91,6 @@ exports.byTinyIdVersion = function (req, res) {
         sdcExport(req, res, cde);
     };
 
-    if (req.params.version === 'null')
-        mongo_data.eltByTinyId(req.params.tinyId, cb);
-    else
-        mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, cb);
+    if (req.params.version === 'null') mongo_data.eltByTinyId(req.params.tinyId, cb);
+    else mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, cb);
 };
