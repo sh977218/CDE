@@ -3,24 +3,28 @@
         <div class="descriptionToolbox" *ngIf="canEdit" #descToolbox>
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
             <span role="button" id="addSectionTop" class="btn btn-light formDescriptionTool"
+                  (dragstart)="dragActive = true" (dragend)="dragActive = false"
                   [treeDrag]="{ref:'section'}" [treeDragEnabled]="true"
                   style="width: 74px;">
                 <i class="fa fa-plus"></i><span class="toolSection"></span>
             </span>
             <span *ngIf="elt.formElements.length > 0" role="button" id="startAddingQuestions"
                   class="btn btn-light formDescriptionTool"
+                  (dragstart)="dragActive = true" (dragend)="dragActive = false"
                   [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true"
                   style="width: 87px;">
                 <i class="fa fa-cube"></i><span class="toolQuestion"></span>
             </span>
             <span *ngIf="elt.formElements.length > 0" role="button" id="startAddingForms"
                   class="btn btn-light formDescriptionTool"
+                  (dragstart)="dragActive = true" (dragend)="dragActive = false"
                   [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true"
                   style="width: 68px;">
                 <i class="fa fa-cubes"></i><span class="toolForm"></span>
             </span>
             <span role="button" *ngIf="hasCopiedSection()" id="pasteSection"
                   class="btn btn-light formDescriptionTool"
+                  (dragstart)="dragActive = true" (dragend)="dragActive = false"
                   [treeDrag]="{ref: 'pasteSection'}" [treeDragEnabled]="true" style="width: 68px;">
                 <i class="fa fa-paste" [ngClass]="{'pasteSectionWrench':elt.isCopied}"></i><span
                     class="toolCopySection"></span>
@@ -44,7 +48,8 @@
         </div>
 
         <ng-container *ngFor="let eltIter of [elt]">
-            <tree-root #tree [nodes]="eltIter.formElements" [options]="treeOptions" style="min-height: 400px">
+            <tree-root [ngClass]="{'drag-active': dragActive}"
+                    #tree [nodes]="eltIter.formElements" [options]="treeOptions" style="min-height: 400px">
                 <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
                     <div class="tree-node tree-node-level-{{ node.level }}" [id]="node.data.elementType + '_' + node.data.feId"
                          [class]="node.getClass()"
