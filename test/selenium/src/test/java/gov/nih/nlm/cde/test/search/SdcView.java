@@ -31,7 +31,7 @@ public class SdcView extends NlmCdeBaseTest {
         Assert.assertEquals("DCP", findElement(By.id("stewOrgName")).getText());
         Assert.assertEquals("DCP:Division of Cancer Prevention", findElement(By.id("origin")).getText());
         Assert.assertEquals("Other Specify Text", findElement(By.id("vd")).getText());
-        Assert.assertEquals("CHARACTER", findElement(By.id("datatype")).getText());
+        Assert.assertEquals("Text", findElement(By.id("datatype")).getText());
         Assert.assertEquals("described", findElement(By.id("type")).getText());
         switchTabAndClose(0);
     }

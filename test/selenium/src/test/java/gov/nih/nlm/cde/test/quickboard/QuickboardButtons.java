@@ -42,7 +42,7 @@ public class QuickboardButtons extends NlmCdeBaseTest{
         textPresent("NX");
         textPresent("pN0");
         textPresent("Pathologic N Stage");
-        textPresent("NUMBER");
+        textPresent("Number");
         textPresent("3028594");
         textPresent("3436564");
         textPresent("Fluorescence in situ ");
