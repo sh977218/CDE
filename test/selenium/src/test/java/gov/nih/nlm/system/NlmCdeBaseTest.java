@@ -103,7 +103,7 @@ public class NlmCdeBaseTest {
     private NgWebDriver ngdriver;
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    private ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
+    private ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Time", "Number", "Externally Defined", "File"));
     private Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
         {
             put("rename", "fa-pencil");
@@ -1176,12 +1176,10 @@ public class NlmCdeBaseTest {
 
     protected void changeDatatype(String newDatatype) {
         if (PREDEFINED_DATATYPE.contains(newDatatype)) {
-            clickElement(By.xpath("//*[@id='datatypeSelect']//span[contains(@class,'select2-selection--single')]"));
-            clickElement(By.xpath("(//*[contains(@class,'select2-dropdown')]//*[contains(@class,'select2-results')]//ul//li)[text()='" + newDatatype + "']"));
+            clickElement(By.xpath("//*[@id='datatypeSelect']/ng-select//input"));
+            selectNgSelectDropdownByText(newDatatype);
         } else {
-            clickElement(By.xpath("//*[@id='datatypeSelect']//span[contains(@class,'select2-selection--single')]"));
-            findElement(By.xpath("//*[contains(@class,'select2-dropdown')]//*[contains(@class,'elect2-search--dropdown')]//input")).sendKeys(newDatatype);
-            clickElement(By.xpath("(//*[contains(@class,'select2-dropdown')]//*[contains(@class,'select2-results')]//ul//li)[1]"));
+            System.out.println("Invalidate data type: " + newDatatype);
         }
     }
 

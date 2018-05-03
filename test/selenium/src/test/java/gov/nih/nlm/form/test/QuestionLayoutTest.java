@@ -29,14 +29,14 @@ public class QuestionLayoutTest extends QuestionTest {
         textPresent("Mage-OM (1)");
         textPresent("Qualified (9)");
         textNotPresent("Incomplete (");
-        textPresent("java.util.Date (2)");
+        textPresent("Date (2)");
         textPresent("Value List (1)");
 
-        clickElement(By.id("datatype-java.util.Date"));
+        clickElement(By.id("datatype-Date"));
         textPresent("2 results for All Terms");
         textNotPresent("Reference Editor java.lang.String");
         textNotPresent("Mage-OM (");
-        textPresent("java.util.Date (2)");
+        textPresent("Date (2)");
         textPresent("Value List (1)");
         clickElement(By.id("cancelSelectQ"));
 
