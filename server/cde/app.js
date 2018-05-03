@@ -14,7 +14,6 @@ const vsac = require('./vsac-io');
 const config = require('../system/parseConfig');
 const elastic = require('./elastic');
 const adminItemSvc = require('../system/adminItemSvc.js');
-const sdc = require("./sdc.js");
 const appStatus = require('../system/status');
 const elastic_system = require('../system/elastic');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
@@ -191,14 +190,6 @@ exports.init = function (app, daoManager) {
 
     app.get('/permissibleValueCodeSystemList', exportShared.nocacheMiddleware, function (req, res) {
         res.send(elastic.pVCodeSystemList);
-    });
-
-    app.get('/sdc/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
-        sdc.byTinyIdVersion(req, res);
-    });
-
-    app.get('/sdc/:id', exportShared.nocacheMiddleware, function (req, res) {
-        sdc.byId(req, res);
     });
 
     app.get('/status/cde', appStatus.status);
