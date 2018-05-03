@@ -239,11 +239,21 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     typeaheadSkipLogic(parent, fe, event) {
-        console.log('a');
         if (fe.skipLogic && fe.skipLogic.condition !== event) {
             this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
             this.onEltChange.emit();
         }
+    }
+
+    onSelectItem(parent, question, $event, slInput) {
+        this.typeaheadSkipLogic(parent, question, $event);
+        $event.preventDefault();
+        slInput.focus();
+        this.slOptionsRetrigger();
+    }
+
+    inputFormatter(a) {
+        return a.replace(/ *\([^)]*\) */g, "");
     }
 
     uomAddNew() {
