@@ -44,7 +44,7 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         goToOrgManagement();
         goToListManagement();
         addTagByOrg(orgName, tag);
-        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]/ng-select/div/div//div[contains(.,'doYouSeeThis')]/span"));
+        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]/ng-select/div/div//div[contains(.,'canYouSeeThis')]/span"));
 
         goToCdeByName(cdeName);
         goToNaming();
