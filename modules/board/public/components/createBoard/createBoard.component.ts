@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { AlertService } from '_app/alert/alert.service';
@@ -12,11 +12,14 @@ import { MyBoardsService } from 'board/public/myBoards.service';
     providers: [NgbActiveModal]
 })
 export class CreateBoardComponent {
-    @ViewChild('createBoardModal') public createBoardModal: NgbModalModule;
-    public modalRef: NgbModalRef;
-    newBoard: any = {
-        type: 'cde'
-    };
+    @Input() set module(module) {
+        this._module = module;
+        if (this.newBoard) this.newBoard.type = module;
+    }
+    @ViewChild('createBoardModal') createBoardModal: NgbModalModule;
+    _module = undefined;
+    modalRef: NgbModalRef;
+    newBoard: any;
 
     constructor(
         private alert: AlertService,
@@ -37,7 +40,7 @@ export class CreateBoardComponent {
 
     openNewBoard() {
         this.newBoard = {
-            type: 'cde'
+            type: this._module || 'cde'
         };
         this.modalRef = this.modalService.open(this.createBoardModal, {size: 'lg'});
     }

@@ -131,7 +131,10 @@ exports.logError = function (message, callback) { // all server errors, express 
             }
         };
 
-        mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+        mongo_data_system.pushGetAdministratorRegistrations((err, registrations) => {
+            if (err) {
+                return; // no log to prevent re-trigger
+            }
             registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
         });
         if (callback) callback(err);
@@ -167,7 +170,10 @@ exports.logClientError = function (req, callback) {
             }
         };
 
-        mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+        mongo_data_system.pushGetAdministratorRegistrations((err, registrations) => {
+            if (err) {
+                return exports.logIfMongoError(err);
+            }
             registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
         });
         callback(err);
@@ -177,31 +183,40 @@ exports.logClientError = function (req, callback) {
 // substitute for (err, ...) => {}
 // used as cb (...) => {}
 // handles the error scenario properly leaving only data parameters for the callback
-exports.withError = function (res, errorMessage, cb) {
-    function errorHandler(res, errorMessage, cb, err, ...args) {
+exports.withError = function (res, errorMessage, cb, serverErrorTemplate = undefined) {
+    return function errorHandler(err, ...args) {
         if (err) {
-            return exports.respondError(res, err, errorMessage);
+            return exports.respondError(res, err, errorMessage, serverErrorTemplate);
         }
         cb(...args);
-    }
-    return errorHandler.bind(undefined, res, errorMessage, cb);
+    };
 };
 
-exports.logIfError = function (err, message = '') {
+exports.withMongoError = function (res, errorMessage, cb) {
+    return exports.withError(res, errorMessage, cb, {origin: 'mongo'});
+};
+
+exports.logIfError = function (err, message = '', serverErrorTemplate = undefined) {
     if (err) {
-        exports.logError({
-            message: message ? message : 'Internal Error',
-            origin: 'dblogger',
+        let info = {
+            message: message,
             stack: err,
-            details: ''
-        });
+        };
+        if (serverErrorTemplate) {
+            info = Object.assign({}, info, serverErrorTemplate);
+        }
+        exports.logError(info);
     }
+};
+
+exports.logIfMongoError = function (err, message = '') {
+    return exports.logIfError(err, message, {origin: 'mongo'});
 };
 
 // handle server errors properly
-exports.respondError = function(res, err, message = '') {
-    res.status(500).send(message);
-    exports.logIfError(err, message);
+exports.respondError = function(res, err, message = '', serverErrorTemplate = undefined) {
+    if (res) res.status(500).send(message);
+    exports.logIfError(err, message, serverErrorTemplate);
 };
 
 exports.getLogs = function (body, callback) {

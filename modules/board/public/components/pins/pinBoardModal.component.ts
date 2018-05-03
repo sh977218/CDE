@@ -63,7 +63,7 @@ export class PinBoardModalComponent {
             this.resolve = resolve;
             this.reject = reject;
 
-            if (this.userService.user && this.userService.user._id) {
+            if (this.userService.user) {
                 this.myBoardsSvc.loadMyBoards(this.module);
                 this.modalRef = this.modalService.open(this.pinModal);
             } else {

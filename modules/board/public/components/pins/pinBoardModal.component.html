@@ -1,15 +1,13 @@
 <ng-template #pinModal id="pinModal" let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h3>Choose a Board to pin this element to
-            <cde-create-board></cde-create-board>
+            <cde-create-board [module]="module"></cde-create-board>
         </h3>
     </div>
     <div class="modal-body">
         <i *ngIf="myBoardsSvc.reloading" class="fa fa-spinner fa-spin"></i>
         <i *ngIf="!myBoardsSvc.boards" class="fa fa-spinner fa-spin"></i>
-        <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0">
-            <div class="ml-10"> You don't have any boards</div>
-        </div>
+        <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0"class="ml-10"> You don't have any boards</div>
         <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length > 0">
             <div class="pl-10" *ngIf="myBoardsSvc.filter">
                 <div *ngIf="myBoardsSvc.filter.tags.length > 0">
@@ -31,12 +29,10 @@
             </div>
             <div class="row">
                 <div *ngFor="let board of myBoardsSvc.boards; let $index = index" class="col-lg-6">
-                    <div class="pinToBoard-card my-board-card" attr.data-id="boardDiv_{{board.name}}">
+                    <div *ngIf="!module || module === board.type" class="pinToBoard-card my-board-card"
+                         attr.data-id="boardDiv_{{board.name}}">
                         <h5 class="myBoardName" id="board_name_{{$index}}">
-                            <span>
-                                <i class="fa"
-                                   [ngClass]="board.shareStatus === 'Public' ? 'fa-globe' : 'fa-lock'"></i>
-                            </span>
+                            <i class="fa" [ngClass]="board.shareStatus === 'Public' ? 'fa-globe' : 'fa-lock'"></i>
                             <a id="viewBoard_{{board.name}}" (click)="selectBoard(board);c()">{{board.name}}</a>
                         </h5>
                         <div>
@@ -46,9 +42,9 @@
                             : (board.pins.length && board.pins.length > 0?'CDEs':'CDE')}}
                         </div>
                         <div id="board_tag_{{$index}}" class="myBoardTags">
-                            <span *ngFor="let tag of board.tags">
+                            <ng-container *ngFor="let tag of board.tags">
                                 <span class="badge badge-secondary"><i class="fa fa-hashtag"></i>{{tag}}</span>
-                            </span>
+                            </ng-container>
                         </div>
                     </div>
                 </div>
@@ -74,7 +70,8 @@
         </ul>
         <br>
         <div style="text-align: center">
-            <a id="signUpLink" routerLink="/login" class="btn    btn-outline-dark" (click)="c()">Sign up or Log In</a></div>
+            <a id="signUpLink" routerLink="/login" class="btn    btn-outline-dark" (click)="c()">Sign up or Log In</a>
+        </div>
     </div>
     <div class="modal-footer">
         <button class="btn  btn-warning" (click)="c()" id="cancelSelect">Cancel</button>
