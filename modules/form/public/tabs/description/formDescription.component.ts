@@ -82,11 +82,12 @@ const TOOL_BAR_OFF_SET = 55;
             background-color: #ddffee;
             box-shadow: inset 0 0 1px #999;
         }
-
+        :host >>> div.node-drop-slot {
+            height: 300px;
+        }
         .panel-body-form {
             background-color: rgba(0, 0, 0, 0.03);
         }
-
         .descriptionToolbox {
             color: #9d9d9d;
             background-color: #343a40;
