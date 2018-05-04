@@ -268,7 +268,7 @@ exports.init = function (app) {
                 dbLogger.consoleLog("done with sitemap");
                 wstream.end();
             });
-    }, null, true, 'America/New York');
+    }, null, true, 'America/New_York');
 
     ["/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404",
@@ -1285,7 +1285,7 @@ exports.init = function (app) {
         res.send(elastic.meshSyncStatus);
     });
 
-    new CronJob('00 00 4 * * *', () => elastic.syncWithMesh(), null, true, 'America/New York');
+    new CronJob('00 00 4 * * *', () => elastic.syncWithMesh(), null, true, 'America/New_York');
 
     app.get('/comments/eltId/:eltId', function (req, res) {
         mongo_data.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function (err, comments) {

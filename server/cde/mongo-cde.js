@@ -477,7 +477,7 @@ new CronJob('00 00 4 * * *', () => {
             dbLogger.consoleLog("Board <-> CDE reference repair done!");
         });
     });
-}, null, true, 'America/New York');
+}, null, true, 'America/New_York');
 
 exports.findModifiedElementsSince = function (date, cb) {
     DataElement.aggregate([
