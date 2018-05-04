@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ViewChild } from '@angular/core';
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { Select2OptionData } from 'ng2-select2';
 
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
@@ -18,20 +17,14 @@ export class UsersMgtComponent {
     foundUsers: any[] = [];
     modalRef: NgbModalRef;
     newUsername: string;
-    rolesEnum: Select2OptionData[] = rolesEnum.map(r => {
-        return {'id': r, 'text': r};
-    });
     search: any = {username: ''};
-    s2Options: Select2Options = {
-        multiple: true
-    };
+    rolesEnum = rolesEnum;
 
-    constructor(
-        private Alert: AlertService,
-        private http: HttpClient,
-        public modalService: NgbModal,
-        public userService: UserService,
-    ) {}
+    constructor(private Alert: AlertService,
+                private http: HttpClient,
+                public modalService: NgbModal,
+                public userService: UserService) {
+    }
 
     addNewUser() {
         this.http.put('/user', {username: this.newUsername}, {responseType: 'text'}).subscribe(
@@ -60,14 +53,9 @@ export class UsersMgtComponent {
             });
     }
 
-    updateRoles(user, data: {value: string[]}) {
-        if (data.value !== user.roles) {
-            user.roles = data.value;
-            this.http.post('/updateUserRoles', user).subscribe(
-                () => {
-                    this.Alert.addAlert('success', 'Roles saved.');
-                });
-        }
+    updateRoles(user) {
+        this.http.post('/updateUserRoles', user)
+            .subscribe(() => this.Alert.addAlert('success', 'Roles saved.'));
     }
 
     updateTesterStatus(user, newValue) {

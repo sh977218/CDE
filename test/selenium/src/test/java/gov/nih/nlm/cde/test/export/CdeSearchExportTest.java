@@ -58,7 +58,8 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         clickElement(By.id("source"));
         clickElement(By.id("updated"));
         clickElement(By.xpath("//*[@id='identifiers']//input"));
-        clickElement(By.xpath("//span[contains(@class,'select2-results')]/ul//li[text()='NINDS Variable Name']"));
+        clickElement(By.xpath("//ng-select[@id='identifiers']//input"));
+        selectNgSelectDropdownByText("NINDS Variable Name");
         clickElement(By.id("saveSettings"));
         checkAlert("Settings saved!");
 
