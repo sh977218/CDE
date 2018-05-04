@@ -20,12 +20,22 @@
 </div>
 
 <ng-template #editBoardContent id="editBoardModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="editBoardModalHeader">
-        Edit Board: {{board.name}}
-    </div>
-    <div class="modal-body" id="editBoardModalBody">
-
-    </div>
-    <div class="modal-footer" id="editBoardModalFooter">
-    </div>
+    <form role="form" #editBoardForm="ngForm" (ngSubmit)="save.emit();">
+        <div class="modal-header" id="editBoardModalHeader">
+            <input name="boardName" [(ngModel)]="board.name" required>
+        </div>
+        <div class="modal-body" id="editBoardModalBody">
+            <input name="boardDescription" [(ngModel)]="board.description">
+            <ng-select name="boardType" [ngModel]="board.type" [item]="types"></ng-select>
+            <ng-select name="boardTag" [ngModel]="board.tags" [item]="tags" [addTag]="true"></ng-select>
+        </div>
+        <div class="modal-footer" id="editBoardModalFooter">
+            <button class="btn btn-outline-dark" (click)="c('Close click')" id="cancelEditBoardBtn"
+                    name="cancelNewNamingBtn">Cancel
+            </button>
+            <button class="btn  btn-warning" [disabled]="!editBoardForm.form.valid" id="saveEditBoardBtn"
+                    name="saveEditBoardBtn" type="submit">Save
+            </button>
+        </div>
+    </form>
 </ng-template>

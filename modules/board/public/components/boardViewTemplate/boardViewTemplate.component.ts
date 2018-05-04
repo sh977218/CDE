@@ -13,19 +13,18 @@ import { NgbModalModule, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstra
 })
 export class BoardViewTemplateComponent {
     @ViewChild('editBoardContent') newNamingContent: NgbModalModule;
-    modalRef: NgbModalRef;
-
     @Input() board: any;
     @Input() canEdit: boolean;
 
     @Output() save = new EventEmitter();
 
     tags = [];
+    types = ['cde', 'form'];
 
     constructor(public modalService: NgbModal) {
     }
 
     openEditBoardModal() {
-        this.modalRef = this.modalService.open(this.newNamingContent, {size: 'sm'});
+        this.modalService.open(this.newNamingContent, {size: 'sm'});
     }
 }
