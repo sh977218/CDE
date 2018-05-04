@@ -127,13 +127,13 @@
             <dt class="col-2">Show if:</dt>
             <dd class="col-10 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
                 <input #slInput type="text" title="Show if"
-                       (focus)="slOptionsRetrigger()"
+                       (focus)="slOptionsRetrigger()" [inputFormatter]="inputFormatter"
                        [ngModel]="question.skipLogic.condition"
                        (ngModelChange)="typeaheadSkipLogic(parent, question, $event);"
                        class="form-control skipLogicCondition"
                        placeholder="Start typing a question name to find options"
                        [ngbTypeahead]="getSkipLogicOptions"
-                       (selectItem)="typeaheadSkipLogic(parent, question, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
+                       (selectItem)="onSelectItem(parent, question, $event,slInput);"/>
                 <span style="color: red">{{question.skipLogic?.validationError}}</span>
             </dd>
         </ng-container>

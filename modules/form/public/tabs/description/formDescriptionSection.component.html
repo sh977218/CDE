@@ -1,5 +1,6 @@
 <div class="sectionTitle">
-    <div class="text-truncate p-1" [ngClass]="{'outdated-bg': formSection?.inForm?.form?.outdated && !section.hover,'hover-bg':section.hover}">
+    <div class="text-truncate p-1"
+         [ngClass]="{'outdated-bg': formSection?.inForm?.form?.outdated && !section.hover,'hover-bg':section.hover}">
         <div *ngIf="!isSubForm && canEdit" class="float-left">
             <i class="fa fa-arrows fa-lg question-move-handle ml-1"
                [treeDrag]="node" [treeDragEnabled]="node.allowDrag()"></i>
@@ -96,12 +97,12 @@
                         <input #slInput [disabled]="!(parent.formElements.length > 1 && canEditSection())"
                                type="text" title="Show If"
                                (focus)="slOptionsRetrigger()"
-                               [ngModel]="section.skipLogic.condition"
+                               [ngModel]="section.skipLogic.condition" [inputFormatter]="inputFormatter"
                                (ngModelChange)="typeaheadSkipLogic(parent, section, $event)"
                                class="form-control skipLogicCondition"
                                placeholder="Start typing a question name to find options"
                                [ngbTypeahead]="getSkipLogicOptions"
-                               (selectItem)="typeaheadSkipLogic(parent, section, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
+                               (selectItem)="onSelectItem(parent, section, $event,slInput);"/>
                         <span [textContent]="section.skipLogic?.validationError"></span>
                     </span>
             </div>
