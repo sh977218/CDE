@@ -268,7 +268,7 @@ exports.init = function (app) {
                 dbLogger.consoleLog("done with sitemap");
                 wstream.end();
             });
-    }, null, true, 'America/New_York');
+    }, null, true, 'America/New_York', this, true);
 
     ["/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404",
