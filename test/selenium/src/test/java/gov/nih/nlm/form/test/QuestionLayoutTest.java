@@ -47,7 +47,7 @@ public class QuestionLayoutTest extends QuestionTest {
         clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'editIconDiv')]//*[contains(@class,'badge')]/*[contains(@class,'fa-check')]"));
         textNotPresent(sec1);
 
-        textPresent("There is no content yet.");
+        textPresent("To begin building your form, find the Section button");
 
         String sec3 = "third section";
         addSectionBottom(sec3, null);
