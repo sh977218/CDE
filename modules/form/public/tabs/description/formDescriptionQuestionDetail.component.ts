@@ -99,9 +99,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             return answer;
         });
         this.syncAnswerList();
-        this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.forEach((t, i) => {
-            this.tag$.push({id: i, name: t});
-        });
+        let stewardOrgName = this.elt.stewardOrg.name;
+        this.tag$ = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
     }
 
     private syncAnswerList() {

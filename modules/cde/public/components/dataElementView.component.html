@@ -179,8 +179,7 @@
                                                (onEltChange)="saveDraft();"></cde-permissible-value>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'naming_tab'">
-                        <cde-naming [elt]="elt" [orgNamingTags]="orgNamingTags" [canEdit]="canEdit()"
-                                    (onEltChange)="saveDraft();"></cde-naming>
+                        <cde-naming [elt]="elt" canEdit]="canEdit()" (onEltChange)="saveDraft();"></cde-naming>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'classification_tab'">
                         <cde-cde-classification [elt]="elt"></cde-cde-classification>

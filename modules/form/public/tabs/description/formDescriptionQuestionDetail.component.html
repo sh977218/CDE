@@ -254,7 +254,7 @@
                         </td>
                         <td>
                             <ng-select [(ngModel)]="cdeNaming.tags" [items]="tag$" [hideSelected]="true"
-                                       multiple="true" bindLabel="name" [appendTo]="'body'" [hideSelected]="true"
+                                       multiple="true" [appendTo]="'body'" [hideSelected]="true"
                                        (change)="onEltChange.emit();">
                             </ng-select>
                         </td>
@@ -414,7 +414,7 @@
                     <dt class="col-2"> Tags:</dt>
                     <dd class="col-10">
                         <ng-select [(ngModel)]="naming.tags" [items]="tag$" [hideSelected]="true"
-                                   multiple="true" bindLabel="name" [appendTo]="'body'" [hideSelected]="true"
+                                   multiple="true" [appendTo]="'body'" [hideSelected]="true"
                                    (change)="onEltChange.emit();">
                         </ng-select>
                     </dd>

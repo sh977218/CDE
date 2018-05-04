@@ -1,44 +1,34 @@
-import { Component, Input, ViewChild, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, EventEmitter, Output } from '@angular/core';
 import { NgbModalModule, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { Naming } from 'shared/models.model';
-
+import { OrgHelperService } from 'core/orgHelper.service';
 
 @Component({
     selector: 'cde-naming',
     templateUrl: './naming.component.html'
 })
-export class NamingComponent {
+export class NamingComponent implements OnInit {
     @Input() canEdit: boolean = false;
     @Input() elt: any;
-    @Input() orgNamingTags: { id: string; text: string }[] = [];
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newNamingContent') newNamingContent: NgbModalModule;
     modalRef: NgbModalRef;
     newNaming: Naming = new Naming();
-    options = {
-        multiple: true,
-        tags: true,
-        language: {
-            noResults: () => {
-                return 'No Tags found, Tags are managed in Org Management > List Management';
-            }
-        }
-    };
+    tags = [];
 
-    constructor(
-        public modalService: NgbModal
-    ) {
+    constructor(public modalService: NgbModal,
+                private orgHelperService: OrgHelperService) {
+    }
+
+    ngOnInit() {
+        let stewardOrgName = this.elt.stewardOrg.name;
+        this.tags = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
     }
 
     addNewNaming() {
         this.elt.naming.push(this.newNaming);
         this.modalRef.close();
-        this.onEltChange.emit();
-    }
-
-    changedTags(name, data: { value: string[] }) {
-        name.tags = data.value;
         this.onEltChange.emit();
     }
 

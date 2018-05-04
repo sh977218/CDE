@@ -94,7 +94,8 @@
                     </li>
                     <li class="dropdown-item">
                         <a id='nihRedCap' href="formById/{{elt._id}}?type=REDCap" target="_blank">REDCap</a>
-                        <a href="https://projectredcap.org/" target="_blank" title="Information"><i class="fa fa-info-circle"></i></a>
+                        <a href="https://projectredcap.org/" target="_blank" title="Information"><i
+                                class="fa fa-info-circle"></i></a>
                     </li>
                     <li class="dropdown-item">
                         <span id='formCdesExport' (click)="exportService.formCdeExport(elt)">CDE Dictionary (CSV)</span>
@@ -104,7 +105,8 @@
                            target="_blank">FHIR Questionnaire</a>
                         <a href="https://www.hl7.org/fhir/questionnaire.html" target="_blank" title="Schema">
                             <i class="fa fa-info-circle"></i></a>
-                        <a href="formById/{{elt._id}}?subtype=fhirQuestionnaire&validate" target="_blank" title="Validate">
+                        <a href="formById/{{elt._id}}?subtype=fhirQuestionnaire&validate" target="_blank"
+                           title="Validate">
                             <i class="fa fa-check" style="color: green"></i></a>
                     </li>
                 </ng-container>
@@ -250,8 +252,7 @@
                                               (onEltChange)="saveDraft()"></cde-form-description>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'naming_tab'">
-                        <cde-naming [elt]="elt" [orgNamingTags]="orgNamingTags" [canEdit]="canEdit()"
-                                    (onEltChange)="saveDraft();"></cde-naming>
+                        <cde-naming [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();"></cde-naming>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'classification_tab'">
                         <cde-form-classification [elt]="elt"></cde-form-classification>
