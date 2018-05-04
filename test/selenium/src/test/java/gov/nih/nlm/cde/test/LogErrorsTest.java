@@ -26,31 +26,4 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         textPresent("/triggerServerErrorExpress");
         textPresent("app.express.error");
     }
-
-    @Test
-    @SelectBrowser()
-    public void createIEError () {
-        driver.get(baseUrl + "/sdcview?triggerClientError=1&fullPath=true&inIE=true");
-        textPresent("SDC Attributes");
-    }
-
-
-    @Test(dependsOnMethods = {"createIEError"})
-    public void logClientErrors() {
-        driver.get(baseUrl + "/sdcview?triggerClientError=1&fullPath=true");
-        textPresent("SDC Attributes");
-
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Audit"));
-
-        clickElement(By.linkText("Client Errors"));
-        textPresent("An exception has been thown");
-
-        textNotPresent("IE 11");
-        textNotPresent("inIE=true");
-        clickElement(By.id("ie"));
-        textPresent("IE 11");
-        textPresent("inIE=true");
-    }
 }
