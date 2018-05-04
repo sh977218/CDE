@@ -214,4 +214,17 @@ export class FormDescriptionSectionComponent implements OnInit {
             this.onEltChange.emit();
         }
     }
+
+    onSelectItem(parent, question, $event, slInput) {
+        this.typeaheadSkipLogic(parent, question, $event);
+        $event.preventDefault();
+        slInput.focus();
+        this.slOptionsRetrigger();
+    }
+
+    inputFormatter(a) {
+        return a.replace(/ *\([^)]*\) */g, "");
+    }
+
+
 }
