@@ -38,7 +38,7 @@ export class MyBoardsComponent implements OnInit {
     }
 
     cancelSave(board) {
-        delete board.editMode;
+        if (board.editMode) delete board.editMode;
         board.showEdit = false;
     }
 
@@ -66,7 +66,7 @@ export class MyBoardsComponent implements OnInit {
     }
 
     save(board) {
-        delete board.editMode;
+        if (board.editMode) delete board.editMode;
         this.http.post('/board', board, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Saved.');
             this.myBoardsSvc.waitAndReload();

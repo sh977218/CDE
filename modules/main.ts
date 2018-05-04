@@ -12,10 +12,6 @@ import '../node_modules/bootstrap/dist/js/bootstrap.js';
 import '../node_modules/@ng-select/ng-select/themes/default.theme.css';
 require('expose-loader?bootstrap!bootstrap');
 
-// required for ng2-select2
-import '../node_modules/select2/dist/js/select2.js';
-require('expose-loader?select2!select2');
-
 import { enableProdMode } from '@angular/core';
 if (PRODUCTION) enableProdMode();
 

@@ -3,7 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { RouterModule } from '@angular/router';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { Select2Module } from 'ng2-select2';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { BoardViewTemplateComponent } from 'board/public/components/boardViewTemplate/boardViewTemplate.component';
@@ -24,8 +24,8 @@ import { WidgetModule } from "widget/widget.module";
         CommonModule,
         FormsModule,
         NgbModule,
+        NgSelectModule,
         RouterModule,
-        Select2Module,
         // core
         WidgetModule,
         // internal

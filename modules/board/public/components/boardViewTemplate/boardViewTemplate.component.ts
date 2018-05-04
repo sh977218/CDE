@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
     selector: 'cde-board-view-template',
@@ -10,7 +10,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
         }
     `]
 })
-export class BoardViewTemplateComponent implements OnInit {
+export class BoardViewTemplateComponent {
 
     @Input() board: any;
     @Input() canEditBoard: boolean;
@@ -19,19 +19,5 @@ export class BoardViewTemplateComponent implements OnInit {
 
     @Output() save = new EventEmitter();
 
-    currentTags = [];
-
-    options = {
-        tags: true,
-        multiple: true
-    };
-
-    ngOnInit () {
-        this.currentTags = this.board.tags;
-    }
-
-    tagsChanged ($event) {
-        this.board.tags = $event.value;
-    }
-
+    tags = [];
 }

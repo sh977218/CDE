@@ -1,10 +1,9 @@
 <div>
-    <span id="board_num_cdes_{{index}}">{{board.pins.length}}</span> {{board.type ==='form'?'Forms':'CDEs'}}</div>
+    <span id="board_num_cdes_{{index}}">{{board.pins.length}}</span> {{board.type ==='form'?'Forms':'CDEs'}}
+</div>
 
-<cde-inline-edit
-        id="board_desc_{{index}}"
-        [(model)]="board.description" [isAllowed]="canEditBoard"
-        (modelChange)="save.emit(board)"></cde-inline-edit>
+<cde-inline-edit id="board_desc_{{index}}" [(model)]="board.description" [isAllowed]="canEditBoard"
+                 (modelChange)="save.emit(board)"></cde-inline-edit>
 
 <div id="board_tag_{{index}}" class="myBoardTags">
     <span *ngIf="!board.editMode">
@@ -12,10 +11,14 @@
             <span class="badge badge-secondary"><i class="fa fa-hashtag"></i>{{tag}}</span>
         </span>
     </span>
-    <select2 *ngIf="board.editMode" [value]="currentTags" [options]="options"
-             [disabled]="!canEditBoard" [data]="suggestTags"
-             (valueChanged)="tagsChanged($event)">
-    </select2>
+    <ng-select *ngIf="board.editMode" [disabled]="!canEditBoard" [(ngModel)]="board.tags" [addTag]="true"
+               [items]="tags" [hideSelected]="true" [hideSelected]="true" multiple="true" [appendTo]="'body'"
+               >
+    </ng-select>
+<!--
+    (change)="save.emit(board);"
+-->
+
     <span *ngIf="board.editMode">Save?
         <i class="fa fa-check" (click)="save.emit(board)" id="confirmEdit_{{index}}"></i>
         <i class="fa fa-times" (click)="board.editMode = false;board.showEdit = false;"></i>
