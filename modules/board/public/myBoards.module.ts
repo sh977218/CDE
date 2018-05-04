@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
+import { MatInputModule } from '@angular/material';
 
 import { BoardModule } from 'board/public/board.module';
 import { MyBoardsComponent } from 'board/public/components/myBoards/myBoards.component';
@@ -15,6 +16,7 @@ const boardRoutes: Routes = [
     imports: [
         CommonModule,
         FormsModule,
+        MatInputModule,
         RouterModule.forChild(boardRoutes),
         // core
         WidgetModule,
@@ -24,12 +26,9 @@ const boardRoutes: Routes = [
     declarations: [
         MyBoardsComponent,
     ],
-    entryComponents: [
-    ],
-    providers: [
-    ],
-    exports: [
-    ],
+    entryComponents: [],
+    providers: [],
+    exports: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

@@ -6,10 +6,6 @@ import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap/alert/alert.module';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap/dropdown/dropdown.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 
-/*
-import { MatInputModule } from '@angular/material';
-*/
-
 import { AlertComponent } from '_app/alert/alert.component';
 import { AlertService } from '_app/alert/alert.service';
 import { BackForwardService } from '_app/backForward.service';
