@@ -74,10 +74,18 @@ const TOOL_BAR_OFF_SET = 55;
             margin-top: 2px;
             white-space: normal;
         }
+
         :host >>> .node-content-wrapper:hover {
             background: transparent;
             box-shadow: inset 0 0 0;
         }
+
+        :host >>> .drag-active .node-drop-slot:not(.is-dragging-over) {
+            border: 1px dashed;
+            border-radius: 4px;
+            background-color: #ffc6d0;
+        }
+
         .node-content-wrapper.is-dragging-over {
             background-color: #ddffee;
             box-shadow: inset 0 0 1px #999;
@@ -93,7 +101,7 @@ const TOOL_BAR_OFF_SET = 55;
             position: fixed;
             padding: 5px;
             padding-left: 20px;
-            top: ${TOOL_BAR_OFF_SET}px;
+            top: ${TOOL_BAR_OFF_SET} px;
             border-bottom-left-radius: 50px;
             right: 0;
             -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -160,6 +168,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     searchSettings = new SearchSettings;
     private searchTerms = new Subject<string>();
     suggestedCdes = [];
+    dragActive: boolean;
     treeOptions = {
         allowDrag: element => !isSubForm(element) || element.data.elementType === 'form' && !isSubForm(element.parent),
         allowDrop: (element, {parent, index}) => {
@@ -171,6 +180,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         },
         actionMapping: {
             mouse: {
+                drag: () => this.dragActive = true,
+                dragEnd: () => this.dragActive = false,
                 drop: (tree, node, $event, {from, to}) => {
                     if (from.ref) {
                         this.formElementEditing = {
