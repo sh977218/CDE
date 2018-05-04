@@ -235,9 +235,8 @@ exports.init = function (app) {
     });
 
     // every sunday at 4:07 AM
-    new CronJob({
-        cronTime: '* 7 4 * * 6',
-        onTick: () => {
+    new CronJob('* 7 4 * * 6',
+        () => {
             dbLogger.consoleLog("Creating sitemap");
             let wstream = fs.createWriteStream('./dist/app/sitemap.txt');
             let cond = {
@@ -269,10 +268,7 @@ exports.init = function (app) {
                 dbLogger.consoleLog("done with sitemap");
                 wstream.end();
             });
-        },
-        runOnInit: true,
-        timeZone: "America/New_York"
-    }).start();
+    }, null, true, 'America/New York');
 
     ["/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404",
@@ -1289,15 +1285,7 @@ exports.init = function (app) {
         res.send(elastic.meshSyncStatus);
     });
 
-    new CronJob({
-        cronTime: '00 00 4 * * *',
-        //noinspection JSUnresolvedFunction
-        onTick: function () {
-            elastic.syncWithMesh();
-        },
-        start: false,
-        timeZone: "America/New_York"
-    }).start();
+    new CronJob('00 00 4 * * *', () => elastic.syncWithMesh(), null, true, 'America/New York');
 
     app.get('/comments/eltId/:eltId', function (req, res) {
         mongo_data.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function (err, comments) {

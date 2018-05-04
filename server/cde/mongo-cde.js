@@ -463,27 +463,21 @@ schemas.dataElementSchema.post('save', function (doc) {
     correctBoardPinsForCde(doc);
 });
 
-new CronJob({
-    cronTime: '00 00 4 * * *',
-    //noinspection JSUnresolvedFunction
-    onTick: function () {
-        dbLogger.consoleLog("Repairing Board <-> CDE references.");
-        var dayBeforeYesterday = new Date();
-        dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
-        mongo_board.PinningBoard.find().distinct('pins.deTinyId', function (err, ids) {
-            if (err) throw "Cannot repair CDE references.";
-            async.eachSeries(ids, function (id, cb) {
-                DataElement.findOne({tinyId: id, archived: false}).exec(function (err, de) {
-                    if (!err && de) correctBoardPinsForCde(de, cb);
-                });
-            }, function () {
-                dbLogger.consoleLog("Board <-> CDE reference repair done!");
+new CronJob('00 00 4 * * *', () => {
+    dbLogger.consoleLog("Repairing Board <-> CDE references.");
+    let dayBeforeYesterday = new Date();
+    dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
+    mongo_board.PinningBoard.find().distinct('pins.deTinyId', function (err, ids) {
+        if (err) throw "Cannot repair CDE references.";
+        async.eachSeries(ids, function (id, cb) {
+            DataElement.findOne({tinyId: id, archived: false}).exec(function (err, de) {
+                if (!err && de) correctBoardPinsForCde(de, cb);
             });
+        }, function () {
+            dbLogger.consoleLog("Board <-> CDE reference repair done!");
         });
-    },
-    start: false,
-    timeZone: "America/New_York"
-}).start();
+    });
+}, null, true, 'America/New York');
 
 exports.findModifiedElementsSince = function (date, cb) {
     DataElement.aggregate([
