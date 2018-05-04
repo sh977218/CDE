@@ -3,28 +3,42 @@ import { NgbModalModule, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstra
 
 @Component({
     selector: 'cde-board-view-template',
-    templateUrl: './boardViewTemplate.component.html',
-    styles: [`
-        .myBoardTags {
-            position: absolute;
-            bottom: 7px;
-        }
-    `]
+    templateUrl: './boardViewTemplate.component.html'
 })
 export class BoardViewTemplateComponent {
-    @ViewChild('editBoardContent') newNamingContent: NgbModalModule;
+    @ViewChild('editBoardContent') editBoardContent: NgbModalModule;
+    @ViewChild('deleteBoardContent') deleteBoardContent: NgbModalModule;
     @Input() board: any;
     @Input() canEdit: boolean;
+    @Input() headerLink: boolean = true;
 
-    @Output() save = new EventEmitter();
-
-    tags = [];
-    types = ['cde', 'form'];
+    @Output() onSave = new EventEmitter();
+    @Output() onDelete = new EventEmitter();
+    @Output() onHeaderClick = new EventEmitter();
+    modalRef: NgbModalRef;
 
     constructor(public modalService: NgbModal) {
     }
 
     openEditBoardModal() {
-        this.modalService.open(this.newNamingContent, {size: 'sm'});
+        this.modalRef = this.modalService.open(this.editBoardContent, {size: 'lg'});
+    }
+
+    openDeleteBoardModal() {
+        this.modalRef = this.modalService.open(this.deleteBoardContent, {size: 'sm'});
+    }
+
+    save(board) {
+        this.modalRef.close();
+        this.onSave.emit(board);
+    }
+
+    delete(board) {
+        this.modalRef.close();
+        this.onDelete.emit(board);
+    }
+
+    clickHeader(board) {
+        if (this.onHeaderClick) this.onHeaderClick.emit(board);
     }
 }

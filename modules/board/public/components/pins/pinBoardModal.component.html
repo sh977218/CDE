@@ -7,7 +7,8 @@
     <div class="modal-body">
         <i *ngIf="myBoardsSvc.reloading" class="fa fa-spinner fa-spin"></i>
         <i *ngIf="!myBoardsSvc.boards" class="fa fa-spinner fa-spin"></i>
-        <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0"class="ml-10"> You don't have any boards</div>
+        <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0" class="ml-10"> You don't have any boards
+        </div>
         <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length > 0">
             <div class="pl-10" *ngIf="myBoardsSvc.filter">
                 <div *ngIf="myBoardsSvc.filter.tags.length > 0">
@@ -29,24 +30,9 @@
             </div>
             <div class="row">
                 <div *ngFor="let board of myBoardsSvc.boards; let $index = index" class="col-lg-6">
-                    <div *ngIf="!module || module === board.type" class="pinToBoard-card my-board-card"
-                         attr.data-id="boardDiv_{{board.name}}">
-                        <h5 class="myBoardName" id="board_name_{{$index}}">
-                            <i class="fa" [ngClass]="board.shareStatus === 'Public' ? 'fa-globe' : 'fa-lock'"></i>
-                            <a id="viewBoard_{{board.name}}" (click)="selectBoard(board);c()">{{board.name}}</a>
-                        </h5>
-                        <div>
-                            <span id="board_num_{{board.type}}s_{{$index}}">{{board.pins.length}}</span>
-                            {{board.type==='form'
-                            ? (board.pins.length && board.pins.length > 0?'Forms':'Form')
-                            : (board.pins.length && board.pins.length > 0?'CDEs':'CDE')}}
-                        </div>
-                        <div id="board_tag_{{$index}}" class="myBoardTags">
-                            <ng-container *ngFor="let tag of board.tags">
-                                <span class="badge badge-secondary"><i class="fa fa-hashtag"></i>{{tag}}</span>
-                            </ng-container>
-                        </div>
-                    </div>
+                    <cde-board-view-template [board]="board" [headerLink]="false"
+                                             (onHeaderClick)="selectBoard(board);c()">
+                    </cde-board-view-template>
                 </div>
             </div>
         </div>

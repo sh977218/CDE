@@ -20,7 +20,7 @@
     "npm": "1.2.x"
   },
   "napa": {
-    "feedback": "https://github.com/ivoviz/feedback.git#master"
+    "feedback": "https://github.com/ivoviz/feedback.git"
   },
   "dependencies": {
     "@std/esm": "0.14.0",
@@ -162,6 +162,7 @@
     "hard-source-webpack-plugin": "0.5.16",
     "html-loader": "0.5.1",
     "intl": "1.2.5",
+    "@ivoviz/feedback.js": "1.0.0-alpha.1",
     "jasmine-reporters": "2.2.1",
     "jasmine-spec-reporter": "4.1.0",
     "js-toggle-switch": "0.1.0",

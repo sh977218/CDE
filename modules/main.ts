@@ -12,6 +12,8 @@ import '../node_modules/bootstrap/dist/js/bootstrap.js';
 import '../node_modules/@ng-select/ng-select/themes/default.theme.css';
 require('expose-loader?bootstrap!bootstrap');
 
+import '../node_modules/@angular/material/prebuilt-themes/indigo-pink.css';
+
 import { enableProdMode } from '@angular/core';
 if (PRODUCTION) enableProdMode();
 
