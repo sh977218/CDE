@@ -36,15 +36,17 @@
         <div class="col-lg-10 col-8 dragDiv" id="my-board-container">
             <div class="row">
                 <div *ngFor="let board of boards; let $index = index" class="col-xl-4 col-lg-4 col-sm-6 col-12">
-                    <div class="my-board-card" data-id="boardDiv_{{board.name}}">
-                        <h4><a routerLink="/board/{{board._id}}" id="viewBoard_{{board.name}}" target="_blank">{{board.name}}</a>
-                        </h4>
-                        <cde-board-view-template [board]="board" [canEditBoard]="false" [index]="$index">
+                    <div class="my-board-card" data-id="boardDiv_{{board.name}}" id="board_num_cdes_{{index}}">
+                        <cde-board-view-template [board]="board" [canEdit]="false" [index]="$index">
                         </cde-board-view-template>
+                        <!--
+                                                <h4><a routerLink="/board/{{board._id}}" id="viewBoard_{{board.name}}" target="_blank">{{board.name}}</a>
+                                                </h4>
 
-                        <small class="myBoardLastModified" id="board_mod_{{index}}">Modified {{board.updatedDate | date:
-                            'MM/dd/yyyy'}}
-                        </small>
+                                                <small class="myBoardLastModified" id="board_mod_{{index}}">Modified {{board.updatedDate | date:
+                                                    'MM/dd/yyyy'}}
+                                                </small>
+                        -->
                     </div>
                 </div>
             </div>

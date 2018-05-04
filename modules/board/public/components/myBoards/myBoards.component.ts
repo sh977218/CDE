@@ -23,7 +23,6 @@ import { MyBoardsService } from 'board/public/myBoards.service';
 export class MyBoardsComponent implements OnInit {
     showChangeStatus: boolean;
     showDelete: boolean;
-    suggestTags = [];
 
     ngOnInit() {
         this.myBoardsSvc.loadMyBoards();

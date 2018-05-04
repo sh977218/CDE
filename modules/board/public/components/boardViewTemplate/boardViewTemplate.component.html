@@ -1,29 +1,31 @@
-<div>
-    <span id="board_num_cdes_{{index}}">{{board.pins.length}}</span> {{board.type ==='form'?'Forms':'CDEs'}}
-</div>
-
-<cde-inline-edit id="board_desc_{{index}}" [(model)]="board.description" [isAllowed]="canEditBoard"
-                 (modelChange)="save.emit(board)"></cde-inline-edit>
-
-<div id="board_tag_{{index}}" class="myBoardTags">
-    <span *ngIf="!board.editMode">
-        <span *ngFor="let tag of board.tags">
+<div class="card" style="width: 18rem;">
+    <div class="card-header">
+        {{board.name}} <span class="float-right" *ngIf="canEdit" (click)="openEditBoardModal();">
+        <i class="fa fa-pencil"></i></span>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{board.pins.length + ' '}}{{board.type ==='form'?'Form(s)':'CDE(s)'}}</h5>
+        <p class="card-text">{{board.description}}</p>
+        <p class="card-text">
+            <small class="text-muted">
+                Modified {{board.updatedDate | date: 'MM/dd/yyyy'}}
+            </small>
+        </p>
+    </div>
+    <div class="card-footer">
+        <ng-container *ngFor="let tag of board.tags">
             <span class="badge badge-secondary"><i class="fa fa-hashtag"></i>{{tag}}</span>
-        </span>
-    </span>
-    <ng-select *ngIf="board.editMode" [disabled]="!canEditBoard" [(ngModel)]="board.tags" [addTag]="true"
-               [items]="tags" [hideSelected]="true" [hideSelected]="true" multiple="true" [appendTo]="'body'"
-               >
-    </ng-select>
-<!--
-    (change)="save.emit(board);"
--->
-
-    <span *ngIf="board.editMode">Save?
-        <i class="fa fa-check" (click)="save.emit(board)" id="confirmEdit_{{index}}"></i>
-        <i class="fa fa-times" (click)="board.editMode = false;board.showEdit = false;"></i>
-    </span>
-    <span *ngIf="!board.editMode && canEditBoard">
-        <i class="fa fa-pencil" (click)="board.editMode = true" id="edit_board_{{index}}"></i>
-    </span>
+        </ng-container>
+    </div>
 </div>
+
+<ng-template #editBoardContent id="editBoardModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="editBoardModalHeader">
+        Edit Board: {{board.name}}
+    </div>
+    <div class="modal-body" id="editBoardModalBody">
+
+    </div>
+    <div class="modal-footer" id="editBoardModalFooter">
+    </div>
+</ng-template>
