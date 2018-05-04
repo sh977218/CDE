@@ -77,7 +77,7 @@ export class SkipLogicValidateService {
                     valueMeaningName: tokenSanitizer(a.valueMeaningName)
                 };
             }).map(a => {
-                if (a.valueMeaningName) return `"${a.permissibleValue} (${a.valueMeaningName})"`;
+                if (a.valueMeaningName && a.valueMeaningName !== a.permissibleValue) return `"${a.permissibleValue} (${a.valueMeaningName})"`;
                 else return `"${a.permissibleValue}"`;
             });
         }
