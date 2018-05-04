@@ -614,10 +614,6 @@ exports.init = function (app) {
         mongo_data.orgAuthorities((err, users) => res.send(users));
     });
 
-    app.get('/orgAdmins', authorization.checkSiteAdmin, (req, res) => {
-        mongo_data.orgAdmins((err, users) => res.send(users));
-    });
-
     app.get('/managedOrgs', function (req, res) {
         orgsvc.managedOrgs(req, res);
     });
