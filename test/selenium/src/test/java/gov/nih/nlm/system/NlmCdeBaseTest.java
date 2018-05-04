@@ -362,6 +362,21 @@ public class NlmCdeBaseTest {
         findElement(By.id("login_link"));
     }
 
+    protected void openUserMenu() {
+        clickElement(By.id("username_link"));
+    }
+
+    protected void goToOrgManagement() {
+        clickElement(By.linkText("Org Management"));
+    }
+    protected void goToSiteManagement() {
+        clickElement(By.linkText("Site Management"));
+    }
+
+    protected void goToListManagement() {
+        clickElement(By.linkText("List Management"));
+    }
+
     protected int getNumberOfResults() {
         return Integer.parseInt(findElement(By.id("searchResultNum")).getText());
     }

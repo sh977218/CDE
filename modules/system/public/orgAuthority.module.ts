@@ -3,7 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { Select2Module } from 'ng2-select2';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { ListManagementComponent } from 'system/public/components/siteAdmin/listManagement/listManagement.component';
 import { StatusValidationRulesComponent } from 'system/public/components/siteAdmin/statusValidationRules/statusValidationRules.component';
@@ -23,7 +23,7 @@ const appRoutes: Routes = [
         FormsModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
-        Select2Module,
+        NgSelectModule,
         // core
         WidgetModule,
         // internal

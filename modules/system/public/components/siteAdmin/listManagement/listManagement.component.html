@@ -5,18 +5,16 @@
         <th>Tags:</th>
     </tr>
     <tr *ngFor="let o of orgs" id="orgListName-{{o.name}}">
+        <td>{{o.name}}</td>
         <td>
-            {{o.name}}
+            <ng-select [(ngModel)]="o.propertyKeys" [items]="allPropertyKeys" [multiple]="true"
+                       [appendTo]="'body'" [hideSelected]="true" (change)="saveOrg(o);">
+            </ng-select>
         </td>
         <td>
-            <select2 [data]="allPropertyKeys" [value]="o.currentPropertyKeys" [options]="options"
-                     width="100%" (valueChanged)="propsChanged(o, $event)">
-            </select2>
-        </td>
-        <td>
-            <select2 [data]="allTags" [value]="o.currentTags" [options]="options"
-                     width="100%" (valueChanged)="tagsChanged(o, $event)">
-            </select2>
+            <ng-select [(ngModel)]="o.nameTags" [items]="allTags" [multiple]="true" [appendTo]="'body'"
+                       [hideSelected]="true" (change)="saveOrg(o);">
+            </ng-select>
         </td>
 
     </tr>
