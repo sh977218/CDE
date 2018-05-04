@@ -247,6 +247,9 @@ exports.addUser = function (user, callback) {
 exports.siteAdmins = function (callback) {
     User.find({'siteAdmin': true}).select('username email').exec(callback);
 };
+exports.orgAuthorities = function (callback) {
+    User.find({'roles': 'OrgAuthority'}).select('username').exec(callback);
+};
 
 exports.orgAdmins = function (callback) {
     User.find({orgAdmin: {$not: {$size: 0}}}, callback);

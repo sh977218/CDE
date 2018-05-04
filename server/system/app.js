@@ -57,7 +57,7 @@ exports.init = function (app) {
         homeHtml = str;
     });
 
-    function isModernBrowser (req) {
+    function isModernBrowser(req) {
         let ua = useragent.is(req.headers['user-agent']);
         return ua.chrome || ua.firefox || ua.edge;
     }
@@ -482,10 +482,11 @@ exports.init = function (app) {
         })[0];
     }
 
-    function myCsrf (req, res, next) {
+    function myCsrf(req, res, next) {
         if (!req.body._csrf) return res.status(401).send();
         csrf()(req, res, next);
     }
+
     const validLoginBody = ["username", "password", "_csrf", "recaptcha"];
     app.post('/login', myCsrf, (req, res, next) => {
         if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
@@ -605,24 +606,16 @@ exports.init = function (app) {
     });
 
 
-    app.get('/siteAdmins', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data.siteAdmins(function (err, users) {
-                res.send(users);
-            });
-        } else {
-            res.status(401).send();
-        }
+    app.get('/siteAdmins', authorization.checkSiteAdmin, (req, res) => {
+        mongo_data.siteAdmins((err, users) => res.send(users));
     });
 
-    app.get('/orgAdmins', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data.orgAdmins(function (err, users) {
-                res.send(users);
-            });
-        } else {
-            res.status(401).send();
-        }
+    app.get('/OrgAuthorities', authorization.checkSiteAdmin, (req, res) => {
+        mongo_data.orgAuthorities((err, users) => res.send(users));
+    });
+
+    app.get('/orgAdmins', authorization.checkSiteAdmin, (req, res) => {
+        mongo_data.orgAdmins((err, users) => res.send(users));
     });
 
     app.get('/managedOrgs', function (req, res) {
@@ -708,7 +701,6 @@ exports.init = function (app) {
     app.get('/myOrgsAdmins', exportShared.nocacheMiddleware, function (req, res) {
         usersrvc.myOrgsAdmins(req, res);
     });
-
 
     app.get('/orgAdmins', exportShared.nocacheMiddleware, function (req, res) {
         usersrvc.orgAdmins(req, res);
@@ -879,9 +871,9 @@ exports.init = function (app) {
             dbLogger.getClientErrors(req.body, (err, result) => {
                 res.send(result.map(r => {
                     let l = r.toObject();
-                   l.agent = useragent.parse(r.userAgent).toAgent();
-                   l.ua = useragent.is(r.userAgent);
-                   return l;
+                    l.agent = useragent.parse(r.userAgent).toAgent();
+                    l.ua = useragent.is(r.userAgent);
+                    return l;
                 }));
             });
         } else {
@@ -1390,7 +1382,7 @@ exports.init = function (app) {
                     elt.ipList.splice(foundIndex, 1);
                     elt.save(() => res.send());
                 } else {
-                   res.send();
+                    res.send();
                 }
             });
         } else res.status(401).send();

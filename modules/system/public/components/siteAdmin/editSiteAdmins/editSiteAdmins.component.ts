@@ -12,11 +12,11 @@ import { UserService } from '_app/user.service';
 export class EditSiteAdminsComponent implements OnInit {
     newAdmin: any;
     siteAdmins: any = [];
-    orgAdmins: any = [];
+    orgAuthorities: any = [];
 
     ngOnInit() {
         this.getSiteAdmins();
-        this.getOrgAdmins();
+        this.getOrgAuthorities();
     }
 
     constructor(private Alert: AlertService,
@@ -37,8 +37,8 @@ export class EditSiteAdminsComponent implements OnInit {
         this.http.get('/siteAdmins').subscribe(response => this.siteAdmins = response);
     }
 
-    getOrgAdmins() {
-        this.http.get('/orgAdmins').subscribe(response => this.orgAdmins = response);
+    getOrgAuthorities() {
+        this.http.get('/OrgAuthorities').subscribe(response => this.orgAuthorities = response);
     }
 
     removeSiteAdmin(byId) {
