@@ -32,7 +32,6 @@ const appRoutes: Routes = [
     {path: 'orgComments', loadChildren: 'discuss/discussEntry.module#DiscussEntryModule', canLoad: [OrgCuratorGuard]},
     {path: 'quickBoard', loadChildren: 'quickBoard/quickBoard.module#QuickBoardModule'},
     {path: 'profile', loadChildren: 'system/public/profile.module#ProfileModule', canLoad: [LoggedInGuard]},
-    {path: 'sdcview', loadChildren: 'cde/public/sdcView.module#SdcViewModule'},
     {
         path: 'searchPreferences',
         resolve: {

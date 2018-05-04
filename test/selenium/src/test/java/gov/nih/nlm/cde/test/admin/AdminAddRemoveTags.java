@@ -8,18 +8,43 @@ import org.testng.annotations.Test;
 
 public class AdminAddRemoveTags extends NlmCdeBaseTest {
 
+    private void addPropertyKeyByOrg(String orgName, String key) {
+        String xpath = "//*[@id='orgListName-" + orgName + "']//td[2]//input";
+        clickElement(By.xpath(xpath));
+        selectNgSelectDropdownByText(key);
+        checkAlert("Org Updated");
+    }
+
+    private void removePropertyKeyByOrg(String orgName, String key) {
+        String xpath = "//tr[@id='orgListName-" + orgName + "']//td[2]/ng-select/div/div//div[contains(.,'" + key + "')]/span[1]";
+        clickElement(By.xpath(xpath));
+        checkAlert("Org Updated");
+    }
+
+    private void addTagByOrg(String orgName, String key) {
+        String xpath = "//*[@id='orgListName-" + orgName + "']//td[3]//input";
+        clickElement(By.xpath(xpath));
+        selectNgSelectDropdownByText(key);
+        checkAlert("Org Updated");
+    }
+
+    private void removeTagByOrg(String orgName, String key) {
+        String xpath = "//tr[@id='orgListName-" + orgName + "']//td[3]/ng-select/div/div//div[contains(.,'" + key + "')]/span[1]";
+        clickElement(By.xpath(xpath));
+        checkAlert("Org Updated");
+    }
+
     @Test
     public void adminAddRemoveTags() {
+        String orgName = "TEST";
+        String tag = "canYouSeeThis";
         String cdeName = "Distance from Closest Margin Value";
-
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Org Management"));
-        clickElement(By.linkText("List Management"));
-        clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//input"));
-        clickElement(By.xpath("//li[. = 'canYouSeeThis']"));
-        checkAlert("Org Updated");
-        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//li[contains(., 'canYouSeeThis')]/span"));
+        openUserMenu();
+        goToOrgManagement();
+        goToListManagement();
+        addTagByOrg(orgName, tag);
+        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]/ng-select/div/div//div[contains(.,'canYouSeeThis')]/span"));
 
         goToCdeByName(cdeName);
         goToNaming();
@@ -29,13 +54,11 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         clickElement(By.xpath("//span[contains(@class,'select2-results')]/ul//li[text()='canYouSeeThis']"));
         clickElement(By.id("cancelNewNamingBtn"));
 
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Org Management"));
-        clickElement(By.linkText("List Management"));
+        openUserMenu();
+        goToOrgManagement();
+        goToListManagement();
 
-        new Actions(driver).moveToElement(findElement(By.id("orgListName-Training")));
-        clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]//li[contains(., 'canYouSeeThis')]/span"));
-        textPresent("Org Updated");
+        removeTagByOrg(orgName, tag);
         closeAlert();
 
         goToCdeByName("Distance from Closest Margin Value");
@@ -48,14 +71,14 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
 
     @Test
     public void adminAddRemovePropertyKey() {
+        String orgName = "TEST";
+        String propertyKey = "doYouSeeThis";
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
-        clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//input"));
-        clickElement(By.xpath("//li[. = 'doYouSeeThis']"));
-        checkAlert("Org Updated");
-        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//li[contains(.,'doYouSeeThis')]/span"));
+        addPropertyKeyByOrg(orgName, propertyKey);
+        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]/ng-select/div/div//div[contains(.,'doYouSeeThis')]/span"));
 
         goToCdeByName("Distance from Closest Margin Value");
 
@@ -67,13 +90,11 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
 
         clickElement(By.id("cancelNewPropertyBtn"));
 
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Org Management"));
-        clickElement(By.linkText("List Management"));
+        openUserMenu();
+        goToOrgManagement();
+        goToListManagement();
 
-        new Actions(driver).moveToElement(findElement(By.id("orgListName-Training"))).perform();
-        clickElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//li[contains(.,'doYouSeeThis')]/span"));
-        checkAlert("Org Updated");
+        removePropertyKeyByOrg(orgName, propertyKey);
 
         goToCdeByName("Distance from Closest Margin Value");
 
