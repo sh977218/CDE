@@ -9,7 +9,8 @@ import {
 export class SkipLogicValidateService {
     previousSkipLogicPriorToSelect = '';
 
-    constructor() {}
+    constructor() {
+    }
 
     static checkAndUpdateLabel(section, oldLabel, newLabel = undefined) {
         let result = false;
@@ -70,8 +71,15 @@ export class SkipLogicValidateService {
         if (!q) return [];
 
         if (q.question.datatype === 'Value List') {
-            return q.question.answers.map(a => tokenSanitizer(a.permissibleValue))
-                .map(a => '"' + a + '" ');
+            return q.question.answers.map(a => {
+                return {
+                    permissibleValue: tokenSanitizer(a.permissibleValue),
+                    valueMeaningName: tokenSanitizer(a.valueMeaningName)
+                };
+            }).map(a => {
+                if (a.valueMeaningName && a.valueMeaningName !== a.permissibleValue) return `"${a.permissibleValue} (${a.valueMeaningName})"`;
+                else return `"${a.permissibleValue}"`;
+            });
         }
         if (q.question.datatype === 'Number') {
             return ['{{' + q.question.datatype + '}}'];
@@ -124,7 +132,7 @@ export class SkipLogicValidateService {
         switch (filteredQuestion.question.datatype) {
             case 'Value List':
                 if (tokens[2].length > 0 && filteredQuestion.question.answers.map(a => '"' +
-                        tokenSanitizer(a.permissibleValue) + '"').indexOf(tokens[2]) < 0) {
+                    tokenSanitizer(a.permissibleValue) + '"').indexOf(tokens[2]) < 0) {
                     return tokens[2] + ' is not a valid answer for "' + filteredQuestion.label + '"';
                 }
                 break;

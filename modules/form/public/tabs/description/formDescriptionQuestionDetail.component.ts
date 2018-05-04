@@ -245,6 +245,17 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
+    onSelectItem(parent, question, $event, slInput) {
+        this.typeaheadSkipLogic(parent, question, $event);
+        $event.preventDefault();
+        slInput.focus();
+        this.slOptionsRetrigger();
+    }
+
+    inputFormatter(a) {
+        return a.replace(/ *\([^)]*\) */g, "");
+    }
+
     uomAddNew() {
         if (!this.question.question.unitsOfMeasure.filter(u => u.code === this.newUom
             && u.system === this.newUomSystem).length) {
