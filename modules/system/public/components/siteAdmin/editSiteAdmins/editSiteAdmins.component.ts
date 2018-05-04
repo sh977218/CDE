@@ -38,7 +38,7 @@ export class EditSiteAdminsComponent implements OnInit {
     }
 
     getOrgAuthorities() {
-        this.http.get('/OrgAuthorities').subscribe(response => this.orgAuthorities = response);
+        this.http.get('/orgAuthorities').subscribe(response => this.orgAuthorities = response);
     }
 
     removeSiteAdmin(byId) {

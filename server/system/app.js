@@ -610,7 +610,7 @@ exports.init = function (app) {
         mongo_data.siteAdmins((err, users) => res.send(users));
     });
 
-    app.get('/OrgAuthorities', authorization.checkSiteAdmin, (req, res) => {
+    app.get('/orgAuthorities', authorization.checkSiteAdmin, (req, res) => {
         mongo_data.orgAuthorities((err, users) => res.send(users));
     });
 
