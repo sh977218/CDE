@@ -36,13 +36,6 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     @Test
     public void cdeFullDetail() {
         fullDetail();
-
-        goToGeneralDetail();
-        clickElement(By.linkText("SDC View"));
-        switchTab(1);
-        textPresent("Genotype Directed Therapy Bas");
-        textPresent("enumerated");
-        switchTabAndClose(0);
     }
 
 

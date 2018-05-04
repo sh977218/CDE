@@ -40,11 +40,6 @@
             <dt class="col-3 text-right">Views:</dt>
             <dd id="views" class="col-9">{{elt.views}}</dd>
         </ng-container>
-        <dt class="col-3 text-right">SDC View:</dt>
-        <dd class="col-9">
-            <a href="/sdcview?cdeId={{elt._id}}" aria-label="SDC View" target="_blank">
-                <i class="fa fa-share-square-o"></i> SDC View</a>
-        </dd>
         <ng-container *ngIf="elt.imported">
             <dt class="col-3 text-right">Last import:</dt>
             <dd class="col-9">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
