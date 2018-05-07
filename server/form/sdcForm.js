@@ -121,6 +121,10 @@ let doSection = function (parent, section) {
 
 let idToName = {};
 
+
+let allSchemas = [];
+
+
 exports.formToSDC = function (form, renderer, cb) {
     let formDesign = builder.create({
         "FormDesign": {
