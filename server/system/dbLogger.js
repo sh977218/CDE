@@ -336,7 +336,7 @@ exports.saveFeedback = function (req, cb) {
         subject: "Issue reported by a user"
         , body: report.note
     };
-    mongo_data_system.siteadmins(function (err, users) {
+    mongo_data_system.siteAdmins(function (err, users) {
         email.emailUsers(emailContent, users, function () {
         });
     });
