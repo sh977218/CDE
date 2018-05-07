@@ -18,7 +18,7 @@ public class CdeSearchFilterTest extends NlmCdeBaseTest {
         textPresent("Candidate (3)");
         textPresent("Incomplete (2)");
         textPresent("Value List (4)");
-        textPresent("NUMBER (1)");
+        textPresent("Number (1)");
 
         clickElement(By.xpath("//*[@id='regstatus-Candidate']/*[@class='treeItemText']"));
         textPresent("3 results for");
@@ -27,7 +27,7 @@ public class CdeSearchFilterTest extends NlmCdeBaseTest {
         textPresent("Candidate (3)");
         textPresent("Incomplete (2)");
         textPresent("Value List (2)");
-        textPresent("NUMBER (1)");
+        textPresent("Number (1)");
 
         clickElement(By.xpath("//*[@id='datatype-Value List']/*[@class='treeItemText']"));
         textPresent("2 results for");
@@ -35,7 +35,7 @@ public class CdeSearchFilterTest extends NlmCdeBaseTest {
         textPresent("Candidate (3)");
         textPresent("Incomplete (2)");
         textPresent("Value List (2)");
-        textPresent("NUMBER (1)");
+        textPresent("Number (1)");
     }
 
 }

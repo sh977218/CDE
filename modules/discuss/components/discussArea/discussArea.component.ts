@@ -164,8 +164,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     @Output() highlightedTabsChange = new EventEmitter();
     avatarUrls: any = {};
     cancelReply = comment => this.tempReplies[comment._id] = '';
-    canRemoveComment = com => this.isAllowedModel.doesUserOwnElt(this.elt) ||
-        (this.userService.user && this.userService.user._id && (this.userService.user._id === com.user))
+    canRemoveComment = com => this.isAllowedModel.doesUserOwnElt(this.elt) || (this.userService.user && this.userService.user._id === com.user);
     canReopenComment = (com) => com.status === 'resolved' && this.canRemoveComment(com);
     canResolveComment = (com) => com.status !== 'resolved' && this.canRemoveComment(com);
     eltComments: Comment[];

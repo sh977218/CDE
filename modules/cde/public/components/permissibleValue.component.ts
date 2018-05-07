@@ -10,6 +10,7 @@ import { AlertService } from '_app/alert/alert.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { checkPvUnicity, fixDatatype } from 'shared/de/deValidator';
 import { SearchSettings } from 'search/search.model';
+import { DataTypeService } from 'core/dataType.service';
 
 
 @Component({
@@ -22,8 +23,6 @@ export class PermissibleValueComponent {
     _elt: any;
     @Input() set elt(v: any) {
         this._elt = v;
-        let isDatatypeDefined = _indexOf(this.dataTypeOptions, this.elt.valueDomain.datatype);
-        if (isDatatypeDefined === -1) this.dataTypeOptions.push(this.elt.valueDomain.datatype);
         fixDatatype(this.elt);
         this.elt.allValid = true;
         this.loadValueSet();
@@ -51,16 +50,10 @@ export class PermissibleValueComponent {
     @ViewChild('importPermissibleValueContent') public importPermissibleValueContent: NgbModalModule;
     canLinkPv = false;
     containsKnownSystem: boolean = false;
-    dataTypeOptions = ['Value List', 'Text', 'Date', 'Number', 'Externally Defined'];
-    dataTypeValueListOptions = ['Text', 'Date', 'Number'];
     editMode;
     keys = Object.keys;
     modalRef: NgbModalRef;
     newPermissibleValue: any = {};
-    options = {
-        multiple: false,
-        tags: true
-    };
     pVTypeheadVsacNameList;
     private searchTerms = new Subject<string>();
     vsacValueSet = [];
@@ -77,10 +70,14 @@ export class PermissibleValueComponent {
         datatypes: ["Value List"]
     };
 
-    constructor(private Alert: AlertService,
-                public isAllowedModel: IsAllowedService,
-                public http: HttpClient,
-                public modalService: NgbModal) {
+    dataTypeList = [];
+
+
+    constructor(public http: HttpClient,
+                public modalService: NgbModal,
+                private Alert: AlertService,
+                public isAllowedModel: IsAllowedService) {
+        this.dataTypeList = DataTypeService.getDataTypeItemList();
     }
 
     addAllVsac() {
@@ -92,7 +89,7 @@ export class PermissibleValueComponent {
         this.modalRef.close();
         this.runManualValidation();
         this.initSrcOptions();
-        this.stageElt();
+        this.onEltChange.emit();
     }
 
     allVsacMatch() {
@@ -316,7 +313,7 @@ export class PermissibleValueComponent {
         delete this.elt.dataElementConcept.conceptualDomain.vsac;
         this.runManualValidation();
         this.initSrcOptions();
-        this.stageElt();
+        this.onEltChange.emit();
     }
 
     runManualValidation() {
@@ -333,10 +330,6 @@ export class PermissibleValueComponent {
         if (!this.newPermissibleValue['permissibleValue']) {
             this.newPermissibleValue['permissibleValue'] = term.name;
         }
-    }
-
-    stageElt() {
-        this.onEltChange.emit();
     }
 
     savePvDatatype(data: { value: string[] }) {
@@ -366,5 +359,11 @@ export class PermissibleValueComponent {
             && this.elt.dataElementConcept.conceptualDomain.vsac.name
             && this.elt.dataElementConcept.conceptualDomain.vsac.version
             && this.elt.dataElementConcept.conceptualDomain.vsac.id;
+    }
+
+    onDataTypeChange() {
+        fixDatatype(this.elt);
+        this.runManualValidation();
+        this.onEltChange.emit();
     }
 }

@@ -11,14 +11,14 @@ public class BoardPublisher extends BoardTest {
         mustBeLoggedInAs(boardPublisherTest_username, password);
         makePublic("IsItPublic", "You don't have permission to make boards public!");
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Site Management"));
+        openUserMenu();
+        goToSiteManagement();
         clickElement(By.linkText("Users"));
 
         findElement(By.id("searchUsersInput")).sendKeys(newUsername);
         clickElement(By.id("searchUsersSubmit"));
-        findElement(By.xpath("//div[@id='user_roles_0']//input")).sendKeys("boardp");
-        clickElement(By.xpath("//li[. = 'BoardPublisher']"));
+        findElement(By.xpath("//*[@id='user_roles_0']/ng-select//input")).sendKeys("boardp");
+        selectNgSelectDropdownByText("BoardPublisher");
         checkAlert("Roles saved");
 
         mustBeLoggedInAs(boardPublisherTest_username, password);

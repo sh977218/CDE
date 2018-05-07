@@ -97,7 +97,7 @@ export class DataElementViewComponent implements OnInit {
             this.elt = elt;
             this.loadComments(this.elt);
             this.deId = this.elt._id;
-            if (this.userService.user && this.userService.user.username) {
+            if (this.userService.user) {
                 checkPvUnicity(this.elt.valueDomain);
             }
             this.displayStatusWarning = (() => {

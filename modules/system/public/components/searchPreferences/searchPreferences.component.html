@@ -129,11 +129,11 @@
                 <div class="checkbox indent">
                     <label><input id="ids" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.ids">
                         Identifiers</label>
-                    <select2 [data]="identifierSources" [(value)]="searchSettings.tableViewFields.identifiers"
-                             [options]="options" width="100%" id="identifiers"
-                             [disabled]="!searchSettings.tableViewFields.ids"
-                             (valueChanged)="changedIdentifier(searchSettings,$event)">
-                    </select2>
+                    <ng-select id="identifiers" [(ngModel)]="searchSettings.tableViewFields.identifiers"
+                               placeholder="Optional: select identifiers to include (default: all)"
+                               [items]="identifierSources" [multiple]="true" [appendTo]="'body'" [hideSelected]="true"
+                               [disabled]="!searchSettings.tableViewFields.ids">
+                    </ng-select>
                 </div>
                 <div class="checkbox indent">
                     <label><input id="source" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.source">
@@ -149,7 +149,8 @@
                             class="text-info"><small>(Form Only)</small></span></label>
                 </div>
                 <div class="checkbox indent">
-                    <label><input id="linkedForms" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.linkedForms">
+                    <label><input id="linkedForms" type="checkbox"
+                                  [(ngModel)]="searchSettings.tableViewFields.linkedForms">
                         Linked Forms <span class="text-info"><small>(CDE Only)</small></span></label>
                 </div>
             </div>

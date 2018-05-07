@@ -29,12 +29,11 @@ export class IsAllowedService {
         if (elt.elementType === 'board') {
             return this.userService.user.siteAdmin || this.userService.user.username === elt.owner.username;
         } else {
-            return this.userService.user.siteAdmin || this.userService.user._id &&
-                this.userService.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1;
+            return this.userService.user.siteAdmin || this.userService.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1;
         }
     }
 
     loggedIn () {
-        return !!(this.userService.user && this.userService.user._id);
+        return !!this.userService.user;
     }
 }

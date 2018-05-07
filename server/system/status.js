@@ -1,4 +1,8 @@
+const async = require('async');
+const moment = require('moment');
+
 const config = require('./parseConfig');
+const dbLogger = require('./dbLogger.js');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_board = require('../board/mongo-board');
@@ -7,8 +11,6 @@ const mongo_data_system = require('./mongo-data');
 const elastic = require('./elastic');
 const esInit = require('./elasticSearchInit');
 const email = require('./email');
-const async = require('async');
-const moment = require('moment');
 const pushNotification = require('./pushNotification');
 
 let app_status = this;
@@ -162,7 +164,10 @@ setInterval(() => {
                 }
             };
 
-            mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+            mongo_data_system.pushGetAdministratorRegistrations((err, registrations) => {
+                if (err) {
+                    return dbLogger.logIfMongoError(err);
+                }
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
             });
 
@@ -181,7 +186,7 @@ setInterval(() => {
                         subject: "Server Configuration Change"
                         , body: "Server Configuration Change from " + currentActiveNodes + " to " + activeNodes
                     };
-                    mongo_data_system.siteadmins(function(err, users) {
+                    mongo_data_system.siteAdmins(function(err, users) {
                         email.emailUsers(emailContent, users, function() {});
                     });
                 }

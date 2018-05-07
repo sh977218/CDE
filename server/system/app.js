@@ -1,4 +1,20 @@
+const async = require('async');
+const spawn = require('child_process').spawn;
+const CronJob = require('cron').CronJob;
+const csrf = require('csurf');
+const ejs = require('ejs');
+const fs = require('fs');
+const _ = require('lodash');
+const multer = require('multer');
 const passport = require('passport');
+const path = require('path');
+const request = require('request');
+const tar = require('tar-fs');
+const useragent = require('useragent');
+const zlib = require('zlib');
+
+const authorization = require('./authorization');
+const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_data = require('./mongo-data');
@@ -9,29 +25,15 @@ const orgsvc = require('./orgsvc');
 const pushNotification = require('./pushNotification');
 const usersrvc = require('./usersrvc');
 const orgClassificationSvc = require('./orgClassificationSvc');
-const path = require('path');
 const adminItemSvc = require("./adminItemSvc");
-const csrf = require('csurf');
-const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const daoManager = require('./moduleDaoManager');
-const fs = require('fs');
-const multer = require('multer');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
-const tar = require('tar-fs');
-const zlib = require('zlib');
-const spawn = require('child_process').spawn;
-const authorization = require('./authorization');
 const esInit = require('./elasticSearchInit');
 const elastic = require('./elastic.js');
 const cdeElastic = require('../cde/elastic.js');
 const formElastic = require('../form/elastic.js');
 const app_status = require("./status.js");
-const async = require('async');
-const request = require('request');
-const CronJob = require('cron').CronJob;
-const _ = require('lodash');
-const ejs = require('ejs');
-const useragent = require('useragent');
+
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -55,7 +57,7 @@ exports.init = function (app) {
         homeHtml = str;
     });
 
-    function isModernBrowser (req) {
+    function isModernBrowser(req) {
         let ua = useragent.is(req.headers['user-agent']);
         return ua.chrome || ua.firefox || ua.edge;
     }
@@ -299,9 +301,10 @@ exports.init = function (app) {
         });
     });
 
-    app.post('/pushRegistration', [authorizationShared.loggedInMiddleware], pushNotification.create);
-    app.delete('/pushRegistration', [authorizationShared.loggedInMiddleware], pushNotification.delete);
-    app.post('/pushRegistrationSubscribe', [authorizationShared.loggedInMiddleware], pushNotification.subscribe);
+    pushNotification.checkDatabase();
+    app.post('/pushRegistration', [authorization.loggedInMiddleware], pushNotification.create);
+    app.delete('/pushRegistration', [authorization.loggedInMiddleware], pushNotification.delete);
+    app.post('/pushRegistrationSubscribe', [authorization.loggedInMiddleware], pushNotification.subscribe);
     app.post('/pushRegistrationUpdate', pushNotification.updateStatus);
 
     // delete org classification
@@ -479,10 +482,11 @@ exports.init = function (app) {
         })[0];
     }
 
-    function myCsrf (req, res, next) {
+    function myCsrf(req, res, next) {
         if (!req.body._csrf) return res.status(401).send();
         csrf()(req, res, next);
     }
+
     const validLoginBody = ["username", "password", "_csrf", "recaptcha"];
     app.post('/login', myCsrf, (req, res, next) => {
         if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
@@ -602,14 +606,12 @@ exports.init = function (app) {
     });
 
 
-    app.get('/siteadmins', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data.siteadmins(function (err, users) {
-                res.send(users);
-            });
-        } else {
-            res.status(401).send();
-        }
+    app.get('/siteAdmins', authorization.checkSiteAdmin, (req, res) => {
+        mongo_data.siteAdmins((err, users) => res.send(users));
+    });
+
+    app.get('/orgAuthorities', authorization.checkSiteAdmin, (req, res) => {
+        mongo_data.orgAuthorities((err, users) => res.send(users));
     });
 
     app.get('/managedOrgs', function (req, res) {
@@ -695,7 +697,6 @@ exports.init = function (app) {
     app.get('/myOrgsAdmins', exportShared.nocacheMiddleware, function (req, res) {
         usersrvc.myOrgsAdmins(req, res);
     });
-
 
     app.get('/orgAdmins', exportShared.nocacheMiddleware, function (req, res) {
         usersrvc.orgAdmins(req, res);
@@ -866,9 +867,9 @@ exports.init = function (app) {
             dbLogger.getClientErrors(req.body, (err, result) => {
                 res.send(result.map(r => {
                     let l = r.toObject();
-                   l.agent = useragent.parse(r.userAgent).toAgent();
-                   l.ua = useragent.is(r.userAgent);
-                   return l;
+                    l.agent = useragent.parse(r.userAgent).toAgent();
+                    l.ua = useragent.is(r.userAgent);
+                    return l;
                 }));
             });
         } else {
@@ -1096,7 +1097,10 @@ exports.init = function (app) {
                 }
             };
 
-            mongo_data.pushGetAdministratorRegistrations(registrations => {
+            mongo_data.pushGetAdministratorRegistrations((err, registrations) => {
+                if (err) {
+                    return dbLogger.logIfMongoError(err);
+                }
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
             });
             res.send({});
@@ -1374,7 +1378,7 @@ exports.init = function (app) {
                     elt.ipList.splice(foundIndex, 1);
                     elt.save(() => res.send());
                 } else {
-                   res.send();
+                    res.send();
                 }
             });
         } else res.status(401).send();

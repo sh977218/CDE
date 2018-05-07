@@ -1,23 +1,3 @@
-export function canEditMiddleware(req, res, next) {
-    if (!canEditCuratedItem(req.user, req.body)) {
-        // TODO: should consider adding to error log
-        return res.status(401).send();
-    }
-    if (next) {
-        next();
-    }
-}
-
-export function loggedInMiddleware(req, res, next) {
-    if (!req.user) {
-        // TODO: should consider adding to error log
-        return res.status(403).send();
-    }
-    if (next) {
-        next();
-    }
-}
-
 export const rolesEnum = ["DocumentationEditor", "BoardPublisher", "CommentAuthor",
     "CommentReviewer", "AttachmentReviewer", "OrgAuthority", "FormEditor"];
 

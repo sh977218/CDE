@@ -3,10 +3,10 @@
     <dl class="row">
         <dt class="col-3 text-right">Value Type:</dt>
         <dd id="datatypeSelect" class="col-9">
-            <select2 [data]="dataTypeOptions" [value]="elt.valueDomain.datatype" [options]="options"
-                     width="100%" (valueChanged)="changedDatatype($event)"
-                     [disabled]="!canEdit">
-            </select2>
+            <ng-select [(ngModel)]="elt.valueDomain.datatype" [items]="dataTypeList" bindValue="value"
+                       placeholder="Select data type" [appendTo]="'body'" [hideSelected]="true"
+                       (change)="onDataTypeChange();" [disabled]="!canEdit">
+            </ng-select>
         </dd>
         <ng-container *ngIf="elt.valueDomain.definition">
             <dt class="col-3 text-right">Instructions:</dt>
@@ -20,7 +20,7 @@
                              [isAllowed]="canEdit"></cde-inline-edit>
         </dd>
         <dt class="col-3 text-right">Ids:</dt>
-        <dd id="identifiers" class="col-9">
+        <dd *ngIf="elt.valueDomain.ids?.length > 0" id="identifiers" class="col-9">
             <div *ngFor="let id of elt.valueDomain.ids">
                 {{id.source}}: {{id.id}}<span *ngIf="id.version">, version: </span>{{id.version}}
             </div>
@@ -77,6 +77,8 @@
                 <dt class="col-3 text-right">File:</dt>
                 <dd class="col-9"></dd>
             </ng-container>
+            <ng-container *ngSwitchCase="'Time'">
+            </ng-container>
             <ng-container *ngSwitchCase="'Externally Defined'">
                 <dt class="col-3 text-right">Link:</dt>
                 <dd class="col-9">
@@ -99,16 +101,6 @@
     </dl>
     <ng-container *ngIf="elt.valueDomain.datatype === 'Value List'">
         <h4>Permissible Value</h4>
-        <dl class="row">
-            <dt class="col-3 text-right">Datatype:</dt>
-            <dd class="col-9">
-                <cde-inline-select-edit [(value)]="elt.valueDomain.datatypeValueList.datatype"
-                                        [selectOptions]="dataTypeValueListOptions"
-                                        (save)="savePvDatatype($event);" [isAllowed]="canEdit">
-                </cde-inline-select-edit>
-            </dd>
-        </dl>
-
         <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
             <span *ngFor="let source of keys(SOURCES)" style="margin-left: 50px">
                 <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox"
