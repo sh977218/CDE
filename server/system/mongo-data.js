@@ -244,8 +244,11 @@ exports.addUser = function (user, callback) {
     new User(user).save(callback);
 };
 
-exports.siteadmins = function (callback) {
+exports.siteAdmins = function (callback) {
     User.find({'siteAdmin': true}).select('username email').exec(callback);
+};
+exports.orgAuthorities = function (callback) {
+    User.find({'roles': 'OrgAuthority'}).select('username').exec(callback);
 };
 
 exports.orgAdmins = function (callback) {

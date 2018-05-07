@@ -116,7 +116,6 @@ exports.orgCurators = function(req, res) {
     }
 };
 
-
 exports.orgAdmins = function(req, res) {
     if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
 
