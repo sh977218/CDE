@@ -171,7 +171,7 @@ let orgJson = {
 };
 schemas.orgJson = orgJson;
 
-schemas.orgSchema = new mongoose.Schema(orgJson);
+schemas.orgSchema = new mongoose.Schema(orgJson, {usePushEach: true});
 
 schemas.pushRegistration = new mongoose.Schema({
     features: [stringType],
