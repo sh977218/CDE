@@ -369,6 +369,7 @@ public class NlmCdeBaseTest {
     protected void goToOrgManagement() {
         clickElement(By.linkText("Org Management"));
     }
+
     protected void goToSiteManagement() {
         clickElement(By.linkText("Site Management"));
     }
@@ -1099,7 +1100,6 @@ public class NlmCdeBaseTest {
         textNotPresent("Confirm");
     }
 
-
     protected void addNewName(String designation, String definition, boolean isHtml, String[] tags) {
         clickElement(By.id("openNewNamingModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
@@ -1110,9 +1110,8 @@ public class NlmCdeBaseTest {
         if (tags != null) {
             String tagsInputXpath = "//*[@id='newTags']//input";
             for (String tag : tags) {
-                String selectTagXpath = "//span[contains(@class,'select2-results')]/ul//li[text()='" + tag + "']";
                 clickElement(By.xpath(tagsInputXpath));
-                clickElement(By.xpath(selectTagXpath));
+                selectNgSelectDropdownByText(tag);
                 textPresent(tag);
             }
         }
