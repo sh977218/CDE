@@ -315,7 +315,7 @@ schemas.commentSchema = new mongoose.Schema({
         eltType: Object.assign({enum: ["cde", "form", "board"]}, stringType),
         eltId: stringType
     }
-});
+}, {usePushEach: true,});
 
 schemas.helpItemSchema = new mongoose.Schema({
     permalink: stringType,

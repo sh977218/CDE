@@ -31,7 +31,7 @@ exports.save = function (req, res, dao, cb) {
                     res.status(403).send("not authorized");
                 } else if (elt.registrationState && elt.registrationState.registrationStatus) {
                     if ((elt.registrationState.registrationStatus === "Standard" ||
-                            elt.registrationState.registrationStatus === " Preferred Standard") && !req.user.siteAdmin) {
+                        elt.registrationState.registrationStatus === " Preferred Standard") && !req.user.siteAdmin) {
                         return res.status(403).send("Not authorized");
                     }
                     return dao.create(elt, req.user, function (err, savedItem) {
@@ -53,7 +53,7 @@ exports.save = function (req, res, dao, cb) {
                     res.status(403).send("Not authorized");
                 } else {
                     if ((item.registrationState.registrationStatus === "Standard" ||
-                            item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
+                        item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
                         res.status(403).send("This record is already standard.");
                     } else {
                         if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") &&
@@ -172,21 +172,21 @@ exports.removeAttachmentLinks = function (id, collection) {
 };
 
 exports.createApprovalMessage = function (user, role, type, details) {
-    var message = {
-        recipient: {recipientType: "role", name: role}
-        , author: {authorType: "user", name: user.username}
-        , date: new Date()
-        , type: type
-        , states: [{
-            action: String
-            , date: new Date()
-            , comment: String
+    let message = {
+        recipient: {recipientType: "role", name: role},
+        author: {authorType: "user", name: user.username},
+        date: new Date(),
+        type: type,
+        states: [{
+            action: String,
+            date: new Date(),
+            comment: String
         }]
     };
 
-    var emailContent = {
-        subject: "CDE Message Pending"
-        , body: "You have a pending message in NLM CDE application."
+    let emailContent = {
+        subject: "CDE Message Pending",
+        body: "You have a pending message in NLM CDE application."
     };
 
     if (type === "CommentApproval") message.typeCommentApproval = details;
@@ -315,69 +315,79 @@ exports.addComment = function (req, res, dao) {
 };
 
 exports.replyToComment = function (req, res) {
-    if (req.isAuthenticated()) {
+    if (!req.isAuthenticated()) res.status(403).send("You are not authorized.");
+    else {
         mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
-            if (err) return res.status(404).send("Comment not found");
-            let reply = {
-                user: req.user._id,
-                username: req.user.username,
-                created: new Date().toJSON(),
-                text: req.body.reply
-            };
-            if (!comment.replies) comment.replies = [];
-            if (!authorizationShared.canComment(req.user)) {
-                reply.pendingApproval = true;
-                var details = {
-                    element: {
-                        tinyId: comment.element.eltId,
-                        name: req.body.eltName
-                    },
-                    comment: {
-                        commentId: comment._id,
-                        replyIndex: comment.replies.length,
-                        text: req.body.reply
-                    }
+            if (err) {
+                dbLogger.logError({
+                    message: 'Error reply to comment',
+                    origin: 'comments/reply',
+                    stack: err,
+                    details: ''
+                });
+                res.status(500).send("Error reply to comment");
+            } else if (!comment) res.status(404).send("Comment not found.");
+            else {
+                let reply = {
+                    user: req.user._id,
+                    username: req.user.username,
+                    created: new Date().toJSON(),
+                    text: req.body.reply
                 };
-                exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
-            }
-            comment.replies.push(reply);
-            comment.save(err => {
-                if (err) {
-                    logging.errorLogger.error("Error: Cannot add comment.", {
-                        origin: "system.adminItemSvc.addComment",
-                        stack: new Error().stack
-                    });
-                    res.status(500).send("ERROR - Cannot save comment");
-                } else {
-                    ioServer.ioServer.of("/comment").emit('commentUpdated', {username: req.user.username});
-                    res.send({message: "Reply added"});
-                    if (req.user.username !== comment.username) {
-                        let message = {
-                            recipient: {recipientType: "user", name: comment.username},
-                            author: {authorType: "user", name: req.user.username},
-                            date: new Date(),
-                            type: "CommentReply",
-                            typeCommentReply: {
-                                // TODO change this when you merge board comments
-                                element: {
-                                    eltType: comment.element.eltType,
-                                    eltId: comment.element.eltId,
-                                    name: req.body.eltName
-                                },
-                                comment: {
-                                    commentId: comment._id,
-                                    text: reply.text
-                                }
-                            },
-                            states: []
-                        };
-                        mongo_data_system.createMessage(message);
-                    }
+                if (!comment.replies) comment.replies = [];
+                if (!authorizationShared.canComment(req.user)) {
+                    reply.pendingApproval = true;
+                    var details = {
+                        element: {
+                            tinyId: comment.element.eltId,
+                            name: req.body.eltName
+                        },
+                        comment: {
+                            commentId: comment._id,
+                            replyIndex: comment.replies.length,
+                            text: req.body.reply
+                        }
+                    };
+                    exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                 }
-            });
+                comment.replies.push(reply);
+                comment.save(err => {
+                    if (err) {
+                        logging.errorLogger.error("Error: Cannot add comment.", {
+                            origin: "system.adminItemSvc.addComment",
+                            stack: new Error().stack
+                        });
+                        res.status(500).send("ERROR - Cannot save comment");
+                    } else {
+                        ioServer.ioServer.of("/comment").emit('commentUpdated', {username: req.user.username});
+                        res.send({message: "Reply added"});
+                        if (req.user.username !== comment.username) {
+                            let message = {
+                                recipient: {recipientType: "user", name: comment.username},
+                                author: {authorType: "user", name: req.user.username},
+                                date: new Date(),
+                                type: "CommentReply",
+                                typeCommentReply: {
+                                    // TODO change this when you merge board comments
+                                    element: {
+                                        eltType: comment.element.eltType,
+                                        eltId: comment.element.eltId,
+                                        name: req.body.eltName
+                                    },
+                                    comment: {
+                                        commentId: comment._id,
+                                        text: reply.text
+                                    }
+                                },
+                                states: []
+                            };
+                            mongo_data_system.createMessage(message);
+                        }
+                    }
+                });
+            }
         });
-    } else {
-        res.status(403).send("You are not authorized.");
+
     }
 };
 
