@@ -400,7 +400,7 @@ schemas.jobQueue = mongoose.Schema({
     type: stringType,
     status: Object.assign({enum: ["Running"]}, stringType),
     error: stringType
-});
+}, {usePushEach: true});
 
 schemas.fs_files = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
