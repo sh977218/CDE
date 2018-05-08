@@ -121,15 +121,10 @@ let doSection = function (parent, section) {
 
 let idToName = {};
 
-
-let allSchemas = [];
-
-
-exports.formToSDC = function (form, renderer, cb) {
+exports.formToSDC = function ({form, renderer, validate}, cb) {
     let formDesign = builder.create({
         "FormDesign": {
             "@xmlns": "urn:ihe:qrph:sdc:2016",
-            "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "@xsi:schemaLocation": "http://healthIT.gov/sdc SDCFormDesign.xsd",
             "@ID": form.tinyId + "v" + form.version,
@@ -162,23 +157,26 @@ exports.formToSDC = function (form, renderer, cb) {
     idToName = {};
 
     let xmlStr = formDesign.end({pretty: false});
+    if (noSupport) cb("SDC Export does not support questions outside of sections. ");
 
-    validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err) {
-        if (err) {
-            dbLogger.logError({
-                message: "SDC Schema validation error: ",
-                origin: "sdcForm.formToSDC",
-                stack: err,
-                details: "formID: " + form._id
-            });
-            xmlStr = "<!-- Validation Error: " + err + " -->" + xmlStr;
-        }
-        if (noSupport) {
-            cb("SDC Export does not support questions outside of sections. ");
-        } else if (renderer === "defaultHtml") {
-            cb(null, "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr);
-        } else {
+    if (renderer === "defaultHtml") {
+        xmlStr = "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr;
+    }
+
+    if (validate) {
+        validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', err => {
+            if (err) {
+                dbLogger.logError({
+                    message: "SDC Schema validation error: ",
+                    origin: "sdcForm.formToSDC",
+                    stack: err,
+                    details: "formID: " + form._id
+                });
+                xmlStr = "<!-- Validation Error: " + err + " -->" + xmlStr;
+            }
             cb(null, xmlStr);
-        }
-    });
+        });
+    } else {
+        cb (null, xmlStr);
+    }
 };

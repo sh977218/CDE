@@ -110,7 +110,7 @@ exports.byId = function (req, res) {
                             return res.send(xmlForm);
                         });
                     } else if (req.query.subtype === 'sdc') {
-                        sdc.formToSDC(wholeForm, req.query.renderer, function (err, sdcForm) {
+                        sdc.formToSDC({form: wholeForm, rendered: req.query.renderer, validate: req.query.validate}, (err, sdcForm) => {
                             if (err) return res.send(err);
                             return res.send(sdcForm);
                         });
@@ -181,7 +181,7 @@ exports.byTinyId = function (req, res) {
                             return res.send(xmlForm);
                         });
                     else if (req.query.subtype === 'sdc')
-                        sdc.formToSDC(wholeForm, req.query.renderer, function (err, sdcForm) {
+                        sdc.formToSDC({form: wholeForm, renderer: req.query.renderer, validate: req.query.validate}, (err, sdcForm) => {
                             if (err) return res.send(err);
                             return res.send(sdcForm);
                         });
