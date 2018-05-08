@@ -20,7 +20,7 @@
     "npm": "1.2.x"
   },
   "napa": {
-    "feedback": "https://github.com/ivoviz/feedback.git"
+    "feedback": "https://github.com/ivoviz/feedback.git#master"
   },
   "dependencies": {
     "@std/esm": "0.14.0",
