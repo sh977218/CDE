@@ -10,17 +10,23 @@
     <button class="btn btn-warning ml-1" (click)="addSiteAdmin()" id="saveMessage">Make Admin</button>
 </form>
 
-<table class="table table-border table-responsive">
+<table class="table table-bordered table-responsive">
     <tr>
         <th>Site Admins:</th>
     </tr>
-    <tr>
+    <tr *ngFor="let user of siteAdmins">
         <td>
-            <div *ngFor="let user of siteAdmins">
-                <span id="existingSiteAdmin-{{index}}">{{user.username}}</span>
-                <i class="fa fa-trash-o hand-cursor" (click)="removeSiteAdmin(user._id)"
-                   id="removeSiteAdmin-{{index}}" title="Remove"></i>
-            </div>
+            <span id="existingSiteAdmin-{{index}}">{{user.username}}</span>
+            <i class="fa fa-trash-o hand-cursor" (click)="removeSiteAdmin(user._id)"
+               id="removeSiteAdmin-{{index}}" title="Remove"></i>
         </td>
+    </tr>
+</table>
+<table class="table table-bordered table-responsive">
+    <tr>
+        <th>Org Authorities:</th>
+    </tr>
+    <tr *ngFor="let user of orgAuthorities">
+        <td> {{user.username}}</td>
     </tr>
 </table>

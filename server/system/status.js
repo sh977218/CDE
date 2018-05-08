@@ -186,7 +186,7 @@ setInterval(() => {
                         subject: "Server Configuration Change"
                         , body: "Server Configuration Change from " + currentActiveNodes + " to " + activeNodes
                     };
-                    mongo_data_system.siteadmins(function(err, users) {
+                    mongo_data_system.siteAdmins(function(err, users) {
                         email.emailUsers(emailContent, users, function() {});
                     });
                 }
