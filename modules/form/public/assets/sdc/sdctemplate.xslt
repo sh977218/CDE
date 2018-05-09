@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="us-ascii"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	version="1.0" xmlns:sr="http://www.cap.org/pert/2009/01/"
-	xmlns:x="urn:ihe:qrph:sdc:2016">
-	
-  <xsl:output encoding="us-ascii" method="html" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
-  
-  
+				version="1.0" xmlns:sr="http://www.cap.org/pert/2009/01/"
+				xmlns:x="urn:ihe:qrph:sdc:2016">
+
+	<xsl:output encoding="us-ascii" method="html" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
+
+
 	<xsl:variable name="show-toc" select="'false'"/>
 	<xsl:variable name="debug" select="'false'"/>
 
 	<xsl:template match="/">
-		
+
 		<xsl:variable name ="required" select="string(//Header/Property[@type='web_posting_date meta']/@val)"/>
-        <html>
-            <head>
-			<title><xsl:value-of select="//x:Header/@title"/></title>
-			
-			<link rel="stylesheet" href="sdctemplate.css" type="text/css" />
-			
-			
-            <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-			<!--<script type="text/javascript" src="sdc.js"></script>-->
-			
+		<html>
+			<head>
+				<title><xsl:value-of select="//x:Header/@title"/></title>
+
+				<link rel="stylesheet" href="/form/public/assets/sdc/sdctemplate.css" type="text/css" />
+
+
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+				<!--<script type="text/javascript" src="sdc.js"></script>-->
+
 				<script type="text/javascript">
 				
 					<xsl:text disable-output-escaping="yes" >
@@ -1440,35 +1440,35 @@
 
 						]]>
 					</xsl:text>
-					
+
 				</script>
-				
-			
-			 
-            </head>
-            <body align="left">
-			
-			<nav style="position: fixed; font-size:smaller;">
-				<!--<a id="linkxml" href="#" onclick="toggleviewxml()">Show Xml</a>
-				<br />-->
-			<!--
-               <a href="##" onclick="toggle_metadata();">
-                  Toggle Metadata
-               </a>
-               <br/>-->
-               <a href="##" onclick="toggle_id();">
-                  Toggle IDs
-               </a>
-              <br/>
-            </nav>
-            	
-            	<!--hidden textbox to store rawxml at run time-->
-            	<!--<input type="hidden" id = "rawxml"/>-->
-            	<!--<textarea rows="10" style="width:90%;margin:40px;background-color:lightyellow" id = 'rawxml'> 
-		               <xsl:copy-of select="node()"/>
-		               
-         		</textarea>	-->
-				
+
+
+
+			</head>
+			<body align="left">
+
+				<nav style="position: fixed; font-size:smaller;">
+					<!--<a id="linkxml" href="#" onclick="toggleviewxml()">Show Xml</a>
+                    <br />-->
+					<!--
+                       <a href="##" onclick="toggle_metadata();">
+                          Toggle Metadata
+                       </a>
+                       <br/>-->
+					<a href="##" onclick="toggle_id();">
+						Toggle IDs
+					</a>
+					<br/>
+				</nav>
+
+				<!--hidden textbox to store rawxml at run time-->
+				<!--<input type="hidden" id = "rawxml"/>-->
+				<!--<textarea rows="10" style="width:90%;margin:40px;background-color:lightyellow" id = 'rawxml'>
+                       <xsl:copy-of select="node()"/>
+
+                 </textarea>	-->
+
 				<div class="BodyGroup">
 					<!--
 					<xsl:if test="$show-toc='true' and count($template-links/template-link) &gt; 0">
@@ -1477,20 +1477,20 @@
 						</xsl:attribute>
 					</xsl:if>
 					-->
-					
+
 					<input type="hidden" id="rawxml" />
-					
+
 					<div id="MessageData" style="display:none;">
 						<table class="HeaderGroup" align="center">
 							<tr>
 								<td>
-									
+
 									<div class="TopHeader">
 										Structured Report Data
 									</div>
 									<div id="MessageDataResult" class="MessageDataResult"/>
-									
-									
+
+
 									<div class="SubmitButton">
 										<input type="button" value="Back" onClick="javascript:closeMessageData()" />
 									</div>
@@ -1498,33 +1498,33 @@
 							</tr>
 						</table>
 					</div>
-					
+
 					<div id="response" style="display:none;">
 					</div>
-					
+
 					<div id="FormData">
 						<form id="checklist" name="checklist" method="post" >
 							<xsl:attribute name="action">
 								<!--<xsl:value-of select="$form-action"/>-->
 							</xsl:attribute>
-							
+
 							<!--formInstanceURI, formInstanceVersionURI, formPreviousInstanceVersionURI-->
-							<div class="form-version">								
+							<div class="form-version">
 								<xsl:if test="//x:FormDesign/@formInstanceURI">
 									<p>
-										Form Instance: 
+										Form Instance:
 										<xsl:value-of select="//x:FormDesign/@formInstanceURI"/>
 									</p>
 								</xsl:if>
 								<xsl:if test="//x:FormDesign/@formInstanceVersionURI">
 									<p>
-										Version: 
+										Version:
 										<xsl:value-of select="//x:FormDesign/@formInstanceVersionURI"/>
 									</p>
 								</xsl:if>
 								<xsl:if test="//x:FormDesign/@formPreviousInstanceVersionURI">
 									<p>
-										Previous Version: 
+										Previous Version:
 										<xsl:value-of select="//x:FormDesign/@formPreviousInstanceVersionURI"/>
 									</p>
 								</xsl:if>
@@ -1532,31 +1532,7 @@
 
 							<!--show properties under form-design-->
 							<div>
-							<xsl:for-each select="//x:FormDesign/x:Property">
-								<xsl:variable name="textstyle" select="@styleClass"/>
-								<p class='{$textstyle}'>
-									<b><xsl:value-of select="@propName"/></b>
-									<xsl:if test="@propName">
-										:
-									</xsl:if>
-									<xsl:value-of select="@val"/>
-								</p>
-																
-							</xsl:for-each>
-								
-							</div>
-							<!--show header-->
-							<xsl:if test="//x:Header">
-								<xsl:variable name="title_style" select="//x:Header/@styleClass"/>
-								<xsl:variable name='title_id' select="//x:Header/@ID"/>
-								<div ID = '{$title_id}' class="Header_{$title_style}">								
-									<xsl:value-of select="//x:Header/@title"/>
-								</div>
-								<div style="clear:both"/>
-								<hr/>
-								
-								<div>
-								<xsl:for-each select="//x:Header/x:Property">
+								<xsl:for-each select="//x:FormDesign/x:Property">
 									<xsl:variable name="textstyle" select="@styleClass"/>
 									<p class='{$textstyle}'>
 										<b><xsl:value-of select="@propName"/></b>
@@ -1565,25 +1541,49 @@
 										</xsl:if>
 										<xsl:value-of select="@val"/>
 									</p>
-																	
+
 								</xsl:for-each>
-									
+
+							</div>
+							<!--show header-->
+							<xsl:if test="//x:Header">
+								<xsl:variable name="title_style" select="//x:Header/@styleClass"/>
+								<xsl:variable name='title_id' select="//x:Header/@ID"/>
+								<div ID = '{$title_id}' class="Header_{$title_style}">
+									<xsl:value-of select="//x:Header/@title"/>
+								</div>
+								<div style="clear:both"/>
+								<hr/>
+
+								<div>
+									<xsl:for-each select="//x:Header/x:Property">
+										<xsl:variable name="textstyle" select="@styleClass"/>
+										<p class='{$textstyle}'>
+											<b><xsl:value-of select="@propName"/></b>
+											<xsl:if test="@propName">
+												:
+											</xsl:if>
+											<xsl:value-of select="@val"/>
+										</p>
+
+									</xsl:for-each>
+
 								</div>
 							</xsl:if>
 							<div style="clear:both"></div>
-							
-							<!--Demo-->		
+
+							<!--Demo-->
 							<xsl:if test="//x:DemogFormDesign">
 								<a style="text-decoration:none;color:black;font-weight:bold;font-size:large" id="demshowhide" href="#" onclick="ShowHideDemo()">+ Demographics</a>
-								<div id="divdemo" style="display:none">								
+								<div id="divdemo" style="display:none">
 									<xsl:apply-templates select="//x:DemogFormDesign/x:Body/x:ChildItems/x:Section" mode="level1" >
 										<xsl:with-param name="required" select="$required" />
-										<xsl:with-param name="parentId" select="'*'"/>  
+										<xsl:with-param name="parentId" select="'*'"/>
 										<xsl:with-param name="defaultStyle" select="'TopHeaderDemo'"/>
 									</xsl:apply-templates>
 									<xsl:apply-templates select="//x:DemogFormDesign/x:Body/x:ChildItems/x:Question" mode="level2" >
 										<xsl:with-param name="required" select="$required" />
-										<xsl:with-param name="parentId" select="'*'"/>   
+										<xsl:with-param name="parentId" select="'*'"/>
 									</xsl:apply-templates>
 								</div>
 							</xsl:if>
@@ -1591,181 +1591,56 @@
 							<!--show body-->
 							<xsl:apply-templates select="//x:FormDesign/x:Body/x:ChildItems/x:Section|//x:FormDesign/x:Body/x:ChildItems/x:DisplayedItem" mode="level1">
 								<xsl:with-param name="required" select="$required" />
-								<xsl:with-param name="parentId" select="'*'"/> <!--parentId = * for outermost --> 
+								<xsl:with-param name="parentId" select="'*'"/> <!--parentId = * for outermost -->
 								<xsl:with-param name="defaultStyle" select="'TopHeader'"/>
 							</xsl:apply-templates>
 							<xsl:apply-templates select="//x:FormDesign/x:Body/x:ChildItems/x:Question" mode="level2" >
 								<xsl:with-param name="required" select="$required" />
-								<xsl:with-param name="parentId" select="'*'"/>  <!--parentId = * for outermost --> 
+								<xsl:with-param name="parentId" select="'*'"/>  <!--parentId = * for outermost -->
 							</xsl:apply-templates>
-							
+
 							<!--<xsl:if test="contains($form-action, 'http') or contains($form-action, 'javascript')">-->
-								<!--remove submit button for the desktop verion-->
-								
-								<div class="SubmitButton">
-									<input type="submit" id="send" value="Submit" onclick="javascript:openMessageData(1);return false;"/>
-								</div>
+							<!--remove submit button for the desktop verion-->
+
+							<div class="SubmitButton">
+								<input type="submit" id="send" value="Submit" onclick="javascript:openMessageData(1);return false;"/>
+							</div>
 							<!--</xsl:if>-->
 						</form>
 					</div>
 				</div>
-            </body>
-        </html>
-    </xsl:template>
-   
-    <xsl:template match="//x:Header">
-       
-       
-    </xsl:template>
-	
+			</body>
+		</html>
+	</xsl:template>
+
+	<xsl:template match="//x:Header">
+
+
+	</xsl:template>
+
 	<!--sections within body and other sections directly inside sections-->
 	<xsl:template match="x:Section" mode="level1">
-		<xsl:param name="parentSectionId"/>	
+		<xsl:param name="parentSectionId"/>
 		<xsl:param name="defaultStyle"/>
 		<!--<xsl:if test="string-length(@title) &gt; 0">--> <!--do not show if there is no title-->
-			<xsl:if test="not (@visible) or (@visible='true')">
-				<xsl:variable name="required" select="true"/>
-				<xsl:variable name="style" select="@styleClass"/>
-				<!--<xsl:variable name="defaultStyle" select="'TopHeader'"/>-->
-				<xsl:variable name="sectionId" select="concat('s',@ID)"/>
-				<div> 
-					<xsl:attribute name="id">
-						<xsl:value-of select="$sectionId"/>						
-					</xsl:attribute>
-	  
-					<input id = "maxcardinality" type="hidden">
-						<xsl:attribute name="value">
-							<xsl:value-of select="@maxCard"/>
-						</xsl:attribute>						
-					</input>
-					
-					<!-- table is repeated if cardinality is greater than 1 and id value will be incremented-->
-					<table class="HeaderTable" align="center">					   
-					   <xsl:attribute name="id">
-						<xsl:value-of select="$sectionId"/>
-					   </xsl:attribute>
-						<tr>
-							<td>								
-								<xsl:choose>
-									<xsl:when test="$style!=''">
-										<div class="{$style} collapsable">										
-											<xsl:value-of select="@title"/>
-										</div>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:choose>
-											<xsl:when test="count(ancestor::x:Section)= 0">
-												<div class="{$defaultStyle} collapsable">
-													<div style="display:inline" class="idDisplay">
-														<xsl:value-of select="substring-before(@ID, '.')"/> -
-													</div>
-													<xsl:value-of select="@title"/>	
-													<div style="display:inline" class="MetadataDisplay">
-														<!---metadata-->
-													</div>													
-												</div>
-												<div style='clear:both'/>
-											</xsl:when>
-											<xsl:when test="count(ancestor::x:Section)= 1">
-												<div class="{$defaultStyle}2 collapsable">
-													<div style="display:inline" class="idDisplay">
-														<xsl:value-of select="substring-before(@ID, '.')"/> -
-													</div>
-													<xsl:value-of select="@title"/>	
-													<div style="display:inline" class="MetadataDisplay">
-														<!---metadata-->
-													</div>													
-												</div>
-												<div style='clear:both'/>
-											</xsl:when>
-											<xsl:when test="count(ancestor::x:Section)= 2">
-												<div class="{$defaultStyle}2 collapsable">
-													<div style="display:inline" class="idDisplay">
-														<xsl:value-of select="substring-before(@ID, '.')"/> -
-													</div>
-													<xsl:value-of select="@title"/>	
-													<div style="display:inline" class="MetadataDisplay">
-														<!---metadata-->
-													</div>
-												</div>
-											</xsl:when>
-											<xsl:otherwise>
-												<div class="{$defaultStyle}2 collapsable">
-													<div style="display:inline" class="idDisplay">
-														<xsl:value-of select="substring-before(@ID, '.')"/> -
-													</div>
-													<xsl:value-of select="@title"/>	
-													<div style="display:inline" class="MetadataDisplay">
-														<!---metadata-->
-													</div>
-												</div>
-											</xsl:otherwise>
-											
-										</xsl:choose>
-										
-									</xsl:otherwise>
-								</xsl:choose>
-								<!--show link here?-->
-								<xsl:for-each select="x:Link">					
-									<xsl:call-template name="handle_link"/>
-								</xsl:for-each>
-
-								<xsl:choose>
-									<xsl:when test="$required='false'">
-
-									</xsl:when>
-									<xsl:otherwise>	
-										<xsl:apply-templates select="x:ChildItems/x:Question | x:ChildItems/x:Section | x:ChildItems/x:DisplayedItem" mode="level1" >
-											<xsl:with-param name="required" select="'true'"/>
-											<xsl:with-param name="parentSectionId" select="$sectionId"/>
-											<xsl:with-param name="defaultStyle" select="$defaultStyle"/>
-										</xsl:apply-templates>
-
-									</xsl:otherwise>
-								</xsl:choose>
-								<div style="clear:both"/>
-								
-								<xsl:if test="@maxCard&gt;1">
-								
-									<input type="button" class="btnAdd" onclick="addSection(this)" value="+"/>
-									<input type="button" class ="btnRemove" onclick="removeSection(this)" value="-">
-										<xsl:attribute name = "style">
-											<xsl:value-of select="'visibility:hidden;'"/>
-										</xsl:attribute>
-									</input>
-								</xsl:if>
-							</td>
-						</tr>
-					</table>
-				</div>
-			
-			</xsl:if>
-		<!--</xsl:if>-->
-	</xsl:template>
-	
-	<!--section within a list item -->
-	<xsl:template match="x:Section" mode="level2">
-		<xsl:param name="parentSectionId"/>	
-		<xsl:param name="defaultStyle"/>		
 		<xsl:if test="not (@visible) or (@visible='true')">
 			<xsl:variable name="required" select="true"/>
 			<xsl:variable name="style" select="@styleClass"/>
-			<!--<xsl:variable name="defaultStyle" select="'TopHeader2'"/>-->
+			<!--<xsl:variable name="defaultStyle" select="'TopHeader'"/>-->
 			<xsl:variable name="sectionId" select="concat('s',@ID)"/>
-			
-			<div class="section_wthin_list"> 
+			<div>
 				<xsl:attribute name="id">
-					<xsl:value-of select="$sectionId"/>					
+					<xsl:value-of select="$sectionId"/>
 				</xsl:attribute>
-				
+
 				<input id = "maxcardinality" type="hidden">
 					<xsl:attribute name="value">
 						<xsl:value-of select="@maxCard"/>
-					</xsl:attribute>					
+					</xsl:attribute>
 				</input>
-				
+
 				<!-- table is repeated if cardinality is greater than 1 and id value will be incremented-->
-				<table class="HeaderTableChild" align="center">					
+				<table class="HeaderTable" align="center">
 					<xsl:attribute name="id">
 						<xsl:value-of select="$sectionId"/>
 					</xsl:attribute>
@@ -1773,9 +1648,134 @@
 						<td>
 							<xsl:choose>
 								<xsl:when test="$style!=''">
-									<div class="{$style}">	
+									<div class="{$style} collapsable">
+										<xsl:value-of select="@title"/>
+									</div>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:choose>
+										<xsl:when test="count(ancestor::x:Section)= 0">
+											<div class="{$defaultStyle} collapsable">
+												<div style="display:inline" class="idDisplay">
+													<xsl:value-of select="substring-before(@ID, '.')"/> -
+												</div>
+												<xsl:value-of select="@title"/>
+												<div style="display:inline" class="MetadataDisplay">
+													<!---metadata-->
+												</div>
+											</div>
+											<div style='clear:both'/>
+										</xsl:when>
+										<xsl:when test="count(ancestor::x:Section)= 1">
+											<div class="{$defaultStyle}2 collapsable">
+												<div style="display:inline" class="idDisplay">
+													<xsl:value-of select="substring-before(@ID, '.')"/> -
+												</div>
+												<xsl:value-of select="@title"/>
+												<div style="display:inline" class="MetadataDisplay">
+													<!---metadata-->
+												</div>
+											</div>
+											<div style='clear:both'/>
+										</xsl:when>
+										<xsl:when test="count(ancestor::x:Section)= 2">
+											<div class="{$defaultStyle}2 collapsable">
+												<div style="display:inline" class="idDisplay">
+													<xsl:value-of select="substring-before(@ID, '.')"/> -
+												</div>
+												<xsl:value-of select="@title"/>
+												<div style="display:inline" class="MetadataDisplay">
+													<!---metadata-->
+												</div>
+											</div>
+										</xsl:when>
+										<xsl:otherwise>
+											<div class="{$defaultStyle}2 collapsable">
+												<div style="display:inline" class="idDisplay">
+													<xsl:value-of select="substring-before(@ID, '.')"/> -
+												</div>
+												<xsl:value-of select="@title"/>
+												<div style="display:inline" class="MetadataDisplay">
+													<!---metadata-->
+												</div>
+											</div>
+										</xsl:otherwise>
+
+									</xsl:choose>
+
+								</xsl:otherwise>
+							</xsl:choose>
+							<!--show link here?-->
+							<xsl:for-each select="x:Link">
+								<xsl:call-template name="handle_link"/>
+							</xsl:for-each>
+
+							<xsl:choose>
+								<xsl:when test="$required='false'">
+
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:apply-templates select="x:ChildItems/x:Question | x:ChildItems/x:Section | x:ChildItems/x:DisplayedItem" mode="level1" >
+										<xsl:with-param name="required" select="'true'"/>
+										<xsl:with-param name="parentSectionId" select="$sectionId"/>
+										<xsl:with-param name="defaultStyle" select="$defaultStyle"/>
+									</xsl:apply-templates>
+
+								</xsl:otherwise>
+							</xsl:choose>
+							<div style="clear:both"/>
+
+							<xsl:if test="@maxCard&gt;1">
+
+								<input type="button" class="btnAdd" onclick="addSection(this)" value="+"/>
+								<input type="button" class ="btnRemove" onclick="removeSection(this)" value="-">
+									<xsl:attribute name = "style">
+										<xsl:value-of select="'visibility:hidden;'"/>
+									</xsl:attribute>
+								</input>
+							</xsl:if>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+		</xsl:if>
+		<!--</xsl:if>-->
+	</xsl:template>
+
+	<!--section within a list item -->
+	<xsl:template match="x:Section" mode="level2">
+		<xsl:param name="parentSectionId"/>
+		<xsl:param name="defaultStyle"/>
+		<xsl:if test="not (@visible) or (@visible='true')">
+			<xsl:variable name="required" select="true"/>
+			<xsl:variable name="style" select="@styleClass"/>
+			<!--<xsl:variable name="defaultStyle" select="'TopHeader2'"/>-->
+			<xsl:variable name="sectionId" select="concat('s',@ID)"/>
+
+			<div class="section_wthin_list">
+				<xsl:attribute name="id">
+					<xsl:value-of select="$sectionId"/>
+				</xsl:attribute>
+
+				<input id = "maxcardinality" type="hidden">
+					<xsl:attribute name="value">
+						<xsl:value-of select="@maxCard"/>
+					</xsl:attribute>
+				</input>
+
+				<!-- table is repeated if cardinality is greater than 1 and id value will be incremented-->
+				<table class="HeaderTableChild" align="center">
+					<xsl:attribute name="id">
+						<xsl:value-of select="$sectionId"/>
+					</xsl:attribute>
+					<tr>
+						<td>
+							<xsl:choose>
+								<xsl:when test="$style!=''">
+									<div class="{$style}">
 										<div style="display:inline" class="idDisplay">
-											
+
 											<xsl:value-of select="substring-before(@ID, '.')"/> -
 										</div>
 										<xsl:value-of select="@title"/>
@@ -1797,26 +1797,26 @@
 								</xsl:otherwise>
 							</xsl:choose>
 							<!--show link here?-->
-							<xsl:for-each select="x:Link">					
+							<xsl:for-each select="x:Link">
 								<xsl:call-template name="handle_link"/>
 							</xsl:for-each>
 
 							<xsl:choose>
 								<xsl:when test="$required='false'">
-									
+
 								</xsl:when>
-								<xsl:otherwise>	
+								<xsl:otherwise>
 									<xsl:apply-templates select="x:ChildItems/x:Question | x:ChildItems/x:Section" mode="level2" >
 										<xsl:with-param name="required" select="'true'"/>
 										<xsl:with-param name="parentSectionId" select="$sectionId"/>
 										<xsl:with-param name="defaultStyle" select="$defaultStyle"/>
 									</xsl:apply-templates>
-									
+
 								</xsl:otherwise>
 							</xsl:choose>
 							<div style="clear:both"/>
 							<xsl:if test="@maxCard&gt;1">
-							
+
 								<input type="button" class="btnAdd" onclick="addSection(this)" value="+"/>
 								<input type="button" class ="btnRemove" onclick="removeSection(this)" value="-">
 									<xsl:attribute name = "style">
@@ -1828,135 +1828,40 @@
 					</tr>
 				</table>
 			</div>
-			
+
 		</xsl:if>
 	</xsl:template>
-	
+
 	<!--question in section-->
 	<xsl:template match="x:Question" mode="level1">
 		<xsl:param name="parentSectionId"/>
-		<xsl:variable name="questionId" select="concat('q',@ID)"/>		            
-    		<input type="hidden" class="TextBox">
-				<xsl:attribute name="name">
-					<xsl:value-of select="$questionId"/>
-				</xsl:attribute>				
-				<xsl:attribute name="value">
-					<xsl:value-of select="@title"/>
-				</xsl:attribute>
-    		</input>
-    
+		<xsl:variable name="questionId" select="concat('q',@ID)"/>
+		<input type="hidden" class="TextBox">
+			<xsl:attribute name="name">
+				<xsl:value-of select="$questionId"/>
+			</xsl:attribute>
+			<xsl:attribute name="value">
+				<xsl:value-of select="@title"/>
+			</xsl:attribute>
+		</input>
+
 		<div class="QuestionInSection">   <!--two columns-->
 			<div class="QuestionTitle">
 				<div style="display:inline" class="idDisplay">
 					<xsl:value-of select="substring-before(@ID, '.')"/> -
 				</div>
-				<xsl:value-of select="@title"/> 
+				<xsl:value-of select="@title"/>
 				<div style="display:inline" class="metadata">
 					<!---metadata-->
 				</div>
 				<xsl:if test="not(x:ResponseField)">
-					 <a class="QuestionReset">
-					  <xsl:attribute name="href">
-						 javascript:resetAnswer('<xsl:value-of select="substring($questionId,2)"/>')
-					  </xsl:attribute>
-					  <xsl:text>(reset)</xsl:text>
+					<a class="QuestionReset">
+						<xsl:attribute name="href">
+							javascript:resetAnswer('<xsl:value-of select="substring($questionId,2)"/>')
+						</xsl:attribute>
+						<xsl:text>(reset)</xsl:text>
 					</a>
 				</xsl:if>
-				<xsl:if test="x:ResponseField"> 
-					<input type="text" class="TextBox">
-						<xsl:attribute name="name">
-							<xsl:value-of select="substring($questionId,2)"/>
-						</xsl:attribute>
-						<xsl:attribute name="value">
-							<xsl:value-of select="x:ResponseField/x:Response//@val"/>
-						</xsl:attribute>
-					</input>
-				</xsl:if>
-				<!--show link here?-->
-				<xsl:for-each select="x:Link">					
-					<xsl:call-template name="handle_link"/>
-				</xsl:for-each>
-
-			</div>
-			
-			<div style="clear:both;"/>
-			
-			<xsl:if test="x:ListField">
-			  <xsl:apply-templates select="x:ListField" mode="level1">
-				  <xsl:with-param name="questionId" select="$questionId" />
-				  <xsl:with-param name="parentSectionId" select="$parentSectionId" />
-			  </xsl:apply-templates>
-			</xsl:if>
-			
-			<!--11/13/2016: question within question-->
-			<div style="clear:both;"/>
-			<xsl:if test="x:ChildItems/x:Question">				
-				<xsl:apply-templates select="x:ChildItems/x:Question" mode="level3">
-					<xsl:with-param name="parentSectionId" select="$parentSectionId" />
-				</xsl:apply-templates>
-			</xsl:if>
-			
-			</div>
-		
-	</xsl:template>
-
-	
-	<!--question in list item-->
-<xsl:template match="x:Question" mode="level2">
-	<xsl:param name="parentSectionId"/>
-	<xsl:variable name="questionId" select="concat('q',@ID)"/>
-
-    <input type="hidden" class="TextBox">
-      <xsl:attribute name="name">
-        <xsl:value-of select="$questionId"/>
-      </xsl:attribute>
-      <xsl:attribute name="value">
-      <xsl:value-of select="@title"/>
-      </xsl:attribute>
-    </input>
-    
-	<div class="QuestionInListItem"> 	  
-		<xsl:choose>
-			<!--not showing the hidden question-->
-			<xsl:when test="string-length(@title)&gt;0">
-				<div class="QuestionTitle">
-					<div style="display:inline" class="idDisplay">
-						<xsl:value-of select="substring-before(@ID, '.')"/> -
-					</div>
-					<xsl:value-of select="@title"/> 
-					<div style="display:inline" class="MetadataDisplay">
-						<!---metadata-->
-					</div>
-					<xsl:if test="not(x:ResponseField)">
-					 <a class="QuestionReset">
-					  <xsl:attribute name="href">
-						 javascript:resetAnswer('<xsl:value-of select="substring($questionId,2)"/>')
-					  </xsl:attribute>
-					  <xsl:text>(reset)</xsl:text>
-					</a>
-					</xsl:if>
-					<xsl:if test="x:ResponseField">
-						<input type="text" class="TextBox">
-							<xsl:attribute name="name">
-								<xsl:value-of select="substring($questionId,2)"/> <!--drop q-->
-							</xsl:attribute>
-							<xsl:attribute name="value">
-								<xsl:value-of select="x:ResponseField/x:Response//@val"/>
-							</xsl:attribute>
-						</input>
-					</xsl:if>
-				</div>
-			</xsl:when>
-			<xsl:otherwise>
-				<!--reset for hidden field-->
-				<xsl:if test="not(x:ResponseField)">
-						<a class="QuestionReset">
-						  <xsl:attribute name="href">
-							 javascript:resetAnswer('<xsl:value-of select="substring($questionId,2)"/>')
-						  </xsl:attribute>
-						  <xsl:text>(reset)</xsl:text>
-						</a>
-					</xsl:if>
 				<xsl:if test="x:ResponseField">
 					<input type="text" class="TextBox">
 						<xsl:attribute name="name">
@@ -1967,43 +1872,138 @@
 						</xsl:attribute>
 					</input>
 				</xsl:if>
-			</xsl:otherwise>
-		</xsl:choose>		
-		
-		<div style="clear:both;"/>
-		<xsl:if test="x:ListField">
-    		<xsl:apply-templates select="x:ListField" mode="level1">
-				<xsl:with-param name="questionId" select="$questionId" />
-				<xsl:with-param name="parentSectionId" select="$parentSectionId" />
-        	</xsl:apply-templates>
-		</xsl:if>
-		
-		<!--11/13/2016: question within question-->
-		<!--<xsl:if test="x:ChildItems/x:Section">			-->
-			<xsl:apply-templates select="x:ChildItems/x:Section | x:ChildItems/x:Question" mode="level2">
-				<xsl:with-param name="parentSectionId" select="$parentSectionId" />
-				<xsl:with-param name="defaultStyle" select="'TopHeader2'"/>
-			</xsl:apply-templates>
-		<!--</xsl:if>-->
-		
-	</div>
+				<!--show link here?-->
+				<xsl:for-each select="x:Link">
+					<xsl:call-template name="handle_link"/>
+				</xsl:for-each>
 
-</xsl:template>
+			</div>
 
-	<!--question in question-->
-	<xsl:template match="x:Question" mode="level3">
+			<div style="clear:both;"/>
+
+			<xsl:if test="x:ListField">
+				<xsl:apply-templates select="x:ListField" mode="level1">
+					<xsl:with-param name="questionId" select="$questionId" />
+					<xsl:with-param name="parentSectionId" select="$parentSectionId" />
+				</xsl:apply-templates>
+			</xsl:if>
+
+			<!--11/13/2016: question within question-->
+			<div style="clear:both;"/>
+			<xsl:if test="x:ChildItems/x:Question">
+				<xsl:apply-templates select="x:ChildItems/x:Question" mode="level3">
+					<xsl:with-param name="parentSectionId" select="$parentSectionId" />
+				</xsl:apply-templates>
+			</xsl:if>
+
+		</div>
+
+	</xsl:template>
+
+
+	<!--question in list item-->
+	<xsl:template match="x:Question" mode="level2">
 		<xsl:param name="parentSectionId"/>
-		<xsl:variable name="questionId" select="concat('q',@ID)"/>		            
+		<xsl:variable name="questionId" select="concat('q',@ID)"/>
+
 		<input type="hidden" class="TextBox">
 			<xsl:attribute name="name">
 				<xsl:value-of select="$questionId"/>
-			</xsl:attribute>				
+			</xsl:attribute>
 			<xsl:attribute name="value">
 				<xsl:value-of select="@title"/>
 			</xsl:attribute>
 		</input>
-		
-		<div class="QuestionInQuestion">   
+
+		<div class="QuestionInListItem">
+			<xsl:choose>
+				<!--not showing the hidden question-->
+				<xsl:when test="string-length(@title)&gt;0">
+					<div class="QuestionTitle">
+						<div style="display:inline" class="idDisplay">
+							<xsl:value-of select="substring-before(@ID, '.')"/> -
+						</div>
+						<xsl:value-of select="@title"/>
+						<div style="display:inline" class="MetadataDisplay">
+							<!---metadata-->
+						</div>
+						<xsl:if test="not(x:ResponseField)">
+							<a class="QuestionReset">
+								<xsl:attribute name="href">
+									javascript:resetAnswer('<xsl:value-of select="substring($questionId,2)"/>')
+								</xsl:attribute>
+								<xsl:text>(reset)</xsl:text>
+							</a>
+						</xsl:if>
+						<xsl:if test="x:ResponseField">
+							<input type="text" class="TextBox">
+								<xsl:attribute name="name">
+									<xsl:value-of select="substring($questionId,2)"/> <!--drop q-->
+								</xsl:attribute>
+								<xsl:attribute name="value">
+									<xsl:value-of select="x:ResponseField/x:Response//@val"/>
+								</xsl:attribute>
+							</input>
+						</xsl:if>
+					</div>
+				</xsl:when>
+				<xsl:otherwise>
+					<!--reset for hidden field-->
+					<xsl:if test="not(x:ResponseField)">
+						<a class="QuestionReset">
+							<xsl:attribute name="href">
+								javascript:resetAnswer('<xsl:value-of select="substring($questionId,2)"/>')
+							</xsl:attribute>
+							<xsl:text>(reset)</xsl:text>
+						</a>
+					</xsl:if>
+					<xsl:if test="x:ResponseField">
+						<input type="text" class="TextBox">
+							<xsl:attribute name="name">
+								<xsl:value-of select="substring($questionId,2)"/>
+							</xsl:attribute>
+							<xsl:attribute name="value">
+								<xsl:value-of select="x:ResponseField/x:Response//@val"/>
+							</xsl:attribute>
+						</input>
+					</xsl:if>
+				</xsl:otherwise>
+			</xsl:choose>
+
+			<div style="clear:both;"/>
+			<xsl:if test="x:ListField">
+				<xsl:apply-templates select="x:ListField" mode="level1">
+					<xsl:with-param name="questionId" select="$questionId" />
+					<xsl:with-param name="parentSectionId" select="$parentSectionId" />
+				</xsl:apply-templates>
+			</xsl:if>
+
+			<!--11/13/2016: question within question-->
+			<!--<xsl:if test="x:ChildItems/x:Section">			-->
+			<xsl:apply-templates select="x:ChildItems/x:Section | x:ChildItems/x:Question" mode="level2">
+				<xsl:with-param name="parentSectionId" select="$parentSectionId" />
+				<xsl:with-param name="defaultStyle" select="'TopHeader2'"/>
+			</xsl:apply-templates>
+			<!--</xsl:if>-->
+
+		</div>
+
+	</xsl:template>
+
+	<!--question in question-->
+	<xsl:template match="x:Question" mode="level3">
+		<xsl:param name="parentSectionId"/>
+		<xsl:variable name="questionId" select="concat('q',@ID)"/>
+		<input type="hidden" class="TextBox">
+			<xsl:attribute name="name">
+				<xsl:value-of select="$questionId"/>
+			</xsl:attribute>
+			<xsl:attribute name="value">
+				<xsl:value-of select="@title"/>
+			</xsl:attribute>
+		</input>
+
+		<div class="QuestionInQuestion">
 			<div class="QuestionTitle">
 				<div style="display:inline" class="idDisplay">
 					<xsl:value-of select="substring-before(@ID, '.')"/> -
@@ -2013,14 +2013,14 @@
 					<!---metadata-->
 				</div>
 				<xsl:if test="not(x:ResponseField)">
-					 <a class="QuestionReset">
-					  <xsl:attribute name="href">
-						 javascript:resetAnswer('<xsl:value-of select="substring($questionId,2)"/>')
-					  </xsl:attribute>
-					  <xsl:text>(reset)</xsl:text>
+					<a class="QuestionReset">
+						<xsl:attribute name="href">
+							javascript:resetAnswer('<xsl:value-of select="substring($questionId,2)"/>')
+						</xsl:attribute>
+						<xsl:text>(reset)</xsl:text>
 					</a>
-				</xsl:if>				
-				<xsl:if test="x:ResponseField"> 
+				</xsl:if>
+				<xsl:if test="x:ResponseField">
 					<input type="text" class="TextBox">
 						<xsl:attribute name="name">
 							<xsl:value-of select="substring($questionId,2)"/>
@@ -2032,259 +2032,259 @@
 					</input>
 				</xsl:if>
 				<!--show link here?-->
-				<xsl:for-each select="x:Link">					
+				<xsl:for-each select="x:Link">
 					<xsl:call-template name="handle_link"/>
 				</xsl:for-each>
 
 			</div>
-			
+
 			<div style="clear:both;"/>
-			
+
 			<xsl:if test="x:ListField">
 				<xsl:apply-templates select="x:ListField" mode="level1">
 					<xsl:with-param name="questionId" select="$questionId" />
 					<xsl:with-param name="parentSectionId" select="$parentSectionId" />
 				</xsl:apply-templates>
 			</xsl:if>
-			
+
 			<!--11/13/2016: question within question-->
 			<div style="clear:both;"/>
-			<xsl:if test="x:ChildItems/x:Question">				
+			<xsl:if test="x:ChildItems/x:Question">
 				<xsl:apply-templates select="x:ChildItems/x:Question" mode="level3">
 					<xsl:with-param name="parentSectionId" select="$parentSectionId" />
 				</xsl:apply-templates>
 			</xsl:if>
-			
+
 		</div>
-		
+
 	</xsl:template>
 
-<xsl:template match="x:ListField" mode="level1">
-   <xsl:param name="questionId" />
-   <xsl:param name="parentSectionId" />  
-	<xsl:choose>
-		<!--single select-->
-		<xsl:when test="@maxSelections='1' or not (@maxSelections)" >
-			<xsl:apply-templates select= "x:List/x:ListItem|x:List/x:DisplayedItem" mode="singleselect">
-				<xsl:with-param  name="questionId" select ="$questionId"/>
-				<xsl:with-param  name="parentSectionId" select ="$parentSectionId"/>	
-			</xsl:apply-templates>			
-		</xsl:when>	
-		<!--multi select-->
-		<xsl:otherwise>			
-			<xsl:apply-templates select= "x:List/x:ListItem|x:List/x:DisplayedItem" mode="multiselect">
-				<xsl:with-param  name="questionId" select ="$questionId"/>
-				<xsl:with-param  name="parentSectionId" select ="$parentSectionId"/>	
-			</xsl:apply-templates>			
-		</xsl:otherwise>		
-	</xsl:choose>
-</xsl:template>
-	
+	<xsl:template match="x:ListField" mode="level1">
+		<xsl:param name="questionId" />
+		<xsl:param name="parentSectionId" />
+		<xsl:choose>
+			<!--single select-->
+			<xsl:when test="@maxSelections='1' or not (@maxSelections)" >
+				<xsl:apply-templates select= "x:List/x:ListItem|x:List/x:DisplayedItem" mode="singleselect">
+					<xsl:with-param  name="questionId" select ="$questionId"/>
+					<xsl:with-param  name="parentSectionId" select ="$parentSectionId"/>
+				</xsl:apply-templates>
+			</xsl:when>
+			<!--multi select-->
+			<xsl:otherwise>
+				<xsl:apply-templates select= "x:List/x:ListItem|x:List/x:DisplayedItem" mode="multiselect">
+					<xsl:with-param  name="questionId" select ="$questionId"/>
+					<xsl:with-param  name="parentSectionId" select ="$parentSectionId"/>
+				</xsl:apply-templates>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
 	<xsl:template match="x:ListItem" mode="singleselect">
 		<xsl:param name="questionId" />
-		<xsl:param name="parentSectionId" />  		
-			<div class="Answer">
-				<input type="radio" style="float:left">
+		<xsl:param name="parentSectionId" />
+		<div class="Answer">
+			<input type="radio" style="float:left">
+				<xsl:attribute name="name">
+					<xsl:value-of select="substring($questionId,2)"/>
+				</xsl:attribute>
+				<xsl:if test="@selected='true'">
+					<xsl:attribute name="checked">
+					</xsl:attribute>
+				</xsl:if>
+				<xsl:attribute name="value">
+					<xsl:value-of select="@ID"/>,<xsl:value-of select="@title"/>
+				</xsl:attribute>
+			</input>
+			<div style="display:inline" class="idDisplay">
+				<xsl:value-of select="substring-before(@ID, '.')"/> -
+			</div>
+			<xsl:value-of select="@title"/>
+			<!--show link here?-->
+
+			<xsl:for-each select="x:Link">
+				<xsl:call-template name="handle_link"/>
+			</xsl:for-each>
+
+
+			<div style="display:inline" class="MetadataDisplay">
+				<!---metadata-->
+			</div>
+			<!--answer fillin-->
+			<xsl:if test="x:ListItemResponseField">
+				<input type="text" class="AnswerTextBox">
+					<xsl:attribute name="width">
+						<xsl:value-of select="100"/>
+					</xsl:attribute>
 					<xsl:attribute name="name">
 						<xsl:value-of select="substring($questionId,2)"/>
 					</xsl:attribute>
-					<xsl:if test="@selected='true'">
-						<xsl:attribute name="checked">
-						</xsl:attribute>
-					</xsl:if>					
 					<xsl:attribute name="value">
-						<xsl:value-of select="@ID"/>,<xsl:value-of select="@title"/>
+						<xsl:value-of select="x:ListItemResponseField/x:Response//@val"/>
 					</xsl:attribute>
-				</input> 
-				<div style="display:inline" class="idDisplay">
-					<xsl:value-of select="substring-before(@ID, '.')"/> -
-				</div>
-				<xsl:value-of select="@title"/>
-				<!--show link here?-->
-				
-				<xsl:for-each select="x:Link">					
-					<xsl:call-template name="handle_link"/>
-				</xsl:for-each>
-		
-				
-				<div style="display:inline" class="MetadataDisplay">
-					<!---metadata-->
-				</div>
-				<!--answer fillin-->
-				<xsl:if test="x:ListItemResponseField">
-					<input type="text" class="AnswerTextBox">
-						<xsl:attribute name="width">
-							<xsl:value-of select="100"/>
-						</xsl:attribute>
-						<xsl:attribute name="name">
-							<xsl:value-of select="substring($questionId,2)"/>
-						</xsl:attribute>
-						<xsl:attribute name="value">
-							<xsl:value-of select="x:ListItemResponseField/x:Response//@val"/>
-						</xsl:attribute>
-					</input>
-				</xsl:if>
+				</input>
+			</xsl:if>
+		</div>
+
+		<!--property-->
+		<xsl:if test="x:Property">
+			<div class="property">
+				<xsl:value-of select="@name"/>
+				<xsl:value-of select="@type"/>
+				<xsl:value-of select="@val"/>
 			</div>
-			
-			<!--property-->
-			<xsl:if test="x:Property">
-				<div class="property">
-					<xsl:value-of select="@name"/>
-					<xsl:value-of select="@type"/>
-					<xsl:value-of select="@val"/>
-				</div>
-			</xsl:if>			
-			
-			<!--SRB: 12/18/2016 - handle section within listitem -->
-			<xsl:apply-templates select="x:ChildItems/x:Section" mode="level2">
-				<xsl:with-param name="parentSectionId" select="$parentSectionId" />
-			</xsl:apply-templates>
-			<!--question within list-->
-			<xsl:apply-templates select="x:ChildItems/x:Question" mode="level2">
-				<xsl:with-param name="parentSectionId" select="$parentSectionId" />
-			</xsl:apply-templates>	
-		
+		</xsl:if>
+
+		<!--SRB: 12/18/2016 - handle section within listitem -->
+		<xsl:apply-templates select="x:ChildItems/x:Section" mode="level2">
+			<xsl:with-param name="parentSectionId" select="$parentSectionId" />
+		</xsl:apply-templates>
+		<!--question within list-->
+		<xsl:apply-templates select="x:ChildItems/x:Question" mode="level2">
+			<xsl:with-param name="parentSectionId" select="$parentSectionId" />
+		</xsl:apply-templates>
+
 	</xsl:template>
-	
+
 	<xsl:template name="handle_link">
-	
+
 		<!--show link here?-->
-		
-			&#160;
-			<xsl:element name="a">
-				<xsl:attribute name="href">
-					<xsl:value-of select="x:LinkURI/@val"/>
-				</xsl:attribute>
-				<xsl:attribute name="target">
-					_blank
-				</xsl:attribute>
-				<xsl:attribute name="title">
-					<xsl:value-of select="x:LinkText/x:Property[@propClass='tooltip']/@val"/>							
-				</xsl:attribute>
-				<xsl:value-of select="x:LinkText/@val"/>
-			</xsl:element>
-		
+
+		&#160;
+		<xsl:element name="a">
+			<xsl:attribute name="href">
+				<xsl:value-of select="x:LinkURI/@val"/>
+			</xsl:attribute>
+			<xsl:attribute name="target">
+				_blank
+			</xsl:attribute>
+			<xsl:attribute name="title">
+				<xsl:value-of select="x:LinkText/x:Property[@propClass='tooltip']/@val"/>
+			</xsl:attribute>
+			<xsl:value-of select="x:LinkText/@val"/>
+		</xsl:element>
+
 	</xsl:template>
-	
+
 	<xsl:template match="x:ListItem" mode="multiselect">
 		<xsl:param name="questionId" />
-		<xsl:param name="parentSectionId" />  		
-			<div class="Answer">
-				<input type="checkbox" style="float:left;">
+		<xsl:param name="parentSectionId" />
+		<div class="Answer">
+			<input type="checkbox" style="float:left;">
+				<xsl:attribute name="name">
+					<xsl:value-of select="substring($questionId,2)"/>
+				</xsl:attribute>
+				<xsl:attribute name="value">
+					<xsl:value-of select="@ID"/>,<xsl:value-of select="@title"/>
+				</xsl:attribute>
+				<xsl:if test="@selected='true'">
+					<xsl:attribute name="checked">
+					</xsl:attribute>
+				</xsl:if>
+			</input>
+			<div style="display:inline" class="idDisplay">
+				<xsl:value-of select="substring-before(@ID, '.')"/> -
+			</div>
+			<xsl:value-of select="@title"/>
+			<!--show link here?-->
+
+			<xsl:for-each select="x:Link">
+				<xsl:call-template name="handle_link"/>
+			</xsl:for-each>
+
+			<div style="display:inline" class="MetadataDisplay">
+				<!---metadata-->
+			</div>
+			<xsl:if test="x:ListItemResponseField">
+				<input type="text" class="AnswerTextBox">
 					<xsl:attribute name="name">
 						<xsl:value-of select="substring($questionId,2)"/>
 					</xsl:attribute>
 					<xsl:attribute name="value">
-						<xsl:value-of select="@ID"/>,<xsl:value-of select="@title"/>
+						<xsl:value-of select="x:ListItemResponseField/x:Response//@val"/>
 					</xsl:attribute>
-					<xsl:if test="@selected='true'">
-						<xsl:attribute name="checked">
-						</xsl:attribute>
-					</xsl:if>
 				</input>
-				<div style="display:inline" class="idDisplay">
-					<xsl:value-of select="substring-before(@ID, '.')"/> -
-				</div>
-				<xsl:value-of select="@title"/>
-				<!--show link here?-->
-				
-				<xsl:for-each select="x:Link">					
-					<xsl:call-template name="handle_link"/>
-				</xsl:for-each>
-				
-				<div style="display:inline" class="MetadataDisplay">
-					<!---metadata-->
-				</div>
-				<xsl:if test="x:ListItemResponseField">
-					<input type="text" class="AnswerTextBox">
-						<xsl:attribute name="name">
-							<xsl:value-of select="substring($questionId,2)"/>
-						</xsl:attribute>
-						<xsl:attribute name="value">
-							<xsl:value-of select="x:ListItemResponseField/x:Response//@val"/>
-						</xsl:attribute>
-					</input>
-				</xsl:if>
-			</div>
-			<!--SRB: 12/18/2016 - handle section within listitem -->
-			<xsl:apply-templates select="x:ChildItems/x:Section" mode="level2">
-				<xsl:with-param name="parentSectionId" select="$parentSectionId" />
-			</xsl:apply-templates>
-			<!--question within list-->
-			<xsl:apply-templates select="x:ChildItems/x:Question" mode="level2">
-				<xsl:with-param name="parentSectionId" select="$parentSectionId" />
-			</xsl:apply-templates>
-		
+			</xsl:if>
+		</div>
+		<!--SRB: 12/18/2016 - handle section within listitem -->
+		<xsl:apply-templates select="x:ChildItems/x:Section" mode="level2">
+			<xsl:with-param name="parentSectionId" select="$parentSectionId" />
+		</xsl:apply-templates>
+		<!--question within list-->
+		<xsl:apply-templates select="x:ChildItems/x:Question" mode="level2">
+			<xsl:with-param name="parentSectionId" select="$parentSectionId" />
+		</xsl:apply-templates>
+
 	</xsl:template>
-	
+
 	<xsl:template match="*|/" mode="DisplayedItem">
 		<xsl:param name="parentSectionId"/>
 		<xsl:variable name="questionId" select="concat('q',@ID)"/>
 		<xsl:if test="x:DisplayedItem">
-			<div> 
+			<div>
 				-------------------------------
 				<div class="DisplayedItem">
-					<xsl:value-of select="x:DisplayedItem/@title"/> 				
-				</div>		
+					<xsl:value-of select="x:DisplayedItem/@title"/>
+				</div>
 				-------------------------
-				<div style="clear:both;"/>			
-			</div>	
-		</xsl:if>			
+				<div style="clear:both;"/>
+			</div>
+		</xsl:if>
 	</xsl:template>
-	
+
 	<xsl:template match="x:DisplayedItem" mode="level1">
 		<xsl:param name="parentSectionId"/>
 		<xsl:variable name="questionId" select="concat('q',@ID)"/>
-			<div>   
-				<div class="NoteText">
-					<div style="display:inline" class="idDisplay">
-						<xsl:value-of select="substring-before(@ID, '.')"/> -
-					</div>
-					<xsl:value-of select="@title"/> 
-					<div style="display:inline" class="MetadataDisplay">
-						<!---metadata-->
-					</div>					
-				</div>			
-				<div style="clear:both;"/>			
-			</div>	
-					
+		<div>
+			<div class="NoteText">
+				<div style="display:inline" class="idDisplay">
+					<xsl:value-of select="substring-before(@ID, '.')"/> -
+				</div>
+				<xsl:value-of select="@title"/>
+				<div style="display:inline" class="MetadataDisplay">
+					<!---metadata-->
+				</div>
+			</div>
+			<div style="clear:both;"/>
+		</div>
+
 	</xsl:template>
-	
+
 	<xsl:template match="x:DisplayedItem" mode="singleselect">
 		<xsl:param name="parentSectionId"/>
 		<xsl:variable name="questionId" select="concat('q',@ID)"/>
-		<div>   
+		<div>
 			<div class="ListNote">
 				<div style="display:inline" class="idDisplay">
 					<xsl:value-of select="substring-before(@ID, '.')"/> -
 				</div>
-				<xsl:value-of select="@title"/> 
+				<xsl:value-of select="@title"/>
 				<div style="display:inline" class="MetadataDisplay">
 					<!---metadata-->
 				</div>
-			</div>			
-			<div style="clear:both;"/>			
-		</div>		
+			</div>
+			<div style="clear:both;"/>
+		</div>
 	</xsl:template>
-	
-	
+
+
 	<xsl:template match="x:DisplayedItem" mode='multiselect'>
 		<xsl:param name="parentSectionId"/>
 		<xsl:variable name="questionId" select="concat('q',@ID)"/>
-		
-		<div>  
+
+		<div>
 			<div class="ListNote">
 				<div style="display:inline" class="idDisplay">
 					<xsl:value-of select="substring-before(@ID, '.')"/> -
 				</div>
-				<xsl:value-of select="@title"/> 
+				<xsl:value-of select="@title"/>
 				<div style="display:inline" class="MetadataDisplay">
 					<!---metadata-->
 				</div>
-			</div>			
-			<div style="clear:both;"/>			
+			</div>
+			<div style="clear:both;"/>
 		</div>
-		
+
 	</xsl:template>
 
 </xsl:stylesheet>

@@ -31,7 +31,9 @@ exports.FormDraft = FormDraft;
 
 exports.elastic = elastic;
 
-exports.byId = Form.findById;
+exports.byId = function (id, cb) {
+    Form.findById(id, cb);
+};
 
 exports.byIdList = function (idList, cb) {
     Form.find({}).where("_id").in(idList).exec(cb);
@@ -183,7 +185,7 @@ exports.update = function (elt, user, callback, special) {
 };
 
 exports.create = function (form, user, callback) {
-    var newForm = new Form(form);
+    let newForm = new Form(form);
     if (!form.registrationState) {
         newForm.registrationState = {
             registrationStatus: "Incomplete"
@@ -195,7 +197,7 @@ exports.create = function (form, user, callback) {
         userId: user._id
         , username: user.username
     };
-    newForm.save(function (err) {
+    newForm.save(err => {
         callback(err, newForm);
     });
 };
@@ -224,8 +226,8 @@ exports.transferSteward = function (from, to, callback) {
 
 exports.byTinyIdListInOrder = function (idList, callback) {
     exports.byTinyIdList(idList, function (err, forms) {
-        var reorderedForms = idList.map(function (id) {
-            for (var i = 0; i < forms.length; i++) {
+        let reorderedForms = idList.map(function (id) {
+            for (let i = 0; i < forms.length; i++) {
                 if (id === forms[i].tinyId) return forms[i];
             }
         });

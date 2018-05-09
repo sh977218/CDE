@@ -1,8 +1,8 @@
-.collapsable{
+﻿.collapsable{
 	/*background-color: yellow;*/
 	color:whitesmoke;
 	cursor:pointer;
-	font-weight:bold;					
+	font-weight:bold;
 }
 
 .collapsable:before{
@@ -24,17 +24,17 @@
 }
 
 Body{
-   font-family: Arial;
-   font-size: 12px;
-   width: 99%;
-   margin-left: auto;
-   margin-right: auto;
+	font-family: Arial;
+	font-size: 12px;
+	width: 99%;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 li{
-   padding: 1px;
-   color: blue;
-   list-style-type: square;
+	padding: 1px;
+	color: blue;
+	list-style-type: square;
 }
 p
 {
@@ -42,115 +42,115 @@ p
 	margin-bottom:2px;
 	padding:0px;
 }
-				
+
 .BodyGroup{
-   margin-left: 100px;
-   margin-right: auto;
-   text-align: left;
+	margin-left: 100px;
+	margin-right: auto;
+	text-align: left;
 }
 
 .HeaderTable{
-   width: 97.5%;
-   margin-top: 5px;
-   margin-bottom: 5px;
-   margin-left: 20px;
-   /*    margin-right: 25px;*/
-   border: solid 1px #000080;
-   padding: 0px;
-   clear: both;
+	width: 97.5%;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 20px;
+	/*    margin-right: 25px;*/
+	border: solid 1px #000080;
+	padding: 0px;
+	clear: both;
 }
 
 .HeaderTableChild{
-   width: 97.5%;
-   margin-top: 5px;
-   margin-bottom: 5px;
-   margin-left: 10px;
-   /*    margin-right: 25px;*/
-   border: solid 1px #000080;
-   padding: 0px;
-   clear: both;
+	width: 97.5%;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 10px;
+	/*    margin-right: 25px;*/
+	border: solid 1px #000080;
+	padding: 0px;
+	clear: both;
 }
 .HeaderGroupText{
-   font-size: 12px;
-   font-weight: bold;
-   background-color: #FFFFFF;
-   color: #000080;
-   padding: 8px;
-   vertical-align: bottom;
+	font-size: 12px;
+	font-weight: bold;
+	background-color: #FFFFFF;
+	color: #000080;
+	padding: 8px;
+	vertical-align: bottom;
 }
 .HeaderInfoText{
-   font-size: 12px;
-   text-align: right;
-   font-style: italic;
+	font-size: 12px;
+	text-align: right;
+	font-style: italic;
 }
 .HeaderText{
-   text-align: center;
-   font-size: 18px;
-   font-weight: bold;
-   background-color: #FFFFFF;
-   color: #000080;
-   padding: 8px;
-   vertical-align: bottom;
+	text-align: center;
+	font-size: 18px;
+	font-weight: bold;
+	background-color: #FFFFFF;
+	color: #000080;
+	padding: 8px;
+	vertical-align: bottom;
 }
 
 .TopHeader{
-   text-align: center;
-   font-size: 25px;
-   font-weight: bold;
-   background-color: #000080;
-   color: #FFFFFF;
-   padding: 2px;
-   cursor:pointer;
+	text-align: center;
+	font-size: 25px;
+	font-weight: bold;
+	background-color: #000080;
+	color: #FFFFFF;
+	padding: 2px;
+	cursor:pointer;
 }
 .TopHeader2{
-   text-align: center;
-   font-size: 16px;
-   font-weight: bold;
-   background-color: #000080;
-   color: #FFFFFF;
-   padding: 2px;
-   cursor:pointer;
+	text-align: center;
+	font-size: 16px;
+	font-weight: bold;
+	background-color: #000080;
+	color: #FFFFFF;
+	padding: 2px;
+	cursor:pointer;
 }
 
 .TopHeaderDemo{
-   text-align: center;
-   font-size: 25px;
-   font-weight: bold;
-   background-color: darkgreen;
-   color: #FFFFFF;
-   padding: 2px;
-   cursor:pointer;
+	text-align: center;
+	font-size: 25px;
+	font-weight: bold;
+	background-color: darkgreen;
+	color: #FFFFFF;
+	padding: 2px;
+	cursor:pointer;
 }
 .TopHeaderDemo2{
-   text-align: center;
-   font-size: 16px;
-   font-weight: bold;
-   background-color: darkgreen;
-   color: #FFFFFF;
-   padding: 2px;
-   cursor:pointer;
+	text-align: center;
+	font-size: 16px;
+	font-weight: bold;
+	background-color: darkgreen;
+	color: #FFFFFF;
+	padding: 2px;
+	cursor:pointer;
 }
 
 .QuestionReset{
-   float: right;
-   padding-left: 2px;
-   font-size: 10px;
-   text-decoration: none;
-   font-style: normal;
-   color: Blue;
+	float: right;
+	padding-left: 2px;
+	font-size: 10px;
+	text-decoration: none;
+	font-style: normal;
+	color: Blue;
 }
 
 .MetadataDisplay
 {
-   display: inline;
-   font-weight: normal;
-   font-size: 11px;
+	display: inline;
+	font-weight: normal;
+	font-size: 11px;
 }
 
 .idDisplay{
-   display: inline;
-   color: red;
-   font-weight: normal;
+	display: inline;
+	color: red;
+	font-weight: normal;
 }
 
 .form-version
@@ -192,7 +192,7 @@ p
 
 .QuestionInQuestion
 {
-	float: left;    
+	float: left;
 	padding: 2px;
 }
 
@@ -222,27 +222,27 @@ p
 }
 
 .NoteText{
-   padding: 2px;
-   padding-left: 20px;
-   font-weight: bold;
-   color: Blue;
-   clear: both;
+	padding: 2px;
+	padding-left: 20px;
+	font-weight: bold;
+	color: Blue;
+	clear: both;
 }
 .NoteText2{
-   padding: 2px;
-   padding-left: 20px;
-   font-weight: bold;
-   color: blue;
-   float: left;
-   width: 48%;
+	padding: 2px;
+	padding-left: 20px;
+	font-weight: bold;
+	color: blue;
+	float: left;
+	width: 48%;
 }
 
 .ListNote{
-   padding: 2px;
-   padding-left: 5px;
-   font-weight: bold;
-   color: #b22222; /*firebrick*/
-   clear: both;
+	padding: 2px;
+	padding-left: 5px;
+	font-weight: bold;
+	color: #b22222; /*firebrick*/
+	clear: both;
 }
 
 .DisplayedItem
@@ -254,7 +254,7 @@ p
 	font-weight: bold;
 	clear: both;
 }
-				
+
 .DisplayProperty
 {
 	float: left;
@@ -374,7 +374,7 @@ p
 	text-align: left;
 	font-size: 18px;
 	font-weight: bold;
-	
+
 }
 .left
 {
@@ -389,5 +389,5 @@ p
 .section_wthin_list
 {
 	margin-left:20px;
-	
+
 }
