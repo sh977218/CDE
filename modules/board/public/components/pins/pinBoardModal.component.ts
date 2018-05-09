@@ -20,13 +20,11 @@ export class PinBoardModalComponent {
     private resolve;
     private reject;
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public modalService: NgbModal,
-        public myBoardsSvc: MyBoardsService,
-        private userService: UserService,
-    ) {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public modalService: NgbModal,
+                public myBoardsSvc: MyBoardsService,
+                private userService: UserService) {
     }
 
     pinMultiple(elts: any, promise: Promise<any>) {
