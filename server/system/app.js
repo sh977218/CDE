@@ -940,7 +940,15 @@ exports.init = function (app) {
     app.post('/addUserRole', function (req, res) {
         if (authorizationShared.hasRole(req.user, "CommentReviewer")) {
             mongo_data.addUserRole(req.body, function (err) {
-                if (err) res.status(404).send(err);
+                if (err) {
+                    dbLogger.logError({
+                        message: 'Error adding user role',
+                        origin: '/addUserRole',
+                        stack: err,
+                        details: ''
+                    });
+                    res.status(500).send('Error adding user role');
+                }
                 else res.send("Role added.");
             });
         }

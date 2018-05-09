@@ -34,7 +34,10 @@ const questionSchema = new Schema({
         , rule: sharedSchemas.stringType
         , showAsTextArea: {type: Boolean, default: false}
     }, datatypeDate: {
-        precision: Object.assign({enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'], default: 'Day'}, sharedSchemas.stringType)
+        precision: Object.assign({
+            enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'],
+            default: 'Day'
+        }, sharedSchemas.stringType)
     }
     , unitsOfMeasure: [sharedSchemas.codeAndSystemSchema]
     , required: {type: Boolean, default: false}
@@ -147,8 +150,9 @@ exports.formJson = {
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 };
 
-exports.formSchema = new Schema(exports.formJson);
+exports.formSchema = new Schema(exports.formJson, {usePushEach: true});
 exports.draftSchema = new Schema(exports.formJson, {
+    sePushEach: true,
     toObject: {
         virtuals: true
     },
