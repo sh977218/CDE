@@ -108,18 +108,22 @@ export class NativeQuestionComponent implements OnInit {
         }
     }
 
-    isFirstInRow(index) {
+    hasHeading(q: FormQuestion): boolean {
+        return this.hasLabel(q) || q.instructions && q.instructions.value;
+    }
+
+    hasLabel(q: FormQuestion): boolean {
+        return q.label && !q.hideLabel;
+    }
+
+    isFirstInRow(index: number): boolean {
         if (this.nrs.profile && this.nrs.profile.numberOfColumns > 0) return index % this.nrs.profile.numberOfColumns === 0;
         else return index % 4 === 0;
     }
 
-    hasLabel(question) {
-        return question.label && !question.hideLabel;
-    }
-
-    isOneLiner(question, numSubQuestions) {
-        return numSubQuestions && !this.hasLabel(question) && (!question.instructions || !question.instructions.value)
-            && question.elementType === 'question' && question.question.datatype !== 'Value List';
+    isOneLiner(q: FormQuestion, numSubQuestions: number): boolean {
+        return numSubQuestions && !this.hasHeading(q) && (!q.instructions || !q.instructions.value)
+            && q.elementType === 'question' && q.question.datatype !== 'Value List';
     }
 
     // updateDateTime() {

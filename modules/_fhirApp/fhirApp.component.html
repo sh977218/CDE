@@ -9,7 +9,7 @@
                 </div>
                 <div>
                     <span class="info-heading">Patient:</span>
-                    <span class="info-label">{{getPatientName()}}</span>
+                    <span class="info-label">{{getPatientName(patient)}}</span>
                 </div>
                 <div>
                     <span class="info-heading">Date of Birth:</span>
@@ -25,7 +25,7 @@
                         <span *ngIf="selectedEncounter" class="badge badge-primary"
                               style="background-color: #007bff;white-space: normal">
                             <span *ngIf="selectedEncounter.type">{{selectedEncounter.type + ' - '}}</span>
-                            {{selectedEncounter.date}}
+                            {{selectedEncounter.period.start}}
                         </span>
                     </button>
                 </div>
@@ -76,48 +76,49 @@
                             </td>
                             <td>{{e.type}}</td>
                             <td>{{e.reason}}</td>
-                            <td>{{e.date}}</td>
+                            <td>{{e.period.start}}</td>
                         </tr>
                         </tbody>
                         <tfoot>
-                            <tr [hidden]="newEncounter">
-                                <td colspan="4">
-                                    <button mat-raised-button (click)="newEncounter = true; newEncounterVerify()">
-                                        <mat-icon>add</mat-icon>Add
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr [hidden]="!newEncounter">
-                                <td>
-                                    <button mat-icon-button color="basic" style="width: 25px"
-                                            [disabled]="!newEncounterValid" title="Add" (click)="newEncounterAdd()">
-                                        <mat-icon>add</mat-icon>
-                                    </button>
-                                    <button mat-icon-button title="Cancel"  style="width: 25px"
-                                            (click)="newEncounterReset()">
-                                        <mat-icon>delete</mat-icon>
-                                    </button>
-                                </td>
-                                <td>
-                                    <mat-form-field>
-                                        <input matInput style="width: 185px" [(ngModel)]="newEncounterType" disabled
-                                               (ngModelChange)="newEncounterVerify()" placeholder="Encounter Type">
-                                    </mat-form-field>
-                                </td>
-                                <td>
-                                    <mat-form-field>
-                                        <input matInput [(ngModel)]="newEncounterReason"
-                                               (ngModelChange)="newEncounterVerify()" placeholder="Reason">
-                                    </mat-form-field>
-                                </td>
-                                <td>
-                                    <mat-form-field>
-                                        <input matInput type="datetime-local" [(ngModel)]="newEncounterDate"
-                                               (ngModelChange)="newEncounterVerify()" placeholder="Date and Time"
-                                            step="3600"
-                                        >
-                                    </mat-form-field>
-                                </td>
+                            <tr>
+                                <ng-container *ngIf="newEncounter; else addNewEncounter">
+                                    <td>
+                                        <button mat-icon-button color="basic" style="width: 25px"
+                                                [disabled]="!newEncounterValid" title="Add" (click)="newEncounterAdd()">
+                                            <mat-icon>add</mat-icon>
+                                        </button>
+                                        <button mat-icon-button title="Cancel"  style="width: 25px"
+                                                (click)="newEncounterReset()">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <mat-form-field>
+                                            <input matInput style="width: 185px" [(ngModel)]="newEncounterType" disabled
+                                                   (ngModelChange)="newEncounterVerify()" placeholder="Encounter Type">
+                                        </mat-form-field>
+                                    </td>
+                                    <td>
+                                        <mat-form-field>
+                                            <input matInput [(ngModel)]="newEncounterReason"
+                                                   (ngModelChange)="newEncounterVerify()" placeholder="Reason">
+                                        </mat-form-field>
+                                    </td>
+                                    <td>
+                                        <mat-form-field>
+                                            <input matInput type="datetime-local" [(ngModel)]="newEncounterDate"
+                                                   (ngModelChange)="newEncounterVerify()" placeholder="Date and Time"
+                                                   step="3600">
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+                                <ng-template #addNewEncounter>
+                                    <td colspan="4">
+                                        <button mat-raised-button (click)="newEncounter = true; newEncounterVerify()">
+                                            <mat-icon>add</mat-icon>Add
+                                        </button>
+                                    </td>
+                                </ng-template>
                             </tr>
                             <tr [hidden]="!newEncounterErrorMessage">
                                 <td colspan="4" style="color: red; text-align: center">{{newEncounterErrorMessage}}</td>

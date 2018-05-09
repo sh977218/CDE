@@ -197,7 +197,7 @@ export class FormSection implements FormSectionOrForm {
                 newFe.question = Question.copy((fe as FormQuestion).question);
             }
         } else {
-            return undefined;
+            return;
         }
         newFe.instructions = fe.instructions ? Object.assign(new FormattedValue(), fe.instructions) : undefined;
         newFe.formElements = [];

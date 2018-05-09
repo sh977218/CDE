@@ -1,3 +1,5 @@
+import { capString } from 'shared/system/util';
+
 export function newIdentifier(uri, value, use) {
     return {
         system: uri,

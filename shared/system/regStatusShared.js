@@ -1,3 +1,5 @@
+import { capString } from 'shared/system/util';
+
 // @TODO refactor this to = {"pref standard": {help: "", curHelp: ""}}
 export const statusList = [
     {

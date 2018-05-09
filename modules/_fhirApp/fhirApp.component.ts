@@ -1,21 +1,58 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
 import async_forEach from 'async/forEach';
 import async_parallel from 'async/parallel';
 import 'fhirclient';
-
-import { CdeForm, DisplayProfile } from 'shared/form/form.model';
-import { iterateFeSync } from 'shared/form/formShared';
-
 import _intersectionWith from 'lodash/intersectionWith';
 
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
-import { CdeId } from "../../shared/models.model";
+import { CdeId } from 'shared/models.model';
+import { iterateFeSync } from 'shared/form/formShared';
+import { CdeForm, DisplayProfile, FormQuestion } from 'shared/form/form.model';
+import { FhirEncounter, FhirObservation } from 'shared/mapping/fhir/fhirResource.model';
+import { externalCodeSystemsMap } from 'shared/mapping/fhir';
+import { codingArrayPreview, valuePreview } from 'shared/mapping/fhir/fhirDatatypes';
+import { typedValueToValue, valuedElementToItemType } from 'shared/mapping/fhir/from/datatypeFromItemType';
+import { newEncounter } from 'shared/mapping/fhir/resource/encounter';
+import { observationFromForm } from 'shared/mapping/fhir/resource/observation';
+import { getPatientName } from 'shared/mapping/fhir/resource/patient';
+import { containerToItemType, itemTypeToItemDatatype, valueToTypedValue } from 'shared/mapping/fhir/to/datatypeToItemType';
+import { capString } from 'shared/system/util';
+
+type EncounterVM = any;
+function encounterVM(encounter: FhirEncounter): EncounterVM {
+    return Object.create(encounter, {
+        type: {
+            value: encounter.type ? encounter.type.map(e => e.text).join(', ') : null
+        },
+        reason: {
+            value: encounter.reason ? encounter.reason.map(r => r.coding.length ? r.coding[0].display : '') : null
+        },
+        observations: {
+            value: []
+        },
+    });
+}
+
+class ObservationVM {}
+function observationVM(observation: FhirObservation): ObservationVM {
+    return Object.create(observation, {
+        preview: {
+            value: observation.code ? codingArrayPreview(observation.code.coding) : JSON.stringify(observation)
+        },
+        encounter: {
+            value: observation.context ? observation.context.reference : undefined
+        },
+        value: {
+            value: valuePreview(observation)
+        },
+    });
+}
 
 @Component({
     selector: 'cde-fhir-standalone',
-    template: "<router-outlet></router-outlet>"
+    template: '<router-outlet></router-outlet>'
 })
 export class FhirStandaloneComponent {}
 
@@ -56,8 +93,10 @@ export class FhirStandaloneComponent {}
     templateUrl: './fhirApp.component.html'
 })
 export class FhirAppComponent {
+    codeToDisplay = {};
     elt: CdeForm;
     errorMessage: string;
+    getPatientName = getPatientName;
     methodLoadForm = this.loadForm.bind(this);
     newEncounter: boolean;
     newEncounterDate: string = new Date().toISOString().slice(0, 16);
@@ -71,29 +110,15 @@ export class FhirAppComponent {
     patientObservations = [];
     patientOrganization: any;
     saveMessage: string = null;
-    selectedEncounter: any;
-    selectedObservations = []; // display data only
+    selectedEncounter: EncounterVM;
+    selectedObservations: ObservationVM[] = [];
     selectedProfile: DisplayProfile;
     selectedProfileName: string;
-    submitFhirPending = [];
-    submitFhirObservations = [];
     smart;
     ioInProgress: boolean;
     saving: boolean;
     saved: boolean;
     summary: boolean = true;
-    fhirToCdeCodeMap = {
-        'http://loinc.org': "LOINC",
-        "LOINC": 'http://loinc.org',
-        'http://unitsofmeasure.org': "UCUM",
-        'UCUM': "http://unitsofmeasure.org"
-    };
-    externalCodeSystems = [
-        {id: 'LOINC', uri: 'http://loinc.org'},
-        {id: 'UCUM', uri: 'http://unitsofmeasure.org'}
-    ];
-
-    codeToDisplay = {};
 
     constructor(private http: HttpClient,
                 public dialog: MatDialog,
@@ -103,7 +128,7 @@ export class FhirAppComponent {
         let queryParams = this.route.snapshot.queryParams;
         this.selectedProfileName = queryParams['selectedProfile'];
 
-        this.http.get("/fhirApp/" + this.route.snapshot.paramMap.get("config")).subscribe((fhirApp: any) => {
+        this.http.get('/fhirApp/' + this.route.snapshot.paramMap.get('config')).subscribe((fhirApp: any) => {
             fhirApp.forms.forEach(f => {
                 this.http.get<CdeForm>('/form/' + f.tinyId).subscribe(form => {
                     this.patientForms.push({
@@ -113,15 +138,15 @@ export class FhirAppComponent {
                     iterateFeSync(form, () => {}, () => {}, q => {
                         q.question.cde.ids.forEach(id => {
                             if (id.source === 'LOINC') {
-                                this.http.get("/umlsCuiFromSrc/" + id.id + "/LNC").subscribe((r: any) => {
+                                this.http.get('/umlsCuiFromSrc/' + id.id + '/LNC').subscribe((r: any) => {
                                     if (r && r.result && r.result.results.length) {
-                                        this.codeToDisplay[id.source + ":" + id.id] = r.result.results[0].name.split(":")[0];
+                                        this.codeToDisplay[id.source + ':' + id.id] = r.result.results[0].name.split(':')[0];
                                     }
                                 });
                             }
                         });
                         let localCdeId = new CdeId();
-                        localCdeId.source = "https://cde.nlm.nih.gov";
+                        localCdeId.source = 'https://cde.nlm.nih.gov';
                         localCdeId.id = q.question.cde.tinyId;
                         q.question.cde.ids.push(localCdeId);
                     });
@@ -130,33 +155,26 @@ export class FhirAppComponent {
         });
 
 
-        if (queryParams['state']) this.loadPatientData();
-        else if (queryParams['iss']) {
+        if (queryParams['state']) {
+            this.loadPatientData();
+        } else if (queryParams['iss']) {
             (<any>window).FHIR.oauth2.authorize({
                 'client_id': 'e17575b9-f89b-49c1-a9c2-52c68f1d273c',
-                'redirect_uri': '/' + this.route.snapshot.paramMap.get("config"),
+                'redirect_uri': '/' + this.route.snapshot.paramMap.get('config'),
                 'scope':  'patient/*.*'
             });
         }
     }
 
-
     encounterAdd(encounter) {
-        this.patientEncounters.push({
-            type: encounter.type ? encounter.type.map(e => e.text).join(', ') : null,
-            reason: encounter.reason
-                ? encounter.reason.map(r => r.coding.length ? r.coding[0].display : '') : null,
-            date: encounter.period.start,
-            observations: [],
-            raw: encounter
-        });
+        this.patientEncounters.push(encounterVM(encounter));
     }
 
     encounterSelected() {
         this.filterObservations();
-        if (!this.selectedEncounter) return;
-
-
+        if (!this.selectedEncounter) {
+            return;
+        }
         this.patientForms.forEach(f => {
             this.loadFhirDataToForm(f);
         });
@@ -168,64 +186,15 @@ export class FhirAppComponent {
             ? this.selectedEncounter.observations : this.patientObservations;
     }
 
-    getCodingsPreview(coding) {
-        return coding.reduce(
-            (a, v) => a += v.display + ' ' + this.getCodeSystem(v.system) + ':' + v.code + '\n', ''
-        );
-    }
-
-    getCodeSystem(uri) {
-        let results = this.externalCodeSystems.filter(c => c.uri === uri);
-        if (results.length) return results[0].id;
-        else return 'no code system';
-    }
-
-    getCodeSystemOut(system, fe = null) {
-        let s = system;
-        if (fe && fe.question && fe.question.cde && Array.isArray(fe.question.cde.ids) && fe.question.cde.ids.length) {
-            s = fe.question.cde.ids[0].source;
-        }
-
-        let external = this.externalCodeSystems.filter(e => e.id === s);
-        if (external.length) return external[0].uri;
-        else return s;
-    }
-
     getForm(tinyId, cb) {
         if (!this.selectedEncounter) {
-            return this.snackBar.open("Select an encounter to open a form.", "", {duration: 2000});
+            return this.snackBar.open('Select an encounter to open a form.', '', {duration: 2000});
         }
 
         this.http.get<CdeForm>('/form/' + tinyId).subscribe(elt => {
             CdeForm.validate(elt);
             cb(null, elt);
         }, err => cb(err.statusText));
-    }
-
-    getObservationValue(observation) {
-        if (!observation) return undefined;
-        if (observation.valueCodeableConcept) return this.getCodingsPreview(observation.valueCodeableConcept.coding);
-        else if (observation.valueQuantity) {
-            let quantity = observation.valueQuantity;
-            if (quantity.value === undefined) return undefined;
-            return quantity.value + ' ' + (quantity.code || "(no unit)") + ' (' + this.getCodeSystem(quantity.system) + ')';
-        } else if (observation.component) {
-            let value = observation.component.reduce((a, v) => {
-                let vs = this.getObservationValue(v);
-                if (vs === undefined) return a;
-                return a + this.getCodingsPreview(v.code.coding) + ' = ' + vs + '\n';
-            }, '');
-            if (value === '') return undefined;
-            else return value;
-        } else return JSON.stringify(observation);
-    }
-
-    getPatientName() {
-        if (this.patient) {
-            let name = this.patient.name.filter(name => name.use === 'official')[0];
-            if (!name) name = this.patient.name[0];
-            return name.family + ', ' + name.given.join(' ');
-        }
     }
 
     loadPatientData() {
@@ -246,7 +215,7 @@ export class FhirAppComponent {
                     this.smart.patient.api.fetchAll({type: 'Observation'})
                         .then(results => {
                             results.forEach(observation =>
-                                this.patientObservations.push(this.observationAdd(observation))
+                                this.patientObservations.push(observationVM(observation))
                             );
                             cb();
                         });
@@ -262,14 +231,18 @@ export class FhirAppComponent {
                 }
             ], () => {
                 this.patientEncounters.sort((a, b) => {
-                    if (a.date > b.date) return 1;
-                    else if (a.date < b.date) return -1;
-                    else return 0;
+                    if (a.period.start > b.period.start) {
+                        return 1;
+                    } else if (a.period.start < b.period.start) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
                 });
                 this.patientObservations.forEach(o => {
                     if (o.encounter && o.encounter.startsWith('Encounter/')) {
                         let id = o.encounter.substr(10);
-                        let encounters = this.patientEncounters.filter(e => e.raw.id === id);
+                        let encounters = this.patientEncounters.filter(e => e.id === id);
                         if (encounters.length) encounters[0].observations.push(o);
                     }
                 });
@@ -285,7 +258,19 @@ export class FhirAppComponent {
     }
 
     loadFhirDataToForm(formElt) {
-        iterateFeSync(formElt, this.loadFhirDataToForm.bind(this), this.loadFhirDataToForm.bind(this), this.mapInputQuestion.bind(this));
+        iterateFeSync(formElt, undefined, undefined, (q: FormQuestion) => {
+            q.question.cde.ids.push({source: 'https://cde.nlm.nih.gov', id: q.question.cde.tinyId});
+            this.selectedEncounter.observations.forEach(o => {
+                let matchedCodes = _intersectionWith(
+                    o.code.coding,
+                    q.question.cde.ids,
+                    (a, b) => a['system'] === externalCodeSystemsMap[b['source']] && a['code'] === b['id']);
+                if (matchedCodes.length) {
+                    let qType = valuedElementToItemType(o);
+                    typedValueToValue(q.question, qType, o);
+                }
+            });
+        });
     }
 
     loadForm(err = null, elt = null) {
@@ -300,130 +285,19 @@ export class FhirAppComponent {
         this.loadFhirData();
     }
 
-    mapInputQuestion (formElt) {
-        let observations = this.selectedEncounter.observations.map(o => o.raw);
-        formElt.question.cde.ids.push({source: "https://cde.nlm.nih.gov", id: formElt.question.cde.tinyId});
-        observations.forEach(o => {
-            let matchedCodes = _intersectionWith(
-                o.code.coding,
-                formElt.question.cde.ids,
-                (a, b) =>  this.fhirToCdeCodeMap[a['system']] === b['source'] && a['code'] === b['id']);
-            if (matchedCodes.length) {
-                formElt.question.answer = o.valueQuantity.value;
-                formElt.question.unitsOfMeasure.forEach(feUom => {
-                   if (feUom.system === this.fhirToCdeCodeMap[o.valueQuantity.system]
-                    && feUom.code === o.valueQuantity.unit) {
-                       formElt.question.answerUom = feUom;
-                   }
-                });
-            }
-        });
-    }
-
-
-    updateObservation (formElt) {
-        let observations = this.selectedEncounter.observations.map(o => o.raw);
-        let foundObs = false;
-        observations.forEach(o => {
-            let copy = JSON.parse(JSON.stringify(o));
-            let matchedCodes = _intersectionWith(
-                o.code.coding,
-                formElt.question.cde.ids,
-                (a, b) => this.fhirToCdeCodeMap[a['system']] === b['source'] && a['code'] === b['id']
-            );
-
-            if (matchedCodes.length) {
-                copy.valueQuantity.value = formElt.question.answer;
-                if (formElt.question.answerUom) {
-                    copy.valueQuantity.system = this.fhirToCdeCodeMap[formElt.question.answerUom.system];
-                    copy.valueQuantity.unit = formElt.question.answerUom.code;
-
-                }
-                foundObs = true;
-                this.submitFhirObservations.push(copy);
-                this.submitFhirPending.push({before: o, after: copy});
-            }
-        });
-        if (!foundObs && formElt.question.answer) {
-            let observation = this.createObs(formElt);
-            observation.valueQuantity = {
-                value: formElt.question.answer
-            };
-            if (formElt.question.answerUom) {
-                observation.valueQuantity.system = this.fhirToCdeCodeMap[formElt.question.answerUom.system];
-                observation.valueQuantity.unit = formElt.question.answerUom.code;
-                observation.valueQuantity.code = formElt.question.answerUom.code;
-            }
-
-            this.submitFhirObservations.push(observation);
-            this.submitFhirPending.push({before: null, after: observation});
-        }
-    }
-
-    createObs (formElt) {
-        let obsCode = {
-            system: "https://cde.nlm.nih.gov",
-            code: formElt.question.cde.tinyId,
-            display: formElt.question.cde.name
-        };
-        formElt.question.cde.ids.forEach(id => {
-            if (id.source === 'LOINC') {
-                obsCode.system = this.fhirToCdeCodeMap['LOINC'];
-                obsCode.code = id.id;
-                obsCode.display = this.codeToDisplay[id.source + ":" + id.id];
-            }
-        });
-
-        let observation = FhirAppComponent.newObservationGet();
-        observation.context.reference = 'Encounter/' + this.selectedEncounter.raw.id;
-        observation.issued = this.selectedEncounter.date;
-        observation.subject.reference = 'Patient/' + this.patient.id;
-
-        if (obsCode) {
-            observation.code = {
-                coding: [{
-                    system: this.getCodeSystemOut(obsCode.system),
-                    code: obsCode.code,
-                    display: obsCode.display
-                }],
-                text: obsCode.display
-            };
-        }
-
-        return observation;
-    }
-
     newEncounterAdd() {
         this.smart.patient.api.create({
             baseUrl: 'https://api-v5-stu3.hspconsortium.org/LLatLO/data/',
             type: 'Encounter',
-            data: JSON.stringify(this.newEncounterGet())
+            data: JSON.stringify(newEncounter(
+                this.newEncounterDate + ':00-00:00',
+                'Patient/' + this.patient.id,
+                this.patientOrganization ? 'Organization/' + this.patientOrganization.id : undefined
+            ))
         }).then(response => {
             if (response.data && response.data.resourceType === 'Encounter') this.encounterAdd(response.data);
             this.newEncounterReset();
         });
-    }
-
-    newEncounterGet() {
-        let encounter = {
-            resourceType: 'Encounter',
-            id: null,
-            status: 'finished',
-            class: {'code': 'outpatient'},
-            type: [{'coding': [{'system': 'http://snomed.info/sct', 'code': '185349003'}], 'text': 'Outpatient Encounter'}],
-            period: {'start': null, 'end': null},
-            serviceProvider: {
-                reference: null
-            },
-            subject: {
-                reference: null
-            }
-        };
-        encounter.period.start = encounter.period.end = this.newEncounterDate + ":00-00:00";
-        encounter.subject.reference = 'Patient/' + this.patient.id;
-        if (this.patientOrganization) encounter.serviceProvider.reference = 'Organization/' + this.patientOrganization.id;
-        delete encounter.id;
-        return encounter;
     }
 
     newEncounterReset() {
@@ -445,37 +319,7 @@ export class FhirAppComponent {
         }
     }
 
-    static newObservationGet(): any {
-        return {
-            resourceType: 'Observation',
-            id: null,
-            status: 'final',
-            category: [],
-            code: null,
-            subject: {
-                reference: null
-            },
-            context: {
-                reference: null
-            },
-            effectiveDateTime: null,
-            issued: null
-        };
-    }
-
-    observationAdd(observation) {
-        return {
-            code: observation.code
-                ? this.getCodingsPreview(observation.code.coding)
-                : JSON.stringify(observation),
-            value: this.getObservationValue(observation),
-            date: observation.issued,
-            encounter: observation.context ? observation.context.reference : undefined,
-            raw: observation
-        };
-    }
-
-    openViewObs (e) {
+    openViewObs(e) {
         this.selectedEncounter = e;
         this.encounterSelected();
         this.dialog.open(ViewFhirObservationDialogComponent, {
@@ -484,28 +328,53 @@ export class FhirAppComponent {
         });
     }
 
-    prepareObservations(formElt) {
-        iterateFeSync(formElt, undefined, undefined, this.updateObservation.bind(this));
-    }
-
     submitFhir() {
         this.saving = true;
+        let submitFhirPending = [];
+        let submitFhirObservations = [];
 
-        this.submitFhirPending = [];
-        this.submitFhirObservations = [];
+        iterateFeSync(this.elt, undefined, undefined, (q: FormQuestion) => {
+            let foundObs = false;
+            this.selectedEncounter.observations
+                .map(o => o.__proto__)
+                .forEach(o => {
+                    let copy = JSON.parse(JSON.stringify(o));
+                    let matchedCodes = _intersectionWith(
+                        o.code.coding,
+                        q.question.cde.ids,
+                        (a, b) => a['system'] === externalCodeSystemsMap[b['source']] && a['code'] === b['id']
+                    );
+                    if (matchedCodes.length) {
+                        let qType = containerToItemType(q.question);
+                        copy['value' + capString(itemTypeToItemDatatype(qType, true))] = valueToTypedValue(q.question,
+                            qType, q.question.answer, undefined, q.question.answerUom, true);
+                        foundObs = true;
+                        submitFhirObservations.push(copy);
+                        submitFhirPending.push({before: o, after: copy});
+                    }
 
-        this.prepareObservations(this.elt);
+                });
+            if (!foundObs && q.question.answer) {
+                let observation = observationFromForm(q, this.codeToDisplay, this.selectedEncounter, this.patient);
+                let qType = containerToItemType(q.question);
+                observation['value' + capString(itemTypeToItemDatatype(qType, true))] = valueToTypedValue(q.question,
+                    qType, q.question.answer, undefined, q.question.answerUom, true);
+
+                submitFhirObservations.push(observation);
+                submitFhirPending.push({before: null, after: observation});
+            }
+        });
 
         // identify changed and submit to server
-        for (let i = 0; i < this.submitFhirPending.length; i++) {
-            let p = this.submitFhirPending[i];
-            if (this.getObservationValue(p.before) === this.getObservationValue(p.after)) {
-                this.submitFhirPending.splice(i, 1);
+        for (let i = 0; i < submitFhirPending.length; i++) {
+            let p = submitFhirPending[i];
+            if (valuePreview(p.before) === valuePreview(p.after)) {
+                submitFhirPending.splice(i, 1);
                 i--;
             }
         }
         // TODO: refresh before copy from server and compare again to prevent save with conflict
-        async_forEach(this.submitFhirPending, (p, done) => {
+        async_forEach(submitFhirPending, (p, done) => {
             if (p.before) {
                 this.smart.api.update({
                     data: JSON.stringify(p.after),
@@ -513,10 +382,10 @@ export class FhirAppComponent {
                     type: p.after.resourceType
                 }).then(response => {
                     if (!response || !response.data) return done('Not saved ' + p.after.id);
-                    let obs = this.observationAdd(response.data);
-                    let index = this.patientObservations.findIndex(o => o.raw === p.before);
+                    let obs = observationVM(response.data);
+                    let index = this.patientObservations.findIndex(o => o.__proto__ === p.before);
                     if (index > -1) this.patientObservations[index] = obs;
-                    index = this.selectedEncounter.observations.findIndex(o => o.raw === p.before);
+                    index = this.selectedEncounter.observations.findIndex(o => o.__proto__ === p.before);
                     if (index > -1) this.selectedEncounter.observations[index] = obs;
                     done();
                 }, done);
@@ -528,7 +397,7 @@ export class FhirAppComponent {
                     type: 'Observation'
                 }).then(response => {
                     if (!response || !response.data) return done('Not saved ' + p.after.id);
-                    let obs = this.observationAdd(response.data);
+                    let obs = observationVM(response.data);
                     this.patientObservations.push(obs);
                     this.selectedEncounter.observations.push(obs);
                     done();
@@ -579,7 +448,7 @@ export class FhirAppComponent {
                 <tr *ngFor="let o of data.selectedObservations">
                     <td>{{o.code}}</td>
                     <td><pre>{{o.value}}</pre></td>
-                    <td>{{o.date}}</td>
+                    <td>{{o.issued}}</td>
                 </tr>
                 </tbody>
             </table>

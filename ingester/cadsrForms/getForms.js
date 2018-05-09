@@ -282,7 +282,7 @@ var saveForm = function(cadsrForm, cbfc) {
         if (s.instructionContent) newSection.instructions = s.instructionContent;
 
         if (s.maximumQuestionRepeat) {
-            newSection.cardinality = s.maximumQuestionRepeat;
+            newSection.repeat = s.maximumQuestionRepeat;
         }
 
         cdeForm.formElements.push(newSection);

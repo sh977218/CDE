@@ -18,9 +18,7 @@ export class FhirAppsComponent {
     }
 
     formsUpdated (event, app) {
-        app.forms = event.target.value.split(",").map(id => {
-            return {tinyId: id.trim()};
-        });
+        app.forms = event.target.value.split(",").map(id => ({tinyId: id.trim()})).filter(form => form.tinyId);
         this.saveApp(app);
     }
 

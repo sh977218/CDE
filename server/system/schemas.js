@@ -7,7 +7,7 @@ let schemas = {};
 
 function deleteEmpty(v) {
     if (v === null || v === '') {
-        return undefined;
+        return;
     }
     return v;
 }

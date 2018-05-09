@@ -1,3 +1,5 @@
+import { capString } from 'shared/system/util';
+
 export function regStatusToPublicationStatus(status) { // http://hl7.org/fhir/publication-status
     switch (status) {
         case 'Preferred Standard':

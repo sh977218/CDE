@@ -22,10 +22,7 @@ export class NativeSectionComponent {
     }
 
     isSectionDisplayed(section) {
-        return section.label ||
-            section.formElements.some(function (elem) {
-                return elem.elementType === 'question';
-            });
+        return section.label || section.formElements.some(elem => elem.elementType === 'question');
     }
 
     canBeDisplayedAsMatrix(section) {
@@ -60,25 +57,25 @@ export class NativeSectionComponent {
         return result;
     }
 
-    addSection(section, formElements, index) {
-        let newElt = JSON.parse(JSON.stringify(section));
-        newElt.isCopy = true;
-        this.removeAnswers(newElt);
-        formElements.splice(index + 1, 0, newElt);
-    }
-
-    removeSection(index) {
-        this.nrs.elt.formElements.splice(index, 1);
-    }
-
-    canRepeat(formElt) {
-        return formElt.cardinality === {min: 0, max: -1} || formElt.cardinality === {min: 1, max: -1};
-    }
-
-    removeAnswers(formElt) {
-        if (formElt.question) delete formElt.question.answer;
-        formElt.formElements.forEach(function (fe) {
-            this.removeAnswers(fe);
-        });
-    }
+    // addSection(section, formElements, index) {
+    //     let newElt = JSON.parse(JSON.stringify(section));
+    //     newElt.isCopy = true;
+    //     this.removeAnswers(newElt);
+    //     formElements.splice(index + 1, 0, newElt);
+    // }
+    //
+    // removeSection(index) {
+    //     this.nrs.elt.formElements.splice(index, 1);
+    // }
+    //
+    // canRepeat(formElt) {
+    //     return formElt.cardinality === {min: 0, max: -1} || formElt.cardinality === {min: 1, max: -1};
+    // }
+    //
+    // removeAnswers(formElt) {
+    //     if (formElt.question) delete formElt.question.answer;
+    //     formElt.formElements.forEach(function (fe) {
+    //         this.removeAnswers(fe);
+    //     });
+    // }
 }

@@ -33,7 +33,6 @@ export class NativeRenderAppComponent {
     elt: CdeForm;
     errorMessage: string;
     methodLoadForm = this.loadForm.bind(this);
-    newEncounter = false;
     selectedProfile: DisplayProfile;
     selectedProfileName: string;
     summary = false;
@@ -47,8 +46,11 @@ export class NativeRenderAppComponent {
             let elt = JSON.parse(JSON.stringify((<any>window).formElt));
             this.loadForm(null, elt);
         } else {
-            if (args.tinyId) this.getForm(args.tinyId, this.methodLoadForm);
-            else this.summary = true;
+            if (args.tinyId) {
+                this.getForm(args.tinyId, this.methodLoadForm);
+            } else {
+                this.summary = true;
+            }
         }
     }
 
