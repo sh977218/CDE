@@ -5,12 +5,12 @@ const sharedSchemas = require('../system/schemas.js');
 var schemas = {};
 
 var pinSchema = new mongoose.Schema({
-    name: sharedSchemas.stringType
-    , pinnedDate: Date
-    , deTinyId: sharedSchemas.stringType
-    , deName: sharedSchemas.stringType
-    , formTinyId: sharedSchemas.stringType
-    , formName: sharedSchemas.stringType
+    name: sharedSchemas.stringType,
+    pinnedDate: Date,
+    deTinyId: sharedSchemas.stringType,
+    deName: sharedSchemas.stringType,
+    formTinyId: sharedSchemas.stringType,
+    formName: sharedSchemas.stringType
 }, {_id: false});
 
 schemas.pinningBoardSchema = new mongoose.Schema({
@@ -32,7 +32,10 @@ schemas.pinningBoardSchema = new mongoose.Schema({
         role: Object.assign({default: 'viewer', enum: ['viewer', 'reviewer']}, sharedSchemas.stringType),
         lastViewed: Date,
         status: {
-            approval: Object.assign({default: 'invited', enum: ['invited', 'approved', 'disapproved']}, sharedSchemas.stringType),
+            approval: Object.assign({
+                default: 'invited',
+                enum: ['invited', 'approved', 'disapproved']
+            }, sharedSchemas.stringType),
             reviewedDate: Date
         }
     }],
@@ -40,7 +43,7 @@ schemas.pinningBoardSchema = new mongoose.Schema({
         startDate: Date,
         endDate: Date
     }
-});
+}, {usePushEach: true});
 schemas.pinningBoardSchema.set('collection', 'pinningBoards');
 
 module.exports = schemas;

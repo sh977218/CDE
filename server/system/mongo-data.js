@@ -510,9 +510,9 @@ exports.generateTinyId = function () {
 
 exports.createMessage = function (msg, cb) {
     msg.states = [{
-        action: "Filed"
-        , date: new Date()
-        , comment: "cmnt"
+        action: "Filed",
+        date: new Date(),
+        comment: "cmnt"
     }];
     var message = new Message(msg);
     message.save(cb);
