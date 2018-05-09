@@ -1105,12 +1105,9 @@ exports.init = function (app) {
                 }
             };
 
-            mongo_data.pushGetAdministratorRegistrations((err, registrations) => {
-                if (err) {
-                    return dbLogger.logIfMongoError(err);
-                }
+            mongo_data.pushGetAdministratorRegistrations(dbLogger.handleGenericError({origin: "/feedback/report"}, registrations => {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
-            });
+            }));
             res.send({});
         });
     });

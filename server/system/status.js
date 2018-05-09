@@ -164,12 +164,10 @@ setInterval(() => {
                 }
             };
 
-            mongo_data_system.pushGetAdministratorRegistrations((err, registrations) => {
-                if (err) {
-                    return dbLogger.logIfMongoError(err);
-                }
+            mongo_data_system.pushGetAdministratorRegistrations(dbLogger.handleGenericError(
+                {origin: "app_status.getStatus"}, registrations => {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
-            });
+            }));
 
         }
         lastReport = newReport;

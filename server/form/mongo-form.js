@@ -10,10 +10,10 @@ const elastic = require('./elastic');
 exports.type = "form";
 exports.name = "forms";
 
-var conn = connHelper.establishConnection(config.database.appData);
+let conn = connHelper.establishConnection(config.database.appData);
 
 schemas.formSchema.pre('save', function (next) {
-    var self = this;
+    let self = this;
     self.definitions = mongo_data.copyDefinition(self.naming);
     self.designations = mongo_data.copyDesignation(self.naming);
     try {
@@ -31,9 +31,7 @@ exports.FormDraft = FormDraft;
 
 exports.elastic = elastic;
 
-exports.byId = function (id, cb) {
-    Form.findById(id, cb);
-};
+exports.byId = Form.findById;
 
 exports.byIdList = function (idList, cb) {
     Form.find({}).where("_id").in(idList).exec(cb);
