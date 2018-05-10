@@ -37,10 +37,10 @@
             </mat-form-field>
             <mat-button-toggle-group #board.shareStatus="matButtonToggleGroup">
                 <mat-button-toggle value="Public">
-                    <mat-icon>lock</mat-icon>
+                    <mat-icon>public</mat-icon>Public
                 </mat-button-toggle>
                 <mat-button-toggle value="Private">
-                    <mat-icon>earth</mat-icon>
+                    <mat-icon>lock</mat-icon>Private
                 </mat-button-toggle>
             </mat-button-toggle-group>
             <ng-select name="boardTag" [ngModel]="board.tags" [items]="board.tags" [addTag]="true"
