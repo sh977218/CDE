@@ -15,19 +15,9 @@ public class BoardTest extends NlmCdeBaseTest {
 
     protected void makePublic(String boardName, String response) {
         gotoMyBoards();
-        textPresent(boardName);
-        int length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
-        for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("board_name_" + i)).getText();
-            if (boardName.equals(name)) {
-                clickElement(By.id("privateIcon_" + i));
-                textPresent("Change Status?");
-                clickElement(By.id("confirmChangeStatus_" + i));
-                checkAlert(response);
-                return;
-            }
-        }
-        Assert.fail();
+        editBoardByName(boardName, null, null, true, null);
+        checkAlert(response);
+        closeAlert();
     }
 
     public void gotoMyBoards() {
@@ -102,5 +92,22 @@ public class BoardTest extends NlmCdeBaseTest {
         WebElement numElt = findElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'numElement')]"));
         int num = Integer.parseInt(numElt.getText().trim());
         return num;
+    }
+
+
+    void editBoardByName(String boardName, String boardNameChange, String boardDescriptionChange, boolean isPublic, String[] boardTags) {
+        clickElement(By.xpath("//*[@id='" + boardName + "']//i[contains(@class,'editBoard')]"));
+        if (boardNameChange != null) findElement(By.id("boardName")).sendKeys(boardNameChange);
+        if (boardDescriptionChange != null) findElement(By.id("boardDescription")).sendKeys(boardDescriptionChange);
+        if (isPublic) clickElement(By.id("makePublicBtn"));
+        else if (isPublic == false) clickElement(By.id("makePrivateBtn"));
+        if (boardTags != null) {
+            for (String tag : boardTags) {
+                clickElement(By.xpath("//*[@id='boardTag']//input"));
+                findElement(By.xpath("//*[@id='boardTag']//input")).sendKeys(tag);
+                selectNgSelectDropdownByText(tag);
+            }
+        }
+        clickElement(By.id("saveEditBoardBtn"));
     }
 }

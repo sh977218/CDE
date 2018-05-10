@@ -19,19 +19,4 @@ public class EditBoardTest extends BoardTest {
         textPresent(boardDescriptionChange);
     }
 
-    void editBoardByName(String boardName, String boardNameChange, String boardDescriptionChange, boolean isPublic, String[] boardTags) {
-        clickElement(By.xpath("//*[@id='" + boardName + "']//i[contains(@class,'editBoard')]"));
-        findElement(By.id("boardName")).sendKeys(boardNameChange);
-        findElement(By.id("boardDescription")).sendKeys(boardDescriptionChange);
-        if (boardTags != null) {
-            for (String tag : boardTags) {
-                clickElement(By.xpath("//*[@id='boardTag']//input"));
-                findElement(By.xpath("//*[@id='boardTag']//input")).sendKeys(tag);
-                selectNgSelectDropdownByText(tag);
-            }
-        }
-        clickElement(By.id("saveEditBoardBtn"));
-        closeAlert();
-    }
-
 }
