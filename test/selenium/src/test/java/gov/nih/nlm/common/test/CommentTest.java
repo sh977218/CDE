@@ -1,6 +1,7 @@
 package gov.nih.nlm.common.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
@@ -52,17 +53,26 @@ public abstract class CommentTest extends CommonTest {
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
 
-        hangon(1);
-        clickElement(By.id("replyTextarea_0"));
-        findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment about Status");
+        try {
+            clickElement(By.id("replyTextarea_0"));
+            findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment about Status");
+        } catch (StaleElementReferenceException se) {
+            clickElement(By.id("replyTextarea_0"));
+            findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment about Status");
+        }
+
         hangon(1);
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
 
         hangon(1);
-        clickElement(By.id("replyTextarea_1"));
-        hangon(1);
-        findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment about Naming");
+        try {
+            clickElement(By.id("replyTextarea_1"));
+            findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment about Naming");
+        } catch (StaleElementReferenceException se) {
+            clickElement(By.id("replyTextarea_1"));
+            findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment about Naming");
+        }
         hangon(1);
         scrollToViewById("replyBtn_1");
         clickElement(By.id("replyBtn_1"));

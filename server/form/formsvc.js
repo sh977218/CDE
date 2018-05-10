@@ -110,7 +110,7 @@ exports.byId = function (req, res) {
                             return res.send(xmlForm);
                         });
                     } else if (req.query.subtype === 'sdc') {
-                        sdc.formToSDC(wholeForm, req.query.renderer, function (err, sdcForm) {
+                        sdc.formToSDC({form: wholeForm, renderer: req.query.renderer, validate: req.query.validate}, (err, sdcForm) => {
                             if (err) return res.send(err);
                             return res.send(sdcForm);
                         });
@@ -181,7 +181,7 @@ exports.byTinyId = function (req, res) {
                             return res.send(xmlForm);
                         });
                     else if (req.query.subtype === 'sdc')
-                        sdc.formToSDC(wholeForm, req.query.renderer, function (err, sdcForm) {
+                        sdc.formToSDC({form: wholeForm, renderer: req.query.renderer, validate: req.query.validate}, (err, sdcForm) => {
                             if (err) return res.send(err);
                             return res.send(sdcForm);
                         });
@@ -307,19 +307,15 @@ exports.latestVersionByTinyId = function (req, res) {
 };
 
 exports.publishForm = function (req, res) {
-    if (!req.params.id) {
-        return res.status(400).send();
-    }
-    if (!req.isAuthenticated()) {
-        return res.status(401).send();
-    }
-    mongo_form.byId(req.params.id, dbLogger.withMongoError(res, 'form not found', form => {
-        if (!form) {
-            return res.status(400).send('form not found');
-        }
-        fetchWholeForm(form.toObject(), dbLogger.withMongoError(res, 'fetch whole for publish', wholeForm => {
-            publishForm.getFormForPublishing(wholeForm, req, res);
-        }));
+    if (!req.params.id) return res.status(400).send();
+    mongo_form.byId(req.params.id, dbLogger.handleGenericError(
+        {res: res, origin: "Publish form"},
+        form => {
+            if (!form) return res.status(400).send('form not found');
+            fetchWholeForm(form.toObject(), dbLogger.handleGenericError(
+                {res: res, message: 'Fetch whole for publish', origin: "publishForm"}, wholeForm => {
+                publishForm.getFormForPublishing(wholeForm, req, res);
+            }));
     }));
 };
 
