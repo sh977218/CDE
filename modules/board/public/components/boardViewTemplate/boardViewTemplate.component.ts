@@ -41,4 +41,8 @@ export class BoardViewTemplateComponent {
     clickHeader(board) {
         if (this.onHeaderClick) this.onHeaderClick.emit(board);
     }
+
+    onBoardShareStatusChange($event) {
+        this.board.shareStatus = $event.value;
+    }
 }
