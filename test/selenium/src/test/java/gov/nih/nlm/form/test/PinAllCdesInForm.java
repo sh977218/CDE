@@ -20,7 +20,8 @@ public class PinAllCdesInForm extends BoardTest {
         waitForESUpdate();
 
         gotoMyBoards();
-        Assert.assertEquals(findElement(By.xpath("//*[@id='" + boardName + "']//div[contains(@class,'card-body')]//div[contains(@class,'numElement')]")).getText(), "7");
+        int numElement = getNumberElementsByBoardName(boardName);
+        Assert.assertEquals(numElement, "7");
         goToBoard(boardName);
         textPresent("Optical coherence");
     }

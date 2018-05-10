@@ -58,7 +58,7 @@ public class BoardViewTest extends BoardTest {
     private void attachToBoard(String cdeName, String boardName) {
         searchElt(cdeName, "cde");
         clickElement(By.id("pinToBoard_0"));
-        clickElement(By.id(boardName));
+        clickBoardHeaderByName(boardName);
         textPresent("Added to Board");
     }
 }
