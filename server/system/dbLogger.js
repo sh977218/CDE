@@ -131,12 +131,11 @@ exports.logError = function (message, callback) { // all server errors, express 
             }
         };
 
-        mongo_data_system.pushGetAdministratorRegistrations((err, registrations) => {
-            if (err) {
-                return; // no log to prevent re-trigger
-            }
-            registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
-        });
+        if (message.origin.indexOf("pushGetAdministratorRegistrations") === -1) {
+            mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
+            });
+        }
         if (callback) callback(err);
     });
 };
@@ -170,10 +169,7 @@ exports.logClientError = function (req, callback) {
             }
         };
 
-        mongo_data_system.pushGetAdministratorRegistrations((err, registrations) => {
-            if (err) {
-                return exports.logIfMongoError(err);
-            }
+        mongo_data_system.pushGetAdministratorRegistrations(registrations => {
             registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
         });
         callback(err);

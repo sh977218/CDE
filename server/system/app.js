@@ -1101,9 +1101,9 @@ exports.init = function (app) {
                 }
             };
 
-            mongo_data.pushGetAdministratorRegistrations(dbLogger.handleGenericError({origin: "/feedback/report"}, registrations => {
+            mongo_data.pushGetAdministratorRegistrations(registrations => {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
-            }));
+            });
             res.send({});
         });
     });
