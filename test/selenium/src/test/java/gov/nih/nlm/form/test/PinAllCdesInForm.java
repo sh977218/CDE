@@ -21,7 +21,7 @@ public class PinAllCdesInForm extends BoardTest {
 
         gotoMyBoards();
         int numElement = getNumberElementsByBoardName(boardName);
-        Assert.assertEquals(numElement, "7");
+        Assert.assertEquals(numElement, 7);
         goToBoard(boardName);
         textPresent("Optical coherence");
     }
