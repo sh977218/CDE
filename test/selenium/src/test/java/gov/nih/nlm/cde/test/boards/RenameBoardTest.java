@@ -9,11 +9,9 @@ public class RenameBoardTest extends BoardTest {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Cerebral Palsy";
         gotoMyBoards();
-        clickElement(By.xpath("//*[@id='viewBoard_Cerebral Palsy']//i"));
-        textPresent("Confirm");
-        findElement(By.xpath("//*[@id='viewBoard_Cerebral Palsy']//input")).sendKeys(" NEW");
-        clickElement(By.xpath("//*[@id='viewBoard_Cerebral Palsy']//button[contains(text(),'Confirm')]"));
-        closeAlert();
+        clickElement(By.xpath("//*[@id='viewBoard_Cerebral Palsy']//i[contains(@class,'editBoard')]"));
+        findElement(By.id("boardName")).sendKeys(" NEW");
+        clickElement(By.id("saveEditBoardBtn"));
         textPresent(boardName + " NEW");
     }
 }

@@ -74,7 +74,7 @@ public class BoardTest extends NlmCdeBaseTest {
         if (type.equals("form")) openFormInList(eltName);
         clickElement(By.id("pinToBoard_0"));
         textPresent(boardName);
-        clickElement(By.linkText(boardName));
+        clickElement(By.id(boardName));
         checkAlert("Added to Board");
         modalGone();
     }
@@ -87,7 +87,7 @@ public class BoardTest extends NlmCdeBaseTest {
         } else {
             gotoMyBoards();
             textPresent(boardName);
-            clickElement(By.xpath("//*[@id='viewBoard_" + boardName + "']//a"));
+            clickElement(By.xpath("//*[@id='" + boardName + "']//a"));
             switchTab(1);
             textPresent(boardName, By.xpath("//h3[@id='board_name_" + boardName + "']"));
         }
