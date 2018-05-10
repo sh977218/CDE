@@ -74,7 +74,7 @@ public class BoardTest extends NlmCdeBaseTest {
         if (type.equals("form")) openFormInList(eltName);
         clickElement(By.id("pinToBoard_0"));
         textPresent(boardName);
-        clickElement(By.id(boardName));
+        clickElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'card-header')]"));
         checkAlert("Added to Board");
         modalGone();
     }

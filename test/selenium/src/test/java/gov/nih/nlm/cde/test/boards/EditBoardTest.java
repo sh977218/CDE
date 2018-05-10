@@ -9,12 +9,29 @@ public class EditBoardTest extends BoardTest {
     public void editBoard() {
         mustBeLoggedInAs(boarduserEdit_username, password);
         gotoMyBoards();
-        clickElement(By.xpath("//*[@id='board_desc_0']//i"));
-        findElement(By.xpath("//*[@id='board_desc_0']//input")).sendKeys(" -- Desc Edited");
-        clickElement(By.xpath("//*[@id='board_desc_0']//button[contains(text(),'Confirm')]"));
+        String boardName = "Edit Board";
+        String boardNameChange = " NEW";
+        String boardDescriptionChange = "-- Desc Edited";
+        String[] boardTags = new String[]{"tag1", "tag2", "tag3"};
+        editBoardByName(boardName, boardNameChange, boardDescriptionChange, false, boardTags);
+        textPresent(boardNameChange);
+        textPresent(boardDescriptionChange);
+        textPresent(boardDescriptionChange);
+    }
+
+    void editBoardByName(String boardName, String boardNameChange, String boardDescriptionChange, boolean isPublic, String[] boardTags) {
+        clickElement(By.xpath("//*[@id='" + boardName + "']//i[contains(@class,'editBoard')]"));
+        findElement(By.id("boardName")).sendKeys(boardNameChange);
+        findElement(By.id("boardDescription")).sendKeys(boardDescriptionChange);
+        if (boardTags != null) {
+            for (String tag : boardTags) {
+                clickElement(By.xpath("//*[@id='boardTag']//input"));
+                findElement(By.xpath("//*[@id='boardTag']//input")).sendKeys(tag);
+                selectNgSelectDropdownByText(tag);
+            }
+        }
+        clickElement(By.id("saveEditBoardBtn"));
         closeAlert();
-        driver.navigate().refresh();
-        textPresent("-- Desc Edited");
     }
 
 }
