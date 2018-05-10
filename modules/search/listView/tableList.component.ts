@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ElasticService } from '_app/elastic.service';
+import { SearchPreferencesComponent } from 'system/public/components/searchPreferences/searchPreferences.component';
 
 @Component({
     selector: 'cde-table-list',
@@ -25,8 +27,11 @@ export class TableListComponent implements OnInit {
     private _elts: any[];
     headings: string[];
     rows: any[];
+    modalRef: NgbModalRef;
 
-    constructor(public esService: ElasticService) {}
+    constructor(public modalService: NgbModal,
+                public esService: ElasticService) {
+    }
 
     ngOnInit() {
         this.render();
@@ -338,5 +343,9 @@ export class TableListComponent implements OnInit {
             if (!n.tags) n.tags = [];
             return i > 0 && n.tags.filter(t => t.indexOf('Question Text') > -1).length === 0;
         });
+    }
+
+    openSearchSettingsModal() {
+        this.modalRef = this.modalService.open(SearchPreferencesComponent);
     }
 }
