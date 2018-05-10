@@ -10,10 +10,10 @@ const elastic = require('./elastic');
 exports.type = "form";
 exports.name = "forms";
 
-var conn = connHelper.establishConnection(config.database.appData);
+let conn = connHelper.establishConnection(config.database.appData);
 
 schemas.formSchema.pre('save', function (next) {
-    var self = this;
+    let self = this;
     self.definitions = mongo_data.copyDefinition(self.naming);
     self.designations = mongo_data.copyDesignation(self.naming);
     try {
@@ -185,7 +185,7 @@ exports.update = function (elt, user, callback, special) {
 };
 
 exports.create = function (form, user, callback) {
-    var newForm = new Form(form);
+    let newForm = new Form(form);
     if (!form.registrationState) {
         newForm.registrationState = {
             registrationStatus: "Incomplete"
@@ -197,7 +197,7 @@ exports.create = function (form, user, callback) {
         userId: user._id
         , username: user.username
     };
-    newForm.save(function (err) {
+    newForm.save(err => {
         callback(err, newForm);
     });
 };
@@ -226,8 +226,8 @@ exports.transferSteward = function (from, to, callback) {
 
 exports.byTinyIdListInOrder = function (idList, callback) {
     exports.byTinyIdList(idList, function (err, forms) {
-        var reorderedForms = idList.map(function (id) {
-            for (var i = 0; i < forms.length; i++) {
+        let reorderedForms = idList.map(function (id) {
+            for (let i = 0; i < forms.length; i++) {
                 if (id === forms[i].tinyId) return forms[i];
             }
         });
