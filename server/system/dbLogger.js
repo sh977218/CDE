@@ -188,7 +188,7 @@ exports.handleGenericError = function (options, cb) {
                 res.status(500).send(message);
             }
             exports.logError({
-                message: origin.message,
+                message: options.message,
                 origin: options.origin,
                 stack: err,
                 details: options.details

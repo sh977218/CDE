@@ -203,10 +203,8 @@ exports.pushGetAdministratorRegistrations = function (callback) {
         }
         let userIds = users.map(u => u._id.toString());
         PushRegistration.find({}).exec((err, registrations) => {
-            if (err) {
-                return callback(err);
-            }
-            callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
+            if (err) return callback(err);
+            callback(null, registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
         });
     });
 };

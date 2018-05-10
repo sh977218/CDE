@@ -38,13 +38,13 @@ app.use(require('hsts')({maxAge: 31536000000}));
 let localRedirectProxy = httpProxy.createProxyServer({});
 
 process.on('uncaughtException', function (err) {
-    console.log("ERROR1: " + err);
+    console.log("Error: Process Uncaught Exception");
     console.log(err.stack);
     logging.errorLogger.error("Error: Uncaught Exception", {stack: err.stack, origin: "app.process.uncaughtException"});
 });
 
 domain.on('error', function (err) {
-    console.log("ERROR2: " + err);
+    console.log("Error: Domain Error");
     console.log(err.stack);
     logging.errorLogger.error("Error: Domain Error", {stack: err.stack, origin: "app.domain.error"});
 });
