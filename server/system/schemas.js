@@ -124,10 +124,11 @@ embedJson.form.cdes = {type: Boolean, default: false};
 schemas.embedSchema = new mongoose.Schema(embedJson);
 
 let fhirAppJson = {
+    clientId: String,
     forms: [
         {tinyId: String}
     ],
-    clientId: String
+    sandboxName: String,
 };
 schemas.fhirAppSchema = new mongoose.Schema(fhirAppJson);
 

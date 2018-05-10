@@ -9,7 +9,7 @@ import _intersectionWith from 'lodash/intersectionWith';
 
 import { CdeId } from 'shared/models.model';
 import { iterateFeSync } from 'shared/form/formShared';
-import { CdeForm, DisplayProfile, FormQuestion } from 'shared/form/form.model';
+import { CdeForm, DisplayProfile, FhirApp, FormQuestion } from 'shared/form/form.model';
 import { FhirEncounter, FhirObservation } from 'shared/mapping/fhir/fhirResource.model';
 import { externalCodeSystemsMap } from 'shared/mapping/fhir';
 import { codingArrayPreview, valuePreview } from 'shared/mapping/fhir/fhirDatatypes';
@@ -93,6 +93,8 @@ export class FhirStandaloneComponent {}
     templateUrl: './fhirApp.component.html'
 })
 export class FhirAppComponent {
+    static readonly FHIR_SANDBOX_SERVER_API_URL = 'https://api-v5-stu3.hspconsortium.org/';
+    static readonly SCOPE = 'patient/*.*';
     codeToDisplay = {};
     elt: CdeForm;
     errorMessage: string;
@@ -109,6 +111,7 @@ export class FhirAppComponent {
     patientEncounters = [];
     patientObservations = [];
     patientOrganization: any;
+    sandboxUrl: string;
     saveMessage: string = null;
     selectedEncounter: EncounterVM;
     selectedObservations: ObservationVM[] = [];
@@ -128,12 +131,27 @@ export class FhirAppComponent {
         let queryParams = this.route.snapshot.queryParams;
         this.selectedProfileName = queryParams['selectedProfile'];
 
-        this.http.get('/fhirApp/' + this.route.snapshot.paramMap.get('config')).subscribe((fhirApp: any) => {
+        this.http.get<FhirApp>('/fhirApp/' + this.route.snapshot.paramMap.get('config')).subscribe(fhirApp => {
+            if (!fhirApp || !fhirApp.sandboxName || !fhirApp.clientId) {
+                return;
+            }
+            if (queryParams['state']) {
+                this.loadPatientData();
+            } else if (queryParams['iss']) {
+                (<any>window).FHIR.oauth2.authorize({
+                    'client_id': fhirApp.clientId,
+                    'redirect_uri': '/' + this.route.snapshot.paramMap.get('config'),
+                    'scope':  FhirAppComponent.SCOPE,
+                });
+            }
+            this.sandboxUrl = FhirAppComponent.FHIR_SANDBOX_SERVER_API_URL + fhirApp.sandboxName + '/data/';
             fhirApp.forms.forEach(f => {
                 this.http.get<CdeForm>('/form/' + f.tinyId).subscribe(form => {
+                    CdeForm.validate(form);
                     this.patientForms.push({
                         tinyId: form.tinyId,
-                        name: form.naming[0].designation
+                        name: form.naming[0].designation,
+                        form: form
                     });
                     iterateFeSync(form, () => {}, () => {}, q => {
                         q.question.cde.ids.forEach(id => {
@@ -145,25 +163,11 @@ export class FhirAppComponent {
                                 });
                             }
                         });
-                        let localCdeId = new CdeId();
-                        localCdeId.source = 'https://cde.nlm.nih.gov';
-                        localCdeId.id = q.question.cde.tinyId;
-                        q.question.cde.ids.push(localCdeId);
+                        q.question.cde.ids.push(new CdeId(externalCodeSystemsMap.NLM, q.question.cde.tinyId));
                     });
                 });
             });
-        });
-
-
-        if (queryParams['state']) {
-            this.loadPatientData();
-        } else if (queryParams['iss']) {
-            (<any>window).FHIR.oauth2.authorize({
-                'client_id': 'e17575b9-f89b-49c1-a9c2-52c68f1d273c',
-                'redirect_uri': '/' + this.route.snapshot.paramMap.get('config'),
-                'scope':  'patient/*.*'
-            });
-        }
+        }, err => this.errorMessage = err);
     }
 
     encounterAdd(encounter) {
@@ -175,9 +179,10 @@ export class FhirAppComponent {
         if (!this.selectedEncounter) {
             return;
         }
-        this.patientForms.forEach(f => {
-            this.loadFhirDataToForm(f);
-        });
+        if (!this.selectedEncounter.forms) {
+            this.selectedEncounter.forms = this.patientForms.map(f => ({form: JSON.parse(JSON.stringify(f.form)),
+                reference: f}));
+        }
         this.updateProgress();
     }
 
@@ -191,10 +196,7 @@ export class FhirAppComponent {
             return this.snackBar.open('Select an encounter to open a form.', '', {duration: 2000});
         }
 
-        this.http.get<CdeForm>('/form/' + tinyId).subscribe(elt => {
-            CdeForm.validate(elt);
-            cb(null, elt);
-        }, err => cb(err.statusText));
+        cb(null, this.selectedEncounter.forms.filter(f => f.form.tinyId === tinyId)[0].form);
     }
 
     loadPatientData() {
@@ -259,7 +261,7 @@ export class FhirAppComponent {
 
     loadFhirDataToForm(formElt) {
         iterateFeSync(formElt, undefined, undefined, (q: FormQuestion) => {
-            q.question.cde.ids.push({source: 'https://cde.nlm.nih.gov', id: q.question.cde.tinyId});
+            q.question.cde.ids.push({source: 'NLM', id: q.question.cde.tinyId});
             this.selectedEncounter.observations.forEach(o => {
                 let matchedCodes = _intersectionWith(
                     o.code.coding,
@@ -287,7 +289,7 @@ export class FhirAppComponent {
 
     newEncounterAdd() {
         this.smart.patient.api.create({
-            baseUrl: 'https://api-v5-stu3.hspconsortium.org/LLatLO/data/',
+            baseUrl: this.sandboxUrl,
             type: 'Encounter',
             data: JSON.stringify(newEncounter(
                 this.newEncounterDate + ':00-00:00',
@@ -328,6 +330,10 @@ export class FhirAppComponent {
         });
     }
 
+    static questionAnswered(answer) {
+        return typeof(answer) !== 'undefined' && !(Array.isArray(answer) && answer.length === 0);
+    }
+
     submitFhir() {
         this.saving = true;
         let submitFhirPending = [];
@@ -354,7 +360,7 @@ export class FhirAppComponent {
                     }
 
                 });
-            if (!foundObs && q.question.answer) {
+            if (!foundObs && FhirAppComponent.questionAnswered(q.question.answer)) {
                 let observation = observationFromForm(q, this.codeToDisplay, this.selectedEncounter, this.patient);
                 let qType = containerToItemType(q.question);
                 observation['value' + capString(itemTypeToItemDatatype(qType, true))] = valueToTypedValue(q.question,
@@ -392,7 +398,7 @@ export class FhirAppComponent {
             }
             else {
                 this.smart.patient.api.create({
-                    baseUrl: 'https://sb-fhir-stu3.smarthealthit.org/smartstu3/data/',
+                    baseUrl: this.sandboxUrl,
                     data: JSON.stringify(p.after),
                     type: 'Observation'
                 }).then(response => {
@@ -423,7 +429,9 @@ export class FhirAppComponent {
                 f.percent = 0;
                 iterateFeSync(form, () => {}, () => {}, q => {
                      f.total++;
-                     if (q.question.answer) f.observed++;
+                     if (FhirAppComponent.questionAnswered(q.question.answer)) {
+                         f.observed++;
+                     }
                 });
                 f.percent = 100 * f.observed / f.total;
             });
@@ -446,7 +454,7 @@ export class FhirAppComponent {
                 </thead>
                 <tbody>
                 <tr *ngFor="let o of data.selectedObservations">
-                    <td>{{o.code}}</td>
+                    <td>{{o.preview}}</td>
                     <td><pre>{{o.value}}</pre></td>
                     <td>{{o.issued}}</td>
                 </tr>

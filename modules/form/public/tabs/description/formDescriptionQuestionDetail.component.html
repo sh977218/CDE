@@ -127,7 +127,7 @@
             <dt class="col-2">Show if:</dt>
             <dd class="col-10 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
                 <input #slInput type="text" title="Show if"
-                       (focus)="slOptionsRetrigger()" [inputFormatter]="inputFormatter"
+                       (focus)="slOptionsRetrigger()"
                        [ngModel]="question.skipLogic.condition"
                        (ngModelChange)="typeaheadSkipLogic(parent, question, $event);"
                        class="form-control skipLogicCondition"

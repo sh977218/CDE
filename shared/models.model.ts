@@ -23,6 +23,11 @@ export class CdeId {
     source: string;
     version?: string;
 
+    constructor(source = undefined, id = undefined) {
+        this.source = source;
+        this.id = id;
+    }
+
     static copy(id: CdeId) {
         return Object.assign(new CdeId(), id);
     }

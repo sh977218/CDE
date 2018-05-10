@@ -140,6 +140,12 @@ export class DisplayProfile {
     }
 }
 
+export class FhirApp {
+    clientId: string;
+    forms: {tinyId: string}[];
+    sandboxName: string;
+}
+
 export interface FormElementsContainer {
     formElements: FormElement[];
 }

@@ -8,7 +8,12 @@
             <td><i class="fa fa-trash-o" (click)="deleteApp(app)"></i></td>
             <td>{{app._id}}</td>
             <td>
-                <label> Client Id:
+                <label>Sandbox Name
+                    <input [(ngModel)]="app.sandboxName" class="form-control" (change)="saveApp(app)">
+                </label>
+            </td>
+            <td>
+                <label>Client Id:
                     <input [(ngModel)]="app.clientId" class="form-control" (change)="saveApp(app)">
                 </label>
             </td>

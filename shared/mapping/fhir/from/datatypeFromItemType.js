@@ -1,8 +1,15 @@
 import { externalCodeSystemsMap } from 'shared/mapping/fhir/index';
 
 export function isCodingToValueList(container, coding) {
-    let pvs = Array.isArray(container.answers) ? container.answers : container.permissibleValues;
-    return pvs.some(pv => pv.permissibleValue === coding.code && externalCodeSystemsMap[pv.codeSystemName] === coding.system);
+    function isCodingInContainer(container, c) {
+        let pvs = Array.isArray(container.answers) ? container.answers : container.permissibleValues;
+        return pvs.some(pv => pv.permissibleValue === c.code && externalCodeSystemsMap[pv.codeSystemName] === c.system);
+    }
+    if (Array.isArray(coding)) {
+        return coding.every(c => isCodingInContainer(container, c));
+    } else {
+        return isCodingInContainer(container, coding);
+    }
 }
 
 export function isItemTypeToContainer(container, type) { // http://hl7.org/fhir/item-type
@@ -56,11 +63,23 @@ export function typedValueToValue(container, type, v) {
         case 'display':
             return true;
         case 'choice':
-            let coding = typeof(v.valueCoding) !== 'undefined' ? v.valueCoding : v.valueCodeableConcept.coding[0];
+            let coding = typeof(v.valueCoding) !== 'undefined' ? v.valueCoding : v.valueCodeableConcept.coding;
             if (!isCodingToValueList(container, coding)) {
                 return false;
             }
-            container.answer = coding.code;
+            if (Array.isArray(coding)) {
+                if (container.multiselect) {
+                    container.answer = coding.map(c => c.code);
+                } else {
+                    container.answer = coding.length ? coding[0].code : undefined;
+                }
+            } else {
+                if (container.multiselect) {
+                    container.answer = [coding.code];
+                } else {
+                    container.answer = coding.code;
+                }
+            }
             return true;
         case 'boolean':
             container.answer = v.valueBoolean ? '1' : '0';

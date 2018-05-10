@@ -19,13 +19,30 @@ export function containerToItemType(container) { // http://hl7.org/fhir/item-typ
     }
 }
 
-export function containerValueListToCoding(container, value) {
-    let pvs = Array.isArray(container.answers) ? container.answers : container.permissibleValues;
-    let matches = pvs.filter(a => a.permissibleValue === value);
-    if (matches.length) {
-        return permissibleValueToCoding(matches[0]);
+export function containerValueListToCoding(container, value, multi = false) {
+    function valueToCoding(container, v) {
+        let pvs = Array.isArray(container.answers) ? container.answers : container.permissibleValues;
+        let matches = pvs.filter(a => a.permissibleValue === v);
+        if (matches.length) {
+            return permissibleValueToCoding(matches[0]);
+        }
+        return {code: v};
     }
-    return {code: value};
+    if (Array.isArray(value)) {
+        let result = value.map(v => valueToCoding(container, v));
+        if (multi) {
+            return result.length ? result : undefined;
+        } else {
+            return result.length ? result[0] : undefined;
+        }
+    } else {
+        let result = valueToCoding(container, value);
+        if (multi) {
+            return [result];
+        } else {
+            return result;
+        }
+    }
 }
 
 export function itemTypeToItemDatatype(type, hasCodeableConcept = false) {
@@ -67,7 +84,11 @@ export function valueToQuantity(container, value, comparator, valueUom) {
 export function valueToTypedValue(container, type, value, comparator = '=', valueUom = undefined, hasCodeableConcept = false) {
     switch (type) {
         case 'choice':
-            return hasCodeableConcept ? {coding: [containerValueListToCoding(container, value)]} : containerValueListToCoding(container, value);
+            if (hasCodeableConcept) {
+                let coding = containerValueListToCoding(container, value, true);
+                return coding ? {coding: coding} : undefined;
+            }
+            return containerValueListToCoding(container, value);
         case 'boolean':
             return !!value;
         case 'quantity':

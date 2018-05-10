@@ -10,27 +10,6 @@ import { score } from 'shared/form/formShared';
 @Component({
     selector: 'cde-native-question',
     templateUrl: './nativeQuestion.component.html',
-    styles: [`
-        @media (min-width: 768px) {
-            div .col-sm-2-4 {
-                flex: 0 0 20%;
-                max-width: 20%;
-            }
-        }
-        :host >>> label.native-question-label {
-            font-weight: 700;
-        }
-        :host >>> .form-check-label > input[type="checkbox"] {
-            margin-top: 8px !important;
-        }
-        :host >>> .form-check-label > input[type="radio"] {
-            margin-top: 7px !important;
-        }
-
-        .native-valuelist-label {
-            word-break: break-word;
-        }
-    `]
 })
 export class NativeQuestionComponent implements OnInit {
     @Input() formElement: FormQuestion;
