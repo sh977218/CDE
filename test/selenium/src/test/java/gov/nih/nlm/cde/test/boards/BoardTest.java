@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test.boards;
 import gov.nih.nlm.system.EltIdMaps;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
@@ -69,12 +70,16 @@ public class BoardTest extends NlmCdeBaseTest {
         pinTo(formName, formBoardName, "form");
     }
 
+    protected void clickBoardHeaderByName(String boardName) {
+        clickElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'card-header')]"));
+    }
+
     private void pinTo(String eltName, String boardName, String type) {
         if (type.equals("cde")) openCdeInList(eltName);
         if (type.equals("form")) openFormInList(eltName);
         clickElement(By.id("pinToBoard_0"));
         textPresent(boardName);
-        clickElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'card-header')]"));
+        clickBoardHeaderByName(boardName);
         checkAlert("Added to Board");
         modalGone();
     }
@@ -93,4 +98,9 @@ public class BoardTest extends NlmCdeBaseTest {
         }
     }
 
+    public int getNumberElementsByBoardName(String boardName) {
+        WebElement numElt = findElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'numElement')]"));
+        int num = Integer.parseInt(numElt.getText().trim());
+        return num;
+    }
 }
