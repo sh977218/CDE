@@ -197,18 +197,12 @@ exports.pushEndpointUpdate = function (endpoint, commandObj, callback) {
 };
 
 exports.pushGetAdministratorRegistrations = function (callback) {
-    User.find({siteAdmin: true}).exec((err, users) => {
-        if (err) {
-            return callback(err);
-        }
+    User.find({siteAdmin: true}).exec(dbLogger.handleGenericError({origin: "pushGetAdministratorRegistrations"}, users => {
         let userIds = users.map(u => u._id.toString());
-        PushRegistration.find({}).exec((err, registrations) => {
-            if (err) {
-                return callback(err);
-            }
+        PushRegistration.find({}).exec(dbLogger.handleGenericError({origin: "pushGetAdministratorRegistrations.find"}, registrations => {
             callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
-        });
-    });
+        }));
+    }));
 };
 
 exports.userByName = function (name, callback) {

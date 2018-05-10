@@ -52,7 +52,7 @@ exports.init = function (app, daoManager) {
 
     app.get("/draftFormById/:id",formSvc.draftFormById);
 
-    app.post('/form/publish/:id', formSvc.publishForm);
+    app.post('/form/publish/:id', authorization.loggedInMiddleware, formSvc.publishForm);
 
     app.get('/viewingHistory/form', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {

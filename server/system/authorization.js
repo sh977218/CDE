@@ -9,17 +9,12 @@ exports.canEditMiddleware = function (req, res, next) {
     if (next) {
         next();
     }
-}
+};
 
 exports.loggedInMiddleware = function (req, res, next) {
-    if (!req.user) {
-        // TODO: should consider adding to error log
-        return res.status(403).send();
-    }
-    if (next) {
-        next();
-    }
-}
+    if (!req.user) return res.status(403).send();
+    if (next) next();
+};
 
 exports.checkOwnership = function (dao, id, req, cb) {
     if (!req.isAuthenticated()) return cb("You are not authorized.", null);
