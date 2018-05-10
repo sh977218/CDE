@@ -29,11 +29,13 @@
                 </div>
             </div>
             <div class="row">
-                <div *ngFor="let board of myBoardsSvc.boards; let $index = index" class="col-lg-6">
-                    <cde-board-view-template [board]="board" [headerLink]="false"
-                                             (onHeaderClick)="selectBoard(board);c()">
-                    </cde-board-view-template>
-                </div>
+                <ng-container *ngFor="let board of myBoardsSvc.boards; let $index = index">
+                    <div [id]="board.name" class="col-lg-4 col-md-3">
+                        <cde-board-view-template [board]="board" [headerLink]="false"
+                                                 (onHeaderClick)="selectBoard(board);c()">
+                        </cde-board-view-template>
+                    </div>
+                </ng-container>
             </div>
         </div>
     </div>

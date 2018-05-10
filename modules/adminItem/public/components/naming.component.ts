@@ -23,7 +23,10 @@ export class NamingComponent implements OnInit {
 
     ngOnInit() {
         let stewardOrgName = this.elt.stewardOrg.name;
-        this.tags = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
+        let namingTags = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
+        this.tags = this.elt.naming.reduce((accumulator, currentValue) => {
+            return accumulator.concat(currentValue.tags);
+        }, namingTags);
     }
 
     addNewNaming() {
