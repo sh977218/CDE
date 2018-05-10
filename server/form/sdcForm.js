@@ -10,7 +10,7 @@ function addQuestion(parent, question) {
         newQuestion["@title"] = question.label;
     }
     if (question.instructions && question.instructions.value) {
-        newQuestion.Property = {"@type": "instruction", "@val": question.instructions.value};
+        newQuestion.Property = {"@propName": "instruction", "@val": question.instructions.value};
     }
     let questionEle = parent.ele({Question: newQuestion});
     if (question.question.cde.ids.length > 0) {
@@ -67,9 +67,7 @@ function doQuestion(parent, question) {
     try {
         if (question.skipLogic && question.skipLogic.condition.length > 0) {
             if (question.skipLogic.condition.match('".+" = ".+"')) {
-                let terms = question.skipLogic.condition.match(/"[^"]+"/g).map(function (t) {
-                    return t.substr(1, t.length - 2);
-                });
+                let terms = question.skipLogic.condition.match(/"[^"]+"/g).map(t => t.substr(1, t.length - 2));
                 if (terms.length === 2) {
                     let qToAddTo = questionsInSection[terms[0]];
                     // below is xmlBuilder ele. This seems to be the way to find child inside element
@@ -99,9 +97,7 @@ function doQuestion(parent, question) {
     } catch (e) {
     }
 
-    if (!embed) {
-        addQuestion(parent, question);
-    }
+    if (!embed) addQuestion(parent, question);
 }
 
 let questionsInSection = {};
@@ -125,7 +121,7 @@ let doSection = function (parent, section) {
 
 let idToName = {};
 
-exports.formToSDC = function (form, renderer, cb) {
+exports.formToSDC = function ({form, renderer, validate}, cb) {
     let formDesign = builder.create({
         "FormDesign": {
             "@xmlns": "urn:ihe:qrph:sdc:2016",
@@ -161,23 +157,26 @@ exports.formToSDC = function (form, renderer, cb) {
     idToName = {};
 
     let xmlStr = formDesign.end({pretty: false});
+    if (noSupport) cb("SDC Export does not support questions outside of sections. ");
 
-    validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err) {
-        if (err) {
-            dbLogger.logError({
-                message: "SDC Schema validation error: ",
-                origin: "sdcForm.formToSDC",
-                stack: err,
-                details: "formID: " + form._id
-            });
-            xmlStr = "<!-- Validation Error: " + err + " -->" + xmlStr;
-        }
-        if (noSupport) {
-            cb("SDC Export does not support questions outside of sections. ");
-        } else if (renderer === "defaultHtml") {
-            cb(null, "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr);
-        } else {
+    if (renderer === "defaultHtml") {
+        xmlStr = "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr;
+    }
+
+    if (validate) {
+        validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', err => {
+            if (err) {
+                dbLogger.logError({
+                    message: "SDC Schema validation error: ",
+                    origin: "sdcForm.formToSDC",
+                    stack: err,
+                    details: "formID: " + form._id
+                });
+                xmlStr = "<!-- Validation Error: " + err + " -->" + xmlStr;
+            }
             cb(null, xmlStr);
-        }
-    });
+        });
+    } else {
+        cb (null, xmlStr);
+    }
 };

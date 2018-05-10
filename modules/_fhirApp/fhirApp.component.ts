@@ -395,7 +395,7 @@ export class FhirAppComponent {
 
     newEncounterAdd() {
         this.smart.patient.api.create({
-            baseUrl: 'https://api-v5-stu3.hspconsortium.org/LLatLO/data/',
+            baseUrl: 'https://api-v5-stu3.hspconsortium.org/NewCD/data/',
             type: 'Encounter',
             data: JSON.stringify(this.newEncounterGet())
         }).then(response => {

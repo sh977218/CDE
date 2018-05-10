@@ -15,36 +15,35 @@ export class OrgAccountManagementComponent implements OnInit {
     orgCurators = [];
     transferStewardObj = {};
 
-    ngOnInit () {
+    ngOnInit() {
         this.getOrgCurators();
     }
 
-    constructor(
-        private http: HttpClient,
-        private alert: AlertService,
-        public userService: UserService
-    ) {}
+    constructor(private http: HttpClient,
+                private alert: AlertService,
+                public userService: UserService) {
+    }
 
-    addOrgCurator () {
+    addOrgCurator() {
         this.http.post('/addOrgCurator', {
-            username: this.newUsername
-            , org: this.newOrgName
+            username: this.newUsername,
+            org: this.newOrgName
         }, {responseType: 'text'}).subscribe(() => {
-            this.alert.addAlert('success', 'Saved');
-            this.getOrgCurators();
-        }, () => this.alert.addAlert('danger', 'There was an issue saving.')
+                this.alert.addAlert('success', 'Saved');
+                this.getOrgCurators();
+            }, () => this.alert.addAlert('danger', 'There was an issue saving.')
         );
         this.newUsername = '';
         this.newOrgName = '';
     }
 
-    getOrgCurators () {
+    getOrgCurators() {
         this.http.get<any>('/orgCurators').subscribe(response => {
             this.orgCurators = response.orgs.sort((a, b) => a.name - b.name);
         });
     }
 
-    removeOrgCurator (orgName, userId) {
+    removeOrgCurator(orgName, userId) {
         this.http.post('/removeOrgCurator', {
             orgName: orgName
             , userId: userId
@@ -54,7 +53,7 @@ export class OrgAccountManagementComponent implements OnInit {
         }, () => this.alert.addAlert('danger', 'An error occured.'));
     }
 
-    transferSteward () {
+    transferSteward() {
         this.http.post('/transferSteward', this.transferStewardObj, {responseType: 'text'}).subscribe(r => {
             this.alert.addAlert('success', r);
             this.transferStewardObj = {};

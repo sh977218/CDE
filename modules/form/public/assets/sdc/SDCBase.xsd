@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="urn:ihe:qrph:sdc:2016" xmlns="urn:ihe:qrph:sdc:2016">
    <!-- 9/15/2016 Changes for IHE Profile Trial Implementation (for Jan 2017 Connectathon) -->
-   <xs:complexType abstract="true" name="ExtensionBaseType">
+   <xs:complexType abstract="true" name="X_ExtensionBaseType">
       <xs:annotation>
-         <xs:documentation/>
+         <xs:documentation>MOVED to SDCResources</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:extension base="BaseType">
@@ -17,19 +17,16 @@
    <xs:complexType name="ExtensionType">
 
       <xs:annotation>
-         <xs:documentation>Similar to the Schema type xs:anyType, but requires strict validation,
-                and includes optional baseAttributes. Developer will need to declare a namespace and
-                provide a Schema to validate the contents.</xs:documentation>
+         <xs:documentation>Similar to the Schema type xs:anyType, but requires strict validation, and includes optional baseAttributes. Developer will need to declare a namespace and provide a Schema to validate the contents.</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:extension base="BaseType">
             <xs:sequence>
-               <xs:any maxOccurs="unbounded" processContents="strict" namespace="##other"/>
+               <xs:any maxOccurs="unbounded" processContents="strict" namespace="##any"/>
             </xs:sequence>
-            <xs:anyAttribute processContents="strict" namespace="##other">
+            <xs:anyAttribute processContents="strict" namespace="##any">
                <xs:annotation>
-                  <xs:documentation>Developer must supply a namespace and a Schema to validate
-                            the attributes. Cannot reuse any SDC attributes.</xs:documentation>
+                  <xs:documentation>Developer must supply a namespace and a Schema to validate the attributes.</xs:documentation>
                </xs:annotation>
             </xs:anyAttribute>
          </xs:extension>
