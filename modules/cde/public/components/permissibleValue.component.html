@@ -19,12 +19,14 @@
             <cde-inline-edit id="uom" [(model)]="elt.valueDomain.uom" (modelChange)="onEltChange.emit();"
                              [isAllowed]="canEdit"></cde-inline-edit>
         </dd>
-        <dt class="col-3 text-right">Ids:</dt>
-        <dd *ngIf="elt.valueDomain.ids?.length > 0" id="identifiers" class="col-9">
-            <div *ngFor="let id of elt.valueDomain.ids">
-                {{id.source}}: {{id.id}}<span *ngIf="id.version">, version: </span>{{id.version}}
-            </div>
-        </dd>
+        <ng-container *ngIf="elt.valueDomain.ids?.length > 0">
+            <dt class="col-3 text-right">Ids:</dt>
+            <dd id="identifiers" class="col-9">
+                <div *ngFor="let id of elt.valueDomain.ids">
+                    {{id.source}}: {{id.id}}<span *ngIf="id.version">, version: </span>{{id.version}}
+                </div>
+            </dd>
+        </ng-container>
         <ng-container [ngSwitch]="elt.valueDomain.datatype">
             <ng-container *ngSwitchCase="'Value List'">
             </ng-container>

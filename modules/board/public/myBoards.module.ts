@@ -24,12 +24,9 @@ const boardRoutes: Routes = [
     declarations: [
         MyBoardsComponent,
     ],
-    entryComponents: [
-    ],
-    providers: [
-    ],
-    exports: [
-    ],
+    entryComponents: [],
+    providers: [],
+    exports: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { RouterModule } from '@angular/router';
-import { Select2Module } from 'ng2-select2';
 import { TreeModule } from 'angular-tree-component/dist/angular-tree-component';
 import 'angular-tree-component/dist/angular-tree-component.css';
 
@@ -27,7 +26,6 @@ import { WidgetModule } from 'widget/widget.module';
         NgbModule,
         NgSelectModule,
         RouterModule,
-        Select2Module,
         TreeModule,
         // core
         WidgetModule,

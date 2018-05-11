@@ -25,10 +25,8 @@ export class PublicBoardsComponent implements OnInit {
         this.loadPublicBoards();
     }
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient
-    ) {
+    constructor(private alert: AlertService,
+                private http: HttpClient) {
     }
 
     loadPublicBoards() {

@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { Select2Module } from 'ng2-select2';
 import { TreeModule } from 'angular-tree-component/dist/angular-tree-component';
 import 'angular-tree-component/dist/angular-tree-component.css';
 
@@ -37,7 +36,6 @@ const appRoutes: Routes = [
         FormsModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
-        Select2Module,
         TreeModule,
         NgSelectModule,
         // core

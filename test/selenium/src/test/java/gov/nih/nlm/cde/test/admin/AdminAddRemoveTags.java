@@ -51,7 +51,7 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         clickElement(By.id("openNewNamingModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newTags']//input"));
-        clickElement(By.xpath("//span[contains(@class,'select2-results')]/ul//li[text()='canYouSeeThis']"));
+        selectNgSelectDropdownByText("canYouSeeThis");
         clickElement(By.id("cancelNewNamingBtn"));
 
         openUserMenu();

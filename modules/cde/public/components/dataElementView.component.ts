@@ -59,17 +59,7 @@ export class DataElementViewComponent implements OnInit {
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
             this.loadDataElement(() => {
-                this.orgHelperService.then(() => {
-                    let org = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name];
-                    let allNamingTags = org ? org.nameTags : [];
-                    this.elt.naming.forEach(n => {
-                        n.tags.forEach(t => allNamingTags.push(t));
-                    });
-                    this.orgNamingTags = _uniqWith(allNamingTags, _isEqual).map(t => {
-                        return {id: t, text: t};
-                    });
-                    this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
-                }, _noop);
+                this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
             });
         });
     }

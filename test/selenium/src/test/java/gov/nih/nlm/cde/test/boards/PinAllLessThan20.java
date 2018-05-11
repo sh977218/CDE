@@ -8,7 +8,7 @@ public class PinAllLessThan20 extends BoardTest {
 
     @Test
     public void pinAllLessThan20() {
-        String board_name = "Pin All Less Than 20 Test Board";
+        String boardName = "Pin All Less Than 20 Test Board";
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         goToCdeSearch();
 
@@ -21,15 +21,13 @@ public class PinAllLessThan20 extends BoardTest {
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         clickElement(By.id("pinAll"));
         textPresent("Choose a Board to pin");
-        clickElement(By.linkText(board_name));
+        clickBoardHeaderByName(boardName);
         checkAlert("All elements pinned.");
         waitForESUpdate();
         gotoMyBoards();
 
         // find nb of cdes for the boards.
-        int num_cde_after_pinAll_int =
-                Integer.valueOf(findElement(By.xpath("//*[@id = 'boardDiv_"
-                        + board_name + "']//*[contains(@id, 'board_num_cdes_')]")).getText());
+        int num_cde_after_pinAll_int = getNumberElementsByBoardName(boardName);
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
     }
 

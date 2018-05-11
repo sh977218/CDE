@@ -80,16 +80,7 @@ export class FormViewComponent implements OnInit {
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
             this.loadForm(() => {
-                this.orgHelperService.then(orgsDetailedInfo => {
-                    let allNamingTags = orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
-                    this.elt.naming.forEach(n => {
-                        n.tags.forEach(t => allNamingTags.push(t));
-                    });
-                    this.orgNamingTags = _uniqWith(allNamingTags, _isEqual).map(t => {
-                        return {id: t, text: t};
-                    });
-                    this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
-                }, _noop);
+                this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
             });
         });
     }
