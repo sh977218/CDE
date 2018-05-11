@@ -1,77 +1,36 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
 import { MyBoardsService } from 'board/public/myBoards.service';
 
-
 @Component({
     selector: 'cde-my-boards',
-    templateUrl: './myBoards.component.html',
-    styles: [`
-        .my-board-card {
-            border: 1px solid #dcdcdc;
-            border-radius: 5px;
-            margin: 3px;
-            padding: 15px;
-            min-height: 160px;
-            position: relative;
-        }
-    `]
+    templateUrl: './myBoards.component.html'
 })
-export class MyBoardsComponent implements OnInit {
-    showChangeStatus: boolean;
-    showDelete: boolean;
-    suggestTags = [];
-
-    ngOnInit() {
+export class MyBoardsComponent {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public myBoardsSvc: MyBoardsService,
+                public userService: UserService) {
         this.myBoardsSvc.loadMyBoards();
     }
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public myBoardsSvc: MyBoardsService,
-        public userService: UserService,
-    ) {
-    }
-
-    cancelSave(board) {
-        delete board.editMode;
-        board.showEdit = false;
-    }
-
-    changeStatus(index) {
-        let board = this.myBoardsSvc.boards[index];
-        if (board.shareStatus === 'Private') {
-            board.shareStatus = 'Public';
-        } else {
-            board.shareStatus = 'Private';
-        }
-        this.save(board);
-        this.showChangeStatus = false;
-    }
-
-    getLinkSource(id) {
-        return '/board/' + id;
-    }
-
-    removeBoard(index) {
-        this.showDelete = false;
-        this.http.delete('/board/' + this.myBoardsSvc.boards[index]._id, {responseType: 'text'}).subscribe(() => {
-            this.alert.addAlert('success', 'Done');
-            this.myBoardsSvc.waitAndReload();
-        });
-    }
-
-    save(board) {
-        delete board.editMode;
+    saveBoard(board) {
         this.http.post('/board', board, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Saved.');
             this.myBoardsSvc.waitAndReload();
         }, err => this.alert.httpErrorMessageAlert(err));
     }
+
+    deleteBoard(board) {
+        this.http.delete('/board/' + board._id, {responseType: 'text'}).subscribe(() => {
+            this.alert.addAlert('success', 'Deleted.');
+            this.myBoardsSvc.waitAndReload();
+        });
+    }
+
 
     selectAggregation(aggName, $index) {
         this.myBoardsSvc.filter[aggName][$index].checked = !this.myBoardsSvc.filter[aggName][$index].checked;

@@ -18,7 +18,7 @@ public class NoDoublePinTest extends BoardTest {
         goToCdeSearch();
         openCdeInList(cdeName);
         clickElement(By.id("pinToBoard_0"));
-        clickElement(By.linkText(boardName));
+        clickBoardHeaderByName(boardName);
 
         textPresent("Already added");
         modalGone();

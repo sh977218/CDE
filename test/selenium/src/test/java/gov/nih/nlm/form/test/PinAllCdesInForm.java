@@ -15,12 +15,13 @@ public class PinAllCdesInForm extends BoardTest {
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         goToFormByName(formName);
         clickElement(By.id("pinAllCdes"));
-        clickElement(By.linkText(boardName));
+        clickElement(By.xpath("//*[@id='" + boardName + "']//div[contains(@class,'card-header')]"));
         checkAlert("All elements pinned");
         waitForESUpdate();
 
         gotoMyBoards();
-        Assert.assertEquals(findElement(By.xpath("//div[@id='boardDiv_" + boardName + "']//span[contains(@id,'board_num_cdes_')]")).getText(), "7");
+        int numElement = getNumberElementsByBoardName(boardName);
+        Assert.assertEquals(numElement, 7);
         goToBoard(boardName);
         textPresent("Optical coherence");
     }

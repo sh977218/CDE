@@ -35,7 +35,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         goToPermissibleValues();
         textPresent("myUom");
 
-         goToIdentifiers();
+        goToIdentifiers();
         Assert.assertEquals("1.1", findElement(By.id("dd_version_nlm")).getText());
 
         // Test history
