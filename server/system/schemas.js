@@ -5,12 +5,13 @@ const regStatusShared = require('@std/esm')(module)("../../shared/system/regStat
 
 let schemas = {};
 
-function deleteEmpty (v) {
-    if(v === null || v === ''){
+function deleteEmpty(v) {
+    if (v === null || v === '') {
         return undefined;
     }
     return v;
 }
+
 const stringType = schemas.stringType = {type: String, set: deleteEmpty};
 const stringIndexType = schemas.stringIndexType = Object.assign({index: true}, stringType);
 
@@ -170,7 +171,7 @@ let orgJson = {
 };
 schemas.orgJson = orgJson;
 
-schemas.orgSchema = new mongoose.Schema(orgJson);
+schemas.orgSchema = new mongoose.Schema(orgJson, {usePushEach: true});
 
 schemas.pushRegistration = new mongoose.Schema({
     features: [stringType],
@@ -238,7 +239,7 @@ schemas.userSchema = new mongoose.Schema({
         name: stringType,
         id: mongoose.Schema.Types.ObjectId
     }]
-});
+}, {usePushEach: true});
 
 schemas.orgSchema.set('collection', 'orgs');
 schemas.userSchema.set('collection', 'users');
@@ -314,7 +315,7 @@ schemas.commentSchema = new mongoose.Schema({
         eltType: Object.assign({enum: ["cde", "form", "board"]}, stringType),
         eltId: stringType
     }
-});
+}, {usePushEach: true,});
 
 schemas.helpItemSchema = new mongoose.Schema({
     permalink: stringType,
@@ -399,7 +400,7 @@ schemas.jobQueue = mongoose.Schema({
     type: stringType,
     status: Object.assign({enum: ["Running"]}, stringType),
     error: stringType
-});
+}, {usePushEach: true});
 
 schemas.fs_files = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -535,13 +536,13 @@ schemas.feedbackIssueSchema = new mongoose.Schema({
 });
 
 schemas.trafficFilterSchema = new mongoose.Schema({
-   ipList: [{
-       ip: String,
-       date: {type: Date, default: Date.now()},
-       reason: String,
-       strikes: {type: Number, default: 1},
-       _id: false
-   }]
+    ipList: [{
+        ip: String,
+        date: {type: Date, default: Date.now()},
+        reason: String,
+        strikes: {type: Number, default: 1},
+        _id: false
+    }]
 });
 
 schemas.classificationAudit.set('collection', 'classificationAudit');

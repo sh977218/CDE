@@ -57,7 +57,7 @@ exports.init = function (app) {
         homeHtml = str;
     });
 
-    function isModernBrowser (req) {
+    function isModernBrowser(req) {
         let ua = useragent.is(req.headers['user-agent']);
         return ua.chrome || ua.firefox || ua.edge;
     }
@@ -235,9 +235,8 @@ exports.init = function (app) {
     });
 
     // every sunday at 4:07 AM
-    new CronJob({
-        cronTime: '* 7 4 * * 6',
-        onTick: () => {
+    new CronJob('* 7 4 * * 6',
+        () => {
             dbLogger.consoleLog("Creating sitemap");
             let wstream = fs.createWriteStream('./dist/app/sitemap.txt');
             let cond = {
@@ -269,10 +268,7 @@ exports.init = function (app) {
                 dbLogger.consoleLog("done with sitemap");
                 wstream.end();
             });
-        },
-        runOnInit: true,
-        timeZone: "America/New_York"
-    }).start();
+    }, null, true, 'America/New_York', this, true);
 
     ["/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404",
@@ -482,10 +478,11 @@ exports.init = function (app) {
         })[0];
     }
 
-    function myCsrf (req, res, next) {
+    function myCsrf(req, res, next) {
         if (!req.body._csrf) return res.status(401).send();
         csrf()(req, res, next);
     }
+
     const validLoginBody = ["username", "password", "_csrf", "recaptcha"];
     app.post('/login', myCsrf, (req, res, next) => {
         if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
@@ -605,14 +602,12 @@ exports.init = function (app) {
     });
 
 
-    app.get('/siteadmins', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data.siteadmins(function (err, users) {
-                res.send(users);
-            });
-        } else {
-            res.status(401).send();
-        }
+    app.get('/siteAdmins', authorization.checkSiteAdmin, (req, res) => {
+        mongo_data.siteAdmins((err, users) => res.send(users));
+    });
+
+    app.get('/orgAuthorities', authorization.checkSiteAdmin, (req, res) => {
+        mongo_data.orgAuthorities((err, users) => res.send(users));
     });
 
     app.get('/managedOrgs', function (req, res) {
@@ -698,7 +693,6 @@ exports.init = function (app) {
     app.get('/myOrgsAdmins', exportShared.nocacheMiddleware, function (req, res) {
         usersrvc.myOrgsAdmins(req, res);
     });
-
 
     app.get('/orgAdmins', exportShared.nocacheMiddleware, function (req, res) {
         usersrvc.orgAdmins(req, res);
@@ -869,9 +863,9 @@ exports.init = function (app) {
             dbLogger.getClientErrors(req.body, (err, result) => {
                 res.send(result.map(r => {
                     let l = r.toObject();
-                   l.agent = useragent.parse(r.userAgent).toAgent();
-                   l.ua = useragent.is(r.userAgent);
-                   return l;
+                    l.agent = useragent.parse(r.userAgent).toAgent();
+                    l.ua = useragent.is(r.userAgent);
+                    return l;
                 }));
             });
         } else {
@@ -946,7 +940,15 @@ exports.init = function (app) {
     app.post('/addUserRole', function (req, res) {
         if (authorizationShared.hasRole(req.user, "CommentReviewer")) {
             mongo_data.addUserRole(req.body, function (err) {
-                if (err) res.status(404).send(err);
+                if (err) {
+                    dbLogger.logError({
+                        message: 'Error adding user role',
+                        origin: '/addUserRole',
+                        stack: err,
+                        details: ''
+                    });
+                    res.status(500).send('Error adding user role');
+                }
                 else res.send("Role added.");
             });
         }
@@ -1099,10 +1101,7 @@ exports.init = function (app) {
                 }
             };
 
-            mongo_data.pushGetAdministratorRegistrations((err, registrations) => {
-                if (err) {
-                    return dbLogger.logIfMongoError(err);
-                }
+            mongo_data.pushGetAdministratorRegistrations(registrations => {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
             });
             res.send({});
@@ -1289,15 +1288,7 @@ exports.init = function (app) {
         res.send(elastic.meshSyncStatus);
     });
 
-    new CronJob({
-        cronTime: '00 00 4 * * *',
-        //noinspection JSUnresolvedFunction
-        onTick: function () {
-            elastic.syncWithMesh();
-        },
-        start: false,
-        timeZone: "America/New_York"
-    }).start();
+    new CronJob('00 00 4 * * *', () => elastic.syncWithMesh(), null, true, 'America/New_York');
 
     app.get('/comments/eltId/:eltId', function (req, res) {
         mongo_data.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function (err, comments) {
@@ -1380,7 +1371,7 @@ exports.init = function (app) {
                     elt.ipList.splice(foundIndex, 1);
                     elt.save(() => res.send());
                 } else {
-                   res.send();
+                    res.send();
                 }
             });
         } else res.status(401).send();

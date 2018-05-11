@@ -1,5 +1,6 @@
-let mongo_board = require('./mongo-board');
-let _ = require("lodash");
+const mongo_board = require('./mongo-board');
+const _ = require("lodash");
+const dbLogger = require('../system/dbLogger');
 
 let propMapping = {
     'cde': {id: "deTinyId", name: "deName"},
@@ -55,21 +56,29 @@ exports.pinForms = function (req, res) {
 
 
 exports.pinToBoard = function (req, res, dao) {
-    var tinyId = req.params.tinyId;
-    var boardId = req.params.boardId;
+    let tinyId = req.params.tinyId;
+    let boardId = req.params.boardId;
 
     dao.byTinyId(tinyId, function (err, elt) {
         mongo_board.boardById(boardId, function (err, board) {
-            if (err) return res.send("Board cannot be found.");
-            if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
-                return res.send("You must own a board to edit it.");
+            if (err) {
+                dbLogger.logError({
+                    message: 'Error pin to board',
+                    origin: '/pin/',
+                    stack: err,
+                    details: ''
+                });
+                res.status(500).send("Error pin to board.");
+            } else if (!board) res.send("Board cannot be found.");
+            else if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
+                res.send("You must own this board to edit it.");
             } else {
-                var pin = {
+                let pin = {
                     pinnedDate: Date.now()
                 };
                 pin[propMapping[dao.type].id] = tinyId;
                 pin[propMapping[dao.type].name] = elt.naming[0].designation;
-                for (var i = 0; i < board.pins.length; i++) {
+                for (let i = 0; i < board.pins.length; i++) {
                     if (JSON.stringify(board.pins[i][propMapping[dao.type].id]) === JSON.stringify(tinyId)) {
                         res.statusCode = 202;
                         return res.send("Already added to the board.");

@@ -620,13 +620,9 @@
       <xs:complexContent>
          <xs:extension base="ExtensionBaseType">
             <xs:sequence>
-               <xs:element maxOccurs="1" minOccurs="0" name="HTML" type="HTML_Stype">
-                  <xs:annotation>
-                     <xs:documentation>Contains optional HTML formatting. The HTML must reflect the contents of the UTF8Text element. (Future modelling may include a Schema to restrict the HTML formatting.) </xs:documentation>
-                  </xs:annotation>
-               </xs:element>
+               <xs:element form="qualified" name="RichText" type="HTML_Stype"/>
             </xs:sequence>
-            <xs:attribute name="val" type="xs:string" use="optional"/>
+            <xs:attribute name="val" type="xs:string" use="required"/>
          </xs:extension>
       </xs:complexContent>
    </xs:complexType>
@@ -645,12 +641,6 @@
                <xs:element maxOccurs="1" minOccurs="1" name="LinkURI" type="anyURI_Stype">
                   <xs:annotation>
                      <xs:documentation>Link to external information.</xs:documentation>
-                  </xs:annotation>
-               </xs:element>
-               <xs:element maxOccurs="unbounded" minOccurs="0" name="Description" type="RichTextType">
-                  <xs:annotation>
-                     <xs:documentation>Alternative description(s) of the URI link, not usually for display purposes, but available for special
- purposes.</xs:documentation>
                   </xs:annotation>
                </xs:element>
             </xs:sequence>
@@ -723,28 +713,33 @@
       </xs:attribute>
    </xs:attributeGroup>
    <xs:complexType name="EmailAddressType">
+      <xs:annotation>
+         <xs:documentation>***Changed from BaseType to ExtensionBaseType</xs:documentation>
+      </xs:annotation>
       <xs:complexContent>
-         <xs:extension base="BaseType">
+         <xs:extension base="ExtensionBaseType">
             <xs:attribute name="val" use="required" type="EmailAddress_Stype"> </xs:attribute>
          </xs:extension>
       </xs:complexContent>
    </xs:complexType>
    <xs:simpleType name="EmailAddress_Stype">
       <xs:restriction base="xs:string">
-         <xs:maxLength value="254"/>
-         <xs:pattern value="[\w\-\.\+]{1,63}@([a-zA-Z\d]{1,2}|[a-zA-Z\d][a-zA-Z\d\-]{0,61}[a-zA-Z\d])(\.([a-zA-Z\d]{1,2}|[a-zA-Z\d][a-zA-Z\d\-]{0,61}[a-zA-Z\d]))*"/>
+         <xs:pattern value="[a-zA-Z0-9_\-\.\+-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9_\-\.]+"/>
       </xs:restriction>
    </xs:simpleType>
    <xs:complexType name="PhoneNumberType">
+      <xs:annotation>
+         <xs:documentation>***Changed from BaseType to ExtensionBaseType</xs:documentation>
+      </xs:annotation>
       <xs:complexContent>
-         <xs:extension base="BaseType">
+         <xs:extension base="ExtensionBaseType">
             <xs:attribute name="val" use="required" type="PhoneNumber_Stype"> </xs:attribute>
          </xs:extension>
       </xs:complexContent>
    </xs:complexType>
    <xs:simpleType name="PhoneNumber_Stype">
       <xs:restriction base="xs:string">
-         <xs:pattern value="((|\+1)[\-\.\(\) ]?[2-9]\d{2}[\-\.\(\) ]?[2-9](1[02-9]|[02-9]\d)|\+([02-9]|\d{2,3})([\-\.\(\) ]?\d{3}){2})[\-\.\(\) ]?\d{4}(;ext=[\-\.\(\) \d]+)?"/>
+         <xs:pattern value="\+?\(?\d{2,4}\)?[\d\s-]{3,}"/>
       </xs:restriction>
    </xs:simpleType>
    <xs:complexType name="AreaCodeType">
@@ -755,8 +750,8 @@
       </xs:complexContent>
    </xs:complexType>
    <xs:simpleType name="AreaCode_Stype">
-      <xs:restriction base="xs:string">
-         <xs:pattern value="\d{3}"/>
+      <xs:restriction base="xs:unsignedShort">
+         <xs:maxInclusive value="999"/>
       </xs:restriction>
    </xs:simpleType>
    <xs:complexType name="CountryCodeType">
@@ -767,8 +762,8 @@
       </xs:complexContent>
    </xs:complexType>
    <xs:simpleType name="CountryCode_Stype">
-      <xs:restriction base="xs:string">
-         <xs:pattern value="\d{1,3}"/>
+      <xs:restriction base="xs:unsignedByte">
+         <xs:maxInclusive value="99"/>
       </xs:restriction>
    </xs:simpleType>
    <xs:complexType name="LanguageCode.ISO.639.3_Type">
@@ -835,12 +830,15 @@
    <xs:attributeGroup name="IDAttributes">
       <xs:attribute name="ID" type="URI_Atype" use="required">
          <xs:annotation>
-            <xs:documentation>A unique identifier for critical types in FormDesign.</xs:documentation>
+            <xs:documentation>A unique identifier for critical types in FormDesign.
+TODO: Needs Schematron to calidate uniqueness in each form.</xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="baseURI" type="URI_Atype">
          <xs:annotation>
-            <xs:documentation>If the ID does not use the default base URI (namespace), then the local base URI goes here. Note that all IDs must be unique, even if they do not have the same base URI. </xs:documentation>
+            <xs:documentation>If the ID does not use the default base URI (namespace), then the local baseURI goes here. Note that all IDs must be unique within a form, even if they do not have the same baseURI. 
+
+Ideally, the baseURI + ID should combine to form a *globally* unique identifier, that uniquely identifies an item in a particular form.  The same baseURI and ID may be reused in derived or versioned forms, as long as the context stays the same, and any affected data elements remain unchanged in context and semantics.  Following this approach is likely to simplify analytics based on form content.</xs:documentation>
          </xs:annotation>
       </xs:attribute>
    </xs:attributeGroup>
@@ -911,8 +909,11 @@
       </xs:complexContent>
    </xs:complexType>
    <xs:complexType name="DestinationType">
+      <xs:annotation>
+         <xs:documentation>***Changed from BaseType to ExtensionBaseType</xs:documentation>
+      </xs:annotation>
       <xs:complexContent>
-         <xs:extension base="BaseType">
+         <xs:extension base="ExtensionBaseType">
             <xs:sequence maxOccurs="1">
                <xs:element maxOccurs="1" minOccurs="1" name="Endpoint" type="anyURI_Stype"/>
                <xs:element maxOccurs="1" minOccurs="1" name="EndpointDescription" type="string_Stype"/>
@@ -1022,6 +1023,553 @@
       <xs:complexContent>
          <xs:extension base="base64Binary_Stype">
             <xs:attribute name="hashAlgorithm" type="xs:string"/>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="PropertyType1">
+      <xs:annotation>
+         <xs:documentation>MOVED: From SDCFormDesign
+CHANGED:
+Property is any type of data that is associated with any form item (e.g., section, question, list item) in any context.  The Property context is specified by the @type attribute.  Examples of @type values may include:
+-alternate language representations, e.g., 'spanish'
+-'instruction'
+-'tooltip' 
+-'help' for a pop-up help box
+-'outlining' (such as question numbering)
+
+The @type enumerations must be defined and documented for the particular use case, and are currently out of scope in this schema definition.  Multiple type tokens for a single element are supported.
+
+RENAMED:  'OtherText' to 'Property' 9/14/2016</xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:extension base="DataTypes_SType">
+            <xs:attribute form="unqualified" name="propName" type="xs:NMTOKEN" use="required">
+               <xs:annotation>
+                  <xs:documentation>NEW</xs:documentation>
+               </xs:annotation>
+            </xs:attribute>
+            <xs:attribute form="unqualified" name="propClass" type="xs:NMTOKENS">
+               <xs:annotation>
+                  <xs:documentation>NEW</xs:documentation>
+               </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="val" type="xs:string" use="optional"/>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="PropertyType">
+      <xs:annotation>
+         <xs:documentation>MOVED: From SDCFormDesign
+CHANGED:
+Property is any type of data that is associated with any form item (e.g., section, question, list item) in any context.  The Property context is specified by the @type attribute.  Examples of @type values may include:
+-alternate language representations, e.g., 'spanish'
+-'instruction'
+-'tooltip' 
+-'help' for a pop-up help box
+-'outlining' (such as question numbering)
+
+The @type enumerations must be defined and documented for the particular use case, and are currently out of scope in this schema definition.  Multiple type tokens for a single element are supported.
+
+RENAMED:  'OtherText' to 'Property' 9/14/2016</xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:extension base="ExtensionBaseType">
+            <xs:sequence>
+               <xs:element maxOccurs="1" minOccurs="0" name="TypedValue" type="DataTypes_SType">
+                  <xs:annotation>
+                     <xs:documentation>Contains optional typed data.  </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+            </xs:sequence>
+            <xs:attribute form="unqualified" name="propName" type="xs:NMTOKEN" use="required">
+               <xs:annotation>
+                  <xs:documentation>NEW</xs:documentation>
+               </xs:annotation>
+            </xs:attribute>
+            <xs:attribute form="unqualified" name="propClass" type="xs:NMTOKENS">
+               <xs:annotation>
+                  <xs:documentation>NEW</xs:documentation>
+               </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="val" type="xs:string" use="optional"/>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType abstract="true" name="ExtensionBaseType">
+      <xs:annotation>
+         <xs:documentation>MOVED from SDCBase
+ADDED Properties</xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:extension base="BaseType">
+            <xs:sequence>
+               <xs:element maxOccurs="unbounded" minOccurs="0" name="Comment" type="CommentType"> </xs:element>
+               <xs:element maxOccurs="unbounded" minOccurs="0" name="Extension" type="ExtensionType"> </xs:element>
+               <xs:element maxOccurs="unbounded" minOccurs="0" name="Property" type="PropertyType"/>
+            </xs:sequence>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="DataTypes_DEType">
+      <xs:annotation>
+         <xs:documentation>MOVED from SDCDataTypes:
+SDC datatypes for Data Entry (DE), based mostly on W3C specifications. Uses baseAttributes  and Extension capability to enhance the list of Data Types. Includes additonal metadata to specify data input restrictions for data entry forms, and to aid in validation of IHE RFD SubmitForm responses in XML instance documents.
+         </xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:extension base="ExtensionBaseType">
+            <xs:choice>
+               <xs:element name="anyType" nillable="true" type="anyType_DEtype"> </xs:element>
+               <xs:element name="anyURI" nillable="true" type="anyURI_DEtype"> </xs:element>
+               <xs:element name="base64Binary" nillable="true" type="base64Binary_DEtype">
+                  <xs:annotation>
+                     <xs:documentation>**SDC may need a valid list of MIME types.
+ </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="boolean" nillable="true" type="boolean_DEtype"> </xs:element>
+               <xs:element name="duration" nillable="true" type="duration_DEtype">
+                  <xs:annotation>
+                     <xs:documentation source="http://www.w3schools.com/schema/schema_dtypes_date.asp">Duration Data Type 
+The duration data type is used to specify a time interval.
+The time interval is specified in the following form
+"PnYnMnDTnHnMnS" where: 
+ P indicates the period (required) 
+ nY indicates the number of years nM indicates the number of months 
+ nD indicates the number of days T indicates the start of a time section
+ (required if you are going to specify hours, minutes, or seconds) 
+ nH indicates the number of hours nM indicates the number of minutes 
+ nS indicates the number of seconds 
+
+An element in your document might look like this: P5Y 
+ The example above indicates a period of five years. 
+ 
+Or it might look like this: P5Y2M10D. 
+ The example above indicates a period of five years, two months, and 10 days. 
+ 
+Or it might look like this: P5Y2M10DT15H. 
+ The example above indicates a period of five years, two months, 10 days, and 15 hours. 
+ 
+Or it might look like this: PT15H.
+                            </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="byte" nillable="true" type="byte_DEtype"> </xs:element>
+               <xs:element name="date" nillable="true" type="date_DEtype">
+                  <xs:annotation>
+                     <xs:documentation>**Does SDC need a list of valid patterns for all date/time types? </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="dateTimeStamp" nillable="true" type="dateTimeStamp_DEtype"> </xs:element>
+               <xs:element name="decimal" nillable="true" type="decimal_DEtype"> </xs:element>
+               <xs:element name="dateTime" nillable="true" type="dateTimeStamp_DEtype">
+                  <xs:annotation>
+                     <xs:documentation source="http://www.w3schools.com/schema/schema_dtypes_date.asp">DateTime Data Type 
+The dateTime data type is used to specify a date
+ and a time. The dateTime is specified in the following form
+ "YYYY-MM-DDThh:mm:ss" where: 
+ YYYY indicates the year 
+ MM indicates the month 
+ DD indicates the day 
+ T indicates the start of the required time section 
+ hh indicates the hour 
+ mm indicates the minute 
+ ss indicates the second 
+ 
+Time Zones 
+ To specify a time zone, you can either enter a time in UTC time by adding a "Z" behind the time -
+ like this: 09:30:10Z 
+ or you can specify an offset from the UTC time by adding a positive or negative time behind the
+ time - like this: 09:30:10-06:00 or 09:30:10+06:00.
+                            </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="double" nillable="true" type="double_DEtype"/>
+               <xs:element name="float" nillable="true" type="float_DEtype"/>
+               <xs:element name="gDay" nillable="true" type="gDay_DEtype"/>
+               <xs:element name="gMonth" nillable="true" type="gMonth_DEtype"/>
+               <xs:element name="gMonthDay" nillable="true" type="gMonthDay_DEtype"/>
+               <xs:element name="gYear" nillable="true" type="gYear_DEtype"/>
+               <xs:element name="gYearMonth" nillable="true" type="gMonth_DEtype"/>
+               <xs:element name="hexBinary" nillable="true" type="hexBinary_DEtype"/>
+               <xs:element name="HTML" nillable="true" type="HTML_DEtype"> </xs:element>
+               <xs:element name="int" nillable="true" type="int_DEtype"> </xs:element>
+               <xs:element name="integer" nillable="true" type="integer_DEtype"> </xs:element>
+               <xs:element name="long" nillable="true" type="long_DEtype"> </xs:element>
+               <xs:element name="negativeInteger" nillable="true" type="negativeInteger_DEtype"/>
+               <xs:element name="nonNegativeInteger" nillable="true" type="nonNegativeInteger_DEtype"/>
+               <xs:element name="nonPositiveInteger" nillable="true" type="nonPositiveInteger_DEtype"/>
+               <xs:element name="positiveInteger" nillable="true" type="positiveInteger_DEtype"/>
+               <xs:element name="short" nillable="true" type="short_DEtype"/>
+               <xs:element name="string" nillable="true" type="string_DEtype"/>
+               <xs:element name="time" nillable="true" type="time_DEtype">
+                  <xs:annotation>
+                     <xs:documentation>**possibly "HH:MM:SS:ms am/pm 12/24"</xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="unsignedByte" nillable="true" type="unsignedByte_DEtype"/>
+               <xs:element name="unsignedInt" nillable="true" type="unsignedInt_DEtype"/>
+               <xs:element name="unsignedLong" nillable="true" type="unsignedLong_DEtype"/>
+               <xs:element name="unsignedShort" nillable="true" type="unsignedShort_DEtype"/>
+               <xs:element name="XML" nillable="true" type="XML_DEtype"/>
+               <xs:element name="yearMonthDuration" nillable="true" type="yearMonthDuration_DEtype"> </xs:element>
+            </xs:choice>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="DataTypesNumeric_DEType">
+      <xs:annotation>
+         <xs:documentation>NEW:
+SDC datatypes for Data Entry (DE), based mostly on W3C specifications. Uses baseAttributes  and Extension capability to enhance the list of Data Types. Includes additonal metadata to specify data input restrictions for data entry forms, and to aid in validation of IHE RFD SubmitForm responses in XML instance documents.
+         </xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:extension base="ExtensionBaseType">
+            <xs:choice>
+               <xs:element name="byte" nillable="true" type="byte_DEtype"> </xs:element>
+               <xs:element name="decimal" nillable="true" type="decimal_DEtype"> </xs:element>
+               <xs:element name="double" nillable="true" type="double_DEtype"/>
+               <xs:element name="float" nillable="true" type="float_DEtype"/>
+               <xs:element name="hexBinary" nillable="true" type="hexBinary_DEtype"/>
+               <xs:element name="int" nillable="true" type="int_DEtype"> </xs:element>
+               <xs:element name="integer" nillable="true" type="integer_DEtype"> </xs:element>
+               <xs:element name="long" nillable="true" type="long_DEtype"> </xs:element>
+               <xs:element name="negativeInteger" nillable="true" type="negativeInteger_DEtype"/>
+               <xs:element name="nonNegativeInteger" nillable="true" type="nonNegativeInteger_DEtype"/>
+               <xs:element name="nonPositiveInteger" nillable="true" type="nonPositiveInteger_DEtype"/>
+               <xs:element name="positiveInteger" nillable="true" type="positiveInteger_DEtype"/>
+               <xs:element name="short" nillable="true" type="short_DEtype"/>
+               <xs:element name="time" nillable="true" type="time_DEtype">
+                  <xs:annotation>
+                     <xs:documentation>**possibly "HH:MM:SS:ms am/pm 12/24"</xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="unsignedByte" nillable="true" type="unsignedByte_DEtype"/>
+               <xs:element name="unsignedInt" nillable="true" type="unsignedInt_DEtype"/>
+               <xs:element name="unsignedLong" nillable="true" type="unsignedLong_DEtype"/>
+               <xs:element name="unsignedShort" nillable="true" type="unsignedShort_DEtype"/>
+               <xs:element name="yearMonthDuration" nillable="true" type="yearMonthDuration_DEtype"> </xs:element>
+            </xs:choice>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="DataTypesNumeric_SType">
+      <xs:annotation>
+         <xs:documentation>NEW:
+SDC datatypes in Simple (S) format, based mostly on W3C specifications.  Uses baseAttributes and Extension capability to enhance the list of Data Types.        **CHECK for ERRORS and completeness**</xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:extension base="ExtensionBaseType">
+            <xs:choice>
+               <xs:element name="byte" nillable="true" type="byte_Stype"> </xs:element>
+               <xs:element name="decimal" nillable="true" type="decimal_Stype">
+                  <xs:annotation>
+                     <xs:documentation/>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="double" nillable="true" type="double_Stype"/>
+               <xs:element name="float" nillable="true" type="float_Stype"/>
+               <xs:element name="int" nillable="true" type="int_Stype"> </xs:element>
+               <xs:element name="integer" nillable="true" type="integer_Stype"> </xs:element>
+               <xs:element name="long" nillable="true" type="long_Stype"/>
+               <xs:element name="negativeInteger" nillable="true" type="negativeInteger_Stype"/>
+               <xs:element name="nonNegativeInteger" nillable="true" type="nonNegativeInteger_Stype"/>
+               <xs:element name="nonPositiveInteger" nillable="true" type="nonPositiveInteger_Stype"/>
+               <xs:element name="positiveInteger" nillable="true" type="positiveInteger_Stype"/>
+               <xs:element name="short" nillable="true" type="short_Stype"/>
+               <xs:element name="unsignedByte" nillable="true" type="unsignedByte_Stype"/>
+               <xs:element name="unsignedInt" nillable="true" type="unsignedInt_Stype"/>
+               <xs:element name="unsignedLong" nillable="true" type="unsignedLong_Stype"/>
+               <xs:element name="unsignedShort" nillable="true" type="unsignedShort_Stype"/>
+               <xs:element name="yearMonthDuration" nillable="true" type="yearMonthDuration_Stype"/>
+            </xs:choice>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="DataTypesDateTime_DEType">
+      <xs:annotation>
+         <xs:documentation>NEW:
+SDC datatypes for Data Entry (DE), based mostly on W3C specifications. Uses baseAttributes  and Extension capability to enhance the list of Data Types. Includes additonal metadata to specify data input restrictions for data entry forms, and to aid in validation of IHE RFD SubmitForm responses in XML instance documents.
+         </xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:extension base="ExtensionBaseType">
+            <xs:choice>
+               <xs:element name="dateTime" nillable="true" type="dateTimeStamp_DEtype">
+                  <xs:annotation>
+                     <xs:documentation source="http://www.w3schools.com/schema/schema_dtypes_date.asp">DateTime Data Type 
+The dateTime data type is used to specify a date
+ and a time. The dateTime is specified in the following form
+ "YYYY-MM-DDThh:mm:ss" where: 
+ YYYY indicates the year 
+ MM indicates the month 
+ DD indicates the day 
+ T indicates the start of the required time section 
+ hh indicates the hour 
+ mm indicates the minute 
+ ss indicates the second 
+ 
+Time Zones 
+ To specify a time zone, you can either enter a time in UTC time by adding a "Z" behind the time -
+ like this: 09:30:10Z 
+ or you can specify an offset from the UTC time by adding a positive or negative time behind the
+ time - like this: 09:30:10-06:00 or 09:30:10+06:00.
+                            </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="duration" nillable="true" type="duration_DEtype">
+                  <xs:annotation>
+                     <xs:documentation source="http://www.w3schools.com/schema/schema_dtypes_date.asp">Duration Data Type 
+The duration data type is used to specify a time interval.
+The time interval is specified in the following form
+"PnYnMnDTnHnMnS" where: 
+ P indicates the period (required) 
+ nY indicates the number of years nM indicates the number of months 
+ nD indicates the number of days T indicates the start of a time section
+ (required if you are going to specify hours, minutes, or seconds) 
+ nH indicates the number of hours nM indicates the number of minutes 
+ nS indicates the number of seconds 
+
+An element in your document might look like this: P5Y 
+ The example above indicates a period of five years. 
+ 
+Or it might look like this: P5Y2M10D. 
+ The example above indicates a period of five years, two months, and 10 days. 
+ 
+Or it might look like this: P5Y2M10DT15H. 
+ The example above indicates a period of five years, two months, 10 days, and 15 hours. 
+ 
+Or it might look like this: PT15H.
+                            </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="gMonthDay" nillable="true" type="gMonthDay_DEtype"/>
+               <xs:element name="gYear" nillable="true" type="gYear_DEtype"/>
+               <xs:element name="gYearMonth" nillable="true" type="gMonth_DEtype"/>
+               <xs:element name="time" nillable="true" type="time_DEtype">
+                  <xs:annotation>
+                     <xs:documentation>**possibly "HH:MM:SS:ms am/pm 12/24"</xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="yearMonthDuration" nillable="true" type="yearMonthDuration_DEtype"> </xs:element>
+            </xs:choice>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="DataTypesDateTime_SType">
+      <xs:annotation>
+         <xs:documentation>NEW:
+SDC datatypes in Simple (S) format, based mostly on W3C specifications.  Uses baseAttributes and Extension capability to enhance the list of Data Types.        **CHECK for ERRORS and completeness**</xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:extension base="ExtensionBaseType">
+            <xs:choice>
+               <xs:element name="duration" nillable="true" type="duration_Stype">
+                  <xs:annotation>
+                     <xs:documentation source="http://www.w3schools.com/schema/schema_dtypes_date.asp">Duration Data Type The duration data type is used to specify a time
+ interval. The time interval is specified in the following form:
+ "PnYnMnDTnHnMnS" where: 
+ P indicates the period (required) 
+ nY indicates the number of years nM indicates the number of months 
+ nD indicates the number of days T indicates the start of a time section
+ (required if you are going to specify hours, minutes, or seconds) 
+ nH indicates the number of hours nM indicates the number of minutes 
+ nS indicates the number of seconds 
+ 
+An element in your document might look like this: P5Y 
+ The example above indicates a period of five years. 
+Or it might look like this: P5Y2M10D. 
+ The example above indicates a period of five years, two months, and 10 days. 
+Or it might look like this: P5Y2M10DT15H. 
+ The example above indicates a period of five years, two months, 10 days, and 15 hours. 
+Or it might look like this: PT15H.
+                            </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="date" nillable="true" type="date_Stype">
+                  <xs:annotation>
+                     <xs:documentation>**Does SDC need a list of valid patterns for all date/time types? </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="dateTimeStamp" nillable="true" type="dateTimeStamp_Stype">
+                  <xs:annotation>
+                     <xs:documentation> </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="dateTime" nillable="true" type="dateTimeStamp_Stype">
+                  <xs:annotation>
+                     <xs:documentation source="http://www.w3schools.com/schema/schema_dtypes_date.asp">DateTime Data Type The dateTime data type is used to specify a date
+ and a time. 
+ The dateTime is specified in the following form
+ "YYYY-MM-DDThh:mm:ss" where: 
+ YYYY indicates the year 
+ MM indicates the month 
+ DD indicates the day 
+ T indicates the start of the required time section 
+ hh indicates the hour mm indicates the minute 
+ ss indicates the second 
+ 
+ Time Zones To specify a time zone, you can either enter a time
+ in UTC time by adding a "Z" behind the time -
+ like this: 09:30:10Z 
+ or you can specify an offset from the UTC time 
+ by adding a positive or negative time behind the
+ time - like this: 09:30:10-06:00 or 09:30:10+06:00.
+                            </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="gDay" nillable="true" type="gDay_Stype"/>
+               <xs:element name="gMonth" nillable="true" type="gMonth_Stype"/>
+               <xs:element name="gMonthDay" nillable="true" type="gMonthDay_Stype"/>
+               <xs:element name="gYear" nillable="true" type="gYear_Stype"/>
+               <xs:element name="gYearMonth" nillable="true" type="gMonth_Stype"/>
+               <xs:element name="time" nillable="true" type="time_Stype">
+                  <xs:annotation>
+                     <xs:documentation>**possibly "HH:MM:SS:ms am/pm 12/24"</xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="yearMonthDuration" nillable="true" type="yearMonthDuration_Stype"/>
+               <xs:element name="List000"/>
+            </xs:choice>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="DataTypes_SType">
+      <xs:annotation>
+         <xs:documentation>MOVED from SDCDataTypes:
+SDC datatypes in Simple (S) format, based mostly on W3C specifications.  Uses baseAttributes and Extension capability to enhance the list of Data Types.        **CHECK for ERRORS and completeness**</xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:extension base="ExtensionBaseType">
+            <xs:choice>
+               <xs:element name="anyType" nillable="true" type="anyType_DEtype"> </xs:element>
+               <xs:element name="anyURI" nillable="true" type="anyURI_Stype"> </xs:element>
+               <xs:element name="base64Binary" nillable="true" type="base64Binary_Stype">
+                  <xs:annotation>
+                     <xs:documentation>**SDC may need a valid list of MIME types.</xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="boolean" nillable="true" type="boolean_Stype"/>
+               <xs:element name="duration" nillable="true" type="duration_Stype">
+                  <xs:annotation>
+                     <xs:documentation source="http://www.w3schools.com/schema/schema_dtypes_date.asp">Duration Data Type The duration data type is used to specify a time
+ interval. The time interval is specified in the following form:
+ "PnYnMnDTnHnMnS" where: 
+ P indicates the period (required) 
+ nY indicates the number of years nM indicates the number of months 
+ nD indicates the number of days T indicates the start of a time section
+ (required if you are going to specify hours, minutes, or seconds) 
+ nH indicates the number of hours nM indicates the number of minutes 
+ nS indicates the number of seconds 
+ 
+An element in your document might look like this: P5Y 
+ The example above indicates a period of five years. 
+Or it might look like this: P5Y2M10D. 
+ The example above indicates a period of five years, two months, and 10 days. 
+Or it might look like this: P5Y2M10DT15H. 
+ The example above indicates a period of five years, two months, 10 days, and 15 hours. 
+Or it might look like this: PT15H.
+                            </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="byte" nillable="true" type="byte_Stype"> </xs:element>
+               <xs:element name="date" nillable="true" type="date_Stype">
+                  <xs:annotation>
+                     <xs:documentation>**Does SDC need a list of valid patterns for all date/time types? </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="dateTimeStamp" nillable="true" type="dateTimeStamp_Stype">
+                  <xs:annotation>
+                     <xs:documentation> </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="decimal" nillable="true" type="decimal_Stype">
+                  <xs:annotation>
+                     <xs:documentation/>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="dateTime" nillable="true" type="dateTimeStamp_Stype">
+                  <xs:annotation>
+                     <xs:documentation source="http://www.w3schools.com/schema/schema_dtypes_date.asp">DateTime Data Type The dateTime data type is used to specify a date
+ and a time. 
+ The dateTime is specified in the following form
+ "YYYY-MM-DDThh:mm:ss" where: 
+ YYYY indicates the year 
+ MM indicates the month 
+ DD indicates the day 
+ T indicates the start of the required time section 
+ hh indicates the hour mm indicates the minute 
+ ss indicates the second 
+ 
+ Time Zones To specify a time zone, you can either enter a time
+ in UTC time by adding a "Z" behind the time -
+ like this: 09:30:10Z 
+ or you can specify an offset from the UTC time 
+ by adding a positive or negative time behind the
+ time - like this: 09:30:10-06:00 or 09:30:10+06:00.
+                            </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="double" nillable="true" type="double_Stype"/>
+               <xs:element name="float" nillable="true" type="float_Stype"/>
+               <xs:element name="gDay" nillable="true" type="gDay_Stype"/>
+               <xs:element name="gMonth" nillable="true" type="gMonth_Stype"/>
+               <xs:element name="gMonthDay" nillable="true" type="gMonthDay_Stype"/>
+               <xs:element name="gYear" nillable="true" type="gYear_Stype"/>
+               <xs:element name="gYearMonth" nillable="true" type="gMonth_Stype"/>
+               <xs:element name="hexBinary" nillable="true" type="hexBinary_Stype">
+                  <xs:annotation>
+                     <xs:documentation>**Does SDC need list of valid MIME types?</xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="HTML" nillable="true" type="HTML_Stype"/>
+               <xs:element name="int" nillable="true" type="int_Stype"> </xs:element>
+               <xs:element name="integer" nillable="true" type="integer_Stype"> </xs:element>
+               <xs:element name="long" nillable="true" type="long_Stype"/>
+               <xs:element name="negativeInteger" nillable="true" type="negativeInteger_Stype"/>
+               <xs:element name="nonNegativeInteger" nillable="true" type="nonNegativeInteger_Stype"/>
+               <xs:element name="nonPositiveInteger" nillable="true" type="nonPositiveInteger_Stype"/>
+               <xs:element name="positiveInteger" nillable="true" type="positiveInteger_Stype"/>
+               <xs:element name="short" nillable="true" type="short_Stype"/>
+               <xs:element name="string" nillable="true" type="string_Stype"/>
+               <xs:element name="time" nillable="true" type="time_Stype">
+                  <xs:annotation>
+                     <xs:documentation>**possibly "HH:MM:SS:ms am/pm 12/24"</xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="unsignedByte" nillable="true" type="unsignedByte_Stype"/>
+               <xs:element name="unsignedInt" nillable="true" type="unsignedInt_Stype"/>
+               <xs:element name="unsignedLong" nillable="true" type="unsignedLong_Stype"/>
+               <xs:element name="unsignedShort" nillable="true" type="unsignedShort_Stype"/>
+               <xs:element name="XML" nillable="true" type="XML_Stype"/>
+               <xs:element name="yearMonthDuration" nillable="true" type="yearMonthDuration_Stype"/>
+            </xs:choice>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="ItemNameType">
+      <xs:annotation>
+         <xs:documentation>Moved from SDCFormDesign
+The type is a standard way to point to a named item anywhere in a FormDesign template.  A named item is any element that has the @name attribute set to a unique value.</xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:extension base="ExtensionBaseType">
+            <xs:attribute name="itemName" type="xs:NCName" use="required">
+               <xs:annotation>
+                  <xs:documentation>The @name attribute of the referenced element.</xs:documentation>
+               </xs:annotation>
+            </xs:attribute>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="ItemNameAttributeType">
+      <xs:annotation>
+         <xs:documentation>Moved from SDCFormDesign
+The type is a standard way to point to a named item anywhere in a FormDesign template.  A named item is any element that has the @name attribute set to a unique value.</xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:extension base="ItemNameType">
+            <xs:attribute default="val" name="attributeName" type="xs:NCName"/>
          </xs:extension>
       </xs:complexContent>
    </xs:complexType>

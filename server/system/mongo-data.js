@@ -197,18 +197,12 @@ exports.pushEndpointUpdate = function (endpoint, commandObj, callback) {
 };
 
 exports.pushGetAdministratorRegistrations = function (callback) {
-    User.find({siteAdmin: true}).exec((err, users) => {
-        if (err) {
-            return callback(err);
-        }
+    User.find({siteAdmin: true}).exec(dbLogger.handleGenericError({origin: "pushGetAdministratorRegistrations"}, users => {
         let userIds = users.map(u => u._id.toString());
-        PushRegistration.find({}).exec((err, registrations) => {
-            if (err) {
-                return callback(err);
-            }
+        PushRegistration.find({}).exec(dbLogger.handleGenericError({origin: "pushGetAdministratorRegistrations.find"}, registrations => {
             callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
-        });
-    });
+        }));
+    }));
 };
 
 exports.userByName = function (name, callback) {
@@ -244,8 +238,11 @@ exports.addUser = function (user, callback) {
     new User(user).save(callback);
 };
 
-exports.siteadmins = function (callback) {
+exports.siteAdmins = function (callback) {
     User.find({'siteAdmin': true}).select('username email').exec(callback);
+};
+exports.orgAuthorities = function (callback) {
+    User.find({'roles': 'OrgAuthority'}).select('username').exec(callback);
 };
 
 exports.orgAdmins = function (callback) {
@@ -507,9 +504,9 @@ exports.generateTinyId = function () {
 
 exports.createMessage = function (msg, cb) {
     msg.states = [{
-        action: "Filed"
-        , date: new Date()
-        , comment: "cmnt"
+        action: "Filed",
+        date: new Date(),
+        comment: "cmnt"
     }];
     var message = new Message(msg);
     message.save(cb);

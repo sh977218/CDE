@@ -369,6 +369,7 @@ public class NlmCdeBaseTest {
     protected void goToOrgManagement() {
         clickElement(By.linkText("Org Management"));
     }
+
     protected void goToSiteManagement() {
         clickElement(By.linkText("Site Management"));
     }
@@ -838,8 +839,8 @@ public class NlmCdeBaseTest {
         return !(driver.findElements(By.cssSelector(selector)).size() > 0);
     }
 
-    protected boolean checkElementDoesNotExistByLocator(By locator) {
-        return !(driver.findElements(locator).size() > 0);
+    protected void checkElementDoesNotExistByLocator(By locator) {
+        Assert.assertTrue(!(driver.findElements(locator).size() > 0));
     }
 
     protected void scrollTo(Integer y) {
@@ -1076,9 +1077,8 @@ public class NlmCdeBaseTest {
     protected void editTagByIndex(int index, String[] tags) {
         String tagsInputXpath = "//*[@id='tags_" + index + "']//input";
         for (String tag : tags) {
-            String selectTagXpath = "//span[contains(@class,'select2-results')]/ul//li[text()='" + tag + "']";
             clickElement(By.xpath(tagsInputXpath));
-            clickElement(By.xpath(selectTagXpath));
+            selectNgSelectDropdownByText(tag);
             textPresent(tag);
         }
     }
@@ -1099,7 +1099,6 @@ public class NlmCdeBaseTest {
         textNotPresent("Confirm");
     }
 
-
     protected void addNewName(String designation, String definition, boolean isHtml, String[] tags) {
         clickElement(By.id("openNewNamingModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
@@ -1110,12 +1109,13 @@ public class NlmCdeBaseTest {
         if (tags != null) {
             String tagsInputXpath = "//*[@id='newTags']//input";
             for (String tag : tags) {
-                String selectTagXpath = "//span[contains(@class,'select2-results')]/ul//li[text()='" + tag + "']";
                 clickElement(By.xpath(tagsInputXpath));
-                clickElement(By.xpath(selectTagXpath));
+                selectNgSelectDropdownByText(tag);
                 textPresent(tag);
             }
         }
+
+
         clickElement(By.id("createNewNamingBtn"));
     }
 
@@ -1194,7 +1194,7 @@ public class NlmCdeBaseTest {
         textPresent("You are about to delete " + categories[categories.length - 1] + " classification. Are you sure?");
         clickElement(By.id("confirmDeleteClassificationBtn"));
         closeAlert();
-        Assert.assertTrue(checkElementDoesNotExistByLocator(By.xpath("//*[@id='" + selector + "']")));
+        checkElementDoesNotExistByLocator(By.xpath("//*[@id='" + selector + "']"));
     }
 
     protected void openClassificationAudit(String name) {

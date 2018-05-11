@@ -102,6 +102,7 @@ var deJson = {
 
 exports.deJson = deJson;
 exports.dataElementSchema = new Schema(deJson, {
+    usePushEach: true,
     toJSON: {
         transform: function (doc, ret) {
             ret._links = {
@@ -138,6 +139,7 @@ exports.cdeAuditSchema = new Schema({
 
 exports.cdeAuditSchema.set('collection', 'cdeAudit');
 exports.draftSchema = new Schema(deJson, {
+    usePushEach: true,
     toObject: {
         virtuals: true
     },

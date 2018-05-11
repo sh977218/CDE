@@ -6,7 +6,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import "angular-tree-component/dist/angular-tree-component.css";
 import { CKEditorModule } from 'ng2-ckeditor';
-import { Select2Module } from "ng2-select2";
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { CompareModule } from 'compare/compare.module';
 import { SearchModule } from 'search/search.module';
@@ -35,8 +35,8 @@ import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/de
         CommonModule,
         CKEditorModule,
         FormsModule,
-        Select2Module,
         NgbModule,
+        NgSelectModule,
         RouterModule,
         TreeModule,
         // core

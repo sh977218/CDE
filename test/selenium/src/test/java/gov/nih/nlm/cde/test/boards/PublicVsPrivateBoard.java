@@ -19,7 +19,6 @@ public class PublicVsPrivateBoard extends BoardTest {
         // I can view my own boards.
         textPresent("MUGA");
         String url = driver.getCurrentUrl();
-        String boardId = url.substring(url.lastIndexOf("/") + 1);
 
         logout();
         driver.get(url);

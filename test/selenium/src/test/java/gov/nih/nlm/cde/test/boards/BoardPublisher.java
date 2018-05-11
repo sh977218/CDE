@@ -9,6 +9,7 @@ public class BoardPublisher extends BoardTest {
     public void boardPublisher() {
         String newUsername = "boardPublisherTest";
         mustBeLoggedInAs(boardPublisherTest_username, password);
+        gotoMyBoards();
         makePublic("IsItPublic", "You don't have permission to make boards public!");
         mustBeLoggedInAs(nlm_username, nlm_password);
         openUserMenu();

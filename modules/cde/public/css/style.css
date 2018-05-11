@@ -3,6 +3,8 @@ a {
     color: #337ab7;
 }
 
+
+
 .homeDescriptionLink {
     color: #0F4E9D;
 }
@@ -360,12 +362,6 @@ input.ng-invalid {
     padding: 15px;
     min-height: 160px;
     position: relative;
-}
-
-.myBoardLastModified {
-    position: absolute;
-    bottom: 5px;
-    right: 25px;
 }
 
 .eltCommentView {

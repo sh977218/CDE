@@ -20,13 +20,11 @@ export class PinBoardModalComponent {
     private resolve;
     private reject;
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public modalService: NgbModal,
-        public myBoardsSvc: MyBoardsService,
-        private userService: UserService,
-    ) {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public modalService: NgbModal,
+                public myBoardsSvc: MyBoardsService,
+                private userService: UserService) {
     }
 
     pinMultiple(elts: any, promise: Promise<any>) {
@@ -65,7 +63,7 @@ export class PinBoardModalComponent {
 
             if (this.userService.user) {
                 this.myBoardsSvc.loadMyBoards(this.module);
-                this.modalRef = this.modalService.open(this.pinModal);
+                this.modalRef = this.modalService.open(this.pinModal, {size: 'lg'});
             } else {
                 this.modalService.open(this.ifYouLoginModal);
                 this.reject();

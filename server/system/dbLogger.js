@@ -131,12 +131,11 @@ exports.logError = function (message, callback) { // all server errors, express 
             }
         };
 
-        mongo_data_system.pushGetAdministratorRegistrations((err, registrations) => {
-            if (err) {
-                return; // no log to prevent re-trigger
-            }
-            registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
-        });
+        if (message.origin.indexOf("pushGetAdministratorRegistrations") === -1) {
+            mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
+            });
+        }
         if (callback) callback(err);
     });
 };
@@ -170,53 +169,29 @@ exports.logClientError = function (req, callback) {
             }
         };
 
-        mongo_data_system.pushGetAdministratorRegistrations((err, registrations) => {
-            if (err) {
-                return exports.logIfMongoError(err);
-            }
+        mongo_data_system.pushGetAdministratorRegistrations(registrations => {
             registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
         });
         callback(err);
     });
 };
 
-// substitute for (err, ...) => {}
-// used as cb (...) => {}
-// handles the error scenario properly leaving only data parameters for the callback
-exports.withError = function (res, errorMessage, cb, serverErrorTemplate = undefined) {
+exports.handleGenericError = function (options, cb) {
     return function errorHandler(err, ...args) {
         if (err) {
-            return exports.respondError(res, err, errorMessage, serverErrorTemplate);
+            if (options && options.res) {
+                let message = options.publicMessage || "An error has occured. It's already been reported.";
+                res.status(500).send(message);
+            }
+            exports.logError({
+                message: options.message,
+                origin: options.origin,
+                stack: err,
+                details: options.details
+            });
         }
         cb(...args);
     };
-};
-
-exports.withMongoError = function (res, errorMessage, cb) {
-    return exports.withError(res, errorMessage, cb, {origin: 'mongo'});
-};
-
-exports.logIfError = function (err, message = '', serverErrorTemplate = undefined) {
-    if (err) {
-        let info = {
-            message: message,
-            stack: err,
-        };
-        if (serverErrorTemplate) {
-            info = Object.assign({}, info, serverErrorTemplate);
-        }
-        exports.logError(info);
-    }
-};
-
-exports.logIfMongoError = function (err, message = '') {
-    return exports.logIfError(err, message, {origin: 'mongo'});
-};
-
-// handle server errors properly
-exports.respondError = function(res, err, message = '', serverErrorTemplate = undefined) {
-    if (res) res.status(500).send(message);
-    exports.logIfError(err, message, serverErrorTemplate);
 };
 
 exports.getLogs = function (body, callback) {
@@ -336,7 +311,7 @@ exports.saveFeedback = function (req, cb) {
         subject: "Issue reported by a user"
         , body: report.note
     };
-    mongo_data_system.siteadmins(function (err, users) {
+    mongo_data_system.siteAdmins(function (err, users) {
         email.emailUsers(emailContent, users, function () {
         });
     });
