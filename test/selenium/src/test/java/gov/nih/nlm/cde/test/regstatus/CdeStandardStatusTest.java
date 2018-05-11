@@ -36,7 +36,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         goToNaming();
         findElement(By.xpath("//*[@id='designation_0' and not(//i[contains(@class, 'fa-edit')])]"));
         findElement(By.xpath("//*[@id='definition_0' and not(//i[contains(@class, 'fa-edit')])]"));
-        Assert.assertFalse(driver.findElements(By.xpath("//*[@id='tags_0']//input")).get(0).isEnabled());
+        checkElementDoesNotExistByLocator(By.xpath("//*[@id='tags_0']//input"));
 
         // Can edit classifications
         goToClassification();

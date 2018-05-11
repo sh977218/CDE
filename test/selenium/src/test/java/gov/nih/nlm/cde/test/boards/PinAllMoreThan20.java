@@ -8,7 +8,7 @@ public class PinAllMoreThan20 extends BoardTest {
 
     @Test
     public void pinAllMoreThan20() {
-        String board_name = "Pin All More Than 20 Test Board";
+        String boardName = "Pin All More Than 20 Test Board";
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
@@ -22,12 +22,10 @@ public class PinAllMoreThan20 extends BoardTest {
         scrollToTop();
         clickElement(By.id("pinAll"));
         textPresent("Choose a Board to pin");
-        clickElement(By.xpath("//*[@id='viewBoard_" + board_name + "']"));
+        clickBoardHeaderByName(boardName);
         textPresent("All elements pinned.");
         gotoMyBoards();
-        int num_cde_after_pinAll_int =
-                Integer.valueOf(findElement(By.xpath("//*[@id = 'boardDiv_"
-                        + board_name + "']//*[contains(@id, 'board_num_cdes_')]")).getText());
+        int num_cde_after_pinAll_int = getNumberElementsByBoardName(boardName);
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
     }
 

@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test.boards;
 import gov.nih.nlm.system.EltIdMaps;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
@@ -14,19 +15,9 @@ public class BoardTest extends NlmCdeBaseTest {
 
     protected void makePublic(String boardName, String response) {
         gotoMyBoards();
-        textPresent(boardName);
-        int length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
-        for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("board_name_" + i)).getText();
-            if (boardName.equals(name)) {
-                clickElement(By.id("privateIcon_" + i));
-                textPresent("Change Status?");
-                clickElement(By.id("confirmChangeStatus_" + i));
-                checkAlert(response);
-                return;
-            }
-        }
-        Assert.fail();
+        editBoardByName(boardName, null, null, true, null);
+        checkAlert(response);
+        closeAlert();
     }
 
     public void gotoMyBoards() {
@@ -69,12 +60,16 @@ public class BoardTest extends NlmCdeBaseTest {
         pinTo(formName, formBoardName, "form");
     }
 
+    protected void clickBoardHeaderByName(String boardName) {
+        clickElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'card-header')]"));
+    }
+
     private void pinTo(String eltName, String boardName, String type) {
         if (type.equals("cde")) openCdeInList(eltName);
         if (type.equals("form")) openFormInList(eltName);
         clickElement(By.id("pinToBoard_0"));
         textPresent(boardName);
-        clickElement(By.linkText(boardName));
+        clickBoardHeaderByName(boardName);
         checkAlert("Added to Board");
         modalGone();
     }
@@ -87,10 +82,32 @@ public class BoardTest extends NlmCdeBaseTest {
         } else {
             gotoMyBoards();
             textPresent(boardName);
-            clickElement(By.xpath("//*[@id='viewBoard_" + boardName + "']//a"));
+            clickElement(By.xpath("//*[@id='" + boardName + "']//a"));
             switchTab(1);
             textPresent(boardName, By.xpath("//h3[@id='board_name_" + boardName + "']"));
         }
     }
 
+    public int getNumberElementsByBoardName(String boardName) {
+        WebElement numElt = findElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'numElement')]"));
+        int num = Integer.parseInt(numElt.getText().trim());
+        return num;
+    }
+
+
+    void editBoardByName(String boardName, String boardNameChange, String boardDescriptionChange, boolean isPublic, String[] boardTags) {
+        clickElement(By.xpath("//*[@id='" + boardName + "']//i[contains(@class,'editBoard')]"));
+        if (boardNameChange != null) findElement(By.id("boardName")).sendKeys(boardNameChange);
+        if (boardDescriptionChange != null) findElement(By.id("boardDescription")).sendKeys(boardDescriptionChange);
+        if (isPublic) clickElement(By.id("makePublicBtn"));
+        else if (isPublic == false) clickElement(By.id("makePrivateBtn"));
+        if (boardTags != null) {
+            for (String tag : boardTags) {
+                clickElement(By.xpath("//*[@id='boardTag']//input"));
+                findElement(By.xpath("//*[@id='boardTag']//input")).sendKeys(tag);
+                selectNgSelectDropdownByText(tag);
+            }
+        }
+        clickElement(By.id("saveEditBoardBtn"));
+    }
 }

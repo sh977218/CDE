@@ -1,35 +1,15 @@
 <button type="button" class="btn btn-outline-dark" id="openLinkedBoardsModalBtn"
-        (click)="openLinkedBoardsModal()">Linked Boards</button>
+        (click)="openLinkedBoardsModal()">Linked Boards
+</button>
 
 <ng-template #linkedBoardsContent id="linkedFormsModal" let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h3 class="modal-title">Linked Boards</h3>
     </div>
-    <div class="modal-body">
-        <div class="overflowHidden">
-            <div *ngIf="!(boards?.length > 0)">No boards using this element</div>
-            <ng-container *ngIf="boards?.length > 0">
-                <div *ngFor="let board of boards; let i = index">
-                    <div class="my-board-card" attr.data-id="boardDiv_{{board.name}}">
-                        <h4><a routerLink="/board/{{board._id}}" id="viewBoard_{{board.name}}"
-                               target="_blank">{{board.name}}</a></h4>
-
-                        <div><span id="board_num_cdes_{{i}}">{{board.pins.length}}</span>
-                            {{board.type ==='form'?'Forms':'CDEs'}}</div>
-
-                        <div id="board_desc_{{i}}">{{board.description}}</div>
-
-                        <small class="myBoardLastModified" id="board_mod_{{i}}">Modified
-                            {{board.updatedDate | date: 'MM/dd/yyyy'}}</small>
-
-                        <div id="board_tag_{{i}}" class="myBoardTags">
-                        <span *ngFor="let tag of board.tags">
-                            <span class="badge badge-secondary"><i class="fa fa-hashtag"></i>{{tag}}</span>
-                        </span>
-                        </div>
-                    </div>
-                </div>
-            </ng-container>
+    <div class="modal-body linkedBoardDiv">
+        <div *ngIf="!(boards?.length > 0)">No boards using this element</div>
+        <div *ngFor="let board of boards; let i = index">
+            <cde-board-view-template [board]="board"></cde-board-view-template>
         </div>
     </div>
     <div class="modal-footer">

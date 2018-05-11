@@ -8,7 +8,12 @@ import { AlertService } from '_app/alert/alert.service';
 @Component({
     selector: 'cde-linked-boards',
     providers: [NgbActiveModal],
-    templateUrl: 'linkedBoards.component.html'
+    templateUrl: 'linkedBoards.component.html',
+    styles: [`
+        :host >>> .linkedBoardDiv .card {
+        width:100%!important;
+            }
+    `]
 })
 export class LinkedBoardsComponent {
     @Input() elt: any;
@@ -16,11 +21,10 @@ export class LinkedBoardsComponent {
     boards: any[];
     modalRef: NgbModalRef;
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public modalService: NgbModal,
-    ) {}
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public modalService: NgbModal) {
+    }
 
     openLinkedBoardsModal() {
         this.http.get<any>('/deBoards/' + this.elt.tinyId).subscribe(response => {

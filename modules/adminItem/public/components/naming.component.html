@@ -4,7 +4,8 @@
     <ng-container *ngFor="let name of elt.naming;let i = index">
         <dl class="row">
             <dt class="col-3 text-right">
-                <span (click)="removeNamingByIndex(i)" *ngIf="canEdit && !name.edit" class="btn-outline-dark fa fa-trash-o"
+                <span (click)="removeNamingByIndex(i)" *ngIf="canEdit && !name.edit"
+                      class="btn-outline-dark fa fa-trash-o"
                       id="removeNaming-{{i}}" title="Remove"></span>
                 <cde-sortable-array [theArray]="elt.naming" [index]="i" (cb)="onEltChange.emit()"></cde-sortable-array>
                 Name:
@@ -21,16 +22,15 @@
             </dd>
             <dt class="col-3 text-right">Tags:</dt>
             <dd id="tags_{{i}}" class="col-9">
-                <select2 [data]="orgNamingTags" [value]="name.tags" [options]="options"
-                         [disabled]="!canEdit" width="100%"
-                         (valueChanged)="changedTags(name,$event)">
-                </select2>
+                <ng-select [(ngModel)]="name.tags" [items]="tags" [hideSelected]="true"
+                           [disabled]="!canEdit" multiple="true" [appendTo]="'body'" (change)="onEltChange.emit();">
+                </ng-select>
             </dd>
         </dl>
         <hr>
     </ng-container>
     <button *ngIf="canEdit" id="openNewNamingModalBtn"
-            class="btn   btn-outline-dark" (click)="openNewNamingModal();">
+            class="btn btn-outline-dark" (click)="openNewNamingModal();">
         <i class="fa fa-plus"></i> Add Naming
     </button>
 </div>
@@ -48,10 +48,12 @@
             <div class="form-group">
                 <label for="newDefinition">Definition</label>
                 <div id="newDefinition">
-                    <button type="button" class="btn btn-outline-dark btn-xs" (click)="newNaming.definitionFormat = '';">
+                    <button type="button" class="btn btn-outline-dark btn-xs"
+                            (click)="newNaming.definitionFormat = '';">
                         Plain Text
                     </button>
-                    <button type="button" class="btn btn-outline-dark btn-xs" (click)="newNaming.definitionFormat = 'html';">
+                    <button type="button" class="btn btn-outline-dark btn-xs"
+                            (click)="newNaming.definitionFormat = 'html';">
                         Rich Text
                     </button>
                     <textarea name="definition" *ngIf="newNaming.definitionFormat !== 'html'"
@@ -65,10 +67,11 @@
             </div>
             <div class="form-group">
                 <label for="newTags">Tags</label>
-                <div id="newTags" name="newTags">
-                    <select2 [data]="orgNamingTags" [value]="newNaming.tags" [options]="options"
-                             width="100%" (valueChanged)="changedTags(newNaming,$event,false)">
-                    </select2>
+                <div id="newTags">
+                    <ng-select [(ngModel)]="newNaming.tags" [items]="tags" [hideSelected]="true" [hideSelected]="true"
+                               placeholder="No Tags found, Tags are managed in Org Management > List Management"
+                               multiple="true" [appendTo]="'body'" name="newTags">
+                    </ng-select>
                 </div>
             </div>
             <div class="alert alert-info">
@@ -76,7 +79,8 @@
             </div>
         </div>
         <div class="modal-footer" id="newNamingModalFooter">
-            <button class="btn btn-outline-dark" (click)="c('Close click')" id="cancelNewNamingBtn" name="cancelNewNamingBtn"
+            <button class="btn btn-outline-dark" (click)="c('Close click')" id="cancelNewNamingBtn"
+                    name="cancelNewNamingBtn"
                     type="button">Cancel
             </button>
             <button class="btn  btn-warning" [disabled]="!newNamingForm.form.valid" id="createNewNamingBtn"

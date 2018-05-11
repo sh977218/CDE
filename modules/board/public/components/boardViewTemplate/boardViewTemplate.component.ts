@@ -1,37 +1,48 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import { NgbModalModule, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'cde-board-view-template',
-    templateUrl: './boardViewTemplate.component.html',
-    styles: [`
-        .myBoardTags {
-            position: absolute;
-            bottom: 7px;
-        }
-    `]
+    templateUrl: './boardViewTemplate.component.html'
 })
-export class BoardViewTemplateComponent implements OnInit {
-
+export class BoardViewTemplateComponent {
+    @ViewChild('editBoardContent') editBoardContent: NgbModalModule;
+    @ViewChild('deleteBoardContent') deleteBoardContent: NgbModalModule;
     @Input() board: any;
-    @Input() canEditBoard: boolean;
-    @Input() suggestTags = [];
-    @Input() index: number;
+    @Input() canEdit: boolean;
+    @Input() headerLink: boolean = true;
 
-    @Output() save = new EventEmitter();
+    @Output() onSave = new EventEmitter();
+    @Output() onDelete = new EventEmitter();
+    @Output() onHeaderClick = new EventEmitter();
+    modalRef: NgbModalRef;
 
-    currentTags = [];
-
-    options = {
-        tags: true,
-        multiple: true
-    };
-
-    ngOnInit () {
-        this.currentTags = this.board.tags;
+    constructor(public modalService: NgbModal) {
     }
 
-    tagsChanged ($event) {
-        this.board.tags = $event.value;
+    openEditBoardModal() {
+        this.modalRef = this.modalService.open(this.editBoardContent, {size: 'lg'});
     }
 
+    openDeleteBoardModal() {
+        this.modalRef = this.modalService.open(this.deleteBoardContent, {size: 'sm'});
+    }
+
+    save(board) {
+        this.modalRef.close();
+        this.onSave.emit(board);
+    }
+
+    delete(board) {
+        this.modalRef.close();
+        this.onDelete.emit(board);
+    }
+
+    clickHeader(board) {
+        if (this.onHeaderClick) this.onHeaderClick.emit(board);
+    }
+
+    onBoardShareStatusChange($event) {
+        this.board.shareStatus = $event.value;
+    }
 }

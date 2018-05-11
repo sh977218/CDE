@@ -6,13 +6,12 @@ import org.testng.annotations.Test;
 public class RemoveBoardTest extends BoardTest {
     @Test
     public void removeBoard() {
-        mustBeLoggedInAs(boardUser, password);
         String boardName = "Remove me board";
+        mustBeLoggedInAs(boardUser, password);
         gotoMyBoards();
-        clickElement(By.xpath("//*[@id='boardDiv_" + boardName + "']//*[contains(@id,'removeBoard-')]"));
-        textPresent("Confirm Delete");
-        clickElement(By.xpath("//*[@id='boardDiv_" + boardName + "']//*[contains(@id,'confirmRemove-')]"));
-        checkAlert("Done");
+        clickElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'deleteBoard')]"));
+        clickElement(By.id("saveDeleteBoardBtn"));
+        checkAlert("Deleted.");
         textNotPresent(boardName);
     }
 }
