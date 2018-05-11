@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ElasticService } from '_app/elastic.service';
 import { SearchPreferencesComponent } from 'system/public/components/searchPreferences/searchPreferences.component';
+import { TableViewPreferencesComponent } from 'search/tableViewPreferences/tableViewPreferences.component';
 
 @Component({
     selector: 'cde-table-list',
@@ -30,6 +32,7 @@ export class TableListComponent implements OnInit {
     modalRef: NgbModalRef;
 
     constructor(public modalService: NgbModal,
+                public dialog: MatDialog,
                 public esService: ElasticService) {
     }
 
@@ -346,6 +349,12 @@ export class TableListComponent implements OnInit {
     }
 
     openSearchSettingsModal() {
-        this.modalRef = this.modalService.open(SearchPreferencesComponent);
+        let dialogRef = this.dialog.open(TableViewPreferencesComponent, {
+            width: '1000px',
+            data: {}
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+        });
     }
 }

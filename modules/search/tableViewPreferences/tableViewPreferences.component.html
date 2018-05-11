@@ -1,0 +1,145 @@
+<h1 mat-dialog-title>Table View Fields</h1>
+<div mat-dialog-content>
+    <mat-form-field>
+        <mat-checkbox [disabled]="true">Name</mat-checkbox>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-checkbox>Question Texts</mat-checkbox>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-checkbox>11</mat-checkbox>
+        <mat-checkbox>11</mat-checkbox>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-checkbox>2</mat-checkbox>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-checkbox>3</mat-checkbox>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-checkbox>3</mat-checkbox>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">No Thanks</button>
+    <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>
+
+
+<div class="modal-header"></div>
+<div class="modal-body">
+    <h3><i class="fa fa-table"></i> Table View Fields</h3>
+    <span>I want my <i class="fa fa-table"></i> Table View and CSV Exports to include these fields </span>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="checkbox indent">
+                    <label><input disabled id="name" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.name">
+                        Name</label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="questionTexts" type="checkbox"
+                                  [(ngModel)]="searchSettings.tableViewFields.questionTexts">
+                        Question Texts</label>
+                    <span class="text-info"><small>(CDE Only)</small></span>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="naming" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.naming"> Other
+                        Names</label>
+                </div>
+                <div class="checkbox indent">
+                    <label>
+                        <input id="permissibleValues" type="checkbox"
+                               [(ngModel)]="searchSettings.tableViewFields.permissibleValues"> Permissible Values
+                    </label>
+                    <span class="text-info"><small>(CDE Only)</small></span>
+                </div>
+                <div class="checkbox indent">
+                    <label>
+                        <input id="pvCodeNames" type="checkbox"
+                               [(ngModel)]="searchSettings.tableViewFields.pvCodeNames"> Code Names
+                    </label>
+                    <span class="text-info"><small>(CDE Only)</small></span>
+                </div>
+                <div class="checkbox indent">
+                    <label>
+                        <input id="nbOfPVs" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.nbOfPVs">
+                        Number of Permissible Values (PVs)
+                    </label>
+                    <span class="text-info"><small>(CDE Only)</small></span>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="uom" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.uom"> Unit of
+                        Measure</label>
+                    <span class="text-info"><small>(CDE Only)</small></span>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="stewardOrg" type="checkbox"
+                                  [(ngModel)]="searchSettings.tableViewFields.stewardOrg">
+                        Steward</label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="usedBy" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.usedBy"> Used
+                        by</label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="tinyId" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.tinyId"> NLM
+                        ID</label>
+                </div>
+
+            </div>
+            <div class="col-lg-6">
+                <div class="checkbox indent">
+                    <label><input id="registrationStatus" type="checkbox"
+                                  [(ngModel)]="searchSettings.tableViewFields.registrationStatus"> Registration
+                        Status</label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="administrativeStatus" type="checkbox"
+                                  [(ngModel)]="searchSettings.tableViewFields.administrativeStatus"> Admin
+                        Status</label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="ids" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.ids">
+                        Identifiers</label>
+                    <ng-select id="identifiers" [(ngModel)]="searchSettings.tableViewFields.identifiers"
+                               placeholder="Optional: select identifiers to include (default: all)"
+                               [items]="identifierSources" [multiple]="true" [appendTo]="'body'" [hideSelected]="true"
+                               [disabled]="!searchSettings.tableViewFields.ids">
+                    </ng-select>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="source" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.source">
+                        Source</label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="updated" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.updated">
+                        Updated</label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="numQuestions" type="checkbox"
+                                  [(ngModel)]="searchSettings.tableViewFields.numQuestions"> Nb of Questions <span
+                            class="text-info"><small>(Form Only)</small></span></label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="linkedForms" type="checkbox"
+                                  [(ngModel)]="searchSettings.tableViewFields.linkedForms">
+                        Linked Forms <span class="text-info"><small>(CDE Only)</small></span></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button id="loadDefaultSettingsBtn" class="btn btn-outline-dark" (click)="loadDefault()">
+        <i class="fa fa-undo"></i> Load Default
+    </button>
+    <button id="cancelSaveSettingsBtn" class="btn btn-warning" (click)="cancelSettings()">
+        <i class="fa fa-times"></i>
+        Cancel
+    </button>
+    <button id="saveSettings" type="button" class="btn btn-success" (click)="saveSettings()">
+        <i class="fa fa-check"></i> Save
+    </button>
+</div>

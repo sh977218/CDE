@@ -1,8 +1,9 @@
 <table id="gridList" class="gridListView table table-condensed table-striped table-bordered table-responsive">
     <thead>
     <tr>
-        <th *ngFor="let heading of headings">
-            {{heading}}<i class="fa fa-cog text-muted" (click)="openSearchSettingsModal()"></i>
+        <th *ngFor="let heading of headings">{{heading}}
+            <i *ngIf="heading === 'Name'" class="fa fa-cog text-muted hand-cursor"
+               (click)="openSearchSettingsModal()"></i>
         </th>
     </tr>
     </thead>

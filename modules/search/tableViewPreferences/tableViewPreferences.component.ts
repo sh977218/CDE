@@ -7,10 +7,10 @@ import { IdentifierSourcesResolve } from 'system/public/components/searchPrefere
 
 
 @Component({
-    selector: 'cde-search-preferences',
-    templateUrl: 'searchPreferences.component.html'
+    selector: 'cde-table-view-preferences',
+    templateUrl: 'tableViewPreferences.component.html'
 })
-export class SearchPreferencesComponent implements OnInit {
+export class TableViewPreferencesComponent implements OnInit {
     identifierSources = [];
     searchSettings: any;
 
