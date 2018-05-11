@@ -1,13 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
+import './nativeRender.css';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-native-render',
     providers: [NativeRenderService],
-    styleUrls: ['./nativeRender.css'.toString()],
     templateUrl: './nativeRender.component.html',
 })
 export class NativeRenderComponent {
