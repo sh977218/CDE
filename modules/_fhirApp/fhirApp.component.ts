@@ -93,8 +93,8 @@ export class FhirStandaloneComponent {}
     templateUrl: './fhirApp.component.html'
 })
 export class FhirAppComponent {
-    static readonly FHIR_SANDBOX_SERVER_API_URL = 'https://api-v5-stu3.hspconsortium.org/';
     static readonly SCOPE = 'patient/*.*';
+    baseUrl: string;
     codeToDisplay = {};
     elt: CdeForm;
     errorMessage: string;
@@ -111,7 +111,6 @@ export class FhirAppComponent {
     patientEncounters = [];
     patientObservations = [];
     patientOrganization: any;
-    sandboxUrl: string;
     saveMessage: string = null;
     selectedEncounter: EncounterVM;
     selectedObservations: ObservationVM[] = [];
@@ -132,7 +131,7 @@ export class FhirAppComponent {
         this.selectedProfileName = queryParams['selectedProfile'];
 
         this.http.get<FhirApp>('/fhirApp/' + this.route.snapshot.paramMap.get('config')).subscribe(fhirApp => {
-            if (!fhirApp || !fhirApp.sandboxName || !fhirApp.clientId) {
+            if (!fhirApp || !fhirApp.baseUrl || !fhirApp.clientId) {
                 return;
             }
             if (queryParams['state']) {
@@ -144,7 +143,7 @@ export class FhirAppComponent {
                     'scope':  FhirAppComponent.SCOPE,
                 });
             }
-            this.sandboxUrl = FhirAppComponent.FHIR_SANDBOX_SERVER_API_URL + fhirApp.sandboxName + '/data/';
+            this.baseUrl = fhirApp.baseUrl;
             fhirApp.forms.forEach(f => {
                 this.http.get<CdeForm>('/form/' + f.tinyId).subscribe(form => {
                     CdeForm.validate(form);
@@ -289,7 +288,7 @@ export class FhirAppComponent {
 
     newEncounterAdd() {
         this.smart.patient.api.create({
-            baseUrl: this.sandboxUrl,
+            baseUrl: this.baseUrl,
             type: 'Encounter',
             data: JSON.stringify(newEncounter(
                 this.newEncounterDate + ':00-00:00',
@@ -398,7 +397,7 @@ export class FhirAppComponent {
             }
             else {
                 this.smart.patient.api.create({
-                    baseUrl: this.sandboxUrl,
+                    baseUrl: this.baseUrl,
                     data: JSON.stringify(p.after),
                     type: 'Observation'
                 }).then(response => {

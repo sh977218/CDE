@@ -35,7 +35,7 @@ export class FhirAppsComponent {
         this.saveApp({
             clientId: '',
             forms: [],
-            sandboxName: '',
+            baseUrl: '',
         });
     }
 

@@ -143,7 +143,7 @@ export class DisplayProfile {
 export class FhirApp {
     clientId: string;
     forms: {tinyId: string}[];
-    sandboxName: string;
+    baseUrl: string;
 }
 
 export interface FormElementsContainer {
