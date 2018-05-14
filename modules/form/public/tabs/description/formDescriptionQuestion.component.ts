@@ -102,6 +102,12 @@ export class FormDescriptionQuestionComponent implements OnInit {
         newQuestion.question.invisible = currentQuestion.question.invisible;
         newQuestion.question.multiselect = currentQuestion.question.multiselect;
         newQuestion.question.required = currentQuestion.question.required;
+        newQuestion.question.unitsOfMeasure =
+            newQuestion.question.unitsOfMeasure.length && currentQuestion.question.unitsOfMeasure.filter(
+                u => newQuestion.question.unitsOfMeasure[0].code === u.code && !u.system
+            ).length
+                ? currentQuestion.question.unitsOfMeasure
+                : newQuestion.question.unitsOfMeasure.concat(currentQuestion.question.unitsOfMeasure);
         newQuestion.repeat = currentQuestion.repeat;
         newQuestion.skipLogic = currentQuestion.skipLogic;
         if (newCde.naming.some(n => n.designation === currentQuestion.label)) {

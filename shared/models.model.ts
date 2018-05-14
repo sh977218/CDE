@@ -18,10 +18,15 @@ export class Attachment {
 }
 
 export class CdeId {
-    _id: ObjectId;
+    _id?: ObjectId;
     id: string;
     source: string;
-    version: string;
+    version?: string;
+
+    constructor(source = undefined, id = undefined) {
+        this.source = source;
+        this.id = id;
+    }
 
     static copy(id: CdeId) {
         return Object.assign(new CdeId(), id);

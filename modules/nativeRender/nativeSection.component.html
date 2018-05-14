@@ -1,38 +1,35 @@
 <div *ngIf="formElement" class="native-section" id="formRenderSection_{{formElement.label}}">
     <div *ngIf="formElement.label" [ngClass]="{'native-section-header': isSectionDisplayed(formElement)}" class="keep-together">
-        <div class="row">
-            <div [ngClass]="{'col-sm-9':canRepeat(formElement)}" class="col-12">
-                <h4>{{formElement.label}}</h4>
-            </div>
-            <div class="col-sm-3" *ngIf="canRepeat(formElement)">
-                <button class="btn btn-outline-dark fa fa-plus"
-                        (click)="addSection(formElement, formElements, $index)">Add One</button>
-                <button *ngIf="formElement.isCopy" class="btn btn-outline-dark fa fa-trash-o"
-                        (click)="removeSection($index)">Remove</button>
-            </div>
-        </div>
+        <h4>{{formElement.label}}</h4>
     </div>
     <div *ngIf="nrs.profile.displayInstructions && formElement.instructions?.value"
-         class="native-instructions" [ngSwitch]="formElement.instructions.valueFormat">
-        <span *ngSwitchCase="'html'" [innerHtml]="formElement.instructions.value"></span>
-        <span *ngSwitchDefault class="text-muted">{{formElement.instructions.value}}</span>
+         class="native-instructions">
+        <ng-container *ngIf="formElement.instructions.valueFormat === 'html'; else instructionsText">
+            <span [innerHtml]="formElement.instructions.value"></span>
+        </ng-container>
+        <ng-template #instructionsText>
+            <span class="text-muted">{{formElement.instructions.value}}</span>
+        </ng-template>
     </div>
-
-    <cde-native-table *ngIf="sectionType() === 'table'" [formElement]="formElement"></cde-native-table>
-    <cde-native-section-matrix *ngIf="sectionType() === 'matrix'"
-                               [formElement]="formElement" [numSubQuestions]="numSubQuestions"></cde-native-section-matrix>
-    <ng-container *ngIf="sectionType() === 'section'">
-        <ng-container *ngFor="let element of formElement.formElements; let i = index">
-            <ng-container *ngIf="nrs.skipLogicService.evalSkipLogicAndClear(formElement, element, nrs)">
-                <div *ngIf="element.elementType === 'question'" [ngClass]="{'keep-with-previous':i===0,
-                         'native-box': !formElement.label && formElement.instructions && formElement.instructions.value}"
-                     class="native-question-header native-question-answers">
-                    <cde-native-question [formElement]="element"
-                                         [numSubQuestions]="numSubQuestions"></cde-native-question>
-                </div>
-                <cde-native-section *ngIf="element.elementType === 'section' || element.elementType === 'form'"
-                                    [formElements]="formElement.formElements" [formElement]="element"
-                                    [numSubQuestions]="numSubQuestions"></cde-native-section>
+    <ng-container [ngSwitch]="sectionType()">
+        <cde-native-table *ngSwitchCase="'table'" [formElement]="formElement"></cde-native-table>
+        <cde-native-section-matrix *ngSwitchCase="'matrix'" [formElement]="formElement"
+                                   [numSubQuestions]="numSubQuestions"></cde-native-section-matrix>
+        <ng-container *ngSwitchDefault>
+            <ng-container *ngFor="let element of formElement.formElements; let i = index">
+                <ng-container *ngIf="nrs.skipLogicService.evalSkipLogicAndClear(formElement, element, nrs)">
+                    <div *ngIf="element.elementType === 'question'; else elementGroup"
+                         [ngClass]="{'keep-with-previous': i===0,
+                         'native-box': !formElement.label && formElement.instructions?.value}"
+                         class="native-question-header native-question-answers">
+                        <cde-native-question [formElement]="element"
+                                             [numSubQuestions]="numSubQuestions"></cde-native-question>
+                    </div>
+                    <ng-template #elementGroup>
+                        <cde-native-section [formElements]="formElement.formElements" [formElement]="element"
+                                            [numSubQuestions]="numSubQuestions"></cde-native-section>
+                    </ng-template>
+                </ng-container>
             </ng-container>
         </ng-container>
     </ng-container>

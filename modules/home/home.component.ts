@@ -26,6 +26,9 @@ import { ActivatedRoute, Router } from '@angular/router';
             /*background-color: #eee;*/
             /*width: 10%;*/
         }
+        :host >>> .carousel-indicators > li {
+            height: 10px;
+        }
         :host >>> .carousel-indicators li {
             background-color: #fff;
             border: 1px solid #0275d8;

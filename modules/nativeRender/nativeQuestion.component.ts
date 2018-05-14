@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import * as moment from 'moment/min/moment.min';
+// import * as moment from 'moment/min/moment.min';
 
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CodeAndSystem } from 'shared/models.model';
@@ -10,27 +10,6 @@ import { score } from 'shared/form/formShared';
 @Component({
     selector: 'cde-native-question',
     templateUrl: './nativeQuestion.component.html',
-    styles: [`
-        @media (min-width: 768px) {
-            div .col-sm-2-4 {
-                flex: 0 0 20%;
-                max-width: 20%;
-            }
-        }
-        :host >>> label.native-question-label {
-            font-weight: 700;
-        }
-        :host >>> .form-check-label > input[type="checkbox"] {
-            margin-top: 8px !important;
-        }
-        :host >>> .form-check-label > input[type="radio"] {
-            margin-top: 7px !important;
-        }
-
-        .native-valuelist-label {
-            word-break: break-word;
-        }
-    `]
 })
 export class NativeQuestionComponent implements OnInit {
     @Input() formElement: FormQuestion;
@@ -108,18 +87,22 @@ export class NativeQuestionComponent implements OnInit {
         }
     }
 
-    isFirstInRow(index) {
+    hasHeading(q: FormQuestion): boolean {
+        return this.hasLabel(q) || q.instructions && q.instructions.value;
+    }
+
+    hasLabel(q: FormQuestion): boolean {
+        return q.label && !q.hideLabel;
+    }
+
+    isFirstInRow(index: number): boolean {
         if (this.nrs.profile && this.nrs.profile.numberOfColumns > 0) return index % this.nrs.profile.numberOfColumns === 0;
         else return index % 4 === 0;
     }
 
-    hasLabel(question) {
-        return question.label && !question.hideLabel;
-    }
-
-    isOneLiner(question, numSubQuestions) {
-        return numSubQuestions && !this.hasLabel(question) && (!question.instructions || !question.instructions.value)
-            && question.elementType === 'question' && question.question.datatype !== 'Value List';
+    isOneLiner(q: FormQuestion, numSubQuestions: number): boolean {
+        return numSubQuestions && !this.hasHeading(q) && (!q.instructions || !q.instructions.value)
+            && q.elementType === 'question' && q.question.datatype !== 'Value List';
     }
 
     // updateDateTime() {

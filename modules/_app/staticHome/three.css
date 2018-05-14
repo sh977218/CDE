@@ -19,6 +19,9 @@
 
 
 }
+[_nghost-c1]     .carousel-indicators > li {
+    height: 10px;
+}
 [_nghost-c1]     .carousel-indicators li {
     background-color: #fff;
     border: 1px solid #0275d8;
