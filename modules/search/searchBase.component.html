@@ -8,15 +8,25 @@
         </div>
         <div class="row justify-content-md-center" id="searchDiv">
             <div class="col-12 col-md-10 mx-auto">
-                <form #quickSearchForm="ngForm" id="quickSearchForm" class="input-group" novalidate>
-                    <input name="q" id="ftsearch-input" class="form-control search-query" type="text"
-                           [(ngModel)]="searchSettings.q" maxlength="500"
-                           [ngbTypeahead]="getAutocompleteSuggestions" [focusFirst]="false"
-                           (selectItem)="typeaheadSelect($event)">
-                    <button id="search.submit" (click)="termSearch()" type="submit"
-                            class="btn  btn-danger ">
-                        <i class="fa fa-search"></i> Search
-                    </button>
+                <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="max-width: 1000px">
+                    <!--<input name="q" id="ftsearch-input" class="form-control search-query" type="text"-->
+                           <!--[(ngModel)]="searchSettings.q" maxlength="500"-->
+                           <!--[ngbTypeahead]="getAutocompleteSuggestions" [focusFirst]="false"-->
+                           <!--(selectItem)="typeaheadSelect($event)">-->
+                    <mat-form-field style="width: 100%">
+                        <input matInput name="q" id="ftsearch-input" placeholder="Search"
+                            [(ngModel)]="searchSettings.q" maxlength="500"
+                        >
+                        <!--<button mat-button matSuffix color="danger">-->
+                            <mat-icon matSuffix (click)="termSearch()">search</mat-icon>
+                        <!--</button>-->
+                    </mat-form-field>
+
+
+                    <!--<button id="search.submit" (click)="termSearch()" type="submit"-->
+                            <!--class="btn  btn-danger ">-->
+                        <!--<i class="fa fa-search"></i> Search-->
+                    <!--</button>-->
                     <!-- Error display area -->
                     <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
                        class="error-block">

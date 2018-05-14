@@ -54,6 +54,9 @@ export const searchStyles: string = `
         padding-left: 10px;
         text-indent: -5px;
     }
+    .cdeFieldset > div {
+        font-size: 16px;
+    }
 `;
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {

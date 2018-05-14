@@ -7,7 +7,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { SearchPreferencesComponent } from "./components/searchPreferences/searchPreferences.component";
 import { WidgetModule } from 'widget/widget.module';
 
-
 const appRoutes: Routes = [
     {path: '', component: SearchPreferencesComponent},
 ];

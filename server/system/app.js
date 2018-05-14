@@ -105,7 +105,7 @@ exports.init = function (app) {
         }
     });
 
-    app.get("/cde/search", function (req, res) {
+    app.get("/cde/search", (req, res) => {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
         if (!pageString) pageString = "1";
@@ -149,7 +149,7 @@ exports.init = function (app) {
                         });
                 });
             } else res.render('bot/cdeSearch', 'system');
-        } else res.send(indexLegacyHtml);
+        } else res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
     });
     app.get("/deView", function (req, res) {
         let tinyId = req.query.tinyId;
@@ -164,7 +164,7 @@ exports.init = function (app) {
             } else {
                 let isSEO = isSearchEngine(req);
                 if (isSEO) res.render('bot/deView', 'system', {elt: cde});
-                else res.send(indexLegacyHtml);
+                else res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
             }
         });
     });
@@ -213,7 +213,7 @@ exports.init = function (app) {
                         });
                 });
             } else res.render('bot/formSearch', 'system');
-        } else res.send(indexLegacyHtml);
+        } else res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
     });
 
     app.get("/formView", function (req, res) {
@@ -229,7 +229,7 @@ exports.init = function (app) {
             } else {
                 let isSEO = isSearchEngine(req);
                 if (isSEO) res.render('bot/formView', 'system', {elt: cde});
-                else res.send(indexLegacyHtml);
+                else res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
             }
         });
     });
