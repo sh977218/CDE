@@ -1,28 +1,19 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
 
 import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { IdentifierSourcesResolve } from 'system/public/components/searchPreferences/identifier-source.resolve.service';
 
-
-@Component({
-    selector: 'cde-table-view-preferences',
-    templateUrl: 'tableViewPreferences.component.html'
-})
-export class TableViewPreferencesComponent implements OnInit {
+export class TableViewPreferencesComponent {
     identifierSources = [];
     searchSettings: any;
-
-    ngOnInit(): void {
-        this.identifierSources = this.identifierSourceSvc.identifierSources;
-    }
 
     constructor(private alert: AlertService,
                 public esService: ElasticService,
                 private http: HttpClient,
                 private identifierSourceSvc: IdentifierSourcesResolve) {
         this.searchSettings = this.esService.searchSettings;
+        this.identifierSources = this.identifierSourceSvc.identifierSources;
     }
 
     cancelSettings() {

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import {
     MatAutocompleteModule,
     MatButtonModule,
@@ -48,11 +49,13 @@ import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/listView/summaryListItem.component';
 import { TableListComponent } from 'search/listView/tableList.component';
 import { WidgetModule } from 'widget/widget.module';
-import { TableViewPreferencesComponent } from 'search/tableViewPreferences/tableViewPreferences.component';
+import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
+import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
 
 @NgModule({
     imports: [
         CommonModule,
+        FlexLayoutModule,
         FormsModule,
         MatAutocompleteModule,
         MatButtonModule,
@@ -103,14 +106,16 @@ import { TableViewPreferencesComponent } from 'search/tableViewPreferences/table
         SummaryListItemComponent,
         SummaryPlaceholderDirective,
         TableListComponent,
-        TableViewPreferencesComponent
+        CdeTableViewPreferencesComponent,
+        FormTableViewPreferencesComponent
     ],
     entryComponents: [
         ListViewComponent,
         ListViewControlsComponent,
         SummaryListComponent,
         TableListComponent,
-        TableViewPreferencesComponent
+        CdeTableViewPreferencesComponent,
+        FormTableViewPreferencesComponent
     ],
     exports: [
         AccordionListHeadingComponent,

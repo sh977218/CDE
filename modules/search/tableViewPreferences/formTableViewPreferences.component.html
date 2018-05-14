@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>Table View Fields</h1>
+<div mat-dialog-content>
+    <div fxLayout="row wrap" fxLayoutAlign="space-between">
+        <mat-checkbox [disabled]="true">Name</mat-checkbox>
+        <mat-checkbox>Other Names</mat-checkbox>
+        <mat-checkbox>Steward</mat-checkbox>
+        <mat-checkbox>Used by</mat-checkbox>
+        <mat-checkbox>NLM ID</mat-checkbox>
+        <mat-checkbox>Registration Status</mat-checkbox>
+        <mat-checkbox>Admin Status</mat-checkbox>
+        <mat-checkbox>Identifiers</mat-checkbox>
+        <mat-checkbox>Source</mat-checkbox>
+        <mat-checkbox>Updated</mat-checkbox>
+        <mat-checkbox>Number of Questions</mat-checkbox>
+        <ng-select id="identifiers" [(ngModel)]="searchSettings.tableViewFields.identifiers"
+                   placeholder="Optional: select identifiers to include (default: all)"
+                   [items]="identifierSources" [multiple]="true" [appendTo]="'body'" [hideSelected]="true"
+                   [disabled]="!searchSettings.tableViewFields.ids">
+        </ng-select>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">No Thanks</button>
+    <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>

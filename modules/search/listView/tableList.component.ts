@@ -4,6 +4,8 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ElasticService } from '_app/elastic.service';
 import { SearchPreferencesComponent } from 'system/public/components/searchPreferences/searchPreferences.component';
 import { TableViewPreferencesComponent } from 'search/tableViewPreferences/tableViewPreferences.component';
+import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
+import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
 
 @Component({
     selector: 'cde-table-list',
@@ -349,8 +351,9 @@ export class TableListComponent implements OnInit {
     }
 
     openSearchSettingsModal() {
-        let dialogRef = this.dialog.open(TableViewPreferencesComponent, {
-            width: '1000px',
+        let viewComponent = this.module === 'cde' ? CdeTableViewPreferencesComponent : FormTableViewPreferencesComponent;
+        let dialogRef = this.dialog.open(viewComponent, {
+            width: '500px',
             data: {}
         });
 
