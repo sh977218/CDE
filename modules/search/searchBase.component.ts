@@ -139,21 +139,31 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     view: string;
     autocompleteSuggestions: any[];
 
-    ngOnDestroy() {
-        if (this.routerSubscription) this.routerSubscription.unsubscribe();
+    constructor(protected _componentFactoryResolver,
+                protected alert,
+                protected backForwardService,
+                protected elasticService,
+                protected exportService,
+                protected http: HttpClient,
+                protected modalService,
+                protected orgHelperService,
+                protected route,
+                protected router,
+                protected userService) {
+        this.searchSettings.page = 1;
+
+        this.routerSubscription = this.router.events.subscribe(e => {
+            if (this.previousUrl && e instanceof NavigationStart) {
+                if (/^\/(cde|form)\/search/.exec(this.previousUrl)) this.scrollHistorySave();
+                this.previousUrl = null;
+            }
+        });
+
+        this.filterMode = $(window).width() >= 768;
     }
 
-    searchAuto(term) {
-        return this.http.post<any[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
-            this.elasticService.buildElasticQuerySettings(this.searchSettings)).map(res => {
-            let final = new Set();
-            this.lastTypeahead = {};
-            res.forEach(e => {
-                this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
-                final.add(e._source.primaryNameSuggest);
-            });
-            return Array.from(final);
-        });
+    ngOnDestroy() {
+        if (this.routerSubscription) this.routerSubscription.unsubscribe();
     }
 
     ngOnInit() {
@@ -178,29 +188,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     }).subscribe(res => this.autocompleteSuggestions = res)
                     : empty();
             });
-    }
-
-    constructor(protected _componentFactoryResolver,
-                protected alert,
-                protected backForwardService,
-                protected elasticService,
-                protected exportService,
-                protected http: HttpClient,
-                protected modalService,
-                protected orgHelperService,
-                protected route,
-                protected router,
-                protected userService) {
-        this.searchSettings.page = 1;
-
-        this.routerSubscription = this.router.events.subscribe(e => {
-            if (this.previousUrl && e instanceof NavigationStart) {
-                if (/^\/(cde|form)\/search/.exec(this.previousUrl)) this.scrollHistorySave();
-                this.previousUrl = null;
-            }
-        });
-
-        this.filterMode = $(window).width() >= 768;
     }
 
     addDatatypeFilter(datatype) {
