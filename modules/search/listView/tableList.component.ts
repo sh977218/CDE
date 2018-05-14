@@ -353,11 +353,15 @@ export class TableListComponent implements OnInit {
         let config = {
             width: '500px'
         };
-        if (this.module === 'cde') dialogRef = this.dialog.open(CdeTableViewPreferencesComponent, config);
-        else dialogRef = this.dialog.open(FormTableViewPreferencesComponent, config);
+        let viewComponent = CdeTableViewPreferencesComponent;
+        if (this.module === 'form') viewComponent = FormTableViewPreferencesComponent;
+        dialogRef = this.dialog.open(viewComponent, config);
         dialogRef.componentInstance.searchSettings = this.searchSettings;
         dialogRef.componentInstance.onChanged.subscribe(() => {
             this.render();
+        });
+        dialogRef.componentInstance.onClosed.subscribe(() => {
+            dialogRef.close();
         });
     }
 }

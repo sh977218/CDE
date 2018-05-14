@@ -34,13 +34,13 @@
         <mat-checkbox (change)="onChanged.emit();" [(ngModel)]="searchSettings.tableViewFields.ids">Identifiers
         </mat-checkbox>
         <ng-select id="identifiers" [(ngModel)]="searchSettings.tableViewFields.identifiers"
-                   placeholder="Optional: select identifiers to include (default: all)"
-                   [items]="identifierSources" [multiple]="true" [appendTo]="'body'" [hideSelected]="true"
+                   [placeholder]="placeHolder" [multiple]="true" [appendTo]="appendTo"
+                   [items]="identifierSources" [hideSelected]="true"
                    [disabled]="!searchSettings.tableViewFields.ids">
         </ng-select>
     </div>
 </div>
 <div mat-dialog-actions>
     <button mat-raised-button (click)="loadDefault()">Load Default</button>
-    <button mat-raised-button>Close</button>
+    <button mat-raised-button (click)="onClosed.emit();">Close</button>
 </div>
