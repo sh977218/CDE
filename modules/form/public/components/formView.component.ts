@@ -297,10 +297,14 @@ export class FormViewComponent implements OnInit {
         this.savingText = 'Saving ...';
         this.elt._id = this.formId;
         let username = this.userService.user.username;
-        if (this.elt.updatedBy) this.elt.updatedBy.username = username;
-        else this.elt.updatedBy = {userId: undefined, username: username};
-        if (this.elt.createdBy) this.elt.createdBy.username = username;
-        else this.elt.createdBy = {userId: undefined, username: username};
+        if (this.elt.updatedBy) {
+            this.elt.updatedBy.username = username;
+        } else {
+            this.elt.updatedBy = {userId: undefined, username: username};
+        }
+        if (!this.elt.createdBy) {
+            this.elt.createdBy = {userId: undefined, username: username};
+        }
         this.elt.updated = new Date();
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
         this.draftSubscription = this.http.post('/draftForm/' + this.elt.tinyId, this.elt).subscribe(res => {

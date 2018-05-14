@@ -320,7 +320,16 @@ let formCompareArrayOption = [
         }
         :host .arrayObjReorder {
             border-left: 5px solid #fad000
-        }`]
+        }
+        :host >>> ins {
+            color: black;
+            background: #bbffbb;
+        }
+        :host >>> del {
+            color: black;
+            background: #ffbbbb;
+        }
+    `]
 })
 export class CompareArrayComponent implements OnInit {
     @Input() older;

@@ -1,25 +1,28 @@
 <div [hidden]="formElement.question.invisible && !nrs.profile.displayInvisible">
     <fieldset>
         <legend class="native-question-label"></legend>
-        <label *ngIf="formElement.question.datatype !== 'Value List'"
-               class="native-question-label"
-               [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}"
-               [hidden]="!hasLabel(formElement)"
-               attr.for="{{formElement.label}}_{{formElement.feId}}_box">
-            <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}</label>
-        <div *ngIf="formElement.question.datatype === 'Value List'"
+        <div *ngIf="formElement.question.datatype === 'Value List'; else titleOnALabel"
              class="native-question-label"
              [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}"
              [hidden]="!hasLabel(formElement)">
-            <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}
-        </div>
+            <ng-container *ngIf="parentValue">If {{parentValue}}: </ng-container>{{formElement.label}}</div>
+        <ng-template #titleOnALabel>
+            <label class="native-question-label"
+                   [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}"
+                   [hidden]="!hasLabel(formElement)"
+                   attr.for="{{formElement.label}}_{{formElement.feId}}_box">
+                <ng-container *ngIf="parentValue">If {{parentValue}}: </ng-container>{{formElement.label}}</label>
+        </ng-template>
         <div *ngIf="nrs.profile.displayInstructions && formElement?.instructions?.value"
              class="native-instructions">
-            <span *ngIf="formElement.instructions.valueFormat === 'html'"
-                  [innerHtml]="formElement.instructions.value"></span>
-            <span *ngIf="formElement.instructions.valueFormat !== 'html'" class="text-muted">{{formElement.instructions.value}}</span>
+            <ng-container *ngIf="formElement.instructions.valueFormat === 'html'; else instructionsText">
+                <span [innerHtml]="formElement.instructions.value"></span>
+            </ng-container>
+            <ng-template #instructionsText>
+                <span class="text-muted">{{formElement.instructions.value}}</span>
+            </ng-template>
         </div>
-        <div attr.id="{{formElement.label}}_{{formElement.feId}}" [ngClass]="{'native-box': hasLabel(formElement)}">
+        <div attr.id="{{formElement.label}}_{{formElement.feId}}" [ngClass]="{'native-box': hasHeading(formElement)}">
             <ng-template #scoreDisplay>Score: {{score(formElement, nrs.vm)}}</ng-template>
             <ng-container *ngIf="!formElement.question.isScore; else scoreDisplay">
                 <ng-container [ngSwitch]="formElement.question.datatype">

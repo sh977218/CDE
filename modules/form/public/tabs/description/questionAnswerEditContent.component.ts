@@ -7,6 +7,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
     providers: []
 })
 export class QuestionAnswerEditContentComponent {
+    @Output() onCleared: EventEmitter<void> = new EventEmitter<void>();
     @Output() onSaved: EventEmitter<void> = new EventEmitter<void>();
     answers;
 

@@ -129,23 +129,11 @@ gulp.task('prepareVersion', ['copyCode'], function () {
     });
 });
 
-gulp.task('buildApp', ['createDist'], function () {
-    return run('npm run buildApp').exec();
+gulp.task('build', ['createDist'], function () {
+    return run('npm run build').exec();
 });
 
-gulp.task('buildNative', ['createDist'], () => {
-    return run('npm run buildNative').exec();
-});
-
-gulp.task('buildFhir', ['createDist'], () => {
-    return run('npm run buildFhir').exec();
-});
-
-gulp.task('buildEmbed', ['createDist'], () => {
-    return run('npm run buildEmbed').exec();
-});
-
-gulp.task('copyDist', ['buildApp', 'buildEmbed', 'buildNative', 'buildFhir'], () => {
+gulp.task('copyDist', ['build'], () => {
     let streamArray = [];
 
     // App
@@ -156,13 +144,13 @@ gulp.task('copyDist', ['buildApp', 'buildEmbed', 'buildNative', 'buildFhir'], ()
     streamArray.push(gulp.src('./dist/embed/**/*')
         .pipe(gulp.dest(config.node.buildDir + '/dist/embed')));
 
-    // Native
-    streamArray.push(gulp.src('./dist/native/**/*')
-        .pipe(gulp.dest(config.node.buildDir + '/dist/native')));
-
     // Fhir
     streamArray.push(gulp.src('./dist/fhir/*')
         .pipe(gulp.dest(config.node.buildDir + '/dist/fhir')));
+
+    // Native
+    streamArray.push(gulp.src('./dist/native/**/*')
+        .pipe(gulp.dest(config.node.buildDir + '/dist/native')));
 
     // Launch optimization
     streamArray.push(gulp.src('./modules/system/views/home-launch.ejs')
@@ -179,8 +167,8 @@ gulp.task('usemin', ['copyCode', 'copyDist'], function () {
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/system/views/", filename: "index-legacy.ejs"},
         {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
+        {folder: "./modules/_fhirApp/", filename: "fhirApp.html"},
         {folder: "./modules/_nativeRenderApp/", filename: "nativeRenderApp.html"},
-        {folder: "./modules/_fhirApp/", filename: "fhirApp.html"}
     ].forEach(item => {
         let useminOutputs = [];
 

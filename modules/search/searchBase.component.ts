@@ -21,6 +21,10 @@ import { HelperObjectsService } from 'widget/helperObjects.service';
 import { FormControl } from "@angular/forms";
 
 export const searchStyles: string = `
+    #searchResultInfoBar {
+        font-size: 16.5px;
+        vertical-align: middle;
+    }
     .treeTitle {
         display: inline-block;
         font-weight: bold;
@@ -59,6 +63,29 @@ export const searchStyles: string = `
     }
     .cdeFieldset > div {
         font-size: 16px;
+    }
+    .welcomeCount {
+        bottom: 1px;
+        right: 40px;
+        position: absolute;
+        background-color: white;
+        padding: 0 5px 0 5px;
+    }
+    .welcomeDetailIcon {
+        position: absolute !important;
+        right: 21px;
+        top: 30px;
+        color: lightslategrey;
+        font-size: 1.5em !important;
+        border: 1px solid rgba(128, 128, 128, 0.35);
+        border-radius: 28px;
+        width: 25px;
+        display: block;
+        text-align: center;
+    }
+    .welcomeDetailIcon:hover {
+        background-color: #337ab7;
+        color: white;
     }
 `;
 

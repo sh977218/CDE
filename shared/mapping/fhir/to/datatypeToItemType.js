@@ -1,3 +1,5 @@
+import { externalCodeSystemsMap } from 'shared/mapping/fhir/index';
+
 export function containerToItemType(container) { // http://hl7.org/fhir/item-type
     // NOT IMPLEMENTED: boolean, time, url, open-choice(choice+string), attachment, reference
     if (container.isScore) return 'display';
@@ -5,7 +7,7 @@ export function containerToItemType(container) { // http://hl7.org/fhir/item-typ
         case 'Value List':
             return 'choice';
         case 'Date':
-            return ['Hour', 'Minute', 'Second'].indexOf(container.datatypeDate.precision) ? 'dateTime' : 'date';
+            return ['Hour', 'Minute', 'Second'].indexOf(container.datatypeDate.precision) > -1 ? 'dateTime' : 'date';
         case 'Number':
             if (Array.isArray(container.unitsOfMeasure) && container.unitsOfMeasure.length || container.uom) {
                 return 'quantity';
@@ -17,17 +19,34 @@ export function containerToItemType(container) { // http://hl7.org/fhir/item-typ
     }
 }
 
-export function containerValueListToCoding(container, value) {
-    let pvs = Array.isArray(container.answers) ? container.answers : container.permissibleValues;
-    let matches = pvs.filter(a => a.permissibleValue === value);
-    if (matches.length) {
-        return permissibleValueToCoding(matches[0]);
+export function containerValueListToCoding(container, value, multi = false) {
+    function valueToCoding(container, v) {
+        let pvs = Array.isArray(container.answers) ? container.answers : container.permissibleValues;
+        let matches = pvs.filter(a => a.permissibleValue === v);
+        if (matches.length) {
+            return permissibleValueToCoding(matches[0]);
+        }
+        return {code: v};
     }
-    return {code: value};
+    if (Array.isArray(value)) {
+        let result = value.map(v => valueToCoding(container, v));
+        if (multi) {
+            return result.length ? result : undefined;
+        } else {
+            return result.length ? result[0] : undefined;
+        }
+    } else {
+        let result = valueToCoding(container, value);
+        if (multi) {
+            return [result];
+        } else {
+            return result;
+        }
+    }
 }
 
-export function itemTypeToItemDatatype(type) {
-    if ('choice') return 'Coding';
+export function itemTypeToItemDatatype(type, hasCodeableConcept = false) {
+    if (type === 'choice') return hasCodeableConcept ? 'CodeableConcept' : 'Coding';
     return type;
 }
 
@@ -35,35 +54,45 @@ export function permissibleValueToCoding(pv) {
     return {
         code: pv.permissibleValue,
         display: pv.valueMeaningName && pv.valueMeaningName !== pv.permissibleValue ? pv.valueMeaningName : undefined,
-        system: pv.codeSystemName || undefined,
+        system: externalCodeSystemsMap[pv.codeSystemName] || undefined,
         version: pv.codeSystemVersion || undefined,
     };
 }
 
-export function valueToQuantity(container, value, comparator, uomIndex) {
+export function valueToQuantity(container, value, comparator, valueUom) {
     let quantity = {
         comparator: comparator && comparator !== '=' ? comparator : undefined,
         value: parseFloat(value),
     };
     if (Array.isArray(container.unitsOfMeasure)) {
-        let uom = container.unitsOfMeasure[Math.min(uomIndex, container.unitsOfMeasure.length - 1)];
-        if (uom) {
-            quantity.code = uom.code;
-            quantity.system = uom.system;
+        if (valueUom) {
+            quantity.code = valueUom.code;
+            quantity.system = valueUom.system;
+        } else if (container.unitsOfMeasure.length) {
+            quantity.code = container.unitsOfMeasure[0].code;
+            quantity.system = container.unitsOfMeasure[0].system;
+        }
+        if (quantity.system) {
+            quantity.system = externalCodeSystemsMap[quantity.system];
         }
     } else {
         quantity.unit = container.uom;
     }
+    return quantity;
 }
 
-export function valueToTypedValue(container, type, value, comparator = '=', uomIndex = 0) {
+export function valueToTypedValue(container, type, value, comparator = '=', valueUom = undefined, hasCodeableConcept = false) {
     switch (type) {
         case 'choice':
+            if (hasCodeableConcept) {
+                let coding = containerValueListToCoding(container, value, true);
+                return coding ? {coding: coding} : undefined;
+            }
             return containerValueListToCoding(container, value);
         case 'boolean':
             return !!value;
         case 'quantity':
-            return valueToQuantity(container, value, comparator, uomIndex);
+            return valueToQuantity(container, value, comparator, valueUom);
         case 'integer':
             return parseInt(value);
         case 'decimal':

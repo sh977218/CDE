@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from 'angular-tree-component';
+import _clone from 'lodash/clone';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
-import _clone from 'lodash/clone';
 import { debounceTime, map } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -15,9 +15,9 @@ import { DataTypeService } from 'core/dataType.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
+import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
 import { CodeAndSystem, FormattedValue } from 'shared/models.model';
 import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'shared/form/form.model';
-import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
 
 @Component({
     selector: 'cde-form-description-question-detail',
@@ -277,6 +277,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         if (q.question.answers.length > 0) {
             const modalRef = this.modalService.open(QuestionAnswerEditContentComponent, {size: 'lg'});
             modalRef.componentInstance.answers = q.question.answers;
+            modalRef.componentInstance.onCleared.subscribe(() => {
+                this.onAnswerListRemove(this.question.question.defaultAnswer || undefined);
+            });
             modalRef.componentInstance.onSaved.subscribe((answers) => {
                 q.question.answers = _clone(answers);
                 this.onEltChange.emit();

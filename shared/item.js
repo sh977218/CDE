@@ -1,3 +1,5 @@
+import { capString } from 'shared/system/util';
+
 export const ITEM_MAP = {
     board: {
         view: '/board/',
