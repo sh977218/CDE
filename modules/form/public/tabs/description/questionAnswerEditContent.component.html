@@ -28,6 +28,8 @@
     </table>
 </div>
 <div class="modal-footer">
+    <button class="btn btn-danger" style="margin-right: auto"
+            (click)="answers.length = 0; onCleared.emit(); onSaved.emit(answers);">Clear All</button>
     <button class="btn btn-outline-dark" (click)="activeModal.close('Close click');" id="cancelEditAnswerBtn">
         Cancel
     </button>
