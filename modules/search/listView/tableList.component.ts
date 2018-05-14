@@ -1,9 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { ElasticService } from '_app/elastic.service';
-import { SearchPreferencesComponent } from 'system/public/components/searchPreferences/searchPreferences.component';
-import { TableViewPreferencesComponent } from 'search/tableViewPreferences/tableViewPreferences.component';
 import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
 import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
 
@@ -31,11 +28,12 @@ export class TableListComponent implements OnInit {
     private _elts: any[];
     headings: string[];
     rows: any[];
-    modalRef: NgbModalRef;
 
-    constructor(public modalService: NgbModal,
-                public dialog: MatDialog,
+    searchSettings;
+
+    constructor(public dialog: MatDialog,
                 public esService: ElasticService) {
+        this.searchSettings = this.esService.searchSettings;
     }
 
     ngOnInit() {
@@ -49,7 +47,7 @@ export class TableListComponent implements OnInit {
     }
 
     renderCde() {
-        let tableSetup = this.esService.searchSettings.tableViewFields;
+        let tableSetup = this.searchSettings.tableViewFields;
         this.headings = [];
         if (tableSetup.name) this.headings.push('Name');
         if (tableSetup.questionTexts) this.headings.push('Question Texts');
@@ -206,7 +204,7 @@ export class TableListComponent implements OnInit {
     }
 
     renderForm() {
-        let tableSetup = this.esService.searchSettings.tableViewFields;
+        let tableSetup = this.searchSettings.tableViewFields;
         this.headings = [];
         if (tableSetup.name) this.headings.push('Name');
         if (tableSetup.naming) this.headings.push('Other Names');
@@ -350,14 +348,16 @@ export class TableListComponent implements OnInit {
         });
     }
 
-    openSearchSettingsModal() {
-        let viewComponent = this.module === 'cde' ? CdeTableViewPreferencesComponent : FormTableViewPreferencesComponent;
-        let dialogRef = this.dialog.open(viewComponent, {
-            width: '500px',
-            data: {}
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
+    openTableViewPreferences() {
+        let dialogRef;
+        let config = {
+            width: '500px'
+        };
+        if (this.module === 'cde') dialogRef = this.dialog.open(CdeTableViewPreferencesComponent, config);
+        else dialogRef = this.dialog.open(FormTableViewPreferencesComponent, config);
+        dialogRef.componentInstance.searchSettings = this.searchSettings;
+        dialogRef.componentInstance.onChanged.subscribe(() => {
+            this.render();
         });
     }
 }

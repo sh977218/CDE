@@ -57,6 +57,7 @@ export const searchStyles: string = `
 `;
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
+
     @Input() searchSettingsInput?: SearchSettings;
 
     @HostListener('window:beforeunload') unload() {
@@ -778,9 +779,5 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     static waitScroll(count, previousSpot) {
         if (count > 0) setTimeout(() => SearchBaseComponent.waitScroll(count - 1, previousSpot), 100);
         else window.scrollTo(0, previousSpot);
-    }
-
-    openSearchSettingsModal() {
-
     }
 }
