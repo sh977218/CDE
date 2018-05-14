@@ -240,10 +240,14 @@ export class DataElementViewComponent implements OnInit {
         this.savingText = 'Saving ...';
         this.elt._id = this.deId;
         let username = this.userService.user.username;
-        if (this.elt.updatedBy) this.elt.updatedBy.username = username;
-        else this.elt.updatedBy = {username: username, userId: undefined};
-        if (this.elt.createdBy) this.elt.createdBy.username = username;
-        else this.elt.createdBy = {username: username, userId: undefined};
+        if (this.elt.updatedBy) {
+            this.elt.updatedBy.username = username;
+        } else {
+            this.elt.updatedBy = {username: username, userId: undefined};
+        }
+        if (!this.elt.createdBy) {
+            this.elt.createdBy = {username: username, userId: undefined};
+        }
         this.elt.updated = new Date();
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
         this.draftSubscription = this.http.post('/draftDataElement/' + this.elt.tinyId, this.elt)

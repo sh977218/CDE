@@ -7,7 +7,7 @@ let schemas = {};
 
 function deleteEmpty(v) {
     if (v === null || v === '') {
-        return undefined;
+        return;
     }
     return v;
 }
@@ -124,10 +124,11 @@ embedJson.form.cdes = {type: Boolean, default: false};
 schemas.embedSchema = new mongoose.Schema(embedJson);
 
 let fhirAppJson = {
+    clientId: String,
+    dataEndpointUrl: String,
     forms: [
         {tinyId: String}
     ],
-    clientId: String
 };
 schemas.fhirAppSchema = new mongoose.Schema(fhirAppJson);
 

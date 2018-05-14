@@ -6,7 +6,17 @@ import { ClassificationService } from 'core/classification.service';
 
 @Component({
     selector: "cde-compare-object",
-    templateUrl: "./compareObject.component.html"
+    templateUrl: "./compareObject.component.html",
+    styles: [`
+        :host >>> ins {
+            color: black;
+            background: #bbffbb;
+        }
+        :host >>> del {
+            color: black;
+            background: #ffbbbb;
+        }
+    `]
 })
 export class CompareObjectComponent implements OnInit {
 

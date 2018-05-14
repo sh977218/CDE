@@ -8,7 +8,12 @@
             <td><i class="fa fa-trash-o" (click)="deleteApp(app)"></i></td>
             <td>{{app._id}}</td>
             <td>
-                <label> Client Id:
+                <label>Data Endpoint URL
+                    <input [(ngModel)]="app.dataEndpointUrl" class="form-control" (change)="saveApp(app)">
+                </label>
+            </td>
+            <td>
+                <label>Client Id:
                     <input [(ngModel)]="app.clientId" class="form-control" (change)="saveApp(app)">
                 </label>
             </td>

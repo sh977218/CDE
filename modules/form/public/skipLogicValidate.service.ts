@@ -8,6 +8,7 @@ import {
 @Injectable()
 export class SkipLogicValidateService {
     previousSkipLogicPriorToSelect = '';
+    optionsMap: Map<string, string> = new Map;
 
     constructor() {
     }
@@ -41,6 +42,7 @@ export class SkipLogicValidateService {
         let tokens = tokenSplitter(currentContent);
         this.previousSkipLogicPriorToSelect = currentContent.substr(0, currentContent.length - tokens.unmatched.length);
 
+        this.optionsMap.clear();
         let options: string[];
         if (tokens.length % 4 === 0) {
             options = getQuestionsPrior(parent, fe)
@@ -49,7 +51,7 @@ export class SkipLogicValidateService {
         } else if (tokens.length % 4 === 1) {
             options = ['= ', '< ', '> ', '>= ', '<= ', '!= '];
         } else if (tokens.length % 4 === 2) {
-            options = SkipLogicValidateService.getTypeaheadOptionsAnswer(parent, fe, tokens[tokens.length - 2]);
+            options = this.getTypeaheadOptionsAnswer(parent, fe, tokens[tokens.length - 2]);
         } else if (tokens.length % 4 === 3) {
             options = ['AND ', 'OR '];
         }
@@ -66,19 +68,18 @@ export class SkipLogicValidateService {
         return options;
     }
 
-    static getTypeaheadOptionsAnswer(parent: FormElementsContainer, fe: FormElement, questionName: string): string[] {
+    getTypeaheadOptionsAnswer(parent: FormElementsContainer, fe: FormElement, questionName: string): string[] {
         let q = getQuestionPriorByLabel(parent, fe, questionName.substring(1, questionName.length - 1));
         if (!q) return [];
 
         if (q.question.datatype === 'Value List') {
             return q.question.answers.map(a => {
-                return {
-                    permissibleValue: tokenSanitizer(a.permissibleValue),
-                    valueMeaningName: tokenSanitizer(a.valueMeaningName)
-                };
-            }).map(a => {
-                if (a.valueMeaningName && a.valueMeaningName !== a.permissibleValue) return `"${a.permissibleValue} (${a.valueMeaningName})"`;
-                else return `"${a.permissibleValue}"`;
+                let pv = tokenSanitizer(a.permissibleValue);
+                let pvString = `"${pv}" `;
+                let nameString = a.valueMeaningName !== a.permissibleValue
+                    ? `"${pv}" - ${tokenSanitizer(a.valueMeaningName)}` : pvString;
+                this.optionsMap.set(nameString, pvString);
+                return nameString;
             });
         }
         if (q.question.datatype === 'Number') {
@@ -94,7 +95,8 @@ export class SkipLogicValidateService {
         let skipLogic = fe.skipLogic;
         skipLogic.validationError = undefined;
         if (event && event.item) {
-            skipLogic.condition = this.previousSkipLogicPriorToSelect + event.item;
+            skipLogic.condition = this.previousSkipLogicPriorToSelect
+                + (this.optionsMap.size ? this.optionsMap.get(event.item) : event.item);
         } else {
             skipLogic.condition = event;
         }
