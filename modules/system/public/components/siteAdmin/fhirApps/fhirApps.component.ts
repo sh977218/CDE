@@ -32,11 +32,7 @@ export class FhirAppsComponent {
     }
 
     newApp() {
-        this.saveApp({
-            clientId: '',
-            forms: [],
-            baseUrl: '',
-        });
+        this.saveApp(new FhirApp);
     }
 
     saveApp(app) {

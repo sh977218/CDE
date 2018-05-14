@@ -8,8 +8,8 @@
             <td><i class="fa fa-trash-o" (click)="deleteApp(app)"></i></td>
             <td>{{app._id}}</td>
             <td>
-                <label>Sandbox Name
-                    <input [(ngModel)]="app.baseUrl" class="form-control" (change)="saveApp(app)">
+                <label>Data Endpoint URL
+                    <input [(ngModel)]="app.dataEndpointUrl" class="form-control" (change)="saveApp(app)">
                 </label>
             </td>
             <td>

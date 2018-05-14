@@ -131,7 +131,7 @@ export class FhirAppComponent {
         this.selectedProfileName = queryParams['selectedProfile'];
 
         this.http.get<FhirApp>('/fhirApp/' + this.route.snapshot.paramMap.get('config')).subscribe(fhirApp => {
-            if (!fhirApp || !fhirApp.baseUrl || !fhirApp.clientId) {
+            if (!fhirApp || !fhirApp.dataEndpointUrl || !fhirApp.clientId) {
                 return;
             }
             if (queryParams['state']) {
@@ -143,7 +143,7 @@ export class FhirAppComponent {
                     'scope':  FhirAppComponent.SCOPE,
                 });
             }
-            this.baseUrl = fhirApp.baseUrl;
+            this.baseUrl = fhirApp.dataEndpointUrl;
             fhirApp.forms.forEach(f => {
                 this.http.get<CdeForm>('/form/' + f.tinyId).subscribe(form => {
                     CdeForm.validate(form);

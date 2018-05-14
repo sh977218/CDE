@@ -141,9 +141,9 @@ export class DisplayProfile {
 }
 
 export class FhirApp {
-    clientId: string;
-    forms: {tinyId: string}[];
-    baseUrl: string;
+    clientId: string = '';
+    dataEndpointUrl: string = '';
+    forms: {tinyId: string}[] = [];
 }
 
 export interface FormElementsContainer {
