@@ -6,8 +6,10 @@ import { NavigationStart } from '@angular/router';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
 import { empty } from 'rxjs/observable/empty';
-import { debounceTime, distinctUntilChanged, map, switchMap, take } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
+
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/map';
+
 import { Subscription } from 'rxjs/Subscription';
 
 import { SearchSettings } from 'search/search.model';
@@ -16,6 +18,7 @@ import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
+import { FormControl } from "@angular/forms";
 
 export const searchStyles: string = `
     .treeTitle {
@@ -98,6 +101,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     routerSubscription: Subscription;
     searchSettings: SearchSettings = new SearchSettings;
     searchedTerm: string;
+    searchTermFC: FormControl = new FormControl();
     took: any;
     topics: any;
     topicsKeys: string[];
@@ -106,14 +110,47 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     user: User;
     validRulesStatus: string;
     view: string;
+    autocompleteSuggestions: any[];
 
     ngOnDestroy() {
         if (this.routerSubscription) this.routerSubscription.unsubscribe();
     }
 
+    searchAuto(term) {
+        return this.http.post<any[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
+            this.elasticService.buildElasticQuerySettings(this.searchSettings)).map(res => {
+            let final = new Set();
+            this.lastTypeahead = {};
+            res.forEach(e => {
+                this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
+                final.add(e._source.primaryNameSuggest);
+            });
+            return Array.from(final);
+        });
+    }
+
     ngOnInit() {
         // TODO: remove OnInit when OnChanges inputs is implemented for Dynamic Components
         this.route.queryParams.subscribe(() => this.search());
+
+        this.searchTermFC.valueChanges.subscribe(v => this.searchSettings.q = v);
+
+        this.searchTermFC.valueChanges
+            .debounceTime(500)
+            .subscribe(term => {
+                term.length >= 3 ?
+                    this.http.post<any[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
+                        this.elasticService.buildElasticQuerySettings(this.searchSettings)).map(res => {
+                        let final = new Set();
+                        this.lastTypeahead = {};
+                        res.forEach(e => {
+                            this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
+                            final.add(e._source.primaryNameSuggest);
+                        });
+                        return Array.from(final);
+                    }).subscribe(res => this.autocompleteSuggestions = res)
+                    : empty();
+            });
     }
 
     constructor(protected _componentFactoryResolver,
@@ -318,29 +355,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (this.byTopic && !this.isSearched()) searchTerms.byTopic = 1;
         return searchTerms;
     }
-
-    getAutocompleteSuggestions = ((text$: Observable<string>) =>
-        text$.pipe(
-            debounceTime(500),
-            distinctUntilChanged(),
-            switchMap(term =>
-                term.length >= 3 ?
-                    this.http.post<any[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
-                        this.elasticService.buildElasticQuerySettings(this.searchSettings)).pipe(
-                        map(res => {
-                            let final = new Set();
-                            this.lastTypeahead = {};
-                            res.forEach(e => {
-                                this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
-                                final.add(e._source.primaryNameSuggest);
-                            });
-                            return Array.from(final);
-                        })
-                    )
-                    : empty()
-            ),
-            take(8)
-        ));
 
     getCurrentSelectedClassification() {
         return this.altClassificationFilterMode
@@ -764,7 +778,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     typeaheadSelect (item) {
         if (!this.embedded) {
-            this.router.navigate([this.module === 'form' ? "formView" : "deView"], {queryParams: {tinyId: this.lastTypeahead[item.item]}});
+            this.router.navigate([this.module === 'form' ? "formView" : "deView"],
+                {queryParams: {tinyId: this.lastTypeahead[item.option.value]}});
         }
         else this.reload();
     }

@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { BoardFormSummaryListComponent } from "./components/listView/boardFormSummaryList.component";
@@ -12,6 +12,7 @@ import { FormSummaryListContentComponent } from "./components/listView/formSumma
 import { SearchModule } from "search/search.module";
 import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
 import { WidgetModule } from "widget/widget.module";
+import { MatAutocompleteModule, MatIconModule, MatInputModule } from "@angular/material";
 
 
 @NgModule({
@@ -23,7 +24,11 @@ import { WidgetModule } from "widget/widget.module";
         WidgetModule,
         // internal
         BoardModule,
+        ReactiveFormsModule,
         SearchModule,
+        MatInputModule,
+        MatIconModule,
+        MatAutocompleteModule
     ],
     declarations: [
         BoardFormSummaryListComponent,
