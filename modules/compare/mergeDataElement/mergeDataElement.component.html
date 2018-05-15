@@ -4,10 +4,10 @@
 <ng-template #mergeDataElementContent id="mergeDataElementModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="MergeDataElementModalHeader">
         <div class="col-10 col-offset-1">
-            <a target="_blank" href="/deView?tinyId={{source.tinyId}}">{{source.naming[0].designation}}</a>
+            <a target="_blank" href="/deView?tinyId={{source.tinyId}}">{{source.designations[0].designation}}</a>
             [{{ source.stewardOrg.name }}]
             <br><i class="fa fa-arrow-down"></i><br>
-            <a target="_blank" href="/deView?tinyId={{destination.tinyId}}">{{destination.naming[0].designation}}</a>
+            <a target="_blank" href="/deView?tinyId={{destination.tinyId}}">{{destination.designations[0].designation}}</a>
             [{{ destination.stewardOrg.name }}]
         </div>
     </div>

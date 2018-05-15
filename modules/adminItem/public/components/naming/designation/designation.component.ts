@@ -7,7 +7,7 @@ import { Designation } from '../../../../../../shared/models.model';
     selector: 'cde-designation',
     templateUrl: './designation.component.html'
 })
-export class DesignationComponent implements OnInit {
+export class DesignationComponent {
     placeHolder = 'No Tags found, Tags are managed in Org Management > List Management';
     appendTo = 'body';
     modalRef: NgbModalRef;

@@ -7,7 +7,7 @@ import { Definition } from '../../../../../../shared/models.model';
     selector: 'cde-definition',
     templateUrl: './definition.component.html'
 })
-export class DefinitionComponent implements OnInit {
+export class DefinitionComponent {
     placeHolder = 'No Tags found, Tags are managed in Org Management > List Management';
     appendTo = 'body';
     modalRef: NgbModalRef;

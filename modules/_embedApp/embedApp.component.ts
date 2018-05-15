@@ -219,7 +219,7 @@ export class EmbedAppComponent  {
                 }
 
                 if (embed4Type.primaryDefinition && embed4Type.primaryDefinition.show) {
-                    c.embed.primaryDefinition = c.naming[0].definition;
+                    c.embed.primaryDefinition = c.definitions[0].definition;
                 }
 
                 if (embed4Type.registrationStatus && embed4Type.registrationStatus.show) {

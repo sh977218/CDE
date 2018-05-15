@@ -1,5 +1,5 @@
 <h1 *ngIf="showTitle"
-    [textContent]="nrs.vm?.naming && nrs.vm.naming[0]?.designation"></h1>
+    [textContent]="nrs.vm?.naming && nrs.vm.designations[0]?.designation"></h1>
 
 <form *ngIf="!endpointUrl && nrs.vm" name="sectionLabel" role="form" class="form-horizontal">
     <cde-native-section *ngIf="nrs.nativeRenderType !== NRS.SHOW_IF
