@@ -143,7 +143,7 @@
             </div>
             <div class="modal-body">
                 <label for="newDEName"></label>
-                <input [(ngModel)]="newDataElement.naming[0].designation" class="form-control" id="newDEName"
+                <input [(ngModel)]="newDataElement.designations[0].designation" class="form-control" id="newDEName"
                        name="newDEName" placeholder="New Data Element Name"
                        (ngModelChange)="newDataElementNameChanged();"
                        required autofocus/>
@@ -156,7 +156,7 @@
                                 <i class="fa fa-plus"></i> Add
                             </button>
                             <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed">
-                                {{cde.naming[0].designation}}
+                                {{cde.designations[0].designation}}
                             </span>
                             <a routerLink="/deView" [queryParams]="{tinyId: cde.tinyId}" target="_blank">
                                 <i class="fa fa-eye iconColor"></i></a>
@@ -166,7 +166,7 @@
                         <div class="card-body" [ngbCollapse]="!cde.isCollapsed">
                             <div class="row">
                                 <div class="col-12">
-                                    {{cde.naming[0].definition}}
+                                    {{cde.definitions[0].definition}}
                                 </div>
                             </div>
                             <div class="row" *ngIf="cde.valueDomain.permissibleValues.length > 0">
