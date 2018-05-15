@@ -13,7 +13,7 @@
                         <div class="float-left" (click)="newCde.isCollapsed = !newCde.isCollapsed"
                              [ngClass]="{'text-danger':newCde.naming.length === 0}">
                             <span *ngIf="newCde.naming.length > 0" class="hand-cursor">
-                                {{newCde.naming[0].designation}}
+                                {{newCde.designations[0].designation}}
                             </span>
                             <span *ngIf="newCde.naming.length === 0">
                             naming is empty;
@@ -22,16 +22,25 @@
                     </div>
                     <div class="card-body" [ngbCollapse]="!newCde.isCollapsed">
                         <dl class="row">
-                            <dt class="col-2 text-right">Naming:</dt>
+                            <dt class="col-2 text-right">Designations:</dt>
                             <dd class="col-10">
-                                <dl *ngFor="let cdeNaming of newCde.naming" class="row">
+                                <dl *ngFor="let cdeDesignation of newCde.designations" class="row">
                                     <dt class="col-3 text-right">Designation:</dt>
-                                    <dd class="col-9">{{cdeNaming.designation}}</dd>
-                                    <dt class="col-3 text-right">Definition:</dt>
-                                    <dd class="col-9">{{cdeNaming.definition}}</dd>
+                                    <dd class="col-9">{{cdeDesignation.designation}}</dd>
                                     <dt class="col-3 text-right">Tags:</dt>
                                     <dd class="col-9">
-                                        <span *ngFor="let cdeTag of cdeNaming.tags" class="badge badge-secondary mx-1">{{cdeTag}}</span>
+                                        <span *ngFor="let cdeTag of cdeDesignation.tags" class="badge badge-secondary mx-1">{{cdeTag}}</span>
+                                    </dd>
+                                </dl>
+                            </dd>
+                            <dt class="col-2 text-right">Definitions:</dt>
+                            <dd class="col-10">
+                                <dl *ngFor="let cdeDefinition of newCde.definitions" class="row">
+                                    <dt class="col-3 text-right">Definition:</dt>
+                                    <dd class="col-9">{{cdeDefinition.definition}}</dd>
+                                    <dt class="col-3 text-right">Tags:</dt>
+                                    <dd class="col-9">
+                                        <span *ngFor="let cdeTag of cdeDefinition.tags" class="badge badge-secondary mx-1">{{cdeTag}}</span>
                                     </dd>
                                 </dl>
                             </dd>

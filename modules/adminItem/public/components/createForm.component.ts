@@ -118,9 +118,9 @@ export class CreateFormComponent implements OnInit {
     }
 
     validationErrors(elt) {
-        if (!elt.naming[0].designation) {
+        if (!elt.designations[0].designation) {
             return 'Please enter a name for the new Form';
-        } else if (!elt.naming[0].definition) {
+        } else if (!elt.definitions[0].definition) {
             return 'Please enter a definition for the new Form';
         } else if (!elt.stewardOrg.name) {
             return 'Please select a steward for the new Form';
