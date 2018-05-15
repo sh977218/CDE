@@ -5,7 +5,7 @@ import { IdentifierSourcesResolve } from 'system/public/components/searchPrefere
 import { ElasticService } from '_app/elastic.service';
 
 @Component({
-    templateUrl: 'tableViewPreference.component.html'
+    template: ''
 })
 export class TableViewPreferencesComponent {
     identifierSources = [];

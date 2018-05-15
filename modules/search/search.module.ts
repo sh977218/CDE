@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatCheckboxModule, MatSelectModule } from '@angular/material';
+import { MatCheckboxModule, MatDialogModule, MatSelectModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -25,6 +25,7 @@ import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/f
         CommonModule,
         FlexLayoutModule,
         FormsModule,
+        MatDialogModule,
         MatCheckboxModule,
         MatSelectModule,
         NgbModule,
@@ -33,6 +34,7 @@ import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/f
         // core
         WidgetModule,
         // internal
+
     ],
     declarations: [
         AccordionListHeadingComponent,
@@ -45,16 +47,12 @@ import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/f
         SummaryPlaceholderDirective,
         TableListComponent,
         TableViewPreferencesComponent,
-        CdeTableViewPreferencesComponent,
-        FormTableViewPreferencesComponent
     ],
     entryComponents: [
         ListViewComponent,
         ListViewControlsComponent,
         SummaryListComponent,
-        TableListComponent,
-        CdeTableViewPreferencesComponent,
-        FormTableViewPreferencesComponent
+        TableListComponent
     ],
     exports: [
         AccordionListHeadingComponent,

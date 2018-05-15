@@ -13,6 +13,8 @@ import { CdeSummaryListContentComponent } from 'cde/public/components/listView/c
 import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/listView/quickBoardCdeSummaryListContent.component';
 import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
+import { CdeTableViewPreferencesComponent } from "../../search/tableViewPreferences/cdeTableViewPreferencesComponent";
+import { MatButtonModule, MatCheckboxModule, MatGridListModule, MatSelectModule } from "@angular/material";
 
 
 @NgModule({
@@ -27,18 +29,24 @@ import { WidgetModule } from 'widget/widget.module';
         BoardModule,
         CdeModule,
         SearchModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatGridListModule,
+        MatSelectModule
     ],
     declarations: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
         CdeSearchComponent,
         CdeSummaryListContentComponent,
+        CdeTableViewPreferencesComponent,
         QuickBoardCdeSummaryListContentComponent,
     ],
     entryComponents: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
         CdeSummaryListContentComponent,
+        CdeTableViewPreferencesComponent,
         QuickBoardCdeSummaryListContentComponent,
     ],
     exports: [

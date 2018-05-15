@@ -6,4 +6,7 @@ import { TableViewPreferencesComponent } from 'search/tableViewPreferences/table
     templateUrl: 'cdeTableViewPreferences.component.html'
 })
 export class CdeTableViewPreferencesComponent extends TableViewPreferencesComponent {
+
+    // options = [{id: this.searchSettings.tableViewFields.name, label: "Name"}];
+
 }
