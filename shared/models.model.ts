@@ -63,7 +63,7 @@ export class CodeAndSystem {
         return this.code === r.code && this.system === r.system;
     }
 
-    static copy(u: CodeAndSystem|any) {
+    static copy(u: CodeAndSystem | any) {
         if (u instanceof CodeAndSystem) {
             return u;
         } else {
@@ -160,6 +160,8 @@ export abstract class Elt {
     isDraft: boolean; // optional, draft only
     lastMigrationScript: string;
     naming: Naming[] = [];
+    designations: Designation[] = [];
+    definitions: Definition[] = [];
     origin: string;
     primaryDefinitionCopy: string; // volatile, Elastic
     primaryNameCopy: string; // volatile, Elastic
@@ -212,6 +214,8 @@ export abstract class Elt {
         copyArray(elt.classification, this.classification, Classification);
         copyArray(elt.comments, this.comments, Comment);
         copyArray(elt.naming, this.naming, Naming);
+        copyArray(elt.designations, this.designations, Designation);
+        copyArray(elt.definitions, this.definitions, Definition);
         copyArray(elt.properties, this.properties, Property);
         copyArray(elt.referenceDocuments, this.referenceDocuments, ReferenceDocument);
         this.stewardOrg = {name: elt.stewardOrg ? elt.stewardOrg.name : ''};
@@ -242,6 +246,37 @@ export class FormattedValue {
 }
 
 export type Instruction = FormattedValue;
+
+export class Designation {
+    designation: string;
+    tags: [string];
+
+    constructor(designation = '') {
+        this.designation = designation;
+    }
+
+    static copy(designation: Designation) {
+        let newDesignation = Object.assign(new Designation(), designation);
+        newDesignation.tags = newDesignation.tags.concat();
+        return newDesignation;
+    }
+}
+
+export class Definition {
+    definition: string;
+    definitionFormat: string;
+    tags: [string];
+
+    constructor(definition = '') {
+        this.definition = definition;
+    }
+
+    static copy(definition: Definition) {
+        let newDefinition = Object.assign(new Definition(), definition);
+        newDefinition.tags = newDefinition.tags.concat();
+        return newDefinition;
+    }
+}
 
 export class Naming {
     context: {
@@ -373,7 +408,7 @@ class StatusValidationRules {
     id: number;
     rule: {
         regex: string
-    } = { regex: undefined };
+    } = {regex: undefined};
     ruleName: string;
     occurence: string; // enum: ["exactlyOne", "atLeastOne", "all"]
     targetStatus: string; // enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]

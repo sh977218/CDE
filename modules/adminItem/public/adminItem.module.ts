@@ -17,7 +17,7 @@ import { DraftSliderComponent } from 'adminItem/public/components/draftSlider.co
 import { HistoryComponent } from "./components/history.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
-import { NamingComponent } from "./components/naming.component";
+import { NamingComponent } from "./components/naming/naming.component";
 import { PropertiesComponent } from "./components/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
 import { SourcesComponent } from "./components/sources/sources.component";
@@ -28,6 +28,8 @@ import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.compone
 import { CreateFormComponent } from 'adminItem/public/components/createForm.component';
 import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/deleteModal.component';
+import { DesignationComponent } from 'adminItem/public/components/naming/designation/designation.component';
+import { DefinitionComponent } from 'adminItem/public/components/naming/definition/definition.component';
 
 
 @NgModule({
@@ -51,6 +53,8 @@ import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/de
         ClassifyItemModalComponent,
         CdeUpdateElementComponent,
         CreateFormComponent,
+        DefinitionComponent,
+        DesignationComponent,
         DraftSliderComponent,
         IdentifiersComponent,
         LinkedFormsComponent,
@@ -62,6 +66,10 @@ import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/de
         SaveModalComponent,
         DeleteModalComponent,
         SourcesComponent,
+    ],
+    entryComponents: [
+        DefinitionComponent,
+        DesignationComponent
     ],
     exports: [
         AttachmentsComponent,
