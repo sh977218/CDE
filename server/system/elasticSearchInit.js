@@ -276,7 +276,7 @@ exports.riverFunction = function (_elt, cb) {
         elt.flatClassifications = flatArray;
         elt.stewardOrgCopy = elt.stewardOrg;
         elt.steward = elt.stewardOrg.name;
-        elt.primaryNameCopy = elt.naming ? escapeHTML(elt.naming[0].designation) : '';
+        elt.primaryNameCopy = elt.naming ? escapeHTML(elt.designations[0].designation) : '';
         elt.primaryNameSuggest = elt.primaryNameCopy;
 
         var primDef;
