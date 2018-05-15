@@ -118,7 +118,7 @@ exports.draftsList = (criteria, cb) => {
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
 exports.getPrimaryName = function (elt) {
-    return elt.naming[0].designation;
+    return elt.designations[0].designation;
 };
 
 exports.getStream = function (condition) {
@@ -342,7 +342,7 @@ let auditModifications = function (oldDe, newDe, user) {
             tinyId: newDe.tinyId
             , version: newDe.version
             , _id: newDe._id
-            , name: newDe.naming[0].designation
+            , name: newDe.designations[0].designation
         }
     };
 
@@ -351,7 +351,7 @@ let auditModifications = function (oldDe, newDe, user) {
             tinyId: oldDe.tinyId
             , version: oldDe.version
             , _id: oldDe._id
-            , name: oldDe.naming[0].designation
+            , name: oldDe.designations[0].designation
         };
         message.diff = cdediff.diff(newDe, oldDe);
     }
@@ -452,7 +452,7 @@ exports.derivationOutputs = function (inputTinyId, cb) {
 
 let correctBoardPinsForCde = function (doc, cb) {
     if (doc)
-        mongo_board.PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err) {
+        mongo_board.PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.designations[0].designation}).exec(function (err) {
             if (err) throw err;
             if (cb) cb();
         });
