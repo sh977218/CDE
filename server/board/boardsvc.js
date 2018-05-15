@@ -77,7 +77,7 @@ exports.pinToBoard = function (req, res, dao) {
                     pinnedDate: Date.now()
                 };
                 pin[propMapping[dao.type].id] = tinyId;
-                pin[propMapping[dao.type].name] = elt.naming[0].designation;
+                pin[propMapping[dao.type].name] = elt.designations[0].designation;
                 for (let i = 0; i < board.pins.length; i++) {
                     if (JSON.stringify(board.pins[i][propMapping[dao.type].id]) === JSON.stringify(tinyId)) {
                         res.statusCode = 202;
