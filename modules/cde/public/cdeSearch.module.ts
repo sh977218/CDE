@@ -13,7 +13,13 @@ import { CdeSummaryListContentComponent } from 'cde/public/components/listView/c
 import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/listView/quickBoardCdeSummaryListContent.component';
 import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
-import { MatAutocompleteModule, MatButtonModule, MatIconModule, MatInputModule } from "@angular/material";
+import {
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule
+} from "@angular/material";
 
 
 @NgModule({
@@ -29,9 +35,11 @@ import { MatAutocompleteModule, MatButtonModule, MatIconModule, MatInputModule }
         BoardModule,
         CdeModule,
         SearchModule,
+        MatButtonModule,
         MatInputModule,
         MatIconModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
+        MatMenuModule
     ],
     declarations: [
         BoardCdeSummaryListComponent,

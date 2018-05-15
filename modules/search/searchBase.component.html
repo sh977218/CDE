@@ -101,12 +101,21 @@
                     aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <input id="ftsearch-input" class="form-control pull-left" type="text" name="q" placeholder="Search"
-                   [focusFirst]="false" [(ngModel)]="searchSettings.q" maxlength="500"
-                   [ngbTypeahead]="getAutocompleteSuggestions" autocomplete="off" style="width:80%;">
-            <button id="search.submit" class="btn  btn-danger" type="submit"
-                    (click)="termSearch()"><i class="fa fa-search"></i> Search
-            </button>
+
+            <mat-form-field style="width: 90%; padding-left: 30px; margin-bottom: -20px">
+                <input matInput name="q" id="ftsearch-input" placeholder="Search"
+                       [formControl]="searchTermFC" maxlength="500" [matAutocomplete]="auto"
+                >
+                <mat-icon matSuffix (click)="termSearch()">search</mat-icon>
+            </mat-form-field>
+            <button style="display: none" type="submit" (click)="termSearch()"></button>
+
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="typeaheadSelect($event)">
+                <mat-option *ngFor="let option of autocompleteSuggestions" [value]="option">
+                    {{ option }}
+                </mat-option>
+            </mat-autocomplete>
+
         </form>
         <div class="ml-auto collapse navbar-collapse" style="width:auto;"
              id="searchBarContent" role="group" aria-label="Basic example">
@@ -128,10 +137,12 @@
             </button>
             <cde-list-view-controls [(listView)]="resultsView" *ngIf="!embedded"></cde-list-view-controls>
             <div class="btn-group dropdown" role="group" *ngIf="!embedded">
+
                 <button id="export" type="button" class="btn ml-1 btn-outline-dark dropdown-toggle"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-download"></i> Export
                 </button>
+
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="export"
                      style="left: auto;right: 0;">
                     <ng-container *ngIf="userService.user || module === 'cde'; else exportFormNotAuthorized">

@@ -12,7 +12,13 @@ import { FormSummaryListContentComponent } from "./components/listView/formSumma
 import { SearchModule } from "search/search.module";
 import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
 import { WidgetModule } from "widget/widget.module";
-import { MatAutocompleteModule, MatIconModule, MatInputModule } from "@angular/material";
+import {
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule
+} from "@angular/material";
 
 
 @NgModule({
@@ -26,9 +32,11 @@ import { MatAutocompleteModule, MatIconModule, MatInputModule } from "@angular/m
         BoardModule,
         ReactiveFormsModule,
         SearchModule,
+        MatButtonModule,
         MatInputModule,
         MatIconModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
+        MatMenuModule
     ],
     declarations: [
         BoardFormSummaryListComponent,
