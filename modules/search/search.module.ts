@@ -3,9 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatCheckboxModule, MatDialogModule, MatSelectModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgSelectModule } from '@ng-select/ng-select';
 
 import { AccordionListHeadingComponent } from 'search/listView/accordionListHeading.component';
 import { ListViewComponent } from 'search/listView/listView.component';
@@ -16,20 +14,13 @@ import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/listView/summaryListItem.component';
 import { TableListComponent } from 'search/listView/tableList.component';
 import { WidgetModule } from 'widget/widget.module';
-import { TableViewPreferencesComponent } from 'search/tableViewPreferences/tableViewPreferences.component';
-import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
-import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
 
 @NgModule({
     imports: [
         CommonModule,
         FlexLayoutModule,
         FormsModule,
-        MatDialogModule,
-        MatCheckboxModule,
-        MatSelectModule,
         NgbModule,
-        NgSelectModule,
         RouterModule.forChild([]),
         // core
         WidgetModule,
@@ -46,7 +37,6 @@ import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/f
         SummaryListItemComponent,
         SummaryPlaceholderDirective,
         TableListComponent,
-        TableViewPreferencesComponent,
     ],
     entryComponents: [
         ListViewComponent,

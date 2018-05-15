@@ -13,7 +13,7 @@ import { SearchModule } from "search/search.module";
 import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
 import { WidgetModule } from "widget/widget.module";
 import { FormTableViewPreferencesComponent } from "../../search/tableViewPreferences/formTableViewPreferencesComponent";
-import { MatButtonModule, MatCheckboxModule, MatSelectModule } from "@angular/material";
+import { MatButtonModule, MatCheckboxModule, MatGridListModule, MatSelectModule } from "@angular/material";
 
 
 @NgModule({
@@ -28,6 +28,7 @@ import { MatButtonModule, MatCheckboxModule, MatSelectModule } from "@angular/ma
         SearchModule,
         MatButtonModule,
         MatCheckboxModule,
+        MatGridListModule,
         MatSelectModule
     ],
     declarations: [
@@ -50,8 +51,7 @@ import { MatButtonModule, MatCheckboxModule, MatSelectModule } from "@angular/ma
     exports: [
         FormSearchComponent,
     ],
-    providers: [
-    ],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class FormSearchModule {
