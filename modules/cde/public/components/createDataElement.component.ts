@@ -70,7 +70,7 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     dataElementNameChanged() {
-        this.searchTerms.next(this.elt.naming[0].designation);
+        this.searchTerms.next(this.elt.designations[0].designation);
     }
 
     constructor(
@@ -128,8 +128,8 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     elementNameChanged() {
-        if (!(this.elt.naming[0].designation) || this.elt.naming[0].designation.length < 3) return;
-        else this.showSuggestions(this.elt.naming[0].designation);
+        if (!(this.elt.designations[0].designation) || this.elt.designations[0].designation.length < 3) return;
+        else this.showSuggestions(this.elt.designations[0].designation);
     }
 
     openClassifyItemModal() {
@@ -166,10 +166,10 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     validationErrors(elt) {
-        if (!elt.naming[0].designation) {
+        if (!elt.designations[0].designation) {
             this.validationMessage = 'Please enter a name for the new CDE';
             return true;
-        } else if (!elt.naming[0].definition) {
+        } else if (!elt.definitions[0].definition) {
             this.validationMessage = 'Please enter a definition for the new CDE';
             return true;
         } else if (!elt.stewardOrg.name || elt.stewardOrg.name === 'Select One') {

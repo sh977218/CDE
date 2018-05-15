@@ -124,13 +124,13 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
             if (qbElt.valueDomain.datatype === 'Value List') {
                 qbElt.valueDomain.permissibleValues.forEach((pv: any) => {
                     if (isNaN(pv.permissibleValue)) {
-                        this.invalidCdeMessage = 'CDE ' + qbElt.naming[0].designation +
+                        this.invalidCdeMessage = 'CDE ' + qbElt.designations[0].designation +
                             ' contains a Permissible Value that is not a number. It may not be added to a score.';
                     }
                 });
             }
             else {
-                this.invalidCdeMessage = 'CDE ' + qbElt.naming[0].designation +
+                this.invalidCdeMessage = 'CDE ' + qbElt.designations[0].designation +
                     " has a datatype other than 'Number' and may not be added to a score";
             }
         });
