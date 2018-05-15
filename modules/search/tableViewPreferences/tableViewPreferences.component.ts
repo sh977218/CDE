@@ -1,21 +1,26 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Output, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from "@angular/material";
 import { AlertService } from '_app/alert/alert.service';
 import { IdentifierSourcesResolve } from 'system/public/components/searchPreferences/identifier-source.resolve.service';
 import { ElasticService } from '_app/elastic.service';
 
-@Component({})
+@Component({
+    templateUrl: 'tableViewPreference.component.html'
+})
 export class TableViewPreferencesComponent {
     identifierSources = [];
-    @Input() searchSettings;
+    searchSettings;
     @Output() onChanged = new EventEmitter();
     @Output() onClosed = new EventEmitter();
     placeHolder = 'Optional: select identifiers to include (default: all)';
     appendTo = 'body';
 
-    constructor(private alert: AlertService,
+    constructor(@Inject(MAT_DIALOG_DATA) data,
+                private alert: AlertService,
                 public esService: ElasticService,
                 private identifierSourceSvc: IdentifierSourcesResolve) {
         this.identifierSources = this.identifierSourceSvc.identifierSources;
+        this.searchSettings = data.searchSettings;
     }
 
     loadDefault() {

@@ -349,19 +349,15 @@ export class TableListComponent implements OnInit {
     }
 
     openTableViewPreferences() {
-        let dialogRef;
-        let config = {
-            width: '500px'
-        };
         let viewComponent = CdeTableViewPreferencesComponent;
         if (this.module === 'form') viewComponent = FormTableViewPreferencesComponent;
-        dialogRef = this.dialog.open(viewComponent, config);
-        dialogRef.componentInstance.searchSettings = this.searchSettings;
-        dialogRef.componentInstance.onChanged.subscribe(() => {
-            this.render();
+        let dialogRef = this.dialog.open(viewComponent, {
+            width: '500px',
+            data: {
+                searchSettings: this.searchSettings
+            }
         });
-        dialogRef.componentInstance.onClosed.subscribe(() => {
-            dialogRef.close();
-        });
+        dialogRef.componentInstance.onChanged.subscribe(() => this.render());
+        dialogRef.componentInstance.onClosed.subscribe(() => dialogRef.close());
     }
 }
