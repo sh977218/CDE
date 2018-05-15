@@ -14,7 +14,13 @@ import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/
 import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
 import { CdeTableViewPreferencesComponent } from "../../search/tableViewPreferences/cdeTableViewPreferencesComponent";
-import { MatButtonModule, MatCheckboxModule, MatGridListModule, MatSelectModule } from "@angular/material";
+import {
+    MatButtonModule,
+    MatCheckboxModule,
+    MatDialogModule,
+    MatGridListModule,
+    MatSelectModule
+} from "@angular/material";
 
 
 @NgModule({
@@ -32,6 +38,7 @@ import { MatButtonModule, MatCheckboxModule, MatGridListModule, MatSelectModule 
         MatButtonModule,
         MatCheckboxModule,
         MatGridListModule,
+        MatDialogModule,
         MatSelectModule
     ],
     declarations: [
@@ -52,8 +59,7 @@ import { MatButtonModule, MatCheckboxModule, MatGridListModule, MatSelectModule 
     exports: [
         CdeSearchComponent,
     ],
-    providers: [
-    ],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CdeSearchModule {

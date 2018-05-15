@@ -14,6 +14,7 @@ import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/listView/summaryListItem.component';
 import { TableListComponent } from 'search/listView/tableList.component';
 import { WidgetModule } from 'widget/widget.module';
+import { TableViewPreferencesComponent } from 'search/tableViewPreferences/tableViewPreferences.component';
 
 @NgModule({
     imports: [
@@ -37,6 +38,7 @@ import { WidgetModule } from 'widget/widget.module';
         SummaryListItemComponent,
         SummaryPlaceholderDirective,
         TableListComponent,
+        TableViewPreferencesComponent
     ],
     entryComponents: [
         ListViewComponent,
