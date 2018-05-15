@@ -15,8 +15,7 @@ public class FormDeleteMeshTermMappingTest extends NlmCdeBaseTest {
         textPresent("D000328 - Adult");
         textPresent("D011795 - Surveys and Questionnaires");
 
-        clickElement(By.xpath("//li[contains(., 'D011795')]//i[@title='Remove Mesh Term']"));
-        clickElement(By.id("confirmRemoveMesh-2"));
+        deleteWithConfirm(By.xpath("//li[contains(., 'D011795')]"));
         checkAlert("Saved");
         textPresent("D003710 - Demography");
         textPresent("D000328 - Adult");

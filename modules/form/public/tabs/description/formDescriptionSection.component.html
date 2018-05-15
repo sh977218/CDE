@@ -33,18 +33,9 @@
                [queryParams]="{tinyId: section.inForm.form.tinyId, version: section.inForm.form.version}">
                 <i class="fa fa-eye"></i> View Form
             </a>
-            <div class="d-inline-block editIconDiv" style="font-size: 16px">
-                <i *ngIf="section.elementType === 'section'" class="fa fa-copy copySection" title="Copy section"
-                   (click)="copySection(section)"></i>
-                <i *ngIf="!section.confirmDelete" class="fa fa-trash-o hand-cursor" title="Remove Section"
-                   (click)="section.confirmDelete = true"></i>
-                <span *ngIf="section.confirmDelete" class="badge badge-secondary" style="font-size: 75%">Confirm Delete
-                    <a class="badge badge-danger" (click)="removeNode(node)" id="confirmRemoveProperty-{{i}}"
-                       title="Delete">Delete <i class="fa fa-check"></i></a>
-                    <a class="badge badge-secondary" (click)="section.confirmDelete = false"
-                       id="cancelRemoveProperty-{{i}}" title="Cancel">Cancel <i class="fa fa-times"></i></a>
-                </span>
-            </div>
+            <i *ngIf="section.elementType === 'section'" class="fa fa-copy copySection" title="Copy section"
+               (click)="copySection(section)"></i>
+            <cde-delete-with-confirm (deleted)="removeNode(node)"></cde-delete-with-confirm>
         </div>
     </div>
 </div>

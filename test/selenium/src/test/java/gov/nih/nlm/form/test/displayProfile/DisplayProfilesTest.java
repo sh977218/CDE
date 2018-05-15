@@ -77,8 +77,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         clickElement(By.id("displayProfiles_tab"));
 
         for (int i = 0; i < 4; i++) {
-            clickElement(By.id("removeDisplayProfile-0"));
-            clickElement(By.id("confirmRemoveDisplayProfile-0"));
+            deleteWithConfirm(By.cssSelector("#profile_0"));
         }
 
         newFormVersion();

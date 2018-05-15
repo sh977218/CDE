@@ -24,13 +24,13 @@
                                 (click)="$event.stopPropagation()">ONC</a>)
             </button>
             <button id="printableLogicCb" class="dropdown-item" (click)="overridePrintable = !overridePrintable">
-                Printable Logic:
-                <i class="fa fa-fw" [class.fa-check-square-o]="overridePrintable"
-                   [class.fa-square-o]="!overridePrintable"></i>
+                Print View: <i class="fa fa-fw"
+                               [class.fa-check-square-o]="overridePrintable"
+                               [class.fa-square-o]="!overridePrintable"></i>
             </button>
         </div>
     </div>
-    <div class="dropdown float-left" *ngIf="elt.displayProfiles?.length > 0">
+    <div class="dropdown float-left ml-1" *ngIf="elt.displayProfiles?.length > 0">
         <button class="btn btn-outline-dark dropdown-toggle" type="button" id="select_display_profile"
                 data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">

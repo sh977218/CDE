@@ -34,16 +34,7 @@
             <i class="fa fa-eye"></i> View CDE
         </a>
         <span *ngIf="!question.question.cde.tinyId" class="text-danger">(This is a new CDE)</span>
-        <div *ngIf="!isSubForm && canEdit" class="d-inline-block editIconDiv" style="font-size: 16px">
-            <i *ngIf="!question.confirmDelete" (click)="question.confirmDelete = true;"
-               class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
-            <span *ngIf="question.confirmDelete" class="badge badge-secondary" style="font-size: 75%">
-                <a class="badge badge-danger" (click)="removeNode(node)"
-                   id="confirmRemoveProperty-{{i}}" title="Delete">Delete <i class="fa fa-check"></i></a>
-                <a class="badge badge-secondary" (click)="question.confirmDelete = false"
-                   id="cancelRemoveProperty-{{i}}" title="Cancel">Cancel <i class="fa fa-times"></i></a>
-            </span>
-        </div>
+        <cde-delete-with-confirm *ngIf="!isSubForm && canEdit" (deleted)="removeNode(node)"></cde-delete-with-confirm>
     </div>
 </div>
 

@@ -203,7 +203,7 @@
                    (click)="openEditAnswerModal(question)"></i>:
             </dt>
             <dd class="col-10 answerList">
-                <ng-select [(ngModel)]="question.question.answers" [items]="answerList$"
+                <ng-select [(ngModel)]="question.question.answers" [items]="answerList"
                            [multiple]="true" bindLabel="valueMeaningName" placeholder="Select Answer"
                            [appendTo]="'body'" [hideSelected]="true" (add)="onAnswerListAdd();"
                            (remove)="onAnswerListRemove($event);" (clear)="onEltChange.emit();">
@@ -213,7 +213,7 @@
         <dt class="col-2">Default Answer:</dt>
         <dd class="col-10 defaultAnswer">
             <ng-container *ngIf="question.question.datatype === 'Value List'">
-                <ng-select [(ngModel)]="question.question.defaultAnswer" [items]="defaultAnswerList$"
+                <ng-select [(ngModel)]="question.question.defaultAnswer" [items]="defaultAnswerList"
                            bindLabel="valueMeaningName" bindValue="valueMeaningName" placeholder="Select Default Answer"
                            [appendTo]="'body'" [hideSelected]="true" (change)="onEltChange.emit()">
                 </ng-select>
@@ -253,7 +253,7 @@
                                              (modelChange)="onEltChange.emit();"></cde-inline-edit>
                         </td>
                         <td>
-                            <ng-select [(ngModel)]="cdeNaming.tags" [items]="tag$" [hideSelected]="true"
+                            <ng-select [(ngModel)]="cdeNaming.tags" [items]="tag" [hideSelected]="true"
                                        multiple="true" [appendTo]="'body'" [hideSelected]="true"
                                        (change)="onEltChange.emit();">
                             </ng-select>
@@ -266,7 +266,7 @@
                         <td><input [(ngModel)]="newCdeNaming.designation" class="w-100 newCdeDesignation"/></td>
                         <td><input [(ngModel)]="newCdeNaming.definition" class="w-100 newCdeDefinition"/></td>
                         <td class="newCdeTags">
-                            <ng-select [(ngModel)]="newCdeNaming.tags" [items]="tag$" [hideSelected]="true"
+                            <ng-select [(ngModel)]="newCdeNaming.tags" [items]="tag" [hideSelected]="true"
                                        multiple="true" bindLabel="name" bindValue="name" [appendTo]="'body'"
                                        [hideSelected]="true">
                             </ng-select>
@@ -413,7 +413,7 @@
                     </dd>
                     <dt class="col-2"> Tags:</dt>
                     <dd class="col-10">
-                        <ng-select [(ngModel)]="naming.tags" [items]="tag$" [hideSelected]="true"
+                        <ng-select [(ngModel)]="naming.tags" [items]="tag" [hideSelected]="true"
                                    multiple="true" [appendTo]="'body'" [hideSelected]="true"
                                    (change)="onEltChange.emit();">
                         </ng-select>

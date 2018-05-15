@@ -346,6 +346,11 @@ public class NlmCdeBaseTest {
         }
     }
 
+    protected void deleteWithConfirm(By by) {
+        clickElement(by.xpath("//i[contains(@class,'fa-trash-o')]"));
+        clickElement(by.xpath("//*[contains(@class,'badge')]/*[contains(@class,'fa-check')]"));
+    }
+
     protected void gotoClassificationMgt() {
         clickElement(By.id("username_link"));
         hangon(.5);

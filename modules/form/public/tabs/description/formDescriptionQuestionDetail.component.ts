@@ -67,9 +67,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     parent: FormElement;
 
     dataTypeList = [];
-    answerList$ = [];
-    defaultAnswerList$ = [];
-    tag$ = [];
+    answerList = [];
+    defaultAnswerList = [];
+    tag = [];
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
@@ -94,17 +94,17 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.answerList$ = this.question.question.cde.permissibleValues.map(answer => {
+        this.answerList = this.question.question.cde.permissibleValues.map(answer => {
             answer['id'] = answer.permissibleValue;
             return answer;
         });
         this.syncAnswerList();
         let stewardOrgName = this.elt.stewardOrg.name;
-        this.tag$ = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
+        this.tag = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
     }
 
     private syncAnswerList() {
-        this.defaultAnswerList$ = this.question.question.answers.map(answer => {
+        this.defaultAnswerList = this.question.question.answers.map(answer => {
             answer['id'] = answer.permissibleValue;
             return answer;
         });

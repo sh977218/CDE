@@ -1,14 +1,8 @@
-<div id="displayProfileDiv" class="col-12">
+<div id="displayProfileDiv">
     <h4>Display Profiles</h4>
     <div *ngFor="let dPVM of dPVMs; let index = index" class="hr" id="profile_{{index}}">
-        <div class="text-right" *ngIf="canEdit">
-            <span *ngIf="showDelete">Confirm Delete
-                <a class="fa fa-check" (click)="showDelete = false; removeDisplayProfile(index)"
-                   id="confirmRemoveDisplayProfile-{{index}}" title="OK"></a>
-                <a class="fa fa-times" (click)="showDelete = false" title="Cancel"></a>
-            </span>
-            <a (click)="showDelete = true" *ngIf="!showDelete" class="fa fa-trash-o"
-               id="removeDisplayProfile-{{index}}" title="Remove"></a>
+        <div class="text-right mb-1" *ngIf="canEdit">
+            <cde-delete-with-confirm (deleted)="removeDisplayProfile(index)"></cde-delete-with-confirm>
         </div>
         <div class="row">
             <div class="col-lg-5 col-sm-12">
@@ -19,41 +13,43 @@
                                          [isAllowed]="canEdit" (modelChange)="onEltChange.emit();">
                         </cde-inline-edit>
                     </dd>
-                    <dt class="col-sm-5">Display Printable Logic:</dt>
-                    <dd class="col-sm-7 ">
-                        <input type="checkbox" [disabled]="!canEdit" id="displayType_{{index}}"
-                               [checked]="dPVM.profile.displayType === 'Follow-up'"
-                               (change)="setDisplayType(dPVM, $event)">
+                    <dt class="col-sm-5">Default View:</dt>
+                    <dd class="col-sm-7">
+                        <select id="displayType_{{index}}" class="form-control" [disabled]="!canEdit"
+                                [(ngModel)]="dPVM.profile.displayType" (ngModelChange)="setDisplayType(dPVM)">
+                            <option value="Follow-up">Print (Follow-up style)</option>
+                            <option value="Dynamic">Digital (Dynamic style)</option>
+                        </select>
                     </dd>
                     <dt class="col-sm-5">Sections as matrices:</dt>
-                    <dd class="col-sm-7 ">
+                    <dd class="col-sm-7">
                         <input type="checkbox" [(ngModel)]="dPVM.profile.sectionsAsMatrix" [disabled]="!canEdit"
                                id="displayAsMatrix_{{index}}" (change)="onEltChange.emit();"/>
                     </dd>
                     <dt class="col-sm-5">Display answer values:</dt>
-                    <dd class="col-sm-7 ">
+                    <dd class="col-sm-7">
                         <input type="checkbox" [(ngModel)]="dPVM.profile.displayValues" [disabled]="!canEdit"
                                id="displayValues_{{index}}" (change)="onEltChange.emit();"/>
                     </dd>
                     <dt class="col-sm-5">Display Instructions:</dt>
-                    <dd class="col-sm-7 ">
+                    <dd class="col-sm-7">
                         <input type="checkbox" [(ngModel)]="dPVM.profile.displayInstructions" [disabled]="!canEdit"
                                id="displayInstructions_{{index}}" (change)="onEltChange.emit();">
                     </dd>
                     <dt class="col-sm-5">Display Copyright:</dt>
-                    <dd class="col-sm-7 ">
+                    <dd class="col-sm-7">
                         <input type="checkbox" [(ngModel)]="dPVM.profile.displayCopyright" [disabled]="!canEdit"
                                id="displayCopyright_{{index}}" (change)="onEltChange.emit();">
                     </dd>
                     <dt class="col-sm-5">Display Question Numbers:</dt>
-                    <dd class="col-sm-7 ">
+                    <dd class="col-sm-7">
                         <input type="checkbox" [(ngModel)]="dPVM.profile.displayNumbering" [disabled]="!canEdit"
                                id="displayNumbering_{{index}}" (change)="onEltChange.emit();">
                     </dd>
                     <dt class="col-sm-5">Number of Columns:</dt>
-                    <dd class="col-sm-7 ">
+                    <dd class="col-sm-7">
                         <select [ngModel]="dPVM.profile.numberOfColumns" id="nc_{{index}}" class="form-control"
-                                (ngModelChange)="onChange(dPVM.profile,$event)">
+                                (ngModelChange)="onChange(dPVM.profile,$event)" [disabled]="!canEdit">
                             <option value=1>1</option>
                             <option value=2>2</option>
                             <option value=3>3</option>
@@ -63,12 +59,12 @@
                         </select>
                     </dd>
                     <dt class="col-sm-5">Display Invisible Questions:</dt>
-                    <dd class="col-sm-7 ">
+                    <dd class="col-sm-7">
                         <input type="checkbox" [(ngModel)]="dPVM.profile.displayInvisible" [disabled]="!canEdit"
                                id="displayInvisible_{{index}}" (change)="onEltChange.emit();">
                     </dd>
                     <dt class="col-sm-5">Repeat Format String:</dt>
-                    <dd class="col-sm-7 ">
+                    <dd class="col-sm-7">
                         <input class="form-control" [(ngModel)]="dPVM.profile.repeatFormat"
                                [disabled]="!canEdit" id="displayRepeatFormat_{{index}}" (change)="onEltChange.emit();">
                         (Use # in place of number. Ex: "#." for "1.")
@@ -82,11 +78,11 @@
                 </div>
                 <div class="card mt-3">
                     <div class="card-header hand-cursor hoverEdit"
-                         (click)="dPVM.aliases.edit=!dPVM.aliases.edit;dPVM.aliases.edit && profileUomsEditCreate(dPVM)">
+                         (click)="uomAliasEdit(dPVM)">
                         Edit Unit of Measure Aliases
                     </div>
                     <div class="card-body row">
-                        <ng-container *ngIf="!dPVM.aliases.edit">
+                        <ng-template #displayAliases>
                             <ng-container *ngFor="let u of dPVM.profile.unitsOfMeasureAlias">
                                 <div class="col-12 col-sm-6 col-lg-12 col-xl-6 mb-1">
                                     <ng-container *ngIf="u.unitOfMeasure.system">{{u.unitOfMeasure.system}}/
@@ -94,15 +90,15 @@
                                     {{u.unitOfMeasure.code}}: {{u.alias}}
                                 </div>
                             </ng-container>
-                        </ng-container>
-                        <ng-container *ngIf="dPVM.aliases.edit">
+                        </ng-template>
+                        <ng-container *ngIf="dPVM.aliases.edit; else displayAliases">
                             <ng-container *ngFor="let u of uoms">
-                                <div class="col-12 col-sm-6 col-lg-12 col-xl-6 mb-1"
+                                <div class="col-sm-6 col-lg-12 col-xl-6 mb-1"
                                      id="alias-{{u.u.system}}-{{u.u.code}}">
                                     <ng-container *ngIf="u.u.system">{{u.u.system}}/</ng-container>
                                     {{u.u.code}}:
                                     <select [ngModel]="profileAliasGet(dPVM, u.u)" class="form-control"
-                                            (ngModelChange)="profileAliasSet(dPVM, u.u, $event)">
+                                            (ngModelChange)="profileAliasSet(dPVM, u.u, $event)" [disabled]="!canEdit">
                                         <option *ngFor="let option of u.a">{{option}}</option>
                                     </select>
                                 </div>
@@ -113,10 +109,10 @@
                     </div>
                 </div>
                 <fieldset class="cdeFieldset">
-                    <legend>Dynamic View Only Settings</legend>
+                    <legend>Digital View Settings</legend>
                     <dl class="row">
                         <dt class="col-sm-5">Multiple choice answer limit</dt>
-                        <dd class="col-sm-7 ">
+                        <dd class="col-sm-7">
                             <input class="form-control" [(ngModel)]="dPVM.profile.answerDropdownLimit"
                                    type="number" min="0" [disabled]="!canEdit"
                                    id="displayAnswerDropdownLimit_{{index}}" (change)="onEltChange.emit();">
@@ -127,7 +123,7 @@
         </div>
         <hr/>
     </div>
-    <button *ngIf="canEdit" class="btn   btn-outline-dark" value="add" (click)="addProfile()"
+    <button *ngIf="canEdit" class="btn btn-outline-dark" value="add" (click)="addProfile()"
             id="addDisplayProfile"><i class="fa fa-plus"> </i> Add Profile
     </button>
 </div>
