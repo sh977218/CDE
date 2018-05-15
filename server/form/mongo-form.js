@@ -114,7 +114,7 @@ exports.latestVersionByTinyId = function (tinyId, cb) {
 /* ---------- PUT NEW REST API above ---------- */
 
 exports.getPrimaryName = function (elt) {
-    return elt.naming[0].designation;
+    return elt.designations[0].designation;
 };
 
 exports.getStream = function (condition) {
