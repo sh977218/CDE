@@ -30,6 +30,17 @@ console.log(process.versions.node);
 let app = express();
 
 app.use(helmet());
+app.use(helmet.contentSecurityPolicy({
+    directives: {
+        defaultSrc: ["'self'", 'fonts.gstatic.com'],
+        scriptSrc: [ "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", 'maxcdn.bootstrapcdn.com', 'fonts.googleapis.com', 'fonts.gstatic.com', "'unsafe-inline'"],
+        reportUri: "https://420c1123c0ad4a7752c8697a2b254638.report-uri.com/r/d/csp/reportOnly",
+        workerSrc: ['*']
+    },
+    "reportOnly": true,
+}));
+app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 app.use(auth.ticketAuth);
 app.use(compress());
 
