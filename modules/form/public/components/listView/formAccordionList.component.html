@@ -26,7 +26,7 @@
                         <dd id="dd_def" class="col-9" [innerHtml]="elt.naming[0].definition || 'N/A'"></dd>
                         <ng-container *ngIf="elt.classification.length > 0">
                             <dt class="col-3 text-right">Used By:</dt>
-                            <dd id="usedBy" class="col-9">
+                            <dd id="usedBy_{{eltIndex}}" class="col-9">
                                 <span *ngFor="let cl of elt.classification">{{cl.stewardOrg.name}}</span>
                             </dd>
                         </ng-container>

@@ -17,7 +17,7 @@ import {
     MatButtonModule,
     MatIconModule,
     MatInputModule,
-    MatMenuModule
+    MatMenuModule, MatPaginatorModule
 } from "@angular/material";
 
 
@@ -36,7 +36,8 @@ import {
         MatInputModule,
         MatIconModule,
         MatAutocompleteModule,
-        MatMenuModule
+        MatMenuModule,
+        MatPaginatorModule
     ],
     declarations: [
         BoardFormSummaryListComponent,

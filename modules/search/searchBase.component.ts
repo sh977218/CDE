@@ -87,6 +87,9 @@ export const searchStyles: string = `
         background-color: #337ab7;
         color: white;
     }
+    .badge-success {
+        background-color: #087721;
+    }
 `;
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
@@ -486,7 +489,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }, ()  => {});
     }
 
-    pageChange() {
+    pageChange(newPage) {
+        this.searchSettings.page = newPage.pageIndex + 1;
         this.doSearch();
     }
 

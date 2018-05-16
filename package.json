@@ -119,7 +119,7 @@
     "babel-loader": "7.1.2",
     "babel-polyfill": "6.22.0",
     "babel-preset-env": "1.6.1",
-    "bootstrap": "4.0.0-beta.2",
+    "bootstrap": "^4.1.1",
     "bootstrap-tour": "https://github.com/sorich87/bootstrap-tour.git",
     "capitalize": "1.0.0",
     "cheerio": "1.0.0-rc.2",
