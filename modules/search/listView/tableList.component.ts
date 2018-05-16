@@ -352,12 +352,15 @@ export class TableListComponent implements OnInit {
         let viewComponent = CdeTableViewPreferencesComponent;
         if (this.module === 'form') viewComponent = FormTableViewPreferencesComponent;
         let dialogRef = this.dialog.open(viewComponent, {
-            width: '500px',
+            width: '550px',
             data: {
                 searchSettings: this.searchSettings
             }
         });
-        dialogRef.componentInstance.onChanged.subscribe(() => this.render());
+        dialogRef.componentInstance.onChanged.subscribe(() => {
+            this.render();
+            this.esService.saveConfiguration(this.searchSettings);
+        });
         dialogRef.componentInstance.onClosed.subscribe(() => dialogRef.close());
     }
 }

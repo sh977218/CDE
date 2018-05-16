@@ -11,6 +11,7 @@ import '../node_modules/bootstrap/dist/css/bootstrap.css';
 import '../node_modules/bootstrap/dist/js/bootstrap.js';
 import '../node_modules/@ng-select/ng-select/themes/default.theme.css';
 require('expose-loader?bootstrap!bootstrap');
+import '../node_modules/@material/layout-grid/dist/mdc.layout-grid.css';
 
 import '../node_modules/@angular/material/prebuilt-themes/indigo-pink.css';
 

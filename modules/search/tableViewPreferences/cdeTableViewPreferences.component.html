@@ -1,90 +1,119 @@
-<h1 mat-dialog-title>Table View Fields</h1>
-<div mat-dialog-content>
-    <mat-grid-list cols="2" rowHeight="2:1">
-        <form role="form" #tableViewSettingsForm="ngForm" (ngSubmit)="onClosed.emit()">
-            <mat-grid-tile>
-                <mat-checkbox [disabled]="true" name="name" [(ngModel)]="searchSettings.tableViewFields.name">Name
-                </mat-checkbox>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-checkbox name="naming" [(ngModel)]="searchSettings.tableViewFields.naming">Other Names
-                </mat-checkbox>
-            </mat-grid-tile>
-
-            <mat-grid-tile>
-                <mat-checkbox name="usedBy" [(ngModel)]="searchSettings.tableViewFields.usedBy">Used by
-                </mat-checkbox>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-checkbox name="updated" [(ngModel)]="searchSettings.tableViewFields.updated">Updated
-                </mat-checkbox>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-checkbox name="permissibleValues" [(ngModel)]="searchSettings.tableViewFields.permissibleValues">
-                    Permissible Values
-                </mat-checkbox>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-checkbox name="pvCodeNames" [(ngModel)]="searchSettings.tableViewFields.pvCodeNames">
-                    Code Names
-                </mat-checkbox>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-checkbox name="nbOfPVs" [(ngModel)]="searchSettings.tableViewFields.nbOfPVs">
-                    Number of Permissible Values
-                </mat-checkbox>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-checkbox name="source" [(ngModel)]="searchSettings.tableViewFields.source">Source
-                </mat-checkbox>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-checkbox name="tinyId" [(ngModel)]="searchSettings.tableViewFields.tinyId">NLM ID
-                </mat-checkbox>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-checkbox name="stewardOrg" [(ngModel)]="searchSettings.tableViewFields.stewardOrg">Steward
-                </mat-checkbox>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-checkbox name="linkedForms" [(ngModel)]="searchSettings.tableViewFields.linkedForms">Linked
-                    Forms
-                </mat-checkbox>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-checkbox name="uom" [(ngModel)]="searchSettings.tableViewFields.uom">Unit of Measure
-                </mat-checkbox>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-checkbox name="registrationStatus" [(ngModel)]="searchSettings.tableViewFields.registrationStatus">
-                    Registration Status
-                </mat-checkbox>
-            </mat-grid-tile>
-            <mat-checkbox name="administrativeStatus" [(ngModel)]="searchSettings.tableViewFields.administrativeStatus">
-                Admin Status
-            </mat-checkbox>
-            <mat-grid-tile>
-                <mat-checkbox name="questionTexts" [(ngModel)]="searchSettings.tableViewFields.questionTexts">
-                    Question Texts
-                </mat-checkbox>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-checkbox name="ids" [(ngModel)]="searchSettings.tableViewFields.ids">Identifiers
-                </mat-checkbox>
-            </mat-grid-tile>
-<!--
-            <mat-grid-tile>
-                <ng-select name="identifiers" id="identifiers" [(ngModel)]="searchSettings.tableViewFields.identifiers"
-                           [placeholder]="placeHolder" [multiple]="true" [appendTo]="appendTo"
-                           [items]="identifierSources" [hideSelected]="true"
-                           [disabled]="!searchSettings.tableViewFields.ids">
-                </ng-select>
-            </mat-grid-tile>
--->
-        </form>
+<mat-dialog-title>CDE Table View Fields</mat-dialog-title>
+<mat-dialog-content>
+    <mat-grid-list cols="2" rowHeight="1:2">
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <mat-list>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" [disabled]="true" name="name"
+                                  [(ngModel)]="searchSettings.tableViewFields.name">
+                        Name
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="naming"
+                                  [(ngModel)]="searchSettings.tableViewFields.naming">
+                        Other Names
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="usedBy"
+                                  [(ngModel)]="searchSettings.tableViewFields.usedBy">
+                        Used by
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="updated"
+                                  [(ngModel)]="searchSettings.tableViewFields.updated">
+                        Updated
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="permissibleValues"
+                                  [(ngModel)]="searchSettings.tableViewFields.permissibleValues">
+                        Permissible Values
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="pvCodeNames"
+                                  [(ngModel)]="searchSettings.tableViewFields.pvCodeNames">
+                        Code Names
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="nbOfPVs"
+                                  [(ngModel)]="searchSettings.tableViewFields.nbOfPVs">
+                        Number of Permissible Values
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="uom"
+                                  [(ngModel)]="searchSettings.tableViewFields.uom">
+                        Unit of Measure
+                    </mat-checkbox>
+                </mat-list-item>
+            </mat-list>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <mat-list>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="source"
+                                  [(ngModel)]="searchSettings.tableViewFields.source">
+                        Source
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="tinyId"
+                                  [(ngModel)]="searchSettings.tableViewFields.tinyId">
+                        NLM ID
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="stewardOrg"
+                                  [(ngModel)]="searchSettings.tableViewFields.stewardOrg">
+                        Steward
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="linkedForms"
+                                  [(ngModel)]="searchSettings.tableViewFields.linkedForms">
+                        Linked Forms
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="registrationStatus"
+                                  [(ngModel)]="searchSettings.tableViewFields.registrationStatus">
+                        Registration Status
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="administrativeStatus"
+                                  [(ngModel)]="searchSettings.tableViewFields.administrativeStatus">
+                        Admin Status
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="questionTexts"
+                                  [(ngModel)]="searchSettings.tableViewFields.questionTexts">
+                        Question Texts
+                    </mat-checkbox>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <mat-checkbox (change)="onChanged.emit()" name="ids"
+                                  [(ngModel)]="searchSettings.tableViewFields.ids">
+                        Identifiers
+                    </mat-checkbox>
+                    <ng-select id="identifiers" (change)="onChanged.emit()" ngDefaultControl
+                               [(ngModel)]="searchSettings.tableViewFields.identifiers"
+                               [placeholder]="placeHolder" [multiple]="true" [appendTo]="appendTo"
+                               [items]="identifierSources" [hideSelected]="true"
+                               [disabled]="!searchSettings.tableViewFields.ids">
+                    </ng-select>
+                </mat-list-item>
+            </mat-list>
+        </mat-grid-tile>
     </mat-grid-list>
-</div>
-<div mat-dialog-actions>
+</mat-dialog-content>
+<mat-dialog-actions>
     <button mat-raised-button (click)="loadDefault()">Load Default</button>
     <button mat-raised-button (click)="onClosed.emit()">Close</button>
-</div>
+</mat-dialog-actions>
