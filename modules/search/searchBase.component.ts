@@ -90,6 +90,9 @@ export const searchStyles: string = `
     .badge-success {
         background-color: #087721;
     }
+    .badge-secondary {
+        background-color: #70777d;
+    }
 `;
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
