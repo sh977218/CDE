@@ -36,6 +36,7 @@ app.use(helmet.contentSecurityPolicy({
         scriptSrc: [ "'self'", "'unsafe-inline'", "'unsafe-eval'", "cdn.ckeditor.com"],
         styleSrc: ["'self'", 'maxcdn.bootstrapcdn.com', 'fonts.googleapis.com', 'fonts.gstatic.com',
             "'unsafe-inline'"],
+        imgSrc: ['*'],
         reportUri: "https://420c1123c0ad4a7752c8697a2b254638.report-uri.com/r/d/csp/reportOnly",
         workerSrc: ['*']
     },
