@@ -13,7 +13,7 @@
                         <input matInput name="q" id="ftsearch-input" placeholder="Search"
                             [formControl]="searchTermFC" maxlength="500" [matAutocomplete]="auto"
                         >
-                        <mat-icon matSuffix (click)="termSearch()">search</mat-icon>
+                        <mat-icon matSuffix (click)="termSearch()" id="search.submit">search</mat-icon>
                     </mat-form-field>
                     <button style="display: none" type="submit" (click)="termSearch()"></button>
 
@@ -106,7 +106,7 @@
                 <input matInput name="q" id="ftsearch-input" placeholder="Search"
                        [formControl]="searchTermFC" maxlength="500" [matAutocomplete]="auto"
                 >
-                <mat-icon matSuffix (click)="termSearch()">search</mat-icon>
+                <mat-icon matSuffix (click)="termSearch()" id="search.submit>search</mat-icon>
             </mat-form-field>
             <button style="display: none" type="submit" (click)="termSearch()"></button>
 
