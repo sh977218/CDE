@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { BoardFormSummaryListComponent } from "./components/listView/boardFormSummaryList.component";
 import { BoardFormSummaryListContentComponent } from "./components/listView/boardFormSummaryListContent.component";
@@ -28,6 +29,7 @@ import {
         CommonModule,
         FormsModule,
         NgbModule,
+        NgSelectModule,
         // core
         WidgetModule,
         // internal

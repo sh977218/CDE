@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { MAT_DIALOG_DATA } from "@angular/material";
 
 import { AlertService } from '_app/alert/alert.service';
@@ -17,10 +18,10 @@ export class TableViewPreferencesComponent {
     appendTo = 'body';
 
     constructor(@Inject(MAT_DIALOG_DATA) data,
+                private http: HttpClient,
                 private alert: AlertService,
-                public esService: ElasticService,
-                private identifierSourceSvc: IdentifierSourcesResolve) {
-        this.identifierSources = this.identifierSourceSvc.identifierSources;
+                public esService: ElasticService) {
+        this.http.get<[]>('/identifierSources').subscribe(idSources => this.identifierSources = idSources);
         this.searchSettings = data.searchSettings;
     }
 

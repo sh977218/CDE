@@ -2,7 +2,8 @@
     <thead>
     <tr>
         <th *ngFor="let heading of headings">{{heading}}
-            <mat-icon *ngIf="heading === 'Name'" (click)="openTableViewPreferences()">settings</mat-icon>
+            <mat-icon *ngIf="heading === 'Name'" id="tableViewSettings" (click)="openTableViewPreferences()">settings
+            </mat-icon>
         </th>
     </tr>
     </thead>
