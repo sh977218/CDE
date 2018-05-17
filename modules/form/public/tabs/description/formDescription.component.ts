@@ -16,18 +16,18 @@ import { TREE_ACTIONS, TreeComponent } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { Hotkey, HotkeysService } from "angular2-hotkeys";
 import _isEmpty from 'lodash/isEmpty';
-import _noop from 'lodash/noop';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
-import { CdeForm, FormElement, FormElementsContainer, FormSection } from 'shared/form/form.model';
+import { CdeForm, FormElementsContainer, FormSection } from 'shared/form/form.model';
 import { addFormIds, convertFormToSection, isSubForm, iterateFeSync } from 'shared/form/formShared';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
 import { SearchSettings } from 'search/search.model';
+import { MatDialog } from "@angular/material";
 
 const TOOL_BAR_OFF_SET = 55;
 
@@ -280,6 +280,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         private http: HttpClient,
         private localStorageService: LocalStorageService,
         public modalService: NgbModal,
+        public matDialog: MatDialog,
     ) {}
 
     addExpanded(fe) {
@@ -343,17 +344,16 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     openFormSearch() {
         this.isModalOpen = true;
-        this.modalService.open(this.formSearchTmpl, {size: 'lg'}).result.then(
-            () => this.isModalOpen = false,
-            () => this.isModalOpen = false);
+        this.matDialog.open(this.formSearchTmpl, {width: '1200px'})
+            .afterClosed().subscribe(() => this.isModalOpen = false);
     }
 
     openQuestionSearch() {
         this.isModalOpen = true;
         this.newDataElement = this.initNewDataElement();
-        this.modalService.open(this.questionSearchTmpl, {size: 'lg'}).result.then(
-            () => this.isModalOpen = false,
-            () => this.isModalOpen = false);
+        this.matDialog.open(this.questionSearchTmpl, {width: '1200px'})
+            .afterClosed().subscribe(() => this.isModalOpen = false);
+
         setTimeout(() => {
             if (this.questionModelMode === 'add') window.document.getElementById("newDEName").focus();
         }, 0);
