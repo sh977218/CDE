@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AccordionListHeadingComponent } from 'search/listView/accordionListHeading.component';
@@ -19,7 +18,6 @@ import { TableViewPreferencesComponent } from 'search/tableViewPreferences/table
 @NgModule({
     imports: [
         CommonModule,
-        FlexLayoutModule,
         FormsModule,
         NgbModule,
         RouterModule.forChild([]),
