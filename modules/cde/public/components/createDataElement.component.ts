@@ -30,7 +30,7 @@ import { classifyItem, findSteward, removeCategory } from 'shared/system/classif
     `]
 })
 export class CreateDataElementComponent implements OnInit {
-    @Input() elt: DataElement;
+    @Input() elt: DataElement = new DataElement();
     @Output() close = new EventEmitter<void>();
     @Output() dismiss = new EventEmitter<void>();
     @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
