@@ -12,11 +12,11 @@
                     <div class="card-header">
                         <div class="float-left" (click)="newCde.isCollapsed = !newCde.isCollapsed"
                              [ngClass]="{'text-danger':newCde.naming.length === 0}">
-                            <span *ngIf="newCde.naming.length > 0" class="hand-cursor">
+                            <span *ngIf="newCde.designations.length > 0" class="hand-cursor">
                                 {{newCde.designations[0].designation}}
                             </span>
-                            <span *ngIf="newCde.naming.length === 0">
-                            naming is empty;
+                            <span *ngIf="newCde.designations.length === 0">
+                            designations is empty;
                             </span>
                         </div>
                     </div>
@@ -29,7 +29,8 @@
                                     <dd class="col-9">{{cdeDesignation.designation}}</dd>
                                     <dt class="col-3 text-right">Tags:</dt>
                                     <dd class="col-9">
-                                        <span *ngFor="let cdeTag of cdeDesignation.tags" class="badge badge-secondary mx-1">{{cdeTag}}</span>
+                                        <span *ngFor="let cdeTag of cdeDesignation.tags"
+                                              class="badge badge-secondary mx-1">{{cdeTag}}</span>
                                     </dd>
                                 </dl>
                             </dd>
@@ -40,7 +41,8 @@
                                     <dd class="col-9">{{cdeDefinition.definition}}</dd>
                                     <dt class="col-3 text-right">Tags:</dt>
                                     <dd class="col-9">
-                                        <span *ngFor="let cdeTag of cdeDefinition.tags" class="badge badge-secondary mx-1">{{cdeTag}}</span>
+                                        <span *ngFor="let cdeTag of cdeDefinition.tags"
+                                              class="badge badge-secondary mx-1">{{cdeTag}}</span>
                                     </dd>
                                 </dl>
                             </dd>

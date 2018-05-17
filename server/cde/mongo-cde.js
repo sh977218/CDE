@@ -109,7 +109,7 @@ exports.deleteDraftDataElement = function (tinyId, cb) {
 };
 
 exports.draftsList = (criteria, cb) => {
-    DataElementDraft.find(criteria, {"updatedBy.username": 1, "updated": 1, "naming.designation": 1, tinyId: 1})
+    DataElementDraft.find(criteria, {"updatedBy.username": 1, "updated": 1, "designations.designation": 1, tinyId: 1})
         .sort({"updated": -1}).exec(cb);
 };
 

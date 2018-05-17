@@ -21,11 +21,10 @@ export class SaveModalComponent {
     protected newCdes = [];
     overrideVersion: false;
 
-    constructor(
-        private alert: AlertService,
-        public http: HttpClient,
-        public modalService: NgbModal,
-    ) {}
+    constructor(private alert: AlertService,
+                public http: HttpClient,
+                public modalService: NgbModal) {
+    }
 
     confirmSave() {
         this.modalRef.close();

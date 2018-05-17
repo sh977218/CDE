@@ -25,6 +25,8 @@ export class FormService {
         q.question.cde.derivationRules = cde.derivationRules;
         q.question.cde.name = cde.designations[0] ? cde.designations[0].designation : '';
         q.question.cde.naming = cde.naming;
+        q.question.cde.designations = cde.designations;
+        q.question.cde.definitions = cde.definitions;
         q.question.cde.permissibleValues = [];
         q.question.cde.tinyId = cde.tinyId;
         q.question.cde.version = cde.version;

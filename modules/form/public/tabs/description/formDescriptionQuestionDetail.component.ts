@@ -60,7 +60,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     nameSelectModalRef: NgbModalRef;
     newCdePv = {};
     newCdeId = {};
-    newCdeNaming = {};
+    newCdeDesignation = {};
+    newCdeDefinition = {};
     newUom = '';
     newUomSystem = 'UCUM';
     question: FormQuestion;
@@ -123,12 +124,20 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
-    addNewCdeNaming(newCdeNaming) {
-        if (!_isEmpty(newCdeNaming)) {
-            this.question.question.cde.naming.push(newCdeNaming);
-            this.newCdeNaming = {};
+    addNewCdeDesignation(newCdeDesignation) {
+        if (!_isEmpty(newCdeDesignation)) {
+            this.question.question.cde.designations.push(newCdeDesignation);
+            this.newCdeDesignation = {};
             this.onEltChange.emit();
-        } else this.alert.addAlert('danger', 'Empty name.');
+        } else this.alert.addAlert('danger', 'Empty designation.');
+    }
+
+    addNewCdeDefinition(newCdeDefinition) {
+        if (!_isEmpty(newCdeDefinition)) {
+            this.question.question.cde.definitions.push(newCdeDefinition);
+            this.newCdeDefinition = {};
+            this.onEltChange.emit();
+        } else this.alert.addAlert('danger', 'Empty definition.');
     }
 
     addNewCdePv(newCdePv) {
@@ -203,11 +212,16 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.onEltChange.emit();
     }
 
-    removeCdeNaming(i) {
-        if (this.question.question.cde.naming.length === 1) {
+    removeCdeDesignation(i) {
+        if (this.question.question.cde.designations.length === 1) {
             return this.alert.addAlert('danger', 'Data element must have at least one name.');
         }
-        this.question.question.cde.naming.splice(i, 1);
+        this.question.question.cde.designations.splice(i, 1);
+        this.onEltChange.emit();
+    }
+
+    removeCdeDefinition(i) {
+        this.question.question.cde.definitions.splice(i, 1);
         this.onEltChange.emit();
     }
 
