@@ -24,8 +24,6 @@ schemas.dataElementSchema.post('remove', function (doc, next) {
 });
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
-    self.definitions = mongo_data_system.copyDefinition(self.naming);
-    self.designations = mongo_data_system.copyDesignation(self.naming);
     var cdeError = deValidator.checkPvUnicity(self.valueDomain);
     if (cdeError && cdeError.pvNotValidMsg) {
         logging.errorLogger.error(cdeError);
@@ -267,8 +265,6 @@ exports.update = function (elt, user, callback, special) {
         elt.comments = dataElement.comments;
         var newDe = new DataElement(elt);
 
-        dataElement.archived = true;
-
         if (special) {
             special(newDe, dataElement);
         }
@@ -291,6 +287,7 @@ exports.update = function (elt, user, callback, special) {
                 });
                 callback(err);
             } else {
+                dataElement.archived = true;
                 dataElement.save(function (err) {
                     if (err) {
                         logging.errorLogger.error("Error: Cannot save CDE", {
