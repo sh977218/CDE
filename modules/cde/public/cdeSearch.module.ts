@@ -20,7 +20,8 @@ import {
     MatDialogModule,
     MatGridListModule,
     MatListModule,
-    MatSelectModule
+    MatSelectModule,
+    MatIconModule
 } from "@angular/material";
 
 
@@ -41,6 +42,7 @@ import {
         MatGridListModule,
         MatListModule,
         MatDialogModule,
+        MatIconModule,
         MatSelectModule
     ],
     declarations: [

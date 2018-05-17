@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { MatIconModule } from '@angular/material';
 
 import { AccordionListHeadingComponent } from 'search/listView/accordionListHeading.component';
 import { ListViewComponent } from 'search/listView/listView.component';
@@ -23,6 +24,7 @@ import { TableViewPreferencesComponent } from 'search/tableViewPreferences/table
         RouterModule.forChild([]),
         // core
         WidgetModule,
+        MatIconModule
         // internal
 
     ],
@@ -54,6 +56,7 @@ import { TableViewPreferencesComponent } from 'search/tableViewPreferences/table
         TableListComponent,
     ],
     providers: [],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SearchModule {
 }

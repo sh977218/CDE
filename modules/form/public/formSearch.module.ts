@@ -19,7 +19,8 @@ import {
     MatDialogModule,
     MatGridListModule,
     MatListModule,
-    MatSelectModule
+    MatSelectModule,
+    MatIconModule
 } from "@angular/material";
 
 @NgModule({
@@ -37,7 +38,8 @@ import {
         MatGridListModule,
         MatListModule,
         MatDialogModule,
-        MatSelectModule
+        MatSelectModule,
+        MatIconModule
     ],
     declarations: [
         BoardFormSummaryListComponent,

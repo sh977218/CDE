@@ -2,8 +2,7 @@
     <thead>
     <tr>
         <th *ngFor="let heading of headings">{{heading}}
-            <i *ngIf="heading === 'Name'" class="fa fa-cog text-muted hand-cursor"
-               (click)="openTableViewPreferences()"></i>
+            <mat-icon *ngIf="heading === 'Name'" (click)="openTableViewPreferences()">settings</mat-icon>
         </th>
     </tr>
     </thead>
