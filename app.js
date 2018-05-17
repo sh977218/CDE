@@ -30,6 +30,22 @@ console.log(process.versions.node);
 let app = express();
 
 app.use(helmet());
+app.use(helmet.contentSecurityPolicy({
+    directives: {
+        defaultSrc: ["'self'", 'fonts.gstatic.com'],
+        fontSrc: ["'self'", 'fonts.gstatic.com', "*.nih.gov"],
+        scriptSrc: [ "'self'", "'unsafe-inline'", "'unsafe-eval'", "cdn.ckeditor.com", "cdn.jsdelivr.net",
+            "cdnjs.cloudflare.com", "*.nih.gov", "ajax.googleapis.com"],
+        styleSrc: ["'self'", 'maxcdn.bootstrapcdn.com', 'fonts.googleapis.com', 'fonts.gstatic.com',
+            "'unsafe-inline'", "*.nih.gov", "cdn.ckeditor.com"],
+        imgSrc: ["'self'", 'data:', "cdn.ckeditor.com", "*.nih.gov"],
+        connectSrc: ['*'],
+        reportUri: "https://nlmoccs.report-uri.com/r/d/csp/reportOnly",
+        workerSrc: ['*']
+    },
+    "reportOnly": true,
+}));
+app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 app.use(auth.ticketAuth);
 app.use(compress());
 
