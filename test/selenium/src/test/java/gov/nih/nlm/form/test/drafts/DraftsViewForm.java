@@ -9,6 +9,7 @@ public class DraftsViewForm extends NlmCdeBaseTest {
     @Test
     public void draftsViewForm() {
         mustBeLoggedInAs("nindsCurator", password);
+
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
         findElement(By.linkText("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)"));

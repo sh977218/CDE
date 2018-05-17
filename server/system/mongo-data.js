@@ -340,7 +340,9 @@ exports.formatElt = function (elt) {
     if (elt.toObject) elt = elt.toObject();
     elt.stewardOrgCopy = elt.stewardOrg;
     elt.primaryNameCopy = _.escape(elt.designations[0].designation);
-    elt.primaryDefinitionCopy = _.escape(elt.definitions[0].definition);
+    elt.primaryDefinitionCopy = '';
+    if (elt.definitions[0] && elt.definitions[0].definition)
+        elt.primaryDefinitionCopy = _.escape(elt.definitions[0].definition);
     return elt;
 };
 
