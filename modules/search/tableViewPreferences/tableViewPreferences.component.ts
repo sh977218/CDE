@@ -21,7 +21,7 @@ export class TableViewPreferencesComponent {
                 private http: HttpClient,
                 private alert: AlertService,
                 public esService: ElasticService) {
-        this.http.get<[]>('/identifierSources').subscribe(idSources => this.identifierSources = idSources);
+        this.http.get<any[]>('/identifierSources').subscribe(idSources => this.identifierSources = idSources);
         this.searchSettings = data.searchSettings;
     }
 
