@@ -11,8 +11,7 @@
                 <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="max-width: 1000px">
                     <mat-form-field style="width: 100%; font-size: 25px">
                         <input matInput name="q" id="ftsearch-input" placeholder="Search"
-                            [formControl]="searchTermFC" maxlength="500" [matAutocomplete]="auto"
-                        >
+                            [formControl]="searchTermFC" maxlength="500" [matAutocomplete]="auto">
                         <mat-icon matSuffix (click)="termSearch()" id="search.submit">search</mat-icon>
                     </mat-form-field>
                     <button style="display: none" type="submit" (click)="termSearch()"></button>
