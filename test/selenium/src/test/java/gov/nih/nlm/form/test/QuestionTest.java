@@ -23,7 +23,7 @@ public class QuestionTest extends BaseFormTest {
         textPresent("", By.id("ftsearch-input"));
         findElement(By.id("ftsearch-input")).sendKeys(cdeNameString);
         hangon(1);
-        clickElement(By.xpath("(//ngb-highlight[contains(., '" + cdeNameString + "')])[1]"));
+        clickElement(By.xpath("//span[@class='mat-option-text' and contains(., '" + cdeNameString + "')]"));
         clickElement(By.xpath("//*[@id='acc_link_0']/preceding-sibling::button"));
         clickElement(By.id("cancelSelectQ"));
     }

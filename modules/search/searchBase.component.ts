@@ -19,6 +19,7 @@ import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 import { FormControl } from "@angular/forms";
+import { MatAutocompleteTrigger } from "@angular/material";
 
 export const searchStyles: string = `
     #searchResultInfoBar {
@@ -106,6 +107,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer: ViewContainerRef;
     @ViewChild('tbset') public tabset: NgbTabset;
     @ViewChild('validRulesModal') validRulesModal: NgbModal;
+    @ViewChild('autoCompleteInput', { read: MatAutocompleteTrigger }) autoCompleteInput: MatAutocompleteTrigger;
     add: EventEmitter<any>;
     addMode: string;
     aggregations: any;
@@ -216,7 +218,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     alterOrgFilter(orgName) {
         let orgToAlter = this.altClassificationFilterMode ? this.searchSettings.selectedOrgAlt : this.searchSettings.selectedOrg;
-        let classifToAlter = this.getCurrentSelectedClassification();
 
         if (orgToAlter === undefined) {
             if (this.altClassificationFilterMode) {
@@ -795,6 +796,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
 
         this.doSearch();
+        setTimeout(() => this.autoCompleteInput.closePanel(), 0);
     }
 
     typeaheadSelect (item) {
