@@ -1019,7 +1019,7 @@ public class NlmCdeBaseTest {
     protected void setVisibleStatus(String id) {
         goToSearch("cde");
         goHome();
-        clickElement(By.id("tableViewSettings"));
+        clickElement(By.id("searchSettings"));
         clickElement(By.id(id));
         hangon(1);
         clickElement(By.id("saveSettings"));
