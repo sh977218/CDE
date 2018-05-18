@@ -17,7 +17,7 @@ public class NbOfPvInSearchTest extends NlmCdeBaseTest {
         textPresent("Nb of PVs");
         Assert.assertEquals(findElement(By.cssSelector("td.nbOfPVs")).getText(), "249");
         clickElement(By.id("tableViewSettings"));
-        textPresent("Number of Permissible Values (PVs)");
+        textPresent("Number of Permissible Values");
         clickElement(By.id("nbOfPVs"));
         closeTableViewPreferenceModal();
         textNotPresent("249");

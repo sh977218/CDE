@@ -34,6 +34,7 @@ public class FormTableView extends BaseFormTest {
         clickElement(By.id("source"));
         clickElement(By.id("updated"));
         clickElement(By.id("numQuestions"));
+        closeTableViewPreferenceModal();
 
         textPresent("Other Names");
         textNotPresent("Steward");
