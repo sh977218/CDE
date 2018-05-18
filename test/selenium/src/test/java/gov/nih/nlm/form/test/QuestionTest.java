@@ -34,14 +34,12 @@ public class QuestionTest extends BaseFormTest {
 
     public void addCdesByNames(String[] cdeNames) {
         for (String cdeName : cdeNames) {
-            try {
-                new Actions(driver).sendKeys("q").build().perform();
-                textPresent("Create Data Element");
-                new Actions(driver).sendKeys(cdeName).build().perform();
-                clickElement(By.id("createNewDataElement"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            new Actions(driver).sendKeys("q").build().perform();
+            textPresent("Create Data Element");
+            // wait for modal animation
+            hangon(2);
+            new Actions(driver).sendKeys(cdeName).build().perform();
+            clickElement(By.id("createNewDataElement"));
         }
 
     }
