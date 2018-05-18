@@ -272,47 +272,6 @@
                     </tbody>
                 </table>
             </dd>
-            <dt class="col-2">CDE Definitions:</dt>
-            <dd class="col-10 cdeDefinition">
-                <table class="table table-border table-responsive">
-                    <thead>
-                    <tr>
-                        <th>Definition</th>
-                        <th>Tags</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let cdeDefinition of question.question.cde.definitions;let i = index;">
-                        <td>
-                            <cde-inline-edit [(model)]="cdeDefinition.definition" [isAllowed]="true"
-                                             (modelChange)="onEltChange.emit();"></cde-inline-edit>
-                        </td>
-                        <td>
-                            <ng-select [(ngModel)]="cdeDefinition.tags" [items]="tag$" [hideSelected]="true"
-                                       multiple="true" [appendTo]="'body'" [hideSelected]="true"
-                                       (change)="onEltChange.emit();">
-                            </ng-select>
-                        </td>
-                        <td>
-                            <i class="fa fa-trash hand-cursor" (click)="removeCdeDefinition(i);"></i>
-                        </td>
-                    </tr>
-                    <tr class="newCdeName">
-                        <td><input [(ngModel)]="newCdeDefinition.definition" class="w-100 newCdeDefinition"/></td>
-                        <td class="newCdeTags">
-                            <ng-select [(ngModel)]="newCdeDefinition.tags" [items]="tag$" [hideSelected]="true"
-                                       multiple="true" bindLabel="name" bindValue="name" [appendTo]="'body'"
-                                       [hideSelected]="true">
-                            </ng-select>
-                        </td>
-                        <td>
-                            <i class="fa fa-plus hand-cursor" (click)="addNewCdeDefinition(newCdeDefinition);"></i>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </dd>
             <dt class="col-2">CDE Identifiers:</dt>
             <dd class="col-10 cdeIdentifier">
                 <table class="table table-border table-responsive">
@@ -414,51 +373,4 @@
             </ng-container>
         </ng-container>
     </dl>
-</ng-template>
-
-<ng-template #formDescriptionNameSelectTmpl let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h3>Select a question label from a CDE Name</h3>
-    </div>
-
-    <div class="modal-body">
-        <div *ngIf="nameSelectModal.cde === null"><i class="fa fa-spinner fa-pulse"></i> Loading...</div>
-        <div *ngIf="nameSelectModal.cde === 'error'">There is an issue retrieving this Data Element.</div>
-        <ngb-alert *ngIf="nameSelectModal.updateSkipLogic">
-            There is skip logic using this label. It will be updated.
-        </ngb-alert>
-
-        <div *ngFor="let designation of nameSelectModal.cde.designations; let i = index" class="row"
-             id="q_select_name_{{i}}">
-            <div class="col-3">
-                <button class="btn btn-outline-dark" (click)="nameSelectModal.okSelect(naming)">
-                    <i class="fa fa-check mr-1"></i>Select
-                </button>
-            </div>
-            <div class="col-9">
-                <dl class="row">
-                    <dt class="col-2">Designation:</dt>
-                    <dd class="col-10">{{designation.designation}}}</dd>
-                    <dt class="col-2"> Tags:</dt>
-                    <dd class="col-10">
-                        <ng-select [(ngModel)]="designation.tags" [items]="tag$" [hideSelected]="true"
-                                   multiple="true" [appendTo]="'body'" [hideSelected]="true"
-                                   (change)="onEltChange.emit();" disabled="true">
-                        </ng-select>
-                    </dd>
-                </dl>
-            </div>
-            <hr/>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <button class="btn btn-outline-dark" (click)="nameSelectModal.okSelect()">
-                    <i class="fa fa-stop"></i> No Label
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
-    </div>
 </ng-template>
