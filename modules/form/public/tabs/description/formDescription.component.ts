@@ -27,7 +27,7 @@ import { addFormIds, convertFormToSection, isSubForm, iterateFeSync } from 'shar
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
 import { SearchSettings } from 'search/search.model';
-import { MatDialog } from "@angular/material";
+import { MatDialog, MatDialogRef } from "@angular/material";
 
 const TOOL_BAR_OFF_SET = 55;
 
@@ -223,10 +223,23 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         isExpandedField: 'expanded'
     };
 
+    addQuestionDialogRef: MatDialogRef<any, any>;
+
     @HostListener('window:scroll', ['$event'])
     scrollEvent() {
         this.doIt();
     }
+
+    constructor(
+        private alert: AlertService,
+        private elasticService: ElasticService,
+        private formService: FormService,
+        private _hotkeysService: HotkeysService,
+        private http: HttpClient,
+        private localStorageService: LocalStorageService,
+        public modalService: NgbModal,
+        public matDialog: MatDialog,
+    ) {}
 
     doIt() {
         if (this && this.descToolbox && this.descToolbox.nativeElement) {
@@ -272,17 +285,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.doIt();
     }
 
-    constructor(
-        private alert: AlertService,
-        private elasticService: ElasticService,
-        private formService: FormService,
-        private _hotkeysService: HotkeysService,
-        private http: HttpClient,
-        private localStorageService: LocalStorageService,
-        public modalService: NgbModal,
-        public matDialog: MatDialog,
-    ) {}
-
     addExpanded(fe) {
         fe.expanded = true;
         let expand = fe => { fe.expanded = true; };
@@ -321,8 +323,12 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             question.edit = true;
             this.addFormElement(question);
             this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
-            setTimeout(() => window.document.getElementById(question.feId).scrollIntoView(), 0);
+            setTimeout(() => {
+                let e = window.document.getElementById(question.feId);
+                if (e) e.scrollIntoView();
+            }, 0);
             this.isModalOpen = false;
+            this.addQuestionDialogRef.close();
             if (cb) cb();
         });
     }
@@ -351,8 +357,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     openQuestionSearch() {
         this.isModalOpen = true;
         this.newDataElement = this.initNewDataElement();
-        this.matDialog.open(this.questionSearchTmpl, {width: '1200px'})
-            .afterClosed().subscribe(() => this.isModalOpen = false);
+        this.addQuestionDialogRef = this.matDialog.open(this.questionSearchTmpl, {width: '1200px'});
+        this.addQuestionDialogRef.afterClosed().subscribe(() => this.isModalOpen = false);
 
         setTimeout(() => {
             if (this.questionModelMode === 'add') window.document.getElementById("newDEName").focus();
