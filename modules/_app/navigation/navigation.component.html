@@ -2,46 +2,41 @@
     <a class="navbar-brand" routerLink="/home" id="homeLink">
         <img alt="Home" src="/cde/public/assets/img/min/nih-cde-logo-simple.png"/>
     </a>
+    <a id="menu_cdes_link" routerLink="/cde/search">CDEs</a>
+    <a id="menu_forms_link" routerLink="/form/search">Forms</a>
+    <ng-template #simpleBoards>
+        <!--<li class="nav-item" [ngClass]="{active: isPageActive('/boardList')}">-->
+        <a id="boardsMenu" routerLink="/boardList">Boards</a>
+        <!--</li>-->
+    </ng-template>
+    <ng-container *ngIf="userService.user; else simpleBoards">
+        <a id="boardsMenu" [matMenuTriggerFor]="boardMenu">Boards <mat-icon>arrow_drop_down</mat-icon></a>
+        <mat-menu #boardMenu="matMenu">
+            <a id="publicBoardsLink" routerLink="/boardList" mat-menu-item>Public Boards</a>
+            <a id="myBoardsLink" routerLink="/myboards" mat-menu-item>My Boards</a>
+        </mat-menu>
+    </ng-container>
+    <!--<li *ngIf="userService.user; else simpleBoards" class="nav-item"-->
+        <!--[ngClass]="{active: isPageActive('/boardList') || isPageActive('/myboards')}">-->
+        <!--<a id="boardsMenu" class="nav-link dropdown-toggle" data-toggle="dropdown"-->
+           <!--aria-haspopup="true" aria-expanded="false">Boards</a>-->
+        <!--<div class="dropdown-menu" aria-labelledby="boardsMenu">-->
+            <!--<a id="publicBoardsLink" routerLink="/boardList" class="dropdown-item">Public Boards</a>-->
+            <!--<a id="myBoardsLink" routerLink="/myboards" class="dropdown-item">My Boards</a>-->
+        <!--</div>-->
+
+    <!--</li>-->
 
 
 </mat-toolbar>
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <a class="navbar-brand" routerLink="/home" id="homeLink">
-        <img alt="Home" src="/cde/public/assets/img/min/nih-cde-logo-simple.png"/>
-    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item" [ngClass]="{active: isPageActive('/cde/search')}">
-                <a id="menu_cdes_link" class="nav-link" routerLink="/cde/search">CDEs</a>
-            </li>
-            <li class="nav-item" [ngClass]="{active: isPageActive('/form/search')}">
-                <a id="menu_forms_link" class="nav-link" routerLink="/form/search">Forms</a>
-            </li>
-            <ng-template #simpleBoards>
-                <li class="nav-item" [ngClass]="{active: isPageActive('/boardList')}">
-                    <a id="boardsMenu" class="nav-link" routerLink="/boardList">Boards</a>
-                </li>
-            </ng-template>
-            <li *ngIf="userService.user; else simpleBoards" class="nav-item"
-                [ngClass]="{active: isPageActive('/boardList') || isPageActive('/myboards')}">
-                <!--<a id="boardsMenu" class="nav-link dropdown-toggle" data-toggle="dropdown"-->
-                   <!--aria-haspopup="true" aria-expanded="false">Boards</a>-->
-                <!--<div class="dropdown-menu" aria-labelledby="boardsMenu">-->
-                    <!--<a id="publicBoardsLink" routerLink="/boardList" class="dropdown-item">Public Boards</a>-->
-                    <!--<a id="myBoardsLink" routerLink="/myboards" class="dropdown-item">My Boards</a>-->
-                <!--</div>-->
-
-                <a id="boardsMenu" [matMenuTriggerFor]="boardMenu">Boards <mat-icon>arrow_drop_down</mat-icon></a>
-                <mat-menu #boardMenu="matMenu">
-                    <a id="publicBoardsLink" routerLink="/boardList" mat-menu-item>Public Boards</a>
-                    <a id="myBoardsLink" routerLink="/myboards" mat-menu-item>My Boards</a>
-                </mat-menu>
-            </li>
             <li class="nav-item dropdown"
                 [ngClass]="{ active: isPageActive('/createCde') || isPageActive('/createForm')}"
                 *ngIf="isOrgCurator(userService.user)">

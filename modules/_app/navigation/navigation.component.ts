@@ -18,6 +18,13 @@ import {
         :not(.active) > #menu_cdes_link, :not(.active) > #menu_forms_link, :not(.active) > #menu_qb_link, :not(.active) > #boardsMenu, :not(.active) > #createEltLink, :not(.active) > #menu_help_link, :not(.active) > #username_link, :not(.active) > #login_link {
             color: rgba(255, 255, 255, 0.53);
         }
+        .mat-toolbar {
+            background: #343a40;
+        }
+        a {
+            text-decoration: none;
+            font-size: 1rem;
+        }
     `]
 })
 export class NavigationComponent {
