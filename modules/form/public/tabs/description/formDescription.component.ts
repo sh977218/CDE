@@ -328,7 +328,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 if (e) e.scrollIntoView();
             }, 0);
             this.isModalOpen = false;
-            this.addQuestionDialogRef.close();
             if (cb) cb();
         });
     }
@@ -371,6 +370,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     createNewDataElement(newCde = this.newDataElement, cb) {
         this.addQuestionFromSearch(newCde, cb);
+        this.addQuestionDialogRef.close();
     }
 
     setCurrentEditing(formElements, formElement, index) {

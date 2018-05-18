@@ -789,7 +789,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
 
         this.doSearch();
-        setTimeout(() => this.autoCompleteInput.closePanel(), 0);
+        setTimeout(() => {
+            if (this.autoCompleteInput) this.autoCompleteInput.closePanel();
+        }, 0);
     }
 
     typeaheadSelect (item) {
