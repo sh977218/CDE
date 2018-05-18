@@ -2,112 +2,86 @@
     <a class="navbar-brand" routerLink="/home" id="homeLink">
         <img alt="Home" src="/cde/public/assets/img/min/nih-cde-logo-simple.png"/>
     </a>
-    <a id="menu_cdes_link" routerLink="/cde/search">CDEs</a>
-    <a id="menu_forms_link" routerLink="/form/search">Forms</a>
+
+    <a id="menu_cdes_link" class="toolbarItem" routerLink="/cde/search"
+       [ngClass]="{active: isPageActive('/cde/search')}">CDEs</a>
+
+    <a id="menu_forms_link" class="toolbarItem" routerLink="/form/search"
+       [ngClass]="{active: isPageActive('/cde/search')}">Forms</a>
+
     <ng-template #simpleBoards>
-        <!--<li class="nav-item" [ngClass]="{active: isPageActive('/boardList')}">-->
-        <a id="boardsMenu" routerLink="/boardList">Boards</a>
-        <!--</li>-->
+        <a id="boardsMenu" class="toolbarItem" routerLink="/boardList"
+           [ngClass]="{active: isPageActive('/boardList')}">Boards</a>
     </ng-template>
     <ng-container *ngIf="userService.user; else simpleBoards">
-        <a id="boardsMenu" [matMenuTriggerFor]="boardMenu">Boards <mat-icon>arrow_drop_down</mat-icon></a>
+        <a id="boardsMenu" class="toolbarItem dropdown-toggle" [matMenuTriggerFor]="boardMenu"
+           [ngClass]="{active: isPageActive('/boardList')}">Boards</a>
         <mat-menu #boardMenu="matMenu">
             <a id="publicBoardsLink" routerLink="/boardList" mat-menu-item>Public Boards</a>
             <a id="myBoardsLink" routerLink="/myboards" mat-menu-item>My Boards</a>
         </mat-menu>
     </ng-container>
-    <!--<li *ngIf="userService.user; else simpleBoards" class="nav-item"-->
-        <!--[ngClass]="{active: isPageActive('/boardList') || isPageActive('/myboards')}">-->
-        <!--<a id="boardsMenu" class="nav-link dropdown-toggle" data-toggle="dropdown"-->
-           <!--aria-haspopup="true" aria-expanded="false">Boards</a>-->
-        <!--<div class="dropdown-menu" aria-labelledby="boardsMenu">-->
-            <!--<a id="publicBoardsLink" routerLink="/boardList" class="dropdown-item">Public Boards</a>-->
-            <!--<a id="myBoardsLink" routerLink="/myboards" class="dropdown-item">My Boards</a>-->
-        <!--</div>-->
 
-    <!--</li>-->
+    <a id="createEltLink" class="toolbarItem dropdown-toggle" *ngIf="isOrgCurator(userService.user)"
+       [ngClass]="{active: isPageActive('/createCde') || isPageActive('/createForm')}"
+        [matMenuTriggerFor]="createMenu">Create</a>
+    <mat-menu #createMenu="matMenu">
+        <a id="createCDELink" routerLink="/createCde" mat-menu-item>CDE</a>
+        <a id="createFormLink" routerLink="/createForm" *ngIf="canCreateForms(userService.user)"
+           mat-menu-item>Form</a>
+    </mat-menu>
 
+    <a id="menu_qb_link" routerLink="/quickBoard" [ngClass]="{active: isPageActive('/quickBoard')}"
+       class="toolbarItem"
+       [textContent]="'Quick Board (' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"></a>
+
+    <a id="menu_help_link" class="toolbarItem dropdown-toggle" [ngClass]="{active: isPageActive('/help')}"
+       [matMenuTriggerFor]="helpMenu">Help</a>
+    <mat-menu #helpMenu="matMenu">
+        <a id="apiDocumentationLink" routerLink="/api" mat-menu-item>API Documentation</a>
+    </mat-menu>
+
+    <span style="flex: 1 1 auto;"></span>
+
+    <ng-template #loginLink>
+        <a (click)="loginSvc.goToLogin()" id="login_link" class="toolbarItem"
+           [ngClass]="{active: isPageActive('/login')}"
+           routerLink="/login">
+            Log In</a>
+    </ng-template>
+    <ng-container *ngIf="userService.user; else loginLink">
+        <a routerLink="/inbox" class="toolbarItem" *ngIf="userService.user.hasMail">
+            <i id="incomingMessage" class="fa fa-envelope text-danger"></i>
+        </a>
+
+        <a id="username_link" class="toolbarItem dropdown-toggle"
+           [matMenuTriggerFor]="loginMenu"
+           [textContent]="userService.user.username | cdeTruncateLongName"></a>
+        <mat-menu #loginMenu="matMenu">
+            <a routerLink="/profile" id="user_profile" mat-menu-item>Profile</a>
+            <a routerLink="/inbox" id="user_inbox" mat-menu-item>Inbox</a>
+            <a routerLink="/orgComments" id="org_comments" mat-menu-item
+               *ngIf="isOrgCurator(userService.user)">Org Comments</a>
+            <a routerLink="/classificationmanagement" id="user_classifications" mat-menu-item
+               *ngIf="isOrgCurator(userService.user)">Classifications</a>
+            <a routerLink="/orgAuthority" id="user_org_authority" mat-menu-item
+               *ngIf="canOrgAuthority(userService.user)">Org Management</a>
+            <a routerLink="/orgaccountmanagement" id="user_account_management" mat-menu-item
+               *ngIf="isOrgAdmin(userService.user)">Account Management</a>
+            <a routerLink="/siteaccountmanagement" id="user_site_management" mat-menu-item
+               *ngIf="isSiteAdmin(userService.user)">Site Management</a>
+            <a routerLink="/siteAudit" id="user_audit" mat-menu-item
+               *ngIf="canOrgAuthority(userService.user)">Audit</a>
+            <a (click)="loginSvc.logout()" target="_self" id="user_logout" mat-menu-item>Log Out</a>
+        </mat-menu>
+    </ng-container>
+
+    <span id="notifications">
+        <cde-notifications></cde-notifications>
+    </span>
+
+    <a routerLink="/searchPreferences" class="toolbarItem" id="searchSettings">
+        <mat-icon style="font-size: 1em">settings</mat-icon>
+    </a>
 
 </mat-toolbar>
-
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item dropdown"
-                [ngClass]="{ active: isPageActive('/createCde') || isPageActive('/createForm')}"
-                *ngIf="isOrgCurator(userService.user)">
-                <a id="createEltLink" class="nav-link dropdown-toggle" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">Create</a>
-                <div class="dropdown-menu" aria-labelledby="createEltLink">
-                    <a id="createCDELink" routerLink="/createCde" class="dropdown-item">CDE</a>
-                    <a id="createFormLink" routerLink="/createForm" *ngIf="canCreateForms(userService.user)"
-                       class="dropdown-item">Form</a>
-                </div>
-            </li>
-            <li class="nav-item" [ngClass]="{active: isPageActive('/quickBoard')}">
-                <a id="menu_qb_link" class="nav-link" routerLink="/quickBoard"
-                   [textContent]="'Quick Board (' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"></a>
-            </li>
-            <li class="nav-item dropdown" [ngClass]="{active: isPageActive('/help')}">
-                <a id="menu_help_link" class="nav-link dropdown-toggle" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">Help</a>
-                <div class="dropdown-menu" aria-labelledby="menu_help_link">
-                    <a id="apiDocumentationLink" class="dropdown-item" routerLink="/api">API Documentation</a>
-                </div>
-            </li>
-        </ul>
-        <div class="navbar-nav ml-auto">
-            <ul class="navbar-nav float-right">
-                <ng-template #loginLink>
-                    <li class="nav-item" [ngClass]="{active: isPageActive('/login')}">
-                        <a (click)="loginSvc.goToLogin()" id="login_link" class="nav-link" title="Log in"
-                           routerLink="/login">
-                            Log In</a>
-                    </li>
-                </ng-template>
-                <ng-container *ngIf="userService.user; else loginLink">
-                    <li class="nav-item" *ngIf="userService.user.hasMail">
-                        <a routerLink="/inbox" class="nav-link">
-                            <i id="incomingMessage" class="fa fa-envelope text-danger"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a id="username_link" class="nav-link dropdown-toggle" data-toggle="dropdown"
-                           aria-haspopup="true" aria-expanded="false"
-                           [textContent]="userService.user.username | cdeTruncateLongName"></a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="username_link">
-                            <a routerLink="/profile" id="user_profile" class="dropdown-item">Profile</a>
-                            <a routerLink="/inbox" id="user_inbox" class="dropdown-item">Inbox</a>
-                            <a routerLink="/orgComments" id="org_comments" class="dropdown-item"
-                               *ngIf="isOrgCurator(userService.user)">Org Comments</a>
-                            <a routerLink="/classificationmanagement" id="user_classifications"
-                               class="dropdown-item"
-                               *ngIf="isOrgCurator(userService.user)">Classifications</a>
-                            <a routerLink="/orgAuthority" id="user_org_authority" class="dropdown-item"
-                               *ngIf="canOrgAuthority(userService.user)">Org Management</a>
-                            <a routerLink="/orgaccountmanagement" id="user_account_management"
-                               class="dropdown-item"
-                               *ngIf="isOrgAdmin(userService.user)">Account Management</a>
-                            <a routerLink="/siteaccountmanagement" id="user_site_management" class="dropdown-item"
-                               *ngIf="isSiteAdmin(userService.user)">Site Management</a>
-                            <a routerLink="/siteAudit" id="user_audit" class="dropdown-item"
-                               *ngIf="canOrgAuthority(userService.user)">Audit</a>
-                            <a (click)="loginSvc.logout()" target="_self" id="user_logout" class="dropdown-item">Log Out</a>
-                        </div>
-                    </li>
-                </ng-container>
-                <li class="nav-item dropdown" id="notifications">
-                    <cde-notifications></cde-notifications>
-                </li>
-                <li class="nav-item">
-                    <a routerLink="/searchPreferences" title="open search setting" class="nav-link">
-                        <i class="fa fa-cog text-muted" id="searchSettings"></i></a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>

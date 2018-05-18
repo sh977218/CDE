@@ -1,11 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-
 import { LoginService } from '_app/login.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import {
-    canCreateForms, canOrgAuthority, isOrgAdmin, isOrgCurator, isSiteAdmin
-} from 'shared/system/authorizationShared';
+import { canCreateForms, canOrgAuthority, isOrgAdmin, isOrgCurator, isSiteAdmin } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-navigation',
@@ -15,15 +12,24 @@ import {
             padding-left: 15px;
             padding-right: 15px;
         }
-        :not(.active) > #menu_cdes_link, :not(.active) > #menu_forms_link, :not(.active) > #menu_qb_link, :not(.active) > #boardsMenu, :not(.active) > #createEltLink, :not(.active) > #menu_help_link, :not(.active) > #username_link, :not(.active) > #login_link {
-            color: rgba(255, 255, 255, 0.53);
-        }
         .mat-toolbar {
             background: #343a40;
+        }
+        .toolbarItem {
+            margin: 0.8em;
+        }
+        a.active {
+            color: rgb(255, 255, 255);
+        }
+        .mat-toolbar a:not(.active):not(:hover) {
+            color: rgba(255, 255, 255, 0.53);
         }
         a {
             text-decoration: none;
             font-size: 1rem;
+        }
+        .toolbarItem:hover {
+            color: rgba(255, 255, 255, 0.75) !important;
         }
     `]
 })
@@ -35,8 +41,6 @@ export class NavigationComponent {
     isOrgAdmin = isOrgAdmin;
     isOrgCurator = isOrgCurator;
     isSiteAdmin = isSiteAdmin;
-    largeContext = {$implicit: ''};
-    smallContext = {$implicit: 'collapse'};
 
     constructor(public userService: UserService,
                 public quickBoardService: QuickBoardListService,
