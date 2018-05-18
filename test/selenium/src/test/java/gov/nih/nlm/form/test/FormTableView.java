@@ -24,7 +24,7 @@ public class FormTableView extends BaseFormTest {
         textPresent("TESTOrg");
         textPresent("goodForTablesForm");
 
-        clickElement(By.id("searchSettings"));
+        clickElement(By.id("tableViewSettings"));
         clickElement(By.id("naming"));
         clickElement(By.id("stewardOrg"));
         clickElement(By.id("usedBy"));

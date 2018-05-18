@@ -1019,7 +1019,7 @@ public class NlmCdeBaseTest {
     protected void setVisibleStatus(String id) {
         goToSearch("cde");
         goHome();
-        clickElement(By.id("searchSettings"));
+        clickElement(By.id("tableViewSettings"));
         clickElement(By.id(id));
         hangon(1);
         clickElement(By.id("saveSettings"));
@@ -1033,7 +1033,7 @@ public class NlmCdeBaseTest {
 
     protected void loadDefaultSettings() {
         goToSearch("cde");
-        clickElement(By.id("searchSettings"));
+        clickElement(By.id("tableViewSettings"));
         clickElement(By.id("loadDefaultSettings"));
         checkAlert("Default settings loaded");
         clickElement(By.id("saveSettings"));
