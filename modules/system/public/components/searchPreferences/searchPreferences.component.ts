@@ -5,7 +5,6 @@ import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { IdentifierSourcesResolve } from 'system/public/components/searchPreferences/identifier-source.resolve.service';
 
-
 @Component({
     selector: 'cde-search-preferences',
     templateUrl: 'searchPreferences.component.html'

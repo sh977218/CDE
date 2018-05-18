@@ -3,7 +3,6 @@ a {
     color: #337ab7;
 }
 
-
 /* home component */
 .homeDescriptionLink {
     color: #0F4E9D;
@@ -205,10 +204,6 @@ nih-cde:empty + .loading {
     margin-bottom: 10px;
     background-color: white;
     font-size: 21px;
-}
-
-.cdeFieldset > div {
-    font-size: 14px;
 }
 
 .cdeTable, .gridListView td {

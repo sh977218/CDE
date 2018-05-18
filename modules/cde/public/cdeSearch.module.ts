@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -13,6 +13,13 @@ import { CdeSummaryListContentComponent } from 'cde/public/components/listView/c
 import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/listView/quickBoardCdeSummaryListContent.component';
 import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
+import {
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule
+} from "@angular/material";
 
 
 @NgModule({
@@ -20,6 +27,7 @@ import { WidgetModule } from 'widget/widget.module';
         CommonModule,
         FormsModule,
         NgbModule,
+        ReactiveFormsModule,
         RouterModule,
         // core
         WidgetModule,
@@ -27,6 +35,11 @@ import { WidgetModule } from 'widget/widget.module';
         BoardModule,
         CdeModule,
         SearchModule,
+        MatButtonModule,
+        MatInputModule,
+        MatIconModule,
+        MatAutocompleteModule,
+        MatMenuModule
     ],
     declarations: [
         BoardCdeSummaryListComponent,
