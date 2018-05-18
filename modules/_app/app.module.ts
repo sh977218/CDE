@@ -21,6 +21,7 @@ import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { NotificationsComponent } from "./notifications/notifications.component";
+import { MatIconModule, MatMenuModule } from "@angular/material";
 
 @NgModule({
     imports: [
@@ -36,6 +37,8 @@ import { NotificationsComponent } from "./notifications/notifications.component"
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
+        MatIconModule,
+        MatMenuModule
     ],
     declarations: [
         AlertComponent,

@@ -21,12 +21,18 @@
             </ng-template>
             <li *ngIf="userService.user; else simpleBoards" class="nav-item dropdown"
                 [ngClass]="{active: isPageActive('/boardList') || isPageActive('/myboards')}">
-                <a id="boardsMenu" class="nav-link dropdown-toggle" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">Boards</a>
-                <div class="dropdown-menu" aria-labelledby="boardsMenu">
-                    <a id="publicBoardsLink" routerLink="/boardList" class="dropdown-item">Public Boards</a>
-                    <a id="myBoardsLink" routerLink="/myboards" class="dropdown-item">My Boards</a>
-                </div>
+                <!--<a id="boardsMenu" class="nav-link dropdown-toggle" data-toggle="dropdown"-->
+                   <!--aria-haspopup="true" aria-expanded="false">Boards</a>-->
+                <!--<div class="dropdown-menu" aria-labelledby="boardsMenu">-->
+                    <!--<a id="publicBoardsLink" routerLink="/boardList" class="dropdown-item">Public Boards</a>-->
+                    <!--<a id="myBoardsLink" routerLink="/myboards" class="dropdown-item">My Boards</a>-->
+                <!--</div>-->
+
+                <a id="boardsMenu" [matMenuTriggerFor]="boardMenu">Boards <mat-icon>keyboard_arrow_down</mat-icon></a>
+                <mat-menu #boardMenu="matMenu">
+                    <a id="publicBoardsLink" routerLink="/boardList" mat-menu-item>Public Boards</a>
+                    <a id="myBoardsLink" routerLink="/myboards" mat-menu-item>My Boards</a>
+                </mat-menu>
             </li>
             <li class="nav-item dropdown"
                 [ngClass]="{ active: isPageActive('/createCde') || isPageActive('/createForm')}"
