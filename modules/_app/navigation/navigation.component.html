@@ -19,7 +19,7 @@
                     <a id="boardsMenu" class="nav-link" routerLink="/boardList">Boards</a>
                 </li>
             </ng-template>
-            <li *ngIf="userService.user; else simpleBoards" class="nav-item dropdown"
+            <li *ngIf="userService.user; else simpleBoards" class="nav-item"
                 [ngClass]="{active: isPageActive('/boardList') || isPageActive('/myboards')}">
                 <!--<a id="boardsMenu" class="nav-link dropdown-toggle" data-toggle="dropdown"-->
                    <!--aria-haspopup="true" aria-expanded="false">Boards</a>-->
@@ -28,7 +28,7 @@
                     <!--<a id="myBoardsLink" routerLink="/myboards" class="dropdown-item">My Boards</a>-->
                 <!--</div>-->
 
-                <a id="boardsMenu" [matMenuTriggerFor]="boardMenu">Boards <mat-icon>keyboard_arrow_down</mat-icon></a>
+                <a id="boardsMenu" [matMenuTriggerFor]="boardMenu">Boards <mat-icon>arrow_drop_down</mat-icon></a>
                 <mat-menu #boardMenu="matMenu">
                     <a id="publicBoardsLink" routerLink="/boardList" mat-menu-item>Public Boards</a>
                     <a id="myBoardsLink" routerLink="/myboards" mat-menu-item>My Boards</a>
