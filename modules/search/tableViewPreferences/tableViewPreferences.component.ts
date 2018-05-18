@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { MAT_DIALOG_DATA } from "@angular/material";
 
 import { AlertService } from '_app/alert/alert.service';
-import { IdentifierSourcesResolve } from 'system/public/components/searchPreferences/identifier-source.resolve.service';
 import { ElasticService } from '_app/elastic.service';
 
 @Component({

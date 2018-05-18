@@ -24,14 +24,14 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textNotPresent("NLM ID");
 
 
-        findElement(By.id("tableViewSettings")).click();
+        clickElement(By.id("tableViewSettings"));
         textPresent("Table View Fields");
         clickElement(By.id("tinyId"));
         clickElement(By.id("registrationStatus"));
         clickElement(By.id("administrativeStatus"));
         clickElement(By.id("naming"));
+        closeTableViewPreferenceModal();
 
-        clickElement(By.id("closeTableViewSettingsBtn"));
         textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");

@@ -50,6 +50,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
             Assert.fail("Exception reading " + fileLoc);
             throw new RuntimeException(e);
         }
+        clickElement(By.id("list_gridView"));
         clickElement(By.id("tableViewSettings"));
         clickElement(By.id("uom"));
         clickElement(By.id("naming"));
@@ -60,8 +61,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='identifiers']//input"));
         clickElement(By.xpath("//ng-select[@id='identifiers']//input"));
         selectNgSelectDropdownByText("NINDS Variable Name");
-        clickElement(By.id("saveSettings"));
-        checkAlert("Settings saved!");
+        closeTableViewPreferenceModal();
 
         try {
             clickElement(By.id("export"));

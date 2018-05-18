@@ -17,9 +17,7 @@ public class QuestionTextTableView extends NlmCdeBaseTest {
         clickElement(By.id("tableViewSettings"));
         clickElement(By.id("questionTexts"));
         clickElement(By.id("naming"));
-        hangon(1);
-        clickElement(By.id("saveSettings"));
-        checkAlert("Settings saved");
+
         textNotPresent("QuestionText001");
         textNotPresent("QuestionText002");
         textPresent("OtherName001");

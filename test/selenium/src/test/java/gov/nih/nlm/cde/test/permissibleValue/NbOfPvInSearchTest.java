@@ -16,13 +16,10 @@ public class NbOfPvInSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("list_gridView"));
         textPresent("Nb of PVs");
         Assert.assertEquals(findElement(By.cssSelector("td.nbOfPVs")).getText(), "249");
-        findElement(By.id("searchSettings")).click();
+        clickElement(By.id("tableViewSettings"));
         textPresent("Number of Permissible Values (PVs)");
-        wait.until(ExpectedConditions.elementSelectionStateToBe(By.id("nbOfPVs"), true));
-        findElement(By.id("nbOfPVs")).click();
-        wait.until(ExpectedConditions.elementSelectionStateToBe(By.id("nbOfPVs"), false));
-        clickElement(By.id("saveSettings"));
-        textPresent("Settings saved!");
+        clickElement(By.id("nbOfPVs"));
+        closeTableViewPreferenceModal();
         textNotPresent("249");
     }
 
