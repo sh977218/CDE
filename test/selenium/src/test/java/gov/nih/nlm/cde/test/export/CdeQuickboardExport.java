@@ -19,14 +19,13 @@ public class CdeQuickboardExport extends NlmCdeBaseTest {
         String cdeName2 = "Scale for the Assessment of Positive Symptoms (SAPS) - voice conversing scale";
         String cdeName3 = "User Login Name java.lang.String";
         mustBeLoggedOut();
-        loadDefaultSettings();
-
         addCdeToQuickBoard(cdeName1);
         addCdeToQuickBoard(cdeName2);
         addCdeToQuickBoard(cdeName3);
 
         textPresent("Quick Board (3)");
         goToQuickBoardByModule("cde");
+        loadDefaultTableViewSettings();
         textPresent("Export Quick Board");
 
         clickElement(By.id("qb_de_export"));

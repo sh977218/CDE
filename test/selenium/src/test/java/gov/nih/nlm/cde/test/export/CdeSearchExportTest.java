@@ -17,10 +17,9 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
     @Test
     public void cdeSearchExport() {
         mustBeLoggedOut();
-        loadDefaultSettings();
-
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
+        loadDefaultTableViewSettings();
         textPresent("All Statuses");
         findElement(By.id("ftsearch-input")).sendKeys("\"Unified Parkinson's\"");
         clickElement(By.id("search.submit"));
