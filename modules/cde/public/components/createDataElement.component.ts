@@ -30,7 +30,7 @@ import { classifyItem, findSteward, removeCategory } from 'shared/system/classif
     `]
 })
 export class CreateDataElementComponent implements OnInit {
-    @Input() elt: DataElement = new DataElement();
+    @Input() elt: DataElement;
     @Output() close = new EventEmitter<void>();
     @Output() dismiss = new EventEmitter<void>();
     @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
@@ -49,6 +49,7 @@ export class CreateDataElementComponent implements OnInit {
         }
         this.validationErrors(this.elt);
         let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
+
         this.searchTerms.pipe(
             debounceTime(300),
             distinctUntilChanged(),

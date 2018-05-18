@@ -18,7 +18,8 @@ public class CdeAddRemoveNameTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeByName(cdeName);
         goToNaming();
-        addNewName(newName, newDefinition, false, null);
+        addNewDesignation(newName, null);
+        addNewDefinition(newDefinition, false, null);
         newCdeVersion();
 
         goToCdeByName(cdeName);
