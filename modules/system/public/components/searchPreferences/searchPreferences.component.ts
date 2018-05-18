@@ -17,6 +17,7 @@ export class SearchPreferencesComponent {
 
     cancelSettings() {
         this.alert.addAlert('warning', 'Cancelled...');
+        window.history.back();
     }
 
     loadDefault() {
@@ -30,5 +31,6 @@ export class SearchPreferencesComponent {
     saveSettings() {
         this.esService.saveConfiguration(this.searchSettings);
         this.alert.addAlert('success', 'Settings saved!');
+        window.history.back();
     }
 }
