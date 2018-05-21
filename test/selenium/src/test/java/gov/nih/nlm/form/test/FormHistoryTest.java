@@ -28,7 +28,7 @@ public class FormHistoryTest extends NlmCdeBaseTest {
         textPresent("List of previous versions");
         Assert.assertEquals(3, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr[td]")).size());
         selectHistoryAndCompare(1, 2);
-        textPresent(newFormDef, By.xpath("//*[@id='Naming']//ins"));
+        textPresent(newFormDef, By.xpath("//*[@id='Definition']//ins"));
         clickElement(By.id("closeHistoryCompareModal"));
 
         clickElement(By.xpath("//*[@id='prior-1']//span"));
