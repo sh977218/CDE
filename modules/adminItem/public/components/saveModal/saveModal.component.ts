@@ -56,12 +56,12 @@ export class SaveModalComponent {
                 async: true,
                 questionCb: (fe, cb) => {
                     if (!fe.question.cde.tinyId) {
-                        if (fe.question.cde.naming.length === 0) {
-                            fe.question.cde.naming.invalid = true;
-                            fe.question.cde.naming.message = 'no naming.';
+                        if (fe.question.cde.designations.length === 0) {
+                            fe.question.cde.designations.invalid = true;
+                            fe.question.cde.designations.message = 'no designation.';
                         } else {
-                            fe.question.cde.naming.invalid = false;
-                            fe.question.cde.naming.message = null;
+                            fe.question.cde.designations.invalid = false;
+                            fe.question.cde.designations.message = null;
                         }
                         this.newCdes.push(fe.question.cde);
                         if (cb) cb();

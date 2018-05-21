@@ -113,7 +113,8 @@ export class FormViewComponent implements OnInit {
 
     createDataElement(newCde, cb) {
         let dataElement = {
-            naming: newCde.naming,
+            designations: newCde.designations,
+            definitions: newCde.definitions,
             stewardOrg: {
                 name: this.elt.stewardOrg.name
             },

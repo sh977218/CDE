@@ -48,7 +48,7 @@ public class FormAddCdeTest extends QuestionTest {
         textPresent("Text", By.id("datatypeSelect"));
         goToNaming();
         textPresent(cdeName1, By.id("designation_0"));
-        textPresent("Question Text", By.id("tags_0"));
+        textPresent("Question Text", By.id("designationTags_0"));
     }
 
     private void checkNewCde2() {
@@ -58,11 +58,10 @@ public class FormAddCdeTest extends QuestionTest {
         textPresent("Date", By.id("datatypeSelect"));
         goToNaming();
         textPresent(cdeName2, By.id("designation_0"));
-        textPresent("Question Text", By.id("tags_0"));
+        textPresent("Question Text", By.id("designationTags_0"));
 
         textPresent("newCde2 second name", By.id("designation_1"));
-        textPresent("newCde2 second definition", By.id("definition_1"));
-        textPresent("TEST", By.id("tags_1"));
+        textPresent("TEST", By.id("designationTags_1"));
 
         goToIdentifiers();
         textPresent("newCde2Source", By.id("source_0"));
@@ -77,13 +76,11 @@ public class FormAddCdeTest extends QuestionTest {
         textPresent("Number", By.id("datatypeSelect"));
         goToNaming();
         textPresent(cdeName3, By.id("designation_0"));
-        textPresent("Question Text", By.id("tags_0"));
+        textPresent("Question Text", By.id("designationTags_0"));
         textPresent("newCde3 second name", By.id("designation_1"));
-        textPresent("newCde3 second definition", By.id("definition_1"));
-        textPresent("TEST", By.id("tags_1"));
-        textPresent("Preferred Question Text", By.id("tags_1"));
+        textPresent("TEST", By.id("designationTags_1"));
+        textPresent("Preferred Question Text", By.id("designationTags_1"));
         textNotPresent("newCde3 third name");
-        textNotPresent("you should not see this definition");
 
         goToIdentifiers();
         textPresent("newCde3Source", By.id("source_0"));
@@ -112,7 +109,7 @@ public class FormAddCdeTest extends QuestionTest {
 
         goToNaming();
         textPresent(cdeName4, By.id("designation_0"));
-        textPresent("Question Text", By.id("tags_0"));
+        textPresent("Question Text", By.id("designationTags_0"));
     }
 
     private void checkNewCde5() {
@@ -123,7 +120,7 @@ public class FormAddCdeTest extends QuestionTest {
 
         goToNaming();
         textPresent(cdeName5, By.id("designation_0"));
-        textPresent("Question Text", By.id("tags_0"));
+        textPresent("Question Text", By.id("designationTags_0"));
     }
 
 }
