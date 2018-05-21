@@ -1034,7 +1034,7 @@ public class NlmCdeBaseTest {
     protected void loadDefaultTableViewSettings() {
         clickElement(By.id("list_gridView"));
         openTableViewPreferenceModal();
-        clickElement(By.id("loadDefaultSettings"));
+        clickElement(By.id("loadDefaultTableViewSettingsBtn"));
         checkAlert("Default settings loaded");
         closeTableViewPreferenceModal();
     }
