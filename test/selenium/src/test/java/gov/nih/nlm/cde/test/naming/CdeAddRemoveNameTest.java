@@ -25,7 +25,7 @@ public class CdeAddRemoveNameTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToNaming();
         textPresent(newName);
-        editDesignationByIndex(1, newNameChange);
+        editDesignationByIndex(1, newNameChange,null);
         newCdeVersion();
 
         goToCdeByName(cdeName);
@@ -37,7 +37,7 @@ public class CdeAddRemoveNameTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToNaming();
         textPresent(newDefinition + newDefinitionChange);
-        editTagByIndex(1, new String[]{newTag});
+        editDesignationByIndex(1, null, new String[]{newTag});
         newCdeVersion();
 
         goToCdeByName(cdeName);

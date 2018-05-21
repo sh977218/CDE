@@ -56,15 +56,13 @@ export class BoardViewComponent implements OnInit {
         this.url = location.href;
     }
 
-    constructor(
-        private alert: AlertService,
-        public esService: ElasticService,
-        private http: HttpClient,
-        private modalService: NgbModal,
-        private orgHelperService: OrgHelperService,
-        private route: ActivatedRoute,
-        protected userService: UserService,
-    ) {
+    constructor(private alert: AlertService,
+                public esService: ElasticService,
+                private http: HttpClient,
+                private modalService: NgbModal,
+                private orgHelperService: OrgHelperService,
+                private route: ActivatedRoute,
+                protected userService: UserService) {
     }
 
     addClassification(event) {
@@ -221,9 +219,7 @@ export class BoardViewComponent implements OnInit {
                     () => this.alert.addAlert('danger', 'Error on loading comments. ')
                 );
             }
-        }, () => {
-            this.alert.addAlert('danger', 'Board not found');
-        });
+        }, () => this.alert.addAlert('danger', 'Board not found'));
     }
 
     setPage(newPage) {

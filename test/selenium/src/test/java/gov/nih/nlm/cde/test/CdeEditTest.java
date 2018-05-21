@@ -17,7 +17,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         String cdeDefinitionChange = "[definition change number 1]";
         goToCdeByName(cdeName);
         goToNaming();
-        editDesignationByIndex(0, cdeDesignationChange);
+        editDesignationByIndex(0, cdeDesignationChange,null);
         editDefinitionByIndex(0, cdeDefinitionChange, false);
 
         goToPermissibleValues();

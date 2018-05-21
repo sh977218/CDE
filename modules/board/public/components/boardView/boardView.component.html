@@ -79,7 +79,6 @@
                         (click)="classifyEltBoard()">
                     <i class="fa fa-folder-open-o"></i> Classify All {{board.type==='form'?'Form':'CDE'}}s
                 </button>
-
                 <cde-create-form-from-board
                         *ngIf="userService.userOrgs?.length > 0 && elts.length > 0 && board.type === 'cde'"
                         [board]="board"></cde-create-form-from-board>
