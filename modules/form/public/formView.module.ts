@@ -30,7 +30,7 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 import { UcumService } from 'form/public/ucum.service';
 import { WidgetModule } from 'widget/widget.module';
 import { CompareModule } from 'compare/compare.module';
-import { MatDialogModule } from "@angular/material";
+import { MatButtonModule, MatDialogModule } from "@angular/material";
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -55,6 +55,7 @@ const appRoutes: Routes = [
         DiscussModule,
         FormSearchModule,
         NativeRenderModule,
+        MatButtonModule,
         MatDialogModule
     ],
     declarations: [

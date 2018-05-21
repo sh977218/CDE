@@ -112,7 +112,7 @@
         </cde-form-search>
     </div>
     <div mat-dialog-actions align="end">
-        <button class="btn  btn-warning" [mat-dialog-close] id="cancelSelectF">Close</button>
+        <button mat-raised-button color="accent" [mat-dialog-close] id="cancelSelectF">Close</button>
     </div>
 </ng-template>
 
@@ -120,7 +120,7 @@
     <ng-container *ngIf="questionModelMode === 'search'">
         <div mat-dialog-title>
             <h1>Search Data Elements</h1>
-            <button class="btn btn-outline-dark" id="addNewCdeBtn" (click)="questionModelMode = 'add'">
+            <button mat-raised-button id="addNewCdeBtn" (click)="questionModelMode = 'add'">
                 Create Data Element
             </button>
         </div>
@@ -129,14 +129,14 @@
             </cde-cde-search>
         </div>
         <div mat-dialog-actions align="end">
-            <button class="btn  btn-warning" [mat-dialog-close] id="cancelSelectQ">Close</button>
+            <button mat-raised-button color="accent" [mat-dialog-close] id="cancelSelectQ">Close</button>
         </div>
     </ng-container>
     <ng-container *ngIf="questionModelMode === 'add'">
         <form #newDataElementForm="ngForm" (ngSubmit)="createNewDataElement(undefined,c);">
             <div mat-dialog-title>
                 <h1>Create Data Element</h1>
-                <button class="btn btn-outline-dark" type="button" (click)="questionModelMode = 'search'">
+                <button mat-raised-button (click)="questionModelMode = 'search'">
                     Search Data Elements
                 </button>
             </div>
@@ -150,7 +150,7 @@
                     <h4>Possible Matches</h4>
                     <div class="card" *ngFor="let cde of suggestedCdes;let index = index;">
                         <div class="card-header">
-                            <button class="btn btn-outline-danger hand-cursor" type="button"
+                            <button mat-raised-button color="accent"
                                     (click)="createNewDataElement(cde,c);">
                                 <i class="fa fa-plus"></i> Add
                             </button>
@@ -189,9 +189,8 @@
                 </div>
             </div>
             <div mat-dialog-actions align="end">
-                <button class="btn btn-warning" type="submit" [disabled]="!newDataElementForm.valid"
-                        id="createNewDataElement">Create
-                </button>
+                <button mat-raised-button color="accent" type="submit" [disabled]="!newDataElementForm.valid"
+                        id="createNewDataElement">Create</button>
             </div>
         </form>
     </ng-container>
