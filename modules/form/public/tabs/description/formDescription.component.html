@@ -143,7 +143,7 @@
                 <input [(ngModel)]="newDataElement.naming[0].designation" class="form-control" id="newDEName"
                        name="newDEName" placeholder="New Data Element Name" autocomplete="off"
                        (ngModelChange)="newDataElementNameChanged();"
-                       required cdk-focus-start />
+                       required cdk-focus-start autofocus/>
                 <div id="accordionList" *ngIf="suggestedCdes?.length > 0">
                     <h4>Possible Matches</h4>
                     <div class="card" *ngFor="let cde of suggestedCdes;let index = index;">

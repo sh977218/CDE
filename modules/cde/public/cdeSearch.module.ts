@@ -21,10 +21,10 @@ import {
     MatDialogModule,
     MatGridListModule,
     MatListModule,
+    MatAutocompleteModule,
     MatSelectModule,
     MatIconModule, MatMenuModule, MatInputModule
 } from "@angular/material";
-import { MatAutocompleteModule } from "@angular/material/typings/esm5/autocomplete";
 
 
 @NgModule({

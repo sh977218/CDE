@@ -21,9 +21,8 @@ import {
     MatGridListModule,
     MatListModule,
     MatSelectModule,
-    MatIconModule, MatInputModule, MatMenuModule
+    MatIconModule, MatInputModule, MatMenuModule, MatAutocompleteModule
 } from "@angular/material";
-import { MatAutocompleteModule } from "@angular/material/typings/esm5/autocomplete";
 
 @NgModule({
     imports: [
