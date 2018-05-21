@@ -49,7 +49,6 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
             Assert.fail("Exception reading " + fileLoc);
             throw new RuntimeException(e);
         }
-        clickElement(By.id("list_gridView"));
         clickElement(By.id("tableViewSettings"));
         clickElement(By.id("uom"));
         clickElement(By.id("naming"));
