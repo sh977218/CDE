@@ -112,7 +112,8 @@ $/cde/>  npm -install -g gulp
 ```
 
 ## Compile Static Homepage
-1. In Chrome, load the Home page on Production and not logged.
+1. Do a prod build
+2. In Chrome, load Welcome page, then navigate to home page while logged out. (navigating directly to home would serve the existing static page)
 2. In the Devtool Elements Tab, right click the specified tag and click "Copy Element" to copy the following:
 
    a. Copy the last three \<style> tags to one.css, two.css and three.css.
