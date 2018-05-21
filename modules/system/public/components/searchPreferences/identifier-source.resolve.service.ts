@@ -6,9 +6,7 @@ import { Resolve } from '@angular/router';
 export class IdentifierSourcesResolve implements Resolve<any> {
     identifierSources = [];
 
-    constructor(
-        private http: HttpClient
-    ) {
+    constructor(private http: HttpClient) {
     }
 
     resolve(): Promise<any> | boolean {

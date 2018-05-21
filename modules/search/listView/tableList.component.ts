@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { ElasticService } from '_app/elastic.service';
+import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
+import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
 
 @Component({
     selector: 'cde-table-list',
@@ -26,7 +29,12 @@ export class TableListComponent implements OnInit {
     headings: string[];
     rows: any[];
 
-    constructor(public esService: ElasticService) {}
+    searchSettings;
+
+    constructor(public dialog: MatDialog,
+                public esService: ElasticService) {
+        this.searchSettings = this.esService.searchSettings;
+    }
 
     ngOnInit() {
         this.render();
@@ -39,7 +47,7 @@ export class TableListComponent implements OnInit {
     }
 
     renderCde() {
-        let tableSetup = this.esService.searchSettings.tableViewFields;
+        let tableSetup = this.searchSettings.tableViewFields;
         this.headings = [];
         if (tableSetup.name) this.headings.push('Name');
         if (tableSetup.questionTexts) this.headings.push('Question Texts');
@@ -196,7 +204,7 @@ export class TableListComponent implements OnInit {
     }
 
     renderForm() {
-        let tableSetup = this.esService.searchSettings.tableViewFields;
+        let tableSetup = this.searchSettings.tableViewFields;
         this.headings = [];
         if (tableSetup.name) this.headings.push('Name');
         if (tableSetup.naming) this.headings.push('Other Names');
@@ -338,5 +346,21 @@ export class TableListComponent implements OnInit {
             if (!n.tags) n.tags = [];
             return i > 0 && n.tags.filter(t => t.indexOf('Question Text') > -1).length === 0;
         });
+    }
+
+    openTableViewPreferences() {
+        let viewComponent = CdeTableViewPreferencesComponent;
+        if (this.module === 'form') viewComponent = FormTableViewPreferencesComponent;
+        let dialogRef = this.dialog.open(viewComponent, {
+            width: '550px',
+            data: {
+                searchSettings: this.searchSettings
+            }
+        });
+        dialogRef.componentInstance.onChanged.subscribe(() => {
+            this.render();
+            this.esService.saveConfiguration(this.searchSettings);
+        });
+        dialogRef.componentInstance.onClosed.subscribe(() => dialogRef.close());
     }
 }

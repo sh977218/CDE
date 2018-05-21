@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { BoardFormSummaryListComponent } from "./components/listView/boardFormSummaryList.component";
 import { BoardFormSummaryListContentComponent } from "./components/listView/boardFormSummaryListContent.component";
@@ -12,20 +13,23 @@ import { FormSummaryListContentComponent } from "./components/listView/formSumma
 import { SearchModule } from "search/search.module";
 import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
 import { WidgetModule } from "widget/widget.module";
+import { FormTableViewPreferencesComponent } from "../../search/tableViewPreferences/formTableViewPreferencesComponent";
 import {
-    MatAutocompleteModule,
     MatButtonModule,
-    MatIconModule,
-    MatInputModule,
-    MatMenuModule
+    MatCheckboxModule,
+    MatDialogModule,
+    MatGridListModule,
+    MatListModule,
+    MatSelectModule,
+    MatIconModule, MatInputModule, MatMenuModule, MatAutocompleteModule
 } from "@angular/material";
-
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
+        NgSelectModule,
         // core
         WidgetModule,
         // internal
@@ -33,10 +37,15 @@ import {
         ReactiveFormsModule,
         SearchModule,
         MatButtonModule,
-        MatInputModule,
-        MatIconModule,
         MatAutocompleteModule,
-        MatMenuModule
+        MatInputModule,
+        MatMenuModule,
+        MatCheckboxModule,
+        MatGridListModule,
+        MatListModule,
+        MatDialogModule,
+        MatSelectModule,
+        MatIconModule
     ],
     declarations: [
         BoardFormSummaryListComponent,
@@ -44,6 +53,7 @@ import {
         FormAccordionListComponent,
         FormSearchComponent,
         FormSummaryListContentComponent,
+        FormTableViewPreferencesComponent,
         QuickBoardFormSummaryListContentComponent,
     ],
     entryComponents: [
@@ -51,13 +61,13 @@ import {
         BoardFormSummaryListContentComponent,
         FormAccordionListComponent,
         FormSummaryListContentComponent,
+        FormTableViewPreferencesComponent,
         QuickBoardFormSummaryListContentComponent,
     ],
     exports: [
         FormSearchComponent,
     ],
-    providers: [
-    ],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class FormSearchModule {

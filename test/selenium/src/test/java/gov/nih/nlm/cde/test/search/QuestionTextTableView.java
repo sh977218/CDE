@@ -14,12 +14,12 @@ public class QuestionTextTableView extends NlmCdeBaseTest {
         textPresent("QuestionText002");
         textNotPresent("OtherName001");
         textNotPresent("OtherName002");
-        clickElement(By.id("searchSettings"));
+
+        clickElement(By.id("tableViewSettings"));
         clickElement(By.id("questionTexts"));
         clickElement(By.id("naming"));
-        hangon(1);
-        clickElement(By.id("saveSettings"));
-        checkAlert("Settings saved");
+        closeTableViewPreferenceModal();
+
         textNotPresent("QuestionText001");
         textNotPresent("QuestionText002");
         textPresent("OtherName001");
