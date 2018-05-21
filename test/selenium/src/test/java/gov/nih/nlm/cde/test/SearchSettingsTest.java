@@ -23,19 +23,15 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textNotPresent("Other Names");
         textNotPresent("NLM ID");
 
-        findElement(By.id("searchSettings")).click();
-        textPresent("Search Results View");
+
+        clickElement(By.id("tableViewSettings"));
         textPresent("Table View Fields");
-        textPresent("Search Results View");
         clickElement(By.id("tinyId"));
         clickElement(By.id("registrationStatus"));
         clickElement(By.id("administrativeStatus"));
         clickElement(By.id("naming"));
-        hangon(1);
-        clickElement(By.id("saveSettings"));
-        textPresent("Settings saved");
-        goToCdeSearch();
-        clickElement(By.id("browseOrg-NINDS"));
+        closeTableViewPreferenceModal();
+
         textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");

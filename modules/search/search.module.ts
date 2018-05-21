@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -14,6 +14,7 @@ import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/li
 import { TableListComponent } from 'search/listView/tableList.component';
 import { WidgetModule } from 'widget/widget.module';
 import { MatButtonModule, MatIconModule, MatMenuModule } from "@angular/material";
+import { TableViewPreferencesComponent } from 'search/tableViewPreferences/tableViewPreferences.component';
 
 @NgModule({
     imports: [
@@ -23,7 +24,7 @@ import { MatButtonModule, MatIconModule, MatMenuModule } from "@angular/material
         RouterModule.forChild([]),
         // core
         WidgetModule,
-        // internal
+        MatIconModule,
         MatButtonModule,
         MatIconModule,
         MatMenuModule
@@ -38,12 +39,13 @@ import { MatButtonModule, MatIconModule, MatMenuModule } from "@angular/material
         SummaryListItemComponent,
         SummaryPlaceholderDirective,
         TableListComponent,
+        TableViewPreferencesComponent
     ],
     entryComponents: [
         ListViewComponent,
         ListViewControlsComponent,
         SummaryListComponent,
-        TableListComponent,
+        TableListComponent
     ],
     exports: [
         AccordionListHeadingComponent,
@@ -54,8 +56,8 @@ import { MatButtonModule, MatIconModule, MatMenuModule } from "@angular/material
         SummaryListComponent,
         TableListComponent,
     ],
-    providers: [
-    ],
+    providers: [],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SearchModule {
 }
