@@ -35,11 +35,8 @@
        class="toolbarItem"
        [textContent]="'Quick Board (' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"></a>
 
-    <a id="menu_help_link" class="toolbarItem dropdown-toggle" [ngClass]="{active: isPageActive('/help')}"
-       [matMenuTriggerFor]="helpMenu">Help</a>
-    <mat-menu #helpMenu="matMenu">
-        <a id="apiDocumentationLink" routerLink="/api" mat-menu-item>API Documentation</a>
-    </mat-menu>
+    <a id="menu_help_link" class="toolbarItem" [ngClass]="{active: isPageActive('/help')}"
+       routerLink="/api">API</a>
 
     <span style="flex: 1 1 auto;"></span>
 
@@ -81,7 +78,7 @@
     </span>
 
     <a routerLink="/searchPreferences" class="toolbarItem" id="searchSettings">
-        <mat-icon style="font-size: 1em">settings</mat-icon>
+        <mat-icon style="font-size: 1em" svgIcon="settings"></mat-icon>
     </a>
 
 </mat-toolbar>
