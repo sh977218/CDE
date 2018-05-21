@@ -1031,13 +1031,12 @@ public class NlmCdeBaseTest {
         setVisibleStatus("minStatus-Incomplete");
     }
 
-    protected void loadDefaultSettings() {
-        goToSearch("cde");
-        clickElement(By.id("searchSettings"));
-        clickElement(By.id("loadDefaultSettings"));
+    protected void loadDefaultTableViewSettings() {
+        clickElement(By.id("list_gridView"));
+        openTableViewPreferenceModal();
+        clickElement(By.id("loadDefaultTableViewSettingsBtn"));
         checkAlert("Default settings loaded");
-        clickElement(By.id("saveSettings"));
-        checkAlert("Settings saved!");
+        closeTableViewPreferenceModal();
     }
 
     protected void editDesignationByIndex(int index, String newDesignation) {
@@ -1666,5 +1665,13 @@ public class NlmCdeBaseTest {
 
     protected void selectNgSelectDropdownByText(String text) {
         clickElement(By.xpath("//ng-dropdown-panel//div[contains(@class,'ng-option') and contains(., '" + text + "')]"));
+    }
+
+    protected void openTableViewPreferenceModal() {
+        clickElement(By.id("tableViewSettings"));
+    }
+
+    protected void closeTableViewPreferenceModal() {
+        clickElement(By.id("closeTableViewSettingsBtn"));
     }
 }

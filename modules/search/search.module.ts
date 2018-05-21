@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { MatIconModule } from '@angular/material';
 
 import { AccordionListHeadingComponent } from 'search/listView/accordionListHeading.component';
 import { ListViewComponent } from 'search/listView/listView.component';
@@ -13,6 +14,7 @@ import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/listView/summaryListItem.component';
 import { TableListComponent } from 'search/listView/tableList.component';
 import { WidgetModule } from 'widget/widget.module';
+import { TableViewPreferencesComponent } from 'search/tableViewPreferences/tableViewPreferences.component';
 
 @NgModule({
     imports: [
@@ -22,7 +24,9 @@ import { WidgetModule } from 'widget/widget.module';
         RouterModule.forChild([]),
         // core
         WidgetModule,
+        MatIconModule
         // internal
+
     ],
     declarations: [
         AccordionListHeadingComponent,
@@ -34,12 +38,13 @@ import { WidgetModule } from 'widget/widget.module';
         SummaryListItemComponent,
         SummaryPlaceholderDirective,
         TableListComponent,
+        TableViewPreferencesComponent
     ],
     entryComponents: [
         ListViewComponent,
         ListViewControlsComponent,
         SummaryListComponent,
-        TableListComponent,
+        TableListComponent
     ],
     exports: [
         AccordionListHeadingComponent,
@@ -50,8 +55,8 @@ import { WidgetModule } from 'widget/widget.module';
         SummaryListComponent,
         TableListComponent,
     ],
-    providers: [
-    ],
+    providers: [],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SearchModule {
 }

@@ -84,12 +84,15 @@ export const searchStyles: string = `
 `;
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
+
     @Input() searchSettingsInput?: SearchSettings;
+
     @HostListener('window:beforeunload') unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname)) {
             window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
         }
     }
+
     @ViewChild('orgDetailsModal') orgDetailsModal: NgbModal;
     @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer: ViewContainerRef;
     @ViewChild('tbset') public tabset: NgbTabset;
@@ -478,8 +481,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             params.set('searchSettings', JSON.stringify(report.searchSettings));
             params.set('status', report.status);
             let uri = params.toString();
-            this.router.navigate(['/cdeStatusReport'], {queryParams:  {searchSettings: JSON.stringify(report.searchSettings), status: report.status}});
-        }, ()  => {});
+            this.router.navigate(['/cdeStatusReport'], {
+                queryParams: {
+                    searchSettings: JSON.stringify(report.searchSettings),
+                    status: report.status
+                }
+            });
+        }, () => {
+        });
     }
 
     pageChange() {
@@ -508,7 +517,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.alert.addAlert('success', 'All elements pinned.');
                 this.http.post('/myBoards', filter).subscribe();
             }, () => this.alert.addAlert('danger', 'Not all elements were not pinned!'));
-        }, () => {});
+        }, () => {
+        });
     }
 
     redirect(params: string[]) {
@@ -786,7 +796,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.doSearch();
     }
 
-    typeaheadSelect (item) {
+    typeaheadSelect(item) {
         if (!this.embedded) {
             this.router.navigate([this.module === 'form' ? "formView" : "deView"], {queryParams: {tinyId: this.lastTypeahead[item.item]}});
         }

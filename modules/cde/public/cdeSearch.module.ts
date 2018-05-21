@@ -3,6 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { BoardCdeSummaryListComponent } from 'cde/public/components/listView/boardCdeSummaryList.component';
 import { BoardCdeSummaryListContentComponent } from 'cde/public/components/listView/boardCdeSummaryListContent.component';
@@ -13,6 +14,16 @@ import { CdeSummaryListContentComponent } from 'cde/public/components/listView/c
 import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/listView/quickBoardCdeSummaryListContent.component';
 import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
+import { CdeTableViewPreferencesComponent } from "../../search/tableViewPreferences/cdeTableViewPreferencesComponent";
+import {
+    MatButtonModule,
+    MatCheckboxModule,
+    MatDialogModule,
+    MatGridListModule,
+    MatListModule,
+    MatSelectModule,
+    MatIconModule
+} from "@angular/material";
 
 
 @NgModule({
@@ -20,6 +31,7 @@ import { WidgetModule } from 'widget/widget.module';
         CommonModule,
         FormsModule,
         NgbModule,
+        NgSelectModule,
         RouterModule,
         // core
         WidgetModule,
@@ -27,25 +39,33 @@ import { WidgetModule } from 'widget/widget.module';
         BoardModule,
         CdeModule,
         SearchModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatGridListModule,
+        MatListModule,
+        MatDialogModule,
+        MatIconModule,
+        MatSelectModule
     ],
     declarations: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
         CdeSearchComponent,
         CdeSummaryListContentComponent,
+        CdeTableViewPreferencesComponent,
         QuickBoardCdeSummaryListContentComponent,
     ],
     entryComponents: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
         CdeSummaryListContentComponent,
+        CdeTableViewPreferencesComponent,
         QuickBoardCdeSummaryListContentComponent,
     ],
     exports: [
         CdeSearchComponent,
     ],
-    providers: [
-    ],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CdeSearchModule {
