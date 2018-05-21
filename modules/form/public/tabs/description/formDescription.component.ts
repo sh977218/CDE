@@ -316,7 +316,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         addFormIds(this.elt);
     }
 
-    addQuestionFromSearch(cde, cb = null) {
+    addQuestionFromSearch(cde) {
         this.formService.convertCdeToQuestion(cde, question => {
             question.formElements = [];
             question.expanded = true;
@@ -328,7 +328,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 if (e) e.scrollIntoView();
             }, 0);
             this.isModalOpen = false;
-            if (cb) cb();
         });
     }
 
@@ -368,8 +367,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.searchTerms.next(this.newDataElement.naming[0].designation);
     }
 
-    createNewDataElement(newCde = this.newDataElement, cb) {
-        this.addQuestionFromSearch(newCde, cb);
+    createNewDataElement(newCde = this.newDataElement) {
+        this.addQuestionFromSearch(newCde);
         this.addQuestionDialogRef.close();
     }
 

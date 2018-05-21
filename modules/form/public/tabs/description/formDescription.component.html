@@ -136,7 +136,7 @@
         <div mat-dialog-title>
             <h1>Create Data Element</h1>
         </div>
-        <form #newDataElementForm="ngForm" (ngSubmit)="createNewDataElement(undefined,c);">
+        <form #newDataElementForm="ngForm" (ngSubmit)="createNewDataElement(undefined);">
             <!-- tabindex -1 to prevent mat dialog autofocus -->
             <button mat-raised-button (click)="questionModelMode = 'search'" tabindex="-1">Search Data Elements</button>
             <div mat-dialog-content>
@@ -147,10 +147,9 @@
                        required autofocus/>
                 <div id="accordionList" *ngIf="suggestedCdes?.length > 0">
                     <h4>Possible Matches</h4>
-                    <div class="card" *ngFor="let cde of suggestedCdes;let index = index;">
+                    <div class="card" *ngFor="let cde of suggestedCdes; let index = index;">
                         <div class="card-header">
-                            <button mat-raised-button color="accent"
-                                    (click)="createNewDataElement(cde,c);">
+                            <button mat-raised-button type="button" color="accent" (click)="createNewDataElement(cde)">
                                 <i class="fa fa-plus"></i> Add
                             </button>
                             <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed">
