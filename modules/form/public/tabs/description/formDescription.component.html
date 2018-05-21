@@ -137,13 +137,14 @@
             <h1>Create Data Element</h1>
         </div>
         <form #newDataElementForm="ngForm" (ngSubmit)="createNewDataElement(undefined,c);">
-            <button mat-raised-button (click)="questionModelMode = 'search'">Search Data Elements</button>
+            <!-- tabindex -1 to prevent mat dialog autofocus -->
+            <button mat-raised-button (click)="questionModelMode = 'search'" tabindex="-1">Search Data Elements</button>
             <div mat-dialog-content>
                 <label for="newDEName"></label>
                 <input [(ngModel)]="newDataElement.naming[0].designation" class="form-control" id="newDEName"
                        name="newDEName" placeholder="New Data Element Name" autocomplete="off"
                        (ngModelChange)="newDataElementNameChanged();"
-                       required cdk-focus-start autofocus/>
+                       required autofocus/>
                 <div id="accordionList" *ngIf="suggestedCdes?.length > 0">
                     <h4>Possible Matches</h4>
                     <div class="card" *ngFor="let cde of suggestedCdes;let index = index;">
