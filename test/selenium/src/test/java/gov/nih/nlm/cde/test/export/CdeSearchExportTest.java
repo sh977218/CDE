@@ -17,10 +17,9 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
     @Test
     public void cdeSearchExport() {
         mustBeLoggedOut();
-        loadDefaultSettings();
-
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
+        loadDefaultTableViewSettings();
         textPresent("All Statuses");
         findElement(By.id("ftsearch-input")).sendKeys("\"Unified Parkinson's\"");
         clickElement(By.id("search.submit"));
@@ -50,7 +49,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
             Assert.fail("Exception reading " + fileLoc);
             throw new RuntimeException(e);
         }
-        clickElement(By.id("searchSettings"));
+        clickElement(By.id("tableViewSettings"));
         clickElement(By.id("uom"));
         clickElement(By.id("naming"));
         clickElement(By.id("pvCodeNames"));
@@ -60,8 +59,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='identifiers']//input"));
         clickElement(By.xpath("//ng-select[@id='identifiers']//input"));
         selectNgSelectDropdownByText("NINDS Variable Name");
-        clickElement(By.id("saveSettings"));
-        checkAlert("Settings saved!");
+        closeTableViewPreferenceModal();
 
         try {
             clickElement(By.id("export"));
