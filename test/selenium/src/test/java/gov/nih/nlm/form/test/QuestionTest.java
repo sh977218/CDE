@@ -63,14 +63,12 @@ public class QuestionTest extends BaseFormTest {
         }
     }
 
-    public void addCdeNameById(String questionId, String newName, String newDefinition, String[] newTags) {
+    public void addCdeDesignationById(String questionId, String newDesignation, String[] newTags) {
         boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]")).size() > 0;
         if (!isQuestionOpen) startEditQuestionById(questionId);
-        String preXpath = "//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]//*[@class='newCdeName']";
-        if (newName != null)
-            findElement(By.xpath(preXpath + "//*[contains(@class,'newCdeDesignation')]")).sendKeys(newName);
-        if (newDefinition != null)
-            findElement(By.xpath(preXpath + "//*[contains(@class,'newCdeDefinition')]")).sendKeys(newDefinition);
+        String preXpath = "//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeDesignation')]//*[@class='newCdeDesignation']";
+        if (newDesignation != null)
+            findElement(By.xpath(preXpath + "//*[contains(@class,'newCdeDesignation')]")).sendKeys(newDesignation);
         if (newTags != null) {
             String tagsInputXpath = preXpath + "//*[contains(@class,'newCdeTags')]//input";
             for (String newTag : newTags) {
@@ -83,7 +81,7 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void addCdeIdentifierById(String questionId, String newSource, String newIdentifier, String newVersion) {
-        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]")).size() > 0;
+        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeDesignation')]")).size() > 0;
         if (!isQuestionOpen) startEditQuestionById(questionId);
         String preXpath = "//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeIdentifier')]//*[@class='newCdeIdentifier']";
         if (newSource != null)
@@ -96,7 +94,7 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void deleteCdeNameById(String questionId, int i) {
-        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]")).size() > 0;
+        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeDesignation')]")).size() > 0;
         if (!isQuestionOpen) startEditQuestionById(questionId);
         clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]/table/tbody/tr[" + i + "]//i[contains(@class,'fa fa-trash')]"));
     }
@@ -115,7 +113,7 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void addCdePvById(String questionId, String pv, String codeName, String code, String codeSystem, String codeDescription) {
-        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]")).size() > 0;
+        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeDesignation')]")).size() > 0;
         if (!isQuestionOpen) startEditQuestionById(questionId);
         String preXpath = "//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdePVs')]//*[@class='newCdePv']";
         if (pv != null)
@@ -132,7 +130,7 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void deleteCdePvById(String questionId, int i) {
-        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeName')]")).size() > 0;
+        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeDesignation')]")).size() > 0;
         if (!isQuestionOpen) startEditQuestionById(questionId);
         clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdePVs')]/table/tbody/tr[" + i + "]//i[contains(@class,'fa fa-trash')]"));
     }

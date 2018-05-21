@@ -43,7 +43,7 @@ public class CdeAddRemoveNameTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToNaming();
         textPresent(newTag);
-        clickElement(By.id("removeNaming-1"));
+        clickElement(By.id("removeDesignation-1"));
         newCdeVersion();
 
         textNotPresent(newName);

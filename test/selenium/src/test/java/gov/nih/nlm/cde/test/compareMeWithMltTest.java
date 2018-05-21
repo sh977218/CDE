@@ -22,9 +22,9 @@ public class compareMeWithMltTest extends NlmCdeBaseTest {
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_compare"));
         textPresent("in CTC category Blood/Bone Marrow",
-                By.xpath(getSideBySideXpath("left", "naming", "notmatch", 1)));
+                By.xpath(getSideBySideXpath("left", "designation", "notmatch", 1)));
         textPresent("CTC Adverse Event Platelets Grade",
-                By.xpath(getSideBySideXpath("right", "naming", "notmatch", 2)));
+                By.xpath(getSideBySideXpath("right", "designation", "notmatch", 2)));
     }
 
 }

@@ -7,7 +7,8 @@
             <a target="_blank" href="/deView?tinyId={{source.tinyId}}">{{source.designations[0].designation}}</a>
             [{{ source.stewardOrg.name }}]
             <br><i class="fa fa-arrow-down"></i><br>
-            <a target="_blank" href="/deView?tinyId={{destination.tinyId}}">{{destination.designations[0].designation}}</a>
+            <a target="_blank"
+               href="/deView?tinyId={{destination.tinyId}}">{{destination.designations[0].designation}}</a>
             [{{ destination.stewardOrg.name }}]
         </div>
     </div>
@@ -31,8 +32,14 @@
             </div>
             <div class="row">
                 <div class="col-lg-offset-1 col-10">
-                    <input type="checkbox" id="mergeFieldsNaming" [(ngModel)]="mergeFields.naming"
-                           (ngModelChange)="allowToMerge()">Names
+                    <input type="checkbox" id="mergeFieldsDesignations" [(ngModel)]="mergeFields.designations"
+                           (ngModelChange)="allowToMerge()">Designations
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-offset-1 col-10">
+                    <input type="checkbox" id="mergeFieldsDefinitions" [(ngModel)]="mergeFields.definitions"
+                           (ngModelChange)="allowToMerge()">Definitions
                 </div>
             </div>
             <div class="row">

@@ -10,17 +10,21 @@
                       [innerHtml]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)">
                 </span>
             </ng-template>
-            <cde-inline-select-edit [ngbTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)?stewardTooltip:undefined"
-                                    placement="bottom" [(value)]="elt.stewardOrg.name"
-                                    [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
-                                    [isAllowed]="canEdit && !elt.isDraft">
+            <cde-inline-select-edit
+                    [ngbTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)?stewardTooltip:undefined"
+                    placement="bottom" [(value)]="elt.stewardOrg.name"
+                    [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
+                    [isAllowed]="canEdit && !elt.isDraft">
             </cde-inline-select-edit>
         </dd>
-        <dt class="col-3 text-right">Definition:</dt>
-        <dd id="dd_def" itemprop="description" class="col-9">
-            <span *ngIf="elt.definitions[0]?.definitionFormat !== 'html'">{{elt.definitions[0].definition}}</span>
-            <span *ngIf="elt.definitions[0]?.definitionFormat === 'html'" [innerHtml]="elt.definitions[0].definition"></span>
-        </dd>
+        <ng-container *ngIf="elt.definitions[0]">
+            <dt class="col-3 text-right">Definition:</dt>
+            <dd id="dd_def" itemprop="description" class="col-9">
+                <span *ngIf="elt.definitions[0].definitionFormat !== 'html'">{{elt.definitions[0].definition}}</span>
+                <span *ngIf="elt.definitions[0].definitionFormat === 'html'"
+                      [innerHtml]="elt.definitions[0].definition"></span>
+            </dd>
+        </ng-container>
         <dt class="col-3 text-right">Used By:</dt>
         <dd id="dd_usedBy" class="col-9">
             <div *ngIf="elt.classification?.length > 0">
