@@ -3,8 +3,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import _uniq from 'lodash/uniq';
 
 import { OrgHelperService } from 'core/orgHelper.service';
-import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/designation.component';
-import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/definition.component';
+import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
+import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
 
 @Component({
     selector: 'cde-naming',

@@ -28,8 +28,8 @@ import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.compone
 import { CreateFormComponent } from 'adminItem/public/components/createForm.component';
 import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/deleteModal.component';
-import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/designation.component';
-import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/definition.component';
+import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
+import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
 
 
 @NgModule({

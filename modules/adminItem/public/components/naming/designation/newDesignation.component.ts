@@ -5,7 +5,7 @@ import { Designation } from '../../../../../../shared/models.model';
 
 @Component({
     selector: 'cde-designation',
-    templateUrl: './designation.component.html'
+    templateUrl: './newDesignation.component.html'
 })
 export class NewDesignationComponent {
     placeHolder = 'No Tags found, Tags are managed in Org Management > List Management';
