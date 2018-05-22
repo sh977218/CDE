@@ -436,7 +436,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.sort = {
             "_score": 'desc',
             "views": 'desc',
-            "primaryNameCopy":'desc'
+            "primaryNameNotAnalyzed": 'desc'
         };
     }
 
