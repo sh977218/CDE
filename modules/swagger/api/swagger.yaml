@@ -170,10 +170,8 @@ definitions:
       lastMigrationScript:
         type: "string"
         example: "mergeNamingWithTags"
-      designations:
-        $ref: "#/definitions/Designations"
-      definitions:
-        $ref: "#/definitions/Definitions"
+      naming:
+        $ref: "#/definitions/Naming"
       origin:
         type: "string"
         example: "NCISTD: NCI CRF Harmonization and Standards Initiative"
@@ -500,10 +498,8 @@ definitions:
       lastMigrationScript:
         type: "string"
         example: "mergeNamingWithTags"
-      designations:
-        $ref: "#/definitions/Designations"
-      definitions:
-        $ref: "#/definitions/Definitions"
+      naming:
+        $ref: "#/definitions/Naming"
       noRenderAllowed:
         type: "boolean"
       origin:
