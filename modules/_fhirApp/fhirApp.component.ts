@@ -411,7 +411,7 @@ export class FhirAppComponent {
         // identify changed
         for (let i = 0; i < submitFhirObservationsPending.length; i++) {
             let p = submitFhirObservationsPending[i];
-            if (valuePreview(p.before) === valuePreview(p.after) || p.before.device !== p.after.device) {
+            if (valuePreview(p.before) === valuePreview(p.after) || (p.before ? p.before.device : undefined) !== p.after.device) {
                 submitFhirObservationsPending.splice(i, 1);
                 i--;
             }
@@ -449,7 +449,7 @@ export class FhirAppComponent {
                     }, done);
                 }
             };
-            if (p.after.device.indexOf('Device/new') > -1) {
+            if (p.after.device && p.after.device.indexOf('Device/new') > -1) {
                 // let device = devices[parseInt(p.after.device.slice(10))];
                 let device;
                 this.smart.patient.api.create({

@@ -37,9 +37,11 @@ export function observationFromForm(q, codeToDisplay, encounter = null, patient 
         }],
         text: obsCode.display
     };
-    let devices = q.metadataTags.filter(m => m.key === 'device');
-    if (devices.length) {
-        observation.device = newReference('Device/' + devices[0].value.id);
+    if (Array.isArray(q.metadataTags)) {
+        let devices = q.metadataTags.filter(m => m.key === 'device');
+        if (devices.length) {
+            observation.device = newReference('Device/' + devices[0].value.id);
+        }
     }
     return observation;
 }

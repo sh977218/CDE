@@ -60,7 +60,6 @@ export class CdeForm extends Elt implements FormElementsContainer {
     }
 
     static validate(elt: CdeForm) {
-        if (!(elt instanceof CdeForm)) elt = new CdeForm(elt);
         elt.displayProfiles.forEach(dp => {
             if (!dp.metadata) dp.metadata = {};
             if (!dp.unitsOfMeasureAlias) dp.unitsOfMeasureAlias = [];
