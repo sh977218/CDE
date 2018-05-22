@@ -546,6 +546,12 @@ schemas.trafficFilterSchema = new mongoose.Schema({
     }]
 });
 
+schemas.notificationSchema = new mongoose.Schema({
+    title: String,
+    body: String,
+    receiver: Number
+});
+
 schemas.classificationAudit.set('collection', 'classificationAudit');
 
 schemas.fs_files.set('collection', 'fs.files');

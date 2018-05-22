@@ -18,45 +18,42 @@ const StoredQueryModel = mongo_storedQuery.StoredQueryModel;
 const FeedbackModel = conn.model('FeedbackIssue', schemas_system.feedbackIssueSchema);
 const consoleLogModel = conn.model('consoleLogs', schemas_system.consoleLogSchema);
 const TrafficFilterModel = conn.model('trafficFilter', schemas_system.trafficFilterSchema);
+const NotificationModel = conn.model('notification', schemas_system.notificationSchema);
 
 let initTrafficFilter = cb => {
-    TrafficFilterModel.remove({}).exec(() => {
-       new TrafficFilterModel({ipList: []}).save(cb);
-    });
+    TrafficFilterModel.remove({}, () => new TrafficFilterModel({ipList: []}).save(cb));
 };
 exports.getTrafficFilter = function (cb) {
-    TrafficFilterModel.findOne({}).exec((err, theOne) => {
-       if (err || !theOne) initTrafficFilter((err2, newOne) => cb(newOne));
-       else cb(theOne);
+    TrafficFilterModel.findOne({}, (err, theOne) => {
+        if (err || !theOne) initTrafficFilter((err2, newOne) => cb(newOne));
+        else cb(theOne);
     });
 };
 exports.banIp = function (ip, reason) {
-    TrafficFilterModel.findOne({}).exec((err, theOne) => {
-      if (err) {
-          exports.logError({
-              message: "Unable ban IP ",
-              origin: "dbLogger.banIp",
-              stack: err,
-              details: ""
-          });
-      } else {
-        let foundIndex = theOne.ipList.findIndex(r => r.ip === ip);
-        if (foundIndex > -1) {
-            theOne.ipList[foundIndex].strikes++;
-            theOne.ipList[foundIndex].reason = reason;
-            theOne.ipList[foundIndex].date = Date.now();
+    TrafficFilterModel.findOne({}, (err, theOne) => {
+        if (err) {
+            exports.logError({
+                message: "Unable ban IP ",
+                origin: "dbLogger.banIp",
+                stack: err,
+                details: ""
+            });
         } else {
-            theOne.ipList.push({ip: ip, reason: reason});
+            let foundIndex = theOne.ipList.findIndex(r => r.ip === ip);
+            if (foundIndex > -1) {
+                theOne.ipList[foundIndex].strikes++;
+                theOne.ipList[foundIndex].reason = reason;
+                theOne.ipList[foundIndex].date = Date.now();
+            } else {
+                theOne.ipList.push({ip: ip, reason: reason});
+            }
+            theOne.save();
         }
-        theOne.save();
-      }
     });
 };
 
 exports.consoleLog = function (message, level) { // no express errors see dbLogger.log(message)
-    new consoleLogModel({
-        message: message, level: level
-    }).save(err => {
+    new consoleLogModel({message: message, level: level}).save(err => {
         if (err) noDbLogger.noDbLogger.error("Cannot log to DB: " + err);
     });
 };
@@ -84,7 +81,7 @@ exports.storeQuery = function (settings, callback) {
                     StoredQueryModel.findOneAndUpdate(
                         {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
                         storedQuery,
-                         err => {
+                        err => {
                             if (err) noDbLogger.noDbLogger.info(err);
                             if (callback) callback(err);
                         }
