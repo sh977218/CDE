@@ -435,10 +435,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
         //noinspection JSAnnotator
         queryStuff.sort = {
             "_score": 'desc',
-            "views": 'desc'
-/*
+            "views": 'desc',
             "primaryNameCopy":'desc'
-*/
         };
     }
 

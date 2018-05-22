@@ -80,6 +80,7 @@ exports.createIndexJson = {
                 }
                 , "version": {"type": "string", "index": "no"}
                 , "views": {type: "integer"}
+                , primaryNameCopy: {type: 'string', 'index': 'not_analyzed'}
                 , primaryNameSuggest: {
                     "type":            "string",
                     "analyzer":  "autocomplete",
@@ -159,6 +160,7 @@ exports.createFormIndexJson = {
                     }
                 }, "views": {"type": "integer"}
                 , "numQuestions": {"type": "integer"}
+                , primaryNameCopy: {type: 'string', 'index': 'not_analyzed'}
                 , primaryNameSuggest: {
                     "type":            "string",
                     "analyzer":  "autocomplete",
