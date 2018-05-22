@@ -49,24 +49,15 @@ export class FormDescriptionSectionComponent implements OnInit {
         ));
     static inputEvent = new Event('input');
     isSubForm = false;
-    parent: FormElement;
-    section: FormSection|FormInForm;
     formSection: FormInForm;
+    parent: FormElement;
     repeatOptions = [
         {label: "", value: ""},
         {label: "Set Number of Times", value: "N"},
         {label: "Over first question", value: "F"}
     ];
+    section: FormSection|FormInForm;
     updateFormVersion: any;
-
-    constructor(private alert: AlertService,
-                @Host() public formDescriptionComponent: FormDescriptionComponent,
-                private formService: FormService,
-                private http: HttpClient,
-                private localStorageService: LocalStorageService,
-                public modalService: NgbModal,
-                public skipLogicValidateService: SkipLogicValidateService) {
-    }
 
     ngOnInit() {
         this.section = this.node.data;
@@ -84,6 +75,15 @@ export class FormDescriptionSectionComponent implements OnInit {
         }
 
         this.checkRepeatOptions();
+    }
+
+    constructor(private alert: AlertService,
+                @Host() public formDescriptionComponent: FormDescriptionComponent,
+                private formService: FormService,
+                private http: HttpClient,
+                private localStorageService: LocalStorageService,
+                public modalService: NgbModal,
+                public skipLogicValidateService: SkipLogicValidateService) {
     }
 
     canEditSection() {
@@ -145,6 +145,13 @@ export class FormDescriptionSectionComponent implements OnInit {
         if (!this.isSubForm && this.canEdit) {
             section.hover = false;
         }
+    }
+
+    onSelectItem(parent, question, $event, slInput) {
+        this.typeaheadSkipLogic(parent, question, $event);
+        $event.preventDefault();
+        slInput.focus();
+        this.slOptionsRetrigger();
     }
 
     openUpdateFormVersion(formSection: FormInForm) {
@@ -214,17 +221,4 @@ export class FormDescriptionSectionComponent implements OnInit {
             this.onEltChange.emit();
         }
     }
-
-    onSelectItem(parent, question, $event, slInput) {
-        this.typeaheadSkipLogic(parent, question, $event);
-        $event.preventDefault();
-        slInput.focus();
-        this.slOptionsRetrigger();
-    }
-
-    inputFormatter(a) {
-        return a.replace(/ *\([^)]*\) */g, "");
-    }
-
-
 }

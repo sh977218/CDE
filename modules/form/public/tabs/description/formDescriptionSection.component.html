@@ -88,7 +88,7 @@
                         <input #slInput [disabled]="!(parent.formElements.length > 1 && canEditSection())"
                                type="text" title="Show If"
                                (focus)="slOptionsRetrigger()"
-                               [ngModel]="section.skipLogic.condition" [inputFormatter]="inputFormatter"
+                               [ngModel]="section.skipLogic.condition"
                                (ngModelChange)="typeaheadSkipLogic(parent, section, $event)"
                                class="form-control skipLogicCondition"
                                placeholder="Start typing a question name to find options"

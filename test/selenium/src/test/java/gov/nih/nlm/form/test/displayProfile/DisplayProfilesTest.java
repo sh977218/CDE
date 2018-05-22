@@ -23,6 +23,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         createDisplayProfile(3, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5, false, 0);
         createDisplayProfile(4, "Multiple Select", false, false, false, false, "Dynamic", 5, false, 4);
         scrollToTop();
+        clickElement(By.id("displayMetadataDevice_0"));
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
         textPresent("1", By.xpath("//div[@id='profile_0']//table/tbody/tr[1]/td[6]/span"));
         Assert.assertTrue(
@@ -37,7 +38,18 @@ public class DisplayProfilesTest extends BaseFormTest {
         newFormVersion();
 
         goToFormByName(formName);
+        clickElement(By.xpath("//*[@class='fa fa-plus iconButton'"));
+        clickElement(By.xpath("//a[text()='Add Device by UDI'"));
+        findElement(By.xpath("//input[@id='deviceSearchInput']")).clear();
+        findElement(By.xpath("//input[@id='deviceSearchInput']")).sendKeys("=/08717648200274=,000025=A99971312345600=>014032=}013032&,1000000000000XYZ123");
+        clickElement(By.xpath("//section[@class='metadata-item']//button"));
+        textPresent("Device DI:");
+        textPresent("08717648200274");
+        textPresent("ICCBBA");
+        textPresent("XIENCE ALPINE");
+
         textPresent("In the past 7 days");
+        Assert.assertEquals(findElements(By.xpath("//*[@class='fa fa-plus iconButton'")).size(), 0);
         textPresent("I felt annoyed");
         textPresent("1", By.xpath("//div[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
         textPresent("5", By.xpath("//div[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[6]"));
@@ -83,6 +95,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         newFormVersion();
         goToGeneralDetail();
         textNotPresent("Display Profile:");
+        Assert.assertEquals(findElements(By.xpath("//*[@class='fa fa-plus iconButton'")).size(), 0);
     }
 
 }

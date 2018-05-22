@@ -65,9 +65,14 @@
                     </dd>
                     <dt class="col-sm-5">Repeat Format String:</dt>
                     <dd class="col-sm-7">
-                        <input class="form-control" [(ngModel)]="dPVM.profile.repeatFormat"
-                               [disabled]="!canEdit" id="displayRepeatFormat_{{index}}" (change)="onEltChange.emit();">
+                        <input id="displayRepeatFormat_{{index}}" class="form-control" [disabled]="!canEdit"
+                               [(ngModel)]="dPVM.profile.repeatFormat" (change)="onEltChange.emit();">
                         (Use # in place of number. Ex: "#." for "1.")
+                    </dd>
+                    <dt class="col-sm-5">Display Metadata Device:</dt>
+                    <dd class="col-sm-7">
+                        <input type="checkbox" id="displayMetadataDevice_{{index}}" [disabled]="!canEdit"
+                               [(ngModel)]="dPVM.profile.metadata.device" (change)="onEltChange.emit();">
                     </dd>
                 </dl>
             </div>

@@ -1,28 +1,60 @@
 import {
-    FhirAddress, FhirCode,
+    FhirAddress, FhirBase64Binary, FhirCode,
     FhirCodeableConcept, FhirCoding,
-    FhirContactPoint, FhirDateTime, FhirEffective,
+    FhirContactPoint, FhirDateTime, FhirDuration, FhirEffective, FhirExtension,
     FhirHumanName,
     FhirIdentifier, FhirInstant, FhirMeta, FhirNarrative, FhirPeriod, FhirQuantity, FhirRange, FhirRatio,
-    FhirReference, FhirSampledData, FhirTime, FhirUri, FhirValue, FhirExtension, FhirDuration
+    FhirReference, FhirSampledData, FhirTime, FhirUri, FhirValue
 } from 'shared/mapping/fhir/fhir.model';
 
-class FhirResource {
+export class FhirResource {
     id?: string;
     implicitRules?: FhirUri;
     language?: FhirCode;
     meta?: FhirMeta;
 }
 
-class FhirDomainResource extends FhirResource {
+export class FhirDomainResource extends FhirResource {
     contained?: FhirResource[];
     extension?: FhirExtension[];
     modifierExtension?: FhirExtension[];
+    resourceType: string; // not documented, XML: is the node name
     text?: FhirNarrative;
 }
 
 export type FhirAccount = any;
+export type FhirAnnotation = any;
 export type FhirAppointment = any;
+
+export class FhirDevice extends FhirDomainResource {
+    contact?: FhirContactPoint[];
+    expirationDate?: FhirDateTime;
+    identifier?: FhirIdentifier[];
+    location?: FhirReference<FhirLocation>;
+    lotNumber?: string;
+    manufacturer?: string;
+    manufactureDate?: FhirDateTime;
+    model?: string;
+    note?: FhirAnnotation[];
+    owner?: FhirReference<FhirOrganization>;
+    patient?: FhirReference<FhirPatient>;
+    safety?: FhirCodeableConcept[];
+    status?: FhirCode;
+    type?: FhirCodeableConcept;
+    udi?: {
+        carrierAIDC: FhirBase64Binary,
+        carrierHRF: string,
+        deviceIdentifier?: string,
+        entryType: FhirCode,
+        issuer: FhirUri,
+        jurisdiction: FhirUri,
+        name?: string,
+    };
+    url?: FhirUri;
+    version?: string;
+}
+
+export type FhirDeviceMetric = any;
 
 export class FhirEncounter extends FhirDomainResource {
     account?: FhirReference<FhirAccount>[];
@@ -106,7 +138,7 @@ export class FhirObservation extends FhirObservationComponent implements FhirEff
     comment?: string;
     component?: FhirObservationComponent[];
     context?: FhirReference<FhirEncounter | any>;
-    device?: FhirReference<any>;
+    device?: FhirReference<FhirDevice | FhirDeviceMetric>;
     effectiveDateTime?: FhirDateTime;
     effectivePeriod?: FhirPeriod;
     identifier?: FhirIdentifier[];

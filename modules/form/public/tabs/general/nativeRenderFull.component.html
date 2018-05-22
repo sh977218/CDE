@@ -1,5 +1,5 @@
-<div class="noGridPadLarge clearfix">
-    <div class="dropdown float-left">
+<div class="noGridPadLarge">
+    <div class="dropdown d-inline-block">
         <button class="btn btn-outline-dark dropdown-toggle" type="button" id="selectRenderButton"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Options
@@ -30,7 +30,7 @@
             </button>
         </div>
     </div>
-    <div class="dropdown float-left ml-1" *ngIf="elt.displayProfiles?.length > 0">
+    <div *ngIf="elt.displayProfiles?.length > 0" class="dropdown d-inline-block">
         <button class="btn btn-outline-dark dropdown-toggle" type="button" id="select_display_profile"
                 data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
