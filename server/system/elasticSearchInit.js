@@ -274,17 +274,17 @@ exports.riverFunction = function (_elt, cb) {
         elt.primaryNameSuggest = elt.primaryNameCopy;
 
         var primDef;
-        for (var i = 0; i < elt.naming.length; i++) {
-            if (elt.naming[i].definition) {
-                primDef = elt.naming[i];
-                i = elt.naming.length;
+        for (var i = 0; i < elt.definitions.length; i++) {
+            if (elt.definitions[i].definition) {
+                primDef = elt.definitions[i];
+                i = elt.definitions.length;
             }
         }
         if (primDef) {
             if (primDef.definitionFormat === 'html') {
                 elt.primaryDefinitionCopy = primDef.definition.replace(/<(?:.|\\n)*?>/gm, '');
             } else {
-                elt.primaryDefinitionCopy = elt.naming ? escapeHTML(primDef.definition) : '';
+                elt.primaryDefinitionCopy = elt.definitions ? escapeHTML(primDef.definition) : '';
             }
         } else {
             elt.primaryDefinitionCopy = '';
