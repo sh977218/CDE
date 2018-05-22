@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test.export;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 
 public class NotLoggedInCantExport extends NlmCdeBaseTest {
@@ -15,7 +16,7 @@ public class NotLoggedInCantExport extends NlmCdeBaseTest {
         textPresent("Please login to export forms");
 
         findElement(By.id("ftsearch-input")).sendKeys("\"Unified Parkinson's\"");
-        clickElement(By.id("search.submit"));
+        findElement(By.id("ftsearch-input")).sendKeys(Keys.RETURN);
         clickElement(By.id("export"));
         textPresent("Please login to export forms");
 

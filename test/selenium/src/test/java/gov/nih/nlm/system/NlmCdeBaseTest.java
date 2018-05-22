@@ -537,7 +537,7 @@ public class NlmCdeBaseTest {
         clickElement(By.linkText("Forms"));
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
-        clickElement(By.cssSelector("i.fa-search"));
+        clickElement(By.xpath("//mat-icon[. = 'search']"));
         textPresent("1 results for");
         textPresent(name, By.id("searchResult_0"));
     }

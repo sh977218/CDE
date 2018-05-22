@@ -11,7 +11,7 @@
                 <div *ngFor="let newCde of newCdes" class="card">
                     <div class="card-header">
                         <div class="float-left" (click)="newCde.isCollapsed = !newCde.isCollapsed"
-                             [ngClass]="{'text-danger':newCde.naming.length === 0}">
+                             [ngClass]="{'text-danger':newCde.designations.length === 0}">
                             <span *ngIf="newCde.designations.length > 0" class="hand-cursor">
                                 {{newCde.designations[0].designation}}
                             </span>

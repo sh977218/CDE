@@ -209,7 +209,7 @@ export class EmbedAppComponent  {
 
                 if (embed4Type.otherNames) {
                     embed4Type.otherNames.forEach(eName => {
-                        let name = c.naming.filter(n => {
+                        let name = c.designations.filter(n => {
                             return n.tags.filter(t => t.indexOf('Question Text') > -1).length > 0;
                         })[0];
                         if (name) {
