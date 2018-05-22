@@ -1419,4 +1419,12 @@ exports.init = function (app) {
         }
     });
 
+    app.get('/notifications', (req, res) => {
+        let user = req.user;
+        mongo_data.getNotificationsByRole(role,(err,result)=>{
+            if(err) return res.status(500).send("Error Retrieving Notification.");
+            else res.send(result);
+        })
+    })
+
 };

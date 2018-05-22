@@ -27,6 +27,7 @@ const Org = conn.model('Org', schemas.orgSchema);
 const PushRegistration = conn.model('PushRegistration', schemas.pushRegistration);
 const User = conn.model('User', schemas.userSchema);
 const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema);
+const NotificationModel = conn.model('notification', schemas.notificationSchema);
 
 const gfs = Grid(conn.db, mongoose.mongo);
 const sessionStore = new MongoStore({
@@ -737,4 +738,9 @@ exports.copyDefinition = function (namings) {
             definitions.push(definition);
     });
     return definitions;
+};
+
+
+exports.getNotificationsByRole = (role, cb) => {
+    NotificationModel.find({receiver: role}, cb);
 };

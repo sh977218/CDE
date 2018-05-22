@@ -4,6 +4,6 @@
         <span class="button_badge">{{notifications.length}}</span>
     </a>
     <div class="dropdown-menu dropdown-menu-right">
-        <div class="dropdown-item" *ngFor="let notif of notifications">{{notif}}</div>
+        <div class="dropdown-item" *ngFor="let notification of notifications">{{notification.title}}</div>
     </div>
 </ng-container>

@@ -18,7 +18,6 @@ const StoredQueryModel = mongo_storedQuery.StoredQueryModel;
 const FeedbackModel = conn.model('FeedbackIssue', schemas_system.feedbackIssueSchema);
 const consoleLogModel = conn.model('consoleLogs', schemas_system.consoleLogSchema);
 const TrafficFilterModel = conn.model('trafficFilter', schemas_system.trafficFilterSchema);
-const NotificationModel = conn.model('notification', schemas_system.notificationSchema);
 
 let initTrafficFilter = cb => {
     TrafficFilterModel.remove({}, () => new TrafficFilterModel({ipList: []}).save(cb));

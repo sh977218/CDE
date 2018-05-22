@@ -33,7 +33,10 @@ export class NotificationsComponent {
                         "please close all instances / tabs of this site then load again. ";
                     if (this.notifications.indexOf(note) === -1) this.notifications.push(note);
                 }
-            } catch (e) {}
+                const notifications = await this.http.get<any[]>("/notifications", {responseType: 'text'}).toPromise();
+                this.notifications = notifications;
+            } catch (e) {
+            }
         }, (window as any).versionCheckIntervalInSeconds * 1000);
     }
 }
