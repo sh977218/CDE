@@ -72,17 +72,11 @@ exports.createIndexJson = {
                 }
                 , "history": {"type": "string", "index": "no"}
                 , "imported": {"type": "date", "index": "no"}
-                , "naming": {
-                    properties: {
-                        "languageCode": {"type": "string", "index": "no"},
-                        "tags": {"type": "string", "index": "not_analyzed"}
-                    }
-                }
                 , "version": {"type": "string", "index": "no"}
                 , "views": {type: "integer"}
                 , primaryNameSuggest: {
-                    "type":            "string",
-                    "analyzer":  "autocomplete",
+                    "type": "string",
+                    "analyzer": "autocomplete",
                     "search_analyzer": "standard"
                 }
             }
@@ -160,8 +154,8 @@ exports.createFormIndexJson = {
                 }, "views": {"type": "integer"}
                 , "numQuestions": {"type": "integer"}
                 , primaryNameSuggest: {
-                    "type":            "string",
-                    "analyzer":  "autocomplete",
+                    "type": "string",
+                    "analyzer": "autocomplete",
                     "search_analyzer": "standard"
                 }
             }
