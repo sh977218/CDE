@@ -331,6 +331,8 @@ let requestSchema = {
     mergeFields: {
         ids: Boolean,
         naming: Boolean,
+        designations: Boolean,
+        definitions: Boolean,
         attachments: Boolean,
         properties: Boolean,
         classifications: Boolean
