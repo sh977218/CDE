@@ -270,25 +270,12 @@ exports.riverFunction = function (_elt, cb) {
         elt.flatClassifications = flatArray;
         elt.stewardOrgCopy = elt.stewardOrg;
         elt.steward = elt.stewardOrg.name;
-        elt.primaryNameCopy = elt.naming ? escapeHTML(elt.designations[0].designation) : '';
+        elt.primaryNameCopy = elt.designations[0] ? escapeHTML(elt.designations[0].designation) : '';
         elt.primaryNameSuggest = elt.primaryNameCopy;
+        elt.primaryDefinitionCopy = elt.definitions[0] ? elt.designations[0].designation : '';
+        if (elt.definitions[0] && elt.definitions[0].definitionFormat === 'html')
+            elt.primaryDefinitionCopy = escapeHTML(elt.primaryDefinitionCopy);
 
-        var primDef;
-        for (var i = 0; i < elt.definitions.length; i++) {
-            if (elt.definitions[i].definition) {
-                primDef = elt.definitions[i];
-                i = elt.definitions.length;
-            }
-        }
-        if (primDef) {
-            if (primDef.definitionFormat === 'html') {
-                elt.primaryDefinitionCopy = primDef.definition.replace(/<(?:.|\\n)*?>/gm, '');
-            } else {
-                elt.primaryDefinitionCopy = elt.definitions ? escapeHTML(primDef.definition) : '';
-            }
-        } else {
-            elt.primaryDefinitionCopy = '';
-        }
         var regStatusSortMap = {
             Retired: 6,
             Incomplete: 5,

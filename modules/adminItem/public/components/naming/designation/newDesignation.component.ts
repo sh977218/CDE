@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { NgbModalRef, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Designation } from '../../../../../../shared/models.model';
 
@@ -7,10 +7,8 @@ import { Designation } from '../../../../../../shared/models.model';
     selector: 'cde-designation',
     templateUrl: './designation.component.html'
 })
-export class DesignationComponent {
+export class NewDesignationComponent {
     placeHolder = 'No Tags found, Tags are managed in Org Management > List Management';
-    appendTo = 'body';
-    modalRef: NgbModalRef;
     @Input() tags = [];
     @Output() onSave = new EventEmitter();
     newDesignation: Designation = new Designation;

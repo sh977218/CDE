@@ -3,8 +3,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import _uniq from 'lodash/uniq';
 
 import { OrgHelperService } from 'core/orgHelper.service';
-import { DesignationComponent } from 'adminItem/public/components/naming/designation/designation.component';
-import { DefinitionComponent } from 'adminItem/public/components/naming/definition/definition.component';
+import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/designation.component';
+import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/definition.component';
 
 @Component({
     selector: 'cde-naming',
@@ -40,7 +40,7 @@ export class NamingComponent implements OnInit {
     }
 
     openNewDesignationModal() {
-        const modalRef = this.modalService.open(DesignationComponent, {size: 'lg'});
+        const modalRef = this.modalService.open(NewDesignationComponent, {size: 'lg'});
         modalRef.componentInstance.tags = this.tags;
         modalRef.componentInstance.onSave.subscribe(newDesignation => {
             this.elt.designations.push(newDesignation);
@@ -50,7 +50,7 @@ export class NamingComponent implements OnInit {
     }
 
     openNewDefinitionModal() {
-        const modalRef = this.modalService.open(DefinitionComponent, {size: 'lg'});
+        const modalRef = this.modalService.open(NewDefinitionComponent, {size: 'lg'});
         modalRef.componentInstance.tags = this.tags;
         modalRef.componentInstance.onSave.subscribe(newDefinition => {
             this.elt.definitions.push(newDefinition);

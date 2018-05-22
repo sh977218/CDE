@@ -28,8 +28,8 @@ import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.compone
 import { CreateFormComponent } from 'adminItem/public/components/createForm.component';
 import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/deleteModal.component';
-import { DesignationComponent } from 'adminItem/public/components/naming/designation/designation.component';
-import { DefinitionComponent } from 'adminItem/public/components/naming/definition/definition.component';
+import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/designation.component';
+import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/definition.component';
 
 
 @NgModule({
@@ -53,8 +53,8 @@ import { DefinitionComponent } from 'adminItem/public/components/naming/definiti
         ClassifyItemModalComponent,
         CdeUpdateElementComponent,
         CreateFormComponent,
-        DefinitionComponent,
-        DesignationComponent,
+        NewDefinitionComponent,
+        NewDesignationComponent,
         DraftSliderComponent,
         IdentifiersComponent,
         LinkedFormsComponent,
@@ -68,8 +68,8 @@ import { DefinitionComponent } from 'adminItem/public/components/naming/definiti
         SourcesComponent,
     ],
     entryComponents: [
-        DefinitionComponent,
-        DesignationComponent
+        NewDefinitionComponent,
+        NewDesignationComponent
     ],
     exports: [
         AttachmentsComponent,

@@ -255,14 +255,14 @@ schemas.namingSchema = new mongoose.Schema({
 }, {_id: false});
 
 schemas.designationSchema = new mongoose.Schema({
-    designation: String,
-    tags: [String]
+    designation: stringType,
+    tags: [stringType]
 }, {_id: false});
 
 schemas.definitionSchema = new mongoose.Schema({
-    definition: String,
-    definitionFormat: String,
-    tags: [String]
+    definition: stringType,
+    definitionFormat: stringType,
+    tags: [stringType]
 }, {_id: false});
 
 let attachmentSchema = {

@@ -18,9 +18,9 @@ const questionSchema = new Schema({
     cde: {
         tinyId: sharedSchemas.stringType
         , name: sharedSchemas.stringType
-        , naming: []
-        , designations: []
-        , definitions: []
+        , naming: [sharedSchemas.stringType]
+        , designations: [sharedSchemas.stringType]
+        , definitions: [sharedSchemas.stringType]
         , datatype: sharedSchemas.stringType
         , version: sharedSchemas.stringType
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
