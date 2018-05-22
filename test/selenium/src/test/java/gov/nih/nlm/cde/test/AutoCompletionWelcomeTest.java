@@ -14,14 +14,14 @@ public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("specimen lat");
         textNotPresent("Specimen Laterality");
         textPresent("Cell Specimen");
-        clickElement(By.xpath("//ngb-highlight[contains(., \"Cell Specimen Requirement\")]"));
+        clickElement(By.xpath("//span[@class='mat-option-text' and contains(., 'Cell Specimen Requirement')]"));
         textPresent("The smallest units of living structure capable of independent existence");
 
         setLowStatusesVisible();
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("specimen lat");
         textPresent("Specimen Laterality");
-        clickElement(By.xpath("//ngb-highlight[contains(., \"Specimen Laterality Not Specified Reason\")]"));
+        clickElement(By.xpath("//span[@class='mat-option-text' and contains(., 'Specimen Laterality Not Specified Reason')]"));
         textPresent("02/03/2016");
     }
 
@@ -31,13 +31,13 @@ public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
         goToSearch("form");
         findElement(By.id("ftsearch-input")).sendKeys("multi");
         textNotPresent("MultiSelect");
-        clickElement(By.xpath("//ngb-highlight[contains(., \"Multiple Sclerosis Quality of Life\")]"));
+        clickElement(By.xpath("//span[@class='mat-option-text' and contains(., 'Multiple Sclerosis Quality of Life')]"));
         textPresent("Rendering has been disabled for this form.");
 
         setLowStatusesVisible();
         goToSearch("form");
         findElement(By.id("ftsearch-input")).sendKeys("multi");
-        clickElement(By.xpath("//ngb-highlight[contains(., \"MultiSelect Logic\")]"));
+        clickElement(By.xpath("//span[@class='mat-option-text' and contains(., 'MultiSelect Logic')]"));
         textPresent("Medicaid");
     }
 

@@ -102,57 +102,54 @@
     </div>
 </div>
 
-
-<ng-template #formSearchTmpl let-c="close" let-d="dismiss">
-    <div class="modal-header">
+<ng-template #formSearchTmpl>
+    <div mat-dialog-title>
         <h3>Search Forms</h3>
     </div>
-    <div class="modal-body">
+    <div mat-dialog-content>
         <cde-form-search class="panel-group" id="accordion_form" addMode="True" [embedded]="true"
                          (add)="addFormFromSearch($event)">
         </cde-form-search>
     </div>
-    <div class="modal-footer">
-        <button class="btn  btn-warning" (click)="d()" id="cancelSelectF">Close</button>
+    <div mat-dialog-actions align="end">
+        <button mat-raised-button color="accent" [mat-dialog-close] id="cancelSelectF">Close</button>
     </div>
 </ng-template>
 
-<ng-template #questionSearchTmpl let-c="close" let-d="dismiss">
+<ng-template #questionSearchTmpl>
     <ng-container *ngIf="questionModelMode === 'search'">
-        <div class="modal-header">
+        <div mat-dialog-title>
             <h1>Search Data Elements</h1>
-            <button class="btn btn-outline-dark" id="addNewCdeBtn" (click)="questionModelMode = 'add'">
+            <button mat-raised-button id="addNewCdeBtn" (click)="questionModelMode = 'add'">
                 Create Data Element
             </button>
         </div>
-        <div class="modal-body">
+        <div mat-dialog-content>
             <cde-cde-search addMode="True" [embedded]="true" (add)="addQuestionFromSearch($event)">
             </cde-cde-search>
         </div>
-        <div class="modal-footer">
-            <button class="btn  btn-warning" (click)="d()" id="cancelSelectQ">Close</button>
+        <div mat-dialog-actions align="end">
+            <button mat-raised-button color="accent" [mat-dialog-close] id="cancelSelectQ">Close</button>
         </div>
     </ng-container>
     <ng-container *ngIf="questionModelMode === 'add'">
-        <form #newDataElementForm="ngForm" (ngSubmit)="createNewDataElement(undefined,c);">
-            <div class="modal-header">
-                <h1>Create Data Element</h1>
-                <button class="btn btn-outline-dark" type="button" (click)="questionModelMode = 'search'">
-                    Search Data Elements
-                </button>
-            </div>
-            <div class="modal-body">
+        <div mat-dialog-title>
+            <h1>Create Data Element</h1>
+        </div>
+        <form #newDataElementForm="ngForm" (ngSubmit)="createNewDataElement(undefined);">
+            <!-- tabindex -1 to prevent mat dialog autofocus -->
+            <button mat-raised-button (click)="questionModelMode = 'search'" tabindex="-1">Search Data Elements</button>
+            <div mat-dialog-content>
                 <label for="newDEName"></label>
                 <input [(ngModel)]="newDataElement.naming[0].designation" class="form-control" id="newDEName"
-                       name="newDEName" placeholder="New Data Element Name"
+                       name="newDEName" placeholder="New Data Element Name" autocomplete="off"
                        (ngModelChange)="newDataElementNameChanged();"
                        required autofocus/>
                 <div id="accordionList" *ngIf="suggestedCdes?.length > 0">
                     <h4>Possible Matches</h4>
-                    <div class="card" *ngFor="let cde of suggestedCdes;let index = index;">
+                    <div class="card" *ngFor="let cde of suggestedCdes; let index = index;">
                         <div class="card-header">
-                            <button class="btn btn-outline-danger hand-cursor" type="button"
-                                    (click)="createNewDataElement(cde,c);">
+                            <button mat-raised-button type="button" color="accent" (click)="createNewDataElement(cde)">
                                 <i class="fa fa-plus"></i> Add
                             </button>
                             <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed">
@@ -189,11 +186,11 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-warning" type="submit" [disabled]="!newDataElementForm.valid"
-                        id="createNewDataElement">Create
-                </button>
+            <div mat-dialog-actions align="end">
+                <button mat-raised-button color="accent" type="submit" [disabled]="!newDataElementForm.valid"
+                        id="createNewDataElement">Create</button>
             </div>
         </form>
     </ng-container>
 </ng-template>
+
