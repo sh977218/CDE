@@ -17,11 +17,9 @@ public class BoardExportTest extends BoardTest {
     @Test
     public void boardExport() {
         mustBeLoggedOut();
-        loadDefaultSettings();
-
         String board_name = "Board Export Test";
-
         goToBoard(board_name);
+        loadDefaultTableViewSettings();
         textPresent("Export Board");
         clickElement(By.id(("export")));
         clickElement(By.id(("csvExport")));

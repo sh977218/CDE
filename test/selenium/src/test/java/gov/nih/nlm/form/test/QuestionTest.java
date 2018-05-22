@@ -34,16 +34,13 @@ public class QuestionTest extends BaseFormTest {
 
     public void addCdesByNames(String[] cdeNames) {
         for (String cdeName : cdeNames) {
-            try {
-                new Actions(driver).sendKeys("q").build().perform();
-                textPresent("Create Data Element");
-                new Actions(driver).sendKeys(cdeName).build().perform();
-                clickElement(By.id("createNewDataElement"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            new Actions(driver).sendKeys("q").build().perform();
+            textPresent("Create Data Element");
+            // wait for modal animation
+            hangon(2);
+            new Actions(driver).sendKeys(cdeName).build().perform();
+            clickElement(By.id("createNewDataElement"));
         }
-
     }
 
     private void addCde(String cdeName, String dropXpath, boolean isSuggested) {
@@ -51,16 +48,13 @@ public class QuestionTest extends BaseFormTest {
         WebElement targetElt = findElement(By.xpath(dropXpath));
         (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
         dragAndDrop(sourceElt, targetElt);
-        try {
-            if (driver.findElements(By.id("addNewCdeBtn")).size() > 0) {
-                clickElement(By.id("addNewCdeBtn"));
-            }
-            textPresent("Create Data Element");
-            new Actions(driver).sendKeys(cdeName).build().perform();
-            if (!isSuggested) clickElement(By.id("createNewDataElement"));
-            else clickElement(By.xpath("(//*[@id='accordionList']//div[@class='card-header']//button)[1]"));
-        } catch (Exception e) {
-        }
+
+        if (driver.findElements(By.id("addNewCdeBtn")).size() > 0) clickElement(By.id("addNewCdeBtn"));
+        textPresent("Create Data Element");
+
+        new Actions(driver).sendKeys(cdeName).build().perform();
+        if (!isSuggested) clickElement(By.id("createNewDataElement"));
+        else clickElement(By.xpath("(//*[@id='accordionList']//div[@class='card-header']//button)[1]"));
     }
 
     public void addCdeNameById(String questionId, String newName, String newDefinition, String[] newTags) {

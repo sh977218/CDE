@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
+import { MatDialog, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import async_forEach from 'async/forEach';
 import async_parallel from 'async/parallel';
@@ -466,9 +466,6 @@ export class FhirAppComponent {
     `,
 })
 export class ViewFhirObservationDialogComponent {
-    constructor(
-        public dialogRef: MatDialogRef<ViewFhirObservationDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any) { }
-
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any) { }
 }
 
