@@ -7,7 +7,7 @@ import { TreeModule } from 'angular-tree-component';
 import "angular-tree-component/dist/angular-tree-component.css";
 import { NgSelectModule } from '@ng-select/ng-select';
 import { HotkeyModule } from 'angular2-hotkeys';
-import { MatDialogModule, MatIconModule, MatGridListModule } from "@angular/material";
+import { MatDialogModule, MatIconModule, MatGridListModule, MatButtonModule } from "@angular/material";
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { ArrayListPipe } from './arrayList.pipe';
@@ -32,7 +32,6 @@ import { UcumService } from 'form/public/ucum.service';
 import { WidgetModule } from 'widget/widget.module';
 import { CompareModule } from 'compare/compare.module';
 import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
-import { MatButtonModule, MatDialogModule } from "@angular/material";
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -48,6 +47,7 @@ const appRoutes: Routes = [
         HotkeyModule.forRoot(),
         TreeModule,
         MatIconModule,
+        MatButtonModule,
         MatDialogModule,
         MatGridListModule,
         // core
@@ -59,9 +59,7 @@ const appRoutes: Routes = [
         CompareModule,
         DiscussModule,
         FormSearchModule,
-        NativeRenderModule,
-        MatButtonModule,
-        MatDialogModule
+        NativeRenderModule
     ],
     declarations: [
         ArrayListPipe,
