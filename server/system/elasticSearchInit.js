@@ -72,6 +72,12 @@ exports.createIndexJson = {
                 }
                 , "history": {"type": "string", "index": "no"}
                 , "imported": {"type": "date", "index": "no"}
+                , "naming": {
+                    properties: {
+                        "languageCode": {"type": "string", "index": "no"},
+                        "tags": {"type": "string", "index": "not_analyzed"}
+                    }
+                }
                 , "version": {"type": "string", "index": "no"}
                 , "views": {type: "integer"}
                 , primaryNameSuggest: {
