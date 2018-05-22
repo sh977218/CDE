@@ -208,6 +208,7 @@ schemas.userSchema = new mongoose.Schema({
     formViewHistory: [stringType],
     knownIPs: [stringType],
     roles: [Object.assign({enum: authorizationShared.rolesEnum}, stringType)],
+    rolesBackup: {type: Number, default: 0},
     searchSettings: {
         version: Number,
         defaultSearchView: Object.assign({enum: ["accordion", "table", "summary"]}, stringType),
@@ -549,6 +550,7 @@ schemas.trafficFilterSchema = new mongoose.Schema({
 schemas.notificationSchema = new mongoose.Schema({
     title: String,
     body: String,
+    data: {type: Date, index: true, default: new Date()},
     receiver: Number
 });
 

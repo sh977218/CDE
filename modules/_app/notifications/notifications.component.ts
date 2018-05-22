@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: 'cde-notifications',
@@ -24,7 +25,8 @@ export class NotificationsComponent {
     currentVersion = (window as any).version;
     notifications = [];
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient,
+                private alert: AlertService) {
         setInterval(async () => {
             try {
                 const latestVersion = await this.http.get("/site-version", {responseType: 'text'}).toPromise();
@@ -33,9 +35,10 @@ export class NotificationsComponent {
                         "please close all instances / tabs of this site then load again. ";
                     if (this.notifications.indexOf(note) === -1) this.notifications.push(note);
                 }
-                const notifications = await this.http.get<any[]>("/notifications", {responseType: 'text'}).toPromise();
+                const notifications = await this.http.get<any[]>("/notifications").toPromise();
                 this.notifications = notifications;
             } catch (e) {
+                this.alert.addAlert('danger', e);
             }
         }, (window as any).versionCheckIntervalInSeconds * 1000);
     }

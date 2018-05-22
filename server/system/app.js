@@ -268,7 +268,7 @@ exports.init = function (app) {
                 dbLogger.consoleLog("done with sitemap");
                 wstream.end();
             });
-    }, null, true, 'America/New_York', this, true);
+        }, null, true, 'America/New_York', this, true);
 
     ["/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404",
@@ -1420,9 +1420,10 @@ exports.init = function (app) {
     });
 
     app.get('/notifications', (req, res) => {
-        let user = req.user;
-        mongo_data.getNotificationsByRole(role,(err,result)=>{
-            if(err) return res.status(500).send("Error Retrieving Notification.");
+        let roles = [];
+        if (req.user && req.user.roles) roles = req.user.roles;
+        mongo_data.getNotificationsByRole(roles, (err, result) => {
+            if (err) return res.status(500).send("Error Retrieving Notification.");
             else res.send(result);
         })
     })

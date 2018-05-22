@@ -741,6 +741,7 @@ exports.copyDefinition = function (namings) {
 };
 
 
-exports.getNotificationsByRole = (role, cb) => {
-    NotificationModel.find({receiver: role}, cb);
+exports.getNotificationsByRole = (roles, cb) => {
+    roles = roles.map(r => authorizationShared.ROLE_BIT_MAP[r]);
+    NotificationModel.find({date: {"$lte": new Date()}, receiver: {$bitsAnySet: roles}}, cb);
 };
