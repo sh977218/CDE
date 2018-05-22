@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -21,7 +21,7 @@ import {
     MatGridListModule,
     MatListModule,
     MatSelectModule,
-    MatIconModule
+    MatIconModule, MatInputModule, MatMenuModule, MatAutocompleteModule
 } from "@angular/material";
 
 @NgModule({
@@ -34,8 +34,12 @@ import {
         WidgetModule,
         // internal
         BoardModule,
+        ReactiveFormsModule,
         SearchModule,
         MatButtonModule,
+        MatAutocompleteModule,
+        MatInputModule,
+        MatMenuModule,
         MatCheckboxModule,
         MatGridListModule,
         MatListModule,

@@ -3,7 +3,6 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { MatIconModule } from '@angular/material';
 
 import { AccordionListHeadingComponent } from 'search/listView/accordionListHeading.component';
 import { ListViewComponent } from 'search/listView/listView.component';
@@ -14,6 +13,7 @@ import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/listView/summaryListItem.component';
 import { TableListComponent } from 'search/listView/tableList.component';
 import { WidgetModule } from 'widget/widget.module';
+import { MatButtonModule, MatIconModule, MatMenuModule } from "@angular/material";
 import { TableViewPreferencesComponent } from 'search/tableViewPreferences/tableViewPreferences.component';
 
 @NgModule({
@@ -24,9 +24,10 @@ import { TableViewPreferencesComponent } from 'search/tableViewPreferences/table
         RouterModule.forChild([]),
         // core
         WidgetModule,
-        MatIconModule
-        // internal
-
+        MatIconModule,
+        MatButtonModule,
+        MatIconModule,
+        MatMenuModule
     ],
     declarations: [
         AccordionListHeadingComponent,

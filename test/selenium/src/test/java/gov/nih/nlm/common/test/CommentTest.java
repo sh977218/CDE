@@ -154,7 +154,7 @@ public abstract class CommentTest extends CommonTest {
         textPresent("Comment approval");
 
         clickElement(By.partialLinkText("Comment approval | " + user + " | " + commentText));
-        clickElement(By.xpath("//div[@class='card']//a[contains(., '" + eltName + "')]"));
+        clickElement(By.xpath("//div[contains(@class, 'card')]//a[contains(., '" + eltName + "')]"));
 
         switchTab(1);
         textPresent(eltName);

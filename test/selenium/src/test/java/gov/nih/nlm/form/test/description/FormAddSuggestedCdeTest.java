@@ -33,7 +33,6 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
         textPresent("Yes", By.xpath("//*[@id='question_0-4']//*[contains(@class,'card-body')]//*[contains(@class,'answerList')]"));
         textPresent("No", By.xpath("//*[@id='question_0-4']//*[contains(@class,'card-body')]//*[contains(@class,'answerList')]"));
         textPresent("Unknown", By.xpath("//*[@id='question_0-4']//*[contains(@class,'card-body')]//*[contains(@class,'answerList')]"));
-
     }
 
 
