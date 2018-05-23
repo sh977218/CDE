@@ -24,6 +24,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         createDisplayProfile(4, "Multiple Select", false, false, false, false, "Dynamic", 5, false, 4);
         scrollToTop();
         clickElement(By.id("displayMetadataDevice_0"));
+        Assert.assertEquals(1, 0);
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
         textPresent("1", By.xpath("//div[@id='profile_0']//table/tbody/tr[1]/td[6]/span"));
         Assert.assertTrue(
