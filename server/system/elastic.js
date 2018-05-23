@@ -430,15 +430,11 @@ exports.buildElasticSearchQuery = function (user, settings) {
         regStatusAggFilter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
     }
 
-
-    if (sort) {
-        //noinspection JSAnnotator
-        queryStuff.sort = {
-            "_score": 'desc',
-            "views": 'desc',
-            "primaryNameNotAnalyzed": 'desc'
-        };
-    }
+    queryStuff.sort = {
+        "_score": 'desc',
+        "views": 'desc',
+        "primaryNameSuggest": 'desc'
+    };
 
     // Get aggregations on classifications and statuses
     if (settings.includeAggregations) {

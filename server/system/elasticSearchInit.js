@@ -80,11 +80,16 @@ exports.createIndexJson = {
                 }
                 , "version": {"type": "string", "index": "no"}
                 , "views": {type: "integer"}
-                , primaryNameNotAnalyzed: {type: 'string', 'index': 'not_analyzed'}
                 , primaryNameSuggest: {
                     "type":            "string",
                     "analyzer":  "autocomplete",
-                    "search_analyzer": "standard"
+                    "search_analyzer": "standard",
+                    "fields": {
+                        "raw": {
+                            "type":  "string",
+                            "index": "not_analyzed"
+                        }
+                    }
                 }
             }
         }
@@ -160,7 +165,6 @@ exports.createFormIndexJson = {
                     }
                 }, "views": {"type": "integer"}
                 , "numQuestions": {"type": "integer"}
-                , primaryNameNotAnalyzed: {type: 'string', 'index': 'not_analyzed'}
                 , primaryNameSuggest: {
                     "type":            "string",
                     "analyzer":  "autocomplete",
@@ -279,7 +283,6 @@ exports.riverFunction = function (_elt, cb) {
         elt.stewardOrgCopy = elt.stewardOrg;
         elt.steward = elt.stewardOrg.name;
         elt.primaryNameCopy = elt.naming ? escapeHTML(elt.naming[0].designation) : '';
-        elt.primaryNameNotAnalyzed = elt.naming ? escapeHTML(elt.naming[0].designation) : '';
         elt.primaryNameSuggest = elt.primaryNameCopy;
 
         var primDef;
