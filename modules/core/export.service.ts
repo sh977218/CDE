@@ -77,7 +77,7 @@ export class ExportService {
                             let interArr = _intersectionWith(
                                 nonEmptyResults,
                                 formCdes,
-                                (a, b) => a.tinyId === b.tinyId);
+                                (a: any, b: any) => a.tinyId === b.tinyId);
                             interArr.forEach(matchId => {
                                 let foundCdes = result.filter(c => c.tinyId === matchId.tinyId);
                                 foundCdes.forEach(c => {

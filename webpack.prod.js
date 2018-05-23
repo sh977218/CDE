@@ -1,11 +1,9 @@
-const prod = process.env.BUILD_ENV === 'production'; // build type from "npm run build"
 const _ = require('lodash');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const AotPlugin = require('@ngtools/webpack');
-const { CheckerPlugin } = require('awesome-typescript-loader');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -23,9 +21,9 @@ const assets = [
     '/app/styles-cde.css'
 ];
 
-console.log("Are we prod? " + prod);
 
 module.exports = {
+    mode: 'production',
     context: __dirname,
     entry: {
         cde: './modules/main.ts',
@@ -41,11 +39,7 @@ module.exports = {
             {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
             {
                 test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
-                use: prod ? ['@ngtools/webpack'] : [
-                    {loader: 'awesome-typescript-loader', options: {configFile: 'tsconfig.json'}},
-                    'angular-router-loader',
-                    'angular2-template-loader'
-                ]
+                use: ['@ngtools/webpack']
             },
             {
                 test: /\.js$/,
@@ -74,15 +68,16 @@ module.exports = {
             {test: /\.(eot|png|svg|ttf|webp|woff|woff2)$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]},
         ]
     },
-    plugins: prod ?
+    plugins:
         [
             new CleanWebpackPlugin(['dist/app']),
-            new webpack.NoEmitOnErrorsPlugin(),
-            new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
-            new webpack.DefinePlugin({
-                IS_BROWSER: true,
-                PRODUCTION: JSON.stringify(true),
-            }),
+
+            // new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
+            // new webpack.DefinePlugin({
+            //     IS_BROWSER: true,
+            //     PRODUCTION: JSON.stringify(true),
+            // }),
+
             new webpack.ProvidePlugin({
                 $: 'jquery',
                 jQuery: 'jquery',
@@ -90,10 +85,12 @@ module.exports = {
                 Tether: 'tether',
                 Popper: ['popper.js', 'default'],
             }),
+
             new AotPlugin.AngularCompilerPlugin({
                 tsConfigPath: path.resolve(__dirname, 'tsconfig.json'),
                 entryModule: path.resolve(__dirname, 'modules/_app/app.module') + '#CdeAppModule'
             }),
+
             // new webpack.optimize.UglifyJsPlugin({
             //     output: {
             //         comments: false
@@ -111,11 +108,12 @@ module.exports = {
             //     },
             //     warnings: true,
             // }),
+
             new ExtractTextPlugin({filename: '[name].css'}),
-            new webpack.optimize.ModuleConcatenationPlugin(),
-            new OptimizeJsPlugin({
-                sourceMap: false
-            }),
+            // new OptimizeJsPlugin({
+            //     sourceMap: false
+            // }),
+
             // new webpack.optimize.CommonsChunkPlugin({
             //     name: ['cde'],
             // }),
@@ -164,67 +162,11 @@ module.exports = {
                 }
             }),
             // new BundleAnalyzerPlugin()
-        ] : [
-            new CleanWebpackPlugin(['dist/app']),
-            new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
-                /@angular(\\|\/)core(\\|\/)esm5/,
-                path.resolve(__dirname, '../src')
-            ),
-            new webpack.DefinePlugin({
-                IS_BROWSER: true,
-                PRODUCTION: JSON.stringify(false),
-            }),
-            new webpack.NoEmitOnErrorsPlugin(),
-            new webpack.LoaderOptionsPlugin({debug: true}), // enable debug
-            new webpack.ProgressPlugin(), // show progress in ConEmu window
-            new webpack.ProvidePlugin({
-                $: 'jquery',
-                jQuery: 'jquery',
-                'windows.jQuery': 'jquery',
-                Tether: 'tether',
-                Popper: ['popper.js', 'default'],
-            }),
-            new CheckerPlugin(),
-            // new HardSourceWebpackPlugin(),
-            new ExtractTextPlugin({filename: '[name].css'}),
-            new CopyWebpackPlugin([
-                {from: 'modules/_app/assets/'}
-            ]),
-            new FileListPlugin({
-                fileName: 'sw.js',
-                itemsFromCompilation: function defaultItemsFromCompilation(compilation){
-                    return _.keys(compilation.assets);
-                },
-                format: function defaultFormat(listItems){
-                    let sw = fs.readFileSync('modules/_app/sw.template.js', {encoding: 'utf8'});
-                    let filesInsert = listItems.map(e => '/app/' + e).concat(assets).map(e => '"' + e + '"').join(',');
-                    let version = crypto.createHash('md5').update(filesInsert).digest('hex').substr(0,4);
-                    sw = sw.replace('{#}', version);
-                    sw = sw.replace('{#}', version);
-                    let location = sw.indexOf('"###"');
-                    let pre = sw.substring(0, location);
-                    let post = sw.substring(location + 5);
-                    return pre + filesInsert + post;
-                }
-            }),
         ],
     resolve: {
         unsafeCache: false,
         extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],
         modules: ["modules", "node_modules", "modules/components"]
-    },
-    devtool: prod ? undefined : '#cheap-eval-source-map',
-    watch: !prod,
-    watchOptions: prod ? undefined : {
-        aggregateTimeout: 1000,
-        ignored: /node_modules/
-    },
-    devServer: prod ? undefined : {
-        contentBase: __dirname,
-        colors: true,
-        hot: true,
-        inline: true,
-        progress: true
     },
     externals: {
         angular: true
