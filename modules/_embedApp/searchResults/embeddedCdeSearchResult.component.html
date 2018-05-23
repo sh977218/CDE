@@ -23,7 +23,7 @@
         <tr *ngFor="let elt of elts">
             <td class="name">
                 <a href="https://cde.nlm.nih.gov/deView?tinyId={{elt.tinyId}}" target="_blank">
-                    {{elt.naming[0].designation}}
+                    {{elt.designations[0].designation}}
                 </a>
             </td>
             <td *ngIf="searchViewSettings.tableViewFields.permissibleValues" class="permissibleValues multiline-ellipsis">

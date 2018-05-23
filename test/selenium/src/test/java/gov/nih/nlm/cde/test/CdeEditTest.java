@@ -13,11 +13,11 @@ public class CdeEditTest extends NlmCdeBaseTest {
     public void editCde() {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Mediastinal Lymph Node Physical Examination Specify";
-        String cdeNameChange = "[name change number 1]";
-        String cdeDefinitionChange = "[def change number 1]";
+        String cdeDesignationChange = "[designation change number 1]";
+        String cdeDefinitionChange = "[definition change number 1]";
         goToCdeByName(cdeName);
         goToNaming();
-        editDesignationByIndex(0, cdeNameChange);
+        editDesignationByIndex(0, cdeDesignationChange,null);
         editDefinitionByIndex(0, cdeDefinitionChange, false);
 
         goToPermissibleValues();
@@ -29,7 +29,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         newCdeVersion("Change note for change number 1");
 
         goToCdeByName(cdeName);
-        textPresent(cdeNameChange);
+        textPresent(cdeDesignationChange);
         textPresent(cdeDefinitionChange);
 
         goToPermissibleValues();
@@ -43,8 +43,8 @@ public class CdeEditTest extends NlmCdeBaseTest {
         textPresent(cdeName);
         textPresent("Change note for change number 1");
         selectHistoryAndCompare(1, 2);
-        textPresent(cdeName + "[name change number 1]", By.xpath("//*[@id='Naming_0']"));
-        textPresent(cdeDefinitionChange, By.xpath("//*[@id='Naming_0']"));
+        textPresent(cdeName + cdeDesignationChange, By.xpath("//*[@id='Designation_0']"));
+        textPresent(cdeDefinitionChange, By.xpath("//*[@id='Definition_0']"));
         clickElement(By.id("closeHistoryCompareModal"));
 
         // View Prior Version
@@ -52,14 +52,14 @@ public class CdeEditTest extends NlmCdeBaseTest {
         switchTab(1);
         textPresent("Warning: this data element is archived.");
         clickElement(By.linkText("view the current version here"));
-        textPresent(cdeNameChange);
+        textPresent(cdeDesignationChange);
         textPresent(cdeDefinitionChange);
 
         goToPermissibleValues();
         textPresent("myUom");
 
         openCdeAudit(cdeName);
-        textPresent(cdeName + cdeNameChange);
+        textPresent(cdeName + cdeDesignationChange);
         textPresent("the free text field to specify the other type of mediastinal lymph node dissection." + cdeDefinitionChange);
 
         switchTabAndClose(0);

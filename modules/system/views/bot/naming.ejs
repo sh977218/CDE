@@ -1,19 +1,37 @@
-<% if (elt.naming.length) { %>
-<div class="row" id="naming_tab">
-    <h2 class="w-100">Naming:</h2>
-    <% for(var i = 0; i < elt.naming.length; i++) {
-        var name = elt.naming[i];
-    %>
-    <div class="col-12">
-        <dl class="row">
-            <dt class="col-3">Name:</dt>
-            <dd class="col-9"><%= name.designation %></dd>
-            <dt class="col-3">Definition:</dt>
-            <dd class="col-9"><%= name.definition %></dd>
-            <dt class="col-3">Tags:</dt>
-            <dd class="col-9"><%= name.tags %></dd>
-        </dl>
+<div id="naming_tab">
+    <% if (elt.designations.length) { %>
+    <div class="row">
+        <h2 class="w-100">Designations:</h2>
+        <% for(var i = 0; i < elt.designations.length; i++) {
+            var designation = elt.designations[i];
+        %>
+        <div class="col-12">
+            <dl class="row">
+                <dt class="col-3">Designation:</dt>
+                <dd class="col-9"><%= designation.designation %></dd>
+                <dt class="col-3">Tags:</dt>
+                <dd class="col-9"><%= designation.tags %></dd>
+            </dl>
+        </div>
+        <% } %>
+    </div>
+    <% } %>
+
+    <% if (elt.definitions.length) { %>
+    <div class="row">
+        <h2 class="w-100">Designations:</h2>
+        <% for(var i = 0; i < elt.definitions.length; i++) {
+            var definition = elt.definitions[i];
+        %>
+        <div class="col-12">
+            <dl class="row">
+                <dt class="col-3">Definition:</dt>
+                <dd class="col-9"><%= definition.definition %></dd>
+                <dt class="col-3">Tags:</dt>
+                <dd class="col-9"><%= definition.tags %></dd>
+            </dl>
+        </div>
+        <% } %>
     </div>
     <% } %>
 </div>
-<% } %>

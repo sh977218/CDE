@@ -4,7 +4,7 @@ import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstra
 
 import { AlertService } from '_app/alert/alert.service';
 import { FormService } from 'nativeRender/form.service';
-import { Naming } from 'shared/models.model';
+import { Definition, Designation, Naming } from 'shared/models.model';
 import { CdeForm, FormSection } from 'shared/form/form.model';
 
 @Component({
@@ -17,18 +17,17 @@ export class CreateFormFromBoardComponent {
     elt: CdeForm;
     modalRef: NgbModalRef;
 
-    constructor(
-        private alert: AlertService,
-        private formService: FormService,
-        private http: HttpClient,
-        public modalService: NgbModal
-    ) {
+    constructor(private alert: AlertService,
+                private formService: FormService,
+                private http: HttpClient,
+                public modalService: NgbModal) {
     }
 
     openCreateFormModal() {
         if (this.board.pins && this.board.pins.length > 0) {
             this.elt = new CdeForm();
-            this.elt.naming.push(new Naming(this.board.name));
+            this.elt.designations.push(new Designation(this.board.name));
+            this.elt.definitions.push(new Definition());
             this.elt.formElements.push(new FormSection());
             this.http.get<any>('/board/' + this.board._id + '/0/500').subscribe(
                 res => {

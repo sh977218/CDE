@@ -12,7 +12,7 @@
     <tr *ngFor="let f of elts">
         <td *ngIf="searchViewSettings.tableViewFields.name">
             <a href="https://cde.nlm.nih.gov/formView?tinyId={{f.tinyId}}" target="_blank">
-                {{f.naming[0].designation}}
+                {{f.designations[0].designation}}
             </a>
         </td>
         <td *ngIf="embed.form.nbOfQuestions">

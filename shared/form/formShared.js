@@ -56,11 +56,11 @@ export function convertFormToSection(form) {
                 form: {
                     tinyId: form.tinyId,
                     version: form.version,
-                    name: form.naming[0] ? form.naming[0].designation : '',
+                    name: form.designations[0] ? form.designations[0].designation : '',
                     ids: form.ids
                 }
             },
-            label: form.naming[0] ? form.naming[0].designation : '',
+            label: form.designations[0] ? form.designations[0].designation : '',
             skipLogic: {
                 condition: ''
             },
@@ -174,13 +174,13 @@ export function getFormOdm(form, cb) {
         , Study: {
             '$OID': form.tinyId
             , GlobalVariables: {
-                StudyName: escapeHTML(form.naming[0].designation)
-                , StudyDescription: escapeHTML(form.naming[0].definition)
-                , ProtocolName: escapeHTML(form.naming[0].designation)
+                StudyName: escapeHTML(form.designations[0].designation)
+                , StudyDescription: escapeHTML(form.definitions[0].definition)
+                , ProtocolName: escapeHTML(form.designations[0].designation)
             }
             , BasicDefinitions: {}
             , MetaDataVersion: {
-                '$Name': escapeHTML(form.naming[0].designation)
+                '$Name': escapeHTML(form.designations[0].designation)
                 , '$OID': 'MDV_' + form.tinyId
                 , Protocol: {
                     StudyEventRef: {

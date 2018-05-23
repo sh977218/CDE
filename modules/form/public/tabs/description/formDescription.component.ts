@@ -342,6 +342,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 designation: '',
                 tags: ['Question Text']
             }],
+            designations: [{designation: '', tags: ['Question Text']}],
             valueDomain: {datatype: 'Text', permissibleValues: []}
         };
     }
@@ -364,7 +365,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     newDataElementNameChanged() {
-        this.searchTerms.next(this.newDataElement.naming[0].designation);
+        this.searchTerms.next(this.newDataElement.designations[0].designation);
     }
 
     createNewDataElement(newCde = this.newDataElement) {

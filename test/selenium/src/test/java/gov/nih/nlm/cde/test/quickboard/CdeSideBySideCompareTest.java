@@ -24,8 +24,8 @@ public class CdeSideBySideCompareTest extends NlmCdeBaseTest {
         textPresent("Incomplete", By.xpath(getSideBySideXpath("left", "status", "fullmatch", 1)));
         textPresent("Incomplete", By.xpath(getSideBySideXpath("right", "status", "fullmatch", 1)));
 
-        textPresent("cdeCompare1", By.xpath(getSideBySideXpath("left", "naming", "notmatch", 1)));
-        textPresent("cdeCompare2", By.xpath(getSideBySideXpath("right", "naming", "notmatch", 1)));
+        textPresent("cdeCompare1", By.xpath(getSideBySideXpath("left", "designation", "notmatch", 1)));
+        textPresent("cdeCompare2", By.xpath(getSideBySideXpath("right", "designation", "notmatch", 1)));
 
         textPresent("reference document title 1", By.xpath(getSideBySideXpath("left", "reference documents", "notmatch", 1)));
         textPresent("reference document title 2", By.xpath(getSideBySideXpath("right", "reference documents", "notmatch", 1)));
