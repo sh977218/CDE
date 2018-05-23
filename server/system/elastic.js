@@ -433,7 +433,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     queryStuff.sort = {
         "_score": 'desc',
         "views": 'desc',
-        "primaryNameSuggest": 'desc'
+        "primaryNameSuggest.raw": 'desc'
     };
 
     // Get aggregations on classifications and statuses

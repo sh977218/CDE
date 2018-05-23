@@ -168,7 +168,13 @@ exports.createFormIndexJson = {
                 , primaryNameSuggest: {
                     "type":            "string",
                     "analyzer":  "autocomplete",
-                    "search_analyzer": "standard"
+                    "search_analyzer": "standard",
+                    "fields": {
+                        "raw": {
+                            "type":  "string",
+                            "index": "not_analyzed"
+                        }
+                    }
                 }
             }
         }
