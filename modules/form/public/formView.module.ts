@@ -1,13 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import {
+    MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatExpansionModule, MatGridListModule,
+    MatIconModule,
+    MatInputModule,
+    MatSelectModule, MatSliderModule, MatTabsModule
+} from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeModule } from 'angular-tree-component';
 import "angular-tree-component/dist/angular-tree-component.css";
 import { NgSelectModule } from '@ng-select/ng-select';
 import { HotkeyModule } from 'angular2-hotkeys';
-import { MatDialogModule, MatIconModule, MatGridListModule, MatButtonModule } from "@angular/material";
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { BoardModule } from 'board/public/board.module';
@@ -50,7 +55,14 @@ const appRoutes: Routes = [
         MatIconModule,
         MatButtonModule,
         MatDialogModule,
+        MatInputModule,
+        MatCheckboxModule,
         MatGridListModule,
+        MatSelectModule,
+        MatSliderModule,
+        MatExpansionModule,
+        MatCardModule,
+        MatTabsModule,
         // core
         WidgetModule,
         // internal

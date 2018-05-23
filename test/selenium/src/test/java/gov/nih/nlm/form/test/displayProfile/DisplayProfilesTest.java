@@ -22,11 +22,11 @@ public class DisplayProfilesTest extends BaseFormTest {
         createDisplayProfile(3, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5, false, 0);
         createDisplayProfile(4, "Multiple Select", false, false, false, false, "Dynamic", 5, false, 4);
         scrollToTop();
-        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
-        textPresent("1", By.xpath("(//div[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]/../span"));
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='profile_0']//table//input[@type='radio']")).size(), 10);
+        textPresent("1", By.xpath("(//*[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]/../span"));
         Assert.assertTrue(
-                findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_0-1']//" + byValueListValueXPath("1st Grade"))).getLocation().y <
-                        findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_0-1']//" + byValueListValueXPath("2nd Grade"))).getLocation().y
+                findElement(By.xpath("//*[@id='profile_2']//div[@id='Education level USA type_0-1']//" + byValueListValueXPath("1st Grade"))).getLocation().y <
+                        findElement(By.xpath("//*[@id='profile_2']//div[@id='Education level USA type_0-1']//" + byValueListValueXPath("2nd Grade"))).getLocation().y
         );
         scrollToViewById("profile_3");
         Assert.assertEquals(
@@ -39,8 +39,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         textPresent("In the past 7 days");
         Assert.assertEquals(driver.findElements(By.cssSelector(".fa.fa-plus.iconButton")).size(), 0);
         textPresent("I felt annoyed");
-        textPresent("1", By.xpath("//div[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
-        textPresent("5", By.xpath("//div[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[6]"));
+        textPresent("1", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
+        textPresent("5", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[6]"));
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 25);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
         textNotPresent("I was grouchy");
