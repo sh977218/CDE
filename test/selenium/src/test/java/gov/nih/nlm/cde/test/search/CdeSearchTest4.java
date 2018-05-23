@@ -6,15 +6,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CdeSearchTest4 extends NlmCdeBaseTest {
-    @Test
-    public void basicPagination() {
-        goToCdeSearch();
-        clickElement(By.id("browseOrg-NINDS"));
-        textPresent("1 - 20 of 10000");
-        clickElement(By.cssSelector("mat-paginator-navigation-next"));
-        textPresent("21 - 40 of 10000");
-    }
-
 
     @Test
     public void usedBySummary() {
