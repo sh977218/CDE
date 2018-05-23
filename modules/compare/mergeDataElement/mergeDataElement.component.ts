@@ -20,7 +20,8 @@ export class MergeDataElementComponent {
     mergeFields: any = {
         classifications: true,
         ids: false,
-        naming: false,
+        designations: false,
+        definitions: false,
         properties: false,
         attachments: false,
         sources: false,
@@ -31,12 +32,10 @@ export class MergeDataElementComponent {
     };
     modalRef: NgbModalRef;
 
-    constructor(
-        private alert: AlertService,
-        public isAllowedModel: IsAllowedService,
-        public mergeCdeService: MergeCdeService,
-        public modalService: NgbModal,
-    ) {
+    constructor(private alert: AlertService,
+                public isAllowedModel: IsAllowedService,
+                public mergeCdeService: MergeCdeService,
+                public modalService: NgbModal) {
     }
 
     allowToMerge() {
@@ -45,7 +44,8 @@ export class MergeDataElementComponent {
             this.allow = this.allow && this.isAllowedModel.isAllowed(this.source);
         }
         if (this.mergeFields.ids ||
-            this.mergeFields.naming ||
+            this.mergeFields.designations ||
+            this.mergeFields.definitions ||
             this.mergeFields.properties ||
             this.mergeFields.attachments ||
             this.mergeFields.sources ||
@@ -59,7 +59,8 @@ export class MergeDataElementComponent {
     checkAllMergerFields() {
         this.mergeFields.classifications = true;
         this.mergeFields.ids = true;
-        this.mergeFields.naming = true;
+        this.mergeFields.designations = true;
+        this.mergeFields.definitions = true;
         this.mergeFields.properties = true;
         this.mergeFields.attachments = true;
         this.mergeFields.sources = true;

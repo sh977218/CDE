@@ -18,13 +18,14 @@ public class CdeAddRemoveNameTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeByName(cdeName);
         goToNaming();
-        addNewName(newName, newDefinition, false, null);
+        addNewDesignation(newName, null);
+        addNewDefinition(newDefinition, false, null);
         newCdeVersion();
 
         goToCdeByName(cdeName);
         goToNaming();
         textPresent(newName);
-        editDesignationByIndex(1, newNameChange);
+        editDesignationByIndex(1, newNameChange,null);
         newCdeVersion();
 
         goToCdeByName(cdeName);
@@ -36,13 +37,13 @@ public class CdeAddRemoveNameTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToNaming();
         textPresent(newDefinition + newDefinitionChange);
-        editTagByIndex(1, new String[]{newTag});
+        editDesignationByIndex(1, null, new String[]{newTag});
         newCdeVersion();
 
         goToCdeByName(cdeName);
         goToNaming();
         textPresent(newTag);
-        clickElement(By.id("removeNaming-1"));
+        clickElement(By.id("removeDesignation-1"));
         newCdeVersion();
 
         textNotPresent(newName);

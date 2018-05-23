@@ -14,7 +14,7 @@ public class EditCdeByTinyIdTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         goToNaming();
-        editDesignationByIndex(0, nameChange);
+        editDesignationByIndex(0, nameChange,null);
         newCdeVersion();
 
         goToCdeByName(cdeName);

@@ -113,7 +113,8 @@ export class FormViewComponent implements OnInit {
 
     createDataElement(newCde, cb) {
         let dataElement = {
-            naming: newCde.naming,
+            designations: newCde.designations,
+            definitions: newCde.definitions,
             stewardOrg: {
                 name: this.elt.stewardOrg.name
             },
@@ -237,7 +238,9 @@ export class FormViewComponent implements OnInit {
         delete this.eltCopy['views'];
         this.eltCopy['ids'] = [];
         this.eltCopy['sources'] = [];
-        this.eltCopy['naming'][0].designation = 'Copy of: ' + this.eltCopy['naming'][0].designation;
+        this.eltCopy['designations'] = this.eltCopy['designations'];
+        this.eltCopy['designations'][0].designation = 'Copy of: ' + this.eltCopy['designations'][0].designation;
+        this.eltCopy['definitions'] = this.eltCopy['definitions'];
         this.eltCopy['registrationState'] = {
             registrationStatus: 'Incomplete',
             administrativeNote: 'Copy of: ' + this.elt.tinyId

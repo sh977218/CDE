@@ -55,7 +55,7 @@
         <div class="card" *ngFor="let cde of cdes;let index = index;">
             <div class="card-header">
                 <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed">
-                    {{cde.naming[0].designation}}
+                    {{cde.designations[0].designation}}
                 </span>
                 <a routerLink="/deView" [queryParams]="{tinyId: cde.tinyId}">
                     <i class="fa fa-eye iconColor"></i></a>
@@ -111,7 +111,7 @@
         <div class="card" *ngFor="let form of forms;let index = index;">
             <div class="card-header">
                 <span class="hand-cursor" (click)="form.isCollapsed = !form.isCollapsed">
-                    {{form.naming[0].designation}}
+                    {{form.designations[0].designation}}
                 </span>
                 <a routerLink="/formView" [queryParams]="{tinyId: form.tinyId}">
                     <i class="fa fa-eye iconColor"></i></a>

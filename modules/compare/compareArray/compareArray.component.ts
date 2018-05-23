@@ -51,27 +51,37 @@ let compareArrayOption = [
         ]
     },
     {
-        label: "Naming",
+        label: "Designation",
         isEqual: function (a, b) {
             if (_isEmpty(a.diff)) a.diff = [];
             if (_isEmpty(b.diff)) b.diff = [];
             let result = _isEqual(a.designation, b.designation);
             if (result) {
-                if (!_isEqual(a.definition, b.definition)) {
-                    a.diff.push("definition");
-                    b.diff.push("definition");
+                if (!_isEqual(a.tags, b.tags)) {
+                    a.diff.push("tags");
+                    b.diff.push("tags");
                     a.display = true;
                     b.display = true;
                 }
-                if (!_isEqual(a.languageCode, b.languageCode)) {
-                    a.diff.push("languageCode");
-                    b.diff.push("languageCode");
-                    a.display = true;
-                    b.display = true;
-                }
-                if (!_isEqual(a.source, b.source)) {
-                    a.diff.push("source");
-                    b.diff.push("source");
+            }
+            return result;
+        },
+        property: "designations",
+        data: [
+            {label: 'Designation', property: 'designation'},
+            {label: 'Tags', property: 'tags', array: true}
+        ]
+    },
+    {
+        label: "Definition",
+        isEqual: function (a, b) {
+            if (_isEmpty(a.diff)) a.diff = [];
+            if (_isEmpty(b.diff)) b.diff = [];
+            let result = _isEqual(a.definition, b.definition);
+            if (result) {
+                if (!_isEqual(a.definitionFormat, b.definitionFormat)) {
+                    a.diff.push("definitionFormat");
+                    b.diff.push("definitionFormat");
                     a.display = true;
                     b.display = true;
                 }
@@ -84,10 +94,10 @@ let compareArrayOption = [
             }
             return result;
         },
-        property: "naming",
+        property: "definitions",
         data: [
-            {label: 'Name', property: 'designation'},
             {label: 'Definition', property: 'definition'},
+            {label: 'Format', property: 'definitionFormat'},
             {label: 'Tags', property: 'tags', array: true}
         ]
     },

@@ -27,10 +27,9 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     @Input() model;
     @Input() inputType: string = "text";
     @Input() isAllowed: boolean = false;
-    @Input() defFormat: string = "";
     @Output() modelChange = new EventEmitter<string>();
+    @Input() defFormat: string = "";
     @Output() defFormatChange = new EventEmitter<string>();
-    @Output() save = new EventEmitter<string>();
 
     public editMode: boolean;
     public value: string;
@@ -88,10 +87,8 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
             alert('Error. Img src may only be a relative url starting with /data');
         } else {
             this.editMode = false;
-            this.defFormat = this.localFormat;
-            this.modelChange.emit(this.value);
             this.defFormatChange.emit(this.localFormat);
-            this.save.emit();
+            this.modelChange.emit(this.value);
         }
     }
 

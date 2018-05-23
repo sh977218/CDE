@@ -131,7 +131,7 @@ exports.logError = function (message, callback) { // all server errors, express 
             }
         };
 
-        if (message.origin.indexOf("pushGetAdministratorRegistrations") === -1) {
+        if (message.origin && message.origin.indexOf("pushGetAdministratorRegistrations") === -1) {
             mongo_data_system.pushGetAdministratorRegistrations(registrations => {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
             });
@@ -180,7 +180,7 @@ exports.handleGenericError = function (options, cb) {
     return function errorHandler(err, ...args) {
         if (err) {
             if (options && options.res) {
-                let message = options.publicMessage || "An error has occured. It's already been reported.";
+                let message = options.publicMessage || "An error has occurred. It's already been reported.";
                 res.status(500).send(message);
             }
             exports.logError({
