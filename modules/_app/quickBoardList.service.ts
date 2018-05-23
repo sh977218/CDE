@@ -22,11 +22,9 @@ export class QuickBoardListService {
     forms: CdeForm[] = [];
 
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        private localStorageService: LocalStorageService,
-    ) {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                private localStorageService: LocalStorageService) {
         this.loadElements();
     }
 

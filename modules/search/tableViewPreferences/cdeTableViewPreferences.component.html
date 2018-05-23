@@ -108,7 +108,7 @@
     </mat-grid-list>
     <ng-select id="identifiers" (change)="onChanged.emit()" ngDefaultControl
                [(ngModel)]="searchSettings.tableViewFields.identifiers"
-               [placeholder]="placeHolder" [multiple]="true" [appendTo]="appendTo"
+               [placeholder]="placeHolder" [multiple]="true"
                [items]="identifierSources" [hideSelected]="true"
                [disabled]="!searchSettings.tableViewFields.ids">
     </ng-select>

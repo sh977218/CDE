@@ -14,8 +14,6 @@ let conn = connHelper.establishConnection(config.database.appData);
 
 schemas.formSchema.pre('save', function (next) {
     let self = this;
-    self.definitions = mongo_data.copyDefinition(self.naming);
-    self.designations = mongo_data.copyDesignation(self.naming);
     try {
         elastic.updateOrInsert(self);
     } catch (exception) {
@@ -101,7 +99,7 @@ exports.deleteDraftForm = function (tinyId, cb) {
 };
 
 exports.draftsList = (criteria, cb) => {
-    FormDraft.find(criteria, {"updatedBy.username": 1, "updated": 1, "naming.designation": 1, tinyId: 1})
+    FormDraft.find(criteria, {"updatedBy.username": 1, "updated": 1, "designations.designation": 1, tinyId: 1})
         .sort({"updated": -1}).exec(cb);
 };
 
@@ -114,7 +112,7 @@ exports.latestVersionByTinyId = function (tinyId, cb) {
 /* ---------- PUT NEW REST API above ---------- */
 
 exports.getPrimaryName = function (elt) {
-    return elt.naming[0].designation;
+    return elt.designations[0].designation;
 };
 
 exports.getStream = function (condition) {

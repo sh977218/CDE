@@ -335,14 +335,14 @@ export class TableListComponent implements OnInit {
     }
 
     static getQuestionTexts(e) {
-        return e.naming.filter(n => {
+        return e.designations.filter(n => {
             if (!n.tags) n.tags = [];
             return n.tags.filter(t => t.indexOf('Question Text') > -1).length > 0;
         });
     }
 
     static getOtherNames(cde) {
-        return cde.naming.filter((n, i) => {
+        return cde.designations.filter((n, i) => {
             if (!n.tags) n.tags = [];
             return i > 0 && n.tags.filter(t => t.indexOf('Question Text') > -1).length === 0;
         });

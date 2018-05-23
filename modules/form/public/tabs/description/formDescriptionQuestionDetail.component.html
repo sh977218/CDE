@@ -231,48 +231,42 @@
             </dd>
         </ng-container>
         <ng-container *ngIf="!question.question.cde.tinyId">
-            <dt class="col-2">CDE Names:</dt>
-            <dd class="col-10 cdeName">
+            <dt class="col-2">CDE Designations:</dt>
+            <dd class="col-10 cdeDesignations">
                 <table class="table table-border table-responsive">
                     <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Definition</th>
+                        <th>Designation</th>
                         <th>Tags</th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let cdeNaming of question.question.cde.naming;let i = index;">
+                    <tr *ngFor="let cdeDesignation of question.question.cde.designations;let i = index;">
                         <td>
-                            <cde-inline-edit [(model)]="cdeNaming.designation" [isAllowed]="true"
+                            <cde-inline-edit [(model)]="cdeDesignation.designation" [isAllowed]="true"
                                              (modelChange)="onEltChange.emit();"></cde-inline-edit>
                         </td>
                         <td>
-                            <cde-inline-edit [(model)]="cdeNaming.definition" [isAllowed]="true"
-                                             (modelChange)="onEltChange.emit();"></cde-inline-edit>
-                        </td>
-                        <td>
-                            <ng-select [(ngModel)]="cdeNaming.tags" [items]="tag" [hideSelected]="true"
+                            <ng-select [(ngModel)]="cdeDesignation.tags" [items]="tag" [hideSelected]="true"
                                        multiple="true" [appendTo]="'body'" [hideSelected]="true"
                                        (change)="onEltChange.emit();">
                             </ng-select>
                         </td>
                         <td>
-                            <i class="fa fa-trash hand-cursor" (click)="removeCdeNaming(i);"></i>
+                            <i class="fa fa-trash hand-cursor" (click)="removeCdeDesignation(i);"></i>
                         </td>
                     </tr>
-                    <tr class="newCdeName">
-                        <td><input [(ngModel)]="newCdeNaming.designation" class="w-100 newCdeDesignation"/></td>
-                        <td><input [(ngModel)]="newCdeNaming.definition" class="w-100 newCdeDefinition"/></td>
+                    <tr class="newCdeDesignation">
+                        <td><input [(ngModel)]="newCdeDesignation.designation" class="w-100 newCdeDesignation"/></td>
                         <td class="newCdeTags">
-                            <ng-select [(ngModel)]="newCdeNaming.tags" [items]="tag" [hideSelected]="true"
+                            <ng-select [(ngModel)]="newCdeDesignation.tags" [items]="tag" [hideSelected]="true"
                                        multiple="true" bindLabel="name" bindValue="name" [appendTo]="'body'"
                                        [hideSelected]="true">
                             </ng-select>
                         </td>
                         <td>
-                            <i class="fa fa-plus hand-cursor" (click)="addNewCdeNaming(newCdeNaming);"></i>
+                            <i class="fa fa-plus hand-cursor" (click)="addNewCdeDesignation(newCdeDesignation);"></i>
                         </td>
                     </tr>
                     </tbody>
@@ -379,58 +373,4 @@
             </ng-container>
         </ng-container>
     </dl>
-</ng-template>
-
-<ng-template #formDescriptionNameSelectTmpl let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h3>Select a question label from a CDE Name</h3>
-    </div>
-
-    <div class="modal-body">
-        <div *ngIf="nameSelectModal.cde === null"><i class="fa fa-spinner fa-pulse"></i> Loading...</div>
-        <div *ngIf="nameSelectModal.cde === 'error'">There is an issue retrieving this Data Element.</div>
-        <ngb-alert *ngIf="nameSelectModal.updateSkipLogic">
-            There is skip logic using this label. It will be updated.
-        </ngb-alert>
-
-        <div *ngFor="let naming of nameSelectModal.cde.naming; let i = index" class="row" id="q_select_name_{{i}}">
-            <div class="col-3">
-                <button class="btn btn-outline-dark" (click)="nameSelectModal.okSelect(naming)">
-                    <i class="fa fa-check mr-1"></i>Select
-                </button>
-            </div>
-            <div class="col-9">
-                <dl class="row">
-                    <dt class="col-2">Name:</dt>
-                    <dd class="col-10">
-                        <cde-inline-edit [(model)]="naming.designation"
-                                         (modelChange)="onEltChange.emit();"></cde-inline-edit>
-                    </dd>
-                    <dt class="col-2">Definition:</dt>
-                    <dd class="col-10">
-                        <cde-inline-area-edit [(model)]="naming.definition" (modelChange)="onEltChange.emit();"
-                                              [(defFormat)]="naming.definitionFormat"></cde-inline-area-edit>
-                    </dd>
-                    <dt class="col-2"> Tags:</dt>
-                    <dd class="col-10">
-                        <ng-select [(ngModel)]="naming.tags" [items]="tag" [hideSelected]="true"
-                                   multiple="true" [appendTo]="'body'" [hideSelected]="true"
-                                   (change)="onEltChange.emit();">
-                        </ng-select>
-                    </dd>
-                </dl>
-            </div>
-            <hr/>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <button class="btn btn-outline-dark" (click)="nameSelectModal.okSelect()">
-                    <i class="fa fa-stop"></i> No Label
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
-    </div>
 </ng-template>

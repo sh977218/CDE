@@ -166,7 +166,7 @@ export class FhirAppComponent {
                     CdeForm.validate(form);
                     this.patientForms.push({
                         tinyId: form.tinyId,
-                        name: form.naming[0].designation,
+                        name: form.designations[0].designation,
                         form: form
                     });
                     iterateFeSync(form, () => {}, () => {}, q => {

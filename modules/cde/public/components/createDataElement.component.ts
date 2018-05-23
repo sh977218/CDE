@@ -14,7 +14,7 @@ import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { Naming } from 'shared/models.model';
+import { Definition, Designation, Naming } from 'shared/models.model';
 import { SearchSettings } from 'search/search.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { classifyItem, findSteward, removeCategory } from 'shared/system/classificationShared';
@@ -44,9 +44,12 @@ export class CreateDataElementComponent implements OnInit {
         if (!this.elt) {
             this.elt = new DataElement();
             this.elt.naming.push(new Naming());
+            this.elt.designations.push(new Designation());
+            this.elt.definitions.push(new Definition());
         }
         this.validationErrors(this.elt);
         let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
+
         this.searchTerms.pipe(
             debounceTime(300),
             distinctUntilChanged(),
@@ -70,18 +73,16 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     dataElementNameChanged() {
-        this.searchTerms.next(this.elt.naming[0].designation);
+        this.searchTerms.next(this.elt.designations[0].designation);
     }
 
-    constructor(
-        private alert: AlertService,
-        private elasticService: ElasticService,
-        public isAllowedModel: IsAllowedService,
-        private http: HttpClient,
-        private localStorageService: LocalStorageService,
-        private router: Router,
-        public userService: UserService,
-    ) {
+    constructor(private alert: AlertService,
+                private elasticService: ElasticService,
+                public isAllowedModel: IsAllowedService,
+                private http: HttpClient,
+                private localStorageService: LocalStorageService,
+                private router: Router,
+                public userService: UserService) {
     }
 
     afterClassified(event) {
@@ -128,8 +129,8 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     elementNameChanged() {
-        if (!(this.elt.naming[0].designation) || this.elt.naming[0].designation.length < 3) return;
-        else this.showSuggestions(this.elt.naming[0].designation);
+        if (!(this.elt.designations[0].designation) || this.elt.designations[0].designation.length < 3) return;
+        else this.showSuggestions(this.elt.designations[0].designation);
     }
 
     openClassifyItemModal() {
@@ -166,10 +167,10 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     validationErrors(elt) {
-        if (!elt.naming[0].designation) {
+        if (!elt.designations[0].designation) {
             this.validationMessage = 'Please enter a name for the new CDE';
             return true;
-        } else if (!elt.naming[0].definition) {
+        } else if (!elt.definitions[0] || !elt.definitions[0].definition) {
             this.validationMessage = 'Please enter a definition for the new CDE';
             return true;
         } else if (!elt.stewardOrg.name || elt.stewardOrg.name === 'Select One') {

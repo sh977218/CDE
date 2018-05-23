@@ -17,7 +17,7 @@ public class VersionNumberValidator extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         goToNaming();
-        editDesignationByIndex(0, newName);
+        editDesignationByIndex(0, newName,null);
         clickElement(By.id("openSave"));
         textNotPresent(validationError);
         findElement(By.id("newVersion")).sendKeys("/23");

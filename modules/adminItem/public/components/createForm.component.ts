@@ -20,7 +20,7 @@ import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { Naming } from 'shared/models.model';
+import { Definition, Designation, Naming } from 'shared/models.model';
 import { CdeForm } from 'shared/form/form.model';
 import { classifyItem, findSteward, removeCategory } from 'shared/system/classificationShared';
 
@@ -47,17 +47,16 @@ export class CreateFormComponent implements OnInit {
         if (!this.elt) {
             this.elt = new CdeForm();
             this.elt.naming.push(new Naming());
+            this.elt.designations.push(new Designation());
+            this.elt.definitions.push(new Definition());
         }
     }
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public isAllowedModel: IsAllowedService,
-        private localStorageService: LocalStorageService,
-        private router: Router,
-    public userService: UserService,
-    ) {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public isAllowedModel: IsAllowedService,
+                private localStorageService: LocalStorageService,
+                private router: Router, public userService: UserService) {
     }
 
     afterClassified(event) {
@@ -118,9 +117,9 @@ export class CreateFormComponent implements OnInit {
     }
 
     validationErrors(elt) {
-        if (!elt.naming[0].designation) {
+        if (!elt.designations[0].designation) {
             return 'Please enter a name for the new Form';
-        } else if (!elt.naming[0].definition) {
+        } else if (!elt.definitions[0].definition) {
             return 'Please enter a definition for the new Form';
         } else if (!elt.stewardOrg.name) {
             return 'Please select a steward for the new Form';

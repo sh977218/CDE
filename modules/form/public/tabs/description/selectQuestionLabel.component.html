@@ -1,0 +1,36 @@
+<mat-dialog-title>Select a question label from a CDE Name</mat-dialog-title>
+<mat-dialog-content>
+    <ngb-alert>
+        There is skip logic using this label. It will be updated.
+    </ngb-alert>
+
+    <div *ngFor="let designation of cde.designations; let i = index" class="row"
+         id="q_select_name_{{i}}">
+        <div class="col-3">
+            <button mat-raised-button (click)="onSelect.emit(designation)">
+                <i class="fa fa-check mr-1"></i>Select
+            </button>
+        </div>
+        <div class="col-9">
+            <dl class="row">
+                <dt class="col-2">Designation:</dt>
+                <dd class="col-10">{{designation.designation}}}</dd>
+                <dt class="col-2"> Tags:</dt>
+                <dd class="col-10">
+                    <span *ngFor="let tag of designation.tags" class="badge badge-secondary">{{tag}}</span>
+                </dd>
+            </dl>
+        </div>
+        <hr/>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <button class="btn btn-outline-dark" (click)="onSelect.emit()">
+                <i class="fa fa-stop"></i> No Label
+            </button>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-raised-button (click)="onClosed.emit();" id="closeSelectQuestionLabelBtn">Close</button>
+</mat-dialog-actions>

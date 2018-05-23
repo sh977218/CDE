@@ -7,7 +7,7 @@
 
 <div class="container" itemscope="http://schema.org/MedicalCode">
     <% if (elt) { %>
-    <h1><%= elt.naming[0].designation %></h1>
+    <h1><%= elt.designations[0].designation %></h1>
     <%- include generalDetail.ejs %>
     <%- include naming.ejs %>
     <%- include referenceDocuments.ejs %>
