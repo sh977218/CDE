@@ -93,7 +93,7 @@ exports.createIndexJson = {
             analysis: {
                 "filter": {
                     "autocomplete_filter": {
-                        "type":     "edge_ngram",
+                        "type": "edge_ngram",
                         "min_gram": 1,
                         "max_gram": 20
                     }
@@ -104,7 +104,7 @@ exports.createIndexJson = {
                         , language: 'English'
                     },
                     "autocomplete": {
-                        "type":      "custom",
+                        "type": "custom",
                         "tokenizer": "standard",
                         "filter": [
                             "lowercase",
@@ -172,7 +172,7 @@ exports.createFormIndexJson = {
             analysis: {
                 "filter": {
                     "autocomplete_filter": {
-                        "type":     "edge_ngram",
+                        "type": "edge_ngram",
                         "min_gram": 1,
                         "max_gram": 20
                     }
@@ -183,7 +183,7 @@ exports.createFormIndexJson = {
                         , language: 'English'
                     },
                     "autocomplete": {
-                        "type":      "custom",
+                        "type": "custom",
                         "tokenizer": "standard",
                         "filter": [
                             "lowercase",
@@ -280,7 +280,8 @@ exports.riverFunction = function (_elt, cb) {
         elt.primaryNameSuggest = elt.primaryNameCopy;
         elt.primaryDefinitionCopy = elt.definitions[0] ? elt.definitions[0].definition : '';
         if (elt.definitions[0] && elt.definitions[0].definitionFormat === 'html')
-            elt.primaryDefinitionCopy = escapeHTML(elt.primaryDefinitionCopy);
+            elt.primaryDefinitionCopy = elt.primaryDefinitionCopy.replace(/<(?:.|\\n)*?>/gm, '');
+        else elt.primaryDefinitionCopy = escapeHTML(elt.primaryDefinitionCopy);
 
         var regStatusSortMap = {
             Retired: 6,
