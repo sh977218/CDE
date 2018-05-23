@@ -550,8 +550,8 @@ schemas.trafficFilterSchema = new mongoose.Schema({
 schemas.notificationSchema = new mongoose.Schema({
     title: String,
     body: String,
-    data: {type: Date, index: true, default: new Date()},
-    receiver: Number
+    date: {type: Date, index: true, default: new Date()},
+    roles: {type: [String], index: true, default: []}
 });
 
 schemas.classificationAudit.set('collection', 'classificationAudit');

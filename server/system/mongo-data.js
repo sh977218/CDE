@@ -741,7 +741,16 @@ exports.copyDefinition = function (namings) {
 };
 
 
-exports.getNotificationsByRole = (roles, cb) => {
-    roles = roles.map(r => authorizationShared.ROLE_BIT_MAP[r]);
-    NotificationModel.find({date: {"$lte": new Date()}, receiver: {$bitsAnySet: roles}}, cb);
+exports.getNotificationsByUser = (user, cb) => {
+    let query = {date: {"$lte": new Date()}};
+    if (user) {
+        if (!user.siteAdmin) {
+            query.roles = user.roles;
+        } else if (user.roles.length === 0) {
+            query.roles = 'all';
+        }
+    } else {
+        query.roles = 'all';
+    }
+    NotificationModel.find(query, cb);
 };

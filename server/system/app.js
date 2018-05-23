@@ -1419,10 +1419,8 @@ exports.init = function (app) {
         }
     });
 
-    app.get('/notifications', (req, res) => {
-        let roles = [];
-        if (req.user && req.user.roles) roles = req.user.roles;
-        mongo_data.getNotificationsByRole(roles, (err, result) => {
+    app.get('/notificationsByUser', (req, res) => {
+        mongo_data.getNotificationsByUser(req.user, (err, result) => {
             if (err) return res.status(500).send("Error Retrieving Notification.");
             else res.send(result);
         })
