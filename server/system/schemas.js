@@ -255,14 +255,14 @@ schemas.namingSchema = new mongoose.Schema({
 }, {_id: false});
 
 schemas.designationSchema = new mongoose.Schema({
-    designation: String,
-    tags: [String]
+    designation: stringType,
+    tags: [stringType]
 }, {_id: false});
 
 schemas.definitionSchema = new mongoose.Schema({
-    definition: String,
-    definitionFormat: String,
-    tags: [String]
+    definition: stringType,
+    definitionFormat: stringType,
+    tags: [stringType]
 }, {_id: false});
 
 let attachmentSchema = {
@@ -331,6 +331,8 @@ let requestSchema = {
     mergeFields: {
         ids: Boolean,
         naming: Boolean,
+        designations: Boolean,
+        definitions: Boolean,
         attachments: Boolean,
         properties: Boolean,
         classifications: Boolean

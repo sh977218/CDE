@@ -74,13 +74,13 @@ exports.getFormOdm = function (form, cb) {
         Study: {
             '$OID': form.tinyId,
             GlobalVariables: {
-                StudyName: _.escape(form.naming[0].designation),
-                StudyDescription: _.escape(form.naming[0].definition),
-                ProtocolName: _.escape(form.naming[0].designation)
+                StudyName: _.escape(form.designations[0].designation),
+                StudyDescription: _.escape(form.definitions[0].definition),
+                ProtocolName: _.escape(form.designations[0].designation)
             },
             BasicDefinitions: {},
             MetaDataVersion: {
-                '$Name': _.escape(form.naming[0].designation),
+                '$Name': _.escape(form.designations[0].designation),
                 '$OID': 'MDV_' + form.tinyId,
                 Protocol: {
                     StudyEventRef: {
@@ -101,7 +101,7 @@ exports.getFormOdm = function (form, cb) {
                     }
                 },
                 FormDef: {
-                    '$Name': _.escape(form.naming[0].designation),
+                    '$Name': _.escape(form.designations[0].designation),
                     '$OID': form.tinyId,
                     '$Repeating': 'No',
                     'ItemGroupRef': []

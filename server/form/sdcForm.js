@@ -130,7 +130,7 @@ exports.formToSDC = function ({form, renderer, validate}, cb) {
             "@ID": form.tinyId + "v" + form.version,
             "Header": {
                 "@ID": "S1",
-                "@title": form.naming[0].designation,
+                "@title": form.designations[0].designation,
                 "@styleClass": "left"
             }
         }

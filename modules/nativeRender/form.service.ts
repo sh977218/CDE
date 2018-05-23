@@ -23,8 +23,10 @@ export class FormService {
 
         let q = new FormQuestion();
         q.question.cde.derivationRules = cde.derivationRules;
-        q.question.cde.name = cde.naming[0] ? cde.naming[0].designation : '';
+        q.question.cde.name = cde.designations[0] ? cde.designations[0].designation : '';
         q.question.cde.naming = cde.naming;
+        q.question.cde.designations = cde.designations;
+        q.question.cde.definitions = cde.definitions;
         q.question.cde.permissibleValues = [];
         q.question.cde.tinyId = cde.tinyId;
         q.question.cde.version = cde.version;
@@ -46,7 +48,7 @@ export class FormService {
             }
         });
         if (!q.label) {
-            q.label = cde.naming[0].designation;
+            q.label = cde.designations[0].designation;
         }
         if (!q.label) q.hideLabel = true;
 

@@ -33,7 +33,7 @@
     <h1 class="mobileViewH1 my-4">
         <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadDataElement():loadPublished()"
                           [hidden]="drafts?.length === 0"></cde-draft-slider>
-        {{elt?.naming[0].designation}}
+        {{elt?.designations[0].designation}}
     </h1>
     <div class="pull-left">
         <div class="dropdown float-left">
@@ -219,7 +219,7 @@
              style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
             <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
                               (highlightedTabsChange)="loadHighlightedTabs($event)"
-                              [eltName]="elt.naming[0].designation"></cde-discuss-area>
+                              [eltName]="elt.designations[0].designation"></cde-discuss-area>
         </div>
     </div>
     <div *ngIf="elt.valueDomain.allValid === false" class="row alert alert-danger mt20"

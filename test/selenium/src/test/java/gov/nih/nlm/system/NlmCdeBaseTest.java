@@ -1039,15 +1039,25 @@ public class NlmCdeBaseTest {
         closeTableViewPreferenceModal();
     }
 
-    protected void editDesignationByIndex(int index, String newDesignation) {
+    protected void editDesignationByIndex(int index, String newDesignation, String[] tags) {
         String designationEditIconXpath = "//*[@id='designation_" + index + "']//*[contains(@class,'fa-edit')]";
         String designationInputXpath = "//*[@id='designation_" + index + "']//input";
         String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//*[contains(@class,'fa-check')]";
-        clickElement(By.xpath(designationEditIconXpath));
-        findElement(By.xpath(designationInputXpath)).sendKeys(newDesignation);
-        hangon(2);
-        clickElement(By.xpath(designationConfirmBtnXpath));
-        textNotPresent("Confirm");
+        if (newDesignation != null) {
+            clickElement(By.xpath(designationEditIconXpath));
+            findElement(By.xpath(designationInputXpath)).sendKeys(newDesignation);
+            hangon(2);
+            clickElement(By.xpath(designationConfirmBtnXpath));
+            textNotPresent("Confirm");
+        }
+        if (tags != null) {
+            String tagsInputXpath = "//*[@id='designationTags_" + index + "']//input";
+            for (String tag : tags) {
+                clickElement(By.xpath(tagsInputXpath));
+                selectNgSelectDropdownByText(tag);
+                textPresent(tag);
+            }
+        }
     }
 
     protected void editDefinitionByIndex(int index, String newDefinition, boolean html) {
@@ -1098,24 +1108,37 @@ public class NlmCdeBaseTest {
         textNotPresent("Confirm");
     }
 
-    protected void addNewName(String designation, String definition, boolean isHtml, String[] tags) {
-        clickElement(By.id("openNewNamingModalBtn"));
+
+    protected void addNewDesignation(String designation, String[] tags) {
+        clickElement(By.id("openNewDesignationModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.name("newDesignation")).sendKeys(designation);
-        findElement(By.xpath("//*[@id='newDefinition']//textarea")).sendKeys(definition);
-        if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Rich Text')]"));
-        else clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Plain Text')]"));
         if (tags != null) {
-            String tagsInputXpath = "//*[@id='newTags']//input";
+            String tagsInputXpath = "//*[@id='newDesignationTags']//input";
             for (String tag : tags) {
                 clickElement(By.xpath(tagsInputXpath));
                 selectNgSelectDropdownByText(tag);
                 textPresent(tag);
             }
         }
+        clickElement(By.id("createNewDesignationBtn"));
+    }
 
-
-        clickElement(By.id("createNewNamingBtn"));
+    protected void addNewDefinition(String definition, boolean isHtml, String[] tags) {
+        clickElement(By.id("openNewDefinitionModalBtn"));
+        textPresent("Tags are managed in Org Management > List Management");
+        findElement(By.xpath("//*[@id='newDefinition']//textarea")).sendKeys(definition);
+        if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Rich Text')]"));
+        else clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Plain Text')]"));
+        if (tags != null) {
+            String tagsInputXpath = "//*[@id='newDefinitionTags']//input";
+            for (String tag : tags) {
+                clickElement(By.xpath(tagsInputXpath));
+                selectNgSelectDropdownByText(tag);
+                textPresent(tag);
+            }
+        }
+        clickElement(By.id("createNewDefinitionBtn"));
     }
 
     protected void addNewProperty(String key, String value, boolean isHtml) {
@@ -1453,7 +1476,8 @@ public class NlmCdeBaseTest {
 
         if (section.equalsIgnoreCase("steward")) section = "Steward";
         if (section.equalsIgnoreCase("status")) section = "Status";
-        if (section.equalsIgnoreCase("naming")) section = "Naming";
+        if (section.equalsIgnoreCase("designation")) section = "Designation";
+        if (section.equalsIgnoreCase("definition")) section = "Definition";
         if (section.equalsIgnoreCase("reference documents")) section = "Reference Documents";
         if (section.equalsIgnoreCase("properties")) section = "Properties";
         if (section.equalsIgnoreCase("data element concept")) section = "Data Element Concept";

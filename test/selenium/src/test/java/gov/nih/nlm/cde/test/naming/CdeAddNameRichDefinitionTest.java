@@ -16,7 +16,8 @@ public class CdeAddNameRichDefinitionTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         goToNaming();
-        addNewName(newName, newDefinition, true, newTag);
+        addNewDesignation(newName, newTag);
+        addNewDefinition(newDefinition, true, newTag);
         newCdeVersion();
 
         goToCdeByName(cdeName);

@@ -11,7 +11,8 @@ public class DeleteFormDraftTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToNaming();
-        addNewName("draft designation", "draft definition", false, new String[]{"Health"});
+        addNewDesignation("draft designation", new String[]{"Health"});
+        addNewDefinition("draft definition", false, new String[]{"Health"});
         textPresent("Draft");
         deleteDraft();
         textNotPresent("Draft");
