@@ -6,11 +6,13 @@ const webpack = require('webpack');
 const AotPlugin = require('@ngtools/webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+// const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const FileListPlugin = require('file-list-plugin');
 // const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const OptimizeJsPlugin = require('optimize-js-plugin');
 // let BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
 
 const assets = [
     '/cde/public/assets/img/min/NIH-CDE.png',
@@ -58,10 +60,15 @@ module.exports = {
             },
             {
                 test: /\.css$/, include: /node_modules/,
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: 'css-loader'
-                })
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader"
+                ]
+
+                //     ExtractTextPlugin.extract({
+                //     fallback: 'style-loader',
+                //     use: 'css-loader'
+                // })
             },
             {test: /\.css$/, exclude: /node_modules/, use: ['style-loader', 'css-loader']},
             {test: /\.html$/, use: [{loader: 'html-loader', options: {attrs: ['img:src', 'source:srcset'], minimize: false}}]},
@@ -71,6 +78,10 @@ module.exports = {
     plugins:
         [
             new CleanWebpackPlugin(['dist/app']),
+            new webpack.DefinePlugin({
+                IS_BROWSER: true,
+                PRODUCTION: JSON.stringify(true),
+            }),
 
             // new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
             // new webpack.DefinePlugin({
@@ -109,7 +120,7 @@ module.exports = {
             //     warnings: true,
             // }),
 
-            new ExtractTextPlugin({filename: '[name].css'}),
+            new MiniCssExtractPlugin({filename: '[name].css'}),
             // new OptimizeJsPlugin({
             //     sourceMap: false
             // }),
