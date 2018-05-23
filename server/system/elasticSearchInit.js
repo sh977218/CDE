@@ -278,7 +278,7 @@ exports.riverFunction = function (_elt, cb) {
         elt.steward = elt.stewardOrg.name;
         elt.primaryNameCopy = elt.designations[0] ? escapeHTML(elt.designations[0].designation) : '';
         elt.primaryNameSuggest = elt.primaryNameCopy;
-        elt.primaryDefinitionCopy = elt.definitions[0] ? elt.designations[0].designation : '';
+        elt.primaryDefinitionCopy = elt.definitions[0] ? elt.definitions[0].definitions : '';
         if (elt.definitions[0] && elt.definitions[0].definitionFormat === 'html')
             elt.primaryDefinitionCopy = escapeHTML(elt.primaryDefinitionCopy);
 
