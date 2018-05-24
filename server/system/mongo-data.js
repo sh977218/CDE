@@ -340,8 +340,10 @@ exports.removeOrg = function (id, callback) {
 exports.formatElt = function (elt) {
     if (elt.toObject) elt = elt.toObject();
     elt.stewardOrgCopy = elt.stewardOrg;
-    elt.primaryNameCopy = _.escape(elt.naming[0].designation);
-    elt.primaryDefinitionCopy = _.escape(elt.naming[0].definition);
+    elt.primaryNameCopy = _.escape(elt.designations[0].designation);
+    elt.primaryDefinitionCopy = '';
+    if (elt.definitions[0] && elt.definitions[0].definition)
+        elt.primaryDefinitionCopy = _.escape(elt.definitions[0].definition);
     return elt;
 };
 
@@ -606,7 +608,7 @@ exports.addToClassifAudit = function (msg) {
     var persistClassifRecord = function (err, elt) {
         if (!elt) return;
         msg.elements[0].eltType = elt.formElements ? 'form' : 'cde';
-        msg.elements[0].name = elt.naming[0].designation;
+        msg.elements[0].name = elt.designations[0].designation;
         msg.elements[0].status = elt.registrationState.registrationStatus;
         new classificationAudit(msg).save();
     };

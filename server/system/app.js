@@ -9,7 +9,6 @@ const multer = require('multer');
 const passport = require('passport');
 const path = require('path');
 const request = require('request');
-const tar = require('tar-fs');
 const useragent = require('useragent');
 const zlib = require('zlib');
 
@@ -1105,40 +1104,6 @@ exports.init = function (app) {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
             });
             res.send({});
-        });
-    });
-
-    app.post('/api/reloadProd', authorization.checkSiteAdmin, function (req, res) {
-        if (!config.prodDump.enabled) return res.status(401).send();
-        let target = './prodDump';
-        let untar = tar.extract(target);
-        let rmTargets = [target + '/system*', target + '/clusterstatuses*'];
-        if (!req.body.includeAll) {
-            rmTargets.push(target + '/cdeAudit*');
-            rmTargets.push(target + '/classificationAudit*');
-            rmTargets.push(target + '/fs.*');
-            rmTargets.push(target + '/sessions.*');
-        }
-        request(req.body.url, {rejectUnauthorized: false}).pipe(zlib.createGunzip()).pipe(untar);
-        untar.on('finish', function () {
-            spawn('rm', rmTargets).on('exit', function () {
-                let restore = spawn('mongorestore',
-                    ['-host', config.database.servers[0].host,
-                        '-u', config.database.appData.username,
-                        '-p', config.database.appData.password,
-                        './prodDump',
-                        '--drop',
-                        '--db', config.database.appData.db
-                    ], {stdio: 'inherit'});
-                restore.on('exit', function () {
-                    let rm = spawn('rm', [target + '/*']);
-                    rm.on('exit', function () {
-                        esInit.indices.forEach(elastic.reIndex);
-                        res.send();
-                    });
-                });
-            });
-
         });
     });
 

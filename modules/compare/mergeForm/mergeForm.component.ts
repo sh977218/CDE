@@ -18,14 +18,16 @@ export class MergeFormComponent {
     doneMerge: boolean = false;
     maxNumberQuestions: any;
     mergeFields: any = {
-        naming: true,
+        designations: true,
+        definitions: true,
         referenceDocuments: true,
         properties: true,
         ids: true,
         classifications: true,
         questions: true,
         cde: {
-            naming: true,
+            designations: true,
+            definitions: true,
             referenceDocuments: true,
             properties: true,
             attachments: true,
@@ -41,16 +43,15 @@ export class MergeFormComponent {
     numMergedQuestions: any;
     showProgressBar: boolean = false;
 
-    constructor(
-        private alert: AlertService,
-        public isAllowedModel: IsAllowedService,
-        public mergeFormService: MergeFormService,
-        public modalService: NgbModal
-    ) {
+    constructor(private alert: AlertService,
+                public isAllowedModel: IsAllowedService,
+                public mergeFormService: MergeFormService,
+                public modalService: NgbModal) {
     }
 
     deselectAllCdeMergerFields() {
-        this.mergeFields.cde.naming = false;
+        this.mergeFields.cde.designations = false;
+        this.mergeFields.cde.definitions = false;
         this.mergeFields.cde.referenceDocuments = false;
         this.mergeFields.cde.properties = false;
         this.mergeFields.cde.ids = false;
@@ -58,7 +59,8 @@ export class MergeFormComponent {
     }
 
     deselectAllFormMergerFields() {
-        this.mergeFields.naming = false;
+        this.mergeFields.designations = false;
+        this.mergeFields.definitions = false;
         this.mergeFields.referenceDocuments = false;
         this.mergeFields.properties = false;
         this.mergeFields.ids = false;
@@ -124,7 +126,8 @@ export class MergeFormComponent {
     }
 
     selectAllCdeMergerFields() {
-        this.mergeFields.cde.naming = true;
+        this.mergeFields.cde.designations = true;
+        this.mergeFields.cde.definitions = true;
         this.mergeFields.cde.referenceDocuments = true;
         this.mergeFields.cde.properties = true;
         this.mergeFields.cde.ids = true;
@@ -136,7 +139,8 @@ export class MergeFormComponent {
     }
 
     selectAllFormMergerFields() {
-        this.mergeFields.naming = true;
+        this.mergeFields.designations = true;
+        this.mergeFields.definitions = true;
         this.mergeFields.referenceDocuments = true;
         this.mergeFields.properties = true;
         this.mergeFields.ids = true;

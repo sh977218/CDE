@@ -14,7 +14,6 @@ export class TableViewPreferencesComponent {
     @Output() onChanged = new EventEmitter();
     @Output() onClosed = new EventEmitter();
     placeHolder = 'Optional: select identifiers to include (default: all)';
-    appendTo = 'body';
 
     constructor(@Inject(MAT_DIALOG_DATA) data,
                 private http: HttpClient,

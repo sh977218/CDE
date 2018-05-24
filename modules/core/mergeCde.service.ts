@@ -25,7 +25,8 @@ export class MergeCdeService {
         forkJoin([getDeFromObservable, getDeToObservable]).subscribe(results => {
                 let cdeFrom = results[0];
                 let cdeTo = results[1];
-                if (fields.naming) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "naming");
+                if (fields.designations) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "designations");
+                if (fields.definitions) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "definitions");
                 if (fields.referenceDocuments) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "referenceDocuments");
                 if (fields.properties) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "properties");
                 if (fields.ids) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "ids");

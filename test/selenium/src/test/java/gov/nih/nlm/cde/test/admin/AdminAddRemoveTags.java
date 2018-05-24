@@ -48,11 +48,11 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         goToNaming();
-        clickElement(By.id("openNewNamingModalBtn"));
+        clickElement(By.id("openNewDesignationModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
-        clickElement(By.xpath("//*[@id='newTags']//input"));
+        clickElement(By.xpath("//*[@id='newDesignationTags']//input"));
         selectNgSelectDropdownByText("canYouSeeThis");
-        clickElement(By.id("cancelNewNamingBtn"));
+        clickElement(By.id("cancelNewDesignationBtn"));
 
         openUserMenu();
         goToOrgManagement();
@@ -63,8 +63,8 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
 
         goToCdeByName("Distance from Closest Margin Value");
         goToNaming();
-        clickElement(By.id("openNewNamingModalBtn"));
-        clickElement(By.xpath("//*[@id='newTags']//input"));
+        clickElement(By.id("openNewDesignationModalBtn"));
+        clickElement(By.xpath("//*[@id='newDesignationTags']//input"));
         textNotPresent("canYouSeeThis");
 
     }
