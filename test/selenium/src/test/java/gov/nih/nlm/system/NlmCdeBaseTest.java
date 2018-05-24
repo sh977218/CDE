@@ -347,8 +347,8 @@ public class NlmCdeBaseTest {
     }
 
     protected void deleteWithConfirm(By by) {
-        clickElement(by.cssSelector("i[class*='fa-trash-o']"));
-        clickElement(by.cssSelector("[class*='badge'] > [class*='fa-check']"));
+        clickElement(by.xpath(".//i[contains(@class,'fa-trash-o')]"));
+        clickElement(by.xpath(".//*[contains(@class,'badge')]/*[contains(@class,'fa-check')]"));
     }
 
     protected void gotoClassificationMgt() {
