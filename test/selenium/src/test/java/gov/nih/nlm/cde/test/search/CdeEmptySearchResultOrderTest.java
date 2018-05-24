@@ -8,6 +8,7 @@ public class CdeEmptySearchResultOrderTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeEmptySearchResultOrder() {
+        setLowStatusesVisible();
         goToCdeSearch();
         clickElement(By.id("search_by_classification_GRDR"));
         textPresent("Qualified", By.id("registrationStatus_0"));

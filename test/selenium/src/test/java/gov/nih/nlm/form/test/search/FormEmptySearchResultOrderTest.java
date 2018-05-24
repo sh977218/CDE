@@ -7,12 +7,13 @@ import org.testng.annotations.Test;
 public class FormEmptySearchResultOrderTest extends NlmCdeBaseTest {
 
     @Test
-    public void cdeEmptySearchResultOrder() {
-        goToCdeSearch();
+    public void formEmptySearchResultOrder() {
+        setLowStatusesVisible();
+        goToFormSearch();
         clickElement(By.id("search_by_classification_TEST"));
         textPresent("Qualified", By.id("registrationStatus_0"));
-        textPresent("Recorded", By.id("registrationStatus_1"));
-        textPresent("Recorded", By.id("registrationStatus_17"));
+        textPresent("Qualified", By.id("registrationStatus_1"));
+        textPresent("Incomplete", By.id("registrationStatus_17"));
     }
 
 }
