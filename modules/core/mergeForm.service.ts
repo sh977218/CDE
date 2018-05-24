@@ -66,8 +66,11 @@ export class MergeFormService {
         if (mergeFrom.length !== mergeTo.length) {
             cb({error: 'number of question on left is not same on right.'});
         } else {
-            if (fields.naming) {
-                this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, 'naming');
+            if (fields.designations) {
+                this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, 'designations');
+            }
+            if (fields.definitions) {
+                this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, 'definitions');
             }
             if (fields.referenceDocuments) {
                 this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, 'referenceDocuments');

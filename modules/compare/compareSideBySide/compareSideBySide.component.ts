@@ -63,13 +63,11 @@ export class CompareSideBySideComponent implements OnInit {
     canMergeForm: boolean = false;
     canMergeDataElement: boolean = false;
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public isAllowedModel: IsAllowedService,
-        public modalService: NgbModal,
-        public quickBoardService: QuickBoardListService,
-    ) {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public isAllowedModel: IsAllowedService,
+                public modalService: NgbModal,
+                public quickBoardService: QuickBoardListService) {
     }
 
     doneMerge(event) {
@@ -180,22 +178,20 @@ export class CompareSideBySideComponent implements OnInit {
             },
             {
                 displayAs: {
-                    label: 'Naming',
-                    property: 'naming',
+                    label: 'Designation',
+                    property: 'designations',
                     data: [
-                        {label: 'Name', property: 'designation'},
-                        {label: 'Definition', property: 'definition'},
+                        {label: 'Designation', property: 'designation'},
                         {label: 'Tags', property: 'tags'}
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _isEqual(a.designation, b.designation) && _isEqual(a.definition, b.definition);
+                    return _isEqual(a.designation, b.designation);
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     let diff = [];
                     if (!_isEqual(a, b) && _isEqual(a.designation, b.designation)) {
-                        if (!_isEqual(a.definition, b.definition)) diff.push('definition');
                         if (!_isEqual(a.tags, b.tags)) diff.push('tags');
                     }
                     return diff;
@@ -203,6 +199,33 @@ export class CompareSideBySideComponent implements OnInit {
                 partialMatches: [],
                 notMatchFn: (a, b) => {
                     return _isEqual(a.designation, b.designation);
+                },
+                leftNotMatches: [],
+                rightNotMatches: []
+            },
+            {
+                displayAs: {
+                    label: 'Definition',
+                    property: 'definitions',
+                    data: [
+                        {label: 'Definition', property: 'definition'},
+                        {label: 'Tags', property: 'tags'}
+                    ]
+                },
+                fullMatchFn: (a, b) => {
+                    return _isEqual(a.definition, b.definition);
+                },
+                fullMatches: [],
+                partialMatchFn: (a, b) => {
+                    let diff = [];
+                    if (!_isEqual(a, b) && _isEqual(a.definition, b.definition)) {
+                        if (!_isEqual(a.tags, b.tags)) diff.push('tags');
+                    }
+                    return diff;
+                },
+                partialMatches: [],
+                notMatchFn: (a, b) => {
+                    return _isEqual(a.definition, b.definition);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -611,8 +634,8 @@ export class CompareSideBySideComponent implements OnInit {
                         {label: 'Unit of Measure', property: 'question.unitsOfMeasure'},
                         {
                             label: 'Answer', property: 'question.answers', properties: {
-                            label: 'Permissible Value', property: 'permissibleValue'
-                        }
+                                label: 'Permissible Value', property: 'permissibleValue'
+                            }
                         }
                     ]
                 },
@@ -668,7 +691,7 @@ export class CompareSideBySideComponent implements OnInit {
             else return '';
         } else if (_isArray(value)) {
             return JSON.stringify(value);
-               }
+        }
         else return value;
     }
 

@@ -335,6 +335,8 @@ export class QuestionCde { // copied from original data element, not configurabl
     ids: CdeId[] = [];
     name: string;
     naming = [];
+    designations = [];
+    definitions = [];
     datatype = 'Text';
     permissibleValues: PermissibleValue[] = [];
     outdated: boolean = false; // calculated, by server for client

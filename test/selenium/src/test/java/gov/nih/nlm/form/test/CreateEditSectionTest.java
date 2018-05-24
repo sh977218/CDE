@@ -9,6 +9,7 @@ public class CreateEditSectionTest extends QuestionTest {
     @Test
     public void createEditSection() {
         mustBeLoggedInAs(testAdmin_username, password);
+        String cdeName = "Race Category Text";
         String formName = "Section Test Form";
 
         goToFormByName(formName);
@@ -18,7 +19,7 @@ public class CreateEditSectionTest extends QuestionTest {
         addSectionBottom("Section 2", "2");
         addSectionBottom("Section 3", "F");
         closeAlert();
-        String cdeName = "Race Category Text";
+
         addQuestionToSection(cdeName, 2);
         newFormVersion();
 

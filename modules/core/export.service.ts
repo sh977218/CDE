@@ -170,7 +170,7 @@ export class ExportService {
                                 let record = {
                                     tinyId: oneElt.tinyId
                                     ,
-                                    cdeName: oneElt.naming[0].designation
+                                    cdeName: oneElt.designations[0].designation
                                     ,
                                     validationRules: this.registrationValidatorService.evalCde(oneElt, orgName, status, cdeOrgRules)
                                 };
@@ -184,12 +184,6 @@ export class ExportService {
                 };
 
                 if (result) {
-                    // @TODO remove after convert newTags
-                    result.forEach(r => {
-                        r.naming.forEach(n => {
-                            delete n.newTags;
-                        });
-                    });
                     let exporter = exporters[type];
                     if (!exporter) {
                         this.alertService.addAlert('danger', 'This export format is not supported.');

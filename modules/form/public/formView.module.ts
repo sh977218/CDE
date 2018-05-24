@@ -7,6 +7,7 @@ import { TreeModule } from 'angular-tree-component';
 import "angular-tree-component/dist/angular-tree-component.css";
 import { NgSelectModule } from '@ng-select/ng-select';
 import { HotkeyModule } from 'angular2-hotkeys';
+import { MatDialogModule, MatIconModule, MatGridListModule, MatButtonModule } from "@angular/material";
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { ArrayListPipe } from './arrayList.pipe';
@@ -30,7 +31,7 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 import { UcumService } from 'form/public/ucum.service';
 import { WidgetModule } from 'widget/widget.module';
 import { CompareModule } from 'compare/compare.module';
-import { MatButtonModule, MatDialogModule } from "@angular/material";
+import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -45,6 +46,10 @@ const appRoutes: Routes = [
         NgSelectModule,
         HotkeyModule.forRoot(),
         TreeModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatGridListModule,
         // core
         WidgetModule,
         // internal
@@ -54,9 +59,7 @@ const appRoutes: Routes = [
         CompareModule,
         DiscussModule,
         FormSearchModule,
-        NativeRenderModule,
-        MatButtonModule,
-        MatDialogModule
+        NativeRenderModule
     ],
     declarations: [
         ArrayListPipe,
@@ -70,10 +73,12 @@ const appRoutes: Routes = [
         FormGeneralDetailsComponent,
         FormTermMappingComponent,
         NativeRenderFullComponent,
-        QuestionAnswerEditContentComponent
+        QuestionAnswerEditContentComponent,
+        SelectQuestionLabelComponent
     ],
     entryComponents: [
-        QuestionAnswerEditContentComponent
+        QuestionAnswerEditContentComponent,
+        SelectQuestionLabelComponent
     ],
     exports: [],
     providers: [

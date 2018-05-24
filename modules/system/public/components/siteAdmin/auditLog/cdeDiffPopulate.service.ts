@@ -5,7 +5,8 @@ export class CdeDiffPopulateService {
 
     pathFieldMap = {
         1: [
-            {fieldName: "Naming", path: ["naming"]}
+            {fieldName: "Designations", path: ["designations"]}
+            , {fieldName: "Definitions", path: ["definitions"]}
             , {fieldName: "Properties", path: ["properties"]}
             , {fieldName: "Identifiers", path: ["ids"]}
             , {fieldName: "Attachments", path: ["attachments"]}

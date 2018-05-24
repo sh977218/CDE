@@ -5,6 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap/alert/alert.module';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap/dropdown/dropdown.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
+import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 
 import { AlertComponent } from '_app/alert/alert.component';
 import { AlertService } from '_app/alert/alert.service';
@@ -46,6 +47,12 @@ import { NotificationsComponent } from "./notifications/notifications.component"
         TruncateLongNamePipe,
     ],
     providers: [
+        {
+            provide: NG_SELECT_DEFAULT_CONFIG,
+            useValue: {
+                appendTo: 'body'
+            }
+        },
         AlertService,
         BackForwardService,
         ElasticService, // TODO: create shared CoreModule loaded async and provide to all lazy routes

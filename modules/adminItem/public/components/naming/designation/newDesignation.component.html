@@ -1,0 +1,32 @@
+<div class="modal-header" id="newDesignationModalHeader">
+    <h4 class="modal-title">Add a Designation</h4>
+</div>
+<form role="form" #newDesignationForm="ngForm" (ngSubmit)="onSave.emit(newDesignation)">
+    <div class="modal-body" id="newDesignationModalBody">
+        <div class="form-group">
+            <label for="newDesignation">Designation</label>
+            <input class="form-control" id="newDesignation" name="newDesignation"
+                   [(ngModel)]="newDesignation.designation" Placeholder="Name / Designation" required/>
+        </div>
+        <div class="form-group">
+            <label for="newDesignationTags">Tags</label>
+            <div id="newDesignationTags">
+                <ng-select [(ngModel)]="newDesignation.tags" [items]="tags" [hideSelected]="true" [hideSelected]="true"
+                           [placeholder]="noTagFoundMessage" multiple="true"  name="newTags">
+                </ng-select>
+            </div>
+        </div>
+        <div class="alert alert-info">
+            Tags are managed in Org Management > List Management
+        </div>
+    </div>
+    <div class="modal-footer" id="newDesignationModalFooter">
+        <button class="btn btn-outline-dark" (click)="activeModal.close('Close click')" id="cancelNewDesignationBtn"
+                name="cancelNewDesignationBtn"
+                type="button">Cancel
+        </button>
+        <button class="btn  btn-warning" [disabled]="!newDesignationForm.form.valid" id="createNewDesignationBtn"
+                name="createNewDesignationBtn" type="submit">Save
+        </button>
+    </div>
+</form>

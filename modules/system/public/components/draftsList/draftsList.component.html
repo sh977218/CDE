@@ -4,7 +4,7 @@
         <tr *ngFor="let draftCde of drafts.draftCdes">
             <td>
                 <a routerLink="/deView" [queryParams]="{tinyId: draftCde.tinyId}">
-                    {{draftCde.naming[0].designation}}</a>
+                    {{draftCde.designations[0].designation}}</a>
             </td>
             <td>{{draftCde.tinyId}}</td>
             <td>{{draftCde.updatedBy?.username}}</td>
@@ -19,7 +19,7 @@
         <tr *ngFor="let draftForm of drafts.draftForms">
             <td>
                 <a routerLink="/formView" [queryParams]="{tinyId: draftForm.tinyId}">
-                    {{draftForm.naming[0].designation}}</a>
+                    {{draftForm.designations[0].designation}}</a>
             </td>
             <td>{{draftForm.tinyId}}</td>
             <td>{{draftForm.updatedBy?.username}}</td>

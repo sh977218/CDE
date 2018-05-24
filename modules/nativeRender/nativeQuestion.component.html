@@ -121,8 +121,8 @@
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable"/>
                             <label *ngFor="let uom of formElement.question.uomsAlias; index as i"
-                                   [ngClass]="{'nativeRequiredBox': formElement.question.required}"
-                                   class="input-group-addon">
+                                   class="input-group-text"
+                                   [ngClass]="{'nativeRequiredBox': formElement.question.required}">
                                 <input type="radio"
                                        [name]="formElement.feId + '_uom'"
                                        [attr.name]="formElement.feId + '_uom'"
@@ -145,7 +145,7 @@
                                    [disabled]="!formElement.question.editable"/>
                             <label *ngFor="let uom of formElement.question.uomsAlias; index as i"
                                    [ngClass]="{'nativeRequiredBox': formElement.question.required}"
-                                   class="input-group-addon">
+                                   class="input-group-text">
                                 <input type="radio"
                                        [name]="formElement.feId + '_uom'"
                                        [attr.name]="formElement.feId + '_uom'"

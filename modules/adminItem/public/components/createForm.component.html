@@ -5,12 +5,12 @@
         <form #dataElementForm="ngForm">
             <div class="form-group">
                 <label for="eltName">Name</label>
-                <input type="text" class="form-control" id="eltName" [(ngModel)]="elt.naming[0].designation"
+                <input type="text" class="form-control" id="eltName" [(ngModel)]="elt.designations[0].designation"
                        name="eltName" required>
             </div>
             <div class="form-group">
                 <label for="eltDefinition">Definition</label>
-                <input type="text" class="form-control" id="eltDefinition" [(ngModel)]="elt.naming[0].definition"
+                <input type="text" class="form-control" id="eltDefinition" [(ngModel)]="elt.definitions[0].definition"
                        name="eltDefinition" required>
             </div>
             <div class="form-group ng-scope" ng-if="module==='form'">

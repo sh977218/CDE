@@ -20,7 +20,8 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
 
         goToNaming();
-        addNewName(newName, newDefinition, false, null);
+        addNewDesignation(newName, null);
+        addNewDefinition(newDefinition, false, null);
 
         goToConcepts();
         clickElement(By.id("openNewConceptModalBtn"));
@@ -32,8 +33,8 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         goToHistory();
         selectHistoryAndCompare(1, 2);
-        textPresent("Alternative Name 1", By.xpath("//*[@id='Naming_2']"));
-        textPresent("Alternative Definition 1", By.xpath("//*[@id='Naming_2']"));
+        textPresent("Alternative Name 1", By.xpath("//*[@id='Designation_2']"));
+        textPresent("Alternative Definition 1", By.xpath("//*[@id='Definition_2']"));
         textPresent("Code Name 1", By.xpath("//*[@id='Concepts_6']"));
         textPresent("Code ID 1", By.xpath("//*[@id='Concepts_6']"));
         clickElement(By.id("closeHistoryCompareModal"));

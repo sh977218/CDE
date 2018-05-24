@@ -4,7 +4,7 @@
             <button class="btn btn-outline-danger hand-cursor" (click)="add.emit(elt);">
                 <i class="fa fa-plus"></i> Add
             </button>
-            <span class="hand-cursor" (click)="elt.isCollapsed = !elt.isCollapsed"> {{elt.naming[0].designation}}</span>
+            <span class="hand-cursor" (click)="elt.isCollapsed = !elt.isCollapsed"> {{elt.designations[0].designation}}</span>
             <a href="deView?tinyId={{elt.tinyId}}" target="_blank" id="acc_link_{{i}}">
                 <i class="fa fa-eye iconColor"></i>
             </a>
@@ -21,7 +21,7 @@
                     <dl class="row">
                         <ng-container *ngIf="elt.usedBy">
                             <dt class="col-4 text-right">Used By:</dt>
-                            <dd class="col-8" id="usedBy">
+                            <dd class="col-8" id="usedBy_{{i}}">
                                 <div *ngIf="elt.classification.length === 0">None</div>
                                 <div *ngIf="elt.classification.length > 0">
                                     <span *ngFor="let ub of elt.usedBy">{{ub}} </span>

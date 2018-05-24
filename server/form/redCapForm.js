@@ -88,7 +88,7 @@ function getRedCap(form) {
                 }
                 let questionRow = {
                     'Variable / Field Name': variableName,
-                    'Form Name': form.naming[0].designation,
+                    'Form Name': form.designations[0].designation,
                     'Section Header': i === 0 ? sectionHeader : '',
                     'Field Type': field_type_map[q.datatype],
                     'Field Label': e.label,
@@ -130,7 +130,7 @@ exports.getZipRedCap = function (form, res) {
     if (validationErr) return res.status(500).send(redCapExportWarnings[validationErr]);
     res.writeHead(200, {
         "Content-Type": "application/zip",
-        "Content-disposition": "attachment; filename=" + form.naming[0].designation + ".zip"
+        "Content-disposition": "attachment; filename=" + form.designations[0].designation + ".zip"
     });
     let zip = archiver("zip", {});
     zip.on("error", function (err) {
