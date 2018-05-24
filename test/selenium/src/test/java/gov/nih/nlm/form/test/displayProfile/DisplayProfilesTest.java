@@ -24,6 +24,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         createDisplayProfile(4, "Multiple Select", false, false, false, false, "Dynamic", 5, false, 4);
         scrollToTop();
         clickElement(By.id("displayMetadataDevice_0"));
+        hangon(5);
+        goToPreview();
         Assert.assertEquals(1, 0);
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
         textPresent("1", By.xpath("//div[@id='profile_0']//table/tbody/tr[1]/td[6]/span"));
@@ -90,7 +92,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         clickElement(By.id("displayProfiles_tab"));
 
         for (int i = 0; i < 4; i++) {
-            deleteWithConfirm(By.cssSelector("#profile_0"));
+            deleteWithConfirm(findElement(By.cssSelector("#profile_0")));
         }
 
         newFormVersion();

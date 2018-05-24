@@ -40,9 +40,9 @@ public class QuestionLayoutTest extends QuestionTest {
         textPresent("Value List (1)");
         clickElement(By.id("cancelSelectQ"));
 
-        deleteWithConfirm(By.xpath("//*[@id='section_1']//*[contains(@class,'sectionTitle')]"));
+        deleteWithConfirm(findElement(By.xpath("//*[@id='section_1']//*[contains(@class,'sectionTitle')]")));
         textNotPresent(sec2);
-        deleteWithConfirm(By.xpath("//*[@id='section_0']//*[contains(@class,'sectionTitle')]"));
+        deleteWithConfirm(findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'sectionTitle')]")));
         textNotPresent(sec1);
 
         textPresent("To begin building your form, find the Section button");
