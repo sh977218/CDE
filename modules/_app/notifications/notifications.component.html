@@ -1,16 +1,14 @@
-<ng-container *ngIf="notifications.length">
-    <a class="nav-link" data-toggle="dropdown">
-        <i class="fa fa-bell text-muted"></i>
-        <span class="button_badge">{{notifications.length}}</span>
-    </a>
-    <div class="dropdown-menu dropdown-menu-right">
-        <div class="dropdown-item" *ngFor="let notification of notifications"
-             (click)="viewNotification();">
-            {{notification.title}}
-        </div>
-        <div class="dropdown-item" (click)="getNotification();">
-            Refresh
-        </div>
-
+<a class="nav-link" data-toggle="dropdown">
+    <i class="fa fa-bell text-muted"></i>
+    <span class="button_badge" *ngIf="notifications.length > 0">{{notifications.length}}</span>
+</a>
+<div class="dropdown-menu dropdown-menu-right">
+    <div class="dropdown-item" *ngFor="let notification of notifications"
+         (click)="viewNotification();">
+        {{notification.title}}
     </div>
-</ng-container>
+    <div class="dropdown-item" (click)="getNotification();">
+        Refresh
+    </div>
+
+</div>

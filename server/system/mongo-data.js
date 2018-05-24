@@ -759,5 +759,5 @@ exports.getNotificationsByUser = (user, cb) => {
 };
 
 exports.updateUserLastViewNotification = (user, cb) => {
-    User.update({username: user.username}, {$set: {$lastViewNotification: new Date()}}, cb);
+    User.update({username: user.username}, {$set: {lastViewNotification: new Date()}}, cb);
 };

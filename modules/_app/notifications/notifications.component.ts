@@ -29,21 +29,19 @@ export class NotificationsComponent {
     constructor(private http: HttpClient,
                 private userService: UserService,
                 private alert: AlertService) {
-        /*
-         setInterval(async () => {
-               try {
-                   const latestVersion = await this.http.get("/site-version", {responseType: 'text'}).toPromise();
-                   if (latestVersion !== this.currentVersion) {
-                       let note = "A new version of this site is available. To enjoy the new features, \n" +
-                           "please close all instances / tabs of this site then load again. ";
-                       if (this.notifications.indexOf(note) === -1) this.notifications.push(note);
-                   }
-               } catch (e) {
-                   this.alert.addAlert('danger', e);
-               }
-           }, (window as any).versionCheckIntervalInSeconds * 1000);
-   */
-        if (this.userService.user) this.getNotification();
+        setInterval(async () => {
+            try {
+                const latestVersion = await this.http.get("/site-version", {responseType: 'text'}).toPromise();
+                if (latestVersion !== this.currentVersion) {
+                    let note = "A new version of this site is available. To enjoy the new features, \n" +
+                        "please close all instances / tabs of this site then load again. ";
+                    this.notifications.unshift({title: note});
+                }
+            } catch (e) {
+                this.alert.addAlert('danger', e);
+            }
+            if (this.userService.user) this.getNotification();
+        }, (window as any).versionCheckIntervalInSeconds * 1000);
     }
 
     getNotification() {
