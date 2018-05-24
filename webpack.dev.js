@@ -6,8 +6,8 @@ const webpack = require('webpack');
 const { CheckerPlugin } = require('awesome-typescript-loader');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const FileListPlugin = require('file-list-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const assets = [
     '/cde/public/assets/img/min/NIH-CDE.png',
@@ -35,7 +35,7 @@ module.exports = {
             {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
             {
                 test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
-                use: prod ? ['@ngtools/webpack'] : [
+                use: [
                     {loader: 'awesome-typescript-loader', options: {configFile: 'tsconfig.json'}},
                     'angular-router-loader',
                     'angular2-template-loader'
@@ -58,10 +58,10 @@ module.exports = {
             },
             {
                 test: /\.css$/, include: /node_modules/,
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: 'css-loader'
-                })
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader"
+                ]
             },
             {test: /\.css$/, exclude: /node_modules/, use: ['style-loader', 'css-loader']},
             {test: /\.html$/, use: [{loader: 'html-loader', options: {attrs: ['img:src', 'source:srcset'], minimize: false}}]},
@@ -79,7 +79,6 @@ module.exports = {
                 IS_BROWSER: true,
                 PRODUCTION: JSON.stringify(false),
             }),
-            new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: true}), // enable debug
             new webpack.ProgressPlugin(), // show progress in ConEmu window
             new webpack.ProvidePlugin({
@@ -90,7 +89,7 @@ module.exports = {
                 Popper: ['popper.js', 'default'],
             }),
             new CheckerPlugin(),
-            new ExtractTextPlugin({filename: '[name].css'}),
+            new MiniCssExtractPlugin({filename: '[name].css'}),
             new CopyWebpackPlugin([
                 {from: 'modules/_app/assets/'}
             ]),
@@ -117,8 +116,8 @@ module.exports = {
         extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],
         modules: ["modules", "node_modules", "modules/components"]
     },
-    // devtool: '#cheap-eval-source-map',
-    // watch: !prod,
+    devtool: '#eval-source-map',
+    watch: true,
     watchOptions: {
         aggregateTimeout: 1000,
         ignored: /node_modules/
