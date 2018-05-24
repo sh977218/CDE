@@ -180,7 +180,6 @@ export abstract class Elt {
     updatedBy: UserReference;
     usedBy: string[]; // volatile, Classification stewardOrg names
     version: string; // ??? elastic(version) or mongo(__v)
-    explanation: {};
 
     constructor(elt: Elt = undefined) {
         if (!elt) return;
@@ -210,7 +209,6 @@ export abstract class Elt {
         this.updated = elt.updated;
         this.updatedBy = elt.updatedBy;
         this.version = elt.version;
-        this.explanation = elt.explanation;
 
         // mutable
         copyArray(elt.classification, this.classification, Classification);

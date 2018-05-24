@@ -295,7 +295,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     let queryStuff = {
         post_filter: settings.filter,
-        explain: true,
         query: {
             bool: {
                 must: [
