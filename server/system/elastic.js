@@ -295,6 +295,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     let queryStuff = {
         post_filter: settings.filter,
+        explain: true,
         query: {
             bool: {
                 must: [
@@ -308,8 +309,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
                                                 analyze_wildcard: true,
                                                 query: settings.searchTerm
                                             }
-                                        } : undefined,
-                                        script_score: {script: script}
+                                        } : undefined
+//                                        script_score: {script: script}
                                     }
                                 }
                             ]
@@ -331,8 +332,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
                         analyze_wildcard: true,
                         query: settings.searchTerm
                     }
-                },
-                script_score: {script: script}
+                }
+//                script_score: {script: script}
             }
         });
 
@@ -348,8 +349,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
                             "analyze_wildcard": true,
                             "query": "\"" + settings.searchTerm + "\"~4"
                         }
-                    },
-                    script_score: {script: script}
+                    }
+//                    script_score: {script: script}
                 }
             });
         }
@@ -433,7 +434,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     queryStuff.sort = {
         "_score": 'desc',
         "views": 'desc',
-        "primaryNameSuggest.raw": 'desc'
+        "primaryNameSuggest.raw": 'asc'
     };
 
     // Get aggregations on classifications and statuses
@@ -741,6 +742,7 @@ exports.elasticsearch = function (type, query, settings, cb) {
                 thisCde.properties = [];
                 thisCde.flatProperties = [];
                 thisCde.highlight = response.hits.hits[i].highlight;
+                thisCde.explanation = response.hits.hits[i]._explanation;
                 result[type + 's'].push(thisCde);
             }
             result.aggregations = response.aggregations;

@@ -288,7 +288,7 @@ exports.riverFunction = function (_elt, cb) {
         elt.flatClassifications = flatArray;
         elt.stewardOrgCopy = elt.stewardOrg;
         elt.steward = elt.stewardOrg.name;
-        elt.primaryNameCopy = elt.designations[0] ? escapeHTML(elt.designations[0].designation) : '';
+        elt.primaryNameCopy = elt.designations[0] ? escapeHTML(elt.designations[0].designation).toLowerCase() : '';
         elt.primaryNameSuggest = elt.primaryNameCopy;
         elt.primaryDefinitionCopy = elt.definitions[0] ? elt.definitions[0].definition : '';
         if (elt.definitions[0] && elt.definitions[0].definitionFormat === 'html')
