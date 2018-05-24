@@ -21,14 +21,15 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         scrollToTop();
-        clickElement(By.linkText("2"));
+        clickElement(By.cssSelector("button.mat-paginator-navigation-next"));
+        textPresent("21 - 40");
         hangon(2);
         scrollToTop();
         clickElement(By.id("linkToElt_0"));
 
         textPresent("More Like This");
         driver.navigate().back();
-        Assert.assertTrue(findElement(By.xpath("//li[contains(a,'2')]")).getAttribute("class").contains("active"));
+        textPresent("21 - 40");
     }
 
 }
