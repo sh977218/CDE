@@ -3,7 +3,6 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
-const AotPlugin = require('@ngtools/webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const FileListPlugin = require('file-list-plugin');
@@ -21,15 +20,6 @@ const assets = [
 module.exports = {
     mode: 'production',
     context: __dirname,
-    entry: {
-        cde: './modules/main.ts',
-    },
-    output: {
-        path: path.resolve(__dirname, 'dist/app'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
-        publicPath: '/app/',
-        filename: '[name].js',
-        chunkFilename: 'cde-[chunkhash].js',
-    },
     module: {
         rules: [
             {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
@@ -66,7 +56,6 @@ module.exports = {
     },
     plugins:
         [
-            new CleanWebpackPlugin(['dist/app']),
             new webpack.DefinePlugin({
                 IS_BROWSER: true,
                 PRODUCTION: JSON.stringify(true),
@@ -77,11 +66,6 @@ module.exports = {
                 'windows.jQuery': 'jquery',
                 Tether: 'tether',
                 Popper: ['popper.js', 'default'],
-            }),
-
-            new AotPlugin.AngularCompilerPlugin({
-                tsConfigPath: path.resolve(__dirname, 'tsconfig.json'),
-                entryModule: path.resolve(__dirname, 'modules/_app/app.module') + '#CdeAppModule'
             }),
             new MiniCssExtractPlugin({filename: '[name].css'}),
             new CopyWebpackPlugin([

@@ -21,15 +21,6 @@ const assets = [
 module.exports = {
     mode: 'development',
     context: __dirname,
-    entry: {
-        cde: './modules/main.ts',
-    },
-    output: {
-        path: path.resolve(__dirname, 'dist/app'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
-        publicPath: '/app/',
-        filename: '[name].js',
-        chunkFilename: 'cde-[chunkhash].js',
-    },
     module: {
         rules: [
             {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
@@ -70,7 +61,6 @@ module.exports = {
     },
     plugins:
         [
-            new CleanWebpackPlugin(['dist/app']),
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
                 /@angular(\\|\/)core(\\|\/)esm5/,
                 path.resolve(__dirname, '../src')
