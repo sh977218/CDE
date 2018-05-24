@@ -8,7 +8,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
 
     protected void removeAttachment(String name) {
         goToAttachments();
-        deleteWithConfirm(findElement(By.xpath("//*[contains(@id, 'attachment_')][//a[.='" + name + "']]")));
+        deleteWithConfirm(By.xpath("//*[contains(@id, 'attachment_')][//a[.='" + name + "']]"));
         checkAlert("Attachment Removed.");
         textNotPresent(name);
     }

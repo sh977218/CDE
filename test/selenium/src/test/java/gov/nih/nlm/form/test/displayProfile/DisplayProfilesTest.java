@@ -2,8 +2,6 @@ package gov.nih.nlm.form.test.displayProfile;
 
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -92,7 +90,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         clickElement(By.id("displayProfiles_tab"));
 
         for (int i = 0; i < 4; i++) {
-            deleteWithConfirm(findElement(By.cssSelector("#profile_0")));
+            deleteWithConfirm(By.cssSelector("#profile_0"));
         }
 
         newFormVersion();

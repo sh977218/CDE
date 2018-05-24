@@ -9,6 +9,7 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -346,9 +347,9 @@ public class NlmCdeBaseTest {
         }
     }
 
-    protected void deleteWithConfirm(WebElement element) {
-        element.findElement(By.xpath(".//i[contains(@class,'fa-trash-o')]")).click();
-        element.findElement(By.xpath(".//*[contains(@class,'badge')]/*[contains(@class,'fa-check')]")).click();
+    protected void deleteWithConfirm(By by) {
+        clickElement(new ByChained(by, By.xpath(".//i[contains(@class,'fa-trash-o')]")));
+        clickElement(new ByChained(by, By.xpath(".//*[contains(@class,'badge')]/*[contains(@class,'fa-check')]")));
     }
 
     protected void gotoClassificationMgt() {
