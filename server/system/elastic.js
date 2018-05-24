@@ -309,8 +309,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
                                                 analyze_wildcard: true,
                                                 query: settings.searchTerm
                                             }
-                                        } : undefined
-//                                        script_score: {script: script}
+                                        } : undefined,
+                                        script_score: {script: script}
                                     }
                                 }
                             ]
@@ -332,8 +332,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
                         analyze_wildcard: true,
                         query: settings.searchTerm
                     }
-                }
-//                script_score: {script: script}
+                },
+                script_score: {script: script}
             }
         });
 
@@ -349,8 +349,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
                             "analyze_wildcard": true,
                             "query": "\"" + settings.searchTerm + "\"~4"
                         }
-                    }
-//                    script_score: {script: script}
+                    },
+                    script_score: {script: script}
                 }
             });
         }
@@ -431,11 +431,13 @@ exports.buildElasticSearchQuery = function (user, settings) {
         regStatusAggFilter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
     }
 
-    queryStuff.sort = {
-        "_score": 'desc',
-        "views": 'desc',
-        "primaryNameSuggest.raw": 'asc'
-    };
+    if (sort) {
+        queryStuff.sort = {
+            "registrationState.registrationStatusSortOrder": "asc",
+            "classificationBoost": "desc",
+            "primaryNameSuggest.raw": "asc"
+        };
+    }
 
     // Get aggregations on classifications and statuses
     if (settings.includeAggregations) {
@@ -474,9 +476,9 @@ exports.buildElasticSearchQuery = function (user, settings) {
                 }
             };
             if (selectionString === "") {
-                flatClassifications.terms.include =  escapeRegExp(settings[orgVariableName]) + ";[^;]+";
+                flatClassifications.terms.include = escapeRegExp(settings[orgVariableName]) + ";[^;]+";
             } else {
-                flatClassifications.terms.include =  escapeRegExp(settings[orgVariableName]) + ';' + escapeRegExp(selectionString) + ";[^;]+";
+                flatClassifications.terms.include = escapeRegExp(settings[orgVariableName]) + ';' + escapeRegExp(selectionString) + ";[^;]+";
             }
             queryStuff.aggregations[variableName] = {
                 "filter": settings.filter,
@@ -714,7 +716,8 @@ exports.elasticsearch = function (type, query, settings, cb) {
                 let querystr = "cannot stringify query";
                 try {
                     querystr = JSON.stringify(query);
-                } catch (e) {}
+                } catch (e) {
+                }
                 logging.errorLogger.error("Error: ElasticSearch Error",
                     {
                         origin: "system.elastic.elasticsearch", stack: error.stack,
