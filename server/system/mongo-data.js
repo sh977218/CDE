@@ -755,15 +755,9 @@ exports.getNotificationsByUser = (user, cb) => {
     } else {
         query.roles = 'all';
     }
-    NotificationModel.find(query, (err, results) => {
-        if (err) cb(err, []);
-        else updateUserLastViewNotification(user, err => {
-            if (err) cb(err, []);
-            else cb(null, results);
-        })
-    });
+    NotificationModel.find(query, cb);
 };
 
-updateUserLastViewNotification = (user, cb) => {
-    User.update({username: user.username}, {$set: {$lastViewNotification: user.lastViewNotification}}, cb);
+exports.updateUserLastViewNotification = (user, cb) => {
+    User.update({username: user.username}, {$set: {$lastViewNotification: new Date()}}, cb);
 };

@@ -43,7 +43,7 @@ export class NotificationsComponent {
                }
            }, (window as any).versionCheckIntervalInSeconds * 1000);
    */
-        this.getNotification();
+        if (this.userService.user) this.getNotification();
     }
 
     getNotification() {
@@ -53,6 +53,6 @@ export class NotificationsComponent {
     }
 
     viewNotification() {
-        this.userService.user.lastViewNotification = new Date();
+        this.http.get("/viewedNotification").subscribe();
     }
 }

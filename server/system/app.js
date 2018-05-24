@@ -1384,14 +1384,17 @@ exports.init = function (app) {
         }
     });
 
+    app.get('/viewedNotification', (req, res) => {
+        mongo_data.updateUserLastViewNotification(req.user, err => {
+            if (err) res.status(500).send("Error Updating User Last View Notification.");
+            else res.send();
+        })
+    });
+
     app.get('/notificationsByUser', (req, res) => {
-        let user = req.user;
         mongo_data.getNotificationsByUser(req.user, (err, result) => {
             if (err) return res.status(500).send("Error Retrieving Notification.");
-            else {
-                console.log(user);
-                res.send(result);
-            }
+            else res.send(result);
         })
     })
 
