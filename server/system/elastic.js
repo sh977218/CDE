@@ -744,7 +744,6 @@ exports.elasticsearch = function (type, query, settings, cb) {
                 thisCde.properties = [];
                 thisCde.flatProperties = [];
                 thisCde.highlight = response.hits.hits[i].highlight;
-                thisCde.explanation = response.hits.hits[i]._explanation;
                 result[type + 's'].push(thisCde);
             }
             result.aggregations = response.aggregations;
