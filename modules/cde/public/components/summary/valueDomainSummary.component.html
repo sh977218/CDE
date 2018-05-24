@@ -3,9 +3,9 @@
     <table *ngIf="elt.valueDomain.permissibleValues.length > 0" class="table cdeTable"
            summary="List of permissible values">
         <tr>
-            <th id="value" class="col-5">Value</th>
-            <th id="codeName" class="col-5">Code Name</th>
-            <th id="code" class="col-2">Code</th>
+            <th class="col-5">Value</th>
+            <th class="col-5">Code Name</th>
+            <th class="col-2">Code</th>
         </tr>
         <tr *ngFor="let pv of elt.valueDomain.permissibleValues | slice:0:4; let i = index">
             <td headers="value" class="col-5 text-truncate">{{pv.permissibleValue}}</td>

@@ -16,12 +16,16 @@ import { WidgetModule } from "widget/widget.module";
 import { FormTableViewPreferencesComponent } from "../../search/tableViewPreferences/formTableViewPreferencesComponent";
 import {
     MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule,
+    MatPaginatorModule,
     MatCheckboxModule,
     MatDialogModule,
     MatGridListModule,
     MatListModule,
     MatSelectModule,
-    MatIconModule, MatInputModule, MatMenuModule, MatAutocompleteModule
+    MatAutocompleteModule
 } from "@angular/material";
 
 @NgModule({
@@ -38,6 +42,7 @@ import {
         SearchModule,
         MatButtonModule,
         MatAutocompleteModule,
+        MatPaginatorModule,
         MatInputModule,
         MatMenuModule,
         MatCheckboxModule,
