@@ -744,15 +744,26 @@ exports.copyDefinition = function (namings) {
 
 
 exports.getNotificationsByUser = (user, cb) => {
-    let query = {date: {"$lte": new Date()}};
+    let query = {};
     if (user) {
+        if (user.lastViewNotification) {
+            query.date = {"$lte": new Date(user.lastViewNotification)}
+        }
         if (!user.siteAdmin) {
             query.roles = user.roles;
-        } else if (user.roles.length === 0) {
-            query.roles = 'all';
         }
     } else {
         query.roles = 'all';
     }
-    NotificationModel.find(query, cb);
+    NotificationModel.find(query, (err, results) => {
+        if (err) cb(err, []);
+        else updateUserLastViewNotification(user, err => {
+            if (err) cb(err, []);
+            else cb(null, results);
+        })
+    });
+};
+
+updateUserLastViewNotification = (user, cb) => {
+    User.update({username: user.username}, {$set: {$lastViewNotification: user.lastViewNotification}}, cb);
 };

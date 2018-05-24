@@ -2,7 +2,6 @@ import { User } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 
-declare const ROLE_BIT_MAP;
 declare const rolesEnum: string[];
 declare function canComment(user: User): boolean;
 declare function canCreateForms(user: User): boolean;

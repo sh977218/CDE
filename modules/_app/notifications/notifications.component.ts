@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AlertService } from '_app/alert/alert.service';
+import { UserService } from '_app/user.service';
 
 @Component({
     selector: 'cde-notifications',
@@ -26,20 +27,32 @@ export class NotificationsComponent {
     notifications = [];
 
     constructor(private http: HttpClient,
+                private userService: UserService,
                 private alert: AlertService) {
-        setInterval(async () => {
-            try {
-                const latestVersion = await this.http.get("/site-version", {responseType: 'text'}).toPromise();
-                if (latestVersion !== this.currentVersion) {
-                    let note = "A new version of this site is available. To enjoy the new features, \n" +
-                        "please close all instances / tabs of this site then load again. ";
-                    if (this.notifications.indexOf(note) === -1) this.notifications.push(note);
-                }
-                const notifications = await this.http.get<any[]>("/notifications").toPromise();
-                this.notifications = notifications;
-            } catch (e) {
-                this.alert.addAlert('danger', e);
-            }
-        }, (window as any).versionCheckIntervalInSeconds * 1000);
+        /*
+         setInterval(async () => {
+               try {
+                   const latestVersion = await this.http.get("/site-version", {responseType: 'text'}).toPromise();
+                   if (latestVersion !== this.currentVersion) {
+                       let note = "A new version of this site is available. To enjoy the new features, \n" +
+                           "please close all instances / tabs of this site then load again. ";
+                       if (this.notifications.indexOf(note) === -1) this.notifications.push(note);
+                   }
+               } catch (e) {
+                   this.alert.addAlert('danger', e);
+               }
+           }, (window as any).versionCheckIntervalInSeconds * 1000);
+   */
+        this.getNotification();
+    }
+
+    getNotification() {
+        this.http.get<any[]>("/notificationsByUser")
+            .subscribe(res => this.notifications = res,
+                err => this.alert.addAlert('danger', err));
+    }
+
+    viewNotification() {
+        this.userService.user.lastViewNotification = new Date();
     }
 }

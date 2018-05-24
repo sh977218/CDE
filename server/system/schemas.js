@@ -198,6 +198,7 @@ schemas.userSchema = new mongoose.Schema({
     email: stringType,
     password: stringType,
     lastLogin: Date,
+    lastViewNotification: Date,
     lockCounter: Number,
     orgAdmin: [stringType],
     orgCurator: [stringType],
@@ -208,7 +209,6 @@ schemas.userSchema = new mongoose.Schema({
     formViewHistory: [stringType],
     knownIPs: [stringType],
     roles: [Object.assign({enum: authorizationShared.rolesEnum}, stringType)],
-    rolesBackup: {type: Number, default: 0},
     searchSettings: {
         version: Number,
         defaultSearchView: Object.assign({enum: ["accordion", "table", "summary"]}, stringType),

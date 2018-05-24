@@ -1,20 +1,5 @@
 import _find from 'lodash/find';
 
-/*
-Bit Value	1	1	1	1	1	1	1	1
-Position	7	6	5	4	3	2	1	0
-*/
-export const ROLE_BIT_MAP = {
-    "DocumentationEditor": 1,
-    "BoardPublisher": 2,
-    "CommentAuthor": 3,
-    "CommentReviewer": 4,
-    "AttachmentReviewer": 5,
-    "OrgAuthority": 6,
-    "FormEditor": 7
-};
-
-
 export const rolesEnum = ["DocumentationEditor", "BoardPublisher", "CommentAuthor",
     "CommentReviewer", "AttachmentReviewer", "OrgAuthority", "FormEditor"];
 
