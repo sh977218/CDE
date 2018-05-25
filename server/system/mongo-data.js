@@ -747,7 +747,7 @@ exports.getNotificationsByUser = (user, cb) => {
     let query = {};
     if (user) {
         if (user.lastViewNotification) {
-            query.date = {"$lte": new Date(user.lastViewNotification)}
+            query.date = {"$gte": new Date(user.lastViewNotification)}
         }
         if (!user.siteAdmin) {
             query.roles = user.roles;
