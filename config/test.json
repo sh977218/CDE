@@ -10,7 +10,7 @@
     "index": {"name": "cdetest"},
     "formIndex": {"name": "formtest"},
     "boardIndex": {"name": "boardtest"},
-    "number_of_replicas" : 0
+    "number_of_replicas": 0
   },
   "versionCheckIntervalInSeconds": 20,
   "siteKey" : "6LecRzAUAAAAAOB_LOhlf3itbTn3zOC2jYC6Er6u",
