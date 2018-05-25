@@ -1698,4 +1698,6 @@ public class NlmCdeBaseTest {
     protected void closeTableViewPreferenceModal() {
         clickElement(By.id("closeTableViewSettingsBtn"));
     }
+
+
 }
