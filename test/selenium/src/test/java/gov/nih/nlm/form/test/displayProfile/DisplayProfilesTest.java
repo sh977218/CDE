@@ -23,6 +23,11 @@ public class DisplayProfilesTest extends BaseFormTest {
         scrollToTop();
         clickElement(By.id("displayMetadataDevice_2"));
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
+        findElement(By.xpath("//div[@id='profile_0']"));
+        findElement(By.xpath("//div[@id='profile_0']//*[@class='native-section']"));
+        findElement(By.xpath("//div[@id='profile_0']//*[@class='native-section']//table"));
+        findElement(By.xpath("//div[@id='profile_0']//*[@class='native-section']//table//input[@type='radio']"));
+        findElement(By.xpath("(//div[@id='profile_0']//*[@class='native-section']//table//input[@type='radio'])[5]"));
         findElement(By.xpath("(//div[@id='profile_0']//*[@class='native-section']//table//input[@type='radio'])[5]/../span"));
         textPresent("1", By.xpath("(//div[@id='profile_0']//*[@class='native-section']//table//input[@type='radio'])[5]/../span"));
         Assert.assertTrue(
