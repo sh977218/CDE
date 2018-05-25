@@ -18,19 +18,19 @@ const usemin = require('gulp-usemin');
 
 require('es6-promise').polyfill();
 
-gulp.task('npm', function () {
+gulp.task('npm', function npm() {
     run('node --version').exec();
     return gulp.src(['./package.json'])
         .pipe(install());
 });
 
-gulp.task('copyNpmDeps', ['npm'], function () {
+gulp.task('copyNpmDeps', gulp.series('npm', function copyNpmDeps() {
     return gulp.src(['./package.json'])
         .pipe(gulp.dest(config.node.buildDir))
         .pipe(install({production: true}));
-});
+}));
 
-gulp.task('thirdParty', ['npm'], function () {
+gulp.task('thirdParty', gulp.series('npm', function thirdParty() {
     let streamArr = [];
 
     streamArr.push(gulp.src('./node_modules/core-js/client/core.min.js')
@@ -48,14 +48,14 @@ gulp.task('thirdParty', ['npm'], function () {
     ]).pipe(gulp.dest('./dist/common/')));
 
     return merge(streamArr);
-});
+}));
 
-gulp.task('createDist', ['thirdParty'], function () {
+gulp.task('createDist', gulp.series('thirdParty', () => {
     return gulp.src('./modules/cde/public/css/style.css') // TODO: move style.css to modules/standard_theme.css
         .pipe(gulp.dest('./dist/common'));
-});
+}));
 
-gulp.task('copyCode', [], function () {
+gulp.task('copyCode', function _copyCode() {
     let streamArray = [];
 
     ['cde', 'form', 'processManager', 'system', 'board'].forEach(function (module) {
@@ -119,49 +119,31 @@ gulp.task('copyCode', [], function () {
     return merge(streamArray);
 });
 
-gulp.task('prepareVersion', ['copyCode'], function () {
-    git.revParse({args: '--short HEAD'}, function (err, hash) {
+gulp.task('prepareVersion', gulp.series('copyCode', function prepareVersion() {
+    return git.revParse({args: '--short HEAD'}, function (err, hash) {
         fs.writeFile(config.node.buildDir + "/server/system/version.js", "exports.version = '" + hash + "';",
             function (err) {
                 if (err) console.log("ERROR generating version.html: " + err);
                 else console.log("generated " + config.node.buildDir + "/server/system/version.js");
             });
     });
-});
+}));
 
-gulp.task('build', ['createDist'], function () {
-    return run('npm run build').exec();
-});
+gulp.task('copyDist', gulp.series('createDist',
+    gulp.parallel(
+        buildApp = () => run('npm run buildApp').exec(),
+        buildNative = () => run('npm run buildNative').exec(),
+        buildEmbed = () => run('npm run buildEmbed').exec(),
+        buildFhir = () => run('npm run buildFhir').exec())
+    , copyApp = () => gulp.src('./dist/app/**/*').pipe(gulp.dest(config.node.buildDir + '/dist/app'))
+    , copyEmbed = () => gulp.src('./dist/embed/**/*').pipe(gulp.dest(config.node.buildDir + '/dist/embed'))
+    , copyFhir = () => gulp.src('./dist/fhir/*').pipe(gulp.dest(config.node.buildDir + '/dist/fhir'))
+    , copyNative = () => gulp.src('./dist/native/**/*').pipe(gulp.dest(config.node.buildDir + '/dist/native'))
+    , copyHome = () => gulp.src('./modules/system/views/home-launch.ejs').pipe(gulp.dest(config.node.buildDir + '/modules/system/views'))
+    , copyLaunch = () => gulp.src('./dist/launch/*').pipe(gulp.dest(config.node.buildDir + '/dist/launch'))
+));
 
-gulp.task('copyDist', ['build'], () => {
-    let streamArray = [];
-
-    // App
-    streamArray.push(gulp.src('./dist/app/**/*')
-        .pipe(gulp.dest(config.node.buildDir + '/dist/app')));
-
-    // Embed
-    streamArray.push(gulp.src('./dist/embed/**/*')
-        .pipe(gulp.dest(config.node.buildDir + '/dist/embed')));
-
-    // Fhir
-    streamArray.push(gulp.src('./dist/fhir/*')
-        .pipe(gulp.dest(config.node.buildDir + '/dist/fhir')));
-
-    // Native
-    streamArray.push(gulp.src('./dist/native/**/*')
-        .pipe(gulp.dest(config.node.buildDir + '/dist/native')));
-
-    // Launch optimization
-    streamArray.push(gulp.src('./modules/system/views/home-launch.ejs')
-        .pipe(gulp.dest(config.node.buildDir + '/modules/system/views')));
-    streamArray.push(gulp.src('./dist/launch/*')
-        .pipe(gulp.dest(config.node.buildDir + '/dist/launch')));
-
-    return merge(streamArray);
-});
-
-gulp.task('usemin', ['copyCode', 'copyDist'], function () {
+gulp.task('usemin', gulp.series('copyDist', function _usemin() {
     let streamArray = [];
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
@@ -214,12 +196,12 @@ gulp.task('usemin', ['copyCode', 'copyDist'], function () {
         });
     });
     return merge(streamArray);
-});
+}));
 
-gulp.task('copyUsemin', ['usemin'], function () {
+gulp.task('copyUsemin', gulp.series('usemin', function _usemin() {
     let streamArray = [];
     [
-        {folder: "./modules/system/views/bot/"},
+        {folder: "./modules/system/views/bot/", filename: "*.ejs"},
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/system/views/", filename: "index-legacy.ejs"},
         {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
@@ -230,9 +212,9 @@ gulp.task('copyUsemin', ['usemin'], function () {
             .pipe(gulp.dest(config.node.buildDir + "/" + item.folder)));
     });
     return merge(streamArray);
-});
+}));
 
-gulp.task('es', function () {
+gulp.task('es', function _es() {
     const elasticsearch = require('elasticsearch');
 
     let esClient = new elasticsearch.Client({
@@ -247,7 +229,7 @@ gulp.task('es', function () {
 });
 
 // Procedure calling task in README
-gulp.task('buildHome', [], function () {
+gulp.task('buildHome', function buildHome() {
     return del(['dist/launch/*.png']).then(() => {
         gulp.src('./dist/app/*.png')
             .pipe(gulp.dest('dist/launch'));
@@ -282,6 +264,6 @@ gulp.task('buildHome', [], function () {
     });
 });
 
-gulp.task('default', ['copyNpmDeps', 'prepareVersion', 'copyUsemin']);
+gulp.task('default', gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin'));
 
 

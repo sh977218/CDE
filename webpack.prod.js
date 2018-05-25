@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const crypto = require('crypto');
 const fs = require('fs');
-const path = require('path');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');

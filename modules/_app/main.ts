@@ -18,5 +18,5 @@ import { enableProdMode } from '@angular/core';
 if (PRODUCTION) enableProdMode();
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { CdeAppModule } from '_app/app.module';
+import { CdeAppModule } from './app.module';
 platformBrowserDynamic().bootstrapModule(CdeAppModule/*, options*/);

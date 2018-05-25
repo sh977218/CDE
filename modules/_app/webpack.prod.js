@@ -17,7 +17,7 @@ module.exports = merge(baseConfig, {
         new CleanWebpackPlugin(['dist/app']),
         new AotPlugin.AngularCompilerPlugin({
             tsConfigPath: path.resolve(__dirname, '../../tsconfig.json'),
-            entryModule: path.resolve(__dirname, './_app/app.module') + '#CdeAppModule'
+            entryModule: path.resolve(__dirname, './app.module') + '#CdeAppModule'
         }),
     ]
 });
