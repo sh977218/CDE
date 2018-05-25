@@ -181,7 +181,7 @@ exports.handleGenericError = function (options, cb) {
         if (err) {
             if (options && options.res) {
                 let message = options.publicMessage || "An error has occurred. It's already been reported.";
-                res.status(500).send(message);
+                options.res.status(500).send(message);
             }
             exports.logError({
                 message: options.message,
