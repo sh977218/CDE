@@ -1391,6 +1391,10 @@ exports.init = function (app) {
         })
     });
 
+    app.post('/notification',(req,res)=>{
+
+    })
+
     app.get('/notificationsByUser', (req, res) => {
         mongo_data.getNotificationsByUser(req.user, (err, result) => {
             if (err) return res.status(500).send("Error Retrieving Notification.");
