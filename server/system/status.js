@@ -145,6 +145,13 @@ let lastReport;
 setInterval(() => {
     app_status.getStatus(() => {
         let newReport = JSON.stringify(app_status.statusReport);
+
+        mongo_data.saveNotification({
+            title: 'Elastic Search Index Error',
+            body: JSON.stringify(newReport),
+            roles: ['siteAdmin']
+        });
+
         if (!!lastReport && newReport !== lastReport) {
             let emailContent = {
                 subject: "ElasticSearch Status Change " + config.name

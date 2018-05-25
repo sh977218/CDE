@@ -735,8 +735,12 @@ exports.copyDefinition = function (namings) {
     return definitions;
 };
 
+exports.saveNotification = (notification, callback) => {
+    notification.data = new Date();
+    new NotificationModel(notification).save(callback);
+};
 
-exports.getNotifications = (user, cb) => {
+exports.getNotifications = (user, callback) => {
     let query = {};
     if (user) {
         if (user.lastViewNotification) {
@@ -748,9 +752,9 @@ exports.getNotifications = (user, cb) => {
     } else {
         query.roles = 'all';
     }
-    NotificationModel.find(query, cb);
+    NotificationModel.find(query, callback);
 };
 
-exports.updateUserLastViewNotification = (user, cb) => {
-    User.update({username: user.username}, {$set: {lastViewNotification: new Date()}}, cb);
+exports.updateUserLastViewNotification = (user, callback) => {
+    User.update({username: user.username}, {$set: {lastViewNotification: new Date()}}, callback);
 };

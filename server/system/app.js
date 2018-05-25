@@ -887,6 +887,11 @@ exports.init = function (app) {
 
     app.get('/triggerServerErrorExpress', function (req, res) {
         res.send("received");
+        mongo_data.saveNotification({
+            title: 'trigger server error test',
+            body: '/triggerServerErrorExpress',
+            roles: ['siteAdmin']
+        });
         trigger.error(); // jshint ignore:line
     });
 
@@ -1079,6 +1084,14 @@ exports.init = function (app) {
     });
 
     app.post('/feedback/report', function (req, res) {
+
+        mongo_data.saveNotification({
+            title: 'Feedback Error',
+            body: JSON.stringify(req.body.feedback),
+            roles: ['siteAdmin']
+        });
+
+
         dbLogger.saveFeedback(req, function () {
             let msg = {
                 title: 'New Feedback Message\'',

@@ -1,7 +1,7 @@
 const config = require('./parseConfig');
 const connHelper = require('./connections');
 const logging = require('./logging');
-const mongo_data_system = require('./mongo-data');
+const mongo_data = require('./mongo-data');
 const mongo_storedQuery = require('../cde/mongo-storedQuery');
 const email = require('./email');
 const schemas_system = require('./schemas');
@@ -108,6 +108,13 @@ exports.log = function (message, callback) { // express only, all others dbLogge
 
 exports.logError = function (message, callback) { // all server errors, express and not
     message.date = new Date();
+
+    mongo_data.saveNotification({
+        title: 'Log Error',
+        body: JSON.stringify(message),
+        roles: ['siteAdmin']
+    });
+
     new LogErrorModel(message).save(err => {
         if (err) noDbLogger.noDbLogger.info("ERROR: ");
         let msg = {
@@ -128,7 +135,7 @@ exports.logError = function (message, callback) { // all server errors, express 
         };
 
         if (message.origin && message.origin.indexOf("pushGetAdministratorRegistrations") === -1) {
-            mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+            mongo_data.pushGetAdministratorRegistrations(registrations => {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
             });
         }
@@ -165,7 +172,13 @@ exports.logClientError = function (req, callback) {
             }
         };
 
-        mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+        mongo_data.saveNotification({
+            title: 'Client Error',
+            body: JSON.stringify(exc),
+            roles: ['siteAdmin']
+        });
+
+        mongo_data.pushGetAdministratorRegistrations(registrations => {
             registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
         });
         callback(err);
@@ -307,7 +320,7 @@ exports.saveFeedback = function (req, cb) {
         subject: "Issue reported by a user"
         , body: report.note
     };
-    mongo_data_system.siteAdmins(function (err, users) {
+    mongo_data.siteAdmins(function (err, users) {
         email.emailUsers(emailContent, users, function () {
         });
     });
