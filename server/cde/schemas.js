@@ -95,7 +95,7 @@ var deJson = {
     archived: {type: Boolean, default: false, index: true}, // Indication of historical record. True for previous versions.
     forkOf: sharedSchemas.stringType, // May point to a tinyID if the CDE is a fork
     attachments: [sharedSchemas.attachmentSchema],
-    views: Number,
+    views: {type: Number, default: 0},
     referenceDocuments: [sharedSchemas.referenceDocumentSchema], // Any written, printed or electronic matter used as a source of information. Used to provide information or evidence of authoritative or official record.
     derivationRules: [sharedSchemas.derivationRuleSchema]
 };
