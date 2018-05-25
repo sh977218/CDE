@@ -120,7 +120,7 @@ exports.orgAdmins = function(req, res) {
     if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
 
     let result = {"orgs": []};
-    mongo_data.managedOrgs(managedOrgs => {
+    mongo_data.managedOrgs((err,managedOrgs) => {
         mongo_data.orgAdmins((err, users) => {
             managedOrgs.forEach(mo => {
                 let newOrg = {"name": mo.name, "users": []};

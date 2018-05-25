@@ -45,7 +45,7 @@ export class NotificationsComponent {
     }
 
     getNotification() {
-        this.http.get<any[]>("/notificationsByUser")
+        this.http.get<any[]>("/notifications")
             .subscribe(res => this.notifications = res,
                 err => this.alert.addAlert('danger', err));
     }

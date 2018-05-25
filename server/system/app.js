@@ -592,8 +592,9 @@ exports.init = function (app) {
 
     app.get('/usernamesByIp/:ip', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            return mongo_data.usernamesByIp(req.params.ip, function (result) {
-                res.send(result);
+            return mongo_data.usernamesByIp(req.params.ip, function (err, result) {
+                if (err) return res.status(500).send("Error retrieving username by id");
+                else res.send(result);
             });
         } else {
             res.status(401).send();
@@ -615,6 +616,7 @@ exports.init = function (app) {
 
     app.post('/addOrg', function (req, res) {
         if (authorizationShared.canOrgAuthority(req.user)) {
+
             orgsvc.addOrg(req, res);
         } else {
             res.status(401).send();
@@ -955,9 +957,9 @@ exports.init = function (app) {
 
     app.get('/mailStatus', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) return res.send({count: 0});
-        mongo_data.mailStatus(req.user, function (err, result) {
+        mongo_data.mailStatus(req.user, function (err, results) {
             if (err) res.status(500).send("Unable to get mail status");
-            else res.send({count: result});
+            else res.send({count: results.length});
         });
     });
 
@@ -1391,12 +1393,8 @@ exports.init = function (app) {
         })
     });
 
-    app.post('/notification',(req,res)=>{
-
-    })
-
-    app.get('/notificationsByUser', (req, res) => {
-        mongo_data.getNotificationsByUser(req.user, (err, result) => {
+    app.get('/notifications', (req, res) => {
+        mongo_data.getNotifications(req.user, (err, result) => {
             if (err) return res.status(500).send("Error Retrieving Notification.");
             else res.send(result);
         })

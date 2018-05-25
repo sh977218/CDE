@@ -20,13 +20,13 @@ app_status.statusReport = {
         up: false,
         indices: []
     }
-};    
+};
 
-exports.everythingOk = function() {
+exports.everythingOk = function () {
     return app_status.statusReport.elastic.up;
 };
 
-exports.status = function(req, res) {    
+exports.status = function (req, res) {
     if (app_status.everythingOk()) {
         res.send("ALL SERVICES UP\n" + JSON.stringify(app_status.statusReport));
     } else {
@@ -34,63 +34,63 @@ exports.status = function(req, res) {
     }
 };
 
-app_status.checkElasticCount = function(count, index, type, cb) {
+app_status.checkElasticCount = function (count, index, type, cb) {
     elastic.esClient.count(
         {
             index: index
             , type: type
         }
-    , function(err, response) {
-        if (err) {
-            cb(false, "Error retrieving index count: " + err);
-        } else {
-            if (!(response.count >= count - 5 && response.count <= count + 5)) {
-                cb(false, "Count mismatch because db count = " + count + " and esCount = " + response.count);
+        , function (err, response) {
+            if (err) {
+                cb(false, "Error retrieving index count: " + err);
             } else {
+                if (!(response.count >= count - 5 && response.count <= count + 5)) {
+                    cb(false, "Count mismatch because db count = " + count + " and esCount = " + response.count);
+                } else {
+                    cb(true);
+                }
+            }
+        });
+};
+
+app_status.isElasticUp = function (cb) {
+    elastic.esClient.cat.health({h: "st"}, function (err, response) {
+        if (err) {
+            app_status.statusReport.elastic.up = "No Response on Health Check: " + err;
+            cb(false);
+        } else {
+            if (response.indexOf("red") === 0) {
+                app_status.statusReport.elastic.up = false;
+                app_status.statusReport.elastic.message = "Cluster status is Red.";
+                cb();
+            } else if (response.indexOf('yellow') === 0) {
+                app_status.statusReport.elastic.up = true;
+                app_status.statusReport.elastic.message = "Cluster status is Yellow.";
+                cb();
+            } else if (response.indexOf("green") === 0) {
+                app_status.statusReport.elastic.up = true;
+                delete app_status.statusReport.elastic.message;
+                cb(true);
+            } else {
+                app_status.statusReport.elastic.up = true;
+                app_status.statusReport.elastic.message = "Cluster status is unknown.";
                 cb(true);
             }
         }
     });
 };
 
-app_status.isElasticUp = function(cb) {
-    elastic.esClient.cat.health({h: "st"}, function(err, response) {
-        if(err) {
-            app_status.statusReport.elastic.up = "No Response on Health Check: " + err;
-            cb(false);
-        } else {
-             if (response.indexOf("red") === 0) {
-                 app_status.statusReport.elastic.up = false;
-                 app_status.statusReport.elastic.message = "Cluster status is Red.";
-                 cb();
-             } else if (response.indexOf('yellow') === 0) {
-                 app_status.statusReport.elastic.up = true;
-                 app_status.statusReport.elastic.message = "Cluster status is Yellow.";
-                 cb();
-             } else if (response.indexOf("green") === 0) {
-                 app_status.statusReport.elastic.up = true;
-                 delete app_status.statusReport.elastic.message;
-                 cb(true);
-             } else {
-                 app_status.statusReport.elastic.up = true;
-                 app_status.statusReport.elastic.message = "Cluster status is unknown.";
-                 cb(true);
-             }
-        }
-    });
-};
-
 let startupDate = new Date();
-app_status.getStatus = function(done) {
-    app_status.isElasticUp(function() {
+app_status.getStatus = function (done) {
+    app_status.isElasticUp(function () {
         if (app_status.statusReport.elastic.up) {
             app_status.statusReport.elastic.indices = [];
             let condition = {archived: false};
             async.series([
-                function(done) {
+                function (done) {
                     mongo_cde.count(condition, function (err, deCount) {
                         esInit.indices[0].totalCount = deCount;
-                        app_status.checkElasticCount(deCount, config.elastic.index.name, "dataelement", function(up, message) {
+                        app_status.checkElasticCount(deCount, config.elastic.index.name, "dataelement", function (up, message) {
                             app_status.statusReport.elastic.indices.push({
                                 name: config.elastic.index.name,
                                 up: up,
@@ -100,7 +100,7 @@ app_status.getStatus = function(done) {
                         });
                     });
                 },
-                function(done) {
+                function (done) {
                     mongo_form.count(condition, function (err, formCount) {
                         esInit.indices[1].totalCount = formCount;
                         app_status.checkElasticCount(formCount, config.elastic.formIndex.name, "form", function (up, message) {
@@ -113,7 +113,7 @@ app_status.getStatus = function(done) {
                         });
                     });
                 },
-                function(done) {
+                function (done) {
                     mongo_board.count({}, function (err, boardCount) {
                         esInit.indices[2].totalCount = boardCount;
                         app_status.checkElasticCount(boardCount, config.elastic.boardIndex.name, "board", function (up, message) {
@@ -126,11 +126,14 @@ app_status.getStatus = function(done) {
                         });
                     });
                 }
-            ], function() {
+            ], function () {
                 mongo_data_system.updateClusterHostStatus({
                     hostname: config.hostname, port: config.port, nodeStatus: "Running",
                     elastic: app_status.statusReport.elastic, pmPort: config.pm.port, startupDate: startupDate
+                }, err => {
+                    if (err) logging.errorLogger.error("Unable to retrieve state of host in cluster config.", err);
                 });
+
                 if (done) done();
             });
         }
@@ -175,16 +178,17 @@ setInterval(() => {
         mongo_data_system.getClusterHostStatuses(function (err, statuses) {
             let now = moment();
             let activeNodes = statuses.filter(s => now.diff(moment(s.lastUpdate), 'seconds') < timeDiff)
-                .map( s => s.hostname + ":" + s.port).sort();
+                .map(s => s.hostname + ":" + s.port).sort();
             if (!currentActiveNodes) currentActiveNodes = activeNodes;
             else {
-                if (!(currentActiveNodes.length === activeNodes.length && currentActiveNodes.every ((v,i)=> v === activeNodes[i]))) {
+                if (!(currentActiveNodes.length === activeNodes.length && currentActiveNodes.every((v, i) => v === activeNodes[i]))) {
                     let emailContent = {
                         subject: "Server Configuration Change"
                         , body: "Server Configuration Change from " + currentActiveNodes + " to " + activeNodes
                     };
-                    mongo_data_system.siteAdmins(function(err, users) {
-                        email.emailUsers(emailContent, users, function() {});
+                    mongo_data_system.siteAdmins(function (err, users) {
+                        email.emailUsers(emailContent, users, function () {
+                        });
                     });
                 }
                 currentActiveNodes = activeNodes;

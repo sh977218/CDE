@@ -12,12 +12,16 @@ exports.checkDatabase = (callback = _.noop) => {
             mongo_data.pushCreate({_id: mongo_data.ObjectId('000000000000000000000000'), userId: config.publicUrl},
                 dbLogger.handleGenericError({origin: "pushNotification.checkDatabase"}, callback));
         }
+
         if (!push) {
             createDbTag();
             return;
         }
         if (push.userId !== config.publicUrl) {
-            mongo_data.pushClearDb(dbLogger.handleGenericError({message: 'could not remove push', origin: "checkDatabase"}, createDbTag));
+            mongo_data.pushClearDb(dbLogger.handleGenericError({
+                message: 'could not remove push',
+                origin: "checkDatabase"
+            }, createDbTag));
             return;
         }
         callback();
@@ -50,7 +54,8 @@ exports.create = (req, res) => {
             pushes.forEach(push => {
                 if (push.loggedIn) {
                     push.loggedIn = false;
-                    push.save(dbLogger.handleGenericError({origin: "pushNotification.create"}, () => {}));
+                    push.save(dbLogger.handleGenericError({origin: "pushNotification.create"}, () => {
+                    }));
                 }
             });
             mongo_data.pushCreate({
@@ -69,15 +74,25 @@ exports.create = (req, res) => {
 exports.createUnsubscribed = (req, res) => {
     mongo_data.pushCreate({vapidKeys: webpush.generateVAPIDKeys()}, dbLogger.handleGenericError(
         {res: res, origin: "pushNotification.createUnsubscribed"}, push => {
-        res.send({applicationServerKey: push.vapidKeys.publicKey, subscribed: false});
-    }));
+            res.send({applicationServerKey: push.vapidKeys.publicKey, subscribed: false});
+        }));
 };
 
 exports.delete = (req, res) => {
     if (!req.body.endpoint || !req.user || !req.user._id) {
         return res.status(400).send('Required parameters missing.');
     }
-    mongo_data.pushDelete(req.body.endpoint, req.user._id, dbLogger.withMongoError(res, 'could not remove', res.send));
+    mongo_data.pushByIds(req.body.endpoint, req.user._id, (err, registry) => {
+        if (err) return res.status(500).send("Error push by id.");
+        else {
+            mongo_data.pushDeleteById(registry._id, err => {
+                if (err) {
+                    dbLogger.withMongoError(res, 'could not remove.');
+                    return res.status(500).send("Error removing registry.");
+                } else res.send();
+            })
+        }
+    })
 };
 
 exports.subscribe = (req, res) => {
@@ -94,15 +109,18 @@ exports.subscribe = (req, res) => {
     }
     mongo_data.pushByPublicKey(req.body.applicationServerKey, dbLogger.handleGenericError(
         {res: res, origin: "pushNotification.subscribe"}, push => {
-        if (!push) {
-            return res.status(400).send('push registration must be created before it is subscribed to.');
-        }
-        push.features = _.union(push.features, req.body.features);
-        push.loggedIn = true;
-        push.subscription = req.body.subscription;
-        push.userId = req.user._id;
-        push.save(dbLogger.handleGenericError({res: res, origin: "pushNotification.subscribe"}, push => res.send(push.features)));
-    }));
+            if (!push) {
+                return res.status(400).send('push registration must be created before it is subscribed to.');
+            }
+            push.features = _.union(push.features, req.body.features);
+            push.loggedIn = true;
+            push.subscription = req.body.subscription;
+            push.userId = req.user._id;
+            push.save(dbLogger.handleGenericError({
+                res: res,
+                origin: "pushNotification.subscribe"
+            }, push => res.send(push.features)));
+        }));
 };
 
 exports.triggerPushMsg = (push, dataToSend) => {
@@ -117,7 +135,7 @@ exports.triggerPushMsg = (push, dataToSend) => {
         .catch(err => {
             if (err.name === 'WebPushError' && err.message === 'Received unexpected response code') { // endpoint gone
                 push.remove()
-                    // .then(() => dbLogger.consoleLog('PushNotification trigger removed: ' + pushReg.userId + ' ' + pushReg.subscription.endpoint))
+                // .then(() => dbLogger.consoleLog('PushNotification trigger removed: ' + pushReg.userId + ' ' + pushReg.subscription.endpoint))
                     .catch(dbLogger.logError);
             } else { // currently unknown error
                 dbLogger.logError({
@@ -138,21 +156,22 @@ exports.updateStatus = (req, res) => {
         // start
         mongo_data.pushByIds(req.body.endpoint, req.user._id, dbLogger.handleGenericError(
             {res: res, origin: "pushNotification.updateStatus"}, push => {
-            mongo_data.pushByIdsCount(req.body.endpoint, undefined, dbLogger.handleGenericError(
-                {res: res, origin: "pushNotification.updateStatus"}, countExists => {
-                function respond() {
-                    res.send({status: !!push, exist: !!countExists});
-                }
-                if (!push || push.loggedIn) return respond();
-                push.update({$set: {loggedIn : true}}, undefined, dbLogger.handleGenericError(
-                    {res: res, origin: "pushNotification.updateStatus"}, respond));
+                mongo_data.pushByIdsCount(req.body.endpoint, undefined, dbLogger.handleGenericError(
+                    {res: res, origin: "pushNotification.updateStatus"}, countExists => {
+                        function respond() {
+                            res.send({status: !!push, exist: !!countExists});
+                        }
+
+                        if (!push || push.loggedIn) return respond();
+                        push.update({$set: {loggedIn: true}}, undefined, dbLogger.handleGenericError(
+                            {res: res, origin: "pushNotification.updateStatus"}, respond));
+                    }));
             }));
-        }));
     } else {
         // stop
-        mongo_data.pushEndpointUpdate(req.body.endpoint, {$set: {loggedIn : false}}, dbLogger.handleGenericError(
+        mongo_data.pushEndpointUpdate(req.body.endpoint, {$set: {loggedIn: false}}, dbLogger.handleGenericError(
             {res: res, origin: "pushNotification.updateStatus"}, () => {
-            res.send({status: false, exist: true});
-        }));
+                res.send({status: false, exist: true});
+            }));
     }
 };
