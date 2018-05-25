@@ -51,6 +51,8 @@ export class NotificationsComponent {
     }
 
     viewNotification() {
-        this.http.get("/viewedNotification").subscribe();
+        this.http.get("/viewedNotification")
+            .subscribe(() => this.getNotification(),
+                err => this.alert.addAlert('danger', err));
     }
 }
