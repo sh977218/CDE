@@ -20,12 +20,15 @@ public class DisplayProfilesTest extends BaseFormTest {
         createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Follow-up", 1, false, 0);
         createDisplayProfile(3, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5, false, 0);
         createDisplayProfile(4, "Multiple Select", false, false, false, false, "Dynamic", 5, false, 4);
-        scrollToTop();
         clickElement(By.id("displayMetadataDevice_2"));
+        scrollToTop();
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
+        hangon(10);
         findElement(By.xpath("//div[@id='profile_0']"));
         findElement(By.xpath("//div[@id='profile_0']//*[contains(@class,'native-section')]"));
         findElement(By.xpath("//div[@id='profile_0']//*[contains(@class,'native-section')]//table"));
+        driver.findElement(By.xpath("//div[@id='profile_0']//table//input"));
+        findElement(By.xpath("//div[@id='profile_0']//table//input"));
         findElement(By.xpath("//div[@id='profile_0']//*[contains(@class,'native-section')]//table//input"));
         findElement(By.xpath("//div[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio']"));
         findElement(By.xpath("(//div[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]"));
