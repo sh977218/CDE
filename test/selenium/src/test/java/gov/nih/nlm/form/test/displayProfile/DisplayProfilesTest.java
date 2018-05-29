@@ -18,21 +18,11 @@ public class DisplayProfilesTest extends BaseFormTest {
         createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up", 1, false, 0);
         createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic", 6, true, 0);
         createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Follow-up", 1, false, 0);
+        clickElement(By.id("displayMetadataDevice_2"));
         createDisplayProfile(3, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5, false, 0);
         createDisplayProfile(4, "Multiple Select", false, false, false, false, "Dynamic", 5, false, 4);
-        clickElement(By.id("displayMetadataDevice_2"));
         scrollToTop();
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
-        hangon(10);
-        findElement(By.xpath("//div[@id='profile_0']"));
-        findElement(By.xpath("//div[@id='profile_0']//*[contains(@class,'native-section')]"));
-        findElement(By.xpath("//div[@id='profile_0']//*[contains(@class,'native-section')]//table"));
-        driver.findElement(By.xpath("//div[@id='profile_0']//table//input"));
-        findElement(By.xpath("//div[@id='profile_0']//table//input"));
-        findElement(By.xpath("//div[@id='profile_0']//*[contains(@class,'native-section')]//table//input"));
-        findElement(By.xpath("//div[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio']"));
-        findElement(By.xpath("(//div[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]"));
-        findElement(By.xpath("(//div[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]/../span"));
         textPresent("1", By.xpath("(//div[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]/../span"));
         Assert.assertTrue(
                 findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_0-1']//" + byValueListValueXPath("1st Grade"))).getLocation().y + 8 <
@@ -47,7 +37,7 @@ public class DisplayProfilesTest extends BaseFormTest {
 
         goToFormByName(formName);
         textPresent("In the past 7 days");
-        Assert.assertEquals(findElements(By.xpath("//*[@class='fa fa-plus iconButton'")).size(), 0);
+        Assert.assertEquals(findElements(By.cssSelector(".fa.fa-plus.iconButton")).size(), 0);
         textPresent("I felt annoyed");
         textPresent("1", By.xpath("//div[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
         textPresent("5", By.xpath("//div[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[6]"));
@@ -69,7 +59,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         Assert.assertTrue(findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//" + byValueListValueXPath("Never"))).getLocation().y + 8 <
                 findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//" + byValueListValueXPath("Rarely"))).getLocation().y
         );
-        clickElement(By.xpath("//*[@class='fa fa-plus iconButton'"));
+        clickElement(By.cssSelector(".fa.fa-plus.iconButton"));
         clickElement(By.xpath("//a[text()='Add Device by UDI'"));
         findElement(By.xpath("//input[@id='deviceSearchInput']")).clear();
         findElement(By.xpath("//input[@id='deviceSearchInput']")).sendKeys("=/08717648200274=,000025=A99971312345600=>014032=}013032&,1000000000000XYZ123");
@@ -103,7 +93,6 @@ public class DisplayProfilesTest extends BaseFormTest {
         newFormVersion();
         goToGeneralDetail();
         textNotPresent("Display Profile:");
-        Assert.assertEquals(findElements(By.xpath("//*[@class='fa fa-plus iconButton'")).size(), 0);
+        Assert.assertEquals(findElements(By.cssSelector(".fa.fa-plus.iconButton")).size(), 0);
     }
-
 }

@@ -27,6 +27,7 @@ type DisplayProfileVM = {
 export class DisplayProfileComponent {
     @Input() set elt(e: CdeForm) {
         this._elt = e;
+        this.dPVMs.length = 0;
         this.elt.displayProfiles.forEach(profile => this.dPVMs.push(DisplayProfileComponent.dPVMNew(profile)));
     }
     get elt() {
