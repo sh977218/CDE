@@ -26,6 +26,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         findElement(By.xpath("//div[@id='profile_0']"));
         findElement(By.xpath("//div[@id='profile_0']//*[contains(@class,'native-section')]"));
         findElement(By.xpath("//div[@id='profile_0']//*[contains(@class,'native-section')]//table"));
+        findElement(By.xpath("//div[@id='profile_0']//*[contains(@class,'native-section')]//table//input"));
         findElement(By.xpath("//div[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio']"));
         findElement(By.xpath("(//div[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]"));
         findElement(By.xpath("(//div[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]/../span"));
