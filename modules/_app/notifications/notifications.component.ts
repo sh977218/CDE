@@ -55,4 +55,8 @@ export class NotificationsComponent {
             .subscribe(() => this.getNotification(),
                 err => this.alert.addAlert('danger', err));
     }
+
+    resetDateToBefore() {
+        this.http.get("/resetDateToBefore");
+    }
 }

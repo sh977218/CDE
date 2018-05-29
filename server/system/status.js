@@ -7,7 +7,7 @@ const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_board = require('../board/mongo-board');
 const mongo_storedQuery = require('../cde/mongo-storedQuery');
-const mongo_data_system = require('./mongo-data');
+const mongo_data = require('./mongo-data');
 const elastic = require('./elastic');
 const esInit = require('./elasticSearchInit');
 const email = require('./email');
@@ -127,7 +127,7 @@ app_status.getStatus = function (done) {
                     });
                 }
             ], function () {
-                mongo_data_system.updateClusterHostStatus({
+                mongo_data.updateClusterHostStatus({
                     hostname: config.hostname, port: config.port, nodeStatus: "Running",
                     elastic: app_status.statusReport.elastic, pmPort: config.pm.port, startupDate: startupDate
                 }, err => {
@@ -174,7 +174,7 @@ setInterval(() => {
                 }
             };
 
-            mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+            mongo_data.pushGetAdministratorRegistrations(registrations => {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
             });
 
@@ -182,7 +182,7 @@ setInterval(() => {
         lastReport = newReport;
 
         let timeDiff = config.status.timeouts.statusCheck / 1000 + 30;
-        mongo_data_system.getClusterHostStatuses(function (err, statuses) {
+        mongo_data.getClusterHostStatuses(function (err, statuses) {
             let now = moment();
             let activeNodes = statuses.filter(s => now.diff(moment(s.lastUpdate), 'seconds') < timeDiff)
                 .map(s => s.hostname + ":" + s.port).sort();
@@ -193,7 +193,7 @@ setInterval(() => {
                         subject: "Server Configuration Change"
                         , body: "Server Configuration Change from " + currentActiveNodes + " to " + activeNodes
                     };
-                    mongo_data_system.siteAdmins(function (err, users) {
+                    mongo_data.siteAdmins(function (err, users) {
                         email.emailUsers(emailContent, users, function () {
                         });
                     });

@@ -1411,6 +1411,14 @@ exports.init = function (app) {
             if (err) return res.status(500).send("Error Retrieving Notification.");
             else res.send(result);
         })
-    })
+    });
+
+    // @TODO for testing purpose
+    app.get('/resetDateToBefore', (req, res) => {
+        mongo_data.resetDateToBefore(req.user, err => {
+            if (err) res.status(500).send("Error Updating User Last View Notification.");
+            else res.send();
+        })
+    });
 
 };

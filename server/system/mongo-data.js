@@ -758,3 +758,8 @@ exports.getNotifications = (user, callback) => {
 exports.updateUserLastViewNotification = (user, callback) => {
     User.update({username: user.username}, {$set: {lastViewNotification: new Date()}}, callback);
 };
+
+// @TODO for testing purpose
+exports.resetDateToBefore = (user, callback) => {
+    User.update({username: user.username}, {$set: {lastViewNotification: ''}}, callback);
+};

@@ -2,13 +2,17 @@
     <i class="fa fa-bell text-muted"></i>
     <span class="button_badge" *ngIf="notifications.length > 0">{{notifications.length}}</span>
 </a>
-<div class="dropdown-menu dropdown-menu-right">
-    <div class="dropdown-item" *ngFor="let notification of notifications"
-         (click)="viewNotification();">
-        {{notification.title}}
+<div class="dropdown-menu dropdown-menu-right" style="min-width: 30rem;">
+    <div class="dropdown-item border-bottom" *ngFor="let notification of notifications" (click)="viewNotification();"
+         style="padding:0.5rem 1rem">
+        <p>{{notification.title}}</p>
+        <small>{{notification.date | date:'yyyy-MM-dd HH:mm'}}</small>
     </div>
     <div class="dropdown-item" (click)="getNotification();">
         Refresh
+    </div>
+    <div class="dropdown-item" (click)="resetDateToBefore();">
+        Reset Date to Before
     </div>
 
 </div>
