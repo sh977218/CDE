@@ -1086,8 +1086,8 @@ exports.init = function (app) {
     app.post('/feedback/report', function (req, res) {
 
         mongo_data.saveNotification({
-            title: 'Feedback Error',
-            body: JSON.stringify(req.body.feedback),
+            title: 'Feedback Error: ' + req.body.feedback ? JSON.parse(req.body.feedback).note.substr(0, 15) : '',
+            url: "/siteAudit#userFeedback",
             roles: ['siteAdmin']
         });
 
@@ -1096,7 +1096,7 @@ exports.init = function (app) {
             let msg = {
                 title: 'New Feedback Message\'',
                 options: {
-                    body: (req.body.feedback ? JSON.parse(req.body.feedback).note : ''),
+                    body: req.body.feedback ? JSON.parse(req.body.feedback).note : '',
                     icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
                     badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
                     tag: 'cde-feedback',
@@ -1399,25 +1399,23 @@ exports.init = function (app) {
         }
     });
 
-    app.get('/viewedNotification', (req, res) => {
+    app.get('/viewedNotification', authorization.loggedInMiddleware, (req, res) => {
         mongo_data.updateUserLastViewNotification(req.user, err => {
-            if (err) res.status(500).send("Error Updating User Last View Notification.");
+            if (err) res.status(500).send("Error Updating User's Last View Notification Date.");
             else res.send();
         })
     });
 
-    app.get('/notifications', (req, res) => {
+    app.get('/notifications', authorization.loggedInMiddleware, (req, res) => {
         mongo_data.getNotifications(req.user, (err, result) => {
-            if (err) return res.status(500).send("Error Retrieving Notification.");
+            if (err) return res.status(500).send("Error Retrieving Notifications.");
             else res.send(result);
         })
     });
-
-    // @TODO for testing purpose
-    app.get('/resetDateToBefore', (req, res) => {
-        mongo_data.resetDateToBefore(req.user, err => {
-            if (err) res.status(500).send("Error Updating User Last View Notification.");
-            else res.send();
+    app.get('/unreadNotifications', authorization.loggedInMiddleware, (req, res) => {
+        mongo_data.getUnreadNotifications(req.user, (err, result) => {
+            if (err) return res.status(500).send("Error Retrieving Unread Notifications.");
+            else res.send(result);
         })
     });
 

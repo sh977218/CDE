@@ -24,7 +24,8 @@ import { UserService } from '_app/user.service';
 export class NotificationsComponent {
 
     currentVersion = (window as any).version;
-    notifications = [];
+    readNotifications = [];
+    unreadNotifications = [];
 
     constructor(private http: HttpClient,
                 private userService: UserService,
@@ -35,24 +36,36 @@ export class NotificationsComponent {
                 if (latestVersion !== this.currentVersion) {
                     let note = "A new version of this site is available. To enjoy the new features, \n" +
                         "please close all instances / tabs of this site then load again. ";
-                    this.notifications.unshift({title: note});
+                    this.unreadNotifications.unshift({title: note});
                 }
             } catch (e) {
                 this.alert.addAlert('danger', e);
             }
-            if (this.userService.user) this.getNotification();
+            if (this.userService.user) this.getNotifications();
         }, (window as any).versionCheckIntervalInSeconds * 1000);
     }
 
-    getNotification() {
-        this.http.get<any[]>("/notifications")
-            .subscribe(res => this.notifications = res,
+    getUnreadNotifications(cb = null) {
+        this.http.get<any[]>("/unreadNotifications")
+            .subscribe(res => {
+                    this.unreadNotifications = res;
+                    if (cb) cb();
+                },
                 err => this.alert.addAlert('danger', err));
     }
 
-    viewNotification() {
+    getNotifications(cb = null) {
+        this.http.get<any[]>("/notifications")
+            .subscribe(res => {
+                    this.readNotifications = res;
+                    this.getUnreadNotifications(cb);
+                },
+                err => this.alert.addAlert('danger', err));
+    }
+
+    viewNotification(notification) {
         this.http.get("/viewedNotification")
-            .subscribe(() => this.getNotification(),
+            .subscribe(() => this.getNotifications(() => window.open(notification._id.url, '_blank')),
                 err => this.alert.addAlert('danger', err));
     }
 

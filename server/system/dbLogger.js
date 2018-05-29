@@ -110,8 +110,8 @@ exports.logError = function (message, callback) { // all server errors, express 
     message.date = new Date();
 
     mongo_data.saveNotification({
-        title: 'Log Error',
-        body: JSON.stringify(message),
+        title: "Server Side Error: " + message.message.substr(0, 30),
+        url: "/siteAudit#serverError",
         roles: ['siteAdmin']
     });
 
@@ -120,7 +120,7 @@ exports.logError = function (message, callback) { // all server errors, express 
         let msg = {
             title: 'Server Side Error',
             options: {
-                body: ("Server Side Error: " + message.message.substr(0, 30)),
+                body: "Server Side Error: " + message.message.substr(0, 30),
                 icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
                 badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
                 tag: 'cde-server-side',
@@ -158,7 +158,7 @@ exports.logClientError = function (req, callback) {
         let msg = {
             title: 'Client Side Error',
             options: {
-                body: ("Client Side Error: " + exc.message.substr(0, 30)),
+                body: "Client Side Error: " + exc.message.substr(0, 30),
                 icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
                 badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
                 tag: 'cde-client-side',
@@ -173,8 +173,8 @@ exports.logClientError = function (req, callback) {
         };
 
         mongo_data.saveNotification({
-            title: 'Client Error',
-            body: JSON.stringify(exc),
+            title: "Client Side Error: " + exc.message.substr(0, 30),
+            url: "/siteAudit#clientErrors",
             roles: ['siteAdmin']
         });
 

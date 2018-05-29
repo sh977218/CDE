@@ -551,7 +551,7 @@ schemas.trafficFilterSchema = new mongoose.Schema({
 
 schemas.notificationSchema = new mongoose.Schema({
     title: String,
-    body: String,
+    url: String,
     date: {type: Date, index: true, default: new Date()},
     roles: {type: [String], index: true, default: []}
 });

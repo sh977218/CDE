@@ -148,7 +148,7 @@ setInterval(() => {
 
         mongo_data.saveNotification({
             title: 'Elastic Search Index Error',
-            body: JSON.stringify(newReport),
+            url: "/status/cde",
             roles: ['siteAdmin']
         });
 
@@ -160,7 +160,7 @@ setInterval(() => {
             let msg = {
                 title: 'Elastic Search Index Issue',
                 options: {
-                    body: ("Status reports not normal"),
+                    body: "Status reports not normal",
                     icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
                     badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
                     tag: 'cde-es-issue',

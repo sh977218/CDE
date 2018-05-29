@@ -740,26 +740,34 @@ exports.saveNotification = (notification, callback) => {
     new NotificationModel(notification).save(callback);
 };
 
+exports.getUnreadNotifications = (user, callback) => {
+    let query = {};
+    if (user.lastViewNotification) {
+        query.date = {"$gte": new Date(user.lastViewNotification)}
+    }
+    if (!user.siteAdmin) {
+        query.roles = user.roles;
+    }
+    NotificationModel.aggregate([
+        {$match: query},
+        {$group: {_id: {title: '$title', url: '$url'}, count: {$sum: 1}, date: {$max: '$date'}}}
+    ], callback);
+};
+
 exports.getNotifications = (user, callback) => {
     let query = {};
-    if (user) {
-        if (user.lastViewNotification) {
-            query.date = {"$gte": new Date(user.lastViewNotification)}
-        }
-        if (!user.siteAdmin) {
-            query.roles = user.roles;
-        }
-    } else {
-        query.roles = 'all';
+    if (user.lastViewNotification) {
+        query.date = {"$lte": new Date(user.lastViewNotification)}
     }
-    NotificationModel.find(query, callback);
+    if (!user.siteAdmin) {
+        query.roles = user.roles;
+    }
+    NotificationModel.aggregate([
+        {$match: query},
+        {$group: {_id: {title: '$title', url: '$url'}, count: {$sum: 1}, date: {$max: '$date'}}}
+    ], callback);
 };
 
 exports.updateUserLastViewNotification = (user, callback) => {
     User.update({username: user.username}, {$set: {lastViewNotification: new Date()}}, callback);
-};
-
-// @TODO for testing purpose
-exports.resetDateToBefore = (user, callback) => {
-    User.update({username: user.username}, {$set: {lastViewNotification: ''}}, callback);
 };

@@ -1,18 +1,17 @@
 <a class="nav-link" data-toggle="dropdown">
     <i class="fa fa-bell text-muted"></i>
-    <span class="button_badge" *ngIf="notifications.length > 0">{{notifications.length}}</span>
+    <span class="button_badge" *ngIf="unreadNotifications.length > 0">{{unreadNotifications.length}}</span>
 </a>
+
 <div class="dropdown-menu dropdown-menu-right" style="min-width: 30rem;">
-    <div class="dropdown-item border-bottom" *ngFor="let notification of notifications" (click)="viewNotification();"
-         style="padding:0.5rem 1rem">
-        <p>{{notification.title}}</p>
+    <div class="dropdown-item border-bottom" *ngFor="let notification of unreadNotifications"
+         (click)="viewNotification(notification);" style="padding:0.5rem 1rem">
+        <p>{{notification._id.title}} ({{notification.count}})</p>
         <small>{{notification.date | date:'yyyy-MM-dd HH:mm'}}</small>
     </div>
-    <div class="dropdown-item" (click)="getNotification();">
-        Refresh
+    <div class="dropdown-item border-bottom" *ngFor="let notification of readNotifications"
+         (click)="viewNotification(notification);" style="padding:0.5rem 1rem;background-color:lightgray;">
+        <p>{{notification._id.title}} ({{notification.count}})</p>
+        <small>{{notification.date | date:'yyyy-MM-dd HH:mm'}}</small>
     </div>
-    <div class="dropdown-item" (click)="resetDateToBefore();">
-        Reset Date to Before
-    </div>
-
 </div>
