@@ -11,6 +11,7 @@ import {
     TemplateRef,
     ViewChild
 } from '@angular/core';
+import { MatDialog, MatDialogRef } from "@angular/material";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TREE_ACTIONS, TreeComponent } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
@@ -20,14 +21,14 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
-import { CdeForm, FormElementsContainer, FormSection } from 'shared/form/form.model';
-import { addFormIds, convertFormToSection, isSubForm, iterateFeSync } from 'shared/form/formShared';
+import { AlertService } from '_app/alert/alert.service';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
 import { SearchSettings } from 'search/search.model';
-import { MatDialog, MatDialogRef } from "@angular/material";
+import { CdeForm, FormElementsContainer, FormSection } from 'shared/form/form.model';
+import { addFormIds, convertFormToSection, isSubForm, iterateFeSync } from 'shared/form/formShared';
+import { BrowserService } from 'widget/browser.service';
 
 const TOOL_BAR_OFF_SET = 55;
 
@@ -323,10 +324,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             question.edit = true;
             this.addFormElement(question);
             this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
-            setTimeout(() => {
-                let e = window.document.getElementById(question.feId);
-                if (e) e.scrollIntoView();
-            }, 0);
+            BrowserService.waitRendered(
+                () => document.getElementById('question_' + question.feId),
+                () => BrowserService.scrollTo(question.feId)
+            );
             this.isModalOpen = false;
         });
     }
