@@ -889,7 +889,7 @@ exports.init = function (app) {
         res.send("received");
         mongo_data.saveNotification({
             title: 'trigger server error test',
-            body: '/triggerServerErrorExpress',
+            url: '/triggerServerErrorExpress',
             roles: ['siteAdmin']
         });
         trigger.error(); // jshint ignore:line
@@ -900,7 +900,7 @@ exports.init = function (app) {
             res.send("received");
             mongo_data.saveNotification({
                 title: 'trigger server error test',
-                body: '/triggerServerErrorMongoose',
+                url: '/triggerServerErrorMongoose',
                 roles: ['siteAdmin']
             });
             trigger.error(); // jshint ignore:line
@@ -911,7 +911,7 @@ exports.init = function (app) {
         res.send("received");
         mongo_data.saveNotification({
             title: 'trigger client error test',
-            body: '/triggerClientError',
+            url: '/triggerClientError',
             roles: ['siteAdmin']
         });
         trigger.error();
@@ -938,13 +938,9 @@ exports.init = function (app) {
                 if (err) {
                     res.statusCode = 404;
                     res.send("Error while updating the message");
-                } else {
-                    res.send();
-                }
+                } else res.send();
             });
-        } else {
-            res.status(401).send();
-        }
+        } else res.status(401).send();
     });
 
     app.post('/mail/messages/:type', function (req, res) {
