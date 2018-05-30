@@ -898,8 +898,23 @@ exports.init = function (app) {
     app.get('/triggerServerErrorMongoose', function (req, res) {
         mongo_data.orgByName("none", function () {
             res.send("received");
+            mongo_data.saveNotification({
+                title: 'trigger server error test',
+                body: '/triggerServerErrorMongoose',
+                roles: ['siteAdmin']
+            });
             trigger.error(); // jshint ignore:line
         });
+    });
+
+    app.get('/triggerClientError', function (req, res) {
+        res.send("received");
+        mongo_data.saveNotification({
+            title: 'trigger client error test',
+            body: '/triggerClientError',
+            roles: ['siteAdmin']
+        });
+        trigger.error();
     });
 
     app.post('/mail/messages/new', function (req, res) {
