@@ -164,7 +164,7 @@ export function projectCdeForExport(ele, settings) {
 }
 
 function sanitize(v) {
-    return (v.trim && v) ? v.trim().replace(/\"/g, "\"\"") : v;
+    return (v && v.trim) ? v.trim().replace(/\"/g, "\"\"") : v;
 };
 
 export function convertToCsv(ele) {
