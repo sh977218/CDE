@@ -113,6 +113,7 @@ gulp.task('copyCode', function _copyCode() {
 });
 
 gulp.task('copyNpmDeps', gulp.series('copyCode', function _copyNpmDeps() {
+    run('npm -v').exec();
     return gulp.src('./package.json')
         .pipe(gulp.dest(config.node.buildDir))
         .pipe(install({npm: '--production'}));
