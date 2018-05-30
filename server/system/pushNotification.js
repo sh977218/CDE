@@ -82,17 +82,7 @@ exports.delete = (req, res) => {
     if (!req.body.endpoint || !req.user || !req.user._id) {
         return res.status(400).send('Required parameters missing.');
     }
-    mongo_data.pushByIds(req.body.endpoint, req.user._id, (err, registry) => {
-        if (err) return res.status(500).send("Error push by id.");
-        else {
-            mongo_data.pushDeleteById(registry._id, err => {
-                if (err) {
-                    dbLogger.withMongoError(res, 'could not remove.');
-                    return res.status(500).send("Error removing registry.");
-                } else res.send();
-            })
-        }
-    })
+    mongo_data.pushDelete(req.body.endpoint, req.user._id, dbLogger.withMongoError(res, 'could not remove', res.send));
 };
 
 exports.subscribe = (req, res) => {

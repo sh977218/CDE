@@ -201,11 +201,10 @@ exports.pushCreate = (push, callback) => {
 };
 
 exports.pushDelete = (endpoint, userId, callback) => {
-    this.pushByIds(endpoint, userId, callback);
-};
-
-exports.pushDeleteById = (id, callback) => {
-    PushRegistration.remove({_id: id}, callback);
+    this.pushByIds(endpoint, userId, (err, registration) => {
+        if (err) return callback(err);
+        PushRegistration.remove({_id: registration._id}, callback);
+    });
 };
 
 exports.pushEndpointUpdate = (endpoint, commandObj, callback) => {
