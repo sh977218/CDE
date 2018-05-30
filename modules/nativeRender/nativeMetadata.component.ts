@@ -12,6 +12,7 @@ const ACCESSGUDID_PARSEUDI = 'https://accessgudid.nlm.nih.gov/api/v1/parse_udi.j
     templateUrl: './nativeMetadata.component.html',
 })
 export class NativeMetadataComponent {
+    componentClass = NativeMetadataComponent;
     metadataSearch: string;
     metadataSearchResult: any;
     watchNewState: string;
@@ -19,7 +20,9 @@ export class NativeMetadataComponent {
     constructor(public nativeFe: NativeQuestionComponent, private http: HttpClient) {}
 
     accessGUDIdSearch(term) {
-        return this.http.get<any>(ACCESSGUDID_LOOKUP + (this.nativeFe.metadataTagsNew === 'UDI' ? '?udi=' : '?di=')
+        if (typeof(term) === 'string') term = term.trim();
+        if (!term) return;
+        this.http.get<any>(ACCESSGUDID_LOOKUP + (this.nativeFe.metadataTagsNew === 'UDI' ? '?udi=' : '?di=')
             + encodeURIComponent(term)).subscribe((result: any) => {
             if (result.error) {
                 return this.metadataSearchResult = null;
@@ -33,7 +36,7 @@ export class NativeMetadataComponent {
         let addDI = () => this.nativeFe.formElement.metadataTags.push({key: 'device', value: accessgudid});
         if (!this.nativeFe.formElement.metadataTags) this.nativeFe.formElement.metadataTags = [];
         if (this.nativeFe.metadataTagsNew === 'UDI') {
-            this.http.get<any>(ACCESSGUDID_PARSEUDI + encodeURIComponent(this.metadataSearch)).subscribe(udi => {
+            this.http.get<any>(ACCESSGUDID_PARSEUDI + encodeURIComponent(this.metadataSearch.trim())).subscribe(udi => {
                 if (udi.error) {
                     return addDI();
                 }
@@ -47,6 +50,16 @@ export class NativeMetadataComponent {
         this.metadataSearch = undefined;
         this.metadataSearchResult = undefined;
         this.watchNewState = undefined;
+    }
+
+    static deviceId(accessgudid) {
+        let ids = accessgudid.gudid.device.identifiers.identifier;
+        if (Array.isArray(ids)) {
+            let primary = ids.filter(id => id.deviceIdType === 'Primary');
+            return primary.length ? primary[0].deviceId : (ids.length ? ids[0].deviceId : '');
+        } else {
+            return ids.deviceId;
+        }
     }
 
     moveFocus(field: HTMLElement) {
