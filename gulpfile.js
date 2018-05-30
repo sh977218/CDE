@@ -24,12 +24,6 @@ gulp.task('npm', function npm() {
         .pipe(install());
 });
 
-gulp.task('copyNpmDeps', gulp.series('npm', function copyNpmDeps() {
-    return gulp.src(['./package.json'])
-        .pipe(gulp.dest(config.node.buildDir))
-        .pipe(install({production: true}));
-}));
-
 gulp.task('thirdParty', gulp.series('npm', function thirdParty() {
     let streamArr = [];
 
@@ -115,9 +109,14 @@ gulp.task('copyCode', function _copyCode() {
     streamArray.push(gulp.src('./shared/**')
         .pipe(gulp.dest(config.node.buildDir + "/shared/")));
 
-
     return merge(streamArray);
 });
+
+gulp.task('copyNpmDeps', gulp.series('copyCode', function copyNpmDeps() {
+    return gulp.src('./package.json')
+        .pipe(gulp.dest(config.node.buildDir))
+        .pipe(install({npm: '--production'}));
+}));
 
 gulp.task('prepareVersion', gulp.series('copyCode', function prepareVersion() {
     return git.revParse({args: '--short HEAD'}, function (err, hash) {
