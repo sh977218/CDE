@@ -163,10 +163,11 @@ export function projectCdeForExport(ele, settings) {
     return cde;
 }
 
+function sanitize(v) {
+    return (v.trim && v) ? v.trim().replace(/\"/g, "\"\"") : v;
+};
+
 export function convertToCsv(ele) {
-    let sanitize = function (v) {
-        return v.trim ? v.trim().replace(/\"/g, "\"\"") : v;
-    };
     let row = "";
     Object.keys(ele).forEach(function (key) {
         row += "\"";
