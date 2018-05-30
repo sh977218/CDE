@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 @Component({
     selector: 'cde-notifications',
@@ -45,31 +46,19 @@ export class NotificationsComponent {
         }, (window as any).versionCheckIntervalInSeconds * 1000);
     }
 
-    getUnreadNotifications(cb = null) {
-        this.http.get<any[]>("/unreadNotifications")
-            .subscribe(res => {
-                    this.unreadNotifications = res;
-                    if (cb) cb();
-                },
-                err => this.alert.addAlert('danger', err));
-    }
-
     getNotifications(cb = null) {
-        this.http.get<any[]>("/notifications")
-            .subscribe(res => {
-                    this.readNotifications = res;
-                    this.getUnreadNotifications(cb);
-                },
-                err => this.alert.addAlert('danger', err));
+        let obs1 = this.http.get<any[]>("/unreadNotifications");
+        let obs2 = this.http.get<any[]>("/notifications");
+        forkJoin([obs1, obs2]).subscribe(results => {
+            this.unreadNotifications = results[0];
+            this.readNotifications = results[1];
+            if (cb) cb();
+        }, err => this.alert.addAlert('danger', err));
     }
 
     viewNotification(notification) {
         this.http.get("/viewedNotification")
             .subscribe(() => this.getNotifications(() => window.open(notification._id.url, '_blank')),
                 err => this.alert.addAlert('danger', err));
-    }
-
-    resetDateToBefore() {
-        this.http.get("/resetDateToBefore");
     }
 }

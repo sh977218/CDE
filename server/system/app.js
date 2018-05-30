@@ -593,7 +593,7 @@ exports.init = function (app) {
     app.get('/usernamesByIp/:ip', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             return mongo_data.usernamesByIp(req.params.ip, function (err, result) {
-                if (err) return res.status(500).send("Error retrieving username by id");
+                if (err) return res.status(500).send("Error retrieving username by IP");
                 else res.send(result);
             });
         } else {
