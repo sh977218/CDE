@@ -15,15 +15,22 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         Assert.assertEquals("received", response);
         response = get(baseUrl + "/triggerServerErrorMongoose").asString();
         Assert.assertEquals("received", response);
+        response = get(baseUrl + "/triggerClientError").asString();
+        Assert.assertEquals("received", response);
 
         mustBeLoggedInAs(nlm_username, nlm_password);
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Audit")).click();
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Audit"));
 
-        findElement(By.linkText("Server Errors")).click();
+        clickElement(By.linkText("Server Errors"));
 
         textPresent("ReferenceError: trigger is not defined");
         textPresent("/triggerServerErrorExpress");
         textPresent("app.express.error");
+
+        clickElement(By.id("notifications"));
+        textPresent("trigger server error test", By.id("notificationsDropdown"));
+        textPresent("trigger server error test", By.id("notificationsDropdown"));
+        textPresent("trigger client error test", By.id("notificationsDropdown"));
     }
 }
