@@ -1,7 +1,7 @@
 const config = require('./parseConfig');
 const connHelper = require('./connections');
 const logging = require('./logging');
-const mongo_data_system = require('./mongo-data');
+const mongo_data = require('./mongo-data');
 const mongo_storedQuery = require('../cde/mongo-storedQuery');
 const email = require('./email');
 const schemas_system = require('./schemas');
@@ -20,43 +20,39 @@ const consoleLogModel = conn.model('consoleLogs', schemas_system.consoleLogSchem
 const TrafficFilterModel = conn.model('trafficFilter', schemas_system.trafficFilterSchema);
 
 let initTrafficFilter = cb => {
-    TrafficFilterModel.remove({}).exec(() => {
-       new TrafficFilterModel({ipList: []}).save(cb);
-    });
+    TrafficFilterModel.remove({}, () => new TrafficFilterModel({ipList: []}).save(cb));
 };
 exports.getTrafficFilter = function (cb) {
-    TrafficFilterModel.findOne({}).exec((err, theOne) => {
-       if (err || !theOne) initTrafficFilter((err2, newOne) => cb(newOne));
-       else cb(theOne);
+    TrafficFilterModel.findOne({}, (err, theOne) => {
+        if (err || !theOne) initTrafficFilter((err2, newOne) => cb(newOne));
+        else cb(theOne);
     });
 };
 exports.banIp = function (ip, reason) {
-    TrafficFilterModel.findOne({}).exec((err, theOne) => {
-      if (err) {
-          exports.logError({
-              message: "Unable ban IP ",
-              origin: "dbLogger.banIp",
-              stack: err,
-              details: ""
-          });
-      } else {
-        let foundIndex = theOne.ipList.findIndex(r => r.ip === ip);
-        if (foundIndex > -1) {
-            theOne.ipList[foundIndex].strikes++;
-            theOne.ipList[foundIndex].reason = reason;
-            theOne.ipList[foundIndex].date = Date.now();
+    TrafficFilterModel.findOne({}, (err, theOne) => {
+        if (err) {
+            exports.logError({
+                message: "Unable ban IP ",
+                origin: "dbLogger.banIp",
+                stack: err,
+                details: ""
+            });
         } else {
-            theOne.ipList.push({ip: ip, reason: reason});
+            let foundIndex = theOne.ipList.findIndex(r => r.ip === ip);
+            if (foundIndex > -1) {
+                theOne.ipList[foundIndex].strikes++;
+                theOne.ipList[foundIndex].reason = reason;
+                theOne.ipList[foundIndex].date = Date.now();
+            } else {
+                theOne.ipList.push({ip: ip, reason: reason});
+            }
+            theOne.save();
         }
-        theOne.save();
-      }
     });
 };
 
 exports.consoleLog = function (message, level) { // no express errors see dbLogger.log(message)
-    new consoleLogModel({
-        message: message, level: level
-    }).save(err => {
+    new consoleLogModel({message: message, level: level}).save(err => {
         if (err) noDbLogger.noDbLogger.error("Cannot log to DB: " + err);
     });
 };
@@ -84,7 +80,7 @@ exports.storeQuery = function (settings, callback) {
                     StoredQueryModel.findOneAndUpdate(
                         {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
                         storedQuery,
-                         err => {
+                        err => {
                             if (err) noDbLogger.noDbLogger.info(err);
                             if (callback) callback(err);
                         }
@@ -112,12 +108,19 @@ exports.log = function (message, callback) { // express only, all others dbLogge
 
 exports.logError = function (message, callback) { // all server errors, express and not
     message.date = new Date();
+
+    mongo_data.saveNotification({
+        title: "Server Side Error: " + message.message.substr(0, 30),
+        url: "/siteAudit#serverError",
+        roles: ['siteAdmin']
+    });
+
     new LogErrorModel(message).save(err => {
         if (err) noDbLogger.noDbLogger.info("ERROR: ");
         let msg = {
             title: 'Server Side Error',
             options: {
-                body: ("Server Side Error: " + message.message.substr(0, 30)),
+                body: "Server Side Error: " + message.message.substr(0, 30),
                 icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
                 badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
                 tag: 'cde-server-side',
@@ -132,7 +135,7 @@ exports.logError = function (message, callback) { // all server errors, express 
         };
 
         if (message.origin && message.origin.indexOf("pushGetAdministratorRegistrations") === -1) {
-            mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+            mongo_data.pushGetAdministratorRegistrations(registrations => {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
             });
         }
@@ -155,7 +158,7 @@ exports.logClientError = function (req, callback) {
         let msg = {
             title: 'Client Side Error',
             options: {
-                body: ("Client Side Error: " + exc.message.substr(0, 30)),
+                body: "Client Side Error: " + exc.message.substr(0, 30),
                 icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
                 badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
                 tag: 'cde-client-side',
@@ -169,7 +172,13 @@ exports.logClientError = function (req, callback) {
             }
         };
 
-        mongo_data_system.pushGetAdministratorRegistrations(registrations => {
+        mongo_data.saveNotification({
+            title: "Client Side Error: " + exc.message.substr(0, 30),
+            url: "/siteAudit#clientErrors",
+            roles: ['siteAdmin']
+        });
+
+        mongo_data.pushGetAdministratorRegistrations(registrations => {
             registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
         });
         callback(err);
@@ -311,7 +320,7 @@ exports.saveFeedback = function (req, cb) {
         subject: "Issue reported by a user"
         , body: report.note
     };
-    mongo_data_system.siteAdmins(function (err, users) {
+    mongo_data.siteAdmins(function (err, users) {
         email.emailUsers(emailContent, users, function () {
         });
     });

@@ -142,7 +142,7 @@ exports.byId = function (req, res) {
                     }
                 }
             });
-            mongo_data.addToViewHistory(wholeForm, req.user);
+            mongo_data.addFormToViewHistory(wholeForm, req.user);
         });
     });
 };
@@ -193,7 +193,7 @@ exports.byTinyId = function (req, res) {
                     redCap.getZipRedCap(wholeForm, res);
                 else res.send(wholeForm);
             });
-            mongo_data.addToViewHistory(wholeForm, req.user);
+            mongo_data.addFormToViewHistory(wholeForm, req.user);
         });
     });
 };
