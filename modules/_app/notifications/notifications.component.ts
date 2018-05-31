@@ -37,7 +37,7 @@ export class NotificationsComponent {
                 if (latestVersion !== this.currentVersion) {
                     let note = "A new version of this site is available. To enjoy the new features, \n" +
                         "please close all instances / tabs of this site then load again. ";
-                    this.unreadNotifications.unshift({title: note});
+                    this.unreadNotifications.unshift({_id: {title: note}});
                 }
             } catch (e) {
                 this.alert.addAlert('danger', e);
@@ -58,7 +58,11 @@ export class NotificationsComponent {
 
     viewNotification(notification) {
         this.http.get("/viewedNotification")
-            .subscribe(() => this.getNotifications(() => window.open(notification._id.url, '_blank')),
+            .subscribe(() => this.getNotifications(() => this.navigateNotification(notification)),
                 err => this.alert.addAlert('danger', err));
+    }
+
+    navigateNotification(notification) {
+        if (notification && notification._id && notification._id.url) window.open(notification._id.url, '_blank');
     }
 }
