@@ -18,19 +18,13 @@ const usemin = require('gulp-usemin');
 
 require('es6-promise').polyfill();
 
-gulp.task('npm', function npm() {
+gulp.task('npm', function _npm() {
     run('node --version').exec();
     return gulp.src(['./package.json'])
         .pipe(install());
 });
 
-gulp.task('copyNpmDeps', gulp.series('npm', function copyNpmDeps() {
-    return gulp.src(['./package.json'])
-        .pipe(gulp.dest(config.node.buildDir))
-        .pipe(install({production: true}));
-}));
-
-gulp.task('thirdParty', gulp.series('npm', function thirdParty() {
+gulp.task('thirdParty', gulp.series('npm', function _thirdParty() {
     let streamArr = [];
 
     streamArr.push(gulp.src('./node_modules/core-js/client/core.min.js')
@@ -50,7 +44,7 @@ gulp.task('thirdParty', gulp.series('npm', function thirdParty() {
     return merge(streamArr);
 }));
 
-gulp.task('createDist', gulp.series('thirdParty', () => {
+gulp.task('createDist', gulp.series('thirdParty', function _createDist() {
     return gulp.src('./modules/cde/public/css/style.css') // TODO: move style.css to modules/standard_theme.css
         .pipe(gulp.dest('./dist/common'));
 }));
@@ -58,7 +52,7 @@ gulp.task('createDist', gulp.series('thirdParty', () => {
 gulp.task('copyCode', function _copyCode() {
     let streamArray = [];
 
-    ['cde', 'form', 'processManager', 'system', 'board'].forEach(function (module) {
+    ['cde', 'form', 'processManager', 'system', 'board'].forEach(module => {
         streamArray.push(gulp.src('./modules/' + module + '/**/*.png')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/')));
         streamArray.push(gulp.src('./modules/' + module + '/**/*.ico')
@@ -115,11 +109,17 @@ gulp.task('copyCode', function _copyCode() {
     streamArray.push(gulp.src('./shared/**')
         .pipe(gulp.dest(config.node.buildDir + "/shared/")));
 
-
     return merge(streamArray);
 });
 
-gulp.task('prepareVersion', gulp.series('copyCode', function prepareVersion() {
+gulp.task('copyNpmDeps', gulp.series('copyCode', function _copyNpmDeps() {
+    run('npm -v').exec();
+    return gulp.src('./package.json')
+        .pipe(gulp.dest(config.node.buildDir))
+        .pipe(install({npm: '--production'}));
+}));
+
+gulp.task('prepareVersion', gulp.series('copyCode', function _prepareVersion() {
     return git.revParse({args: '--short HEAD'}, function (err, hash) {
         fs.writeFile(config.node.buildDir + "/server/system/version.js", "exports.version = '" + hash + "';",
             function (err) {
@@ -221,15 +221,14 @@ gulp.task('es', function _es() {
         hosts: config.elastic.hosts
     });
 
-    esInit.indices.forEach(function (index) {
-        esClient.indices.delete({index: index.indexName, timeout: "2s"}, function () {
-        });
+    esInit.indices.forEach(index => {
+        esClient.indices.delete({index: index.indexName, timeout: "2s"}, () => {});
     });
     setTimeout(() => process.exit(0), 3000);
 });
 
 // Procedure calling task in README
-gulp.task('buildHome', function buildHome() {
+gulp.task('buildHome', function _buildHome() {
     return del(['dist/launch/*.png']).then(() => {
         gulp.src('./dist/app/*.png')
             .pipe(gulp.dest('dist/launch'));
