@@ -26,7 +26,7 @@ exports.byId = function (req, res) {
         }
         res.send(dataElement);
         mongo_cde.inCdeView(dataElement);
-        mongo_data.addToViewHistory(dataElement, req.user);
+        mongo_data.addCdeToViewHistory(dataElement, req.user);
     });
 };
 
@@ -67,7 +67,7 @@ exports.byTinyId = function (req, res) {
         }
         res.send(dataElement);
         mongo_cde.inCdeView(dataElement);
-        mongo_data.addToViewHistory(dataElement, req.user);
+        mongo_data.addCdeToViewHistory(dataElement, req.user);
     });
 };
 
@@ -267,7 +267,7 @@ exports.show = function (req, res, cb) {
         if (cde) {
             mongo_cde.inCdeView(cde);
             if (req.isAuthenticated()) {
-                mongo_cde.addToViewHistory(cde, req.user);
+                mongo_cde.addCdeToViewHistory(cde, req.user);
             }
         }
     });

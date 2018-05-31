@@ -422,6 +422,7 @@ export class User {
     formViewHistory: string[];
     hasMail: boolean;
     lastLogin: Date;
+    lastViewNotification: Date;
     lockCounter: number;
     knownIPs: string[];
     orgAdmin: string[];
