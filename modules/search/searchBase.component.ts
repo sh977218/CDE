@@ -7,7 +7,6 @@ import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
 import { empty } from 'rxjs/observable/empty';
 
-import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/map';
 
 import { Subscription } from 'rxjs/Subscription';
@@ -20,6 +19,7 @@ import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 import { FormControl } from "@angular/forms";
 import { MatAutocompleteTrigger } from "@angular/material";
+import { debounceTime } from "rxjs/operators";
 
 export const searchStyles: string = `
     #searchResultInfoBar {
@@ -183,8 +183,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
         this.searchTermFC.valueChanges.subscribe(v => this.searchSettings.q = v);
 
-        this.searchTermFC.valueChanges
-            .debounceTime(500)
+        this.searchTermFC.valueChanges.pipe(debounceTime(500))
             .subscribe(term => {
                 term.length >= 3 ?
                     this.http.post<any[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
