@@ -7,8 +7,6 @@ import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
 import { empty } from 'rxjs/observable/empty';
 
-import 'rxjs/add/operator/map';
-
 import { Subscription } from 'rxjs/Subscription';
 
 import { SearchSettings } from 'search/search.model';
@@ -19,7 +17,7 @@ import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 import { FormControl } from "@angular/forms";
 import { MatAutocompleteTrigger } from "@angular/material";
-import { debounceTime } from "rxjs/operators";
+import { debounceTime, map } from "rxjs/operators";
 
 export const searchStyles: string = `
     #searchResultInfoBar {

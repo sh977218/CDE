@@ -27,6 +27,10 @@ gulp.task('npm', function _npm() {
 gulp.task('thirdParty', gulp.series('npm', function _thirdParty() {
     let streamArr = [];
 
+    // move this file because for some obscure reason, main.ts can't read from this location
+    streamArr.push(gulp.src('./node_modules/@angular/material/prebuilt-themes/*.css')
+        .pipe(replace('//# sourceMappingURL=core.min.js.map', ''))
+        .pipe(gulp.dest('./dist/common/')));
     streamArr.push(gulp.src('./node_modules/core-js/client/core.min.js')
         .pipe(replace('//# sourceMappingURL=core.min.js.map', ''))
         .pipe(gulp.dest('./dist/common/')));
