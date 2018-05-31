@@ -267,7 +267,7 @@ exports.init = function (app) {
                 dbLogger.consoleLog("done with sitemap");
                 wstream.end();
             });
-    }, null, true, 'America/New_York', this, true);
+        }, null, true, 'America/New_York', this, true);
 
     ["/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404",
@@ -592,8 +592,9 @@ exports.init = function (app) {
 
     app.get('/usernamesByIp/:ip', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            return mongo_data.usernamesByIp(req.params.ip, function (result) {
-                res.send(result);
+            return mongo_data.usernamesByIp(req.params.ip, function (err, result) {
+                if (err) return res.status(500).send("Error retrieving username by IP");
+                else res.send(result);
             });
         } else {
             res.status(401).send();
@@ -615,6 +616,7 @@ exports.init = function (app) {
 
     app.post('/addOrg', function (req, res) {
         if (authorizationShared.canOrgAuthority(req.user)) {
+
             orgsvc.addOrg(req, res);
         } else {
             res.status(401).send();
@@ -885,14 +887,34 @@ exports.init = function (app) {
 
     app.get('/triggerServerErrorExpress', function (req, res) {
         res.send("received");
+        mongo_data.saveNotification({
+            title: 'trigger server error test',
+            url: '/triggerServerErrorExpress',
+            roles: ['siteAdmin']
+        });
         trigger.error(); // jshint ignore:line
     });
 
     app.get('/triggerServerErrorMongoose', function (req, res) {
         mongo_data.orgByName("none", function () {
             res.send("received");
+            mongo_data.saveNotification({
+                title: 'trigger server error test',
+                url: '/triggerServerErrorMongoose',
+                roles: ['siteAdmin']
+            });
             trigger.error(); // jshint ignore:line
         });
+    });
+
+    app.get('/triggerClientError', function (req, res) {
+        res.send("received");
+        mongo_data.saveNotification({
+            title: 'trigger client error test',
+            url: '/triggerClientError',
+            roles: ['siteAdmin']
+        });
+        trigger.error();
     });
 
     app.post('/mail/messages/new', function (req, res) {
@@ -916,13 +938,9 @@ exports.init = function (app) {
                 if (err) {
                     res.statusCode = 404;
                     res.send("Error while updating the message");
-                } else {
-                    res.send();
-                }
+                } else res.send();
             });
-        } else {
-            res.status(401).send();
-        }
+        } else res.status(401).send();
     });
 
     app.post('/mail/messages/:type', function (req, res) {
@@ -955,9 +973,9 @@ exports.init = function (app) {
 
     app.get('/mailStatus', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) return res.send({count: 0});
-        mongo_data.mailStatus(req.user, function (err, result) {
+        mongo_data.mailStatus(req.user, function (err, results) {
             if (err) res.status(500).send("Unable to get mail status");
-            else res.send({count: result});
+            else res.send({count: results.length});
         });
     });
 
@@ -1077,11 +1095,19 @@ exports.init = function (app) {
     });
 
     app.post('/feedback/report', function (req, res) {
+
+        mongo_data.saveNotification({
+            title: 'Feedback Error: ' + req.body.feedback ? JSON.parse(req.body.feedback).note.substr(0, 15) : '',
+            url: "/siteAudit#userFeedback",
+            roles: ['siteAdmin']
+        });
+
+
         dbLogger.saveFeedback(req, function () {
             let msg = {
                 title: 'New Feedback Message\'',
                 options: {
-                    body: (req.body.feedback ? JSON.parse(req.body.feedback).note : ''),
+                    body: req.body.feedback ? JSON.parse(req.body.feedback).note : '',
                     icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
                     badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
                     tag: 'cde-feedback',
@@ -1382,6 +1408,26 @@ exports.init = function (app) {
         } else {
             res.status(401).send();
         }
+    });
+
+    app.get('/viewedNotification', authorization.loggedInMiddleware, (req, res) => {
+        mongo_data.updateUserLastViewNotification(req.user, err => {
+            if (err) res.status(500).send("Error Updating User's Last View Notification Date.");
+            else res.send();
+        })
+    });
+
+    app.get('/notifications', authorization.loggedInMiddleware, (req, res) => {
+        mongo_data.getNotifications(req.user, (err, result) => {
+            if (err) return res.status(500).send("Error Retrieving Notifications.");
+            else res.send(result);
+        })
+    });
+    app.get('/unreadNotifications', authorization.loggedInMiddleware, (req, res) => {
+        mongo_data.getUnreadNotifications(req.user, (err, result) => {
+            if (err) return res.status(500).send("Error Retrieving Unread Notifications.");
+            else res.send(result);
+        })
     });
 
 };

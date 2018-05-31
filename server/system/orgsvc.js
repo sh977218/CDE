@@ -4,14 +4,14 @@ var mongo_data = require('./mongo-data')
     ;
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 
-exports.managedOrgs = function(req, res) {
-    mongo_data.managedOrgs(function(orgs) {
+exports.managedOrgs = function (req, res) {
+    mongo_data.managedOrgs(function (err, orgs) {
         res.send({"orgs": orgs});
     });
 };
 
 exports.addOrg = function(req, res) {
-    var newOrg = req.body;
+    let newOrg = req.body;
     if (newOrg.workingGroupOf) {
         mongo_data.orgByName(newOrg.workingGroupOf, function (err, parentOrg) {
             newOrg.classifications = parentOrg.classifications;
@@ -22,8 +22,8 @@ exports.addOrg = function(req, res) {
     }
 };
 
-exports.removeOrg = function(req, res) {
-    mongo_data.removeOrg(req.body.id, function () {
+exports.removeOrg = function (req, res) {
+    mongo_data.removeOrgById(req.body.id, function () {
         res.send("Org Removed");
     });
 };
