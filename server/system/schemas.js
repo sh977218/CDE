@@ -198,6 +198,7 @@ schemas.userSchema = new mongoose.Schema({
     email: stringType,
     password: stringType,
     lastLogin: Date,
+    lastViewNotification: Date,
     lockCounter: Number,
     orgAdmin: [stringType],
     orgCurator: [stringType],
@@ -546,6 +547,13 @@ schemas.trafficFilterSchema = new mongoose.Schema({
         strikes: {type: Number, default: 1},
         _id: false
     }]
+});
+
+schemas.notificationSchema = new mongoose.Schema({
+    title: String,
+    url: String,
+    date: {type: Date, index: true, default: new Date()},
+    roles: {type: [String], index: true, default: []}
 });
 
 schemas.classificationAudit.set('collection', 'classificationAudit');
