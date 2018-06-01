@@ -13,7 +13,7 @@ public class FormEmptySearchResultOrderTest extends NlmCdeBaseTest {
         clickElement(By.id("search_by_classification_TEST"));
         textPresent("Qualified", By.id("registrationStatus_0"));
         textPresent("Qualified", By.id("registrationStatus_1"));
-        textPresent("Incomplete", By.id("registrationStatus_17"));
+//        textPresent("Incomplete", By.id("registrationStatus_17"));
     }
 
 }

@@ -39,7 +39,7 @@ public class DisplayProfilesTest extends BaseFormTest {
 
         goToFormByName(formName);
         textPresent("In the past 7 days");
-        Assert.assertEquals(findElements(By.cssSelector(".fa.fa-plus.iconButton")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.cssSelector(".fa.fa-plus.iconButton")).size(), 0);
         textPresent("I felt annoyed");
         textPresent("1", By.xpath("//div[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
         textPresent("5", By.xpath("//div[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[6]"));
@@ -62,10 +62,10 @@ public class DisplayProfilesTest extends BaseFormTest {
                 findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//" + byValueListValueXPath("Rarely"))).getLocation().y
         );
         clickElement(By.cssSelector(".fa.fa-plus.iconButton"));
-        clickElement(By.xpath("//a[text()='Add Device by UDI'"));
+        clickElement(By.xpath("//a[text()='Add Device by UDI']"));
         findElement(By.xpath("//input[@id='deviceSearchInput']")).clear();
         findElement(By.xpath("//input[@id='deviceSearchInput']")).sendKeys("=/08717648200274=,000025=A99971312345600=>014032=}013032&,1000000000000XYZ123");
-        clickElement(By.xpath("//section[@class='metadata-item']//button"));
+        clickElement(By.cssSelector("section.metadata-item button"));
         textPresent("Device DI:");
         textPresent("08717648200274");
         textPresent("ICCBBA");
