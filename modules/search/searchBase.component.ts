@@ -185,15 +185,17 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             .subscribe(term => {
                 term.length >= 3 ?
                     this.http.post<any[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
-                        this.elasticService.buildElasticQuerySettings(this.searchSettings)).map(res => {
-                        let final = new Set();
-                        this.lastTypeahead = {};
-                        res.forEach(e => {
-                            this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
-                            final.add(e._source.primaryNameSuggest);
-                        });
-                        return Array.from(final);
-                    }).subscribe(res => this.autocompleteSuggestions = res)
+                        this.elasticService.buildElasticQuerySettings(this.searchSettings)).pipe(
+                            map(res => {
+                                let final = new Set();
+                                this.lastTypeahead = {};
+                                res.forEach(e => {
+                                    this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
+                                    final.add(e._source.primaryNameSuggest);
+                                });
+                                return Array.from(final);
+                            }
+                            )).subscribe(res => this.autocompleteSuggestions = res)
                     : empty();
             });
     }
