@@ -4,10 +4,12 @@ const userSvc = require('./userService');
 
 exports.init = function (app) {
 
+    app.use('/user',[],userSvc);
+
     app.post('/user/me', function (req, res) {
         if (!req.user) return res.status(401).send();
-        if (req.user._id.toString() !== req.body._id)
-            return res.status(401).send();
+        // if (req.user._id.toString() !== req.body._id)
+        //     return res.status(401).send();
         mongo_data.userById(req.user._id, function (err, user) {
             user.email = req.body.email;
             user.publishedForms = req.body.publishedForms;
@@ -17,10 +19,10 @@ exports.init = function (app) {
             });
         });
     });
-    app.post('/updateUserAvatar', function (req, res) {
-        if (!authorizationShared.canOrgAuthority(req.user))
-            return res.status(401).send("Not Authorized");
-        userSvc.updateUserAvatar(req.body, function (err) {
+    app.post('/updateUserAvatar', authorizationShared.canOrgAuthority, (req, res) => {
+        // if (!authorizationShared.canOrgAuthority(req.user))
+        //     return res.status(401).send("Not Authorized");
+        userSvc.updateUserAvatar(req.body, err => {
             if (err) res.status(500).end();
             else res.status(200).end();
         });
