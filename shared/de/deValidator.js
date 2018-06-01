@@ -8,7 +8,7 @@ export const checkPvUnicity = function (valueDomain) {
         result.allValid = false;
         valueDomain.pvNotValidMsg = "permissibleValues is empty";
         valueDomain.allValid = false;
-        return;
+        return result;
     }
     var allPvs = {}, allCodes = {}, allVms = {};
     valueDomain.permissibleValues.forEach(function (pv) {
@@ -20,7 +20,7 @@ export const checkPvUnicity = function (valueDomain) {
             result.allValid = false;
             valueDomain.pvNotValidMsg = pv.notValid;
             valueDomain.allValid = false;
-            return;
+            return result;
         }
         if (allPvs[pv.permissibleValue]) {
             pv.notValid = "Duplicate Permissible Value";
@@ -28,7 +28,7 @@ export const checkPvUnicity = function (valueDomain) {
             result.allValid = false;
             valueDomain.pvNotValidMsg = pv.notValid;
             valueDomain.allValid = false;
-            return;
+            return result;
         }
         if (allVms[pv.valueMeaningName]) {
             pv.notValid = "Duplicate Code Name";
@@ -36,7 +36,7 @@ export const checkPvUnicity = function (valueDomain) {
             result.allValid = false;
             valueDomain.pvNotValidMsg = pv.notValid;
             valueDomain.allValid = false;
-            return;
+            return result;
         }
         if (allCodes[pv.valueMeaningCode]) {
             pv.notValid = "Duplicate Code";
@@ -44,7 +44,7 @@ export const checkPvUnicity = function (valueDomain) {
             result.allValid = false;
             valueDomain.pvNotValidMsg = pv.notValid;
             valueDomain.allValid = false;
-            return;
+            return result;
         }
         allPvs[pv.permissibleValue] = 1;
         if (pv.valueMeaningName && pv.valueMeaningName.length > 0)
