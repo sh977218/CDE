@@ -71,13 +71,13 @@
             <i class="fa fa-comment mr-1" [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">
             </i><span class="d-none d-sm-inline-block">Discuss</span>
         </button>
-        <div class="navbar-expand-md navbar-light d-inline-block">
-            <button class="btn btn-outline-dark navbar-toggler hidden-md-up"
+        <span class="navbar-expand-md navbar-light">
+            <button class="btn btn-outline-dark navbar-toggler"
                     data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
                     aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-        </div>
+        </span>
     </div>
     <div class="pull-right text-right">
         <ng-container *ngIf="elt.isDraft">
