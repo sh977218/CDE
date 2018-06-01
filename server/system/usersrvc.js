@@ -15,13 +15,6 @@ exports.updateUserRoles = function(user, cb) {
     });
 };
 
-exports.updateUserAvatar = function(user, cb) {
-    mongo_data.userByName(user.username, function(err, found) {
-        if (err) return cb(err);
-        found.avatarUrl = user.avatarUrl;
-        found.save(cb);
-    });
-};
 
 
 exports.addSiteAdmin = function(req, res) {
@@ -218,13 +211,5 @@ exports.getAllUsernames = function(req, res) {
         else {
             res.send(usernames);
         }
-    });
-};
-
-exports.updateSearchSettings = function(username, settings, cb) {
-    mongo_data.userByName(username, function(err, user){
-        user.searchSettings = settings;
-        //user.markModified('searchSettings');
-        user.save(cb);
     });
 };
