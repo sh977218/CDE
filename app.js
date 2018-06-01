@@ -242,7 +242,7 @@ try {
 
     require(path.join(__dirname, './server/form/app.js')).init(app, daoManager);
 
-    app.use('/user', [], require('./server/user/userService'));
+    app.use('/user', [], require('./server/user/userService').module.init);
 
     require(path.join(__dirname, './server/system/app.js')).init(app, daoManager);
 

@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
+const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 
+let schemas = {};
+
+function deleteEmpty(v) {
+    if (v === null || v === '') {
+        return;
+    }
+    return v;
+}
+
+const stringType = schemas.stringType = {type: String, set: deleteEmpty};
 
 schemas.userSchema = new mongoose.Schema({
     username: Object.assign({unique: true}, stringType),

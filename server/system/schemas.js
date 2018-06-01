@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const config = require('./parseConfig');
-const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const regStatusShared = require('@std/esm')(module)("../../shared/system/regStatusShared");
 
 let schemas = {};
