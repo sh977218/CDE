@@ -2,7 +2,8 @@ const MongoClient = require('mongodb').MongoClient;
 const config = require('../system/parseConfig');
 
 MongoClient.connect(config.mongoUri, function (err, client) {
-    const adminDb = client.db(config.database.appData.db).admin();
+    const db = client.db(config.database.appData.db);
+    
     // List all the available databases
     adminDb.listDatabases(function (err, dbs) {
         test.equal(null, err);
