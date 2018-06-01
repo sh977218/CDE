@@ -33,6 +33,8 @@ public class DisplayProfilesTest extends BaseFormTest {
                 findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//" + byValueListValueXPath("1st Grade"))).getLocation().y,
                 findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//" + byValueListValueXPath("5th Grade"))).getLocation().y
         );
+        driver.navigate().refresh();
+        hangon(5);
         newFormVersion();
 
         goToFormByName(formName);
