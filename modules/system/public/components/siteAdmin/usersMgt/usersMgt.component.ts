@@ -47,10 +47,8 @@ export class UsersMgtComponent {
     }
 
     updateAvatar(user) {
-        this.http.post('/updateUserAvatar', user).subscribe(
-            () => {
-                this.Alert.addAlert('success', 'Saved.');
-            });
+        this.http.put('/user/avatar', user).subscribe(
+            () => this.Alert.addAlert('success', 'Saved.'));
     }
 
     updateRoles(user) {

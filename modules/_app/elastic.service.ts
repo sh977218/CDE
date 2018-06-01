@@ -157,7 +157,7 @@ export class ElasticService {
         delete savedSettings.includeRetired;
         this.localStorageService.set("SearchSettings", savedSettings);
         if (this.userService.user) {
-            this.http.post("/user/update/searchSettings", savedSettings, {responseType: 'text'}).subscribe();
+            this.http.put("/user/searchSettings", savedSettings, {responseType: 'text'}).subscribe();
         }
     }
 

@@ -1,14 +1,8 @@
-const MongoClient = require('mongodb').MongoClient;
-const config = require('../system/parseConfig');
+const schemas = require('./schemas');
 
-MongoClient.connect(config.mongoUri, function (err, client) {
-    const db = client.db(config.database.appData.db);
-    
-    // List all the available databases
-    adminDb.listDatabases(function (err, dbs) {
-        test.equal(null, err);
-        test.ok(dbs.databases.length > 0);
-        client.close();
-    });
-});
+const conn = connHelper.establishConnection(config.database.appData);
+const User = conn.model('User', schemas.userSchema);
+
+exports.User = User;
+
 
