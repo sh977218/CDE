@@ -1,10 +1,14 @@
 const router = require('express').Router();
 
+const schemas = require('./schemas');
+const config = require('../system/parseConfig');
+const connHelper = require('../system/connections');
+const conn = connHelper.establishConnection(config.database.appData);
+const User = conn.model('User', schemas.userSchema);
+
 const authorization = require('../system/authorization');
 const dbLogger = require('../system/dbLogger');
-const mongo_user = require('./mongo_user');
 const mongo_data = require('../system/mongo-data');
-const User = mongo_user.User;
 
 router.get('/', (req, res) => {
     if (!req.user) return res.send({});
