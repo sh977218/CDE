@@ -1,27 +1,25 @@
 const router = require('express').Router();
 
 const authorization = require('../system/authorization');
+const dbLogger = require('../system/dbLogger');
 const mongo_user = require('./mongo_user');
 const mongo_data = require('../system/mongo-data');
+const User = mongo_user.User;
 
+router.get('/', (req, res) => {
+    if (!req.user) return res.send({});
+    User.findById(req.user._id, dbLogger.handleGenericError(
+        {res: res, origin: "/user/"}, user => res.send(user))
+    )
+});
 router.post('/', (req, res) => {
     let user = req.user;
     let condition = {_id: user._id};
     let update = {};
     if (req.body.email) update.email = req.body.email;
     if (req.body.publishedForms) update.email = req.body.publishedForms;
-    mongo_user.User.update(condition, update, dbLogger.handleGenericError(
+    User.update(condition, update, dbLogger.handleGenericError(
         {res: res, origin: "/user/"}, () => res.send('OK'))
-    )
-});
-router.post('/me', [authorization.loggedInMiddleware], (req, res) => {
-    let user = req.user;
-    let condition = {_id: user._id};
-    let update = {};
-    if (req.body.email) update.email = req.body.email;
-    if (req.body.publishedForms) update.email = req.body.publishedForms;
-    mongo_user.User.update(condition, update, dbLogger.handleGenericError(
-        {res: res, origin: "/user/me"}, () => res.send('OK'))
     )
 });
 router.put('/avatar', authorization.isOrgAuthority, (req, res) => {
@@ -29,7 +27,7 @@ router.put('/avatar', authorization.isOrgAuthority, (req, res) => {
     let condition = {_id: user._id};
     let update = {};
     if (user.avatarUrl) update.avatarUrl = user.avatarUrl;
-    mongo_user.User.update(condition, update, dbLogger.handleGenericError(
+    User.update(condition, update, dbLogger.handleGenericError(
         {res: res, origin: "/user/avatar"}, () => res.send('OK'))
     )
 });
@@ -38,7 +36,7 @@ router.get('/avatar/:username', (req, res) => {
     let username = req.params.username;
     let condition = {'username': new RegExp('^' + username + '$', "i")};
     let project = {avatarUrl: 1};
-    mongo_user.User.findOne(condition, project, dbLogger.handleGenericError(
+    User.findOne(condition, project, dbLogger.handleGenericError(
         {res: res, origin: "/user/avatar/:username"}, () => res.send('OK'))
     )
 });
@@ -61,7 +59,7 @@ router.put('/searchSettings', [authorization.loggedInMiddleware], (req, res) => 
     let condition = {_id: user._id};
     let update = {};
     if (user.searchSettings) update.searchSettings = user.searchSettings;
-    mongo_user.User.update(condition, update, dbLogger.handleGenericError(
+    User.update(condition, update, dbLogger.handleGenericError(
         {res: res, origin: "/user/searchSettings"}, () => res.send("Search settings updated."))
     )
 });
