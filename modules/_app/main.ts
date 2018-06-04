@@ -5,7 +5,7 @@ import 'reflect-metadata';
 
 
 import '../../node_modules/font-awesome/css/font-awesome.css';
-import '../../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css';
+import '../../node_modules/deeppurple-amber.css';
 import '../../node_modules/font-awesome-animation/dist/font-awesome-animation.css';
 
 // path to node_modules required to override module/components/bootstrap
