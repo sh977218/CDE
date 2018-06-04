@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
-import { DeCompletionService } from 'cde/completion/deCompletion.service';
+import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 
 @Component({
     selector: 'cde-de-completion',

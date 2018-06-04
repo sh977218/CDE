@@ -9,7 +9,7 @@ import _isEqual from 'lodash/isEqual';
 import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { DeCompletionService } from 'cde/completion/deCompletion.service';
+import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { Definition, Designation, Naming } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
