@@ -348,11 +348,8 @@ public class NlmCdeBaseTest {
 
     protected void deleteWithConfirm(By by) {
         WebElement element = findElement(by);
-        System.out.println("reuseAttach 12b1");
         element.findElement(By.cssSelector(".fa-trash-o")).click();
-        System.out.println("reuseAttach 12b2");
         element.findElement(By.cssSelector(".badge > .fa-check")).click();
-        System.out.println("reuseAttach 12b3");
     }
 
     protected void gotoClassificationMgt() {

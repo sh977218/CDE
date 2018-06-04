@@ -7,15 +7,10 @@ import org.openqa.selenium.JavascriptExecutor;
 public class BaseAttachmentTest extends NlmCdeBaseTest {
 
     protected void removeAttachment(String name) {
-        System.out.println("reuseAttach 12a");
         goToAttachments();
-        System.out.println("reuseAttach 12b");
         deleteWithConfirm(By.xpath("//*[contains(@id, 'attachment_')][//a[.='" + name + "']]"));
-        System.out.println("reuseAttach 12c");
         checkAlert("Attachment Removed.");
-        System.out.println("reuseAttach 12d");
         textNotPresent(name);
-        System.out.println("reuseAttach 12e");
     }
 
     protected void addAttachment(String name) {
