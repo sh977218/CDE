@@ -24,13 +24,17 @@ gulp.task('npm', function () {
         .pipe(install());
 });
 
-gulp.task('copyNpmDeps', ['npm'], function () {
+gulp.task('npmRebuildNodeSass', ['npm'], function () {
+    return run('npm rebuild node-sass').exec();
+});
+
+gulp.task('copyNpmDeps', ['npmRebuildNodeSass'], function () {
     return gulp.src(['./package.json'])
         .pipe(gulp.dest(config.node.buildDir))
         .pipe(install({production: true}));
 });
 
-gulp.task('thirdParty', ['npm'], function () {
+gulp.task('thirdParty', ['npmRebuildNodeSass'], function () {
     let streamArr = [];
 
     streamArr.push(gulp.src('./node_modules/core-js/client/core.min.js')

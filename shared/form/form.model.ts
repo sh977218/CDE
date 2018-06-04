@@ -60,8 +60,8 @@ export class CdeForm extends Elt implements FormElementsContainer {
     }
 
     static validate(elt: CdeForm) {
-        if (!(elt instanceof CdeForm)) elt = new CdeForm(elt);
         elt.displayProfiles.forEach(dp => {
+            if (!dp.metadata) dp.metadata = {};
             if (!dp.unitsOfMeasureAlias) dp.unitsOfMeasureAlias = [];
         });
         function feValid(fe: FormElement) {
@@ -112,16 +112,17 @@ export class CdeFormElastic extends CdeForm {
 
 export class DisplayProfile {
     _id: ObjectId = null;
+    answerDropdownLimit: number = 10;
     displayCopyright: boolean = true;
     displayInstructions: boolean = true;
     displayInvisible: boolean = false;
     displayNumbering: boolean = true;
     displayType: string = 'Follow-up';
     displayValues: boolean = false;
+    metadata: {device?: boolean} = {};
     name: String;
     numberOfColumns: number = 4;
     repeatFormat: string = '#.';
-    answerDropdownLimit: number = 10;
     sectionsAsMatrix: boolean = true;
     unitsOfMeasureAlias: {alias: string, unitOfMeasure: CodeAndSystem}[] = [];
 
@@ -158,6 +159,7 @@ export interface FormElement extends FormElementsContainer {
     formElements: FormElement[];
     instructions: Instruction;
     label: string;
+    metadataTags?: {key: string, value?: any}[]; // calculated, used by FHIR
     repeat: string;
     skipLogic: SkipLogic;
     updatedSkipLogic: boolean; // calculated, formDescription view model
@@ -178,6 +180,7 @@ export class FormSection implements FormSectionOrForm {
     hover: boolean; // calculated, formDescription view model
     instructions;
     label = '';
+    metadataTags;
     repeat;
     repeatNumber: number; // calculated, formDescription view model
     repeatOption: string; // calculated, formDescription view model
@@ -229,6 +232,7 @@ export class FormInForm implements FormSectionOrForm {
     instructions;
     inForm: InForm;
     label = '';
+    metadataTags;
     repeat;
     repeatNumber: number; // calculated, formDescription view model
     repeatOption: string; // calculated, formDescription view model
@@ -248,6 +252,7 @@ export class FormQuestion implements FormElement {
     incompleteRule: boolean;
     instructions;
     label = '';
+    metadataTags;
     question: Question = new Question();
     repeat;
     skipLogic = new SkipLogic();
