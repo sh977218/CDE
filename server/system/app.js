@@ -612,7 +612,7 @@ exports.init = function (app) {
         }
     });
 
-    app.get('/user/:search', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/admin/user/:search', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) return res.send({});
         else if (!req.params.search) {
             return res.send({});
@@ -629,7 +629,7 @@ exports.init = function (app) {
         }
     });
 
-    app.put('/user', function (req, res) {
+    app.put('/admin/user', function (req, res) {
         if (!authorizationShared.canOrgAuthority(req.user))
             return res.status(401).send("Not Authorized");
         mongo_data.addUser({

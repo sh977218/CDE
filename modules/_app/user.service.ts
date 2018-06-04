@@ -50,7 +50,7 @@ export class UserService {
     reload() {
         this.clear();
         this.promise = new Promise<User>((resolve, reject) => {
-            this.http.get<User>('/user').subscribe(response => {
+            this.http.get<User>('/user/').subscribe(response => {
                 if (!response || !response.username) {
                     return reject();
                 }
