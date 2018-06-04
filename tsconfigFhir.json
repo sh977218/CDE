@@ -34,6 +34,7 @@
     "ingester",
     "modules/_app",
     "modules/_embedApp",
+    "modules/_nativeRenderApp",
     "modules/adminItem",
     "modules/board",
     "modules/cde",

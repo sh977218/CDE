@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 
 import { CommonAppModule } from '_commonApp/commonApp.module';
 import { FormService } from 'nativeRender/form.service';
+import { NativeMetadataComponent } from 'nativeRender/nativeMetadata.component';
 import { NativeRenderComponent } from 'nativeRender/nativeRender.component';
 import { NativeSectionComponent } from 'nativeRender/nativeSection.component';
 import { NativeSectionMatrixComponent } from 'nativeRender/nativeSectionMatrix.component';
@@ -22,10 +23,11 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
         CommonAppModule,
     ],
     declarations: [
+        NativeMetadataComponent,
         NativeRenderComponent,
+        NativeQuestionComponent,
         NativeSectionComponent,
         NativeSectionMatrixComponent,
-        NativeQuestionComponent,
         NativeTableComponent,
     ],
     entryComponents: [

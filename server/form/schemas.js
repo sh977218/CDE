@@ -142,6 +142,9 @@ exports.formJson = {
         , displayInstructions: {type: Boolean}
         , displayNumbering: {type: Boolean}
         , displayType: Object.assign({enum: ['Dynamic', 'Follow-up'], default: 'Dynamic'}, sharedSchemas.stringType)
+        , metadata: {
+            device: Boolean,
+        }
         , numberOfColumns: {type: Number, min: 1, max: 6}
         , displayInvisible: {type: Boolean}
         , repeatFormat: Object.assign({default: ''}, sharedSchemas.stringType)

@@ -52,6 +52,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     @ViewChild('editAnswerModal') editAnswerModal: NgbModalModule;
     @ViewChild('slInput') slInput: ElementRef;
     answersSelected: Array<string>;
+    answerList = [];
+    dataTypeList = [];
+    defaultAnswerList = [];
     getSkipLogicOptions = ((text$: Observable<string>) => text$.pipe(
         debounceTime(300),
         map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question))
@@ -64,11 +67,17 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     newUomSystem = 'UCUM';
     question: FormQuestion;
     parent: FormElement;
+    tag = [];
 
-    dataTypeList = [];
-    answerList$ = [];
-    defaultAnswerList$ = [];
-    tag$ = [];
+    ngOnInit() {
+        this.answerList = this.question.question.cde.permissibleValues.map(answer => {
+            answer['id'] = answer.permissibleValue;
+            return answer;
+        });
+        this.syncAnswerList();
+        let stewardOrgName = this.elt.stewardOrg.name;
+        this.tag = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
+    }
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
@@ -78,23 +87,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 public skipLogicValidateService: SkipLogicValidateService,
                 private ucumService: UcumService) {
         this.dataTypeList = DataTypeService.getDataTypeItemList();
-    }
-
-    ngOnInit() {
-        this.answerList$ = this.question.question.cde.permissibleValues.map(answer => {
-            answer['id'] = answer.permissibleValue;
-            return answer;
-        });
-        this.syncAnswerList();
-        let stewardOrgName = this.elt.stewardOrg.name;
-        this.tag$ = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
-    }
-
-    private syncAnswerList() {
-        this.defaultAnswerList$ = this.question.question.answers.map(answer => {
-            answer['id'] = answer.permissibleValue;
-            return answer;
-        });
     }
 
     addNewCdeId(newCdeId) {
@@ -137,19 +129,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
-    onAnswerListAdd() {
-        this.syncAnswerList();
-        this.onEltChange.emit();
-    }
-
-    onAnswerListRemove(removedAnswer) {
-        if (removedAnswer && removedAnswer.value.valueMeaningName === this.question.question.defaultAnswer) {
-            this.question.question.defaultAnswer = '';
-        }
-        this.syncAnswerList();
-        this.onEltChange.emit();
-    }
-
     getRepeatLabel(fe) {
         if (!fe.repeat) return '';
         if (fe.repeat[0] === 'F') return 'over First Question';
@@ -164,6 +143,34 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     isScore(formElt) {
         return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
+    }
+
+    onAnswerListAdd() {
+        this.syncAnswerList();
+        this.onEltChange.emit();
+    }
+
+    onAnswerListRemove(removedAnswer) {
+        if (removedAnswer && removedAnswer.value.valueMeaningName === this.question.question.defaultAnswer) {
+            this.question.question.defaultAnswer = '';
+        }
+        this.syncAnswerList();
+        this.onEltChange.emit();
+    }
+
+    openEditAnswerModal(q) {
+        if (q.question.answers.length > 0) {
+            const modalRef = this.modalService.open(QuestionAnswerEditContentComponent, {size: 'lg'});
+            modalRef.componentInstance.answers = q.question.answers;
+            modalRef.componentInstance.onCleared.subscribe(() => {
+                this.onAnswerListRemove(this.question.question.defaultAnswer || undefined);
+            });
+            modalRef.componentInstance.onSaved.subscribe((answers) => {
+                q.question.answers = _clone(answers);
+                this.onEltChange.emit();
+                modalRef.close();
+            });
+        }
     }
 
     openNameSelect(question, parent) {
@@ -186,6 +193,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             dialogRef.close();
             this.onEltChange.emit();
         });
+        dialogRef.componentInstance.onClosed.subscribe(() => dialogRef.close());
         dialogRef.componentInstance.onClosed.subscribe(() => dialogRef.close());
     }
 
@@ -228,6 +236,13 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
+    private syncAnswerList() {
+        this.defaultAnswerList = this.question.question.answers.map(answer => {
+            answer['id'] = answer.permissibleValue;
+            return answer;
+        });
+    }
+
     typeaheadSkipLogic(parent, fe, event) {
         if (fe.skipLogic && fe.skipLogic.condition !== event) {
             this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
@@ -240,10 +255,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         $event.preventDefault();
         slInput.focus();
         this.slOptionsRetrigger();
-    }
-
-    inputFormatter(a) {
-        return a.replace(/ *\([^)]*\) */g, "");
     }
 
     uomAddNew() {
@@ -261,21 +272,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.uomAddNew();
             setTimeout(() => this.newUom = '', 0); // the type-ahead seems to fill in the value asynchronously
             this.ucumService.validateUoms(this.question.question);
-        }
-    }
-
-    openEditAnswerModal(q) {
-        if (q.question.answers.length > 0) {
-            const modalRef = this.modalService.open(QuestionAnswerEditContentComponent, {size: 'lg'});
-            modalRef.componentInstance.answers = q.question.answers;
-            modalRef.componentInstance.onCleared.subscribe(() => {
-                this.onAnswerListRemove(this.question.question.defaultAnswer || undefined);
-            });
-            modalRef.componentInstance.onSaved.subscribe((answers) => {
-                q.question.answers = _clone(answers);
-                this.onEltChange.emit();
-                modalRef.close();
-            });
         }
     }
 }

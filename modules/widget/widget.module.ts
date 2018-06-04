@@ -5,12 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { CKEditorModule } from 'ng2-ckeditor';
 
 import { CoreModule } from 'core/core.module';
-import { InlineEditComponent } from 'widget/inlineEdit/inlineEdit.component';
+import { DeleteWithConfirmComponent } from 'widget/deleteWithConfirm.component';
 import { InlineAreaEditComponent } from 'widget/inlineEdit/inlineAreaEdit.component';
-import { PlaceHoldEmptyPipe } from 'widget/pipes/placeHoldEmpty.pipe';
-import { TextTruncateComponent } from 'widget/text/textTruncate.component';
-import { SortableArrayComponent } from 'widget/sortableArray/sortableArray.component';
+import { InlineEditComponent } from 'widget/inlineEdit/inlineEdit.component';
 import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.component';
+import { PlaceHoldEmptyPipe } from 'widget/pipes/placeHoldEmpty.pipe';
+import { SortableArrayComponent } from 'widget/sortableArray/sortableArray.component';
+import { TextTruncateComponent } from 'widget/text/textTruncate.component';
 
 @NgModule({
     imports: [
@@ -22,17 +23,19 @@ import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.co
         // internal
     ],
     declarations: [
+        DeleteWithConfirmComponent,
         InlineAreaEditComponent,
-        InlineSelectEditComponent,
         InlineEditComponent,
+        InlineSelectEditComponent,
         PlaceHoldEmptyPipe,
         TextTruncateComponent,
         SortableArrayComponent,
     ],
     exports: [
+        DeleteWithConfirmComponent,
+        InlineAreaEditComponent,
         InlineEditComponent,
         InlineSelectEditComponent,
-        InlineAreaEditComponent,
         PlaceHoldEmptyPipe,
         SortableArrayComponent,
     ],

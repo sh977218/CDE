@@ -357,6 +357,12 @@ public class NlmCdeBaseTest {
         }
     }
 
+    protected void deleteWithConfirm(By by) {
+        WebElement element = findElement(by);
+        element.findElement(By.cssSelector(".fa-trash-o")).click();
+        element.findElement(By.cssSelector(".badge > .fa-check")).click();
+    }
+
     protected void gotoClassificationMgt() {
         clickElement(By.id("username_link"));
         hangon(.5);

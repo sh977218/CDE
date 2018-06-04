@@ -37,14 +37,7 @@
                 <ng-container *ngIf="canEdit">
                     <dt class="col-3 text-right">Actions:</dt>
                     <dd id="dd_version_nlm" class="col-9">
-                        <div *ngIf="attachment.showDelete">
-                            Confirm Delete
-                            <i class="fa fa-check" (click)="attachment.showDelete = false; removeAttachment.emit(i)"
-                               id="confirmRemove-{{i}}"></i>
-                            <i class="fa fa-times" (click)="attachment.showDelete = false"></i>
-                        </div>
-                        <i (click)="attachment.showDelete = true" *ngIf="!attachment.showDelete" class="fa fa-trash-o"
-                           id="removeAttachment-{{i}}"></i>
+                        <cde-delete-with-confirm (deleted)="removeAttachment.emit(i)"></cde-delete-with-confirm>
                     </dd>
                 </ng-container>
                 <dt class="col-3 text-right">Size:</dt>
