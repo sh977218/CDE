@@ -33,6 +33,7 @@
     "dist",
     "ingester",
     "modules/_app",
+    "modules/_fhirApp",
     "modules/_nativeRenderApp",
     "modules/adminItem",
     "modules/board",

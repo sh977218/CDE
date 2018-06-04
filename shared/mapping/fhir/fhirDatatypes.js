@@ -25,7 +25,15 @@ export function codingArrayPreview(codings) {
 }
 
 export function codingPreview(coding) {
-    return coding.display + ' ' + codeSystemIn(coding.system) + ':' + coding.code
+    return coding.display + ' ' + codeSystemIn(coding.system) + ':' + coding.code;
+}
+
+export function newPeriod(start, end = undefined) {
+    if (!end) {
+        return {start: start, end: start};
+    } else {
+        return {start: start, end: end};
+    }
 }
 
 export function newReference(ref) {

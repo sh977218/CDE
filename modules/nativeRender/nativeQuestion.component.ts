@@ -18,6 +18,7 @@ export class NativeQuestionComponent implements OnInit {
     NRS = NativeRenderService;
     datePrecisionToType = FormQuestion.datePrecisionToType;
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
+    metadataTagsNew: string;
     previousUom: CodeAndSystem;
     // static readonly reHasTime = /[hHmsSkaAZ]/;
     score = score;

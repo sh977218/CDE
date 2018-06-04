@@ -121,6 +121,17 @@ public class NlmCdeBaseTest {
             put("formTinyIdVersion", "operations-Form-get_form__tinyId__version__version_");
         }
     };
+    private Map<String, Integer> regStatusSortMap = new HashMap<String, Integer>() {
+        {
+            put("Retired", 6);
+            put("Incomplete", 5);
+            put("Candidate", 4);
+            put("Recorded", 3);
+            put("Qualified", 2);
+            put("Standard", 1);
+            put("Preferred Standard", 0);
+        }
+    };
 
     private void setDriver(String b, String u) {
         if (b == null) b = browser;
@@ -344,6 +355,12 @@ public class NlmCdeBaseTest {
         if (orgLongName != null) {
             textPresent(orgLongName);
         }
+    }
+
+    protected void deleteWithConfirm(By by) {
+        WebElement element = findElement(by);
+        element.findElement(By.cssSelector(".fa-trash-o")).click();
+        element.findElement(By.cssSelector(".badge > .fa-check")).click();
     }
 
     protected void gotoClassificationMgt() {
@@ -1699,5 +1716,15 @@ public class NlmCdeBaseTest {
         clickElement(By.id("closeTableViewSettingsBtn"));
     }
 
-
+    protected void verifyRegistrationStatusOrder(List<WebElement> registrationStatusList) {
+        int order = 100;
+        for (ListIterator<WebElement> iterator = registrationStatusList.listIterator(); iterator.hasNext(); ) {
+            WebElement webElement = iterator.next();
+            String status = webElement.getText().trim();
+            if (order > 6) order = regStatusSortMap.get(status);
+            int currentOrder = regStatusSortMap.get(status);
+            if (currentOrder < order)
+                org.junit.Assert.fail("Registration status order incorrect. Current:" + currentOrder + " Previous: " + order);
+        }
+    }
 }
