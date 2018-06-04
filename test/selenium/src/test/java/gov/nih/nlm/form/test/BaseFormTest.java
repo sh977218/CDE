@@ -208,15 +208,15 @@ public class BaseFormTest extends FormCommentTest {
         if (displayValues) clickElement(By.id("displayValues_" + index));
         if (!instructions) clickElement(By.id("displayInstructions_" + index));
         if (!numbering) clickElement(By.id("displayNumbering_" + index));
-        if (!"Follow-up".equals(displayType)) clickElement(By.id("displayType_" + index));
 
+        new Select(findElement(By.id("displayType_" + index))).selectByValue(displayType);
         new Select(findElement(By.id("nc_" + index))).selectByVisibleText(String.valueOf(numberOfColumns));
 
         if (displayInvisible) clickElement(By.id("displayInvisible_" + index));
 
         if (answerDropdownLimit > 0) {
             findElement(By.id("displayAnswerDropdownLimit_" + index)).clear();
-            findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit));
+            findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit) + Keys.TAB);
         }
     }
 

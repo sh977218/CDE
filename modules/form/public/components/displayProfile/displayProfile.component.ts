@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { FormViewComponent } from 'form/public/components/formView.component';
 import { UcumService } from 'form/public/ucum.service';
@@ -13,37 +13,39 @@ type DisplayProfileVM = {
     },
     profile: DisplayProfile,
     sample: CdeForm,
-    showDelete: boolean,
 };
 
 @Component({
-    selector: "cde-display-profile",
+    selector: 'cde-display-profile',
     styles: [`
         .hoverEdit:hover {
             background-color: lightgreen;
         }
     `],
-    templateUrl: "./displayProfile.component.html",
+    templateUrl: './displayProfile.component.html',
 })
-export class DisplayProfileComponent implements OnInit {
-    @Input() elt: CdeForm;
+export class DisplayProfileComponent {
+    @Input() set elt(e: CdeForm) {
+        this._elt = e;
+        this.dPVMs.length = 0;
+        this.elt.displayProfiles.forEach(profile => this.dPVMs.push(DisplayProfileComponent.dPVMNew(profile)));
+    }
+    get elt() {
+        return this._elt;
+    }
     @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
-
+    private _elt: CdeForm;
     dPVMs: DisplayProfileVM[] = [];
     uoms: {u: CodeAndSystem, a: string[]}[] = [];
     uomsDate: Date;
     uomsPromise: Promise<void>;
 
-    ngOnInit() {
-        this.elt.displayProfiles.forEach(profile => this.dPVMs.push(DisplayProfileComponent.dPVMNew(profile)));
-    }
-
     constructor(private ucumService: UcumService, private formViewComponent: FormViewComponent) {
     }
 
     addProfile() {
-        let newProfile = new DisplayProfile("New Profile");
+        let newProfile = new DisplayProfile('New Profile');
         if (!this.elt.displayProfiles) this.elt.displayProfiles = [newProfile];
         else this.elt.displayProfiles.push(newProfile);
         this.dPVMs.push(DisplayProfileComponent.dPVMNew(newProfile));
@@ -58,7 +60,6 @@ export class DisplayProfileComponent implements OnInit {
             },
             profile: profile,
             sample: DisplayProfileComponent.getSample(),
-            showDelete: false,
         };
     }
 
@@ -150,9 +151,8 @@ export class DisplayProfileComponent implements OnInit {
         }
     }
 
-    setDisplayType(dPVM: DisplayProfileVM, $event) {
+    setDisplayType(dPVM: DisplayProfileVM) {
         let profile = DisplayProfile.copy(dPVM.profile);
-        profile.displayType = $event.target.checked ? 'Follow-up' : 'Dynamic';
         this.substituteProfile(dPVM, profile);
         this.onEltChange.emit();
     }
@@ -165,6 +165,12 @@ export class DisplayProfileComponent implements OnInit {
     onChange(p: DisplayProfile, event) {
         p.numberOfColumns = parseInt(event);
         this.onEltChange.emit();
+    }
+
+    uomAliasEdit(dPVM: DisplayProfileVM) {
+        if (!this.canEdit) return;
+        dPVM.aliases.edit = !dPVM.aliases.edit;
+        if (dPVM.aliases.edit) this.profileUomsEditCreate(dPVM);
     }
 
     static sampleElt = {
