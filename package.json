@@ -180,6 +180,7 @@
     "reflect-metadata": "0.1.12",
     "rxjs": "6.2.0",
     "rxjs-compat": "6.2.0",
+    "sass-loader": "^7.0.1",
     "selenium-webdriver": "3.4.0",
     "style-loader": "0.21.0",
     "time-ago-pipe": "https://github.com/ivanovgp/time-ago-pipe.git",
