@@ -24,7 +24,11 @@ gulp.task('npm', function _npm() {
         .pipe(install());
 });
 
-gulp.task('thirdParty', gulp.series('npm', function _thirdParty() {
+gulp.task('npmRebuildNodeSass', ['npm'], function () {
+    return run('npm rebuild node-sass').exec();
+});
+
+gulp.task('thirdParty', ['npmRebuildNodeSass'], function () {
     let streamArr = [];
 
     streamArr.push(gulp.src('./node_modules/core-js/client/core.min.js')
@@ -42,7 +46,7 @@ gulp.task('thirdParty', gulp.series('npm', function _thirdParty() {
     ]).pipe(gulp.dest('./dist/common/')));
 
     return merge(streamArr);
-}));
+});
 
 gulp.task('createDist', gulp.series('thirdParty', function _createDist() {
     return gulp.src('./modules/cde/public/css/style.css') // TODO: move style.css to modules/standard_theme.css
@@ -112,7 +116,7 @@ gulp.task('copyCode', function _copyCode() {
     return merge(streamArray);
 });
 
-gulp.task('copyNpmDeps', gulp.series('copyCode', function _copyNpmDeps() {
+gulp.task('copyNpmDeps', gulp.series('copyCode', 'npmRebuildNodeSass', function _copyNpmDeps() {
     run('npm -v').exec();
     return gulp.src('./package.json')
         .pipe(gulp.dest(config.node.buildDir))

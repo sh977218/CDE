@@ -10,7 +10,9 @@ import _intersectionWith from 'lodash/intersectionWith';
 import { CdeId } from 'shared/models.model';
 import { iterateFeSync } from 'shared/form/formShared';
 import { CdeForm, DisplayProfile, FhirApp, FormQuestion } from 'shared/form/form.model';
-import { FhirEncounter, FhirObservation } from 'shared/mapping/fhir/fhirResource.model';
+import {
+    FhirDevice, FhirDeviceMetric, FhirDomainResource, FhirEncounter, FhirObservation, FhirOrganization, FhirPatient
+} from 'shared/mapping/fhir/fhirResource.model';
 import { externalCodeSystemsMap } from 'shared/mapping/fhir';
 import { codingArrayPreview, valuePreview } from 'shared/mapping/fhir/fhirDatatypes';
 import { typedValueToValue, valuedElementToItemType } from 'shared/mapping/fhir/from/datatypeFromItemType';
@@ -19,6 +21,9 @@ import { observationFromForm } from 'shared/mapping/fhir/resource/observation';
 import { getPatientName } from 'shared/mapping/fhir/resource/patient';
 import { containerToItemType, itemTypeToItemDatatype, valueToTypedValue } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { capString } from 'shared/system/util';
+import { FhirReference } from 'shared/mapping/fhir/fhir.model';
+
+let compareCodingId = (a, b) => a['system'] === externalCodeSystemsMap[b['source']] && a['code'] === b['id'];
 
 type EncounterVM = any;
 function encounterVM(encounter: FhirEncounter): EncounterVM {
@@ -35,7 +40,11 @@ function encounterVM(encounter: FhirEncounter): EncounterVM {
     });
 }
 
-class ObservationVM {}
+class ObservationVM extends FhirObservation {
+    encounter: string;
+    preview: string;
+    value: string;
+}
 function observationVM(observation: FhirObservation): ObservationVM {
     return Object.create(observation, {
         preview: {
@@ -95,9 +104,10 @@ export class FhirStandaloneComponent {}
 export class FhirAppComponent {
     static readonly SCOPE = 'patient/*.*';
     baseUrl: string;
-    codeToDisplay = {};
+    codeToDisplay: any = {};
     elt: CdeForm;
     errorMessage: string;
+    ioInProgress: boolean;
     getPatientName = getPatientName;
     methodLoadForm = this.loadForm.bind(this);
     newEncounter: boolean;
@@ -106,18 +116,25 @@ export class FhirAppComponent {
     newEncounterReason: string;
     newEncounterType: string = 'Outpatient Encounter';
     newEncounterValid: boolean;
-    patient: any;
-    patientForms: any = [];
-    patientEncounters = [];
-    patientObservations = [];
-    patientOrganization: any;
+    patient: FhirPatient;
+    patientForms: {
+        form: CdeForm,
+        name: string,
+        observed?: number,
+        percent?: number,
+        tinyId: string,
+        total?: number,
+    }[] = [];
+    patientDevices: FhirDevice[] = [];
+    patientEncounters: EncounterVM[] = [];
+    patientObservations: ObservationVM[] = [];
+    patientOrganization: FhirOrganization;
     saveMessage: string = null;
     selectedEncounter: EncounterVM;
     selectedObservations: ObservationVM[] = [];
     selectedProfile: DisplayProfile;
     selectedProfileName: string;
-    smart;
-    ioInProgress: boolean;
+    smart: any;
     saving: boolean;
     saved: boolean;
     summary: boolean = true;
@@ -167,6 +184,32 @@ export class FhirAppComponent {
                 });
             });
         }, err => this.errorMessage = err);
+    }
+
+    addDevice(deviceRef: FhirReference<FhirDevice | FhirDeviceMetric>, containers: Array<FhirEncounter | FhirObservation>): boolean {
+        if (deviceRef.reference.indexOf('Device/') !== 0) {
+            return false;
+        }
+
+        let id = deviceRef.reference.substr(7);
+        let found = false;
+        containers.forEach(c => {
+            if (Array.isArray(c.contained)) {
+                found = c.contained.some(r => {
+                    if (typeof((r as FhirDomainResource).resourceType) !== 'undefined'
+                        && (r as FhirDomainResource).resourceType === 'Device' && r.id === id) {
+                        this.patientDevices.push(r as FhirDevice);
+                        return true;
+                    }
+                });
+            }
+        });
+
+        if (!found) {
+            // query for Device
+        }
+
+        return found;
     }
 
     encounterAdd(encounter) {
@@ -241,10 +284,17 @@ export class FhirAppComponent {
                     }
                 });
                 this.patientObservations.forEach(o => {
+                    let e;
                     if (o.encounter && o.encounter.startsWith('Encounter/')) {
                         let id = o.encounter.substr(10);
                         let encounters = this.patientEncounters.filter(e => e.id === id);
-                        if (encounters.length) encounters[0].observations.push(o);
+                        if (encounters.length) {
+                            encounters[0].observations.push(o);
+                            e = encounters[0];
+                        }
+                    }
+                    if (o.device) {
+                        this.addDevice(o.device, [o, e]);
                     }
                 });
                 this.filterObservations();
@@ -262,10 +312,7 @@ export class FhirAppComponent {
         iterateFeSync(formElt, undefined, undefined, (q: FormQuestion) => {
             q.question.cde.ids.push({source: 'NLM', id: q.question.cde.tinyId});
             this.selectedEncounter.observations.forEach(o => {
-                let matchedCodes = _intersectionWith(
-                    o.code.coding,
-                    q.question.cde.ids,
-                    (a, b) => a['system'] === externalCodeSystemsMap[b['source']] && a['code'] === b['id']);
+                let matchedCodes = _intersectionWith(o.code.coding, q.question.cde.ids, compareCodingId);
                 if (matchedCodes.length) {
                     let qType = valuedElementToItemType(o);
                     typedValueToValue(q.question, qType, o);
@@ -296,7 +343,8 @@ export class FhirAppComponent {
                 this.patientOrganization ? 'Organization/' + this.patientOrganization.id : undefined
             ))
         }).then(response => {
-            if (response.data && response.data.resourceType === 'Encounter') this.encounterAdd(response.data);
+            let encounter: FhirEncounter = response.data;
+            if (encounter && encounter.resourceType === 'Encounter') this.encounterAdd(encounter);
             this.newEncounterReset();
         });
     }
@@ -335,84 +383,93 @@ export class FhirAppComponent {
 
     submitFhir() {
         this.saving = true;
-        let submitFhirPending = [];
-        let submitFhirObservations = [];
+        let submitFhirObservationsPending: {before: FhirObservation, after: FhirObservation}[] = [];
 
         iterateFeSync(this.elt, undefined, undefined, (q: FormQuestion) => {
-            let foundObs = false;
-            this.selectedEncounter.observations
-                .map(o => o.__proto__)
-                .forEach(o => {
-                    let copy = JSON.parse(JSON.stringify(o));
-                    let matchedCodes = _intersectionWith(
-                        o.code.coding,
-                        q.question.cde.ids,
-                        (a, b) => a['system'] === externalCodeSystemsMap[b['source']] && a['code'] === b['id']
-                    );
-                    if (matchedCodes.length) {
-                        let qType = containerToItemType(q.question);
-                        copy['value' + capString(itemTypeToItemDatatype(qType, true))] = valueToTypedValue(q.question,
-                            qType, q.question.answer, undefined, q.question.answerUom, true);
-                        foundObs = true;
-                        submitFhirObservations.push(copy);
-                        submitFhirPending.push({before: o, after: copy});
-                    }
-
-                });
+            let observation: FhirObservation;
+            let foundObs = this.selectedEncounter.observations.some(o => {
+                let matchedCodes = _intersectionWith(o.code.coding, q.question.cde.ids, compareCodingId);
+                if (matchedCodes.length) {
+                    let original = Object.getPrototypeOf(o);
+                    observation = JSON.parse(JSON.stringify(original));
+                    let qType = containerToItemType(q.question);
+                    observation['value' + capString(itemTypeToItemDatatype(qType, true))] = valueToTypedValue(q.question,
+                        qType, q.question.answer, undefined, q.question.answerUom, true);
+                    submitFhirObservationsPending.push({before: original, after: observation});
+                    return true;
+                }
+            });
             if (!foundObs && FhirAppComponent.questionAnswered(q.question.answer)) {
-                let observation = observationFromForm(q, this.codeToDisplay, this.selectedEncounter, this.patient);
+                observation = observationFromForm(q, this.codeToDisplay, this.selectedEncounter, this.patient);
                 let qType = containerToItemType(q.question);
                 observation['value' + capString(itemTypeToItemDatatype(qType, true))] = valueToTypedValue(q.question,
                     qType, q.question.answer, undefined, q.question.answerUom, true);
-
-                submitFhirObservations.push(observation);
-                submitFhirPending.push({before: null, after: observation});
+                submitFhirObservationsPending.push({before: null, after: observation});
             }
         });
 
-        // identify changed and submit to server
-        for (let i = 0; i < submitFhirPending.length; i++) {
-            let p = submitFhirPending[i];
-            if (valuePreview(p.before) === valuePreview(p.after)) {
-                submitFhirPending.splice(i, 1);
+        // identify changed
+        for (let i = 0; i < submitFhirObservationsPending.length; i++) {
+            let p = submitFhirObservationsPending[i];
+            if (valuePreview(p.before) === valuePreview(p.after) || (p.before ? p.before.device : undefined) !== p.after.device) {
+                submitFhirObservationsPending.splice(i, 1);
                 i--;
             }
         }
+
+        // save Device then Observation
         // TODO: refresh before copy from server and compare again to prevent save with conflict
-        async_forEach(submitFhirPending, (p, done) => {
-            if (p.before) {
-                this.smart.api.update({
-                    data: JSON.stringify(p.after),
-                    id: p.after.id,
-                    type: p.after.resourceType
-                }).then(response => {
-                    if (!response || !response.data) return done('Not saved ' + p.after.id);
-                    let obs = observationVM(response.data);
-                    let index = this.patientObservations.findIndex(o => o.__proto__ === p.before);
-                    if (index > -1) this.patientObservations[index] = obs;
-                    index = this.selectedEncounter.observations.findIndex(o => o.__proto__ === p.before);
-                    if (index > -1) this.selectedEncounter.observations[index] = obs;
-                    done();
-                }, done);
-            }
-            else {
+        async_forEach(submitFhirObservationsPending, (p, done) => {
+            let saveObservation = (p, done) => {
+                if (p.before) {
+                    this.smart.api.update({
+                        data: JSON.stringify(p.after),
+                        id: p.after.id,
+                        type: p.after.resourceType
+                    }).then(response => {
+                        if (!response || !response.data) return done('Not saved ' + p.after.id);
+                        let obs = observationVM(response.data);
+                        let index = this.patientObservations.findIndex(o => Object.getPrototypeOf(o) === p.before);
+                        if (index > -1) this.patientObservations[index] = obs;
+                        index = this.selectedEncounter.observations.findIndex(o => Object.getPrototypeOf(o) === p.before);
+                        if (index > -1) this.selectedEncounter.observations[index] = obs;
+                        done();
+                    }, done);
+                } else {
+                    this.smart.patient.api.create({
+                        baseUrl: this.baseUrl,
+                        data: JSON.stringify(p.after),
+                        type: p.after.resourceType
+                    }).then(response => {
+                        if (!response || !response.data) return done('Not saved ' + p.after.id);
+                        let obs = observationVM(response.data);
+                        this.patientObservations.push(obs);
+                        this.selectedEncounter.observations.push(obs);
+                        done();
+                    }, done);
+                }
+            };
+            if (p.after.device && p.after.device.indexOf('Device/new') > -1) {
+                // let device = devices[parseInt(p.after.device.slice(10))];
+                let device;
                 this.smart.patient.api.create({
                     baseUrl: this.baseUrl,
-                    data: JSON.stringify(p.after),
-                    type: 'Observation'
+                    data: JSON.stringify(device),
+                    type: device.resourceType
                 }).then(response => {
-                    if (!response || !response.data) return done('Not saved ' + p.after.id);
-                    let obs = observationVM(response.data);
-                    this.patientObservations.push(obs);
-                    this.selectedEncounter.observations.push(obs);
-                    done();
-                });
+                    if (!response || !response.data || !response.data.id) {
+                        return done('Device not created.');
+                    }
+                    p.after.device = 'Device/' + response.data.id;
+                    saveObservation(p, done);
+                }, done);
+            } else {
+                saveObservation(p, done);
             }
         }, (err: string) => {
             if (err) this.saveMessage = err;
             else this.saved = true;
             setTimeout(() => this.saved = false, 5000);
-
             this.saving = false;
             this.loadFhirData();
             this.updateProgress();

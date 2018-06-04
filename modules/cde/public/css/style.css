@@ -143,6 +143,10 @@ input.ng-invalid {
         page-break-inside: avoid;
         break-inside: avoid;
     }
+
+    .noPrint {
+        display: none !important;
+    }
 }
 /* end alternatives */
 

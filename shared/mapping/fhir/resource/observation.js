@@ -1,5 +1,5 @@
-import { externalCodeSystemsMap } from '../index';
-import { codeSystemOut, newReference } from '../fhirDatatypes';
+import { externalCodeSystemsMap } from 'shared/mapping/fhir';
+import { codeSystemOut, newReference } from 'shared/mapping/fhir/fhirDatatypes';
 
 export function newObservation(encounter = null, patient = null) {
     return {
@@ -15,14 +15,14 @@ export function newObservation(encounter = null, patient = null) {
     };
 }
 
-export function observationFromForm(formElt, codeToDisplay, encounter = null, patient = null) {
+export function observationFromForm(q, codeToDisplay, encounter = null, patient = null) {
     let observation = newObservation(encounter, patient);
     let obsCode = {
-        system: "https://cde.nlm.nih.gov",
-        code: formElt.question.cde.tinyId,
-        display: formElt.question.cde.name
+        system: externalCodeSystemsMap['NLM'],
+        code: q.question.cde.tinyId,
+        display: q.question.cde.name
     };
-    formElt.question.cde.ids.forEach(id => {
+    q.question.cde.ids.forEach(id => {
         if (id.source === 'LOINC') {
             obsCode.system = externalCodeSystemsMap['LOINC'];
             obsCode.code = id.id;
@@ -37,5 +37,11 @@ export function observationFromForm(formElt, codeToDisplay, encounter = null, pa
         }],
         text: obsCode.display
     };
+    if (Array.isArray(q.metadataTags)) {
+        let devices = q.metadataTags.filter(m => m.key === 'device');
+        if (devices.length) {
+            observation.device = newReference('Device/' + devices[0].value.id);
+        }
+    }
     return observation;
 }
