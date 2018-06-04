@@ -9,7 +9,6 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -348,10 +347,11 @@ public class NlmCdeBaseTest {
     }
 
     protected void deleteWithConfirm(By by) {
+        WebElement element = findElement(by);
         System.out.println("reuseAttach 12b1");
-        clickElement(new ByChained(by, By.cssSelector(".fa-trash-o")));
+        element.findElement(By.cssSelector(".fa-trash-o")).click();
         System.out.println("reuseAttach 12b2");
-        clickElement(new ByChained(by, By.cssSelector(".badge > .fa-check")));
+        element.findElement(By.cssSelector(".badge > .fa-check")).click();
         System.out.println("reuseAttach 12b3");
     }
 

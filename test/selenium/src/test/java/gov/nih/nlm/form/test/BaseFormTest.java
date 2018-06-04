@@ -216,7 +216,7 @@ public class BaseFormTest extends FormCommentTest {
 
         if (answerDropdownLimit > 0) {
             findElement(By.id("displayAnswerDropdownLimit_" + index)).clear();
-            findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit));
+            findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit) + Keys.TAB);
         }
     }
 

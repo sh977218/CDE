@@ -33,8 +33,6 @@ public class DisplayProfilesTest extends BaseFormTest {
                 findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//" + byValueListValueXPath("1st Grade"))).getLocation().y,
                 findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//" + byValueListValueXPath("5th Grade"))).getLocation().y
         );
-        driver.navigate().refresh();
-        hangon(5);
         newFormVersion();
 
         goToFormByName(formName);
@@ -88,13 +86,13 @@ public class DisplayProfilesTest extends BaseFormTest {
 
         clickElement(By.id("displayProfiles_tab"));
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             deleteWithConfirm(By.cssSelector("#profile_0"));
         }
 
         newFormVersion();
         goToGeneralDetail();
         textNotPresent("Display Profile:");
-        Assert.assertEquals(findElements(By.cssSelector(".fa.fa-plus.iconButton")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.cssSelector(".fa.fa-plus.iconButton")).size(), 0);
     }
 }
