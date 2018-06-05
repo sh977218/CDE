@@ -240,15 +240,18 @@ express.response.render = function (view, module, msg) {
 try {
     require(path.join(__dirname, './server/cde/app.js')).init(app, daoManager);
 
-    require(path.join(__dirname, './server/form/app.js')).init(app, daoManager);
-
-    app.use('/server/user', require('./server/user/index').module);
-
     require(path.join(__dirname, './server/system/app.js')).init(app, daoManager);
 
-    require(path.join(__dirname, './server/board/app.js')).init(app, daoManager);
+    let formModule = require(path.join(__dirname, './server/form/app.js'));
+    formModule.init(app, daoManager);
 
-    require(path.join(__dirname, './modules/swagger/index.js')).init(app);
+    let boardModule = require(path.join(__dirname, './server/board/app.js'));
+    boardModule.init(app, daoManager);
+
+    let swaggerModule = require(path.join(__dirname, './modules/swagger/index.js'));
+    swaggerModule.init(app);
+
+    app.use('/server/user', require('./server/user/index').module);
 } catch (e) {
     console.log(e.stack);
     process.exit();
