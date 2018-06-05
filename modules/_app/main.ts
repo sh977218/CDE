@@ -5,7 +5,6 @@ import 'reflect-metadata';
 
 
 import '../../node_modules/font-awesome/css/font-awesome.css';
-import '../../node_modules/deeppurple-amber.css';
 import '../../node_modules/font-awesome-animation/dist/font-awesome-animation.css';
 
 // path to node_modules required to override module/components/bootstrap
@@ -16,6 +15,7 @@ import '../../node_modules/@ng-select/ng-select/themes/default.theme.css';
 
 require('expose-loader?bootstrap!bootstrap');
 
+import '../../node_modules/deeppurple-amber.css';
 
 import { enableProdMode } from '@angular/core';
 if (PRODUCTION) enableProdMode();
