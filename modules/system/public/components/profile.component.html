@@ -150,6 +150,8 @@
 
     <cde-user-comments [user]="user"></cde-user-comments>
 
-    <h2>My Drafts</h2>
-    <cde-drafts-my-list></cde-drafts-my-list>
+    <ng-container *ngIf="isOrgAdmin()">
+        <h2>My Drafts</h2>
+        <cde-drafts-my-list></cde-drafts-my-list>
+    </ng-container>
 </div>

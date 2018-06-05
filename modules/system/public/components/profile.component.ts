@@ -9,7 +9,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { User } from 'shared/models.model';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
-
+import { isOrgAdmin } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-profile',
@@ -70,7 +70,9 @@ export class ProfileComponent {
             return PushNotificationSubscriptionService.subscriptionServerUpdate(this.user._id);
         });
     }
-
+    isOrgAdmin() {
+        return isOrgAdmin(this.userService.user);
+    }
     reloadUser() {
         this.userService.then(user => {
             this.hasQuota = user.quota;
