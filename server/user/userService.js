@@ -25,13 +25,6 @@ router.post('/', (req, res) => {
         {res: res, origin: "/user/"}, () => res.send('OK'))
     )
 });
-router.put('/avatar', authorization.isOrgAuthority, (req, res) => {
-    let update = {};
-    if (req.body.avatarUrl) update.avatarUrl = req.body.avatarUrl;
-    User.update({_id: req.body._id}, update, dbLogger.handleGenericError(
-        {res: res, origin: "/avatar"}, () => res.send('OK'))
-    )
-});
 
 router.get('/avatar/:username', (req, res) => {
     User.findOne({'username': new RegExp('^' + req.params.username + '$', "i")},

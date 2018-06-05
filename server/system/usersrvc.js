@@ -15,7 +15,13 @@ exports.updateUserRoles = function(user, cb) {
     });
 };
 
-
+exports.updateUserAvatar = function(user, cb) {
+    mongo_data.userByName(user.username, function(err, found) {
+        if (err) return cb(err);
+        found.avatarUrl = user.avatarUrl;
+        found.save(cb);
+    });
+};
 
 exports.addSiteAdmin = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {

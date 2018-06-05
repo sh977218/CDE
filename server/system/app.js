@@ -719,6 +719,15 @@ exports.init = function (app) {
         });
     });
 
+    app.post('/updateUserAvatar', function (req, res) {
+        if (!authorizationShared.canOrgAuthority(req.user))
+            return res.status(401).send("Not Authorized");
+        usersrvc.updateUserAvatar(req.body, function (err) {
+            if (err) res.status(500).end();
+            else res.status(200).end();
+        });
+    });
+
     app.post('/updateTesterStatus', function (req, res) {
         if (!authorizationShared.canOrgAuthority(req.user))
             return res.status(401).send("Not Authorized");
