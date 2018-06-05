@@ -122,6 +122,7 @@
     "babel-preset-env": "1.6.1",
     "bootstrap": "^4.1.1",
     "bootstrap-tour": "https://github.com/sorich87/bootstrap-tour.git",
+    "bundlesize": "^0.17.0",
     "capitalize": "1.0.0",
     "cheerio": "1.0.0-rc.2",
     "classlist.js": "1.1.20150312",
@@ -195,5 +196,52 @@
   },
   "@std/esm": {
     "esm": "all"
-  }
+  },
+  "bundlesize": [
+    {
+      "path": "./dist/app/cde.js",
+      "compression": "none",
+      "maxSize": "1.06 MB"
+    },
+    {
+      "path": "./dist/app/cde.css",
+      "compression": "none",
+      "maxSize": "255 kB"
+    },
+    {
+      "path": "./dist/embed/embed.js",
+      "compression": "none",
+      "maxSize": "1.22 MB"
+    },
+    {
+      "path": "./dist/embed/embed.css",
+      "compression": "none",
+      "maxSize": "167 kB"
+    },
+    {
+      "path": "./dist/fhir/fhir.js",
+      "compression": "none",
+      "maxSize": "1.72 MB"
+    },
+    {
+      "path": "./dist/fhir/fhir.css",
+      "compression": "none",
+      "maxSize": "210 kB"
+    },
+    {
+      "path": "./dist/native/native.js",
+      "compression": "none",
+      "maxSize": "712 kB"
+    },
+    {
+      "path": "./dist/native/native.css",
+      "compression": "none",
+      "maxSize": "167 kB"
+    },
+    {
+      "path": "./modules/system/views/home-launch.ejs",
+      "compression": "none",
+      "maxSize": "418 kB"
+    }
+  ]
 }
