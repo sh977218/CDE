@@ -612,7 +612,7 @@ exports.init = function (app) {
         }
     });
 
-    app.get('/admin/user/:search', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/user/:search', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) return res.send({});
         else if (!req.params.search) {
             return res.send({});
@@ -629,7 +629,7 @@ exports.init = function (app) {
         }
     });
 
-    app.put('/admin/user', function (req, res) {
+    app.put('/user', function (req, res) {
         if (!authorizationShared.canOrgAuthority(req.user))
             return res.status(401).send("Not Authorized");
         mongo_data.addUser({
@@ -700,6 +700,14 @@ exports.init = function (app) {
         } else {
             res.status(401).send();
         }
+    });
+
+    app.get('/searchUsers/:username?', function (req, res) {
+        if (!authorization.isSiteOrgAdmin(req))
+            return res.status(401).send("Not Authorized");
+        mongo_data.usersByPartialName(req.params.username, function (err, users) {
+            res.send({users: users});
+        });
     });
 
     app.post('/updateUserRoles', function (req, res) {
