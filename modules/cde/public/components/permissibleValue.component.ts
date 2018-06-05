@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
-import { checkPvUnicity, fixDatatype } from 'shared/de/deValidator';
-import { SearchSettings } from 'search/search.model';
 import { DataTypeService } from 'core/dataType.service';
-
+import { IsAllowedService } from 'core/isAllowed.service';
+import { SearchSettings } from 'search/search.model';
+import { checkPvUnicity, fixDatatype } from 'shared/de/deValidator';
 
 @Component({
     selector: 'cde-permissible-value',
@@ -31,29 +31,36 @@ export class PermissibleValueComponent {
             this.elt.dataElementConcept.conceptualDomain = {vsac: {}};
         }
 
-        this.searchTerms.pipe(debounceTime(300), distinctUntilChanged(), switchMap(term => term
-            ? this.http.get('/searchUmls?searchTerm=' + term)
-            : Observable.of<string[]>([]))).subscribe((res: any) => {
+        this.searchTerms.pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            switchMap(term => term
+                ? this.http.get('/searchUmls?searchTerm=' + term)
+                : EmptyObservable.create<string[]>()
+            )
+        ).subscribe((res: any) => {
             if (res.result && res.result.results) {
                 this.umlsTerms = res.result.results;
             } else this.umlsTerms = [];
         });
     }
-
     get elt(): any {
         return this._elt;
     }
-
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newPermissibleValueContent') public newPermissibleValueContent: NgbModalModule;
     @ViewChild('importPermissibleValueContent') public importPermissibleValueContent: NgbModalModule;
     canLinkPv = false;
     containsKnownSystem: boolean = false;
+    dataTypeList = [];
     editMode;
     keys = Object.keys;
     modalRef: NgbModalRef;
     newPermissibleValue: any = {};
     pVTypeheadVsacNameList;
+    searchSettings: SearchSettings = {
+        datatypes: ["Value List"]
+    };
     private searchTerms = new Subject<string>();
     vsacValueSet = [];
     vsac = {};
@@ -64,13 +71,6 @@ export class PermissibleValueComponent {
         'LOINC': {source: 'LNC', termType: 'LA', codes: {}, selected: false, disabled: true},
         'SNOMEDCT US': {source: 'SNOMEDCT_US', termType: 'PT', codes: {}, selected: false, disabled: true}
     };
-
-    searchSettings: SearchSettings = {
-        datatypes: ["Value List"]
-    };
-
-    dataTypeList = [];
-
 
     constructor(public http: HttpClient,
                 public modalService: NgbModal,

@@ -9,6 +9,7 @@ import 'angular-tree-component/dist/angular-tree-component.css';
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { BoardModule } from 'board/public/board.module';
+import { DeCompletionComponent } from 'cde/public/components/completion/deCompletion.component';
 import { DataElementService } from 'cde/public/dataElement.service';
 import { CreateDataElementComponent } from 'cde/public/components/createDataElement.component';
 import { CdeAccordionListComponent } from 'cde/public/components/listView/cdeAccordionList.component';
@@ -39,6 +40,7 @@ import { WidgetModule } from 'widget/widget.module';
         CdeAccordionListComponent,
         CdeGeneralDetailsComponent,
         CreateDataElementComponent,
+        DeCompletionComponent,
         ValueDomainSummaryComponent,
     ],
     entryComponents: [
@@ -47,6 +49,7 @@ import { WidgetModule } from 'widget/widget.module';
     exports: [
         CdeGeneralDetailsComponent,
         CreateDataElementComponent,
+        DeCompletionComponent,
         ValueDomainSummaryComponent,
     ],
     providers: [
