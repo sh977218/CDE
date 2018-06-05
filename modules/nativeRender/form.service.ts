@@ -4,9 +4,9 @@ import _noop from 'lodash/noop';
 
 import { DataElementService } from 'cde/public/dataElement.service';
 import { CodeAndSystem } from 'shared/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormQuestion } from 'shared/form/form.model';
 import { iterateFe } from 'shared/form/formShared';
-
 
 @Injectable()
 export class FormService {
@@ -16,39 +16,39 @@ export class FormService {
     ) {}
 
     // TODO: use Mongo cde and move to shared, currently open to using Elastic cde
-    convertCdeToQuestion(cde, cb: (q?: FormQuestion) => (void)): void {
-        if (!cde || cde.valueDomain === undefined) {
-            throw new Error('Cde ' + cde.tinyId + ' is not valid');
+    convertCdeToQuestion(de: DataElement, cb: (q?: FormQuestion) => (void)): void {
+        if (!de || de.valueDomain === undefined) {
+            throw new Error('Cde ' + de.tinyId + ' is not valid');
         }
 
         let q = new FormQuestion();
-        q.question.cde.derivationRules = cde.derivationRules;
-        q.question.cde.name = cde.designations[0] ? cde.designations[0].designation : '';
-        q.question.cde.naming = cde.naming;
-        q.question.cde.designations = cde.designations;
-        q.question.cde.definitions = cde.definitions;
+        q.question.cde.derivationRules = de.derivationRules;
+        q.question.cde.name = de.designations[0] ? de.designations[0].designation : '';
+        q.question.cde.naming = de.naming;
+        q.question.cde.designations = de.designations;
+        q.question.cde.definitions = de.definitions;
         q.question.cde.permissibleValues = [];
-        q.question.cde.tinyId = cde.tinyId;
-        q.question.cde.version = cde.version;
-        q.question.datatype = cde.valueDomain.datatype;
-        q.question.datatypeDate = cde.valueDomain.datatypeDate;
+        q.question.cde.tinyId = de.tinyId;
+        q.question.cde.version = de.version;
+        q.question.datatype = de.valueDomain.datatype;
+        q.question.datatypeDate = de.valueDomain.datatypeDate;
         if (!q.question.datatypeDate) q.question.datatypeDate = {};
-        q.question.datatypeNumber = cde.valueDomain.datatypeNumber;
-        q.question.datatypeText = cde.valueDomain.datatypeText;
-        if (cde.ids) {
-            q.question.cde.ids = cde.ids;
+        q.question.datatypeNumber = de.valueDomain.datatypeNumber;
+        q.question.datatypeText = de.valueDomain.datatypeText;
+        if (de.ids) {
+            q.question.cde.ids = de.ids;
         }
-        if (cde.valueDomain.uom) {
-            q.question.unitsOfMeasure.push(new CodeAndSystem('', cde.valueDomain.uom));
+        if (de.valueDomain.uom) {
+            q.question.unitsOfMeasure.push(new CodeAndSystem('', de.valueDomain.uom));
         }
 
-        cde.naming.forEach(n => {
+        de.naming.forEach(n => {
             if (Array.isArray(n.tags) && n.tags.indexOf('Question Text') > -1 && !q.label) {
                 q.label = n.designation;
             }
         });
         if (!q.label) {
-            q.label = cde.designations[0].designation;
+            q.label = de.designations[0].designation;
         }
         if (!q.label) q.hideLabel = true;
 
@@ -61,15 +61,15 @@ export class FormService {
                 q.question.cde.permissibleValues.push(pv);
             });
         }
-        if (cde.valueDomain.permissibleValues.length > 0) {
+        if (de.valueDomain.permissibleValues.length > 0) {
             // elastic only store 10 pv, retrieve pv when have more than 9 pv.
-            if (cde.valueDomain.permissibleValues.length > 9) {
-                this.dataElementService.fetchDe(cde.tinyId, cde.version || '').then(result => {
+            if (de.valueDomain.permissibleValues.length > 9) {
+                this.dataElementService.fetchDe(de.tinyId, de.version || '').then(result => {
                     convertPv(q, result);
                     cb(q);
                 }, cb);
             } else {
-                convertPv(q, cde);
+                convertPv(q, de);
                 cb(q);
             }
         } else {
