@@ -35,7 +35,7 @@ fs.readdirSync(logFolder).forEach(file => {
     let expectedLines = expectedContent[file.split("_")[0]];
     if (!expectedLines) errors.push("ERROR: Unexpected file in console logs: " + file);
     else {
-        let actualLines = fs.readFileSync(file, 'utf-8').split("\n").filter(Boolean);
+        let actualLines = fs.readFileSync(logFolder + "/" + file, 'utf-8').split("\n").filter(Boolean);
 
         actualLines.forEach(l => {
             if (l.indexOf(expectedLines) === -1) {
