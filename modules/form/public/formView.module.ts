@@ -10,28 +10,29 @@ import { HotkeyModule } from 'angular2-hotkeys';
 import { MatDialogModule, MatIconModule, MatGridListModule, MatButtonModule } from "@angular/material";
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
-import { ArrayListPipe } from './arrayList.pipe';
 import { BoardModule } from 'board/public/board.module';
+import { CdeModule } from 'cde/public/cde.module';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
+import { CompareModule } from 'compare/compare.module';
 import { DiscussModule } from 'discuss/discuss.module';
-import { DisplayProfileComponent } from './components/displayProfile/displayProfile.component';
-import { FormClassificationComponent } from './components/formClassification/formClassification.component';
-import { FormDescriptionComponent } from './tabs/description/formDescription.component';
-import { FormDescriptionQuestionComponent } from './tabs/description/formDescriptionQuestion.component';
-import { FormDescriptionQuestionDetailComponent } from './tabs/description/formDescriptionQuestionDetail.component';
-import { FormDescriptionSectionComponent } from './tabs/description/formDescriptionSection.component';
-import { FormGeneralDetailsComponent } from './components/formGeneralDetails/formGeneralDetails.component';
+import { ArrayListPipe } from 'form/public/arrayList.pipe';
 import { FormSearchModule } from 'form/public/formSearch.module';
-import { FormTermMappingComponent } from './components/formTermMapping/formTermMapping.component';
-import { FormViewComponent } from './components/formView.component';
-import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
-import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
-import { WidgetModule } from 'widget/widget.module';
-import { CompareModule } from 'compare/compare.module';
+import { FormViewComponent } from 'form/public/components/formView.component';
+import { DisplayProfileComponent } from 'form/public/components/displayProfile/displayProfile.component';
+import { FormClassificationComponent } from 'form/public/components/formClassification/formClassification.component';
+import { FormGeneralDetailsComponent } from 'form/public/components/formGeneralDetails/formGeneralDetails.component';
+import { FormTermMappingComponent } from 'form/public/components/formTermMapping/formTermMapping.component';
+import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
+import { FormDescriptionQuestionComponent } from 'form/public/tabs/description/formDescriptionQuestion.component';
+import { FormDescriptionSectionComponent } from 'form/public/tabs/description/formDescriptionSection.component';
+import { FormDescriptionQuestionDetailComponent } from 'form/public/tabs/description/formDescriptionQuestionDetail.component';
+import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
 import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
+import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
+import { NativeRenderModule } from 'nativeRender/nativeRender.module';
+import { WidgetModule } from 'widget/widget.module';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -55,6 +56,7 @@ const appRoutes: Routes = [
         // internal
         AdminItemModule,
         BoardModule,
+        CdeModule,
         CdeSearchModule,
         CompareModule,
         DiscussModule,
