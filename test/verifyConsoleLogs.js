@@ -1,4 +1,4 @@
-const logFolder = './build';
+const logFolder = './build/consolelogs';
 const fs = require('fs');
 
 let expectedContent = {
