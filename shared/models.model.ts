@@ -279,15 +279,15 @@ export class Definition {
 }
 
 export class Naming {
-    context: {
+    context?: {
         acceptability: string,
         contextName: string,
     };
-    definition: string;
-    definitionFormat: string;
+    definition?: string;
+    definitionFormat?: string;
     designation: string;
-    languageCode: string;
-    source: string;
+    languageCode?: string;
+    source?: string;
     tags: string[] = [];
 
     constructor(designation = '') {
