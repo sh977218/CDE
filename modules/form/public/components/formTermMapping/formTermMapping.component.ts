@@ -1,15 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { ElasticQueryResponse } from 'shared/models.model';
-
 
 @Component({
     selector: 'cde-form-term-mapping',
@@ -32,7 +31,7 @@ export class FormTermMappingComponent implements OnInit {
             switchMap(term => term
                 ? this.http.get((window as any).meshUrl
                     + '/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=' + term)
-                : Observable.of<string[]>([])
+                : EmptyObservable.create<string[]>()
             )
         ).subscribe((res: ElasticQueryResponse) => {
             if (res && res.hits && res.hits.hits.length === 1) {
