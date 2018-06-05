@@ -35,10 +35,6 @@ exports.isOrgAdmin = function (req, org) {
     return req.isAuthenticated() && authorizationShared.isOrgAdmin(req.user, org);
 };
 
-exports.isOrgAuthority = function (req) {
-    return req.isAuthenticated() && authorizationShared.canOrgAuthority(req.user);
-};
-
 exports.checkSiteAdmin = function (req, res, next) {
     if (req.isAuthenticated() && req.user.siteAdmin)
         return next();
