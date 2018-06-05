@@ -12,7 +12,7 @@ class Concepts {
 }
 
 export class DataElement extends Elt {
-    dataElementConcept: { // mutable
+    dataElementConcept?: { // mutable
         concepts: Concept[],
         conceptualDomain: {
             vsac: {

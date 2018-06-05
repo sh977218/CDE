@@ -5,7 +5,7 @@ export class SearchSettings {
     meshTree?: string;
     page?: number = 1;
     q?: string;
-    regStatuses?: string[];
+    regStatuses?: string[] = [];
     resultPerPage?: number = 20;
     selectedOrg?: string;
     selectedOrgAlt?: string;

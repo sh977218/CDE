@@ -143,48 +143,9 @@
                 <label for="newDEName"></label>
                 <input [(ngModel)]="newDataElement.designations[0].designation" class="form-control" id="newDEName"
                        name="newDEName" placeholder="New Data Element Name" autocomplete="off"
-                       (ngModelChange)="newDataElementNameChanged();"
+                       (ngModelChange)="deCompletionService.next($event);"
                        required autofocus/>
-                <div id="accordionList" *ngIf="suggestedCdes?.length > 0">
-                    <h4>Possible Matches</h4>
-                    <div class="card" *ngFor="let cde of suggestedCdes; let index = index;">
-                        <div class="card-header">
-                            <button mat-raised-button type="button" color="accent" (click)="createNewDataElement(cde)">
-                                <i class="fa fa-plus"></i> Add
-                            </button>
-                            <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed">
-                                {{cde.designations[0].designation}}
-                            </span>
-                            <a routerLink="/deView" [queryParams]="{tinyId: cde.tinyId}" target="_blank">
-                                <i class="fa fa-eye iconColor"></i></a>
-                            <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
-                            <cde-pin-quickboard [elt]="cde" [eltIndex]="index"></cde-pin-quickboard>
-                        </div>
-                        <div class="card-body" [ngbCollapse]="!cde.isCollapsed">
-                            <div class="row">
-                                <div class="col-12">
-                                    {{cde.definitions[0].definition}}
-                                </div>
-                            </div>
-                            <div class="row" *ngIf="cde.valueDomain.permissibleValues.length > 0">
-                                <div class="col-12">
-                                    <table class="table table-bordered">
-                                        <tr>
-                                            <th>Value</th>
-                                            <th>Code Name</th>
-                                            <th>Code</th>
-                                        </tr>
-                                        <tr *ngFor="let pv of cde.valueDomain.permissibleValues">
-                                            <td>{{pv.permissibleValue}}</td>
-                                            <td>{{pv.valueMeaningName}}
-                                            <td>{{pv.valueMeaningCode}}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <cde-de-completion (add)="createNewDataElement($event)"></cde-de-completion>
             </div>
             <div mat-dialog-actions align="end">
                 <button mat-raised-button color="accent" type="submit" [disabled]="!newDataElementForm.valid"
