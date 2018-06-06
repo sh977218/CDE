@@ -61,7 +61,7 @@
                 <i class="fa fa-download"></i><span class="d-none d-sm-inline ml-1">Export</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="export">
-                <ng-container *ngIf="isAllowedModel.loggedIn()">
+                <ng-container *ngIf="userService.loggedIn()">
                     <li class="dropdown-item">
                         <a id='nihJson' href="formById/{{elt._id}}" target="_blank">
                             JSON File, NIH/CDE Schema</a>
@@ -110,7 +110,7 @@
                             <i class="fa fa-check" style="color: green"></i></a>
                     </li>
                 </ng-container>
-                <a class="dropdown-item" *ngIf="!isAllowedModel.loggedIn()" href="login">
+                <a class="dropdown-item" *ngIf="!userService.loggedIn()" href="login">
                     Please login to export forms.</a>
             </ul>
         </span>
@@ -123,7 +123,7 @@
                 (click)="mltPinModal.open([elt], 'cde')">
             <i class="fa fa-thumb-tack"></i><span class="d-none d-sm-inline ml-1">Add to Board</span>
         </button>
-        <button *ngIf="isAllowedModel.loggedIn()"
+        <button *ngIf="userService.loggedIn()"
                 id="pinAllCdes" class="btn btn-outline-dark"
                 title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
             <i class="fa fa-cogs"></i><span class="d-none d-sm-inline ml-1">Pin CDEs</span>
