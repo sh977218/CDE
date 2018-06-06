@@ -82,12 +82,15 @@ export class LoginComponent implements OnInit {
     }
 
     login() {
-        this.http.post('/login', {
+        if (!this.csrf) return;
+        let loginParams = {
             username: this.username,
             password: this.password,
             _csrf: this.csrf,
             recaptcha: this.recaptcha
-        }, {responseType: 'text'}).subscribe(res => {
+        };
+        delete this.csrf;
+        this.http.post('/login', loginParams, {responseType: 'text'}).subscribe(res => {
             this.userService.reload();
             if (res === 'OK') {
                 if (this.loginSvc.getPreviousRoute()) {
