@@ -176,20 +176,20 @@
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'pvs_tab'">
                         <cde-permissible-value [elt]="elt" [canEdit]="canEdit()"
-                                               (onEltChange)="saveDraft();"></cde-permissible-value>
+                                               (onEltChange)="saveDraft()"></cde-permissible-value>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'naming_tab'">
-                        <cde-naming [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();"></cde-naming>
+                        <cde-naming [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft()"></cde-naming>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'classification_tab'">
                         <cde-cde-classification [elt]="elt"></cde-cde-classification>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'concepts_tab'">
-                        <cde-concepts [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();"></cde-concepts>
+                        <cde-concepts [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft()"></cde-concepts>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'referenceDocuments_tab'">
-                        <cde-reference-document [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();">
-                        </cde-reference-document>
+                        <cde-reference-document [elt]="elt" [canEdit]="canEdit()"
+                                                (onEltChange)="saveDraft()"></cde-reference-document>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'properties_tab'">
                         <cde-properties [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft()">
@@ -209,7 +209,8 @@
                         <cde-history [elt]="elt" [canEdit]="canEdit()"></cde-history>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'rules_tab'">
-                        <cde-derivation-rules [elt]="elt" (onEltChange)="saveDraft();"></cde-derivation-rules>
+                        <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt"
+                                              (onEltChange)="saveDraft()"></cde-derivation-rules>
                         <cde-valid-rules [elt]="elt"></cde-valid-rules>
                     </ng-container>
                 </div>
