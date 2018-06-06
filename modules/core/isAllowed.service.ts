@@ -25,15 +25,11 @@ export class IsAllowedService {
     }
 
     doesUserOwnElt (elt) {
-        if (!this.userService.user) return false;
+        if (!this.userService.loggedIn()) return false;
         if (elt.elementType === 'board') {
             return this.userService.user.siteAdmin || this.userService.user.username === elt.owner.username;
         } else {
             return this.userService.user.siteAdmin || this.userService.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1;
         }
-    }
-
-    loggedIn () {
-        return !!this.userService.user;
     }
 }
