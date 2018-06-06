@@ -7,10 +7,11 @@ const conn = connHelper.establishConnection(config.database.appData);
 const User = conn.model('User', schemas.userSchema);
 
 const authorization = require('../system/authorization');
+const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const dbLogger = require('../system/dbLogger');
 const mongo_data = require('../system/mongo-data');
 
-router.get('/', (req, res) => {
+router.get('/', exportShared.nocacheMiddleware, (req, res) => {
     if (!req.user) return res.send({});
     User.findById(req.user._id, {password: 0}, dbLogger.handleGenericError(
         {res: res, origin: "/user/"}, user => res.send(user))
