@@ -1,17 +1,13 @@
 const async = require('async');
-const spawn = require('child_process').spawn;
 const CronJob = require('cron').CronJob;
 const csrf = require('csurf');
 const ejs = require('ejs');
 const fs = require('fs');
 const _ = require('lodash');
-const multer = require('multer');
 const passport = require('passport');
 const path = require('path');
 const request = require('request');
 const useragent = require('useragent');
-const zlib = require('zlib');
-
 const authorization = require('./authorization');
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const mongo_cde = require('../cde/mongo-cde');
@@ -91,18 +87,6 @@ exports.init = function (app) {
             res.send();
         });
     }
-
-    // @TODO Remove me
-    app.get("/testProxy", (req, res) => {
-        if (authorizationShared.isSiteAdmin(req.user)) {
-            request.get(req.query.url, (err, resp, body) => {
-                if (err) return res.send(err);
-                else return res.send(body);
-            });
-        } else {
-            res.status(401).send();
-        }
-    });
 
     app.get("/cde/search", (req, res) => {
         let selectedOrg = req.query.selectedOrg;
@@ -792,13 +776,6 @@ exports.init = function (app) {
         mongo_data.getFile(req.user, req.params.imgtag, res);
     });
 
-    app.get('/data/status/:imgtag', function (req, res) {
-        mongo_data.getFileStatus(req.params.imgtag, function (err, status) {
-            if (err) res.status(404).send();
-            res.send(status);
-        });
-    });
-
     app.post('/transferSteward', function (req, res) {
         orgsvc.transferSteward(req, res);
     });
@@ -841,14 +818,6 @@ exports.init = function (app) {
         if (!formId) return res.status(400).send("Bad Request");
         adminItemSvc.resetBulkClassifyCdesStatus(req.user.username + req.param("eltId"));
         res.end();
-    });
-
-    app.get('/getAllUsernames', function (req, res) {
-        if (authorization.isSiteOrgAdmin(req)) {
-            usersrvc.getAllUsernames(req, res);
-        } else {
-            res.status(401).send();
-        }
     });
 
     app.post('/getServerErrors', (req, res) => {
@@ -1133,30 +1102,6 @@ exports.init = function (app) {
         });
     });
 
-    let loincUploadStatus;
-    app.post('/uploadLoincCsv', multer(), function (req, res) {
-        loincUploadStatus = [];
-        let load = spawn(config.pmNodeProcess, ['./ingester/loinc/loadLoincFields.js', req.files.uploadedFiles.path]).on('exit', function (code) {
-            loincUploadStatus.push("Complete with Code: " + code);
-            setTimeout(function () {
-                loincUploadStatus = [];
-            }, 5 * 60 * 1000);
-            fs.unlink(req.files.uploadedFiles.path);
-        });
-        res.send();
-
-        load.stdout.on('data', function (data) {
-            loincUploadStatus.push("" + data);
-        });
-        load.stderr.on('data', function (data) {
-            loincUploadStatus.push("" + data);
-        });
-    });
-
-    app.get('/uploadLoincCsvStatus', function (req, res) {
-        res.send(loincUploadStatus);
-    });
-
     app.post('/disableRule', function (req, res) {
         if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
         mongo_data.disableRule(req.body, function (err, org) {
@@ -1322,31 +1267,6 @@ exports.init = function (app) {
         adminItemSvc.updateCommentStatus(req, res, "active");
     });
     app.post('/comments/reply', adminItemSvc.replyToComment);
-
-    app.get('/statsNew/cde', function (req, res) {
-        elastic.elasticsearch('cde', elastic.queryNewest, undefined, (err, result) => {
-            if (err) return res.status(400).send("invalid query");
-            res.send(result.cdes.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
-        });
-    });
-    app.get('/statsNew/form', function (req, res) {
-        elastic.elasticsearch('form', elastic.queryNewest, undefined, (err, result) => {
-            if (err) return res.status(400).send("invalid query");
-            res.send(result.forms.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
-        });
-    });
-    app.get('/statsTopViews/cde', function (req, res) {
-        elastic.elasticsearch('cde', elastic.queryMostViewed, undefined, (err, result) => {
-            if (err) return res.status(400).send("invalid query");
-            res.send(result.cdes.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
-        });
-    });
-    app.get('/statsTopViews/form', function (req, res) {
-        elastic.elasticsearch('form', elastic.queryMostViewed, undefined, (err, result) => {
-            if (err) return res.status(400).send("invalid query");
-            res.send(result.forms.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
-        });
-    });
 
     app.get('/activeBans', (req, res) => {
         if (req.isAuthenticated() && req.user.siteAdmin) {
