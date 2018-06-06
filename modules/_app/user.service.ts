@@ -47,6 +47,10 @@ export class UserService {
         return ITEM_MAP[c.element.eltType].view + c.element.eltId;
     }
 
+    loggedIn() {
+        return !!this.user;
+    }
+
     reload() {
         this.clear();
         this.promise = new Promise<User>((resolve, reject) => {

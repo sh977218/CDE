@@ -6,10 +6,8 @@ import _noop from 'lodash/noop';
 
 import { AlertService } from '_app/alert/alert.service';
 import { UserService } from '_app/user.service';
-import { IsAllowedService } from 'core/isAllowed.service';
 import { Comment } from 'shared/models.model';
 import { statusList } from 'shared/system/regStatusShared';
-
 
 @Component({
     selector: 'cde-registration',
@@ -33,7 +31,6 @@ export class RegistrationComponent implements OnInit {
     constructor (
         private alert: AlertService,
         private http: HttpClient,
-        public isAllowedModel: IsAllowedService,
         public modalService: NgbModal,
         private parserFormatter: NgbDateParserFormatter,
         private userService: UserService,

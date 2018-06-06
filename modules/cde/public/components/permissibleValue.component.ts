@@ -5,6 +5,7 @@ import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 
+import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
 import { DataTypeService } from 'core/dataType.service';
 import { IsAllowedService } from 'core/isAllowed.service';
@@ -73,8 +74,8 @@ export class PermissibleValueComponent {
 
     constructor(public http: HttpClient,
                 public modalService: NgbModal,
-                private Alert: AlertService,
-                public isAllowedModel: IsAllowedService) {
+                public userService: UserService,
+                private Alert: AlertService) {
         this.dataTypeList = DataTypeService.getDataTypeItemList();
     }
 
