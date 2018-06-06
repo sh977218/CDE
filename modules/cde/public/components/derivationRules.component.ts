@@ -3,8 +3,6 @@ import { Component, DoCheck, Input, ViewChild, OnChanges, Output, EventEmitter, 
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
 
 import { QuickBoardListService } from '_app/quickBoardList.service';
-import { IsAllowedService } from 'core/isAllowed.service';
-
 
 @Component({
     selector: 'cde-derivation-rules',
@@ -12,9 +10,10 @@ import { IsAllowedService } from 'core/isAllowed.service';
     templateUrl: './derivationRules.component.html'
 })
 export class DerivationRulesComponent implements DoCheck, OnChanges {
-    @Input() public elt: any;
+    @Input() canEdit;
+    @Input() elt: any;
     @Output() onEltChange = new EventEmitter();
-    @ViewChild('newScoreContent') public newScoreContent: NgbModalModule;
+    @ViewChild('newScoreContent') newScoreContent: NgbModalModule;
     invalidCdeMessage: string = '';
     modalRef: NgbModalRef;
     newDerivationRule: any = {
@@ -42,7 +41,6 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         private http: HttpClient,
         public modalService: NgbModal,
         public quickBoardService: QuickBoardListService,
-        public isAllowedModel: IsAllowedService
     ) {
     }
 
@@ -58,9 +56,14 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     }
 
     canAddScore() {
-        if (!this.isAllowedModel.isAllowed(this.elt)) return false;
-        if (this.elt.derivationRules) return this.elt.derivationRules.filter(derRule => derRule.ruleType === 'score').length < 1;
-        else return true;
+        if (!this.canEdit) {
+            return false;
+        }
+        if (this.elt.derivationRules) {
+            return this.elt.derivationRules.filter(derRule => derRule.ruleType === 'score').length < 1;
+        } else {
+            return true;
+        }
     }
 
     findDerivationOutputs() {
