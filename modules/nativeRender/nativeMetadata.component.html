@@ -46,7 +46,7 @@
             <button class="btn btn-outline-dark input-group-addon" (click)="accessGUDIdSearch(metadataSearch)">Add</button>
         </div>
         <ng-container *ngIf="nativeFe.metadataTagsNew !== watchNewState && moveFocus(searchField)"></ng-container>
-        <div><a *ngIf="metadataSearchResult === null" style="color: red">Not Found</a></div>
+        <div><a *ngIf="metadataSearchResult === null" style="color: red">Device Identifier(DI) Not Found</a></div>
     </article>
     <footer class="noPrint">
         <a title="Delete" (click)="nativeFe.metadataTagsNew = undefined"><i class="fa fa-trash-o"></i></a>
