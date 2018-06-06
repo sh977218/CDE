@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const { CheckerPlugin } = require('awesome-typescript-loader');
 const merge = require('webpack-merge');
 const baseConfig = require('./webpack.config.js');
 const path = require('path');
@@ -11,7 +10,7 @@ module.exports = merge(baseConfig, {
             {
                 test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
                 use: [
-                    {loader: 'awesome-typescript-loader', options: {configFile: 'tsconfig.json'}},
+                    {loader: 'ts-loader', options: {configFile: 'tsconfig.json'}},
                     'angular-router-loader',
                     'angular2-template-loader'
                 ]
@@ -36,8 +35,7 @@ module.exports = merge(baseConfig, {
                 'windows.jQuery': 'jquery',
                 Tether: 'tether',
                 Popper: ['popper.js', 'default'],
-            }),
-            new CheckerPlugin(),
+            })
         ],
     devtool: '#eval-source-map',
     watch: true,
