@@ -30,16 +30,14 @@ let errors = [];
 fs.readdirSync(logFolder).forEach(file => {
 
     let expectedLines = expectedContent[file.split("_")[0]];
-    else {
-        let actualLines = fs.readFileSync(logFolder + "/" + file, 'utf-8').split("\n").filter(Boolean);
+    let actualLines = fs.readFileSync(logFolder + "/" + file, 'utf-8').split("\n").filter(Boolean);
 
-        actualLines.forEach(l => {
-            if (expectedLines !== "*" && (expectedLines && l.indexOf(expectedLines) === -1) && l.indexOf("Slow network is detected") === "-1") {
-                errors.push("ERROR: Unexpected content in console logs: " + file + "--> " + l);
-            }
-        });
+    actualLines.forEach(l => {
+        if (expectedLines !== "*" && (expectedLines && l.indexOf(expectedLines) === -1) && l.indexOf("Slow network is detected") === "-1") {
+            errors.push("ERROR: Unexpected content in console logs: " + file + "--> " + l);
+        }
+    });
 
-    }
 
 });
 
