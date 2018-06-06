@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.test.boards;
+Cpackage gov.nih.nlm.cde.test.boards;
 
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
