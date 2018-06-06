@@ -289,10 +289,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             question.edit = true;
             this.addFormElement(question);
             this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
-            setTimeout(() => {
-                let e = window.document.getElementById(question.feId);
-                if (e) e.scrollIntoView();
-            }, 0);
+            BrowserService.waitRendered(
+                () => document.getElementById('question_' + question.feId),
+                () => BrowserService.scrollTo('question_' + question.feId)
+            );
             this.isModalOpen = false;
         });
     }
