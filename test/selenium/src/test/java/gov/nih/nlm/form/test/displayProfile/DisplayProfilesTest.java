@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test.displayProfile;
 
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -29,10 +30,16 @@ public class DisplayProfilesTest extends BaseFormTest {
                         findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_0-1']//" + byValueListValueXPath("2nd Grade"))).getLocation().y
         );
         scrollToViewById("profile_3");
-        Assert.assertEquals(
-                findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//" + byValueListValueXPath("1st Grade"))).getLocation().y,
-                findElement(By.xpath("//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//" + byValueListValueXPath("5th Grade"))).getLocation().y
-        );
+        String baseXpath = "//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//";
+
+        int i = 5;
+        while (i >= 0) {
+            if (i == 0) Assert.fail("Unexpected y value");
+            if (findElement(By.xpath(baseXpath + byValueListValueXPath("1st Grade"))).getLocation().y !=
+                    findElement(By.xpath(baseXpath + byValueListValueXPath("5th Grade"))).getLocation().y) {
+                i--;
+            } else i = -1;
+        }
         newFormVersion();
 
         goToFormByName(formName);
