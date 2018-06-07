@@ -30,6 +30,11 @@ type DisplayProfileVM = {
         :host ::ng-deep .mat-checkbox-inner-container {
             margin-left: inherit;
         }
+        .mat-icon {
+            font-size: 1.2em;
+            height: 1.2em;
+            width: 1.2em;
+        }
     `],
     templateUrl: './displayProfile.component.html',
 })

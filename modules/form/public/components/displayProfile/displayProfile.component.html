@@ -4,7 +4,7 @@
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <h3 style="line-height: initial; margin-bottom: 0; width: 100%">
-                    Profile {{index + 1}}
+                    {{dPVM.profile.name}}
                     <div class="pull-right" *ngIf="canEdit">
                         <cde-delete-with-confirm (click)="BrowserService.interruptEvent($event)"
                                                  (deleted)="removeDisplayProfile(index)"></cde-delete-with-confirm>
@@ -22,8 +22,9 @@
                         </cde-inline-edit>
                     </div>
                     <mat-form-field>
-                        Default View:
-                        <mat-select id="displayType_{{index}}" class="form-control" [disabled]="!canEdit" [(value)]="dPVM.profile.displayType" (valueChange)="setDisplayType(dPVM)">
+                        <mat-select id="displayType_{{index}}" class="form-control" [disabled]="!canEdit"
+                                    placeholder="Default View"
+                                    [(value)]="dPVM.profile.displayType" (valueChange)="setDisplayType(dPVM)">
                             <mat-option value="Follow-up">Print (Follow-up style)</mat-option>
                             <mat-option value="Dynamic">Digital (Dynamic style)</mat-option>
                         </mat-select>
@@ -72,12 +73,12 @@
 
                 <h4>
                     Unit of Measure Aliases
-                    <button class="btn btn-outline-dark" (click)="uomAliasEdit(dPVM)">
+                    <button mat-raised-button (click)="uomAliasEdit(dPVM)">
                         <ng-container *ngIf="dPVM.aliases.edit; else uomEdit">
-                            Okay <i class="fa fa-check"></i>
+                            Okay <mat-icon>done</mat-icon>
                         </ng-container>
                         <ng-template #uomEdit>
-                            Edit <i class="fa fa-pencil"></i>
+                            Edit <mat-icon>edit</mat-icon>
                         </ng-template>
                     </button>
                 </h4>
@@ -135,7 +136,7 @@
             </div>
         </div>
     </mat-expansion-panel>
-    <button *ngIf="canEdit" class="btn btn-outline-dark mt-2" value="add" (click)="addProfile()"
-            id="addDisplayProfile"><i class="fa fa-plus"> </i> Add Profile
+    <button *ngIf="canEdit" mat-raised-button class="mt-2" value="add" (click)="addProfile()"
+            id="addDisplayProfile"><mat-icon style="font-weight: 900">add</mat-icon> Add Profile
     </button>
 </div>
