@@ -258,7 +258,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     addFormElement(fe) {
-        this.addIndex(this.formElementEditing.formElements, fe, this.formElementEditing.index);
+        if (this.formElementEditing.formElements) {
+            this.formElementEditing.formElements.splice(this.formElementEditing.index, 0, fe);
+        }
+        addFormIds(this.elt);
         this.tree.treeModel.update();
         this.tree.treeModel.expandAll();
         this.onEltChange.emit();
@@ -275,11 +278,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             this.isModalOpen = false;
             if (cb) cb(inForm);
         });
-    }
-
-    addIndex(elements, element, i) {
-        elements.splice(i, 0, element);
-        addFormIds(this.elt);
     }
 
     addQuestionFromSearch(cde) {

@@ -359,7 +359,10 @@ public class NlmCdeBaseTest {
 
     protected void deleteWithConfirm(By by) {
         WebElement element = findElement(by);
+
+        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.cssSelector(".fa-trash-o"))));
         element.findElement(By.cssSelector(".fa-trash-o")).click();
+        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.cssSelector(".badge > .fa-check"))));
         element.findElement(By.cssSelector(".badge > .fa-check")).click();
     }
 
