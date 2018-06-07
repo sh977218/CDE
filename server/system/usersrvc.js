@@ -23,7 +23,6 @@ exports.updateUserAvatar = function(user, cb) {
     });
 };
 
-
 exports.addSiteAdmin = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {
         if (!found) {
@@ -218,13 +217,5 @@ exports.getAllUsernames = function(req, res) {
         else {
             res.send(usernames);
         }
-    });
-};
-
-exports.updateSearchSettings = function(username, settings, cb) {
-    mongo_data.userByName(username, function(err, user){
-        user.searchSettings = settings;
-        //user.markModified('searchSettings');
-        user.save(cb);
     });
 };
