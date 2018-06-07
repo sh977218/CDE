@@ -5,7 +5,7 @@
     "build": "bash paral 'npm run buildApp' 'npm run buildEmbed' 'npm run buildFhir' 'npm run buildNative'",
     "buildApp": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_app/webpack.prod.js",
     "buildEmbed": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_embedApp/webpackEmbed.prod.js",
-    "buildNative": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --sm --config ./modules/_nativeRenderApp/webpackNative.prod.js",
+    "buildNative": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_nativeRenderApp/webpackNative.prod.js",
     "buildFhir": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_fhirApp/webpackFhir.prod.js",
     "dev": "npm run devApp",
     "devApp": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_app/webpack.dev.js",
