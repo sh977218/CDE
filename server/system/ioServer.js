@@ -1,9 +1,12 @@
 var passportSocketIo = require('passport.socketio');
 
-exports.startServer = function(server, expressSettings) {
-    var ioServer = require('socket.io')(server);
+exports.startServer = function (server, expressSettings) {
+    let ioServer = require('socket.io')(server);
+    let mongoAdapter = require('socket.io-adapter-mongo');
+    if (config.database.appData && config.database.appData.options && config.database.appData.options.server) {
+        ioServer.adapter(mongoAdapter(config.mongoUri, config.database.appData.options.server));
+    } else ioServer.adapter(mongoAdapter(config.mongoUri));
     exports.ioServer = ioServer;
-
     ioServer.use(passportSocketIo.authorize(expressSettings));
     ioServer.of("/comment").on('connection', function (client) {
         client.on("room", function (roomId) {
