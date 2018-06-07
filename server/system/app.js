@@ -481,26 +481,7 @@ exports.init = function (app) {
         async.series([
                 function checkCaptcha(captchaDone) {
                     if (failedIp && failedIp.nb > 2) {
-                        // if (req.body.recaptcha) {
-                        //     request.post("https://www.google.com/recaptcha/api/siteverify",
-                        //         {
-                        //             form: {
-                        //                 secret: config.captchaCode,
-                        //                 response: req.body.recaptcha,
-                        //                 remoteip: getRealIp(req)
-                        //             },
-                        //             json: true
-                        //         }, function (err, resp, body) {
-                        //             if (err) captchaDone(err);
-                        //             else if (!body.success) {
-                        //                 captchaDone("incorrect recaptcha");
-                        //             } else {
                         captchaDone();
-                        //     }
-                        // });
-                        // } else {
-                        //     captchaDone("missing recaptcha");
-                        // }
                     } else {
                         captchaDone();
                     }
@@ -632,20 +613,6 @@ exports.init = function (app) {
         }
     });
 
-    app.post('/user/me', function (req, res) {
-        if (!req.user) return res.status(401).send();
-        if (req.user._id.toString() !== req.body._id)
-            return res.status(401).send();
-        mongo_data.userById(req.user._id, function (err, user) {
-            user.email = req.body.email;
-            user.publishedForms = req.body.publishedForms;
-            user.save(function (err) {
-                if (err) return res.status(500).send("ERROR getting my user");
-                res.send("OK");
-            });
-        });
-    });
-
     app.put('/user', function (req, res) {
         if (!authorizationShared.canOrgAuthority(req.user))
             return res.status(401).send("Not Authorized");
@@ -733,12 +700,6 @@ exports.init = function (app) {
         usersrvc.updateUserRoles(req.body, function (err) {
             if (err) res.status(500).end();
             else res.status(200).end();
-        });
-    });
-
-    app.get('/user/avatar/:username', function (req, res) {
-        mongo_data.userByName(req.params.username, function (err, u) {
-            res.send(u && u.avatarUrl ? u.avatarUrl : "");
         });
     });
 
@@ -940,14 +901,6 @@ exports.init = function (app) {
         }
     });
 
-    app.get('/mailStatus', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) return res.send({count: 0});
-        mongo_data.mailStatus(req.user, function (err, results) {
-            if (err) res.status(500).send("Unable to get mail status");
-            else res.send({count: results.length});
-        });
-    });
-
     // @TODO this should be POST
     app.get('/attachment/approve/:id', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
@@ -976,14 +929,6 @@ exports.init = function (app) {
         } else {
             res.status(401).send("Not Authorized");
         }
-    });
-
-    app.post('/user/update/searchSettings', function (req, res) {
-        if (!req.user) return;
-        usersrvc.updateSearchSettings(req.user.username, req.body, function (err) {
-            if (err) res.status(500).send("ERROR - cannot update search settings. ");
-            else res.send("Search settings updated.");
-        });
     });
 
     app.post('/embed/', function (req, res) {
