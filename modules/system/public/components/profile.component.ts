@@ -90,7 +90,7 @@ export class ProfileComponent {
     }
 
     saveProfile() {
-        this.http.post('/user/me', this.user, {responseType: 'text'}).subscribe(
+        this.http.post('/server/user/', this.user, {responseType: 'text'}).subscribe(
             () => {
                 this.reloadUser();
                 this.alert.addAlert('success', 'Saved');
