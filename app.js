@@ -34,7 +34,7 @@ app.use(helmet.contentSecurityPolicy({
     directives: {
         defaultSrc: ["'self'", 'fonts.gstatic.com'],
         fontSrc: ["'self'", 'fonts.gstatic.com', "*.nih.gov"],
-        scriptSrc: [ "'self'", "'unsafe-inline'", "'unsafe-eval'", "cdn.ckeditor.com", "cdn.jsdelivr.net",
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "cdn.ckeditor.com", "cdn.jsdelivr.net",
             "cdnjs.cloudflare.com", "*.nih.gov", "ajax.googleapis.com", "www.googletagmanager.com", "www.google-analytics.com"],
         styleSrc: ["'self'", 'maxcdn.bootstrapcdn.com', 'fonts.googleapis.com', 'fonts.gstatic.com',
             "'unsafe-inline'", "*.nih.gov", "cdn.ckeditor.com"],
@@ -45,7 +45,7 @@ app.use(helmet.contentSecurityPolicy({
     },
     "reportOnly": true,
 }));
-app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
+app.use(helmet.referrerPolicy({policy: 'same-origin'}));
 app.use(auth.ticketAuth);
 app.use(compress());
 
@@ -96,7 +96,7 @@ const banEndsWith = config.banEndsWith || [];
 const banStartsWith = config.banStartsWith || [];
 
 const releaseHackersFrequency = 5 * 60 * 1000;
-const keepHackerForDuration = 1000 * 60 * 60* 24;
+const keepHackerForDuration = 1000 * 60 * 60 * 24;
 // every minute, get latest list.
 setInterval(() => {
     dbLogger.getTrafficFilter(record => {
@@ -120,7 +120,7 @@ app.use((req, res, next) => {
 });
 
 app.use(function banHackers(req, res, next) {
-    banEndsWith.forEach(ban =>  {
+    banEndsWith.forEach(ban => {
         if (req.originalUrl.slice(-(ban.length)) === ban) {
             let ip = getRealIp(req);
             dbLogger.banIp(ip, req.originalUrl);
@@ -242,14 +242,13 @@ try {
 
     require(path.join(__dirname, './server/system/app.js')).init(app, daoManager);
 
-    let formModule = require(path.join(__dirname, './server/form/app.js'));
-    formModule.init(app, daoManager);
+    require(path.join(__dirname, './server/form/app.js')).init(app, daoManager);
 
-    let boardModule = require(path.join(__dirname, './server/board/app.js'));
-    boardModule.init(app, daoManager);
+    require(path.join(__dirname, './server/board/app.js')).init(app, daoManager);
 
-    let swaggerModule = require(path.join(__dirname, './modules/swagger/index.js'));
-    swaggerModule.init(app);
+    require(path.join(__dirname, './modules/swagger/index.js')).init(app);
+
+    app.use('/server/user', require('./server/user/index').module);
 } catch (e) {
     console.log(e.stack);
     process.exit();

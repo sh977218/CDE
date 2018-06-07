@@ -5,13 +5,13 @@
 
 <div class="dropdown-menu dropdown-menu-right" style="min-width: 30rem;" id="notificationsDropdown">
     <div class="dropdown-item border-bottom" *ngFor="let notification of unreadNotifications"
-         (click)="viewNotification(notification);" style="padding:0.5rem 1rem">
-        <p>{{notification._id.title}} ({{notification.count}})</p>
+         (click)="viewNotification(notification)" style="padding:0.5rem 1rem">
+        <p>{{notification._id.title}} <ng-container *ngIf="notification.count">({{notification.count}})</ng-container></p>
         <small>{{notification.date | date:'yyyy-MM-dd HH:mm'}}</small>
     </div>
     <div class="dropdown-item border-bottom" *ngFor="let notification of readNotifications"
-         (click)="viewNotification(notification);" style="padding:0.5rem 1rem;background-color:lightgray;">
-        <p>{{notification._id.title}} ({{notification.count}})</p>
+         (click)="viewNotification(notification)" style="padding:0.5rem 1rem;background-color:lightgray;">
+        <p>{{notification._id.title}} <ng-container *ngIf="notification.count">({{notification.count}})</ng-container></p>
         <small>{{notification.date | date:'yyyy-MM-dd HH:mm'}}</small>
     </div>
 </div>
