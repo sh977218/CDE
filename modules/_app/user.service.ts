@@ -8,8 +8,7 @@ import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from '
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { ITEM_MAP } from 'shared/item';
 import { User } from 'shared/models.model';
-import { isOrgAdmin } from 'shared/system/authorizationShared';
-
+import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
 
 @Injectable()
 export class UserService {
@@ -49,6 +48,10 @@ export class UserService {
 
     loggedIn() {
         return !!this.user;
+    }
+
+    isOrgCurator () {
+        return isOrgCurator(this.user);
     }
 
     reload() {

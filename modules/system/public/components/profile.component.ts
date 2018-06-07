@@ -9,7 +9,6 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { User } from 'shared/models.model';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
-import { isOrgCurator } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-profile',
@@ -27,7 +26,7 @@ export class ProfileComponent {
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
-                private userService: UserService) {
+                public userService: UserService) {
         this.http.get('/viewingHistory/dataElement').subscribe(response => {
             this.cdes = response;
             if (_isArray(response)) this.cdes.forEach((elt, i, elts) => elts[i] = DataElement.copy(elt));
@@ -70,9 +69,7 @@ export class ProfileComponent {
             return PushNotificationSubscriptionService.subscriptionServerUpdate(this.user._id);
         });
     }
-    isOrgCurator () {
-        return isOrgCurator(this.userService.user);
-    }
+
     reloadUser() {
         this.userService.then(user => {
             this.hasQuota = user.quota;

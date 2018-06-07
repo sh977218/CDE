@@ -150,7 +150,7 @@
 
     <cde-user-comments [user]="user"></cde-user-comments>
 
-    <ng-container *ngIf="isOrgCurator()">
+    <ng-container *ngIf="userService.isOrgCurator()">
         <h2>My Drafts</h2>
         <cde-drafts-my-list></cde-drafts-my-list>
     </ng-container>
