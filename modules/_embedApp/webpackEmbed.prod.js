@@ -16,7 +16,7 @@ module.exports = merge(baseConfig, {
     plugins: [
         new CleanWebpackPlugin(['dist/embed']),
         new AotPlugin.AngularCompilerPlugin({
-            tsConfigPath: path.resolve(__dirname, './tsconfigEmbed.json'),
+            tsConfigPath: path.resolve(__dirname, '../../tsconfigEmbed.json'),
             entryModule: path.resolve(__dirname, './embedApp.module') + '#EmbedAppModule'
         }),
     ],

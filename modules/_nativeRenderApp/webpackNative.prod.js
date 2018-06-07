@@ -16,7 +16,7 @@ module.exports = merge(baseConfig, {
     plugins: [
         new CleanWebpackPlugin(['dist/native']),
         new AotPlugin.AngularCompilerPlugin({
-            tsConfigPath: path.resolve(__dirname, './tsconfigNative.json'),
+            tsConfigPath: path.resolve(__dirname, '../../tsconfigNative.json'),
             entryModule: path.resolve(__dirname, './nativeRenderApp.module') + '#NativeRenderAppModule'
         }),
     ]

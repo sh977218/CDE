@@ -16,7 +16,7 @@ module.exports = merge(baseConfig, {
     plugins: [
         new CleanWebpackPlugin(['dist/fhir']),
         new AotPlugin.AngularCompilerPlugin({
-            tsConfigPath: path.resolve(__dirname, './tsconfigFhir.json'),
+            tsConfigPath: path.resolve(__dirname, '../../tsconfigFhir.json'),
             entryModule: path.resolve(__dirname, './fhirApp.module') + '#FhirAppModule'
         }),
     ]
