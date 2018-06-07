@@ -253,7 +253,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     addExpanded(fe) {
         fe.expanded = true;
-        let expand = fe => fe.expanded = true;
+        let expand = fe => { fe.expanded = true; };
         iterateFeSync(fe, undefined, expand, expand);
     }
 
