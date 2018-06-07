@@ -54,13 +54,13 @@ export class UserService {
     reload() {
         this.clear();
         this.promise = new Promise<User>((resolve, reject) => {
-            this.http.get<User>('/user/me').subscribe(response => {
+            this.http.get<User>('/server/user/').subscribe(response => {
                 if (!response || !response.username) {
                     return reject();
                 }
                 this.user = response;
                 this.setOrganizations();
-                this.http.get<any>('/mailStatus').subscribe(response => this.user.hasMail = response.count > 0);
+                this.http.get<any>('/server/user/mailStatus').subscribe(response => this.user.hasMail = response.count > 0);
                 resolve(this.user);
             }, reject);
         });
