@@ -163,10 +163,6 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     @Input() highlightedTabs = [];
     @Output() highlightedTabsChange = new EventEmitter();
     avatarUrls: any = {};
-    cancelReply = comment => this.tempReplies[comment._id] = '';
-    canRemoveComment = com => this.isAllowedModel.doesUserOwnElt(this.elt) || (this.userService.user && this.userService.user._id === com.user);
-    canReopenComment = (com) => com.status === 'resolved' && this.canRemoveComment(com);
-    canResolveComment = (com) => com.status !== 'resolved' && this.canRemoveComment(com);
     eltComments: Comment[];
     private emitCurrentReplying = new Subject<{ _id: string, comment: string }>();
     newComment: Comment = new Comment();
@@ -174,6 +170,12 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     socket = io((<any>window).publicUrl + '/comment');
     subscriptions: any = {};
     tempReplies: any = {};
+
+    constructor(
+        private http: HttpClient,
+        public isAllowedModel: IsAllowedService,
+        public userService: UserService
+    ) {}
 
     ngOnInit() {
         this.loadComments();
@@ -198,19 +200,17 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
                 this.socket.emit('currentReplying', this.eltId, obj._id);
                 return of<string[]>([]);
             })
-        ).subscribe(() => {
-        });
+        ).subscribe(() => {});
     }
 
     ngOnDestroy() {
         this.socket.close();
     }
 
-    constructor(
-        private http: HttpClient,
-        public isAllowedModel: IsAllowedService,
-        public userService: UserService
-    ) {}
+    cancelReply = comment => this.tempReplies[comment._id] = '';
+    canRemoveComment = com => this.isAllowedModel.doesUserOwnElt(this.elt) || (this.userService.user && this.userService.user._id === com.user);
+    canReopenComment = (com) => com.status === 'resolved' && this.canRemoveComment(com);
+    canResolveComment = (com) => com.status !== 'resolved' && this.canRemoveComment(com);
 
     addAvatar(username) {
         if (username && !this.avatarUrls[username]) {
@@ -225,9 +225,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
             comment: this.newComment.text,
             linkedTab: tabMap[this.selectedElt],
             element: {eltId: this.eltId}
-        }).subscribe(() => {
-            this.newComment.text = '';
-        });
+        }).subscribe(() => this.newComment.text = '');
     }
 
     changeOnReply(comment) {
@@ -241,13 +239,12 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
                 if (comment.linkedTab && this.highlightedTabs.indexOf(comment.linkedTab) === -1) {
                     this.highlightedTabs.push(comment.linkedTab);
                 }
-                if (this.selectedElt.indexOf(comment.linkedTab) !== -1 || (comment.linkedTab && comment.linkedTab.indexOf(this.selectedElt) !== -1)) {
+                if (this.selectedElt.indexOf(comment.linkedTab) !== -1
+                    || (comment.linkedTab && comment.linkedTab.indexOf(this.selectedElt) !== -1)) {
                     comment.currentComment = true;
                 }
                 this.addAvatar(comment.username);
-                if (comment.replies) {
-                    comment.replies.forEach(r => this.addAvatar(r.username));
-                }
+                if (comment.replies) comment.replies.forEach(r => this.addAvatar(r.username));
             });
             this.highlightedTabsChange.emit(this.highlightedTabs);
             if (cb) cb();
