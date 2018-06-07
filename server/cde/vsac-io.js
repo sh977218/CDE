@@ -103,11 +103,9 @@ exports.getTicket = function (cb) {
 };
 
 exports.getValueSet = function (oid, cb) {
-    this.getTicket(function (vsacTicket) {
-        let url = "https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet" + "?id=" + oid + "&ticket=" + vsacTicket;
-        request({url: url, strictSSL: false}, function (err, response) {
-            cb(err, response);
-        });
+    this.getTicket(vsacTicket => {
+        request({url: "https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet" + "?id="
+            + oid + "&ticket=" + vsacTicket, strictSSL: false}, cb);
     });
 };
 

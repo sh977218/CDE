@@ -25,7 +25,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 export class NotificationsComponent {
 
     currentVersion = (window as any).version;
-    readNotifications = [];
+    readNotifications = [{_id: {title: "You have no new notifications."}}];
     unreadNotifications = [];
 
     constructor(private http: HttpClient,
@@ -46,7 +46,7 @@ export class NotificationsComponent {
         }, (window as any).versionCheckIntervalInSeconds * 1000);
     }
 
-    getNotifications(cb = null) {
+    getNotifications(cb?) {
         let obs1 = this.http.get<any[]>("/unreadNotifications");
         let obs2 = this.http.get<any[]>("/notifications");
         forkJoin([obs1, obs2]).subscribe(results => {
@@ -58,11 +58,11 @@ export class NotificationsComponent {
 
     viewNotification(notification) {
         this.http.get("/viewedNotification")
-            .subscribe(() => this.getNotifications(() => this.navigateNotification(notification)),
+            .subscribe(() => this.getNotifications(() => NotificationsComponent.navigateNotification(notification)),
                 err => this.alert.addAlert('danger', err));
     }
 
-    navigateNotification(notification) {
+    static navigateNotification(notification) {
         if (notification && notification._id && notification._id.url) window.open(notification._id.url, '_blank');
     }
 }

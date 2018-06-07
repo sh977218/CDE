@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const config = require('./parseConfig');
-const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const regStatusShared = require('@std/esm')(module)("../../shared/system/regStatusShared");
 
 let schemas = {};
@@ -193,58 +192,7 @@ schemas.pushRegistration = new mongoose.Schema({
 });
 schemas.pushRegistration.set('collection', 'pushRegistration');
 
-schemas.userSchema = new mongoose.Schema({
-    username: Object.assign({unique: true}, stringType),
-    email: stringType,
-    password: stringType,
-    lastLogin: Date,
-    lastViewNotification: Date,
-    lockCounter: Number,
-    orgAdmin: [stringType],
-    orgCurator: [stringType],
-    siteAdmin: Boolean,
-    tester: Boolean,
-    quota: Number,
-    viewHistory: [stringType],
-    formViewHistory: [stringType],
-    knownIPs: [stringType],
-    roles: [Object.assign({enum: authorizationShared.rolesEnum}, stringType)],
-    searchSettings: {
-        version: Number,
-        defaultSearchView: Object.assign({enum: ["accordion", "table", "summary"]}, stringType),
-        lowestRegistrationStatus: stringType,
-        tableViewFields: {
-            name: {type: Boolean, default: true},
-            naming: Boolean,
-            questionTexts: Boolean,
-            permissibleValues: Boolean,
-            pvCodeNames: Boolean,
-            nbOfPVs: Boolean,
-            uom: Boolean,
-            stewardOrg: Boolean,
-            usedBy: Boolean,
-            registrationStatus: Boolean,
-            administrativeStatus: Boolean,
-            ids: Boolean,
-            identifiers: [stringType],
-            source: Boolean,
-            updated: Boolean,
-            numQuestions: Boolean,
-            tinyId: Boolean,
-            linkedForms: Boolean
-        }
-    },
-    accessToken: stringType,
-    refreshToken: stringType,
-    avatarUrl: stringType,
-    publishedForms: [{
-        name: stringType,
-        id: mongoose.Schema.Types.ObjectId
-    }]
-}, {usePushEach: true});
-
 schemas.orgSchema.set('collection', 'orgs');
-schemas.userSchema.set('collection', 'users');
 
 schemas.namingSchema = new mongoose.Schema({
     designation: stringType,

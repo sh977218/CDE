@@ -365,18 +365,15 @@ export function iterateFes(fes, formCb = noopCb, sectionCb = noopCb, questionCb 
 
 // feCb(fe): skipChildren  (noopSkipSync: () => true)
 export function iterateFesSync(fes, formCb = _noop, sectionCb = _noop, questionCb = _noop) {
-    if (Array.isArray(fes))
+    if (Array.isArray(fes)) {
         fes.forEach(fe => {
             if (fe.elementType === 'form') {
-                if (!formCb(fe))
-                    iterateFeSync(fe, formCb, sectionCb, questionCb);
+                if (!formCb(fe)) iterateFeSync(fe, formCb, sectionCb, questionCb);
             } else if (fe.elementType === 'section') {
-                if (!sectionCb(fe))
-                    iterateFeSync(fe, formCb, sectionCb, questionCb);
-            } else {
-                questionCb(fe);
-            }
+                if (!sectionCb(fe)) iterateFeSync(fe, formCb, sectionCb, questionCb);
+            } else questionCb(fe);
         });
+    }
 }
 
 function noopCb(dummy, cb) {

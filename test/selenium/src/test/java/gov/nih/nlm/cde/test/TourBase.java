@@ -6,7 +6,7 @@ import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class TourTest extends NlmCdeBaseTest {
+public class TourBase extends NlmCdeBaseTest {
 
     private String[] steps = new String[]{
             "Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here.",
@@ -54,11 +54,10 @@ public class TourTest extends NlmCdeBaseTest {
 
     private void getNext(String expectedText) {
         clickElement(By.xpath("//button[@data-role='next']"));
-        hangon(4);
         textPresent(expectedText);
     }
 
-    private void checkTour() {
+    protected void checkTour() {
         clickElement(By.id("takeATourBtn"));
         hangon(1);
         textPresent(steps[0]);
@@ -67,14 +66,6 @@ public class TourTest extends NlmCdeBaseTest {
             getNext(expectedText.trim());
         }
         clickElement(By.xpath("//button[@data-role='end']"));
-    }
-
-    @Test
-    public void takeTourTest() {
-        goHomeStatic();
-        checkTour();
-        goHome();
-        checkTour();
     }
 
 }

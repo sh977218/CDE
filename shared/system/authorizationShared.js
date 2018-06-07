@@ -1,5 +1,4 @@
 import _find from 'lodash/find';
-import _uniq from 'lodash/uniq';
 
 export const rolesEnum = ["DocumentationEditor", "BoardPublisher", "CommentAuthor",
     "CommentReviewer", "AttachmentReviewer", "OrgAuthority", "FormEditor"];

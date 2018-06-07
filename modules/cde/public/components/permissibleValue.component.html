@@ -107,9 +107,9 @@
             <span *ngFor="let source of keys(SOURCES)" style="margin-left: 50px">
                 <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox"
                        [(ngModel)]="SOURCES[source].selected"
-                       [disabled]="SOURCES[source].disabled && !isAllowedModel.loggedIn()"
+                       [disabled]="SOURCES[source].disabled && !userService.loggedIn()"
                        (ngModelChange)="lookupAsSource(source)">{{source}} Codes
-                <span *ngIf="!isAllowedModel.loggedIn() && SOURCES[source].disabled"> (Login to enable)</span>
+                <span *ngIf="!userService.loggedIn() && SOURCES[source].disabled"> (Login to enable)</span>
         </span>
         </div>
         <ng-container *ngIf="!(elt.valueDomain.permissibleValues.length > 0)">
@@ -218,7 +218,7 @@
         </div>
 
         <div *ngIf="!vsacMappingExists()">No Value Set specified.</div>
-        <div *ngIf="isAllowedModel.loggedIn()">
+        <div *ngIf="userService.loggedIn()">
             <div>{{vsacError}}</div>
             <div *ngIf="!editMode">
                 <a *ngIf="canEdit" class="btn btn-outline-dark"
@@ -257,7 +257,7 @@
                 </td>
             </tr>
         </table>
-        <div *ngIf="vsacMappingExists() && !isAllowedModel.loggedIn()">Please log in to see VSAC mapping.</div>
+        <div *ngIf="vsacMappingExists() && !userService.loggedIn()">Please log in to see VSAC mapping.</div>
         <a *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()"
            class="btn btn-outline-dark mt20"
            (click)="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>

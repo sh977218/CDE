@@ -5,6 +5,7 @@ import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 
+import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
 import { DataTypeService } from 'core/dataType.service';
 import { IsAllowedService } from 'core/isAllowed.service';
@@ -73,8 +74,8 @@ export class PermissibleValueComponent {
 
     constructor(public http: HttpClient,
                 public modalService: NgbModal,
-                private Alert: AlertService,
-                public isAllowedModel: IsAllowedService) {
+                public userService: UserService,
+                private Alert: AlertService) {
         this.dataTypeList = DataTypeService.getDataTypeItemList();
     }
 
@@ -113,12 +114,6 @@ export class PermissibleValueComponent {
     canLinkPvFunc() {
         let dec = this.elt.dataElementConcept;
         this.canLinkPv = (this.canEdit && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
-    }
-
-    changedDatatype(data: { value: string[] }) {
-        this.elt.valueDomain.datatype = data.value;
-        fixDatatype(this.elt);
-        this.onEltChange.emit();
     }
 
     checkPvUnicity() {
@@ -265,7 +260,7 @@ export class PermissibleValueComponent {
                                         meaning: l[0].name
                                     };
                                 } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                            }, err => this.Alert.addAlert('danger', "Error query UMLS."));
+                            }, () => this.Alert.addAlert('danger', "Error query UMLS."));
                 } else {
                     this.http.get<any>('/crossWalkingVocabularies/' + source + '/' + code + '/' + targetSource)
                         .subscribe(res => {
@@ -328,12 +323,6 @@ export class PermissibleValueComponent {
         if (!this.newPermissibleValue['permissibleValue']) {
             this.newPermissibleValue['permissibleValue'] = term.name;
         }
-    }
-
-    savePvDatatype(data: { value: string[] }) {
-        this.elt.valueDomain.datatypeValueList.datatype = data;
-        fixDatatype(this.elt);
-        this.onEltChange.emit();
     }
 
     sortPermissibleValue() {
