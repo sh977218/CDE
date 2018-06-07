@@ -85,9 +85,12 @@ public class DisplayProfilesTest extends BaseFormTest {
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage_1-1']//div//input[@type='radio']")).size(), 3);
 
         clickElement(By.id("displayProfiles_tab"));
-        for (int i = 0; i < 5; i++) {
-            deleteWithConfirm(By.cssSelector("#profile_0"));
-        }
+
+        deleteWithConfirm(By.cssSelector("#profile_0"));
+        deleteWithConfirm(By.cssSelector("#profile_0"));
+        deleteWithConfirm(By.cssSelector("#profile_0"));
+        deleteWithConfirm(By.cssSelector("#profile_0"));
+        deleteWithConfirm(By.cssSelector("#profile_0"));
 
         newFormVersion();
         goToPreview();
