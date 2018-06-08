@@ -10,7 +10,6 @@ import { CdeForm } from 'shared/form/form.model';
 import { User } from 'shared/models.model';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 
-
 @Component({
     selector: 'cde-profile',
     templateUrl: 'profile.component.html'
@@ -27,7 +26,7 @@ export class ProfileComponent {
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
-                private userService: UserService) {
+                public userService: UserService) {
         this.http.get('/viewingHistory/dataElement').subscribe(response => {
             this.cdes = response;
             if (_isArray(response)) this.cdes.forEach((elt, i, elts) => elts[i] = DataElement.copy(elt));
