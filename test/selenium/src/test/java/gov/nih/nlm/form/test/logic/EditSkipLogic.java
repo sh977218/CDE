@@ -9,7 +9,6 @@ public class EditSkipLogic extends BaseFormTest {
 
     @Test
     public void editSkipLogicTest() {
-        mustBeLoggedOut();
         String formName = "PROMIS SF v1.0-Fatigue 8a";
         goToFormByName(formName);
         goToFormDescription();

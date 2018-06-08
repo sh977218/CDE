@@ -22,7 +22,7 @@ public class DisallowRenderingTest extends NlmCdeBaseTest {
         clickElement(By.id("disallowRendering"));
         newFormVersion();
 
-        mustBeLoggedOut();
+        logout();
         goToFormByName(formName);
         textPresent("In general, would you say");
         goToFormDescription();
