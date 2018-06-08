@@ -32,7 +32,6 @@
     "deploy",
     "dist",
     "ingester",
-    "modules/_app",
     "modules/_embedApp",
     "modules/_fhirApp",
     "modules/_nativeRenderApp",

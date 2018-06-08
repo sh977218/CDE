@@ -3,7 +3,6 @@ import { ErrorHandler, NgModule } from "@angular/core";
 
 import { FrontExceptionHandler } from '_commonApp/frontExceptionHandler';
 
-
 @NgModule({
     imports: [
         HttpClientModule,
