@@ -4,9 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModalRef, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import async_forEach from 'async/forEach';
 import _cloneDeep from 'lodash/cloneDeep';
-import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
-import _uniqWith from 'lodash/uniqWith';
 import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
@@ -72,7 +70,6 @@ export class FormViewComponent implements OnInit {
     highlightedTabs = [];
     missingCdes = [];
     modalRef: NgbModalRef;
-    orgNamingTags = [];
     savingText: string = '';
     tabsCommented = [];
     validationErrors: { message: string, id: string }[] = [];
@@ -197,9 +194,7 @@ export class FormViewComponent implements OnInit {
                     this.formLoaded(null, cb);
                 }
             );
-        }, () => {
-            this.loadPublished(cb);
-        });
+        }, () => this.loadPublished(cb));
     }
 
     loadHighlightedTabs($event) {
