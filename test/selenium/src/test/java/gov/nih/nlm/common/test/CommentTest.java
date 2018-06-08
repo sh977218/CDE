@@ -201,7 +201,6 @@ public abstract class CommentTest extends CommonTest {
         addCommentNeedApproval(commentText);
         logout();
 
-        logout();
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         hangon(1);
         clickElement(By.id("incomingMessage"));
