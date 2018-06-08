@@ -16,19 +16,21 @@ public class FormAttachmentsTest extends BaseAttachmentTest {
         goToAttachments();
         textNotPresent("Upload more files");
 
+        logout();
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
-
         addAttachment("melanoma.jpg");
 
-        checkAttachmentNotReviewed();
+        textPresent("cannot be downloaded");
+        logout();
         reviewAttachment("melanoma.jpg");
 
+        logout();
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
 
         setAttachmentDefault();
-        mustBeLoggedOut();
+        logout();
 
         hangon(5);
 

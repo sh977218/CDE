@@ -21,6 +21,7 @@ public class BoardComments extends NlmCdeBaseTest {
         findElement(By.id("commentTextArea")).sendKeys(commentText);
         clickElement(By.id("postComment"));
 
+        logout();
         mustBeLoggedInAs(test_username, password);
         goToBoard(boardName);
         clickElement(By.id("discussBtn"));
@@ -31,6 +32,7 @@ public class BoardComments extends NlmCdeBaseTest {
         findElement(By.id("replyTextarea_0")).sendKeys(replyText);
         clickElement(By.id("replyBtn_0"));
 
+        logout();
         mustBeLoggedInAs(commentEditor_username, password);
         clickElement(By.id("incomingMessage"));
         clickElement(By.partialLinkText(commentText));
@@ -38,6 +40,7 @@ public class BoardComments extends NlmCdeBaseTest {
         checkAlert("Message moved to archived.");
         closeAlert();
 
+        logout();
         mustBeLoggedInAs(reguser_username, password);
         goToBoard(boardName);
         findElement(By.cssSelector(".faa-wrench"));
@@ -46,6 +49,7 @@ public class BoardComments extends NlmCdeBaseTest {
         findElement(By.id("removeComment-0"));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeReply-0-0")));
 
+        logout();
         mustBeLoggedInAs(boardUser_username, password);
         goToBoard(boardName);
         clickElement(By.id("discussBtn"));

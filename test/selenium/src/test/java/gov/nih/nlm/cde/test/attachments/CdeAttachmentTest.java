@@ -15,22 +15,24 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
         goToAttachments();
         textNotPresent("Upload more files");
 
+        logout();
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
 
         addAttachment("glass.jpg");
-        checkAttachmentNotReviewed();
+        textPresent("cannot be downloaded");
+
+        logout();
         reviewAttachment("glass.jpg");
 
+        logout();
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
 
         setAttachmentDefault();
-        mustBeLoggedOut();
-
+        logout();
         openCdeInList(cdeName);
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
-
         goToCdeByName(cdeName);
 
         checkAttachmentReviewed("glass.jpg");

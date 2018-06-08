@@ -9,7 +9,6 @@ public class NotLoggedInCantExport extends NlmCdeBaseTest {
 
     @Test
     public void notLoggedInCantExport() {
-        mustBeLoggedOut();
         goToFormSearch();
         hangon(1);
         clickElement(By.id("export"));

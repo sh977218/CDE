@@ -25,7 +25,11 @@ public class CheckOnlyShowingDefaultAttachmentForm extends BaseAttachmentTest {
             addAttachment("defaultAttachmentForForm.jpg");
             textPresent("This attachment cannot be downloaded because it is pending approval.");
         }
+
+        logout();
         reviewAttachment("defaultAttachmentForForm.jpg");
+
+        logout();
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
         setAttachmentDefault();
