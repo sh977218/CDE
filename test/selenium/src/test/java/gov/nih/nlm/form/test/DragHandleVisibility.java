@@ -8,7 +8,6 @@ public class DragHandleVisibility extends BaseFormTest {
 
     @Test
     public void dragHandleVisibility() {
-        mustBeLoggedOut();
         String formName = "Deployment Risk and Resiliency Inventory, Version 2 (Combat)";
         goToFormByName(formName);
         goToFormDescription();

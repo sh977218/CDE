@@ -27,7 +27,8 @@ public class CopyrightTest extends BaseFormTest {
         findElement(By.cssSelector("#formCopyrightAuthority input")).sendKeys(authority);
         clickElement(By.cssSelector("#formCopyrightAuthority .fa-check"));
         newFormVersion();
-        mustBeLoggedOut();
+
+        logout();
         goToFormByName(formName);
         findElement(By.xpath("//small[@id='copyrightStatement' and contains(., '" + statement + "')]"));
         goToGeneralDetail();

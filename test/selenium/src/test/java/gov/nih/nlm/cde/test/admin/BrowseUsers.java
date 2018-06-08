@@ -30,6 +30,7 @@ public class BrowseUsers extends NlmCdeBaseTest {
         Assert.assertEquals(findElement(By.id("user_siteadmin")).getText(), "Yes");
 
         // make sure same tab is in 2 places.
+        logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Site Management"));

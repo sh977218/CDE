@@ -18,6 +18,7 @@ public class ReplyNotification extends CdeCommentTest {
         goToEltByName(eltName);
         addComment(commentText);
 
+        logout();
         mustBeLoggedInAs(reguser_username, password);
         goToEltByName(eltName);
 
@@ -28,6 +29,7 @@ public class ReplyNotification extends CdeCommentTest {
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
 
+        logout();
         mustBeLoggedInAs(test_username, password);
         clickElement(By.id("incomingMessage"));
 

@@ -21,10 +21,6 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         textPresent(name);
     }
 
-    protected void checkAttachmentNotReviewed() {
-        textPresent("cannot be downloaded");
-    }
-
     protected void checkAttachmentReviewed(String name) {
         goToAttachments();
         clickElement(By.linkText(name));

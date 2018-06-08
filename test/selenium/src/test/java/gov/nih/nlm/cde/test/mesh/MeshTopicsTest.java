@@ -23,6 +23,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         checkAlert("Saved");
 
         // now update index
+        logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Site Management"));
