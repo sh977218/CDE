@@ -28,6 +28,8 @@ public class InlineEditTest extends BaseAttachmentTest {
         }
         // wait before checking inbox
         hangon(5);
+
+        logout();
         reviewAttachment(attachmentName);
         logout();
         mustBeLoggedInAs(testAdmin_username, password);

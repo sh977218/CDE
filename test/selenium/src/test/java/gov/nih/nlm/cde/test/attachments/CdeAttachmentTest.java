@@ -20,7 +20,9 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
         goToCdeByName(cdeName);
 
         addAttachment("glass.jpg");
-        checkAttachmentNotReviewed();
+        textPresent("cannot be downloaded");
+
+        logout();
         reviewAttachment("glass.jpg");
 
         logout();
@@ -29,10 +31,8 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
 
         setAttachmentDefault();
         logout();
-
         openCdeInList(cdeName);
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
-
         goToCdeByName(cdeName);
 
         checkAttachmentReviewed("glass.jpg");

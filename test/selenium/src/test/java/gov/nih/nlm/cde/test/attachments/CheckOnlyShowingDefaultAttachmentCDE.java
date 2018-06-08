@@ -15,21 +15,17 @@ public class CheckOnlyShowingDefaultAttachmentCDE extends BaseAttachmentTest {
         String cdeName = "Geriatric Depression Scale (GDS) - life satisfaction indicator";
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-
-
         addAttachment("default.jpg");
+
+        logout();
         reviewAttachment("default.jpg");
 
         logout();
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-
         setAttachmentDefault();
-
         goToCdeByName(cdeName);
-
         addAttachment("nonDefault.jpg");
-
         openEltInList(cdeName, "cde");
 
         List<WebElement> l = driver.findElements(By.cssSelector("cdeAttachmentThumbnail"));
