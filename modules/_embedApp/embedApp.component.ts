@@ -209,7 +209,7 @@ export class EmbedAppComponent  {
 
                 if (embed4Type.otherNames) {
                     embed4Type.otherNames.forEach(eName => {
-                        let name = c.naming.filter(n => {
+                        let name = c.designations.filter(n => {
                             return n.tags.filter(t => t.indexOf('Question Text') > -1).length > 0;
                         })[0];
                         if (name) {
@@ -219,7 +219,7 @@ export class EmbedAppComponent  {
                 }
 
                 if (embed4Type.primaryDefinition && embed4Type.primaryDefinition.show) {
-                    c.embed.primaryDefinition = c.naming[0].definition;
+                    c.embed.primaryDefinition = c.definitions[0].definition;
                 }
 
                 if (embed4Type.registrationStatus && embed4Type.registrationStatus.show) {

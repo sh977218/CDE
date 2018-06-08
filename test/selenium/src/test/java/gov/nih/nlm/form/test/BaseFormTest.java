@@ -200,6 +200,7 @@ public class BaseFormTest extends FormCommentTest {
                                         boolean numbering, String displayType, int numberOfColumns, boolean displayInvisible, int answerDropdownLimit) {
         textPresent("Add Profile");
         clickElement(By.id("addDisplayProfile"));
+        clickElement(By.cssSelector("#profile_" + index + " mat-panel-title h3"));
         clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//i[@title='Edit']"));
         findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
         findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).sendKeys(name);
@@ -208,15 +209,20 @@ public class BaseFormTest extends FormCommentTest {
         if (displayValues) clickElement(By.id("displayValues_" + index));
         if (!instructions) clickElement(By.id("displayInstructions_" + index));
         if (!numbering) clickElement(By.id("displayNumbering_" + index));
-        if (!"Follow-up".equals(displayType)) clickElement(By.id("displayType_" + index));
 
-        new Select(findElement(By.id("nc_" + index))).selectByVisibleText(String.valueOf(numberOfColumns));
+        clickElement(By.id("displayType_" + index));
+        clickElement(By.xpath("//mat-option[contains(.,'" + displayType + "')]"));
+
+        WebElement slider = findElement(By.cssSelector("#profile_" + index + " .mat-slider-wrapper"));
+        Actions slide = new Actions(driver);
+        int width = slider.getSize().getWidth() / 6;
+        slide.moveToElement(slider, width * (numberOfColumns - 1) + width / 2, slider.getSize().getHeight() / 2).click().build().perform();
 
         if (displayInvisible) clickElement(By.id("displayInvisible_" + index));
 
         if (answerDropdownLimit > 0) {
             findElement(By.id("displayAnswerDropdownLimit_" + index)).clear();
-            findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit));
+            findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit) + Keys.TAB);
         }
     }
 

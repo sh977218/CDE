@@ -3,8 +3,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IActionMapping, TreeComponent } from 'angular-tree-component';
 import _noop from 'lodash/noop';
+import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '_app/alert/alert.service';
@@ -13,6 +13,7 @@ import { ClassifyItemModalComponent } from 'adminItem/public/components/classifi
 import { ClassificationService } from 'core/classification.service';
 import { ElasticQueryResponse } from 'shared/models.model';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
+
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -81,8 +82,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             tap(() => this.searching = true),
             switchMap(term => {
                 let url = (window as any).meshUrl + '/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=' + term;
-                if (term) return this.http.get(url);
-                else return Observable.of<string[]>([]);
+                return term ? this.http.get(url) : EmptyObservable.create<string[]>();
             })
         ).subscribe((res: ElasticQueryResponse) => {
             if (res && res.hits && res.hits.hits && res.hits.hits.length === 1) {

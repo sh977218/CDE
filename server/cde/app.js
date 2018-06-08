@@ -3,7 +3,6 @@ const multer = require('multer');
 const authorization = require('../system/authorization');
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const cdesvc = require('./cdesvc');
-const cdediff = require('./cdediff');
 const boardsvc = require('../board/boardsvc');
 const mongo_cde = require('./mongo-cde');
 const mongo_data_system = require('../system/mongo-data');
@@ -57,24 +56,6 @@ exports.init = function (app, daoManager) {
         mongo_cde.byTinyIdList(req.body, function (err, cdes) {
             if (err) return res.status(500).send();
             res.send(cdes);
-        });
-    });
-
-    app.get('/autocomplete/org/:name', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_cde.org_autocomplete(req.params.name, function (result) {
-            res.send(result);
-        });
-    });
-
-    app.get('/cdediff/:deId', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.params.deId) res.status(404).send("Please specify CDE id.");
-        mongo_cde.byId(req.params.deId, function (err, dataElement) {
-            if (err) return res.status(404).send("Cannot retrieve DataElement.");
-            if (!dataElement.history || dataElement.history.length < 1) return res.send([]);
-            mongo_cde.byId(dataElement.history[dataElement.history.length - 1], function (err, priorDe) {
-                let diff = cdediff.diff(dataElement, priorDe);
-                res.send(diff);
-            });
         });
     });
 
@@ -275,13 +256,6 @@ exports.init = function (app, daoManager) {
             res.send(elts.map(function (e) {
                 return {tinyId: e._id};
             }));
-        });
-    });
-
-    app.get('/esRecord/:id', function (req, res) {
-        elastic.get(req.params.id, function (err, result) {
-            if (err) throw err;
-            else res.send(result);
         });
     });
 

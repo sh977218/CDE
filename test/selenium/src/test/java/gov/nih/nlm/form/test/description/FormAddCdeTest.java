@@ -16,14 +16,12 @@ public class FormAddCdeTest extends QuestionTest {
         goToFormDescription();
         addCdeByNameBeforeId(cdeName1, "question_0-0", false);
         addCdesByNames(cdeNames);
-        addCdeNameById("question_0-1", "newCde2 second name", "newCde2 second definition", new String[]{"TEST"});
+        addCdeDesignationById("question_0-1", "newCde2 second name", new String[]{"TEST"});
         addCdeIdentifierById("question_0-1", "newCde2Source", "newCde2Id", "newCde2Version");
         editCdeDataTypeById("question_0-1", "Date");
 
-        addCdeNameById("question_0-2", "newCde3 second name", "newCde3 second definition",
-                new String[]{"TEST", "Preferred Question Text"});
-        addCdeNameById("question_0-2", "newCde3 third name", "you should not see this definition",
-                new String[]{"Preferred Question Text"});
+        addCdeDesignationById("question_0-2", "newCde3 second name", new String[]{"TEST", "Preferred Question Text"});
+        addCdeDesignationById("question_0-2", "newCde3 third name", new String[]{"Preferred Question Text"});
         deleteCdeNameById("question_0-2", 3);
         addCdeIdentifierById("question_0-2", "newCde3Source", "newCde3Id", "newCde3Version");
         addCdeIdentifierById("question_0-2", "newCde3Source3", "newCde3Id3", "newCde3Version3");
@@ -35,6 +33,7 @@ public class FormAddCdeTest extends QuestionTest {
         addCdePvById("question_0-3", "2", "2", "2", "2", "2");
         addCdePvById("question_0-3", "3", "3", "3", "3", "3");
         deleteCdePvById("question_0-3", 2);
+        hangon(2);
         newFormVersion();
         checkNewCde1();
         checkNewCde2();
@@ -50,7 +49,7 @@ public class FormAddCdeTest extends QuestionTest {
         textPresent("Text", By.id("datatypeSelect"));
         goToNaming();
         textPresent(cdeName1, By.id("designation_0"));
-        textPresent("Question Text", By.id("tags_0"));
+        textPresent("Question Text", By.id("designationTags_0"));
     }
 
     private void checkNewCde2() {
@@ -60,11 +59,10 @@ public class FormAddCdeTest extends QuestionTest {
         textPresent("Date", By.id("datatypeSelect"));
         goToNaming();
         textPresent(cdeName2, By.id("designation_0"));
-        textPresent("Question Text", By.id("tags_0"));
+        textPresent("Question Text", By.id("designationTags_0"));
 
         textPresent("newCde2 second name", By.id("designation_1"));
-        textPresent("newCde2 second definition", By.id("definition_1"));
-        textPresent("TEST", By.id("tags_1"));
+        textPresent("TEST", By.id("designationTags_1"));
 
         goToIdentifiers();
         textPresent("newCde2Source", By.id("source_0"));
@@ -79,13 +77,11 @@ public class FormAddCdeTest extends QuestionTest {
         textPresent("Number", By.id("datatypeSelect"));
         goToNaming();
         textPresent(cdeName3, By.id("designation_0"));
-        textPresent("Question Text", By.id("tags_0"));
+        textPresent("Question Text", By.id("designationTags_0"));
         textPresent("newCde3 second name", By.id("designation_1"));
-        textPresent("newCde3 second definition", By.id("definition_1"));
-        textPresent("TEST", By.id("tags_1"));
-        textPresent("Preferred Question Text", By.id("tags_1"));
+        textPresent("TEST", By.id("designationTags_1"));
+        textPresent("Preferred Question Text", By.id("designationTags_1"));
         textNotPresent("newCde3 third name");
-        textNotPresent("you should not see this definition");
 
         goToIdentifiers();
         textPresent("newCde3Source", By.id("source_0"));
@@ -114,7 +110,7 @@ public class FormAddCdeTest extends QuestionTest {
 
         goToNaming();
         textPresent(cdeName4, By.id("designation_0"));
-        textPresent("Question Text", By.id("tags_0"));
+        textPresent("Question Text", By.id("designationTags_0"));
     }
 
     private void checkNewCde5() {
@@ -125,7 +121,7 @@ public class FormAddCdeTest extends QuestionTest {
 
         goToNaming();
         textPresent(cdeName5, By.id("designation_0"));
-        textPresent("Question Text", By.id("tags_0"));
+        textPresent("Question Text", By.id("designationTags_0"));
     }
 
 }

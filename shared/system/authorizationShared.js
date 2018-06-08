@@ -29,9 +29,10 @@ export function canOrgAuthority(user) {
 }
 
 export function hasRole(user, role) {
-    if (!user) return false;
+    if (!user || !role) return false;
     if (isSiteAdmin(user)) return true;
     if (user.roles && user.roles.indexOf(role) > -1) return true;
+    if (user.orgCurator.length > 0 && role.toLowerCase() === 'BoardPublisher'.toLowerCase()) return true;
 }
 
 export function isOrgCurator(user, org = undefined) {

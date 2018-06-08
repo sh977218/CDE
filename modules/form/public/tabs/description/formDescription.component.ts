@@ -11,23 +11,22 @@ import {
     TemplateRef,
     ViewChild
 } from '@angular/core';
+import { MatDialog, MatDialogRef } from "@angular/material";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TREE_ACTIONS, TreeComponent } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { Hotkey, HotkeysService } from "angular2-hotkeys";
 import _isEmpty from 'lodash/isEmpty';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 
-import { AlertService } from '_app/alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
-import { CdeForm, FormElementsContainer, FormSection } from 'shared/form/form.model';
-import { addFormIds, convertFormToSection, isSubForm, iterateFeSync } from 'shared/form/formShared';
+import { AlertService } from '_app/alert/alert.service';
+import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
-import { SearchSettings } from 'search/search.model';
-import { MatDialog, MatDialogRef } from "@angular/material";
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm, FormElementsContainer, FormSection } from 'shared/form/form.model';
+import { addFormIds, convertFormToSection, isSubForm, iterateFeSync } from 'shared/form/formShared';
+import { BrowserService } from 'widget/browser.service';
 
 const TOOL_BAR_OFF_SET = 55;
 
@@ -35,6 +34,7 @@ const TOOL_BAR_OFF_SET = 55;
     selector: 'cde-form-description',
     templateUrl: 'formDescription.component.html',
     animations: [copySectionAnimation],
+    providers: [DeCompletionService],
     styles: [`
         :host >>> .hover-bg {
             background-color: lightblue;
@@ -112,7 +112,7 @@ const TOOL_BAR_OFF_SET = 55;
         }
 
         .descriptionToolbox .btn.formDescriptionTool {
-            margin-left: 0;
+            margin-left: 4px;
             padding: 0;
             touch-action: auto;
             cursor: move;
@@ -161,14 +161,12 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     @ViewChild('formSearchTmpl') formSearchTmpl: TemplateRef<any>;
     @ViewChild('questionSearchTmpl') questionSearchTmpl: TemplateRef<any>;
     @ViewChild('descToolbox') descToolbox: ElementRef;
+    addQuestionDialogRef: MatDialogRef<any, any>;
+    dragActive: boolean;
     formElementEditing: any = {};
     isModalOpen: boolean = false;
-    newDataElement = this.initNewDataElement();
+    newDataElement: DataElement = this.initNewDataElement();
     questionModelMode = 'search';
-    searchSettings = new SearchSettings;
-    private searchTerms = new Subject<string>();
-    suggestedCdes = [];
-    dragActive: boolean;
     treeOptions = {
         allowDrag: element => !isSubForm(element) || element.data.elementType === 'form' && !isSubForm(element.parent),
         allowDrop: (element, {parent, index}) => {
@@ -223,16 +221,12 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         isExpandedField: 'expanded'
     };
 
-    addQuestionDialogRef: MatDialogRef<any, any>;
-
-    @HostListener('window:scroll', ['$event'])
-    scrollEvent() {
+    @HostListener('window:scroll', ['$event']) scrollEvent() {
         this.doIt();
     }
 
     constructor(
-        private alert: AlertService,
-        private elasticService: ElasticService,
+        public deCompletionService: DeCompletionService,
         private formService: FormService,
         private _hotkeysService: HotkeysService,
         private http: HttpClient,
@@ -240,13 +234,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         public modalService: NgbModal,
         public matDialog: MatDialog,
     ) {}
-
-    doIt() {
-        if (this && this.descToolbox && this.descToolbox.nativeElement) {
-            this.descToolbox.nativeElement.style.top = (window.pageYOffset > TOOL_BAR_OFF_SET ? 0
-                : (TOOL_BAR_OFF_SET - window.pageYOffset)) + 'px';
-        }
-    }
 
     ngOnInit(): void {
         this._hotkeysService.add([
@@ -258,27 +245,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 } else return false;
             })
         ]);
-
-        let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
-        this.searchTerms.pipe(
-            debounceTime(300),
-            distinctUntilChanged(),
-            switchMap(term => {
-                if (term) {
-                    settings.resultPerPage = 5;
-                    settings.searchTerm = term;
-                    return this.http.post<any[]>('/cdeCompletion/' + encodeURI(term), this.elasticService.buildElasticQuerySettings(settings));
-                } else return Observable.of<string[]>([]);
-            })
-        ).subscribe(res => {
-            let tinyIdList = res.map(r => r._id).slice(0, 5);
-            if (tinyIdList && tinyIdList.length > 0) {
-                this.http.get<any[]>('/deList/' + tinyIdList).subscribe(result => {
-                    this.suggestedCdes = result;
-                }, err => this.alert.httpErrorMessageAlert(err));
-            }
-            else this.suggestedCdes = [];
-        });
     }
 
     ngAfterViewInit(): void {
@@ -292,7 +258,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     addFormElement(fe) {
-        this.addIndex(this.formElementEditing.formElements, fe, this.formElementEditing.index);
+        if (this.formElementEditing.formElements) {
+            this.formElementEditing.formElements.splice(this.formElementEditing.index, 0, fe);
+        }
+        addFormIds(this.elt);
         this.tree.treeModel.update();
         this.tree.treeModel.expandAll();
         this.onEltChange.emit();
@@ -311,11 +280,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         });
     }
 
-    addIndex(elements, element, i) {
-        elements.splice(i, 0, element);
-        addFormIds(this.elt);
-    }
-
     addQuestionFromSearch(cde) {
         this.formService.convertCdeToQuestion(cde, question => {
             question.formElements = [];
@@ -323,27 +287,33 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             question.edit = true;
             this.addFormElement(question);
             this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
-            setTimeout(() => {
-                let e = window.document.getElementById(question.feId);
-                if (e) e.scrollIntoView();
-            }, 0);
+            BrowserService.waitRendered(
+                () => document.getElementById('question_' + question.feId),
+                () => BrowserService.scrollTo('question_' + question.feId)
+            );
             this.isModalOpen = false;
         });
+    }
+
+    doIt() {
+        if (this && this.descToolbox && this.descToolbox.nativeElement) {
+            this.descToolbox.nativeElement.style.top = (window.pageYOffset > TOOL_BAR_OFF_SET ? 0
+                : (TOOL_BAR_OFF_SET - window.pageYOffset)) + 'px';
+        }
     }
 
     hasCopiedSection() {
         return !_isEmpty(this.localStorageService.get('sectionCopied'));
     }
 
-    initNewDataElement() {
-        this.suggestedCdes = [];
-        return {
-            naming: [{
-                designation: '',
-                tags: ['Question Text']
-            }],
-            valueDomain: {datatype: 'Text', permissibleValues: []}
-        };
+    initNewDataElement(): DataElement {
+        this.deCompletionService.suggestedCdes = [];
+
+        let de = new DataElement();
+        de.designations.push({designation: '', tags: ['Question Text']});
+        de.naming.push({designation: '', tags: ['Question Text']});
+        de.valueDomain.datatype = 'Text';
+        return de;
     }
 
     openFormSearch() {
@@ -363,11 +333,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         }, 0);
     }
 
-    newDataElementNameChanged() {
-        this.searchTerms.next(this.newDataElement.naming[0].designation);
-    }
-
-    createNewDataElement(newCde = this.newDataElement) {
+    createNewDataElement(newCde: DataElement = this.newDataElement) {
         this.addQuestionFromSearch(newCde);
         this.addQuestionDialogRef.close();
     }

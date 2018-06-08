@@ -10,7 +10,6 @@ const dbLogger = require('./dbLogger.js');
 const mongo_cde = require("../cde/mongo-cde");
 const mongo_form = require("../form/mongo-form");
 const mongo_board = require("../board/mongo-board");
-const mongo_storedQuery = require("../cde/mongo-storedQuery");
 const mongo_data = require("./mongo-data");
 const noDbLogger = require("./noDbLogger");
 
@@ -430,14 +429,11 @@ exports.buildElasticSearchQuery = function (user, settings) {
         regStatusAggFilter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
     }
 
-
     if (sort) {
-        //noinspection JSAnnotator
         queryStuff.sort = {
-            "_score": 'desc',
-            "views": {
-                order: 'desc'
-            }
+            "registrationState.registrationStatusSortOrder": "asc",
+            "classificationBoost": "desc",
+            "primaryNameSuggest.raw": "asc"
         };
     }
 
@@ -478,9 +474,9 @@ exports.buildElasticSearchQuery = function (user, settings) {
                 }
             };
             if (selectionString === "") {
-                flatClassifications.terms.include =  escapeRegExp(settings[orgVariableName]) + ";[^;]+";
+                flatClassifications.terms.include = escapeRegExp(settings[orgVariableName]) + ";[^;]+";
             } else {
-                flatClassifications.terms.include =  escapeRegExp(settings[orgVariableName]) + ';' + escapeRegExp(selectionString) + ";[^;]+";
+                flatClassifications.terms.include = escapeRegExp(settings[orgVariableName]) + ';' + escapeRegExp(selectionString) + ";[^;]+";
             }
             queryStuff.aggregations[variableName] = {
                 "filter": settings.filter,
@@ -718,7 +714,8 @@ exports.elasticsearch = function (type, query, settings, cb) {
                 let querystr = "cannot stringify query";
                 try {
                     querystr = JSON.stringify(query);
-                } catch (e) {}
+                } catch (e) {
+                }
                 logging.errorLogger.error("Error: ElasticSearch Error",
                     {
                         origin: "system.elastic.elasticsearch", stack: error.stack,

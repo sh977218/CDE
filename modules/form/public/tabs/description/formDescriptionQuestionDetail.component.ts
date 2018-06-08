@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
-import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog } from '@angular/material';
+import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from 'angular-tree-component';
 import _clone from 'lodash/clone';
 import _isEqual from 'lodash/isEqual';
@@ -18,6 +19,7 @@ import { UcumService } from 'form/public/ucum.service';
 import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
 import { CodeAndSystem, FormattedValue } from 'shared/models.model';
 import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'shared/form/form.model';
+import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
 
 @Component({
     selector: 'cde-form-description-question-detail',
@@ -45,69 +47,46 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
-    @ViewChild('formDescriptionNameSelectTmpl') formDescriptionNameSelectTmpl: NgbModalModule;
     @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl: TemplateRef<any>;
     @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl: TemplateRef<any>;
     @ViewChild('editAnswerModal') editAnswerModal: NgbModalModule;
     @ViewChild('slInput') slInput: ElementRef;
     answersSelected: Array<string>;
+    answerList = [];
+    dataTypeList = [];
+    defaultAnswerList = [];
     getSkipLogicOptions = ((text$: Observable<string>) => text$.pipe(
         debounceTime(300),
         map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question))
     ));
     static inputEvent = new Event('input');
-    nameSelectModal: any = {};
-    nameSelectModalRef: NgbModalRef;
     newCdePv = {};
     newCdeId = {};
-    newCdeNaming = {};
+    newCdeDesignation = {};
     newUom = '';
     newUomSystem = 'UCUM';
     question: FormQuestion;
     parent: FormElement;
-
-    dataTypeList = [];
-    answerList$ = [];
-    defaultAnswerList$ = [];
-    tag$ = [];
-
-    constructor(private alert: AlertService,
-                private http: HttpClient,
-                public modalService: NgbModal,
-                private orgHelperService: OrgHelperService,
-                public skipLogicValidateService: SkipLogicValidateService,
-                private ucumService: UcumService) {
-        this.dataTypeList = DataTypeService.getDataTypeItemList();
-        this.nameSelectModal.okSelect = (naming = null) => {
-            if (!naming) {
-                this.nameSelectModal.question.label = '';
-                this.nameSelectModal.question.hideLabel = true;
-            }
-            else {
-                this.nameSelectModal.updateSkipLogic = SkipLogicValidateService.checkAndUpdateLabel(
-                    this.nameSelectModal.section, this.nameSelectModal.question.label, naming.designation);
-                this.nameSelectModal.question.label = naming.designation;
-                this.nameSelectModal.question.hideLabel = false;
-            }
-            this.nameSelectModalRef.close();
-        };
-    }
+    tag = [];
 
     ngOnInit() {
-        this.answerList$ = this.question.question.cde.permissibleValues.map(answer => {
+        this.answerList = this.question.question.cde.permissibleValues.map(answer => {
             answer['id'] = answer.permissibleValue;
             return answer;
         });
         this.syncAnswerList();
         let stewardOrgName = this.elt.stewardOrg.name;
-        this.tag$ = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
+        this.tag = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
     }
 
-    private syncAnswerList() {
-        this.defaultAnswerList$ = this.question.question.answers.map(answer => {
-            answer['id'] = answer.permissibleValue;
-            return answer;
-        });
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public modalService: NgbModal,
+                public dialog: MatDialog,
+                private orgHelperService: OrgHelperService,
+                public skipLogicValidateService: SkipLogicValidateService,
+                private ucumService: UcumService) {
+        this.dataTypeList = DataTypeService.getDataTypeItemList();
     }
 
     addNewCdeId(newCdeId) {
@@ -123,12 +102,12 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
-    addNewCdeNaming(newCdeNaming) {
-        if (!_isEmpty(newCdeNaming)) {
-            this.question.question.cde.naming.push(newCdeNaming);
-            this.newCdeNaming = {};
+    addNewCdeDesignation(newCdeDesignation) {
+        if (!_isEmpty(newCdeDesignation)) {
+            this.question.question.cde.designations.push(newCdeDesignation);
+            this.newCdeDesignation = {};
             this.onEltChange.emit();
-        } else this.alert.addAlert('danger', 'Empty name.');
+        } else this.alert.addAlert('danger', 'Empty designation.');
     }
 
     addNewCdePv(newCdePv) {
@@ -150,19 +129,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
-    onAnswerListAdd() {
-        this.syncAnswerList();
-        this.onEltChange.emit();
-    }
-
-    onAnswerListRemove(removedAnswer) {
-        if (removedAnswer && removedAnswer.value.valueMeaningName === this.question.question.defaultAnswer) {
-            this.question.question.defaultAnswer = '';
-        }
-        this.syncAnswerList();
-        this.onEltChange.emit();
-    }
-
     getRepeatLabel(fe) {
         if (!fe.repeat) return '';
         if (fe.repeat[0] === 'F') return 'over First Question';
@@ -179,23 +145,56 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
     }
 
-    openNameSelect(question, section) {
-        this.nameSelectModal.section = section;
-        this.nameSelectModal.question = question;
-        this.nameSelectModal.cde = question.question.cde;
-        if (this.nameSelectModal.cde.tinyId) {
-            let url = '/de/' + this.nameSelectModal.cde.tinyId;
-            if (this.nameSelectModal.cde.version) url += '/version/' + this.nameSelectModal.cde.version;
-            this.http.get(url).subscribe((response) => {
-                this.nameSelectModal.cde = response;
-            }, () => {
-                this.nameSelectModal.cde = 'error';
+    onAnswerListAdd() {
+        this.syncAnswerList();
+        this.onEltChange.emit();
+    }
+
+    onAnswerListRemove(removedAnswer) {
+        if (removedAnswer && removedAnswer.value.valueMeaningName === this.question.question.defaultAnswer) {
+            this.question.question.defaultAnswer = '';
+        }
+        this.syncAnswerList();
+        this.onEltChange.emit();
+    }
+
+    openEditAnswerModal(q) {
+        if (q.question.answers.length > 0) {
+            const modalRef = this.modalService.open(QuestionAnswerEditContentComponent, {size: 'lg'});
+            modalRef.componentInstance.answers = q.question.answers;
+            modalRef.componentInstance.onCleared.subscribe(() => {
+                this.onAnswerListRemove(this.question.question.defaultAnswer || undefined);
+            });
+            modalRef.componentInstance.onSaved.subscribe((answers) => {
+                q.question.answers = _clone(answers);
+                this.onEltChange.emit();
+                modalRef.close();
             });
         }
-        this.nameSelectModal.updateSkipLogic = SkipLogicValidateService.checkAndUpdateLabel(section, this.nameSelectModal.question.label);
-        this.nameSelectModalRef = this.modalService.open(this.formDescriptionNameSelectTmpl, {size: 'lg'});
-        this.nameSelectModalRef.result.then(() => this.onEltChange.emit(), () => {
+    }
+
+    openNameSelect(question, parent) {
+        let dialogRef = this.dialog.open(SelectQuestionLabelComponent, {
+            width: '800px',
+            data: {
+                question: question,
+                parent: parent
+            }
         });
+        dialogRef.componentInstance.onSelect.subscribe(designation => {
+            if (!designation.designation) {
+                question.label = '';
+                question.hideLabel = true;
+            } else {
+                SkipLogicValidateService.checkAndUpdateLabel(parent, question.label, designation.designation);
+                question.label = designation.designation;
+                question.hideLabel = false;
+            }
+            dialogRef.close();
+            this.onEltChange.emit();
+        });
+        dialogRef.componentInstance.onClosed.subscribe(() => dialogRef.close());
+        dialogRef.componentInstance.onClosed.subscribe(() => dialogRef.close());
     }
 
     removeCdeId(i) {
@@ -203,11 +202,11 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.onEltChange.emit();
     }
 
-    removeCdeNaming(i) {
-        if (this.question.question.cde.naming.length === 1) {
+    removeCdeDesignation(i) {
+        if (this.question.question.cde.designations.length === 1) {
             return this.alert.addAlert('danger', 'Data element must have at least one name.');
         }
-        this.question.question.cde.naming.splice(i, 1);
+        this.question.question.cde.designations.splice(i, 1);
         this.onEltChange.emit();
     }
 
@@ -237,6 +236,13 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
+    private syncAnswerList() {
+        this.defaultAnswerList = this.question.question.answers.map(answer => {
+            answer['id'] = answer.permissibleValue;
+            return answer;
+        });
+    }
+
     typeaheadSkipLogic(parent, fe, event) {
         if (fe.skipLogic && fe.skipLogic.condition !== event) {
             this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
@@ -249,10 +255,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         $event.preventDefault();
         slInput.focus();
         this.slOptionsRetrigger();
-    }
-
-    inputFormatter(a) {
-        return a.replace(/ *\([^)]*\) */g, "");
     }
 
     uomAddNew() {
@@ -270,21 +272,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.uomAddNew();
             setTimeout(() => this.newUom = '', 0); // the type-ahead seems to fill in the value asynchronously
             this.ucumService.validateUoms(this.question.question);
-        }
-    }
-
-    openEditAnswerModal(q) {
-        if (q.question.answers.length > 0) {
-            const modalRef = this.modalService.open(QuestionAnswerEditContentComponent, {size: 'lg'});
-            modalRef.componentInstance.answers = q.question.answers;
-            modalRef.componentInstance.onCleared.subscribe(() => {
-                this.onAnswerListRemove(this.question.question.defaultAnswer || undefined);
-            });
-            modalRef.componentInstance.onSaved.subscribe((answers) => {
-                q.question.answers = _clone(answers);
-                this.onEltChange.emit();
-                modalRef.close();
-            });
         }
     }
 }

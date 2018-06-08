@@ -7,9 +7,6 @@ import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
 import { empty } from 'rxjs/observable/empty';
 
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/map';
-
 import { Subscription } from 'rxjs/Subscription';
 
 import { SearchSettings } from 'search/search.model';
@@ -20,6 +17,7 @@ import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 import { FormControl } from "@angular/forms";
 import { MatAutocompleteTrigger } from "@angular/material";
+import { debounceTime, map } from "rxjs/operators";
 
 export const searchStyles: string = `
     #searchResultInfoBar {
@@ -87,6 +85,12 @@ export const searchStyles: string = `
     .welcomeDetailIcon:hover {
         background-color: #337ab7;
         color: white;
+    }
+    .badge-success {
+        background-color: #087721;
+    }
+    .badge-secondary {
+        background-color: #70777d;
     }
 `;
 
@@ -177,20 +181,21 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
         this.searchTermFC.valueChanges.subscribe(v => this.searchSettings.q = v);
 
-        this.searchTermFC.valueChanges
-            .debounceTime(500)
+        this.searchTermFC.valueChanges.pipe(debounceTime(500))
             .subscribe(term => {
                 term.length >= 3 ?
                     this.http.post<any[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
-                        this.elasticService.buildElasticQuerySettings(this.searchSettings)).map(res => {
-                        let final = new Set();
-                        this.lastTypeahead = {};
-                        res.forEach(e => {
-                            this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
-                            final.add(e._source.primaryNameSuggest);
-                        });
-                        return Array.from(final);
-                    }).subscribe(res => this.autocompleteSuggestions = res)
+                        this.elasticService.buildElasticQuerySettings(this.searchSettings)).pipe(
+                            map(res => {
+                                let final = new Set();
+                                this.lastTypeahead = {};
+                                res.forEach(e => {
+                                    this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
+                                    final.add(e._source.primaryNameSuggest);
+                                });
+                                return Array.from(final);
+                            }
+                            )).subscribe(res => this.autocompleteSuggestions = res)
                     : empty();
             });
     }
@@ -496,7 +501,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         });
     }
 
-    pageChange() {
+    pageChange(newPage) {
+        this.searchSettings.page = newPage.pageIndex + 1;
         this.doSearch();
     }
 

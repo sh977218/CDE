@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { FormViewComponent } from 'form/public/components/formView.component';
 import { UcumService } from 'form/public/ucum.service';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/formShared';
 import { CodeAndSystem } from 'shared/models.model';
+import { BrowserService } from 'widget/browser.service';
 
 type DisplayProfileVM = {
     aliases: {
@@ -13,37 +14,53 @@ type DisplayProfileVM = {
     },
     profile: DisplayProfile,
     sample: CdeForm,
-    showDelete: boolean,
 };
 
 @Component({
-    selector: "cde-display-profile",
+    selector: 'cde-display-profile',
     styles: [`
         .hoverEdit:hover {
             background-color: lightgreen;
         }
+        .mat-form-field,
+        .mat-slider,
+        :host ::ng-deep .mat-checkbox-layout {
+            width: 100%;
+        }
+        :host ::ng-deep .mat-checkbox-inner-container {
+            margin-left: inherit;
+        }
+        .mat-icon {
+            font-size: 1.2em;
+            height: 1.2em;
+            width: 1.2em;
+        }
     `],
-    templateUrl: "./displayProfile.component.html",
+    templateUrl: './displayProfile.component.html',
 })
-export class DisplayProfileComponent implements OnInit {
-    @Input() elt: CdeForm;
+export class DisplayProfileComponent {
+    @Input() set elt(e: CdeForm) {
+        this._elt = e;
+        this.dPVMs.length = 0;
+        this.elt.displayProfiles.forEach(profile => this.dPVMs.push(DisplayProfileComponent.dPVMNew(profile)));
+    }
+    get elt() {
+        return this._elt;
+    }
     @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
-
+    BrowserService = BrowserService;
+    private _elt: CdeForm;
     dPVMs: DisplayProfileVM[] = [];
     uoms: {u: CodeAndSystem, a: string[]}[] = [];
     uomsDate: Date;
     uomsPromise: Promise<void>;
 
-    ngOnInit() {
-        this.elt.displayProfiles.forEach(profile => this.dPVMs.push(DisplayProfileComponent.dPVMNew(profile)));
-    }
-
     constructor(private ucumService: UcumService, private formViewComponent: FormViewComponent) {
     }
 
     addProfile() {
-        let newProfile = new DisplayProfile("New Profile");
+        let newProfile = new DisplayProfile('New Profile');
         if (!this.elt.displayProfiles) this.elt.displayProfiles = [newProfile];
         else this.elt.displayProfiles.push(newProfile);
         this.dPVMs.push(DisplayProfileComponent.dPVMNew(newProfile));
@@ -58,7 +75,6 @@ export class DisplayProfileComponent implements OnInit {
             },
             profile: profile,
             sample: DisplayProfileComponent.getSample(),
-            showDelete: false,
         };
     }
 
@@ -121,8 +137,8 @@ export class DisplayProfileComponent implements OnInit {
             if (dPVM.aliases && dPVM.aliases.date === this.uomsDate) return;
 
             for (let u of dPVM.profile.unitsOfMeasureAlias) {
-                if (!this.uoms.filter(a => a.u.compare(u.unitOfMeasure))
-                        .map(a => a.a.indexOf(u.alias)).every(r => r > 0)) {
+                let found = this.uoms.filter(a => a.u.compare(u.unitOfMeasure));
+                if (!found.length || !found.map(a => a.a.indexOf(u.alias)).every(r => r > 0)) {
                     dPVM.profile.unitsOfMeasureAlias.splice(dPVM.profile.unitsOfMeasureAlias.indexOf(u), 1);
                     this.onEltChange.emit();
                 }
@@ -150,9 +166,8 @@ export class DisplayProfileComponent implements OnInit {
         }
     }
 
-    setDisplayType(dPVM: DisplayProfileVM, $event) {
+    setDisplayType(dPVM: DisplayProfileVM) {
         let profile = DisplayProfile.copy(dPVM.profile);
-        profile.displayType = $event.target.checked ? 'Follow-up' : 'Dynamic';
         this.substituteProfile(dPVM, profile);
         this.onEltChange.emit();
     }
@@ -165,6 +180,12 @@ export class DisplayProfileComponent implements OnInit {
     onChange(p: DisplayProfile, event) {
         p.numberOfColumns = parseInt(event);
         this.onEltChange.emit();
+    }
+
+    uomAliasEdit(dPVM: DisplayProfileVM) {
+        if (!this.canEdit) return;
+        dPVM.aliases.edit = !dPVM.aliases.edit;
+        if (dPVM.aliases.edit) this.profileUomsEditCreate(dPVM);
     }
 
     static sampleElt = {

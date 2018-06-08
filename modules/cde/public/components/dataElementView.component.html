@@ -33,7 +33,7 @@
     <h1 class="mobileViewH1 my-4">
         <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadDataElement():loadPublished()"
                           [hidden]="drafts?.length === 0"></cde-draft-slider>
-        {{elt?.naming[0].designation}}
+        {{elt?.designations[0].designation}}
     </h1>
     <div class="pull-left">
         <div class="dropdown float-left">
@@ -71,13 +71,13 @@
             <i class="fa fa-comment mr-1" [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">
             </i><span class="d-none d-sm-inline-block">Discuss</span>
         </button>
-        <div class="navbar-expand-md navbar-light d-inline-block">
-            <button class="btn btn-outline-dark navbar-toggler hidden-md-up"
+        <span class="navbar-expand-md navbar-light">
+            <button class="btn btn-outline-dark navbar-toggler"
                     data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
                     aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-        </div>
+        </span>
     </div>
     <div class="pull-right text-right">
         <ng-container *ngIf="elt.isDraft">
@@ -86,7 +86,7 @@
                 <i class="fa fa-trash fa-lg mr-1"></i>Delete Draft
             </button>
             <button *ngIf="elt.valueDomain.allValid" class="btn btn-success" id="openSave"
-                    (click)="saveModal.openSaveModal();">
+                    (click)="saveModal.openSaveModal()">
                 <i class="fa fa-globe fa-lg mr-1"></i>Publish
             </button>
             <br><span id="viewChangesBtn" class="fake-link hand-cursor" (click)="viewChanges();">Changed</span> by
@@ -176,20 +176,20 @@
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'pvs_tab'">
                         <cde-permissible-value [elt]="elt" [canEdit]="canEdit()"
-                                               (onEltChange)="saveDraft();"></cde-permissible-value>
+                                               (onEltChange)="saveDraft()"></cde-permissible-value>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'naming_tab'">
-                        <cde-naming [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();"></cde-naming>
+                        <cde-naming [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft()"></cde-naming>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'classification_tab'">
                         <cde-cde-classification [elt]="elt"></cde-cde-classification>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'concepts_tab'">
-                        <cde-concepts [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();"></cde-concepts>
+                        <cde-concepts [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft()"></cde-concepts>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'referenceDocuments_tab'">
-                        <cde-reference-document [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();">
-                        </cde-reference-document>
+                        <cde-reference-document [elt]="elt" [canEdit]="canEdit()"
+                                                (onEltChange)="saveDraft()"></cde-reference-document>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'properties_tab'">
                         <cde-properties [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft()">
@@ -209,7 +209,8 @@
                         <cde-history [elt]="elt" [canEdit]="canEdit()"></cde-history>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'rules_tab'">
-                        <cde-derivation-rules [elt]="elt" (onEltChange)="saveDraft();"></cde-derivation-rules>
+                        <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt"
+                                              (onEltChange)="saveDraft()"></cde-derivation-rules>
                         <cde-valid-rules [elt]="elt"></cde-valid-rules>
                     </ng-container>
                 </div>
@@ -219,7 +220,7 @@
              style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
             <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
                               (highlightedTabsChange)="loadHighlightedTabs($event)"
-                              [eltName]="elt.naming[0].designation"></cde-discuss-area>
+                              [eltName]="elt.designations[0].designation"></cde-discuss-area>
         </div>
     </div>
     <div *ngIf="elt.valueDomain.allValid === false" class="row alert alert-danger mt20"

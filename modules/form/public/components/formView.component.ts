@@ -4,9 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModalRef, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import async_forEach from 'async/forEach';
 import _cloneDeep from 'lodash/cloneDeep';
-import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
-import _uniqWith from 'lodash/uniqWith';
 import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
@@ -72,7 +70,6 @@ export class FormViewComponent implements OnInit {
     highlightedTabs = [];
     missingCdes = [];
     modalRef: NgbModalRef;
-    orgNamingTags = [];
     savingText: string = '';
     tabsCommented = [];
     validationErrors: { message: string, id: string }[] = [];
@@ -113,7 +110,8 @@ export class FormViewComponent implements OnInit {
 
     createDataElement(newCde, cb) {
         let dataElement = {
-            naming: newCde.naming,
+            designations: newCde.designations,
+            definitions: newCde.definitions,
             stewardOrg: {
                 name: this.elt.stewardOrg.name
             },
@@ -196,9 +194,7 @@ export class FormViewComponent implements OnInit {
                     this.formLoaded(null, cb);
                 }
             );
-        }, () => {
-            this.loadPublished(cb);
-        });
+        }, () => this.loadPublished(cb));
     }
 
     loadHighlightedTabs($event) {
@@ -237,7 +233,9 @@ export class FormViewComponent implements OnInit {
         delete this.eltCopy['views'];
         this.eltCopy['ids'] = [];
         this.eltCopy['sources'] = [];
-        this.eltCopy['naming'][0].designation = 'Copy of: ' + this.eltCopy['naming'][0].designation;
+        this.eltCopy['designations'] = this.eltCopy['designations'];
+        this.eltCopy['designations'][0].designation = 'Copy of: ' + this.eltCopy['designations'][0].designation;
+        this.eltCopy['definitions'] = this.eltCopy['definitions'];
         this.eltCopy['registrationState'] = {
             registrationStatus: 'Incomplete',
             administrativeNote: 'Copy of: ' + this.elt.tinyId

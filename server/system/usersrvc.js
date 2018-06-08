@@ -23,7 +23,6 @@ exports.updateUserAvatar = function(user, cb) {
     });
 };
 
-
 exports.addSiteAdmin = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {
         if (!found) {
@@ -120,7 +119,7 @@ exports.orgAdmins = function(req, res) {
     if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
 
     let result = {"orgs": []};
-    mongo_data.managedOrgs(managedOrgs => {
+    mongo_data.managedOrgs((err,managedOrgs) => {
         mongo_data.orgAdmins((err, users) => {
             managedOrgs.forEach(mo => {
                 let newOrg = {"name": mo.name, "users": []};
@@ -218,13 +217,5 @@ exports.getAllUsernames = function(req, res) {
         else {
             res.send(usernames);
         }
-    });
-};
-
-exports.updateSearchSettings = function(username, settings, cb) {
-    mongo_data.userByName(username, function(err, user){
-        user.searchSettings = settings;
-        //user.markModified('searchSettings');
-        user.save(cb);
     });
 };

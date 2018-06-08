@@ -121,6 +121,17 @@ public class NlmCdeBaseTest {
             put("formTinyIdVersion", "operations-Form-get_form__tinyId__version__version_");
         }
     };
+    private Map<String, Integer> regStatusSortMap = new HashMap<String, Integer>() {
+        {
+            put("Retired", 6);
+            put("Incomplete", 5);
+            put("Candidate", 4);
+            put("Recorded", 3);
+            put("Qualified", 2);
+            put("Standard", 1);
+            put("Preferred Standard", 0);
+        }
+    };
 
     private void setDriver(String b, String u) {
         if (b == null) b = browser;
@@ -344,6 +355,15 @@ public class NlmCdeBaseTest {
         if (orgLongName != null) {
             textPresent(orgLongName);
         }
+    }
+
+    protected void deleteWithConfirm(By by) {
+        WebElement element = findElement(by);
+
+        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.cssSelector(".fa-trash-o"))));
+        element.findElement(By.cssSelector(".fa-trash-o")).click();
+        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.cssSelector(".badge > .fa-check"))));
+        element.findElement(By.cssSelector(".badge > .fa-check")).click();
     }
 
     protected void gotoClassificationMgt() {
@@ -656,11 +676,9 @@ public class NlmCdeBaseTest {
     }
 
     protected void newVersion(String changeNote) {
-        if (changeNote == null || changeNote.equals(""))
-            changeNote = "Change note for change number 1";
+        if (changeNote == null || changeNote.equals("")) changeNote = "Change note for change number 1";
         clickElement(By.id("openSave"));
-        if (findElement(By.id("newVersion")).getText().length() > 0)
-            textPresent("has already been used");
+        if (findElement(By.id("newVersion")).getText().length() > 0) textPresent("has already been used");
         findElement(By.id("changeNote")).clear();
         findElement(By.id("changeNote")).sendKeys(changeNote);
         findElement(By.name("newVersion")).sendKeys(".1");
@@ -1039,15 +1057,25 @@ public class NlmCdeBaseTest {
         closeTableViewPreferenceModal();
     }
 
-    protected void editDesignationByIndex(int index, String newDesignation) {
+    protected void editDesignationByIndex(int index, String newDesignation, String[] tags) {
         String designationEditIconXpath = "//*[@id='designation_" + index + "']//*[contains(@class,'fa-edit')]";
         String designationInputXpath = "//*[@id='designation_" + index + "']//input";
         String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//*[contains(@class,'fa-check')]";
-        clickElement(By.xpath(designationEditIconXpath));
-        findElement(By.xpath(designationInputXpath)).sendKeys(newDesignation);
-        hangon(2);
-        clickElement(By.xpath(designationConfirmBtnXpath));
-        textNotPresent("Confirm");
+        if (newDesignation != null) {
+            clickElement(By.xpath(designationEditIconXpath));
+            findElement(By.xpath(designationInputXpath)).sendKeys(newDesignation);
+            hangon(2);
+            clickElement(By.xpath(designationConfirmBtnXpath));
+            textNotPresent("Confirm");
+        }
+        if (tags != null) {
+            String tagsInputXpath = "//*[@id='designationTags_" + index + "']//input";
+            for (String tag : tags) {
+                clickElement(By.xpath(tagsInputXpath));
+                selectNgSelectDropdownByText(tag);
+                textPresent(tag);
+            }
+        }
     }
 
     protected void editDefinitionByIndex(int index, String newDefinition, boolean html) {
@@ -1098,24 +1126,37 @@ public class NlmCdeBaseTest {
         textNotPresent("Confirm");
     }
 
-    protected void addNewName(String designation, String definition, boolean isHtml, String[] tags) {
-        clickElement(By.id("openNewNamingModalBtn"));
+
+    protected void addNewDesignation(String designation, String[] tags) {
+        clickElement(By.id("openNewDesignationModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.name("newDesignation")).sendKeys(designation);
-        findElement(By.xpath("//*[@id='newDefinition']//textarea")).sendKeys(definition);
-        if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Rich Text')]"));
-        else clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Plain Text')]"));
         if (tags != null) {
-            String tagsInputXpath = "//*[@id='newTags']//input";
+            String tagsInputXpath = "//*[@id='newDesignationTags']//input";
             for (String tag : tags) {
                 clickElement(By.xpath(tagsInputXpath));
                 selectNgSelectDropdownByText(tag);
                 textPresent(tag);
             }
         }
+        clickElement(By.id("createNewDesignationBtn"));
+    }
 
-
-        clickElement(By.id("createNewNamingBtn"));
+    protected void addNewDefinition(String definition, boolean isHtml, String[] tags) {
+        clickElement(By.id("openNewDefinitionModalBtn"));
+        textPresent("Tags are managed in Org Management > List Management");
+        findElement(By.xpath("//*[@id='newDefinition']//textarea")).sendKeys(definition);
+        if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Rich Text')]"));
+        else clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Plain Text')]"));
+        if (tags != null) {
+            String tagsInputXpath = "//*[@id='newDefinitionTags']//input";
+            for (String tag : tags) {
+                clickElement(By.xpath(tagsInputXpath));
+                selectNgSelectDropdownByText(tag);
+                textPresent(tag);
+            }
+        }
+        clickElement(By.id("createNewDefinitionBtn"));
     }
 
     protected void addNewProperty(String key, String value, boolean isHtml) {
@@ -1453,7 +1494,8 @@ public class NlmCdeBaseTest {
 
         if (section.equalsIgnoreCase("steward")) section = "Steward";
         if (section.equalsIgnoreCase("status")) section = "Status";
-        if (section.equalsIgnoreCase("naming")) section = "Naming";
+        if (section.equalsIgnoreCase("designation")) section = "Designation";
+        if (section.equalsIgnoreCase("definition")) section = "Definition";
         if (section.equalsIgnoreCase("reference documents")) section = "Reference Documents";
         if (section.equalsIgnoreCase("properties")) section = "Properties";
         if (section.equalsIgnoreCase("data element concept")) section = "Data Element Concept";
@@ -1673,5 +1715,17 @@ public class NlmCdeBaseTest {
 
     protected void closeTableViewPreferenceModal() {
         clickElement(By.id("closeTableViewSettingsBtn"));
+    }
+
+    protected void verifyRegistrationStatusOrder(List<WebElement> registrationStatusList) {
+        int order = 100;
+        for (ListIterator<WebElement> iterator = registrationStatusList.listIterator(); iterator.hasNext(); ) {
+            WebElement webElement = iterator.next();
+            String status = webElement.getText().trim();
+            if (order > 6) order = regStatusSortMap.get(status);
+            int currentOrder = regStatusSortMap.get(status);
+            if (currentOrder < order)
+                org.junit.Assert.fail("Registration status order incorrect. Current:" + currentOrder + " Previous: " + order);
+        }
     }
 }

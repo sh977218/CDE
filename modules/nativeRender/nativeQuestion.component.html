@@ -1,17 +1,25 @@
 <div [hidden]="formElement.question.invisible && !nrs.profile.displayInvisible">
     <fieldset>
         <legend class="native-question-label"></legend>
+        <ng-template #labelClause>
+            <ng-container *ngIf="parentValue">If {{parentValue}}: </ng-container>{{formElement.label}}
+            <ng-container *ngIf="nrs.profile.metadata.device && !metadataTagsNew && (!formElement.metadataTags || !formElement.metadataTags.length)">
+                <ng-container *ngTemplateOutlet="metadataAddButton"></ng-container>
+            </ng-container>
+        </ng-template>
         <div *ngIf="formElement.question.datatype === 'Value List'; else titleOnALabel"
              class="native-question-label"
              [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}"
              [hidden]="!hasLabel(formElement)">
-            <ng-container *ngIf="parentValue">If {{parentValue}}: </ng-container>{{formElement.label}}</div>
+            <ng-container *ngTemplateOutlet="labelClause"></ng-container>
+        </div>
         <ng-template #titleOnALabel>
             <label class="native-question-label"
                    [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}"
                    [hidden]="!hasLabel(formElement)"
                    attr.for="{{formElement.label}}_{{formElement.feId}}_box">
-                <ng-container *ngIf="parentValue">If {{parentValue}}: </ng-container>{{formElement.label}}</label>
+                <ng-container *ngTemplateOutlet="labelClause"></ng-container>
+            </label>
         </ng-template>
         <div *ngIf="nrs.profile.displayInstructions && formElement?.instructions?.value"
              class="native-instructions">
@@ -120,17 +128,20 @@
                                    [attr.max]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.maxValue : null"
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable"/>
-                            <label *ngFor="let uom of formElement.question.uomsAlias; index as i"
-                                   [ngClass]="{'nativeRequiredBox': formElement.question.required}"
-                                   class="input-group-addon">
-                                <input type="radio"
-                                       [name]="formElement.feId + '_uom'"
-                                       [attr.name]="formElement.feId + '_uom'"
-                                       [(ngModel)]="formElement.question.answerUom" (ngModelChange)="convert()"
-                                       [value]="formElement.question.unitsOfMeasure[i]"
-                                       [attr.value]="formElement.question.unitsOfMeasure[i]"
-                                       [required]="formElement.question.required || formElement.question.answer"
-                                       [disabled]="!formElement.question.editable"/> {{uom}}</label>
+                            <div *ngIf="formElement.question.uomsAlias.length" class="input-group-append">
+                                <label *ngFor="let uom of formElement.question.uomsAlias; index as i"
+                                       class="input-group-text"
+                                       [ngClass]="{'nativeRequiredBox': formElement.question.required}">
+                                    <input type="radio"
+                                           [name]="formElement.feId + '_uom'"
+                                           [attr.name]="formElement.feId + '_uom'"
+                                           class="mr-1"
+                                           [(ngModel)]="formElement.question.answerUom" (ngModelChange)="convert()"
+                                           [value]="formElement.question.unitsOfMeasure[i]"
+                                           [attr.value]="formElement.question.unitsOfMeasure[i]"
+                                           [required]="formElement.question.required || formElement.question.answer"
+                                           [disabled]="!formElement.question.editable"/>{{uom}}</label>
+                            </div>
                         </div>
                     </ng-container>
                     <ng-container *ngSwitchDefault>
@@ -143,17 +154,20 @@
                                    [(ngModel)]="formElement.question.answer"
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable"/>
-                            <label *ngFor="let uom of formElement.question.uomsAlias; index as i"
-                                   [ngClass]="{'nativeRequiredBox': formElement.question.required}"
-                                   class="input-group-addon">
-                                <input type="radio"
-                                       [name]="formElement.feId + '_uom'"
-                                       [attr.name]="formElement.feId + '_uom'"
-                                       [(ngModel)]="formElement.question.answerUom" (ngModelChange)="convert()"
-                                       [value]="formElement.question.unitsOfMeasure[i]"
-                                       [attr.value]="formElement.question.unitsOfMeasure[i]"
-                                       [required]="formElement.question.required || formElement.question.answer"
-                                       [disabled]="!formElement.question.editable"/> {{uom}}</label>
+                            <div *ngIf="formElement.question.uomsAlias.length" class="input-group-append">
+                                <label *ngFor="let uom of formElement.question.uomsAlias; index as i"
+                                       class="input-group-text"
+                                       [ngClass]="{'nativeRequiredBox': formElement.question.required}">
+                                    <input type="radio"
+                                           [name]="formElement.feId + '_uom'"
+                                           [attr.name]="formElement.feId + '_uom'"
+                                           class="mr-1"
+                                           [(ngModel)]="formElement.question.answerUom" (ngModelChange)="convert()"
+                                           [value]="formElement.question.unitsOfMeasure[i]"
+                                           [attr.value]="formElement.question.unitsOfMeasure[i]"
+                                           [required]="formElement.question.required || formElement.question.answer"
+                                           [disabled]="!formElement.question.editable"/>{{uom}}</label>
+                            </div>
                         </div>
                         <!--<div>{{nrs.form.$$element[0][formElement.feId].validationMessage}}</div>-->
                     </ng-container>
@@ -181,5 +195,23 @@
                 </ng-container>
             </ng-container>
         </div>
+        <div *ngIf="nrs.profile.metadata.device && (metadataTagsNew || formElement.metadataTags?.length)"
+             class="ml-3" style="font-size: .8rem; font-style: italic; color: grey">
+            <div class="native-question-label">
+                Metadata:
+                <ng-container *ngTemplateOutlet="metadataAddButton"></ng-container>
+            </div>
+            <cde-native-metadata></cde-native-metadata>
+        </div>
     </fieldset>
 </div>
+
+<ng-template #metadataAddButton>
+    <span class="dropdown noPrint">
+        <i class="fa fa-plus iconButton" data-toggle="dropdown"></i>
+        <div class="dropdown-menu" style="font-size: .8rem; font-weight: initial">
+            <a class="dropdown-item" (click)="metadataTagsNew = 'UDI'">Add Device by UDI</a>
+            <a class="dropdown-item" (click)="metadataTagsNew = 'DI'">Add Device by DI</a>
+        </div>
+    </span>
+</ng-template>

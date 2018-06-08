@@ -1,18 +1,13 @@
 const async = require('async');
-const spawn = require('child_process').spawn;
 const CronJob = require('cron').CronJob;
 const csrf = require('csurf');
 const ejs = require('ejs');
 const fs = require('fs');
 const _ = require('lodash');
-const multer = require('multer');
 const passport = require('passport');
 const path = require('path');
 const request = require('request');
-const tar = require('tar-fs');
 const useragent = require('useragent');
-const zlib = require('zlib');
-
 const authorization = require('./authorization');
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const mongo_cde = require('../cde/mongo-cde');
@@ -92,18 +87,6 @@ exports.init = function (app) {
             res.send();
         });
     }
-
-    // @TODO Remove me
-    app.get("/testProxy", (req, res) => {
-        if (authorizationShared.isSiteAdmin(req.user)) {
-            request.get(req.query.url, (err, resp, body) => {
-                if (err) return res.send(err);
-                else return res.send(body);
-            });
-        } else {
-            res.status(401).send();
-        }
-    });
 
     app.get("/cde/search", (req, res) => {
         let selectedOrg = req.query.selectedOrg;
@@ -268,7 +251,7 @@ exports.init = function (app) {
                 dbLogger.consoleLog("done with sitemap");
                 wstream.end();
             });
-    }, null, true, 'America/New_York', this, true);
+        }, null, true, 'America/New_York', this, true);
 
     ["/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404",
@@ -498,26 +481,7 @@ exports.init = function (app) {
         async.series([
                 function checkCaptcha(captchaDone) {
                     if (failedIp && failedIp.nb > 2) {
-                        // if (req.body.recaptcha) {
-                        //     request.post("https://www.google.com/recaptcha/api/siteverify",
-                        //         {
-                        //             form: {
-                        //                 secret: config.captchaCode,
-                        //                 response: req.body.recaptcha,
-                        //                 remoteip: getRealIp(req)
-                        //             },
-                        //             json: true
-                        //         }, function (err, resp, body) {
-                        //             if (err) captchaDone(err);
-                        //             else if (!body.success) {
-                        //                 captchaDone("incorrect recaptcha");
-                        //             } else {
                         captchaDone();
-                        //     }
-                        // });
-                        // } else {
-                        //     captchaDone("missing recaptcha");
-                        // }
                     } else {
                         captchaDone();
                     }
@@ -593,8 +557,9 @@ exports.init = function (app) {
 
     app.get('/usernamesByIp/:ip', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            return mongo_data.usernamesByIp(req.params.ip, function (result) {
-                res.send(result);
+            return mongo_data.usernamesByIp(req.params.ip, function (err, result) {
+                if (err) return res.status(500).send("Error retrieving username by IP");
+                else res.send(result);
             });
         } else {
             res.status(401).send();
@@ -616,6 +581,7 @@ exports.init = function (app) {
 
     app.post('/addOrg', function (req, res) {
         if (authorizationShared.canOrgAuthority(req.user)) {
+
             orgsvc.addOrg(req, res);
         } else {
             res.status(401).send();
@@ -645,20 +611,6 @@ exports.init = function (app) {
                 res.send(users);
             });
         }
-    });
-
-    app.post('/user/me', function (req, res) {
-        if (!req.user) return res.status(401).send();
-        if (req.user._id.toString() !== req.body._id)
-            return res.status(401).send();
-        mongo_data.userById(req.user._id, function (err, user) {
-            user.email = req.body.email;
-            user.publishedForms = req.body.publishedForms;
-            user.save(function (err) {
-                if (err) return res.status(500).send("ERROR getting my user");
-                res.send("OK");
-            });
-        });
     });
 
     app.put('/user', function (req, res) {
@@ -751,12 +703,6 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/user/avatar/:username', function (req, res) {
-        mongo_data.userByName(req.params.username, function (err, u) {
-            res.send(u && u.avatarUrl ? u.avatarUrl : "");
-        });
-    });
-
     app.post('/updateUserAvatar', function (req, res) {
         if (!authorizationShared.canOrgAuthority(req.user))
             return res.status(401).send("Not Authorized");
@@ -789,13 +735,6 @@ exports.init = function (app) {
 
     app.get('/data/:imgtag', function (req, res) {
         mongo_data.getFile(req.user, req.params.imgtag, res);
-    });
-
-    app.get('/data/status/:imgtag', function (req, res) {
-        mongo_data.getFileStatus(req.params.imgtag, function (err, status) {
-            if (err) res.status(404).send();
-            res.send(status);
-        });
     });
 
     app.post('/transferSteward', function (req, res) {
@@ -842,14 +781,6 @@ exports.init = function (app) {
         res.end();
     });
 
-    app.get('/getAllUsernames', function (req, res) {
-        if (authorization.isSiteOrgAdmin(req)) {
-            usersrvc.getAllUsernames(req, res);
-        } else {
-            res.status(401).send();
-        }
-    });
-
     app.post('/getServerErrors', (req, res) => {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             dbLogger.getServerErrors(req.body, (err, result) => res.send(result));
@@ -886,14 +817,34 @@ exports.init = function (app) {
 
     app.get('/triggerServerErrorExpress', function (req, res) {
         res.send("received");
+        mongo_data.saveNotification({
+            title: 'trigger server error test',
+            url: '/triggerServerErrorExpress',
+            roles: ['siteAdmin']
+        });
         trigger.error(); // jshint ignore:line
     });
 
     app.get('/triggerServerErrorMongoose', function (req, res) {
         mongo_data.orgByName("none", function () {
             res.send("received");
+            mongo_data.saveNotification({
+                title: 'trigger server error test',
+                url: '/triggerServerErrorMongoose',
+                roles: ['siteAdmin']
+            });
             trigger.error(); // jshint ignore:line
         });
+    });
+
+    app.get('/triggerClientError', function (req, res) {
+        res.send("received");
+        mongo_data.saveNotification({
+            title: 'trigger client error test',
+            url: '/triggerClientError',
+            roles: ['siteAdmin']
+        });
+        trigger.error();
     });
 
     app.post('/mail/messages/new', function (req, res) {
@@ -917,13 +868,9 @@ exports.init = function (app) {
                 if (err) {
                     res.statusCode = 404;
                     res.send("Error while updating the message");
-                } else {
-                    res.send();
-                }
+                } else res.send();
             });
-        } else {
-            res.status(401).send();
-        }
+        } else res.status(401).send();
     });
 
     app.post('/mail/messages/:type', function (req, res) {
@@ -954,14 +901,6 @@ exports.init = function (app) {
         }
     });
 
-    app.get('/mailStatus', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) return res.send({count: 0});
-        mongo_data.mailStatus(req.user, function (err, result) {
-            if (err) res.status(500).send("Unable to get mail status");
-            else res.send({count: result});
-        });
-    });
-
     // @TODO this should be POST
     app.get('/attachment/approve/:id', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
@@ -990,14 +929,6 @@ exports.init = function (app) {
         } else {
             res.status(401).send("Not Authorized");
         }
-    });
-
-    app.post('/user/update/searchSettings', function (req, res) {
-        if (!req.user) return;
-        usersrvc.updateSearchSettings(req.user.username, req.body, function (err) {
-            if (err) res.status(500).send("ERROR - cannot update search settings. ");
-            else res.send("Search settings updated.");
-        });
     });
 
     app.post('/embed/', function (req, res) {
@@ -1078,11 +1009,19 @@ exports.init = function (app) {
     });
 
     app.post('/feedback/report', function (req, res) {
+
+        mongo_data.saveNotification({
+            title: 'Feedback Error: ' + req.body.feedback ? JSON.parse(req.body.feedback).note.substr(0, 15) : '',
+            url: "/siteAudit#userFeedback",
+            roles: ['siteAdmin']
+        });
+
+
         dbLogger.saveFeedback(req, function () {
             let msg = {
                 title: 'New Feedback Message\'',
                 options: {
-                    body: (req.body.feedback ? JSON.parse(req.body.feedback).note : ''),
+                    body: req.body.feedback ? JSON.parse(req.body.feedback).note : '',
                     icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
                     badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
                     tag: 'cde-feedback',
@@ -1106,64 +1045,6 @@ exports.init = function (app) {
             });
             res.send({});
         });
-    });
-
-    app.post('/api/reloadProd', authorization.checkSiteAdmin, function (req, res) {
-        if (!config.prodDump.enabled) return res.status(401).send();
-        let target = './prodDump';
-        let untar = tar.extract(target);
-        let rmTargets = [target + '/system*', target + '/clusterstatuses*'];
-        if (!req.body.includeAll) {
-            rmTargets.push(target + '/cdeAudit*');
-            rmTargets.push(target + '/classificationAudit*');
-            rmTargets.push(target + '/fs.*');
-            rmTargets.push(target + '/sessions.*');
-        }
-        request(req.body.url, {rejectUnauthorized: false}).pipe(zlib.createGunzip()).pipe(untar);
-        untar.on('finish', function () {
-            spawn('rm', rmTargets).on('exit', function () {
-                let restore = spawn('mongorestore',
-                    ['-host', config.database.servers[0].host,
-                        '-u', config.database.appData.username,
-                        '-p', config.database.appData.password,
-                        './prodDump',
-                        '--drop',
-                        '--db', config.database.appData.db
-                    ], {stdio: 'inherit'});
-                restore.on('exit', function () {
-                    let rm = spawn('rm', [target + '/*']);
-                    rm.on('exit', function () {
-                        esInit.indices.forEach(elastic.reIndex);
-                        res.send();
-                    });
-                });
-            });
-
-        });
-    });
-
-    let loincUploadStatus;
-    app.post('/uploadLoincCsv', multer(), function (req, res) {
-        loincUploadStatus = [];
-        let load = spawn(config.pmNodeProcess, ['./ingester/loinc/loadLoincFields.js', req.files.uploadedFiles.path]).on('exit', function (code) {
-            loincUploadStatus.push("Complete with Code: " + code);
-            setTimeout(function () {
-                loincUploadStatus = [];
-            }, 5 * 60 * 1000);
-            fs.unlink(req.files.uploadedFiles.path);
-        });
-        res.send();
-
-        load.stdout.on('data', function (data) {
-            loincUploadStatus.push("" + data);
-        });
-        load.stderr.on('data', function (data) {
-            loincUploadStatus.push("" + data);
-        });
-    });
-
-    app.get('/uploadLoincCsvStatus', function (req, res) {
-        res.send(loincUploadStatus);
     });
 
     app.post('/disableRule', function (req, res) {
@@ -1332,31 +1213,6 @@ exports.init = function (app) {
     });
     app.post('/comments/reply', adminItemSvc.replyToComment);
 
-    app.get('/statsNew/cde', function (req, res) {
-        elastic.elasticsearch('cde', elastic.queryNewest, undefined, (err, result) => {
-            if (err) return res.status(400).send("invalid query");
-            res.send(result.cdes.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
-        });
-    });
-    app.get('/statsNew/form', function (req, res) {
-        elastic.elasticsearch('form', elastic.queryNewest, undefined, (err, result) => {
-            if (err) return res.status(400).send("invalid query");
-            res.send(result.forms.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
-        });
-    });
-    app.get('/statsTopViews/cde', function (req, res) {
-        elastic.elasticsearch('cde', elastic.queryMostViewed, undefined, (err, result) => {
-            if (err) return res.status(400).send("invalid query");
-            res.send(result.cdes.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
-        });
-    });
-    app.get('/statsTopViews/form', function (req, res) {
-        elastic.elasticsearch('form', elastic.queryMostViewed, undefined, (err, result) => {
-            if (err) return res.status(400).send("invalid query");
-            res.send(result.forms.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
-        });
-    });
-
     app.get('/activeBans', (req, res) => {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             dbLogger.getTrafficFilter(list => res.send(list));
@@ -1417,6 +1273,26 @@ exports.init = function (app) {
         } else {
             res.status(401).send();
         }
+    });
+
+    app.get('/viewedNotification', authorization.loggedInMiddleware, (req, res) => {
+        mongo_data.updateUserLastViewNotification(req.user, err => {
+            if (err) res.status(500).send("Error Updating User's Last View Notification Date.");
+            else res.send();
+        })
+    });
+
+    app.get('/notifications', authorization.loggedInMiddleware, (req, res) => {
+        mongo_data.getNotifications(req.user, (err, result) => {
+            if (err) return res.status(500).send("Error Retrieving Notifications.");
+            else res.send(result);
+        })
+    });
+    app.get('/unreadNotifications', authorization.loggedInMiddleware, (req, res) => {
+        mongo_data.getUnreadNotifications(req.user, (err, result) => {
+            if (err) return res.status(500).send("Error Retrieving Unread Notifications.");
+            else res.send(result);
+        })
     });
 
 };

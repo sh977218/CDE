@@ -8,8 +8,7 @@ import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from '
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { ITEM_MAP } from 'shared/item';
 import { User } from 'shared/models.model';
-import { isOrgAdmin } from 'shared/system/authorizationShared';
-
+import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
 
 @Injectable()
 export class UserService {
@@ -47,16 +46,24 @@ export class UserService {
         return ITEM_MAP[c.element.eltType].view + c.element.eltId;
     }
 
+    loggedIn() {
+        return !!this.user;
+    }
+
+    isOrgCurator () {
+        return isOrgCurator(this.user);
+    }
+
     reload() {
         this.clear();
         this.promise = new Promise<User>((resolve, reject) => {
-            this.http.get<User>('/user/me').subscribe(response => {
+            this.http.get<User>('/server/user/').subscribe(response => {
                 if (!response || !response.username) {
                     return reject();
                 }
                 this.user = response;
                 this.setOrganizations();
-                this.http.get<any>('/mailStatus').subscribe(response => this.user.hasMail = response.count > 0);
+                this.http.get<any>('/server/user/mailStatus').subscribe(response => this.user.hasMail = response.count > 0);
                 resolve(this.user);
             }, reject);
         });

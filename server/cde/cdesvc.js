@@ -26,7 +26,7 @@ exports.byId = function (req, res) {
         }
         res.send(dataElement);
         mongo_cde.inCdeView(dataElement);
-        mongo_data.addToViewHistory(dataElement, req.user);
+        mongo_data.addCdeToViewHistory(dataElement, req.user);
     });
 };
 
@@ -67,7 +67,7 @@ exports.byTinyId = function (req, res) {
         }
         res.send(dataElement);
         mongo_cde.inCdeView(dataElement);
-        mongo_data.addToViewHistory(dataElement, req.user);
+        mongo_data.addCdeToViewHistory(dataElement, req.user);
     });
 };
 
@@ -232,13 +232,14 @@ exports.publishDataElement = function (req, res) {
 let parser = new xml2js.Parser();
 exports.vsacId = function (req, res) {
     if (!req.user) return res.status(202).send({error: {message: "Please login to see VSAC mapping."}});
-    vsac.getValueSet(req.params.vsacId, function (err, result) {
-        if (result.statusCode === 404 || result === 400)
-            return res.status(500).end();
-        parser.parseString(result.body, function (err, jsonResult) {
-            res.send(jsonResult);
-        });
-    });
+    vsac.getValueSet(req.params.vsacId, dbLogger.handleGenericError(
+        {res: res, message: 'Error retrieving from VSAC', origin: "vsacId"}, result => {
+            if (result.statusCode === 404 || result === 400) return res.status(404).end();
+            parser.parseString(result.body, dbLogger.handleGenericError(
+                {res: res, message: 'Error parsing from VSAC', origin: "vsacId"}, jsonResult => {
+                    res.send(jsonResult);
+            }));
+    }));
 };
 
 exports.viewHistory = function (req, res) {
@@ -267,7 +268,7 @@ exports.show = function (req, res, cb) {
         if (cde) {
             mongo_cde.inCdeView(cde);
             if (req.isAuthenticated()) {
-                mongo_cde.addToViewHistory(cde, req.user);
+                mongo_cde.addCdeToViewHistory(cde, req.user);
             }
         }
     });

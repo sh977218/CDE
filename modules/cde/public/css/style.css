@@ -3,6 +3,10 @@ a {
     color: #337ab7;
 }
 
+button {
+    margin-right: 4px;
+}
+
 /* home component */
 .homeDescriptionLink {
     color: #0F4E9D;
@@ -142,6 +146,10 @@ input.ng-invalid {
     .keep-together {
         page-break-inside: avoid;
         break-inside: avoid;
+    }
+
+    .noPrint {
+        display: none !important;
     }
 }
 /* end alternatives */

@@ -5,24 +5,20 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LocalStorageService } from 'angular-2-local-storage/dist';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 
-import { AlertService } from '_app/alert/alert.service';
-import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
+import { AlertService } from '_app/alert/alert.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { Naming } from 'shared/models.model';
-import { SearchSettings } from 'search/search.model';
+import { Definition, Designation, Naming } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { classifyItem, findSteward, removeCategory } from 'shared/system/classificationShared';
-
 
 @Component({
     selector: 'cde-create-data-element',
     templateUrl: './createDataElement.component.html',
+    providers: [DeCompletionService],
     styles: [`
         label {
             font-weight: 700;
@@ -35,53 +31,25 @@ export class CreateDataElementComponent implements OnInit {
     @Output() dismiss = new EventEmitter<void>();
     @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
     modalRef: NgbModalRef;
-    searchSettings = new SearchSettings;
-    private searchTerms = new Subject<string>();
-    suggestedCdes = [];
     validationMessage;
 
     ngOnInit() {
         if (!this.elt) {
             this.elt = new DataElement();
             this.elt.naming.push(new Naming());
+            this.elt.designations.push(new Designation());
+            this.elt.definitions.push(new Definition());
         }
         this.validationErrors(this.elt);
-        let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
-        this.searchTerms.pipe(
-            debounceTime(300),
-            distinctUntilChanged(),
-            switchMap(term => {
-                if (term) {
-                    settings.resultPerPage = 5;
-                    settings.searchTerm = term;
-                    return this.http.post<any[]>('/cdeCompletion/' + encodeURI(term), this.elasticService.buildElasticQuerySettings(settings));
-                } else return Observable.of<string[]>([]);
-            })
-        ).subscribe(res => {
-            let tinyIdList = res.map(r => r._id).slice(0, 5);
-            if (tinyIdList && tinyIdList.length > 0) {
-                this.http.get<any[]>('/deList/' + tinyIdList).subscribe(result => {
-                    this.suggestedCdes = result;
-                }, err => this.alert.addAlert('danger', err));
-            } else {
-                this.suggestedCdes = [];
-            }
-        });
     }
 
-    dataElementNameChanged() {
-        this.searchTerms.next(this.elt.naming[0].designation);
-    }
-
-    constructor(
-        private alert: AlertService,
-        private elasticService: ElasticService,
-        public isAllowedModel: IsAllowedService,
-        private http: HttpClient,
-        private localStorageService: LocalStorageService,
-        private router: Router,
-        public userService: UserService,
-    ) {
+    constructor(private alert: AlertService,
+                public deCompletionService: DeCompletionService,
+                public isAllowedModel: IsAllowedService,
+                private http: HttpClient,
+                private localStorageService: LocalStorageService,
+                private router: Router,
+                public userService: UserService) {
     }
 
     afterClassified(event) {
@@ -127,31 +95,8 @@ export class CreateDataElementComponent implements OnInit {
             }, err => this.alert.addAlert('danger', err));
     }
 
-    elementNameChanged() {
-        if (!(this.elt.naming[0].designation) || this.elt.naming[0].designation.length < 3) return;
-        else this.showSuggestions(this.elt.naming[0].designation);
-    }
-
     openClassifyItemModal() {
         this.modalRef = this.classifyItemComponent.openModal();
-    }
-
-    showSuggestions(event) {
-        if (event.length < 3) return;
-        let searchSettings = {
-            q: ''
-            , page: 1
-            , classification: []
-            , classificationAlt: []
-            , regStatuses: []
-            , resultPerPage: 20
-        };
-        searchSettings.q = event.trim();
-        this.elasticService.generalSearchQuery(
-            this.elasticService.buildElasticQuerySettings(searchSettings), 'cde', (err, result) => {
-                if (err) return;
-                this.suggestedCdes = result.cdes;
-            });
     }
 
     updateClassificationLocalStorage(item) {
@@ -166,10 +111,10 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     validationErrors(elt) {
-        if (!elt.naming[0].designation) {
+        if (!elt.designations[0].designation) {
             this.validationMessage = 'Please enter a name for the new CDE';
             return true;
-        } else if (!elt.naming[0].definition) {
+        } else if (!elt.definitions[0] || !elt.definitions[0].definition) {
             this.validationMessage = 'Please enter a definition for the new CDE';
             return true;
         } else if (!elt.stewardOrg.name || elt.stewardOrg.name === 'Select One') {

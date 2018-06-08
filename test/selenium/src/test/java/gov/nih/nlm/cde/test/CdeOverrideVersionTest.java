@@ -14,7 +14,7 @@ public class CdeOverrideVersionTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
         goToNaming();
-        editDesignationByIndex(0, nameChange);
+        editDesignationByIndex(0, nameChange,null);
 
         clickElement(By.id("openSave"));
         textPresent("has already been used");

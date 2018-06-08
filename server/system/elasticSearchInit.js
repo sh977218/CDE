@@ -81,9 +81,15 @@ exports.createIndexJson = {
                 , "version": {"type": "string", "index": "no"}
                 , "views": {type: "integer"}
                 , primaryNameSuggest: {
-                    "type":            "string",
-                    "analyzer":  "autocomplete",
-                    "search_analyzer": "standard"
+                    "type": "string",
+                    "analyzer": "autocomplete",
+                    "search_analyzer": "standard",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
                 }
             }
         }
@@ -93,7 +99,7 @@ exports.createIndexJson = {
             analysis: {
                 "filter": {
                     "autocomplete_filter": {
-                        "type":     "edge_ngram",
+                        "type": "edge_ngram",
                         "min_gram": 1,
                         "max_gram": 20
                     }
@@ -104,7 +110,7 @@ exports.createIndexJson = {
                         , language: 'English'
                     },
                     "autocomplete": {
-                        "type":      "custom",
+                        "type": "custom",
                         "tokenizer": "standard",
                         "filter": [
                             "lowercase",
@@ -160,9 +166,15 @@ exports.createFormIndexJson = {
                 }, "views": {"type": "integer"}
                 , "numQuestions": {"type": "integer"}
                 , primaryNameSuggest: {
-                    "type":            "string",
-                    "analyzer":  "autocomplete",
-                    "search_analyzer": "standard"
+                    "type": "string",
+                    "analyzer": "autocomplete",
+                    "search_analyzer": "standard",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
                 }
             }
         }
@@ -172,7 +184,7 @@ exports.createFormIndexJson = {
             analysis: {
                 "filter": {
                     "autocomplete_filter": {
-                        "type":     "edge_ngram",
+                        "type": "edge_ngram",
                         "min_gram": 1,
                         "max_gram": 20
                     }
@@ -183,7 +195,7 @@ exports.createFormIndexJson = {
                         , language: 'English'
                     },
                     "autocomplete": {
-                        "type":      "custom",
+                        "type": "custom",
                         "tokenizer": "standard",
                         "filter": [
                             "lowercase",
@@ -276,25 +288,13 @@ exports.riverFunction = function (_elt, cb) {
         elt.flatClassifications = flatArray;
         elt.stewardOrgCopy = elt.stewardOrg;
         elt.steward = elt.stewardOrg.name;
-        elt.primaryNameCopy = elt.naming ? escapeHTML(elt.naming[0].designation) : '';
+        elt.primaryNameCopy = elt.designations[0] ? escapeHTML(elt.designations[0].designation) : '';
         elt.primaryNameSuggest = elt.primaryNameCopy;
+        elt.primaryDefinitionCopy = elt.definitions[0] ? elt.definitions[0].definition : '';
+        if (elt.definitions[0] && elt.definitions[0].definitionFormat === 'html')
+            elt.primaryDefinitionCopy = elt.primaryDefinitionCopy.replace(/<(?:.|\\n)*?>/gm, '');
+        else elt.primaryDefinitionCopy = escapeHTML(elt.primaryDefinitionCopy);
 
-        var primDef;
-        for (var i = 0; i < elt.naming.length; i++) {
-            if (elt.naming[i].definition) {
-                primDef = elt.naming[i];
-                i = elt.naming.length;
-            }
-        }
-        if (primDef) {
-            if (primDef.definitionFormat === 'html') {
-                elt.primaryDefinitionCopy = primDef.definition.replace(/<(?:.|\\n)*?>/gm, '');
-            } else {
-                elt.primaryDefinitionCopy = elt.naming ? escapeHTML(primDef.definition) : '';
-            }
-        } else {
-            elt.primaryDefinitionCopy = '';
-        }
         var regStatusSortMap = {
             Retired: 6,
             Incomplete: 5,

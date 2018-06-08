@@ -1,0 +1,54 @@
+<section *ngFor="let meta of nativeFe.formElement.metadataTags; index as i" class="metadata-item">
+    <article *ngIf="meta.key === 'device'">
+        <aside>
+            <div>Device DI:</div>
+            <span>{{componentClass.deviceId(meta.value)}}</span>
+        </aside>
+        <article>
+            <section *ngIf="meta.value.udi">
+                <div *ngIf="meta.value.udi.issuing_agency">
+                    <label>Issued By:</label> {{meta.value.udi.issuing_agency}}</div>
+                <div *ngIf="meta.value.udi.expiration_date">
+                    <label>Expiration Date:</label> {{meta.value.udi.expiration_date}}</div>
+                <div *ngIf="meta.value.udi.manufacturing_date">
+                    <label>Manufacture Date:</label> {{meta.value.udi.manufacturing_date}}</div>
+                <div *ngIf="meta.value.udi.serial_number">
+                    <label>Serial:</label> {{meta.value.udi.serial_number}}</div>
+                <div *ngIf="meta.value.udi.donation_id">
+                    <label>Donation:</label> {{meta.value.udi.donation_id}}</div>
+                <div *ngIf="meta.value.udi.lot_number">
+                    <label>Lot:</label> {{meta.value.udi.lot_number}}</div>
+            </section>
+            <div *ngIf="meta.value.gudid.device.identifiers.identifier.deviceIdIssuingAgency">
+                <label>Issued By:</label> {{meta.value.gudid.device.identifiers.identifier.deviceIdIssuingAgency}}</div>
+            <div *ngIf="meta.value.gudid.device.companyName">
+                <label>Company:</label> {{meta.value.gudid.device.companyName}}</div>
+            <div *ngIf="meta.value.gudid.device.brandName">
+                <label>Brand:</label> {{meta.value.gudid.device.brandName}}</div>
+            <div *ngIf="meta.value.gudid.device.versionModelNumber">
+                <label>Model:</label> {{meta.value.gudid.device.versionModelNumber}}</div>
+            <div *ngIf="meta.value.gudid.device.expirationDate === 'true' && (!meta.value.udi || !meta.value.udi.expiration_date)">
+                <label>Expires</label></div>
+            <div *ngIf="meta.value.gudid.device.deviceDescription">
+                <label>Description:</label> {{meta.value.gudid.device.deviceDescription}}</div>
+        </article>
+    </article>
+    <footer class="noPrint">
+        <a title="Delete" (click)="nativeFe.formElement.metadataTags.splice(i, 1)"><i class="fa fa-trash-o"></i></a>
+    </footer>
+</section>
+<section *ngIf="nativeFe.metadataTagsNew === 'DI' || nativeFe.metadataTagsNew === 'UDI'" class="metadata-item">
+    <article>
+        <div><label for="deviceSearchInput">Search for Device by
+            <ng-container *ngIf="nativeFe.metadataTagsNew === 'UDI'">Unique</ng-container>Device Id:</label></div>
+        <div class="input-group mr-2 mb-1">
+            <input #searchField id="deviceSearchInput" class="form-control" [(ngModel)]="metadataSearch"/>
+            <button class="btn btn-outline-dark input-group-addon" (click)="accessGUDIdSearch(metadataSearch)">Add</button>
+        </div>
+        <ng-container *ngIf="nativeFe.metadataTagsNew !== watchNewState && moveFocus(searchField)"></ng-container>
+        <div><a *ngIf="metadataSearchResult === null" style="color: red">Device Identifier(DI) Not Found</a></div>
+    </article>
+    <footer class="noPrint">
+        <a title="Delete" (click)="nativeFe.metadataTagsNew = undefined"><i class="fa fa-trash-o"></i></a>
+    </footer>
+</section>

@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const config = require('../system/parseConfig');
 const schemas = require('./schemas');
-const schemas_system = require('../system/schemas');
+const schemas_user = require('../user/schemas');
 const mongo_data_system = require('../system/mongo-data');
 const mongo_board = require('../board/mongo-board');
 const connHelper = require('../system/connections');
@@ -24,8 +24,6 @@ schemas.dataElementSchema.post('remove', function (doc, next) {
 });
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
-    self.definitions = mongo_data_system.copyDefinition(self.naming);
-    self.designations = mongo_data_system.copyDesignation(self.naming);
     var cdeError = deValidator.checkPvUnicity(self.valueDomain);
     if (cdeError && cdeError.pvNotValidMsg) {
         logging.errorLogger.error(cdeError);
@@ -43,7 +41,7 @@ schemas.dataElementSchema.pre('save', function (next) {
 
 var conn = connHelper.establishConnection(config.database.appData);
 
-var User = conn.model('User', schemas_system.userSchema);
+var User = conn.model('User', schemas_user.userSchema);
 var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
 var DataElementDraft = conn.model('DataElementDraft', draftSchema);
 exports.User = User;
@@ -111,14 +109,14 @@ exports.deleteDraftDataElement = function (tinyId, cb) {
 };
 
 exports.draftsList = (criteria, cb) => {
-    DataElementDraft.find(criteria, {"updatedBy.username": 1, "updated": 1, "naming.designation": 1, tinyId: 1})
+    DataElementDraft.find(criteria, {"updatedBy.username": 1, "updated": 1, "designations.designation": 1, tinyId: 1})
         .sort({"updated": -1}).exec(cb);
 };
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
 exports.getPrimaryName = function (elt) {
-    return elt.naming[0].designation;
+    return elt.designations[0].designation;
 };
 
 exports.getStream = function (condition) {
@@ -267,8 +265,6 @@ exports.update = function (elt, user, callback, special) {
         elt.comments = dataElement.comments;
         var newDe = new DataElement(elt);
 
-        dataElement.archived = true;
-
         if (special) {
             special(newDe, dataElement);
         }
@@ -291,6 +287,7 @@ exports.update = function (elt, user, callback, special) {
                 });
                 callback(err);
             } else {
+                dataElement.archived = true;
                 dataElement.save(function (err) {
                     if (err) {
                         logging.errorLogger.error("Error: Cannot save CDE", {
@@ -342,7 +339,7 @@ let auditModifications = function (oldDe, newDe, user) {
             tinyId: newDe.tinyId
             , version: newDe.version
             , _id: newDe._id
-            , name: newDe.naming[0].designation
+            , name: newDe.designations[0].designation
         }
     };
 
@@ -351,7 +348,7 @@ let auditModifications = function (oldDe, newDe, user) {
             tinyId: oldDe.tinyId
             , version: oldDe.version
             , _id: oldDe._id
-            , name: oldDe.naming[0].designation
+            , name: oldDe.designations[0].designation
         };
         message.diff = cdediff.diff(newDe, oldDe);
     }
@@ -452,7 +449,7 @@ exports.derivationOutputs = function (inputTinyId, cb) {
 
 let correctBoardPinsForCde = function (doc, cb) {
     if (doc)
-        mongo_board.PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err) {
+        mongo_board.PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.designations[0].designation}).exec(function (err) {
             if (err) throw err;
             if (cb) cb();
         });

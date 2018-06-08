@@ -3,11 +3,13 @@
     <div class="col-12">
         <dl class="row">
             <dt class="col-3">Name:</dt>
-            <dd class="col-9"><%= elt.naming[0].designation %></dd>
+            <dd class="col-9"><%= elt.designations[0].designation %></dd>
             <dt class="col-3">Steward:</dt>
             <dd class="col-9"><%= elt.stewardOrg.name %></dd>
+            <% if (elt.definitions[0]) { %>
             <dt class="col-3">Definition:</dt>
-            <dd class="col-9"><%= elt.naming[0].definition %></dd>
+            <dd class="col-9"><%= elt.definitions[0].definition %></dd>
+            <% } %>
             <dt class="col-3">Registration Status:</dt>
             <dd class="col-9"><%= elt.registrationState.registrationStatus %></dd>
         </dl>
