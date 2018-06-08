@@ -11,13 +11,11 @@ public class WorkingGroupSeesOtherWg extends BaseClassificationTest {
     @Test
     public void wgSeesOtherWg() throws IOException, AWTException {
         //ANONYMOUS
-        mustBeLoggedOut();
         goToCdeSearch();
         textNotPresent("NINDS-WG-1");
         textNotPresent("NINDS-WG-2");
 
         //CTEP
-        logout();
         mustBeLoggedInAs("ctepCurator", "pass");
         goToCdeSearch();
         textNotPresent("NINDS-WG-1");

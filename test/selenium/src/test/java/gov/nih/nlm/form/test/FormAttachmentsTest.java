@@ -39,7 +39,6 @@ public class FormAttachmentsTest extends BaseAttachmentTest {
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
         clickElement(By.linkText(formName));
 
-        logout();
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
 

@@ -318,17 +318,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void doLogin(String username, String password) {
-        System.out.println("1");
         List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
-        System.out.println("2");
         if (loginLinkList.size() > 0) {
             loginAs(username, password);
         } else {
-            System.out.println("3");
             if (!isUsernameMatch(username)) {
-                System.out.println("4");
                 logout();
-                System.out.println("5");
                 loginAs(username, password);
             }
         }

@@ -37,7 +37,6 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
 
         checkAttachmentReviewed("glass.jpg");
 
-        logout();
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
 
