@@ -23,6 +23,7 @@ public class HideProprietaryPv extends NlmCdeBaseTest {
         textNotPresent("SNOMEDCT");
         textPresent("Login to see the value.");
 
+        logout();
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Post traumatic amnesia duration range");
         clickElement(By.linkText("Permissible Values"));

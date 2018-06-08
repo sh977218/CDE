@@ -17,24 +17,28 @@ public class WorkingGroupSeesOtherWg extends BaseClassificationTest {
         textNotPresent("NINDS-WG-2");
 
         //CTEP
+        logout();
         mustBeLoggedInAs("ctepCurator", "pass");
         goToCdeSearch();
         textNotPresent("NINDS-WG-1");
         textNotPresent("NINDS-WG-2");
 
         //NINDS-WG-1
+        logout();
         mustBeLoggedInAs("nindsWg1User", "pass");
         goToCdeSearch();
         textPresent("NINDS-WG-1");
         textPresent("NINDS-WG-2");
 
         //NINDS-WG-2
+        logout();
         mustBeLoggedInAs("nindsWg2User", "pass");
         goToCdeSearch();
         textPresent("NINDS-WG-1");
         textPresent("NINDS-WG-2");
 
         //deView Wg1 sees Wg2
+        logout();
         mustBeLoggedInAs("nindsWg1User", "pass");
         goToCdeByName("Urinary tract surgical procedure indicator");
         goToClassification();
@@ -43,6 +47,7 @@ public class WorkingGroupSeesOtherWg extends BaseClassificationTest {
         textPresent("WG2 Sub Classif");
 
         //deView Ctep cannot see Wg2
+        logout();
         mustBeLoggedInAs("ctepCurator", "pass");
         goToCdeByName("Urinary tract surgical procedure indicator");
         goToClassification();

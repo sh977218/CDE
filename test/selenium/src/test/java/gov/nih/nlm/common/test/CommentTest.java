@@ -103,6 +103,7 @@ public abstract class CommentTest extends CommonTest {
         goToEltByName(eltName, status);
         addComment(commentText);
 
+        logout();
         mustBeLoggedInAs(cabigAdmin_username, password);
         goToEltByName(eltName, status);
         clickElement(By.id("discussBtn"));
@@ -148,6 +149,7 @@ public abstract class CommentTest extends CommonTest {
         textNotPresent(commentText);
         textPresent(censoredText);
 
+        logout();
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         clickElement(By.id("incomingMessage"));
 
@@ -199,6 +201,7 @@ public abstract class CommentTest extends CommonTest {
         addCommentNeedApproval(commentText);
         logout();
 
+        logout();
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         hangon(1);
         clickElement(By.id("incomingMessage"));
@@ -238,6 +241,7 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.id("replyBtn_0"));
         textNotPresent(replyText);
 
+        logout();
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         clickElement(By.id("incomingMessage"));
 
@@ -247,7 +251,7 @@ public abstract class CommentTest extends CommonTest {
         textPresent("Message moved");
         textPresent("Approved");
 
-        mustBeLoggedOut();
+        logout();
         goToEltByName(eltName);
         clickElement(By.id("discussBtn"));
         textPresent(replyText);
@@ -258,7 +262,7 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         goToEltByName(eltName);
         addComment(commentText);
-        mustBeLoggedOut();
+        logout();
         goToEltByName(eltName);
         clickElement(By.id("discussBtn"));
         textPresent(commentText);

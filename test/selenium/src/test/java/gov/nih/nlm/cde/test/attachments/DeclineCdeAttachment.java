@@ -14,6 +14,7 @@ public class DeclineCdeAttachment extends BaseAttachmentTest {
 
         goToAttachments();
 
+        logout();
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Alcohol use frequency");
         String attachmentName = "painLocationInapr.png";

@@ -15,7 +15,7 @@ public class NotLoggedInCantUnclassify extends NlmCdeBaseTest {
         textPresent("Assessments");
         Assert.assertTrue(driver.findElements(By.cssSelector(".fa-trash-o")).size() > 0);
 
-        mustBeLoggedOut();
+        logout();
         goToCdeByName("Lower limb tone findings result");
         goToClassification();
         textPresent("Assessments");

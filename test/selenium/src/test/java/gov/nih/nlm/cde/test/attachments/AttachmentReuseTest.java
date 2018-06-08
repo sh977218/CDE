@@ -15,6 +15,7 @@ public class AttachmentReuseTest extends BaseAttachmentTest {
         checkAttachmentNotReviewed();
         reviewAttachment("painLocation.jpg");
 
+        logout();
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cde2);
         addAttachment("painLocation.jpg");

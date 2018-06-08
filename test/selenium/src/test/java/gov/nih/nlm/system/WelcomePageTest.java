@@ -19,7 +19,7 @@ public class WelcomePageTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='orgHtmlOverview-caBIG']//button[contains(text(),'Confirm')]"));
         checkAlert("Saved");
 
-        mustBeLoggedOut();
+        logout();
         goToCdeSearch();
         clickElement(By.id("search_by_classification_info_caBIG"));
         textPresent(orgDetail);

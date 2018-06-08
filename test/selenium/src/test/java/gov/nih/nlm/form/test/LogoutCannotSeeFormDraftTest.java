@@ -7,7 +7,6 @@ public class LogoutCannotSeeFormDraftTest extends NlmCdeBaseTest {
     @Test
     public void logoutCannotSeeFormDraft() {
         String formName = "Draft Form Test";
-        mustBeLoggedOut();
         goToFormByName(formName);
         textNotPresent("Delete Draft");
     }

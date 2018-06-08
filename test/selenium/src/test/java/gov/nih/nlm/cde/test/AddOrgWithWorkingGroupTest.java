@@ -27,6 +27,7 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         // Create some classifications for working group
         String classification = "DISEASE";
         String subClassification = "Phase II Lung Cancer";
+        logout();
         mustBeLoggedInAs(ctepCurator_username, password);
         gotoClassificationMgt();
         new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText(orgWG);
@@ -58,11 +59,13 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         findElement(By.xpath("//*[@id='browseOrg-" + orgWG + "']"));
 
         // Make sure nlm users can see it
+        logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         findElement(By.xpath("//*[@id='browseOrg-" + orgWG + "']"));
 
         // Make sure cabigAdmin can't
+        logout();
         mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeSearch();
         textNotPresent(orgWG);

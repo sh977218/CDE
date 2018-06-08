@@ -7,7 +7,6 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
     
     @Test
     public void StandardStatusWarningCheck() {
-        mustBeLoggedOut();
         // Check that a none Standard or Preferred Standard CDE doesn't have warning message when not logged in
         goToCdeByName("Specimen Collection Sampling Number");
         textNotPresent("Note: You may not edit this CDE because it is standard.");
@@ -22,6 +21,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         textNotPresent("Note: You may not edit this CDE because it is standard.");
         
         // Check that a Standard CDE have warning message
+        logout();
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Person Birth Date");
         textPresent("Note: You may not edit this CDE because it is standard.");
