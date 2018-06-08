@@ -40,3 +40,4 @@ router.get('/mailStatus', [authorization.loggedInMiddleware], (req, res) => {
 });
 
 exports.module = router;
+exports.user = User;
