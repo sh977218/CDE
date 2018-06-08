@@ -1,9 +1,9 @@
 <ngb-accordion>
     <ngb-panel class='panel-default' *ngFor="let edit of records">
         <ng-template ngbPanelTitle>
-            <span *ngIf="edit.elements.length === 1">{{edit.elements[0].name}}</span>
-            <span *ngIf="edit.elements.length === 10">10+ elements</span>
-            <span *ngIf="edit.elements.length > 1 && edit.elements.length < 10">{{edit.elements.length}} elements</span>
+            <span *ngIf="edit.elements.length === 1">{{edit.elements[0].name}} </span>
+            <span *ngIf="edit.elements.length === 10">10+ elements </span>
+            <span *ngIf="edit.elements.length > 1 && edit.elements.length < 10">{{edit.elements.length}} elements </span>
             <span class="text-info">{{edit.path.join(" > ")}}</span>
             <span class="matched-by">{{edit.date | date : 'MMM d, y, h:mm a' }}</span>
         </ng-template>

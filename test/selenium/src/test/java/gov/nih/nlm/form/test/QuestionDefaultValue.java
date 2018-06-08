@@ -32,7 +32,6 @@ public class QuestionDefaultValue extends NlmCdeBaseTest {
         goToFormDescription();
         textPresent("Brother", By.xpath("//*[@id='question_0-0']//*[contains(@class,'defaultAnswer')]"));
         textPresent("A default answer!", By.xpath("//*[@id='question_0-1']//*[contains(@class,'defaultAnswer')]"));
-
     }
 
 }

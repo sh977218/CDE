@@ -23,8 +23,7 @@ export class SaveModalComponent {
 
     constructor(private alert: AlertService,
                 public http: HttpClient,
-                public modalService: NgbModal) {
-    }
+                public modalService: NgbModal) {}
 
     confirmSave() {
         this.modalRef.close();

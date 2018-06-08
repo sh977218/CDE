@@ -206,7 +206,7 @@
                 <ng-select [(ngModel)]="question.question.answers" [items]="answerList"
                            [multiple]="true" bindLabel="valueMeaningName" placeholder="Select Answer"
                            [appendTo]="'body'" [hideSelected]="true" (add)="onAnswerListAdd();"
-                           (remove)="onAnswerListRemove($event);" (clear)="onEltChange.emit();">
+                           (remove)="onAnswerListRemove($event)" (clear)="onEltChange.emit();">
                 </ng-select>
             </dd>
         </ng-container>

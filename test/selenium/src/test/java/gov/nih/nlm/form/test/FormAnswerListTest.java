@@ -23,9 +23,9 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         String question_zero_answer_list_xpath = "//*[@id='question_0-0']//*[contains(@class,'ng-value ng-star-inserted')]";
         List<WebElement> lis = driver.findElements(By.xpath(question_zero_answer_list_xpath));
         Assert.assertEquals(lis.size(), 3);
-        Assert.assertEquals(lis.get(0).getText(), "× Female Gender");
-        Assert.assertEquals(lis.get(1).getText(), "× Male Gender");
-        Assert.assertEquals(lis.get(2).getText(), "× Unknown");
+        Assert.assertEquals(lis.get(0).getText(), "×Female Gender");
+        Assert.assertEquals(lis.get(1).getText(), "×Male Gender");
+        Assert.assertEquals(lis.get(2).getText(), "×Unknown");
 
 
         clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'answerListLabel')]//i"));
@@ -33,17 +33,17 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         clickElement(By.id("saveEditAnswerBtn"));
         lis = driver.findElements(By.xpath(question_zero_answer_list_xpath));
         Assert.assertEquals(lis.size(), 3);
-        Assert.assertEquals(lis.get(0).getText(), "× Male Gender");
-        Assert.assertEquals(lis.get(1).getText(), "× Female Gender");
-        Assert.assertEquals(lis.get(2).getText(), "× Unknown");
+        Assert.assertEquals(lis.get(0).getText(), "×Male Gender");
+        Assert.assertEquals(lis.get(1).getText(), "×Female Gender");
+        Assert.assertEquals(lis.get(2).getText(), "×Unknown");
 
 
         clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'ng-value ng-star-inserted') and contains(., 'Female Gender')]//span[contains(.,'×')]"));
         textNotPresent("×Female Gender");
         lis = driver.findElements(By.xpath(question_zero_answer_list_xpath));
         Assert.assertEquals(lis.size(), 2);
-        Assert.assertEquals(lis.get(0).getText(), "× Male Gender");
-        Assert.assertEquals(lis.get(1).getText(), "× Unknown");
+        Assert.assertEquals(lis.get(0).getText(), "×Male Gender");
+        Assert.assertEquals(lis.get(1).getText(), "×Unknown");
         saveEditQuestionById("question_0-0");
         newFormVersion();
 

@@ -15,7 +15,7 @@
              class="font-weight-bold float-left hand-cursor sectionLabel ml-1"
              (mouseover)="hoverInSection(section)" (mouseout)="hoverOutSection(section)"
              (click)="editSection(section); section.updatedSkipLogic = false">
-            <span *ngIf="section.elementType === 'form'">Embedded Form:</span>
+            <span *ngIf="section.elementType === 'form'">Embedded Form: </span>
             <span class="ml-1" title="{{section.label}}">
                 <strong>{{section.label | cdePlaceholder}}</strong>
             </span>
