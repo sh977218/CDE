@@ -5,6 +5,7 @@ import { UcumService } from 'form/public/ucum.service';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/formShared';
 import { CodeAndSystem } from 'shared/models.model';
+import { BrowserService } from 'widget/browser.service';
 
 type DisplayProfileVM = {
     aliases: {
@@ -21,6 +22,19 @@ type DisplayProfileVM = {
         .hoverEdit:hover {
             background-color: lightgreen;
         }
+        .mat-form-field,
+        .mat-slider,
+        :host ::ng-deep .mat-checkbox-layout {
+            width: 100%;
+        }
+        :host ::ng-deep .mat-checkbox-inner-container {
+            margin-left: inherit;
+        }
+        .mat-icon {
+            font-size: 1.2em;
+            height: 1.2em;
+            width: 1.2em;
+        }
     `],
     templateUrl: './displayProfile.component.html',
 })
@@ -35,6 +49,7 @@ export class DisplayProfileComponent {
     }
     @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
+    BrowserService = BrowserService;
     private _elt: CdeForm;
     dPVMs: DisplayProfileVM[] = [];
     uoms: {u: CodeAndSystem, a: string[]}[] = [];
@@ -122,8 +137,8 @@ export class DisplayProfileComponent {
             if (dPVM.aliases && dPVM.aliases.date === this.uomsDate) return;
 
             for (let u of dPVM.profile.unitsOfMeasureAlias) {
-                if (!this.uoms.filter(a => a.u.compare(u.unitOfMeasure))
-                        .map(a => a.a.indexOf(u.alias)).every(r => r > 0)) {
+                let found = this.uoms.filter(a => a.u.compare(u.unitOfMeasure));
+                if (!found.length || !found.map(a => a.a.indexOf(u.alias)).every(r => r > 0)) {
                     dPVM.profile.unitsOfMeasureAlias.splice(dPVM.profile.unitsOfMeasureAlias.indexOf(u), 1);
                     this.onEltChange.emit();
                 }
