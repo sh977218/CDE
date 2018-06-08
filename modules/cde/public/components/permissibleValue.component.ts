@@ -116,12 +116,6 @@ export class PermissibleValueComponent {
         this.canLinkPv = (this.canEdit && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
     }
 
-    changedDatatype(data: { value: string[] }) {
-        this.elt.valueDomain.datatype = data.value;
-        fixDatatype(this.elt);
-        this.onEltChange.emit();
-    }
-
     checkPvUnicity() {
         let validObject = checkPvUnicity(this.elt.valueDomain);
         this.elt.allValid = validObject['allValid'];
@@ -266,7 +260,7 @@ export class PermissibleValueComponent {
                                         meaning: l[0].name
                                     };
                                 } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                            }, err => this.Alert.addAlert('danger', "Error query UMLS."));
+                            }, () => this.Alert.addAlert('danger', "Error query UMLS."));
                 } else {
                     this.http.get<any>('/crossWalkingVocabularies/' + source + '/' + code + '/' + targetSource)
                         .subscribe(res => {
@@ -329,12 +323,6 @@ export class PermissibleValueComponent {
         if (!this.newPermissibleValue['permissibleValue']) {
             this.newPermissibleValue['permissibleValue'] = term.name;
         }
-    }
-
-    savePvDatatype(data: { value: string[] }) {
-        this.elt.valueDomain.datatypeValueList.datatype = data;
-        fixDatatype(this.elt);
-        this.onEltChange.emit();
     }
 
     sortPermissibleValue() {
