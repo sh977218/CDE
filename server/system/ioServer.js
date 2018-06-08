@@ -1,4 +1,5 @@
-var passportSocketIo = require('passport.socketio');
+const passportSocketIo = require('passport.socketio');
+const config = require('../system/parseConfig');
 
 exports.startServer = function (server, expressSettings) {
     let ioServer = require('socket.io')(server);
