@@ -7,8 +7,6 @@ public class FormTableView extends BaseFormTest {
 
     @Test
     public void seeFormSource() {
-        mustBeLoggedOut();
-
         clickElement(By.id("menu_forms_link"));
         clickElement(By.id("browseOrg-TEST"));
         clickElement(By.id("list_gridView"));

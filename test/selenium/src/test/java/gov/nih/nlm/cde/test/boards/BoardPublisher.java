@@ -11,6 +11,8 @@ public class BoardPublisher extends BoardTest {
         mustBeLoggedInAs(boardPublisherTest_username, password);
         gotoMyBoards();
         makePublic("IsItPublic", "You don't have permission to make boards public!");
+
+        logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
         openUserMenu();
         goToSiteManagement();
@@ -22,6 +24,7 @@ public class BoardPublisher extends BoardTest {
         selectNgSelectDropdownByText("BoardPublisher");
         checkAlert("Roles saved");
 
+        logout();
         mustBeLoggedInAs(boardPublisherTest_username, password);
         gotoMyBoards();
         makePublic("IsItPublic");

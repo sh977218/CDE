@@ -42,7 +42,7 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         textPresent("Female", By.id("nameAsSCT_5"));
         textPresent("A2881557", By.id("codeAsSCT_5"));
 
-        mustBeLoggedOut();
+        logout();
         goToCdeByName(cdeName);
         goToPermissibleValues();
 

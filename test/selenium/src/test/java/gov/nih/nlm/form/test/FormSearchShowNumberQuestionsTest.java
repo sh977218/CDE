@@ -8,7 +8,6 @@ public class FormSearchShowNumberQuestionsTest extends NlmCdeBaseTest {
 
     @Test
     public void formSearchShowNumberQuestionsTest() {
-        mustBeLoggedOut();
         searchElt("Classification of Seizures", "form");
         textPresent("8 Questions", By.id("searchResult_0"));
 
