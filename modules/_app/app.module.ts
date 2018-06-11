@@ -22,7 +22,7 @@ import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { NotificationsComponent } from "./notifications/notifications.component";
-import { MatIconModule, MatMenuModule, MatToolbarModule } from "@angular/material";
+import { MatBadgeModule, MatIconModule, MatMenuModule, MatToolbarModule } from "@angular/material";
 
 @NgModule({
     imports: [
@@ -38,6 +38,7 @@ import { MatIconModule, MatMenuModule, MatToolbarModule } from "@angular/materia
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
+        MatBadgeModule,
         MatIconModule,
         MatMenuModule,
         MatToolbarModule

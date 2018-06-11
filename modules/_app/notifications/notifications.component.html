@@ -1,18 +1,18 @@
-<a class="nav-link" data-toggle="dropdown">
-    <!--<i class="fa fa-bell text-muted"></i>-->
-    <mat-icon style="font-size: 1.5em">notifications</mat-icon>
-    <span class="button_badge" *ngIf="unreadNotifications.length > 0">{{unreadNotifications.length}}</span>
+<a [matMenuTriggerFor]="navDropdown" >
+    <mat-icon style="font-size: 1.3em; margin-top: 10px" [matBadge]="unreadNotifications.length"
+        matBadgeColor="warn" matBadgeSize="small" [matBadgeHidden]="unreadNotifications.length === 0" >notifications</mat-icon>
 </a>
 
-<div class="dropdown-menu dropdown-menu-right" style="min-width: 30rem;" id="notificationsDropdown">
-    <div class="dropdown-item border-bottom" *ngFor="let notification of unreadNotifications"
-         (click)="viewNotification(notification)" style="padding:0.5rem 1rem">
-        <p>{{notification._id.title}} <ng-container *ngIf="notification.count">({{notification.count}})</ng-container></p>
+<mat-menu #navDropdown="matMenu" panelClass="notifMenu" >
+    <span  mat-menu-item *ngFor="let notification of unreadNotifications"
+         (click)="viewNotification(notification)" style="padding:0.5rem 1rem; font-size: 0.7em">
+        {{notification._id.title}} <ng-container *ngIf="notification.count">({{notification.count}})</ng-container>
         <small>{{notification.date | date:'yyyy-MM-dd HH:mm'}}</small>
-    </div>
-    <div class="dropdown-item border-bottom" *ngFor="let notification of readNotifications"
-         (click)="viewNotification(notification)" style="padding:0.5rem 1rem;background-color:lightgray;">
-        <p>{{notification._id.title}} <ng-container *ngIf="notification.count">({{notification.count}})</ng-container></p>
+    </span>
+    <span mat-menu-item *ngFor="let notification of readNotifications"
+         (click)="viewNotification(notification)" style="padding:0.5rem 1rem; background-color: lightgray; font-size: 0.7em">
+        {{notification._id.title}} <ng-container *ngIf="notification.count">({{notification.count}})</ng-container>
         <small>{{notification.date | date:'yyyy-MM-dd HH:mm'}}</small>
-    </div>
-</div>
+    </span>
+</mat-menu>
+

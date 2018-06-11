@@ -8,24 +8,15 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
     selector: 'cde-notifications',
     templateUrl: 'notifications.component.html',
     styles: [`
-    .button_badge {
-      background-color: #fa3e3e;
-      border-radius: 4px;
-      color: white;
-
-      padding: 1px 3px;
-      font-size: 10px;
-
-      position: absolute; /* Position the badge within the relatively positioned button */
-      top: 4px;
-      right: 2px;
-    }
+        .notifMenu {
+            width: 200px;
+        }
     `]
 })
 export class NotificationsComponent {
 
     currentVersion = (window as any).version;
-    readNotifications = [{_id: {title: "You have no new notifications."}}];
+    readNotifications = [{_id: {title: "You have no new notifications."}, date: "second line"}];
     unreadNotifications = [];
 
     constructor(private http: HttpClient,
@@ -50,8 +41,8 @@ export class NotificationsComponent {
         let obs1 = this.http.get<any[]>("/unreadNotifications");
         let obs2 = this.http.get<any[]>("/notifications");
         forkJoin([obs1, obs2]).subscribe(results => {
-            this.unreadNotifications = results[0];
-            this.readNotifications = results[1];
+            // this.unreadNotifications = results[0];
+            // this.readNotifications = results[1];
             if (cb) cb();
         }, err => this.alert.addAlert('danger', err));
     }
