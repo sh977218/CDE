@@ -5,8 +5,8 @@ exports.startServer = function (server, expressSettings) {
     let ioServer = require('socket.io')(server);
     let mongoAdapter = require('socket.io-adapter-mongo');
     if (config.database.appData && config.database.appData.options && config.database.appData.options.server) {
-        ioServer.adapter(mongoAdapter(config.mongoUri, config.database.appData.options.server));
-    } else ioServer.adapter(mongoAdapter(config.mongoUri));
+        ioServer.adapter(mongoAdapter(config.database.appData.uri, config.database.appData.options.server));
+    } else ioServer.adapter(mongoAdapter(config.database.appData.uri));
     exports.ioServer = ioServer;
     ioServer.use(passportSocketIo.authorize(expressSettings));
     ioServer.of("/comment").on('connection', function (client) {
