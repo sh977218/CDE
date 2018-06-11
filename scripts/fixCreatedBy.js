@@ -29,27 +29,32 @@ function run() {
     ];
 
     DAOs.forEach(DAO => {
-            let model = DAO.dao;
             let aggregate = [
                 {
                     $group: {
                         _id: '$tinyId',
-                        info: {$push: {createdBy: '$createdBy.username', updated: '$updated'}},
+                        info: {$push: {createdBy: '$createdBy.username', updated: '$updated', history: '$history'}},
                         count: {$sum: 1}
                     }
                 }
             ];
-            model
-                .aggregate(aggregate)
+            DAO.dao.aggregate(aggregate)
                 .cursor({batchSize: 1000, useMongooseAggCursor: true})
                 .exec()
                 .eachAsync(result => {
                     return new Promise((resolve, reject) => {
-                        result.info.map(o => {
-                            let r = {updatedBy:'batchloader',};
-                            return {};
-                        })
-                        elt.save(err => {
+                        result.info.sort((a, b) => a.history.length - b.history.length)
+                        let temp = _.uniqWith(result.info, (a, b) => a.createdBy === b.createdBy);
+                        if (temp.length > 1) {
+                            console.log(DAO.name + ' tinyId: ' + result._id);
+                            let originalCreatedBy = result.info[0].createdBy;
+                            let lastestCreatedBy = result.info[result.info.length - 1].createdBy;
+                            console.log('originalCreatedBy: ' + originalCreatedBy);
+                            console.log('lastestCreatedBy: ' + lastestCreatedBy);
+                            console.log('--------------------');
+                        }
+                        resolve();
+                        /*elt.save(err => {
                             if (err) {
                                 console.log(err);
                                 console.log(elt.tinyId);
@@ -59,7 +64,7 @@ function run() {
                                 console.log(DAO.name + "Count: " + DAO.count);
                                 resolve();
                             }
-                        });
+                        });*/
                     });
                 }).then(err => {
                 if (err) throw err;
