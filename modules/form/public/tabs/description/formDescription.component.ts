@@ -112,7 +112,7 @@ const TOOL_BAR_OFF_SET = 55;
         }
 
         .descriptionToolbox .btn.formDescriptionTool {
-            margin-left: 0;
+            margin-left: 4px;
             padding: 0;
             touch-action: auto;
             cursor: move;
