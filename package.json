@@ -122,7 +122,6 @@
     "babel-preset-env": "1.6.1",
     "bootstrap": "^4.1.1",
     "bootstrap-tour": "https://github.com/sorich87/bootstrap-tour.git",
-    "bundlesize": "^0.17.0",
     "capitalize": "1.0.0",
     "cheerio": "1.0.0-rc.2",
     "classlist.js": "1.1.20150312",
@@ -211,7 +210,7 @@
     {
       "path": "./dist/embed/embed.js",
       "compression": "none",
-      "maxSize": "1.22 MB"
+      "maxSize": "1.23 MB"
     },
     {
       "path": "./dist/embed/embed.css",
@@ -231,7 +230,7 @@
     {
       "path": "./dist/native/native.js",
       "compression": "none",
-      "maxSize": "712 kB"
+      "maxSize": "750 kB"
     },
     {
       "path": "./dist/native/native.css",
