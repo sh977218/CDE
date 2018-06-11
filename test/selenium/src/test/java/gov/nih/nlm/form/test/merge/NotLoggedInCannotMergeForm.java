@@ -8,7 +8,6 @@ public class NotLoggedInCannotMergeForm extends NlmCdeBaseTest {
 
     @Test
     public void notLoggedInCannotMergeForm() {
-        mustBeLoggedOut();
         String form1 = "PROMIS SF v1.0 - Pain Behavior 7a";
         String form2 = "Two Dimensional Speckle Tracking Echocardiography Imaging";
         addFormToQuickBoardByTinyId(form1);

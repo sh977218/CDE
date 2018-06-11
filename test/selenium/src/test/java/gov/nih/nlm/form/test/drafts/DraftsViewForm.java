@@ -15,6 +15,7 @@ public class DraftsViewForm extends NlmCdeBaseTest {
         findElement(By.linkText("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)"));
         textPresent("Q1MfMySSFe");
 
+        logout();
         mustBeLoggedInAs(ninds_username, password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
@@ -26,6 +27,7 @@ public class DraftsViewForm extends NlmCdeBaseTest {
         findElement(By.linkText("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)"));
         textPresent("nindsCurator");
 
+        logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));

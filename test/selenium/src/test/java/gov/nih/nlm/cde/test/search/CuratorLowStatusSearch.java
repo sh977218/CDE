@@ -8,7 +8,6 @@ public class CuratorLowStatusSearch extends NlmCdeBaseTest {
 
     @Test
     public void curatorLowStatusSearch() {
-        mustBeLoggedOut();
         setVisibleStatus("minStatus-Qualified");
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).clear();

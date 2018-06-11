@@ -27,6 +27,8 @@ public class AddReviewerToBoardTest extends BoardTest {
         hangon(1);
         clickElement(By.id("startReviewBtn"));
         textPresent("End Review");
+
+        logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("incomingMessage"));
         clickElement(By.partialLinkText("| Board approval | boarduser"));
@@ -38,6 +40,8 @@ public class AddReviewerToBoardTest extends BoardTest {
         switchTabAndClose(0);
         clickElement(By.xpath("//button[normalize-space(.)='Archive']"));
         closeAlert();
+
+        logout();
         mustBeLoggedInAs(ninds_username, password);
         clickElement(By.id("incomingMessage"));
         clickElement(By.partialLinkText("Board approval | boarduser"));
@@ -49,6 +53,8 @@ public class AddReviewerToBoardTest extends BoardTest {
         switchTabAndClose(0);
         clickElement(By.xpath("//button[normalize-space(.)='Archive']"));
         closeAlert();
+
+        logout();
         mustBeLoggedInAs(boardUser, password);
         goToBoard(boardName);
         Assert.assertEquals(findElement(By.id("reviewer_nlm_status")).getAttribute("class").contains("green-icon"), true);

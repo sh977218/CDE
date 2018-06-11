@@ -10,7 +10,6 @@ public class FormMoreElementsNoSideBySideCompareTest extends NlmCdeBaseTest {
         String formName1 = "Family History - SMA";
         String formName2 = "Anatomical Functional Imaging";
         String formName3 = "Tinnitus Functional Index (TFI)";
-        mustBeLoggedOut();
         addFormToQuickBoard(formName1);
         textPresent("Quick Board (1)");
         addFormToQuickBoard(formName2);

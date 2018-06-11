@@ -25,6 +25,7 @@ public class LatestComments extends CdeCommentTest {
         textPresent(nindsComment);
         textPresent(caBIGComment);
 
+        logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
 
         clickElement(By.id("username_link"));
@@ -40,12 +41,14 @@ public class LatestComments extends CdeCommentTest {
         textPresent(nindsComment);
         textPresent(caBIGComment);
 
+        logout();
         mustBeLoggedInAs(ninds_username, password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Comments"));
         textPresent(nindsComment);
         textNotPresent(caBIGComment);
 
+        logout();
         mustBeLoggedInAs(cabigAdmin_username, password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Comments"));
