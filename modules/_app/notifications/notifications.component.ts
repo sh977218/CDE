@@ -11,12 +11,15 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
         .notifMenu {
             width: 200px;
         }
+        .mat-menu-item {
+            line-height: 11px;
+        }
     `]
 })
 export class NotificationsComponent {
 
     currentVersion = (window as any).version;
-    readNotifications = [{_id: {title: "You have no new notifications."}, date: "second line"}];
+    readNotifications = [{_id: {title: "You have no new notifications. "}}];
     unreadNotifications = [];
 
     constructor(private http: HttpClient,
@@ -41,8 +44,8 @@ export class NotificationsComponent {
         let obs1 = this.http.get<any[]>("/unreadNotifications");
         let obs2 = this.http.get<any[]>("/notifications");
         forkJoin([obs1, obs2]).subscribe(results => {
-            // this.unreadNotifications = results[0];
-            // this.readNotifications = results[1];
+            this.unreadNotifications = results[0];
+            this.readNotifications = results[1];
             if (cb) cb();
         }, err => this.alert.addAlert('danger', err));
     }

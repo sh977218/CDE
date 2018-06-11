@@ -4,15 +4,15 @@
 </a>
 
 <mat-menu #navDropdown="matMenu" panelClass="notifMenu" >
-    <span  mat-menu-item *ngFor="let notification of unreadNotifications"
-         (click)="viewNotification(notification)" style="padding:0.5rem 1rem; font-size: 0.7em">
-        {{notification._id.title}} <ng-container *ngIf="notification.count">({{notification.count}})</ng-container>
-        <small>{{notification.date | date:'yyyy-MM-dd HH:mm'}}</small>
+    <span mat-menu-item *ngFor="let notification of unreadNotifications"
+         (click)="viewNotification(notification)" style="padding:0.2rem 1rem; font-size: 0.7em">
+        <p><ng-container *ngIf="notification.count > 0">({{notification.count}}) </ng-container>{{notification._id.title}}</p>
+        <small *ngIf="notification.date">{{notification.date | timeAgo}}</small>
     </span>
-    <span mat-menu-item *ngFor="let notification of readNotifications"
-         (click)="viewNotification(notification)" style="padding:0.5rem 1rem; background-color: lightgray; font-size: 0.7em">
-        {{notification._id.title}} <ng-container *ngIf="notification.count">({{notification.count}})</ng-container>
-        <small>{{notification.date | date:'yyyy-MM-dd HH:mm'}}</small>
-    </span>
+    <div mat-menu-item *ngFor="let notification of readNotifications"
+         (click)="viewNotification(notification)" style="padding:0.2rem 1rem; background-color: lightgray; font-size: 0.7em">
+        <p><ng-container *ngIf="notification.count > 0">({{notification.count}}) </ng-container>{{notification._id.title}}</p>
+        <small *ngIf="notification.date">{{notification.date | timeAgo}}</small>
+    </div>
 </mat-menu>
 

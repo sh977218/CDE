@@ -23,6 +23,7 @@ import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { NotificationsComponent } from "./notifications/notifications.component";
 import { MatBadgeModule, MatIconModule, MatMenuModule, MatToolbarModule } from "@angular/material";
+import { TimeAgoPipeModule } from "time-ago-pipe/es5";
 
 @NgModule({
     imports: [
@@ -41,7 +42,8 @@ import { MatBadgeModule, MatIconModule, MatMenuModule, MatToolbarModule } from "
         MatBadgeModule,
         MatIconModule,
         MatMenuModule,
-        MatToolbarModule
+        MatToolbarModule,
+        TimeAgoPipeModule,
     ],
     declarations: [
         AlertComponent,
