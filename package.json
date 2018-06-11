@@ -200,17 +200,17 @@
     {
       "path": "./dist/app/cde.js",
       "compression": "none",
-      "maxSize": "1.09 MB"
+      "maxSize": "1.14 MB"
     },
     {
       "path": "./dist/app/cde.css",
       "compression": "none",
-      "maxSize": "300 kB"
+      "maxSize": "312 kB"
     },
     {
       "path": "./dist/embed/embed.js",
       "compression": "none",
-      "maxSize": "1.28 MB"
+      "maxSize": "1.33 MB"
     },
     {
       "path": "./dist/embed/embed.css",
@@ -230,7 +230,7 @@
     {
       "path": "./dist/native/native.js",
       "compression": "none",
-      "maxSize": "786 kB"
+      "maxSize": "826 kB"
     },
     {
       "path": "./dist/native/native.css",
