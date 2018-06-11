@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 
 import { AlertService } from '_app/alert/alert.service';
 import { BoardListService } from 'board/public/components/listView/boardList.service';
+import { Elt } from 'shared/models.model';
 
 
 @Component({
@@ -11,9 +12,9 @@ import { BoardListService } from 'board/public/components/listView/boardList.ser
 })
 export class ListSortComponent {
     @Input() currentPage: number;
+    @Input() elt: Elt;
+    @Input() eltIndex: number;
     @Input() totalItems: number;
-    @Input() elt: any;
-    @Input() eltIndex: any;
 
     pinModal: any;
 

@@ -1,4 +1,4 @@
-import { externalCodeSystems } from 'shared/mapping/fhir';
+import { externalCodeSystems, externalCodeSystemsMap } from 'shared/mapping/fhir';
 
 export function codeSystemIn(uri) {
     let results = externalCodeSystems.filter(c => c.uri === uri);
@@ -12,12 +12,7 @@ export function codeSystemOut(system, fe = null) {
         s = fe.question.cde.ids[0].source;
     }
 
-    let external = externalCodeSystems.filter(e => e.id === s);
-    if (external.length) {
-        return external[0].uri;
-    } else {
-        return s;
-    }
+    return s ? externalCodeSystemsMap[s] || s : undefined;
 }
 
 export function codingArrayPreview(codings) {
@@ -28,12 +23,8 @@ export function codingPreview(coding) {
     return coding.display + ' ' + codeSystemIn(coding.system) + ':' + coding.code;
 }
 
-export function newPeriod(start, end = undefined) {
-    if (!end) {
-        return {start: start, end: start};
-    } else {
-        return {start: start, end: end};
-    }
+export function getRef(resource) {
+    return resource.resourceType + '/' + resource.id;
 }
 
 export function newReference(ref) {

@@ -70,6 +70,15 @@
             <dt class="col-3 text-right">Updated By:</dt>
             <dd id="updatedBy" class="col-9">{{elt.updatedBy.username}}</dd>
         </ng-container>
+        <ng-container>
+            <dt class="col-3 text-right">Fhir Tag:</dt>
+            <dd class="col-9">
+                <input type="checkbox" title="FHIR" [(ngModel)]="tagFhir" (change)="updateTagFhir()">
+                Resource:
+                <input class="form-control" [(ngModel)]="tagFhirResource" (change)="updateTagFhir()"
+                       [disabled]="!tagFhir">
+            </dd>
+        </ng-container>
     </dl>
 </div>
 

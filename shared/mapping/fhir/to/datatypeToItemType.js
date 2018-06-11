@@ -1,4 +1,7 @@
-import { externalCodeSystemsMap } from 'shared/mapping/fhir/index';
+import { codeSystemOut } from 'shared/mapping/fhir/fhirDatatypes';
+import { newCodeableConcept } from 'shared/mapping/fhir/datatypes/codeableConcept';
+import { newCoding } from 'shared/mapping/fhir/datatypes/coding';
+import { capString } from 'shared/system/util';
 
 export function containerToItemType(container) { // http://hl7.org/fhir/item-type
     // NOT IMPLEMENTED: boolean, time, url, open-choice(choice+string), attachment, reference
@@ -51,12 +54,14 @@ export function itemTypeToItemDatatype(type, hasCodeableConcept = false) {
 }
 
 export function permissibleValueToCoding(pv) {
-    return {
-        code: pv.permissibleValue,
-        display: pv.valueMeaningName && pv.valueMeaningName !== pv.permissibleValue ? pv.valueMeaningName : undefined,
-        system: externalCodeSystemsMap[pv.codeSystemName] || undefined,
-        version: pv.codeSystemVersion || undefined,
-    };
+    return newCoding(pv.codeSystemName, pv.permissibleValue, pv.codeSystemVersion,
+        pv.valueMeaningName && pv.valueMeaningName !== pv.permissibleValue ? pv.valueMeaningName : undefined);
+}
+
+export function questionValueToFhirValue(q, container, hasCodeableConcept = false) {
+    let qType = containerToItemType(q.question);
+    container['value' + capString(itemTypeToItemDatatype(qType, hasCodeableConcept))]
+        = valueToTypedValue(q.question, qType, q.question.answer, undefined, q.question.answerUom, hasCodeableConcept);
 }
 
 export function valueToQuantity(container, value, comparator, valueUom) {
@@ -72,9 +77,7 @@ export function valueToQuantity(container, value, comparator, valueUom) {
             quantity.code = container.unitsOfMeasure[0].code;
             quantity.system = container.unitsOfMeasure[0].system;
         }
-        if (quantity.system) {
-            quantity.system = externalCodeSystemsMap[quantity.system];
-        }
+        quantity.system = codeSystemOut(quantity.system);
     } else {
         quantity.unit = container.uom;
     }
@@ -86,7 +89,7 @@ export function valueToTypedValue(container, type, value, comparator = '=', valu
         case 'choice':
             if (hasCodeableConcept) {
                 let coding = containerValueListToCoding(container, value, true);
-                return coding ? {coding: coding} : undefined;
+                return coding ? newCodeableConcept(coding) : undefined;
             }
             return containerValueListToCoding(container, value);
         case 'boolean':

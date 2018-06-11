@@ -5,8 +5,7 @@ const multer = require('multer');
 const authorization = require('../system/authorization');
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const config = require('../system/parseConfig');
-const formCtrl = require('./formCtrl');
-const formSvc = require("./formsvc");
+const formSvc = require('./formsvc');
 const mongo_form = require('./mongo-form');
 const mongo_data_system = require('../system/mongo-data');
 const classificationNode_system = require('../system/classificationNode');
@@ -116,14 +115,14 @@ exports.init = function (app, daoManager) {
         elastic_system.scrollExport(query, "form", (err, response) => {
             if (err) res.status(400).send();
             else res.send(response);
-        })
+        });
     });
 
     app.get('/scrollExport/:scrollId', (req, res) => {
         elastic_system.scrollNext(req.params.scrollId, (err, response) => {
             if (err) res.status(400).send();
             else res.send(response);
-        })
+        });
     });
 
     app.post('/elasticSearchExport/form', (req, res) => {
@@ -161,25 +160,20 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.post('/pinFormCdes', function (req, res) {
-        if (req.isAuthenticated()) {
-            mongo_form.eltByTinyId(req.body.formTinyId, function (err, form) {
-                if (form) {
-                    let allCdes = {};
-                    let allTinyIds = [];
-                    formCtrl.findAllCdesInForm(form, allCdes, allTinyIds);
-                    let fakeCdes = allTinyIds.map(function (_tinyId) {
-                        return {tinyId: _tinyId};
-                    });
-                    boardsvc.pinAllToBoard(req, fakeCdes, res);
-                } else {
-                    res.status(404).end();
-                }
-            });
-        } else {
-            res.send("Please login first.");
-        }
-    });
+    // app.post('/pinFormCdes', function (req, res) {
+    //     if (!req.isAuthenticated()) {
+    //         res.send("Please login first.");
+    //         return;
+    //     }
+    //     mongo_form.eltByTinyId(req.body.formTinyId, function (err, form) {
+    //         if (!form) {
+    //             res.status(404).end();
+    //             return;
+    //         }
+    //         let fakeCdes = formSvc.findAllCdesInForm(form).entries.map(entry => ({tinyId: entry[0]}));
+    //         boardsvc.pinAllToBoard(req, res, fakeCdes);
+    //     });
+    // });
 
     app.post('/addFormClassification/', function (req, res) {
         if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");

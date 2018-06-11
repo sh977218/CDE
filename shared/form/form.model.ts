@@ -1,13 +1,14 @@
 import {
+    copyArray,
     CdeId,
     CodeAndSystem,
+    DerivationRule,
     Elt,
+    EltRef,
     FormattedValue,
     Instruction,
     ObjectId,
     PermissibleValue,
-    DerivationRule,
-    copyArray,
 } from 'shared/models.model';
 import {
     DatatypeContainer,
@@ -16,6 +17,8 @@ import {
     QuestionTypeText,
 } from 'shared/de/dataElement.model';
 import { iterateFeSync } from 'shared/form/formShared';
+import { deepCopy } from 'shared/system/util';
+
 
 export class CdeForm extends Elt implements FormElementsContainer {
     copyright: { // mutable
@@ -29,7 +32,8 @@ export class CdeForm extends Elt implements FormElementsContainer {
     isCopyrighted: boolean;
     noRenderAllowed: boolean;
     numQuestions: number; // volatile, Elastic
-    outdated: boolean; // volatile, server calculated
+    outdated?: boolean; // volatile, server calculated
+    tags?: ObjectTag[]; // calculated, used by FHIR
 
     constructor(elt: CdeForm = undefined) {
         super(elt);
@@ -49,6 +53,8 @@ export class CdeForm extends Elt implements FormElementsContainer {
         };
         copyArray(elt.displayProfiles, this.displayProfiles, DisplayProfile);
         copyArray(elt.formElements, this.formElements, FormSection);
+        if (elt.tags) this.tags = [];
+        copyArray(elt.tags, this.tags, ObjectTag);
     }
 
     static copy(elt: CdeForm) {
@@ -162,6 +168,7 @@ export interface FormElement extends FormElementsContainer {
     metadataTags?: {key: string, value?: any}[]; // calculated, used by FHIR
     repeat: string;
     skipLogic: SkipLogic;
+    tags?: ObjectTag[]; // calculated, used by FHIR
     updatedSkipLogic: boolean; // calculated, formDescription view model
 }
 
@@ -186,6 +193,7 @@ export class FormSection implements FormSectionOrForm {
     repeatOption: string; // calculated, formDescription view model
     section: Section;
     skipLogic = new SkipLogic();
+    tags;
     updatedSkipLogic; // calculated, formDescription view model
 
     static copy(fe: FormElement) {
@@ -216,6 +224,8 @@ export class FormSection implements FormSectionOrForm {
             });
         }
         newFe.skipLogic = Object.assign(new SkipLogic(), fe.skipLogic);
+        if (fe.tags) newFe.tags = [];
+        copyArray(fe.tags, newFe.tags, ObjectTag);
         return newFe;
     }
 }
@@ -237,6 +247,7 @@ export class FormInForm implements FormSectionOrForm {
     repeatNumber: number; // calculated, formDescription view model
     repeatOption: string; // calculated, formDescription view model
     skipLogic = new SkipLogic();
+    tags;
     updatedSkipLogic; // calculated, formDescription view model
 }
 
@@ -256,6 +267,7 @@ export class FormQuestion implements FormElement {
     question: Question = new Question();
     repeat;
     skipLogic = new SkipLogic();
+    tags;
     updatedSkipLogic; // calculated, formDescription view model
 
     static datePrecisionToType = {
@@ -277,15 +289,19 @@ export class FormQuestion implements FormElement {
 }
 
 class InForm {
-    form: {
-        name: string
-        outdated: boolean; // calculated, by server for client
-        tinyId: string,
-        version: string,
-    } = {name: '', outdated: false, tinyId: '', version: ''};
+    form: EltRef = new EltRef();
 
-    static copy(inForm: Section) {
-        return Object.assign(new InForm(), inForm ? JSON.parse(JSON.stringify(inForm)) : undefined);
+    static copy(inForm: InForm) {
+        return Object.assign(new InForm(), inForm ? deepCopy(inForm) : undefined);
+    }
+}
+
+export class ObjectTag {
+    key: string;
+    value?: any;
+
+    static copy(tag: ObjectTag) {
+        return Object.assign(new ObjectTag(), tag);
     }
 }
 
@@ -336,18 +352,12 @@ export class Question extends DatatypeContainer {
     }
 }
 
-export class QuestionCde { // copied from original data element, not configurable
-    ids: CdeId[] = [];
-    name: string;
-    naming = [];
-    designations = [];
+export class QuestionCde extends EltRef { // copied from original data element, not configurable
     definitions = [];
-    datatype = 'Text';
-    permissibleValues: PermissibleValue[] = [];
-    outdated: boolean = false; // calculated, by server for client
-    tinyId: string;
-    version: string;
     derivationRules: DerivationRule[] = [];
+    designations = [];
+    naming = [];
+    permissibleValues: PermissibleValue[] = [];
 
     static copy(a: QuestionCde|any) {
         if (a instanceof QuestionCde) {

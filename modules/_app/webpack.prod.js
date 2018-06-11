@@ -1,8 +1,8 @@
-const merge = require('webpack-merge');
 const baseConfig = require('../../webpack.prod.js');
+const merge = require('webpack-merge');
 const path = require('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const AotPlugin = require('@ngtools/webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = merge(baseConfig, {
     entry: {

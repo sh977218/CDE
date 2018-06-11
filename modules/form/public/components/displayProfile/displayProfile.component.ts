@@ -106,7 +106,7 @@ export class DisplayProfileComponent {
     }
 
     profileAliasGet(dPVM: DisplayProfileVM, v: CodeAndSystem) {
-        let matches = dPVM.profile.unitsOfMeasureAlias.filter(a => a.unitOfMeasure.compare(v));
+        let matches = dPVM.profile.unitsOfMeasureAlias.filter(a => CodeAndSystem.compare(a.unitOfMeasure, v));
         return matches.length ? matches[0].alias : v.code;
     }
 
@@ -120,7 +120,7 @@ export class DisplayProfileComponent {
             });
             indexes.reverse().forEach(i => dPVM.profile.unitsOfMeasureAlias.splice(i, 1));
         } else {
-            let existing = dPVM.profile.unitsOfMeasureAlias.filter(u => u.unitOfMeasure.compare(v));
+            let existing = dPVM.profile.unitsOfMeasureAlias.filter(u => CodeAndSystem.compare(u.unitOfMeasure, v));
             if (existing.length) {
                 existing[0].alias = a;
             } else {
@@ -137,7 +137,7 @@ export class DisplayProfileComponent {
             if (dPVM.aliases && dPVM.aliases.date === this.uomsDate) return;
 
             for (let u of dPVM.profile.unitsOfMeasureAlias) {
-                let found = this.uoms.filter(a => a.u.compare(u.unitOfMeasure));
+                let found = this.uoms.filter(a => CodeAndSystem.compare(a.u, u.unitOfMeasure));
                 if (!found.length || !found.map(a => a.a.indexOf(u.alias)).every(r => r > 0)) {
                     dPVM.profile.unitsOfMeasureAlias.splice(dPVM.profile.unitsOfMeasureAlias.indexOf(u), 1);
                     this.onEltChange.emit();

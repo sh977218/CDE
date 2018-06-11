@@ -14,13 +14,17 @@ const datatypeNumberSchema = new Schema({
     , precision: Number
 }, {_id: false});
 
+const tagsSchema = new Schema({
+    key: sharedSchemas.stringType,
+    value: Schema.Types.Mixed,
+}, {_id: false});
+
 const questionSchema = new Schema({
     cde: {
         tinyId: sharedSchemas.stringType
         , name: sharedSchemas.stringType
         , designations: [sharedSchemas.designationSchema]
         , definitions: [sharedSchemas.definitionSchema]
-        , datatype: sharedSchemas.stringType
         , version: sharedSchemas.stringType
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
         , ids: [sharedSchemas.idSchema]
@@ -73,7 +77,8 @@ function getFormElementJson() {
         skipLogic: {
             action: Object.assign({enum: ['show', 'enable']}, sharedSchemas.stringType),
             condition: sharedSchemas.stringType,
-        }
+        },
+        tags: [{type: tagsSchema}],
     };
 }
 
@@ -97,6 +102,7 @@ exports.formJson = {
     }
     , source: sharedSchemas.stringType
     , sources: [sharedSchemas.sourceSchema]
+    , tags: [{type: tagsSchema}]
     , version: sharedSchemas.stringType
     , registrationState: sharedSchemas.registrationStateSchema
     , properties: [sharedSchemas.propertySchema]

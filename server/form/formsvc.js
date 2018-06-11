@@ -33,54 +33,60 @@ function setResponseXmlHeader(res) {
 }
 
 // callback(err, form)
-function fetchWholeForm(form, callback) {
+exports.fetchWholeForm = function (form, callback) {
     if (!form) return callback();
     formShared.iterateFe(form,
         (f, cb) => {
-            let inFormInfo = f.inForm.form;
-            mongo_form.byTinyIdAndVersion(inFormInfo.tinyId, inFormInfo.version, function (err, result) {
+            mongo_form.byTinyIdAndVersion(f.inForm.form.tinyId, f.inForm.form.version, function (err, result) {
                 if (err) {
-                    return cb("Retrieving form tinyId: " + inFormInfo.tinyId + " version: " + inFormInfo.version + " has error: " + err);
+                    cb('Retrieving form tinyId: ' + f.inForm.form.tinyId + ' version: ' + f.inForm.form.version
+                        + ' has error: ' + err);
+                    return;
                 }
-                result = result.toObject();
-                f.formElements = result.formElements;
-                mongo_form.Form.findOne({tinyId: inFormInfo.tinyId, archived: false}, {version: 1}, (err, elt) => {
-                    if (err || !elt) {
-                        return cb(err);
-                    }
-                    let version = inFormInfo.version ? inFormInfo.version : null;
-                    let currentVersion = elt.version ? elt.version : null;
-                    if (version !== currentVersion) {
-                        inFormInfo.outdated = true;
-                        form.outdated = true;
-                    }
-                    cb();
-                });
-            });
-        },
-        undefined,
-        (q, cb) => {
-            mongo_cde.DataElement.findOne({
-                tinyId: q.question.cde.tinyId,
-                archived: false
-            }, {version: 1}, (err, elt) => {
-                if (err || !elt) {
-                    return cb(err);
-                }
-                let version = q.question.cde.version ? q.question.cde.version : null;
-                let currentVersion = elt.version ? elt.version : null;
-                if (version !== currentVersion) {
-                    q.question.cde.outdated = true;
-                    form.outdated = true;
-                }
+                f.formElements = result.toObject().formElements;
                 cb();
             });
         },
-        err => {
-            callback(err, form);
-        }
+        undefined,
+        undefined,
+        err => callback(err, form)
     );
+};
+
+// callback(err, form)
+// outdated is not necessary for endpoints by version
+function fetchWholeFormOutdated(form, callback) {
+    exports.fetchWholeForm(form, function (err, wholeForm) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        formShared.iterateFe(wholeForm, (f, cb) => {
+            mongo_form.Form.findOne({tinyId: f.inForm.form.tinyId, archived: false}, {version: 1}, (err, elt) => {
+                if (elt && (f.inForm.form.version || null) !== (elt.version || null)) {
+                    f.inForm.form.outdated = true;
+                    wholeForm.outdated = true;
+                }
+                cb(err);
+            });
+        }, undefined, (q, cb) => {
+            mongo_cde.DataElement.findOne({tinyId: q.question.cde.tinyId, archived: false}, {version: 1}, (err, elt) => {
+                if (elt && (q.question.cde.version || null) !== (elt.version || null)) {
+                    q.question.cde.outdated = true;
+                    wholeForm.outdated = true;
+                }
+                cb(err);
+            });
+        }, () => callback(undefined, wholeForm));
+    });
 }
+
+// exports.findAllCdesInForm = function (form) {
+//     const pass = (fe, input) => input;
+//     return formShared.iterateFeSync(form, pass, pass, (q, map) => {
+//         map.set(q.question.cde.tinyId, q.question.cde);
+//     }, new Map());
+// };
 
 function wipeRenderDisallowed(form, req, cb) {
     if (form && form.noRenderAllowed) {
@@ -97,7 +103,7 @@ exports.byId = function (req, res) {
     mongo_form.byId(id, function (err, form) {
         if (err) return res.status(500).send("ERROR - cannot get form by id");
         if (!form) return res.status(404).send();
-        fetchWholeForm(form.toObject(), function (err, wholeForm) {
+        fetchWholeFormOutdated(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - cannot fetch whole form");
             wipeRenderDisallowed(wholeForm, req, function (err) {
                 if (err) return res.status(500).send("ERROR - cannot wipe form data");
@@ -168,7 +174,7 @@ exports.byTinyId = function (req, res) {
     mongo_form.byTinyId(tinyId, function (err, form) {
         if (err) return res.status(500).send("ERROR - get form by tinyid");
         if (!form) return res.status(404).send();
-        fetchWholeForm(form.toObject(), function (err, wholeForm) {
+        fetchWholeFormOutdated(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - form by tinyId whole form");
             wipeRenderDisallowed(wholeForm, req, function (err) {
                 if (err) return res.status(500).send("ERROR - form by tinyId - wipe");
@@ -205,7 +211,7 @@ exports.byTinyIdVersion = function (req, res) {
     mongo_form.byTinyIdVersion(tinyId, version, function (err, form) {
         if (err) return res.status(500).send();
         if (!form) return res.status(404).send();
-        fetchWholeForm(form.toObject(), function (err, wholeForm) {
+        exports.fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - form by id / version");
             wipeRenderDisallowed(wholeForm, req, function (err) {
                 if (err) return res.status(500).send("ERROR - form by id version wipe");
@@ -222,7 +228,7 @@ exports.byTinyIdAndVersion = function (req, res) {
     mongo_form.byTinyIdAndVersion(tinyId, version, function (err, form) {
         if (err) return res.status(500).send();
         if (!form) return res.status(404).send();
-        fetchWholeForm(form.toObject(), function (err, wholeForm) {
+        exports.fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - form by id / version");
             wipeRenderDisallowed(wholeForm, req, function (err) {
                 if (err) return res.status(500).send("ERROR - form by id version wipe");
@@ -238,7 +244,7 @@ exports.draftForm = function (req, res) {
     mongo_form.draftForm(tinyId, function (err, form) {
         if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
         if (!form) return res.send();
-        fetchWholeForm(form.toObject(), function (err, wholeForm) {
+        fetchWholeFormOutdated(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
             res.send(wholeForm);
         });
@@ -250,7 +256,7 @@ exports.draftFormById = function (req, res) {
     mongo_form.draftFormById(id, function (err, form) {
         if (err) return res.status(500).send("ERROR - get draft form. " + id);
         if (!form) return res.send();
-        fetchWholeForm(form.toObject(), function (err, wholeForm) {
+        exports.fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - get draft form. " + id);
             res.send(wholeForm);
         });
@@ -312,7 +318,7 @@ exports.publishForm = function (req, res) {
         {res: res, origin: "Publish form"},
         form => {
             if (!form) return res.status(400).send('form not found');
-            fetchWholeForm(form.toObject(), dbLogger.handleGenericError(
+            exports.fetchWholeForm(form.toObject(), dbLogger.handleGenericError(
                 {res: res, message: 'Fetch whole for publish', origin: "publishForm"}, wholeForm => {
                 publishForm.getFormForPublishing(wholeForm, req, res);
             }));

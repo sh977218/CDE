@@ -24,7 +24,7 @@ module.exports = {
                 exclude: /node_modules/,
                 loader: 'babel-loader',
                 query: {
-                    presets: ['env']
+                    presets: [["env", { "modules": false }]]
                 }
             },
             {

@@ -226,12 +226,12 @@
     {
       "path": "./dist/fhir/fhir.css",
       "compression": "none",
-      "maxSize": "250 kB"
+      "maxSize": "265 kB"
     },
     {
       "path": "./dist/native/native.js",
       "compression": "none",
-      "maxSize": "826 kB"
+      "maxSize": "740 kB"
     },
     {
       "path": "./dist/native/native.css",

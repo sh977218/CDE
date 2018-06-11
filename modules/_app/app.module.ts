@@ -6,21 +6,21 @@ import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap/alert/alert.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 
-import { AlertComponent } from '_app/alert/alert.component';
-import { AlertService } from '_app/alert/alert.service';
 import { BackForwardService } from '_app/backForward.service';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
-import { CommonAppModule } from '_commonApp/commonApp.module';
 import { ElasticService } from '_app/elastic.service';
 import { LoginService } from '_app/login.service';
-import { NavigationComponent } from '_app/navigation/navigation.component';
-import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';
+import { AlertComponent } from '_app/alert/alert.component';
+import { AlertService } from '_app/alert/alert.service';
+import { NavigationComponent } from '_app/navigation/navigation.component';
+import { NotificationsComponent } from '_app/notifications/notifications.component';
+import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
+import { CommonAppModule } from '_commonApp/commonApp.module';
 import { OrgHelperService } from 'core/orgHelper.service';
-import { NotificationsComponent } from "./notifications/notifications.component";
 import { MatBadgeModule, MatIconModule, MatMenuModule, MatToolbarModule } from "@angular/material";
 import { TimeAgoPipeModule } from "time-ago-pipe/es5";
 

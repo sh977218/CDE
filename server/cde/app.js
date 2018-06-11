@@ -189,7 +189,7 @@ exports.init = function (app, daoManager) {
         let query = elastic_system.buildElasticSearchQuery(req.user, req.body.query);
         if (query.size > config.maxPin) return res.status(403).send("Maximum number excesses.");
         elastic_system.elasticsearch('cde', query, req.body.query, function (err, cdes) {
-            boardsvc.pinAllToBoard(req, cdes.cdes, res);
+            boardsvc.pinAllToBoard(req, res, cdes.cdes);
         });
     });
 

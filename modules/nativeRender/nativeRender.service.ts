@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { CodeAndSystem } from 'shared/models.model';
 import { pvGetDisplayValue, pvGetLabel } from 'shared/de/deShared';
 import {
     CdeForm, DisplayProfile, FormElement, FormQuestion, FormSectionOrForm, PermissibleFormValue, Question
@@ -48,7 +49,7 @@ export class NativeRenderService {
         if (this.profile) {
             f.question.uomsAlias = [];
             f.question.unitsOfMeasure.forEach(u => {
-                let aliases = this.profile.unitsOfMeasureAlias.filter(a => a.unitOfMeasure.compare(u));
+                let aliases = this.profile.unitsOfMeasureAlias.filter(a => CodeAndSystem.compare(a.unitOfMeasure, u));
                 if (aliases.length) {
                     f.question.uomsAlias.push(aliases[0].alias);
                 } else {
