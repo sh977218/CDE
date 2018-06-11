@@ -3,6 +3,10 @@ a {
     color: #337ab7;
 }
 
+button {
+    margin-right: 0.2rem;
+}
+
 /* home component */
 .homeDescriptionLink {
     color: #0F4E9D;

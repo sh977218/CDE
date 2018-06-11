@@ -13,7 +13,7 @@ import { OrgHelperService } from 'core/orgHelper.service';
 export class StatusValidationRulesComponent implements OnInit {
     @ViewChild('removeRuleModal') public removeRuleModal: NgbModalModule;
     @ViewChild('addNewRuleModal') public addNewRuleModal: NgbModalModule;
-    fields: [string] = [
+    fields: string[] = [
         'stewardOrg.name'
         , 'properties.key'
         , 'valueDomain.permissibleValues.codeSystemName'

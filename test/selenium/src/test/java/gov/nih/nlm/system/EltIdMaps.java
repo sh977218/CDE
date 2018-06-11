@@ -138,6 +138,7 @@ public class EltIdMaps {
         eltMap.put("Stroke Symptoms/Comorbid Events", "7kqGIJBBKg");
         eltMap.put("Stroke Types and Subtypes", "QkX81HrFx");
         eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");
+        eltMap.put("Study Drug Compliance", "71zmIkrBtl");
         eltMap.put("Surgical and Procedural Interventions", "myoQ8JBHFe");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
         eltMap.put("Type, Place, Cause and Mechanism of Injury", "XyqIIyrBtx");
