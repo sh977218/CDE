@@ -7,10 +7,13 @@
 
 <div class="container">
     <ul class="list-group">
-        <% for(var i = 0; i < cdes.length; i++) { %>
+        <% for(var i = 0; i < cdes.length; i++) {
+            let desig = cdes[i].designations && cdes[i].designations[0]
+                    ?cdes[i].designations[0].designation:"No Name";
+        %>
         <li class="list-group-item">
             <a href="/deView?tinyId=<%= cdes[i].tinyId %>">
-                <%= cdes[i].designations[0].designation %></a>
+                <%= desig %></a>
         </li>
         <% } %>
     </ul>

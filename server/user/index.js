@@ -17,6 +17,7 @@ router.get('/', exportShared.nocacheMiddleware, (req, res) => {
         {res: res, origin: "/user/"}, user => res.send(user))
     )
 });
+
 router.post('/', (req, res) => {
     let update = {};
     if (req.body.email) update.email = req.body.email;
