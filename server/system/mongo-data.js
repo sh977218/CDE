@@ -25,7 +25,7 @@ const Message = conn.model('Message', schemas.message);
 const MeshClassification = conn.model('meshClassification', schemas.meshClassification);
 const Org = conn.model('Org', schemas.orgSchema);
 const PushRegistration = conn.model('PushRegistration', schemas.pushRegistration);
-const User = conn.model('User', schemas.userSchema);
+const User = require('../user/index').user;
 const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema);
 const NotificationModel = conn.model('notification', schemas.notificationSchema);
 
