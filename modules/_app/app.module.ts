@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap/alert/alert.module';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap/dropdown/dropdown.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 
@@ -35,7 +34,6 @@ import { TimeAgoPipeModule } from "time-ago-pipe/es5";
             storageType: 'localStorage'
         }),
         NgbAlertModule.forRoot(),
-        NgbDropdownModule.forRoot(),
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
