@@ -10,22 +10,24 @@ function run() {
         {
             name: 'de',
             count: 0,
-            dao: DataElement
-        }/*,
-        {
+            dao: DataElement,
+            incorrectMap: {}
+        }, {
             name: 'de draft',
             count: 0,
-            dao: DataElementDraft
-        },
-        {
+            dao: DataElementDraft,
+            incorrectMap: {}
+        }, {
             name: 'form',
             count: 0,
-            dao: Form
+            dao: Form,
+            incorrectMap: {}
         }, {
             name: 'form draft',
             count: 0,
-            dao: FormDraft
-        }*/
+            dao: FormDraft,
+            incorrectMap: {}
+        }
     ];
 
     DAOs.forEach(DAO => {
@@ -52,23 +54,19 @@ function run() {
                             console.log('originalCreatedBy: ' + originalCreatedBy);
                             console.log('lastestCreatedBy: ' + lastestCreatedBy);
                             console.log('--------------------');
+                            if (!DAO.incorrectMap[originalCreatedBy]) DAO.incorrectMap[originalCreatedBy] = [];
+                            else DAO.incorrectMap[originalCreatedBy].push(result._id);
+                        }
+                        if (temp.length > 2) {
+                            let temp1 = result.info.map(o => o.createdBy);
+                            console.log(result._id + ' has more than 2 createdBy.' + JSON.stringify(temp1));
                         }
                         resolve();
-                        /*elt.save(err => {
-                            if (err) {
-                                console.log(err);
-                                console.log(elt.tinyId);
-                                reject(err);
-                            } else {
-                                DAO.count++;
-                                console.log(DAO.name + "Count: " + DAO.count);
-                                resolve();
-                            }
-                        });*/
                     });
                 }).then(err => {
                 if (err) throw err;
                 console.log("Finished " + DAO.name + " Count: " + DAO.count);
+                console.log(JSON.stringify(DAO.incorrectMap));
             });
         }
     )
