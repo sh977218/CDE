@@ -626,6 +626,21 @@ exports.init = function (app) {
         });
     });
 
+    app.post('/addSiteAdmin', function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            usersrvc.addSiteAdmin(req, res);
+        } else {
+            res.status(401).send();
+        }
+    });
+
+    app.post('/removeSiteAdmin', function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            usersrvc.removeSiteAdmin(req, res);
+        } else {
+            res.status(401).send();
+        }
+    });
 
     app.get('/myOrgsAdmins', exportShared.nocacheMiddleware, function (req, res) {
         usersrvc.myOrgsAdmins(req, res);
