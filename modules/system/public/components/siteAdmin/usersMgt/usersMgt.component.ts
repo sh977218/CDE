@@ -56,11 +56,4 @@ export class UsersMgtComponent {
             .subscribe(() => this.Alert.addAlert('success', 'Roles saved.'));
     }
 
-    updateTesterStatus(user, newValue) {
-        user.tester = newValue;
-        this.http.post('/updateTesterStatus', user).subscribe(
-            () => {
-                this.Alert.addAlert('success', 'Saved.');
-            });
-    }
 }

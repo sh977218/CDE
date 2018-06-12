@@ -22,7 +22,6 @@ schemas.userSchema = new mongoose.Schema({
     orgAdmin: [stringType],
     orgCurator: [stringType],
     siteAdmin: Boolean,
-    tester: Boolean,
     quota: Number,
     viewHistory: [stringType],
     formViewHistory: [stringType],

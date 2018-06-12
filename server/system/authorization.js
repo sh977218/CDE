@@ -26,18 +26,23 @@ exports.checkOwnership = function (dao, id, req, cb) {
     });
 };
 
-// Check if user is site admin or org admin for at least one org
-exports.isSiteOrgAdmin = function (req) {
-    return req.isAuthenticated() && authorizationShared.isOrgAdmin(req.user);
-};
-
 exports.isOrgAdmin = function (req, org) {
     return req.isAuthenticated() && authorizationShared.isOrgAdmin(req.user, org);
 };
 
-exports.checkSiteAdmin = function (req, res, next) {
-    if (req.isAuthenticated() && req.user.siteAdmin)
-        return next();
+
+exports.isOrgAuthorityMiddleware = (req, res, next) => {
+    if (authorizationShared.canOrgAuthority(req.user)) next();
+    else res.status(401).send();
+};
+
+exports.isOrgAdminMiddleware = (req, res, next) => {
+    if (req.isAuthenticated() && authorizationShared.isOrgAdmin(req.user)) next();
+    else res.status(401).send();
+};
+
+exports.isSiteAdmin = function (req, res, next) {
+    if (req.isAuthenticated() && req.user.siteAdmin) return next();
     return res.status(401).send();
 };
 
