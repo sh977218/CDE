@@ -14,7 +14,7 @@ const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_data = require('./mongo-data');
 const config = require('./parseConfig');
-const dbLogger = require('./dbLogger.js');
+const dbLogger = require('../log/dbLogger.js');
 const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
 const pushNotification = require('./pushNotification');
@@ -520,35 +520,6 @@ exports.init = function (app) {
         });
     });
 
-    app.post('/logs', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin)
-            return dbLogger.getLogs(req.body, function (err, result) {
-                if (err) return res.send({error: err});
-                res.send(result);
-            });
-        res.status(401).send();
-    });
-
-    app.post('/appLogs', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin)
-            return dbLogger.appLogs(req.body, function (err, result) {
-                if (err) return res.status(500).send("ERROR getting app logs");
-                return res.send(result);
-            });
-        res.status(401).send();
-    });
-
-    app.get('/logUsageDailyReport', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            dbLogger.usageByDay(function (result) {
-                res.send(result);
-            });
-        } else {
-            res.status(401).send();
-        }
-    });
-
-
     app.get('/org/:name', exportShared.nocacheMiddleware, function (req, res) {
         return mongo_data.orgByName(req.params.name, function (err, result) {
             res.send(result);
@@ -773,71 +744,6 @@ exports.init = function (app) {
         res.end();
     });
 
-    app.post('/getServerErrors', (req, res) => {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            dbLogger.getServerErrors(req.body, (err, result) => res.send(result));
-        } else {
-            res.status(401).send();
-        }
-    });
-
-    app.post('/getClientErrors', (req, res) => {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            dbLogger.getClientErrors(req.body, (err, result) => {
-                res.send(result.map(r => {
-                    let l = r.toObject();
-                    l.agent = useragent.parse(r.userAgent).toAgent();
-                    l.ua = useragent.is(r.userAgent);
-                    return l;
-                }));
-            });
-        } else {
-            res.status(401).send();
-        }
-    });
-
-
-    app.post('/getFeedbackIssues', (req, res) => {
-        if (authorizationShared.canOrgAuthority(req.user)) {
-            dbLogger.getFeedbackIssues(req.body, (err, result) => res.send(result));
-        } else res.status(401).send();
-    });
-
-    app.post('/logClientException', (req, res) => {
-        dbLogger.logClientError(req, (err, result) => res.send(result));
-    });
-
-    app.get('/triggerServerErrorExpress', function (req, res) {
-        res.send("received");
-        mongo_data.saveNotification({
-            title: 'trigger server error test',
-            url: '/triggerServerErrorExpress',
-            roles: ['siteAdmin']
-        });
-        trigger.error(); // jshint ignore:line
-    });
-
-    app.get('/triggerServerErrorMongoose', function (req, res) {
-        mongo_data.orgByName("none", function () {
-            res.send("received");
-            mongo_data.saveNotification({
-                title: 'trigger server error test',
-                url: '/triggerServerErrorMongoose',
-                roles: ['siteAdmin']
-            });
-            trigger.error(); // jshint ignore:line
-        });
-    });
-
-    app.get('/triggerClientError', function (req, res) {
-        res.send("received");
-        mongo_data.saveNotification({
-            title: 'trigger client error test',
-            url: '/triggerClientError',
-            roles: ['siteAdmin']
-        });
-        trigger.error();
-    });
 
     app.post('/mail/messages/new', function (req, res) {
         if (req.isAuthenticated()) {
@@ -1000,44 +906,6 @@ exports.init = function (app) {
         }
     });
 
-    app.post('/feedback/report', function (req, res) {
-
-        mongo_data.saveNotification({
-            title: 'Feedback Error: ' + req.body.feedback ? JSON.parse(req.body.feedback).note.substr(0, 15) : '',
-            url: "/siteAudit#userFeedback",
-            roles: ['siteAdmin']
-        });
-
-
-        dbLogger.saveFeedback(req, function () {
-            let msg = {
-                title: 'New Feedback Message\'',
-                options: {
-                    body: req.body.feedback ? JSON.parse(req.body.feedback).note : '',
-                    icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
-                    badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
-                    tag: 'cde-feedback',
-                    actions: [
-                        {
-                            action: 'audit-action',
-                            title: 'View',
-                            icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
-                        },
-                        {
-                            action: 'profile-action',
-                            title: 'Edit Subscription',
-                            icon: '/cde/public/assets/img/min/portrait.png'
-                        }
-                    ]
-                }
-            };
-
-            mongo_data.pushGetAdministratorRegistrations(registrations => {
-                registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
-            });
-            res.send({});
-        });
-    });
 
     app.post('/disableRule', function (req, res) {
         if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");

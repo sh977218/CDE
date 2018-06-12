@@ -1,13 +1,13 @@
-const config = require('./parseConfig');
-const connHelper = require('./connections');
-const logging = require('./logging');
-const mongo_data = require('./mongo-data');
+const config = require('../system/parseConfig');
+const connHelper = require('../system/connections');
+const logging = require('../system/logging');
+const mongo_data = require('../system/mongo-data');
 const mongo_storedQuery = require('../cde/mongo-storedQuery');
-const email = require('./email');
-const schemas_system = require('./schemas');
+const email = require('../system/email');
+const schemas_system = require('../system/schemas');
 const moment = require('moment');
-const noDbLogger = require('./noDbLogger');
-const pushNotification = require('./pushNotification');
+const noDbLogger = require('../system/noDbLogger');
+const pushNotification = require('../system/pushNotification');
 
 const conn = connHelper.establishConnection(config.database.log);
 
@@ -259,12 +259,7 @@ exports.getServerErrors = function (params, callback) {
 };
 
 exports.getClientErrors = function (params, callback) {
-    ClientErrorModel
-        .find()
-        .sort('-date')
-        .skip(params.skip)
-        .limit(params.limit)
-        .exec(callback);
+    ClientErrorModel.find().sort('-date').skip(params.skip).limit(params.limit).exec(callback);
 };
 
 exports.getFeedbackIssues = function (params, callback) {
@@ -280,9 +275,9 @@ exports.usageByDay = function (callback) {
     let d = new Date();
     d.setDate(d.getDate() - 3);
     //noinspection JSDuplicatedDeclaration
-    LogModel.aggregate(
-        {$match: {date: {$exists: true}, date: {$gte: d}}} // jshint ignore:line
-        , {
+    LogModel.aggregate([
+        {$match: {date: {$exists: true}, date: {$gte: d}}},
+        {
             $group: {
                 _id: {
                     ip: "$remoteAddr",
@@ -291,16 +286,7 @@ exports.usageByDay = function (callback) {
                     dayOfMonth: {$dayOfMonth: "$date"}
                 }, number: {$sum: 1}, latest: {$max: "$date"}
             }
-        }
-        , function (err, result) {
-            if (err || !result) logging.errorLogger.error("Error: Cannot retrieve logs", {
-                origin: "system.dblogger.usageByDay",
-                stack: new Error().stack,
-                details: "err " + err
-            });
-            callback(result);
-        }
-    );
+        }], callback);
 };
 
 exports.saveFeedback = function (req, cb) {

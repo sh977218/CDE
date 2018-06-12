@@ -8,7 +8,7 @@ const elastic = require('./elastic');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 const vsac = require('./vsac-io');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
-const dbLogger = require('../system/dbLogger');
+const dbLogger = require('../log/dbLogger');
 
 exports.byId = function (req, res) {
     let id = req.params.id;

@@ -20,7 +20,8 @@ const compress = require('compression');
 const helmet = require('helmet');
 const ioServer = require('./server/system/ioServer');
 const winston = require('winston');
-const dbLogger = require('./server/system/dbLogger');
+const dbLogger = require('./server/log/dbLogger');
+const authorization = require('./server/system/authorization');
 
 require('./server/system/elastic').initEs();
 
@@ -238,6 +239,8 @@ express.response.render = function (view, module, msg) {
 };
 
 try {
+    app.use('/server/log', authorization.isSiteOrgAdmin, require('./server/user/index').module);
+
     require(path.join(__dirname, './server/cde/app.js')).init(app, daoManager);
 
     require(path.join(__dirname, './server/system/app.js')).init(app, daoManager);

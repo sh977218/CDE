@@ -2,7 +2,7 @@ const _ = require('lodash');
 const webpush = require('web-push');
 
 const config = require('./parseConfig');
-const dbLogger = require('./dbLogger.js');
+const dbLogger = require('../log/dbLogger.js');
 const mongo_data = require('./mongo-data');
 
 exports.checkDatabase = (callback = _.noop) => {

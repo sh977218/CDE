@@ -8,7 +8,7 @@ const User = conn.model('User', schemas.userSchema);
 
 const authorization = require('../system/authorization');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
-const dbLogger = require('../system/dbLogger');
+const dbLogger = require('../log/dbLogger');
 const mongo_data = require('../system/mongo-data');
 
 router.get('/', exportShared.nocacheMiddleware, (req, res) => {

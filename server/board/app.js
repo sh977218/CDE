@@ -14,7 +14,7 @@ const classificationNode_system = require('../system/classificationNode');
 const usersrvc = require('../system/usersrvc');
 const email = require('../system/email');
 const adminItemSvc = require('../system/adminItemSvc.js');
-const dbLogger = require('../system/dbLogger.js');
+const dbLogger = require('../log/dbLogger.js');
 const boardsvc = require('./boardsvc');
 
 exports.init = function (app, daoManager) {
