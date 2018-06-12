@@ -538,11 +538,11 @@ exports.init = function (app) {
     });
 
 
-    app.get('/siteAdmins', authorization.checkSiteAdmin, (req, res) => {
+    app.get('/siteAdmins', authorization.isSiteAdmin, (req, res) => {
         mongo_data.siteAdmins((err, users) => res.send(users));
     });
 
-    app.get('/orgAuthorities', authorization.checkSiteAdmin, (req, res) => {
+    app.get('/orgAuthorities', authorization.isSiteAdmin, (req, res) => {
         mongo_data.orgAuthorities((err, users) => res.send(users));
     });
 
@@ -582,19 +582,6 @@ exports.init = function (app) {
                 res.send(users);
             });
         }
-    });
-
-    app.put('/user', function (req, res) {
-        if (!authorizationShared.canOrgAuthority(req.user))
-            return res.status(401).send("Not Authorized");
-        mongo_data.addUser({
-            username: req.body.username,
-            password: "umls",
-            quota: 1024 * 1024 * 1024
-        }, function (err, newUser) {
-            if (err) return res.status(500).end("ERROR adding user");
-            res.send(newUser.username + " added.");
-        });
     });
 
     app.post('/addSiteAdmin', function (req, res) {
@@ -672,15 +659,6 @@ exports.init = function (app) {
         usersrvc.updateUserAvatar(req.body, function (err) {
             if (err) res.status(500).end();
             else res.status(200).end();
-        });
-    });
-
-    app.post('/updateTesterStatus', function (req, res) {
-        if (!authorizationShared.canOrgAuthority(req.user))
-            return res.status(401).send("Not Authorized");
-        mongo_data.User.findOne({_id: req.body._id}, function (err, u) {
-            u.tester = req.body.tester;
-            u.save(() => res.send());
         });
     });
 

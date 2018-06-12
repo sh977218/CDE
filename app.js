@@ -150,18 +150,6 @@ app.use(function preventSessionCreation(req, res, next) {
 
 });
 
-app.use(function (req, res, next) {
-    try {
-        if (req.headers.host === "cde.nlm.nih.gov") {
-            if (req.user && req.user.tester) {
-                localRedirectProxy.web(req, res, {target: config.internalRules.redirectTo}, next);
-            } else return next();
-        } else return next();
-    } catch (e) {
-        return next();
-    }
-});
-
 app.use("/cde/public", express.static(path.join(__dirname, '/modules/cde/public')));
 app.use("/system/public", express.static(path.join(__dirname, '/modules/system/public')));
 app.use("/swagger/public", express.static(path.join(__dirname, '/modules/swagger/public')));
@@ -251,7 +239,11 @@ try {
 
     require(path.join(__dirname, './modules/swagger/index.js')).init(app);
 
-    app.use('/server/user', require('./server/user/index').module);
+    let userModule = require("./server/user/index")({
+        search: [authorization.isOrgAdminMiddleware],
+        manage: [authorization.isOrgAuthorityMiddleware]
+    });
+    app.use('/server/user', userModule);
 } catch (e) {
     console.log(e.stack);
     process.exit();

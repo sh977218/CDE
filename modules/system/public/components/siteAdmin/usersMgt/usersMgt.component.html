@@ -44,13 +44,6 @@
             <div id="user_siteadmin" class="col-9" [innerHtml]="u.siteAdmin?'Yes':'No'"></div>
         </div>
         <div class="row">
-            <div class="col-3 text-right"><strong><label for="user.tester">Early Feature User: </label></strong></div>
-            <div class="col-9">
-                <input id="user.tester" [ngModel]="u.tester" type="checkbox"
-                       (ngModelChange)="updateTesterStatus(u, $event)">
-            </div>
-        </div>
-        <div class="row">
             <div class="col-3 text-right"><strong>Roles: </strong></div>
             <div class="col-9" id="user_roles_{{$index}}">
                 <ng-select [(ngModel)]="u.roles" [items]="rolesEnum" [multiple]="true"
