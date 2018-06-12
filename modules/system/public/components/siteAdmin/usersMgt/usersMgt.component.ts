@@ -40,7 +40,7 @@ export class UsersMgtComponent {
 
     searchUsers() {
         let uname = this.search.username.username ? this.search.username.username : this.search.username;
-        this.http.get<any>('/searchUsers/' + uname).subscribe(
+        this.http.get<any>('/server/user/searchUsers/' + uname).subscribe(
             result => {
                 this.foundUsers = result.users;
             });

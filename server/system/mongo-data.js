@@ -231,15 +231,6 @@ exports.usersByName = (name, callback) => {
     User.find({'username': new RegExp('^' + name + '$', "i")}, userProject, callback);
 };
 
-exports.usersByPartialName = (name, callback) => {
-    User.find({'username': new RegExp(name, 'i')}, (err, users) => {
-        for (let i = 0; i < users.length; i++) {
-            delete users[i].password;
-        }
-        callback(err, users);
-    });
-};
-
 exports.usernamesByIp = (ip, callback) => {
     User.find({"knownIPs": {$in: [ip]}}, {username: 1}, callback);
 };

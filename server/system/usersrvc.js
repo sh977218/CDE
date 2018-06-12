@@ -23,32 +23,6 @@ exports.updateUserAvatar = function(user, cb) {
     });
 };
 
-exports.addSiteAdmin = function(req, res) {
-    mongo_data.userByName(req.body.username, function(err, found) {
-        if (!found) {
-            res.send("Unknown Username");
-        } else {
-            found.siteAdmin = true;
-            found.save(function () {
-                res.send("User Added");
-            });
-        }
-    });  
-};
-
-exports.removeSiteAdmin = function(req, res) {
-    mongo_data.userById(req.body.id, function(err, found) {
-        if (!found) {
-            res.send("Unknown Username");
-        } else {
-            found.siteAdmin = false;            
-            found.save(function () {
-                res.send("Site Administrator Removed");
-            });
-        }
-    });  
-};
-
 exports.myOrgsAdmins = function(req, res) {
     if (!req.isAuthenticated()) {
         res.send({orgs: []});

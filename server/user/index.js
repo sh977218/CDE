@@ -40,4 +40,26 @@ router.get('/mailStatus', [authorization.loggedInMiddleware], (req, res) => {
     )
 });
 
+
+/* Begin Site Admin Features */
+router.post('/addSiteAdmin', [authorization.isSiteOrgAdmin], (req, res) => {
+    User.findOneAndUpdate({username: req.body.username}, {$set: {siteAdmin: true}}, dbLogger.handleGenericError(
+        {res: res, origin: "/addSiteAdmin"}, () => res.send("User Added"))
+    )
+});
+
+router.post('/removeSiteAdmin', [authorization.isSiteOrgAdmin], (req, res) => {
+    User.findOneAndUpdate({username: req.body.username}, {$set: {siteAdmin: false}}, dbLogger.handleGenericError(
+        {res: res, origin: "/addSiteAdmin"}, () => res.send("Site Administrator Removed"))
+    )
+});
+
+router.get('/searchUsers/:username?', [authorization.isSiteOrgAdmin], (req, res) => {
+    User.find({'username': new RegExp(req.params.username, 'i')}, {password: 0}, dbLogger.handleGenericError(
+        {res: res, origin: "/searchUsers"}, users => res.send({users: users}))
+    )
+});
+
+/* End Site Admin Features */
+
 exports.module = router;
