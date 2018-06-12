@@ -48,15 +48,16 @@ exports.module = function (roleConfig) {
     });
 
     router.post('/addUser', roleConfig.manage, (req, res) => {
-        mongo_data.addUser({
-            username: req.body.username,
-            password: "umls",
-            quota: 1024 * 1024 * 1024
-        }, dbLogger.handleGenericError(
-            {res: res, origin: "/mailStatus"}, newUser => res.send(newUser.username + " added."))
-        );
+        User.findOne({username: req.body.username}, dbLogger.handleGenericError(
+            {res: res, origin: "/addUser"}, existingUser => {
+                if (existingUser) res.send("Duplicated username");
+                else new User({
+                    username: req.body.username.toLowerCase(),
+                    password: "umls",
+                    quota: 1024 * 1024 * 1024
+                }).save(dbLogger.handleGenericError(
+                    {res: res, origin: "/addUser"}, newUser => res.send(newUser.username + " added.")));
+            }))
     });
-
     return router;
-
 };

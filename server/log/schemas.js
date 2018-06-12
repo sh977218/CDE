@@ -11,6 +11,7 @@ function deleteEmpty(v) {
 }
 
 const stringType = schemas.stringType = {type: String, set: deleteEmpty};
+const stringIndexType = schemas.stringIndexType = Object.assign({index: true}, stringType);
 
 schemas.consoleLogSchema = new mongoose.Schema({ // everything server except express
     date: {type: Date, index: true, default: Date.now()},

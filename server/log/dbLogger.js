@@ -1,23 +1,22 @@
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
-const logging = require('../system/logging');
 const mongo_data = require('../system/mongo-data');
 const mongo_storedQuery = require('../cde/mongo-storedQuery');
 const email = require('../system/email');
-const schemas_system = require('../system/schemas');
+const schemas = require('./schemas');
 const moment = require('moment');
 const noDbLogger = require('../system/noDbLogger');
 const pushNotification = require('../system/pushNotification');
 
 const conn = connHelper.establishConnection(config.database.log);
 
-const LogModel = conn.model('DbLogger', schemas_system.logSchema);
-const LogErrorModel = conn.model('DbErrorLogger', schemas_system.logErrorSchema);
-const ClientErrorModel = conn.model('DbClientErrorLogger', schemas_system.clientErrorSchema);
+const LogModel = conn.model('DbLogger', schemas.logSchema);
+const LogErrorModel = conn.model('DbErrorLogger', schemas.logErrorSchema);
+const ClientErrorModel = conn.model('DbClientErrorLogger', schemas.clientErrorSchema);
 const StoredQueryModel = mongo_storedQuery.StoredQueryModel;
-const FeedbackModel = conn.model('FeedbackIssue', schemas_system.feedbackIssueSchema);
-const consoleLogModel = conn.model('consoleLogs', schemas_system.consoleLogSchema);
-const TrafficFilterModel = conn.model('trafficFilter', schemas_system.trafficFilterSchema);
+const FeedbackModel = conn.model('FeedbackIssue', schemas.feedbackIssueSchema);
+const consoleLogModel = conn.model('consoleLogs', schemas.consoleLogSchema);
+const TrafficFilterModel = conn.model('trafficFilter', schemas.trafficFilterSchema);
 
 let initTrafficFilter = cb => {
     TrafficFilterModel.remove({}, () => new TrafficFilterModel({ipList: []}).save(cb));

@@ -227,7 +227,10 @@ express.response.render = function (view, module, msg) {
 };
 
 try {
-    app.use('/server/log', authorization.isSiteOrgAdmin, require('./server/user/index').module);
+    let logModule = require("./server/log/index").module({
+        feedbackLog: [authorization.isOrgAuthorityMiddleware]
+    });
+    app.use('/server/log', logModule);
 
     require(path.join(__dirname, './server/cde/app.js')).init(app, daoManager);
 
@@ -239,7 +242,7 @@ try {
 
     require(path.join(__dirname, './modules/swagger/index.js')).init(app);
 
-    let userModule = require("./server/user/index")({
+    let userModule = require("./server/user/index").module({
         search: [authorization.isOrgAdminMiddleware],
         manage: [authorization.isOrgAuthorityMiddleware]
     });
