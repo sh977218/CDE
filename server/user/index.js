@@ -8,6 +8,7 @@ const mongo_data = require('../system/mongo-data');
 
 const conn = connHelper.establishConnection(config.database.appData);
 const User = conn.model('User', schemas.userSchema);
+exports.user = User;
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
