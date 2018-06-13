@@ -17,7 +17,7 @@ export class FrontExceptionHandler implements ErrorHandler {
         try {
             if (!this.lock) {
                 this.lock = true;
-                this.http.post('/logClientException', {
+                this.http.post('/server/log/clientExceptionLogs', {
                     stack: error.stack,
                     message: error.message,
                     name: error.name,

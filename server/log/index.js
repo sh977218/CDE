@@ -3,7 +3,7 @@ const mongo_data = require('../system/mongo-data');
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
-    router.post('/logs', (req, res) => {
+    router.post('/httpLogs', (req, res) => {
         dbLogger.getLogs(req.body, dbLogger.handleGenericError(
             {res: res, origin: "/logs/"}, result => res.send(result))
         )
@@ -15,21 +15,21 @@ exports.module = function (roleConfig) {
         )
     });
 
-    router.get('/logUsageDailyReport', (req, res) => {
+    router.get('/dailyUsageReportLogs', (req, res) => {
         dbLogger.usageByDay(dbLogger.handleGenericError(
-            {res: res, origin: "/logUsageDailyReport"}, result => res.send(result))
+            {res: res, origin: "/dailyUsageReportLogs"}, result => res.send(result))
         )
     });
 
-    router.post('/getServerErrors', (req, res) => {
+    router.post('/serverErrors', (req, res) => {
         dbLogger.getServerErrors(req.body, dbLogger.handleGenericError(
-            {res: res, origin: "/getServerErrors"}, result => res.send(result))
+            {res: res, origin: "/serverErrors"}, result => res.send(result))
         )
     });
 
-    router.post('/getClientErrors', (req, res) => {
+    router.post('/clientErrors', (req, res) => {
         dbLogger.getClientErrors(req.body, dbLogger.handleGenericError(
-            {res: res, origin: "/getClientErrors"}, result => {
+            {res: res, origin: "/clientErrors"}, result => {
                 res.send(result.map(r => {
                     let l = r.toObject();
                     l.agent = useragent.parse(r.userAgent).toAgent();
@@ -41,15 +41,15 @@ exports.module = function (roleConfig) {
     });
 
 
-    router.post('/getFeedbackIssues', roleConfig.feedbackLog, (req, res) => {
+    router.post('/feedbackIssues', roleConfig.feedbackLog, (req, res) => {
         dbLogger.getFeedbackIssues(req.body, dbLogger.handleGenericError(
-            {res: res, origin: "/getFeedbackIssues/"}, result => res.send(result))
+            {res: res, origin: "/feedbackIssues"}, result => res.send(result))
         )
     });
 
-    router.post('/logClientException', (req, res) => {
+    router.post('/clientExceptionLogs', (req, res) => {
         dbLogger.logClientError(req, dbLogger.handleGenericError(
-            {res: res, origin: "/getFeedbackIssues/"}, result => res.send(result))
+            {res: res, origin: "/clientExceptionLogs"}, result => res.send(result))
         )
     });
 
@@ -67,7 +67,7 @@ exports.module = function (roleConfig) {
         res.send("received");
         mongo_data.orgByName("none");
         mongo_data.saveNotification({
-            title: 'trigger server error test',
+            title: 'trigger server mongoose error test',
             url: '/triggerServerErrorMongoose',
             roles: ['siteAdmin']
         });
