@@ -1,3 +1,4 @@
+const schemas = require('./schemas');
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.log);
