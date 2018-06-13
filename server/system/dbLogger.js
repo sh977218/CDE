@@ -3,7 +3,6 @@ const connHelper = require('./connections');
 const logging = require('./logging');
 const mongo_data = require('./mongo-data');
 const mongo_storedQuery = require('../cde/mongo-storedQuery');
-const email = require('./email');
 const schemas_system = require('./schemas');
 const moment = require('moment');
 const noDbLogger = require('./noDbLogger');
@@ -313,16 +312,8 @@ exports.saveFeedback = function (req, cb) {
         , screenshot: {content: report.img}
         , browser: report.browser.userAgent
     });
-    issue.save(function (err) {
+    issue.save(err => {
         if (cb) cb(err);
-    });
-    let emailContent = {
-        subject: "Issue reported by a user"
-        , body: report.note
-    };
-    mongo_data.siteAdmins(function (err, users) {
-        email.emailUsers(emailContent, users, function () {
-        });
     });
 };
 
