@@ -6,8 +6,8 @@ const mongo_data = require('../system/mongo-data');
 exports.module = function (roleConfig) {
     const router = require('express').Router();
     router.post('/httpLogs', (req, res) => {
-        dbLogger.getLogs(req.body, dbLogger.handleGenericError(
-            {res: res, origin: "/logs/"}, result => res.send(result))
+        dbLogger.httpLogs(req.body, dbLogger.handleGenericError(
+            {res: res, origin: "/httpLogs"}, result => res.send(result))
         )
     });
 

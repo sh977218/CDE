@@ -16,39 +16,6 @@ const ClientErrorModel = conn.model('DbClientErrorLogger', schemas.clientErrorSc
 const StoredQueryModel = mongo_storedQuery.StoredQueryModel;
 const FeedbackModel = conn.model('FeedbackIssue', schemas.feedbackIssueSchema);
 const consoleLogModel = conn.model('consoleLogs', schemas.consoleLogSchema);
-const TrafficFilterModel = conn.model('trafficFilter', schemas.trafficFilterSchema);
-
-let initTrafficFilter = cb => {
-    TrafficFilterModel.remove({}, () => new TrafficFilterModel({ipList: []}).save(cb));
-};
-exports.getTrafficFilter = function (cb) {
-    TrafficFilterModel.findOne({}, (err, theOne) => {
-        if (err || !theOne) initTrafficFilter((err2, newOne) => cb(newOne));
-        else cb(theOne);
-    });
-};
-exports.banIp = function (ip, reason) {
-    TrafficFilterModel.findOne({}, (err, theOne) => {
-        if (err) {
-            exports.logError({
-                message: "Unable ban IP ",
-                origin: "dbLogger.banIp",
-                stack: err,
-                details: ""
-            });
-        } else {
-            let foundIndex = theOne.ipList.findIndex(r => r.ip === ip);
-            if (foundIndex > -1) {
-                theOne.ipList[foundIndex].strikes++;
-                theOne.ipList[foundIndex].reason = reason;
-                theOne.ipList[foundIndex].date = Date.now();
-            } else {
-                theOne.ipList.push({ip: ip, reason: reason});
-            }
-            theOne.save();
-        }
-    });
-};
 
 exports.consoleLog = function (message, level) { // no express errors see dbLogger.log(message)
     new consoleLogModel({message: message, level: level}).save(err => {
@@ -202,7 +169,7 @@ exports.handleGenericError = function (options, cb) {
     };
 };
 
-exports.getLogs = function (body, callback) {
+exports.httpLogs = function (body, callback) {
     let sort = {"date": "desc"};
     if (body.sort) sort = body.sort;
     let currentPage = 1;

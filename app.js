@@ -22,6 +22,7 @@ const ioServer = require('./server/system/ioServer');
 const winston = require('winston');
 const dbLogger = require('./server/log/dbLogger');
 const authorization = require('./server/system/authorization');
+const traffic  = require('./server/system/traffic');
 
 require('./server/system/elastic').initEs();
 
@@ -124,14 +125,14 @@ app.use(function banHackers(req, res, next) {
     banEndsWith.forEach(ban => {
         if (req.originalUrl.slice(-(ban.length)) === ban) {
             let ip = getRealIp(req);
-            dbLogger.banIp(ip, req.originalUrl);
+            traffic.banIp(ip, req.originalUrl);
             blackIps.push(ip);
         }
     });
     banStartsWith.forEach(ban => {
         if (req.originalUrl.substr(0, ban.length) === ban) {
             let ip = getRealIp(req);
-            dbLogger.banIp(ip, req.originalUrl);
+            traffic.banIp(ip, req.originalUrl);
             blackIps.push(ip);
         }
     });

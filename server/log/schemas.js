@@ -30,7 +30,7 @@ schemas.logSchema = new mongoose.Schema({ // express
     responseTime: {type: Number, index: true}
 }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
 
-schemas.logErrorSchema = new mongoose.Schema({ // everything server and express
+schemas.logErrorSchema = new mongoose.Schema({ // server
     message: stringType,
     date: {type: Date, index: true},
     details: stringType,
@@ -87,16 +87,6 @@ schemas.feedbackIssueSchema = new mongoose.Schema({
     userMessage: stringType,
     browser: stringType,
     reportedUrl: stringType
-});
-
-schemas.trafficFilterSchema = new mongoose.Schema({
-    ipList: [{
-        ip: String,
-        date: {type: Date, default: Date.now()},
-        reason: String,
-        strikes: {type: Number, default: 1},
-        _id: false
-    }]
 });
 
 module.exports = schemas;

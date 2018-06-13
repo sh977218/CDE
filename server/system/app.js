@@ -28,6 +28,7 @@ const elastic = require('./elastic.js');
 const cdeElastic = require('../cde/elastic.js');
 const formElastic = require('../form/elastic.js');
 const app_status = require("./status.js");
+const traffic = require('./traffic');
 
 
 exports.init = function (app) {
@@ -469,11 +470,11 @@ exports.init = function (app) {
     const validLoginBody = ["username", "password", "_csrf", "recaptcha"];
     app.post('/login', myCsrf, (req, res, next) => {
         if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
-            dbLogger.banIp(getRealIp(req), "Invalid Login body");
+            traffic.banIp(getRealIp(req), "Invalid Login body");
             return res.status(401).send();
         }
         if (req.params.length) {
-            dbLogger.banIp(getRealIp(req), "Passing params to /login");
+            traffic.banIp(getRealIp(req), "Passing params to /login");
             return res.status(401).send();
         }
 
@@ -1053,13 +1054,13 @@ exports.init = function (app) {
 
     app.get('/activeBans', (req, res) => {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            dbLogger.getTrafficFilter(list => res.send(list));
+            traffic.getTrafficFilter(list => res.send(list));
         } else res.status(401).send();
     });
 
     app.post('/removeBan', (req, res) => {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            dbLogger.getTrafficFilter(elt => {
+            traffic.getTrafficFilter(elt => {
                 let foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
                 if (foundIndex > -1) {
                     elt.ipList.splice(foundIndex, 1);

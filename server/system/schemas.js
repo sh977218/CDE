@@ -410,6 +410,16 @@ schemas.meshClassification = new mongoose.Schema({
     flatTrees: [stringType]
 });
 
+schemas.trafficFilterSchema = new mongoose.Schema({
+    ipList: [{
+        ip: String,
+        date: {type: Date, default: Date.now()},
+        reason: String,
+        strikes: {type: Number, default: 1},
+        _id: false
+    }]
+});
+
 schemas.notificationSchema = new mongoose.Schema({
     title: String,
     url: String,

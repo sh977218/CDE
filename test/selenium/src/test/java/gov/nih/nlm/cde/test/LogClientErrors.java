@@ -18,10 +18,10 @@ public class LogClientErrors extends NlmCdeBaseTest {
 
     @Test(dependsOnMethods = {"createIEError"})
     public void logClientErrors() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
         driver.get(baseUrl + "/siteAudit?triggerClientError=1&fullPath=true");
         textPresent("Reported Issues");
 
+        mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
 
