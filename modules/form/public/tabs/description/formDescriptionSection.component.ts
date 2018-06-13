@@ -167,7 +167,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         newSection.instructions = currentSection.instructions;
         newSection.repeat = currentSection.repeat;
         newSection.skipLogic = currentSection.skipLogic;
-        if (newForm.naming.some(n => n.designation === currentSection.label)) {
+        if (newForm.designations.some(n => n.designation === currentSection.label)) {
             newSection.label = currentSection.label;
         }
 
@@ -176,7 +176,7 @@ export class FormDescriptionSectionComponent implements OnInit {
             newSection: newSection
         };
         modal.bForm = true;
-        modal.bLabel = !_isEqual(newForm.naming, oldForm.naming);
+        modal.bLabel = !_isEqual(newForm.designations, oldForm.designations);
 
         this.updateFormVersion =  modal;
         this.modalService.open(this.updateFormVersionTmpl, {size: 'lg'}).result.then(() => {

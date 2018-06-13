@@ -50,7 +50,6 @@ export class DataElementViewComponent implements OnInit {
     hasComments;
     highlightedTabs = [];
     modalRef: NgbModalRef;
-    orgNamingTags = [];
     tabsCommented = [];
     savingText: String;
     tinyId;

@@ -270,7 +270,6 @@ let requestSchema = {
     destination: {tinyId: stringType},
     mergeFields: {
         ids: Boolean,
-        naming: Boolean,
         designations: Boolean,
         definitions: Boolean,
         attachments: Boolean,
