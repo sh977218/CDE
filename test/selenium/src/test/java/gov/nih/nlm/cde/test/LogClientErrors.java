@@ -22,8 +22,6 @@ public class LogClientErrors extends NlmCdeBaseTest {
         driver.get(baseUrl + "/siteAudit?triggerClientError=1&fullPath=true");
         textPresent("Reported Issues");
 
-        logout();
-        mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
 

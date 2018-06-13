@@ -1,3 +1,5 @@
+const userAgent = require('useragent');
+
 const dbLogger = require('./dbLogger');
 const mongo_data = require('../system/mongo-data');
 
@@ -32,8 +34,8 @@ exports.module = function (roleConfig) {
             {res: res, origin: "/clientErrors"}, result => {
                 res.send(result.map(r => {
                     let l = r.toObject();
-                    l.agent = useragent.parse(r.userAgent).toAgent();
-                    l.ua = useragent.is(r.userAgent);
+                    l.agent = userAgent.parse(r.userAgent).toAgent();
+                    l.ua = userAgent.is(r.userAgent);
                     return l;
                 }));
             })
