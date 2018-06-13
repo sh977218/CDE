@@ -3,7 +3,7 @@
         matBadgeColor="warn" matBadgeSize="small" [matBadgeHidden]="unreadNotifications.length === 0" >notifications</mat-icon>
 </a>
 
-<mat-menu #navDropdown="matMenu" panelClass="notifMenu" >
+<mat-menu #navDropdown="matMenu" panelClass="notifMenu" id="notificationsDropdown">
     <span mat-menu-item *ngFor="let notification of unreadNotifications"
          (click)="viewNotification(notification)" style="padding:0.2rem 1rem; font-size: 0.7em">
         <p><ng-container *ngIf="notification.count > 0">({{notification.count}}) </ng-container>{{notification._id.title}}</p>
