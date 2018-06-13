@@ -110,7 +110,7 @@ exports.init = function (app) {
                             origin: req.url
                         });
                     } else
-                        mongo_cde.DataElement.find(cond, 'tinyId naming', {
+                        mongo_cde.DataElement.find(cond, 'tinyId designations', {
                             skip: pageSize * (pageNum - 1),
                             limit: pageSize
                         }, (err, cdes) => {
@@ -174,7 +174,7 @@ exports.init = function (app) {
                             origin: req.url
                         });
                     } else
-                        mongo_form.Form.find(cond, 'tinyId naming', {
+                        mongo_form.Form.find(cond, 'tinyId designations', {
                             skip: pageSize * (pageNum - 1),
                             limit: pageSize
                         }, (err, forms) => {
