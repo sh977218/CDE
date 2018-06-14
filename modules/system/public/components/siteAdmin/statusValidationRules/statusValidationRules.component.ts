@@ -23,7 +23,6 @@ export class StatusValidationRulesComponent implements OnInit {
         , 'version'
         , 'ids.version'
         , 'ids.source'
-        , 'naming.context.contextName'
         , 'source'
         , 'origin'
         , 'objectClass.concepts.name'
