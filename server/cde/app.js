@@ -34,7 +34,15 @@ exports.init = function (app, daoManager) {
 
     app.get("/draftDataElement/:tinyId", cdesvc.draftDataElement);
     app.post("/draftDataElement/:tinyId", [authorization.canEditMiddleware], cdesvc.saveDraftDataElement);
-    app.delete("/draftDataElement/:tinyId", [authorization.canEditMiddleware], cdesvc.deleteDraftDataElement);
+
+    app.delete("/draftDataElement/:tinyId", (req, res, next) => {
+        if (!authorizationShared.isOrgCurator(req.user)) return res.status(401).send();
+        mongo_cde.byTinyId(req.params.tinyId, dbLogger.handleGenericError({res: res, origin: "DEL /draftDataElement"}, dataElement => {
+            if (!dataElement) return res.send();
+            if (!authorizationShared.isOrgCurator(req.user, dataElement.stewardOrg.name)) return res.status(401).send();
+            next();
+        }));
+        }, cdesvc.deleteDraftDataElement);
 
     app.get("/draftDataElementById/:id", cdesvc.draftDataElementById);
 

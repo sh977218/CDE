@@ -48,7 +48,14 @@ exports.init = function (app, daoManager) {
 
     app.get("/draftForm/:tinyId", formSvc.draftForm);
     app.post("/draftForm/:tinyId", [authorization.canEditMiddleware], formSvc.saveDraftForm);
-    app.delete("/draftForm/:tinyId", [authorization.canEditMiddleware], formSvc.deleteDraftForm);
+    app.delete("/draftForm/:tinyId", (req, res, next) => {
+        if (!authorizationShared.isOrgCurator(req.user)) return res.status(401).send();
+        mongo_form.byTinyId(req.params.tinyId, dbLogger.handleGenericError({res: res, origin: "DEL /draftForm"}, form => {
+            if (!form) return res.send();
+            if (!authorizationShared.isOrgCurator(req.user, form.stewardOrg.name)) return res.status(401).send();
+            next();
+        }));
+    }, formSvc.deleteDraftForm);
 
     app.get("/draftFormById/:id",formSvc.draftFormById);
 
