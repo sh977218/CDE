@@ -31,6 +31,7 @@ public class UomValidation extends BaseFormTest {
         findElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[text()='Kilo']"));
 
         goToPreview();
+        hangon(1);
         findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_0-3_box']")).sendKeys("1.25");
         clickElement(By.xpath("(//div[@id='If Yes, what are the number of CAG repeats on the larger allele_0-3']//input[@name='0-3_uom'])[1]"));
         Assert.assertEquals(findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_0-3_box']")).getAttribute("value"), "1.25");
