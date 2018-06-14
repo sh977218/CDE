@@ -216,12 +216,14 @@
                 <p class="text-muted">Filter by:</p>
                 <!-- CLASSIFICATION AGGREGATIONS -->
                 <div *ngIf="aggregations.orgs.buckets" id="classificationListHolder" class="my-3">
-                    <span class="treeTitle">Classification</span>
-                    <span *ngIf="!altClassificationFilterMode && !embedded" id="altClassificationFilterModeToggle"
-                          class="fa fa-plus-square hand-cursor" (click)="setAltClassificationFilterMode()" role="link"
-                          ngbTooltip="Add a second classifications filter as an AND condition" placement="right"
-                          container="body">
-                    </span>
+                    <div>
+                        <span class="treeTitle" style="vertical-align: top">Classification</span>
+                        <mat-icon *ngIf="!altClassificationFilterMode && !embedded" id="altClassificationFilterModeToggle"
+                              class="hand-cursor" (click)="setAltClassificationFilterMode()" role="link"
+                              ngbTooltip="Add a second classifications filter as an AND condition"
+                                  placement="right" style="font-size: 1rem; padding-top: 5px">add_box
+                        </mat-icon>
+                    </div>
                     <ng-container *ngFor="let t of aggregations.orgs.buckets; trackBy: helperObjectsService.trackByKey">
                         <ng-container *ngIf="getCurrentSelectedOrg(); else classifOrg">
                             <ng-container *ngIf="t.key === getCurrentSelectedOrg()">
