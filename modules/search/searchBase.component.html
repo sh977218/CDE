@@ -118,15 +118,15 @@
         </form>
         <div class="ml-auto collapse navbar-collapse" style="width:auto;"
              id="searchBarContent" role="group" aria-label="Basic example">
-            <button *ngIf="embedded" id="resetSearch" class="btn mr-1 btn-outline-dark" name="resetSearch"
+            <button mat-raised-button *ngIf="embedded" id="resetSearch" class="mr-1" name="resetSearch"
                     type="button" (click)="reset()">
                 <i class="fa fa-trash-o"></i> Reset
             </button>
-            <button id="pinAll" (click)="openPinModal()" class="btn mx-1 btn-outline-dark" type="button"
+            <button id="pinAll" (click)="openPinModal()" class="mx-1" mat-raised-button
                     [hidden]="totalItems <= 0 || module === 'form'" *ngIf="!embedded">
                 <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
             </button>
-            <button (click)="hideShowFilter()" class="btn mx-1 btn-outline-dark" id="showHideFilters">
+            <button (click)="hideShowFilter()" class="mx-1" id="showHideFilters" mat-raised-button>
                 <div [hidden]="filterMode">
                     <i class="glyphicon glyphicon-filter"></i> Show Filters
                 </div>
@@ -135,28 +135,24 @@
                 </div>
             </button>
             <cde-list-view-controls [(listView)]="resultsView" *ngIf="!embedded"></cde-list-view-controls>
-            <div class="btn-group dropdown" role="group" *ngIf="!embedded">
 
-                <button id="export" type="button" class="btn ml-1 btn-outline-dark dropdown-toggle"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-download"></i> Export
-                </button>
+            <button mat-raised-button [matMenuTriggerFor]="exportMenu" *ngIf="!embedded"
+                                id="export" class="ml-1">
+                <mat-icon>play_for_work</mat-icon> Export <mat-icon>arrow_drop_down</mat-icon>
+            </button>
 
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="export"
-                     style="left: auto;right: 0;">
-                    <ng-container *ngIf="userService.user || module === 'cde'; else exportFormNotAuthorized">
-                        <a *ngFor="let key of keys(exporters)" id="{{exporters[key].id}}" class="dropdown-item"
-
-                           (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})"
-                        >{{exporters[key].display}}</a>
-                    </ng-container>
-                    <ng-template #exportFormNotAuthorized>
-                        <a routerLink="/login" class="dropdown-item">Please login to export forms.</a>
-                    </ng-template>
-                    <a *ngIf="userService.user && displayValidation()" id="exportValidRule" class="dropdown-item"
-                       (click)="openValidRulesModal()"> Validation Rules</a>
-                </div>
-            </div>
+            <mat-menu #exportMenu>
+                <ng-container *ngIf="userService.user || module === 'cde'; else exportFormNotAuthorized">
+                    <a *ngFor="let key of keys(exporters)" id="{{exporters[key].id}}" mat-menu-item
+                       (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})"
+                    >{{exporters[key].display}}</a>
+                </ng-container>
+                <ng-template #exportFormNotAuthorized>
+                    <a routerLink="/login" mat-menu-item>Please login to export forms.</a>
+                </ng-template>
+                <a *ngIf="userService.user && displayValidation()" id="exportValidRule" mat-menu-item
+                   (click)="openValidRulesModal()"> Validation Rules</a>
+            </mat-menu>
         </div>
     </nav>
     <!-- BREADCRUMBS -->
@@ -170,7 +166,7 @@
                    (click)="searchSettings.q = ''; doSearch()"></i>
             </span>
         </span>
-        <span id="classif_filter">|
+        <span id="classif_filter">
             <span *ngIf="!hasSelectedClassifications()" class="badge badge-secondary mx-1">
                 All Classifications</span>
             <span *ngIf="hasSelectedClassifications()" class="badge badge-success mx-1">{{getSelectedClassifications()}}
@@ -187,7 +183,7 @@
                 </i>
             </span>
         </span>
-        <span id="topic_crumb">|
+        <span id="topic_crumb">
             <span *ngIf="!hasSelectedTopics()" class="badge badge-secondary mx-1">All Topics</span>
             <span *ngIf="hasSelectedTopics()" class="badge badge-success mx-1">{{getSelectedTopics()}}
                 <i id="removeTopics" class="fa fa-times hand-cursor dark-icon pl-1"
@@ -195,7 +191,7 @@
                    (click)="clearSelectedTopics()"></i>
             </span>
         </span>
-        <span id="status_crumb">|
+        <span id="status_crumb">
             <span *ngIf="!hasSelectedStatuses()" class="badge badge-secondary mx-1">All Statuses</span>
             <span *ngIf="hasSelectedStatuses()" class="badge badge-success mx-1">{{getSelectedStatuses()}}
                 <i id="removeStatuses" class="fa fa-times hand-cursor dark-icon pl-1"
