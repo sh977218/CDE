@@ -7,9 +7,10 @@
     <form #linkedFormsForm="ngForm">
         <div class="modal-body" id="linkedFormsModalBody">
             <p>{{getFormText()}}</p>
-            <a *ngIf="forms && forms.length > 0" class="btn btn-outline-dark" id="seeAllLinkedFormsButton"
+            <a *ngIf="forms && forms.length > 0" id="seeAllLinkedFormsButton"
                href="/form/search?q={{elt.tinyId}}" target="_blank">
-                <i class="fa fa-file-text-o"></i> See all linked forms</a>
+                <button mat-raised-button><mat-icon>launch</mat-icon> See all linked forms</button>
+            </a>
             <hr/>
             <div *ngIf="forms && forms.length > 0">
                 <h4>Preview: </h4>
@@ -18,9 +19,7 @@
             </div>
         </div>
         <div class="modal-footer" id="linkedFormsModalFooter">
-            <button class="btn btn-outline-dark" (click)="c('Close click')" id="closeLinkedFormsModalBtn" type="button">
-                Close
-            </button>
+            <button (click)="c('Close click')" id="closeLinkedFormsModalBtn" mat-raised-button>Close</button>
         </div>
     </form>
 </ng-template>
