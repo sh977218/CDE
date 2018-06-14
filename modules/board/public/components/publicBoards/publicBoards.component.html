@@ -1,16 +1,13 @@
 <div class="container-fluid">
     <form id="searchBoardsForm">
         <div class="input-group input-group-lg">
-            <input [(ngModel)]="filter.search" name="search" class="form-control search-query"
-                   id="search" placeholder="Search Boards...">
-            <div class="input-group-btn">
-                <button (click)="loadPublicBoards()" type="submit" class="btn  btn-danger" id="search.submit">
-                    Search
-                </button>
-            </div>
+            <mat-form-field  style="width: 80%; font-size: 25px; margin: auto">
+                <input [(ngModel)]="filter.search" name="search" matInput
+                       id="search" placeholder="Search Boards...">
+                <mat-icon matSuffix (click)="loadPublicBoards()" id="search.submit">search</mat-icon>
+            </mat-form-field>
         </div>
     </form>
-    <hr>
     <span *ngIf="filter.search.length > 0 && boards.length === 0">
         <h4><i class="fa fa-frown-o"></i> No results were found. Try other criteria.</h4>
     </span>

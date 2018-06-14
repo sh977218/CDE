@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { BoardModule } from 'board/public/board.module';
 import { PublicBoardsComponent } from 'board/public/components/publicBoards/publicBoards.component';
 import { WidgetModule } from 'widget/widget.module';
+import { MatIconModule, MatInputModule } from "@angular/material";
 
 const boardRoutes: Routes = [
     {path: '', component: PublicBoardsComponent},
@@ -19,7 +20,9 @@ const boardRoutes: Routes = [
         // core
         WidgetModule,
         // internal
-        BoardModule
+        BoardModule,
+        MatIconModule,
+        MatInputModule
     ],
     declarations: [
         PublicBoardsComponent,
