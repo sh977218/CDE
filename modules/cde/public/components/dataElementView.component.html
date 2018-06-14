@@ -38,12 +38,14 @@
     <div class="pull-left">
         <button id="export" class="mr-1" mat-raised-button [matMenuTriggerFor]="exportMenu">
             <mat-icon>play_for_work</mat-icon>
-            <span class="d-none d-sm-inline-block"> Export <mat-icon>arrow_drop_down</mat-icon></span>
+            <span class="d-none d-sm-inline-block"> Export </span><mat-icon>arrow_drop_down</mat-icon>
         </button>
         <mat-menu #exportMenu>
-            <a id='jsonExport' href="deById/{{elt._id}}" target="_blank" mat-menu-item>
-                JSON File, NIH/CDE Schema</a>
-            <a href="/schema/cde" target="_blank" mat-menu-item><i class="fa fa-info-circle"></i></a>
+            <span mat-menu-item>
+                <a id='jsonExport' href="deById/{{elt._id}}" target="_blank">
+                    JSON File, NIH/CDE Schema</a>
+                <a href="/schema/cde" target="_blank"> <i class="fa fa-info-circle"></i></a>
+            </span>
             <a id='xmlExport' href="deById/{{elt._id}}?type=xml" target="_blank" mat-menu-item>
                 XML File, NIH/CDE Schema</a>
         </mat-menu>

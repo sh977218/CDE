@@ -30,6 +30,7 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/deleteModal.component';
 import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
+import { MatButtonModule, MatIconModule } from "@angular/material";
 
 
 @NgModule({
@@ -46,6 +47,8 @@ import { NewDefinitionComponent } from 'adminItem/public/components/naming/defin
         // internal
         CompareModule,
         SearchModule,
+        MatButtonModule,
+        MatIconModule
     ],
     declarations: [
         AttachmentsComponent,
