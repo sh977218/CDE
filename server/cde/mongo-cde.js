@@ -140,7 +140,7 @@ exports.desByConcept = function (concept, callback) {
                 {'property.concepts.originId': concept.originId},
                 {'dataElementConcept.concepts.originId': concept.originId}]
         },
-        "naming source registrationState stewardOrg updated updatedBy createdBy tinyId version views")
+        "designations source registrationState stewardOrg updated updatedBy createdBy tinyId version views")
         .limit(20)
         .where("archived").equals(false)
         .exec(function (err, cdes) {
@@ -269,7 +269,7 @@ exports.update = function (elt, user, callback, special) {
             special(newDe, dataElement);
         }
 
-        if (!newDe.naming || newDe.naming.length === 0) {
+        if (!newDe.designations || newDe.designations.length === 0) {
             logging.errorLogger.error("Error: Cannot save CDE without names", {
                 origin: "cde.mongo-cde.update.1",
                 stack: new Error().stack,

@@ -33,10 +33,10 @@ export class CdeDiffPopulateService {
 
         ]
         , 3: [
-            {fieldName: "Naming - Other Name", path: ["naming", -1, "designation"]}
-            , {fieldName: "Naming - Other Definition", path: ["naming", -1, "definition"]}
-            , {fieldName: "Primary Name", path: ["naming", 0, "designation"]}
-            , {fieldName: "Primary Definition", path: ["naming", 0, "definition"]}
+            {fieldName: "Naming - Other Name", path: ["designations", -1, "designation"]}
+            , {fieldName: "Naming - Other Definition", path: ["definitions", -1, "definition"]}
+            , {fieldName: "Primary Name", path: ["designations", 0, "designation"]}
+            , {fieldName: "Primary Definition", path: ["definitions", 0, "definition"]}
             , {
                 fieldName: "Permissible Values - Text - Regular Expression",
                 path: ["valueDomain", "datatypeText", "regex"]
@@ -116,8 +116,6 @@ export class CdeDiffPopulateService {
                 fieldName: "Permissible Values - Code System",
                 path: ["valueDomain", "permissibleValues", -1, "codeSystemName"]
             }
-            , {fieldName: "Naming - Primary Name - Context", path: ["naming", 1, "context", "contextName"]}
-            , {fieldName: "Naming - Other Name - Context", path: ["naming", -1, "context", "contextName"]}
             , {fieldName: "Properties - Object Class - Name", path: ["objectClass", "concepts", -1, "name"]}
 
         ]

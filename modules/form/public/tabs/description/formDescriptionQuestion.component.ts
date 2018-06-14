@@ -110,7 +110,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
                 : newQuestion.question.unitsOfMeasure.concat(currentQuestion.question.unitsOfMeasure);
         newQuestion.repeat = currentQuestion.repeat;
         newQuestion.skipLogic = currentQuestion.skipLogic;
-        if (newCde.naming.some(n => n.designation === currentQuestion.label)) {
+        if (newCde.designations.some(n => n.designation === currentQuestion.label)) {
             newQuestion.label = currentQuestion.label;
         }
 
@@ -119,7 +119,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
             newQuestion: newQuestion
         };
         modal.bCde = true;
-        modal.bLabel = !_isEqual(newCde.naming, oldCde.naming);
+        modal.bLabel = !_isEqual(newCde.designations, oldCde.designations);
         modal.bDatatype = currentQuestion.question.datatype !== newQuestion.question.datatype;
         modal.bDefault = _toString(currentQuestion.question.defaultAnswer) !== _toString(newQuestion.question.defaultAnswer);
         modal.bUom = !_isEqual(currentQuestion.question.unitsOfMeasure, newQuestion.question.unitsOfMeasure);

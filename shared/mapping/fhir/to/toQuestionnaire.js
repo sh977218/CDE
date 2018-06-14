@@ -19,12 +19,12 @@ export function formToQuestionnaire(form, options, config) {
         date: form.updated ? form.updated.toISOString() : form.created.toISOString(),
         identifier: [newIdentifier(config.publicUrl + '/schema/form', form.tinyId, 'official')],
         item: [],
-        name: form.naming[0].designation,
+        name: form.designations[0].designation,
         publisher: 'NIH, National Library of Medicine, Common Data Elements Repository',
         resourceType: 'Questionnaire',
         status: regStatusToPublicationStatus(form.registrationState.registrationStatus),
         subjectType: ['Encounter'], // Required, Other Values: Bundle ResearchStudy ResearchSubject ...
-        title: form.naming[0].designation,
+        title: form.designations[0].designation,
         url: config.publicUrl + ITEM_MAP.form.view + form.tinyId,
         version: form.version || undefined,
     };

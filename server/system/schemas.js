@@ -193,15 +193,6 @@ schemas.pushRegistration.set('collection', 'pushRegistration');
 
 schemas.orgSchema.set('collection', 'orgs');
 
-schemas.namingSchema = new mongoose.Schema({
-    designation: stringType,
-    definition: stringType,
-    definitionFormat: stringType,
-    languageCode: stringType,
-    tags: [stringType],
-    source: stringType
-}, {_id: false});
-
 schemas.designationSchema = new mongoose.Schema({
     designation: stringType,
     tags: [stringType]
@@ -278,7 +269,6 @@ let requestSchema = {
     destination: {tinyId: stringType},
     mergeFields: {
         ids: Boolean,
-        naming: Boolean,
         designations: Boolean,
         definitions: Boolean,
         attachments: Boolean,
