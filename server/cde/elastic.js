@@ -141,8 +141,8 @@ exports.elasticsearch = function (user, settings, cb) {
 
 const mltConf = {
     "mlt_fields": [
-        "naming.designation",
-        "naming.definition",
+        "designations.designation",
+        "definitions.definition",
         "valueDomain.permissibleValues.permissibleValue",
         "valueDomain.permissibleValues.valueMeaningName",
         "valueDomain.permissibleValues.valueMeaningCode",

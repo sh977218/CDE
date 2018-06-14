@@ -24,7 +24,6 @@ export class FormService {
         let q = new FormQuestion();
         q.question.cde.derivationRules = de.derivationRules;
         q.question.cde.name = de.designations[0] ? de.designations[0].designation : '';
-        q.question.cde.naming = de.naming;
         q.question.cde.designations = de.designations;
         q.question.cde.definitions = de.definitions;
         q.question.cde.permissibleValues = [];
@@ -42,7 +41,7 @@ export class FormService {
             q.question.unitsOfMeasure.push(new CodeAndSystem('', de.valueDomain.uom));
         }
 
-        de.naming.forEach(n => {
+        de.designations.forEach(n => {
             if (Array.isArray(n.tags) && n.tags.indexOf('Question Text') > -1 && !q.label) {
                 q.label = n.designation;
             }

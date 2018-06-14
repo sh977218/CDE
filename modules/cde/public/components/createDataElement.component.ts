@@ -11,7 +11,7 @@ import { AlertService } from '_app/alert/alert.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { Definition, Designation, Naming } from 'shared/models.model';
+import { Definition, Designation } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { classifyItem, findSteward, removeCategory } from 'shared/system/classificationShared';
 
@@ -36,7 +36,6 @@ export class CreateDataElementComponent implements OnInit {
     ngOnInit() {
         if (!this.elt) {
             this.elt = new DataElement();
-            this.elt.naming.push(new Naming());
             this.elt.designations.push(new Designation());
             this.elt.definitions.push(new Definition());
         }

@@ -19,14 +19,17 @@ public class FormXMLExportTest extends NlmCdeBaseTest {
         String url = findElement(By.id("nihXml")).getAttribute("href");
         String response = get(url).asString().replaceAll("\\s+", "");
 
-        String shouldContain = ("<naming>\n" +
+        String shouldContain = ("<designations>\n" +
                 "<designation>Parenchymal Imaging</designation>\n" +
-                "<definition>\n" +
-                "Contains data elements collected when an imaging study is performed to measure parenchyma; data recorded attempt to divide the strokes into ischemic or hemorrhagic subtypes, as distinction of hemorrhage versus infarction is the initial critical branch point in acute stroke triage. (Examples of CDEs included: Acute infarcts present; Planimetic acute ischemic lesion volume; and Acute hematoma present)\n" +
-                "</definition>\n" +
-                "</naming>").replaceAll("\\s+", "");
+                "</designations>").replaceAll("\\s+", "");
         if (!response.contains(shouldContain)) {
             Assert.fail("response:\n" + response + "\nshouldContain:\n" + shouldContain);
+        }
+        String shouldContain1 = ("<designations>\n" +
+                "<definition>Contains data elements collected when an imaging study is performed to measure parenchyma; data recorded attempt to divide the strokes into ischemic or hemorrhagic subtypes, as distinction of hemorrhage versus infarction is the initial critical branch point in acute stroke triage. (Examples of CDEs included: Acute infarcts present; Planimetic acute ischemic lesion volume; and Acute hematoma present)\n" +
+                "</definition>").replaceAll("\\s+", "");
+        if (!response.contains(shouldContain)) {
+            Assert.fail("response:\n" + response + "\nshouldContain1:\n" + shouldContain1);
         }
     }
 }
