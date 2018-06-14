@@ -25,10 +25,6 @@ public class DisplayProfilesTest extends BaseFormTest {
         scrollToTop();
         Assert.assertEquals(driver.findElements(By.xpath("//*[@id='profile_0']//table//input[@type='radio']")).size(), 10);
         textPresent("1", By.xpath("(//*[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]/../span"));
-        Assert.assertTrue(
-                findElement(By.xpath("//*[@id='profile_2']//div[@id='Education level USA type_0-1']//" + byValueListValueXPath("1st Grade"))).getLocation().y <
-                        findElement(By.xpath("//*[@id='profile_2']//div[@id='Education level USA type_0-1']//" + byValueListValueXPath("2nd Grade"))).getLocation().y
-        );
         scrollToViewById("profile_3");
         String baseXpath = "//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//";
 
@@ -37,6 +33,7 @@ public class DisplayProfilesTest extends BaseFormTest {
             if (i == 0) Assert.fail("Unexpected y value");
             if (findElement(By.xpath(baseXpath + byValueListValueXPath("1st Grade"))).getLocation().y !=
                     findElement(By.xpath(baseXpath + byValueListValueXPath("5th Grade"))).getLocation().y) {
+                hangon(1);
                 i--;
             } else i = -1;
         }
