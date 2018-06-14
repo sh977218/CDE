@@ -13,7 +13,7 @@
                 <input type="text" class="form-control" id="eltDefinition" [(ngModel)]="elt.definitions[0].definition"
                        name="eltDefinition" required>
             </div>
-            <div class="form-group ng-scope" ng-if="module==='form'">
+            <div class="form-group ng-scope">
                 <label for="formVersion">Version</label>
                 <input type="text" class="form-control" id="formVersion" [(ngModel)]="elt.version"
                        name="formVersion" placeholder="Version">
@@ -27,9 +27,8 @@
                 </select>
             </div>
             <div class="form-group" *ngIf="elt.stewardOrg.name">
-                <button class="btn   btn-outline-dark" id="openClassificationModalBtn"
-                        value="add" (click)="openClassifyItemModal()">
-                    <i class="fa fa-folder-open-o"> </i> Classify this {{ elt.elementType | uppercase}}
+                <button id="openClassificationModalBtn" mat-raised-button (click)="openClassifyItemModal()">
+                    <mat-icon>folder_open</mat-icon> Classify this {{ elt.elementType | uppercase}}
                 </button>
                 <div id="classificationBody" class="overflowHidden">
                     <cde-classification-view [elt]="elt" (confirmDelete)="confirmDelete($event);">
@@ -41,8 +40,8 @@
             </div>
             <div class="clearfix"></div>
             <div class="form-group">
-                <button class="btn  btn-warning ml-sm-5" (click)="cancelCreateForm();"> Cancel</button>
-                <button id="submit" type="submit" (click)="createForm();" class="btn   btn-success"
+                <button (click)="cancelCreateForm()" mat-raised-button color="accent"> Cancel</button>
+                <button id="submit" type="submit" (click)="createForm()" mat-raised-button color="primary"
                         [disabled]="!dataElementForm.form.valid"> Submit
                 </button>
             </div>
