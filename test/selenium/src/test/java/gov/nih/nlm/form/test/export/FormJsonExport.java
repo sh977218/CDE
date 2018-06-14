@@ -23,7 +23,7 @@ public class FormJsonExport extends NlmCdeBaseTest {
                 "\"valueMeaningName\":\"Yes\"",
                 "\"registrationState\":{\"registrationStatus\":\"Qualified\"}",
                 "\"stewardOrg\":{\"name\":\"NINDS\"}",
-                "\"naming\":[{\"designation\":\"Adverse Event Tracking Log\""
+                "\"designations\":[{\"designation\":\"Adverse Event Tracking Log\""
         };
 
         String response = findElement(By.cssSelector("HTML body pre")).getAttribute("innerHTML");

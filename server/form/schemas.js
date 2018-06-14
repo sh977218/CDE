@@ -18,7 +18,6 @@ const questionSchema = new Schema({
     cde: {
         tinyId: sharedSchemas.stringType
         , name: sharedSchemas.stringType
-        , naming: [sharedSchemas.namingSchema]
         , designations: [sharedSchemas.designationSchema]
         , definitions: [sharedSchemas.definitionSchema]
         , datatype: sharedSchemas.stringType
@@ -91,7 +90,6 @@ for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
 exports.formJson = {
     elementType: Object.assign({default: 'form', enum: ['form']}, sharedSchemas.stringType)
     , tinyId: Object.assign({index: true}, sharedSchemas.stringType)
-    , naming: [sharedSchemas.namingSchema]
     , designations: [sharedSchemas.designationSchema]
     , definitions: [sharedSchemas.definitionSchema]
     , stewardOrg: {
