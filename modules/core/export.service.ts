@@ -18,23 +18,12 @@ import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'shared/syste
 
 @Injectable()
 export class ExportService {
-    progressAlert: Alert;
 
     constructor(private alertService: AlertService,
                 private registrationValidatorService: RegistrationValidatorService,
                 private elasticService: ElasticService,
                 protected userService: UserService,
                 protected http: HttpClient) {}
-
-    exportProgressCb (msg, terminate?) {
-        if (!this.progressAlert || this.progressAlert.expired) {
-            this.progressAlert = this.alertService.addAlert('success', msg);
-            this.progressAlert.persistant = true;
-        } else {
-            this.progressAlert.setMessage(msg);
-        }
-        if (terminate) this.progressAlert.persistant = false;
-    }
 
     async resultToCsv (result) {
         let settings = this.elasticService.searchSettings;
@@ -85,7 +74,7 @@ export class ExportService {
                                     else c.linkedForms = esForm.tinyId;
                                 });
                             });
-                            this.exportProgressCb('Attaching linked forms ' + Math.trunc(100 * formCounter / totalNbOfForms) + '%');
+                            this.alertService.addAlert('success', 'Attaching linked forms ' + Math.trunc(100 * formCounter / totalNbOfForms) + '%');
                         }
                         return true;
                     } else return false;
@@ -121,9 +110,10 @@ export class ExportService {
         }
 
         if (type !== 'validationRules') {
-            this.exportProgressCb('Your export is being generated, please wait.');
+            this.alertService.addAlert("", 'Your export is being generated, please wait.');
         }
-        this.exportProgressCb('Fetching ' + module + 's. Please wait...');
+
+        this.alertService.addAlert("", 'Fetching ' + module + 's. Please wait...');
         this.elasticService.getExport(
             this.elasticService.buildElasticQuerySettings(exportSettings.searchSettings), module || 'cde', (err, result) => {
                 if (err) {
@@ -136,12 +126,12 @@ export class ExportService {
                         let csv = await this.resultToCsv(result);
                         let blob = new Blob([csv], {type: 'text/csv'});
                         saveAs(blob, 'SearchExport.csv');
-                        this.exportProgressCb('Export downloaded.', true);
+                        this.alertService.addAlert("", 'Export downloaded.');
                     },
                     'json': result => {
                         let blob = new Blob([JSON.stringify(result)], {type: 'application/json'});
                         saveAs(blob, 'SearchExport.json');
-                        this.exportProgressCb('Export downloaded.', true);
+                        this.alertService.addAlert("", 'Export downloaded.');
                     },
                     'xml': result => {
                         let zip = new JSZip();
@@ -197,19 +187,19 @@ export class ExportService {
     }
 
     async quickBoardExport(elts) {
-        this.exportProgressCb('Fetching cdes. Please wait...');
+        this.alertService.addAlert("", 'Fetching cdes. Please wait...');
         let csv = await this.resultToCsv(elts);
         if (csv) {
             let blob = new Blob([csv], {type: 'text/csv'});
             saveAs(blob, 'QuickBoardExport' + '.csv');
-            this.exportProgressCb('Export downloaded.', true);
+            this.alertService.addAlert("", 'Export downloaded.');
         } else {
             this.alertService.addAlert('danger', 'Something went wrong, please try again in a minute.');
         }
     }
 
     async formCdeExport (form) {
-        this.exportProgressCb('Fetching cdes. Please wait...');
+        this.alertService.addAlert("", 'Fetching cdes. Please wait...');
         let elts = [];
         for (let qCde of getFormCdes(form)) {
             const cde = await this.http.get<DataElement>('/de/' + qCde.tinyId).toPromise().catch(_noop);
@@ -220,7 +210,7 @@ export class ExportService {
         if (csv) {
             let blob = new Blob([csv], {type: 'text/csv'});
             saveAs(blob, 'FormCdes-' + form.tinyId + '.csv');
-            this.exportProgressCb('Export downloaded.', true);
+            this.alertService.addAlert("", 'Export downloaded.');
         } else {
             this.alertService.addAlert('danger', 'Something went wrong, please try again in a minute.');
         }
