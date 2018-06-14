@@ -36,40 +36,33 @@
         {{elt?.designations[0].designation}}
     </h1>
     <div class="pull-left">
-        <div class="dropdown float-left">
-            <button id="export" class="btn btn-outline-dark dropdown-toggle mr-1" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-download mr-1"></i><span class="d-none d-sm-inline-block">Export</span>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="export">
-                <li class="dropdown-item">
-                    <a id='jsonExport' href="deById/{{elt._id}}" target="_blank">
-                        JSON File, NIH/CDE Schema</a>
-                    <a href="/schema/cde" target="_blank"><i class="fa fa-info-circle"></i></a>
-                </li>
-                <li class="dropdown-item">
-                    <a id='xmlExport' href="deById/{{elt._id}}?type=xml" target="_blank">
-                        XML File, NIH/CDE Schema</a>
-                </li>
-            </ul>
-        </div>
-        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
-                class="btn   btn-outline-dark"
+        <button id="export" class="mr-1" mat-raised-button [matMenuTriggerFor]="exportMenu">
+            <mat-icon>play_for_work</mat-icon>
+            <span class="d-none d-sm-inline-block"> Export <mat-icon>arrow_drop_down</mat-icon></span>
+        </button>
+        <mat-menu #exportMenu>
+            <a id='jsonExport' href="deById/{{elt._id}}" target="_blank" mat-menu-item>
+                JSON File, NIH/CDE Schema</a>
+            <a href="/schema/cde" target="_blank" mat-menu-item><i class="fa fa-info-circle"></i></a>
+            <a id='xmlExport' href="deById/{{elt._id}}?type=xml" target="_blank" mat-menu-item>
+                XML File, NIH/CDE Schema</a>
+        </mat-menu>
+        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard" mat-raised-button
                 title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
-            <i class="fa fa-plus mr-1"></i><span class="d-none d-sm-inline-block">Add to Quick Board</span>
+            <mat-icon>add</mat-icon><span class="d-none d-sm-inline-block"> Add to Quick Board</span>
         </button>
-        <button id="addToBoard" class="btn   btn-outline-dark" title="Add to Board"
+        <button id="addToBoard" mat-raised-button title="Add to Board"
                 (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
-            <i class="fa fa-thumb-tack mr-1"></i><span class="d-none d-sm-inline-block">Add to Board</span>
+            <i class="fa fa-thumb-tack mr-1"></i><span class="d-none d-sm-inline-block"> Add to Board</span>
         </button>
-        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyCdeBtn" class="btn   btn-outline-dark"
+        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyCdeBtn" mat-raised-button
                 title="Copy CDE" (click)="openCopyElementModal()">
-            <i class="fa fa-clone mr-1"></i><span class="d-none d-sm-inline-block">Copy</span>
+            <mat-icon>file_copy</mat-icon><span class="d-none d-sm-inline-block"> Copy</span>
         </button>
-        <button id="discussBtn" class="btn   btn-outline-dark" title="Discuss CDE"
+        <button id="discussBtn" title="Discuss CDE" mat-raised-button
                 (click)="commentMode = !commentMode;">
-            <i class="fa fa-comment mr-1" [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">
-            </i><span class="d-none d-sm-inline-block">Discuss</span>
+            <mat-icon [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">comment
+            </mat-icon><span class="d-none d-sm-inline-block"> Discuss</span>
         </button>
         <span class="navbar-expand-md navbar-light">
             <button class="btn btn-outline-dark navbar-toggler"
