@@ -311,7 +311,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
         let de = new DataElement();
         de.designations.push({designation: '', tags: ['Question Text']});
-        de.naming.push({designation: '', tags: ['Question Text']});
         de.valueDomain.datatype = 'Text';
         return de;
     }

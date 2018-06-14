@@ -4,7 +4,7 @@ import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstra
 
 import { AlertService } from '_app/alert/alert.service';
 import { FormService } from 'nativeRender/form.service';
-import { Definition, Designation, Naming } from 'shared/models.model';
+import { Definition, Designation } from 'shared/models.model';
 import { CdeForm, FormSection } from 'shared/form/form.model';
 
 @Component({
