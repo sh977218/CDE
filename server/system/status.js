@@ -2,7 +2,7 @@ const async = require('async');
 const moment = require('moment');
 
 const config = require('./parseConfig');
-const dbLogger = require('./dbLogger.js');
+const dbLogger = require('../log/dbLogger.js');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_board = require('../board/mongo-board');

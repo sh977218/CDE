@@ -32,7 +32,7 @@ export class ClientErrorsComponent implements OnInit {
     ) {}
 
     gotoPage () {
-        this.http.post<ClientErrorRecord[]>('/getClientErrors', {
+        this.http.post<ClientErrorRecord[]>('/server/log/clientErrors', {
             skip: (this.currentPage - 1) * 50,
             limit: 50
         }).subscribe(response => {

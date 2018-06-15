@@ -18,7 +18,7 @@ export class UserService {
             debounceTime(300),
             distinctUntilChanged(),
             switchMap(term => term.length < 3 || !isOrgAdmin(this.user) ? [] :
-                this.http.get<any>('/searchUsers/' + term).pipe(
+                this.http.get<any>('/server/user/searchUsers/' + term).pipe(
                     map((r: any) => r.users.map(u => u.username)),
                     catchError(() => of([]))
                 )

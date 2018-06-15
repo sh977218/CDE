@@ -13,7 +13,7 @@ const js2xml = require('js2xmlparser');
 const classificationNode_system = require('../system/classificationNode');
 const usersrvc = require('../system/usersrvc');
 const adminItemSvc = require('../system/adminItemSvc.js');
-const dbLogger = require('../system/dbLogger.js');
+const dbLogger = require('../log/dbLogger.js');
 const boardsvc = require('./boardsvc');
 
 exports.init = function (app, daoManager) {

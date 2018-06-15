@@ -8,7 +8,7 @@ const MongoStore = require('connect-mongo')(session);
 
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const connHelper = require('./connections');
-const dbLogger = require('./dbLogger');
+const dbLogger = require('../log/dbLogger');
 const logging = require('./logging.js');
 const daoManager = require('./moduleDaoManager');
 const config = require('./parseConfig');
@@ -229,15 +229,6 @@ exports.userByName = (name, callback) => {
 };
 exports.usersByName = (name, callback) => {
     User.find({'username': new RegExp('^' + name + '$', "i")}, userProject, callback);
-};
-
-exports.usersByPartialName = (name, callback) => {
-    User.find({'username': new RegExp(name, 'i')}, (err, users) => {
-        for (let i = 0; i < users.length; i++) {
-            delete users[i].password;
-        }
-        callback(err, users);
-    });
 };
 
 exports.usernamesByIp = (ip, callback) => {

@@ -69,7 +69,7 @@ export class PushNotificationSubscriptionService {
     }
 
     static handleError(error) {
-        fetch('./logClientException', {
+        fetch('./server/log/clientExceptionLogs', {
             method: 'post',
             headers: {
                 'Content-type': 'application/json'
