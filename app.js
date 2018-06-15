@@ -101,7 +101,7 @@ const releaseHackersFrequency = 5 * 60 * 1000;
 const keepHackerForDuration = 1000 * 60 * 60 * 24;
 // every minute, get latest list.
 setInterval(() => {
-    dbLogger.getTrafficFilter(record => {
+    traffic.getTrafficFilter(record => {
         blackIps.length = 0;
         // release IPs, but keep track for a day
         record.ipList = record.ipList.filter(ipElt => ((Date.now() - ipElt.date) < (keepHackerForDuration * ipElt.strikes)));
