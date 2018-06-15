@@ -1,6 +1,6 @@
 var config = require('../system/parseConfig')
     , sharedElastic = require('../system/elastic.js')
-    , dbLogger = require('../system/dbLogger.js')
+    , dbLogger = require('../log/dbLogger.js')
     , logging = require('../system/logging.js')
     , elasticsearch = require('elasticsearch')
     , esInit = require('../system/elasticSearchInit')

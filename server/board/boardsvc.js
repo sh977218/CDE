@@ -1,6 +1,6 @@
 const mongo_board = require('./mongo-board');
 const _ = require("lodash");
-const dbLogger = require('../system/dbLogger');
+const dbLogger = require('../log/dbLogger');
 
 let propMapping = {
     'cde': {id: "deTinyId", name: "deName"},

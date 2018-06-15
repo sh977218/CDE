@@ -44,7 +44,7 @@ export class CdeAppComponent implements OnInit {
         let submitError = '<div id="feedback-submit-error"><div class="feedback-logo">Feedback</div><p>Sadly an error occured while sending your feedback. Please try again.</p><button class="feedback-close-btn  feedback-btn-blue">OK</button><div class="feedback-wizard-close"></div></div>';
 
         ($ as any).feedback({
-            ajaxURL: '/feedback/report',
+            ajaxURL: '/server/log/feedback/report',
             postBrowserInfo: true,
             postHTML: false,
             postURL: true,

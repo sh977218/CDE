@@ -1,21 +1,19 @@
-var config = require('../system/parseConfig');
-var elastic = require('./elastic');
-var schemas_system = require('../system/schemas');
-var connHelper = require('../system/connections');
+const config = require('../system/parseConfig');
+const schemas = require('../log/schemas');
+const connHelper = require('../system/connections');
+const conn = connHelper.establishConnection(config.database.log);
+const StoredQueryModel = conn.model('StoredQuery', schemas.storedQuerySchema);
+
+exports.StoredQueryModel = StoredQueryModel;
+
+exports.getStream = condition => {
+    return StoredQueryModel.find(condition).sort({_id: -1}).cursor();
+};
+exports.count = (condition, callback) => {
+    StoredQueryModel.count(condition, callback);
+};
+
 
 exports.type = "storedQuery";
 exports.name = "storedQueries";
 
-var conn = connHelper.establishConnection(config.database.log);
-
-var StoredQueryModel = conn.model('StoredQuery', schemas_system.storedQuerySchema);
-exports.StoredQueryModel = StoredQueryModel;
-
-exports.getStream = function (condition) {
-    return StoredQueryModel.find(condition).sort({_id: -1}).cursor();
-};
-exports.count = function (condition, callback) {
-    StoredQueryModel.count(condition).exec(function (err, count) {
-        callback(err, count);
-    });
-};

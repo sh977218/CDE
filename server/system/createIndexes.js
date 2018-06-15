@@ -1,7 +1,7 @@
 var config = require('./parseConfig')
     , elasticsearch = require('elasticsearch')
     , esInit = require('./elasticSearchInit')
-    , dbLogger = require('./dbLogger')
+    , dbLogger = require('../log/dbLogger')
     ;
 
 var esClient = new elasticsearch.Client({

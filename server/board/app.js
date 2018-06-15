@@ -12,9 +12,8 @@ const cdesvc = require('../cde/cdesvc');
 const js2xml = require('js2xmlparser');
 const classificationNode_system = require('../system/classificationNode');
 const usersrvc = require('../system/usersrvc');
-const email = require('../system/email');
 const adminItemSvc = require('../system/adminItemSvc.js');
-const dbLogger = require('../system/dbLogger.js');
+const dbLogger = require('../log/dbLogger.js');
 const boardsvc = require('./boardsvc');
 
 exports.init = function (app, daoManager) {
@@ -352,20 +351,6 @@ exports.init = function (app, daoManager) {
                         return u.username;
                     }).forEach(function (username) {
                         mongo_data_system.userByName(username, function (err, u) {
-                            if (u && u.email && u.email.length > 0) {
-                                email.emailUsers({
-                                    subject: "You you been added to review board: " + board.name,
-                                    body: "go to board to review and response."
-                                }, [u], function (e) {
-                                    if (e) {
-                                        dbLogger.logError({
-                                            message: "Unable to email user",
-                                            stack: e,
-                                            details: "user: " + u.username + " in board: " + board._id
-                                        });
-                                    }
-                                });
-                            }
                             if (u && u.username && u.username.length > 0) {
                                 mongo_data_system.Message.findOneAndUpdate({
                                     'type': 'BoardApproval',
@@ -420,42 +405,32 @@ exports.init = function (app, daoManager) {
             }).map(function (u) {
                 return u.username;
             }).forEach(function (username) {
-                mongo_data_system.userByName(username, function (err, user) {
-                    if (err) res.status.send(500);
-                    if (user && user.email && user.email.length > 0) {
-                        email.emailUsers({
-                            subject: "You have a pending board to review: " + board.name,
-                            body: "go to board to review and response."
-                        }, [user], function (e) {
-                            if (e) res.status(500).send();
-                            mongo_data_system.Message.findOneAndUpdate({
-                                'type': 'BoardApproval',
-                                'author.authorType': "user",
-                                'author.name': req.user.username,
-                                'recipient.recipientType': "user", 'recipient.name': user.username,
-                                'typeBoardApproval.element.eltType': 'board',
-                                'typeBoardApproval.element.name': board.name,
-                                'typeBoardApproval.element.eltId': board._id
-                            }, {
-                                $set: {date: new Date()},
-                                $push: {
-                                    "states": {
-                                        $each: [
-                                            {
-                                                "action": "Filed",
-                                                "date": new Date(),
-                                                "comment": "board"
-                                            }],
-                                        $position: 0
-                                    }
+                mongo_data_system.userByName(username, dbLogger.handleGenericError({res: res, origin: '/board/remindReview'}, user => {
+                    if (user) {
+                        mongo_data_system.Message.findOneAndUpdate({
+                            'type': 'BoardApproval',
+                            'author.authorType': "user",
+                            'author.name': req.user.username,
+                            'recipient.recipientType': "user", 'recipient.name': user.username,
+                            'typeBoardApproval.element.eltType': 'board',
+                            'typeBoardApproval.element.name': board.name,
+                            'typeBoardApproval.element.eltId': board._id
+                        }, {
+                            $set: {date: new Date()},
+                            $push: {
+                                "states": {
+                                    $each: [
+                                        {
+                                            "action": "Filed",
+                                            "date": new Date(),
+                                            "comment": "board"
+                                        }],
+                                    $position: 0
                                 }
-                            }, {upsert: true}, function (err) {
-                                if (err) res.status(500).send();
-                                else res.send();
-                            })
-                        });
+                            }
+                        }, {upsert: true}, dbLogger.handleGenericError({res: res, origin: '/board/remindReview'}, () => res.send));
                     }
-                });
+                }));
             });
         });
     });

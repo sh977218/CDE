@@ -2,7 +2,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap/dropdown/dropdown.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 
@@ -21,6 +20,8 @@ import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { NotificationsComponent } from "./notifications/notifications.component";
 import { MatSnackBarModule } from "@angular/material";
+import { MatBadgeModule, MatIconModule, MatMenuModule, MatToolbarModule } from "@angular/material";
+import { TimeAgoPipeModule } from "time-ago-pipe/es5";
 
 @NgModule({
     imports: [
@@ -31,11 +32,15 @@ import { MatSnackBarModule } from "@angular/material";
             prefix: 'nlmcde',
             storageType: 'localStorage'
         }),
-        NgbDropdownModule.forRoot(),
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
+        MatBadgeModule,
+        MatIconModule,
+        MatMenuModule,
         MatSnackBarModule,
+        MatToolbarModule,
+        TimeAgoPipeModule,
     ],
     declarations: [
         CdeAppComponent,

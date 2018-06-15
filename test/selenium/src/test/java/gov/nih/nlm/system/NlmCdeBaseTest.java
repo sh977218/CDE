@@ -598,12 +598,6 @@ public class NlmCdeBaseTest {
     }
 
     protected void clickElement(By by) {
-        // Wait for angular digest cycle.
-        try {
-            String script = "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);";
-            ((JavascriptExecutor) driver).executeAsyncScript(script, "");
-        } catch (Exception e) {
-        }
         try {
             wait.until(ExpectedConditions.presenceOfElementLocated(by));
             scrollToView(by);
@@ -677,6 +671,16 @@ public class NlmCdeBaseTest {
     protected void newVersion(String changeNote) {
         if (changeNote == null || changeNote.equals("")) changeNote = "Change note for change number 1";
         clickElement(By.id("openSave"));
+
+        int i = 5;
+        while (i >= 0) {
+            if (i == 0) Assert.fail("Unexpected y value");
+            if (driver.findElement(By.id("newVersion")) == null) {
+                hangon(1);
+                i--;
+            } else i = -1;
+        }
+
         if (findElement(By.id("newVersion")).getText().length() > 0) textPresent("has already been used");
         findElement(By.id("changeNote")).clear();
         findElement(By.id("changeNote")).sendKeys(changeNote);
@@ -1607,7 +1611,6 @@ public class NlmCdeBaseTest {
 
 
     protected void swaggerApi(String api, String text, String tinyId, String version) {
-        clickElement(By.id("menu_help_link"));
         clickElement(By.id("apiDocumentationLink"));
         hangon(1);
         driver.switchTo().frame(findElement(By.cssSelector("iframe")));

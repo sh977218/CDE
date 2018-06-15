@@ -24,7 +24,7 @@ export class AppLogComponent {
             fromDate: this.fromDate,
             toDate: this.toDate
         };
-        this.http.post<any>('/applogs', postBody).subscribe(res => {
+        this.http.post<any>('/server/log/appLogs', postBody).subscribe(res => {
             if (res.totalItems) this.totalItems = res.totalItems;
             if (res.itemsPerPage) this.itemsPerPage = res.itemsPerPage;
             this.gridLogEvents = res.logs.map(log => {

@@ -15,7 +15,7 @@ export class DailyUsageComponent {
     ) {}
 
     generate () {
-        this.http.get<any>('/logUsageDailyReport').subscribe(res => {
+        this.http.get<any>('/server/log/dailyUsageReportLogs').subscribe(res => {
             this.dailyUsage = res;
             this.dailyUsage.forEach(record => {
                 record.daysAgo = DailyUsageComponent.generateDaysAgo(record._id.year, record._id.month, record._id.dayOfMonth);

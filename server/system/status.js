@@ -2,7 +2,7 @@ const async = require('async');
 const moment = require('moment');
 
 const config = require('./parseConfig');
-const dbLogger = require('./dbLogger.js');
+const dbLogger = require('../log/dbLogger.js');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_board = require('../board/mongo-board');
@@ -10,7 +10,6 @@ const mongo_storedQuery = require('../cde/mongo-storedQuery');
 const mongo_data = require('./mongo-data');
 const elastic = require('./elastic');
 const esInit = require('./elasticSearchInit');
-const email = require('./email');
 const pushNotification = require('./pushNotification');
 
 let app_status = this;
@@ -153,10 +152,6 @@ setInterval(() => {
         });
 
         if (!!lastReport && newReport !== lastReport) {
-            let emailContent = {
-                subject: "ElasticSearch Status Change " + config.name
-                , body: newReport
-            };
             let msg = {
                 title: 'Elastic Search Index Issue',
                 options: {
@@ -180,27 +175,6 @@ setInterval(() => {
 
         }
         lastReport = newReport;
-
-        let timeDiff = config.status.timeouts.statusCheck / 1000 + 30;
-        mongo_data.getClusterHostStatuses(function (err, statuses) {
-            let now = moment();
-            let activeNodes = statuses.filter(s => now.diff(moment(s.lastUpdate), 'seconds') < timeDiff)
-                .map(s => s.hostname + ":" + s.port).sort();
-            if (!currentActiveNodes) currentActiveNodes = activeNodes;
-            else {
-                if (!(currentActiveNodes.length === activeNodes.length && currentActiveNodes.every((v, i) => v === activeNodes[i]))) {
-                    let emailContent = {
-                        subject: "Server Configuration Change"
-                        , body: "Server Configuration Change from " + currentActiveNodes + " to " + activeNodes
-                    };
-                    mongo_data.siteAdmins(function (err, users) {
-                        email.emailUsers(emailContent, users, function () {
-                        });
-                    });
-                }
-                currentActiveNodes = activeNodes;
-            }
-        });
     });
 }, config.status.timeouts.statusCheck);
 

@@ -7,11 +7,10 @@ const md5 = require("md5-file");
 const clamav = require('clamav.js');
 const config = require('./parseConfig');
 const logging = require('./logging');
-const email = require('./email');
 const streamifier = require('streamifier');
 const ioServer = require("./ioServer");
 const usersrvc = require('./usersrvc');
-const dbLogger = require('./dbLogger');
+const dbLogger = require('../log/dbLogger');
 const classificationNode = require('./classificationNode');
 const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared.js');
 const mongo_cde = require('../cde/mongo-cde');
@@ -183,78 +182,13 @@ exports.createApprovalMessage = function (user, role, type, details) {
         }]
     };
 
-    let emailContent = {
-        subject: "CDE Message Pending",
-        body: "You have a pending message in NLM CDE application."
-    };
-
     if (type === "CommentApproval") message.typeCommentApproval = details;
     if (type === "AttachmentApproval") message.typeAttachmentApproval = details;
 
-    mongo_data_system.usersByRole(role, function (err, users) {
-        email.emailUsers(emailContent, users);
+    mongo_data_system.usersByRole(role, (err, users) => {
         mongo_data_system.createMessage(message);
     });
 };
-
-// email all users for all new approval messages every 4 hours
-setInterval(function () {
-    var d = new Date();
-    d.setHours(d.getHours() - 4);
-    var urlMap = {
-        'cde': config.publicUrl + '/deView?tinyId=',
-        'form': config.publicUrl + '/formView?tinyId=',
-        'board': config.publicUrl + '/board/'
-    };
-
-    mongo_data_system.Comment.find({
-        replies: {
-            $elemMatch: {
-                created: {$gte: d},
-                status: "active"
-            }
-        }
-    }, function (err, comments) {
-        var emails = {};
-
-        comments.forEach(function (comment) {
-            var usernamesForThisComment = [];
-            var allComments = [];
-            allComments.push(comment);
-            if (comment.replies && comment.replies.length > 0) {
-                allComments = allComments.concat(comment.get('replies'));
-                allComments.pop();
-            }
-            allComments.forEach(function (commentOrReply) {
-                if (commentOrReply.status === 'active' &&
-                    usernamesForThisComment.indexOf(commentOrReply.username) === -1) {
-
-                    if (!emails[commentOrReply.username]) emails[commentOrReply.username] = [];
-                    usernamesForThisComment.push(commentOrReply.username);
-                    let message = 'Somebody replied to one of your comments. See the comment here: ' +
-                        urlMap[comment.element.eltType] + comment.element.eltId;
-                    if (emails[commentOrReply.username].indexOf(message) === -1) {
-                        emails[commentOrReply.username].push(message);
-                    }
-                }
-            });
-        });
-
-        Object.keys(emails).forEach(function (username) {
-            mongo_data_system.userByName(username, function (err, u) {
-                if (u && u.email && u.email.length > 0) {
-                    email.emailUsers({
-                        subject: "Somebody replied to your comment.",
-                        body: emails[username].join('\n')
-                    }, [u]);
-                }
-            });
-        });
-
-    });
-    // TODO change this time:
-}, 1000 * 60 * 60 * 4);
-
 
 exports.addComment = function (req, res, dao) {
     if (req.isAuthenticated()) {
