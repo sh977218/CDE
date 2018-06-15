@@ -25,7 +25,7 @@ export class FeedbackIssuesComponent implements OnInit {
                 public modalService: NgbModal) {}
 
     gotoPage () {
-        this.http.post<FeedbackErrorRecord[]>('/getFeedbackIssues', {
+        this.http.post<FeedbackErrorRecord[]>('/server/log/feedbackIssues', {
             skip: (this.currentPage - 1) * 5,
             limit: 5
         }).subscribe(response => {

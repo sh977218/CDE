@@ -3,7 +3,7 @@ let Readable = require('stream').Readable;
 let md5_file = require("md5-file");
 let md5 = require("md5");
 let mongo_data = require('../system/mongo-data');
-let dbLogger = require('../system/dbLogger');
+let dbLogger = require('../log/dbLogger');
 
 function storeHtmlInDb(req, res, form, fileStr) {
     let readable = new Readable();

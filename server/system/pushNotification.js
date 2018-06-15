@@ -2,7 +2,7 @@ const _ = require('lodash');
 const webpush = require('web-push');
 
 const config = require('./parseConfig');
-const dbLogger = require('./dbLogger.js');
+const dbLogger = require('../log/dbLogger.js');
 const mongo_data = require('./mongo-data');
 
 exports.checkDatabase = (callback = _.noop) => {
@@ -123,11 +123,9 @@ exports.triggerPushMsg = (push, dataToSend) => {
     );
     return webpush.sendNotification(push.subscription, dataToSend)
         .catch(err => {
-            if (err.name === 'WebPushError' && err.message === 'Received unexpected response code') { // endpoint gone
-                push.remove()
-                // .then(() => dbLogger.consoleLog('PushNotification trigger removed: ' + pushReg.userId + ' ' + pushReg.subscription.endpoint))
-                    .catch(dbLogger.logError);
-            } else { // currently unknown error
+            if (err.name === 'WebPushError' && err.message === 'Received unexpected response code') {
+                push.remove().catch(dbLogger.logError);
+            } else {
                 dbLogger.logError({
                     message: "Error pushing notification: " + dataToSend,
                     origin: "pushNotification.triggerPushMsg",

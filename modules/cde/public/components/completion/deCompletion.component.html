@@ -15,9 +15,7 @@
         </div>
         <div class="card-body" [ngbCollapse]="!de.isCollapsed">
             <div class="row">
-                <div class="col-12">
-                    {{de.definitions[0].definition}}
-                </div>
+                <div class="col-12" *ngIf="de.definitions[0]">{{de.definitions[0].definition}}</div>
             </div>
             <div class="row" *ngIf="de.valueDomain.permissibleValues.length > 0">
                 <div class="col-12">

@@ -27,7 +27,7 @@ export class UsersMgtComponent {
     }
 
     addNewUser() {
-        this.http.put('/user', {username: this.newUsername}, {responseType: 'text'}).subscribe(
+        this.http.post('/server/user/addUser', {username: this.newUsername}, {responseType: 'text'}).subscribe(
             () => this.Alert.addAlert('success', 'User created'),
             () => this.Alert.addAlert('danger', 'Cannot create user. Does it already exist?')
         );
@@ -40,7 +40,7 @@ export class UsersMgtComponent {
 
     searchUsers() {
         let uname = this.search.username.username ? this.search.username.username : this.search.username;
-        this.http.get<any>('/searchUsers/' + uname).subscribe(
+        this.http.get<any>('/server/user/searchUsers/' + uname).subscribe(
             result => {
                 this.foundUsers = result.users;
             });
@@ -56,11 +56,4 @@ export class UsersMgtComponent {
             .subscribe(() => this.Alert.addAlert('success', 'Roles saved.'));
     }
 
-    updateTesterStatus(user, newValue) {
-        user.tester = newValue;
-        this.http.post('/updateTesterStatus', user).subscribe(
-            () => {
-                this.Alert.addAlert('success', 'Saved.');
-            });
-    }
 }

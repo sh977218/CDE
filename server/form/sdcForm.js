@@ -1,6 +1,6 @@
 let validator = require('xsd-schema-validator');
 let builder = require('xmlbuilder');
-let dbLogger = require('../system/dbLogger.js');
+let dbLogger = require('../log/dbLogger.js');
 
 function addQuestion(parent, question) {
     let newQuestion = {
