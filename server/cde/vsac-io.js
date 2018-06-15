@@ -3,7 +3,7 @@ const querystring = require('querystring');
 const config = require('config');
 const request = require('request');
 
-const dbLogger = require('../system/dbLogger.js');
+const dbLogger = require('../log/dbLogger.js');
 
 const authData = querystring.stringify({
     username: config.vsac.username

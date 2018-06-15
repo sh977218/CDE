@@ -20,7 +20,9 @@ const compress = require('compression');
 const helmet = require('helmet');
 const ioServer = require('./server/system/ioServer');
 const winston = require('winston');
-const dbLogger = require('./server/system/dbLogger');
+const dbLogger = require('./server/log/dbLogger');
+const authorization = require('./server/system/authorization');
+const traffic  = require('./server/system/traffic');
 
 require('./server/system/elastic').initEs();
 
@@ -123,14 +125,14 @@ app.use(function banHackers(req, res, next) {
     banEndsWith.forEach(ban => {
         if (req.originalUrl.slice(-(ban.length)) === ban) {
             let ip = getRealIp(req);
-            dbLogger.banIp(ip, req.originalUrl);
+            traffic.banIp(ip, req.originalUrl);
             blackIps.push(ip);
         }
     });
     banStartsWith.forEach(ban => {
         if (req.originalUrl.substr(0, ban.length) === ban) {
             let ip = getRealIp(req);
-            dbLogger.banIp(ip, req.originalUrl);
+            traffic.banIp(ip, req.originalUrl);
             blackIps.push(ip);
         }
     });
@@ -147,18 +149,6 @@ app.use(function preventSessionCreation(req, res, next) {
         session(expressSettings)(req, res, next);
     } else next();
 
-});
-
-app.use(function (req, res, next) {
-    try {
-        if (req.headers.host === "cde.nlm.nih.gov") {
-            if (req.user && req.user.tester) {
-                localRedirectProxy.web(req, res, {target: config.internalRules.redirectTo}, next);
-            } else return next();
-        } else return next();
-    } catch (e) {
-        return next();
-    }
 });
 
 app.use("/cde/public", express.static(path.join(__dirname, '/modules/cde/public')));
@@ -238,6 +228,11 @@ express.response.render = function (view, module, msg) {
 };
 
 try {
+    let logModule = require("./server/log/index").module({
+        feedbackLog: [authorization.isOrgAuthorityMiddleware]
+    });
+    app.use('/server/log', logModule);
+
     require(path.join(__dirname, './server/cde/app.js')).init(app, daoManager);
 
     require(path.join(__dirname, './server/system/app.js')).init(app, daoManager);
@@ -248,7 +243,11 @@ try {
 
     require(path.join(__dirname, './modules/swagger/index.js')).init(app);
 
-    app.use('/server/user', require('./server/user/index').module);
+    let userModule = require("./server/user/index").module({
+        search: [authorization.isOrgAdminMiddleware],
+        manage: [authorization.isOrgAuthorityMiddleware]
+    });
+    app.use('/server/user', userModule);
 } catch (e) {
     console.log(e.stack);
     process.exit();
