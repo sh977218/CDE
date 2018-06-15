@@ -6,7 +6,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 
 import { UserService } from '_app/user.service';
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { ElasticQueryResponse } from 'shared/models.model';
 

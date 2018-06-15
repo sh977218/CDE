@@ -2,13 +2,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap/alert/alert.module';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap/dropdown/dropdown.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 
-import { AlertComponent } from '_app/alert/alert.component';
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { BackForwardService } from '_app/backForward.service';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
@@ -33,7 +31,6 @@ import { MatSnackBarModule } from "@angular/material";
             prefix: 'nlmcde',
             storageType: 'localStorage'
         }),
-        NgbAlertModule.forRoot(),
         NgbDropdownModule.forRoot(),
         // internal
         CdeAppRoutingModule,
@@ -41,7 +38,6 @@ import { MatSnackBarModule } from "@angular/material";
         MatSnackBarModule,
     ],
     declarations: [
-        AlertComponent,
         CdeAppComponent,
         NavigationComponent,
         NotificationsComponent,

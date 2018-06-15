@@ -3,7 +3,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 

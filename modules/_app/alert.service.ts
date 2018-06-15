@@ -8,7 +8,6 @@ export class Alert {
     message: string;
     type: string;
     expired: Boolean;
-    persistant: Boolean;
 
     constructor (_type: string, _message: string) {
         this.type = _type;

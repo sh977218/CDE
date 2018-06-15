@@ -19,7 +19,7 @@ import { Hotkey, HotkeysService } from "angular2-hotkeys";
 import _isEmpty from 'lodash/isEmpty';
 
 import { ElasticService } from '_app/elastic.service';
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
