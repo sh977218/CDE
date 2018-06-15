@@ -15,7 +15,9 @@
     "install": "napa",
     "moveMaterialCss": "cpx ./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css ./node_modules ",
     "postinstall": "npm run moveMaterialCss",
-    "start": "node app.js"
+    "start": "node app.js",
+    "buildAppStats": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_app/webpack.prod.js --profile --json > compilation-stats.json",
+    "bundle-report": "webpack-bundle-analyzer compilation-stats.json"
   },
   "engines": {
     "node": "0.12.x",
@@ -188,7 +190,7 @@
     "url-loader": "0.6.2",
     "web-animations-js": "2.3.1",
     "webpack": "4.8.3",
-    "webpack-bundle-analyzer": "2.9.0",
+    "webpack-bundle-analyzer": "^2.9.0",
     "webpack-cli": "2.1.4",
     "webpack-merge": "^4.1.2",
     "zone.js": "0.8.26"
@@ -200,7 +202,7 @@
     {
       "path": "./dist/app/cde.js",
       "compression": "none",
-      "maxSize": "1.14 MB"
+      "maxSize": "1.34 MB"
     },
     {
       "path": "./dist/app/cde.css",
@@ -240,7 +242,7 @@
     {
       "path": "./modules/system/views/home-launch.ejs",
       "compression": "none",
-      "maxSize": "418 kB"
+      "maxSize": "508 kB"
     }
   ]
 }
