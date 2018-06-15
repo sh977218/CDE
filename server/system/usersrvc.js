@@ -33,7 +33,7 @@ exports.addSiteAdmin = function(req, res) {
                 res.send("User Added");
             });
         }
-    });  
+    });
 };
 
 exports.removeSiteAdmin = function(req, res) {
@@ -41,12 +41,12 @@ exports.removeSiteAdmin = function(req, res) {
         if (!found) {
             res.send("Unknown Username");
         } else {
-            found.siteAdmin = false;            
+            found.siteAdmin = false;
             found.save(function () {
                 res.send("Site Administrator Removed");
             });
         }
-    });  
+    });
 };
 
 exports.myOrgsAdmins = function(req, res) {

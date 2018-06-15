@@ -1,6 +1,6 @@
 const winston = require('winston');
 const util = require('util');
-const dbLogger = require('./dbLogger.js');
+const dbLogger = require('../log/dbLogger.js');
 const config = require('./parseConfig');
 const noDbLogger = require('./noDbLogger');
 

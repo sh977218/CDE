@@ -1,6 +1,6 @@
 var nodemailer = require('nodemailer')
     , config = require('./parseConfig')
-    , dbLogger = require('./dbLogger')
+    , dbLogger = require('../log/dbLogger')
     , logging = require('./logging');
     
 var transporter = nodemailer.createTransport();    

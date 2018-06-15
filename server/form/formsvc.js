@@ -16,7 +16,7 @@ const odm = require("./odmForm");
 const redCap = require("./redCapForm");
 const publishForm = require("./publishForm");
 const toQuestionnaire = require('@std/esm')(module)('../../shared/mapping/fhir/to/toQuestionnaire');
-const dbLogger = require('../system/dbLogger');
+const dbLogger = require('../log/dbLogger');
 
 const ajv = new Ajv({schemaId: 'auto'}); // current FHIR schema uses legacy JSON Schema version 4
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));

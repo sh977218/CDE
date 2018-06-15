@@ -31,7 +31,7 @@ export class ServerErrorsComponent implements OnInit {
     }
 
     gotoPage () {
-        this.http.post<ServerErrorRecord[]>('/getServerErrors', {
+        this.http.post<ServerErrorRecord[]>('/server/log/serverErrors', {
             skip: (this.currentPage - 1) * 50,
             limit: 50
         }).subscribe(response => {

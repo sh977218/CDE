@@ -1,5 +1,5 @@
 const config = require('../system/parseConfig');
-const dbLogger = require('../system/dbLogger.js');
+const dbLogger = require('../log/dbLogger.js');
 const elasticsearch = require('elasticsearch');
 const esInit = require('../system/elasticSearchInit');
 
