@@ -34,6 +34,7 @@ public class DisplayProfilesTest extends BaseFormTest {
                     findElement(By.xpath(baseXpath + byValueListValueXPath("5th Grade"))).getLocation().y) {
                 hangon(1);
                 i--;
+                hangon(1);
             } else i = -1;
         }
         newFormVersion();
