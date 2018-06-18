@@ -10,13 +10,13 @@
       "es2017",
       "dom"
     ],
-    "module": "ES2015",
+    "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": false,
     "pretty": false,
     "sourceMap": false,
     "suppressImplicitAnyIndexErrors": true,
-    "target": "es5",
+    "target": "es6",
     "typeRoots": [
       "node_modules/@types"
     ]

@@ -11,6 +11,7 @@ module.exports = merge(baseConfig, {
     output: {
         path: path.resolve(__dirname, '../../dist/app'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
         publicPath: '/app/',
+        chunkFilename: '[name].bundle.js',
         filename: '[name].js',
     },
     plugins: [
