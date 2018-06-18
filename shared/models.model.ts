@@ -159,7 +159,6 @@ export abstract class Elt {
     imported: Date;
     isDraft: boolean; // optional, draft only
     lastMigrationScript: string;
-    naming: Naming[] = [];
     designations: Designation[] = [];
     definitions: Definition[] = [];
     origin: string;
@@ -213,7 +212,6 @@ export abstract class Elt {
         // mutable
         copyArray(elt.classification, this.classification, Classification);
         copyArray(elt.comments, this.comments, Comment);
-        copyArray(elt.naming, this.naming, Naming);
         copyArray(elt.designations, this.designations, Designation);
         copyArray(elt.definitions, this.definitions, Definition);
         copyArray(elt.properties, this.properties, Property);
@@ -231,7 +229,7 @@ export abstract class Elt {
         if (this.primaryNameCopy) {
             return this.primaryNameCopy;
         } else {
-            return this.naming[0].designation;
+            return this.designations[0].designation;
         }
     }
 
@@ -275,30 +273,6 @@ export class Definition {
         let newDefinition = Object.assign(new Definition(), definition);
         newDefinition.tags = newDefinition.tags.concat();
         return newDefinition;
-    }
-}
-
-export class Naming {
-    context?: {
-        acceptability: string,
-        contextName: string,
-    };
-    definition?: string;
-    definitionFormat?: string;
-    designation: string;
-    languageCode?: string;
-    source?: string;
-    tags: string[] = [];
-
-    constructor(designation = '') {
-        this.designation = designation;
-    }
-
-    static copy(naming: Naming) {
-        let newNaming = Object.assign(new Naming(), naming);
-        newNaming.context = naming.context ? JSON.parse(JSON.stringify(naming.context)) : undefined;
-        newNaming.tags = naming.tags.concat();
-        return newNaming;
     }
 }
 

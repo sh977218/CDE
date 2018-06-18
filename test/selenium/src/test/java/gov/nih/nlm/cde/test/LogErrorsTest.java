@@ -11,11 +11,11 @@ import static com.jayway.restassured.RestAssured.get;
 public class LogErrorsTest extends NlmCdeBaseTest {
     @Test
     public void logServerErrors() {
-        String response = get(baseUrl + "/triggerServerErrorExpress").asString();
+        String response = get(baseUrl + "/server/log/triggerServerErrorExpress").asString();
         Assert.assertEquals("received", response);
-        response = get(baseUrl + "/triggerServerErrorMongoose").asString();
+        response = get(baseUrl + "/server/log/triggerServerErrorMongoose").asString();
         Assert.assertEquals("received", response);
-        response = get(baseUrl + "/triggerClientError").asString();
+        response = get(baseUrl + "/server/log/triggerClientError").asString();
         Assert.assertEquals("received", response);
 
         mustBeLoggedInAs(nlm_username, nlm_password);

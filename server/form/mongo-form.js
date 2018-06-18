@@ -130,7 +130,7 @@ exports.findForms = function (request, callback) {
     var criteria = {};
     if (request && request.term) {
         criteria = {
-            "naming.designation": new RegExp(request.term)
+            "designations.designation": new RegExp(request.term)
         };
     }
     Form.find(criteria).where("archived").equals(false).exec(callback);
@@ -153,7 +153,7 @@ exports.update = function (elt, user, callback, special) {
 
         let newForm = new Form(elt);
         form.archived = true;
-        if (newForm.naming.length < 1) {
+        if (newForm.designations.length < 1) {
             logging.errorLogger.error("Error: Cannot save form without names", {
                 origin: "cde.mongo-form.update.1",
                 stack: new Error().stack,

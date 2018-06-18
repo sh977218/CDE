@@ -8,7 +8,7 @@ const MongoStore = require('connect-mongo')(session);
 
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const connHelper = require('./connections');
-const dbLogger = require('./dbLogger');
+const dbLogger = require('../log/dbLogger');
 const logging = require('./logging.js');
 const daoManager = require('./moduleDaoManager');
 const config = require('./parseConfig');
@@ -229,15 +229,6 @@ exports.userByName = (name, callback) => {
 };
 exports.usersByName = (name, callback) => {
     User.find({'username': new RegExp('^' + name + '$', "i")}, userProject, callback);
-};
-
-exports.usersByPartialName = (name, callback) => {
-    User.find({'username': new RegExp(name, 'i')}, (err, users) => {
-        for (let i = 0; i < users.length; i++) {
-            delete users[i].password;
-        }
-        callback(err, users);
-    });
 };
 
 exports.usernamesByIp = (ip, callback) => {
@@ -657,81 +648,6 @@ exports.sortArrayByArray = function (unSortArray, targetArray) {
         let bIndex = _.findIndex(targetArray, bId);
         return aIndex - bIndex;
     });
-};
-
-exports.copyDesignation = function (namings) {
-    let designations = [];
-    let designationArray = namings.map(n => {
-        let result = {};
-        if (!_.isEmpty(n.designation)) result.designation = n.designation;
-        if (!_.isEmpty(n.tags)) result.tags = n.tags;
-        return result;
-    });
-    let map = _.groupBy(designationArray, 'designation');
-    Object.keys(map).forEach(k => {
-        let obj1 = map[k];
-        let temp = {
-            designation: [],
-            tags: []
-        };
-        obj1.forEach(m => {
-            if (m.designation)
-                temp.designation = _.uniq(temp.designation.concat([m.designation]));
-            if (m.tags)
-                temp.tags = _.uniq(temp.tags.concat(m.tags))
-        });
-        if (temp.designation.length > 1) {
-            throw Error('designation length > 1');
-        }
-        let designation = {
-            designation: temp.designation[0],
-            tags: temp.tags
-        };
-        designations.push(designation);
-    });
-    return designations;
-};
-exports.copyDefinition = function (namings) {
-    let definitions = [];
-    let definitionArray = namings.map(n => {
-        let result = {};
-        if (!_.isEmpty(n.definition)) result.definition = n.definition;
-        if (!_.isEmpty(n.definitionFormat)) result.definitionFormat = n.definitionFormat;
-        if (!_.isEmpty(n.tags)) result.tags = n.tags;
-        return result;
-    });
-    let map = _.groupBy(definitionArray, 'definition');
-    Object.keys(map).forEach(k => {
-        let obj1 = map[k];
-        let temp = {
-            definition: [],
-            definitionFormat: [],
-            tags: []
-        };
-        obj1.forEach(m => {
-            if (m.definition)
-                temp.definition = _.uniq(temp.definition.concat([m.definition]));
-            if (m.definitionFormat)
-                temp.definitionFormat = _.uniq(temp.definitionFormat.concat([m.definitionFormat]))
-            if (m.tags)
-                temp.tags = _.uniq(temp.tags.concat(m.tags))
-        });
-        if (temp.definition.length > 1) {
-            throw Error('definition length > 1');
-        }
-        if (temp.definitionFormat.length > 1) {
-            throw Error('definition format length > 1');
-        }
-        let definition = {
-            definition: temp.definition[0],
-            tags: temp.tags
-        };
-        if (temp.definitionFormat.length > 0)
-            definition.definitionFormat = temp.definitionFormat[0];
-        if (definition.definition && definition.definition !== 'N/A')
-            definitions.push(definition);
-    });
-    return definitions;
 };
 
 exports.saveNotification = (notification, callback) => {

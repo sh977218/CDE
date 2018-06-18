@@ -2,7 +2,6 @@ package gov.nih.nlm.form.test.displayProfile;
 
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -25,10 +24,6 @@ public class DisplayProfilesTest extends BaseFormTest {
         scrollToTop();
         Assert.assertEquals(driver.findElements(By.xpath("//*[@id='profile_0']//table//input[@type='radio']")).size(), 10);
         textPresent("1", By.xpath("(//*[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]/../span"));
-        Assert.assertTrue(
-                findElement(By.xpath("//*[@id='profile_2']//div[@id='Education level USA type_0-1']//" + byValueListValueXPath("1st Grade"))).getLocation().y <
-                        findElement(By.xpath("//*[@id='profile_2']//div[@id='Education level USA type_0-1']//" + byValueListValueXPath("2nd Grade"))).getLocation().y
-        );
         scrollToViewById("profile_3");
         String baseXpath = "//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//";
 
@@ -37,7 +32,9 @@ public class DisplayProfilesTest extends BaseFormTest {
             if (i == 0) Assert.fail("Unexpected y value");
             if (findElement(By.xpath(baseXpath + byValueListValueXPath("1st Grade"))).getLocation().y !=
                     findElement(By.xpath(baseXpath + byValueListValueXPath("5th Grade"))).getLocation().y) {
+                hangon(1);
                 i--;
+                hangon(1);
             } else i = -1;
         }
         newFormVersion();
@@ -77,10 +74,17 @@ public class DisplayProfilesTest extends BaseFormTest {
         textPresent("XIENCE ALPINE");
 
         selectDisplayProfileByName("No Matrix No Values Wider");
-        hangon(1);
-        Assert.assertEquals(findElement(By.xpath("//*[*[normalize-space()='I was irritated more than people knew']]//" + byValueListValueXPath("Never"))).getLocation().y,
-                findElement(By.xpath("//*[*[normalize-space()='I was irritated more than people knew']]//" + byValueListValueXPath("Always"))).getLocation().y
-        );
+
+        baseXpath = "//*[*[normalize-space()='I was irritated more than people knew']]//";
+        i = 5;
+        while (i >= 0) {
+            if (i == 0) Assert.fail("Unexpected y value");
+            if (findElement(By.xpath(baseXpath + byValueListValueXPath("Never"))).getLocation().y !=
+                    findElement(By.xpath(baseXpath + byValueListValueXPath("Always"))).getLocation().y) {
+                hangon(1);
+                i--;
+            } else i = -1;
+        }
 
         selectDisplayProfileByName("Multiple Select");
         hangon(1);

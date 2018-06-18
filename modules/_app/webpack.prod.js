@@ -11,7 +11,7 @@ module.exports = merge(baseConfig, {
     output: {
         path: path.resolve(__dirname, '../../dist/app'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
         publicPath: '/app/',
-        filename: '[name].js'
+        filename: '[name].js',
     },
     plugins: [
         new CleanWebpackPlugin(['dist/app']),
@@ -19,5 +19,5 @@ module.exports = merge(baseConfig, {
             tsConfigPath: path.resolve(__dirname, '../../tsconfig.json'),
             entryModule: path.resolve(__dirname, './app.module') + '#CdeAppModule'
         }),
-    ]
+    ],
 });

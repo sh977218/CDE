@@ -20,7 +20,7 @@ public class NativeTableTest extends BaseFormTest {
         Assert.assertEquals(2, driver.findElements(By.xpath("//thead//th[@colspan='3']")).size());
         Assert.assertEquals(2, driver.findElements(By.xpath("//thead//th[text()='Education level']")).size());
         scrollTo(800);
-        findElement(By.xpath("//div[@class='native-table-cell']/label[text()='2.']"));
+        findElement(By.xpath("//div[contains(@class, 'native-table-cell')]/label[text()='2.']"));
 
         goToFormDescription();
         textPresent("Repeats: 5 times", By.xpath("//div[@id='section_0']//span[contains(@class,'badge-primary')]"));

@@ -130,12 +130,12 @@ export class ElasticService {
         if (cde.highlight.primaryNameCopy) return;
         let field = null;
         let matched = Object.keys(cde.highlight)[0];
-        if (matched === "naming.definition" || matched === "primaryDefinitionCopy") field = "Definition";
+        if (matched === "definitions.definition" || matched === "primaryDefinitionCopy") field = "Definition";
         if (matched.indexOf("classification.") > -1) field = "Classification";
         if (matched.indexOf(".concepts.") > -1) field = "Concepts";
         if (matched.substr(0, 11) === "valueDomain") field = "Permissible Values";
         if (matched.substr(0, 15) === "flatProperties") field = "Properties";
-        if (matched === "naming.designation") field = "Alternative Name";
+        if (matched === "designations.designation") field = "Alternative Name";
         if (matched === "stewardOrgCopy.name") field = "Steward";
         if (matched === "flatIds") field = "Identifier";
         cde.highlight.matchedBy = field;

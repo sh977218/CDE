@@ -1,6 +1,6 @@
 var config = require('../system/parseConfig')
     , sharedElastic = require('../system/elastic.js')
-    , dbLogger = require('../system/dbLogger.js')
+    , dbLogger = require('../log/dbLogger.js')
     , logging = require('../system/logging.js')
     , elasticsearch = require('elasticsearch')
     , esInit = require('../system/elasticSearchInit')
@@ -141,8 +141,8 @@ exports.elasticsearch = function (user, settings, cb) {
 
 const mltConf = {
     "mlt_fields": [
-        "naming.designation",
-        "naming.definition",
+        "designations.designation",
+        "definitions.definition",
         "valueDomain.permissibleValues.permissibleValue",
         "valueDomain.permissibleValues.valueMeaningName",
         "valueDomain.permissibleValues.valueMeaningCode",

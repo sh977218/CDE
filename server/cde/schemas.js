@@ -11,7 +11,6 @@ var conceptSchema = new Schema({
 
 var deJson = {
     elementType: Object.assign({default: 'cde', enum: ['cde']}, sharedSchemas.stringType),
-    naming: [sharedSchemas.namingSchema], // Any string used by which CDE is known, addressed or referred to
     designations: [sharedSchemas.designationSchema],
     definitions: [sharedSchemas.definitionSchema],
     source: sharedSchemas.stringType, // This field is replaced with sources

@@ -3,11 +3,13 @@
     <dl class="row">
         <dt class="col-3 text-right">Name:</dt>
         <dd id="dd_general_name" itemprop="name" class="col-9">{{elt.designations[0].designation}}</dd>
-        <dt class="col-3 text-right">Description:</dt>
-        <dd id="dd_def" itemprop="description" class="col-9">
-            <span *ngIf="elt.definitions[0].definitionFormat !== 'html'">{{elt.definitions[0].definition}}</span>
-            <span *ngIf="elt.definitions[0].definitionFormat === 'html'" [innerHtml]="elt.definitions[0].definition"></span>
-        </dd>
+        <ng-container *ngIf="elt.definitions[0]">
+            <dt class="col-3 text-right">Description:</dt>
+            <dd id="dd_def" itemprop="description" class="col-9" >
+                <span *ngIf="elt.definitions[0].definitionFormat !== 'html'">{{elt.definitions[0].definition}}</span>
+                <span *ngIf="elt.definitions[0].definitionFormat === 'html'" [innerHtml]="elt.definitions[0].definition"></span>
+            </dd>
+        </ng-container>
         <dt class="col-3 text-right">Used by:</dt>
         <dd class="col-9" id="dd_usedBy">{{elt.usedBy}}</dd>
         <dt class="col-3 text-right">Copyrighted:</dt>
