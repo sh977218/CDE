@@ -12,7 +12,6 @@ const mongo_data_system = require('../system/mongo-data');
 const classificationNode_system = require('../system/classificationNode');
 const adminItemSvc = require('../system/adminItemSvc.js');
 const elastic_system = require('../system/elastic');
-const elastic = require('./elastic');
 const dbLogger = require('../log/dbLogger');
 const sharedElastic = require('../system/elastic.js');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
