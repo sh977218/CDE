@@ -1,22 +1,77 @@
+<ng-template #loginMenuTpl>
+    <ng-template #loginLink>
+        <a (click)="loginSvc.goToLogin()" id="login_link"  routerLink="/login"
+           class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem">Login</a>
+    </ng-template>
+    <ng-container *ngIf="userService.user; else loginLink">
+        <a routerLink="/inbox" class="toolbarItem" *ngIf="userService.user.hasMail">
+            <i id="incomingMessage" class="fa fa-envelope text-danger"></i>
+        </a>
+
+        <a id="username_link" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
+           [matMenuTriggerFor]="loginMenu">
+            <span [textContent]="userService.user.username | cdeTruncateLongName"></span>></a>
+        <mat-menu #loginMenu="matMenu">
+            <a routerLink="/profile" id="user_profile" mat-menu-item>Profile</a>
+            <a routerLink="/inbox" id="user_inbox" mat-menu-item>Inbox</a>
+            <a routerLink="/orgComments" id="org_comments" mat-menu-item
+               *ngIf="isOrgCurator(userService.user)">Org Comments</a>
+            <a routerLink="/classificationmanagement" id="user_classifications" mat-menu-item
+               *ngIf="isOrgCurator(userService.user)">Classifications</a>
+            <a routerLink="/orgAuthority" id="user_org_authority" mat-menu-item
+               *ngIf="canOrgAuthority(userService.user)">Org Management</a>
+            <a routerLink="/orgaccountmanagement" id="user_account_management" mat-menu-item
+               *ngIf="isOrgAdmin(userService.user)">Account Management</a>
+            <a routerLink="/siteaccountmanagement" id="user_site_management" mat-menu-item
+               *ngIf="isSiteAdmin(userService.user)">Site Management</a>
+            <a routerLink="/siteAudit" id="user_audit" mat-menu-item
+               *ngIf="canOrgAuthority(userService.user)">Audit</a>
+            <a (click)="loginSvc.logout()" target="_self" id="user_logout" mat-menu-item>Log Out</a>
+        </mat-menu>
+    </ng-container>
+</ng-template>
+
+<ng-template #boardTpl>
+    <ng-template #simpleBoards>
+        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
+           routerLink="/boardList">Boards</a>
+    </ng-template>
+    <ng-container *ngIf="userService.user; else simpleBoards">
+        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem dropdown-toggle"
+           [matMenuTriggerFor]="boardMenu">Boards></a>
+        <mat-menu #boardMenu="matMenu">
+            <a id="publicBoardsLink" routerLink="/boardList"
+               mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Public Boards</a>
+            <a id="myBoardsLink" routerLink="/myboards"
+               mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">My Boards</a>
+        </mat-menu>
+    </ng-container>
+</ng-template>
+
+<ng-template #createTpl>
+    <a id="createEltLink" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem dropdown-toggle"
+       *ngIf="isOrgCurator(userService.user)"
+       [matMenuTriggerFor]="createMenu">Create></a>
+    <mat-menu #createMenu="matMenu">
+        <a id="createCDELink" routerLink="/createCde" mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">CDE</a>
+        <a id="createFormLink" routerLink="/createForm" *ngIf="canCreateForms(userService.user)"
+           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Form</a>
+    </mat-menu>
+</ng-template>
+
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 
     <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
         <div class="mdl-layout__header-row">
 
             <span class="android-title mdl-layout-title">
-                <img class="android-logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png">
+                <a href="/">
+                    <img class="android-logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png">
+                </a>
             </span>
 
             <!-- Add spacer, to align navigation to the right in desktop -->
             <div class="android-header-spacer mdl-layout-spacer"></div>
-            <div class="android-search-box mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right mdl-textfield--full-width">
-                <label class="mdl-button mdl-js-button mdl-button--icon" for="search-field">
-                    <i class="material-icons">search</i>
-                </label>
-                <div class="mdl-textfield__expandable-holder">
-                    <input class="mdl-textfield__input" type="text" id="search-field">
-                </div>
-            </div>
 
             <!-- Navigation -->
             <div class="android-navigation-container">
@@ -27,29 +82,9 @@
                     <a id="menu_forms_link" class="toolbarItem mdl-navigation__link mdl-typography--text-uppercase "
                        routerLink="/form/search">Forms</a>
 
-                    <ng-template #simpleBoards>
-                        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
-                           routerLink="/boardList">Boards</a>
-                    </ng-template>
-                    <ng-container *ngIf="userService.user; else simpleBoards">
-                        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem dropdown-toggle"
-                           [matMenuTriggerFor]="boardMenu">Boards</a>
-                        <mat-menu #boardMenu="matMenu">
-                            <a id="publicBoardsLink" routerLink="/boardList"
-                               mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Public Boards</a>
-                            <a id="myBoardsLink" routerLink="/myboards"
-                               mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">My Boards</a>
-                        </mat-menu>
-                    </ng-container>
+                    <ng-container *ngTemplateOutlet="boardTpl"></ng-container>
 
-                    <a id="createEltLink" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem dropdown-toggle"
-                       *ngIf="isOrgCurator(userService.user)"
-                       [matMenuTriggerFor]="createMenu">Create</a>
-                    <mat-menu #createMenu="matMenu">
-                        <a id="createCDELink" routerLink="/createCde" mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">CDE</a>
-                        <a id="createFormLink" routerLink="/createForm" *ngIf="canCreateForms(userService.user)"
-                           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Form</a>
-                    </mat-menu>
+                    <ng-container *ngTemplateOutlet="createTpl"></ng-container>
 
                     <a id="menu_qb_link" routerLink="/quickBoard"
                        class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
@@ -57,6 +92,16 @@
 
                     <a id="menu_help_link" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
                        routerLink="/api">API</a>
+
+                    <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
+
+                    <a id="notifications">
+                        <cde-notifications></cde-notifications>
+                    </a>
+
+                    <a routerLink="/searchPreferences" class="toolbarItem" id="searchSettings" style="padding-right: 10px">
+                       <i class="material-icons" style="font-size: 1.3em; margin-top: 10px">settings</i>
+                    </a>
 
                 </nav>
             </div>
@@ -74,16 +119,14 @@
             <a class="mdl-navigation__link" href="">CDEs</a>
             <a class="mdl-navigation__link" href="">Forms</a>
             <div class="android-drawer-separator"></div>
-            <span class="mdl-navigation__link" href="">Boards</span>
-            <a class="mdl-navigation__link" href="">Public Boards</a>
-            <a class="mdl-navigation__link" href="">My Boards</a>
+            <ng-container *ngTemplateOutlet="boardTpl"></ng-container>
             <div class="android-drawer-separator"></div>
-            <span class="mdl-navigation__link" href="">Create</span>
-            <a class="mdl-navigation__link" href="">CDE</a>
-            <a class="mdl-navigation__link" href="">Form</a>
+            <ng-container *ngTemplateOutlet="createTpl"></ng-container>
             <div class="android-drawer-separator"></div>
             <a class="mdl-navigation__link" href="">Quick Board</a>
             <a class="mdl-navigation__link" href="">API</a>
+            <div class="android-drawer-separator"></div>
+            <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
         </nav>
     </div>
 
@@ -211,10 +254,6 @@
             <!--<mat-icon style="font-size: 1.3em; margin-top: 10px">settings</mat-icon>-->
         <!--</a>-->
 
-    <!--</span>-->
-
-    <!--<span (click)="snav.toggle()" class="d-md-none toolbar-item" style="color: rgba(255, 255, 255, 0.53)">-->
-        <!--<mat-icon style="font-size: 2.0em; margin-top: 10px; margin-right: 15px">menu</mat-icon>-->
     <!--</span>-->
 
 

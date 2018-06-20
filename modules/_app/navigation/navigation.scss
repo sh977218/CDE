@@ -1,0 +1,35 @@
+.mdl-layout__container {
+  position: static;
+}
+
+.mdl-layout__drawer-button, .mdl-layout__drawer{
+  left: auto;
+  right: 0;
+}
+.mdl-layout__drawer{
+  transform:translateX(250px);
+}
+
+.mdl-layout__header-row {
+  padding: 0 40px 0 20px;
+}
+
+.mat-drawer-container {
+  background-color: white;
+}
+
+.android-navigation .mdl-navigation__link {
+  height: 68px !important;
+  line-height: 64px !important;
+}
+
+.android-header .mdl-navigation__link {
+  color: white !important;
+}
+
+.android-drawer .mdl-layout-title {
+  background: grey !important;
+}
+
+.android-drawer span.mdl-navigation__link.mdl-navigation__link {
+}
