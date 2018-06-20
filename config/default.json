@@ -9,8 +9,12 @@
     "sourceOptions": {
       "NCI": {},
       "UMLS": {},
-      "LNC": {"requiresLogin": true},
-      "SNOMEDCT_US": {"requiresLogin": true}
+      "LNC": {
+        "requiresLogin": true
+      },
+      "SNOMEDCT_US": {
+        "requiresLogin": true
+      }
     }
   },
   "mesh": {
@@ -51,11 +55,19 @@
   "logdir": "",
   "port": 3000,
   "elastic": {
-    "hosts": ["http://localhost:9200"],
-    "index": {"name": "auto"},
-    "formIndex": {"name": "auto"},
-    "boardIndex": {"name": "auto"},
-    "number_of_replicas" : 2
+    "hosts": [
+      "http://localhost:9200"
+    ],
+    "index": {
+      "name": "auto"
+    },
+    "formIndex": {
+      "name": "auto"
+    },
+    "boardIndex": {
+      "name": "auto"
+    },
+    "number_of_replicas": 2
   },
   "database": {
     "servers": [
@@ -67,12 +79,18 @@
     "appData": {
       "db": "test",
       "username": "cdeuser",
-      "password": "password"
+      "password": "password",
+      "options": {
+        "ssl": false
+      }
     },
     "log": {
       "db": "cde-logs-test",
       "username": "cdeuser",
       "password": "password",
+      "options": {
+        "ssl": false
+      },
       "cappedCollectionSizeMB": 262144000
     },
     "migration": {
@@ -137,14 +155,16 @@
     "extractDir": ".."
   },
   "pmRunOnStartup": [],
-  "multer": {"inMemory": true},
+  "multer": {
+    "inMemory": true
+  },
   "prodDump": {
     "enabled": true,
     "url": "https://local-cde-1.nlm.nih.gov/cde/public/assets/dailyDump.tz"
   },
   "pmNodeProcess": "node",
-  "captchaCode" : "Override actual here.",
-  "siteKey" : "6LdAmh4TAAAAABf_PCxKsd4ikR-S5pSSa25PGqUV",
-  "useCaptcha" : true,
-  "sessionKey":  "Kfji76R"
+  "captchaCode": "Override actual here.",
+  "siteKey": "6LdAmh4TAAAAABf_PCxKsd4ikR-S5pSSa25PGqUV",
+  "useCaptcha": true,
+  "sessionKey": "Kfji76R"
 }
