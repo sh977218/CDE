@@ -28,6 +28,12 @@ button {
     background-color: white;
 }
 
+.android-navigation .mdl-navigation__link {
+    height: 68px;
+    line-height: 64px;
+}
+
+
 /* home component */
 .homeDescriptionLink {
     color: #0F4E9D;

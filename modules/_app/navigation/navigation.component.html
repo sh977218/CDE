@@ -2,9 +2,11 @@
 
     <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
         <div class="mdl-layout__header-row">
-              <span class="android-title mdl-layout-title">
+
+            <span class="android-title mdl-layout-title">
                 <img class="android-logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png">
-              </span>
+            </span>
+
             <!-- Add spacer, to align navigation to the right in desktop -->
             <div class="android-header-spacer mdl-layout-spacer"></div>
             <div class="android-search-box mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right mdl-textfield--full-width">
@@ -15,30 +17,33 @@
                     <input class="mdl-textfield__input" type="text" id="search-field">
                 </div>
             </div>
+
             <!-- Navigation -->
             <div class="android-navigation-container">
                 <nav class="android-navigation mdl-navigation">
                     <a id="menu_cdes_link" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
-                       routerLink="/cde/search" [ngClass]="{active: isPageActive('/cde/search')}">CDEs</a>
+                       routerLink="/cde/search">CDEs</a>
 
-                    <a id="menu_forms_link" class="toolbarItem mdl-navigation__link mdl-typography--text-uppercase " routerLink="/form/search"
-                       [ngClass]="{active: isPageActive('/form/search')}">Forms</a>
+                    <a id="menu_forms_link" class="toolbarItem mdl-navigation__link mdl-typography--text-uppercase "
+                       routerLink="/form/search">Forms</a>
 
                     <ng-template #simpleBoards>
-                        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem" routerLink="/boardList"
-                           [ngClass]="{active: isPageActive('/boardList')}">Boards</a>
+                        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
+                           routerLink="/boardList">Boards</a>
                     </ng-template>
                     <ng-container *ngIf="userService.user; else simpleBoards">
-                        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem dropdown-toggle" [matMenuTriggerFor]="boardMenu"
-                           [ngClass]="{active: isPageActive('/boardList')}">Boards</a>
+                        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem dropdown-toggle"
+                           [matMenuTriggerFor]="boardMenu">Boards</a>
                         <mat-menu #boardMenu="matMenu">
-                            <a id="publicBoardsLink" routerLink="/boardList" mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Public Boards</a>
-                            <a id="myBoardsLink" routerLink="/myboards" mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">My Boards</a>
+                            <a id="publicBoardsLink" routerLink="/boardList"
+                               mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Public Boards</a>
+                            <a id="myBoardsLink" routerLink="/myboards"
+                               mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">My Boards</a>
                         </mat-menu>
                     </ng-container>
 
-                    <a id="createEltLink" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem dropdown-toggle" *ngIf="isOrgCurator(userService.user)"
-                       [ngClass]="{active: isPageActive('/createCde') || isPageActive('/createForm')}"
+                    <a id="createEltLink" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem dropdown-toggle"
+                       *ngIf="isOrgCurator(userService.user)"
                        [matMenuTriggerFor]="createMenu">Create</a>
                     <mat-menu #createMenu="matMenu">
                         <a id="createCDELink" routerLink="/createCde" mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">CDE</a>
@@ -46,11 +51,11 @@
                            mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Form</a>
                     </mat-menu>
 
-                    <a id="menu_qb_link" routerLink="/quickBoard" [ngClass]="{active: isPageActive('/quickBoard')}"
+                    <a id="menu_qb_link" routerLink="/quickBoard"
                        class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
                        [textContent]="'Quick Board (' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"></a>
 
-                    <a id="menu_help_link" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem" [ngClass]="{active: isPageActive('/help')}"
+                    <a id="menu_help_link" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
                        routerLink="/api">API</a>
 
                 </nav>

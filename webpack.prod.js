@@ -4,6 +4,7 @@ const baseConfig = require('./webpack.config.js');
 
 module.exports = module.exports = merge(baseConfig,{
     mode: 'production',
+    watch: true,
     context: __dirname,
     module: {
         rules: [
