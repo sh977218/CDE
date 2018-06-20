@@ -21,7 +21,7 @@ import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { NotificationsComponent } from "./notifications/notifications.component";
-import { MatBadgeModule, MatIconModule, MatMenuModule, MatToolbarModule } from "@angular/material";
+import { MatBadgeModule, MatIconModule, MatMenuModule, MatSidenavModule, MatToolbarModule } from "@angular/material";
 import { TimeAgoPipeModule } from "time-ago-pipe/es5";
 
 @NgModule({
@@ -40,6 +40,7 @@ import { TimeAgoPipeModule } from "time-ago-pipe/es5";
         MatBadgeModule,
         MatIconModule,
         MatMenuModule,
+        MatSidenavModule,
         MatToolbarModule,
         TimeAgoPipeModule,
     ],

@@ -12,7 +12,6 @@ import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscr
     selector: 'nih-cde',
     template: `
         <cde-navigation></cde-navigation>
-        <router-outlet></router-outlet>
         <cde-alert></cde-alert>
     `
 })
