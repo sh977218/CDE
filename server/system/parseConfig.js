@@ -13,7 +13,7 @@ databaseNames.forEach(databaseName => {
         uriOptions.push('ssl=true');
     database.uri = "mongodb://" + database.username + ":" + database.password + "@" + hosts + "/" + database.db;
     if (uriOptions) database.uri = database.uri + '?' + uriOptions.join('&');
-    if (database.options.sslCAPath) {
+    if (database.options.sslCAPath && database.options.sslCertPath) {
         database.options.sslCA = [fs.readFileSync(__dirname + database.options.sslCAPath)];
         database.options.sslCert = fs.readFileSync(__dirname + database.options.sslCertPath);
     }
