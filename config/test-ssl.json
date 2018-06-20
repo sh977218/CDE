@@ -1,0 +1,68 @@
+{
+  "port": 3001,
+  "logBufferSize": 2,
+  "publicUrl": "http://localhost:3001",
+  "debugEnabled": true,
+  "pmRunOnStartup": [],
+  "viewsIncrementThreshold": 1,
+  "autoSyncMesh": true,
+  "elastic": {
+    "index": {
+      "name": "cdetest"
+    },
+    "formIndex": {
+      "name": "formtest"
+    },
+    "boardIndex": {
+      "name": "boardtest"
+    },
+    "number_of_replicas": 0
+  },
+  "versionCheckIntervalInSeconds": 20,
+  "siteKey": "6LecRzAUAAAAAOB_LOhlf3itbTn3zOC2jYC6Er6u",
+  "captchaCode": "6LecRzAUAAAAAN5GJyrT5ZuAPOAi9GtiKo5jXgMF",
+  "useCaptcha": true,
+  "sessionKey": "Kfji76R",
+  "database": {
+    "servers": [
+      {
+        "host": "localhost",
+        "port": 27017
+      },
+      {
+        "host": "localhost",
+        "port": 27018
+      }
+    ],
+    "appData": {
+      "db": "test",
+      "username": "cdeuser",
+      "password": "password",
+      "options": {
+        "ssl": true,
+        "replicaSet": "rs0",
+        "authsource": "admin",
+        "sslValidate": false,
+        "sslCAPath": "/../../ssl/mongodb.pem",
+        "sslCertPath": "/../../ssl/mongodb.pem",
+        "sslCA": "/../../ssl/mongodb.pem",
+        "sslCert": "/../../ssl/mongodb.pem"
+      }
+    },
+    "log": {
+      "db": "cde-logs-test",
+      "username": "cdeuser",
+      "password": "password",
+      "options": {
+        "ssl": true,
+        "replicaSet": "rs0",
+        "authsource": "admin",
+        "sslValidate": false,
+        "sslCAPath": "/../../ssl/mongodb.pem",
+        "sslCertPath": "/../../ssl/mongodb.pem",
+        "sslCA": "/../../ssl/mongodb.pem",
+        "sslCert": "/../../ssl/mongodb.pem"
+      }
+    }
+  }
+}

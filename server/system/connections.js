@@ -5,11 +5,6 @@ const logger = require('./noDbLogger');
 let establishedConns = {};
 
 exports.establishConnection = function (dbConfig) {
-    if (dbConfig.options && dbConfig.options.sslCAPath) {
-        dbConfig.options.server.sslCA = [fs.readFileSync(__dirname + dbConfig.options.sslCAPath)];
-        dbConfig.options.server.sslCert = fs.readFileSync(__dirname + dbConfig.options.sslCertPath);
-    }
-
     let uri = dbConfig.uri;
 
     if (establishedConns[uri]) return establishedConns[uri];

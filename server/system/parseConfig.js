@@ -1,19 +1,22 @@
 const config = require('config');
+const fs = require('fs');
 
 let databaseNames = ['log', 'appData'];
 
 databaseNames.forEach(databaseName => {
     let database = config.database[databaseName];
-    let username = database.username;
-    let password = database.password;
     let hosts = config.database.servers.map(srv => srv.host + ":" + srv.port).join(",");
-    let options = [];
-    if (database.options && database.options.server && database.options.server.replicaSet)
-        options.push('replicaSet=' + database.options.server.replset.rs_name);
-    if (database.options && database.options.server && database.options.server.ssl)
-        options.push('ssl=true');
-    database.uri = "mongodb://" + username + ":" + password + "@" + hosts + "/" + database.db;
-    if (options) database.uri = database.uri + '?' + options.join('&');
+    let uriOptions = [];
+    if (database.options.replicaSet)
+        uriOptions.push('replicaSet=' + database.options.replicaSet);
+    if (database.options.ssl)
+        uriOptions.push('ssl=true');
+    database.uri = "mongodb://" + database.username + ":" + database.password + "@" + hosts + "/" + database.db;
+    if (uriOptions) database.uri = database.uri + '?' + uriOptions.join('&');
+    if (database.options.sslCAPath) {
+        database.options.sslCA = [fs.readFileSync(__dirname + database.options.sslCAPath)];
+        database.options.sslCert = fs.readFileSync(__dirname + database.options.sslCertPath);
+    }
 });
 
 Object.keys(config).forEach(function (key) {
