@@ -1,42 +1,42 @@
-<div class="comment" id="comment_{{commentIndex}}"
-     [ngClass]="{'currentTabComment':comment.currentComment}">
-    <ng-container *ngIf="comment.currentComment">
-        <div class="comment-arrow-outer"></div>
-        <div class="comment-arrow-inner"></div>
-    </ng-container>
-    <div class="rootComment">
-        <div class="commentBody">
-            <div class="commentHeader row">
-                <div class="col-sm-2">
-                    <img src="{{avatarUrls[comment.username]}}" width="32" height="32"
-                         alt="portrait"/>
-                </div>
-                <div class="col-sm-8">
-                    <div>{{comment.username}}</div>
-                    <div>
-                        {{comment.created | date: 'MM/dd/yyyy @ h:mma'}}
+<div class="commentDiv">1111
+    <div style="overflow-y: auto;overflow-x: hidden;">
+        <div>
+            <div class="commentHeader">
+                <div class="overflowHidden">
+                    <div class="float-left">
+                        <img src="/cde/public/assets/img/min/portrait.png" width="32" height="32" alt="portrait"/>
+                    </div>
+                    <div class="col-sm-8">
+                        <div>{{comment.username}}</div>
+                        <div>
+                            {{comment.created | date: 'MM/dd/yyyy @ h:mma'}}
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <i class="fa fa-trash-o hand-cursor" title="Remove"
+                           id="removeComment-{{commentIndex}}"
+                           *ngIf="canRemoveComment(comment)"
+                           (click)="removeComment(comment._id)" data-type="remove"></i>
+                        <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
+                           id="resolveComment-{{commentIndex}}"
+                           *ngIf="canResolveComment(comment)"
+                           (click)="updateCommentStatus(comment._id, 'resolved')"></i>
+                        <i class="fa fa-undo hand-cursor" title="Reopen"
+                           id="reopenComment-{{commentIndex}}"
+                           *ngIf="canReopenComment(comment)"
+                           (click)="updateCommentStatus(comment._id, 'active')"></i>
                     </div>
                 </div>
-                <div class="col-sm-2">
-                    <i class="fa fa-trash-o hand-cursor" title="Remove"
-                       id="removeComment-{{commentIndex}}"
-                       *ngIf="canRemoveComment(comment)"
-                       (click)="removeComment(comment._id)" data-type="remove"></i>
-                    <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
-                       id="resolveComment-{{commentIndex}}"
-                       *ngIf="canResolveComment(comment)"
-                       (click)="updateCommentStatus(comment._id, 'resolved')"></i>
-                    <i class="fa fa-undo hand-cursor" title="Reopen"
-                       id="reopenComment-{{commentIndex}}"
-                       *ngIf="canReopenComment(comment)"
-                       (click)="updateCommentStatus(comment._id, 'active')"></i>
-                </div>
             </div>
-            <div id="commentText-{{commentIndex}}" class="commentMessage"
-                 [ngClass]="{strike: comment.status === 'resolved'}">{{comment.text}}
+            <div class="commentBody">
+                <div id="commentText-{{commentIndex}}" class="commentMessage"
+                     [ngClass]="{strike: comment.status === 'resolved'}">{{comment.text}}
+                </div>
             </div>
         </div>
     </div>
+</div>
+<!--
     <div *ngFor="let reply of comment.replies; let replyIndex = index" data-type="replyComment">
         <div *ngIf="showAllReplies[comment._id] || comment.replies.length <= 5">
             <div class="reply">
@@ -134,4 +134,4 @@
             </div>
         </div>
     </div>
-</div>
+-->
