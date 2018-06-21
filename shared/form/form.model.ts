@@ -353,6 +353,7 @@ export class Question extends DatatypeContainer {
 }
 
 export class QuestionCde extends EltRef { // copied from original data element, not configurable
+    datatype: string; // volatile, use by save new cde
     definitions = [];
     derivationRules: DerivationRule[] = [];
     designations = [];

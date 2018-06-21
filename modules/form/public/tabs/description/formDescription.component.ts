@@ -358,6 +358,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     updateTree() {
         this.tree.treeModel.update();
         // @TODO: if node passed in, expand all node only, else no expand
-        // this.tree.treeModel.expandAll();
+        this.tree.treeModel.expandAll();
     }
 }
