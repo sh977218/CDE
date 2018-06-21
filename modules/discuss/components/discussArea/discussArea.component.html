@@ -17,6 +17,8 @@
     </div>
 
     <ng-container *ngFor="let comment of eltComments; let commentIndex = index">
+        <cde-comment [comment]="comment"></cde-comment>
+<!--
         <div class="comment" id="comment_{{commentIndex}}"
              [ngClass]="{'currentTabComment':comment.currentComment}">
             <ng-container *ngIf="comment.currentComment">
@@ -232,5 +234,6 @@
                 </div>
             </div>
         </div>
+-->
     </ng-container>
 </div>

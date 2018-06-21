@@ -1,0 +1,137 @@
+<div class="comment" id="comment_{{commentIndex}}"
+     [ngClass]="{'currentTabComment':comment.currentComment}">
+    <ng-container *ngIf="comment.currentComment">
+        <div class="comment-arrow-outer"></div>
+        <div class="comment-arrow-inner"></div>
+    </ng-container>
+    <div class="rootComment">
+        <div class="commentBody">
+            <div class="commentHeader row">
+                <div class="col-sm-2">
+                    <img src="{{avatarUrls[comment.username]}}" width="32" height="32"
+                         alt="portrait"/>
+                </div>
+                <div class="col-sm-8">
+                    <div>{{comment.username}}</div>
+                    <div>
+                        {{comment.created | date: 'MM/dd/yyyy @ h:mma'}}
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <i class="fa fa-trash-o hand-cursor" title="Remove"
+                       id="removeComment-{{commentIndex}}"
+                       *ngIf="canRemoveComment(comment)"
+                       (click)="removeComment(comment._id)" data-type="remove"></i>
+                    <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
+                       id="resolveComment-{{commentIndex}}"
+                       *ngIf="canResolveComment(comment)"
+                       (click)="updateCommentStatus(comment._id, 'resolved')"></i>
+                    <i class="fa fa-undo hand-cursor" title="Reopen"
+                       id="reopenComment-{{commentIndex}}"
+                       *ngIf="canReopenComment(comment)"
+                       (click)="updateCommentStatus(comment._id, 'active')"></i>
+                </div>
+            </div>
+            <div id="commentText-{{commentIndex}}" class="commentMessage"
+                 [ngClass]="{strike: comment.status === 'resolved'}">{{comment.text}}
+            </div>
+        </div>
+    </div>
+    <div *ngFor="let reply of comment.replies; let replyIndex = index" data-type="replyComment">
+        <div *ngIf="showAllReplies[comment._id] || comment.replies.length <= 5">
+            <div class="reply">
+                <div class="commentHeader">
+                    <table class="w-100">
+                        <tbody>
+                        <tr>
+                            <td>
+                                <img src="{{avatarUrls[reply.username]}}" width="32" height="32"
+                                     alt="portrait"/>
+                            </td>
+                            <td>
+                                <div>
+                                    <div>
+                                        <div>{{reply.username}}</div>
+                                        <div>
+                                            {{reply.created | date: 'MM/dd/yyyy @ h:mma'}}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <i class="fa fa-trash-o hand-cursor" title="Remove"
+                                   id="removeReply-{{commentIndex}}-{{replyIndex}}"
+                                   *ngIf="canRemoveComment(reply)"
+                                   (click)="removeReply(reply._id)" data-type="remove"></i>
+                                <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
+                                   id="resolveReply-{{commentIndex}}-{{replyIndex}}"
+                                   *ngIf="canResolveComment(reply)"
+                                   (click)="updateReplyStatus(reply._id, 'resolved')"
+                                   data-type="resolve"></i>
+                                <i class="fa fa-undo hand-cursor" title="Reopen"
+                                   id="reopenReply-{{commentIndex}}-{{replyIndex}}"
+                                   *ngIf="canReopenComment(reply)"
+                                   (click)="updateReplyStatus(reply._id, 'active')"
+                                   data-type="reopen"></i>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="replyText-{{commentIndex}}-{{replyIndex}}" class="commentMessage"
+                     [ngClass]="{strike: reply.status === 'resolved'}">
+                    {{reply.text}}
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!(showAllReplies[comment._id] || comment.replies.length <= 5)">
+            <div *ngIf="replyIndex < 2">
+                <div class="reply">
+                    <div class="commentHeader">
+                        <table class="w-100">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <img src="{{avatarUrls[reply.username]}}" width="32" height="32"
+                                         alt="portrait"/>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div>
+                                            <div>{{reply.username}}</div>
+                                            <div>
+                                                {{reply.created | date: 'MM/dd/yyyy @ h:mma'}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <i class="fa fa-trash-o hand-cursor" title="Remove"
+                                       id="removeReply-{{commentIndex}}-{{replyIndex}}"
+                                       *ngIf="canRemoveComment(reply)"
+                                       (click)="removeReply(reply._id)" data-type="remove"></i>
+                                    <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
+                                       id="resolveReply-{{commentIndex}}-{{replyIndex}}"
+                                       *ngIf="canResolveComment(reply)"
+                                       (click)="updateCommentStatus(reply._id, 'resolved')"
+                                       data-type="resolve"></i>
+                                    <i class="fa fa-undo hand-cursor" title="Reopen"
+                                       id="reopenReply-{{commentIndex}}-{{replyIndex}}"
+                                       *ngIf="canReopenComment(reply)"
+                                       (click)="updateCommentStatus(reply._id, 'active')"
+                                       data-type="reopen"></i>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="replyText-{{commentIndex}}" class="commentMessage"
+                         [ngClass]="{strike: reply.status === 'resolved'}">
+                        {{reply.text}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
