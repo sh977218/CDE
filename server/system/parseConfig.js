@@ -14,9 +14,9 @@ databaseNames.forEach(databaseName => {
     database.uri = "mongodb://" + database.username + ":" + database.password + "@" + hosts + "/" + database.db;
     if (uriOptions) database.uri = database.uri + '?' + uriOptions.join('&');
     if (database.options.sslCA)
-        database.options.sslCA = [fs.readFileSync(__dirname + database.options.sslCA)];
+        database.options.sslCA = [fs.readFileSync(database.options.sslCA)];
     if (database.options.sslCA && database.options.sslCert)
-        database.options.sslCert = fs.readFileSync(__dirname + database.options.sslCert);
+        database.options.sslCert = fs.readFileSync(database.options.sslCert);
 });
 
 Object.keys(config).forEach(function (key) {
