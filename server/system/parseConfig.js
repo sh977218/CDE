@@ -11,10 +11,14 @@ databaseNames.forEach(databaseName => {
         uriOptions.push('replicaSet=' + database.options.replicaSet);
     if (database.options.ssl) {
         uriOptions.push('ssl=true');
-        if (database.sslCAPath)
-            database.options.sslCA = [fs.readFileSync(__dirname + database.sslCAPath)];
-        if (database.sslCertPath)
-            database.options.sslCert = fs.readFileSync(__dirname + database.sslCertPath);
+        try {
+            if (database.sslCAPath)
+                database.options.sslCA = [fs.readFileSync(__dirname + database.sslCAPath)];
+            if (database.sslCertPath)
+                database.options.sslCert = fs.readFileSync(__dirname + database.sslCertPath);
+        } catch (e) {
+            console.log(e);
+        }
     }
     database.uri = "mongodb://" + database.username + ":" + database.password + "@" + hosts + "/" + database.db;
     if (uriOptions) database.uri = database.uri + '?' + uriOptions.join('&');
