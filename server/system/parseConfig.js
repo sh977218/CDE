@@ -13,9 +13,9 @@ databaseNames.forEach(databaseName => {
         uriOptions.push('ssl=true');
         try {
             if (database.sslCAPath)
-                database.options.sslCA = [fs.readFileSync(__dirname + database.sslCAPath)];
+                database.options.sslCA = [fs.readFileSync(database.sslCAPath)];
             if (database.sslCertPath)
-                database.options.sslCert = fs.readFileSync(__dirname + database.sslCertPath);
+                database.options.sslCert = fs.readFileSync(database.sslCertPath);
         } catch (e) {
             console.log(e);
         }
