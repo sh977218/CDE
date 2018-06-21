@@ -4,6 +4,8 @@ import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { canCreateForms, canOrgAuthority, isOrgAdmin, isOrgCurator, isSiteAdmin } from 'shared/system/authorizationShared';
 import './navigation.scss';
+import '../../../node_modules/material-design-lite/material.css';
+import '../../../node_modules/material-design-lite/material.js';
 
 @Component({
     selector: 'cde-navigation',
@@ -66,16 +68,7 @@ import './navigation.scss';
         .mdl-textfield--expandable {
             width: auto;
         }
-
-        .android-fab {
-            position: absolute;
-            right: 20%;
-            bottom: -26px;
-            z-index: 3;
-            background: #64ffda !important;
-            color: black !important;
-        }
-
+        
         .android-mobile-title {
             display: none !important;
         }
@@ -460,7 +453,7 @@ import './navigation.scss';
             .android-mobile-title {
                 display: block !important;
                 position: absolute;
-                left: calc(50% - 70px);
+                /*left: calc(50% - 70px);*/
                 top: 12px;
                 transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             }
@@ -539,7 +532,6 @@ export class NavigationComponent {
                 public loginSvc: LoginService,
     ) {}
 
-    isPageActive(viewLocation) {
-        return viewLocation === window.location.pathname;
-    }
+    toggleDrawer = () => (document.querySelector('.mdl-layout') as any).MaterialLayout.toggleDrawer();
+
 }

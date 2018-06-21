@@ -1,14 +1,14 @@
 <ng-template #loginMenuTpl>
     <ng-template #loginLink>
         <a (click)="loginSvc.goToLogin()" id="login_link"  routerLink="/login"
-           class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem">Login</a>
+           class="mdl-navigation__link mdl-typography--text-uppercase">Login</a>
     </ng-template>
     <ng-container *ngIf="userService.user; else loginLink">
-        <a routerLink="/inbox" class="toolbarItem" *ngIf="userService.user.hasMail">
+        <a routerLink="/inbox" *ngIf="userService.user.hasMail">
             <i id="incomingMessage" class="fa fa-envelope text-danger"></i>
         </a>
 
-        <a id="username_link" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
+        <a id="username_link" class="mdl-navigation__link mdl-typography--text-uppercase"
            [matMenuTriggerFor]="loginMenu">
             <span [textContent]="userService.user.username | cdeTruncateLongName"></span>></a>
         <mat-menu #loginMenu="matMenu">
@@ -33,11 +33,11 @@
 
 <ng-template #boardTpl>
     <ng-template #simpleBoards>
-        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
+        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase"
            routerLink="/boardList">Boards</a>
     </ng-template>
     <ng-container *ngIf="userService.user; else simpleBoards">
-        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem dropdown-toggle"
+        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase dropdown-toggle"
            [matMenuTriggerFor]="boardMenu">Boards></a>
         <mat-menu #boardMenu="matMenu">
             <a id="publicBoardsLink" routerLink="/boardList"
@@ -49,7 +49,7 @@
 </ng-template>
 
 <ng-template #createTpl>
-    <a id="createEltLink" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem dropdown-toggle"
+    <a id="createEltLink" class="mdl-navigation__link mdl-typography--text-uppercase dropdown-toggle"
        *ngIf="isOrgCurator(userService.user)"
        [matMenuTriggerFor]="createMenu">Create></a>
     <mat-menu #createMenu="matMenu">
@@ -76,10 +76,10 @@
             <!-- Navigation -->
             <div class="android-navigation-container">
                 <nav class="android-navigation mdl-navigation">
-                    <a id="menu_cdes_link" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
+                    <a id="menu_cdes_link" class="mdl-navigation__link mdl-typography--text-uppercase"
                        routerLink="/cde/search">CDEs</a>
 
-                    <a id="menu_forms_link" class="toolbarItem mdl-navigation__link mdl-typography--text-uppercase "
+                    <a id="menu_forms_link" class="mdl-navigation__link mdl-typography--text-uppercase "
                        routerLink="/form/search">Forms</a>
 
                     <ng-container *ngTemplateOutlet="boardTpl"></ng-container>
@@ -87,10 +87,10 @@
                     <ng-container *ngTemplateOutlet="createTpl"></ng-container>
 
                     <a id="menu_qb_link" routerLink="/quickBoard"
-                       class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
+                       class="mdl-navigation__link mdl-typography--text-uppercase"
                        [textContent]="'Quick Board (' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"></a>
 
-                    <a id="menu_help_link" class="mdl-navigation__link mdl-typography--text-uppercase toolbarItem"
+                    <a id="menu_help_link" class="mdl-navigation__link mdl-typography--text-uppercase"
                        routerLink="/api">API</a>
 
                     <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
@@ -99,7 +99,7 @@
                         <cde-notifications></cde-notifications>
                     </a>
 
-                    <a routerLink="/searchPreferences" class="toolbarItem" id="searchSettings" style="padding-right: 10px">
+                    <a routerLink="/searchPreferences" id="searchSettings" style="padding-right: 24px">
                        <i class="material-icons" style="font-size: 1.3em; margin-top: 10px">settings</i>
                     </a>
 
@@ -111,20 +111,20 @@
         </div>
     </div>
 
-    <div class="android-drawer mdl-layout__drawer">
+    <div class="android-drawer mdl-layout__drawer" (click)="toggleDrawer()">
         <span class="mdl-layout-title">
           <img class="android-logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png">
         </span>
         <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="">CDEs</a>
-            <a class="mdl-navigation__link" href="">Forms</a>
+            <a class="mdl-navigation__link" routerLink="/cde/search">CDEs</a>
+            <a class="mdl-navigation__link" routerLink="/form/search">Forms</a>
             <div class="android-drawer-separator"></div>
             <ng-container *ngTemplateOutlet="boardTpl"></ng-container>
             <div class="android-drawer-separator"></div>
             <ng-container *ngTemplateOutlet="createTpl"></ng-container>
-            <div class="android-drawer-separator"></div>
-            <a class="mdl-navigation__link" href="">Quick Board</a>
-            <a class="mdl-navigation__link" href="">API</a>
+            <div *ngIf="userService.user" class="android-drawer-separator"></div>
+            <a class="mdl-navigation__link" routerLink="/quickBoard">Quick Board</a>
+            <a class="mdl-navigation__link" routerLink="/api">API</a>
             <div class="android-drawer-separator"></div>
             <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
         </nav>

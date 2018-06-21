@@ -2,6 +2,10 @@
   position: static;
 }
 
+.mdl-layout {
+  min-height: 650px;
+}
+
 .mdl-layout__drawer-button, .mdl-layout__drawer{
   left: auto;
   right: 0;
@@ -19,7 +23,6 @@
 }
 
 .android-navigation .mdl-navigation__link {
-  height: 68px !important;
   line-height: 64px !important;
 }
 
