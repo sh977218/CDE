@@ -14,6 +14,7 @@ exports.establishConnection = function (dbConfig) {
         logger.noDbLogger.info("Connection open to " + dbConfig.db);
     });
     conn.on('error', function (error) {
+        console.log(error);
         logger.noDbLogger.info("Error connection open to " + error);
     });
     conn.on('reconnected', function () {
