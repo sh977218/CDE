@@ -317,6 +317,7 @@ export class PermissibleFormValue extends PermissibleValue implements FormElemen
 
 export class Question extends DatatypeContainer {
     answer: any; // volatile, input value
+    answerVM: any; // volatile, input value for select
     answerUom: CodeAndSystem; // volatile, input uom value
     answerDate: any; // volatile, working storage for date part
     answerTime: any; // volatile, working storage for time part

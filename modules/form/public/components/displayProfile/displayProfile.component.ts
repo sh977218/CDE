@@ -158,7 +158,7 @@ export class DisplayProfileComponent {
         if (match > -1) a.splice(match, 1);
         a.unshift(v.code);
 
-        let existing = aliases.filter(u => u.u.compare(v));
+        let existing = aliases.filter(u => CodeAndSystem.compare(u.u, v));
         if (existing.length) {
             existing[0].a = a;
         } else {
