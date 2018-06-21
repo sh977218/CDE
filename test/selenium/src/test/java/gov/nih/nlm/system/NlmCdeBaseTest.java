@@ -223,13 +223,6 @@ public class NlmCdeBaseTest {
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
         takeScreenshotsRecordVideo(m);
 
-        ScheduledFuture<?> countdown = scheduler.schedule(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("Test: " + m.getName() + " still running after 5 minutes.");
-            }
-        }, 5, TimeUnit.MINUTES);
-
     }
 
     private void takeScreenshotsRecordVideo(Method m) {
@@ -410,9 +403,7 @@ public class NlmCdeBaseTest {
         goToElementByName(name, "form");
     }
 
-    protected void goToPreview() {
-        clickElement(By.id("preview_tab"));
-    }
+    protected void goToPreview() { clickElement(By.id("preview_tab")); }
 
     protected void goToGeneralDetail() {
         clickElement(By.id("general_tab"));
