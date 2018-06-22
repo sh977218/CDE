@@ -32,8 +32,7 @@ export class PropertiesComponent implements OnInit {
         private alert: AlertService,
         public modalService: NgbModal,
         private orgHelperService: OrgHelperService,
-    ) {
-    }
+    ) {}
 
     addNewProperty() {
         this.elt.properties.push(this.newProperty);

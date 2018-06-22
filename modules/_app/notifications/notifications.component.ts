@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
-// import { forkJoin } from 'rxjs/observable/forkJoin';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 @Component({
     selector: 'cde-notifications',
@@ -43,15 +43,11 @@ export class NotificationsComponent {
     getNotifications(cb?) {
         let obs1 = this.http.get<any[]>("/unreadNotifications");
         let obs2 = this.http.get<any[]>("/notifications");
-        import(/* webpackChunkName: "forkJoin" */ 'rxjs/observable/forkJoin').then(
-            forkJoin => {
-                (forkJoin as any)([obs1, obs2]).subscribe(results => {
-                    this.unreadNotifications = results[0];
-                    this.readNotifications = results[1];
-                    if (cb) cb();
-                }, err => this.alert.addAlert('danger', err));
-            }
-        )
+        forkJoin([obs1, obs2]).subscribe(results => {
+            this.unreadNotifications = results[0];
+            this.readNotifications = results[1];
+            if (cb) cb();
+        }, err => this.alert.addAlert('danger', err));
     }
 
     viewNotification(notification) {

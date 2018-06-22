@@ -248,7 +248,6 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.cssSelector(".card .approveComment"));
 
         textPresent("Message moved");
-        textPresent("Approved");
 
         logout();
         goToEltByName(eltName);
