@@ -40,8 +40,6 @@ import { TimeAgoPipeModule } from "time-ago-pipe/es5";
         MatBadgeModule,
         MatIconModule,
         MatMenuModule,
-        MatSidenavModule,
-        MatToolbarModule,
         TimeAgoPipeModule,
     ],
     declarations: [

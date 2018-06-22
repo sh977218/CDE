@@ -37,7 +37,7 @@
            routerLink="/boardList">Boards</a>
     </ng-template>
     <ng-container *ngIf="userService.user; else simpleBoards">
-        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase dropdown-toggle"
+        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase"
            [matMenuTriggerFor]="boardMenu">Boards></a>
         <mat-menu #boardMenu="matMenu">
             <a id="publicBoardsLink" routerLink="/boardList"
@@ -49,7 +49,7 @@
 </ng-template>
 
 <ng-template #createTpl>
-    <a id="createEltLink" class="mdl-navigation__link mdl-typography--text-uppercase dropdown-toggle"
+    <a id="createEltLink" class="mdl-navigation__link mdl-typography--text-uppercase"
        *ngIf="isOrgCurator(userService.user)"
        [matMenuTriggerFor]="createMenu">Create></a>
     <mat-menu #createMenu="matMenu">
@@ -66,7 +66,7 @@
 
             <span class="android-title mdl-layout-title">
                 <a href="/">
-                    <img class="android-logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png">
+                    <img class="logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png">
                 </a>
             </span>
 
@@ -106,25 +106,25 @@
                 </nav>
             </div>
             <span class="android-mobile-title mdl-layout-title">
-                <img class="android-logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png">
+                <img class="logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png">
             </span>
         </div>
     </div>
 
-    <div class="android-drawer mdl-layout__drawer" (click)="toggleDrawer()">
+    <div class="android-drawer mdl-layout__drawer">
         <span class="mdl-layout-title">
-          <img class="android-logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png">
+          <img class="logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png">
         </span>
         <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" routerLink="/cde/search">CDEs</a>
-            <a class="mdl-navigation__link" routerLink="/form/search">Forms</a>
+            <a class="mdl-navigation__link" routerLink="/cde/search" (click)="toggleDrawer()">CDEs</a>
+            <a class="mdl-navigation__link" routerLink="/form/search" (click)="toggleDrawer()">Forms</a>
             <div class="android-drawer-separator"></div>
             <ng-container *ngTemplateOutlet="boardTpl"></ng-container>
             <div class="android-drawer-separator"></div>
             <ng-container *ngTemplateOutlet="createTpl"></ng-container>
             <div *ngIf="userService.user" class="android-drawer-separator"></div>
-            <a class="mdl-navigation__link" routerLink="/quickBoard">Quick Board</a>
-            <a class="mdl-navigation__link" routerLink="/api">API</a>
+            <a class="mdl-navigation__link" routerLink="/quickBoard" (click)="toggleDrawer()">Quick Board</a>
+            <a class="mdl-navigation__link" routerLink="/api" (click)="toggleDrawer()">API</a>
             <div class="android-drawer-separator"></div>
             <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
         </nav>

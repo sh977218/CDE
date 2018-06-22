@@ -1,31 +1,31 @@
-.sectionPage[_ngcontent-c1] {
+.sectionPage[_ngcontent-c4] {
 
 }
-.slideContent[_ngcontent-c1] {
+.slideContent[_ngcontent-c4] {
     display: block;
     margin: auto;
     height: 500px;
 }
-.carousel-caption[_ngcontent-c1] {
+.carousel-caption[_ngcontent-c4] {
     background-color: rgba(255, 255, 255, .8);
     color: #000;
     text-shadow: none;
 }
-.carousel-caption[_ngcontent-c1]   h3[_ngcontent-c1] {
+.carousel-caption[_ngcontent-c4]   h3[_ngcontent-c4] {
     font-weight: 900;
 }
-[_nghost-c1]     .carousel-control-next, [_nghost-c1]     .carousel-control-prev {
+[_nghost-c4]     .carousel-control-next, [_nghost-c4]     .carousel-control-prev {
     display: none;
 
 
 }
-[_nghost-c1]     .carousel-indicators > li {
+[_nghost-c4]     .carousel-indicators > li {
     height: 10px;
 }
-[_nghost-c1]     .carousel-indicators li {
+[_nghost-c4]     .carousel-indicators li {
     background-color: #fff;
     border: 1px solid #0275d8;
 }
-[_nghost-c1]     .carousel-indicators li.active {
+[_nghost-c4]     .carousel-indicators li.active {
     background-color: #0275d8;
 }
