@@ -1,20 +1,10 @@
 const mongoose = require('mongoose');
-const fs = require('fs');
-const config = require('config');
 const logger = require('./noDbLogger');
 
 let establishedConns = {};
 
 exports.establishConnection = function (dbConfig) {
-    if (dbConfig.options && dbConfig.options.sslCAPath) {
-        dbConfig.options.server.sslCA = [fs.readFileSync(__dirname + dbConfig.options.sslCAPath)];
-        dbConfig.options.server.sslCert = fs.readFileSync(__dirname + dbConfig.options.sslCertPath);
-    }
-
-    let uri = "mongodb://" + dbConfig.username + ":" + dbConfig.password + "@" +
-        config.database.servers.map(function (srv) {
-            return srv.host + ":" + srv.port;
-        }).join(",") + "/" + dbConfig.db;
+    let uri = dbConfig.uri;
 
     if (establishedConns[uri]) return establishedConns[uri];
 
@@ -22,6 +12,9 @@ exports.establishConnection = function (dbConfig) {
 
     conn.once('open', function () {
         logger.noDbLogger.info("Connection open to " + dbConfig.db);
+    });
+    conn.on('error', function (error) {
+        logger.noDbLogger.info("Error connection open to " + error);
     });
     conn.on('reconnected', function () {
         logger.noDbLogger.info("Connection open to " + dbConfig.db);

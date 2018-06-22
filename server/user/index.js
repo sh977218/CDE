@@ -25,7 +25,7 @@ exports.module = function (roleConfig) {
         if (req.body.email) update.email = req.body.email;
         if (req.body.searchSettings) update.searchSettings = req.body.searchSettings;
         if (req.body.publishedForms) update.email = req.body.publishedForms;
-        User.update({_id: req.user._id}, update, dbLogger.handleGenericError(
+        User.update({_id: req.user._id}, {$set: update}, dbLogger.handleGenericError(
             {res: res, origin: "/user/"}, () => res.send('OK'))
         );
     });
