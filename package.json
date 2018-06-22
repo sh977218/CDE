@@ -67,7 +67,6 @@
     "md5-file": "3.1.1",
     "method-override": "2.3.1",
     "moment": "2.20.1",
-    "mongodb": "^3.0.10",
     "mongoose": "4.13.12",
     "mongoose-schema-jsonschema": "1.1.13",
     "morgan": "1.5.1",

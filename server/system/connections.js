@@ -1,8 +1,4 @@
 const mongoose = require('mongoose');
-<<<<<<< HEAD
-const fs = require('fs');
-=======
->>>>>>> b3fc2fd2a31dbe8f81b72feddf73f3757e273fbe
 const logger = require('./noDbLogger');
 
 let establishedConns = {};
