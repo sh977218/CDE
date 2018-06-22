@@ -110,8 +110,8 @@
                   class="badge badge-primary formViewSummaryLabel">
                 Repeats: {{getRepeatLabel(section)}}
             </span>
-            <span *ngFor="let tag of getTags(section, 'fhir')" class="badge badge-primary formViewSummaryLabel">
-                FHIR <ng-container *ngIf="tag.value?.resourceType">Resource: {{tag.value?.resourceType}}</ng-container>
+            <span *ngIf="isMappedTo(section, 'fhir')" class="badge badge-primary formViewSummaryLabel">
+                FHIR <ng-container *ngIf="section.mapTo.fhir.resourceType">Resource: {{section.mapTo.fhir.resourceType}}</ng-container>
             </span>
             <span *ngIf="section.skipLogic?.condition" class="badge badge-warning formViewSummaryLabel">
                 Show if: {{section.skipLogic.condition}}

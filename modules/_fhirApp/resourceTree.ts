@@ -1,5 +1,5 @@
 import { CdeForm, FormElement } from 'shared/form/form.model';
-import { getTag } from 'shared/form/formAndFe';
+import { isMappedTo } from 'shared/form/formAndFe';
 import { getRef } from 'shared/mapping/fhir/fhirDatatypes';
 import { FhirDomainResource, FhirEncounter, FhirObservation } from 'shared/mapping/fhir/fhirResource.model';
 import { newEncounter } from 'shared/mapping/fhir/resource/encounter';
@@ -22,11 +22,8 @@ export class ResourceTree {
         let node: ResourceTree = {children: [], crossReference: fe};
         if (resource) {
             ResourceTree.setResource(node, resource);
-        } else if (fe && Array.isArray(fe.tags) && getTag(fe, 'fhir')) {
-            let tag = getTag(fe, 'fhir');
-            if (tag && tag.value.resourceType) {
-                node.resourceType = tag.value.resourceType;
-            }
+        } else if (fe && isMappedTo(fe, 'fhir') && fe.mapTo.fhir.resourceType) {
+            node.resourceType = fe.mapTo.fhir.resourceType;
         } else if (fe && fe.elementType === 'question') {
             if (parent.resourceType === 'Observation') {
                 node.parentAttribute = 'component';

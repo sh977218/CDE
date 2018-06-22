@@ -71,12 +71,13 @@
             <dd id="updatedBy" class="col-9">{{elt.updatedBy.username}}</dd>
         </ng-container>
         <ng-container>
-            <dt class="col-3 text-right">Fhir Tag:</dt>
+            <dt class="col-3 text-right">Fhir Resource:</dt>
             <dd class="col-9">
-                <input type="checkbox" title="FHIR" [(ngModel)]="tagFhir" (change)="updateTagFhir()">
-                Resource:
-                <input class="form-control" [(ngModel)]="tagFhirResource" (change)="updateTagFhir()"
-                       [disabled]="!tagFhir">
+                <select class="form-control" [(ngModel)]="tagFhirResource" (change)="updateTagFhir()">
+                    <option value="Not Mapped">Not Mapped</option>
+                    <option value="Default Mapping">Default Mapping</option>
+                    <option value="Observation">Observation</option>
+                </select>
             </dd>
         </ng-container>
     </dl>

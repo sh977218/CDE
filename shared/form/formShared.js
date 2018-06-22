@@ -61,10 +61,10 @@ export function convertFormToSection(form) {
                 }
             },
             label: form.designations[0] ? form.designations[0].designation : '',
+            mapTo: form.mapTo,
             skipLogic: {
                 condition: ''
             },
-            tags: form.tags,
         };
     else
         return null;

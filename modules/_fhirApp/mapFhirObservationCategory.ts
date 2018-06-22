@@ -12,5 +12,11 @@ export let mapObservationCategory = [
         observationCategory: 'vital-signs',
         system: 'LOINC',
         codes: ['59408-5', '3141-9', '8287-5', '8302-2', '8306-3', '8310-5', '8462-4', '8480-6', '8867-4', '9279-1', '3140-1', '39156-5']
+    },
+    {
+        panel: 'Custom',
+        observationCategory: 'vital-signs',
+        system: 'LOINC',
+        codes: ['55284-4']
     }
 ];

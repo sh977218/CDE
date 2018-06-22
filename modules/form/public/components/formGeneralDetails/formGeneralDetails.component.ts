@@ -4,7 +4,7 @@ import _noop from 'lodash/noop';
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { CdeForm } from 'shared/form/form.model';
-import { deleteTag, getTag, newTag } from 'shared/form/formAndFe';
+import { isMappedTo } from 'shared/form/formAndFe';
 
 @Component({
     selector: 'cde-form-general-details',
@@ -13,9 +13,7 @@ import { deleteTag, getTag, newTag } from 'shared/form/formAndFe';
 export class FormGeneralDetailsComponent {
     @Input() set elt(e: CdeForm) {
         this._elt = e;
-        let tag = getTag(e, 'fhir');
-        this.tagFhir = !!tag;
-        this.tagFhirResource = tag && tag.value ? tag.value.resourceType : undefined;
+        this.tagFhirResource = isMappedTo(e, 'fhir') ? e.mapTo.fhir.resourceType || 'Default Mapping' : 'Not Mapped';
     }
     get elt() {
         return this._elt;
@@ -27,7 +25,6 @@ export class FormGeneralDetailsComponent {
         multiple: false,
         tags: true
     };
-    tagFhir: boolean;
     tagFhirResource: string;
     userOrgs = [];
 
@@ -44,19 +41,25 @@ export class FormGeneralDetailsComponent {
     }
 
     updateTagFhir() {
-        let tag = getTag(this.elt, 'fhir');
-        if (this.tagFhir) {
-            if (!tag) {
-                tag = newTag(this.elt, 'fhir');
+        if (this.tagFhirResource === 'Not Mapped') {
+            if (this.elt.mapTo) {
+                this.elt.mapTo.fhir = undefined;
+                let count = 0;
+                for (let m in this.elt.mapTo) {
+                    if (m) count++;
+                }
+                if (!count) {
+                    this.elt.mapTo = undefined;
+                }
             }
-            if (!tag.value) {
-                tag.value = {};
-            }
-            tag.value.resourceType = this.tagFhirResource;
         } else {
-            if (tag) {
-                deleteTag(this.elt, tag);
+            if (!this.elt.mapTo) {
+                this.elt.mapTo = {};
             }
+            if (!this.elt.mapTo.fhir) {
+                this.elt.mapTo.fhir = {};
+            }
+            this.elt.mapTo.fhir.resourceType = this.tagFhirResource === 'Default Mapping' ? undefined : this.tagFhirResource;
         }
         this.onEltChange.emit();
     }

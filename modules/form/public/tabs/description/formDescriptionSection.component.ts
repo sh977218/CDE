@@ -18,7 +18,7 @@ import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { FormattedValue } from 'shared/models.model';
 import { CdeForm, FormElement, FormInForm, FormSection, SkipLogic } from 'shared/form/form.model';
-import { getTags } from 'shared/form/formAndFe';
+import { isMappedTo } from 'shared/form/formAndFe';
 import { convertFormToSection, isSubForm } from 'shared/form/formShared';
 
 
@@ -48,8 +48,8 @@ export class FormDescriptionSectionComponent implements OnInit {
             debounceTime(300),
             map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.section)),
         ));
-    getTags = getTags;
     static inputEvent = new Event('input');
+    isMappedTo = isMappedTo;
     isSubForm = false;
     formSection: FormInForm;
     parent: FormElement;

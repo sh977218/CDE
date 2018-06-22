@@ -14,9 +14,10 @@ const datatypeNumberSchema = new Schema({
     , precision: Number
 }, {_id: false});
 
-const tagsSchema = new Schema({
-    key: sharedSchemas.stringType,
-    value: Schema.Types.Mixed,
+const mapToSchema = new Schema({
+    fhir: {
+        resourceType: sharedSchemas.stringType,
+    },
 }, {_id: false});
 
 const questionSchema = new Schema({
@@ -69,6 +70,7 @@ function getFormElementJson() {
         instructions: instructionSchema,
         inForm: {type: inFormSchema, default: undefined},
         label: sharedSchemas.stringType,
+        mapTo: {type: mapToSchema, default: undefined},
         question: {type: questionSchema, default: undefined},
         repeat: sharedSchemas.stringType,
         repeatsFor: sharedSchemas.stringType,
@@ -78,7 +80,6 @@ function getFormElementJson() {
             action: Object.assign({enum: ['show', 'enable']}, sharedSchemas.stringType),
             condition: sharedSchemas.stringType,
         },
-        tags: [{type: tagsSchema}],
     };
 }
 
@@ -97,12 +98,12 @@ exports.formJson = {
     , tinyId: Object.assign({index: true}, sharedSchemas.stringType)
     , designations: [sharedSchemas.designationSchema]
     , definitions: [sharedSchemas.definitionSchema]
+    , mapTo: {type: mapToSchema, default: undefined}
     , stewardOrg: {
         name: sharedSchemas.stringType
     }
     , source: sharedSchemas.stringType
     , sources: [sharedSchemas.sourceSchema]
-    , tags: [{type: tagsSchema}]
     , version: sharedSchemas.stringType
     , registrationState: sharedSchemas.registrationStateSchema
     , properties: [sharedSchemas.propertySchema]

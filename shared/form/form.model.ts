@@ -30,10 +30,10 @@ export class CdeForm extends Elt implements FormElementsContainer {
     formInput: any; // volatile, nativeRender and export
     formElements: FormElement[] = []; // mutable
     isCopyrighted: boolean;
+    mapTo?: ExternalMappings; // calculated, used by: FHIR
     noRenderAllowed: boolean;
     numQuestions: number; // volatile, Elastic
     outdated?: boolean; // volatile, server calculated
-    tags?: ObjectTag[]; // calculated, used by FHIR
 
     constructor(elt: CdeForm = undefined) {
         super(elt);
@@ -42,6 +42,7 @@ export class CdeForm extends Elt implements FormElementsContainer {
         // immutable
         this.formInput = elt.formInput;
         this.isCopyrighted = elt.isCopyrighted;
+        this.mapTo = elt.mapTo;
         this.noRenderAllowed = elt.noRenderAllowed;
         this.numQuestions = elt.numQuestions;
         this.outdated = elt.outdated;
@@ -53,8 +54,6 @@ export class CdeForm extends Elt implements FormElementsContainer {
         };
         copyArray(elt.displayProfiles, this.displayProfiles, DisplayProfile);
         copyArray(elt.formElements, this.formElements, FormSection);
-        if (elt.tags) this.tags = [];
-        copyArray(elt.tags, this.tags, ObjectTag);
     }
 
     static copy(elt: CdeForm) {
@@ -147,6 +146,12 @@ export class DisplayProfile {
     }
 }
 
+export class ExternalMappings {
+    fhir?: {
+        resourceType?: string,
+    };
+}
+
 export class FhirApp {
     clientId: string = '';
     dataEndpointUrl: string = '';
@@ -165,10 +170,10 @@ export interface FormElement extends FormElementsContainer {
     formElements: FormElement[];
     instructions: Instruction;
     label: string;
+    mapTo?: ExternalMappings; // calculated, used by: FHIR
     metadataTags?: {key: string, value?: any}[]; // calculated, used by FHIR
     repeat: string;
     skipLogic: SkipLogic;
-    tags?: ObjectTag[]; // calculated, used by FHIR
     updatedSkipLogic: boolean; // calculated, formDescription view model
 }
 
@@ -187,13 +192,13 @@ export class FormSection implements FormSectionOrForm {
     hover: boolean; // calculated, formDescription view model
     instructions;
     label = '';
+    mapTo;
     metadataTags;
     repeat;
     repeatNumber: number; // calculated, formDescription view model
     repeatOption: string; // calculated, formDescription view model
     section: Section;
     skipLogic = new SkipLogic();
-    tags;
     updatedSkipLogic; // calculated, formDescription view model
 
     static copy(fe: FormElement) {
@@ -224,8 +229,6 @@ export class FormSection implements FormSectionOrForm {
             });
         }
         newFe.skipLogic = Object.assign(new SkipLogic(), fe.skipLogic);
-        if (fe.tags) newFe.tags = [];
-        copyArray(fe.tags, newFe.tags, ObjectTag);
         return newFe;
     }
 }
@@ -242,12 +245,12 @@ export class FormInForm implements FormSectionOrForm {
     instructions;
     inForm: InForm;
     label = '';
+    mapTo;
     metadataTags;
     repeat;
     repeatNumber: number; // calculated, formDescription view model
     repeatOption: string; // calculated, formDescription view model
     skipLogic = new SkipLogic();
-    tags;
     updatedSkipLogic; // calculated, formDescription view model
 }
 
@@ -263,11 +266,11 @@ export class FormQuestion implements FormElement {
     incompleteRule: boolean;
     instructions;
     label = '';
+    mapTo;
     metadataTags;
     question: Question = new Question();
     repeat;
     skipLogic = new SkipLogic();
-    tags;
     updatedSkipLogic; // calculated, formDescription view model
 
     static datePrecisionToType = {
@@ -293,15 +296,6 @@ class InForm {
 
     static copy(inForm: InForm) {
         return Object.assign(new InForm(), inForm ? deepCopy(inForm) : undefined);
-    }
-}
-
-export class ObjectTag {
-    key: string;
-    value?: any;
-
-    static copy(tag: ObjectTag) {
-        return Object.assign(new ObjectTag(), tag);
     }
 }
 
