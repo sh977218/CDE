@@ -25,29 +25,27 @@ let expectedContent = {
     "wrongLogin": "login - Failed to load resource: the server responded with a status of 403"
 }
 
-try {
-    let errors = [];
+let errors = [];
 
-    fs.readdirSync(logFolder).forEach(file => {
-        let expectedLines = expectedContent[file.split("_")[0]];
-        let actualLines = fs.readFileSync(logFolder + "/" + file, 'utf-8').split("\n").filter(Boolean);
+fs.readdirSync(logFolder).forEach(file => {
 
-        actualLines.forEach(l => {
-            if (expectedLines !== "*" && (expectedLines && l.indexOf(expectedLines) === -1) && l.indexOf("Slow network is detected") === "-1") {
-                errors.push("ERROR: Unexpected content in console logs: " + file + "--> " + l);
-            }
-        });
+    let expectedLines = expectedContent[file.split("_")[0]];
+    let actualLines = fs.readFileSync(logFolder + "/" + file, 'utf-8').split("\n").filter(Boolean);
+
+    actualLines.forEach(l => {
+        if (expectedLines !== "*" && (expectedLines && l.indexOf(expectedLines) === -1) && l.indexOf("Slow network is detected") === "-1") {
+            errors.push("ERROR: Unexpected content in console logs: " + file + "--> " + l);
+        }
     });
 
-    if (errors.length) {
-        errors.forEach(e => console.log(e));
-        process.exit(1);
-    } else {
-        console.log("INFO: Console Logs Clean.");
-        process.exit(0);
-    }
-} catch (e) {
-    console.log("INFO: No console log folder found.");
+
+});
+
+if (errors.length) {
+    errors.forEach(e => console.log(e));
+    process.exit(1);
+} else {
+    console.log("INFO: Console Logs Clean.");
     process.exit(0);
 }
 
