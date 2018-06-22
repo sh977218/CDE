@@ -28,8 +28,35 @@
       {
         "host": "localhost",
         "port": 27017
+      },
+      {
+        "host": "localhost",
+        "port": 27018
       }
-    ]
+    ],
+    "appData": {
+      "db": "test",
+      "username": "cdeuser",
+      "password": "password",
+      "sslCAPath": "/../../ssl/mongodb.pem",
+      "sslCertPath": "/../../ssl/mongodb.pem",
+      "options": {
+        "ssl": true,
+        "replicaSet": "rs0",
+        "sslValidate": false
+      }
+    },
+    "log": {
+      "db": "cde-logs-test",
+      "username": "cdeuser",
+      "password": "password",
+      "sslCAPath": "/../../ssl/mongodb.pem",
+      "sslCertPath": "/../../ssl/mongodb.pem",
+      "options": {
+        "ssl": true,
+        "replicaSet": "rs0",
+        "sslValidate": false
+      }
+    }
   }
 }
-
