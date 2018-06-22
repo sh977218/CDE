@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { LatestCommentsComponent } from 'discuss/components/latestComments/latestComments.component';
 import { WidgetModule } from 'widget/widget.module';
-import { CommentComponent } from 'discuss/components/comment/comment.component';
+import { CommentsComponent } from 'discuss/components/comments/comments.component';
 
 
 @NgModule({
@@ -18,12 +18,12 @@ import { CommentComponent } from 'discuss/components/comment/comment.component';
     ],
     declarations: [
         DiscussAreaComponent,
-        CommentComponent,
+        CommentsComponent,
         LatestCommentsComponent
     ],
     entryComponents: [
         DiscussAreaComponent,
-        CommentComponent,
+        CommentsComponent,
         LatestCommentsComponent
     ],
     exports: [

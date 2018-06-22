@@ -3,18 +3,17 @@
 </h4>
 
 <div *ngIf="!elt.isDraft">
-    <ng-template #commentNotAuthorized>
-        <div class="ml-2 my-4">Please <a routerLink="/login">log in</a> to comment.</div>
-    </ng-template>
-    <div *ngIf="userService.user; else commentNotAuthorized" class="my-4">
-        <form #commentForm="ngForm" name="commentForm" id="commentForm" novalidate>
-            <label class="sr-only" for="commentTextArea">Comments</label>
-            <textarea name="commentTextArea" id="commentTextArea" class="form-control" rows="3"
-                      [(ngModel)]="newComment.text" placeholder="Join the discussion..." required></textarea>
-            <input name="postComment" id="postComment" class="btn btn-outline-dark" type="button"
-                   value="Post Comment" (click)="addComment()" [disabled]="!commentForm.form.valid"/>
+    <div *ngIf="!userService.user" class="ml-2 my-4">
+        Please <a routerLink="/login">log in</a> to comment.
+    </div>
+    <div *ngIf="userService.user" class="ml-2 my-4">
+        <form #newCommentForm="ngForm" name="newCommentForm" id="newCommentForm" novalidate (ngSubmit)="addNewComment();">
+            <textarea [(ngModel)]="newComment.text" class="form-control" id="newCommentTextArea"
+                      name="newCommentTextArea" rows="3" placeholder="Join the discussion..." required></textarea>
+            <button class="btn btn-outline-dark" id="postNewComment" name="postNewComment" type="submit"
+                    [disabled]="!newCommentForm.form.valid">Post New Comment
+            </button>
         </form>
     </div>
-
-    <cde-comments [comments]="eltComments"></cde-comments>
+    <cde-comments [eltId]="eltId"></cde-comments>
 </div>

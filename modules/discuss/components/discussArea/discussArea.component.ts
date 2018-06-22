@@ -49,11 +49,10 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     subscriptions: any = {};
     tempReplies: any = {};
 
-    constructor(
-        private http: HttpClient,
-        public isAllowedModel: IsAllowedService,
-        public userService: UserService
-    ) {}
+    constructor(private http: HttpClient,
+                public isAllowedModel: IsAllowedService,
+                public userService: UserService) {
+    }
 
     ngOnInit() {
         this.loadComments();
@@ -78,17 +77,19 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
                 this.socket.emit('currentReplying', this.eltId, obj._id);
                 return of<string[]>([]);
             })
-        ).subscribe(() => {});
+        ).subscribe(() => {
+        });
     }
 
     ngOnDestroy() {
         this.socket.close();
     }
 
+    loadComments(cb?) {
+        if (cb) cb();
+    }
+
     cancelReply = comment => this.tempReplies[comment._id] = '';
-    canRemoveComment = com => this.isAllowedModel.doesUserOwnElt(this.elt) || (this.userService.user && this.userService.user._id === com.user);
-    canReopenComment = (com) => com.status === 'resolved' && this.canRemoveComment(com);
-    canResolveComment = (com) => com.status !== 'resolved' && this.canRemoveComment(com);
 
     addAvatar(username) {
         if (username && !this.avatarUrls[username]) {
@@ -98,7 +99,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         }
     }
 
-    addComment() {
+    addNewComment() {
         this.http.post('/comments/' + this.elt.elementType + '/add', {
             comment: this.newComment.text,
             linkedTab: tabMap[this.selectedElt],
@@ -116,26 +117,11 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         }).subscribe();
     }
 
-    replyTo(commentId) {
-        setTimeout(() => {
-            this.http.post('/comments/reply', {
-                commentId: commentId,
-                eltName: this.eltName,
-                reply: this.tempReplies[commentId]
-            }).subscribe(() => {
-                this.tempReplies[commentId] = '';
-            });
-        }, 0);
-    }
 
     setCurrentTab($event) {
         if (this.eltComments) {
             this.eltComments.forEach(c => c.currentComment = !!(c.linkedTab && c.linkedTab === tabMap[$event]));
         }
-    }
-
-    updateCommentStatus(commentId, status) {
-        this.http.post('/comments/status/' + status, {commentId: commentId}).subscribe();
     }
 
     updateReplyStatus(commentId, replyId, status) {
