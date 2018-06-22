@@ -38,30 +38,24 @@
       "db": "test",
       "username": "cdeuser",
       "password": "password",
+      "sslCAPath": "/../../ssl/mongodb.pem",
+      "sslCertPath": "/../../ssl/mongodb.pem",
       "options": {
         "ssl": true,
         "replicaSet": "rs0",
-        "authsource": "admin",
-        "sslValidate": false,
-        "sslCAPath": "/../../ssl/mongodb.pem",
-        "sslCertPath": "/../../ssl/mongodb.pem",
-        "sslCA": "/../../ssl/mongodb.pem",
-        "sslCert": "/../../ssl/mongodb.pem"
+        "sslValidate": false
       }
     },
     "log": {
       "db": "cde-logs-test",
       "username": "cdeuser",
       "password": "password",
+      "sslCAPath": "/../../ssl/mongodb.pem",
+      "sslCertPath": "/../../ssl/mongodb.pem",
       "options": {
         "ssl": true,
         "replicaSet": "rs0",
-        "authsource": "admin",
-        "sslValidate": false,
-        "sslCAPath": "/../../ssl/mongodb.pem",
-        "sslCertPath": "/../../ssl/mongodb.pem",
-        "sslCA": "/../../ssl/mongodb.pem",
-        "sslCert": "/../../ssl/mongodb.pem"
+        "sslValidate": false
       }
     }
   }
