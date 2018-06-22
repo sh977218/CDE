@@ -27,7 +27,7 @@ export class AlertService {
 
     constructor(private snackBar: MatSnackBar) {
         this.alertTime = (window as any).userAlertTime;
-        if (this.alertTime === 1) this.alertTime = 10000;
+        if (this.alertTime === 1) this.alertTime = 90000;
     }
 
     addAlert(type: string, message: string) {

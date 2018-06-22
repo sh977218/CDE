@@ -692,7 +692,7 @@ public class NlmCdeBaseTest {
         int i = 0;
         while (i < 4) {
             try {
-                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.name("simple-snack-bar"), text));
+                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(".mat-simple-snackbar"), text));
                 closeAlert();
                 i = 10;
             } catch (TimeoutException e) {
