@@ -7,7 +7,8 @@
         Please <a routerLink="/login">log in</a> to comment.
     </div>
     <div *ngIf="userService.user" class="ml-2 my-4">
-        <form #newCommentForm="ngForm" name="newCommentForm" id="newCommentForm" novalidate (ngSubmit)="addNewComment();">
+        <form #newCommentForm="ngForm" name="newCommentForm" id="newCommentForm" novalidate
+              (ngSubmit)="postNewComment();">
             <textarea [(ngModel)]="newComment.text" class="form-control" id="newCommentTextArea"
                       name="newCommentTextArea" rows="3" placeholder="Join the discussion..." required></textarea>
             <button class="btn btn-outline-dark" id="postNewComment" name="postNewComment" type="submit"
@@ -15,5 +16,5 @@
             </button>
         </form>
     </div>
-    <cde-comments [eltId]="eltId"></cde-comments>
+    <cde-comments [eltId]="eltId" [eltName]="eltName" [currentTab]="currentTab"></cde-comments>
 </div>

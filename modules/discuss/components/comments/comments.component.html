@@ -46,15 +46,18 @@
                 <div style="word-wrap: break-word;">{{reply.text}}</div>
             </div>
         </div>
-        <div class="newReply">
-            <div class="newReplyInfo">Someone is typing</div>
+        <div class="newReply p-2 border" style="background-color: rgb(245, 245, 245);">
+            <div class="newReplyInfo" *ngIf="comment.currentlyReplying">Someone is typing</div>
             <form #newReplyForm="ngForm" name="newReplyForm" id="newReplyForm" novalidate
-                  (ngSubmit)="replyToComment(comment._id);">
-                <textarea [(ngModel)]="newReply.text" class="form-control" id="newReplyTextArea" name="newReplyTextArea"
-                          rows="3" required></textarea>
-                <button class="btn btn-outline-dark" id="postNewReply" name="postNewReply" type="submit"
-                        [disabled]="!newReplyForm.form.valid">Post Comment
-                </button>
+                  (ngSubmit)="replyToComment(comment);">
+                <input [(ngModel)]="comment.newReply.text" class="form-control"
+                       id="newReplyTextArea" name="newReplyTextArea" placeholder="Reply to this comment" required/>
+                <ng-container *ngIf="comment.newReply.text">
+                    <button class="btn btn-outline-dark" id="postNewReply" name="postNewReply" type="submit"
+                            [disabled]="!newReplyForm.form.valid">Reply
+                    </button>
+                    <button class="btn btn-outline-dark" (click)="cancelReply(comment);">Cancel</button>
+                </ng-container>
             </form>
         </div>
     </div>

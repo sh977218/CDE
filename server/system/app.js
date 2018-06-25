@@ -1011,6 +1011,14 @@ exports.init = function (app) {
     new CronJob('00 00 4 * * *', () => elastic.syncWithMesh(), null, true, 'America/New_York');
 
     app.get('/comments/eltId/:eltId', function (req, res) {
+        let aggregate = [
+            {
+                $match: {
+                    'element.eltId': req.params.eltId,
+                    status: {$ne: 'deleted'}
+                }
+            }
+        ];
         mongo_data.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function (err, comments) {
             let result = comments.filter(c => c.status !== 'deleted');
             result.forEach(function (c) {

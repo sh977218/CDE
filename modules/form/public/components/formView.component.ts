@@ -100,7 +100,6 @@ export class FormViewComponent implements OnInit {
     beforeChange(event) {
         this.currentTab = event.nextId;
         if (this.commentMode) {
-            this.commentAreaComponent.setCurrentTab(this.currentTab);
         }
     }
 

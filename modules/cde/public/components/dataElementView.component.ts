@@ -181,7 +181,6 @@ export class DataElementViewComponent implements OnInit {
 
     setCurrentTab(currentTab) {
         this.currentTab = currentTab;
-        if (this.commentMode) this.commentAreaComponent.setCurrentTab(this.currentTab);
     }
 
     removeAttachment(index) {
