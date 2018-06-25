@@ -1623,7 +1623,7 @@ public class NlmCdeBaseTest {
 
     protected void selectDisplayProfileByName(String name) {
         clickElement(By.id("select_display_profile"));
-        clickElement(By.xpath("(//*[@id='select_display_profile']/following-sibling::div)/button[normalize-space(text()) = '" + name + "']"));
+        clickElement(By.xpath("//button[contains(@class, 'mat-menu-item') and normalize-space(text()) = '" + name + "']"));
     }
 
     /**
