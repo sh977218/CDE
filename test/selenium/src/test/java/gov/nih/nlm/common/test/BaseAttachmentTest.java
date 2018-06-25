@@ -55,7 +55,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
        // textPresent("Scanned by ClamAV");
 
         clickElement(By.id("decline-" + name));
-        checkAlert("Attachment declined");
+        checkAlert("Message moved to archive");
     }
 
     public void setAttachmentDefault() {

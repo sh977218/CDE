@@ -1158,8 +1158,8 @@ public class NlmCdeBaseTest {
         textPresent("Property keys are managed in Org Management > List Management");
         new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
         findElement(By.xpath("//*[@id='newValue']//textarea")).sendKeys(value);
-        if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Rich Text')]"));
-        else clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Plain Text')]"));
+        if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button/span[contains(text(),'Rich Text')]"));
+        else clickElement(By.xpath("//*[@id='newValue']/button/span[contains(text(),'Plain Text')]"));
         hangon(1);
         clickElement(By.id("createNewPropertyBtn"));
         modalGone();
@@ -1623,7 +1623,7 @@ public class NlmCdeBaseTest {
 
     protected void selectDisplayProfileByName(String name) {
         clickElement(By.id("select_display_profile"));
-        clickElement(By.xpath("(//*[@id='select_display_profile']/following-sibling::div)/button[normalize-space(text()) = '" + name + "']"));
+        clickElement(By.xpath("(//*[@id='select_display_profile']/following-sibling::div)/button/span[normalize-space(text()) = '" + name + "']"));
     }
 
     /**
