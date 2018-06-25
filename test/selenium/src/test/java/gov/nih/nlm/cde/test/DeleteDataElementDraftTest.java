@@ -8,7 +8,7 @@ public class DeleteDataElementDraftTest extends NlmCdeBaseTest {
     @Test
     public void deleteDataElementDraft() {
         String cdeName = "Cde Delete Test";
-        mustBeLoggedInAs(nlm_username, nlm_password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeByName(cdeName);
         goToNaming();
         addNewDesignation("draft designation", new String[]{"Health"});

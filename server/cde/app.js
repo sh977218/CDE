@@ -1,5 +1,4 @@
 const multer = require('multer');
-
 const authorization = require('../system/authorization');
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const cdesvc = require('./cdesvc');
@@ -16,6 +15,8 @@ const adminItemSvc = require('../system/adminItemSvc.js');
 const appStatus = require('../system/status');
 const elastic_system = require('../system/elastic');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
+const dbLogger = require('../log/dbLogger');
+
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_cde);
@@ -34,7 +35,15 @@ exports.init = function (app, daoManager) {
 
     app.get("/draftDataElement/:tinyId", cdesvc.draftDataElement);
     app.post("/draftDataElement/:tinyId", [authorization.canEditMiddleware], cdesvc.saveDraftDataElement);
-    app.delete("/draftDataElement/:tinyId", [authorization.canEditMiddleware], cdesvc.deleteDraftDataElement);
+
+    app.delete("/draftDataElement/:tinyId", (req, res, next) => {
+        if (!authorizationShared.isOrgCurator(req.user)) return res.status(401).send();
+        mongo_cde.byTinyId(req.params.tinyId, dbLogger.handleGenericError({res: res, origin: "DEL /draftDataElement"}, dataElement => {
+            if (!dataElement) return res.send();
+            if (!authorizationShared.isOrgCurator(req.user, dataElement.stewardOrg.name)) return res.status(401).send();
+            next();
+        }));
+        }, cdesvc.deleteDraftDataElement);
 
     app.get("/draftDataElementById/:id", cdesvc.draftDataElementById);
 

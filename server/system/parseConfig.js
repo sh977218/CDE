@@ -1,18 +1,24 @@
-var config = require('config');
+const config = require('config');
+const fs = require('fs');
 
-config.database.log.uri = "mongodb://" + config.database.log.username + ":" + config.database.log.password + "@" +
-config.database.servers.map(function (srv) {
-    return srv.host + ":" + srv.port;
-}).join(",") + "/" + config.database.log.db;
-config.mongoUri = "mongodb://" + config.database.appData.username + ":" + config.database.appData.password + "@" +
-config.database.servers.map(function (srv) {
-    return srv.host + ":" + srv.port;
-}).join(",") + "/" + config.database.appData.db;
+let databaseNames = ['log', 'appData'];
 
-config.mongoMigrationUri = "mongodb://" + config.database.migration.username + ":" + config.database.migration.password + "@" +
-config.database.servers.map(function (srv) {
-    return srv.host + ":" + srv.port;
-}).join(",") + "/" + "migration";
+databaseNames.forEach(databaseName => {
+    let database = config.database[databaseName];
+    let hosts = config.database.servers.map(srv => srv.host + ":" + srv.port).join(",");
+    let uriOptions = [];
+    if (database.options.replicaSet)
+        uriOptions.push('replicaSet=' + database.options.replicaSet);
+    if (database.options.ssl) {
+        uriOptions.push('ssl=true');
+        if (database.sslCAPath)
+            database.options.sslCA = [fs.readFileSync(database.sslCAPath)];
+        if (database.sslCertPath)
+            database.options.sslCert = fs.readFileSync(database.sslCertPath);
+    }
+    database.uri = "mongodb://" + database.username + ":" + database.password + "@" + hosts + "/" + database.db;
+    if (uriOptions) database.uri = database.uri + '?' + uriOptions.join('&');
+});
 Object.keys(config).forEach(function (key) {
     exports[key] = config[key];
 });
