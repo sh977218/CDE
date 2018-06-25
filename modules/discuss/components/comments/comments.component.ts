@@ -12,14 +12,52 @@ import { UserService } from '_app/user.service';
 @Component({
     selector: 'cde-comments',
     templateUrl: './comments.component.html',
-    styles: [``]
+    styles: [`
+      .currentTabComment {
+        position: relative;
+        left: -50px;
+    }
+    .outer-arrow{
+        border-top: none;
+        border-bottom: 24px solid transparent;
+        border-left: none;
+        border-right: 24px solid #ddd;
+        left: -25px;
+        top: -1px;
+        z-index: -1;
+        height: 0;
+        position: absolute;
+        width: 0;
+    }
+    .inner-arrow{
+        cursor: default;
+        border-top: none;
+        border-bottom: 26px solid transparent;
+        border-left: none;
+        border-right: 26px solid #fff;
+        left: -22px;
+        z-index: 501;
+        top: 0;
+        height: 0;
+        position: absolute;
+        width: 0;
+    }
+    `]
 })
 export class CommentsComponent implements OnInit, OnDestroy {
     @Input() eltId;
     @Input() eltName;
-    @Input() currentTab;
+    @Input() ownElt;
 
-    comments: Array<any>;
+    private _currentTab;
+    @Input() set currentTab(t) {
+        this._currentTab = t;
+        this.comments.forEach(c => {
+            c.currentComment = c.linkedTab === t;
+        });
+    }
+
+    comments: Array<any> = [];
     newReply = {};
     socket = io((<any>window).publicUrl + '/comment');
     subscriptions: any = {};
@@ -64,30 +102,28 @@ export class CommentsComponent implements OnInit, OnDestroy {
         this.http.get<Array<any>>('/comments/eltId/' + this.eltId)
             .subscribe(response => {
                 response.forEach(comment => {
-                    comment.currentComment = comment.linkedTab === this.currentTab;
+                    comment.currentComment = comment.linkedTab === this._currentTab;
                     comment.newReply = {};
                 });
                 this.comments = response;
             });
     }
 
-    /*
 
-        canRemoveComment = com => this.isAllowedModel.doesUserOwnElt(this.elt) || (this.userService.user && this.userService.user._id === com.user);
-        canReopenComment = (com) => com.status === 'resolved' && this.canRemoveComment(com);
-        canResolveComment = (com) => com.status !== 'resolved' && this.canRemoveComment(com);
-    */
+    canRemoveComment = com => this.ownElt || (this.userService.user && this.userService.user._id === com.user);
+    canReopenComment = com => com.status === 'resolved' && this.canRemoveComment(com);
+    canResolveComment = com => com.status !== 'resolved' && this.canRemoveComment(com);
 
 
-    removeCommentStatus(commentId) {
-        this.http.post('/comments/status/deleted', {commentId: commentId}).subscribe();
+    removeComment(commentId) {
+        this.http.post('/comments/status/delete', {commentId: commentId}).subscribe();
     }
 
-    resolveCommentStatus(commentId) {
-        this.http.post('/comments/status/resolved', {commentId: commentId}).subscribe();
+    resolveComment(commentId) {
+        this.http.post('/comments/status/resolve', {commentId: commentId}).subscribe();
     }
 
-    reopenCommentStatus(commentId) {
+    reopenComment(commentId) {
         this.http.post('/comments/status/active', {commentId: commentId}).subscribe();
     }
 

@@ -1,5 +1,10 @@
 <div *ngFor="let comment of comments; let i = index" class="mb-5" style=" width: 240px; ">
-    <div class="commentDiv " style="background-color: white;box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);">
+    <div class="commentDiv" [ngClass]="{currentTabComment:comment.currentComment}"
+         style="background-color: white;box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);">
+        <ng-container *ngIf="comment.currentComment">
+            <div class="outer-arrow"></div>
+            <div class="inner-arrow"></div>
+        </ng-container>
         <div class="comment p-2 border">
             <div class="commentHeader">
                 <img class="float-left" src="/cde/public/assets/img/min/portrait.png" width="32" height="32"
@@ -9,14 +14,14 @@
                     <div style="font-size:11px;">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
                 </div>
                 <div class="float-left">
-                    <i class="fa fa-trash-o hand-cursor" title="Remove"
-                       id="removeComment-{{i}}"
+                    <i class="fa fa-trash-o hand-cursor" id="removeComment-{{i}}" title="Remove"
+                       *ngIf="canRemoveComment(comment);"
                        (click)="removeComment(comment._id)" data-type="remove"></i>
-                    <i class="fa fa-check-circle-o hand-cursor ml-1" title="Resolve"
-                       id="resolveComment-{{i}}"
+                    <i class="fa fa-check-circle-o hand-cursor ml-1" id="resolveComment-{{i}}" title="Resolve"
+                       *ngIf="canResolveComment(comment);"
                        (click)="resolveCommentStatus(comment._id)"></i>
-                    <i class="fa fa-undo hand-cursor ml-1" title="Reopen"
-                       id="reopenComment-{{i}}"
+                    <i class="fa fa-undo hand-cursor ml-1" id="reopenComment-{{i}}" title="Reopen"
+                       *ngIf="canReopenComment(comment);"
                        (click)="reopenCommentStatus(comment._id)"></i>
                 </div>
             </div>

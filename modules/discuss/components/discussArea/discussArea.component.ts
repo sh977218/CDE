@@ -29,7 +29,17 @@ const tabMap = {
     `]
 })
 export class DiscussAreaComponent {
-    @Input() public elt: any;
+    private ownElt = false;
+    private _elt;
+    @Input() set elt(e) {
+        this.ownElt = this.isAllowedModel.doesUserOwnElt(e);
+        this._elt = e;
+    }
+
+    get elt() {
+        return this._elt;
+    }
+
     @Input() public eltId: string;
     @Input() public eltName: string;
 
@@ -52,7 +62,7 @@ export class DiscussAreaComponent {
     }
 
     postNewComment() {
-        this.http.post('/comments/' + this.elt.elementType + '/add', {
+        this.http.post('/comments/' + this._elt.elementType + '/add', {
             comment: this.newComment.text,
             linkedTab: this._currentTab,
             element: {eltId: this.eltId}
