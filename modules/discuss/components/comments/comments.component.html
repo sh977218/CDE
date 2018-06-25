@@ -1,6 +1,5 @@
-<div *ngFor="let comment of comments; let i = index">
-    <div class="commentDiv mb-5"
-         style="background-color: white; width: 240px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);">
+<div *ngFor="let comment of comments; let i = index" class="mb-5" style=" width: 240px; ">
+    <div class="commentDiv " style="background-color: white;box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);">
         <div class="comment p-2 border">
             <div class="commentHeader">
                 <img class="float-left" src="/cde/public/assets/img/min/portrait.png" width="32" height="32"
@@ -50,7 +49,7 @@
             <div class="newReplyInfo" *ngIf="comment.currentlyReplying">Someone is typing</div>
             <form #newReplyForm="ngForm" name="newReplyForm" id="newReplyForm" novalidate
                   (ngSubmit)="replyToComment(comment);">
-                <input [(ngModel)]="comment.newReply.text" class="form-control"
+                <input [(ngModel)]="comment.newReply.text" (ngModelChange)="changeOnReply(comment)" class="form-control"
                        id="newReplyTextArea" name="newReplyTextArea" placeholder="Reply to this comment" required/>
                 <ng-container *ngIf="comment.newReply.text">
                     <button class="btn btn-outline-dark" id="postNewReply" name="postNewReply" type="submit"
