@@ -38,10 +38,8 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         clickElement(By.partialLinkText(name));
 
         findElement(By.linkText(name));
-//        textPresent("Scanned by ClamAV");
         clickElement(By.id("approve-" + name));
-        checkAlert("Attachment approved");
-
+        checkAlert("Message moved to archive");
     }
 
     protected void declineAttachment(String name) {
@@ -52,7 +50,6 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         clickElement(By.partialLinkText(name));
 
         findElement(By.linkText(name));
-       // textPresent("Scanned by ClamAV");
 
         clickElement(By.id("decline-" + name));
         checkAlert("Message moved to archive");
