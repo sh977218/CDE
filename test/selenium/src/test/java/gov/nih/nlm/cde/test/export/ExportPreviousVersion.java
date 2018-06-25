@@ -21,6 +21,8 @@ public class ExportPreviousVersion extends NlmCdeBaseTest {
         Assert.assertFalse(get(baseUrl + "/deById/585adda729f8ae801d0f045a").asString().contains("designation: \"This name will be removed\""));
         Assert.assertFalse(get(baseUrl + "/deById/585adda729f8ae801d0f045a?type=xml").asString().contains("<designation>This name will be removed</designation>"));
 
+        clickElement(By.cssSelector(".cdk-overlay-container"));
+
         goToHistory();
         clickElement(By.xpath("//*[@id='prior-1']//span"));
         switchTab(1);

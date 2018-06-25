@@ -7,10 +7,9 @@
     <form #linkedFormsForm="ngForm">
         <div class="modal-body" id="linkedFormsModalBody">
             <p>{{getFormText()}}</p>
-            <a *ngIf="forms && forms.length > 0" id="seeAllLinkedFormsButton"
+            <a *ngIf="forms && forms.length > 0" class="btn btn-outline-dark" id="seeAllLinkedFormsButton"
                href="/form/search?q={{elt.tinyId}}" target="_blank">
-                <button mat-raised-button><mat-icon>launch</mat-icon> See all linked forms</button>
-            </a>
+                <i class="fa fa-file-text-o"></i> See all linked forms</a>
             <hr/>
             <div *ngIf="forms && forms.length > 0">
                 <h4>Preview: </h4>
