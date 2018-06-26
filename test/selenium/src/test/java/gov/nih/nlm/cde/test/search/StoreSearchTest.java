@@ -10,7 +10,9 @@ public class StoreSearchTest extends NlmCdeBaseTest {
     @Test
     public void rememberText() {
         String cdeName = "Smoking History Ind";
-        goToCdeByName(cdeName);
+        searchElt(cdeName, "cde");
+        hangon(1);
+        clickElement(By.id("linkToElt_0"));
         driver.navigate().back();
         textPresent(cdeName);
         Assert.assertTrue("Smoking History Ind".equals(findElement(By.id("linkToElt_0")).getText()));

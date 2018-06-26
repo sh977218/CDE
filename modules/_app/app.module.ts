@@ -2,12 +2,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap/alert/alert.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 
-import { AlertComponent } from '_app/alert/alert.component';
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { BackForwardService } from '_app/backForward.service';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
@@ -21,6 +19,7 @@ import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { NotificationsComponent } from "./notifications/notifications.component";
+import { MatSnackBarModule } from "@angular/material";
 import { MatBadgeModule, MatIconModule, MatMenuModule, MatToolbarModule } from "@angular/material";
 import { TimeAgoPipeModule } from "time-ago-pipe/es5";
 
@@ -33,18 +32,17 @@ import { TimeAgoPipeModule } from "time-ago-pipe/es5";
             prefix: 'nlmcde',
             storageType: 'localStorage'
         }),
-        NgbAlertModule.forRoot(),
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
         MatBadgeModule,
         MatIconModule,
         MatMenuModule,
+        MatSnackBarModule,
         MatToolbarModule,
         TimeAgoPipeModule,
     ],
     declarations: [
-        AlertComponent,
         CdeAppComponent,
         NavigationComponent,
         NotificationsComponent,

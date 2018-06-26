@@ -634,8 +634,7 @@ public class NlmCdeBaseTest {
 
     public void closeAlert() {
         try {
-            List<WebElement> elts = driver.findElements(By.cssSelector("button.close"));
-            if (elts.size() > 0) elts.get(0).click();
+            driver.findElement(By.xpath("//span[. = 'Dismiss']")).click();
         } catch (Exception e) {
             System.out.println("Could not close alert - " + e.getMessage());
         }
@@ -693,7 +692,7 @@ public class NlmCdeBaseTest {
         int i = 0;
         while (i < 4) {
             try {
-                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("alertSection"), text));
+                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(".mat-simple-snackbar"), text));
                 closeAlert();
                 i = 10;
             } catch (TimeoutException e) {
@@ -1159,8 +1158,8 @@ public class NlmCdeBaseTest {
         textPresent("Property keys are managed in Org Management > List Management");
         new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
         findElement(By.xpath("//*[@id='newValue']//textarea")).sendKeys(value);
-        if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Rich Text')]"));
-        else clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Plain Text')]"));
+        if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button/span[contains(text(),'Rich Text')]"));
+        else clickElement(By.xpath("//*[@id='newValue']/button/span[contains(text(),'Plain Text')]"));
         hangon(1);
         clickElement(By.id("createNewPropertyBtn"));
         modalGone();
@@ -1624,7 +1623,7 @@ public class NlmCdeBaseTest {
 
     protected void selectDisplayProfileByName(String name) {
         clickElement(By.id("select_display_profile"));
-        clickElement(By.xpath("(//*[@id='select_display_profile']/following-sibling::div)/button[normalize-space(text()) = '" + name + "']"));
+        clickElement(By.xpath("//button[contains(@class, 'mat-menu-item') and normalize-space(text()) = '" + name + "']"));
     }
 
     /**

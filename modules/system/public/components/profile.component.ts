@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import _isArray from 'lodash/isArray';
 import _noop from 'lodash/noop';
 
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { ElasticService } from '_app/elastic.service';
 
 @Component({

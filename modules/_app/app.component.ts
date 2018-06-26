@@ -13,7 +13,6 @@ import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscr
     template: `
         <cde-navigation></cde-navigation>
         <router-outlet></router-outlet>
-        <cde-alert></cde-alert>
     `
 })
 export class CdeAppComponent implements OnInit {

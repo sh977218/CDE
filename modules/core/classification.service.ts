@@ -4,7 +4,7 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
 
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { AngularHelperService } from 'widget/angularHelper.service';
 
