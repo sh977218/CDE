@@ -17,7 +17,7 @@
                          alt="portrait"/>
                 </ng-container>
                 <div class=" float-left mx-2" style="width:120px;">
-                    <div style="font-size:13px;">{{comment.username}}</div>
+                    <div style="font-size:13px;">{{comment.user.username}}</div>
                     <div style="font-size:11px;">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
                 </div>
                 <div class="float-left">
@@ -45,8 +45,8 @@
                     <img class="float-left" src="/cde/public/assets/img/min/portrait.png" width="32" height="32"
                          alt="portrait"/>
                     <div class=" float-left mx-2" style="width:120px;">
-                        <div style="font-size:13px;">{{comment.username}}</div>
-                        <div style="font-size:11px;">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
+                        <div style="font-size:13px;">{{reply.user.username}}</div>
+                        <div style="font-size:11px;">{{reply.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
                     </div>
                     <div class="float-left">
                         <mat-icon id="removeReply-{{i}}_{{j}}" title="RemoveReply"

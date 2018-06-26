@@ -294,9 +294,9 @@ exports.replyToComment = function (req, res) {
                     } else {
                         ioServer.ioServer.of("/comment").emit('commentUpdated', {username: req.user.username});
                         res.send({message: "Reply added"});
-                        if (req.user.username !== comment.username) {
+                        if (req.user.username !== comment.user.username) {
                             let message = {
-                                recipient: {recipientType: "user", name: comment.username},
+                                recipient: {recipientType: "user", name: comment.user.username},
                                 author: {authorType: "user", name: req.user.username},
                                 date: new Date(),
                                 type: "CommentReply",
@@ -329,7 +329,7 @@ exports.removeComment = function (req, res, comment, dao) {
     let eltId = comment.element.eltId;
     idRetrievalFunc(eltId, function (err, elt) {
         if (err || !elt) return res.status(404).send("elt not found");
-        if (req.user.username === comment.username ||
+        if (req.user.username === comment.user.username ||
             (elt.stewardOrg && (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)) ||
             (elt.owner && (elt.owner.username === req.user.username)) ||
             req.user.siteAdmin) {
@@ -356,7 +356,7 @@ exports.removeReply = function (req, res, comment, dao) {
     let eltId = comment.element.eltId;
     idRetrievalFunc(eltId, function (err, elt) {
         if (err || !elt) return res.status(404).send("elt not found");
-        if (req.user.username === comment.username ||
+        if (req.user.username === comment.user.username ||
             (elt.stewardOrg && (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)) ||
             (elt.owner && (elt.owner.username === req.user.username)) ||
             req.user.siteAdmin) {
