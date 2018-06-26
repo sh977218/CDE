@@ -18,10 +18,9 @@
                     <div *ngIf="orgClassificationsTreeView">
                         <tree-root [nodes]="orgClassificationsTreeView.classifications" [options]="options">
                             <ng-template #treeNodeTemplate let-node="node" let-index="index">
-                                <span>{{ node.data.name }}</span>
-                                <button class="btn btn-outline-dark btn-sm" type="button" id="{{node.path}}-classifyBtn"
-                                        (click)="classifyItemByTree(node)">
-                                    <i class="fa fa-plus"></i> Classify
+                                <span style="margin-right: 10px">{{ node.data.name }}</span>
+                                <button id="{{node.path}}-classifyBtn" mat-raised-button (click)="classifyItemByTree(node)">
+                                    <mat-icon>add</mat-icon> Classify
                                 </button>
                             </ng-template>
                             <ng-template #treeNodeFullTemplate let-node="node" let-index="index"
@@ -57,10 +56,9 @@
                         <div class="breadcrumb" id="recentlyClassification_{{i}}">
                             {{orgClassificationRecentlyAddView.orgName}} /
                             {{orgClassificationRecentlyAddView.categories.join(" / ")}}
-                            <button class="btn btn-outline-dark btn-sm" type="button"
+                            <button mat-raised-button style="margin-left: 10px;"
                                     (click)="classifyItemByRecentlyAdd(orgClassificationRecentlyAddView)">
-                                <i class="fa fa-plus"></i> Classify
-                            </button>
+                                <mat-icon>add</mat-icon> Classify</button>
                         </div>
                     </ng-container>
                 </ng-template>
@@ -68,8 +66,6 @@
         </ngb-tabset>
     </div>
     <div class="modal-footer" id="newClassifyItemModalFooter">
-        <button class="btn btn-outline-dark" (click)="c('Close click')" id="cancelNewClassifyItemBtn"
-                name="cancelNewClassifyItemBtn" type="button">Close
-        </button>
+        <button (click)="c('Close click')" id="cancelNewClassifyItemBtn" mat-raised-button>Close</button>
     </div>
 </ng-template>
