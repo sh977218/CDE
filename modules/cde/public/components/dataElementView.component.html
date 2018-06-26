@@ -77,12 +77,12 @@
     <div class="pull-right text-right">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
-            <button class="btn btn-danger" id="deleteDraftBtn" (click)="deleteModal.openDeleteModal();">
-                <i class="fa fa-trash fa-lg mr-1"></i>Delete Draft
+            <button mat-raised-button color="warn" id="deleteDraftBtn" (click)="deleteModal.openDeleteModal()">
+                <mat-icon>delete</mat-icon>Delete Draft
             </button>
-            <button *ngIf="elt.valueDomain.allValid" class="btn btn-success" id="openSave"
+            <button *ngIf="elt.valueDomain.allValid" id="openSave" mat-raised-button color="primary"
                     (click)="saveModal.openSaveModal()">
-                <i class="fa fa-globe fa-lg mr-1"></i>Publish
+                <mat-icon>publish</mat-icon>Publish
             </button>
             <br><span id="viewChangesBtn" class="fake-link hand-cursor" (click)="viewChanges();">Changed</span> by
             {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
