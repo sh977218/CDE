@@ -19,7 +19,7 @@ import { Hotkey, HotkeysService } from "angular2-hotkeys";
 import _isEmpty from 'lodash/isEmpty';
 
 import { ElasticService } from '_app/elastic.service';
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
@@ -70,7 +70,7 @@ const TOOL_BAR_OFF_SET = 55;
 
         :host >>> .badge.formViewSummaryLabel {
             display: inline-flex;
-            margin-right: 4px;
+            margin-left: 4px;
             margin-top: 2px;
             white-space: normal;
         }
@@ -157,7 +157,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         return this._elt;
     }
     @Output() onEltChange = new EventEmitter();
-    @ViewChild(TreeComponent) public tree: TreeComponent;
+    @ViewChild(TreeComponent) tree: TreeComponent;
     @ViewChild('formSearchTmpl') formSearchTmpl: TemplateRef<any>;
     @ViewChild('questionSearchTmpl') questionSearchTmpl: TemplateRef<any>;
     @ViewChild('descToolbox') descToolbox: ElementRef;
@@ -201,15 +201,13 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                         } else {
                             TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
                             addFormIds(this.elt);
-                            this.tree.treeModel.update();
-                            this.tree.treeModel.expandAll();
+                            this.updateTree();
                             this.onEltChange.emit();
                         }
                     } else {
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
                         addFormIds(this.elt);
-                        this.tree.treeModel.update();
-                        this.tree.treeModel.expandAll();
+                        this.updateTree();
                         this.onEltChange.emit();
                     }
                 }
@@ -262,8 +260,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             this.formElementEditing.formElements.splice(this.formElementEditing.index, 0, fe);
         }
         addFormIds(this.elt);
-        this.tree.treeModel.update();
-        this.tree.treeModel.expandAll();
+        this.updateTree();
         this.onEltChange.emit();
     }
 
@@ -356,5 +353,11 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 };
             }
         }
+    }
+
+    updateTree() {
+        this.tree.treeModel.update();
+        // @TODO: if node passed in, expand all node only, else no expand
+        this.tree.treeModel.expandAll();
     }
 }

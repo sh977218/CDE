@@ -582,9 +582,7 @@ let searchTemplate = {
 
 
 exports.syncWithMesh = function () {
-    mongo_data.findMeshClassification({}, function (err, allMappings) {
-        doSyncWithMesh(allMappings);
-    });
+    mongo_data.findMeshClassification({}, (err, allMappings) => doSyncWithMesh(allMappings));
 };
 
 function doSyncWithMesh(allMappings) {
@@ -597,7 +595,7 @@ function doSyncWithMesh(allMappings) {
     allMappings.forEach(function (m) {
         // from a;b;c to a a;b a;b;c
         classifToTrees[m.flatClassification] = [];
-        m.flatTrees.forEach(function (treeNode) {
+        m.flatTrees.forEach(treeNode => {
             classifToTrees[m.flatClassification].push(treeNode);
             while (treeNode.indexOf(";") > -1) {
                 treeNode = treeNode.substr(0, treeNode.lastIndexOf(";"));
@@ -607,9 +605,7 @@ function doSyncWithMesh(allMappings) {
     });
 
     let classifToSimpleTrees = {};
-    allMappings.forEach(function (m) {
-        classifToSimpleTrees[m.flatClassification] = m.flatTrees;
-    });
+    allMappings.forEach(m => classifToSimpleTrees[m.flatClassification] = m.flatTrees);
 
     let searches = [_.cloneDeep(searchTemplate.cde), _.cloneDeep(searchTemplate.form)];
     searches.forEach(search => {
@@ -622,7 +618,7 @@ function doSyncWithMesh(allMappings) {
             if (err) {
                 lock = false;
                 logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
-                    {origin: "system.elastic.syncWithMesh", stack: new Error().stack});
+                    {origin: "system.elastic.syncWithMesh", stack: err.stack});
             } else {
                 let newScrollId = response._scroll_id;
                 processScroll(newScrollId, s, response);

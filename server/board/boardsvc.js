@@ -116,7 +116,7 @@ exports.removePinFromBoard = function (req, res, dao) {
     });
 };
 
-exports.pinAllToBoard = function (req, cdes, res) {
+exports.pinAllToBoard = function (req, res, cdes) {
     var ids = cdes.map(function (cde) {
         return cde.tinyId;
     });

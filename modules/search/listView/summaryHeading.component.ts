@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
+import { Elt } from 'shared/models.model';
+
 @Component({
     selector: "cde-summary-heading",
     templateUrl: "./summaryHeading.component.html",
@@ -10,7 +12,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
     `]
 })
 export class SummaryHeadingComponent {
-    @Input() elt: any;
+    @Input() elt: Elt;
     @Input() eltIndex: number;
     @Input() urlPrefix: string;
     @Output() select = new EventEmitter<string>();

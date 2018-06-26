@@ -4,3 +4,15 @@ import _find from 'lodash/find';
 export function capString(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
+
+export const callbackToData = (err, data) => {
+        cb(err ? undefined : data);
+};
+
+export function deepCopy(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+export function reduceOptionalArray(arr, cb, initialValue) {
+    return Array.isArray(arr) ? arr.reduce(cb, initialValue) : initialValue;
+}

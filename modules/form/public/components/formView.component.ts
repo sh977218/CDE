@@ -8,7 +8,7 @@ import _noop from 'lodash/noop';
 import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
@@ -322,6 +322,7 @@ export class FormViewComponent implements OnInit {
     saveForm() {
         let newCdes = [];
         iterateFes(this.elt.formElements, undefined, undefined, (fe, cb) => {
+            fe.question.cde.datatype = fe.question.datatype;
             if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
             cb();
         }, () => {

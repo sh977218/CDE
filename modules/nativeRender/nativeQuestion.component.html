@@ -96,7 +96,8 @@
                                     [name]="formElement.feId"
                                     [attr.name]="formElement.feId"
                                     [multiple]="formElement.question.multiselect"
-                                    [(ngModel)]="formElement.question.answer">
+                                    [ngModel]="nrs.selectModel(formElement.question)"
+                                    (ngModelChange)="nrs.selectModelChange($event, formElement.question)">
                                 <option *ngFor="let pv of formElement.question.answers"
                                         [value]="pv.permissibleValue"
                                         [attr.value]="pv.permissibleValue">{{NRS.getPvLabel(pv)}}

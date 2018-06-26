@@ -11,13 +11,14 @@ import _noop from 'lodash/noop';
 import { Observable } from "rxjs/Observable";
 import { debounceTime, map } from 'rxjs/operators';
 
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { FormattedValue } from 'shared/models.model';
 import { CdeForm, FormElement, FormInForm, FormSection, SkipLogic } from 'shared/form/form.model';
+import { isMappedTo } from 'shared/form/formAndFe';
 import { convertFormToSection, isSubForm } from 'shared/form/formShared';
 
 
@@ -48,6 +49,7 @@ export class FormDescriptionSectionComponent implements OnInit {
             map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.section)),
         ));
     static inputEvent = new Event('input');
+    isMappedTo = isMappedTo;
     isSubForm = false;
     formSection: FormInForm;
     parent: FormElement;
@@ -181,7 +183,9 @@ export class FormDescriptionSectionComponent implements OnInit {
         this.updateFormVersion =  modal;
         this.modalService.open(this.updateFormVersionTmpl, {size: 'lg'}).result.then(() => {
             currentSection.inForm = newSection.inForm;
+            currentSection.formElements = newSection.formElements;
             currentSection.label = newSection.label;
+            this.formDescriptionComponent.updateTree();
             this.onEltChange.emit();
         }, _noop);
     }

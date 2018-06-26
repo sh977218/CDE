@@ -169,7 +169,7 @@ public abstract class CommentTest extends CommonTest {
         modalGone();
 
         clickElement(By.cssSelector(".card .approveComment"));
-        textPresent("Approved");
+        checkAlert("Message moved to archive");
 
         logout();
         goToEltByName(eltName, status);
@@ -248,7 +248,6 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.cssSelector(".card .approveComment"));
 
         textPresent("Message moved");
-        textPresent("Approved");
 
         logout();
         goToEltByName(eltName);

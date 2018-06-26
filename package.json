@@ -118,17 +118,17 @@
     "angular-tree-component": "7.0.1",
     "angular2-hotkeys": "2.0.3",
     "angular2-template-loader": "0.6.0",
-    "babel-core": "6.26.0",
-    "babel-loader": "7.1.2",
-    "babel-polyfill": "6.22.0",
-    "babel-preset-env": "1.6.1",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "bootstrap": "^4.1.1",
     "bootstrap-tour": "https://github.com/sorich87/bootstrap-tour.git",
     "capitalize": "1.0.0",
     "cheerio": "1.0.0-rc.2",
     "classlist.js": "1.1.20150312",
-    "clean-webpack-plugin": "0.1.17",
-    "codelyzer": "4.1.0",
+    "clean-webpack-plugin": "^0.1.19",
+    "codelyzer": "^4.3.0",
     "copy-webpack-plugin": "^4.5.1",
     "core-js": "2.4.1",
     "cpx": "1.5.0",
@@ -139,7 +139,7 @@
     "es6-promise": "*",
     "expose-loader": "0.7.3",
     "fhirclient": "0.1.11",
-    "file-list-plugin": "0.1.0",
+    "file-list-plugin": "^2.0.1",
     "file-loader": "1.1.11",
     "file-saver": "1.3.3",
     "font-awesome": "4.7.0",
@@ -182,7 +182,7 @@
     "rxjs-compat": "6.2.0",
     "sass-loader": "^7.0.1",
     "style-loader": "0.21.0",
-    "time-ago-pipe": "https://github.com/ivanovgp/time-ago-pipe.git",
+    "time-ago-pipe": "^1.3.2",
     "ts-loader": "4.3.1",
     "tslint": "5.10.0",
     "tslint-loader": "^3.6.0",
@@ -202,7 +202,7 @@
     {
       "path": "./dist/app/cde.js",
       "compression": "none",
-      "maxSize": "1.34 MB"
+      "maxSize": "1.33 MB"
     },
     {
       "path": "./dist/app/cde.css",
@@ -227,12 +227,12 @@
     {
       "path": "./dist/fhir/fhir.css",
       "compression": "none",
-      "maxSize": "250 kB"
+      "maxSize": "265 kB"
     },
     {
       "path": "./dist/native/native.js",
       "compression": "none",
-      "maxSize": "826 kB"
+      "maxSize": "740 kB"
     },
     {
       "path": "./dist/native/native.css",

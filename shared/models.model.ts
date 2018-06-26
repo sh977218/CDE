@@ -59,8 +59,8 @@ export class CodeAndSystem {
         this.code = code;
     }
 
-    compare(r) {
-        return this.code === r.code && this.system === r.system;
+    static compare(l: CodeAndSystem | undefined, r: CodeAndSystem | undefined) {
+        return !l && !r || l && r && l.code === r.code && l.system === r.system;
     }
 
     static copy(u: CodeAndSystem | any) {
@@ -149,6 +149,7 @@ export abstract class Elt {
     archived: boolean = false;
     attachments: Attachment[];
     changeNote: string;
+    checked: boolean; // volatile, used by quickboard
     classification: Classification[] = []; // mutable
     comments: Comment[] = []; // mutable
     created: Date;
@@ -235,6 +236,18 @@ export abstract class Elt {
 
     static trackByElt(index: number, elt: any): number {
         return elt.tinyId;
+    }
+}
+
+export class EltRef {
+    ids?: CdeId[] = [];
+    name?: string;
+    outdated?: boolean; // calculated, by server for client
+    tinyId?: string;
+    version?: string;
+
+    static copy(inForm: EltRef) {
+        return Object.assign(new EltRef(), inForm ? JSON.parse(JSON.stringify(inForm)) : undefined);
     }
 }
 

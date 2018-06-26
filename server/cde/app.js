@@ -15,7 +15,7 @@ const adminItemSvc = require('../system/adminItemSvc.js');
 const appStatus = require('../system/status');
 const elastic_system = require('../system/elastic');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
-const dbLogger = require('../log/dbLogger');
+const handleError = require('../log/dbLogger').handleError;
 
 
 exports.init = function (app, daoManager) {
@@ -38,12 +38,12 @@ exports.init = function (app, daoManager) {
 
     app.delete("/draftDataElement/:tinyId", (req, res, next) => {
         if (!authorizationShared.isOrgCurator(req.user)) return res.status(401).send();
-        mongo_cde.byTinyId(req.params.tinyId, dbLogger.handleGenericError({res: res, origin: "DEL /draftDataElement"}, dataElement => {
+        mongo_cde.byTinyId(req.params.tinyId, handleError({res, origin: "DEL /draftDataElement"}, dataElement => {
             if (!dataElement) return res.send();
             if (!authorizationShared.isOrgCurator(req.user, dataElement.stewardOrg.name)) return res.status(401).send();
             next();
         }));
-        }, cdesvc.deleteDraftDataElement);
+    }, cdesvc.deleteDraftDataElement);
 
     app.get("/draftDataElementById/:id", cdesvc.draftDataElementById);
 
@@ -189,7 +189,7 @@ exports.init = function (app, daoManager) {
         let query = elastic_system.buildElasticSearchQuery(req.user, req.body.query);
         if (query.size > config.maxPin) return res.status(403).send("Maximum number excesses.");
         elastic_system.elasticsearch('cde', query, req.body.query, function (err, cdes) {
-            boardsvc.pinAllToBoard(req, cdes.cdes, res);
+            boardsvc.pinAllToBoard(req, res, cdes.cdes);
         });
     });
 
