@@ -243,7 +243,7 @@
     {
       "path": "./modules/system/views/home-launch.ejs",
       "compression": "none",
-      "maxSize": "508 kB"
+      "maxSize": "655 kB"
     }
   ]
 }
