@@ -6,7 +6,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 import { LocalStorageModule } from 'angular-2-local-storage';
-import { TimeAgoPipeModule } from 'time-ago-pipe';
 
 import { AlertService } from '_app/alert.service';
 import { BackForwardService } from '_app/backForward.service';
@@ -33,15 +32,14 @@ import { OrgHelperService } from 'core/orgHelper.service';
             prefix: 'nlmcde',
             storageType: 'localStorage'
         }),
-        // internal
-        CdeAppRoutingModule,
-        CommonAppModule,
         MatBadgeModule,
         MatIconModule,
         MatMenuModule,
         MatSnackBarModule,
         MatToolbarModule,
-        TimeAgoPipeModule,
+        // internal
+        CdeAppRoutingModule,
+        CommonAppModule,
     ],
     declarations: [
         CdeAppComponent,
