@@ -116,15 +116,27 @@ export class CommentsComponent implements OnInit, OnDestroy {
 
 
     removeComment(commentId) {
-        this.http.post('/comments/status/delete', {commentId: commentId}).subscribe();
+        this.http.post('/comment/status/delete', {commentId: commentId}).subscribe();
     }
 
     resolveComment(commentId) {
-        this.http.post('/comments/status/resolve', {commentId: commentId}).subscribe();
+        this.http.post('/comment/status/resolve', {commentId: commentId}).subscribe();
     }
 
     reopenComment(commentId) {
-        this.http.post('/comments/status/active', {commentId: commentId}).subscribe();
+        this.http.post('/comment/status/active', {commentId: commentId}).subscribe();
+    }
+
+    removeReply(replyId) {
+        this.http.post('/reply/status/delete', {replyId: replyId}).subscribe();
+    }
+
+    resolveReply(replyId) {
+        this.http.post('/reply/status/resolve', {replyId: replyId}).subscribe();
+    }
+
+    reopenReply(replyId) {
+        this.http.post('/reply/status/active', {replyId: replyId}).subscribe();
     }
 
     replyToComment(comment) {

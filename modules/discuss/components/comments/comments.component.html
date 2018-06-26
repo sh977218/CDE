@@ -14,20 +14,20 @@
                     <div style="font-size:11px;">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
                 </div>
                 <div class="float-left">
-                    <i class="fa fa-trash-o hand-cursor" id="removeComment-{{i}}" title="Remove"
-                       *ngIf="canRemoveComment(comment);"
-                       (click)="removeComment(comment._id)" data-type="remove"></i>
-                    <i class="fa fa-check-circle-o hand-cursor ml-1" id="resolveComment-{{i}}" title="Resolve"
-                       *ngIf="canResolveComment(comment);"
-                       (click)="resolveCommentStatus(comment._id)"></i>
-                    <i class="fa fa-undo hand-cursor ml-1" id="reopenComment-{{i}}" title="Reopen"
-                       *ngIf="canReopenComment(comment);"
-                       (click)="reopenCommentStatus(comment._id)"></i>
+                    <i class="fa fa-trash-o hand-cursor" id="removeComment-{{i}}" title="RemoveComment"
+                       *ngIf="canRemoveComment(comment);" (click)="removeComment(comment._id)" data-type="remove"></i>
+                    <i class="fa fa-check-circle-o hand-cursor ml-1" id="resolveComment-{{i}}" title="ResolveComment"
+                       *ngIf="canResolveComment(comment);" (click)="resolveComment(comment._id)"></i>
+                    <i class="fa fa-undo hand-cursor ml-1" id="reopenComment-{{i}}" title="ReopenComment"
+                       *ngIf="canReopenComment(comment);" (click)="reopenComment(comment._id)"></i>
                 </div>
             </div>
             <div class="clearfix"></div>
             <div class="commentBody">
-                <div style="word-wrap: break-word;">{{comment.text}}</div>
+                <div style="word-wrap: break-word;">
+                    <s *ngIf="comment.status === 'resolved'">{{comment.text}}</s>
+                    <ng-container *ngIf="comment.status !=='resolved'">{{comment.text}}</ng-container>
+                </div>
             </div>
         </div>
         <div *ngFor="let reply of comment.replies; let j = index" class="replyDiv p-2 border"
@@ -40,14 +40,18 @@
                     <div style="font-size:11px;">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
                 </div>
                 <div class="float-left">
-                    <i class="fa fa-trash-o hand-cursor" title="Remove"></i>
-                    <i class="fa fa-check-circle-o hand-cursor ml-1" title="Resolve"></i>
-                    <i class="fa fa-undo hand-cursor ml-1" title="Reopen"></i>
+                    <i class="fa fa-trash-o hand-cursor" id="removeReply-{{i}}_{{j}}" title="RemoveReply"
+                       *ngIf="canRemoveComment(reply);" (click)="removeReply(reply._id)" data-type="remove"></i>
+                    <i class="fa fa-check-circle-o hand-cursor ml-1" id="resolveReply-{{i}}_{{j}}" title="ResolveReply"
+                       *ngIf="canResolveComment(reply);" (click)="resolveReply(reply._id)"></i>
+                    <i class="fa fa-undo hand-cursor ml-1" id="reopenReply-{{i}}_{{j}}" title="ReopenReply"
+                       *ngIf="canReopenComment(reply);" (click)="reopenReply(reply._id)"></i>
                 </div>
             </div>
             <div class="clearfix"></div>
             <div class="replyBody">
-                <div style="word-wrap: break-word;">{{reply.text}}</div>
+                <s *ngIf="reply.status === 'resolved'">{{reply.text}}</s>
+                <ng-container *ngIf="reply.status !=='resolved'">{{reply.text}}</ng-container>
             </div>
         </div>
         <div class="newReply p-2 border" style="background-color: rgb(245, 245, 245);">

@@ -1052,12 +1052,52 @@ exports.init = function (app) {
 
     app.post('/comments/decline', adminItemSvc.declineComment);
 
-    app.post('/comments/status/resolve', function (req, res) {
+    app.post('/comment/status/resolve', [authorization.isAuthenticatedMiddleware], function (req, res) {
         adminItemSvc.updateCommentStatus(req, res, "resolved");
     });
-    app.post('/comments/status/active', function (req, res) {
+    app.post('/comment/status/active', [authorization.isAuthenticatedMiddleware], function (req, res) {
         adminItemSvc.updateCommentStatus(req, res, "active");
     });
+
+    app.post('/reply/status/resolve', [authorization.isAuthenticatedMiddleware], function (req, res) {
+        adminItemSvc.updateReplyStatus(req, res, "resolved");
+    });
+    app.post('/reply/status/active', [authorization.isAuthenticatedMiddleware], function (req, res) {
+        adminItemSvc.updateReplyStatus(req, res, "active");
+    });
+
+    /*    @TODO This endpoint will be improved in discuss module ticket */
+    app.post('/comment/status/delete', [authorization.isAuthenticatedMiddleware], function (req, res) {
+        mongo_data.Comment.findById(req.body.commentId, function (err, comment) {
+            if (err) return res.status(500).send('Error retrieve comment');
+            else if (!comment) return res.status(404).send("Comment not found");
+            else {
+                let type = comment.element.eltType;
+                adminItemSvc.removeComment(req, res, comment, daoManager.getDao(type));
+            }
+        });
+    });
+    /*    @TODO This endpoint will be improved in discuss module ticket */
+    app.post('/reply/status/delete', [authorization.isAuthenticatedMiddleware], function (req, res) {
+        mongo_data.Comment.findOne({'replies._id': req.body.replyId}, function (err, comment) {
+            if (err) return res.status(500).send('Error retrieve comment');
+            else if (!comment) return res.status(404).send("Comment not found");
+            else {
+                let reply = null;
+                comment.replies.forEach(r => {
+                    if (r._id.toString() === req.body.replyId) {
+                        reply = r;
+                    }
+                });
+                if (!reply) return res.status(404).send("Reply not found");
+                else {
+                    let type = comment.element.eltType;
+                    adminItemSvc.removeReply(req, res, comment, reply, daoManager.getDao(type));
+                }
+            }
+        });
+    });
+
     app.post('/comments/reply', adminItemSvc.replyToComment);
 
     app.get('/activeBans', (req, res) => {

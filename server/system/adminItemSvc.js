@@ -324,95 +324,112 @@ exports.replyToComment = function (req, res) {
     }
 };
 
-exports.removeComment = function (req, res, dao) {
-    if (req.isAuthenticated()) {
-        mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
-            if (err) return res.status(404).send("Comment not found");
-            let removedComment;
-            if (req.body.replyId) {
-                if (comment.replies) {
-                    comment.replies.forEach(r => {
-                        if (r._id.toString() === req.body.replyId) {
-                            removedComment = r;
-                        }
+exports.removeComment = function (req, res, comment, dao) {
+    comment.status = "deleted";
+    let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
+    let eltId = comment.element.eltId;
+    idRetrievalFunc(eltId, function (err, elt) {
+        if (err || !elt) return res.status(404).send("elt not found");
+        if (req.user.username === comment.username ||
+            (elt.stewardOrg && (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)) ||
+            (elt.owner && (elt.owner.username === req.user.username)) ||
+            req.user.siteAdmin) {
+            comment.save(function (err) {
+                if (err) {
+                    logging.errorLogger.error("Error: Cannot remove " + comment.type + ".", {
+                        origin: "system.adminItemSvc.removeComment",
+                        stack: new Error().stack
                     });
+                    res.status(500).send("ERROR - cannot save/remove comment");
+                } else {
+                    ioServer.ioServer.of("/comment").emit('commentUpdated', {username: req.user.username});
+                    res.send({message: "Comment removed"});
                 }
-            } else removedComment = comment;
-            if (removedComment) {
-                removedComment.status = "deleted";
-                var idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
-                var eltId = comment.element.eltId;
-                idRetrievalFunc(eltId, function (err, elt) {
-                    if (err || !elt) return res.status(404).send("elt not found");
-                    if (req.user.username === removedComment.username ||
-                        (elt.stewardOrg && (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)) ||
-                        (elt.owner && (elt.owner.username === req.user.username)) ||
-                        req.user.siteAdmin
-                    ) {
-                        comment.save(function (err) {
-                            if (err) {
-                                logging.errorLogger.error("Error: Cannot remove " + removedComment.type + ".", {
-                                    origin: "system.adminItemSvc.removeComment",
-                                    stack: new Error().stack
-                                });
-                                res.status(500).send("ERROR - cannot save/remove comment");
-                            } else {
-                                ioServer.ioServer.of("/comment").emit('commentUpdated', {username: req.user.username});
-                                res.send({message: "Comment removed"});
-                            }
-                        });
-                    } else {
-                        res.send({message: "You can only remove " + removedComment.type + " you own."});
-                    }
-                });
+            });
+        } else {
+            res.send({message: "You can only remove " + comment.type + " you own."});
+        }
+    });
+};
 
-            } else {
-                res.status(404).send("Comment not found")
-            }
-        });
-    } else {
-        res.status(403).send("You are not authorized.");
-    }
+exports.removeReply = function (req, res, comment, reply, dao) {
+    reply.status = "deleted";
+    let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
+    let eltId = comment.element.eltId;
+    idRetrievalFunc(eltId, function (err, elt) {
+        if (err || !elt) return res.status(404).send("elt not found");
+        if (req.user.username === comment.username ||
+            (elt.stewardOrg && (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)) ||
+            (elt.owner && (elt.owner.username === req.user.username)) ||
+            req.user.siteAdmin) {
+            comment.save(function (err) {
+                if (err) {
+                    logging.errorLogger.error("Error: Cannot remove " + comment.type + ".", {
+                        origin: "system.adminItemSvc.removeReply",
+                        stack: new Error().stack
+                    });
+                    res.status(500).send("ERROR - cannot save/remove reply");
+                } else {
+                    ioServer.ioServer.of("/comment").emit('commentUpdated', {username: req.user.username});
+                    res.send({message: "Reply removed"});
+                }
+            });
+        } else {
+            res.send({message: "You can only remove " + comment.type + " you own."});
+        }
+    });
 };
 
 exports.updateCommentStatus = function (req, res, status) {
-    if (req.isAuthenticated()) {
-        mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
-            if (err) return res.status(404).send("Comment not found");
-
-            let updatedComment;
-            if (req.body.replyId) {
-                if (comment.replies) {
-                    comment.replies.forEach(function (r) {
-                        if (r._id.toString() === req.body.replyId) {
-                            updatedComment = r;
-                        }
+    mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
+        if (err) return res.status(404).send("Comment not found");
+        if (comment) {
+            comment.status = status;
+            comment.save(function (err) {
+                if (err) {
+                    logging.errorLogger.error("Error: Cannot Update comment.", {
+                        origin: "system.adminItemSvc.removeComment",
+                        stack: new Error().stack
                     });
+                    res.status(500).send("ERROR - cannot update comment");
+                } else {
+                    ioServer.ioServer.of("/comment").emit('commentUpdated', {username: req.user.username});
+                    res.send({message: "Saved."});
                 }
-            } else {
-                updatedComment = comment;
-            }
-            if (updatedComment) {
-                updatedComment.status = status;
-                comment.save(function (err) {
-                    if (err) {
-                        logging.errorLogger.error("Error: Cannot Update comment.", {
-                            origin: "system.adminItemSvc.removeComment",
-                            stack: new Error().stack
-                        });
-                        res.status(500).send("ERROR - cannot update comment");
-                    } else {
-                        ioServer.ioServer.of("/comment").emit('commentUpdated', {username: req.user.username});
-                        res.send({message: "Saved."});
-                    }
-                });
-            } else {
-                res.status(404).send("Comment not found")
+            });
+        } else {
+            res.status(404).send("Comment not found")
+        }
+    });
+};
+exports.updateReplyStatus = function (req, res, status) {
+    let replyId = req.body.replyId;
+    mongo_data_system.Comment.findOne({'replies._id': replyId}, function (err, comment) {
+        if (err) return res.status(404).send("Reply not found");
+        let reply;
+        comment.replies.forEach(function (r) {
+            if (r._id.toString() === replyId) {
+                reply = r;
             }
         });
-    } else {
-        res.status(403).send("You are not authorized.");
-    }
+        if (reply) {
+            reply.status = status;
+            comment.save(function (err) {
+                if (err) {
+                    logging.errorLogger.error("Error: Cannot Update comment.", {
+                        origin: "system.adminItemSvc.removeComment",
+                        stack: new Error().stack
+                    });
+                    res.status(500).send("ERROR - cannot update comment");
+                } else {
+                    ioServer.ioServer.of("/comment").emit('commentUpdated', {username: req.user.username});
+                    res.send({message: "Saved."});
+                }
+            });
+        } else {
+            res.status(404).send("Reply not found")
+        }
+    });
 };
 
 exports.declineComment = function (req, res) {
