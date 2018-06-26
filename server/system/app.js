@@ -1098,7 +1098,7 @@ exports.init = function (app) {
             if (err) return res.status(500).send('Error retrieve comment');
             else if (!comment) return res.status(404).send("Comment not found");
             else {
-                let index = comment.replies.map(r => r._id).indexOf(req.body.replyId);
+                let index = comment.replies.map(r => r._id.toString()).indexOf(req.body.replyId);
                 if (index === -1) return res.status(404).send("Reply not found");
                 else {
                     comment.replies.splice(index, 1);
