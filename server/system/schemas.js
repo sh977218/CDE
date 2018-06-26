@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
-const regStatusShared = require('@std/esm')(module)("../../shared/system/regStatusShared");
+const Schema = require('mongoose').Schema;
 
-let schemas = {};
+const regStatusShared = require('@std/esm')(module)("../../shared/system/regStatusShared");
 
 function deleteEmpty(v) {
     if (v === null || v === '') {
@@ -10,15 +9,15 @@ function deleteEmpty(v) {
     return v;
 }
 
-const stringType = schemas.stringType = {type: String, set: deleteEmpty};
-const stringIndexType = schemas.stringIndexType = Object.assign({index: true}, stringType);
+const stringType = exports.stringType = {type: String, set: deleteEmpty};
+const stringIndexType = exports.stringIndexType = Object.assign({index: true}, stringType);
 
-let csEltSchema = new mongoose.Schema({
+let csEltSchema = new Schema({
     elements: [],
     name: stringIndexType
 }, {_id: false});
 
-schemas.classificationSchema = new mongoose.Schema({
+exports.classificationSchema = new Schema({
     stewardOrg: {
         name: stringIndexType
     },
@@ -26,12 +25,12 @@ schemas.classificationSchema = new mongoose.Schema({
     elements: [csEltSchema]
 }, {_id: false});
 
-schemas.codeAndSystemSchema = new mongoose.Schema({
+exports.codeAndSystemSchema = new Schema({
     code: stringType,
     system: stringType,
 }, {_id: false});
 
-schemas.permissibleValueSchema = new mongoose.Schema({
+exports.permissibleValueSchema = new Schema({
     permissibleValue: stringType,
     valueMeaningName: stringType,
     valueMeaningCode: stringType,
@@ -41,7 +40,7 @@ schemas.permissibleValueSchema = new mongoose.Schema({
 }, {_id: false});
 
 
-schemas.derivationRuleSchema = new mongoose.Schema({
+exports.derivationRuleSchema = new Schema({
     name: stringType,
     inputs: {type: [stringType], index: true}, // Information operated on by rule
     outputs: [stringType], // Information produced by rule
@@ -50,7 +49,7 @@ schemas.derivationRuleSchema = new mongoose.Schema({
 }, {_id: true});
 
 
-schemas.sourceSchema = new mongoose.Schema({
+exports.sourceSchema = new Schema({
     sourceName: stringType,
     created: Date, // Date created in source
     updated: Date, // Date updated in source
@@ -119,7 +118,7 @@ embedJson.form.sdcLink = {type: Boolean, default: false};
 embedJson.form.nbOfQuestions = {type: Boolean, default: false};
 embedJson.form.cdes = {type: Boolean, default: false};
 
-schemas.embedSchema = new mongoose.Schema(embedJson);
+exports.embedSchema = new Schema(embedJson);
 
 let fhirAppJson = {
     clientId: String,
@@ -128,9 +127,18 @@ let fhirAppJson = {
         {tinyId: String}
     ],
 };
-schemas.fhirAppSchema = new mongoose.Schema(fhirAppJson);
+exports.fhirAppSchema = new Schema(fhirAppJson);
 
-schemas.statusValidationRuleSchema = new mongoose.Schema({
+exports.fhirObservationInformationSchema = new Schema({
+    _id: String,
+    categories: [{
+        type: String,
+        enum: ['social-history', 'vital-signs', 'imaging', 'laboratory', 'procedure', 'survey', 'exam', 'therapy']
+    }],
+    timestamp: Date
+}, {collection: 'fhirObservationInfo'});
+
+exports.statusValidationRuleSchema = new Schema({
     field: stringType,
     id: Number,
     targetStatus: Object.assign({
@@ -165,14 +173,14 @@ let orgJson = {
         default: []
     },
     extraInfo: stringType,
-    cdeStatusValidationRules: [schemas.statusValidationRuleSchema],
+    cdeStatusValidationRules: [exports.statusValidationRuleSchema],
     htmlOverview: stringType
 };
-schemas.orgJson = orgJson;
+exports.orgJson = orgJson;
 
-schemas.orgSchema = new mongoose.Schema(orgJson, {usePushEach: true});
+exports.orgSchema = new Schema(orgJson, {usePushEach: true});
 
-schemas.pushRegistration = new mongoose.Schema({
+exports.pushRegistration = new Schema({
     features: [stringType],
     loggedIn: Boolean,
     subscription: {
@@ -188,17 +196,16 @@ schemas.pushRegistration = new mongoose.Schema({
         privateKey: stringType,
         publicKey: stringType
     }
-});
-schemas.pushRegistration.set('collection', 'pushRegistration');
+}, {collection: 'pushRegistration'});
 
-schemas.orgSchema.set('collection', 'orgs');
+exports.orgSchema.set('collection', 'orgs');
 
-schemas.designationSchema = new mongoose.Schema({
+exports.designationSchema = new Schema({
     designation: stringType,
     tags: [stringType]
 }, {_id: false});
 
-schemas.definitionSchema = new mongoose.Schema({
+exports.definitionSchema = new Schema({
     definition: stringType,
     definitionFormat: stringType,
     tags: [stringType]
@@ -211,7 +218,7 @@ let attachmentSchema = {
     uploadDate: Date,
     comment: stringType,
     uploadedBy: {
-        userId: mongoose.Schema.Types.ObjectId, username: stringIndexType
+        userId: Schema.Types.ObjectId, username: stringIndexType
     },
     filesize: Number,
     isDefault: Boolean,
@@ -219,9 +226,9 @@ let attachmentSchema = {
     scanned: Boolean
 };
 
-schemas.attachmentSchema = new mongoose.Schema(attachmentSchema, {_id: false});
+exports.attachmentSchema = new Schema(attachmentSchema, {_id: false});
 
-schemas.registrationStateSchema = {
+exports.registrationStateSchema = {
     registrationStatus: Object.assign({enum: regStatusShared.orderedList}, stringType),
     effectiveDate: Date,
     untilDate: Date,
@@ -231,11 +238,11 @@ schemas.registrationStateSchema = {
     replacedBy: {tinyId: stringType} // tinyId of replacement CDE
 };
 
-schemas.propertySchema = {key: stringType, value: stringType, source: stringType, valueFormat: stringType, _id: false};
+exports.propertySchema = {key: stringType, value: stringType, source: stringType, valueFormat: stringType, _id: false};
 
-schemas.idSchema = {source: stringType, id: stringType, version: stringType, _id: false};
+exports.idSchema = {source: stringType, id: stringType, version: stringType, _id: false};
 
-schemas.commentSchema = new mongoose.Schema({
+exports.commentSchema = new Schema({
     text: stringType,
     user: stringType,
     username: stringType,
@@ -257,7 +264,7 @@ schemas.commentSchema = new mongoose.Schema({
     }
 }, {usePushEach: true,});
 
-schemas.helpItemSchema = new mongoose.Schema({
+exports.helpItemSchema = new Schema({
     permalink: stringType,
     title: stringType,
     tags: [stringType]
@@ -297,7 +304,7 @@ let boardApprovalSchema = {
     }
 };
 
-schemas.message = new mongoose.Schema({
+exports.message = new Schema({
     recipient: {
         name: stringType,
         recipientType: Object.assign({enum: ["user", "stewardOrg", "role"]}, stringType),
@@ -318,9 +325,9 @@ schemas.message = new mongoose.Schema({
     }]
 });
 
-schemas.message.set('collection', 'messages');
+exports.message.set('collection', 'messages');
 
-schemas.clusterStatus = mongoose.Schema({
+exports.clusterStatus = Schema({
     hostname: stringType,
     port: Number,
     pmPort: Number,
@@ -337,14 +344,14 @@ schemas.clusterStatus = mongoose.Schema({
         }]
     }
 });
-schemas.jobQueue = mongoose.Schema({
+exports.jobQueue = Schema({
     type: stringType,
     status: Object.assign({enum: ["Running"]}, stringType),
     error: stringType
 }, {usePushEach: true});
 
-schemas.fs_files = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
+exports.fs_files = new Schema({
+    _id: Schema.Types.ObjectId,
     filename: stringType,
     contentType: stringType,
     length: Number,
@@ -356,8 +363,9 @@ schemas.fs_files = new mongoose.Schema({
     },
     md5: stringType
 });
+exports.fs_files.set('collection', 'fs.files');
 
-schemas.referenceDocumentSchema = {
+exports.referenceDocumentSchema = {
     docType: stringType,
     document: stringType,
     referenceDocumentId: stringType,
@@ -369,20 +377,20 @@ schemas.referenceDocumentSchema = {
     source: stringType,
     _id: false
 };
-schemas.dataSetSchema = {
+exports.dataSetSchema = {
     source: stringType,
     id: stringType,
     studyUri: stringType,
     notes: stringType
 };
-schemas.classificationAudit = new mongoose.Schema({
+exports.classificationAudit = new Schema({
     date: {type: Date, default: Date.now, index: true}, user: {
         username: stringType
     },
     elements: [{
         tinyId: stringType,
         version: stringType,
-        _id: mongoose.Schema.Types.ObjectId,
+        _id: Schema.Types.ObjectId,
         name: stringType,
         status: Object.assign({enum: regStatusShared.orderedList}, stringType),
         eltType: Object.assign({enum: ["cde", "form"]}, stringType)
@@ -391,16 +399,16 @@ schemas.classificationAudit = new mongoose.Schema({
     action: Object.assign({enum: ["add", "delete", "rename", "reclassify"]}, stringType),
     path: [stringType]
 });
+exports.classificationAudit.set('collection', 'classificationAudit');
 
-
-schemas.meshClassification = new mongoose.Schema({
+exports.meshClassification = new Schema({
     flatClassification: stringType,
     eltId: stringType,
     meshDescriptors: [stringType],
     flatTrees: [stringType]
 });
 
-schemas.trafficFilterSchema = new mongoose.Schema({
+exports.trafficFilterSchema = new Schema({
     ipList: [{
         ip: String,
         date: {type: Date, default: Date.now()},
@@ -410,15 +418,9 @@ schemas.trafficFilterSchema = new mongoose.Schema({
     }]
 });
 
-schemas.notificationSchema = new mongoose.Schema({
+exports.notificationSchema = new Schema({
     title: String,
     url: String,
     date: {type: Date, index: true, default: new Date()},
     roles: {type: [String], index: true, default: []}
 });
-
-schemas.classificationAudit.set('collection', 'classificationAudit');
-
-schemas.fs_files.set('collection', 'fs.files');
-
-module.exports = schemas;

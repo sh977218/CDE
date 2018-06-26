@@ -156,11 +156,11 @@ const tabMap = {
     `]
 })
 export class DiscussAreaComponent implements OnInit, OnDestroy {
-    @Input() public elt: any;
-    @Input() public eltId: string;
-    @Input() public eltName: string;
-    @Input() public selectedElt: string = '';
+    @Input() elt: any;
+    @Input() eltId: string;
+    @Input() eltName: string;
     @Input() highlightedTabs = [];
+    @Input() selectedElt: string = '';
     @Output() highlightedTabsChange = new EventEmitter();
     avatarUrls: any = {};
     eltComments: Comment[];
@@ -207,11 +207,6 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         this.socket.close();
     }
 
-    cancelReply = comment => this.tempReplies[comment._id] = '';
-    canRemoveComment = com => this.isAllowedModel.doesUserOwnElt(this.elt) || (this.userService.user && this.userService.user._id === com.user);
-    canReopenComment = (com) => com.status === 'resolved' && this.canRemoveComment(com);
-    canResolveComment = (com) => com.status !== 'resolved' && this.canRemoveComment(com);
-
     addAvatar(username) {
         if (username && !this.avatarUrls[username]) {
             this.http.get('/user/avatar/' + username, {responseType: 'text'}).subscribe(res => {
@@ -226,6 +221,23 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
             linkedTab: tabMap[this.selectedElt],
             element: {eltId: this.eltId}
         }).subscribe(() => this.newComment.text = '');
+    }
+
+    cancelReply(comment) {
+        return this.tempReplies[comment._id] = '';
+    }
+
+    canRemoveComment(com) {
+        return this.isAllowedModel.doesUserOwnElt(this.elt)
+            || (this.userService.user && this.userService.user._id === com.user);
+    }
+
+    canReopenComment(com) {
+        return com.status === 'resolved' && this.canRemoveComment(com);
+    }
+
+    canResolveComment(com) {
+        return com.status !== 'resolved' && this.canRemoveComment(com);
     }
 
     changeOnReply(comment) {

@@ -7,16 +7,16 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": [
-      "es2015",
-      "dom"
+      "ESNext",
+      "DOM"
     ],
     "module": "ES2015",
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "noImplicitAny": false,
     "pretty": false,
     "sourceMap": false,
     "suppressImplicitAnyIndexErrors": true,
-    "target": "es5",
+    "target": "ES5",
     "typeRoots": [
       "node_modules/@types"
     ]

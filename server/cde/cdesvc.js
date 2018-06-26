@@ -1,14 +1,16 @@
 const xml2js = require('xml2js');
 const js2xml = require('js2xmlparser');
-const mongo_cde = require('./mongo-cde');
-const mongo_data = require('../system/mongo-data');
+
 const authorization = require("../system/authorization");
 const adminSvc = require('../system/adminItemSvc.js');
 const elastic = require('./elastic');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
-const vsac = require('./vsac-io');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
-const dbLogger = require('../log/dbLogger');
+const handleError = require('../log/dbLogger').handleError;
+const logError = require('../log/dbLogger').logError;
+const mongo_cde = require('./mongo-cde');
+const mongo_data = require('../system/mongo-data');
+const vsac = require('./vsac-io');
 
 exports.byId = function (req, res) {
     let id = req.params.id;
@@ -46,7 +48,7 @@ exports.priorDataElements = function (req, res) {
         }).where("_id").in(history).exec((err, priorDataElements) => {
             if (err) return res.status(500).send("ERROR - Cannot get prior DE list");
             mongo_data.sortArrayByArray(priorDataElements, history);
-            res.send(priorDataElements)
+            res.send(priorDataElements);
         });
     });
 };
@@ -105,7 +107,7 @@ exports.draftDataElementById = function (req, res) {
     let id = req.params.id;
     if (!id) return res.status(400).send();
     mongo_cde.draftDataElementById(id, function (err, dataElement) {
-        if (err) return res.status(500).send("ERROR - get draft data element. " + tinyId);
+        if (err) return res.status(500).send("ERROR - get draft data element. " + id);
         res.send(dataElement);
     });
 };
@@ -120,8 +122,8 @@ exports.saveDraftDataElement = function (req, res) {
     elt.updated = new Date();
     mongo_cde.saveDraftDataElement(elt, function (err, dataElement) {
         if (err) {
-            dbLogger.logError({
-                message: "Error saving draft: " + tinyId,
+            logError({
+                publicMessage: "Error saving draft: " + tinyId,
                 origin: "cdeSvc.saveDraftDataElement",
                 stack: err,
                 details: ""
@@ -232,13 +234,11 @@ exports.publishDataElement = function (req, res) {
 let parser = new xml2js.Parser();
 exports.vsacId = function (req, res) {
     if (!req.user) return res.status(202).send({error: {message: "Please login to see VSAC mapping."}});
-    vsac.getValueSet(req.params.vsacId, dbLogger.handleGenericError(
-        {res: res, message: 'Error retrieving from VSAC', origin: "vsacId"}, result => {
-            if (result.statusCode === 404 || result === 400) return res.status(404).end();
-            parser.parseString(result.body, dbLogger.handleGenericError(
-                {res: res, message: 'Error parsing from VSAC', origin: "vsacId"}, jsonResult => {
-                    res.send(jsonResult);
-            }));
+    vsac.getValueSet(req.params.vsacId, handleError({res, message: 'Error retrieving from VSAC', origin: "vsacId"}, result => {
+        if (result.statusCode === 404 || result === 400) return res.status(404).end();
+        parser.parseString(result.body, handleError({res, message: 'Error parsing from VSAC', origin: "vsacId"}, jsonResult => {
+            res.send(jsonResult);
+        }));
     }));
 };
 

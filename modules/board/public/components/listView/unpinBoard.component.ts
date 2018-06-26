@@ -4,6 +4,7 @@ import { Component, Input } from '@angular/core';
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
 import { BoardListService } from 'board/public/components/listView/boardList.service';
+import { Elt } from 'shared/models.model';
 
 
 @Component({
@@ -11,8 +12,8 @@ import { BoardListService } from 'board/public/components/listView/boardList.ser
     templateUrl: './unpinBoard.component.html',
 })
 export class UnpinBoardComponent {
-    @Input() elt: any;
-    @Input() eltIndex: any;
+    @Input() elt: Elt;
+    @Input() eltIndex: number;
     pinModal: any;
 
     constructor(

@@ -142,7 +142,7 @@ export function projectCdeForExport(ele, settings) {
                 ele.ids.forEach(id => {
                     if (id.source === i) cde[i] = id.id + (id.version ? " v" + id.version : "");
                 });
-            })
+            });
         } else cde.ids = ele.ids.map(function (id) {
             return id.source + ": " + id.id + (id.version ? " v" + id.version : "");
         });

@@ -14,24 +14,22 @@
             <cde-pin-quickboard [elt]="de" [eltIndex]="index"></cde-pin-quickboard>
         </div>
         <div class="card-body" [ngbCollapse]="!de.isCollapsed">
-            <div class="row">
-                <div class="col-12" *ngIf="de.definitions[0]">{{de.definitions[0].definition}}</div>
+            <div *ngIf="de.definitions[0]">
+                {{de.definitions[0].definition}}
             </div>
-            <div class="row" *ngIf="de.valueDomain.permissibleValues.length > 0">
-                <div class="col-12">
-                    <table class="table table-bordered">
-                        <tr>
-                            <th>Value</th>
-                            <th>Code Name</th>
-                            <th>Code</th>
-                        </tr>
-                        <tr *ngFor="let pv of de.valueDomain.permissibleValues">
-                            <td>{{pv.permissibleValue}}</td>
-                            <td>{{pv.valueMeaningName}}
-                            <td>{{pv.valueMeaningCode}}</td>
-                        </tr>
-                    </table>
-                </div>
+            <div *ngIf="de.valueDomain.permissibleValues.length > 0">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Value</th>
+                        <th>Code Name</th>
+                        <th>Code</th>
+                    </tr>
+                    <tr *ngFor="let pv of de.valueDomain.permissibleValues">
+                        <td>{{pv.permissibleValue}}</td>
+                        <td>{{pv.valueMeaningName}}
+                        <td>{{pv.valueMeaningCode}}</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>

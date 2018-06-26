@@ -125,17 +125,6 @@ exports.count = function (condition, callback) {
     });
 };
 
-
-exports.findForms = function (request, callback) {
-    var criteria = {};
-    if (request && request.term) {
-        criteria = {
-            "designations.designation": new RegExp(request.term)
-        };
-    }
-    Form.find(criteria).where("archived").equals(false).exec(callback);
-};
-
 exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
     return Form.findOne({_id: elt._id}).exec(function (err, form) {

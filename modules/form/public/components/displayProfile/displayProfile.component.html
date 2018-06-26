@@ -50,7 +50,7 @@
                     Number of Columns: {{dPVM.profile.numberOfColumns}}
                     <mat-slider min="1" max="6" step="1" thumbLabel="true" tickInterval="1"
                                 [ngModel]="dPVM.profile.numberOfColumns"
-                                (ngModelChange)="onChange(dPVM.profile,$event)"></mat-slider>
+                                (ngModelChange)="onChange(dPVM.profile,$event)" [disabled]="!canEdit"></mat-slider>
                     <mat-form-field>
                         <input matInput id="displayRepeatFormat_{{index}}" class="form-control" [disabled]="!canEdit"
                                placeholder="Repeat Format String"
