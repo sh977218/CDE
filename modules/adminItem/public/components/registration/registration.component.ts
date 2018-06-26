@@ -4,7 +4,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-boots
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
 
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
 import { Comment } from 'shared/models.model';
 import { statusList } from 'shared/system/regStatusShared';

@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 

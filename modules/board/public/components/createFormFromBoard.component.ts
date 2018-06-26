@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, ViewChild } from '@angular/core';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { FormService } from 'nativeRender/form.service';
 import { Definition, Designation } from 'shared/models.model';
 import { CdeForm, FormSection } from 'shared/form/form.model';

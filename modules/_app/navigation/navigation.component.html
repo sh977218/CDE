@@ -10,7 +10,7 @@
 
         <a id="username_link" class="mdl-navigation__link mdl-typography--text-uppercase"
            [matMenuTriggerFor]="loginMenu">
-            <span [textContent]="userService.user.username | cdeTruncateLongName"></span>></a>
+            <span [textContent]="userService.user.username | cdeTruncateLongName"></span>&nbsp;▼</a>
         <mat-menu #loginMenu="matMenu">
             <a routerLink="/profile" id="user_profile" mat-menu-item>Profile</a>
             <a routerLink="/inbox" id="user_inbox" mat-menu-item>Inbox</a>
@@ -38,7 +38,7 @@
     </ng-template>
     <ng-container *ngIf="userService.user; else simpleBoards">
         <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase"
-           [matMenuTriggerFor]="boardMenu">Boards></a>
+           [matMenuTriggerFor]="boardMenu">Boards&nbsp;▼</a>
         <mat-menu #boardMenu="matMenu">
             <a id="publicBoardsLink" routerLink="/boardList"
                mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Public Boards</a>
@@ -51,7 +51,7 @@
 <ng-template #createTpl>
     <a id="createEltLink" class="mdl-navigation__link mdl-typography--text-uppercase"
        *ngIf="isOrgCurator(userService.user)"
-       [matMenuTriggerFor]="createMenu">Create></a>
+       [matMenuTriggerFor]="createMenu">Create&nbsp;▼</a>
     <mat-menu #createMenu="matMenu">
         <a id="createCDELink" routerLink="/createCde" mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">CDE</a>
         <a id="createFormLink" routerLink="/createForm" *ngIf="canCreateForms(userService.user)"
@@ -88,7 +88,7 @@
 
                     <a id="menu_qb_link" routerLink="/quickBoard"
                        class="mdl-navigation__link mdl-typography--text-uppercase"
-                       [textContent]="'Quick Board (' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"></a>
+                       [textContent]="'Quick&nbsp;Board&nbsp;(' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"></a>
 
                     <a id="menu_help_link" class="mdl-navigation__link mdl-typography--text-uppercase"
                        routerLink="/api">API</a>
@@ -161,109 +161,5 @@
                 </div>
             </div>
         </footer>
-
-
     </div>
-
-
-<!--<mat-toolbar>-->
-    <!--<a class="navbar-brand" routerLink="/home" id="homeLink">-->
-        <!--<img alt="Home" src="/cde/public/assets/img/min/nih-cde-logo-simple.png"/>-->
-    <!--</a>-->
-
-
-    <!--<span class="d-none d-md-block">-->
-         <!--<a id="menu_cdes_link" class="toolbarItem" routerLink="/cde/search"-->
-            <!--[ngClass]="{active: isPageActive('/cde/search')}">CDEs</a>-->
-
-        <!--<a id="menu_forms_link" class="toolbarItem" routerLink="/form/search"-->
-           <!--[ngClass]="{active: isPageActive('/cde/search')}">Forms</a>-->
-
-        <!--<ng-template #simpleBoards>-->
-            <!--<a id="boardsMenu" class="toolbarItem" routerLink="/boardList"-->
-               <!--[ngClass]="{active: isPageActive('/boardList')}">Boards</a>-->
-        <!--</ng-template>-->
-        <!--<ng-container *ngIf="userService.user; else simpleBoards">-->
-            <!--<a id="boardsMenu" class="toolbarItem dropdown-toggle" [matMenuTriggerFor]="boardMenu"-->
-               <!--[ngClass]="{active: isPageActive('/boardList')}">Boards</a>-->
-            <!--<mat-menu #boardMenu="matMenu">-->
-                <!--<a id="publicBoardsLink" routerLink="/boardList" mat-menu-item>Public Boards</a>-->
-                <!--<a id="myBoardsLink" routerLink="/myboards" mat-menu-item>My Boards</a>-->
-            <!--</mat-menu>-->
-        <!--</ng-container>-->
-
-        <!--<a id="createEltLink" class="toolbarItem dropdown-toggle" *ngIf="isOrgCurator(userService.user)"-->
-           <!--[ngClass]="{active: isPageActive('/createCde') || isPageActive('/createForm')}"-->
-           <!--[matMenuTriggerFor]="createMenu">Create</a>-->
-        <!--<mat-menu #createMenu="matMenu">-->
-            <!--<a id="createCDELink" routerLink="/createCde" mat-menu-item>CDE</a>-->
-            <!--<a id="createFormLink" routerLink="/createForm" *ngIf="canCreateForms(userService.user)"-->
-               <!--mat-menu-item>Form</a>-->
-        <!--</mat-menu>-->
-
-        <!--<a id="menu_qb_link" routerLink="/quickBoard" [ngClass]="{active: isPageActive('/quickBoard')}"-->
-           <!--class="toolbarItem"-->
-           <!--[textContent]="'Quick Board (' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"></a>-->
-
-        <!--<a id="menu_help_link" class="toolbarItem" [ngClass]="{active: isPageActive('/help')}"-->
-           <!--routerLink="/api">API</a>-->
-
-    <!--</span>-->
-
-    <!--<span style="flex: 1 1 auto"></span>-->
-
-    <!--<span class="d-none d-md-block">-->
-        <!--<ng-template #loginLink>-->
-            <!--<a (click)="loginSvc.goToLogin()" id="login_link" class="toolbarItem"-->
-               <!--[ngClass]="{active: isPageActive('/login')}"-->
-               <!--routerLink="/login">-->
-                <!--Log In</a>-->
-        <!--</ng-template>-->
-        <!--<ng-container *ngIf="userService.user; else loginLink">-->
-            <!--<a routerLink="/inbox" class="toolbarItem" *ngIf="userService.user.hasMail">-->
-                <!--<i id="incomingMessage" class="fa fa-envelope text-danger"></i>-->
-            <!--</a>-->
-
-            <!--<a id="username_link" class="toolbarItem dropdown-toggle"-->
-               <!--[matMenuTriggerFor]="loginMenu"-->
-               <!--[textContent]="userService.user.username | cdeTruncateLongName"></a>-->
-            <!--<mat-menu #loginMenu="matMenu">-->
-                <!--<a routerLink="/profile" id="user_profile" mat-menu-item>Profile</a>-->
-                <!--<a routerLink="/inbox" id="user_inbox" mat-menu-item>Inbox</a>-->
-                <!--<a routerLink="/orgComments" id="org_comments" mat-menu-item-->
-                   <!--*ngIf="isOrgCurator(userService.user)">Org Comments</a>-->
-                <!--<a routerLink="/classificationmanagement" id="user_classifications" mat-menu-item-->
-                   <!--*ngIf="isOrgCurator(userService.user)">Classifications</a>-->
-                <!--<a routerLink="/orgAuthority" id="user_org_authority" mat-menu-item-->
-                   <!--*ngIf="canOrgAuthority(userService.user)">Org Management</a>-->
-                <!--<a routerLink="/orgaccountmanagement" id="user_account_management" mat-menu-item-->
-                   <!--*ngIf="isOrgAdmin(userService.user)">Account Management</a>-->
-                <!--<a routerLink="/siteaccountmanagement" id="user_site_management" mat-menu-item-->
-                   <!--*ngIf="isSiteAdmin(userService.user)">Site Management</a>-->
-                <!--<a routerLink="/siteAudit" id="user_audit" mat-menu-item-->
-                   <!--*ngIf="canOrgAuthority(userService.user)">Audit</a>-->
-                <!--<a (click)="loginSvc.logout()" target="_self" id="user_logout" mat-menu-item>Log Out</a>-->
-            <!--</mat-menu>-->
-        <!--</ng-container>-->
-
-        <!--<a id="notifications">-->
-            <!--<cde-notifications></cde-notifications>-->
-        <!--</a>-->
-
-        <!--<a routerLink="/searchPreferences" class="toolbarItem" id="searchSettings">-->
-            <!--<mat-icon style="font-size: 1.3em; margin-top: 10px">settings</mat-icon>-->
-        <!--</a>-->
-
-    <!--</span>-->
-
-
-<!--</mat-toolbar>-->
-
-<!--<mat-sidenav-container (click)="snav.toggle()">-->
-    <!--<mat-sidenav #snav [mode]="'side'" fixedTopGap="56">-->
-       <!--Nav Item One!-->
-    <!--</mat-sidenav>-->
-    <!--<mat-sidenav-content>-->
-        <!--<router-outlet></router-outlet>-->
-    <!--</mat-sidenav-content>-->
-<!--</mat-sidenav-container>-->
+</div>

@@ -7,7 +7,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
 
 import { UserService } from '_app/user.service';
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { IsAllowedService } from 'core/isAllowed.service';

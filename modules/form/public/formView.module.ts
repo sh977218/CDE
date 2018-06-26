@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import {
     MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatExpansionModule, MatGridListModule,
     MatIconModule,
-    MatInputModule,
+    MatInputModule, MatMenuModule,
     MatSelectModule, MatSliderModule, MatTabsModule
 } from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
@@ -60,6 +60,7 @@ const appRoutes: Routes = [
         MatGridListModule,
         MatIconModule,
         MatInputModule,
+        MatMenuModule,
         MatSelectModule,
         MatSliderModule,
         MatTabsModule,

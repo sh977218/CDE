@@ -24,13 +24,12 @@ import { SourcesComponent } from "./components/sources/sources.component";
 import { RegistrationComponent } from "./components/registration/registration.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { ClassificationViewComponent } from "./components/classification/classificationView.component";
-import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.component";
 import { CreateFormComponent } from 'adminItem/public/components/createForm.component';
 import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/deleteModal.component';
 import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
-
+import { MatButtonModule, MatIconModule } from "@angular/material";
 
 @NgModule({
     imports: [
@@ -46,12 +45,13 @@ import { NewDefinitionComponent } from 'adminItem/public/components/naming/defin
         // internal
         CompareModule,
         SearchModule,
+        MatButtonModule,
+        MatIconModule
     ],
     declarations: [
         AttachmentsComponent,
         ClassificationViewComponent,
         ClassifyItemModalComponent,
-        CdeUpdateElementComponent,
         CreateFormComponent,
         NewDefinitionComponent,
         NewDesignationComponent,
@@ -75,7 +75,6 @@ import { NewDefinitionComponent } from 'adminItem/public/components/naming/defin
         AttachmentsComponent,
         ClassificationViewComponent,
         ClassifyItemModalComponent,
-        CdeUpdateElementComponent,
         CreateFormComponent,
         DraftSliderComponent,
         IdentifiersComponent,

@@ -24,6 +24,7 @@ import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { WidgetModule } from 'widget/widget.module';
 import { CompareModule } from 'compare/compare.module';
+import { MatButtonModule, MatIconModule, MatMenuModule } from "@angular/material";
 
 
 const appRoutes: Routes = [
@@ -48,6 +49,9 @@ const appRoutes: Routes = [
         CompareModule,
         DiscussModule,
         FormSearchModule,
+        MatButtonModule,
+        MatIconModule,
+        MatMenuModule
     ],
     declarations: [
         CdeClassificationComponent,

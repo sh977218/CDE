@@ -10,7 +10,7 @@ import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MAT_DIALOG_DATA } from "@angular/material";
 
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { ElasticService } from '_app/elastic.service';
 
 @Component({

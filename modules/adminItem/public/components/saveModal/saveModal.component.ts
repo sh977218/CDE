@@ -3,7 +3,7 @@ import { Component, Input, Output, ViewChild, EventEmitter } from '@angular/core
 import { NgbModalRef, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import _isEqual from 'lodash/isEqual';
 
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { iterateFormElements } from 'shared/form/formShared';
 
 
