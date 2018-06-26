@@ -2,8 +2,7 @@ import { externalCodeSystems, externalCodeSystemsMap } from 'shared/mapping/fhir
 
 export function codeSystemIn(uri) {
     let results = externalCodeSystems.filter(c => c.uri === uri);
-    if (results.length) return results[0].id;
-    else return 'no code system';
+    return results.length ? results[0].id : '';
 }
 
 export function codeSystemOut(system, fe = null) {
@@ -56,7 +55,8 @@ export function valuePreview(container, prefix = 'value') {
         if (quantity.value === undefined) {
             return;
         }
-        return quantity.value + ' ' + (quantity.code || '(no unit)') + ' (' + codeSystemIn(quantity.system) + ')';
+        return quantity.value + ' ' + (quantity.code || '(no unit)')
+            + ' (' + (codeSystemIn(quantity.system) || 'no code system') + ')';
     } else if (container[prefix + 'String']) {
         return container[prefix + 'String'];
     } else if (container.component) {

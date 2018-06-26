@@ -13,7 +13,6 @@ import _intersectionWith from 'lodash/intersectionWith';
 import _noop from 'lodash/noop';
 import _uniq from 'lodash/uniq';
 
-import { mapObservationCategory } from '_fhirApp/mapFhirObservationCategory';
 import { ResourceTree } from '_fhirApp/resourceTree';
 import { valueSets } from '_fhirApp/valueSets';
 import { CdeId } from 'shared/models.model';
@@ -29,9 +28,7 @@ import { getText, newCodeableConcept, reduce as reduceConcept } from 'shared/map
 import { newCoding } from 'shared/mapping/fhir/datatypes/coding';
 import { typedValueToValue, valuedElementToItemType } from 'shared/mapping/fhir/from/datatypeFromItemType';
 import { newEncounter } from 'shared/mapping/fhir/resource/encounter';
-import {
-    newObservation, observationComponentFromForm, observationFromForm
-} from 'shared/mapping/fhir/resource/observation';
+import { observationComponentFromForm, observationFromForm } from 'shared/mapping/fhir/resource/observation';
 import { getPatientName } from 'shared/mapping/fhir/resource/patient';
 import { questionValueToFhirValue } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { deepCopy, reduceOptionalArray } from 'shared/system/util';
@@ -142,6 +139,11 @@ export class FhirAppComponent {
     getDisplayFunc = this.getDisplay.bind(this);
     getPatientName = getPatientName;
     ioInProgress: boolean;
+    lookupObservationCategories = async_memoize((code, done) => {
+        this.http.get('/fhirObservationInfo?id=' + code).subscribe((r: any) => {
+            done(null, r.categories);
+        }, done);
+    });
     lookupLoincName = async_memoize((code, done) => {
         this.http.get('/umlsCuiFromSrc/' + code + '/LNC').subscribe((r: any) => {
             if (r && r.result && r.result.results.length) {
@@ -255,39 +257,53 @@ export class FhirAppComponent {
         this.updateProgress();
     }
 
-    fhirResourcePreSave(resource: FhirDomainResource): void {
-        if (resource.resourceType === 'Observation') { // has category
-            const system = codeSystemOut('LOINC');
-            let categoryAble = resource as FhirObservation;
-            let categories: string[] = reduceConcept(categoryAble.code,
-                (a, coding) => coding.code && system === coding.system
-                    ? a.concat(this.getObservationCategory('LOINC', coding.code))
-                    : a,
-                []);
-            let s = 'http://hl7.org/fhir/observation-category';
-            let existingCodes = reduceOptionalArray(categoryAble.category,
-                (a, concept) => {
-                    return a.concat(reduceConcept(concept,
-                        (ac, c) => {
-                            c.code && c.system === s && ac.push(c.code);
-                            return a;
+    fhirResourcePreSave(resource: FhirDomainResource): Promise<void> {
+        return new Promise<void>(resolve => {
+            if (resource.resourceType === 'Observation') { // has category
+                const system = codeSystemOut('LOINC');
+                let categoryAble = resource as FhirObservation;
+                let codes: string[] = reduceConcept(categoryAble.code,
+                    (a, coding) => coding.code && system === coding.system
+                        ? a.concat(coding.code)
+                        : a,
+                    []);
+                let categories: string[] = [];
+                async_forEach(codes, (code, doneOne) => {
+                    this.getObservationCategory('LOINC', code, cats => {
+                        if (Array.isArray(cats)) {
+                            categories = categories.concat(cats);
+                        }
+                        doneOne();
+                    });
+                }, () => {
+                    let s = 'http://hl7.org/fhir/observation-category';
+                    let existingCodes = reduceOptionalArray(categoryAble.category,
+                        (a, concept) => {
+                            return a.concat(reduceConcept(concept,
+                                (ac, c) => {
+                                    c.code && c.system === s && ac.push(c.code);
+                                    return a;
+                                },
+                                []));
                         },
-                        []));
-                },
-                []);
-            let names = valueSets.get(s).codes;
-            _uniq(categories).forEach(c => {
-                if (existingCodes.indexOf(c) === -1) {
-                    if (!categoryAble.category) categoryAble.category = [];
-                    categoryAble.category.push(newCodeableConcept([newCoding(s, c, undefined, names.get(c))]));
-                }
-            });
-        }
+                        []);
+                    let names = valueSets.get(s).codes;
+                    _uniq(categories).forEach(c => {
+                        if (existingCodes.indexOf(c) === -1) {
+                            if (!categoryAble.category) categoryAble.category = [];
+                            categoryAble.category.push(newCodeableConcept([newCoding(s, c, undefined,
+                                names.get(c))]));
+                        }
+                    });
+                    resolve();
+                });
+            }
+        });
     }
 
     // TODO: refresh before copy from server and compare again to prevent save with conflict
-    fhirResourceSave(resource: FhirDomainResource, cb) {
-        this.fhirResourcePreSave(resource);
+    async fhirResourceSave(resource: FhirDomainResource, cb) {
+        await this.fhirResourcePreSave(resource);
         if (resource.id) {
             this.smart.patient.api.update({
                 data: JSON.stringify(resource),
@@ -342,33 +358,9 @@ export class FhirAppComponent {
         cb(null, this.selectedEncounter.forms.filter(f => f.form.tinyId === tinyId)[0].form);
     }
 
-    getObservationCategory(system, code): string[] {
-        if (system !== 'LOINC') {
-            return [];
-        }
-        if (!this.observationCategoryMap) {
-            let map = new Map();
-            mapObservationCategory.forEach(p => {
-                if (p.system === 'LOINC') {
-                    p.codes.forEach(c => {
-                        let value = map.get(c);
-                        if (!value) {
-                            value = [];
-                            map.set(c, value);
-                        }
-                        value.push(p.observationCategory);
-                    });
-                }
-            });
-            map.forEach((value, key, map) => {
-                let newValue = _uniq(value);
-                if (value.length !== newValue.length) {
-                    map.set(key, newValue);
-                }
-            });
-            this.observationCategoryMap = map;
-        }
-        return this.observationCategoryMap.get(code) || [];
+    // cb(string[]|undefined)
+    getObservationCategory(system, code, cb) {
+        this.lookupObservationCategories(system + ' : ' + code, (err, categories) => cb(err ? undefined : categories));
     }
 
     loadPatientData() {
@@ -705,7 +697,6 @@ export class FhirAppComponent {
                 f.observed = 0;
                 f.total = 0;
                 f.percent = 0;
-                // WRONG
                 iterateFeSync(form, undefined, undefined, q => {
                     f.total++;
                     if (FhirAppComponent.questionAnswered(q.question.answer)) {

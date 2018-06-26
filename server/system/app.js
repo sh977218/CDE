@@ -15,6 +15,7 @@ const mongo_form = require('../form/mongo-form');
 const mongo_data = require('./mongo-data');
 const config = require('./parseConfig');
 const dbLogger = require('../log/dbLogger.js');
+const handleError = require('../log/dbLogger.js').handleError;
 const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
 const pushNotification = require('./pushNotification');
@@ -265,6 +266,16 @@ exports.init = function (app) {
         res.sendFile(path.join(__dirname, '../../modules/_fhirApp', 'fhirApp.html'), undefined, err => {
             if (err) res.sendStatus(404);
         });
+    });
+
+    app.get('/fhirObservationInfo', (req, res) => {
+        mongo_data.fhirObservationInfo.get(req.query.id, handleError({res, origin: '/fhirObservationInfo'}, data =>
+            res.send(data)));
+    });
+
+    app.post('/fhirObservationInfo', (req, res) => {
+        mongo_data.fhirObservationInfo.post(req.body.info, handleError({res, origin: '/fhirObservationInfo'}, data =>
+            res.send(data)));
     });
 
     app.get('/nativeRender', (req, res) => {

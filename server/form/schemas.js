@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const sharedSchemas = require('../system/schemas.js');
 const config = require("config");
+const Schema = require('mongoose').Schema;
+
+const sharedSchemas = require('../system/schemas.js');
 
 const instructionSchema = new Schema({
     value: sharedSchemas.stringType,
@@ -84,7 +84,7 @@ function getFormElementJson() {
 }
 
 let innerFormEltJson = getFormElementJson();
-innerFormEltJson.formElements = [new mongoose.Schema({}, {strict: false})];
+innerFormEltJson.formElements = [new Schema({}, {strict: false})];
 let innerFormEltSchema = new Schema(innerFormEltJson, {_id: false});
 
 for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
@@ -122,18 +122,18 @@ exports.formJson = {
     , origin: sharedSchemas.stringType
     , attachments: [sharedSchemas.attachmentSchema]
     , comments: [sharedSchemas.commentSchema]
-    , history: [mongoose.Schema.Types.ObjectId]
+    , history: [Schema.Types.ObjectId]
     , changeNote: sharedSchemas.stringType
     , lastMigrationScript: sharedSchemas.stringType
     , created: Date
     , updated: Date
     , imported: Date
     , createdBy: {
-        userId: mongoose.Schema.Types.ObjectId
+        userId: Schema.Types.ObjectId
         , username: sharedSchemas.stringType
     }
     , updatedBy: {
-        userId: mongoose.Schema.Types.ObjectId
+        userId: Schema.Types.ObjectId
         , username: sharedSchemas.stringType
     }
     , formElements: [innerFormEltSchema]

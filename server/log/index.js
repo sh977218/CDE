@@ -1,58 +1,46 @@
 const userAgent = require('useragent');
 
 const dbLogger = require('./dbLogger');
+const handleError = require('./dbLogger').handleError;
 const mongo_data = require('../system/mongo-data');
+const pushNotification = require('../system/pushNotification');
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
     router.post('/httpLogs', (req, res) => {
-        dbLogger.httpLogs(req.body, dbLogger.handleGenericError(
-            {res: res, origin: "/httpLogs"}, result => res.send(result))
-        )
+        dbLogger.httpLogs(req.body, handleError({res, origin: "/httpLogs"}, result => res.send(result)));
     });
 
     router.post('/appLogs', (req, res) => {
-        dbLogger.appLogs(req.body, dbLogger.handleGenericError(
-            {res: res, origin: "/appLogs"}, result => res.send(result))
-        )
+        dbLogger.appLogs(req.body, handleError({res, origin: "/appLogs"}, result => res.send(result)));
     });
 
     router.get('/dailyUsageReportLogs', (req, res) => {
-        dbLogger.usageByDay(dbLogger.handleGenericError(
-            {res: res, origin: "/dailyUsageReportLogs"}, result => res.send(result))
-        )
+        dbLogger.usageByDay(handleError({res, origin: "/dailyUsageReportLogs"}, result => res.send(result)));
     });
 
     router.post('/serverErrors', (req, res) => {
-        dbLogger.getServerErrors(req.body, dbLogger.handleGenericError(
-            {res: res, origin: "/serverErrors"}, result => res.send(result))
-        )
+        dbLogger.getServerErrors(req.body, handleError({res, origin: "/serverErrors"}, result => res.send(result)));
     });
 
     router.post('/clientErrors', (req, res) => {
-        dbLogger.getClientErrors(req.body, dbLogger.handleGenericError(
-            {res: res, origin: "/clientErrors"}, result => {
-                res.send(result.map(r => {
-                    let l = r.toObject();
-                    l.agent = userAgent.parse(r.userAgent).toAgent();
-                    l.ua = userAgent.is(r.userAgent);
-                    return l;
-                }));
-            })
-        )
+        dbLogger.getClientErrors(req.body, handleError({res, origin: "/clientErrors"}, result => {
+            res.send(result.map(r => {
+                let l = r.toObject();
+                l.agent = userAgent.parse(r.userAgent).toAgent();
+                l.ua = userAgent.is(r.userAgent);
+                return l;
+            }));
+        }));
     });
 
 
     router.post('/feedbackIssues', roleConfig.feedbackLog, (req, res) => {
-        dbLogger.getFeedbackIssues(req.body, dbLogger.handleGenericError(
-            {res: res, origin: "/feedbackIssues"}, result => res.send(result))
-        )
+        dbLogger.getFeedbackIssues(req.body, handleError({res, origin: "/feedbackIssues"}, result => res.send(result)));
     });
 
     router.post('/clientExceptionLogs', (req, res) => {
-        dbLogger.logClientError(req, dbLogger.handleGenericError(
-            {res: res, origin: "/clientExceptionLogs"}, result => res.send(result))
-        )
+        dbLogger.logClientError(req, handleError({res, origin: "/clientExceptionLogs"}, result => res.send(result)));
     });
 
     router.get('/triggerServerErrorExpress', (req, res) => {

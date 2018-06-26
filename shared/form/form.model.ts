@@ -158,6 +158,12 @@ export class FhirApp {
     forms: {tinyId: string}[] = [];
 }
 
+export class FhirObservationInfo {
+    _id: string;
+    categories: string[];
+    timestamp: Date;
+}
+
 export interface FormElementsContainer {
     formElements: FormElement[];
 }

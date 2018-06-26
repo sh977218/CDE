@@ -16,7 +16,9 @@ const odm = require("./odmForm");
 const redCap = require("./redCapForm");
 const publishForm = require("./publishForm");
 const toQuestionnaire = require('@std/esm')(module)('../../shared/mapping/fhir/to/toQuestionnaire');
-const dbLogger = require('../log/dbLogger');
+const handleError = require('../log/dbLogger').handleError;
+const logError = require('../log/dbLogger').logError;
+const respondError = require('../log/dbLogger').respondError;
 
 const ajv = new Ajv({schemaId: 'auto'}); // current FHIR schema uses legacy JSON Schema version 4
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
@@ -81,13 +83,6 @@ function fetchWholeFormOutdated(form, callback) {
     });
 }
 
-// exports.findAllCdesInForm = function (form) {
-//     const pass = (fe, input) => input;
-//     return formShared.iterateFeSync(form, pass, pass, (q, map) => {
-//         map.set(q.question.cde.tinyId, q.question.cde);
-//     }, new Map());
-// };
-
 function wipeRenderDisallowed(form, req, cb) {
     if (form && form.noRenderAllowed) {
         authorization.checkOwnership(mongo_form, form._id, req, function (err, isYouAllowed) {
@@ -134,7 +129,7 @@ exports.byId = function (req, res) {
                         if (req.query.hasOwnProperty('validate')) {
                             let p = path.resolve(__dirname, '../../shared/mapping/fhir/schema/Questionnaire.schema.json');
                             fs.readFile(p, (err, data) => {
-                                if (err || !data) return dbLogger.respondError(res, err, 'schema missing', {origin: 'formsvc'});
+                                if (err || !data) return respondError(err, {res, publicMessage: 'schema missing', origin: 'formsvc'});
                                 let result = ajv.validate(JSON.parse(data),
                                     toQuestionnaire.formToQuestionnaire(wholeForm, null, config));
                                 res.send({valid: result, errors: ajv.errors});
@@ -273,7 +268,7 @@ exports.saveDraftForm = function (req, res) {
     elt.updated = new Date();
     mongo_form.saveDraftForm(elt, function (err, form) {
         if (err) {
-            dbLogger.logError({
+            logError({
                 message: "Error saving draft: " + tinyId,
                 origin: "formSvc.saveDraftDataElement",
                 stack: err,
@@ -314,14 +309,11 @@ exports.latestVersionByTinyId = function (req, res) {
 
 exports.publishForm = function (req, res) {
     if (!req.params.id) return res.status(400).send();
-    mongo_form.byId(req.params.id, dbLogger.handleGenericError(
-        {res: res, origin: "Publish form"},
-        form => {
-            if (!form) return res.status(400).send('form not found');
-            exports.fetchWholeForm(form.toObject(), dbLogger.handleGenericError(
-                {res: res, message: 'Fetch whole for publish', origin: "publishForm"}, wholeForm => {
-                publishForm.getFormForPublishing(wholeForm, req, res);
-            }));
+    mongo_form.byId(req.params.id, handleError({res, origin: "Publish form"}, form => {
+        if (!form) return res.status(400).send('form not found');
+        exports.fetchWholeForm(form.toObject(), handleError({res, message: 'Fetch whole for publish', origin: "publishForm"}, wholeForm => {
+            publishForm.getFormForPublishing(wholeForm, req, res);
+        }));
     }));
 };
 

@@ -11,10 +11,9 @@ const mongo_data_system = require('../system/mongo-data');
 const classificationNode_system = require('../system/classificationNode');
 const adminItemSvc = require('../system/adminItemSvc.js');
 const elastic_system = require('../system/elastic');
-const dbLogger = require('../log/dbLogger');
+const handleError = require('../log/dbLogger').handleError;
 const sharedElastic = require('../system/elastic.js');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
-const boardsvc = require('../board/boardsvc');
 
 // ucum from lhc uses IndexDB
 global.location = {origin: 'localhost'};
@@ -48,7 +47,7 @@ exports.init = function (app, daoManager) {
     app.post("/draftForm/:tinyId", [authorization.canEditMiddleware], formSvc.saveDraftForm);
     app.delete("/draftForm/:tinyId", (req, res, next) => {
         if (!authorizationShared.isOrgCurator(req.user)) return res.status(401).send();
-        mongo_form.byTinyId(req.params.tinyId, dbLogger.handleGenericError({res: res, origin: "DEL /draftForm"}, form => {
+        mongo_form.byTinyId(req.params.tinyId, handleError({res, origin: "DEL /draftForm"}, form => {
             if (!form) return res.send();
             if (!authorizationShared.isOrgCurator(req.user, form.stewardOrg.name)) return res.status(401).send();
             next();
@@ -159,21 +158,6 @@ exports.init = function (app, daoManager) {
             res.send(resp.hits.hits);
         });
     });
-
-    // app.post('/pinFormCdes', function (req, res) {
-    //     if (!req.isAuthenticated()) {
-    //         res.send("Please login first.");
-    //         return;
-    //     }
-    //     mongo_form.eltByTinyId(req.body.formTinyId, function (err, form) {
-    //         if (!form) {
-    //             res.status(404).end();
-    //             return;
-    //         }
-    //         let fakeCdes = formSvc.findAllCdesInForm(form).entries.map(entry => ({tinyId: entry[0]}));
-    //         boardsvc.pinAllToBoard(req, res, fakeCdes);
-    //     });
-    // });
 
     app.post('/addFormClassification/', function (req, res) {
         if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
