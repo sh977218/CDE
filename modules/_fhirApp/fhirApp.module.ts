@@ -3,10 +3,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-
-import { FhirAppComponent, FhirStandaloneComponent, ViewFhirObservationDialogComponent } from "./fhirApp.component";
-import { NativeRenderModule } from "../nativeRender/nativeRender.module";
-
 import {
     MatButtonModule,
     MatDialogModule,
@@ -15,13 +11,15 @@ import {
     MatProgressSpinnerModule,
     MatSnackBarModule,
 } from '@angular/material';
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { RouterModule, Routes } from "@angular/router";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule, Routes } from '@angular/router';
+
+import { FhirAppComponent, FhirStandaloneComponent, ViewFhirObservationDialogComponent } from '_fhirApp/fhirApp.component';
+import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 
 const appRoutes: Routes = [
     {path: 'form/:config', component: FhirAppComponent},
 ];
-
 
 @NgModule({
     imports: [

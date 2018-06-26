@@ -119,7 +119,7 @@ export class FhirObservationComponent extends FhirDomainResource implements Fhir
     interpretation?: FhirCodeableConcept;
     referenceRange?: any[];
     valueAttachment?: any;
-    valueBoolean: boolean;
+    valueBoolean?: boolean;
     valueCodeableConcept?: FhirCodeableConcept;
     valueDateTime?: FhirDateTime;
     valuePeriod?: FhirPeriod;

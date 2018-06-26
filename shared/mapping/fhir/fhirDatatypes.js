@@ -1,9 +1,8 @@
-import { externalCodeSystems } from 'shared/mapping/fhir';
+import { externalCodeSystems, externalCodeSystemsMap } from 'shared/mapping/fhir';
 
 export function codeSystemIn(uri) {
     let results = externalCodeSystems.filter(c => c.uri === uri);
-    if (results.length) return results[0].id;
-    else return 'no code system';
+    return results.length ? results[0].id : '';
 }
 
 export function codeSystemOut(system, fe = null) {
@@ -12,12 +11,7 @@ export function codeSystemOut(system, fe = null) {
         s = fe.question.cde.ids[0].source;
     }
 
-    let external = externalCodeSystems.filter(e => e.id === s);
-    if (external.length) {
-        return external[0].uri;
-    } else {
-        return s;
-    }
+    return s ? externalCodeSystemsMap[s] || s : undefined;
 }
 
 export function codingArrayPreview(codings) {
@@ -28,12 +22,8 @@ export function codingPreview(coding) {
     return coding.display + ' ' + codeSystemIn(coding.system) + ':' + coding.code;
 }
 
-export function newPeriod(start, end = undefined) {
-    if (!end) {
-        return {start: start, end: start};
-    } else {
-        return {start: start, end: end};
-    }
+export function getRef(resource) {
+    return resource.resourceType + '/' + resource.id;
 }
 
 export function newReference(ref) {
@@ -65,7 +55,8 @@ export function valuePreview(container, prefix = 'value') {
         if (quantity.value === undefined) {
             return;
         }
-        return quantity.value + ' ' + (quantity.code || '(no unit)') + ' (' + codeSystemIn(quantity.system) + ')';
+        return quantity.value + ' ' + (quantity.code || '(no unit)')
+            + ' (' + (codeSystemIn(quantity.system) || 'no code system') + ')';
     } else if (container[prefix + 'String']) {
         return container[prefix + 'String'];
     } else if (container.component) {

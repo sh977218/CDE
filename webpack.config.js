@@ -1,18 +1,6 @@
-const _ = require('lodash');
-const crypto = require('crypto');
-const fs = require('fs');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const FileListPlugin = require('file-list-plugin');
+const path = require('path');
+const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-
-const assets = [
-    '/cde/public/assets/img/min/NIH-CDE.png',
-    '/cde/public/assets/img/min/nih-cde-logo-simple.png',
-    '/cde/public/assets/img/min/nih-cde-logo.png',
-    '/cde/public/assets/img/min/usagov_logo.png',
-    '/cde/public/assets/img/min/NLM-logo.png',
-    '/app/styles-cde.css'
-];
 
 module.exports = {
     context: __dirname,
@@ -24,7 +12,7 @@ module.exports = {
                 exclude: /node_modules/,
                 loader: 'babel-loader',
                 query: {
-                    presets: ['env']
+                    presets: [["env", { "modules": false }]]
                 }
             },
             {
@@ -45,32 +33,21 @@ module.exports = {
             {test: /\.scss$/, exclude: /node_modules/, use: ['style-loader', 'css-loader', 'sass-loader']},
             {test: /\.html$/, use: [{loader: 'html-loader', options: {attrs: ['img:src', 'source:srcset'], minimize: false}}]},
             {test: /\.(eot|png|svg|ttf|webp|woff|woff2)$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]},
+            {test: /[\/\\]@angular[\/\\].+\.js$/, parser: { system: true }}
         ]
     },
-    plugins:
-        [
-            new MiniCssExtractPlugin({filename: '[name].css'}),
-            new CopyWebpackPlugin([
-                {from: 'modules/_app/assets/'}
-            ]),
-            new FileListPlugin({
-                fileName: 'sw.js',
-                itemsFromCompilation: function defaultItemsFromCompilation(compilation){
-                    return _.keys(compilation.assets);
-                },
-                format: function defaultFormat(listItems){
-                    let sw = fs.readFileSync('modules/_app/sw.template.js', {encoding: 'utf8'});
-                    let filesInsert = listItems.map(e => '/app/' + e).concat(assets).map(e => '"' + e + '"').join(',');
-                    let version = crypto.createHash('md5').update(filesInsert).digest('hex').substr(0,4);
-                    sw = sw.replace('{#}', version);
-                    sw = sw.replace('{#}', version);
-                    let location = sw.indexOf('"###"');
-                    let pre = sw.substring(0, location);
-                    let post = sw.substring(location + 5);
-                    return pre + filesInsert + post;
-                }
-            }),
-        ],
+    plugins: [
+        new MiniCssExtractPlugin({filename: '[name].css'}),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'windows.jQuery': 'jquery',
+            Tether: 'tether',
+            Popper: ['popper.js', 'default'],
+        }),
+        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/)
+    ],
+    performance: { hints: false },
     resolve: {
         unsafeCache: false,
         extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],

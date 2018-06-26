@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const sharedSchemas = require('../system/schemas.js');
 const config = require("config");
+const Schema = require('mongoose').Schema;
+
+const sharedSchemas = require('../system/schemas.js');
 
 const instructionSchema = new Schema({
     value: sharedSchemas.stringType,
@@ -14,13 +14,18 @@ const datatypeNumberSchema = new Schema({
     , precision: Number
 }, {_id: false});
 
+const mapToSchema = new Schema({
+    fhir: {
+        resourceType: sharedSchemas.stringType,
+    },
+}, {_id: false});
+
 const questionSchema = new Schema({
     cde: {
         tinyId: sharedSchemas.stringType
         , name: sharedSchemas.stringType
         , designations: [sharedSchemas.designationSchema]
         , definitions: [sharedSchemas.definitionSchema]
-        , datatype: sharedSchemas.stringType
         , version: sharedSchemas.stringType
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
         , ids: [sharedSchemas.idSchema]
@@ -65,6 +70,7 @@ function getFormElementJson() {
         instructions: instructionSchema,
         inForm: {type: inFormSchema, default: undefined},
         label: sharedSchemas.stringType,
+        mapTo: {type: mapToSchema, default: undefined},
         question: {type: questionSchema, default: undefined},
         repeat: sharedSchemas.stringType,
         repeatsFor: sharedSchemas.stringType,
@@ -73,12 +79,12 @@ function getFormElementJson() {
         skipLogic: {
             action: Object.assign({enum: ['show', 'enable']}, sharedSchemas.stringType),
             condition: sharedSchemas.stringType,
-        }
+        },
     };
 }
 
 let innerFormEltJson = getFormElementJson();
-innerFormEltJson.formElements = [new mongoose.Schema({}, {strict: false})];
+innerFormEltJson.formElements = [new Schema({}, {strict: false})];
 let innerFormEltSchema = new Schema(innerFormEltJson, {_id: false});
 
 for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
@@ -92,6 +98,7 @@ exports.formJson = {
     , tinyId: Object.assign({index: true}, sharedSchemas.stringType)
     , designations: [sharedSchemas.designationSchema]
     , definitions: [sharedSchemas.definitionSchema]
+    , mapTo: {type: mapToSchema, default: undefined}
     , stewardOrg: {
         name: sharedSchemas.stringType
     }
@@ -115,18 +122,18 @@ exports.formJson = {
     , origin: sharedSchemas.stringType
     , attachments: [sharedSchemas.attachmentSchema]
     , comments: [sharedSchemas.commentSchema]
-    , history: [mongoose.Schema.Types.ObjectId]
+    , history: [Schema.Types.ObjectId]
     , changeNote: sharedSchemas.stringType
     , lastMigrationScript: sharedSchemas.stringType
     , created: Date
     , updated: Date
     , imported: Date
     , createdBy: {
-        userId: mongoose.Schema.Types.ObjectId
+        userId: Schema.Types.ObjectId
         , username: sharedSchemas.stringType
     }
     , updatedBy: {
-        userId: mongoose.Schema.Types.ObjectId
+        userId: Schema.Types.ObjectId
         , username: sharedSchemas.stringType
     }
     , formElements: [innerFormEltSchema]

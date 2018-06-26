@@ -15,6 +15,7 @@ const mongo_form = require('../form/mongo-form');
 const mongo_data = require('./mongo-data');
 const config = require('./parseConfig');
 const dbLogger = require('../log/dbLogger.js');
+const handleError = require('../log/dbLogger.js').handleError;
 const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
 const pushNotification = require('./pushNotification');
@@ -266,6 +267,16 @@ exports.init = function (app) {
         res.sendFile(path.join(__dirname, '../../modules/_fhirApp', 'fhirApp.html'), undefined, err => {
             if (err) res.sendStatus(404);
         });
+    });
+
+    app.get('/fhirObservationInfo', (req, res) => {
+        mongo_data.fhirObservationInfo.get(req.query.id, handleError({res, origin: '/fhirObservationInfo'}, data =>
+            res.send(data)));
+    });
+
+    app.post('/fhirObservationInfo', (req, res) => {
+        mongo_data.fhirObservationInfo.post(req.body.info, handleError({res, origin: '/fhirObservationInfo'}, data =>
+            res.send(data)));
     });
 
     app.get('/nativeRender', (req, res) => {
@@ -1119,20 +1130,20 @@ exports.init = function (app) {
         mongo_data.updateUserLastViewNotification(req.user, err => {
             if (err) res.status(500).send("Error Updating User's Last View Notification Date.");
             else res.send();
-        })
+        });
     });
 
     app.get('/notifications', authorization.loggedInMiddleware, (req, res) => {
         mongo_data.getNotifications(req.user, (err, result) => {
             if (err) return res.status(500).send("Error Retrieving Notifications.");
             else res.send(result);
-        })
+        });
     });
     app.get('/unreadNotifications', authorization.loggedInMiddleware, (req, res) => {
         mongo_data.getUnreadNotifications(req.user, (err, result) => {
             if (err) return res.status(500).send("Error Retrieving Unread Notifications.");
             else res.send(result);
-        })
+        });
     });
 
 };

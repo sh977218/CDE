@@ -12,6 +12,18 @@ module.exports = merge(baseConfig, {
         publicPath: '/fhir/',
         filename: '[name].js'
     },
+    module: {
+        rules: [
+            {
+                test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+                use: [
+                    {loader: 'ts-loader', options: {configFile: '../../tsconfigFhir.json'}},
+                    'angular-router-loader',
+                    'angular2-template-loader'
+                ]
+            },
+        ]
+    },
     plugins: [
         new CleanWebpackPlugin(['dist/fhir'])
     ]

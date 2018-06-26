@@ -19,12 +19,5 @@ module.exports = module.exports = merge(baseConfig,{
                 IS_BROWSER: true,
                 PRODUCTION: JSON.stringify(true),
             }),
-            new webpack.ProvidePlugin({
-                $: 'jquery',
-                jQuery: 'jquery',
-                'windows.jQuery': 'jquery',
-                Tether: 'tether',
-                Popper: ['popper.js', 'default'],
-            }),
         ],
 });

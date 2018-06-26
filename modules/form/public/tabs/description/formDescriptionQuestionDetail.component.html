@@ -312,13 +312,13 @@
             </dd>
             <dt class="col-2">CDE Datatype:</dt>
             <dd class="col-10 cdeDataType">
-                <ng-select [(ngModel)]="question.question.cde.datatype"
+                <ng-select [(ngModel)]="question.question.datatype"
                            [items]="dataTypeList" bindValue="value"
                            placeholder="Select data type" [appendTo]="'body'" [hideSelected]="true"
                            (change)="onEltChange.emit()">
                 </ng-select>
             </dd>
-            <ng-container *ngIf="question.question.cde.datatype==='Value List'">
+            <ng-container *ngIf="question.question.datatype==='Value List'">
                 <dt class="col-2">CDE Permissible Values:</dt>
                 <dd class="col-10 cdePVs">
                     <table class="table table-border table-responsive">

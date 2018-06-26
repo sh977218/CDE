@@ -5,18 +5,6 @@ const path = require('path');
 
 module.exports = merge(baseConfig, {
     mode: 'development',
-    module: {
-        rules: [
-            {
-                test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
-                use: [
-                    {loader: 'ts-loader', options: {configFile: 'tsconfig.json'}},
-                    'angular-router-loader',
-                    'angular2-template-loader'
-                ]
-            },
-        ]
-    },
     plugins:
         [
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
@@ -28,14 +16,7 @@ module.exports = merge(baseConfig, {
                 PRODUCTION: JSON.stringify(false),
             }),
             new webpack.LoaderOptionsPlugin({debug: true}), // enable debug
-            new webpack.ProgressPlugin(), // show progress in ConEmu window
-            new webpack.ProvidePlugin({
-                $: 'jquery',
-                jQuery: 'jquery',
-                'windows.jQuery': 'jquery',
-                Tether: 'tether',
-                Popper: ['popper.js', 'default'],
-            })
+            new webpack.ProgressPlugin() // show progress in ConEmu window
         ],
     devtool: '#eval-source-map',
     watch: true,

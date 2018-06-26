@@ -2,21 +2,21 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
-import { LocalStorageModule } from 'angular-2-local-storage';
 import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
+import { LocalStorageModule } from 'angular-2-local-storage';
 
 import { AlertService } from '_app/alert.service';
 import { BackForwardService } from '_app/backForward.service';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
-import { CommonAppModule } from '_commonApp/commonApp.module';
 import { ElasticService } from '_app/elastic.service';
 import { LoginService } from '_app/login.service';
-import { NavigationComponent } from '_app/navigation/navigation.component';
-import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';
+import { NavigationComponent } from '_app/navigation/navigation.component';
+import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
+import { CommonAppModule } from '_commonApp/commonApp.module';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { NotificationsComponent } from "./notifications/notifications.component";
 import { MatBadgeModule, MatIconModule, MatMenuModule, MatSnackBarModule } from "@angular/material";
@@ -31,14 +31,14 @@ import { TimeAgoPipeModule } from "time-ago-pipe/es5";
             prefix: 'nlmcde',
             storageType: 'localStorage'
         }),
-        // internal
-        CdeAppRoutingModule,
-        CommonAppModule,
         MatBadgeModule,
         MatIconModule,
         MatMenuModule,
         MatSnackBarModule,
         TimeAgoPipeModule,
+        // internal
+        CdeAppRoutingModule,
+        CommonAppModule,
     ],
     declarations: [
         CdeAppComponent,

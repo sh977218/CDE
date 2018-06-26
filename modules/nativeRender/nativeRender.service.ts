@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { CodeAndSystem } from 'shared/models.model';
 import { pvGetDisplayValue, pvGetLabel } from 'shared/de/deShared';
 import {
     CdeForm, DisplayProfile, FormElement, FormQuestion, FormSectionOrForm, PermissibleFormValue, Question
@@ -48,7 +49,7 @@ export class NativeRenderService {
         if (this.profile) {
             f.question.uomsAlias = [];
             f.question.unitsOfMeasure.forEach(u => {
-                let aliases = this.profile.unitsOfMeasureAlias.filter(a => a.unitOfMeasure.compare(u));
+                let aliases = this.profile.unitsOfMeasureAlias.filter(a => CodeAndSystem.compare(a.unitOfMeasure, u));
                 if (aliases.length) {
                     f.question.uomsAlias.push(aliases[0].alias);
                 } else {
@@ -166,15 +167,40 @@ export class NativeRenderService {
         return this.errors;
     }
 
-    checkboxOnChange($event: any, model: any, value: any) {
+    checkboxOnChange($event: any, model: Question, value: any) {
         model = NativeRenderService.checkboxNullCheck(model);
         if ($event.target.checked) model.answer.push(value);
         else model.answer.splice(model.answer.indexOf(value), 1);
     }
-    checkboxIsChecked(model: any, value: any) {
+    checkboxIsChecked(model: Question, value: any) {
         model = NativeRenderService.checkboxNullCheck(model);
         return (model.answer.indexOf(value) !== -1);
     }
+
+    selectModel(question: Question) {
+        if (question.multiselect || question.answer === undefined) {
+            return question.answer;
+        } else {
+            if (!Array.isArray(question.answerVM)) {
+                question.answerVM = [];
+            }
+            question.answerVM.length = 0;
+            question.answerVM.push(question.answer);
+            return question.answerVM;
+        }
+    }
+
+    selectModelChange($event: any, question: Question) {
+        if (question.multiselect) {
+            question.answer = $event;
+        } else {
+            if ($event.length) {
+                question.answer = $event[0];
+            }
+        }
+    }
+
+
     static checkboxNullCheck(model: any) {
         if (!Array.isArray(model.answer)) model.answer = [];
         return model;

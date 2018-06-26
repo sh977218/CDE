@@ -8,7 +8,8 @@ const MongoStore = require('connect-mongo')(session);
 
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const connHelper = require('./connections');
-const dbLogger = require('../log/dbLogger');
+const consoleLog = require('../log/dbLogger').consoleLog;
+const handleError = require('../log/dbLogger').handleError;
 const logging = require('./logging.js');
 const daoManager = require('./moduleDaoManager');
 const config = require('./parseConfig');
@@ -20,6 +21,7 @@ const ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus);
 const Comment = conn.model('Comment', schemas.commentSchema);
 const Embeds = conn.model('Embed', schemas.embedSchema);
 const FhirApps = conn.model('FhirApp', schemas.fhirAppSchema);
+const FhirObservationInfo = conn.model('FhirObservationInfo', schemas.fhirObservationInformationSchema);
 const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 const Message = conn.model('Message', schemas.message);
 const MeshClassification = conn.model('meshClassification', schemas.meshClassification);
@@ -168,6 +170,41 @@ exports.fhirApps = {
     }
 };
 
+exports.fhirObservationInfo = {
+    get: (id, cb) => {
+        FhirObservationInfo.findOne({_id: id}, cb);
+    },
+    post: (info, cb) => {
+        FhirObservationInfo.findOne({_id: info._id}, (err, oldInfo) => {
+            if (err) {
+                cb(err);
+                return;
+            }
+            const timestamp = info.timestamp;
+            if (oldInfo.timestamp !== timestamp) {
+                cb(new Error('Edited by someone else. Please refresh and redo.'));
+                return;
+            }
+            info.timestamp = Date.now;
+            if (oldInfo) {
+                FhirObservationInfo.update({_id: info._id, timestamp: timestamp}, info, (err, status) => {
+                    if (err) {
+                        cb(err);
+                        return;
+                    }
+                    if (status.nModified === 1) {
+                        cb(undefined, info);
+                    } else {
+                        cb(new Error('Edited by someone else. Please refresh and redo.'));
+                    }
+                });
+            } else {
+                new FhirObservationInfo(info).save(cb);
+            }
+        });
+    }
+};
+
 exports.orgNames = callback => {
     Org.find({}, {name: true, _id: false}, callback);
 };
@@ -212,16 +249,12 @@ exports.pushEndpointUpdate = (endpoint, commandObj, callback) => {
 };
 
 exports.pushGetAdministratorRegistrations = callback => {
-    exports.siteAdmins((err, users) => {
-        if (err) {
-            dbLogger.handleGenericError({origin: "pushGetAdministratorRegistrations"});
-        } else {
-            let userIds = users.map(u => u._id.toString());
-            PushRegistration.find({}).exec(dbLogger.handleGenericError({origin: "pushGetAdministratorRegistrations.find"}, registrations => {
-                callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
-            }));
-        }
-    })
+    exports.siteAdmins(handleError({origin: "pushGetAdministratorRegistrations"}, users => {
+        let userIds = users.map(u => u._id.toString());
+        PushRegistration.find({}).exec(handleError({origin: "pushGetAdministratorRegistrations.find"}, registrations => {
+            callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
+        }));
+    }));
 };
 
 exports.userByName = (name, callback) => {
@@ -531,7 +564,7 @@ exports.getMessages = function (req, callback) {
     };
 
     if (req.user.roles === null || req.user.roles === undefined) {
-        dbLogger.consoleLog("user: " + req.user.username + " has null roles.");
+        consoleLog("user: " + req.user.username + " has null roles.");
         req.user.roles = [];
     }
     req.user.roles.forEach(function (r) {

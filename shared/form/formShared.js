@@ -61,6 +61,7 @@ export function convertFormToSection(form) {
                 }
             },
             label: form.designations[0] ? form.designations[0].designation : '',
+            mapTo: form.mapTo,
             skipLogic: {
                 condition: ''
             },
@@ -330,50 +331,109 @@ export function isSubForm(node) {
     return n.data.elementType === 'form';
 }
 
-// feCb(fe, cbContinue(error, skipChildren?: boolean))  (noopSkipCb: (dummy, cb) => cb(undefined, true))
+// feCb(fe, cbContinue(error, options?: any))  (noopSkipCb: (dummy, cb) => cb(undefined, {skip: true}))
 // callback(error)
-export function iterateFe(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, callback = undefined) {
-    if (fe) iterateFes(fe.formElements, formCb, sectionCb, questionCb, callback);
-}
-
-// cb(fe): skipChildren  (noopSkipSync: () => true)
-export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined) {
-    if (fe) iterateFesSync(fe.formElements, formCb, sectionCb, questionCb);
-}
-
-// feCb(fe, cbContinue(error, skipChildren?: boolean))  (noopSkipCb: (dummy, cb) => cb(undefined, true))
-// callback(error)
-export function iterateFes(fes, formCb = noopCb, sectionCb = noopCb, questionCb = noopCb, callback = _noop) {
-    if (Array.isArray(fes)) {
-        async_forEach(fes, (fe, cb) => {
-            if (fe.elementType === 'form') {
-                formCb(fe, (err, skip = undefined) => {
-                    if (err || skip) cb(err);
-                    else iterateFe(fe, formCb, sectionCb, questionCb, cb);
-                });
-            } else if (fe.elementType === 'section') {
-                sectionCb(fe, (err, skip = undefined) => {
-                    if (err || skip) cb(err);
-                    else iterateFe(fe, formCb, sectionCb, questionCb, cb);
-                });
-            } else {
-                questionCb(fe, cb);
-            }
-        }, callback);
+export function iterateFe(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, callback = undefined, options = undefined) {
+    if (fe) {
+        iterateFes(fe.formElements, formCb, sectionCb, questionCb, callback, options);
     }
 }
 
-// feCb(fe): skipChildren  (noopSkipSync: () => true)
-export function iterateFesSync(fes, formCb = _noop, sectionCb = _noop, questionCb = _noop) {
-    if (Array.isArray(fes)) {
-        fes.forEach(fe => {
-            if (fe.elementType === 'form') {
-                if (!formCb(fe)) iterateFeSync(fe, formCb, sectionCb, questionCb);
-            } else if (fe.elementType === 'section') {
-                if (!sectionCb(fe)) iterateFeSync(fe, formCb, sectionCb, questionCb);
-            } else questionCb(fe);
-        });
+// cb(fe, pass): return
+export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, pass = undefined) {
+    if (fe) {
+        return iterateFesSync(fe.formElements, formCb, sectionCb, questionCb, pass);
     }
+}
+
+// cb(fe, pass, options): return
+export function iterateFeSyncOptions(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, pass = undefined) {
+    if (fe) {
+        return iterateFesSyncOptions(fe.formElements, formCb, sectionCb, questionCb, pass);
+    }
+}
+
+// feCb(fe, cbContinue(error, options?: any))  (noopSkipCb: (dummy, cb) => cb(undefined, {skip: true}))
+// callback(error)
+export function iterateFes(fes, formCb = noopCb, sectionCb = noopCb, questionCb = noopCb, callback = _noop, options = undefined) {
+    if (!Array.isArray(fes)) {
+        return;
+    }
+    async_forEach(fes, (fe, cb) => {
+        switch (fe.elementType) {
+            case 'form':
+                formCb(fe, (err, options = undefined) => {
+                    if (err || options && options.skip) {
+                        cb(err);
+                        return;
+                    }
+                    iterateFe(fe, formCb, sectionCb, questionCb, cb, options);
+                }, options);
+                break;
+            case 'section':
+                sectionCb(fe, (err, options = undefined) => {
+                    if (err || options && options.skip) {
+                        cb(err);
+                        return;
+                    }
+                    iterateFe(fe, formCb, sectionCb, questionCb, cb, options);
+                }, options);
+                break;
+            case 'question':
+                questionCb(fe, cb, options);
+                break;
+        }
+    }, callback);
+}
+
+// cb(fe, pass): return
+export function iterateFesSync(fes, formCb = _noop, sectionCb = _noop, questionCb = _noop, pass = undefined) {
+    if (!Array.isArray(fes)) {
+        return;
+    }
+    fes.forEach(fe => {
+        switch (fe.elementType) {
+            case 'form':
+                iterateFeSync(fe, formCb, sectionCb, questionCb, formCb(fe, pass));
+                break;
+            case 'section':
+                iterateFeSync(fe, formCb, sectionCb, questionCb, sectionCb(fe, pass));
+                break;
+            case 'question':
+                questionCb(fe, pass);
+                break;
+        }
+    });
+    return pass;
+}
+
+// cb(fe, pass, options): return
+export function iterateFesSyncOptions(fes, formCb = _noop, sectionCb = _noop, questionCb = _noop, pass = undefined) {
+    if (!Array.isArray(fes)) {
+        return;
+    }
+    fes.forEach(fe => {
+        let options = {};
+        let ret;
+        switch (fe.elementType) {
+            case 'form':
+                ret = formCb(fe, pass, options);
+                if (!options.skip) {
+                    iterateFeSyncOptions(fe, formCb, sectionCb, questionCb, ret);
+                }
+                break;
+            case 'section':
+                ret = sectionCb(fe, pass, options);
+                if (!options.skip) {
+                    iterateFeSyncOptions(fe, formCb, sectionCb, questionCb, ret);
+                }
+                break;
+            case 'question':
+                questionCb(fe, pass, options);
+                break;
+        }
+    });
+    return pass;
 }
 
 function noopCb(dummy, cb) {
@@ -384,34 +444,35 @@ export function noopSkipCb(dummy, cb) {
     cb(undefined, true);
 }
 
-export function noopSkipSync() {
-    return true;
-}
-
 export function score(question, elt) {
-    if (!question.question.isScore)
+    if (!question.question.isScore) {
         return;
+    }
     let result = 0;
     question.question.cde.derivationRules.forEach(function (derRule) {
         if (derRule.ruleType === 'score') {
             if (derRule.formula === 'sumAll' || derRule.formula === 'mean') {
                 derRule.inputs.forEach(function (cdeTinyId) {
                     let q = findQuestionByTinyId(cdeTinyId, elt);
-                    if (isNaN(result)) return;
+                    if (isNaN(result)) {
+                        return;
+                    }
                     if (q) {
                         let answer = q.question.answer;
-                        if (typeof(answer) === "undefined" || answer === null)
+                        if (typeof(answer) === "undefined" || answer === null) {
                             result = 'Incomplete answers';
-                        else if (isNaN(answer))
+                        } else if (isNaN(answer)) {
                             result = 'Unable to score';
-                        else
+                        } else {
                             result = result + parseFloat(answer);
+                        }
                     }
                 });
             }
             if (derRule.formula === 'mean') {
-                if (!isNaN(result))
+                if (!isNaN(result)) {
                     result = result / derRule.inputs.length;
+                }
             }
         }
     });
@@ -421,39 +482,43 @@ export function score(question, elt) {
 
 export function iterateFormElements(fe = {}, option = {}, cb = undefined) {
     if (!fe.formElements) fe.formElements = [];
-    if (Array.isArray(fe.formElements)) {
-        if (option.async) {
-            async_forEachSeries(fe.formElements, (fe, doneOneFe) => {
-                if (fe.elementType === 'section') {
-                    if (option.sectionCb) option.sectionCb(fe, doneOneFe);
-                    else iterateFormElements(fe, option, doneOneFe);
-                }
-                else if (fe.elementType === 'form') {
-                    if (option.formCb) option.formCb(fe, doneOneFe);
-                    else iterateFormElements(fe, option, doneOneFe);
-                }
-                else if (fe.elementType === 'question') {
-                    if (option.questionCb) option.questionCb(fe, doneOneFe);
-                    else doneOneFe();
-                } else doneOneFe();
-            }, cb);
-        } else {
-            fe.formElements.forEach(fe => {
-                if (fe.elementType === 'section') {
-                    if (option.sectionCb) option.sectionCb(fe);
-                    else iterateFormElements(fe, option);
-                }
-                else if (fe.elementType === 'form') {
-                    if (option.formCb) option.formCb(fe);
-                    else iterateFormElements(fe, option);
-                }
-                else if (fe.elementType === 'question') {
-                    if (option.questionCb) option.questionCb(fe);
-                }
-            });
-            if (cb) cb();
-        }
-    } else cb();
+    if (!Array.isArray(fe.formElements)) {
+        cb();
+        return;
+    }
+    if (option.async) {
+        async_forEachSeries(fe.formElements, (fe, doneOneFe) => {
+            if (fe.elementType === 'section') {
+                if (option.sectionCb) option.sectionCb(fe, doneOneFe);
+                else iterateFormElements(fe, option, doneOneFe);
+            }
+            else if (fe.elementType === 'form') {
+                if (option.formCb) option.formCb(fe, doneOneFe);
+                else iterateFormElements(fe, option, doneOneFe);
+            }
+            else if (fe.elementType === 'question') {
+                if (option.questionCb) option.questionCb(fe, doneOneFe);
+                else doneOneFe();
+            } else {
+                doneOneFe();
+            }
+        }, cb);
+    } else {
+        fe.formElements.forEach(fe => {
+            if (fe.elementType === 'section') {
+                if (option.sectionCb) option.sectionCb(fe);
+                else iterateFormElements(fe, option);
+            }
+            else if (fe.elementType === 'form') {
+                if (option.formCb) option.formCb(fe);
+                else iterateFormElements(fe, option);
+            }
+            else if (fe.elementType === 'question') {
+                if (option.questionCb) option.questionCb(fe);
+            }
+        });
+        if (cb) cb();
+    }
 }
 
 export function trimWholeForm(elt) {
