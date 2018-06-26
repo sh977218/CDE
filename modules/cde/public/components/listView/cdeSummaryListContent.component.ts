@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+
 import { SummaryComponent } from 'search/listView/summaryListItem.component';
+import { Elt } from 'shared/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
 
 
 @Component({
@@ -8,15 +11,15 @@ import { SummaryComponent } from 'search/listView/summaryListItem.component';
     styles: [`
         dd {
             margin-bottom: 0;
-           }
+        }
     `]
 })
 export class CdeSummaryListContentComponent implements SummaryComponent {
-    @Input() elt: any;
-    @Input() eltIndex: any;
+    @Input() elt: DataElement;
+    @Input() eltIndex: number;
     @Output() select = new EventEmitter<string>();
 
-    defaultAttachmentsFilter = a => a.isDefault === true;
+    defaultAttachmentsFilter = Elt.isDefault;
     module = 'cde';
 
     constructor() {
@@ -25,5 +28,4 @@ export class CdeSummaryListContentComponent implements SummaryComponent {
     getStewards() {
         return this.elt.classification.map(cl => cl.stewardOrg.name).join(' ');
     }
-
 }

@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 
+import { Elt } from 'shared/models.model';
 import { BrowserService } from 'widget/browser.service';
 
 @Component({
@@ -7,8 +8,8 @@ import { BrowserService } from 'widget/browser.service';
     templateUrl: './pinBoard.component.html',
 })
 export class PinBoardComponent {
-    @Input() elt: any;
-    @Input() eltIndex: any;
+    @Input() elt: Elt;
+    @Input() eltIndex: number;
     @Input() module: any;
     BrowserService = BrowserService;
     pinModal: any;

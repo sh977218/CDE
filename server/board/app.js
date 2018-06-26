@@ -13,7 +13,8 @@ const js2xml = require('js2xmlparser');
 const classificationNode_system = require('../system/classificationNode');
 const usersrvc = require('../system/usersrvc');
 const adminItemSvc = require('../system/adminItemSvc.js');
-const dbLogger = require('../log/dbLogger.js');
+const handleError = require('../log/dbLogger.js').handleError;
+const logError = require('../log/dbLogger.js').logError;
 const boardsvc = require('./boardsvc');
 
 exports.init = function (app, daoManager) {
@@ -375,7 +376,7 @@ exports.init = function (app, daoManager) {
                                     }
                                 }, {upsert: true}, function (err) {
                                     if (err) {
-                                        dbLogger.logError({
+                                        logError({
                                             message: "Unable to send inbox user",
                                             stack: err,
                                             details: "user: " + u.username + " in board: " + board._id
@@ -405,7 +406,7 @@ exports.init = function (app, daoManager) {
             }).map(function (u) {
                 return u.username;
             }).forEach(function (username) {
-                mongo_data_system.userByName(username, dbLogger.handleGenericError({res: res, origin: '/board/remindReview'}, user => {
+                mongo_data_system.userByName(username, handleError({res, origin: '/board/remindReview'}, user => {
                     if (user) {
                         mongo_data_system.Message.findOneAndUpdate({
                             'type': 'BoardApproval',
@@ -428,7 +429,7 @@ exports.init = function (app, daoManager) {
                                     $position: 0
                                 }
                             }
-                        }, {upsert: true}, dbLogger.handleGenericError({res: res, origin: '/board/remindReview'}, () => res.send));
+                        }, {upsert: true}, handleError({res, origin: '/board/remindReview'}, () => res.send()));
                     }
                 }));
             });

@@ -152,22 +152,28 @@ exports.logClientError = function (req, callback) {
     });
 };
 
-exports.handleGenericError = function (options, cb) {
+// @TODO: remove most "res.status(500)" from the system
+exports.handleError = function (options, cb) {
     return function errorHandler(err, ...args) {
         if (err) {
-            if (options && options.res) {
-                let message = options.publicMessage || "An error has occurred. It's already been reported.";
-                options.res.status(500).send(message);
-            }
-            exports.logError({
-                message: options.message,
-                origin: options.origin,
-                stack: err,
-                details: options.details
-            });
+            exports.respondError(err, options);
         }
         cb(...args);
     };
+};
+
+// @TODO: Combine with logError() which publishes notifications
+exports.respondError = function(err, options) {
+    if (options && options.res) {
+        let message = options.publicMessage || "Generic Server Failure. Please submit an issue.";
+        options.res.status(500).send('Error: ' + message);
+    }
+    exports.logError({
+        message: options.message,
+        origin: options.origin,
+        stack: err,
+        details: options.details
+    });
 };
 
 exports.httpLogs = function (body, callback) {

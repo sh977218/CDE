@@ -91,32 +91,4 @@ export class FormService {
             this.http.get('/formById/' + id).subscribe(resolve, reject);
         });
     }
-
-    // TODO: turn into single server endpoint that calls one of the 2 server-side implementations
-    // modifies form to add sub-forms
-    // callback(err: string)
-    fetchWholeForm(form, callback = _noop) {
-        let formCb = (fe, cb) => {
-            this.fetchForm(fe.inForm.form.tinyId, fe.inForm.form.version || '').then(
-                response => {
-                    fe.formElements = response.formElements;
-                    cb();
-                },
-                err => cb(err.statusText)
-            );
-        };
-        function questionCb(fe, cb) {
-            if (fe.question.cde.derivationRules) {
-                fe.question.cde.derivationRules.forEach(derRule => {
-                    delete fe.incompleteRule;
-                    if (derRule.ruleType === 'score') {
-                        fe.question.isScore = true;
-                        fe.question.scoreFormula = derRule.formula;
-                    }
-                });
-            }
-            cb();
-        }
-        iterateFe(form, formCb, undefined, questionCb, callback);
-    }
 }

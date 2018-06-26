@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+
 import { BoardListService } from 'board/public/components/listView/boardList.service';
 import { SummaryComponent } from 'search/listView/summaryListItem.component';
+import { Elt } from 'shared/models.model';
+import { CdeForm } from 'shared/form/form.model';
 
 
 @Component({
@@ -8,11 +11,11 @@ import { SummaryComponent } from 'search/listView/summaryListItem.component';
     templateUrl: './boardFormSummaryListContent.component.html',
 })
 export class BoardFormSummaryListContentComponent implements SummaryComponent {
-    @Input() elt: any;
-    @Input() eltIndex: any;
+    @Input() elt: CdeForm;
+    @Input() eltIndex: number;
     @Output() select = new EventEmitter<string>();
 
-    defaultAttachmentsFilter = a => a.isDefault === true;
+    defaultAttachmentsFilter = Elt.isDefault;
     module = 'form';
 
     constructor(public boardListService: BoardListService) {}

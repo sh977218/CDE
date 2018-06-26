@@ -14,7 +14,7 @@ public class FhirQuestionnaireExport extends BaseFormTest {
         String[] expectedResults = {
                 "/schema/form",
                 "/deView?tinyId=OtsN78xANu1",
-                "{\"valueCoding\":{\"code\":\"Unknown\"}",
+                "{\"valueCoding\":{\"code\":\"Unknown\",\"userSelected\":false}",
                 "\"linkId\":\"0-2\"",
                 "\"enableWhen\":[",
                 "\"hasAnswer\":false"

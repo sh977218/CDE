@@ -323,6 +323,7 @@ export class FormViewComponent implements OnInit {
     saveForm() {
         let newCdes = [];
         iterateFes(this.elt.formElements, undefined, undefined, (fe, cb) => {
+            fe.question.cde.datatype = fe.question.datatype;
             if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
             cb();
         }, () => {

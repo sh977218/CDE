@@ -1,9 +1,9 @@
-import { externalCodeSystemsMap } from 'shared/mapping/fhir/index';
+import { codeSystemOut } from 'shared/mapping/fhir/fhirDatatypes';
 
 export function isCodingToValueList(container, coding) {
     function isCodingInContainer(container, c) {
         let pvs = Array.isArray(container.answers) ? container.answers : container.permissibleValues;
-        return pvs.some(pv => pv.permissibleValue === c.code && externalCodeSystemsMap[pv.codeSystemName] === c.system);
+        return pvs.some(pv => pv.permissibleValue === c.code && codeSystemOut(pv.codeSystemName) === c.system);
     }
     if (Array.isArray(coding)) {
         return coding.every(c => isCodingInContainer(container, c));
@@ -48,7 +48,7 @@ export function isItemTypeToContainer(container, type) { // http://hl7.org/fhir/
 export function quantityToUnitsOfMeasure(container, quantity) {
     if (Array.isArray(container.unitsOfMeasure)) {
         let matches = container.unitsOfMeasure.filter(u => quantity.code === u.code
-            && (quantity.system ? quantity.system === externalCodeSystemsMap[u.system] : !u.system));
+            && (quantity.system ? quantity.system === codeSystemOut(u.system) : !u.system));
         return matches.length ? matches[0] : undefined;
     } else {
         return container.uom === quantity.unit ? container.uom : undefined;

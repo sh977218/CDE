@@ -1,13 +1,14 @@
 import {
+    copyArray,
     CdeId,
     CodeAndSystem,
+    DerivationRule,
     Elt,
+    EltRef,
     FormattedValue,
     Instruction,
     ObjectId,
     PermissibleValue,
-    DerivationRule,
-    copyArray,
 } from 'shared/models.model';
 import {
     DatatypeContainer,
@@ -16,6 +17,8 @@ import {
     QuestionTypeText,
 } from 'shared/de/dataElement.model';
 import { iterateFeSync } from 'shared/form/formShared';
+import { deepCopy } from 'shared/system/util';
+
 
 export class CdeForm extends Elt implements FormElementsContainer {
     copyright: { // mutable
@@ -27,9 +30,10 @@ export class CdeForm extends Elt implements FormElementsContainer {
     formInput: any; // volatile, nativeRender and export
     formElements: FormElement[] = []; // mutable
     isCopyrighted: boolean;
+    mapTo?: ExternalMappings; // calculated, used by: FHIR
     noRenderAllowed: boolean;
     numQuestions: number; // volatile, Elastic
-    outdated: boolean; // volatile, server calculated
+    outdated?: boolean; // volatile, server calculated
 
     constructor(elt: CdeForm = undefined) {
         super(elt);
@@ -38,6 +42,7 @@ export class CdeForm extends Elt implements FormElementsContainer {
         // immutable
         this.formInput = elt.formInput;
         this.isCopyrighted = elt.isCopyrighted;
+        this.mapTo = elt.mapTo;
         this.noRenderAllowed = elt.noRenderAllowed;
         this.numQuestions = elt.numQuestions;
         this.outdated = elt.outdated;
@@ -141,10 +146,22 @@ export class DisplayProfile {
     }
 }
 
+export class ExternalMappings {
+    fhir?: {
+        resourceType?: string,
+    };
+}
+
 export class FhirApp {
     clientId: string = '';
     dataEndpointUrl: string = '';
     forms: {tinyId: string}[] = [];
+}
+
+export class FhirObservationInfo {
+    _id: string;
+    categories: string[];
+    timestamp: Date;
 }
 
 export interface FormElementsContainer {
@@ -159,6 +176,7 @@ export interface FormElement extends FormElementsContainer {
     formElements: FormElement[];
     instructions: Instruction;
     label: string;
+    mapTo?: ExternalMappings; // calculated, used by: FHIR
     metadataTags?: {key: string, value?: any}[]; // calculated, used by FHIR
     repeat: string;
     skipLogic: SkipLogic;
@@ -180,6 +198,7 @@ export class FormSection implements FormSectionOrForm {
     hover: boolean; // calculated, formDescription view model
     instructions;
     label = '';
+    mapTo;
     metadataTags;
     repeat;
     repeatNumber: number; // calculated, formDescription view model
@@ -232,6 +251,7 @@ export class FormInForm implements FormSectionOrForm {
     instructions;
     inForm: InForm;
     label = '';
+    mapTo;
     metadataTags;
     repeat;
     repeatNumber: number; // calculated, formDescription view model
@@ -252,6 +272,7 @@ export class FormQuestion implements FormElement {
     incompleteRule: boolean;
     instructions;
     label = '';
+    mapTo;
     metadataTags;
     question: Question = new Question();
     repeat;
@@ -277,15 +298,10 @@ export class FormQuestion implements FormElement {
 }
 
 class InForm {
-    form: {
-        name: string
-        outdated: boolean; // calculated, by server for client
-        tinyId: string,
-        version: string,
-    } = {name: '', outdated: false, tinyId: '', version: ''};
+    form: EltRef = new EltRef();
 
-    static copy(inForm: Section) {
-        return Object.assign(new InForm(), inForm ? JSON.parse(JSON.stringify(inForm)) : undefined);
+    static copy(inForm: InForm) {
+        return Object.assign(new InForm(), inForm ? deepCopy(inForm) : undefined);
     }
 }
 
@@ -301,6 +317,7 @@ export class PermissibleFormValue extends PermissibleValue implements FormElemen
 
 export class Question extends DatatypeContainer {
     answer: any; // volatile, input value
+    answerVM: any; // volatile, input value for select
     answerUom: CodeAndSystem; // volatile, input uom value
     answerDate: any; // volatile, working storage for date part
     answerTime: any; // volatile, working storage for time part
@@ -336,18 +353,13 @@ export class Question extends DatatypeContainer {
     }
 }
 
-export class QuestionCde { // copied from original data element, not configurable
-    ids: CdeId[] = [];
-    name: string;
-    naming = [];
-    designations = [];
+export class QuestionCde extends EltRef { // copied from original data element, not configurable
+    datatype: string; // volatile, use by save new cde
     definitions = [];
-    datatype = 'Text';
-    permissibleValues: PermissibleValue[] = [];
-    outdated: boolean = false; // calculated, by server for client
-    tinyId: string;
-    version: string;
     derivationRules: DerivationRule[] = [];
+    designations = [];
+    naming = [];
+    permissibleValues: PermissibleValue[] = [];
 
     static copy(a: QuestionCde|any) {
         if (a instanceof QuestionCde) {

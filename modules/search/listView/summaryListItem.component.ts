@@ -4,6 +4,7 @@ import {
     SimpleChanges,
     ViewChild, ViewContainerRef
 } from '@angular/core';
+
 import { Elt } from 'shared/models.model';
 
 export interface SummaryComponent {
@@ -16,8 +17,8 @@ export interface SummaryComponent {
     selector: '[cdeSummaryPlaceholder]',
 })
 export class SummaryPlaceholderDirective {
-    @Input() elt: any;
-    @Input() eltIndex: any;
+    @Input() elt: Elt;
+    @Input() eltIndex: number;
     constructor (public viewContainerRef: ViewContainerRef) {}
 }
 
@@ -26,8 +27,8 @@ export class SummaryPlaceholderDirective {
     templateUrl: './summaryListItem.component.html',
 })
 export class SummaryListItemComponent implements AfterViewInit, OnChanges {
-    @Input() elt: any;
-    @Input() eltIndex: any;
+    @Input() elt: Elt;
+    @Input() eltIndex: number;
     @Input() contentComponent: any;
     @Output() select = new EventEmitter<string>();
     @ViewChild(SummaryPlaceholderDirective) cHost: SummaryPlaceholderDirective;

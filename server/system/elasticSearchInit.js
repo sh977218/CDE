@@ -1,5 +1,7 @@
 const config = require('config');
-const hash = require("crypto");
+const hash = require('crypto');
+
+
 
 exports.createIndexJson = {
     "mappings": {
@@ -205,28 +207,13 @@ exports.createFormIndexJson = {
 exports.riverFunction = function (_elt, cb) {
     if (_elt.archived) return cb();
 
-    function hasInForm(e) {
-        if (!e.formElements) {
-            return false;
-        } else {
-            if (e.formElements.find(fe => fe.elementType === 'form')) {
-                return true;
-            } else {
-                for (var i = 0; i < e.formElements.length; i++) {
-                    if (hasInForm(e.formElements[i])) return true;
-                }
-            }
-        }
-    }
+    const formSvc = require('../form/formsvc');
 
-    var formCtrl = require('../form/formCtrl');
-
-    var getElt = hasInForm(_elt) ? formCtrl.fetchWholeForm : function (e, cb) {
-        cb(e);
+    let getElt = _elt.formElements ? formSvc.fetchWholeForm : function (e, cb) {
+        cb(undefined, e);
     };
 
-    getElt(_elt, function (elt) {
-
+    getElt(_elt, function (err, elt) {
         function escapeHTML(s) {
             return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
@@ -322,7 +309,6 @@ exports.riverFunction = function (_elt, cb) {
 
         return cb(elt);
     });
-
 };
 
 exports.createBoardIndexJson = {
