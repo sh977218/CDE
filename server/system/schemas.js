@@ -237,7 +237,10 @@ schemas.idSchema = {source: stringType, id: stringType, version: stringType, _id
 
 schemas.commentSchema = new mongoose.Schema({
     text: stringType,
-    user: stringType,
+    user: {
+        userId: mongoose.Schema.Types.ObjectId,
+        username: stringType
+    },
     username: stringType,
     created: Date,
     pendingApproval: Boolean,

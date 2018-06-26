@@ -1012,33 +1012,37 @@ exports.init = function (app) {
 
     app.get('/comments/eltId/:eltId', function (req, res) {
         let aggregate = [
+            {$match: {'element.eltId': req.params.eltId}},
             {
-                $match: {
-                    'element.eltId': req.params.eltId,
-                    status: {$ne: 'deleted'}
+                $lookup: {
+                    from: 'users',
+                    let: {'username': '$username'},
+                    pipeline: [
+                        {$match: {$expr: {$eq: ['$username', '$$username']}}},
+                        {$project: {_id: 0, avatarUrl: 1}}
+                    ],
+                    as: '__user'
                 }
-            }
+            },
+            {$replaceRoot: {newRoot: {$mergeObjects: [{$arrayElemAt: ['$__user', 0]}, "$$ROOT"]}}},
+            {$project: {__user: 0}}
         ];
-        mongo_data.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function (err, comments) {
-            let result = comments.filter(c => c.status !== 'deleted');
-            result.forEach(function (c) {
-                c.replies = c.replies.filter(r => r.status !== 'deleted');
-            });
-            result.forEach(function (c) {
+        mongo_data.Comment.aggregate(aggregate, (err, comments) => {
+            if (err) return res.status(500).send('Error retrieve comments');
+            comments.forEach(c => {
                 if (c.pendingApproval) c.text = "This comment is pending approval";
-                c.replies.forEach(function (r) {
+                c.replies.forEach(r => {
                     if (r.pendingApproval) r.text = "This comment is pending approval";
                 });
             });
-            res.send(result);
+            res.send(comments);
         });
     });
 
     app.get('/comment/:commentId', function (req, res) {
-        mongo_data.Comment.findOne({_id: req.params.commentId}).exec(function (err, comment) {
-            if (err) res.send(500);
-            else
-                res.send(comment);
+        mongo_data.Comment.findById(req.params.commentId, (err, comment) => {
+            if (err) return res.status(500).send('Error retrieve comment');
+            res.send(comment);
         });
     });
 
@@ -1083,16 +1087,12 @@ exports.init = function (app) {
             if (err) return res.status(500).send('Error retrieve comment');
             else if (!comment) return res.status(404).send("Comment not found");
             else {
-                let reply = null;
-                comment.replies.forEach(r => {
-                    if (r._id.toString() === req.body.replyId) {
-                        reply = r;
-                    }
-                });
-                if (!reply) return res.status(404).send("Reply not found");
+                let index = comment.replies.map(r => r._id).indexOf(req.body.replyId);
+                if (index === -1) return res.status(404).send("Reply not found");
                 else {
+                    comment.replies.splice(index, 1);
                     let type = comment.element.eltType;
-                    adminItemSvc.removeReply(req, res, comment, reply, daoManager.getDao(type));
+                    adminItemSvc.removeReply(req, res, comment, daoManager.getDao(type));
                 }
             }
         });

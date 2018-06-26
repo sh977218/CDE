@@ -325,7 +325,6 @@ exports.replyToComment = function (req, res) {
 };
 
 exports.removeComment = function (req, res, comment, dao) {
-    comment.status = "deleted";
     let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
     let eltId = comment.element.eltId;
     idRetrievalFunc(eltId, function (err, elt) {
@@ -334,7 +333,7 @@ exports.removeComment = function (req, res, comment, dao) {
             (elt.stewardOrg && (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)) ||
             (elt.owner && (elt.owner.username === req.user.username)) ||
             req.user.siteAdmin) {
-            comment.save(function (err) {
+            comment.remove(function (err) {
                 if (err) {
                     logging.errorLogger.error("Error: Cannot remove " + comment.type + ".", {
                         origin: "system.adminItemSvc.removeComment",
@@ -352,8 +351,7 @@ exports.removeComment = function (req, res, comment, dao) {
     });
 };
 
-exports.removeReply = function (req, res, comment, reply, dao) {
-    reply.status = "deleted";
+exports.removeReply = function (req, res, comment, dao) {
     let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
     let eltId = comment.element.eltId;
     idRetrievalFunc(eltId, function (err, elt) {

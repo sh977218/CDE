@@ -5,6 +5,7 @@ import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import { Subject } from 'rxjs/Subject';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { IsAllowedService } from 'core/isAllowed.service';
 import { UserService } from '_app/user.service';
@@ -22,8 +23,8 @@ import { UserService } from '_app/user.service';
         border-bottom: 24px solid transparent;
         border-left: none;
         border-right: 24px solid #ddd;
-        left: -25px;
-        top: -1px;
+        left: -21px;
+        top: 0px;
         z-index: -1;
         height: 0;
         position: absolute;
@@ -35,9 +36,9 @@ import { UserService } from '_app/user.service';
         border-bottom: 26px solid transparent;
         border-left: none;
         border-right: 26px solid #fff;
-        left: -22px;
+        left: -18px;
         z-index: 501;
-        top: 0;
+        top: 1px;
         height: 0;
         position: absolute;
         width: 0;
@@ -64,6 +65,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
     private emitCurrentReplying = new Subject<{ _id: string, comment: string }>();
 
     constructor(private http: HttpClient,
+                public dialog: MatDialog,
                 public isAllowedModel: IsAllowedService,
                 public userService: UserService) {
     }
@@ -110,9 +112,17 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
 
-    canRemoveComment = com => this.ownElt || (this.userService.user && this.userService.user._id === com.user);
-    canReopenComment = com => com.status === 'resolved' && this.canRemoveComment(com);
-    canResolveComment = com => com.status !== 'resolved' && this.canRemoveComment(com);
+    canRemoveComment(com) {
+        return this.ownElt || (this.userService.user && this.userService.user._id === com.user);
+    }
+
+    canReopenComment(com) {
+        return com.status === 'resolved' && this.canRemoveComment(com);
+    }
+
+    canResolveComment(com) {
+        return com.status !== 'resolved' && this.canRemoveComment(com);
+    }
 
 
     removeComment(commentId) {
@@ -154,5 +164,4 @@ export class CommentsComponent implements OnInit, OnDestroy {
     changeOnReply(comment) {
         this.emitCurrentReplying.next({_id: comment._id, comment: comment.newReply});
     }
-
 }
