@@ -198,7 +198,10 @@ exports.addComment = function (req, res, dao) {
             else {
                 let eltId = req.body.element.eltId;
                 let commentObj = {
-                    user: req.user._id,
+                    user: {
+                        userId: req.user._id,
+                        username: req.user.username
+                    },
                     username: req.user.username,
                     created: new Date().toJSON(),
                     text: req.body.comment,
@@ -262,7 +265,10 @@ exports.replyToComment = function (req, res) {
             } else if (!comment) res.status(404).send("Comment not found.");
             else {
                 let reply = {
-                    user: req.user._id,
+                    user: {
+                        userId: req.user._id,
+                        username: req.user.username
+                    },
                     username: req.user.username,
                     created: new Date().toJSON(),
                     text: req.body.reply
