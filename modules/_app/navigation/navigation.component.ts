@@ -38,14 +38,6 @@ import '../../../node_modules/material-design-lite/material.js';
         a img {
             border: 0;
         }
-        ::-moz-selection {
-            background-color: #6ab344;
-            color: #fff;
-        }
-        ::selection {
-            background-color: #6ab344;
-            color: #fff;
-        }
         .android-search-box .mdl-textfield__input {
             color: rgba(0, 0, 0, 0.87);
         }
@@ -119,9 +111,6 @@ import '../../../node_modules/material-design-lite/material.js';
         .android-drawer .mdl-navigation__link.mdl-navigation__link {
             font-size: 14px;
             color: #757575;
-        }
-        .android-drawer span.mdl-navigation__link.mdl-navigation__link {
-            color: #8bc34a;
         }
         .android-drawer .mdl-layout-title {
             position: relative;
