@@ -7,8 +7,15 @@
         </ng-container>
         <div class="comment border">
             <div class="commentHeader p-2">
-                <img class="float-left" src="/cde/public/assets/img/min/portrait.png" width="32" height="32"
-                     alt="portrait"/>
+
+                <ng-container *ngIf="!comment.avatarUrl">
+                    <img class="float-left" src="/cde/public/assets/img/min/portrait.png" width="32" height="32"
+                         alt="portrait"/>
+                </ng-container>
+                <ng-container *ngIf="comment.avatarUrl">
+                    <img class="float-left" [src]="comment.avatarUrl" width="32" height="32"
+                         alt="portrait"/>
+                </ng-container>
                 <div class=" float-left mx-2" style="width:120px;">
                     <div style="font-size:13px;">{{comment.username}}</div>
                     <div style="font-size:11px;">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</div>

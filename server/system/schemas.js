@@ -245,7 +245,7 @@ exports.idSchema = {source: stringType, id: stringType, version: stringType, _id
 exports.commentSchema = new Schema({
     text: stringType,
     user: {
-        userId: mongoose.Schema.Types.ObjectId,
+        userId: Schema.Types.ObjectId,
         username: stringType
     },
     username: stringType,
