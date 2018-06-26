@@ -59,7 +59,8 @@
             <form #newReplyForm="ngForm" name="newReplyForm" id="newReplyForm" novalidate
                   (ngSubmit)="replyToComment(comment);">
                 <input [(ngModel)]="comment.newReply.text" (ngModelChange)="changeOnReply(comment)" class="form-control"
-                       id="newReplyTextArea" name="newReplyTextArea" placeholder="Reply to this comment" required/>
+                       id="newReplyTextArea_{{i}}" name="newReplyTextArea" placeholder="Reply to this comment"
+                       required/>
                 <ng-container *ngIf="comment.newReply.text">
                     <button class="btn btn-outline-dark" id="postNewReply" name="postNewReply" type="submit"
                             [disabled]="!newReplyForm.form.valid">Reply

@@ -48,17 +48,17 @@ public abstract class CommentTest extends CommonTest {
         findElement(By.xpath("//*[@id='comment_0' and not(contains(@class, 'currentTabComment'))]"));
         findElement(By.xpath("//*[@id='comment_1' and contains(@class, 'currentTabComment')]"));
 
-        clickElement(By.id("replyTextarea_0"));
-        findElement(By.id("replyTextarea_0")).sendKeys("Reply to First comment about Status");
+        clickElement(By.id("newReplyTextArea_0"));
+        findElement(By.id("newReplyTextArea_0")).sendKeys("Reply to First comment about Status");
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
 
         try {
-            clickElement(By.id("replyTextarea_0"));
-            findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment about Status");
+            clickElement(By.id("newReplyTextArea_0"));
+            findElement(By.id("newReplyTextArea_0")).sendKeys("Second reply to First comment about Status");
         } catch (StaleElementReferenceException se) {
-            clickElement(By.id("replyTextarea_0"));
-            findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment about Status");
+            clickElement(By.id("newReplyTextArea_0"));
+            findElement(By.id("newReplyTextArea_0")).sendKeys("Second reply to First comment about Status");
         }
 
         hangon(1);
@@ -67,11 +67,11 @@ public abstract class CommentTest extends CommonTest {
 
         hangon(1);
         try {
-            clickElement(By.id("replyTextarea_1"));
-            findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment about Naming");
+            clickElement(By.id("newReplyTextArea_1"));
+            findElement(By.id("newReplyTextArea_1")).sendKeys("Reply to another comment about Naming");
         } catch (StaleElementReferenceException se) {
-            clickElement(By.id("replyTextarea_1"));
-            findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment about Naming");
+            clickElement(By.id("newReplyTextArea_1"));
+            findElement(By.id("newReplyTextArea_1")).sendKeys("Reply to another comment about Naming");
         }
         hangon(1);
         scrollToViewById("replyBtn_1");
@@ -229,12 +229,12 @@ public abstract class CommentTest extends CommonTest {
         goToEltByName(eltName);
         addCommentNeedApproval(commentText);
 
-        clickElement(By.id("replyTextarea_0"));
+        clickElement(By.id("newReplyTextArea_0"));
         hangon(1);
         try {
-            findElement(By.id("replyTextarea_0")).sendKeys(replyText);
+            findElement(By.id("newReplyTextArea_0")).sendKeys(replyText);
         } catch (Exception e) {
-            findElement(By.id("replyTextarea_0")).sendKeys(replyText);
+            findElement(By.id("newReplyTextArea_0")).sendKeys(replyText);
         }
         hangon(1);
         clickElement(By.id("replyBtn_0"));

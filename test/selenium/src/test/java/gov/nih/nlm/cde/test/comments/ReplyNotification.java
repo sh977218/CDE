@@ -23,8 +23,8 @@ public class ReplyNotification extends CdeCommentTest {
         goToEltByName(eltName);
 
         clickElement(By.id("discussBtn"));
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("replyTextarea_0")));
-        findElement(By.id("replyTextarea_0")).sendKeys(replyText);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("newReplyTextArea_0")));
+        findElement(By.id("newReplyTextArea_0")).sendKeys(replyText);
         hangon(1);
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
