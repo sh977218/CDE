@@ -269,13 +269,13 @@ exports.init = function (app) {
     });
 
     app.get('/fhirObservationInfo', (req, res) => {
-        mongo_data.fhirObservationInfo.get(req.query.id, handleError({res, origin: '/fhirObservationInfo'}, data =>
-            res.send(data)));
+        mongo_data.fhirObservationInfo.get(res, req.query.id, data =>
+            res.send(data));
     });
 
-    app.post('/fhirObservationInfo', (req, res) => {
-        mongo_data.fhirObservationInfo.post(req.body.info, handleError({res, origin: '/fhirObservationInfo'}, data =>
-            res.send(data)));
+    app.put('/fhirObservationInfo', [authorization.loggedInMiddleware], (req, res) => {
+        mongo_data.fhirObservationInfo.put(res, req.body, data =>
+            res.send(data));
     });
 
     app.get('/nativeRender', (req, res) => {
@@ -298,6 +298,7 @@ exports.init = function (app) {
     app.post('/pushRegistrationSubscribe', [authorization.loggedInMiddleware], pushNotification.subscribe);
     app.post('/pushRegistrationUpdate', pushNotification.updateStatus);
 
+    // @TODO: classification to own file
     // delete org classification
     app.post('/orgClassificationDelete/', (req, res) => {
         let deleteClassification = req.body.deleteClassification;
@@ -550,11 +551,11 @@ exports.init = function (app) {
     });
 
 
-    app.get('/siteAdmins', authorization.isSiteAdmin, (req, res) => {
+    app.get('/siteAdmins', [authorization.isSiteAdminMiddleware], (req, res) => {
         mongo_data.siteAdmins((err, users) => res.send(users));
     });
 
-    app.get('/orgAuthorities', authorization.isSiteAdmin, (req, res) => {
+    app.get('/orgAuthorities', [authorization.isSiteAdminMiddleware], (req, res) => {
         mongo_data.orgAuthorities((err, users) => res.send(users));
     });
 
@@ -596,65 +597,18 @@ exports.init = function (app) {
         }
     });
 
-    app.post('/addSiteAdmin', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            usersrvc.addSiteAdmin(req, res);
-        } else {
-            res.status(401).send();
-        }
-    });
+    app.post('/addSiteAdmin', [authorization.isSiteAdminMiddleware], usersrvc.addSiteAdmin);
+    app.post('/removeSiteAdmin', [authorization.isSiteAdminMiddleware], usersrvc.removeSiteAdmin);
 
-    app.post('/removeSiteAdmin', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            usersrvc.removeSiteAdmin(req, res);
-        } else {
-            res.status(401).send();
-        }
-    });
+    app.get('/myOrgsAdmins', [exportShared.nocacheMiddleware], usersrvc.myOrgsAdmins);
 
-    app.get('/myOrgsAdmins', exportShared.nocacheMiddleware, function (req, res) {
-        usersrvc.myOrgsAdmins(req, res);
-    });
+    app.get('/orgAdmins', [exportShared.nocacheMiddleware], usersrvc.orgAdmins);
+    app.post('/addOrgAdmin', [authorization.isOrgAdminMiddleware], usersrvc.addOrgAdmin);
+    app.post('/removeOrgAdmin', [authorization.isOrgAdminMiddleware], usersrvc.removeOrgAdmin);
 
-    app.get('/orgAdmins', exportShared.nocacheMiddleware, function (req, res) {
-        usersrvc.orgAdmins(req, res);
-    });
-
-    app.get('/orgCurators', exportShared.nocacheMiddleware, function (req, res) {
-        usersrvc.orgCurators(req, res);
-    });
-
-    app.post('/addOrgAdmin', function (req, res) {
-        if (authorization.isOrgAdmin(req, req.body.org)) {
-            usersrvc.addOrgAdmin(req, res);
-        } else {
-            res.status(401).send();
-        }
-    });
-
-    app.post('/removeOrgAdmin', function (req, res) {
-        if (authorization.isOrgAdmin(req, req.body.orgName)) {
-            usersrvc.removeOrgAdmin(req, res);
-        } else {
-            res.status(401).send();
-        }
-    });
-
-    app.post('/addOrgCurator', function (req, res) {
-        if (authorization.isOrgAdmin(req, req.body.org)) {
-            usersrvc.addOrgCurator(req, res);
-        } else {
-            res.status(401).send();
-        }
-    });
-
-    app.post('/removeOrgCurator', function (req, res) {
-        if (authorization.isOrgAdmin(req, req.body.orgName)) {
-            usersrvc.removeOrgCurator(req, res);
-        } else {
-            res.status(401).send();
-        }
-    });
+    app.get('/orgCurators', [exportShared.nocacheMiddleware], usersrvc.orgCurators);
+    app.post('/addOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.addOrgCurator);
+    app.post('/removeOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.removeOrgCurator);
 
     app.post('/updateUserRoles', function (req, res) {
         if (!authorizationShared.canOrgAuthority(req.user))
@@ -819,31 +773,25 @@ exports.init = function (app) {
         }
     });
 
-    app.post('/embed/', function (req, res) {
-        if (authorization.isOrgAdmin(req, req.body.org)) {
-            mongo_data.embeds.save(req.body, function (err, embed) {
-                if (err) res.status(500).send("There was an error saving this embed.");
-                else res.send(embed);
-            });
-        } else {
-            res.status(401).send();
-        }
+    app.post('/embed/', [authorization.isOrgAdminMiddleware], function (req, res) {
+        mongo_data.embeds.save(req.body, handleError({res, publicMessage: 'There was an error saving this embed.', origin: '/embed'}, embed =>
+            res.send(embed)));
     });
 
-    app.delete('/embed/:id', function (req, res) {
-        mongo_data.embeds.find({_id: req.params.id}, function (err, embeds) {
-            if (err) return res.status(500).send();
-            if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
-            let embed = embeds[0];
-            if (authorization.isOrgAdmin(req, embed.org)) {
-                mongo_data.embeds.delete(req.params.id, function (err) {
-                    if (err) res.status(500).send("There was an error removing this embed.");
-                    else res.send();
-                });
-            } else {
-                res.status(401).send();
+    app.delete('/embed/:id', [authorization.loggedInMiddleware], function (req, res) {
+        const errorOptions = {res, publicMessage: 'There was an error removing this embed.', origin: '/embed/'};
+        mongo_data.embeds.find({_id: req.params.id}, handleError(errorOptions, embeds => {
+            if (embeds.length !== 1) {
+                res.status.send("Expectation not met: one document.");
+                return;
             }
-        });
+            if (!req.isAuthenticated() || !authorizationShared.isOrgAdmin(req.user, embeds[0].org)) {
+                res.status(401).send();
+                return;
+            }
+            mongo_data.embeds.delete(req.params.id, handleError(errorOptions, () =>
+                res.send()));
+        }));
     });
 
 
@@ -863,37 +811,21 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/fhirApps', (req, res) => {
-        mongo_data.fhirApps.find({}, (err, apps) => {
-            if (err) res.status(500).send();
-            else res.send(apps);
-        });
+    app.get('/fhirApps', (req, res) =>
+        mongo_data.fhirApps.find(res, {}, apps =>
+            res.send(apps))
+    );
+    app.get('/fhirApp/:id', (req, res) =>
+        mongo_data.fhirApps.find(res, {_id: req.params.id}, apps =>
+            res.send(apps[0]))
+    );
+    app.post('/fhirApp', [authorization.isSiteAdminMiddleware], (req, res) => {
+        mongo_data.fhirApps.put(res, req.body, app =>
+            res.send(app));
     });
-    app.get('/fhirApp/:id', (req, res) => {
-        mongo_data.fhirApps.find({_id: req.params.id}, (err, apps) => {
-            if (err) res.status(500).send();
-            else res.send(apps[0]);
-        });
-    });
-    app.post('/fhirApp', (req, res) => {
-        if (req.user && req.user.siteAdmin) {
-            mongo_data.fhirApps.save(req.body, (err, app) => {
-                if (err) res.status(500).send("There was an error saving this App.");
-                else res.send(app);
-            });
-        } else {
-            res.status(401).send();
-        }
-    });
-    app.delete('/fhirApp/:id', (req, res) => {
-        if (req.user && req.user.siteAdmin) {
-            mongo_data.fhirApps.delete(req.params.id, err => {
-                if (err) res.status(500).send("There was an error removing this App.");
-                else res.send();
-            });
-        } else {
-            res.status(401).send();
-        }
+    app.delete('/fhirApp/:id', [authorization.isSiteAdminMiddleware], (req, res) => {
+        mongo_data.fhirApps.delete(res, req.params.id, () =>
+            res.send());
     });
 
 

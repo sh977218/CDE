@@ -10,6 +10,7 @@ const authorizationShared = require('@std/esm')(module)("../../shared/system/aut
 const connHelper = require('./connections');
 const consoleLog = require('../log/dbLogger').consoleLog;
 const handleError = require('../log/dbLogger').handleError;
+const respondError = require('../log/dbLogger').respondError;
 const logging = require('./logging.js');
 const daoManager = require('./moduleDaoManager');
 const config = require('./parseConfig');
@@ -152,58 +153,52 @@ exports.embeds = {
     }
 };
 
-exports.fhirApps = {
-    save: (embed, cb) => {
-        if (embed._id) {
-            let _id = embed._id;
-            delete embed._id;
-            FhirApps.update({_id: _id}, embed, cb);
-        } else {
-            new FhirApps(embed).save(cb);
-        }
-    },
-    find: (crit, cb) => {
-        FhirApps.find(crit, cb);
-    },
-    delete: (id, cb) => {
-        FhirApps.remove({_id: id}, cb);
-    }
+exports.timestamped = function (model, noPost) {
+    return {
+        delete: (res, id, cb) => {
+            model.remove({_id: id}, handleError({res, origin: 'timestamped delete ' + model}, cb));
+        },
+        find: (res, crit, cb) => {
+            model.find(crit, handleError({res, origin: 'timestamped find ' + model}, cb));
+        },
+        get: (res, id, cb) => {
+            model.findOne({_id: id}, handleError({res, origin: 'timestamped get ' + model}, cb));
+        },
+        put: (res, data, cb) => {
+            const errorOptions = {res, origin: 'timestamped put ' + model};
+            if (!data._id) {
+                if (noPost) {
+                    respondError(new Error('id generation is not supported'), errorOptions);
+                    return;
+                }
+                new model(data).save(handleError(errorOptions, cb));
+                return;
+            }
+            model.findOne({_id: data._id}, handleError(errorOptions, oldInfo => {
+                if (!oldInfo) {
+                    new model(data).save(handleError(errorOptions, cb));
+                    return;
+                }
+                const timestamp = new Date(data.timestamp);
+                if (oldInfo.toObject().timestamp.getTime() !== timestamp.getTime()) {
+                    res.status(409).send('Edited by someone else. Please refresh and redo.');
+                    return;
+                }
+                data.timestamp = new Date();
+                model.update({_id: data._id, timestamp: timestamp}, data, handleError(errorOptions, status => {
+                    if (status.nModified === 1) {
+                        cb(data);
+                    } else {
+                        res.status(409).send('Edited by someone else. Please refresh and redo.');
+                    }
+                }));
+            }));
+        },
+    };
 };
 
-exports.fhirObservationInfo = {
-    get: (id, cb) => {
-        FhirObservationInfo.findOne({_id: id}, cb);
-    },
-    post: (info, cb) => {
-        FhirObservationInfo.findOne({_id: info._id}, (err, oldInfo) => {
-            if (err) {
-                cb(err);
-                return;
-            }
-            const timestamp = info.timestamp;
-            if (oldInfo.timestamp !== timestamp) {
-                cb(new Error('Edited by someone else. Please refresh and redo.'));
-                return;
-            }
-            info.timestamp = Date.now;
-            if (oldInfo) {
-                FhirObservationInfo.update({_id: info._id, timestamp: timestamp}, info, (err, status) => {
-                    if (err) {
-                        cb(err);
-                        return;
-                    }
-                    if (status.nModified === 1) {
-                        cb(undefined, info);
-                    } else {
-                        cb(new Error('Edited by someone else. Please refresh and redo.'));
-                    }
-                });
-            } else {
-                new FhirObservationInfo(info).save(cb);
-            }
-        });
-    }
-};
+exports.fhirApps = exports.timestamped(FhirApps);
+exports.fhirObservationInfo = exports.timestamped(FhirObservationInfo, true);
 
 exports.orgNames = callback => {
     Org.find({}, {name: true, _id: false}, callback);

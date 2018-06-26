@@ -1,9 +1,37 @@
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const mongo_board = require('../board/mongo-board');
 
+// Middleware
 exports.canEditMiddleware = function (req, res, next) {
     if (!authorizationShared.canEditCuratedItem(req.user, req.body)) {
         // TODO: should consider adding to error log
+        return res.status(401).send();
+    }
+    if (next) {
+        next();
+    }
+};
+
+exports.isOrgAdminMiddleware = (req, res, next) => {
+    if (!req.isAuthenticated() || !authorizationShared.isOrgAdmin(req.user, req.body.org)) {
+        return res.status(401).send();
+    }
+    if (next) {
+        next();
+    }
+};
+
+exports.isOrgAuthorityMiddleware = (req, res, next) => {
+    if (!authorizationShared.canOrgAuthority(req.user)) {
+        return res.status(401).send();
+    }
+    if (next) {
+        next();
+    }
+};
+
+exports.isSiteAdminMiddleware = (req, res, next) => {
+    if (!req.isAuthenticated() || !authorizationShared.isSiteAdmin(req.user)) {
         return res.status(401).send();
     }
     if (next) {
@@ -16,6 +44,7 @@ exports.loggedInMiddleware = function (req, res, next) {
     if (next) next();
 };
 
+// Permission Helpers with Request/Response
 exports.checkOwnership = function (dao, id, req, cb) {
     if (!req.isAuthenticated()) return cb("You are not authorized.", null);
     dao.byId(id, function (err, elt) {
@@ -24,26 +53,6 @@ exports.checkOwnership = function (dao, id, req, cb) {
             return cb("You do not own this element.", null);
         cb(null, elt);
     });
-};
-
-exports.isOrgAdmin = function (req, org) {
-    return req.isAuthenticated() && authorizationShared.isOrgAdmin(req.user, org);
-};
-
-
-exports.isOrgAuthorityMiddleware = (req, res, next) => {
-    if (authorizationShared.canOrgAuthority(req.user)) next();
-    else res.status(401).send();
-};
-
-exports.isOrgAdminMiddleware = (req, res, next) => {
-    if (req.isAuthenticated() && authorizationShared.isOrgAdmin(req.user)) next();
-    else res.status(401).send();
-};
-
-exports.isSiteAdmin = function (req, res, next) {
-    if (req.isAuthenticated() && req.user.siteAdmin) return next();
-    return res.status(401).send();
 };
 
 exports.boardOwnership = function (req, res, boardId, next) {
