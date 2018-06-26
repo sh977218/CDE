@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, OnInit, Output, EventEmitter } from '@angular/core';
 import { NgbModalModule, NgbModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
 
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { Property } from 'shared/models.model';
 import { OrgHelperService } from 'core/orgHelper.service';
@@ -32,8 +32,7 @@ export class PropertiesComponent implements OnInit {
         private alert: AlertService,
         public modalService: NgbModal,
         private orgHelperService: OrgHelperService,
-    ) {
-    }
+    ) {}
 
     addNewProperty() {
         this.elt.properties.push(this.newProperty);

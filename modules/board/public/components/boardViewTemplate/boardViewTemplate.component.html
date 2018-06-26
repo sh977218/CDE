@@ -2,7 +2,7 @@
     <div class="card-header" (click)="clickHeader(board);">
         <i class="fa fa-globe" *ngIf="board.shareStatus ==='Public'"></i>
         <i class="fa fa-lock" *ngIf="board.shareStatus ==='Private'"></i>
-        <a *ngIf="headerLink" href="/board/{{board._id}}" target="_blank">{{board.name}}</a>
+        <a *ngIf="headerLink" href="/board/{{board._id}}" target="_blank"> {{board.name}}</a>
         <ng-container *ngIf="!headerLink">{{board.name}}</ng-container>
         <div class="float-right" *ngIf="canEdit">
             <i class="fa fa-pencil editBoard" (click)="openEditBoardModal();"></i>

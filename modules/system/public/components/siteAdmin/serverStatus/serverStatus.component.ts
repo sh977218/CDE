@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ViewChild } from '@angular/core';
 import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
-import { AlertService } from '_app/alert/alert.service';
+import { AlertService } from '_app/alert.service';
 
 @Component({
     selector: 'cde-server-status',

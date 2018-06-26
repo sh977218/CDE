@@ -1,46 +1,42 @@
 <div class="noGridPadLarge">
     <div class="dropdown d-inline-block">
-        <button class="btn btn-outline-dark dropdown-toggle" type="button" id="selectRenderButton"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Options
+        <button id="selectRenderButton" mat-raised-button [matMenuTriggerFor]="optionsMenu">
+            Options <mat-icon>arrow_drop_down</mat-icon>
         </button>
-        <div class="dropdown-menu" aria-labelledby="selectRenderButton">
-            <button class="dropdown-item"
-                    attr.data-url="/nativeRender?tinyId={{elt.tinyId}}&selectedProfile={{selectedProfileNameDecode}}"
-                    onclick="window.open(this.getAttribute('data-url'),'_blank')">
+        <mat-menu #optionsMenu>
+            <span attr.data-url="/nativeRender?tinyId={{elt.tinyId}}&selectedProfile={{selectedProfileNameDecode}}"
+                    onclick="window.open(this.getAttribute('data-url'),'_blank')" mat-menu-item>
                 <a id="button_print_follow">Printable</a>
-            </button>
-            <button class="dropdown-item" attr.data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}"
+            </span>
+            <span attr.data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}" mat-menu-item
                     onclick="window.open(this.getAttribute('data-url'),'_blank')">
                 <a class="d-inline" id="button_lforms">LHC-Forms</a>
                 (Provided by <a class="d-inline" href="https://lhncbc.nlm.nih.gov/project/lforms"
                                 target="_blank" (click)="$event.stopPropagation()">LHNCBC</a>)
-            </button>
-            <button class="dropdown-item"
+            </span>
+            <span mat-menu-item
                     attr.data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
                     onclick="window.open(this.getAttribute('data-url'),'_blank')">
                 <a class="d-inline" id="button_sdc">SDC</a>
                 (Provided by <a class="d-inline" href="https://www.healthit.gov/techlab/" target="_blank"
                                 (click)="$event.stopPropagation()">ONC</a>)
-            </button>
-            <button id="printableLogicCb" class="dropdown-item" (click)="overridePrintable = !overridePrintable">
+            </span>
+            <span id="printableLogicCb" (click)="overridePrintable = !overridePrintable" mat-menu-item>
                 Print View: <i class="fa fa-fw"
                                [class.fa-check-square-o]="overridePrintable"
                                [class.fa-square-o]="!overridePrintable"></i>
-            </button>
-        </div>
+            </span>
+        </mat-menu>
     </div>
-    <div *ngIf="elt.displayProfiles?.length > 0" class="dropdown d-inline-block">
-        <button class="btn btn-outline-dark dropdown-toggle" type="button" id="select_display_profile"
-                data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-            Display Profile: {{selectedProfileName}}
+    <div *ngIf="elt.displayProfiles?.length > 0" class="d-inline-block">
+        <button id="select_display_profile" mat-raised-button [matMenuTriggerFor]="dpMenu">
+            Display Profile: {{selectedProfileName}} <mat-icon>arrow_drop_down</mat-icon>
         </button>
-        <div class="dropdown-menu" aria-labelledby="select_display_profile">
-            <button class="dropdown-item" *ngFor="let p of elt.displayProfiles; let i = index"
+        <mat-menu #dpMenu>
+            <button *ngFor="let p of elt.displayProfiles; let i = index" mat-menu-item
                     (click)="selectProfile(i);">{{p.name}}
             </button>
-        </div>
+        </mat-menu>
     </div>
 </div>
 <div class="noGridPadSmall">
