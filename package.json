@@ -208,7 +208,7 @@
     {
       "path": "./dist/app/cde.css",
       "compression": "none",
-      "maxSize": "312 kB"
+      "maxSize": "676 kB"
     },
     {
       "path": "./dist/embed/embed.js",
