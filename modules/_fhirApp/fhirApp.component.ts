@@ -15,9 +15,11 @@ import _uniq from 'lodash/uniq';
 
 import { ResourceTree } from '_fhirApp/resourceTree';
 import { valueSets } from '_fhirApp/valueSets';
-import { CdeId } from 'shared/models.model';
+import { CdeId, PermissibleValue } from 'shared/models.model';
 import { iterateFeSync, iterateFe } from 'shared/form/formShared';
-import { CdeForm, DisplayProfile, FhirApp, FormElement, FormInForm, FormQuestion } from 'shared/form/form.model';
+import {
+    CdeForm, DisplayProfile, FhirApp, FormElement, FormInForm, FormQuestion
+} from 'shared/form/form.model';
 import {
     FhirDevice, FhirDeviceMetric, FhirDomainResource, FhirEncounter, FhirObservation, FhirObservationComponent,
     FhirOrganization, FhirPatient
@@ -212,10 +214,14 @@ export class FhirAppComponent {
                         undefined,
                         q => {
                             q.question.cde.ids.push(new CdeId('NLM', q.question.cde.tinyId));
-                            FhirAppComponent.applyCodeMapping(fhirApp, q.question.cde.ids);
+                            FhirAppComponent.applyCodeMapping(fhirApp, q.question.cde.ids, 'source', 'id');
                             q.question.cde.ids.forEach(id => {
                                 this.getDisplay(id.source, id.id);
                             });
+                            FhirAppComponent.applyCodeMapping(fhirApp, q.question.answers, 'codeSystemName',
+                                'permissibleValue');
+                            FhirAppComponent.applyCodeMapping(fhirApp, q.question.cde.permissibleValues, 'codeSystemName',
+                                'permissibleValue');
                         }
                     );
                 });
@@ -249,7 +255,7 @@ export class FhirAppComponent {
         return found;
     }
 
-    static applyCodeMapping(fhirApp, ids: CdeId[]) {
+    static applyCodeMapping(fhirApp, ids: (CdeId|PermissibleValue)[], systemProp: string, codeProp: string): void {
         function highestPriority(ids, index) {
             if (index > 0) {
                 let temp = ids[0];
@@ -258,20 +264,18 @@ export class FhirAppComponent {
             }
         }
 
-        // LOINC takes priority
         ids.some((id, index, ids) => {
-            if (id.source === 'LOINC') {
+            if (id[systemProp] === 'LOINC') {
                 highestPriority(ids, index);
                 return true;
             }
         });
 
-        // mapping has highest priority
         fhirApp.mapping.forEach(m => {
             ids.some((id, index, ids) => {
-                if (id.source === m.cdeSystem && id.id === m.cdeCode) {
-                    id.source = m.fhirSystem;
-                    id.id = m.fhirCode;
+                if ((id[systemProp] === m.cdeSystem || !id[systemProp] && !m.cdeSystem) && id[codeProp] === m.cdeCode) {
+                    id[systemProp] = m.fhirSystem;
+                    id[codeProp] = m.fhirCode;
                     highestPriority(ids, index);
                     return true;
                 }

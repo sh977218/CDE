@@ -26,6 +26,8 @@ const daoManager = require('./moduleDaoManager');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const esInit = require('./elasticSearchInit');
 const elastic = require('./elastic.js');
+const fhirApps = require('./fhir').fhirApps;
+const fhirObservationInfo = require('./fhir').fhirObservationInfo;
 const cdeElastic = require('../cde/elastic.js');
 const formElastic = require('../form/elastic.js');
 const app_status = require("./status.js");
@@ -269,12 +271,12 @@ exports.init = function (app) {
     });
 
     app.get('/fhirObservationInfo', (req, res) => {
-        mongo_data.fhirObservationInfo.get(res, req.query.id, data =>
+        fhirObservationInfo.get(res, req.query.id, data =>
             res.send(data));
     });
 
     app.put('/fhirObservationInfo', [authorization.loggedInMiddleware], (req, res) => {
-        mongo_data.fhirObservationInfo.put(res, req.body, data =>
+        fhirObservationInfo.put(res, req.body, data =>
             res.send(data));
     });
 
@@ -610,30 +612,20 @@ exports.init = function (app) {
     app.post('/addOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.addOrgCurator);
     app.post('/removeOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.removeOrgCurator);
 
-    app.post('/updateUserRoles', function (req, res) {
-        if (!authorizationShared.canOrgAuthority(req.user))
-            return res.status(401).send("Not Authorized");
-        usersrvc.updateUserRoles(req.body, function (err) {
-            if (err) res.status(500).end();
-            else res.status(200).end();
-        });
+    app.post('/updateUserRoles', [authorization.isOrgAuthorityMiddleware], function (req, res) {
+        usersrvc.updateUserRoles(req.body, handleError({res, origin: '/updateUserRoles'}, () => {
+            res.status(200).end();
+        }));
     });
 
-    app.post('/updateUserAvatar', function (req, res) {
-        if (!authorizationShared.canOrgAuthority(req.user))
-            return res.status(401).send("Not Authorized");
-        usersrvc.updateUserAvatar(req.body, function (err) {
-            if (err) res.status(500).end();
-            else res.status(200).end();
-        });
+    app.post('/updateUserAvatar', [authorization.isOrgAuthorityMiddleware], function (req, res) {
+        usersrvc.updateUserAvatar(req.body, handleError({res, origin: '/updateUserAvatar'}, () => {
+            res.status(200).end();
+        }));
     });
 
-    app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function (req, res) {
-        if (req.user && req.user.siteAdmin) {
+    app.get('/siteaccountmanagement', [exportShared.nocacheMiddleware, authorization.isSiteAdminMiddleware], (req, res) => {
             res.render('siteaccountmanagement', "system");
-        } else {
-            res.status(401).send();
-        }
     });
 
     app.get('/orgaccountmanagement', exportShared.nocacheMiddleware, function (req, res) {
@@ -654,10 +646,9 @@ exports.init = function (app) {
         if (!req.body.orgName || !req.body.categories) return res.status(400).send("Bad Request");
         let elements = req.body.elements;
         if (elements.length <= 50)
-            adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, function (err) {
-                if (err) res.status(500).send("ERROR in bulk classif by id");
-                else res.send("Done");
-            });
+            adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, handleError({res, origin: '/classification/bulk/'}, () => {
+                res.send("Done");
+            }));
         else {
             res.send("Processing");
             adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body);
@@ -812,19 +803,19 @@ exports.init = function (app) {
     });
 
     app.get('/fhirApps', (req, res) =>
-        mongo_data.fhirApps.find(res, {}, apps =>
+        fhirApps.find(res, {}, apps =>
             res.send(apps))
     );
     app.get('/fhirApp/:id', (req, res) =>
-        mongo_data.fhirApps.find(res, {_id: req.params.id}, apps =>
+        fhirApps.find(res, {_id: req.params.id}, apps =>
             res.send(apps[0]))
     );
     app.post('/fhirApp', [authorization.isSiteAdminMiddleware], (req, res) => {
-        mongo_data.fhirApps.put(res, req.body, app =>
+        fhirApps.put(res, req.body, app =>
             res.send(app));
     });
     app.delete('/fhirApp/:id', [authorization.isSiteAdminMiddleware], (req, res) => {
-        mongo_data.fhirApps.delete(res, req.params.id, () =>
+        fhirApps.delete(res, req.params.id, () =>
             res.send());
     });
 

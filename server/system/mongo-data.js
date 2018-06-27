@@ -10,7 +10,6 @@ const authorizationShared = require('@std/esm')(module)("../../shared/system/aut
 const connHelper = require('./connections');
 const consoleLog = require('../log/dbLogger').consoleLog;
 const handleError = require('../log/dbLogger').handleError;
-const respondError = require('../log/dbLogger').respondError;
 const logging = require('./logging.js');
 const daoManager = require('./moduleDaoManager');
 const config = require('./parseConfig');
@@ -62,6 +61,8 @@ exports.sessionStore = sessionStore;
 exports.Message = Message;
 exports.mongoose_connection = conn;
 exports.sessionStore = sessionStore;
+exports.FhirApps = FhirApps;
+exports.FhirObservationInfo = FhirObservationInfo;
 exports.Org = Org;
 exports.User = User;
 exports.MeshClassification = MeshClassification;
@@ -152,53 +153,6 @@ exports.embeds = {
         Embeds.remove({_id: id}, cb);
     }
 };
-
-exports.timestamped = function (model, noPost) {
-    return {
-        delete: (res, id, cb) => {
-            model.remove({_id: id}, handleError({res, origin: 'timestamped delete ' + model}, cb));
-        },
-        find: (res, crit, cb) => {
-            model.find(crit, handleError({res, origin: 'timestamped find ' + model}, cb));
-        },
-        get: (res, id, cb) => {
-            model.findOne({_id: id}, handleError({res, origin: 'timestamped get ' + model}, cb));
-        },
-        put: (res, data, cb) => {
-            const errorOptions = {res, origin: 'timestamped put ' + model};
-            if (!data._id) {
-                if (noPost) {
-                    respondError(new Error('id generation is not supported'), errorOptions);
-                    return;
-                }
-                new model(data).save(handleError(errorOptions, cb));
-                return;
-            }
-            model.findOne({_id: data._id}, handleError(errorOptions, oldInfo => {
-                if (!oldInfo) {
-                    new model(data).save(handleError(errorOptions, cb));
-                    return;
-                }
-                const timestamp = new Date(data.timestamp);
-                if (oldInfo.toObject().timestamp.getTime() !== timestamp.getTime()) {
-                    res.status(409).send('Edited by someone else. Please refresh and redo.');
-                    return;
-                }
-                data.timestamp = new Date();
-                model.update({_id: data._id, timestamp: timestamp}, data, handleError(errorOptions, status => {
-                    if (status.nModified === 1) {
-                        cb(data);
-                    } else {
-                        res.status(409).send('Edited by someone else. Please refresh and redo.');
-                    }
-                }));
-            }));
-        },
-    };
-};
-
-exports.fhirApps = exports.timestamped(FhirApps);
-exports.fhirObservationInfo = exports.timestamped(FhirObservationInfo, true);
 
 exports.orgNames = callback => {
     Org.find({}, {name: true, _id: false}, callback);
