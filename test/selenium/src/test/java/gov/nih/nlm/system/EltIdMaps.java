@@ -82,6 +82,7 @@ public class EltIdMaps {
         eltMap.put("Vision (aura) typical symptom type", "rRqc8KG1RNO");
 
         // Forms
+        eltMap.put("AED Resistance Log", "7yxcZJrrte");
         eltMap.put("DNA Elements - Information from the Laboratory", "X1x4z1BrYx");
         eltMap.put("Copy Section Form Test", "Xy7W4MKNV");
         eltMap.put("DNA Elements - Participant/Subject Information", "m1fVM1SSFx");

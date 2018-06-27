@@ -1735,6 +1735,23 @@ public class NlmCdeBaseTest {
         textPresent(message);
     }
 
+    protected void addComment(String message) {
+        clickElement(By.id("discussBtn"));
+        findElement(By.id("newCommentTextArea")).sendKeys(message);
+        hangon(2);
+        clickElement(By.id("commentBtn"));
+        textPresent(message);
+    }
+
+    protected void addCommentNeedApproval(String text) {
+        clickElement(By.id("discussBtn"));
+        findElement(By.name("newCommentTextArea")).sendKeys(text);
+        hangon(2);
+        clickElement(By.id("commentBtn"));
+        textNotPresent(text);
+        textPresent("This comment is pending approval");
+    }
+
     protected void approveComment(String username, String message) {
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         clickElement(By.id("incomingMessage"));

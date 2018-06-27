@@ -1,5 +1,6 @@
 package gov.nih.nlm.form.test;
 
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.*;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.interactions.Actions;
@@ -10,7 +11,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
-public class BaseFormTest extends FormCommentTest {
+public class BaseFormTest extends NlmCdeBaseTest {
 
     public void searchForm(String query) {
         findElement(By.name("q")).sendKeys("\"" + query + "\"");
