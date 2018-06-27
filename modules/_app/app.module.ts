@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 import { LocalStorageModule } from 'angular-2-local-storage';
+import { MatBadgeModule, MatIconModule, MatMenuModule, MatSnackBarModule } from '@angular/material';
 
 import { AlertService } from '_app/alert.service';
 import { BackForwardService } from '_app/backForward.service';
@@ -11,6 +12,7 @@ import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
 import { ElasticService } from '_app/elastic.service';
 import { LoginService } from '_app/login.service';
+import { NotificationsComponent } from '_app/notifications/notifications.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { UserService } from '_app/user.service';
@@ -18,9 +20,6 @@ import { NavigationComponent } from '_app/navigation/navigation.component';
 import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
 import { CommonAppModule } from '_commonApp/commonApp.module';
 import { OrgHelperService } from 'core/orgHelper.service';
-import { NotificationsComponent } from "./notifications/notifications.component";
-import { MatBadgeModule, MatIconModule, MatMenuModule, MatSnackBarModule } from "@angular/material";
-import { TimeAgoPipeModule } from "time-ago-pipe/es5";
 
 @NgModule({
     imports: [
@@ -35,7 +34,6 @@ import { TimeAgoPipeModule } from "time-ago-pipe/es5";
         MatIconModule,
         MatMenuModule,
         MatSnackBarModule,
-        TimeAgoPipeModule,
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
