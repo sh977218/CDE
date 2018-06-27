@@ -39,34 +39,44 @@
                     </div>
                 </div>
             </div>
-            <div *ngFor="let reply of comment.replies; let j = index" class="replyDiv p-2 border"
-                 style="background-color: rgb(245, 245, 245);">
-                <div class="replyHeader">
-                    <img class="float-left" src="/cde/public/assets/img/min/portrait.png" width="32" height="32"
-                         alt="portrait"/>
-                    <div class=" float-left mx-2" style="width:120px;">
-                        <div style="font-size:13px;">{{reply.user.username}}</div>
-                        <div style="font-size:11px;">{{reply.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
+            <ng-container *ngIf="comment.replies.length > 5">
+                <div *ngIf="!comment.showAllReplies" id="showAllRepliesButton-{{i}}-{{j}}"
+                     (click)="comment.showAllReplies = true;">Show all {{comment.replies.length}} replies
+                </div>
+                <div *ngIf="comment.showAllReplies" id="showLessRepliesButton-{{i}}-{{j}}"
+                     (click)="comment.showAllReplies = false;">Show less replies
+                </div>
+            </ng-container>
+            <ng-container *ngFor="let reply of comment.replies; let j = index">
+                <div *ngIf="comment.showAllReplies" class="replyDiv p-2 border"
+                     style="background-color: rgb(245, 245, 245);">
+                    <div class="replyHeader">
+                        <img class="float-left" src="/cde/public/assets/img/min/portrait.png" width="32" height="32"
+                             alt="portrait"/>
+                        <div class=" float-left mx-2" style="width:120px;">
+                            <div style="font-size:13px;">{{reply.user.username}}</div>
+                            <div style="font-size:11px;">{{reply.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
+                        </div>
+                        <div class="float-left">
+                            <mat-icon id="removeReply-{{i}}_{{j}}" title="RemoveReply"
+                                      *ngIf="canRemoveComment(reply);" (click)="removeReply(reply._id)">delete
+                            </mat-icon>
+                            <mat-icon id="resolveReply-{{i}}_{{j}}" title="ResolveReply"
+                                      *ngIf="canResolveComment(reply);" (click)="resolveReply(reply._id)">
+                                check_circle_outline
+                            </mat-icon>
+                            <mat-icon id="reopenReply-{{i}}_{{j}}" title="ReopenReply"
+                                      *ngIf="canReopenComment(reply);" (click)="reopenReply(reply._id)">undo
+                            </mat-icon>
+                        </div>
                     </div>
-                    <div class="float-left">
-                        <mat-icon id="removeReply-{{i}}_{{j}}" title="RemoveReply"
-                                  *ngIf="canRemoveComment(reply);" (click)="removeReply(reply._id)">delete
-                        </mat-icon>
-                        <mat-icon id="resolveReply-{{i}}_{{j}}" title="ResolveReply"
-                                  *ngIf="canResolveComment(reply);" (click)="resolveReply(reply._id)">
-                            check_circle_outline
-                        </mat-icon>
-                        <mat-icon id="reopenReply-{{i}}_{{j}}" title="ReopenReply"
-                                  *ngIf="canReopenComment(reply);" (click)="reopenReply(reply._id)">undo
-                        </mat-icon>
+                    <div class="clearfix"></div>
+                    <div class="replyBody">
+                        <s *ngIf="reply.status === 'resolved'">{{reply.text}}</s>
+                        <ng-container *ngIf="reply.status !=='resolved'">{{reply.text}}</ng-container>
                     </div>
                 </div>
-                <div class="clearfix"></div>
-                <div class="replyBody">
-                    <s *ngIf="reply.status === 'resolved'">{{reply.text}}</s>
-                    <ng-container *ngIf="reply.status !=='resolved'">{{reply.text}}</ng-container>
-                </div>
-            </div>
+            </ng-container>
             <div class="newReply p-2 border" style="background-color: rgb(245, 245, 245);">
                 <div class="newReplyInfo" *ngIf="comment.currentlyReplying">Someone is typing</div>
                 <form #newReplyForm="ngForm" name="newReplyForm" id="newReplyForm" novalidate
