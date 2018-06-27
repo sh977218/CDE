@@ -830,11 +830,11 @@ public class NlmCdeBaseTest {
     }
 
     protected void addToCompare(String cdeName1, String cdeName2) {
-        textPresent("Quick Board (0)");
+        textPresent("QUICK BOARD (0)");
         addCdeToQuickBoard(cdeName1);
-        textPresent("Quick Board (1)");
+        textPresent("QUICK BOARD (1)");
         addCdeToQuickBoard(cdeName2);
-        clickElement(By.linkText("Quick Board (2)"));
+        clickElement(By.linkText("QUICK BOARD (2)"));
         clickElement(By.id("dataElementQuickBoard"));
         textPresent(cdeName1);
         textPresent(cdeName2);

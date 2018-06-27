@@ -23,7 +23,7 @@ public class CdeQuickboardExport extends NlmCdeBaseTest {
         addCdeToQuickBoard(cdeName2);
         addCdeToQuickBoard(cdeName3);
 
-        textPresent("Quick Board (3)");
+        textPresent("QUICK BOARD (3)");
         goToQuickBoardByModule("cde");
         loadDefaultTableViewSettings();
         textPresent("Export Quick Board");
