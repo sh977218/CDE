@@ -18,7 +18,7 @@
                     <div *ngIf="orgClassificationsTreeView">
                         <tree-root [nodes]="orgClassificationsTreeView.classifications" [options]="options">
                             <ng-template #treeNodeTemplate let-node="node" let-index="index">
-                                <span style="margin-right: 10px">{{ node.data.name }}</span>
+                                <span class="mr-1">{{ node.data.name }}</span>
                                 <button id="{{node.path}}-classifyBtn" mat-raised-button (click)="classifyItemByTree(node)">
                                     <mat-icon>add</mat-icon> Classify
                                 </button>
