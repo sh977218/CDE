@@ -1051,10 +1051,8 @@ exports.init = function (app) {
     });
 
     app.get('/comment/:commentId', function (req, res) {
-        mongo_data.Comment.findById(req.params.commentId, (err, comment) => {
-            if (err) return res.status(500).send('Error retrieve comment');
-            res.send(comment);
-        });
+        mongo_data.Comment.findById(req.params.commentId, dbLogger.handleError(
+            {res: res, origin: "/comment/"}, comment => res.send(comment)));
     });
 
     app.get('/commentsfor/:username/:from/:size', adminItemSvc.commentsForUser);
@@ -1083,30 +1081,27 @@ exports.init = function (app) {
 
     /*    @TODO This endpoint will be improved in discuss module ticket */
     app.post('/comment/status/delete', [authorization.isAuthenticatedMiddleware], function (req, res) {
-        mongo_data.Comment.findById(req.body.commentId, function (err, comment) {
-            if (err) return res.status(500).send('Error retrieve comment');
-            else if (!comment) return res.status(404).send("Comment not found");
-            else {
+        mongo_data.Comment.findById(req.body.commentId, dbLogger.handleError(
+            {res: res, origin: "/comment/status/delete/"}, comment => {
+                if (!comment) return res.status(404).send("Comment not found");
                 let type = comment.element.eltType;
                 adminItemSvc.removeComment(req, res, comment, daoManager.getDao(type));
-            }
-        });
+            })
+        );
+
     });
     /*    @TODO This endpoint will be improved in discuss module ticket */
     app.post('/reply/status/delete', [authorization.isAuthenticatedMiddleware], function (req, res) {
-        mongo_data.Comment.findOne({'replies._id': req.body.replyId}, function (err, comment) {
-            if (err) return res.status(500).send('Error retrieve comment');
-            else if (!comment) return res.status(404).send("Comment not found");
-            else {
+        mongo_data.Comment.findOne({'replies._id': req.body.replyId}, dbLogger.handleError(
+            {res: res, origin: "/comment/status/delete/"}, comment => {
+                if (!comment) return res.status(404).send("Comment not found");
                 let index = comment.replies.map(r => r._id.toString()).indexOf(req.body.replyId);
                 if (index === -1) return res.status(404).send("Reply not found");
-                else {
-                    comment.replies.splice(index, 1);
-                    let type = comment.element.eltType;
-                    adminItemSvc.removeReply(req, res, comment, daoManager.getDao(type));
-                }
-            }
-        });
+                comment.replies.splice(index, 1);
+                let type = comment.element.eltType;
+                adminItemSvc.removeReply(req, res, comment, daoManager.getDao(type));
+            })
+        );
     });
 
     app.post('/comments/reply', adminItemSvc.replyToComment);

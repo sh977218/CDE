@@ -20,13 +20,13 @@
                     <div style="font-size:11px;">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
                 </div>
                 <div class="float-left">
-                    <mat-icon id="removeComment-{{i}}" title="RemoveComment" *ngIf="canRemoveComment(comment);"
+                    <mat-icon id="removeComment-{{i}}" *ngIf="canRemoveComment(comment);"
                               (click)="removeComment(comment._id)">delete
                     </mat-icon>
-                    <mat-icon id="resolveComment-{{i}}" title="ResolveComment" *ngIf="canResolveComment(comment);"
+                    <mat-icon id="resolveComment-{{i}}" *ngIf="canResolveComment(comment);"
                               (click)="resolveComment(comment._id)">check_circle_outline
                     </mat-icon>
-                    <mat-icon id="reopenComment-{{i}}" title="ReopenComment" *ngIf="canReopenComment(comment);"
+                    <mat-icon id="reopenComment-{{i}}" *ngIf="canReopenComment(comment);"
                               (click)="reopenComment(comment._id)">undo
                     </mat-icon>
                 </div>
@@ -56,15 +56,15 @@
                             <div style="font-size:11px;">{{reply.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
                         </div>
                         <div class="float-left">
-                            <mat-icon id="removeReply-{{i}}_{{j}}" title="RemoveReply"
-                                      *ngIf="canRemoveComment(reply);" (click)="removeReply(reply._id)">delete
+                            <mat-icon id="removeReply-{{i}}_{{j}}" *ngIf="canRemoveComment(reply);"
+                                      (click)="removeReply(reply._id)">delete
                             </mat-icon>
-                            <mat-icon id="resolveReply-{{i}}_{{j}}" title="ResolveReply"
-                                      *ngIf="canResolveComment(reply);" (click)="resolveReply(reply._id)">
+                            <mat-icon id="resolveReply-{{i}}_{{j}}" *ngIf="canResolveComment(reply);"
+                                      (click)="resolveReply(reply._id)">
                                 check_circle_outline
                             </mat-icon>
-                            <mat-icon id="reopenReply-{{i}}_{{j}}" title="ReopenReply"
-                                      *ngIf="canReopenComment(reply);" (click)="reopenReply(reply._id)">undo
+                            <mat-icon id="reopenReply-{{i}}_{{j}}" *ngIf="canReopenComment(reply);"
+                                      (click)="reopenReply(reply._id)">undo
                             </mat-icon>
                         </div>
                     </div>
