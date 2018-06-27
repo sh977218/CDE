@@ -19,7 +19,7 @@
                     <div style="font-size:13px;">{{comment.user.username}}</div>
                     <div style="font-size:11px;">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
                 </div>
-                <div class="float-left">
+                <div class="float-left manageCommentDiv">
                     <mat-icon id="removeComment-{{i}}" *ngIf="canRemoveComment(comment);"
                               (click)="removeComment(comment._id)">delete
                     </mat-icon>
@@ -55,7 +55,7 @@
                             <div style="font-size:13px;">{{reply.user.username}}</div>
                             <div style="font-size:11px;">{{reply.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
                         </div>
-                        <div class="float-left">
+                        <div class="float-left manageReplyDiv">
                             <mat-icon id="removeReply-{{i}}_{{j}}" *ngIf="canRemoveComment(reply);"
                                       (click)="removeReply(reply._id)">delete
                             </mat-icon>
@@ -75,7 +75,8 @@
                     </div>
                 </div>
             </ng-container>
-            <div class="newReply p-2 border" style="background-color: rgb(245, 245, 245);">
+            <div *ngIf="!comment.pendingApproval" class="newReply p-2 border"
+                 style="background-color: rgb(245, 245, 245);">
                 <div class="newReplyInfo" *ngIf="comment.currentlyReplying">Someone is typing</div>
                 <form #newReplyForm="ngForm" name="newReplyForm_{{i}}" id="newReplyForm_{{i}}" novalidate
                       (ngSubmit)="replyToComment(comment);">

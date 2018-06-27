@@ -11,7 +11,7 @@ public class ReplyNotification extends CdeCommentTest {
         mustBeLoggedInAs(test_username, password);
 
         String eltName = "Milestone currently able indicator";
-        int randomNumber = (int) (Math.random() * 10000);
+        int randomNumber = getRandomNumber();
         String commentText = "Comment with reply " + randomNumber;
         String replyText = "Reply will trigger notification " + randomNumber;
 

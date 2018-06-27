@@ -20,9 +20,10 @@ const compress = require('compression');
 const helmet = require('helmet');
 const ioServer = require('./server/system/ioServer');
 const winston = require('winston');
-const dbLogger = require('./server/log/dbLogger');
 const authorization = require('./server/system/authorization');
-const traffic  = require('./server/system/traffic');
+const traffic = require('./server/system/traffic');
+
+require('./scripts/fixComments').run();
 
 require('./server/system/elastic').initEs();
 

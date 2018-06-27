@@ -1,12 +1,30 @@
 package gov.nih.nlm.cde.test.comments;
 
+import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class CdeApproveReply extends CdeCommentTest {
 
     @Test
-    public void approveReply() {
-        approveReply("Lower limb tone findings result");
+    public void cdeApproveReply() {
+        String cdeName = "Lower limb tone findings result";
+        int randomNumber = getRandomNumber();
+        String commentText = "Top Level Comment " + randomNumber;
+        String replyText = "Very Innocent Reply " + randomNumber;
+        mustBeLoggedInAs(reguser_username, anonymousCommentUser_password);
+        goToCdeByName(cdeName);
+        addCommentNeedApproval(commentText);
+        approveComment(reguser_username, commentText);
+
+        mustBeLoggedInAs(reguser_username, anonymousCommentUser_password);
+        goToCdeByName(cdeName);
+        replyComment(0, replyText);
+
+        logout();
+        goToCdeByName(cdeName);
+        clickElement(By.id("discussBtn"));
+        textPresent(commentText);
+        textPresent(replyText);
     }
 
 }

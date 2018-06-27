@@ -403,7 +403,9 @@ public class NlmCdeBaseTest {
         goToElementByName(name, "form");
     }
 
-    protected void goToPreview() { clickElement(By.id("preview_tab")); }
+    protected void goToPreview() {
+        clickElement(By.id("preview_tab"));
+    }
 
     protected void goToGeneralDetail() {
         clickElement(By.id("general_tab"));
@@ -1720,5 +1722,30 @@ public class NlmCdeBaseTest {
             if (currentOrder < order)
                 org.junit.Assert.fail("Registration status order incorrect. Current:" + currentOrder + " Previous: " + order);
         }
+    }
+
+    protected int getRandomNumber() {
+        return (int) (Math.random() * 10000);
+    }
+
+    protected void replyComment(int index, String message) {
+        clickElement(By.id("discussBtn"));
+        findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
+        clickElement(By.id("replyBtn_" + index));
+        textPresent(message);
+    }
+
+    protected void approveComment(String username, String message) {
+        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
+        clickElement(By.id("incomingMessage"));
+        clickElement(By.partialLinkText("Comment approval | " + username + " | " + message));
+        clickElement(By.cssSelector(".card .approveComment"));
+        textPresent("Message moved");
+    }
+
+    protected void removeComment(String message) {
+        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'removeComment')]";
+        clickElement(By.xpath(xpath));
+        textNotPresent(message);
     }
 }

@@ -17,15 +17,14 @@ export class InboxComponent implements OnInit {
     currentMessage: any;
     mail: any = {received: [], sent: [], archived: []};
 
-    ngOnInit () {
+    ngOnInit() {
         this.getAllMail();
     }
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public modalService: NgbModal,
-    ) {}
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public modalService: NgbModal) {
+    }
 
     approveComment(msg) {
         this.http.post('/comments/approve', {
@@ -43,7 +42,7 @@ export class InboxComponent implements OnInit {
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
-    authorizeUser (msg) {
+    authorizeUser(msg) {
         let request = {username: msg.author.name, role: 'CommentAuthor'};
         this.http.post('/addUserRole', request, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
@@ -53,9 +52,9 @@ export class InboxComponent implements OnInit {
 
     closeMessage(message) {
         message.states.unshift({
-            action : 'Approved',
-            date : new Date(),
-            comment : ''
+            action: 'Approved',
+            date: new Date(),
+            comment: ''
         });
         this.http.post('/mail/messages/update', message).subscribe(() => {
             this.alert.addAlert('success', 'Message moved to archived.');
@@ -82,7 +81,7 @@ export class InboxComponent implements OnInit {
 
     declineComment(msg) {
         this.http.post('/comments/decline', {
-        //     commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
+            //     commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
         }, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
@@ -103,7 +102,7 @@ export class InboxComponent implements OnInit {
         });
     }
 
-    openAuthorizeUserModal (message) {
+    openAuthorizeUserModal(message) {
         this.currentMessage = message;
         this.approveUserModalRef = this.modalService.open(this.approveUserModal);
     }

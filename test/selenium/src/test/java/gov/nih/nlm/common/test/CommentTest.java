@@ -15,7 +15,7 @@ public abstract class CommentTest extends CommonTest {
         textPresent(text);
     }
 
-    private void addCommentNeedApproval(String text) {
+    protected void addCommentNeedApproval(String text) {
         clickElement(By.id("discussBtn"));
         findElement(By.name("newCommentTextArea")).sendKeys(text);
         hangon(2);
@@ -124,9 +124,10 @@ public abstract class CommentTest extends CommonTest {
             }
         }
     }
+/*
 
     public void approveComments(String eltName, String status, String user) {
-        int randomNumber = (int) (Math.random() * 10000);
+        int randomNumber = getRandomNumber();
         String commentText = "Very Innocent Comment " + randomNumber;
         String censoredText = "This comment is pending approval";
         mustBeLoggedInAs(user, password);
@@ -209,34 +210,7 @@ public abstract class CommentTest extends CommonTest {
         textNotPresent(censoredText);
         textNotPresent(commentText);
     }
-
-    public void approveReply(String eltName) {
-        int randomNumber = (int) (Math.random() * 10000);
-        String commentText = "Top Level Comment " + randomNumber;
-        String replyText = "Very Innocent Reply " + randomNumber;
-        mustBeLoggedInAs(reguser_username, anonymousCommentUser_password);
-        goToEltByName(eltName);
-        addCommentNeedApproval(commentText);
-
-        findElement(By.id("newReplyTextArea_0")).sendKeys(replyText);
-        hangon(1);
-        clickElement(By.id("replyBtn_0"));
-        textNotPresent(replyText);
-
-        logout();
-        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
-        clickElement(By.id("incomingMessage"));
-
-        clickElement(By.partialLinkText("Comment approval | reguser | " + replyText));
-        clickElement(By.cssSelector(".card .approveComment"));
-
-        textPresent("Message moved");
-
-        logout();
-        goToEltByName(eltName);
-        clickElement(By.id("discussBtn"));
-        textPresent(replyText);
-    }
+*/
 
     public void reviewerCanComment(String eltName) {
         String commentText = "Comment made by reviewer";
