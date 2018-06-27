@@ -925,7 +925,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).sendKeys(password);
         clickElement(By.id("login_button"));
         try {
-            textPresent(checkText);
+            textPresent(checkText.toUpperCase());
             // sometimes an issue with csrf, need to reload the whole page.
         } catch (TimeoutException e) {
             // csrf collision, wait random before re-trying
