@@ -8,12 +8,7 @@ import org.testng.annotations.Test;
 public class LiveCommentTest extends CdeCommentTest {
 
     private void replyComment(String reply) {
-        try {
-            findElement(By.id("newReplyTextArea_0")).sendKeys(reply);
-        } catch (StaleElementReferenceException e) {
-            hangon(2);
-            findElement(By.id("newReplyTextArea_0")).sendKeys(reply);
-        }
+        findElement(By.id("newReplyTextArea_0")).sendKeys(reply);
         hangon(2);
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));

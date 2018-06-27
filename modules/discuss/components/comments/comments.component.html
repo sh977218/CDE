@@ -40,10 +40,10 @@
             </div>
             <div *ngIf="comment.replies.length > 5" class="p-2 border"
                  style="background-color: rgb(245, 245, 245);">
-                <span class="fake-link" *ngIf="!comment.showAllReplies" id="showAllRepliesButton-{{i}}-{{j}}"
+                <span class="fake-link" *ngIf="!comment.showAllReplies" id="showAllRepliesButton_{{i}}"
                       (click)="comment.showAllReplies = true;">Show all {{comment.replies.length}} replies
                 </span>
-                <span class="fake-link" *ngIf="comment.showAllReplies" id="showLessRepliesButton-{{i}}-{{j}}"
+                <span class="fake-link" *ngIf="comment.showAllReplies" id="showLessRepliesButton_{{i}}"
                       (click)="comment.showAllReplies = false;">Show less replies
                 </span>
             </div>

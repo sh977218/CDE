@@ -28,7 +28,7 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(test_username, password);
         goToEltByName(eltName);
         clickElement(By.id("discussBtn"));
-        clickElement(By.linkText("Show all 10 replies"));
+        clickElement(By.id("showAllRepliesButton_0"));
         textNotPresent("Show all 10 replies");
         for (int k = 1; k <= 10; k++) textPresent("Reply to very long comment " + k);
     }
@@ -229,13 +229,7 @@ public abstract class CommentTest extends CommonTest {
         goToEltByName(eltName);
         addCommentNeedApproval(commentText);
 
-        clickElement(By.id("newReplyTextArea_0"));
-        hangon(1);
-        try {
-            findElement(By.id("newReplyTextArea_0")).sendKeys(replyText);
-        } catch (Exception e) {
-            findElement(By.id("newReplyTextArea_0")).sendKeys(replyText);
-        }
+        findElement(By.id("newReplyTextArea_0")).sendKeys(replyText);
         hangon(1);
         clickElement(By.id("replyBtn_0"));
         textNotPresent(replyText);
