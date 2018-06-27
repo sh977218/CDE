@@ -53,26 +53,15 @@ public abstract class CommentTest extends CommonTest {
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
 
-        try {
-            clickElement(By.id("newReplyTextArea_0"));
-            findElement(By.id("newReplyTextArea_0")).sendKeys("Second reply to First comment about Status");
-        } catch (StaleElementReferenceException se) {
-            clickElement(By.id("newReplyTextArea_0"));
-            findElement(By.id("newReplyTextArea_0")).sendKeys("Second reply to First comment about Status");
-        }
-
+        clickElement(By.id("newReplyTextArea_0"));
+        findElement(By.id("newReplyTextArea_0")).sendKeys("Second reply to First comment about Status");
         hangon(1);
+
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
 
-        hangon(1);
-        try {
-            clickElement(By.id("newReplyTextArea_1"));
-            findElement(By.id("newReplyTextArea_1")).sendKeys("Reply to another comment about Naming");
-        } catch (StaleElementReferenceException se) {
-            clickElement(By.id("newReplyTextArea_1"));
-            findElement(By.id("newReplyTextArea_1")).sendKeys("Reply to another comment about Naming");
-        }
+        clickElement(By.id("newReplyTextArea_1"));
+        findElement(By.id("newReplyTextArea_1")).sendKeys("Reply to another comment about Naming");
         hangon(1);
         scrollToViewById("replyBtn_1");
         clickElement(By.id("replyBtn_1"));

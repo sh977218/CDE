@@ -32,10 +32,8 @@
                 </div>
                 <div class="clearfix"></div>
                 <div class="commentBody">
-                    <div style="word-wrap: break-word;">
-                        <s *ngIf="comment.status === 'resolved'">{{comment.text}}</s>
-                        <ng-container *ngIf="comment.status !=='resolved'">{{comment.text}}</ng-container>
-                    </div>
+                    <span style="word-wrap: break-word;" [ngClass]="{'strike':comment.status === 'resolved'}">
+                        {{comment.text}}</span>
                 </div>
             </div>
             <div *ngIf="comment.replies.length > 5" class="p-2 border"
@@ -72,8 +70,8 @@
                     </div>
                     <div class="clearfix"></div>
                     <div class="replyBody">
-                        <s *ngIf="reply.status === 'resolved'">{{reply.text}}</s>
-                        <ng-container *ngIf="reply.status !=='resolved'">{{reply.text}}</ng-container>
+                        <span style="word-wrap: break-word;" [ngClass]="{'strike':reply.status === 'resolved'}">
+                        {{reply.text}}</span>
                     </div>
                 </div>
             </ng-container>
