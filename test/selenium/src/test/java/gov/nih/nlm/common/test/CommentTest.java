@@ -11,15 +11,15 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.id("discussBtn"));
         findElement(By.id("newCommentTextArea")).sendKeys(text);
         hangon(2);
-        clickElement(By.id("postNewComment"));
+        clickElement(By.id("commentBtn"));
         textPresent(text);
     }
 
     private void addCommentNeedApproval(String text) {
         clickElement(By.id("discussBtn"));
-        findElement(By.name("commentTextArea")).sendKeys(text);
+        findElement(By.name("newCommentTextArea")).sendKeys(text);
         hangon(2);
-        clickElement(By.id("postComment"));
+        clickElement(By.id("commentBtn"));
         textNotPresent(text);
         textPresent("This comment is pending approval");
     }
@@ -39,7 +39,7 @@ public abstract class CommentTest extends CommonTest {
 
         addComment("My First Comment about Status!");
         textPresent("My First Comment about Status!");
-        Assert.assertEquals(true, findElement(By.id("comment_0")).getAttribute("class").contains("currentTabComment"));
+        Assert.assertEquals(true, findElement(By.id("currentComment_0")).getAttribute("class").contains("currentTabComment"));
 
         goToNaming();
         findElement(By.name("commentTextArea")).sendKeys("another comment about Naming");

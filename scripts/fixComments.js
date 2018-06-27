@@ -4,12 +4,12 @@ const User = require('../server/user/index').user;
 
 let count = 0;
 
-function run() {
+exports.run = function () {
     /*
     @TODO run this in robo mongo
         Comment.remove({status: 'delete'});
     */
-    Comment.find({}, (error, results) => {
+    Comment.find({'user.username': {$exists: false}}, (error, results) => {
         if (error) throw error;
         else {
             results.forEach(result => {
@@ -50,4 +50,4 @@ function run() {
 
 }
 
-run();
+exports.run();

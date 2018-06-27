@@ -1,13 +1,12 @@
 <div *ngFor="let comment of comments; let i = index" class="mb-5" style=" width: 260px; ">
     <div class="commentDiv" [ngClass]="{currentTabComment:comment.currentComment}"
          style="background-color: white;box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);">
-        <ng-container *ngIf="comment.currentComment">
+        <div *ngIf="comment.currentComment" id="currentComment_{{i}}" class="currentComment">
             <div class="outer-arrow"></div>
             <div class="inner-arrow"></div>
-        </ng-container>
+        </div>
         <div class="comment border">
             <div class="commentHeader p-2">
-
                 <ng-container *ngIf="!comment.avatarUrl">
                     <img class="float-left" src="/cde/public/assets/img/min/portrait.png" width="32" height="32"
                          alt="portrait"/>
@@ -39,16 +38,17 @@
                     </div>
                 </div>
             </div>
-            <ng-container *ngIf="comment.replies.length > 5">
-                <div *ngIf="!comment.showAllReplies" id="showAllRepliesButton-{{i}}-{{j}}"
-                     (click)="comment.showAllReplies = true;">Show all {{comment.replies.length}} replies
-                </div>
-                <div *ngIf="comment.showAllReplies" id="showLessRepliesButton-{{i}}-{{j}}"
-                     (click)="comment.showAllReplies = false;">Show less replies
-                </div>
-            </ng-container>
+            <div *ngIf="comment.replies.length > 5" class="p-2 border"
+                 style="background-color: rgb(245, 245, 245);">
+                <span class="fake-link" *ngIf="!comment.showAllReplies" id="showAllRepliesButton-{{i}}-{{j}}"
+                      (click)="comment.showAllReplies = true;">Show all {{comment.replies.length}} replies
+                </span>
+                <span class="fake-link" *ngIf="comment.showAllReplies" id="showLessRepliesButton-{{i}}-{{j}}"
+                      (click)="comment.showAllReplies = false;">Show less replies
+                </span>
+            </div>
             <ng-container *ngFor="let reply of comment.replies; let j = index">
-                <div *ngIf="comment.showAllReplies" class="replyDiv p-2 border"
+                <div *ngIf="!comment.showAllReplies && j > 2" class="replyDiv p-2 border"
                      style="background-color: rgb(245, 245, 245);">
                     <div class="replyHeader">
                         <img class="float-left" src="/cde/public/assets/img/min/portrait.png" width="32" height="32"
@@ -79,15 +79,15 @@
             </ng-container>
             <div class="newReply p-2 border" style="background-color: rgb(245, 245, 245);">
                 <div class="newReplyInfo" *ngIf="comment.currentlyReplying">Someone is typing</div>
-                <form #newReplyForm="ngForm" name="newReplyForm" id="newReplyForm" novalidate
+                <form #newReplyForm="ngForm" name="newReplyForm_{{i}}" id="newReplyForm_{{i}}" novalidate
                       (ngSubmit)="replyToComment(comment);">
                     <input [(ngModel)]="comment.newReply.text" (ngModelChange)="changeOnReply(comment)"
                            class="form-control"
                            id="newReplyTextArea_{{i}}" name="newReplyTextArea" placeholder="Reply to this comment"
                            required/>
                     <ng-container *ngIf="comment.newReply.text">
-                        <button class="btn btn-outline-dark" id="postNewReply" name="postNewReply" type="submit"
-                                [disabled]="!newReplyForm.form.valid">Reply
+                        <button class="btn btn-outline-dark" id="replyBtn_{{i}}" name="replyBtn_{{i}}"
+                                type="submit" [disabled]="!newReplyForm.form.valid">Reply
                         </button>
                         <button class="btn btn-outline-dark" (click)="cancelReply(comment);">Cancel</button>
                     </ng-container>
