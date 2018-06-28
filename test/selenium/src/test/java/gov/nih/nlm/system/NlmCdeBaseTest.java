@@ -1752,8 +1752,8 @@ public class NlmCdeBaseTest {
         textPresent("This comment is pending approval");
     }
 
-    protected void approveComment(String username, String message) {
-        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
+    protected void approveComment(String adminUsername, String adminPassword, String username, String message) {
+        mustBeLoggedInAs(adminUsername, adminPassword);
         clickElement(By.id("incomingMessage"));
         clickElement(By.partialLinkText("Comment approval | " + username + " | " + message));
         clickElement(By.cssSelector(".card .approveComment"));

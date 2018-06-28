@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class CdeApproveReply extends NlmCdeBaseTest {
 
     @Test
-    public void cdeApproveReply() {
+    public void cdeApproveReplyTest() {
         String cdeName = "Lower limb tone findings result";
         int randomNumber = getRandomNumber();
         String commentText = "Top Level Comment " + randomNumber;
@@ -15,7 +15,7 @@ public class CdeApproveReply extends NlmCdeBaseTest {
         mustBeLoggedInAs(reguser_username, anonymousCommentUser_password);
         goToCdeByName(cdeName);
         addCommentNeedApproval(commentText);
-        approveComment(reguser_username, commentText);
+        approveComment(commentEditor_username, commentEditor_password, reguser_username, commentText);
 
         mustBeLoggedInAs(reguser_username, anonymousCommentUser_password);
         goToCdeByName(cdeName);
