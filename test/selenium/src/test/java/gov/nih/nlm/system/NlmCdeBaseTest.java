@@ -458,7 +458,7 @@ public class NlmCdeBaseTest {
     protected void goToDiscussArea() {
         boolean isDiscussAreaOpen = driver.findElements(By.xpath("//cde-discuss-area")).size() > 0;
         if (!isDiscussAreaOpen) {
-            clickElement(By.xpath("discussBtn"));
+            clickElement(By.id("discussBtn"));
         }
     }
 
