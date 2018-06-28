@@ -72,7 +72,7 @@
                     </div>
                 </div>
             </ng-container>
-            <div *ngIf="!comment.pendingApproval" class="p-2 border commentBox">
+            <div *ngIf="userService.user && !comment.pendingApproval" class="p-2 border commentBox">
                 <div class="newReplyInfo" *ngIf="comment.currentlyReplying">Someone is typing</div>
                 <form #newReplyForm="ngForm" name="newReplyForm_{{i}}" id="newReplyForm_{{i}}" novalidate
                       (ngSubmit)="replyToComment(comment);">

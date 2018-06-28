@@ -456,7 +456,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void goToDiscussArea() {
-        boolean isDiscussAreaOpen = findElements(By.xpath("//cde-discuss-area")).size() > 0;
+        boolean isDiscussAreaOpen = driver.findElements(By.xpath("//cde-discuss-area")).size() > 0;
         if (!isDiscussAreaOpen) {
             clickElement(By.xpath("discussBtn"));
         }
@@ -1773,7 +1773,8 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath(xpath));
         textNotPresent(message);
     }
-    protected void removeReply(String message){
+
+    protected void removeReply(String message) {
         goToDiscussArea();
         String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'removeReply_')]";
         clickElement(By.xpath(xpath));
