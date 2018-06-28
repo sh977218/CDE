@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CKEditorModule } from 'ng2-ckeditor';
@@ -15,6 +16,7 @@ import { ServerStatusComponent } from 'system/public/components/siteAdmin/server
 import { SiteManagementComponent } from 'system/public/components/siteAdmin/siteManagement/siteManagement.component';
 import { WidgetModule } from 'widget/widget.module';
 
+
 const appRoutes: Routes = [
     {path: '', component: SiteManagementComponent},
 ];
@@ -24,6 +26,7 @@ const appRoutes: Routes = [
         CKEditorModule,
         CommonModule,
         FormsModule,
+        MatIconModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core

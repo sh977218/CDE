@@ -5,7 +5,12 @@ import { FhirApp } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-fhir-apps',
-    templateUrl: './fhirApps.component.html'
+    templateUrl: './fhirApps.component.html',
+    styles: [`
+        .table td {
+            padding: 0;
+        }
+    `]
 })
 export class FhirAppsComponent {
     fhirApps: FhirApp[];

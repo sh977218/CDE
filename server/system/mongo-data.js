@@ -61,6 +61,8 @@ exports.sessionStore = sessionStore;
 exports.Message = Message;
 exports.mongoose_connection = conn;
 exports.sessionStore = sessionStore;
+exports.FhirApps = FhirApps;
+exports.FhirObservationInfo = FhirObservationInfo;
 exports.Org = Org;
 exports.User = User;
 exports.MeshClassification = MeshClassification;
@@ -149,59 +151,6 @@ exports.embeds = {
     },
     delete: function (id, cb) {
         Embeds.remove({_id: id}, cb);
-    }
-};
-
-exports.fhirApps = {
-    save: (embed, cb) => {
-        if (embed._id) {
-            let _id = embed._id;
-            delete embed._id;
-            FhirApps.update({_id: _id}, embed, cb);
-        } else {
-            new FhirApps(embed).save(cb);
-        }
-    },
-    find: (crit, cb) => {
-        FhirApps.find(crit, cb);
-    },
-    delete: (id, cb) => {
-        FhirApps.remove({_id: id}, cb);
-    }
-};
-
-exports.fhirObservationInfo = {
-    get: (id, cb) => {
-        FhirObservationInfo.findOne({_id: id}, cb);
-    },
-    post: (info, cb) => {
-        FhirObservationInfo.findOne({_id: info._id}, (err, oldInfo) => {
-            if (err) {
-                cb(err);
-                return;
-            }
-            const timestamp = info.timestamp;
-            if (oldInfo.timestamp !== timestamp) {
-                cb(new Error('Edited by someone else. Please refresh and redo.'));
-                return;
-            }
-            info.timestamp = Date.now;
-            if (oldInfo) {
-                FhirObservationInfo.update({_id: info._id, timestamp: timestamp}, info, (err, status) => {
-                    if (err) {
-                        cb(err);
-                        return;
-                    }
-                    if (status.nModified === 1) {
-                        cb(undefined, info);
-                    } else {
-                        cb(new Error('Edited by someone else. Please refresh and redo.'));
-                    }
-                });
-            } else {
-                new FhirObservationInfo(info).save(cb);
-            }
-        });
     }
 };
 
