@@ -545,7 +545,7 @@ public class NlmCdeBaseTest {
 
     protected void openFormInList(String name) {
         goToFormSearch();
-        clickElement(By.linkText("Forms"));
+        clickElement(By.linkText("FORMS"));
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         clickElement(By.xpath("//mat-icon[. = 'search']"));
@@ -1255,7 +1255,7 @@ public class NlmCdeBaseTest {
 
     protected void gotoMyBoards() {
         clickElement(By.id("boardsMenu"));
-        textPresent("My Boards");
+        textPresent("MY BOARDS");
         clickElement(By.id("myBoardsLink"));
         textPresent("Add Board");
         hangon(2);

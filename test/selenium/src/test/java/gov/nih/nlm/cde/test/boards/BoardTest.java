@@ -22,15 +22,15 @@ public class BoardTest extends NlmCdeBaseTest {
 
     public void gotoMyBoards() {
         clickElement(By.id("boardsMenu"));
-        textPresent("My Boards");
+        textPresent("MY BOARDS");
         clickElement(By.id("myBoardsLink"));
         textPresent("Add Board");
         hangon(2);
     }
 
     protected void gotoPublicBoards() {
-        clickElement(By.linkText("Boards"));
-        clickElement(By.linkText("Public Boards"));
+        clickElement(By.linkText("BOARDS"));
+        clickElement(By.linkText("PUBLIC BOARDS"));
     }
 
     public void createBoard(String name, String description, String type) {

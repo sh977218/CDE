@@ -27,18 +27,18 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         goToCdeSearch();
         textPresent("Albert Einstein Cancer Center");
         clickElement(By.id("browseOrg-AECC"));
-        hoverOverElement(findElement(By.linkText("CDEs")));
+        hoverOverElement(findElement(By.linkText("CDES")));
         textNotPresent("Albert Einstein Cancer Center");
         hoverOverElement(findElement(By.xpath("//*[@id='classif-AECC' and contains(@class,'treeItemText')]")));
         try {
             textPresent("Albert Einstein Cancer Center");
         } catch (TimeoutException e) {
-            hoverOverElement(findElement(By.linkText("CDEs")));
+            hoverOverElement(findElement(By.linkText("CDES")));
             hangon(1);
             hoverOverElement(findElement(By.xpath("//*[@id='classif-AECC' and contains(@class,'treeItemText')]")));
             textPresent("Albert Einstein Cancer Center");
         }
-        hoverOverElement(findElement(By.linkText("CDEs")));
+        hoverOverElement(findElement(By.linkText("CDES")));
         textNotPresent("Albert Einstein Cancer Center");
     }
 
@@ -63,7 +63,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         clickElement(By.id("classif-Imaging Diagnostics"));
         textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
 
-        clickElement(By.linkText("Boards"));
+        clickElement(By.linkText("BOARDS"));
         hangon(1);
         driver.navigate().back();
         textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
