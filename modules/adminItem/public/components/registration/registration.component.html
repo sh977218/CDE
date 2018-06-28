@@ -102,10 +102,9 @@
 
             </div>
             <div class="modal-footer" id="regStatusModalFooter">
-                <button class="btn btn-outline-dark" (click)="d()" id="cancelRegStatus" type="button">Cancel</button>
-                <button class="btn  btn-warning" type="submit" [disabled]="!regForm.form.valid" id="saveRegStatus">
-                    Save
-                </button>
+                <button (click)="d()" id="cancelRegStatus" type="button" mat-raised-button color="warn">Cancel</button>
+                <button type="submit" [disabled]="!regForm.form.valid" id="saveRegStatus"
+                    mat-raised-button color="primary">Save</button>
             </div>
         </form>
     </div>

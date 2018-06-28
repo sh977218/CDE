@@ -176,7 +176,7 @@
                             <span id="pvRemove_{{i}}" class="btn-outline-dark fa fa-trash-o" (click)="removePv(i)"
                                   title="Remove"></span>
                             <cde-sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
-                                                (cb)="sortPermissibleValue();"></cde-sortable-array>
+                                                (cb)="onEltChange.emit()"></cde-sortable-array>
                         </ng-container>
                     </td>
                 </tr>

@@ -5,15 +5,11 @@
         <dl class="row">
             <dt class="col-3 text-right">
                 <ng-container *ngIf="canEdit && rd.edit">Confirm Delete
-                    <span class="btn-outline-dark fa fa-check" (click)="removeReferenceDocumentByIndex(i)"
-                          id="confirmRemoveReferenceDocument-{{i}}" title="OK"></span>
-                    <span class="btn-outline-dark fa fa-times" (click)="rd.edit = false"
-                          id="cancelRemoveReferenceDocument-{{i}}" title="Cancel"></span>
+                    <mat-icon (click)="removeReferenceDocumentByIndex(i)" id="confirmRemoveReferenceDocument-{{i}}">check</mat-icon>
+                    <mat-icon (click)="rd.edit = false" id="cancelRemoveReferenceDocument-{{i}}">cancel</mat-icon>
                 </ng-container>
-                <span (click)="rd.edit = true" *ngIf="canEdit && !rd.edit" class="btn-outline-dark fa fa-trash-o"
-                      id="removeReferenceDocument-{{i}}" title="Remove"></span>
-                <cde-sortable-array [theArray]="elt.referenceDocuments" [index]="i"
-                                (cb)="onEltChange.emit()"></cde-sortable-array>
+                <mat-icon (click)="rd.edit = true" *ngIf="canEdit && !rd.edit" id="removeReferenceDocument-{{i}}">delete</mat-icon>
+                <cde-sortable-array [theArray]="elt.referenceDocuments" [index]="i" (cb)="onEltChange.emit()"></cde-sortable-array>
                 ID:
             </dt>
             <dd id="id_{{i}}" class="col-9">{{rd.referenceDocumentId}}</dd>
@@ -30,9 +26,9 @@
         </dl>
         <hr>
     </ng-container>
-    <button *ngIf="canEdit" class="btn   btn-outline-dark" id="openNewReferenceDocumentModalBtn"
+    <button *ngIf="canEdit" id="openNewReferenceDocumentModalBtn" mat-raised-button
             (click)="openNewReferenceDocumentModal();">
-        <i class="fa fa-plus"></i> Add ReferenceDocument
+        <mat-icon>add</mat-icon> Add Reference Document
     </button>
 </div>
 <ng-template #newReferenceDocumentContent id="newReferenceDocumentModal" let-c="close" let-d="dismiss">
@@ -78,10 +74,11 @@
             </div>
         </div>
         <div class="modal-footer" id="newReferenceDocumentModalFooter">
-            <button class="btn btn-outline-dark" id="cancelNewReferenceDocumentBtn" type="button" (click)="c('Close click')">
+            <button id="cancelNewReferenceDocumentBtn" type="button" (click)="c('Close click')"
+                    mat-raised-button color="warn">
                 Cancel
             </button>
-            <button class="btn  btn-warning" id="createNewReferenceDocumentBtn">
+            <button id="createNewReferenceDocumentBtn" mat-raised-button color="primary">
                 Save
             </button>
         </div>

@@ -8,7 +8,6 @@ import { Subject } from 'rxjs/Subject';
 import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert.service';
 import { DataTypeService } from 'core/dataType.service';
-import { IsAllowedService } from 'core/isAllowed.service';
 import { SearchSettings } from 'search/search.model';
 import { checkPvUnicity, fixDatatype } from 'shared/de/deValidator';
 
@@ -323,10 +322,6 @@ export class PermissibleValueComponent {
         if (!this.newPermissibleValue['permissibleValue']) {
             this.newPermissibleValue['permissibleValue'] = term.name;
         }
-    }
-
-    sortPermissibleValue() {
-        this.onEltChange.emit();
     }
 
     validatePvWithVsac() {

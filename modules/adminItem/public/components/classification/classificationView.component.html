@@ -33,11 +33,10 @@
         You are about to delete <b>{{deleteClassificationString}}</b> classification. Are you sure?
     </div>
     <div class="modal-footer" id="deleteClassificationModalFooter">
-        <button class="btn btn-outline-dark" (click)="c('cancel')" id="cancelDeleteClassificationBtn"
-                name="cancelDeleteClassificationBtn" type="button">Cancel
-        </button>
-        <button class="btn  btn-danger" (click)="c('confirm')" id="confirmDeleteClassificationBtn"
-                name="confirmDeleteClassificationBtn" type="button">OK
+        <button (click)="c('cancel')" id="cancelDeleteClassificationBtn" type="button"
+                mat-raised-button color="warn">Cancel</button>
+        <button (click)="c('confirm')" id="confirmDeleteClassificationBtn"
+                type="button" mat-raised-button color="primary">OK
         </button>
     </div>
 </ng-template>
