@@ -82,8 +82,12 @@ public class EltIdMaps {
         eltMap.put("Vision (aura) typical symptom type", "rRqc8KG1RNO");
 
         // Forms
+        eltMap.put("Activities of Daily Living and Gait", "QyVcb1Srtg");
+        eltMap.put("Adverse Event Tracking Log ", "m1_5_1HBYl");
         eltMap.put("AED Resistance Log", "7yxcZJrrte");
         eltMap.put("ALS Depression Inventory (ADI-12)", "QJW5Z1BrYl");
+        eltMap.put("Antithrombotics and Risk Factor Controlling Medications", "XJfnZyHrYg");
+        eltMap.put("Brain Motor Control Assessment", "XJJzyBSKe");
         eltMap.put("DNA Elements - Information from the Laboratory", "X1x4z1BrYx");
         eltMap.put("Copy Section Form Test", "Xy7W4MKNV");
         eltMap.put("DNA Elements - Participant/Subject Information", "m1fVM1SSFx");
@@ -167,6 +171,7 @@ public class EltIdMaps {
         eltMap.put("Pin All More Than 20 Test Board", "5750434631f3ccb83b82896f");
         eltMap.put("Plantar Fibromatosis", "55f197e0541fd83c2166cbcc");
         eltMap.put("Public Board", "5750474d89949d54384ee640");
+        eltMap.put("Public Smoking Board", "575045748ad83ed43a3b7ebd");
         eltMap.put("Reg Status Lift", "mJmg93zRW");
         eltMap.put("Smoking Board", "5711498c28329938330f5c4f");
         eltMap.put("Schizophrenia", "55f198bf541fd83c2166cbdf");
