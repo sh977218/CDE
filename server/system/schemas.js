@@ -120,14 +120,22 @@ embedJson.form.cdes = {type: Boolean, default: false};
 
 exports.embedSchema = new Schema(embedJson);
 
-let fhirAppJson = {
+exports.fhirAppSchema = new Schema({
     clientId: String,
     dataEndpointUrl: String,
     forms: [
-        {tinyId: String}
+        {tinyId: String, _id: false}
     ],
-};
-exports.fhirAppSchema = new Schema(fhirAppJson);
+    mapping: [{
+        type: new Schema({
+            cdeSystem: stringType,
+            cdeCode: stringType,
+            fhirSystem: stringType,
+            fhirCode: stringType,
+        }, {_id: false}),
+        default: []
+    }],
+}, {collection: 'fhirapps'});
 
 exports.fhirObservationInformationSchema = new Schema({
     _id: String,

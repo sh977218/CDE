@@ -46,8 +46,8 @@ export class OrgAdminComponent implements OnInit {
 
     removeOrgAdmin (orgName, userId) {
         this.http.post('/removeOrgAdmin', {
-            orgName: orgName
-            , userId: userId
+            org: orgName,
+            userId: userId
         }, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Removed');
             this.getAdmins();

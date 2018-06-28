@@ -156,6 +156,7 @@ export class FhirApp {
     clientId: string = '';
     dataEndpointUrl: string = '';
     forms: {tinyId: string}[] = [];
+    mapping: {cdeSystem: string, cdeCode: string, fhirSystem: string, fhirCode: string};
 }
 
 export class FhirObservationInfo {

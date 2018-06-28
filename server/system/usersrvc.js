@@ -162,7 +162,7 @@ exports.removeOrgAdmin = function(req, res) {
         if (!found) {
             res.send("Unknown User");
         } else {
-            var orgInd = found.orgAdmin.indexOf(req.body.orgName);
+            var orgInd = found.orgAdmin.indexOf(req.body.org);
             if (orgInd < 0) {
                 res.send("User is not an Administrator for this Organization");
             } else {
@@ -198,7 +198,7 @@ exports.removeOrgCurator = function(req, res) {
         if (!found) {
             res.send("Unknown User");
         } else {
-            var orgInd = found.orgCurator.indexOf(req.body.orgName);
+            var orgInd = found.orgCurator.indexOf(req.body.org);
             if (orgInd < 0) {
                 res.send("User is not a Curator for this Organization");
             } else {

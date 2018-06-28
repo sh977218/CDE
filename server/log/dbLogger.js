@@ -6,9 +6,7 @@ const schemas = require('./schemas');
 const moment = require('moment');
 const noDbLogger = require('../system/noDbLogger');
 const pushNotification = require('../system/pushNotification');
-
 const conn = connHelper.establishConnection(config.database.log);
-
 const LogModel = conn.model('DbLogger', schemas.logSchema);
 const LogErrorModel = conn.model('DbErrorLogger', schemas.logErrorSchema);
 const ClientErrorModel = conn.model('DbClientErrorLogger', schemas.clientErrorSchema);
@@ -73,9 +71,10 @@ exports.log = function (message, callback) { // express only, all others dbLogge
 
 exports.logError = function (message, callback) { // all server errors, express and not
     message.date = new Date();
+    let description = (message.message || message.publicMessage || '').substr(0, 30);
 
     mongo_data.saveNotification({
-        title: "Server Side Error: " + message.message.substr(0, 30),
+        title: "Server Side Error: " + description,
         url: "/siteAudit#serverError",
         roles: ['siteAdmin']
     });
@@ -85,7 +84,7 @@ exports.logError = function (message, callback) { // all server errors, express 
         let msg = {
             title: 'Server Side Error',
             options: {
-                body: "Server Side Error: " + message.message.substr(0, 30),
+                body: "Server Side Error: " + description,
                 icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
                 badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
                 tag: 'cde-server-side',
@@ -137,15 +136,19 @@ exports.logClientError = function (req, callback) {
             }
         };
 
-        mongo_data.saveNotification({
-            title: "Client Side Error: " + exc.message.substr(0, 30),
-            url: "/siteAudit#clientErrors",
-            roles: ['siteAdmin']
-        });
+        let ua = useragent.is(req.headers['user-agent']);
+        if (ua.chrome || ua.firefox || ua.edge) {
+            mongo_data.saveNotification({
+                title: "Client Side Error: " + exc.message.substr(0, 30),
+                url: "/siteAudit#clientErrors",
+                roles: ['siteAdmin']
+            });
 
-        mongo_data.pushGetAdministratorRegistrations(registrations => {
-            registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
-        });
+            mongo_data.pushGetAdministratorRegistrations(registrations => {
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
+            });
+        }
+
         callback(err);
     });
 };
@@ -167,9 +170,9 @@ exports.respondError = function(err, options) {
         options.res.status(500).send('Error: ' + message);
     }
     exports.logError({
-        message: options.message,
+        message: options.message || err.message,
         origin: options.origin,
-        stack: err,
+        stack: err.stack,
         details: options.details
     });
 };

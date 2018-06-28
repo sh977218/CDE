@@ -45,8 +45,8 @@ export class OrgAccountManagementComponent implements OnInit {
 
     removeOrgCurator(orgName, userId) {
         this.http.post('/removeOrgCurator', {
-            orgName: orgName
-            , userId: userId
+            org: orgName,
+            userId: userId
         }, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Removed');
             this.getOrgCurators();
