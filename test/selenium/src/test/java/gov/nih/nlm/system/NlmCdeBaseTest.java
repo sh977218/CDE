@@ -1767,6 +1767,15 @@ public class NlmCdeBaseTest {
         textPresent("Message moved");
     }
 
+    protected void declineComment(String adminUsername, String adminPassword, String username, String message) {
+        mustBeLoggedInAs(adminUsername, adminPassword);
+        clickElement(By.id("incomingMessage"));
+        clickElement(By.partialLinkText("Comment approval | " + username + " | " + message));
+        clickElement(By.cssSelector(".card .declineComment"));
+        textPresent("Message moved");
+    }
+
+
     protected void removeComment(String message) {
         goToDiscussArea();
         String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'removeComment_')]";

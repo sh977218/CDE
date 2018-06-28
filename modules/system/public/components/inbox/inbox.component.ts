@@ -81,7 +81,7 @@ export class InboxComponent implements OnInit {
 
     declineComment(msg) {
         this.http.post('/comments/decline', {
-            //     commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
+            commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
         }, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
