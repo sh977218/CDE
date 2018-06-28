@@ -1,12 +1,10 @@
 <nih-cde ng-version="6.0.3">
     <cde-navigation _nghost-c0="">
         <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-
             <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
                 <div class="mdl-layout__header-row">
-
-                        <span class="android-title mdl-layout-title"><a
-                                href="/">
+                        <span class="android-title mdl-layout-title">
+                            <a href="/" id="homeLink">
                             <img class="logo-image"
                                  src="/cde/public/assets/img/min/nih-cde-logo-simple.png"></a></span>
                     <div class="android-header-spacer mdl-layout-spacer"></div>
@@ -63,20 +61,14 @@
                                                href="/cde/search">CDEs</a><a
                         class="mdl-navigation__link" href="/form/search">Forms</a>
                     <div class="android-drawer-separator"></div>
-                    <a
-
-                            class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
+                    <a class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
                             id="boardsMenu" href="/boardList">Boards</a>
                     <div class="android-drawer-separator"></div>
                     <mat-menu class="ng-tns-c0-2 ng-star-inserted"></mat-menu>
-                    <a
-                            class="mdl-navigation__link"
-                            href="/quickBoard">Quick Board</a><a class="mdl-navigation__link"
-                                                                 href="/api">API</a>
+                    <a class="mdl-navigation__link" href="/quickBoard">Quick Board</a>
+                    <a class="mdl-navigation__link" href="/api" id="apiDocumentationLink">API</a>
                     <div class="android-drawer-separator"></div>
-                    <a
-
-                            class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
+                    <a class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
                             id="login_link" href="/login">Login</a></nav>
             </div>
             <div class="android-content mdl-layout__content">

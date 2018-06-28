@@ -29,7 +29,7 @@ public class BoardTest extends NlmCdeBaseTest {
     }
 
     protected void gotoPublicBoards() {
-        clickElement(By.linkText("BOARDS"));
+        clickElement(By.id("boardsMenu"));
         clickElement(By.linkText("PUBLIC BOARDS"));
     }
 

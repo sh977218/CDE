@@ -63,7 +63,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         clickElement(By.id("classif-Imaging Diagnostics"));
         textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
 
-        clickElement(By.linkText("BOARDS"));
+        clickElement(By.id("boardsMenu"));
         hangon(1);
         driver.navigate().back();
         textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
