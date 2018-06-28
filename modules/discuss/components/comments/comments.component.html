@@ -44,7 +44,7 @@
                 </span>
             </div>
             <ng-container *ngFor="let reply of comment.replies; let j = index">
-                <div *ngIf="!comment.showAllReplies" class="p-2 border commentBox">
+                <div *ngIf="comment.showAllReplies" class="p-2 border commentBox">
                     <div class="replyHeader">
                         <img class="float-left" src="/cde/public/assets/img/min/portrait.png" width="32" height="32"
                              alt="portrait"/>

@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class FormLongComment extends NlmCdeBaseTest {
 
     @Test
-    public void cdeLongCommentTest() {
+    public void formLongCommentTest() {
         String formName = "PROMIS Bank v1.2 - Physical Function";
         mustBeLoggedInAs(test_username, password);
         goToFormByName(formName);
