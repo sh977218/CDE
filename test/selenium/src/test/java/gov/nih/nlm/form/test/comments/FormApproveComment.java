@@ -7,11 +7,20 @@ import org.testng.annotations.Test;
 public class FormApproveComment extends NlmCdeBaseTest {
 
     @Test
-    public void formApproveFormCommentTest() {
+    public void formApproveCommentTest() {
+        String formName = "Vital Signs and Tests";
+        String commentText= "This comment can not be seen unless it is approved.";
+        goToFormByName(formName);
+        goToDiscussArea();
+        textNotPresent(commentText);
+        approveComment(commentEditor_username, commentEditor_password, anonymousCommentUser2_username, "This comment can not be seen unless it is approved.");
+
+        mustBeLoggedInAs(anonymousCommentUser2_username, anonymousCommentUser_password);
+        goToFormByName(formName);
+        textPresent(commentText);
+
 
         int randomNumber = getRandomNumber();
-        String formName = "Vital Signs and Tests";
-        String commentText = "Very Innocent Comment " + randomNumber;
         String censoredText = "This comment is pending approval";
 
         mustBeLoggedInAs(anonymousCommentUser2_username, password);

@@ -17,9 +17,11 @@ public class CdeLiveComment extends NlmCdeBaseTest {
         String replyToReply = "yes, i can";
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
+        goToDiscussArea();
 
         switchTab(1);
         goToCdeByName(cdeName);
+        goToDiscussArea();
         textPresent(existingComment);
         addComment(newComment);
 

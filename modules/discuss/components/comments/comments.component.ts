@@ -174,4 +174,14 @@ export class CommentsComponent implements OnInit, OnDestroy {
     changeOnReply(comment) {
         this.emitCurrentReplying.next({_id: comment._id, comment: comment.newReply});
     }
+
+    showReply(comment, j) {
+        if (comment.showAllReplies) return true;
+        else if (j < 2 || j > comment.replies.length - 3) return true;
+        else return false;
+    }
+
+    showInfo(comment, j) {
+        return j === 3 && !comment.showAllReplies && comment.replies.length > 5;
+    }
 }

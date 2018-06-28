@@ -12,10 +12,10 @@ public class CdeCurrentComment extends NlmCdeBaseTest {
         String cdeName = "Hospital Confidential Institution Referred From Facility Number Code";
         goToCdeByName(cdeName);
         goToDiscussArea();
-        Assert.assertEquals(true, findElement(By.id("currentComment_0")).getAttribute("class").contains("currentTabComment"));
+        Assert.assertEquals(true, findElement(By.id("currentComment_0")).getAttribute("class").contains("currentComment"));
         goToNaming();
-        findElement(By.xpath("//*[@id='comment_0' and not(contains(@class, 'currentTabComment'))]"));
-        findElement(By.xpath("//*[@id='comment_1' and contains(@class, 'currentTabComment')]"));
+        findElement(By.xpath("//*[@id='comment_0' and not(contains(@class, 'currentComment'))]"));
+        findElement(By.xpath("//*[@id='comment_1' and contains(@class, 'currentComment')]"));
 
     }
 }

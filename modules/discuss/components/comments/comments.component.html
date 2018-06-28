@@ -35,16 +35,8 @@
                         {{comment.text}}</span>
                 </div>
             </div>
-            <div *ngIf="comment.replies.length > 5" class="p-2 border commentBox">
-                <span class="fake-link" *ngIf="!comment.showAllReplies" id="showAllRepliesButton_{{i}}"
-                      (click)="comment.showAllReplies = true;">Show all {{comment.replies.length}} replies
-                </span>
-                <span class="fake-link" *ngIf="comment.showAllReplies" id="showLessRepliesButton_{{i}}"
-                      (click)="comment.showAllReplies = false;">Show less replies
-                </span>
-            </div>
             <ng-container *ngFor="let reply of comment.replies; let j = index">
-                <div *ngIf="!comment.showAllReplies" class="p-2 border commentBox">
+                <div *ngIf="showReply(comment,j)" class="p-2 border commentBox">
                     <div class="replyHeader">
                         <img class="float-left" src="/cde/public/assets/img/min/portrait.png" width="32" height="32"
                              alt="portrait"/>
@@ -70,6 +62,11 @@
                         <span style="word-wrap: break-word;" [ngClass]="{'strike':reply.status === 'resolved'}">
                         {{reply.text}}</span>
                     </div>
+                </div>
+                <div *ngIf="showInfo(comment,j);" class="p-2 border commentBox">
+                    <span class="fake-link" *ngIf="!comment.showAllReplies" id="showAllRepliesButton_{{i}}"
+                          (click)="comment.showAllReplies = true;">Show all {{comment.replies.length}} replies
+                    </span>
                 </div>
             </ng-container>
             <div *ngIf="userService.user && !comment.pendingApproval" class="p-2 border commentBox">

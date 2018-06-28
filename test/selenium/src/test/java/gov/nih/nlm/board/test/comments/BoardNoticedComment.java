@@ -11,6 +11,6 @@ public class BoardNoticedComment extends NlmCdeBaseTest {
         String boardName = "Stomach Cancer";
         mustBeLoggedInAs(test_username, password);
         goToBoard(boardName);
-        Assert.assertEquals(driver.findElements(By.cssSelector(".faa-wrench")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.cssSelector(".faa-wrench")).size(), 1);
     }
 }

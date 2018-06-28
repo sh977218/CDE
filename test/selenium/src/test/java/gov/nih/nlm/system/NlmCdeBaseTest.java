@@ -1735,13 +1735,6 @@ public class NlmCdeBaseTest {
         return (int) (Math.random() * 10000);
     }
 
-    protected void replyComment(int index, String message) {
-        goToDiscussArea();
-        findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
-        clickElement(By.id("replyBtn_" + index));
-        textPresent(message);
-    }
-
     protected void addComment(String message) {
         goToDiscussArea();
         findElement(By.id("newCommentTextArea")).sendKeys(message);
@@ -1750,12 +1743,27 @@ public class NlmCdeBaseTest {
         textPresent(message);
     }
 
-    protected void addCommentNeedApproval(String text) {
+    protected void replyComment(int index, String message) {
         goToDiscussArea();
-        findElement(By.name("newCommentTextArea")).sendKeys(text);
+        findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
+        clickElement(By.id("replyBtn_" + index));
+        textPresent(message);
+    }
+
+    protected void addCommentNeedApproval(String message) {
+        goToDiscussArea();
+        findElement(By.name("newCommentTextArea")).sendKeys(message);
         hangon(2);
         clickElement(By.id("commentBtn"));
-        textNotPresent(text);
+        textNotPresent(message);
+        textPresent("This comment is pending approval");
+    }
+
+    protected void replyCommentNeedApproval(int index, String message) {
+        goToDiscussArea();
+        findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
+        clickElement(By.id("replyBtn_" + index));
+        textNotPresent(message);
         textPresent("This comment is pending approval");
     }
 
