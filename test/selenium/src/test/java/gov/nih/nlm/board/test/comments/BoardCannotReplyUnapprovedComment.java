@@ -14,6 +14,6 @@ public class BoardCannotReplyUnapprovedComment extends NlmCdeBaseTest {
         goToBoard(boardName);
         goToDiscussArea();
         textPresent("This comment is pending approval");
-        Assert.assertEquals(0, findElements(By.xpath("//*[contains(@id,'replyBtn_')]")).size());
+        Assert.assertEquals(driver.findElements(By.xpath("//*[contains(@id,'replyBtn_')]")).size(), 0);
     }
 }

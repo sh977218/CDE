@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 public class BoardNoticedComment extends NlmCdeBaseTest {
     @Test()
     public void boardNoticedCommentTest() {
-        String boardName = "Num Of Questions Board";
+        String boardName = "Stomach Cancer";
         mustBeLoggedInAs(test_username, password);
         goToBoard(boardName);
         Assert.assertEquals(driver.findElements(By.cssSelector(".faa-wrench")).size(), 0);
