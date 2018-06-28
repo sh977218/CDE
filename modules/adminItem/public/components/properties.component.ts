@@ -6,7 +6,6 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { Property } from 'shared/models.model';
 import { OrgHelperService } from 'core/orgHelper.service';
 
-
 @Component({
     selector: 'cde-properties',
     templateUrl: './properties.component.html'
@@ -21,18 +20,18 @@ export class PropertiesComponent implements OnInit {
     onInitDone: boolean = false;
     orgPropertyKeys: string[] = [];
 
+    constructor(
+        private alert: AlertService,
+        public modalService: NgbModal,
+        private orgHelperService: OrgHelperService,
+    ) {}
+
     ngOnInit() {
         this.orgHelperService.reload().then(() => {
             this.orgPropertyKeys = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
             this.onInitDone = true;
         });
     }
-
-    constructor(
-        private alert: AlertService,
-        public modalService: NgbModal,
-        private orgHelperService: OrgHelperService,
-    ) {}
 
     addNewProperty() {
         this.elt.properties.push(this.newProperty);
@@ -57,11 +56,4 @@ export class PropertiesComponent implements OnInit {
         this.onEltChange.emit();
     }
 
-    reorderProperty() {
-        this.onEltChange.emit();
-    }
-
-    setHtml(isHtml) {
-        this.newProperty.valueFormat = isHtml ? 'html' : '';
-    }
 }
