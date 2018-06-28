@@ -85,8 +85,10 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-outline-dark" (click)="c('cancel')" id="cancelSaveBtn" type="button">Cancel</button>
-            <button class="btn btn-warning" id="confirmSaveBtn" (click)="confirmSave();" type="button"
+            <button (click)="c('cancel')" id="cancelSaveBtn" type="button"
+                mat-raised-button color="warn">Cancel</button>
+            <button id="confirmSaveBtn" (click)="confirmSave();" type="button"
+                    mat-raised-button color="primary"
                     [disabled]="!updateElementForm.form.valid || (!overrideVersion && duplicatedVersion)">Save
             </button>
         </div>

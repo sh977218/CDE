@@ -6,12 +6,12 @@
         <h3 class="modal-title">Linked Boards</h3>
     </div>
     <div class="modal-body linkedBoardDiv">
-        <div *ngIf="!(boards?.length > 0)">No boards using this element</div>
+        <div *ngIf="!(boards?.length > 0)">No boards use this element</div>
         <div *ngFor="let board of boards; let i = index">
             <cde-board-view-template [board]="board"></cde-board-view-template>
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-outline-dark" id="closeLinkedBoardBtn" (click)="d()">Close</button>
+        <button id="closeLinkedBoardBtn" (click)="d()" mat-raised-button>Close</button>
     </div>
 </ng-template>

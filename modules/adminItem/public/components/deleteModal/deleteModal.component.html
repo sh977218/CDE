@@ -5,7 +5,7 @@
     <div class="modal-body" id="deleteElementModalBody">
     </div>
     <div class="modal-footer">
-        <button class="btn btn-outline-dark" id="cancelDeleteBtn" (click)="c('cancel')" type="button">Cancel</button>
-        <button class="btn btn-warning" id="confirmDeleteBtn" (click)="confirmDelete();" type="button">Delete</button>
+        <button id="cancelDeleteBtn" (click)="c('cancel')" mat-raised-button color="warn">Cancel</button>
+        <button id="confirmDeleteBtn" (click)="confirmDelete();" mat-raised-button color="primary">Delete</button>
     </div>
 </ng-template>
