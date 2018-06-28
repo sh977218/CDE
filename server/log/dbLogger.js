@@ -6,9 +6,7 @@ const schemas = require('./schemas');
 const moment = require('moment');
 const noDbLogger = require('../system/noDbLogger');
 const pushNotification = require('../system/pushNotification');
-
 const conn = connHelper.establishConnection(config.database.log);
-
 const LogModel = conn.model('DbLogger', schemas.logSchema);
 const LogErrorModel = conn.model('DbErrorLogger', schemas.logErrorSchema);
 const ClientErrorModel = conn.model('DbClientErrorLogger', schemas.clientErrorSchema);
@@ -138,15 +136,19 @@ exports.logClientError = function (req, callback) {
             }
         };
 
-        mongo_data.saveNotification({
-            title: "Client Side Error: " + exc.message.substr(0, 30),
-            url: "/siteAudit#clientErrors",
-            roles: ['siteAdmin']
-        });
+        let ua = useragent.is(req.headers['user-agent']);
+        if (ua.chrome || ua.firefox || ua.edge) {
+            mongo_data.saveNotification({
+                title: "Client Side Error: " + exc.message.substr(0, 30),
+                url: "/siteAudit#clientErrors",
+                roles: ['siteAdmin']
+            });
 
-        mongo_data.pushGetAdministratorRegistrations(registrations => {
-            registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
-        });
+            mongo_data.pushGetAdministratorRegistrations(registrations => {
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
+            });
+        }
+
         callback(err);
     });
 };
