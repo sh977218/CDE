@@ -7,7 +7,7 @@
                 <span (click)="removeDesignationByIndex(i)" *ngIf="canEdit && !designation.edit"
                       class="btn-outline-dark fa fa-trash-o"
                       id="removeDesignation-{{i}}" title="Remove"></span>
-                <cde-sortable-array [theArray]="elt.designations" [index]="i"
+                <cde-sortable-array [theArray]="elt.designations" [index]="i" *ngIf="canEdit"
                                     (cb)="onEltChange.emit()"></cde-sortable-array>
                 Designation:
             </dt>
@@ -34,7 +34,7 @@
                 <span (click)="removeDefinitionByIndex(i)" *ngIf="canEdit && !definition.edit"
                       class="btn-outline-dark fa fa-trash-o"
                       id="removeDefinition-{{i}}" title="Remove"></span>
-                <cde-sortable-array [theArray]="elt.definitions" [index]="i"
+                <cde-sortable-array [theArray]="elt.definitions" [index]="i" *ngIf="canEdit"
                                     (cb)="onEltChange.emit()"></cde-sortable-array>
                 Definition:
             </dt>
