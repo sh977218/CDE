@@ -4,25 +4,64 @@
 
 <div *ngIf="fhirApps?.length">
     <table>
-        <tr *ngFor="let app of fhirApps">
-            <td><i class="fa fa-trash-o" (click)="deleteApp(app)"></i></td>
-            <td>{{app._id}}</td>
-            <td>
-                <label>Data Endpoint URL
-                    <input [(ngModel)]="app.dataEndpointUrl" class="form-control" (change)="saveApp(app)">
-                </label>
-            </td>
-            <td>
-                <label>Client Id:
-                    <input [(ngModel)]="app.clientId" class="form-control" (change)="saveApp(app)">
-                </label>
-            </td>
-            <td>
-                <label>Forms (separate with ,)
-                    <input class="form-control" (change)="formsUpdated($event, app)" [value]="getFormIds(app)">
-                </label>
-            </td>
-        </tr>
+        <ng-container *ngFor="let app of fhirApps">
+            <tr>
+                <td rowspan="2"><i class="fa fa-trash-o" (click)="deleteApp(app)"></i></td>
+                <td rowspan="2">{{app._id}}</td>
+                <td>
+                    <label>Data Endpoint URL
+                        <input [(ngModel)]="app.dataEndpointUrl" class="form-control" (change)="saveApp(app)">
+                    </label>
+                </td>
+                <td>
+                    <label>Client Id:
+                        <input [(ngModel)]="app.clientId" class="form-control" (change)="saveApp(app)">
+                    </label>
+                </td>
+                <td>
+                    <label>Forms (separate with ,)
+                        <input class="form-control" (change)="formsUpdated($event, app)" [value]="getFormIds(app)">
+                    </label>
+                </td>
+            </tr>
+            <tr><td colspan="3">
+                Map Codes:
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>CDE System</th>
+                            <th>CDE Code</th>
+                            <th>FHIR System</th>
+                            <th>FHIR Code</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let e of app.mapping; index as i">
+                            <td>
+                                <button mat-icon-button title="Cancel" style="width: 40px"
+                                        (click)="app.mapping.splice(i, 1); saveApp(app)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </td>
+                            <td><input class="form-control" [(ngModel)]="e.cdeSystem" (change)="saveApp(app)"></td>
+                            <td><input class="form-control" [(ngModel)]="e.cdeCode" (change)="saveApp(app)"></td>
+                            <td><input class="form-control" [(ngModel)]="e.fhirSystem" (change)="saveApp(app)"></td>
+                            <td><input class="form-control" [(ngModel)]="e.fhirCode" (change)="saveApp(app)"></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5">
+                                <button mat-raised-button (click)="app.mapping.push({})">
+                                    <mat-icon>add</mat-icon>Add
+                                </button>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </td></tr>
+        </ng-container>
     </table>
 </div>
 

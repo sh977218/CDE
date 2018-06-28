@@ -1,4 +1,3 @@
-import { getName } from 'shared/elt';
 import { getRef, newReference } from 'shared/mapping/fhir/fhirDatatypes';
 import { newCodeableConcept } from 'shared/mapping/fhir/datatypes/codeableConcept';
 import { newCoding } from 'shared/mapping/fhir/datatypes/coding';
@@ -39,25 +38,14 @@ export function observationComponentFromForm(fe, getDisplay, observationComponen
     } else if (fe.elementType === 'question') {
         eltRef = fe.question.cde;
     }
+    if (!Array.isArray(eltRef.ids) || !eltRef.ids.length) eltRef = fe;
+    if (!Array.isArray(eltRef.ids) || !eltRef.ids.length) throw new Error('cannot be here without ids');
+    let id = eltRef.ids[0];
 
-    let baseAndRef = eltRef || fe;
-    let compatibleId = null;
-    baseAndRef.ids.some(id => {
-        if (id.source === 'LOINC') {
-            compatibleId = id;
-            return true;
-        }
+    return getDisplay(id.source, id.id).then(display => {
+        observationComponent.code = newCodeableConcept([newCoding(id.source, id.id, id.version, display)]);
+        return observationComponent;
     });
-    function codeableConceptCoding(system, code, version, display) {
-        observationComponent.code = newCodeableConcept([newCoding(system, code, version, display)]);
-        return Promise.resolve(observationComponent);
-    }
-    if (compatibleId) {
-        return getDisplay(compatibleId.source, compatibleId.id).then(display =>
-            codeableConceptCoding(compatibleId.source, compatibleId.id, compatibleId.version, display));
-    } else {
-        return codeableConceptCoding('NLM', baseAndRef.tinyId, baseAndRef.version, eltRef ? eltRef.name : getName(fe));
-    }
 }
 
 export function observationFromForm(fe, getDisplay, encounter = null, patient = null) {

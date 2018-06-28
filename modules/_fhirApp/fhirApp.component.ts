@@ -15,9 +15,11 @@ import _uniq from 'lodash/uniq';
 
 import { ResourceTree } from '_fhirApp/resourceTree';
 import { valueSets } from '_fhirApp/valueSets';
-import { CdeId } from 'shared/models.model';
+import { CdeId, PermissibleValue } from 'shared/models.model';
 import { iterateFeSync, iterateFe } from 'shared/form/formShared';
-import { CdeForm, DisplayProfile, FhirApp, FormElement, FormInForm, FormQuestion } from 'shared/form/form.model';
+import {
+    CdeForm, DisplayProfile, FhirApp, FormElement, FormInForm, FormQuestion
+} from 'shared/form/form.model';
 import {
     FhirDevice, FhirDeviceMetric, FhirDomainResource, FhirEncounter, FhirObservation, FhirObservationComponent,
     FhirOrganization, FhirPatient
@@ -141,7 +143,7 @@ export class FhirAppComponent {
     ioInProgress: boolean;
     lookupObservationCategories = async_memoize((code, done) => {
         this.http.get('/fhirObservationInfo?id=' + code).subscribe((r: any) => {
-            done(null, r.categories);
+            done(null, r ? r.categories : undefined);
         }, done);
     });
     lookupLoincName = async_memoize((code, done) => {
@@ -205,12 +207,23 @@ export class FhirAppComponent {
                         name: form.designations[0].designation,
                         form: form
                     });
-                    iterateFeSync(form, undefined, undefined, q => {
-                        q.question.cde.ids.forEach(id => {
-                            this.getDisplay(id.source, id.id);
-                        });
-                        q.question.cde.ids.push(new CdeId(codeSystemOut('NLM'), q.question.cde.tinyId));
-                    });
+                    iterateFeSync(form,
+                        f => {
+                            f.inForm.form.ids.push(new CdeId('NLM', f.inForm.form.tinyId));
+                        },
+                        undefined,
+                        q => {
+                            q.question.cde.ids.push(new CdeId('NLM', q.question.cde.tinyId));
+                            FhirAppComponent.applyCodeMapping(fhirApp, q.question.cde.ids, 'source', 'id');
+                            q.question.cde.ids.forEach(id => {
+                                this.getDisplay(id.source, id.id);
+                            });
+                            FhirAppComponent.applyCodeMapping(fhirApp, q.question.answers, 'codeSystemName',
+                                'permissibleValue');
+                            FhirAppComponent.applyCodeMapping(fhirApp, q.question.cde.permissibleValues, 'codeSystemName',
+                                'permissibleValue');
+                        }
+                    );
                 });
             });
         }, err => this.errorMessage = err);
@@ -240,6 +253,34 @@ export class FhirAppComponent {
         }
 
         return found;
+    }
+
+    static applyCodeMapping(fhirApp, ids: (CdeId|PermissibleValue)[], systemProp: string, codeProp: string): void {
+        function highestPriority(ids, index) {
+            if (index > 0) {
+                let temp = ids[0];
+                ids[0] = ids[index];
+                ids[index] = temp;
+            }
+        }
+
+        ids.some((id, index, ids) => {
+            if (id[systemProp] === 'LOINC') {
+                highestPriority(ids, index);
+                return true;
+            }
+        });
+
+        fhirApp.mapping.forEach(m => {
+            ids.some((id, index, ids) => {
+                if ((id[systemProp] === m.cdeSystem || !id[systemProp] && !m.cdeSystem) && id[codeProp] === m.cdeCode) {
+                    id[systemProp] = m.fhirSystem;
+                    id[codeProp] = m.fhirCode;
+                    highestPriority(ids, index);
+                    return true;
+                }
+            });
+        });
     }
 
     encounterAdd(encounter) {
@@ -432,12 +473,10 @@ export class FhirAppComponent {
 
     loadFhirDataToForm(formElt) {
         let searchInForms = (f: FormInForm) => {
-            f.inForm.form.ids.push({source: 'NLM', id: f.inForm.form.tinyId});
             this.selectedEncounter.observations.some(o => {
                 let matchedCodes = _intersectionWith(o.code.coding, f.inForm.form.ids, compareCodingId);
                 if (matchedCodes.length) {
                     iterateFeSync(f, undefined, undefined, (q: FormQuestion) => {
-                        q.question.cde.ids.push({source: 'NLM', id: q.question.cde.tinyId});
                         o.component.some(c => {
                             let matchedCodes = _intersectionWith(c.code.coding, q.question.cde.ids, compareCodingId);
                             if (matchedCodes.length) {
@@ -452,7 +491,6 @@ export class FhirAppComponent {
             });
         };
         iterateFeSync(formElt, searchInForms, undefined, (q: FormQuestion) => {
-            q.question.cde.ids.push({source: 'NLM', id: q.question.cde.tinyId});
             this.selectedEncounter.observations.some(o => {
                 let matchedCodes = _intersectionWith(o.code.coding, q.question.cde.ids, compareCodingId);
                 if (matchedCodes.length) {
