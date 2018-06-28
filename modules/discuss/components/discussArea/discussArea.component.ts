@@ -29,7 +29,7 @@ const tabMap = {
     `]
 })
 export class DiscussAreaComponent {
-    private ownElt = false;
+    private ownElt;
     private _elt;
     @Input() set elt(e) {
         this.ownElt = this.isAllowedModel.doesUserOwnElt(e);

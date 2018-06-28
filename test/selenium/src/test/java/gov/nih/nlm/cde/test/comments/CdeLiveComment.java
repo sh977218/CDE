@@ -42,7 +42,7 @@ public class CdeLiveComment extends NlmCdeBaseTest {
 
 
         switchTab(0);
-        clickElement(By.id("removeComment-0"));
+        clickElement(By.id("removeComment_0"));
 
         switchTab(1);
         textNotPresent(newComment);

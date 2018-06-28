@@ -11,7 +11,7 @@ public class SiteAdminCanRemoveFormComment extends NlmCdeBaseTest {
         String formName = "AED Resistance Log";
         String commentText = "Another Inappropriate Comment";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName(formName);
+        goToFormByName(formName);
         removeComment(commentText);
     }
 

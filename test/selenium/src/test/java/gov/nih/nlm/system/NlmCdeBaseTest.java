@@ -455,6 +455,13 @@ public class NlmCdeBaseTest {
         clickElement(By.id("rules_tab"));
     }
 
+    protected void goToDiscussArea() {
+        boolean isDiscussAreaOpen = findElements(By.xpath("//cde-discuss-area")).size() > 0;
+        if (!isDiscussAreaOpen) {
+            clickElement(By.xpath("discussBtn"));
+        }
+    }
+
     private void goToElementByName(String name, String type) {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
@@ -1729,14 +1736,14 @@ public class NlmCdeBaseTest {
     }
 
     protected void replyComment(int index, String message) {
-        clickElement(By.id("discussBtn"));
+        goToDiscussArea();
         findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
         clickElement(By.id("replyBtn_" + index));
         textPresent(message);
     }
 
     protected void addComment(String message) {
-        clickElement(By.id("discussBtn"));
+        goToDiscussArea();
         findElement(By.id("newCommentTextArea")).sendKeys(message);
         hangon(2);
         clickElement(By.id("commentBtn"));
@@ -1744,7 +1751,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void addCommentNeedApproval(String text) {
-        clickElement(By.id("discussBtn"));
+        goToDiscussArea();
         findElement(By.name("newCommentTextArea")).sendKeys(text);
         hangon(2);
         clickElement(By.id("commentBtn"));
@@ -1761,22 +1768,32 @@ public class NlmCdeBaseTest {
     }
 
     protected void removeComment(String message) {
-        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'removeComment')]";
+        goToDiscussArea();
+        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'removeComment_')]";
+        clickElement(By.xpath(xpath));
+        textNotPresent(message);
+    }
+    protected void removeReply(String message){
+        goToDiscussArea();
+        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'removeReply_')]";
         clickElement(By.xpath(xpath));
         textNotPresent(message);
     }
 
     protected void resolveComment(String message) {
-        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'resolveComment')]";
+        goToDiscussArea();
+
+        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'resolveComment_')]";
         clickElement(By.xpath(xpath));
         WebElement we = findElement(By.xpath("//div[normalize-space()='" + message + "']"));
         Assert.assertEquals(true, we.getAttribute("class").contains("strike"));
     }
 
     protected void reopenComment(String message) {
+        goToDiscussArea();
         WebElement weResolved = findElement(By.xpath("//div[normalize-space()='" + message + "']"));
         Assert.assertEquals(true, weResolved.getAttribute("class").contains("strike"));
-        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'reopenComment')]";
+        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'reopenComment_')]";
         clickElement(By.xpath(xpath));
         WebElement weReopened = findElement(By.xpath("//div[normalize-space()='" + message + "']"));
         Assert.assertEquals(false, weReopened.getAttribute("class").contains("strike"));
