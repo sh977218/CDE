@@ -71,9 +71,10 @@ exports.log = function (message, callback) { // express only, all others dbLogge
 
 exports.logError = function (message, callback) { // all server errors, express and not
     message.date = new Date();
+    let description = (message.message || message.publicMessage || '').substr(0, 30);
 
     mongo_data.saveNotification({
-        title: "Server Side Error: " + message.message.substr(0, 30),
+        title: "Server Side Error: " + description,
         url: "/siteAudit#serverError",
         roles: ['siteAdmin']
     });
@@ -83,7 +84,7 @@ exports.logError = function (message, callback) { // all server errors, express 
         let msg = {
             title: 'Server Side Error',
             options: {
-                body: "Server Side Error: " + message.message.substr(0, 30),
+                body: "Server Side Error: " + description,
                 icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
                 badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
                 tag: 'cde-server-side',
@@ -169,9 +170,9 @@ exports.respondError = function(err, options) {
         options.res.status(500).send('Error: ' + message);
     }
     exports.logError({
-        message: options.message,
+        message: options.message || err.message,
         origin: options.origin,
-        stack: err,
+        stack: err.stack,
         details: options.details
     });
 };
