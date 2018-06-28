@@ -1,0 +1,20 @@
+package gov.nih.nlm.form.test.comments;
+
+import gov.nih.nlm.system.NlmCdeBaseTest;
+import org.openqa.selenium.By;
+import org.testng.annotations.Test;
+
+public class FormLongComment extends NlmCdeBaseTest {
+
+    @Test
+    public void cdeLongCommentTest() {
+        String formName = "PROMIS Bank v1.2 - Physical Function";
+        mustBeLoggedInAs(test_username, password);
+        goToFormByName(formName);
+        clickElement(By.id("discussBtn"));
+        clickElement(By.id("showAllRepliesButton_0"));
+        textNotPresent("Show all 10 replies");
+        for (int k = 1; k <= 10; k++) textPresent("Reply to very long comment " + k);
+
+    }
+}
