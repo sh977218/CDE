@@ -21,12 +21,11 @@
         </div>
     </div>
     <div class="modal-footer" id="newDesignationModalFooter">
-        <button class="btn btn-outline-dark" (click)="activeModal.close('Close click')" id="cancelNewDesignationBtn"
-                name="cancelNewDesignationBtn"
-                type="button">Cancel
+        <button (click)="activeModal.close('Close click')" id="cancelNewDesignationBtn"
+                type="button" mat-raised-button color="warn">Cancel
         </button>
-        <button class="btn  btn-warning" [disabled]="!newDesignationForm.form.valid" id="createNewDesignationBtn"
-                name="createNewDesignationBtn" type="submit">Save
+        <button [disabled]="!newDesignationForm.form.valid" id="createNewDesignationBtn"
+                type="submit" mat-raised-button color="primary">Save
         </button>
     </div>
 </form>
