@@ -1,15 +1,42 @@
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const mongo_board = require('../board/mongo-board');
 
+// Middleware
 exports.isAuthenticatedMiddleware = function (req, res, next) {
     if (req.isAuthenticated()) next();
     else res.status(401).send();
 };
-
 exports.canEditMiddleware = function (req, res, next) {
     if (!authorizationShared.canEditCuratedItem(req.user, req.body)) {
         // TODO: should consider adding to error log
-        return res.status(401).send();
+        return res.status(403).send();
+    }
+    if (next) {
+        next();
+    }
+};
+
+exports.isOrgAdminMiddleware = (req, res, next) => {
+    if (!req.isAuthenticated() || !authorizationShared.isOrgAdmin(req.user, req.body.org)) {
+        return res.status(403).send();
+    }
+    if (next) {
+        next();
+    }
+};
+
+exports.isOrgAuthorityMiddleware = (req, res, next) => {
+    if (!authorizationShared.canOrgAuthority(req.user)) {
+        return res.status(403).send();
+    }
+    if (next) {
+        next();
+    }
+};
+
+exports.isSiteAdminMiddleware = (req, res, next) => {
+    if (!req.isAuthenticated() || !authorizationShared.isSiteAdmin(req.user)) {
+        return res.status(403).send();
     }
     if (next) {
         next();
@@ -17,10 +44,11 @@ exports.canEditMiddleware = function (req, res, next) {
 };
 
 exports.loggedInMiddleware = function (req, res, next) {
-    if (!req.user) return res.status(403).send();
+    if (!req.user) return res.status(401).send();
     if (next) next();
 };
 
+// Permission Helpers with Request/Response
 exports.checkOwnership = function (dao, id, req, cb) {
     if (!req.isAuthenticated()) return cb("You are not authorized.", null);
     dao.byId(id, function (err, elt) {
@@ -31,28 +59,8 @@ exports.checkOwnership = function (dao, id, req, cb) {
     });
 };
 
-exports.isOrgAdmin = function (req, org) {
-    return req.isAuthenticated() && authorizationShared.isOrgAdmin(req.user, org);
-};
-
-
-exports.isOrgAuthorityMiddleware = (req, res, next) => {
-    if (authorizationShared.canOrgAuthority(req.user)) next();
-    else res.status(401).send();
-};
-
-exports.isOrgAdminMiddleware = (req, res, next) => {
-    if (req.isAuthenticated() && authorizationShared.isOrgAdmin(req.user)) next();
-    else res.status(401).send();
-};
-
-exports.isSiteAdmin = function (req, res, next) {
-    if (req.isAuthenticated() && req.user.siteAdmin) return next();
-    return res.status(401).send();
-};
-
 exports.boardOwnership = function (req, res, boardId, next) {
-    if (!req.isAuthenticated()) return res.status(401).send("You must be logged in to do this.");
+    if (!req.isAuthenticated()) return res.status(401).send();
     mongo_board.boardById(boardId, function (err, board) {
         if (err) return res.status(500).send("ERROR - cannot find board ownership by id.");
         if (!board) return res.status(404).send();
