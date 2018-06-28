@@ -1765,4 +1765,20 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath(xpath));
         textNotPresent(message);
     }
+
+    protected void resolveComment(String message) {
+        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'resolveComment')]";
+        clickElement(By.xpath(xpath));
+        WebElement we = findElement(By.xpath("//div[normalize-space()='" + message + "']"));
+        Assert.assertEquals(true, we.getAttribute("class").contains("strike"));
+    }
+
+    protected void reopenComment(String message) {
+        WebElement weResolved = findElement(By.xpath("//div[normalize-space()='" + message + "']"));
+        Assert.assertEquals(true, weResolved.getAttribute("class").contains("strike"));
+        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'reopenComment')]";
+        clickElement(By.xpath(xpath));
+        WebElement weReopened = findElement(By.xpath("//div[normalize-space()='" + message + "']"));
+        Assert.assertEquals(false, weReopened.getAttribute("class").contains("strike"));
+    }
 }

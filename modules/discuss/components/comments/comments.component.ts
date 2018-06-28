@@ -43,6 +43,15 @@ import { UserService } from '_app/user.service';
         position: absolute;
         width: 0;
     }
+    .strike {
+        text-decoration: line-through;
+    }
+    .commentDiv{
+        background-color: white;box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    .commentBox{
+        background-color: rgb(245, 245, 245);
+    }
     `]
 })
 export class CommentsComponent implements OnInit, OnDestroy {
@@ -113,7 +122,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
 
 
     canRemoveComment(com) {
-        return this.ownElt || (this.userService.user && this.userService.user._id === com.user);
+        return this.ownElt || (this.userService.user && this.userService.user._id === com.user.userId);
     }
 
     canReopenComment(com) {

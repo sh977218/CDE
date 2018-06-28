@@ -1,6 +1,5 @@
 <div *ngFor="let comment of comments; let i = index" class="mb-5" style=" width: 260px; ">
-    <div class="commentDiv" [ngClass]="{currentTabComment:comment.currentComment}"
-         style="background-color: white;box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);">
+    <div class="commentDiv" id="commentDiv_{{i}}" [ngClass]="{currentTabComment:comment.currentComment}">
         <div *ngIf="comment.currentComment" id="currentComment_{{i}}" class="currentComment">
             <div class="outer-arrow"></div>
             <div class="inner-arrow"></div>
@@ -36,8 +35,7 @@
                         {{comment.text}}</span>
                 </div>
             </div>
-            <div *ngIf="comment.replies.length > 5" class="p-2 border"
-                 style="background-color: rgb(245, 245, 245);">
+            <div *ngIf="comment.replies.length > 5" class="p-2 border commentBox">
                 <span class="fake-link" *ngIf="!comment.showAllReplies" id="showAllRepliesButton_{{i}}"
                       (click)="comment.showAllReplies = true;">Show all {{comment.replies.length}} replies
                 </span>
@@ -46,8 +44,7 @@
                 </span>
             </div>
             <ng-container *ngFor="let reply of comment.replies; let j = index">
-                <div *ngIf="!comment.showAllReplies && j > 2" class="replyDiv p-2 border"
-                     style="background-color: rgb(245, 245, 245);">
+                <div *ngIf="!comment.showAllReplies" class="p-2 border commentBox">
                     <div class="replyHeader">
                         <img class="float-left" src="/cde/public/assets/img/min/portrait.png" width="32" height="32"
                              alt="portrait"/>
@@ -75,8 +72,7 @@
                     </div>
                 </div>
             </ng-container>
-            <div *ngIf="!comment.pendingApproval" class="newReply p-2 border"
-                 style="background-color: rgb(245, 245, 245);">
+            <div *ngIf="!comment.pendingApproval" class="p-2 border commentBox">
                 <div class="newReplyInfo" *ngIf="comment.currentlyReplying">Someone is typing</div>
                 <form #newReplyForm="ngForm" name="newReplyForm_{{i}}" id="newReplyForm_{{i}}" novalidate
                       (ngSubmit)="replyToComment(comment);">
