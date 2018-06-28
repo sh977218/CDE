@@ -23,7 +23,9 @@ const winston = require('winston');
 const authorization = require('./server/system/authorization');
 const traffic = require('./server/system/traffic');
 
+/*
 require('./scripts/fixComments').run();
+*/
 
 require('./server/system/elastic').initEs();
 
