@@ -61,6 +61,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
 
     private _currentTab;
     @Input() set currentTab(t) {
+        console.log('comment component ownElt: ' + this.ownElt);
         this._currentTab = t;
         this.comments.forEach(c => {
             c.currentComment = c.linkedTab === t;

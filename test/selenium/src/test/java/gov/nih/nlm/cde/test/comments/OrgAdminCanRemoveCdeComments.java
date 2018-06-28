@@ -9,7 +9,7 @@ public class OrgAdminCanRemoveCdeComments extends NlmCdeBaseTest {
     public void orgAdminCanRemoveCdeCommentTest() {
         String cdeName = "Local Excision Colorectal Lateral Surgical Margin Identifier java.lang.Long";
         String commentText = "Inappropriate Comment";
-        mustBeLoggedInAs(test_username, password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeByName(cdeName);
         removeComment(commentText);
     }

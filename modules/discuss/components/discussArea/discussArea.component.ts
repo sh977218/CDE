@@ -33,6 +33,7 @@ export class DiscussAreaComponent {
     private _elt;
     @Input() set elt(e) {
         this.ownElt = this.isAllowedModel.doesUserOwnElt(e);
+        console.log('discuss area component ownElt: ' + this.ownElt);
         this._elt = e;
     }
 

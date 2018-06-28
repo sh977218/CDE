@@ -11,6 +11,7 @@ public class CdeCurrentComment extends NlmCdeBaseTest {
     public void cdeCurrentCommentTest() {
         String cdeName = "Hospital Confidential Institution Referred From Facility Number Code";
         goToCdeByName(cdeName);
+        goToDiscussArea();
         Assert.assertEquals(true, findElement(By.id("currentComment_0")).getAttribute("class").contains("currentTabComment"));
         goToNaming();
         findElement(By.xpath("//*[@id='comment_0' and not(contains(@class, 'currentTabComment'))]"));

@@ -1783,20 +1783,19 @@ public class NlmCdeBaseTest {
 
     protected void resolveComment(String message) {
         goToDiscussArea();
-
         String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'resolveComment_')]";
         clickElement(By.xpath(xpath));
-        WebElement we = findElement(By.xpath("//div[normalize-space()='" + message + "']"));
+        WebElement we = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
         Assert.assertEquals(true, we.getAttribute("class").contains("strike"));
     }
 
     protected void reopenComment(String message) {
         goToDiscussArea();
-        WebElement weResolved = findElement(By.xpath("//div[normalize-space()='" + message + "']"));
+        WebElement weResolved = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
         Assert.assertEquals(true, weResolved.getAttribute("class").contains("strike"));
         String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'reopenComment_')]";
         clickElement(By.xpath(xpath));
-        WebElement weReopened = findElement(By.xpath("//div[normalize-space()='" + message + "']"));
+        WebElement weReopened = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
         Assert.assertEquals(false, weReopened.getAttribute("class").contains("strike"));
     }
 }
