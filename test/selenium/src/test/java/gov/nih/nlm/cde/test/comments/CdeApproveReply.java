@@ -24,9 +24,8 @@ public class CdeApproveReply extends NlmCdeBaseTest {
 
         logout();
         goToCdeByName(cdeName);
-        clickElement(By.id("discussBtn"));
-        textPresent(commentText);
-        textPresent(replyText);
+        isCommentExists(commentText, true);
+        isCommentExists(replyText, true);
     }
 
 }

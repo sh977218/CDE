@@ -1740,14 +1740,14 @@ public class NlmCdeBaseTest {
         findElement(By.id("newCommentTextArea")).sendKeys(message);
         hangon(2);
         clickElement(By.id("commentBtn"));
-        textPresent(message);
+        isCommentExists(message, true);
     }
 
     protected void replyComment(int index, String message) {
         goToDiscussArea();
         findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
         clickElement(By.id("replyBtn_" + index));
-        textPresent(message);
+        isCommentExists(message, true);
     }
 
     protected void addCommentNeedApproval(String message) {
@@ -1790,14 +1790,14 @@ public class NlmCdeBaseTest {
         goToDiscussArea();
         String xpath = getCommentIconXpath(message, "comment", "remove");
         clickElement(By.xpath(xpath));
-        textNotPresent(message);
+        isCommentExists(message, false);
     }
 
     protected void removeReply(String message) {
         goToDiscussArea();
         String xpath = getCommentIconXpath(message, "reply", "remove");
         clickElement(By.xpath(xpath));
-        textNotPresent(message);
+        isCommentExists(message, false);
     }
 
     protected void resolveComment(String message) {
