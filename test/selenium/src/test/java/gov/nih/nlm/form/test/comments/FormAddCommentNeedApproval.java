@@ -7,7 +7,7 @@ public class FormAddCommentNeedApproval extends NlmCdeBaseTest {
 
     @Test
     public void formAddCommentNeedApproval() {
-        String formName = "Adverse Event Tracking Log ";
+        String formName = "Adverse Event Tracking Log";
         String commentText = "A Very Innocent Comment.";
         mustBeLoggedInAs(anonymousCommentUser2_username, password);
         goToFormByName(formName);

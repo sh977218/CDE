@@ -1786,21 +1786,21 @@ public class NlmCdeBaseTest {
 
     protected void removeComment(String message) {
         goToDiscussArea();
-        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'removeComment_')]";
+        String xpath = getCommentIconXpath(message, "comment", "remove");
         clickElement(By.xpath(xpath));
         textNotPresent(message);
     }
 
     protected void removeReply(String message) {
         goToDiscussArea();
-        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'removeReply_')]";
+        String xpath = getCommentIconXpath(message, "reply", "remove");
         clickElement(By.xpath(xpath));
         textNotPresent(message);
     }
 
     protected void resolveComment(String message) {
         goToDiscussArea();
-        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'resolveComment_')]";
+        String xpath = getCommentIconXpath(message, "comment", "resolve");
         clickElement(By.xpath(xpath));
         WebElement we = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
         Assert.assertEquals(true, we.getAttribute("class").contains("strike"));
@@ -1810,9 +1810,22 @@ public class NlmCdeBaseTest {
         goToDiscussArea();
         WebElement weResolved = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
         Assert.assertEquals(true, weResolved.getAttribute("class").contains("strike"));
-        String xpath = "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'manageCommentDiv')]//*[contains(@id,'reopenComment_')]";
+        String xpath = getCommentIconXpath(message, "comment", "reopen");
         clickElement(By.xpath(xpath));
         WebElement weReopened = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
         Assert.assertEquals(false, weReopened.getAttribute("class").contains("strike"));
+    }
+
+    private Map<String, String> COMMENT_Title_Case_MAP = new HashMap<String, String>() {
+        {
+            put("comment", "Comment");
+            put("reply", "Reply");
+        }
+    };
+
+    private String getCommentIconXpath(String message, String messageType, String iconType) {
+        String titleCase = COMMENT_Title_Case_MAP.get(messageType);
+        return "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'" + messageType + "Header')]/div[contains(@class,'manage" + titleCase + "Div')]//*[contains(@id,'" + iconType + titleCase + "_')]";
+
     }
 }
