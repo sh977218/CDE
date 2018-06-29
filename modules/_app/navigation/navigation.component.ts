@@ -93,6 +93,7 @@ import '../../../node_modules/material-design-lite/material.js';
             border-bottom: 4px solid transparent;
         }
         .android-navigation .mdl-navigation__link:hover {
+            text-decoration: none;
             border-bottom: 4px solid rgb(30, 104, 255);
         }
         .android-search-box {
