@@ -10,8 +10,6 @@ public class FormDeclineComment extends NlmCdeBaseTest {
     public void formDeclineCommentTest() {
         String formName = "ALS Depression Inventory (ADI-12)";
         String sensorComment = "This comment is pending approval";
-        goToFormByName(formName);
-        goToDiscussArea();
         isCommentOrReplyExists(sensorComment, true);
         declineComment(commentEditor_username, commentEditor_password, anonymousCommentUser2_username, "Bad Comment");
 
