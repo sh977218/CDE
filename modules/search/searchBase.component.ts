@@ -16,7 +16,7 @@ import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 import { FormControl } from "@angular/forms";
-import { MatAutocompleteTrigger } from "@angular/material";
+import { MatAutocompleteTrigger, MatPaginator } from "@angular/material";
 import { debounceTime, map } from "rxjs/operators";
 
 export const searchStyles: string = `
@@ -93,6 +93,16 @@ export const searchStyles: string = `
     .badge-secondary {
         background-color: #70777d;
     }
+    .page-select {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      color: mat-color($foreground, secondary-text);
+
+      .label {
+        margin: 0 4px;
+      }
+    }
 `;
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
@@ -110,6 +120,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @ViewChild('tbset') public tabset: NgbTabset;
     @ViewChild('validRulesModal') validRulesModal: NgbModal;
     @ViewChild('autoCompleteInput', { read: MatAutocompleteTrigger }) autoCompleteInput: MatAutocompleteTrigger;
+    @ViewChild(MatPaginator) paginator: MatPaginator;
+
     add: EventEmitter<any>;
     addMode: string;
     aggregations: any;
@@ -822,5 +834,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     static waitScroll(count, previousSpot) {
         if (count > 0) setTimeout(() => SearchBaseComponent.waitScroll(count - 1, previousSpot), 100);
         else window.scrollTo(0, previousSpot);
+    }
+
+    updateManualPage(index) {
+        this.paginator.pageIndex = index - 1;
     }
 }
