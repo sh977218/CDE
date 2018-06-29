@@ -1770,6 +1770,7 @@ public class NlmCdeBaseTest {
     protected void approveComment(String adminUsername, String adminPassword, String username, String message) {
         mustBeLoggedInAs(adminUsername, adminPassword);
         clickElement(By.id("incomingMessage"));
+        if (message.length() > 60) message = message.substring(0, 60);
         clickElement(By.partialLinkText("Comment approval | " + username + " | " + message));
         clickElement(By.cssSelector(".card .approveComment"));
         textPresent("Message moved");
@@ -1778,6 +1779,7 @@ public class NlmCdeBaseTest {
     protected void declineComment(String adminUsername, String adminPassword, String username, String message) {
         mustBeLoggedInAs(adminUsername, adminPassword);
         clickElement(By.id("incomingMessage"));
+        if (message.length() > 60) message = message.substring(0, 60);
         clickElement(By.partialLinkText("Comment approval | " + username + " | " + message));
         clickElement(By.cssSelector(".card .declineComment"));
         textPresent("Message moved");

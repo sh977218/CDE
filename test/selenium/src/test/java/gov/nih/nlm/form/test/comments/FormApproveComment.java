@@ -1,7 +1,6 @@
 package gov.nih.nlm.form.test.comments;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class FormApproveComment extends NlmCdeBaseTest {

@@ -12,6 +12,8 @@ public class FormCurrentComment extends NlmCdeBaseTest {
         String formName = "Activities of Daily Living and Gait";
         goToFormByName(formName);
         goToDiscussArea();
+        checkCurrentCommentByIndex(0, false);
+        goToNaming();
         checkCurrentCommentByIndex(0, true);
     }
 }
