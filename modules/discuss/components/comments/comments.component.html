@@ -1,6 +1,6 @@
 <div *ngFor="let comment of comments; let i = index" class="mb-5" style=" width: 260px; ">
-    <div class="commentDiv" id="commentDiv_{{i}}" [ngClass]="{currentTabComment:comment.currentComment}">
-        <div *ngIf="comment.currentComment" id="currentComment_{{i}}" class="currentComment">
+    <div class="commentDiv" id="commentDiv_{{i}}" [ngClass]="{currentComment:comment.currentComment}">
+        <div *ngIf="comment.currentComment">
             <div class="outer-arrow"></div>
             <div class="inner-arrow"></div>
         </div>

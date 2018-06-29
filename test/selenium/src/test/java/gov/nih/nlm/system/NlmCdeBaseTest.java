@@ -1831,6 +1831,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void checkCurrentCommentByIndex(int index, boolean isCurrent) {
-        Assert.assertEquals(isCurrent, findElement(By.id("currentComment_" + index)).getAttribute("class").contains("currentComment"));
+        Assert.assertEquals(isCurrent, findElement(By.id("commentDiv_" + index)).getAttribute("class").contains("currentComment"));
     }
+
 }

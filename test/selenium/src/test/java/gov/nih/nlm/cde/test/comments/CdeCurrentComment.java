@@ -1,8 +1,6 @@
 package gov.nih.nlm.cde.test.comments;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CdeCurrentComment extends NlmCdeBaseTest {
