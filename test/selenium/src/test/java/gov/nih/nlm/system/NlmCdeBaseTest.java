@@ -1140,7 +1140,7 @@ public class NlmCdeBaseTest {
         clickElement(By.id("openNewDefinitionModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.xpath("//*[@id='newDefinition']//textarea")).sendKeys(definition);
-        if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button/span[contains(text(),'Rich Text')]"));
+        if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Rich Text')]"));
         else clickElement(By.xpath("//*[@id='newDefinition']/button/span[contains(text(),'Plain Text')]"));
         if (tags != null) {
             String tagsInputXpath = "//*[@id='newDefinitionTags']//input";
