@@ -1770,8 +1770,8 @@ public class NlmCdeBaseTest {
     protected void approveComment(String adminUsername, String adminPassword, String username, String message) {
         mustBeLoggedInAs(adminUsername, adminPassword);
         clickElement(By.id("incomingMessage"));
-        if (message.length() > 60) message = message.substring(0, 60);
-        clickElement(By.partialLinkText("Comment approval | " + username + " | " + message));
+        if (message.length() >= 60) message = message.substring(0, 59).trim();
+        clickElement(By.xpath("//a[contains(normalize-space(),'" + "Comment approval | " + username + " | " + message + "')]"));
         clickElement(By.cssSelector(".card .approveComment"));
         textPresent("Message moved");
     }
@@ -1779,8 +1779,8 @@ public class NlmCdeBaseTest {
     protected void declineComment(String adminUsername, String adminPassword, String username, String message) {
         mustBeLoggedInAs(adminUsername, adminPassword);
         clickElement(By.id("incomingMessage"));
-        if (message.length() > 60) message = message.substring(0, 60);
-        clickElement(By.partialLinkText("Comment approval | " + username + " | " + message));
+        if (message.length() >= 60) message = message.substring(0, 59).trim();
+        clickElement(By.xpath("//a[contains(normalize-space(),'" + "Comment approval | " + username + " | " + message + "')]"));
         clickElement(By.cssSelector(".card .declineComment"));
         textPresent("Message moved");
     }
@@ -1832,6 +1832,12 @@ public class NlmCdeBaseTest {
 
     protected void checkCurrentCommentByIndex(int index, boolean isCurrent) {
         Assert.assertEquals(isCurrent, findElement(By.id("commentDiv_" + index)).getAttribute("class").contains("currentComment"));
+    }
+
+    protected void isCommentExists(String commentText, boolean exist) {
+        goToDiscussArea();
+        if (exist) textPresent(commentText, By.xpath("//cde-comments"));
+        else textNotPresent(commentText, By.xpath("//cde-comments"));
     }
 
 }
