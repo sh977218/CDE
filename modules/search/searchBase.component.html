@@ -103,8 +103,7 @@
 
             <mat-form-field style="width: 90%; padding-left: 30px; margin-bottom: -20px">
                 <input matInput name="q" id="ftsearch-input" placeholder="Search" #autoCompleteInput
-                       [formControl]="searchTermFC" maxlength="500" [matAutocomplete]="auto"
-                >
+                       [formControl]="searchTermFC" maxlength="500" [matAutocomplete]="auto">
                 <mat-icon matSuffix (click)="termSearch()" id="search.submit">search</mat-icon>
             </mat-form-field>
             <button style="display: none" type="submit" (click)="termSearch()"></button>

@@ -63,7 +63,7 @@ export class LogAuditComponent {
             sort: this.sortingBy
         };
         //noinspection TypeScriptValidateTypes
-        this.http.post<any>('/server/logs/httpLogs', postBody)
+        this.http.post<any>('/server/log/httpLogs', postBody)
             .subscribe(res => {
                 if (res.totalItems) this.totalItems = res.totalItems;
                 if (res.itemsPerPage) this.itemsPerPage = res.itemsPerPage;

@@ -62,12 +62,12 @@
             </span>
         </div>
         <div class="modal-footer" id="renameClassificationModalFooter">
-            <button class="btn btn-outline-dark" (click)="c('cancel')" id="cancelRenameClassificationBtn"
-                    name="cancelRenameClassificationBtn" type="button">Cancel
+            <button (click)="c('cancel')" id="cancelRenameClassificationBtn"
+                    mat-raised-button color="warn" type="button">Cancel
             </button>
-            <button class="btn  btn-danger" id="confirmRenameClassificationBtn"
+            <button mat-raised-button color="primary" id="confirmRenameClassificationBtn"
                     [disabled]="!newClassificationName && !renameClassificationForm.form.valid"
-                    name="confirmRenameClassificationBtn" type="submit">OK
+                    type="submit">OK
             </button>
         </div>
     </form>

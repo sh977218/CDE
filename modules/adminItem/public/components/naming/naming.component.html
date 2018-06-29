@@ -1,12 +1,17 @@
 <div id="namingDiv">
-    <h4>Designations</h4>
+    <h4>Designations&nbsp;
+        <button *ngIf="canEdit" id="openNewDesignationModalBtn" (click)="openNewDesignationModal()" mat-raised-button>
+            <mat-icon>add</mat-icon>
+            Add Designation
+        </button>
+    </h4>
     <div *ngIf="elt.designations.length === 0">There are no designations.</div>
     <ng-container *ngFor="let designation of elt.designations;let i = index">
         <dl class="row">
             <dt class="col-3 text-right">
-                <span (click)="removeDesignationByIndex(i)" *ngIf="canEdit && !designation.edit"
-                      class="btn-outline-dark fa fa-trash-o"
-                      id="removeDesignation-{{i}}" title="Remove"></span>
+                <mat-icon (click)="removeDesignationByIndex(i)" *ngIf="canEdit && !designation.edit"
+                          id="removeDesignation-{{i}}">delete
+                </mat-icon>
                 <cde-sortable-array [theArray]="elt.designations" [index]="i" *ngIf="canEdit"
                                     (cb)="onEltChange.emit()"></cde-sortable-array>
                 Designation:
@@ -26,14 +31,19 @@
         <hr>
     </ng-container>
 
-    <h4>Definitions</h4>
+    <h4>Definitions&nbsp;
+        <button *ngIf="canEdit" id="openNewDefinitionModalBtn" mat-raised-button (click)="openNewDefinitionModal()">
+            <mat-icon>add</mat-icon>
+            Add Definition
+        </button>
+    </h4>
     <div *ngIf="elt.definitions.length === 0">There are no definitions.</div>
     <ng-container *ngFor="let definition of elt.definitions;let i = index">
         <dl class="row">
             <dt class="col-3 text-right">
-                <span (click)="removeDefinitionByIndex(i)" *ngIf="canEdit && !definition.edit"
-                      class="btn-outline-dark fa fa-trash-o"
-                      id="removeDefinition-{{i}}" title="Remove"></span>
+                <mat-icon (click)="removeDefinitionByIndex(i)" *ngIf="canEdit && !definition.edit"
+                          id="removeDefinition-{{i}}">delete
+                </mat-icon>
                 <cde-sortable-array [theArray]="elt.definitions" [index]="i" *ngIf="canEdit"
                                     (cb)="onEltChange.emit()"></cde-sortable-array>
                 Definition:
@@ -52,12 +62,4 @@
         </dl>
         <hr>
     </ng-container>
-    <button *ngIf="canEdit" id="openNewDesignationModalBtn"
-            class="btn btn-outline-dark" (click)="openNewDesignationModal();">
-        <i class="fa fa-plus"></i> Add Designation
-    </button>
-    <button *ngIf="canEdit" id="openNewDefinitionModalBtn"
-            class="btn btn-outline-dark" (click)="openNewDefinitionModal();">
-        <i class="fa fa-plus"></i> Add Definition
-    </button>
 </div>
