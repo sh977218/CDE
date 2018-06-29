@@ -15,7 +15,7 @@
             <option *ngFor="let myOrgAdmin of orgAdmins" [value]="myOrgAdmin.name">{{myOrgAdmin.name}}</option>
         </select>
     </div>
-    <button type="submit" class="btn btn-success ml-1" id="newOrgAdminSubmit" (click)="addOrgAdmin()"
+    <button type="submit" class="ml-1" id="newOrgAdminSubmit" (click)="addOrgAdmin()" mat-raised-button color="primary"
             [disabled]="!adminForm.form.valid">Make Admin
     </button>
 </form>

@@ -1,6 +1,5 @@
-<button class="btn   btn-outline-dark" value="add" (click)="openNewBoard()"
-    id="addBoard" style="margin-bottom: 10px;">
-        <i class="fa fa-plus"> </i> Add Board
+<button mat-raised-button value="add" (click)="openNewBoard()" id="addBoard" style="margin-bottom: 10px;">
+        <mat-icon>add</mat-icon> Add Board
 </button>
 
 <ng-template #createBoardModal id="newBoardModal" let-d="dismiss">
@@ -36,11 +35,9 @@
                 </div>
             </div>
             <div class="modal-footer" id="newBoardModalFooter">
-                <button class="btn btn-outline-dark" (click)="d()"
-                        id="cancelCreate" type="button">Cancel</button>
-                <button class="btn  btn-warning" (click)="doCreateBoard()"
-                        [disabled]="!bForm.form.valid" id="createBoard"
-                        type="submit">Save
+                <button mat-raised-button color="warn" (click)="d()" id="cancelCreate" type="button">Cancel</button>
+                <button mat-raised-button color="primary" (click)="doCreateBoard()"
+                        [disabled]="!bForm.form.valid" id="createBoard" type="submit">Save
                 </button>
             </div>
         </form>

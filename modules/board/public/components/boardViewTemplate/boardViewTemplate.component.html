@@ -51,10 +51,10 @@
                        multiple="true"></ng-select>
         </div>
         <div class="modal-footer" id="editBoardModalFooter">
-            <button class="btn btn-outline-dark" (click)="c('Close click')" id="cancelEditBoardBtn"
+            <button mat-raised-button (click)="c('Close click')" id="cancelEditBoardBtn" color="warn"
                     name="cancelNewNamingBtn">Cancel
             </button>
-            <button class="btn  btn-warning" [disabled]="!editBoardForm.form.valid" id="saveEditBoardBtn"
+            <button mat-raised-button color="primary" [disabled]="!editBoardForm.form.valid" id="saveEditBoardBtn"
                     name="saveEditBoardBtn" type="submit">Save
             </button>
         </div>
@@ -68,12 +68,8 @@
         <div class="modal-body" id="deleteBoardModalBody">
         </div>
         <div class="modal-footer" id="deleteBoardModalFooter">
-            <button class="btn btn-outline-dark" (click)="c('Close click')" id="cancelDeleteBoardBtn"
-                    name="cancelDeleteBoardBtn">Cancel
-            </button>
-            <button class="btn  btn-warning" id="saveDeleteBoardBtn"
-                    name="confirmDeleteBoardBtn" type="submit">Save
-            </button>
+            <button mat-raised-button color="warn" (click)="c('Close click')" id="cancelDeleteBoardBtn">Cancel</button>
+            <button mat-raised-button color="primary" id="saveDeleteBoardBtn" type="submit">Save</button>
         </div>
     </form>
 </ng-template>

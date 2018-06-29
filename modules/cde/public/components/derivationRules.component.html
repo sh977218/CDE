@@ -28,8 +28,7 @@
         </div>
     </div>
 
-    <button *ngIf="canAddScore()" class="btn   btn-outline-dark" id="addNewScore" value="add"
-            (click)="openNewScoreModal()"><i class="fa fa-plus"> </i> Add Score
+    <button *ngIf="canAddScore()" mat-raised-button id="addNewScore" (click)="openNewScoreModal()"><mat-icon></mat-icon> Add Score
     </button>
 
     <div *ngIf="elt.derivationOutputs && elt.derivationOutputs.length > 0">
@@ -83,10 +82,9 @@
             </div>
         </div>
         <div class="modal-footer" id="newScoreModalFooter">
-            <button class="btn btn-outline-dark" (click)="c('Close click')" id="cancelNewScoreBtn" type="button"> Cancel</button>
-            <button class="btn  btn-warning" type="submit"
-                    [disabled]="someCdesInvalid() || !newScoreForm.form.valid"
-                    id="createDerivationRule">Save
+            <button mat-raised-button color="warn" (click)="c('Close click')" id="cancelNewScoreBtn" type="button"> Cancel</button>
+            <button type="submit" mat-raised-button color="primary"
+                    [disabled]="someCdesInvalid() || !newScoreForm.form.valid" id="createDerivationRule">Save
             </button>
         </div>
     </form>
