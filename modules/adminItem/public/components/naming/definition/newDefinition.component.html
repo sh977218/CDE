@@ -5,12 +5,10 @@
     <div class="modal-body" id="newDefinitionModalBody">
         <div class="form-group">
             <div id="newDefinition">
-                <button type="button" class="btn btn-outline-dark btn-xs"
-                        (click)="newDefinition.definitionFormat = '';">
+                <button type="button" (click)="newDefinition.definitionFormat = ''" mat-raised-button>
                     Plain Text
                 </button>
-                <button type="button" class="btn btn-outline-dark btn-xs"
-                        (click)="newDefinition.definitionFormat = 'html';">
+                <button type="button" mat-raised-button (click)="newDefinition.definitionFormat = 'html'">
                     Rich Text
                 </button>
                 <textarea name="definition" *ngIf="newDefinition.definitionFormat !== 'html'"
@@ -35,12 +33,9 @@
         </div>
     </div>
     <div class="modal-footer" id="newDefinitionModalFooter">
-        <button class="btn btn-outline-dark" (click)="activeModal.close('Close click')" id="cancelNewDefinitionBtn"
-                name="cancelNewDefinitionBtn"
-                type="button">Cancel
-        </button>
-        <button class="btn  btn-warning" [disabled]="!newDefinitionForm.form.valid" id="createNewDefinitionBtn"
-                name="createNewDefinitionBtn" type="submit">Save
-        </button>
+        <button (click)="activeModal.close('Close click')" id="cancelNewDefinitionBtn" type="button"
+            mat-raised-button color="warn">Cancel</button>
+        <button mat-raised-button color="primary" [disabled]="!newDefinitionForm.form.valid"
+                id="createNewDefinitionBtn" type="submit">Save</button>
     </div>
 </form>
