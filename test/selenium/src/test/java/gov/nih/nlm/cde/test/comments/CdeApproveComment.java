@@ -7,7 +7,7 @@ public class CdeApproveComment extends NlmCdeBaseTest {
     @Test
     public void cdeApproveCommentTest() {
         String cdeName = "Person Birth Date";
-        String commentText= "This comment can not be seen unless it is approved.";
+        String commentText= "This comment about Person Birth Date can not be seen unless it is approved.";
         goToCdeByName(cdeName);
         goToDiscussArea();
         textNotPresent(commentText);

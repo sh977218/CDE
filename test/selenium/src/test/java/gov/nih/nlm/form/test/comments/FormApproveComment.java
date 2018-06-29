@@ -9,7 +9,7 @@ public class FormApproveComment extends NlmCdeBaseTest {
     @Test
     public void formApproveCommentTest() {
         String formName = "Vital Signs and Tests";
-        String commentText = "This comment can not be seen unless it is approved.";
+        String commentText = "This comment about Vital Signs and Tests can not be seen unless it is approved.";
         goToFormByName(formName);
         goToDiscussArea();
         textNotPresent(commentText);

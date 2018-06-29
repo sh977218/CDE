@@ -73,7 +73,7 @@
                 <ngb-panel>
                     <ng-template ngbPanelTitle>
                         {{message.date | date : medium}} | {{message.humanType}} | {{message.author.name}} |
-                        {{message.typeCommentApproval.comment.text | slice:0:30}}
+                        {{message.typeCommentApproval.comment.text | slice:0:60}}
                     </ng-template>
                     <ng-template ngbPanelContent>
                         <div class="card-body">

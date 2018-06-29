@@ -12,6 +12,6 @@ public class BoardCurrentComment extends NlmCdeBaseTest {
         String boardName = "Public Smoking Board";
         goToBoard(boardName);
         goToDiscussArea();
-        Assert.assertEquals(true, findElement(By.id("currentComment_0")).getAttribute("class").contains("currentComment"));
+        checkCurrentCommentByIndex(0, true);
     }
 }

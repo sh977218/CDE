@@ -11,9 +11,7 @@ public class FormCurrentComment extends NlmCdeBaseTest {
     public void formCurrentCommentTest() {
         String formName = "Activities of Daily Living and Gait";
         goToFormByName(formName);
-        goToNaming();
         goToDiscussArea();
-        Assert.assertEquals(true, findElement(By.id("currentComment_0")).getAttribute("class").contains("currentComment"));
-        findElement(By.xpath("//*[@id='comment_0' and not(contains(@class, 'currentComment'))]"));
+        checkCurrentCommentByIndex(0, true);
     }
 }

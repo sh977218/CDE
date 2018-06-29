@@ -1826,6 +1826,9 @@ public class NlmCdeBaseTest {
     private String getCommentIconXpath(String message, String messageType, String iconType) {
         String titleCase = COMMENT_Title_Case_MAP.get(messageType);
         return "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'" + messageType + "Header')]/div[contains(@class,'manage" + titleCase + "Div')]//*[contains(@id,'" + iconType + titleCase + "_')]";
+    }
 
+    protected void checkCurrentCommentByIndex(int index, boolean isCurrent) {
+        Assert.assertEquals(isCurrent, findElement(By.id("currentComment_" + index)).getAttribute("class").contains("currentComment"));
     }
 }
