@@ -17,6 +17,7 @@ public class CdeApproveReply extends NlmCdeBaseTest {
         addCommentNeedApproval(commentText);
         approveComment(commentEditor_username, commentEditor_password, reguser_username, commentText);
 
+        logout();
         mustBeLoggedInAs(reguser_username, anonymousCommentUser_password);
         goToCdeByName(cdeName);
         replyComment(0, replyText);

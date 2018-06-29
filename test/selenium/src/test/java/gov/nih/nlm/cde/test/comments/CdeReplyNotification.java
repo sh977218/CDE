@@ -15,6 +15,7 @@ public class CdeReplyNotification extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         replyCommentNeedApproval(0, replyText);
 
+        logout();
         mustBeLoggedInAs(test_username, password);
         clickElement(By.id("incomingMessage"));
         textPresent("Comment reply | reguser | This reply will trigger");
