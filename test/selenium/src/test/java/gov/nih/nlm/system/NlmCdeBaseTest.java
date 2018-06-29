@@ -30,7 +30,6 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -1740,14 +1739,14 @@ public class NlmCdeBaseTest {
         findElement(By.id("newCommentTextArea")).sendKeys(message);
         hangon(2);
         clickElement(By.id("commentBtn"));
-        isCommentExists(message, true);
+        isCommentOrReplyExists(message, true);
     }
 
     protected void replyComment(int index, String message) {
         goToDiscussArea();
         findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
         clickElement(By.id("replyBtn_" + index));
-        isCommentExists(message, true);
+        isCommentOrReplyExists(message, true);
     }
 
     protected void addCommentNeedApproval(String message) {
@@ -1764,7 +1763,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
         clickElement(By.id("replyBtn_" + index));
         textNotPresent(message);
-        textPresent("This comment is pending approval");
+        textPresent("This reply is pending approval");
     }
 
     protected void approveComment(String adminUsername, String adminPassword, String username, String message) {
@@ -1785,19 +1784,18 @@ public class NlmCdeBaseTest {
         textPresent("Message moved");
     }
 
-
     protected void removeComment(String message) {
         goToDiscussArea();
         String xpath = getCommentIconXpath(message, "comment", "remove");
         clickElement(By.xpath(xpath));
-        isCommentExists(message, false);
+        isCommentOrReplyExists(message, false);
     }
 
     protected void removeReply(String message) {
         goToDiscussArea();
         String xpath = getCommentIconXpath(message, "reply", "remove");
         clickElement(By.xpath(xpath));
-        isCommentExists(message, false);
+        isCommentOrReplyExists(message, false);
     }
 
     protected void resolveComment(String message) {
@@ -1834,7 +1832,7 @@ public class NlmCdeBaseTest {
         Assert.assertEquals(isCurrent, findElement(By.id("commentDiv_" + index)).getAttribute("class").contains("currentComment"));
     }
 
-    protected void isCommentExists(String commentText, boolean exist) {
+    protected void isCommentOrReplyExists(String commentText, boolean exist) {
         goToDiscussArea();
         if (exist) textPresent(commentText, By.xpath("//cde-comments"));
         else textNotPresent(commentText, By.xpath("//cde-comments"));

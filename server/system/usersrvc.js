@@ -213,10 +213,7 @@ exports.removeOrgCurator = function(req, res) {
 
 exports.getAllUsernames = function(req, res) {
     mongo_data.getAllUsernames(function(err, usernames) {
-        if(err) {
-            dbLogger.onlyDoLogging(err);
-            res.status(500).end(err);
-        }
+        if(err) res.status(500).end(err);
         else {
             res.send(usernames);
         }

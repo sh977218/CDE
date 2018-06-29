@@ -12,12 +12,12 @@ public class FormDeclineComment extends NlmCdeBaseTest {
         String sensorComment = "This comment is pending approval";
         goToFormByName(formName);
         goToDiscussArea();
-        isCommentExists(sensorComment, true);
+        isCommentOrReplyExists(sensorComment, true);
         declineComment(commentEditor_username, commentEditor_password, anonymousCommentUser2_username, "Bad Comment");
 
         mustBeLoggedInAs(anonymousCommentUser2_username, anonymousCommentUser_password);
         goToFormByName(formName);
-        isCommentExists(sensorComment, false);
+        isCommentOrReplyExists(sensorComment, false);
     }
 
 }

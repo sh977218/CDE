@@ -966,7 +966,7 @@ exports.init = function (app) {
             comments.forEach(c => {
                 if (c.pendingApproval) c.text = "This comment is pending approval";
                 c.replies.forEach(r => {
-                    if (r.pendingApproval) r.text = "This comment is pending approval";
+                    if (r.pendingApproval) r.text = "This reply is pending approval";
                 });
             });
             res.send(comments);
