@@ -9,6 +9,7 @@ public class EltIdMaps {
 
     static {
         eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
+        eltMap.put("Alcohol use started age value", "FtNNFMKHCM4");
         eltMap.put("Atherosclerosis Risk in Communities transient ischemic attack/stroke form (ARIC TIA) - speech loss slurred symptom indicator", "0gqqG2jShnS");
         eltMap.put("Apgar Score Created By java.lang.Long", "GvOOag_P4Zg");
         eltMap.put("Biomarker Outcome Characteristics java.lang.String", "-dPmPekTRsb");

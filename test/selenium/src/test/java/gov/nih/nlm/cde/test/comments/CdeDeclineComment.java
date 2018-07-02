@@ -15,6 +15,7 @@ public class CdeDeclineComment extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(anonymousCommentUser2_username, anonymousCommentUser_password);
         goToCdeByName(cdeName);
+        goToDiscussArea();
         textNotPresent(sensorComment);
     }
 }

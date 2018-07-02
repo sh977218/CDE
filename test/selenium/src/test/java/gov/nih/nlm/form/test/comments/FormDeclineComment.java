@@ -15,6 +15,7 @@ public class FormDeclineComment extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(anonymousCommentUser2_username, anonymousCommentUser_password);
         goToFormByName(formName);
+        goToDiscussArea();
         textNotPresent(sensorComment);
     }
 }
