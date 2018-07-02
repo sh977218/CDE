@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import {
     Component, ViewChild, Type, ViewContainerRef, EventEmitter, HostListener, Input, OnInit, OnDestroy
 } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { NavigationStart } from '@angular/router';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
