@@ -8,11 +8,11 @@ public class AddToQuickBoardFromView extends NlmCdeBaseTest {
 
     @Test
     public void addFormToQuickBoardFromView() {
-        textPresent("Quick Board (0)");
+        textPresent("QUICK BOARD (0)");
         goToFormByName("Vessel Imaging Angiography");
         clickElement(By.id("addToQuickBoard"));
         checkAlert("Added to QuickBoard");
-        textPresent("Quick Board (1)");
+        textPresent("QUICK BOARD (1)");
         clickElement(By.id("menu_qb_link"));
         clickElement(By.id("formQuickBoard"));
         textPresent("30 Questions");

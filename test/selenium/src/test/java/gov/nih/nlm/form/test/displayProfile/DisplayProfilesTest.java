@@ -23,7 +23,10 @@ public class DisplayProfilesTest extends BaseFormTest {
         createDisplayProfile(4, "Multiple Select", false, false, false, false, "Dynamic", 5, false, 4);
         scrollToTop();
         Assert.assertEquals(driver.findElements(By.xpath("//*[@id='profile_0']//table//input[@type='radio']")).size(), 10);
-        textPresent("1", By.xpath("(//*[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]/../span"));
+
+        // because of zoom 60%, use driver.findElement because zoom 60% makes element not visible
+        Assert.assertEquals(
+                driver.findElement(By.xpath("(//*[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]/../span")).getText(), "1");
         scrollToViewById("profile_3");
         String baseXpath = "//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//";
 

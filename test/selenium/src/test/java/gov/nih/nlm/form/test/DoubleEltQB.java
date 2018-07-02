@@ -11,7 +11,7 @@ public class DoubleEltQB extends NlmCdeBaseTest {
         mustBeLoggedInAs("ninds", password);
         addFormToQuickBoard("King-Devick Concussion Screening Test (K-D Test)");
         addFormToQuickBoard("Hamilton Anxiety Rating Scale (HAM-A)");
-        textPresent("Quick Board (2)");
+        textPresent("QUICK BOARD (2)");
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_compare"));
         textPresent("Baseline Attempt Time #1 Total Time");

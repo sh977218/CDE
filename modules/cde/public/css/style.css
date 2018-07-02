@@ -7,6 +7,14 @@ button {
     margin-right: 0.2rem !important;
 }
 
+.displayProfileRenderDiv > * {
+    font-size: 60%;
+}
+.displayProfileRenderDiv input {
+    transform: scale(0.8);
+}
+
+
 /* home component */
 .homeDescriptionLink {
     color: #0F4E9D;

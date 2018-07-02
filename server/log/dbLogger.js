@@ -13,6 +13,7 @@ const ClientErrorModel = conn.model('DbClientErrorLogger', schemas.clientErrorSc
 const StoredQueryModel = mongo_storedQuery.StoredQueryModel;
 const FeedbackModel = conn.model('FeedbackIssue', schemas.feedbackIssueSchema);
 const consoleLogModel = conn.model('consoleLogs', schemas.consoleLogSchema);
+const useragent = require('useragent');
 
 exports.consoleLog = function (message, level) { // no express errors see dbLogger.log(message)
     new consoleLogModel({message: message, level: level}).save(err => {

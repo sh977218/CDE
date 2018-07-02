@@ -11,9 +11,9 @@ public class AddToQuickboard extends BoardTest {
     public void addToQuickBoard() {
         mustBeLoggedInAs(formboarduser, password);
         goToBoard("TestQuickboard");
-        textPresent("Quick Board (0)");
+        textPresent("QUICK BOARD (0)");
         clickElement(By.id("addToCompare_0"));
-        textPresent("Quick Board (1)");
+        textPresent("QUICK BOARD (1)");
         clickElement(By.id("menu_qb_link"));
         clickElement(By.id("formQuickBoard"));
         clickElement(By.linkText("Walking Speed"));

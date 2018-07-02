@@ -12,11 +12,10 @@ import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscr
     selector: 'nih-cde',
     template: `
         <cde-navigation></cde-navigation>
-        <router-outlet></router-outlet>
     `
 })
 export class CdeAppComponent implements OnInit {
-    name = "Angular 5";
+    name = "Angular 6";
 
     ngOnInit() {
         let description = '<div id="feedback-welcome"><div class="h3">Report a problem</div>' +

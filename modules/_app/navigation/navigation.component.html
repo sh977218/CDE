@@ -1,59 +1,16 @@
-<mat-toolbar>
-    <a class="navbar-brand" routerLink="/home" id="homeLink">
-        <img alt="Home" src="/cde/public/assets/img/min/nih-cde-logo-simple.png"/>
-    </a>
-
-    <a id="menu_cdes_link" class="toolbarItem" routerLink="/cde/search"
-       [ngClass]="{active: isPageActive('/cde/search')}">CDEs</a>
-
-    <a id="menu_forms_link" class="toolbarItem" routerLink="/form/search"
-       [ngClass]="{active: isPageActive('/cde/search')}">Forms</a>
-
-    <ng-template #simpleBoards>
-        <a id="boardsMenu" class="toolbarItem" routerLink="/boardList"
-           [ngClass]="{active: isPageActive('/boardList')}">Boards</a>
-    </ng-template>
-    <ng-container *ngIf="userService.user; else simpleBoards">
-        <a id="boardsMenu" class="toolbarItem dropdown-toggle" [matMenuTriggerFor]="boardMenu"
-           [ngClass]="{active: isPageActive('/boardList')}">Boards</a>
-        <mat-menu #boardMenu="matMenu">
-            <a id="publicBoardsLink" routerLink="/boardList" mat-menu-item>Public Boards</a>
-            <a id="myBoardsLink" routerLink="/myboards" mat-menu-item>My Boards</a>
-        </mat-menu>
-    </ng-container>
-
-    <a id="createEltLink" class="toolbarItem dropdown-toggle" *ngIf="isOrgCurator(userService.user)"
-       [ngClass]="{active: isPageActive('/createCde') || isPageActive('/createForm')}"
-        [matMenuTriggerFor]="createMenu">Create</a>
-    <mat-menu #createMenu="matMenu">
-        <a id="createCDELink" routerLink="/createCde" mat-menu-item>CDE</a>
-        <a id="createFormLink" routerLink="/createForm" *ngIf="canCreateForms(userService.user)"
-           mat-menu-item>Form</a>
-    </mat-menu>
-
-    <a id="menu_qb_link" routerLink="/quickBoard" [ngClass]="{active: isPageActive('/quickBoard')}"
-       class="toolbarItem"
-       [textContent]="'Quick Board (' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"></a>
-
-    <a id="menu_help_link" class="toolbarItem" [ngClass]="{active: isPageActive('/help')}"
-       routerLink="/api">API</a>
-
-    <span style="flex: 1 1 auto;"></span>
-
+<ng-template #loginMenuTpl>
     <ng-template #loginLink>
-        <a (click)="loginSvc.goToLogin()" id="login_link" class="toolbarItem"
-           [ngClass]="{active: isPageActive('/login')}"
-           routerLink="/login">
-            Log In</a>
+        <a (click)="loginSvc.goToLogin()" id="login_link"  routerLink="/login"
+           class="mdl-navigation__link mdl-typography--text-uppercase">Login</a>
     </ng-template>
     <ng-container *ngIf="userService.user; else loginLink">
-        <a routerLink="/inbox" class="toolbarItem" *ngIf="userService.user.hasMail">
+        <a routerLink="/inbox" *ngIf="userService.user.hasMail">
             <i id="incomingMessage" class="fa fa-envelope text-danger"></i>
         </a>
 
-        <a id="username_link" class="toolbarItem dropdown-toggle"
-           [matMenuTriggerFor]="loginMenu"
-           [textContent]="userService.user.username | cdeTruncateLongName"></a>
+        <a id="username_link" class="mdl-navigation__link mdl-typography--text-uppercase"
+           [matMenuTriggerFor]="loginMenu">
+            <span [textContent]="userService.user.username | cdeTruncateLongName"></span>&nbsp;▼</a>
         <mat-menu #loginMenu="matMenu">
             <a routerLink="/profile" id="user_profile" mat-menu-item>Profile</a>
             <a routerLink="/inbox" id="user_inbox" mat-menu-item>Inbox</a>
@@ -72,13 +29,137 @@
             <a (click)="loginSvc.logout()" target="_self" id="user_logout" mat-menu-item>Log Out</a>
         </mat-menu>
     </ng-container>
+</ng-template>
 
-    <a id="notifications">
-        <cde-notifications></cde-notifications>
-    </a>
+<ng-template #boardTpl>
+    <ng-template #simpleBoards>
+        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase"
+           routerLink="/boardList">Boards</a>
+    </ng-template>
+    <ng-container *ngIf="userService.user; else simpleBoards">
+        <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase"
+           [matMenuTriggerFor]="boardMenu">Boards&nbsp;▼</a>
+        <mat-menu #boardMenu="matMenu">
+            <a id="publicBoardsLink" routerLink="/boardList"
+               mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Public Boards</a>
+            <a id="myBoardsLink" routerLink="/myboards"
+               mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">My Boards</a>
+        </mat-menu>
+    </ng-container>
+</ng-template>
 
-    <a routerLink="/searchPreferences" class="toolbarItem" id="searchSettings">
-        <mat-icon style="font-size: 1.3em; margin-top: 10px">settings</mat-icon>
-    </a>
+<ng-template #createTpl>
+    <a id="createEltLink" class="mdl-navigation__link mdl-typography--text-uppercase"
+       *ngIf="isOrgCurator(userService.user)"
+       [matMenuTriggerFor]="createMenu">Create&nbsp;▼</a>
+    <mat-menu #createMenu="matMenu">
+        <a id="createCDELink" routerLink="/createCde" mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">CDE</a>
+        <a id="createFormLink" routerLink="/createForm" *ngIf="canCreateForms(userService.user)"
+           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Form</a>
+    </mat-menu>
+</ng-template>
 
-</mat-toolbar>
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
+    <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
+        <div class="mdl-layout__header-row">
+
+            <span class="android-title mdl-layout-title">
+                <a routerLink="/" id="homeLink">
+                    <img class="logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png">
+                </a>
+            </span>
+
+            <!-- Add spacer, to align navigation to the right in desktop -->
+            <div class="android-header-spacer mdl-layout-spacer"></div>
+
+            <!-- Navigation -->
+            <div class="android-navigation-container">
+                <nav class="android-navigation mdl-navigation">
+                    <a id="menu_cdes_link" class="mdl-navigation__link mdl-typography--text-uppercase"
+                       routerLink="/cde/search">CDEs</a>
+
+                    <a id="menu_forms_link" class="mdl-navigation__link mdl-typography--text-uppercase "
+                       routerLink="/form/search">Forms</a>
+
+                    <ng-container *ngTemplateOutlet="boardTpl"></ng-container>
+
+                    <ng-container *ngTemplateOutlet="createTpl"></ng-container>
+
+                    <a id="menu_qb_link" routerLink="/quickBoard"
+                       class="mdl-navigation__link mdl-typography--text-uppercase"
+                       [textContent]="'Quick&nbsp;Board&nbsp;(' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"></a>
+
+                    <a id="apiDocumentationLink" class="mdl-navigation__link mdl-typography--text-uppercase"
+                       routerLink="/api">API</a>
+
+                    <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
+
+                    <a id="notifications">
+                        <cde-notifications></cde-notifications>
+                    </a>
+
+                    <a routerLink="/searchPreferences" id="searchSettings" style="padding-right: 24px">
+                       <i class="material-icons" style="font-size: 1.3em; margin-top: 10px">settings</i>
+                    </a>
+
+                </nav>
+            </div>
+            <span class="android-mobile-title mdl-layout-title">
+                <img class="logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png">
+            </span>
+        </div>
+    </div>
+
+    <div class="android-drawer mdl-layout__drawer">
+        <span class="mdl-layout-title">
+          <img class="logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png">
+        </span>
+        <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" routerLink="/cde/search" (click)="toggleDrawer()">CDEs</a>
+            <a class="mdl-navigation__link" routerLink="/form/search" (click)="toggleDrawer()">Forms</a>
+            <div class="android-drawer-separator"></div>
+            <ng-container *ngTemplateOutlet="boardTpl"></ng-container>
+            <div class="android-drawer-separator"></div>
+            <ng-container *ngTemplateOutlet="createTpl"></ng-container>
+            <div *ngIf="userService.user" class="android-drawer-separator"></div>
+            <a class="mdl-navigation__link" routerLink="/quickBoard" (click)="toggleDrawer()">Quick Board</a>
+            <a class="mdl-navigation__link" routerLink="/api" (click)="toggleDrawer()">API</a>
+            <div class="android-drawer-separator"></div>
+            <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
+        </nav>
+    </div>
+
+    <div class="android-content mdl-layout__content">
+
+        <router-outlet></router-outlet>
+
+        <footer style="margin-top: 10px">
+            <div style="display: none">Hidden Text Ensures 100% SEO. Thank you!</div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4 text-md-left col-12 text-center">
+                        <a href="http://www.nlm.nih.gov/copyright.html"><small>Copyright</small></a>,
+                        <a href="http://www.nlm.nih.gov/privacy.html"><small>Privacy</small></a>,
+                        <a href="http://www.nlm.nih.gov/accessibility.html"><small>Accessibility</small></a>
+                        <br/><br/>
+                        <small>U.S. National Library of Medicine<br/>8600 Rockville Pike, Bethesda, MD 20894</small>
+                    </div>
+
+                    <div class="col-sm-4 col-12 text-center">
+                        <a href="http://www.usa.gov"><img alt="USA.gov logo" src="/cde/public/assets/img/min/usagov_logo.png"/></a>
+                        <a href="http://www.nlm.nih.gov/"><img width="150px" alt="National Library of Medicine logo"
+                                                               src="/cde/public/assets/img/min/NLM-logo.png"/></a>
+                    </div>
+
+                    <div class="col-sm-4 text-md-right col-12 text-center">
+                        <a href="http://www.nih.gov/"><small>National Institutes of Health</small></a><br/>
+                        <a href="http://www.hhs.gov/"><small>Health &amp; Human Services</small></a><br/>
+                        <a href="http://www.nih.gov/icd/od/foia/index.htm"><small>Freedom of Information Act</small></a><br/>
+                        <a href="https://support.nlm.nih.gov/ics/support/default.asp?deptID=28054&category=Terminologies&from=CDE"><small>NLM Customer Support</small></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>

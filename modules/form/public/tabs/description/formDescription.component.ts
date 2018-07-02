@@ -28,7 +28,7 @@ import { CdeForm, FormElementsContainer, FormSection } from 'shared/form/form.mo
 import { addFormIds, convertFormToSection, isSubForm, iterateFeSync } from 'shared/form/formShared';
 import { BrowserService } from 'widget/browser.service';
 
-const TOOL_BAR_OFF_SET = 55;
+const TOOL_BAR_OFF_SET = 64;
 
 @Component({
     selector: 'cde-form-description',
