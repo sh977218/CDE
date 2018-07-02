@@ -1832,6 +1832,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void checkCurrentCommentByIndex(int index, boolean isCurrent) {
+        scrollToViewById("commentDiv_" + index);
         Assert.assertEquals(isCurrent, findElement(By.id("commentDiv_" + index)).getAttribute("class").contains("currentComment"));
     }
 

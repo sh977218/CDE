@@ -11,6 +11,7 @@ public class CdeCurrentComment extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToDiscussArea();
         checkCurrentCommentByIndex(0, true);
+        checkCurrentCommentByIndex(1, false);
         goToNaming();
         checkCurrentCommentByIndex(1, true);
         checkCurrentCommentByIndex(0, false);
