@@ -759,10 +759,8 @@ public class NlmCdeBaseTest {
     protected void logout() {
         clickElement(By.id("username_link"));
         clickElement(By.id("user_logout"));
-        isLogin();
-    }
-
-    protected void isLogin() {
+        findElement(By.id("login_link"));
+        textPresent("Please Log In");
     }
 
     protected void loginAs(String username, String password) {
@@ -771,7 +769,14 @@ public class NlmCdeBaseTest {
         if (username.length() > 17) {
             usernameStr = usernameStr.substring(0, 17) + "...";
         }
-        enterUsernamePasswordSubmit(username, password, usernameStr);
+
+        findElement(By.id("uname")).clear();
+        findElement(By.id("passwd")).clear();
+        findElement(By.id("uname")).sendKeys(username);
+        findElement(By.id("passwd")).sendKeys(password);
+        clickElement(By.id("login_button"));
+
+        textPresent(usernameStr.toUpperCase(), By.id("username_link"));
     }
 
     private boolean isWindows() {

@@ -76,7 +76,6 @@ exports.init = function (app) {
     app.get(["/", "/home"], function (req, res) {
         if (isSearchEngine(req)) res.render('bot/home', 'system');
         else {
-            // res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
             if (req.user || req.query.tour) res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
             else res.send(homeHtml);
         }
