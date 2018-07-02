@@ -11,7 +11,7 @@
                 <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="max-width: 1000px">
                     <mat-form-field style="width: 100%; font-size: 25px">
                         <input matInput name="q" id="ftsearch-input" placeholder="Search"
-                            [formControl]="searchTermFC" maxlength="500" [matAutocomplete]="auto">
+                               [formControl]="searchTermFC" maxlength="500" [matAutocomplete]="auto">
                         <mat-icon matSuffix (click)="termSearch()" id="search.submit">search</mat-icon>
                     </mat-form-field>
                     <button style="display: none" type="submit" (click)="termSearch()"></button>
@@ -56,7 +56,8 @@
                                         elements
                                     </div>
                                     <div *ngIf="org.extraInfo">{{org.extraInfo}}</div>
-                                    <div *ngIf="org.source"><a href="{{org.source}}" target="_blank" rel="noopener">Source</a></div>
+                                    <div *ngIf="org.source"><a href="{{org.source}}" target="_blank" rel="noopener">Source</a>
+                                    </div>
                                 </fieldset>
                                 <i class="fa fa-info welcomeDetailIcon hand-cursor" *ngIf="org.htmlOverview"
                                    id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org)"></i>
@@ -136,8 +137,10 @@
             <cde-list-view-controls [(listView)]="resultsView" *ngIf="!embedded"></cde-list-view-controls>
 
             <button mat-raised-button [matMenuTriggerFor]="exportMenu" *ngIf="!embedded"
-                                id="export" class="ml-1">
-                <mat-icon>play_for_work</mat-icon> Export <mat-icon>arrow_drop_down</mat-icon>
+                    id="export" class="ml-1">
+                <mat-icon>play_for_work</mat-icon>
+                Export
+                <mat-icon>arrow_drop_down</mat-icon>
             </button>
 
             <mat-menu #exportMenu>
@@ -217,9 +220,10 @@
                 <div *ngIf="aggregations.orgs.buckets" id="classificationListHolder" class="my-3">
                     <div>
                         <span class="treeTitle" style="vertical-align: top">Classification</span>
-                        <mat-icon *ngIf="!altClassificationFilterMode && !embedded" id="altClassificationFilterModeToggle"
-                              class="hand-cursor" (click)="setAltClassificationFilterMode()" role="link"
-                              ngbTooltip="Add a second classifications filter as an AND condition"
+                        <mat-icon *ngIf="!altClassificationFilterMode && !embedded"
+                                  id="altClassificationFilterModeToggle"
+                                  class="hand-cursor" (click)="setAltClassificationFilterMode()" role="link"
+                                  ngbTooltip="Add a second classifications filter as an AND condition"
                                   placement="right" style="font-size: 1rem; padding-top: 5px">add_box
                         </mat-icon>
                     </div>
@@ -345,13 +349,17 @@
                     <div class="float-right">
                         <div class="page-select float-left">
                             <mat-form-field>
-                                <label>Go to page:</label>
-                                <mat-select [ngModel]="manualPage" (ngModelChange)="updateManualPage($event)">
-                                    <mat-option [value]="1">1</mat-option>
-                                    <mat-option [value]="10">10</mat-option>
-                                    <mat-option [value]="20">20</mat-option>
-                                    <mat-option [value]="30">30</mat-option>
-                                </mat-select>
+                                <input matInput placeholder="Go to page:" type="number" min="1"
+                                       [max]="totalItemsLimited" value="Sushi">
+
+                                <!--
+                                                                <mat-select [ngModel]="manualPage" (ngModelChange)="updateManualPage($event)">
+                                                                    <mat-option [value]="1">1</mat-option>
+                                                                    <mat-option [value]="10">10</mat-option>
+                                                                    <mat-option [value]="20">20</mat-option>
+                                                                    <mat-option [value]="30">30</mat-option>
+                                                                </mat-select>
+                                -->
                             </mat-form-field>
                         </div>
                         <div class="float-left">
