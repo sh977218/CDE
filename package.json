@@ -13,7 +13,7 @@
     "devNative": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_nativeRenderApp/webpackNative.dev.js",
     "devFhir": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_fhirApp/webpackFhir.dev.js",
     "install": "napa",
-    "moveMaterialCss": "cpx ./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css ./node_modules ",
+    "moveMaterialCss": "cpx ./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css ./node_modules && cpx ./node_modules/material-design-lite/material.min.js ./dist/app/ && cpx ./node_modules/material-design-lite/material.min.css ./dist/app/ ",
     "postinstall": "npm run moveMaterialCss",
     "start": "node app.js",
     "buildAppStats": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_app/webpack.prod.js --profile --json > compilation-stats.json",
@@ -166,6 +166,7 @@
     "js-toggle-switch": "0.1.0",
     "json-beautify": "1.0.1",
     "jszip": "3.1.3",
+    "material-design-lite": "1.3.0",
     "material-design-icons": "3.0.1",
     "material-icons": "^0.2.3",
     "merge-stream": "1.0.1",
@@ -202,12 +203,12 @@
     {
       "path": "./dist/app/cde.js",
       "compression": "none",
-      "maxSize": "1.33 MB"
+      "maxSize": "1.46 MB"
     },
     {
       "path": "./dist/app/cde.css",
       "compression": "none",
-      "maxSize": "312 kB"
+      "maxSize": "676 kB"
     },
     {
       "path": "./dist/embed/embed.js",
@@ -242,7 +243,7 @@
     {
       "path": "./modules/system/views/home-launch.ejs",
       "compression": "none",
-      "maxSize": "508 kB"
+      "maxSize": "655 kB"
     }
   ]
 }

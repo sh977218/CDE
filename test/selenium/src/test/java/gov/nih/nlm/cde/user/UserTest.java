@@ -1,36 +1,12 @@
-package gov.nih.nlm.system;
+package gov.nih.nlm.cde.user;
 
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class UserTest extends NlmCdeBaseTest {
-
-    @Test
-    public void wrongLogin() {
-        mustBeLoggedOut();
-        goToCdeSearch();
-
-        try {
-            clickElement(By.linkText("Log In"));
-        } catch (TimeoutException e) {
-            logout();
-            clickElement(By.linkText("Log In"));
-        }
-        enterUsernamePasswordSubmit("bad-username", "bad-password", "Failed to log in.");
-        driver.get(baseUrl + "/profile");
-        isLogin();
-
-        try {
-            clickElement(By.linkText("Log In"));
-        } catch (TimeoutException e) {
-            logout();
-            clickElement(By.linkText("Log In"));
-        }
-        enterUsernamePasswordSubmit(ctepCurator_username, password, "ctepCurator");
-    }
 
     @Test
     public void curatorProfile() {
@@ -47,7 +23,7 @@ public class UserTest extends NlmCdeBaseTest {
     public void regUserCannotCreate() {
         mustBeLoggedInAs(reguser_username, password);
         findElement(By.id("username_link"));
-        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Create")));
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("createEltLink")));
     }
 
     @Test

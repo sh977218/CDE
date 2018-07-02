@@ -8,7 +8,7 @@ public class FormLinkedFormsTest extends BaseFormTest {
     @Test
     public void formLinkedForms() {
         String formName = "Neurological Assessment: TBI Symptoms and Signs";
-        textPresent("Quick Board (0)");
+        textPresent("QUICK BOARD (0)");
         goToFormByName(formName);
         goToGeneralDetail();
         clickElement(By.id("openLinkedFormsModalBtn"));
@@ -17,7 +17,7 @@ public class FormLinkedFormsTest extends BaseFormTest {
         textNotPresent("Neurological Assessment: TBI Symptoms and Signs", By.id("linkedFormsAccordionList"));
         clickElement(By.id("addToCompare_0"));
         clickElement(By.id("closeLinkedFormsModalBtn"));
-        textPresent("Quick Board (1)");
+        textPresent("QUICK BOARD (1)");
     }
 
 

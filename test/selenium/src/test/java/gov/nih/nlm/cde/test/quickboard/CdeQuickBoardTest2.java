@@ -13,15 +13,15 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
     @Test
     public void showGridViewInCdeQuickBoard() {
         addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
-        textPresent("Quick Board (1)");
+        textPresent("QUICK BOARD (1)");
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
-        textPresent("Quick Board (2)");
+        textPresent("QUICK BOARD (2)");
         addCdeToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
-        textPresent("Quick Board (3)");
+        textPresent("QUICK BOARD (3)");
         addCdeToQuickBoard("Prior BMSCT Administered Indicator");
-        textPresent("Quick Board (4)");
+        textPresent("QUICK BOARD (4)");
         addCdeToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
-        textPresent("Quick Board (5)");
+        textPresent("QUICK BOARD (5)");
         clickElement(By.id("menu_qb_link"));
         textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
         hangon(1);
@@ -68,7 +68,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
     @Test
     public void goToEmptyQuickBoard() {
         goHome();
-        textPresent("Quick Board (0)");
+        textPresent("QUICK BOARD (0)");
         clickElement(By.id("menu_qb_link"));
         textPresent("CDE QuickBoard (0)");
         textPresent("Form QuickBoard (0)");

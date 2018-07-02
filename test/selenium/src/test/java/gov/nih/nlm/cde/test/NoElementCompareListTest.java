@@ -10,7 +10,7 @@ public class NoElementCompareListTest extends NlmCdeBaseTest {
     public void noElementCompareList() {
         mustBeLoggedOut();
         goToCdeSearch();
-        clickElement(By.linkText("Quick Board (0)"));
+        clickElement(By.linkText("QUICK BOARD (0)"));
         textPresent("The quick board is empty.");
     }
 }
