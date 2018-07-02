@@ -6,8 +6,8 @@ import org.testng.annotations.Test;
 public class CdeReopenComment extends NlmCdeBaseTest {
 
     @Test
-    public void cdeResolveCommentTest() {
-        String cdeName = "Hospital Confidential Institution Referred From Facility Number Code";
+    public void cdeReopenCommentTest() {
+        String cdeName = "Ethnic Group Category Text";
         mustBeLoggedInAs(test_username, password);
         goToCdeByName(cdeName);
         reopenComment("This comment needs to reopen");
