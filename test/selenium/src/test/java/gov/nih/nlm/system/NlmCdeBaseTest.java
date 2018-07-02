@@ -60,7 +60,7 @@ public class NlmCdeBaseTest {
     protected static String promis_username = "promis";
     protected static String ctepCurator_username = "ctepCurator";
     protected static String test_username = "testuser";
-    static String history_username = "historyuser";
+    protected static String history_username = "historyuser";
     protected static String ninds_username = "ninds";
     protected static String wguser_username = "wguser";
     protected static String reguser_username = "reguser";
@@ -763,8 +763,6 @@ public class NlmCdeBaseTest {
     }
 
     protected void isLogin() {
-        findElement(By.id("login_link"));
-        textPresent("Please Log In");
     }
 
     protected void loginAs(String username, String password) {
@@ -918,7 +916,7 @@ public class NlmCdeBaseTest {
         action.perform();
     }
 
-    void enterUsernamePasswordSubmit(String username, String password, String checkText) {
+    protected void enterUsernamePasswordSubmit(String username, String password, String checkText) {
         findElement(By.id("uname")).clear();
         findElement(By.id("passwd")).clear();
         findElement(By.id("uname")).sendKeys(username);

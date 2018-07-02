@@ -5,7 +5,7 @@ import * as Tour from "bootstrap-tour/build/js/bootstrap-tour.js";
 const navigationSteps: Array<any> = [
     {
         title: " 1/42 Welcome",
-        element: "img.logo-image",
+        element: "#homeLink",
         content: "Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here."
     },
     {
