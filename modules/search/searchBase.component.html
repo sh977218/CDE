@@ -346,10 +346,10 @@
                 <div>
                     <div class="float-right">
                         <div class="page-select float-left">
-                            <mat-form-field>
+                            <mat-form-field class="float-right w-50">
                                 <input matInput placeholder="Go to page:" type="number" min="1"
-                                       [max]="totalItemsLimited" [ngModel]="manualPage"
-                                       (ngModelChange)="updateManualPage($event)">
+                                       [max]="totalItemsLimited" [(ngModel)]="manualPage.pageIndex"
+                                       (ngModelChange)="updateManualPage(manualPage)">
                             </mat-form-field>
                         </div>
                         <div class="float-left">

@@ -1,6 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import {
-    Component, ViewChild, Type, ViewContainerRef, EventEmitter, HostListener, Input, OnInit, OnDestroy
+    Component,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnDestroy,
+    OnInit,
+    Type,
+    ViewChild,
+    ViewContainerRef
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NavigationStart } from '@angular/router';
@@ -517,7 +525,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     pageChange(newPage) {
         this.searchSettings.page = newPage.pageIndex + 1;
         this.doSearch();
-        this.manualPage = null;
+        this.manualPage = {pageIndex: null};
     }
 
     pinAll(promise: Promise<any>) {
@@ -837,15 +845,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         else window.scrollTo(0, previousSpot);
     }
 
-    manualPage;
+    manualPage = {pageIndex: null};
 
-    updateManualPage(index) {
-        if (index !== null) {
-            if (index < 1 || index > this.totalItems / this.resultPerPage) {
-                this.alert.addAlert("danger", "Invalid page: " + index);
+    updateManualPage(manualPage) {
+        if (manualPage.pageIndex !== null) {
+            if (manualPage.pageIndex < 1 || manualPage.pageIndex > this.totalItems / this.resultPerPage) {
+                this.alert.addAlert("danger", "Invalid page: " + manualPage.pageIndex);
             } else {
-                this.paginator.pageIndex = index - 1;
-                this.alert.addAlert("info", "Redirected to page: " + index);
+                this.pageChange(manualPage);
             }
         }
     }
