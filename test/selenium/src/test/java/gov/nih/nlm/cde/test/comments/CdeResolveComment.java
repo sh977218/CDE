@@ -7,7 +7,7 @@ public class CdeResolveComment extends NlmCdeBaseTest {
 
     @Test
     public void cdeResolveCommentTest() {
-        String cdeName = "Hospital Confidential Institution Referred From Facility Number Code";
+        String cdeName = "Participant Identifier Source";
         mustBeLoggedInAs(test_username, password);
         goToCdeByName(cdeName);
         resolveComment("another comment about Naming");
