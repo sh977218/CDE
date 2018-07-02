@@ -59,4 +59,5 @@ export class NotificationsComponent {
     static navigateNotification(notification) {
         if (notification && notification._id && notification._id.url) window.open(notification._id.url, '_blank');
     }
+
 }

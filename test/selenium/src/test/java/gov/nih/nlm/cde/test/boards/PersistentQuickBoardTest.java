@@ -12,9 +12,9 @@ public class PersistentQuickBoardTest extends NlmCdeBaseTest {
         openCdeInList(eltName);
         clickElement(By.id("addToCompare_0"));
         closeAlert();
-        clickElement(By.linkText("Quick Board (1)"));
+        clickElement(By.linkText("QUICK BOARD (1)"));
         driver.get(baseUrl);
-        clickElement(By.linkText("Quick Board (1)"));
+        clickElement(By.linkText("QUICK BOARD (1)"));
         textPresent(eltName);
     }
 

@@ -29,7 +29,7 @@ public class SaveSearchState extends NlmCdeBaseTest {
         findElement(By.name("q")).sendKeys("name");
         clickElement(By.id("search.submit"));
         checkSearchResultInfo("name", "CTEP", null, "All Topics", "All Statuses", null);
-        clickElement(By.linkText("Forms"));
+        clickElement(By.linkText("FORMS"));
         hangon(1);
         textNotPresent("CATEGORY");
         driver.navigate().back();

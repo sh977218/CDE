@@ -59,7 +59,7 @@ public class NlmCdeBaseTest {
     protected static String promis_username = "promis";
     protected static String ctepCurator_username = "ctepCurator";
     protected static String test_username = "testuser";
-    static String history_username = "historyuser";
+    protected static String history_username = "historyuser";
     protected static String ninds_username = "ninds";
     protected static String wguser_username = "wguser";
     protected static String reguser_username = "reguser";
@@ -553,7 +553,7 @@ public class NlmCdeBaseTest {
 
     protected void openFormInList(String name) {
         goToFormSearch();
-        clickElement(By.linkText("Forms"));
+        clickElement(By.linkText("FORMS"));
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         clickElement(By.xpath("//mat-icon[. = 'search']"));
@@ -767,10 +767,6 @@ public class NlmCdeBaseTest {
     protected void logout() {
         clickElement(By.id("username_link"));
         clickElement(By.id("user_logout"));
-        isLogin();
-    }
-
-    protected void isLogin() {
         findElement(By.id("login_link"));
         textPresent("Please Log In");
     }
@@ -781,7 +777,14 @@ public class NlmCdeBaseTest {
         if (username.length() > 17) {
             usernameStr = usernameStr.substring(0, 17) + "...";
         }
-        enterUsernamePasswordSubmit(username, password, usernameStr);
+
+        findElement(By.id("uname")).clear();
+        findElement(By.id("passwd")).clear();
+        findElement(By.id("uname")).sendKeys(username);
+        findElement(By.id("passwd")).sendKeys(password);
+        clickElement(By.id("login_button"));
+
+        textPresent(usernameStr.toUpperCase(), By.id("username_link"));
     }
 
     private boolean isWindows() {
@@ -838,11 +841,11 @@ public class NlmCdeBaseTest {
     }
 
     protected void addToCompare(String cdeName1, String cdeName2) {
-        textPresent("Quick Board (0)");
+        textPresent("QUICK BOARD (0)");
         addCdeToQuickBoard(cdeName1);
-        textPresent("Quick Board (1)");
+        textPresent("QUICK BOARD (1)");
         addCdeToQuickBoard(cdeName2);
-        clickElement(By.linkText("Quick Board (2)"));
+        clickElement(By.linkText("QUICK BOARD (2)"));
         clickElement(By.id("dataElementQuickBoard"));
         textPresent(cdeName1);
         textPresent(cdeName2);
@@ -926,14 +929,14 @@ public class NlmCdeBaseTest {
         action.perform();
     }
 
-    void enterUsernamePasswordSubmit(String username, String password, String checkText) {
+    protected void enterUsernamePasswordSubmit(String username, String password, String checkText) {
         findElement(By.id("uname")).clear();
         findElement(By.id("passwd")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).sendKeys(password);
         clickElement(By.id("login_button"));
         try {
-            textPresent(checkText);
+            textPresent(checkText.toUpperCase());
             // sometimes an issue with csrf, need to reload the whole page.
         } catch (TimeoutException e) {
             // csrf collision, wait random before re-trying
@@ -1263,7 +1266,7 @@ public class NlmCdeBaseTest {
 
     protected void gotoMyBoards() {
         clickElement(By.id("boardsMenu"));
-        textPresent("My Boards");
+        textPresent("MY BOARDS");
         clickElement(By.id("myBoardsLink"));
         textPresent("Add Board");
         hangon(2);

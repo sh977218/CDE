@@ -5,7 +5,7 @@ import * as Tour from "bootstrap-tour/build/js/bootstrap-tour.js";
 const navigationSteps: Array<any> = [
     {
         title: " 1/42 Welcome",
-        element: "img[alt='Home']",
+        element: "#homeLink",
         content: "Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here."
     },
     {
@@ -30,7 +30,7 @@ const navigationSteps: Array<any> = [
     },
     {
         title: " 6/42 Help",
-        element: "#menu_help_link",
+        element: "#apiDocumentationLink",
         content: "You can find more help about the site here, or information on our APIs. The tour will now take you to the CDE search page.",
         onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_cdes_link", "browseByClassification", resolve))
     }
