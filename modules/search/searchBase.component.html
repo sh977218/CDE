@@ -350,16 +350,8 @@
                         <div class="page-select float-left">
                             <mat-form-field>
                                 <input matInput placeholder="Go to page:" type="number" min="1"
-                                       [max]="totalItemsLimited" value="Sushi">
-
-                                <!--
-                                                                <mat-select [ngModel]="manualPage" (ngModelChange)="updateManualPage($event)">
-                                                                    <mat-option [value]="1">1</mat-option>
-                                                                    <mat-option [value]="10">10</mat-option>
-                                                                    <mat-option [value]="20">20</mat-option>
-                                                                    <mat-option [value]="30">30</mat-option>
-                                                                </mat-select>
-                                -->
+                                       [max]="totalItemsLimited" [ngModel]="manualPage"
+                                       (ngModelChange)="updateManualPage($event)">
                             </mat-form-field>
                         </div>
                         <div class="float-left">

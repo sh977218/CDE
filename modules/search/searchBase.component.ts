@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import {
     Component, ViewChild, Type, ViewContainerRef, EventEmitter, HostListener, Input, OnInit, OnDestroy
 } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { NavigationStart } from '@angular/router';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
@@ -15,7 +16,6 @@ import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
-import { FormControl } from "@angular/forms";
 import { MatAutocompleteTrigger, MatPaginator } from "@angular/material";
 import { debounceTime, map } from "rxjs/operators";
 
@@ -517,6 +517,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     pageChange(newPage) {
         this.searchSettings.page = newPage.pageIndex + 1;
         this.doSearch();
+        this.manualPage = null;
     }
 
     pinAll(promise: Promise<any>) {
@@ -836,7 +837,16 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         else window.scrollTo(0, previousSpot);
     }
 
+    manualPage;
+
     updateManualPage(index) {
-        this.paginator.pageIndex = index - 1;
+        if (index !== null) {
+            if (index < 1 || index > this.totalItems / this.resultPerPage) {
+                this.alert.addAlert("danger", "Invalid page: " + index);
+            } else {
+                this.paginator.pageIndex = index - 1;
+                this.alert.addAlert("info", "Redirected to page: " + index);
+            }
+        }
     }
 }
