@@ -30,7 +30,7 @@ const navigationSteps: Array<any> = [
     },
     {
         title: " 6/42 Help",
-        element: "#menu_help_link",
+        element: "#apiDocumentationLink",
         content: "You can find more help about the site here, or information on our APIs. The tour will now take you to the CDE search page.",
         onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_cdes_link", "browseByClassification", resolve))
     }
