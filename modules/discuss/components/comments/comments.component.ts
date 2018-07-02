@@ -14,7 +14,7 @@ import { UserService } from '_app/user.service';
     selector: 'cde-comments',
     templateUrl: './comments.component.html',
     styles: [`
-    .currentTabComment {
+    .currentComment {
         position: relative;
         left: -50px;
     }
