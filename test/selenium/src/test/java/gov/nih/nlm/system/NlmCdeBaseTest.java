@@ -459,7 +459,8 @@ public class NlmCdeBaseTest {
         if (!isDiscussAreaOpen) {
             clickElement(By.id("discussBtn"));
         }
-        Assert.assertEquals(driver.findElements(By.xpath("//cde-discuss-area")).size(), 0);
+        findElement(By.xpath("//cde-discuss-area"));
+        Assert.assertEquals(driver.findElements(By.xpath("//cde-discuss-area")).size(), 1);
     }
 
     private void goToElementByName(String name, String type) {
