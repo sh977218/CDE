@@ -345,20 +345,16 @@
 
                 <div>
                     <div class="float-right">
-                        <div class="page-select float-left">
-                            <mat-form-field class="float-right w-50">
-                                <input matInput placeholder="Go to page:" type="number" min="1"
-                                       [max]="totalItemsLimited" [(ngModel)]="manualPage.pageIndex"
-                                       (ngModelChange)="updateManualPage(manualPage)">
-                            </mat-form-field>
-                        </div>
-                        <div class="float-left">
-                            <mat-paginator (page)="pageChange($event)" [length]="totalItemsLimited"
-                                           [pageIndex]="searchSettings.page - 1"
-                                           [pageSize]="resultPerPage" [hidePageSize]="true" style="font-size: 1.4em">
-                            </mat-paginator>
-                            <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
-                        </div>
+                        <mat-form-field class="float-left" style="width:35%;">
+                            <input matInput placeholder="Go to page:" type="number" min="1"
+                                   [max]="totalItemsLimited" [(ngModel)]="manualPage.pageIndex"
+                                   (ngModelChange)="updateManualPage(manualPage)">
+                        </mat-form-field>
+                        <mat-paginator (page)="pageChange($event)" [length]="totalItemsLimited"
+                                       [pageIndex]="searchSettings.page - 1"
+                                       [pageSize]="resultPerPage" [hidePageSize]="true" style="font-size: 1.4em">
+                        </mat-paginator>
+                        <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
                     </div>
                 </div>
             </div>

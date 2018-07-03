@@ -107,7 +107,7 @@ export const searchStyles: string = `
       font-size: 12px;
       color: mat-color($foreground, secondary-text);
 
-      .label {
+    .label {
         margin: 0 4px;
       }
     }
