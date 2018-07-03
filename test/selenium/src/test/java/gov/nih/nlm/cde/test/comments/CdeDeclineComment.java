@@ -12,7 +12,7 @@ public class CdeDeclineComment extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToDiscussArea();
         textPresent(sensorComment);
-        declineComment(commentEditor_username, commentEditor_password, anonymousCommentUser2_username, badComment);
+        declineComment(reguser_username, password, anonymousCommentUser2_username, badComment);
 
         mustBeLoggedInAs(anonymousCommentUser2_username, anonymousCommentUser_password);
         goToCdeByName(cdeName);
