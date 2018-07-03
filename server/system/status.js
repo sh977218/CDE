@@ -8,6 +8,7 @@ const mongo_data = require('./mongo-data');
 const elastic = require('./elastic');
 const esInit = require('./elasticSearchInit');
 const pushNotification = require('./pushNotification');
+const dbLogger = require('../log/dbLogger');
 
 let app_status = this;
 
@@ -71,7 +72,6 @@ app_status.isElasticUp = function (cb) {
     });
 };
 
-let startupDate = new Date();
 app_status.getStatus = getStatusDone => {
     app_status.isElasticUp(() => {
         if (app_status.statusReport.elastic.up) {
@@ -123,40 +123,65 @@ app_status.getStatus = getStatusDone => {
 };
 
 let lastReport;
+let notificationTimeout;
+
 setInterval(() => {
     app_status.getStatus(() => {
+        console.log("status got")
         let newReport = JSON.stringify(app_status.statusReport);
 
         if (!!lastReport && newReport !== lastReport) {
-            let msg = {
-                title: 'Elastic Search Index Issue',
-                options: {
-                    body: "Status reports not normal",
-                    icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
-                    badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
-                    tag: 'cde-es-issue',
-                    actions: [
-                        {
-                            action: 'site-mgt-action',
-                            title: 'View',
-                            icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+            console.log("different report")
+            if (!notificationTimeout) {
+                console.log("delay notif");
+                notificationTimeout = setTimeout(() => {
+                    console.log("sending notification");
+                    let msg = {
+                        title: 'Elastic Search Index Issue',
+                        options: {
+                            body: "Status reports not normal",
+                            icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
+                            badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+                            tag: 'cde-es-issue',
+                            actions: [
+                                {
+                                    action: 'site-mgt-action',
+                                    title: 'View',
+                                    icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+                                }
+                            ]
                         }
-                    ]
-                }
-            };
+                    };
 
-            mongo_data.saveNotification({
-                title: 'Elastic Search Index Error',
-                url: "/status/cde",
-                roles: ['siteAdmin']
-            });
+                    mongo_data.saveNotification({
+                        title: 'Elastic Search Index Error',
+                        url: "/status/cde",
+                        roles: ['siteAdmin']
+                    });
 
-            mongo_data.pushGetAdministratorRegistrations(registrations => {
-                registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
-            });
+                    mongo_data.pushGetAdministratorRegistrations(registrations => {
+                        registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
+                    });
 
+                    dbLogger.logError({
+                        message: "Elastic Search Status",
+                        origin: "app_status.getStatus",
+                        details: newReport
+                    });
+                    lastReport = newReport;
+                }, config.status.timeouts.notificationTimeout);
+            }
+        } else {
+            if (!!notificationTimeout) {
+                console.log("cancel notification");
+                clearTimeout(notificationTimeout);
+                notificationTimeout = undefined;
+            }
         }
-        lastReport = newReport;
+        if (!lastReport) {
+            console.log("update report");
+            lastReport = newReport;
+        }
     });
 }, config.status.timeouts.statusCheck);
 
