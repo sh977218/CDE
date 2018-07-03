@@ -8,10 +8,11 @@ public class CdeDeclineComment extends NlmCdeBaseTest {
     public void cdeDeclineCommentTest() {
         String cdeName = "Alcohol use started age value";
         String sensorComment = "This comment is pending approval";
+        String badComment = "This comment about Alcohol use started age value is bad";
         goToCdeByName(cdeName);
         goToDiscussArea();
         textPresent(sensorComment);
-        declineComment(commentEditor_username, commentEditor_password, anonymousCommentUser2_username, "Bad Comment");
+        declineComment(commentEditor_username, commentEditor_password, anonymousCommentUser2_username, badComment);
 
         mustBeLoggedInAs(anonymousCommentUser2_username, anonymousCommentUser_password);
         goToCdeByName(cdeName);

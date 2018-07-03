@@ -438,7 +438,7 @@ exports.updateReplyStatus = function (req, res, status) {
 
 exports.declineComment = function (req, res) {
     if (!req.isAuthenticated() || !authorizationShared.hasRole(req.user, "CommentReviewer")) {
-        res.status(403).send("You are not authorized to approve a comment.");
+        res.status(403).send("You are not authorized to decline this comment.");
     }
     mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
         if (err || !comment) return res.status(404).send("Comment not found");
@@ -464,7 +464,7 @@ exports.declineComment = function (req, res) {
 
 exports.approveComment = function (req, res) {
     if (!req.isAuthenticated() || !authorizationShared.hasRole(req.user, "CommentReviewer")) {
-        res.status(403).send("You are not authorized to approve a comment.");
+        res.status(403).send("You are not authorized to approve this comment.");
     }
     mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
         if (err || !comment) return res.status(404).send("Comment not found");

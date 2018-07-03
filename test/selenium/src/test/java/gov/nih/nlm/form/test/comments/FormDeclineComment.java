@@ -8,10 +8,11 @@ public class FormDeclineComment extends NlmCdeBaseTest {
     public void formDeclineCommentTest() {
         String formName = "ALS Depression Inventory (ADI-12)";
         String sensorComment = "This comment is pending approval";
+        String badComment = "This comment about ALS Depression Inventory (ADI-12) is bad";
         goToFormByName(formName);
         goToDiscussArea();
         textPresent(sensorComment);
-        declineComment(commentEditor_username, commentEditor_password, anonymousCommentUser2_username, "Bad Comment");
+        declineComment(commentEditor_username, commentEditor_password, anonymousCommentUser2_username, badComment);
 
         mustBeLoggedInAs(anonymousCommentUser2_username, anonymousCommentUser_password);
         goToFormByName(formName);
