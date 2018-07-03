@@ -11,7 +11,7 @@ const auth = require('./server/system/authentication');
 const logging = require('./server/system/logging.js');
 const daoManager = require('./server/system/moduleDaoManager.js');
 const domain = require('domain').create();
-const ipfilter = require('express-ipfilter');
+const ipFilter = require('express-ipfilter');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
@@ -20,7 +20,6 @@ const compress = require('compression');
 const helmet = require('helmet');
 const ioServer = require('./server/system/ioServer');
 const winston = require('winston');
-const dbLogger = require('./server/log/dbLogger');
 const authorization = require('./server/system/authorization');
 const traffic  = require('./server/system/traffic');
 
@@ -93,7 +92,7 @@ let getRealIp = function (req) {
 };
 
 let blackIps = [];
-app.use(ipfilter(blackIps, {errorMessage: "You are not authorized. Please contact support if you believe you should not see this error."}));
+app.use(ipFilter(blackIps, {errorMessage: "You are not authorized. Please contact support if you believe you should not see this error."}));
 const banEndsWith = config.banEndsWith || [];
 const banStartsWith = config.banStartsWith || [];
 
