@@ -132,7 +132,7 @@
     "timeouts": {
       "statusCheck": 5000,
       "clusterStatus": 30,
-      "notificationTimeout": 30000
+      "notificationTimeout": 60000
     }
   },
   "account": "CDE Account <cdeuser@nlm.nih.gov>",

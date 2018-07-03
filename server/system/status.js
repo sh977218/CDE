@@ -127,15 +127,15 @@ let notificationTimeout;
 
 setInterval(() => {
     app_status.getStatus(() => {
-        console.log("status got")
         let newReport = JSON.stringify(app_status.statusReport);
 
         if (!!lastReport && newReport !== lastReport) {
-            console.log("different report")
+            // different report
             if (!notificationTimeout) {
-                console.log("delay notif");
+                // delay sending notif if report stays different for 1 minute
                 notificationTimeout = setTimeout(() => {
-                    console.log("sending notification");
+                    // send notification now
+                    lastReport = newReport;
                     let msg = {
                         title: 'Elastic Search Index Issue',
                         options: {
@@ -168,18 +168,17 @@ setInterval(() => {
                         origin: "app_status.getStatus",
                         details: newReport
                     });
-                    lastReport = newReport;
                 }, config.status.timeouts.notificationTimeout);
             }
         } else {
             if (!!notificationTimeout) {
-                console.log("cancel notification");
+                // cancel sending notification because system is back to normal within a minute
                 clearTimeout(notificationTimeout);
                 notificationTimeout = undefined;
             }
         }
         if (!lastReport) {
-            console.log("update report");
+            // set normal status for the first time.
             lastReport = newReport;
         }
     });
