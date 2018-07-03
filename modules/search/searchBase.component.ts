@@ -514,8 +514,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     pageChange(newPage) {
         this.searchSettings.page = newPage.pageIndex + 1;
-        this.doSearch();
-        this.manualPage = {pageIndex: null};
+        if (this.searchSettings.page < 1 || this.searchSettings.page > this.totalItems / this.resultPerPage) {
+            this.alert.addAlert("danger", "Invalid page: " + this.searchSettings.page);
+        } else this.doSearch();
     }
 
     pinAll(promise: Promise<any>) {
@@ -833,17 +834,5 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     static waitScroll(count, previousSpot) {
         if (count > 0) setTimeout(() => SearchBaseComponent.waitScroll(count - 1, previousSpot), 100);
         else window.scrollTo(0, previousSpot);
-    }
-
-    manualPage = {pageIndex: null};
-
-    updateManualPage(manualPage) {
-        if (manualPage.pageIndex !== null) {
-            if (manualPage.pageIndex < 1 || manualPage.pageIndex > this.totalItems / this.resultPerPage) {
-                this.alert.addAlert("danger", "Invalid page: " + manualPage.pageIndex);
-            } else {
-                this.pageChange(manualPage);
-            }
-        }
     }
 }
