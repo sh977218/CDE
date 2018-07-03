@@ -714,7 +714,6 @@ public class NlmCdeBaseTest {
     }
 
     public void textPresent(String text, By by) {
-        scrollToView(by);
         wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
     }
 
