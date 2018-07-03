@@ -101,16 +101,6 @@ export const searchStyles: string = `
     .badge-secondary {
         background-color: #70777d;
     }
-    .page-select {
-      display: flex;
-      align-items: center;
-      font-size: 12px;
-      color: mat-color($foreground, secondary-text);
-
-    .label {
-        margin: 0 4px;
-      }
-    }
 `;
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
