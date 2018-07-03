@@ -767,7 +767,7 @@ public class NlmCdeBaseTest {
         clickElement(By.id("login_link"));
         String usernameStr = username;
         if (username.length() > 17) {
-            usernameStr = usernameStr.substring(0, 17) + "...";mon
+            usernameStr = usernameStr.substring(0, 17) + "...";
         }
 
         findElement(By.id("uname")).clear();
