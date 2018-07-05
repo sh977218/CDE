@@ -31,7 +31,7 @@ exports.byUsername = (username, callback) => {
 };
 
 exports.save = (user, callback) => {
-    new User.save(user, callback);
+    new User(user).save(callback);
 };
 
 
