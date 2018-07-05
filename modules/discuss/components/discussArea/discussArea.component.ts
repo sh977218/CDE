@@ -24,9 +24,7 @@ const tabMap = {
 
 @Component({
     selector: 'cde-discuss-area',
-    templateUrl: './discussArea.component.html',
-    styles: [`
-    `]
+    templateUrl: './discussArea.component.html'
 })
 export class DiscussAreaComponent {
     private ownElt;
@@ -34,6 +32,8 @@ export class DiscussAreaComponent {
     @Input() set elt(e) {
         this.ownElt = this.isAllowedModel.doesUserOwnElt(e);
         this._elt = e;
+        this.newComment.element.eltType = this._elt.elementType;
+        this.newComment.element.eltId = this._elt.tinyId;
     }
 
     get elt() {
@@ -46,6 +46,7 @@ export class DiscussAreaComponent {
     private _currentTab = 'general_tab';
     @Input() set currentTab(tab: string) {
         this._currentTab = tabMap[tab];
+        this.newComment.linkedTab = this._currentTab;
     }
 
     get currentTab() {
@@ -62,11 +63,8 @@ export class DiscussAreaComponent {
     }
 
     postNewComment() {
-        this.http.post('/comments/' + this._elt.elementType + '/add', {
-            comment: this.newComment.text,
-            linkedTab: this._currentTab,
-            element: {eltId: this.eltId}
-        }).subscribe(() => this.newComment.text = '');
+        this.http.post('/server/discuss/postComment', this.newComment)
+            .subscribe(() => this.newComment.text = '');
     }
 
 }

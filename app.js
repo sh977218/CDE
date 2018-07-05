@@ -227,7 +227,7 @@ express.response.render = function (view, module, msg) {
 };
 
 try {
-    let discussModule = require("./server/discuss/index").module({
+    let discussModule = require("./server/discuss/discussRoute").module({
         allComments: [authorization.isOrgAuthorityMiddleware],
         manageComment: [authorization.canApproveCommentMiddleware]
     });

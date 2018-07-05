@@ -1,10 +1,18 @@
 import _find from 'lodash/find';
+import { User } from 'shared/models.model';
 
 export const rolesEnum = ["DocumentationEditor", "BoardPublisher", "CommentAuthor",
     "CommentReviewer", "AttachmentReviewer", "OrgAuthority", "FormEditor"];
 
 export function canComment(user) {
     return hasRole(user, "CommentAuthor") || hasRole(user, "CommentReviewer") || isOrgCurator(user);
+}
+
+export function canRemoveComment(user, comment, element) {
+    return user.username === comment.user.username
+        || (element.stewardOrg && (req.user.orgAdmin.indexOf(element.stewardOrg.name) > -1))
+        || (element.owner && (element.owner.username === req.user.username))
+        || req.user.siteAdmin
 }
 
 export function canCreateForms(user) {

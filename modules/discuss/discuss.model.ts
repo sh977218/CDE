@@ -1,7 +1,18 @@
+import { UserReference } from '../shared/models.model';
+
+export class Reply {
+    text: string;
+    user: UserReference;
+    username: string;
+    created: Date;
+    pendingApproval: boolean;
+    status: string;
+}
+
 export class Comment {
     _id: string;
     text: string;
-    user: string;
+    user: UserReference;
     username: string;
     created: Date;
     pendingApproval: boolean;
@@ -9,16 +20,7 @@ export class Comment {
     currentComment: boolean = false;
     status: string;
     currentlyReplying: boolean;
-    replies: [
-        {
-            text: string
-            user: string
-            username: string
-            created: Date
-            pendingApproval: boolean
-            status: string
-        }
-        ];
+    replies: [Reply];
     element: {
         eltType: string
         eltId: String

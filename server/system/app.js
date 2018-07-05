@@ -1027,8 +1027,6 @@ exports.init = function (app) {
         );
     });
 
-    app.post('/comments/reply', adminItemSvc.replyToComment);
-
     app.get('/activeBans', (req, res) => {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             traffic.getTrafficFilter(list => res.send(list));

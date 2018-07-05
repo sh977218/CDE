@@ -101,13 +101,6 @@ exports.init = function (app, daoManager) {
         adminItemSvc.setAttachmentDefault(req, res, mongo_cde);
     });
 
-    app.post('/comments/cde/add', function (req, res) {
-        adminItemSvc.addComment(req, res, mongo_cde);
-    });
-    app.post('/comments/cde/delete', function (req, res) {
-        adminItemSvc.removeComment(req, res, mongo_cde);
-    });
-
     app.get('/moreLikeCde/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
         elastic.morelike(req.params.tinyId, function (result) {
             result.cdes = cdesvc.hideProprietaryCodes(result.cdes, req.user);
