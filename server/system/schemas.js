@@ -432,3 +432,4 @@ exports.notificationSchema = new Schema({
     date: {type: Date, index: true, default: new Date()},
     roles: {type: [String], index: true, default: []}
 });
+
