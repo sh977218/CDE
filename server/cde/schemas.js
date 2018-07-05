@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const _ = require('lodash');
 const sharedSchemas = require('../system/schemas.js');
+const discussSchemas = require('../discuss/schemas');
 
 var conceptSchema = new Schema({
     name: sharedSchemas.stringType,
@@ -90,7 +91,7 @@ var deJson = {
         script: sharedSchemas.stringType,
         _id: false
     }], // Deprecated
-    comments: [sharedSchemas.commentSchema],
+    comments: [discussSchemas.commentSchema],
     archived: {type: Boolean, default: false, index: true}, // Indication of historical record. True for previous versions.
     forkOf: sharedSchemas.stringType, // May point to a tinyID if the CDE is a fork
     attachments: [sharedSchemas.attachmentSchema],

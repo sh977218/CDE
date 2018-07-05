@@ -11,11 +11,24 @@ exports.canEditMiddleware = function (req, res, next) {
         // TODO: should consider adding to error log
         return res.status(403).send();
     }
-    if (next) {
-        next();
-    }
+    if (next) next();
 };
 
+exports.canCommentMiddleware = function (user) {
+    return authorizationShared.hasRole(user, "CommentAuthor")
+        || authorizationShared.hasRole(user, "CommentReviewer")
+        || authorizationShared.isOrgCurator(user);
+};
+
+exports.canApproveCommentMiddleware = function (req, res, next) {
+    if (authorizationShared.hasRole(req.user, "CommentReviewer")) next();
+    else res.send(401).send();
+};
+
+exports.isAuthenticatedMiddleware = function (req, res, next) {
+    if (req.isAuthenticated()) next();
+    else res.status(401).send();
+};
 exports.isOrgAdminMiddleware = (req, res, next) => {
     if (!req.isAuthenticated() || !authorizationShared.isOrgAdmin(req.user, req.body.org)) {
         return res.status(403).send();

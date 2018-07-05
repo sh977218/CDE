@@ -2,6 +2,7 @@ const config = require("config");
 const Schema = require('mongoose').Schema;
 
 const sharedSchemas = require('../system/schemas.js');
+const discussSchemas = require('../discuss/schemas');
 
 const instructionSchema = new Schema({
     value: sharedSchemas.stringType,
@@ -121,7 +122,7 @@ exports.formJson = {
     }
     , origin: sharedSchemas.stringType
     , attachments: [sharedSchemas.attachmentSchema]
-    , comments: [sharedSchemas.commentSchema]
+    , comments: [discussSchemas.commentSchema]
     , history: [Schema.Types.ObjectId]
     , changeNote: sharedSchemas.stringType
     , lastMigrationScript: sharedSchemas.stringType

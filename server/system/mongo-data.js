@@ -14,11 +14,12 @@ const logging = require('./logging.js');
 const daoManager = require('./moduleDaoManager');
 const config = require('./parseConfig');
 const schemas = require('./schemas');
+const discussSchemas = require('../discuss/schemas');
 
 
 const conn = connHelper.establishConnection(config.database.appData);
 const ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus);
-const Comment = conn.model('Comment', schemas.commentSchema);
+const Comment = conn.model('Comment', discussSchemas.commentSchema);
 const Embeds = conn.model('Embed', schemas.embedSchema);
 const FhirApps = conn.model('FhirApp', schemas.fhirAppSchema);
 const FhirObservationInfo = conn.model('FhirObservationInfo', schemas.fhirObservationInformationSchema);
