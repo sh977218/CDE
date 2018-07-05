@@ -3,10 +3,11 @@ import { Injectable } from '@angular/core';
 import { LocalStorageService } from 'angular-2-local-storage';
 
 import { UserService } from '_app/user.service';
-import { ElasticQueryResponse } from 'shared/models.model';
+import { ElasticQueryResponse, User } from 'shared/models.model';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { orderedList } from 'shared/system/regStatusShared';
+import { AlertService } from '_app/alert.service';
 
 @Injectable()
 export class ElasticService {
@@ -24,7 +25,8 @@ export class ElasticService {
 
     constructor(public http: HttpClient,
                 private localStorageService: LocalStorageService,
-                private userService: UserService) {
+                private userService: UserService,
+                private alert: AlertService) {
         this.loadSearchSettings();
     }
 
@@ -157,7 +159,7 @@ export class ElasticService {
         delete savedSettings.includeRetired;
         this.localStorageService.set("SearchSettings", savedSettings);
         if (this.userService.user) {
-            this.http.post("/server/user/", {searchSettings: savedSettings}, {responseType: 'text'}).subscribe();
+            this.http.post("/server/user/", {searchSettings: savedSettings}).subscribe(savedUser => this.userService.user = <User>savedUser, err => this.alert.addAlert('danger', err));
         }
     }
 
