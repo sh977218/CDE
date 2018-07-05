@@ -220,7 +220,7 @@ express.response.render = (view, module, msg) => {
 };
 
 try {
-    let logModule = require("./server/log/index").module({
+    let logModule = require("./server/log/logRoute").module({
         feedbackLog: [authorization.isOrgAuthorityMiddleware]
     });
     app.use('/server/log', logModule);
