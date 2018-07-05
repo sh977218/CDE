@@ -945,27 +945,37 @@ exports.init = function (app) {
     new CronJob('00 00 4 * * *', () => elastic.syncWithMesh(), null, true, 'America/New_York');
 
     app.get('/comments/eltId/:eltId', function (req, res) {
-        mongo_data.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function (err, comments) {
-            let result = comments.filter(c => c.status !== 'deleted');
-            result.forEach(function (c) {
-                c.replies = c.replies.filter(r => r.status !== 'deleted');
-            });
-            result.forEach(function (c) {
+        let aggregate = [
+            {$match: {'element.eltId': req.params.eltId}},
+            {
+                $lookup: {
+                    from: 'users',
+                    let: {'username': '$username'},
+                    pipeline: [
+                        {$match: {$expr: {$eq: ['$username', '$$username']}}},
+                        {$project: {_id: 0, avatarUrl: 1}}
+                    ],
+                    as: '__user'
+                }
+            },
+            {$replaceRoot: {newRoot: {$mergeObjects: [{$arrayElemAt: ['$__user', 0]}, "$$ROOT"]}}},
+            {$project: {__user: 0}}
+        ];
+        mongo_data.Comment.aggregate(aggregate, (err, comments) => {
+            if (err) return res.status(500).send('Error retrieve comments');
+            comments.forEach(c => {
                 if (c.pendingApproval) c.text = "This comment is pending approval";
-                c.replies.forEach(function (r) {
-                    if (r.pendingApproval) r.text = "This comment is pending approval";
+                c.replies.forEach(r => {
+                    if (r.pendingApproval) r.text = "This reply is pending approval";
                 });
             });
-            res.send(result);
+            res.send(comments);
         });
     });
 
     app.get('/comment/:commentId', function (req, res) {
-        mongo_data.Comment.findOne({_id: req.params.commentId}).exec(function (err, comment) {
-            if (err) res.send(500);
-            else
-                res.send(comment);
-        });
+        mongo_data.Comment.findById(req.params.commentId, dbLogger.handleError(
+            {res: res, origin: "/comment/"}, comment => res.send(comment)));
     });
 
     app.get('/commentsfor/:username/:from/:size', adminItemSvc.commentsForUser);
@@ -978,12 +988,45 @@ exports.init = function (app) {
 
     app.post('/comments/decline', adminItemSvc.declineComment);
 
-    app.post('/comments/status/resolved', function (req, res) {
+    app.post('/comment/status/resolve', [authorization.isAuthenticatedMiddleware], function (req, res) {
         adminItemSvc.updateCommentStatus(req, res, "resolved");
     });
-    app.post('/comments/status/active', function (req, res) {
+    app.post('/comment/status/active', [authorization.isAuthenticatedMiddleware], function (req, res) {
         adminItemSvc.updateCommentStatus(req, res, "active");
     });
+
+    app.post('/reply/status/resolve', [authorization.isAuthenticatedMiddleware], function (req, res) {
+        adminItemSvc.updateReplyStatus(req, res, "resolved");
+    });
+    app.post('/reply/status/active', [authorization.isAuthenticatedMiddleware], function (req, res) {
+        adminItemSvc.updateReplyStatus(req, res, "active");
+    });
+
+    /*    @TODO This endpoint will be improved in discuss module ticket */
+    app.post('/comment/status/delete', [authorization.isAuthenticatedMiddleware], function (req, res) {
+        mongo_data.Comment.findById(req.body.commentId, dbLogger.handleError(
+            {res: res, origin: "/comment/status/delete/"}, comment => {
+                if (!comment) return res.status(404).send("Comment not found");
+                let type = comment.element.eltType;
+                adminItemSvc.removeComment(req, res, comment, daoManager.getDao(type));
+            })
+        );
+
+    });
+    /*    @TODO This endpoint will be improved in discuss module ticket */
+    app.post('/reply/status/delete', [authorization.isAuthenticatedMiddleware], function (req, res) {
+        mongo_data.Comment.findOne({'replies._id': req.body.replyId}, dbLogger.handleError(
+            {res: res, origin: "/comment/status/delete/"}, comment => {
+                if (!comment) return res.status(404).send("Comment not found");
+                let index = comment.replies.map(r => r._id.toString()).indexOf(req.body.replyId);
+                if (index === -1) return res.status(404).send("Reply not found");
+                comment.replies.splice(index, 1);
+                let type = comment.element.eltType;
+                adminItemSvc.removeReply(req, res, comment, daoManager.getDao(type));
+            })
+        );
+    });
+
     app.post('/comments/reply', adminItemSvc.replyToComment);
 
     app.get('/activeBans', (req, res) => {

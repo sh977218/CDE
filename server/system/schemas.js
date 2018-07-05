@@ -252,7 +252,10 @@ exports.idSchema = {source: stringType, id: stringType, version: stringType, _id
 
 exports.commentSchema = new Schema({
     text: stringType,
-    user: stringType,
+    user: {
+        userId: Schema.Types.ObjectId,
+        username: stringType
+    },
     username: stringType,
     created: Date,
     pendingApproval: Boolean,
@@ -260,7 +263,10 @@ exports.commentSchema = new Schema({
     status: Object.assign({enum: ["active", "resolved", "deleted"], default: "active"}, stringType),
     replies: [{
         text: stringType,
-        user: stringType,
+        user: {
+            userId: Schema.Types.ObjectId,
+            username: stringType
+        },
         username: stringType,
         created: Date,
         pendingApproval: Boolean,
