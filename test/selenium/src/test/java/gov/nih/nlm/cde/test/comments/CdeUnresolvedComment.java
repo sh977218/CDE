@@ -1,13 +1,13 @@
-package gov.nih.nlm.cde.test.regstatus;
+package gov.nih.nlm.cde.test.comments;
 
-import gov.nih.nlm.cde.test.comments.CdeCommentTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class UnresolvedComment extends CdeCommentTest {
+public class CdeUnresolvedComment extends NlmCdeBaseTest {
 
     @Test
-    public void unresolvedComment() {
+    public void cdeUnresolvedCommentTest() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Cancer history indicator");
 

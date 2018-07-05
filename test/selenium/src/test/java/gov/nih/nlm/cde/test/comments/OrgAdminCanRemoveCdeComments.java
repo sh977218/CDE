@@ -1,12 +1,17 @@
 package gov.nih.nlm.cde.test.comments;
 
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.testng.annotations.Test;
 
-public class OrgAdminCanRemoveCdeComments extends CdeCommentTest {
+public class OrgAdminCanRemoveCdeComments extends NlmCdeBaseTest {
 
     @Test
-    public void orgAdminCanRemoveCdeComment() {
-        orgAdminCanRemoveComment("Local Excision Colorectal Lateral Surgical Margin Identifier java.lang.Long", null);
+    public void orgAdminCanRemoveCdeCommentTest() {
+        String cdeName = "Local Excision Colorectal Lateral Surgical Margin Identifier java.lang.Long";
+        String commentText = "Inappropriate Comment";
+        mustBeLoggedInAs(cabigAdmin_username, password);
+        goToCdeByName(cdeName);
+        removeComment(commentText);
     }
 
 }

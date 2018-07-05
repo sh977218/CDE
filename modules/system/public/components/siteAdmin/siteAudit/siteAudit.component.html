@@ -1,4 +1,4 @@
-<ngb-tabset class="container-fluid" >
+<ngb-tabset class="container-fluid">
     <ngb-tab title="Logs" *ngIf="isAdmin">
         <ng-template ngbTabContent>
             <cde-log-audit></cde-log-audit>
@@ -6,9 +6,9 @@
     </ngb-tab>
 
     <ngb-tab title="App Logs" *ngIf="isAdmin">
-       <ng-template ngbTabContent>
+        <ng-template ngbTabContent>
             <cde-app-log></cde-app-log>
-       </ng-template>
+        </ng-template>
     </ngb-tab>
 
     <ngb-tab title="Usage" *ngIf="isAdmin">
