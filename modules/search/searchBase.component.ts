@@ -1,7 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import {
-    Component, ViewChild, Type, ViewContainerRef, EventEmitter, HostListener, Input, OnInit, OnDestroy
+    Component,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnDestroy,
+    OnInit,
+    Type,
+    ViewChild,
+    ViewContainerRef
 } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { NavigationStart } from '@angular/router';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
@@ -15,8 +24,7 @@ import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { BrowserService } from 'widget/browser.service';
 import { HelperObjectsService } from 'widget/helperObjects.service';
-import { FormControl } from "@angular/forms";
-import { MatAutocompleteTrigger } from "@angular/material";
+import { MatAutocompleteTrigger, MatPaginator } from "@angular/material";
 import { debounceTime, map } from "rxjs/operators";
 
 export const searchStyles: string = `
@@ -110,6 +118,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @ViewChild('tbset') public tabset: NgbTabset;
     @ViewChild('validRulesModal') validRulesModal: NgbModal;
     @ViewChild('autoCompleteInput', { read: MatAutocompleteTrigger }) autoCompleteInput: MatAutocompleteTrigger;
+    @ViewChild(MatPaginator) paginator: MatPaginator;
+
     add: EventEmitter<any>;
     addMode: string;
     aggregations: any;
@@ -504,7 +514,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     pageChange(newPage) {
         this.searchSettings.page = newPage.pageIndex + 1;
-        this.doSearch();
+        if (this.searchSettings.page < 1 || this.searchSettings.page > this.totalItems / this.resultPerPage) {
+            this.alert.addAlert("danger", "Invalid page: " + this.searchSettings.page);
+        } else this.doSearch();
     }
 
     pinAll(promise: Promise<any>) {
