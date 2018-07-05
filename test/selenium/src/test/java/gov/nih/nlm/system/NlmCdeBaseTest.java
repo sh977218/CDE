@@ -30,7 +30,6 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -403,7 +402,9 @@ public class NlmCdeBaseTest {
         goToElementByName(name, "form");
     }
 
-    protected void goToPreview() { clickElement(By.id("preview_tab")); }
+    protected void goToPreview() {
+        clickElement(By.id("preview_tab"));
+    }
 
     protected void goToGeneralDetail() {
         clickElement(By.id("general_tab"));
@@ -451,6 +452,15 @@ public class NlmCdeBaseTest {
 
     protected void goToScoreDerivations() {
         clickElement(By.id("rules_tab"));
+    }
+
+    protected void goToDiscussArea() {
+        boolean isDiscussAreaOpen = driver.findElements(By.xpath("//cde-discuss-area")).size() > 0;
+        if (!isDiscussAreaOpen) {
+            clickElement(By.id("discussBtn"));
+        }
+        findElement(By.xpath("//cde-discuss-area"));
+        Assert.assertEquals(driver.findElements(By.xpath("//cde-discuss-area")).size(), 1);
     }
 
     private void goToElementByName(String name, String type) {
@@ -1724,4 +1734,114 @@ public class NlmCdeBaseTest {
                 org.junit.Assert.fail("Registration status order incorrect. Current:" + currentOrder + " Previous: " + order);
         }
     }
+
+    protected int getRandomNumber() {
+        return (int) (Math.random() * 10000);
+    }
+
+    protected void addComment(String message) {
+        goToDiscussArea();
+        findElement(By.id("newCommentTextArea")).sendKeys(message);
+        hangon(2);
+        clickElement(By.id("commentBtn"));
+        isCommentOrReplyExists(message, true);
+    }
+
+    protected void replyComment(int index, String message) {
+        goToDiscussArea();
+        findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
+        clickElement(By.id("replyBtn_" + index));
+        isCommentOrReplyExists(message, true);
+    }
+
+    protected void addCommentNeedApproval(String message) {
+        goToDiscussArea();
+        findElement(By.name("newCommentTextArea")).sendKeys(message);
+        hangon(2);
+        clickElement(By.id("commentBtn"));
+        textNotPresent(message);
+        textPresent("This comment is pending approval");
+    }
+
+    protected void replyCommentNeedApproval(int index, String message) {
+        goToDiscussArea();
+        findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
+        clickElement(By.id("replyBtn_" + index));
+        textNotPresent(message);
+        textPresent("This reply is pending approval");
+    }
+
+    protected void approveComment(String adminUsername, String adminPassword, String username, String message) {
+        mustBeLoggedInAs(adminUsername, adminPassword);
+        clickElement(By.id("incomingMessage"));
+        if (message.length() >= 60) message = message.substring(0, 59).trim();
+        clickElement(By.xpath("//a[contains(normalize-space(),'" + "Comment approval | " + username + " | " + message + "')]"));
+        clickElement(By.cssSelector(".card .approveComment"));
+        textPresent("Message moved");
+    }
+
+    protected void declineComment(String adminUsername, String adminPassword, String username, String message) {
+        mustBeLoggedInAs(adminUsername, adminPassword);
+        clickElement(By.id("incomingMessage"));
+        if (message.length() >= 60) message = message.substring(0, 59).trim();
+        clickElement(By.xpath("//a[contains(normalize-space(),'" + "Comment approval | " + username + " | " + message + "')]"));
+        clickElement(By.cssSelector(".card .declineComment"));
+        textPresent("Message moved");
+    }
+
+    protected void removeComment(String message) {
+        goToDiscussArea();
+        String xpath = getCommentIconXpath(message, "comment", "remove");
+        clickElement(By.xpath(xpath));
+        isCommentOrReplyExists(message, false);
+    }
+
+    protected void removeReply(String message) {
+        goToDiscussArea();
+        String xpath = getCommentIconXpath(message, "reply", "remove");
+        clickElement(By.xpath(xpath));
+        isCommentOrReplyExists(message, false);
+    }
+
+    protected void resolveComment(String message) {
+        goToDiscussArea();
+        String xpath = getCommentIconXpath(message, "comment", "resolve");
+        clickElement(By.xpath(xpath));
+        WebElement we = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
+        Assert.assertEquals(true, we.getAttribute("class").contains("strike"));
+    }
+
+    protected void reopenComment(String message) {
+        goToDiscussArea();
+        WebElement weResolved = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
+        Assert.assertEquals(true, weResolved.getAttribute("class").contains("strike"));
+        String xpath = getCommentIconXpath(message, "comment", "reopen");
+        clickElement(By.xpath(xpath));
+        WebElement weReopened = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
+        Assert.assertEquals(false, weReopened.getAttribute("class").contains("strike"));
+    }
+
+    private Map<String, String> COMMENT_Title_Case_MAP = new HashMap<String, String>() {
+        {
+            put("comment", "Comment");
+            put("reply", "Reply");
+        }
+    };
+
+    private String getCommentIconXpath(String message, String messageType, String iconType) {
+        String titleCase = COMMENT_Title_Case_MAP.get(messageType);
+        return "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'" + messageType + "Header')]/div[contains(@class,'manage" + titleCase + "Div')]//*[contains(@id,'" + iconType + titleCase + "_')]";
+    }
+
+    protected void checkCurrentCommentByIndex(int index, boolean isCurrent) {
+        scrollToViewById("commentDiv_" + index);
+        Assert.assertEquals(isCurrent, findElement(By.id("commentDiv_" + index)).getAttribute("class").contains("currentComment"));
+    }
+
+    protected void isCommentOrReplyExists(String commentText, boolean exist) {
+        goToDiscussArea();
+        if (exist) textPresent(commentText, By.xpath("//cde-comments"));
+        else textNotPresent(commentText, By.xpath("//cde-comments"));
+    }
+
 }
