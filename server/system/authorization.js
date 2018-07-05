@@ -118,7 +118,6 @@ exports.loggedInMiddleware = function (req, res, next) {
 // Permission Helpers with Request/Response
 // --------------------------------------------------
 
-
 exports.isDocumentationEditor = function (elt, user) {
     return authorizationShared.hasRole(user, 'DocumentationEditor');
 };

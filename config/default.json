@@ -1,7 +1,21 @@
 {
   "name": "Sample Localhost Configuration",
   "hostname": "localhost",
+  "cloudFunction": {
+    "formSdcValidate": {
+      "name": "cde-fn-sdcValidate",
+      "artifact": "serverless-aws-java/build/distributions/cde-fn-sdcValidate.zip",
+      "handler": "gov.nih.nlm.cde.sdcValidate.Handler::handleRequest"
+    }
+  },
+  "provider": {
+    "faas": "AWS"
+  },
   "publicUrl": "https://cde.nlm.nih.gov",
+  "urlProd": "https://cde.nlm.nih.gov",
+  "urlProdGreen": "https://cde-green.nlm.nih.gov",
+  "urlQa": "https://cde-qa.nlm.nih.gov",
+  "urlQaGreen": "https://cde-qa-green.nlm.nih.gov",
   "debugEnabled": false,
   "umls": {
     "licenseCode": "NLM-4110134256",

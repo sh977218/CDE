@@ -22,8 +22,8 @@ const methodOverride = require('method-override');
 const morganLogger = require('morgan');
 const compress = require('compression');
 const helmet = require('helmet');
-const ioServer = require('./server/system/ioServer');
 const winston = require('winston');
+const ioServer = require('./server/system/ioServer');
 const authorization = require('./server/system/authorization');
 const traffic = require('./server/system/traffic');
 const authorizationShared = require('./shared/system/authorizationShared');
@@ -31,7 +31,7 @@ const authorizationShared = require('./shared/system/authorizationShared');
 require('./server/system/elastic').initEs();
 
 require('log-buffer')(config.logBufferSize || 4096);
-console.log(process.versions.node);
+console.log('Node ' + process.versions.node);
 
 let app = express();
 

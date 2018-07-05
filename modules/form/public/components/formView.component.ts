@@ -48,6 +48,12 @@ class LocatableError {
                 font-size: 20px;
             }
         }
+        .menuActionIcon {
+            margin: 0 0 0 8px;
+        }
+        .menuActionIcon:hover {
+            font-weight: bold;
+        }
     `]
 })
 export class FormViewComponent implements OnInit {

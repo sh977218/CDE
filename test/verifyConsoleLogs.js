@@ -29,35 +29,38 @@ let expectedContent = {
     wrongLogin: 'login - Failed to load resource: the server responded with a status of 403'
 };
 
-let errors = [];
 let ignoreErrors = ['Slow network is detected', 'Report Only', 'reportOnly', 'Failed to decode downloaded font'];
 
-fs.readdirSync(logFolder).forEach(file => {
+fs.readdir(logFolder, (err, files) => {
+    if (err || !files) {
+        console.log(err);
+        console.log('INFO: Console Logs Not Created.');
+        process.exit(0);
+    }
+    let errors = [];
+    files.forEach(file => {
+        let expectedLines = expectedContent[file.split('_')[0]];
+        let actualLines = fs.readFileSync(logFolder + '/' + file, 'utf-8').split('\n').filter(Boolean);
 
-    let expectedLines = expectedContent[file.split('_')[0]];
-    let actualLines = fs.readFileSync(logFolder + '/' + file, 'utf-8').split('\n').filter(Boolean);
-
-    actualLines.forEach(l => {
-        if (expectedLines === '*') return;
-        for (let e of ignoreErrors) {
-            if (l.indexOf(e) > 1) return;
-        }
-        if (!expectedLines
-            || Array.isArray(expectedLines) && expectedLines.filter(e => l.indexOf(e) > -1).length === 0
-            || !Array.isArray(expectedLines) && l.indexOf(expectedLines) === -1
-        ) {
-            errors.push('ERROR: Unexpected content in console logs: ' + file + '--> ' + l);
-            return;
-        }
+        actualLines.forEach(l => {
+            if (expectedLines === '*') return;
+            for (let e of ignoreErrors) {
+                if (l.indexOf(e) > 1) return;
+            }
+            if (!expectedLines
+                || Array.isArray(expectedLines) && expectedLines.filter(e => l.indexOf(e) > -1).length === 0
+                || !Array.isArray(expectedLines) && l.indexOf(expectedLines) === -1
+            ) {
+                errors.push('ERROR: Unexpected content in console logs: ' + file + '--> ' + l);
+                return;
+            }
+        });
     });
-
+    if (errors.length) {
+        errors.forEach(e => console.log(e));
+        process.exit(1);
+    } else {
+        console.log('INFO: Console Logs Clean.');
+        process.exit(0);
+    }
 });
-
-if (errors.length) {
-    errors.forEach(e => console.log(e));
-    process.exit(1);
-} else {
-    console.log('INFO: Console Logs Clean.');
-    process.exit(0);
-}
-
