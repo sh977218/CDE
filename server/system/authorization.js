@@ -2,6 +2,10 @@ const authorizationShared = require('@std/esm')(module)('../../shared/system/aut
 const mongo_board = require('../board/mongo-board');
 
 // Middleware
+exports.isAuthenticatedMiddleware = function (req, res, next) {
+    if (req.isAuthenticated()) next();
+    else res.status(401).send();
+};
 exports.canEditMiddleware = function (req, res, next) {
     if (!authorizationShared.canEditCuratedItem(req.user, req.body)) {
         // TODO: should consider adding to error log

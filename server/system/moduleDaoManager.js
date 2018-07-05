@@ -1,5 +1,5 @@
-var daoList = [];
-var allDaos = {};
+let daoList = [];
+let allDaos = {};
 
 exports.registerDao = function(dao) {
     daoList.push(dao);
