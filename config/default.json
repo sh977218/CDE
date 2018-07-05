@@ -131,9 +131,8 @@
   "status": {
     "timeouts": {
       "statusCheck": 5000,
-      // How often to update /status/cde page ? (miliseconds),
-      "clusterStatus": 30
-      // How often to update your status in DB (seconds)
+      "clusterStatus": 30,
+      "notificationTimeout": 60000
     }
   },
   "account": "CDE Account <cdeuser@nlm.nih.gov>",
@@ -143,7 +142,7 @@
   "expressToStdout": false,
   "logBufferSize": 1000,
   "viewsIncrementThreshold": 3,
-  "versionCheckIntervalInSeconds": 1800,
+  "versionCheckIntervalInSeconds": 60,
   "webtrends": false,
   "antivirus": {
     "ip": "127.0.0.1",

@@ -154,7 +154,6 @@ exports.logClientError = function (req, callback) {
     });
 };
 
-// @TODO: remove most "res.status(500)" from the system
 exports.handleError = function (options, cb) {
     return function errorHandler(err, ...args) {
         if (err) {
