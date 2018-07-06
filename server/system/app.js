@@ -613,13 +613,13 @@ exports.init = function (app) {
     app.post('/removeOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.removeOrgCurator);
 
     app.post('/updateUserRoles', [authorization.isOrgAuthorityMiddleware], function (req, res) {
-        usersrvc.updateUserRoles(req.body, handleError({res, origin: '/updateUserRoles'}, () => {
+        usersrvc.updateUserRoles(req.body, handleError({res:res, origin: '/updateUserRoles'}, () => {
             res.status(200).end();
         }));
     });
 
     app.post('/updateUserAvatar', [authorization.isOrgAuthorityMiddleware], function (req, res) {
-        usersrvc.updateUserAvatar(req.body, handleError({res, origin: '/updateUserAvatar'}, () => {
+        usersrvc.updateUserAvatar(req.body, handleError({res:res, origin: '/updateUserAvatar'}, () => {
             res.status(200).end();
         }));
     });
@@ -646,7 +646,7 @@ exports.init = function (app) {
         if (!req.body.orgName || !req.body.categories) return res.status(400).send("Bad Request");
         let elements = req.body.elements;
         if (elements.length <= 50)
-            adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, handleError({res, origin: '/classification/bulk/'}, () => {
+            adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, handleError({res:res, origin: '/classification/bulk/'}, () => {
                 res.send("Done");
             }));
         else {
@@ -765,7 +765,7 @@ exports.init = function (app) {
     });
 
     app.post('/embed/', [authorization.isOrgAdminMiddleware], function (req, res) {
-        mongo_data.embeds.save(req.body, handleError({res, publicMessage: 'There was an error saving this embed.', origin: '/embed'}, embed =>
+        mongo_data.embeds.save(req.body, handleError({res:res, publicMessage: 'There was an error saving this embed.', origin: '/embed'}, embed =>
             res.send(embed)));
     });
 
