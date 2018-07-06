@@ -17,9 +17,9 @@ exports.byKey = function (key, cb) {
 };
 
 exports.save = function (article, cb) {
-    article.save(cb);
+    Article.save(cb);
 };
 
-exports.update = function (key, cb) {
-    article.findOneAndUpdate({key: key}, {}, cb);
+exports.update = function (art, cb) {
+    Article.findOneAndUpdate({key: art.key}, {$set: {body: art.body, updated: Date.now()}}, {upsert: true}, cb);
 };

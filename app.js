@@ -248,7 +248,7 @@ try {
     });
     app.use('/server/user', userModule);
 
-    let articleModule = require("./server/article/routes").module({
+    let articleModule = require("./server/article/articleRoutes").module({
         update: [authorization.isSiteAdminMiddleware],
     });
     app.use('/server/article', articleModule);

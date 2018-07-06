@@ -21,27 +21,37 @@
                                     class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
                                     id="boardsMenu" href="/boardList">Boards</a>
 
-                            <mat-menu class="ng-tns-c0-1 ng-star-inserted"></mat-menu>
                             <a class="mdl-navigation__link mdl-typography--text-uppercase"
-                               id="menu_qb_link" href="/quickBoard">Quick Board (0)</a><a
-                                class="mdl-navigation__link mdl-typography--text-uppercase"
-                                id="apiDocumentationLink" href="/api">API</a><a
+                               id="menu_qb_link" href="/quickBoard">Quick Board (0)</a>
 
-                                class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
+                            <a id="helpLink" class="mdl-navigation__link mdl-typography--text-uppercase">Help&nbsp;▼</a>
+                            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                                for="helpLink">
+                                <li class="mdl-menu__item">
+                                    <a id="apiDocumentationLink"
+                                       class="mdl-menu__item mdl-typography--text-uppercase"
+                                       href="/api">API</a>
+                                </li>
+                                <li class="mdl-menu__item">
+                                    <a id="whatsNewLink" href="/whatsNew"
+                                       class="mdl-menu__item mdl-typography--text-uppercase">New Features</a>
+                                </li>
+                            </ul>
+
+
+                            <a class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
                                 id="login_link" href="/login">Login</a><a
                                 id="notifications">
-                            <cde-notifications _nghost-c0=""><a
-                                    aria-haspopup="true">
-                                <mat-icon
-                                        class="mat-badge mat-icon mat-badge-warn material-icons mat-badge-overlap mat-badge-above mat-badge-after mat-badge-small mat-badge-hidden"
-                                        matbadgecolor="warn" matbadgesize="small" role="img"
-                                        style="font-size: 1.3em; margin-top: 10px" aria-hidden="true">
-                                    notifications<span id="mat-badge-content-0"
-                                                       class="mat-badge-content mat-badge-active">0</span>
-                                </mat-icon>
-                            </a>
-                                <mat-menu panelclass="notifMenu" class="ng-tns-c0-0">
-                                </mat-menu>
+                            <cde-notifications _nghost-c0="">
+                                <a aria-haspopup="true">
+                                    <mat-icon
+                                            class="mat-badge mat-icon mat-badge-warn material-icons mat-badge-overlap mat-badge-above mat-badge-after mat-badge-small mat-badge-hidden"
+                                            matbadgecolor="warn" matbadgesize="small" role="img"
+                                            style="font-size: 1.3em; margin-top: 10px" aria-hidden="true">
+                                        notifications<span id="mat-badge-content-0"
+                                                           class="mat-badge-content mat-badge-active">0</span>
+                                    </mat-icon>
+                                </a>
                             </cde-notifications>
                         </a><a id="searchSettings"
                                style="padding-right: 24px" href="/searchPreferences"><i
