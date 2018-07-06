@@ -1,18 +1,9 @@
 const Schema = require('mongoose').Schema;
+const stringType = require('../system/schemas').stringType;
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
-
 const conn = connHelper.establishConnection(config.database.appData);
-
-function deleteEmpty(v) {
-    if (v === null || v === '') {
-        return;
-    }
-    return v;
-}
-
-const stringType = {type: String, set: deleteEmpty};
 
 exports.userSchema = new Schema({
     username: Object.assign({unique: true}, stringType),
