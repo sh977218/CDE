@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const Schema = require('mongoose').Schema;
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
@@ -59,7 +59,7 @@ exports.userSchema = new Schema({
     avatarUrl: stringType,
     publishedForms: [{
         name: stringType,
-        id: mongoose.Schema.Types.ObjectId
+        id: Schema.Types.ObjectId
     }]
 }, {usePushEach: true});
 
