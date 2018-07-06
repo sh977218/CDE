@@ -725,7 +725,7 @@ public class NlmCdeBaseTest {
         return textNotPresent(text, By.cssSelector("BODY"));
     }
 
-    public boolean textNotPresent(String text, By by) {NlmCdeBaseTest
+    public boolean textNotPresent(String text, By by) {
         if (driver.findElements(by).size() == 0) return true;
         wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElementLocated(by, text)));
         return true;
