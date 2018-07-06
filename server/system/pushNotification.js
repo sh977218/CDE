@@ -46,7 +46,7 @@ exports.create = (req, res) => {
             let push = ownPushes[0];
             if (!push.loggedIn) {
                 push.loggedIn = true;
-                push.save(dbLogger.handleError({res: res, origin: 'pushNotification.create'}, () => {
+                push.save(dbLogger.handleError({res, origin: 'pushNotification.create'}, () => {
                     res.send({subscribed: true});
                 }));
             } else {
@@ -56,7 +56,7 @@ exports.create = (req, res) => {
             pushes.forEach(push => {
                 if (push.loggedIn) {
                     push.loggedIn = false;
-                    push.save(dbLogger.handleError({res: res, origin: 'pushNotification.create'}, _.noop));
+                    push.save(dbLogger.handleError({res, origin: 'pushNotification.create'}, _.noop));
                 }
             });
             mongo_data.pushCreate({
@@ -65,7 +65,7 @@ exports.create = (req, res) => {
                 subscription: req.body.subscription,
                 userId: req.user._id,
                 vapidKeys: pushes[0].vapidKeys,
-            }, dbLogger.handleError({res:res, origin: 'pushNotification.create'}, () => {
+            }, dbLogger.handleError({res, origin: 'pushNotification.create'}, () => {
                 res.send({subscribed: true});
             }));
         }
@@ -73,7 +73,7 @@ exports.create = (req, res) => {
 };
 
 exports.createUnsubscribed = (req, res) => {
-    mongo_data.pushCreate({vapidKeys: webpush.generateVAPIDKeys()}, dbLogger.handleError({res:res, origin: 'pushNotification.createUnsubscribed'}, push => {
+    mongo_data.pushCreate({vapidKeys: webpush.generateVAPIDKeys()}, dbLogger.handleError({res, origin: 'pushNotification.createUnsubscribed'}, push => {
         res.send({applicationServerKey: push.vapidKeys.publicKey, subscribed: false});
     }));
 };
@@ -82,7 +82,7 @@ exports.delete = (req, res) => {
     if (!req.body.endpoint || !req.user || !req.user._id) {
         return res.status(400).send('Required parameters missing.');
     }
-    mongo_data.pushDelete(req.body.endpoint, req.user._id, dbLogger.handleError({res:res, publicMessage: 'could not remove', origin: 'pushNotification.delete'}, data =>
+    mongo_data.pushDelete(req.body.endpoint, req.user._id, dbLogger.handleError({res, publicMessage: 'could not remove', origin: 'pushNotification.delete'}, data =>
         res.send(data)));
 };
 
@@ -98,7 +98,7 @@ exports.subscribe = (req, res) => {
             }
         });
     }
-    mongo_data.pushByPublicKey(req.body.applicationServerKey, dbLogger.handleError({res:res, origin: 'pushNotification.subscribe'}, push => {
+    mongo_data.pushByPublicKey(req.body.applicationServerKey, dbLogger.handleError({res, origin: 'pushNotification.subscribe'}, push => {
         if (!push) {
             return res.status(400).send('push registration must be created before it is subscribed to.');
         }
@@ -106,7 +106,7 @@ exports.subscribe = (req, res) => {
         push.loggedIn = true;
         push.subscription = req.body.subscription;
         push.userId = req.user._id;
-        push.save(dbLogger.handleError({res:res, origin: 'pushNotification.subscribe'}, push =>
+        push.save(dbLogger.handleError({res, origin: 'pushNotification.subscribe'}, push =>
             res.send(push.features)));
     }));
 };
@@ -140,19 +140,19 @@ exports.updateStatus = (req, res) => {
     }
     if (req.user) {
         // start
-        mongo_data.pushByIds(req.body.endpoint, req.user._id, dbLogger.handleError({res:res, origin: 'pushNotification.updateStatus'}, push => {
-            mongo_data.pushByIdsCount(req.body.endpoint, undefined, dbLogger.handleError({res:res, origin: 'pushNotification.updateStatus'}, countExists => {
+        mongo_data.pushByIds(req.body.endpoint, req.user._id, dbLogger.handleError({res, origin: 'pushNotification.updateStatus'}, push => {
+            mongo_data.pushByIdsCount(req.body.endpoint, undefined, dbLogger.handleError({res, origin: 'pushNotification.updateStatus'}, countExists => {
                 function respond() {
                     res.send({status: !!push, exist: !!countExists});
                 }
 
                 if (!push || push.loggedIn) return respond();
-                push.update({$set: {loggedIn: true}}, undefined, dbLogger.handleError({res:res, origin: 'pushNotification.updateStatus'}, respond));
+                push.update({$set: {loggedIn: true}}, undefined, dbLogger.handleError({res, origin: 'pushNotification.updateStatus'}, respond));
             }));
         }));
     } else {
         // stop
-        mongo_data.pushEndpointUpdate(req.body.endpoint, {$set: {loggedIn: false}}, dbLogger.handleError({res:res, origin: 'pushNotification.updateStatus'}, () => {
+        mongo_data.pushEndpointUpdate(req.body.endpoint, {$set: {loggedIn: false}}, dbLogger.handleError({res, origin: 'pushNotification.updateStatus'}, () => {
             res.send({status: false, exist: true});
         }));
     }

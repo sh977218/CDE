@@ -406,7 +406,7 @@ exports.init = function (app, daoManager) {
             }).map(function (u) {
                 return u.username;
             }).forEach(function (username) {
-                mongo_data_system.userByName(username, handleError({res:res, origin: '/board/remindReview'}, user => {
+                mongo_data_system.userByName(username, handleError({res, origin: '/board/remindReview'}, user => {
                     if (user) {
                         mongo_data_system.Message.findOneAndUpdate({
                             'type': 'BoardApproval',
@@ -429,7 +429,7 @@ exports.init = function (app, daoManager) {
                                     $position: 0
                                 }
                             }
-                        }, {upsert: true}, handleError({res:res, origin: '/board/remindReview'}, () => res.send()));
+                        }, {upsert: true}, handleError({res, origin: '/board/remindReview'}, () => res.send()));
                     }
                 }));
             });

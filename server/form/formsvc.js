@@ -309,9 +309,9 @@ exports.latestVersionByTinyId = function (req, res) {
 
 exports.publishForm = function (req, res) {
     if (!req.params.id) return res.status(400).send();
-    mongo_form.byId(req.params.id, handleError({res:res, origin: "Publish form"}, form => {
+    mongo_form.byId(req.params.id, handleError({res, origin: "Publish form"}, form => {
         if (!form) return res.status(400).send('form not found');
-        exports.fetchWholeForm(form.toObject(), handleError({res:res, message: 'Fetch whole for publish', origin: "publishForm"}, wholeForm => {
+        exports.fetchWholeForm(form.toObject(), handleError({res, message: 'Fetch whole for publish', origin: "publishForm"}, wholeForm => {
             publishForm.getFormForPublishing(wholeForm, req, res);
         }));
     }));

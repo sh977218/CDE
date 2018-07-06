@@ -4,13 +4,13 @@ const respondError = require('../log/dbLogger.js').respondError;
 module.exports = function timestamped(model, noPost) {
     return {
         delete: (res, id, cb) => {
-            model.remove({_id: id}, handleError({res:res, origin: 'timestamped delete ' + model}, cb));
+            model.remove({_id: id}, handleError({res, origin: 'timestamped delete ' + model}, cb));
         },
         find: (res, crit, cb) => {
-            model.find(crit, handleError({res:res, origin: 'timestamped find ' + model}, cb));
+            model.find(crit, handleError({res, origin: 'timestamped find ' + model}, cb));
         },
         get: (res, id, cb) => {
-            model.findOne({_id: id}, handleError({res:res, origin: 'timestamped get ' + model}, cb));
+            model.findOne({_id: id}, handleError({res, origin: 'timestamped get ' + model}, cb));
         },
         put: (res, data, cb) => {
             const errorOptions = {res, origin: 'timestamped put ' + model};
