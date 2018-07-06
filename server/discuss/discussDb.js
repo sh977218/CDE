@@ -21,3 +21,8 @@ exports.save = (comment, callback) => {
 exports.removeById = (id, callback) => {
     Comment.findByIdAndRemove(id, callback);
 };
+
+
+exports.commentsForUser = (username, from, size, callback) => {
+    Comment.find({username: username}).skip(from).limit(size).sort({created: -1}).exec(callback);
+};

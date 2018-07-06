@@ -1,4 +1,4 @@
-import { UserReference } from '../shared/models.model';
+import { UserReference } from '../../shared/models.model';
 
 export class Reply {
     text: string;

@@ -166,7 +166,7 @@ exports.module = function (roleConfig) {
                         if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
                             return res.send({message: "You can only remove " + element.type + " you own."});
                         }
-                        comment.replies = comment.replies.filter(r => r !== replyId);
+                        comment.replies = comment.replies.filter(r => r._id !== replyId);
                         comment.save(handleError({
                                 res,
                                 origin: "/deleteComment/"
@@ -182,6 +182,19 @@ exports.module = function (roleConfig) {
         )
     });
 
+    router.get('/commentsFor/:username/:from/:size', (req, res) => {
+        let from = Number.parseInt(from);
+        let size = Number.parseInt(size);
+        if (from < 0 || size < 0) return res.status(422).send();
+        discussDb.commentsForUser(req.params.username, from, size, handleError({
+                res,
+                origin: "/commentsFor/"
+            }, comments => res.send(comments))
+        )
+    });
+
+
+    
     return router;
 
 };

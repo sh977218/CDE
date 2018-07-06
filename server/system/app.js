@@ -973,13 +973,6 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/comment/:commentId', function (req, res) {
-        mongo_data.Comment.findById(req.params.commentId, dbLogger.handleError(
-            {res: res, origin: "/comment/"}, comment => res.send(comment)));
-    });
-
-    app.get('/commentsfor/:username/:from/:size', adminItemSvc.commentsForUser);
-
     app.get('/allComments/:from/:size', adminItemSvc.allComments);
 
     app.get('/orgComments/:from/:size', adminItemSvc.orgComments);

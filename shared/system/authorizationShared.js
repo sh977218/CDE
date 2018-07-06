@@ -1,6 +1,3 @@
-import _find from 'lodash/find';
-import { User } from 'shared/models.model';
-
 export const rolesEnum = ["DocumentationEditor", "BoardPublisher", "CommentAuthor",
     "CommentReviewer", "AttachmentReviewer", "OrgAuthority", "FormEditor"];
 
