@@ -944,53 +944,6 @@ exports.init = function (app) {
 
     new CronJob('00 00 4 * * *', () => elastic.syncWithMesh(), null, true, 'America/New_York');
 
-    app.get('/comments/eltId/:eltId', function (req, res) {
-        let aggregate = [
-            {$match: {'element.eltId': req.params.eltId}},
-            {
-                $lookup: {
-                    from: 'users',
-                    let: {'username': '$username'},
-                    pipeline: [
-                        {$match: {$expr: {$eq: ['$username', '$$username']}}},
-                        {$project: {_id: 0, avatarUrl: 1}}
-                    ],
-                    as: '__user'
-                }
-            },
-            {$replaceRoot: {newRoot: {$mergeObjects: [{$arrayElemAt: ['$__user', 0]}, "$$ROOT"]}}},
-            {$project: {__user: 0}}
-        ];
-        mongo_data.Comment.aggregate(aggregate, (err, comments) => {
-            if (err) return res.status(500).send('Error retrieve comments');
-            comments.forEach(c => {
-                if (c.pendingApproval) c.text = "This comment is pending approval";
-                c.replies.forEach(r => {
-                    if (r.pendingApproval) r.text = "This reply is pending approval";
-                });
-            });
-            res.send(comments);
-        });
-    });
-
-    app.post('/comments/approve', adminItemSvc.approveComment);
-
-    app.post('/comments/decline', adminItemSvc.declineComment);
-
-    app.post('/comment/status/resolve', [authorization.isAuthenticatedMiddleware], function (req, res) {
-        adminItemSvc.updateCommentStatus(req, res, "resolved");
-    });
-    app.post('/comment/status/active', [authorization.isAuthenticatedMiddleware], function (req, res) {
-        adminItemSvc.updateCommentStatus(req, res, "active");
-    });
-
-    app.post('/reply/status/resolve', [authorization.isAuthenticatedMiddleware], function (req, res) {
-        adminItemSvc.updateReplyStatus(req, res, "resolved");
-    });
-    app.post('/reply/status/active', [authorization.isAuthenticatedMiddleware], function (req, res) {
-        adminItemSvc.updateReplyStatus(req, res, "active");
-    });
-
     app.get('/activeBans', (req, res) => {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             traffic.getTrafficFilter(list => res.send(list));

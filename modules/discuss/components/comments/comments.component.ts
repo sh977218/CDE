@@ -145,11 +145,11 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
     resolveComment(commentId) {
-        this.http.post('/comment/status/resolve', {commentId: commentId}).subscribe();
+        this.http.post('/server/discuss/resolveComment', {commentId: commentId}).subscribe();
     }
 
     reopenComment(commentId) {
-        this.http.post('/comment/status/active', {commentId: commentId}).subscribe();
+        this.http.post('/server/discuss/reopenComment', {commentId: commentId}).subscribe();
     }
 
     removeReply(replyId) {
@@ -157,11 +157,11 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
     resolveReply(replyId) {
-        this.http.post('/reply/status/resolve', {replyId: replyId}).subscribe();
+        this.http.post('/server/discuss/resolveReply', {replyId: replyId}).subscribe();
     }
 
     reopenReply(replyId) {
-        this.http.post('/reply/status/active', {replyId: replyId}).subscribe();
+        this.http.post('/server/discuss/reopenReply', {replyId: replyId}).subscribe();
     }
 
     replyToComment(comment) {
@@ -180,7 +180,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
         this.emitCurrentReplying.next({_id: comment._id, comment: comment.newReply});
     }
 
-    showReply(comment, j) {
+    showReply(comment: any, j) {
         if (comment.showAllReplies) return true;
         else if (j < 2 || j > comment.replies.length - 3) return true;
         else return false;

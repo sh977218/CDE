@@ -53,7 +53,6 @@ exports.module = function (roleConfig) {
         );
 
     });
-
     router.post('/replyComment', [authorization.isAuthenticatedMiddleware], (req, res) => {
         discussDb.byId(req.body.commentId, handleError({
             res,
@@ -148,7 +147,6 @@ exports.module = function (roleConfig) {
             })
         )
     });
-
     router.post('/deleteReply', [authorization.isAuthenticatedMiddleware], (req, res) => {
         let replyId = req.body.replyId;
         discussDb.byReplyId(replyId, handleError({
@@ -216,6 +214,107 @@ exports.module = function (roleConfig) {
         )
     });
 
+    router.post('/approveComment', roleConfig.manageComment, (req, res) => {
+        discussDb.byId(req.body.commentId, handleError({
+                res,
+                origin: "/approveComment/"
+            }, comment => {
+                if (!comment) return res.status(404).send();
+                comment.pendingApproval = false;
+                comment.save(handleError({res, origin: "/approveComment/"}, () => res.send("Approved")));
+            })
+        )
+    });
+    router.post('/declineComment', roleConfig.manageComment, (req, res) => {
+        discussDb.byId(req.body.commentId, handleError({
+                res,
+                origin: "/declineComment/"
+            }, comment => {
+                if (!comment) return res.status(404).send();
+                comment.pendingApproval = false;
+                comment.remove(handleError({res, origin: "/declineComment/"}, () => res.send("Declined")));
+            })
+        )
+    });
+
+    router.post('/approveReply', roleConfig.manageComment, (req, res) => {
+        let replyId = req.body.replyId;
+        discussDb.byReplyId(replyId, handleError({
+                res,
+                origin: "/approveReply/"
+            }, comment => {
+                if (!comment) return res.status(404).send();
+                comment.replies.forEach(r => {
+                    if (r === replyId) r.pendingApproval = false;
+                });
+                comment.save(handleError({res, origin: "/approveReply/"}, () => res.send("Approved")));
+            })
+        )
+    });
+    router.post('/declineReply', roleConfig.manageComment, (req, res) => {
+        let replyId = req.body.replyId;
+        discussDb.byReplyId(replyId, handleError({
+                res,
+                origin: "/declineReply/"
+            }, comment => {
+                if (!comment) return res.status(404).send();
+                comment.replies = comment.replies.filter(r => r._id !== replyId);
+                comment.save(handleError({res, origin: "/declineReply/"}, () => res.send("Approved")));
+            })
+        )
+    });
+
+    router.post('/resolveComment', [authorization.isAuthenticatedMiddleware], (req, res) => {
+        discussDb.byId(req.body.commentId, handleError({
+                res,
+                origin: "/resolveComment/"
+            }, comment => {
+                if (!comment) return res.status(404).send();
+                comment.status = 'resolved';
+                comment.save(handleError({res, origin: "/resolveComment/"}, () => res.send("Saved.")));
+            })
+        )
+    });
+    router.post('/reopenComment', [authorization.isAuthenticatedMiddleware], (req, res) => {
+        discussDb.byId(req.body.commentId, handleError({
+                res,
+                origin: "/reopenComment/"
+            }, comment => {
+                if (!comment) return res.status(404).send();
+                comment.status = 'active';
+                comment.save(handleError({res, origin: "/reopenComment/"}, () => res.send("Saved.")));
+            })
+        )
+    });
+
+    router.post('/resolveReply', [authorization.isAuthenticatedMiddleware], (req, res) => {
+        let replyId = req.body.replyId;
+        discussDb.byReplyId(replyId, handleError({
+                res,
+                origin: "/resolveReply/"
+            }, comment => {
+                if (!comment) return res.status(404).send();
+                comment.replies.forEach(r => {
+                    if (r === replyId) r.status = 'resolved';
+                });
+                comment.save(handleError({res, origin: "/resolveReply/"}, () => res.send("Saved.")));
+            })
+        )
+    });
+    router.post('/reopenReply', [authorization.isAuthenticatedMiddleware], (req, res) => {
+        let replyId = req.body.replyId;
+        discussDb.byReplyId(replyId, handleError({
+                res,
+                origin: "/reopenReply/"
+            }, comment => {
+                if (!comment) return res.status(404).send();
+                comment.replies.forEach(r => {
+                    if (r === replyId) r.status = 'active';
+                });
+                comment.save(handleError({res, origin: "/reopenReply/"}, () => res.send("Saved.")));
+            })
+        )
+    });
 
     return router;
 

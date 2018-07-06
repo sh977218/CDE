@@ -22,15 +22,12 @@ exports.removeById = (id, callback) => {
     Comment.findByIdAndRemove(id, callback);
 };
 
-
 exports.commentsForUser = (username, from, size, callback) => {
     Comment.find({username: username}).skip(from).limit(size).sort({created: -1}).exec(callback);
 };
 exports.allComments = (from, size, callback) => {
     Comment.find().skip(from).limit(size).sort({created: -1}).exec(callback);
 };
-
-
 exports.orgComments = (myOrgs, from, size, callback) => {
     Comment.aggregate(
         [{
@@ -58,3 +55,4 @@ exports.orgComments = (myOrgs, from, size, callback) => {
             }
         }, {$sort: {created: -1}}, {$skip: from}, {$limit: size}], callback);
 };
+
