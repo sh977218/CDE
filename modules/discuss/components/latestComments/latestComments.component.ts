@@ -23,7 +23,7 @@ export class LatestCommentsComponent {
 
     getComments (page) {
         let commentsUrl = this.route.snapshot.data['commentsUrl'];
-        if (!commentsUrl) commentsUrl = '/allComments';
+        if (!commentsUrl) commentsUrl = '/server/discuss/allComments';
         this.http.get<Comment[]>(commentsUrl + '/' + (page - 1) * 30 + '/30').subscribe(comments => {
             this.comments.latestComments = comments;
             if (this.comments.latestComments.length === 0) {

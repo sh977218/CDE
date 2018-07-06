@@ -7,6 +7,7 @@ const mongo_board = require('../board/mongo-board');
 const discussDb = require('./discussDb');
 const daoManager = require('../system/moduleDaoManager');
 const ioServer = require("../system/ioServer");
+const userService = require("../system/usersrvc");
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
@@ -192,9 +193,30 @@ exports.module = function (roleConfig) {
             }, comments => res.send(comments))
         )
     });
+    router.get('/allComments/:from/:size', roleConfig.allComments, (req, res) => {
+        let from = Number.parseInt(from);
+        let size = Number.parseInt(size);
+        if (from < 0 || size < 0) return res.status(422).send();
+        discussDb.allComments(from, size, handleError({
+                res,
+                origin: "/allComments/"
+            }, comments => res.send(comments))
+        )
+    });
+    router.get('/orgComments/:from/:size', authorization.loggedInMiddleware, (req, res) => {
+        let myOrgs = userService.myOrgs(req.user);
+        if (!myOrgs || myOrgs.length === 0) return res.send([]);
+        let from = Number.parseInt(from);
+        let size = Number.parseInt(size);
+        if (from < 0 || size < 0) return res.status(422).send();
+        discussDb.orgComments(myOrgs, from, size, handleError({
+                res,
+                origin: "/orgComments/"
+            }, comments => res.send(comments))
+        )
+    });
 
 
-    
     return router;
 
 };

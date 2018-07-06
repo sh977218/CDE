@@ -39,12 +39,8 @@ exports.isOrgAdminMiddleware = (req, res, next) => {
 };
 
 exports.isOrgAuthorityMiddleware = (req, res, next) => {
-    if (!authorizationShared.canOrgAuthority(req.user)) {
-        return res.status(403).send();
-    }
-    if (next) {
-        next();
-    }
+    if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send();
+    next();
 };
 
 exports.isSiteAdminMiddleware = (req, res, next) => {

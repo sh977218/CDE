@@ -291,67 +291,6 @@ exports.approveComment = function (req, res) {
     });
 };
 
-exports.allComments = function (req, res) {
-    if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
-    mongo_data_system.Comment.find({status: {"$ne": "deleted"}}).skip(Number.parseInt(req.params.from))
-        .limit(Number.parseInt(req.params.size)).sort({created: -1}).exec(function (err, results) {
-        if (err) return res.status(400).send("Unable to retrieve comments. Incorrect numbers?");
-        return res.send(results);
-    });
-};
-
-exports.orgComments = function (req, res) {
-    var myOrgs = usersrvc.myOrgs(req.user);
-    if (!myOrgs || myOrgs.length === 0) {
-        return res.send([]);
-    }
-    mongo_data_system.Comment.aggregate(
-        [
-            {$match: {'status': {$ne: 'deleted'}}},
-            {
-                $lookup: {
-                    from: 'dataelements',
-                    localField: 'element.eltId',
-                    foreignField: 'tinyId',
-                    as: 'embeddedCde'
-                }
-            },
-            {
-                $lookup: {
-                    from: 'forms',
-                    localField: 'element.eltId',
-                    foreignField: 'tinyId',
-                    as: 'embeddedForm'
-                }
-            },
-            {
-                $match: {
-                    $or: [
-                        {'embeddedCde.stewardOrg.name': {$in: myOrgs}},
-                        {'embeddedForm.stewardOrg.name': {$in: myOrgs}},
-                        {'embeddedCde.classification.stewardOrg.name': {$in: myOrgs}},
-                        {'embeddedForm.classification.stewardOrg.name': {$in: myOrgs}}
-                    ]
-                }
-            },
-            {$sort: {created: -1}},
-            {$skip: parseInt(req.params.from)},
-            {$limit: parseInt(req.params.size)}
-        ]
-    ).exec(function (err, results) {
-        if (err) {
-            dbLogger.logError({
-                message: "Unable to retrieve comments",
-                stack: err,
-                details: "user: " + u.username + " in board: " + board._id
-            });
-            return res.status(500).send("Unable to retrieve comments");
-        }
-        return res.send(results);
-    });
-};
-
-
 exports.bulkAction = function (ids, action, cb) {
     var eltsTotal = ids.length;
     var eltsProcessed = 0;

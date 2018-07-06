@@ -973,10 +973,6 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/allComments/:from/:size', adminItemSvc.allComments);
-
-    app.get('/orgComments/:from/:size', adminItemSvc.orgComments);
-
     app.post('/comments/approve', adminItemSvc.approveComment);
 
     app.post('/comments/decline', adminItemSvc.declineComment);
@@ -993,31 +989,6 @@ exports.init = function (app) {
     });
     app.post('/reply/status/active', [authorization.isAuthenticatedMiddleware], function (req, res) {
         adminItemSvc.updateReplyStatus(req, res, "active");
-    });
-
-    /*    @TODO This endpoint will be improved in discuss module ticket */
-    app.post('/comment/status/delete', [authorization.isAuthenticatedMiddleware], function (req, res) {
-        mongo_data.Comment.findById(req.body.commentId, dbLogger.handleError(
-            {res: res, origin: "/comment/status/delete/"}, comment => {
-                if (!comment) return res.status(404).send("Comment not found");
-                let type = comment.element.eltType;
-                adminItemSvc.removeComment(req, res, comment, daoManager.getDao(type));
-            })
-        );
-
-    });
-    /*    @TODO This endpoint will be improved in discuss module ticket */
-    app.post('/reply/status/delete', [authorization.isAuthenticatedMiddleware], function (req, res) {
-        mongo_data.Comment.findOne({'replies._id': req.body.replyId}, dbLogger.handleError(
-            {res: res, origin: "/comment/status/delete/"}, comment => {
-                if (!comment) return res.status(404).send("Comment not found");
-                let index = comment.replies.map(r => r._id.toString()).indexOf(req.body.replyId);
-                if (index === -1) return res.status(404).send("Reply not found");
-                comment.replies.splice(index, 1);
-                let type = comment.element.eltType;
-                adminItemSvc.removeReply(req, res, comment, daoManager.getDao(type));
-            })
-        );
     });
 
     app.get('/activeBans', (req, res) => {
