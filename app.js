@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const http = require('http');
+const httpProxy = require('http-proxy');
 const flash = require('connect-flash');
 const mongo_data_system = require('./server/system/mongo-data');
 const config = require('config');
@@ -51,13 +52,15 @@ app.use(compress());
 
 app.use(require('hsts')({maxAge: 31536000000}));
 
-process.on('uncaughtException', err => {
+let localRedirectProxy = httpProxy.createProxyServer({});
+
+process.on('uncaughtException', function (err) {
     console.log("Error: Process Uncaught Exception");
     console.log(err.stack);
     logging.errorLogger.error("Error: Uncaught Exception", {stack: err.stack, origin: "app.process.uncaughtException"});
 });
 
-domain.on('error', err => {
+domain.on('error', function (err) {
     console.log("Error: Domain Error");
     console.log(err.stack);
     logging.errorLogger.error("Error: Domain Error", {stack: err.stack, origin: "app.domain.error"});
@@ -83,7 +86,7 @@ const expressSettings = {
     cookie: {httpOnly: true, secure: config.proxy}
 };
 
-let getRealIp = req => {
+let getRealIp = function (req) {
     if (req._remoteAddress) return req._remoteAddress;
     if (req.ip) return req.ip;
 };
@@ -136,7 +139,7 @@ app.use(function banHackers(req, res, next) {
 });
 
 app.use(function preventSessionCreation(req, res, next) {
-    this.isFile = req => {
+    this.isFile = function (req) {
         if (req.originalUrl.substr(req.originalUrl.length - 3, 3) === ".js") return true;
         if (req.originalUrl.substr(req.originalUrl.length - 4, 4) === ".css") return true;
         return req.originalUrl.substr(req.originalUrl.length - 4, 4) === ".gif";
@@ -178,12 +181,14 @@ const logFormat = {
     date: ":date", referrer: ":referrer", responseTime: ":response-time"
 };
 
-morganLogger.token('real-remote-addr', req => {
+morganLogger.token('real-remote-addr', function (req) {
     return getRealIp(req);
 });
 
 let winstonStream = {
-    write: message => logging.expressLogger.info(message)
+    write: function (message) {
+        logging.expressLogger.info(message);
+    }
 };
 
 let expressLogger = morganLogger(JSON.stringify(logFormat), {stream: winstonStream});
@@ -196,7 +201,9 @@ if (config.expressLogFile) {
         })]
     });
     let fileStream = {
-        write: message => logger.info(message)
+        write: function (message) {
+            logger.info(message);
+        }
     };
     app.use(morganLogger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":response-time ms"', {stream: fileStream}));
 }
@@ -204,7 +211,7 @@ if (config.expressLogFile) {
 let connections = 0;
 setInterval(() => connections = 0, 60000);
 
-app.use((req, res, next) => {
+app.use(function (req, res, next) {
     let maxLogsPerMinute = config.maxLogsPerMinute || 1000;
     connections++;
     if (connections > maxLogsPerMinute) return next();
@@ -214,13 +221,13 @@ app.use((req, res, next) => {
 app.set('views', path.join(__dirname, './modules'));
 
 let originalRender = express.response.render;
-express.response.render = (view, module, msg) => {
+express.response.render = function (view, module, msg) {
     if (!module) module = "cde";
     originalRender.call(this, path.join(__dirname, '/modules/' + module + "/views/" + view), msg);
 };
 
 try {
-    let logModule = require("./server/log/logRoute").module({
+    let logModule = require("./server/log/logRoutes").module({
         feedbackLog: [authorization.isOrgAuthorityMiddleware]
     });
     app.use('/server/log', logModule);
@@ -235,7 +242,7 @@ try {
 
     require(path.join(__dirname, './modules/swagger/index.js')).init(app);
 
-    let userModule = require("./server/user/userRoute").module({
+    let userModule = require("./server/user/userRoutes").module({
         search: [authorization.isOrgAdminMiddleware],
         manage: [authorization.isOrgAuthorityMiddleware]
     });
@@ -251,16 +258,14 @@ app.use('/robots.txt', express.static(path.join(__dirname, '/modules/system/publ
 // final route -> 404
 app.use((req, res, next) => {
     // swagger does something i don't get. This will let swagger work
-    if (req.originalUrl === "/docs"
-        || req.originalUrl === "/api-docs"
-        || req.originalUrl.indexOf("/docs/") === 0) {
+    if (req.originalUrl === "/docs" || req.originalUrl === "/api-docs" || req.originalUrl.indexOf("/docs/") === 0) {
         return next();
     }
     res.render('index', 'system', {config: config, version: 'version'});
 });
 
 
-app.use((err, req, res, next) => {
+app.use(function (err, req, res, next) {
     console.log("ERROR3: " + err);
     console.log(err.stack);
     if (req && req.body && req.body.password) req.body.password = "";
@@ -286,10 +291,10 @@ app.use((err, req, res, next) => {
     next();
 });
 
-domain.run(() => {
+domain.run(function () {
     let server = http.createServer(app);
     exports.server = server;
-    server.listen(app.get('port'), () => {
+    server.listen(app.get('port'), function () {
         console.log('Express server listening on port ' + app.get('port'));
     });
     ioServer.startServer(server, expressSettings);

@@ -7,7 +7,8 @@ const userDb = require('./userDb');
 exports.module = function (roleConfig) {
     const router = require('express').Router();
 
-    router.get('/', [exportShared.nocacheMiddleware, authorization.loggedInMiddleware], (req, res) => {
+    router.get('/', [exportShared.nocacheMiddleware], (req, res) => {
+        if (!req.user) return res.send({});
         userDb.byId(req.user._id, handleError({
             res: res,
             origin: "/user"
