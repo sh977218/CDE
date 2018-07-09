@@ -16,10 +16,6 @@ exports.byKey = function (key, cb) {
     Article.findOne({key: key}, cb);
 };
 
-exports.save = function (article, cb) {
-    Article.save(cb);
-};
-
 exports.update = function (art, cb) {
     Article.findOneAndUpdate({key: art.key}, {$set: {body: art.body, updated: Date.now()}}, {upsert: true}, cb);
 };
