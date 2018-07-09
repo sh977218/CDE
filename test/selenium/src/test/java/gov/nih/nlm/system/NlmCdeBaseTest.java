@@ -1615,6 +1615,7 @@ public class NlmCdeBaseTest {
 
 
     protected void swaggerApi(String api, String text, String tinyId, String version) {
+        clickElement(By.id("helpLink"));
         clickElement(By.id("apiDocumentationLink"));
         hangon(1);
         driver.switchTo().frame(findElement(By.cssSelector("iframe")));
