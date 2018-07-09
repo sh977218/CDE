@@ -14,11 +14,9 @@ const logging = require('./logging.js');
 const daoManager = require('./moduleDaoManager');
 const config = require('./parseConfig');
 const schemas = require('./schemas');
-const discussDb = require('../discuss/discussDb');
 
 const conn = connHelper.establishConnection(config.database.appData);
 const ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus);
-const Comment = discussDb.Comment;
 const Embeds = conn.model('Embed', schemas.embedSchema);
 const FhirApps = conn.model('FhirApp', schemas.fhirAppSchema);
 const FhirObservationInfo = conn.model('FhirObservationInfo', schemas.fhirObservationInformationSchema);
@@ -66,7 +64,6 @@ exports.FhirObservationInfo = FhirObservationInfo;
 exports.Org = Org;
 exports.User = User;
 exports.MeshClassification = MeshClassification;
-exports.Comment = Comment;
 exports.JobQueue = JobQueue;
 
 var fs_files = conn.model('fs_files', schemas.fs_files);

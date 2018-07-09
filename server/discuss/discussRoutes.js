@@ -1,9 +1,5 @@
 const authorization = require('../system/authorization');
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
-const dbLogger = require('../log/dbLogger');
-const mongo_cde = require('../cde/mongo-cde');
-const mongo_form = require('../form/mongo-form');
-const mongo_board = require('../board/mongo-board');
 const discussDb = require('./discussDb');
 const daoManager = require('../system/moduleDaoManager');
 const ioServer = require("../system/ioServer");
@@ -16,20 +12,12 @@ exports.module = function (roleConfig) {
         let comment = req.body;
         let dao = daoManager.getDao(req.comment.element.eltType);
         let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
-        idRetrievalFunc(req.body.element.eltId, handleError({
-                res,
-                origin: "/postComment/"
-            }, elt => {
+        idRetrievalFunc(req.body.element.eltId, handleError({res, origin: "/postComment/"}, elt => {
                 if (!elt) return res.status(404).send("Element does not exist.");
                 comment.user = req.user;
                 comment.created = new Date().toJSON();
-                if (!authorizationShared.canComment(req.user)) {
-                    comment.pendingApproval = true;
-                }
-                discussDb.save(handleError({
-                    res,
-                    origin: "/postComment/"
-                }, savedComment => {
+                if (!authorizationShared.canComment(req.user)) comment.pendingApproval = true;
+                discussDb.save(handleError({res, origin: "/postComment/"}, savedComment => {
                     let message = "Comment added.";
                     ioServerCommentUpdated(req.user.username);
                     if (savedComment.pendingApproval) {
@@ -54,10 +42,7 @@ exports.module = function (roleConfig) {
 
     });
     router.post('/replyComment', [authorization.isAuthenticatedMiddleware], (req, res) => {
-        discussDb.byId(req.body.commentId, handleError({
-            res,
-            origin: "/replyComment/"
-        }, comment => {
+        discussDb.byId(req.body.commentId, handleError({res, origin: "/replyComment/"}, comment => {
             if (!comment) return res.status(404).send("Comment not found.");
             if (!comment.replies) comment.replies = [];
             let reply = {
@@ -69,10 +54,7 @@ exports.module = function (roleConfig) {
                 reply.pendingApproval = true;
             }
             comment.replies.push(reply);
-            discussDb.save(handleError({
-                res,
-                origin: "/replyComment/"
-            }, savedComment => {
+            discussDb.save(handleError({res, origin: "/replyComment/"}, savedComment => {
                 ioServerCommentUpdated(req.user.username);
                 res.send({message: "Reply added"});
                 if (reply.pendingApproval) {
@@ -117,26 +99,17 @@ exports.module = function (roleConfig) {
 
     router.post('/deleteComment', [authorization.isAuthenticatedMiddleware], (req, res) => {
         let commentId = req.body.commentId;
-        discussDb.byId(commentId, handleError({
-                res,
-                origin: "/deleteComment/"
-            }, comment => {
+        discussDb.byId(commentId, handleError({res, origin: "/deleteComment/"}, comment => {
                 if (!comment) return res.status(404).send("Comment not found");
                 let dao = daoManager.getDao(comment.element.eltType);
                 let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
                 let eltId = comment.element.eltId;
-                idRetrievalFunc(eltId, handleError({
-                        res,
-                        origin: "/deleteComment/"
-                    }, element => {
+                idRetrievalFunc(eltId, handleError({res, origin: "/deleteComment/"}, element => {
                         if (!comment) return res.status(404).send('Element not found');
                         if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
                             return res.send({message: "You can only remove " + element.type + " you own."});
                         }
-                        comment.remove(handleError({
-                                res,
-                                origin: "/deleteComment/"
-                            }, () => {
+                        comment.remove(handleError({res, origin: "/deleteComment/"}, () => {
                                 ioServerCommentUpdated(req.user.username);
                                 res.send({message: "Comment removed"});
                             })
@@ -149,27 +122,18 @@ exports.module = function (roleConfig) {
     });
     router.post('/deleteReply', [authorization.isAuthenticatedMiddleware], (req, res) => {
         let replyId = req.body.replyId;
-        discussDb.byReplyId(replyId, handleError({
-                res,
-                origin: "/deleteReply/"
-            }, comment => {
+        discussDb.byReplyId(replyId, handleError({res, origin: "/deleteReply/"}, comment => {
                 if (!comment) return res.status(404).send("Reply not found");
                 let dao = daoManager.getDao(comment.element.eltType);
                 let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
                 let eltId = comment.element.eltId;
-                idRetrievalFunc(eltId, handleError({
-                        res,
-                        origin: "/deleteReply/"
-                    }, element => {
+                idRetrievalFunc(eltId, handleError({res, origin: "/deleteReply/"}, element => {
                         if (!comment) return res.status(404).send('Element not found');
                         if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
                             return res.send({message: "You can only remove " + element.type + " you own."});
                         }
                         comment.replies = comment.replies.filter(r => r._id !== replyId);
-                        comment.save(handleError({
-                                res,
-                                origin: "/deleteComment/"
-                            }, () => {
+                        comment.save(handleError({res, origin: "/deleteComment/"}, () => {
                                 ioServerCommentUpdated(req.user.username);
                                 res.send({message: "Reply removed"});
                             })
@@ -182,18 +146,17 @@ exports.module = function (roleConfig) {
     });
 
     router.get('/commentsFor/:username/:from/:size', (req, res) => {
-        let from = Number.parseInt(from);
-        let size = Number.parseInt(size);
-        if (from < 0 || size < 0) return res.status(422).send();
-        discussDb.commentsForUser(req.params.username, from, size, handleError({
-                res,
-                origin: "/commentsFor/"
-            }, comments => res.send(comments))
+        let from = Number.parseInt(req.params.from);
+        let size = Number.parseInt(req.params.size);
+        let username = req.params.username;
+        if (!username || from < 0 || size < 0) return res.status(422).send();
+        discussDb.commentsForUser(username, from, size, handleError({res, origin: "/commentsFor/"}, comments =>
+            res.send(comments))
         )
     });
     router.get('/allComments/:from/:size', roleConfig.allComments, (req, res) => {
-        let from = Number.parseInt(from);
-        let size = Number.parseInt(size);
+        let from = Number.parseInt(req.params.from);
+        let size = Number.parseInt(req.params.size);
         if (from < 0 || size < 0) return res.status(422).send();
         discussDb.allComments(from, size, handleError({
                 res,
@@ -207,18 +170,13 @@ exports.module = function (roleConfig) {
         let from = Number.parseInt(from);
         let size = Number.parseInt(size);
         if (from < 0 || size < 0) return res.status(422).send();
-        discussDb.orgComments(myOrgs, from, size, handleError({
-                res,
-                origin: "/orgComments/"
-            }, comments => res.send(comments))
+        discussDb.orgComments(myOrgs, from, size, handleError({res, origin: "/orgComments/"}, comments =>
+            res.send(comments))
         )
     });
 
     router.post('/approveComment', roleConfig.manageComment, (req, res) => {
-        discussDb.byId(req.body.commentId, handleError({
-                res,
-                origin: "/approveComment/"
-            }, comment => {
+        discussDb.byId(req.body.commentId, handleError({res, origin: "/approveComment/"}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.pendingApproval = false;
                 comment.save(handleError({res, origin: "/approveComment/"}, () => res.send("Approved")));
@@ -226,10 +184,7 @@ exports.module = function (roleConfig) {
         )
     });
     router.post('/declineComment', roleConfig.manageComment, (req, res) => {
-        discussDb.byId(req.body.commentId, handleError({
-                res,
-                origin: "/declineComment/"
-            }, comment => {
+        discussDb.byId(req.body.commentId, handleError({res, origin: "/declineComment/"}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.pendingApproval = false;
                 comment.remove(handleError({res, origin: "/declineComment/"}, () => res.send("Declined")));
@@ -239,10 +194,7 @@ exports.module = function (roleConfig) {
 
     router.post('/approveReply', roleConfig.manageComment, (req, res) => {
         let replyId = req.body.replyId;
-        discussDb.byReplyId(replyId, handleError({
-                res,
-                origin: "/approveReply/"
-            }, comment => {
+        discussDb.byReplyId(replyId, handleError({res, origin: "/approveReply/"}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.replies.forEach(r => {
                     if (r === replyId) r.pendingApproval = false;
@@ -253,10 +205,7 @@ exports.module = function (roleConfig) {
     });
     router.post('/declineReply', roleConfig.manageComment, (req, res) => {
         let replyId = req.body.replyId;
-        discussDb.byReplyId(replyId, handleError({
-                res,
-                origin: "/declineReply/"
-            }, comment => {
+        discussDb.byReplyId(replyId, handleError({res, origin: "/declineReply/"}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.replies = comment.replies.filter(r => r._id !== replyId);
                 comment.save(handleError({res, origin: "/declineReply/"}, () => res.send("Approved")));
@@ -265,10 +214,7 @@ exports.module = function (roleConfig) {
     });
 
     router.post('/resolveComment', [authorization.isAuthenticatedMiddleware], (req, res) => {
-        discussDb.byId(req.body.commentId, handleError({
-                res,
-                origin: "/resolveComment/"
-            }, comment => {
+        discussDb.byId(req.body.commentId, handleError({res, origin: "/resolveComment/"}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.status = 'resolved';
                 comment.save(handleError({res, origin: "/resolveComment/"}, () => res.send("Saved.")));
@@ -276,10 +222,7 @@ exports.module = function (roleConfig) {
         )
     });
     router.post('/reopenComment', [authorization.isAuthenticatedMiddleware], (req, res) => {
-        discussDb.byId(req.body.commentId, handleError({
-                res,
-                origin: "/reopenComment/"
-            }, comment => {
+        discussDb.byId(req.body.commentId, handleError({res, origin: "/reopenComment/"}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.status = 'active';
                 comment.save(handleError({res, origin: "/reopenComment/"}, () => res.send("Saved.")));
@@ -289,10 +232,7 @@ exports.module = function (roleConfig) {
 
     router.post('/resolveReply', [authorization.isAuthenticatedMiddleware], (req, res) => {
         let replyId = req.body.replyId;
-        discussDb.byReplyId(replyId, handleError({
-                res,
-                origin: "/resolveReply/"
-            }, comment => {
+        discussDb.byReplyId(replyId, handleError({res, origin: "/resolveReply/"}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.replies.forEach(r => {
                     if (r === replyId) r.status = 'resolved';
@@ -303,10 +243,7 @@ exports.module = function (roleConfig) {
     });
     router.post('/reopenReply', [authorization.isAuthenticatedMiddleware], (req, res) => {
         let replyId = req.body.replyId;
-        discussDb.byReplyId(replyId, handleError({
-                res,
-                origin: "/reopenReply/"
-            }, comment => {
+        discussDb.byReplyId(replyId, handleError({res, origin: "/reopenReply/"}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.replies.forEach(r => {
                     if (r === replyId) r.status = 'active';
