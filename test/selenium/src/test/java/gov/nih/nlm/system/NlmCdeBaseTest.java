@@ -1818,8 +1818,9 @@ public class NlmCdeBaseTest {
         Assert.assertEquals(weResolved.getAttribute("class").contains("strike"), true);
         String xpath = getCommentIconXpath(message, "comment", "reopen");
         clickElement(By.xpath(xpath));
-        wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
-                By.xpath("//div[normalize-space()='" + message + "']/span"), "class", "strike")));
+        hangon(1);
+        WebElement weReopened = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
+        Assert.assertEquals(weReopened.getAttribute("class").contains("strike"), false);
     }
 
     private Map<String, String> COMMENT_Title_Case_MAP = new HashMap<String, String>() {
