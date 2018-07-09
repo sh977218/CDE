@@ -43,8 +43,7 @@ app.use(helmet.contentSecurityPolicy({
         connectSrc: ['*'],
         reportUri: "https://nlmoccs.report-uri.com/r/d/csp/reportOnly",
         workerSrc: ['*']
-    },
-    "reportOnly": true,
+    }
 }));
 app.use(helmet.referrerPolicy({policy: 'same-origin'}));
 app.use(auth.ticketAuth);
