@@ -20,7 +20,7 @@ export class Comment {
     currentlyReplying: boolean;
     replies: Reply[];
     element: {
-        eltType: string,
-        eltId: string
+        eltType?: string,
+        eltId?: string
     } = {};
 }
