@@ -12,7 +12,7 @@ public class WhatsNew extends NlmCdeBaseTest {
         clickElement(By.linkText("Site Management"));
         clickElement(By.id("whatsNewTab"));
         clickElement(By.cssSelector(".fa-edit"));
-        clickElement(By.xpath("//*[@id='newDefinition']/button/span[contains(text(),'Plain Text')]"));
+        clickElement(By.xpath("//button/span[contains(text(),'Plain Text')]"));
 
         findElement(By.cssSelector("textArea")).sendKeys("<h3>June 28, 2018</h3>\n" +
                 "\n" +
@@ -64,7 +64,7 @@ public class WhatsNew extends NlmCdeBaseTest {
                 "\t<li>UI Improvements to the history compare</li>\n" +
                 "</ul>\n");
 
-        clickElement(By.xpath("//*[@id='newDefinition']/button/span[contains(text(),'Rich Text')]"));
+        clickElement(By.xpath("//button/span[contains(text(),'Rich Text')]"));
         clickElement(By.cssSelector(".fa-check"));
         checkAlert("Saved");
         logout();
