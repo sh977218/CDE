@@ -117,13 +117,13 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
     loadComments() {
-        this.http.get<Array<any>>('/comments/eltId/' + this.eltId)
-            .subscribe(response => {
-                response.forEach(comment => {
-                    comment.currentComment = comment.linkedTab === this._currentTab;
-                    comment.newReply = {};
+        this.http.get<Array<any>>('/server/discuss/comments/eltId/' + this.eltId)
+            .subscribe(res => {
+                res.forEach(c => {
+                    c.currentComment = c.linkedTab === this._currentTab;
+                    c.newReply = {};
                 });
-                this.comments = response;
+                this.comments = res;
             });
     }
 

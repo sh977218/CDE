@@ -27,13 +27,15 @@ const tabMap = {
     templateUrl: './discussArea.component.html'
 })
 export class DiscussAreaComponent {
+    newComment: Comment = new Comment();
     private ownElt;
     private _elt;
     @Input() set elt(e) {
         this.ownElt = this.isAllowedModel.doesUserOwnElt(e);
+        if (!this.newComment.element) this.newComment.element = {};
+        this.newComment.element.eltType = e.elementType;
+        this.newComment.element.eltId = e.tinyId;
         this._elt = e;
-        this.newComment.element.eltType = this._elt.elementType;
-        this.newComment.element.eltId = this._elt.tinyId;
     }
 
     get elt() {
@@ -55,7 +57,6 @@ export class DiscussAreaComponent {
 
     @Input() highlightedTabs = [];
     @Output() highlightedTabsChange = new EventEmitter();
-    newComment: Comment = new Comment();
 
     constructor(private http: HttpClient,
                 public isAllowedModel: IsAllowedService,

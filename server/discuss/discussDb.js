@@ -1,24 +1,14 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const stringType = require('../system/schemas').stringType;
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
 
-function deleteEmpty(v) {
-    if (v === null || v === '') {
-        return;
-    }
-    return v;
-}
-
-const stringType = {type: String, set: deleteEmpty};
-
 exports.commentSchema = new Schema({
     text: stringType,
-    user: stringType,
-    username: stringType,
-    userBk: {
+    user: {
         userId: Schema.Types.ObjectId,
         username: stringType
     },
@@ -28,9 +18,7 @@ exports.commentSchema = new Schema({
     status: Object.assign({enum: ["active", "resolved", "deleted"], default: "active"}, stringType),
     replies: [{
         text: stringType,
-        user: stringType,
-        username: stringType,
-        userBk: {
+        user: {
             userId: Schema.Types.ObjectId,
             username: stringType
         },
@@ -45,7 +33,6 @@ exports.commentSchema = new Schema({
 }, {usePushEach: true,});
 
 const Comment = conn.model('Comment', exports.commentSchema);
-
 exports.Comment = Comment;
 
 exports.byId = (id, callback) => {
@@ -53,6 +40,25 @@ exports.byId = (id, callback) => {
 };
 exports.byReplyId = (id, callback) => {
     Comment.findOne({'replies.id': id}, callback);
+};
+exports.byEltId = (id, callback) => {
+    let aggregate = [
+        {$match: {'element.eltId': id}},
+        {
+            $lookup: {
+                from: 'users',
+                let: {'username': '$username'},
+                pipeline: [
+                    {$match: {$expr: {$eq: ['$username', '$$username']}}},
+                    {$project: {_id: 0, avatarUrl: 1}}
+                ],
+                as: '__user'
+            }
+        },
+        {$replaceRoot: {newRoot: {$mergeObjects: [{$arrayElemAt: ['$__user', 0]}, "$$ROOT"]}}},
+        {$project: {__user: 0}}
+    ];
+    Comment.aggregate(aggregate, callback);
 };
 
 exports.save = (comment, callback) => {
@@ -70,8 +76,8 @@ exports.allComments = (from, size, callback) => {
     Comment.find().skip(from).limit(size).sort({created: -1}).exec(callback);
 };
 exports.orgComments = (myOrgs, from, size, callback) => {
-    Comment.aggregate(
-        [{
+    Comment.aggregate([
+        {
             $lookup: {
                 from: 'dataelements',
                 localField: 'element.eltId',

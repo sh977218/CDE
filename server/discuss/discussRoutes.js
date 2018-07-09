@@ -9,6 +9,18 @@ const userService = require("../system/usersrvc");
 exports.module = function (roleConfig) {
     const router = require('express').Router();
 
+    router.get('/comments/eltId/:eltId', (req, res) => {
+        discussDb.byEltId(req.params.eltId, handleError({res, origin: "/comments/"}, comments => {
+            comments.forEach(c => {
+                if (c.pendingApproval) c.text = "This comment is pending approval";
+                c.replies.forEach(r => {
+                    if (r.pendingApproval) r.text = "This reply is pending approval";
+                });
+            });
+            res.send(comments);
+        }))
+    });
+
     router.post('/postComment', authorization.loggedInMiddleware, (req, res) => {
         let comment = req.body;
         let dao = daoManager.getDao(req.comment.element.eltType);
@@ -146,7 +158,7 @@ exports.module = function (roleConfig) {
         )
     });
 
-    router.get('/commentsFor/:username/:from/:size', (req, res) => {
+    router.get('/commentsFor/:username/:from/:size', [authorization.isAuthenticatedMiddleware], (req, res) => {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
         let username = req.params.username;

@@ -231,7 +231,7 @@ try {
         allComments: [authorization.isOrgAuthorityMiddleware],
         manageComment: [authorization.canApproveCommentMiddleware]
     });
-    app.use('/server/discuss', [authorization.isAuthenticatedMiddleware], discussModule);
+    app.use('/server/discuss', discussModule);
 
     let logModule = require("./server/log/index").module({
         feedbackLog: [authorization.isOrgAuthorityMiddleware]
