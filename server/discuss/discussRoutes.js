@@ -1,5 +1,6 @@
 const authorization = require('../system/authorization');
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
+const handleError = require('../log/dbLogger').handleError;
 const discussDb = require('./discussDb');
 const daoManager = require('../system/moduleDaoManager');
 const ioServer = require("../system/ioServer");
