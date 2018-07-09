@@ -1,16 +1,14 @@
 const async = require('async');
-const moment = require('moment');
 
 const config = require('./parseConfig');
-const dbLogger = require('../log/dbLogger.js');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_board = require('../board/mongo-board');
-const mongo_storedQuery = require('../cde/mongo-storedQuery');
 const mongo_data = require('./mongo-data');
 const elastic = require('./elastic');
 const esInit = require('./elasticSearchInit');
 const pushNotification = require('./pushNotification');
+const dbLogger = require('../log/dbLogger');
 
 let app_status = this;
 
@@ -34,12 +32,7 @@ exports.status = function (req, res) {
 };
 
 app_status.checkElasticCount = function (count, index, type, cb) {
-    elastic.esClient.count(
-        {
-            index: index
-            , type: type
-        }
-        , function (err, response) {
+    elastic.esClient.count({index: index, type: type}, (err, response) => {
             if (err) {
                 cb(false, "Error retrieving index count: " + err);
             } else {
@@ -53,7 +46,7 @@ app_status.checkElasticCount = function (count, index, type, cb) {
 };
 
 app_status.isElasticUp = function (cb) {
-    elastic.esClient.cat.health({h: "st"}, function (err, response) {
+    elastic.esClient.cat.health({h: "st"}, (err, response) => {
         if (err) {
             app_status.statusReport.elastic.up = "No Response on Health Check: " + err;
             cb(false);
@@ -79,17 +72,16 @@ app_status.isElasticUp = function (cb) {
     });
 };
 
-let startupDate = new Date();
-app_status.getStatus = function (done) {
-    app_status.isElasticUp(function () {
+app_status.getStatus = getStatusDone => {
+    app_status.isElasticUp(() => {
         if (app_status.statusReport.elastic.up) {
             app_status.statusReport.elastic.indices = [];
             let condition = {archived: false};
             async.series([
-                function (done) {
-                    mongo_cde.count(condition, function (err, deCount) {
+                done => {
+                    mongo_cde.count(condition, (err, deCount) => {
                         esInit.indices[0].totalCount = deCount;
-                        app_status.checkElasticCount(deCount, config.elastic.index.name, "dataelement", function (up, message) {
+                        app_status.checkElasticCount(deCount, config.elastic.index.name, "dataelement", (up, message) => {
                             app_status.statusReport.elastic.indices.push({
                                 name: config.elastic.index.name,
                                 up: up,
@@ -99,10 +91,10 @@ app_status.getStatus = function (done) {
                         });
                     });
                 },
-                function (done) {
-                    mongo_form.count(condition, function (err, formCount) {
+                done => {
+                    mongo_form.count(condition, (err, formCount) => {
                         esInit.indices[1].totalCount = formCount;
-                        app_status.checkElasticCount(formCount, config.elastic.formIndex.name, "form", function (up, message) {
+                        app_status.checkElasticCount(formCount, config.elastic.formIndex.name, "form", (up, message) => {
                             app_status.statusReport.elastic.indices.push({
                                 name: config.elastic.formIndex.name,
                                 up: up,
@@ -112,10 +104,10 @@ app_status.getStatus = function (done) {
                         });
                     });
                 },
-                function (done) {
+                done => {
                     mongo_board.count({}, function (err, boardCount) {
                         esInit.indices[2].totalCount = boardCount;
-                        app_status.checkElasticCount(boardCount, config.elastic.boardIndex.name, "board", function (up, message) {
+                        app_status.checkElasticCount(boardCount, config.elastic.boardIndex.name, "board", (up, message) => {
                             app_status.statusReport.elastic.indices.push({
                                 name: config.elastic.boardIndex.name,
                                 up: up,
@@ -125,56 +117,70 @@ app_status.getStatus = function (done) {
                         });
                     });
                 }
-            ], function () {
-                mongo_data.updateClusterHostStatus({
-                    hostname: config.hostname, port: config.port, nodeStatus: "Running",
-                    elastic: app_status.statusReport.elastic, pmPort: config.pm.port, startupDate: startupDate
-                }, err => {
-                    if (err) logging.errorLogger.error("Unable to retrieve state of host in cluster config.", err);
-                });
-
-                if (done) done();
-            });
+            ], getStatusDone);
         }
     });
 };
 
-let currentActiveNodes;
 let lastReport;
+let notificationTimeout;
+
 setInterval(() => {
     app_status.getStatus(() => {
         let newReport = JSON.stringify(app_status.statusReport);
 
-        mongo_data.saveNotification({
-            title: 'Elastic Search Index Error',
-            url: "/status/cde",
-            roles: ['siteAdmin']
-        });
-
         if (!!lastReport && newReport !== lastReport) {
-            let msg = {
-                title: 'Elastic Search Index Issue',
-                options: {
-                    body: "Status reports not normal",
-                    icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
-                    badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
-                    tag: 'cde-es-issue',
-                    actions: [
-                        {
-                            action: 'site-mgt-action',
-                            title: 'View',
-                            icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+            // different report
+            if (!notificationTimeout) {
+                // delay sending notif if report stays different for 1 minute
+                notificationTimeout = setTimeout(() => {
+                    // send notification now
+                    lastReport = newReport;
+                    let msg = {
+                        title: 'Elastic Search Index Issue',
+                        options: {
+                            body: "Status reports not normal",
+                            icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
+                            badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+                            tag: 'cde-es-issue',
+                            actions: [
+                                {
+                                    action: 'site-mgt-action',
+                                    title: 'View',
+                                    icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+                                }
+                            ]
                         }
-                    ]
-                }
-            };
+                    };
 
-            mongo_data.pushGetAdministratorRegistrations(registrations => {
-                registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
-            });
+                    mongo_data.saveNotification({
+                        title: 'Elastic Search Index Error',
+                        url: "/status/cde",
+                        roles: ['siteAdmin']
+                    });
 
+                    mongo_data.pushGetAdministratorRegistrations(registrations => {
+                        registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
+                    });
+
+                    dbLogger.logError({
+                        message: "Elastic Search Status",
+                        origin: "app_status.getStatus",
+                        details: newReport
+                    });
+                }, config.status.timeouts.notificationTimeout);
+            }
+        } else {
+            if (!!notificationTimeout) {
+                // cancel sending notification because system is back to normal within a minute
+                clearTimeout(notificationTimeout);
+                notificationTimeout = undefined;
+            }
         }
-        lastReport = newReport;
+        if (!lastReport) {
+            // set normal status for the first time.
+            lastReport = newReport;
+        }
     });
 }, config.status.timeouts.statusCheck);
 

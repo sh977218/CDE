@@ -13,7 +13,7 @@ const ClientErrorModel = conn.model('DbClientErrorLogger', schemas.clientErrorSc
 const StoredQueryModel = mongo_storedQuery.StoredQueryModel;
 const FeedbackModel = conn.model('FeedbackIssue', schemas.feedbackIssueSchema);
 const consoleLogModel = conn.model('consoleLogs', schemas.consoleLogSchema);
-const useragent = require('useragent');
+const userAgent = require('useragent');
 
 exports.consoleLog = function (message, level) { // no express errors see dbLogger.log(message)
     new consoleLogModel({message: message, level: level}).save(err => {
@@ -137,7 +137,7 @@ exports.logClientError = function (req, callback) {
             }
         };
 
-        let ua = useragent.is(req.headers['user-agent']);
+        let ua = userAgent.is(req.headers['user-agent']);
         if (ua.chrome || ua.firefox || ua.edge) {
             mongo_data.saveNotification({
                 title: "Client Side Error: " + exc.message.substr(0, 30),
@@ -154,7 +154,6 @@ exports.logClientError = function (req, callback) {
     });
 };
 
-// @TODO: remove most "res.status(500)" from the system
 exports.handleError = function (options, cb) {
     return function errorHandler(err, ...args) {
         if (err) {
