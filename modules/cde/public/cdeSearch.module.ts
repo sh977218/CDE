@@ -17,18 +17,17 @@ import { WidgetModule } from 'widget/widget.module';
 import { CdeTableViewPreferencesComponent } from "../../search/tableViewPreferences/cdeTableViewPreferencesComponent";
 import {
     MatButtonModule,
-    MatIconModule,
     MatInputModule,
     MatMenuModule,
     MatPaginatorModule,
     MatCheckboxModule,
     MatDialogModule,
     MatGridListModule,
+    MatIconModule,
     MatListModule,
     MatAutocompleteModule,
     MatSelectModule,
 } from "@angular/material";
-
 
 @NgModule({
     imports: [

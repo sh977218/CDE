@@ -4,7 +4,6 @@ import { Elt } from 'shared/models.model';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 
 @Component({
-    selector: 'cde-form-accordion-list',
     templateUrl: './formAccordionList.component.html'
 })
 export class FormAccordionListComponent {

@@ -15,7 +15,7 @@
     <div class="modal-body" id="MergeDataElementModalBody">
         <div class="col-10 col-offset-1">
             Fields to be Imported
-            <button id="checkAllMergeFieldsBtn" class="btn btn-outline-dark" (click)="checkAllMergerFields();">
+            <button id="checkAllMergeFieldsBtn" mat-raised-button (click)="checkAllMergerFields();">
                 Check All
             </button>
             <div class="row">
@@ -89,8 +89,8 @@
         </div>
     </div>
     <div class="modal-footer" id="MergeDataElementModalFooter">
-        <button class="btn btn-outline-dark cancel" (click)="c()">Cancel</button>
-        <button class="btn  btn-warning cancel" (click)="doMerge()" [disabled]="!allow" id="doMergeBtn">
+        <button mat-raised-button (click)="c()" color="warn">Cancel</button>
+        <button mat-raised-button color="primary" (click)="doMerge()" [disabled]="!allow" id="doMergeBtn">
             Retire & Merge
         </button>
     </div>

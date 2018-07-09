@@ -132,11 +132,11 @@
     <div class="pull-right text-right">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
-            <button id="deleteDraftBtn"class="btn btn-danger" title="Delete Draft"
+            <button id="deleteDraftBtn" title="Delete Draft" mat-raised-button color="warn"
                     (click)="deleteModal.openDeleteModal()">
-                <i class="fa fa-trash fa-lg"></i><span class="d-none d-sm-inline-block ml-1">Delete Draft</span>
+                <mat-icon>delete</mat-icon><span class="d-none d-sm-inline-block ml-1">Delete Draft</span>
             </button>
-            <button id="openSave" class="btn btn-success" title="Publish" (click)="publish()">
+            <button id="openSave" mat-raised-button color="primary" title="Publish" (click)="publish()">
                 <i class="fa fa-globe fa-lg"></i><span class="d-none d-sm-inline-block ml-1">Publish</span>
             </button>
         </ng-container>

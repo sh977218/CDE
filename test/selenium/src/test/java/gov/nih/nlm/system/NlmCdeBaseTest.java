@@ -1815,11 +1815,11 @@ public class NlmCdeBaseTest {
     protected void reopenComment(String message) {
         goToDiscussArea();
         WebElement weResolved = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
-        Assert.assertEquals(true, weResolved.getAttribute("class").contains("strike"));
+        Assert.assertEquals(weResolved.getAttribute("class").contains("strike"), true);
         String xpath = getCommentIconXpath(message, "comment", "reopen");
         clickElement(By.xpath(xpath));
-        WebElement weReopened = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
-        Assert.assertEquals(false, weReopened.getAttribute("class").contains("strike"));
+        wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
+                By.xpath("//div[normalize-space()='" + message + "']/span"), "class", "strike")));
     }
 
     private Map<String, String> COMMENT_Title_Case_MAP = new HashMap<String, String>() {
