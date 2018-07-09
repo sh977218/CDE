@@ -8,7 +8,8 @@ public class WhatsNew extends NlmCdeBaseTest {
     @Test
     public void whatsNew() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToSiteManagement();
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Site Management"));
         clickElement(By.id("whatsNewTab"));
         clickElement(By.cssSelector(".fa-edit"));
         clickElement(By.xpath("//*[@id='newDefinition']/button/span[contains(text(),'Plain Text')]"));
