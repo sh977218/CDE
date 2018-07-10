@@ -121,7 +121,6 @@ exports.formJson = {
     }
     , origin: sharedSchemas.stringType
     , attachments: [sharedSchemas.attachmentSchema]
-    , comments: [sharedSchemas.commentSchema]
     , history: [Schema.Types.ObjectId]
     , changeNote: sharedSchemas.stringType
     , lastMigrationScript: sharedSchemas.stringType

@@ -1808,6 +1808,7 @@ public class NlmCdeBaseTest {
         goToDiscussArea();
         String xpath = getCommentIconXpath(message, "comment", "resolve");
         clickElement(By.xpath(xpath));
+        isCommentOrReplyExists(message, true);
         WebElement we = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
         Assert.assertEquals(true, we.getAttribute("class").contains("strike"));
     }
@@ -1818,7 +1819,7 @@ public class NlmCdeBaseTest {
         Assert.assertEquals(weResolved.getAttribute("class").contains("strike"), true);
         String xpath = getCommentIconXpath(message, "comment", "reopen");
         clickElement(By.xpath(xpath));
-        hangon(1);
+        isCommentOrReplyExists(message, true);
         WebElement weReopened = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
         Assert.assertEquals(weReopened.getAttribute("class").contains("strike"), false);
     }

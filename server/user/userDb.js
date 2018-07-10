@@ -1,18 +1,11 @@
-const mongoose = require('mongoose');
+const Schema = require('mongoose').Schema;
+const stringType = require('../system/schemas').stringType;
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
+const config = require('../system/parseConfig');
+const connHelper = require('../system/connections');
+const conn = connHelper.establishConnection(config.database.appData);
 
-let schemas = {};
-
-function deleteEmpty(v) {
-    if (v === null || v === '') {
-        return;
-    }
-    return v;
-}
-
-const stringType = schemas.stringType = {type: String, set: deleteEmpty};
-
-schemas.userSchema = new mongoose.Schema({
+exports.userSchema = new Schema({
     username: Object.assign({unique: true}, stringType),
     email: stringType,
     password: stringType,
@@ -57,10 +50,39 @@ schemas.userSchema = new mongoose.Schema({
     avatarUrl: stringType,
     publishedForms: [{
         name: stringType,
-        id: mongoose.Schema.Types.ObjectId
+        id: Schema.Types.ObjectId
     }]
 }, {usePushEach: true});
 
-schemas.userSchema.set('collection', 'users');
+const User = conn.model('User', exports.userSchema);
 
-module.exports = schemas;
+exports.User = User;
+
+exports.byId = (id, callback) => {
+    User.findById(id, {password: 0}, callback);
+};
+
+exports.updateUser = (id, fields, callback) => {
+    let update = {};
+    if (fields.email) update.email = fields.email;
+    if (fields.searchSettings) update.searchSettings = fields.searchSettings;
+    if (fields.publishedForms) update.email = fields.publishedForms;
+    User.update({_id: id}, {$set: update}, callback);
+};
+exports.avatarByUsername = (username, callback) => {
+    User.findOne({'username': new RegExp('^' + username + '$', "i")}, {avatarUrl: 1}, callback);
+};
+
+exports.usersByUsername = (username, callback) => {
+    User.find({'username': new RegExp(username, 'i')}, {password: 0}, callback);
+};
+
+exports.byUsername = (username, callback) => {
+    User.findOne({username: username}, callback);
+};
+
+exports.save = (user, callback) => {
+    new User(user).save(callback);
+};
+
+

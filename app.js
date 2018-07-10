@@ -227,7 +227,7 @@ express.response.render = function (view, module, msg) {
 };
 
 try {
-    let logModule = require("./server/log/index").module({
+    let logModule = require("./server/log/logRoutes").module({
         feedbackLog: [authorization.isOrgAuthorityMiddleware]
     });
     app.use('/server/log', logModule);
@@ -242,7 +242,7 @@ try {
 
     require(path.join(__dirname, './modules/swagger/index.js')).init(app);
 
-    let userModule = require("./server/user/index").module({
+    let userModule = require("./server/user/userRoutes").module({
         search: [authorization.isOrgAdminMiddleware],
         manage: [authorization.isOrgAuthorityMiddleware]
     });
