@@ -36,7 +36,9 @@ module.exports = merge(baseConfig, {
             entryModule: path.resolve(__dirname, './app.module') + '#CdeAppModule'
         }),
         new CopyWebpackPlugin([
-            {from: 'modules/_app/assets/'}
+            {from: 'modules/_app/assets/'},
+            {from: 'node_modules/material-design-lite/material.min.js'},
+            {from: 'node_modules/material-design-lite/material.min.css'}
         ]),
         new FileListPlugin({
             fileName: 'sw.js',
