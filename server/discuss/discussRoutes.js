@@ -5,6 +5,7 @@ const discussDb = require('./discussDb');
 const daoManager = require('../system/moduleDaoManager');
 const ioServer = require("../system/ioServer");
 const userService = require("../system/usersrvc");
+const mongo_data = require('../system/mongo-data');
 const adminItemService = require('../system/adminItemSvc');
 
 exports.module = function (roleConfig) {
@@ -105,7 +106,7 @@ exports.module = function (roleConfig) {
                         },
                         states: []
                     };
-                    mongo_data_system.createMessage(message);
+                    mongo_data.createMessage(message);
                 }
             }));
         }))

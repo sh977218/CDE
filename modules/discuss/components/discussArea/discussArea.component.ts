@@ -34,7 +34,7 @@ export class DiscussAreaComponent {
         this.ownElt = this.isAllowedModel.doesUserOwnElt(e);
         if (!this.newComment.element) this.newComment.element = {};
         this.newComment.element.eltType = e.elementType;
-        this.newComment.element.eltId = e.tinyId;
+        this.newComment.element.eltId = e.tinyId ? e.tinyId : e._id;
         this._elt = e;
     }
 
