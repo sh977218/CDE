@@ -62,7 +62,7 @@ exports.byEltId = (id, callback) => {
 };
 
 exports.save = (comment, callback) => {
-    new Comment.save(comment, callback);
+    new Comment(comment).save(callback);
 };
 
 exports.removeById = (id, callback) => {

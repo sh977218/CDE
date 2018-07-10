@@ -7,9 +7,9 @@ export function canComment(user) {
 
 export function canRemoveComment(user, comment, element) {
     return user.username === comment.user.username
-        || (element.stewardOrg && (req.user.orgAdmin.indexOf(element.stewardOrg.name) > -1))
-        || (element.owner && (element.owner.username === req.user.username))
-        || req.user.siteAdmin
+        || (element.stewardOrg && (user.orgAdmin.indexOf(element.stewardOrg.name) > -1))
+        || (element.owner && (element.owner.username === user.username))
+        || user.siteAdmin
 }
 
 export function canCreateForms(user) {

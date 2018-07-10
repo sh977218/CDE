@@ -23,9 +23,9 @@ exports.module = function (roleConfig) {
 
     router.post('/postComment', authorization.loggedInMiddleware, (req, res) => {
         let comment = req.body;
-        let dao = daoManager.getDao(req.comment.element.eltType);
+        let dao = daoManager.getDao(comment.element.eltType);
         let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
-        idRetrievalFunc(req.body.element.eltId, handleError({res, origin: "/postComment/"}, elt => {
+        idRetrievalFunc(comment.element.eltId, handleError({res, origin: "/postComment/"}, elt => {
                 if (!elt) return res.status(404).send("Element does not exist.");
                 comment.user = req.user;
                 comment.created = new Date().toJSON();
