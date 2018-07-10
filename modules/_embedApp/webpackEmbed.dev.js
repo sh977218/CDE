@@ -25,6 +25,6 @@ module.exports = merge(baseConfig, {
         ]
     },
     plugins: [
-        new CleanWebpackPlugin(['dist/embed'])
+        new CleanWebpackPlugin(['dist/embed'], {root: path.resolve(__dirname, '../..')})
     ]
 });
