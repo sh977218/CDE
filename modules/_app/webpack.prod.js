@@ -27,6 +27,7 @@ module.exports = merge(baseConfig, {
         path: path.resolve(__dirname, '../../dist/app'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
         publicPath: '/app/',
         filename: '[name].js',
+        chunkFilename: 'cde-[chunkhash].js',
     },
     plugins: [
         new CleanWebpackPlugin(['dist/app']),
