@@ -143,11 +143,11 @@ exports.module = function (roleConfig) {
                 let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
                 let eltId = comment.element.eltId;
                 idRetrievalFunc(eltId, handleError({res, origin: "/deleteReply/"}, element => {
-                        if (!comment) return res.status(404).send('Element not found');
+                        if (!element) return res.status(404).send('Element not found');
                         if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
                             return res.send({message: "You can only remove " + element.type + " you own."});
                         }
-                        comment.replies = comment.replies.filter(r => r._id !== replyId);
+                        comment.replies = comment.replies.filter(r => r._id.toString() !== replyId);
                         comment.save(handleError({res, origin: "/deleteComment/"}, () => {
                                 ioServerCommentUpdated(req.user.username);
                                 res.send({message: "Reply removed"});
@@ -173,10 +173,7 @@ exports.module = function (roleConfig) {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
         if (from < 0 || size < 0) return res.status(422).send();
-        discussDb.allComments(from, size, handleError({
-                res,
-                origin: "/allComments/"
-            }, comments => res.send(comments))
+        discussDb.allComments(from, size, handleError({res, origin: "/allComments/"}, comments => res.send(comments))
         )
     });
     router.get('/orgComments/:from/:size', authorization.loggedInMiddleware, (req, res) => {
@@ -212,7 +209,7 @@ exports.module = function (roleConfig) {
         discussDb.byReplyId(replyId, handleError({res, origin: "/approveReply/"}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.replies.forEach(r => {
-                    if (r === replyId) r.pendingApproval = false;
+                    if (r._id.toString() === replyId) r.pendingApproval = false;
                 });
                 comment.save(handleError({res, origin: "/approveReply/"}, () => res.send("Approved")));
             })
@@ -222,7 +219,7 @@ exports.module = function (roleConfig) {
         let replyId = req.body.replyId;
         discussDb.byReplyId(replyId, handleError({res, origin: "/declineReply/"}, comment => {
                 if (!comment) return res.status(404).send();
-                comment.replies = comment.replies.filter(r => r._id !== replyId);
+                comment.replies = comment.replies.filter(r => r._id.toString() !== replyId);
                 comment.save(handleError({res, origin: "/declineReply/"}, () => res.send("Approved")));
             })
         )
@@ -250,7 +247,7 @@ exports.module = function (roleConfig) {
         discussDb.byReplyId(replyId, handleError({res, origin: "/resolveReply/"}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.replies.forEach(r => {
-                    if (r === replyId) r.status = 'resolved';
+                    if (r._id.toString() === replyId) r.status = 'resolved';
                 });
                 comment.save(handleError({res, origin: "/resolveReply/"}, () => res.send("Saved.")));
             })
@@ -261,7 +258,7 @@ exports.module = function (roleConfig) {
         discussDb.byReplyId(replyId, handleError({res, origin: "/reopenReply/"}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.replies.forEach(r => {
-                    if (r === replyId) r.status = 'active';
+                    if (r._id.toString() === replyId) r.status = 'active';
                 });
                 comment.save(handleError({res, origin: "/reopenReply/"}, () => res.send("Saved.")));
             })

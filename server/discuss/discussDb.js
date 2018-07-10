@@ -39,7 +39,7 @@ exports.byId = (id, callback) => {
     Comment.findById(id, callback);
 };
 exports.byReplyId = (id, callback) => {
-    Comment.findOne({'replies.id': id}, callback);
+    Comment.findOne({'replies._id': id}, callback);
 };
 exports.byEltId = (id, callback) => {
     let aggregate = [
