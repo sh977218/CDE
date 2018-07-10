@@ -238,7 +238,7 @@
     {
       "path": "./dist/native/native.css",
       "compression": "none",
-      "maxSize": "206 kB"
+      "maxSize": "210 kB"
     },
     {
       "path": "./modules/system/views/home-launch.ejs",

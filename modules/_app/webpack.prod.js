@@ -30,7 +30,7 @@ module.exports = merge(baseConfig, {
         chunkFilename: 'cde-[chunkhash].js',
     },
     plugins: [
-        new CleanWebpackPlugin(['dist/app']),
+        new CleanWebpackPlugin(['dist/app'], {root: path.resolve(__dirname, '../..')}),
         new AotPlugin.AngularCompilerPlugin({
             tsConfigPath: path.resolve(__dirname, '../../tsconfigApp.json'),
             entryModule: path.resolve(__dirname, './app.module') + '#CdeAppModule'
