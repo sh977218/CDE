@@ -1,7 +1,6 @@
 const _ = require("lodash");
 const config = require('../system/parseConfig');
 const schemas = require('./schemas');
-const schemas_user = require('../user/schemas');
 const mongo_data_system = require('../system/mongo-data');
 const mongo_board = require('../board/mongo-board');
 const connHelper = require('../system/connections');
@@ -41,7 +40,7 @@ schemas.dataElementSchema.pre('save', function (next) {
 
 var conn = connHelper.establishConnection(config.database.appData);
 
-var User = conn.model('User', schemas_user.userSchema);
+var User = require('../user/userDb').User;
 var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
 var DataElementDraft = conn.model('DataElementDraft', draftSchema);
 exports.User = User;

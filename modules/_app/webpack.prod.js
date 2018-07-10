@@ -27,15 +27,18 @@ module.exports = merge(baseConfig, {
         path: path.resolve(__dirname, '../../dist/app'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
         publicPath: '/app/',
         filename: '[name].js',
+        chunkFilename: 'cde-[chunkhash].js',
     },
     plugins: [
-        new CleanWebpackPlugin(['dist/app']),
+        new CleanWebpackPlugin(['dist/app'], {root: path.resolve(__dirname, '../..')}),
         new AotPlugin.AngularCompilerPlugin({
             tsConfigPath: path.resolve(__dirname, '../../tsconfigApp.json'),
             entryModule: path.resolve(__dirname, './app.module') + '#CdeAppModule'
         }),
         new CopyWebpackPlugin([
-            {from: 'modules/_app/assets/'}
+            {from: 'modules/_app/assets/'},
+            {from: 'node_modules/material-design-lite/material.min.js'},
+            {from: 'node_modules/material-design-lite/material.min.css'}
         ]),
         new FileListPlugin({
             fileName: 'sw.js',
