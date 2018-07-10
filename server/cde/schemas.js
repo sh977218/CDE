@@ -85,13 +85,6 @@ var deJson = {
     properties: [sharedSchemas.propertySchema], // Attribute not otherwise documented by structured CDE record
     ids: [sharedSchemas.idSchema], // Identifier used to establish or indicate what CDE is within a specific context
     dataSets: [sharedSchemas.dataSetSchema], // A list of datasets that use this CDE
-    mappingSpecifications: [{
-        content: sharedSchemas.stringType,
-        spec_type: sharedSchemas.stringType,
-        script: sharedSchemas.stringType,
-        _id: false
-    }], // Deprecated
-    comments: [discussDb.commentSchema],
     archived: {type: Boolean, default: false, index: true}, // Indication of historical record. True for previous versions.
     forkOf: sharedSchemas.stringType, // May point to a tinyID if the CDE is a fork
     attachments: [sharedSchemas.attachmentSchema],

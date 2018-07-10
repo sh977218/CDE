@@ -14,7 +14,7 @@
         <mat-menu #loginMenu="matMenu">
             <a routerLink="/profile" id="user_profile" mat-menu-item>Profile</a>
             <a routerLink="/inbox" id="user_inbox" mat-menu-item>Inbox</a>
-            <a routerLink="/server/discuss/orgComments" id="org_comments" mat-menu-item
+            <a routerLink="/orgComments" id="org_comments" mat-menu-item
                *ngIf="isOrgCurator(userService.user)">Org Comments</a>
             <a routerLink="/classificationmanagement" id="user_classifications" mat-menu-item
                *ngIf="isOrgCurator(userService.user)">Classifications</a>

@@ -122,7 +122,6 @@ exports.formJson = {
     }
     , origin: sharedSchemas.stringType
     , attachments: [sharedSchemas.attachmentSchema]
-    , comments: [discussDb.commentSchema]
     , history: [Schema.Types.ObjectId]
     , changeNote: sharedSchemas.stringType
     , lastMigrationScript: sharedSchemas.stringType
