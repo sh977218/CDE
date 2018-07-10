@@ -30,7 +30,7 @@ exports.module = function (roleConfig) {
                 comment.user = req.user;
                 comment.created = new Date().toJSON();
                 if (!authorizationShared.canComment(req.user)) comment.pendingApproval = true;
-                discussDb.save(handleError({res, origin: "/postComment/"}, savedComment => {
+                discussDb.save(comment, handleError({res, origin: "/postComment/"}, savedComment => {
                     let message = "Comment added.";
                     ioServerCommentUpdated(req.user.username);
                     if (savedComment.pendingApproval) {
