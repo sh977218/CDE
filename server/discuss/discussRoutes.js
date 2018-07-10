@@ -5,6 +5,7 @@ const discussDb = require('./discussDb');
 const daoManager = require('../system/moduleDaoManager');
 const ioServer = require("../system/ioServer");
 const userService = require("../system/usersrvc");
+const adminItemService = require('../system/adminItemSvc');
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
@@ -46,7 +47,7 @@ exports.module = function (roleConfig) {
                                 text: savedComment.text
                             }
                         };
-                        exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
+                        adminItemService.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                     }
                     res.send({message: message});
                 }));
@@ -82,7 +83,7 @@ exports.module = function (roleConfig) {
                             text: req.body.reply
                         }
                     };
-                    exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
+                    adminItemService.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                 }
                 if (req.user.username !== savedComment.user.username) {
                     let message = {
