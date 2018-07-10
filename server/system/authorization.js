@@ -14,10 +14,10 @@ exports.canEditMiddleware = function (req, res, next) {
     if (next) next();
 };
 
-exports.canCommentMiddleware = function (user) {
-    return authorizationShared.hasRole(user, "CommentAuthor")
-        || authorizationShared.hasRole(user, "CommentReviewer")
-        || authorizationShared.isOrgCurator(user);
+exports.canCommentMiddleware = function (req, res, next) {
+    if (!req.user) return res.status(401).send();
+    else if (!authorizationShared.canComment(req.user)) res.status(401).send();
+    else next();
 };
 
 exports.canApproveCommentMiddleware = function (req, res, next) {
@@ -25,10 +25,6 @@ exports.canApproveCommentMiddleware = function (req, res, next) {
     else res.send(401).send();
 };
 
-exports.isAuthenticatedMiddleware = function (req, res, next) {
-    if (req.isAuthenticated()) next();
-    else res.status(401).send();
-};
 exports.isOrgAdminMiddleware = (req, res, next) => {
     if (!req.isAuthenticated() || !authorizationShared.isOrgAdmin(req.user, req.body.org)) {
         return res.status(403).send();

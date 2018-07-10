@@ -21,7 +21,7 @@ exports.module = function (roleConfig) {
         }))
     });
 
-    router.post('/postComment', authorization.loggedInMiddleware, (req, res) => {
+    router.post('/postComment', authorization.canCommentMiddleware, (req, res) => {
         let comment = req.body;
         let dao = daoManager.getDao(comment.element.eltType);
         let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
