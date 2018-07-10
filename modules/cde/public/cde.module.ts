@@ -18,7 +18,7 @@ import { ValueDomainSummaryComponent } from 'cde/public/components/summary/value
 import { DiscussModule } from 'discuss/discuss.module';
 import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
-
+import { MatButtonModule, MatIconModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -35,6 +35,8 @@ import { WidgetModule } from 'widget/widget.module';
         BoardModule,
         DiscussModule,
         SearchModule,
+        MatIconModule,
+        MatButtonModule,
     ],
     declarations: [
         CdeAccordionListComponent,

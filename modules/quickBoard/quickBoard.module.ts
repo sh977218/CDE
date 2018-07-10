@@ -12,6 +12,7 @@ import { QuickBoardComponent } from 'quickBoard/quickBoard.component';
 import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
+import { MatButtonModule, MatIconModule } from '@angular/material';
 
 
 const qbRoutes: Routes = [
@@ -31,6 +32,8 @@ const qbRoutes: Routes = [
         // internal
         CdeSearchModule,
         FormSearchModule,
+        MatIconModule,
+        MatButtonModule
     ],
     declarations: [
         DataElementQuickBoardComponent,

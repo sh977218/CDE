@@ -122,7 +122,7 @@ a:not([href]):not([tabindex]).fake-link:hover {
 }
 
 /* begin validation error */
-input.ng-invalid {
+input.ng-invalid:not([matInput]) {
     border-left: 5px solid #a94442 !important;
 }
 
@@ -130,7 +130,7 @@ input.ng-invalid {
     border-left: 5px solid #42A948; /* green */
 }
 
-.ng-invalid:not(form) {
+.ng-invalid:not(form):not(mat-form-field):not([matInput]) {
     border-left: 5px solid #a94442; /* red */
 }
 /* end validation error */
