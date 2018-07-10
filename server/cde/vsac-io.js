@@ -67,6 +67,12 @@ exports.getTGT = function (retries, cb) {
         });
         res.on('end', function () {
             if (!output) {
+                dbLogger.consoleLog('getTgt: ERROR no TGT: check credentials');
+                retry(retries, cb);
+                return;
+            }
+            if (output.indexOf('TGT-') !== 0) {
+                bLogger.consoleLog('getTgt: ERROR bad TGT');
                 retry(retries, cb);
                 return;
             }
@@ -101,6 +107,11 @@ exports.getTicket = function (retries, cb) {
         res.on('end', function () {
             if (output.indexOf('"error":"Not Found"') > -1) {
                 dbLogger.consoleLog('getTicket: ERROR 404');
+                retry(retries, cb);
+                return;
+            }
+            if (output.indexOf('ST-') !== 0) {
+                dbLogger.consoleLog('getTicket: ERROR bad');
                 retry(retries, cb);
                 return;
             }
