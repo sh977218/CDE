@@ -90,7 +90,6 @@ var deJson = {
         script: sharedSchemas.stringType,
         _id: false
     }], // Deprecated
-    comments: [sharedSchemas.commentSchema],
     archived: {type: Boolean, default: false, index: true}, // Indication of historical record. True for previous versions.
     forkOf: sharedSchemas.stringType, // May point to a tinyID if the CDE is a fork
     attachments: [sharedSchemas.attachmentSchema],

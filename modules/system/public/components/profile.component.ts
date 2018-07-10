@@ -87,12 +87,11 @@ export class ProfileComponent {
     }
 
     saveProfile() {
-        this.http.post('/server/user/', this.user, {responseType: 'text'}).subscribe(
+        this.http.post('/server/user/', this.user).subscribe(
             () => {
                 this.reloadUser();
                 this.alert.addAlert('success', 'Saved');
-            },
-            () => this.alert.addAlert('danger', 'Error, unable to save')
+            }, () => this.alert.addAlert('danger', 'Error, unable to save')
         );
     }
 
