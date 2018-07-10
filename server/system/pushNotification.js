@@ -34,7 +34,10 @@ exports.create = (req, res) => {
     if (!req.body.subscription || !req.body.subscription.endpoint) {
         return exports.createUnsubscribed(req, res);
     }
-    mongo_data.pushesByEndpoint(req.body.subscription.endpoint, dbLogger.handleError({res, origin: 'pushNotification.create'}, pushes => {
+    mongo_data.pushesByEndpoint(req.body.subscription.endpoint, dbLogger.handleError({
+        res,
+        origin: 'pushNotification.create'
+    }, pushes => {
         if (!pushes || !pushes.length) {
             return exports.createUnsubscribed(req, res);
         }
