@@ -68,7 +68,7 @@ exports.module = function (roleConfig) {
                 reply.pendingApproval = true;
             }
             comment.replies.push(reply);
-            discussDb.save(handleError({res, origin: "/replyComment/"}, savedComment => {
+            discussDb.save(comment, handleError({res, origin: "/replyComment/"}, savedComment => {
                 ioServerCommentUpdated(req.user.username);
                 res.send({message: "Reply added"});
                 if (reply.pendingApproval) {
