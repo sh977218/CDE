@@ -33,15 +33,13 @@ exports.module = function (roleConfig) {
                 comment.created = new Date().toJSON();
                 if (!authorizationShared.canComment(req.user)) comment.pendingApproval = true;
                 discussDb.save(comment, handleError({res, origin: "/postComment/"}, savedComment => {
-                    let message = "Comment added.";
                     ioServerCommentUpdated(req.user.username);
                     if (savedComment.pendingApproval) {
-                        message += " Approval required.";
                         let details = {
                             element: {
                                 eltId: savedComment.element.eltId,
                                 name: dao.getPrimaryName(elt),
-                                eltType: dao.type
+                                eltType: dao.typediscussRoutes.js
                             },
                             comment: {
                                 commentId: savedComment._id,
@@ -50,7 +48,7 @@ exports.module = function (roleConfig) {
                         };
                         adminItemService.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                     }
-                    res.send({message: message});
+                    res.send({});
                 }));
             })
         );
@@ -71,7 +69,7 @@ exports.module = function (roleConfig) {
             comment.replies.push(reply);
             discussDb.save(comment, handleError({res, origin: "/replyComment/"}, savedComment => {
                 ioServerCommentUpdated(req.user.username);
-                res.send({message: "Reply added"});
+                res.send({});
                 if (reply.pendingApproval) {
                     let details = {
                         element: {
@@ -122,11 +120,11 @@ exports.module = function (roleConfig) {
                 idRetrievalFunc(eltId, handleError({res, origin: "/deleteComment/"}, element => {
                         if (!comment) return res.status(404).send('Element not found');
                         if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
-                            return res.send({message: "You can only remove " + element.type + " you own."});
+                            return res.status(401).send("You can only remove " + element.type + " you own.");
                         }
                         comment.remove(handleError({res, origin: "/deleteComment/"}, () => {
                                 ioServerCommentUpdated(req.user.username);
-                                res.send({message: "Comment removed"});
+                                res.send({});
                             })
                         );
                     })
@@ -145,12 +143,12 @@ exports.module = function (roleConfig) {
                 idRetrievalFunc(eltId, handleError({res, origin: "/deleteReply/"}, element => {
                         if (!element) return res.status(404).send('Element not found');
                         if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
-                            return res.send({message: "You can only remove " + element.type + " you own."});
+                            return res.status(401).send("You can only remove " + element.type + " you own.");
                         }
                         comment.replies = comment.replies.filter(r => r._id.toString() !== replyId);
                         comment.save(handleError({res, origin: "/deleteComment/"}, () => {
                                 ioServerCommentUpdated(req.user.username);
-                                res.send({message: "Reply removed"});
+                                res.send({});
                             })
                         );
                     })
@@ -173,8 +171,7 @@ exports.module = function (roleConfig) {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
         if (from < 0 || size < 0) return res.status(422).send();
-        discussDb.allComments(from, size, handleError({res, origin: "/allComments/"}, comments => res.send(comments))
-        )
+        discussDb.allComments(from, size, handleError({res, origin: "/allComments/"}, comments => res.send(comments)))
     });
     router.get('/orgComments/:from/:size', authorization.loggedInMiddleware, (req, res) => {
         let myOrgs = userService.myOrgs(req.user);
@@ -229,7 +226,10 @@ exports.module = function (roleConfig) {
         discussDb.byId(req.body.commentId, handleError({res, origin: "/resolveComment/"}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.status = 'resolved';
-                comment.save(handleError({res, origin: "/resolveComment/"}, () => res.send("Saved.")));
+                comment.save(handleError({res, origin: "/resolveComment/"}, () => {
+                    ioServerCommentUpdated(req.user.username);
+                    res.send({});
+                }));
             })
         )
     });
@@ -237,7 +237,10 @@ exports.module = function (roleConfig) {
         discussDb.byId(req.body.commentId, handleError({res, origin: "/reopenComment/"}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.status = 'active';
-                comment.save(handleError({res, origin: "/reopenComment/"}, () => res.send("Saved.")));
+                comment.save(handleError({res, origin: "/reopenComment/"}, () => {
+                    ioServerCommentUpdated(req.user.username);
+                    res.send({});
+                }));
             })
         )
     });
@@ -249,7 +252,10 @@ exports.module = function (roleConfig) {
                 comment.replies.forEach(r => {
                     if (r._id.toString() === replyId) r.status = 'resolved';
                 });
-                comment.save(handleError({res, origin: "/resolveReply/"}, () => res.send("Saved.")));
+                comment.save(handleError({res, origin: "/resolveReply/"}, () => {
+                    ioServerCommentUpdated(req.user.username);
+                    res.send({});
+                }));
             })
         )
     });
@@ -260,13 +266,17 @@ exports.module = function (roleConfig) {
                 comment.replies.forEach(r => {
                     if (r._id.toString() === replyId) r.status = 'active';
                 });
-                comment.save(handleError({res, origin: "/reopenReply/"}, () => res.send("Saved.")));
+                comment.save(handleError({res, origin: "/reopenReply/"}, () => {
+                    ioServerCommentUpdated(req.user.username);
+                    res.send({});
+                }));
             })
         )
     });
 
     return router;
 
-};
+}
+;
 
 ioServerCommentUpdated = username => ioServer.ioServer.of("/comment").emit('commentUpdated', {username: username});
