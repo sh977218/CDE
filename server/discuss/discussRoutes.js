@@ -176,8 +176,8 @@ exports.module = function (roleConfig) {
     router.get('/orgComments/:from/:size', authorization.loggedInMiddleware, (req, res) => {
         let myOrgs = userService.myOrgs(req.user);
         if (!myOrgs || myOrgs.length === 0) return res.send([]);
-        let from = Number.parseInt(from);
-        let size = Number.parseInt(size);
+        let from = Number.parseInt(req.params.from);
+        let size = Number.parseInt(req.params.size);
         if (from < 0 || size < 0) return res.status(422).send();
         discussDb.orgComments(myOrgs, from, size, handleError({res, origin: "/orgComments/"}, comments =>
             res.send(comments))
