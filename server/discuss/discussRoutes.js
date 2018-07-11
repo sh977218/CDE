@@ -276,7 +276,7 @@ exports.module = function (roleConfig) {
 
     return router;
 
-}
-;
+};
 
+// @TODO emit should have room Id.
 ioServerCommentUpdated = username => ioServer.ioServer.of("/comment").emit('commentUpdated', {username: username});
