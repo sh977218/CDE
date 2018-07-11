@@ -18,6 +18,7 @@ modules/system/views/version.html
 modules/system/public/html/version.html
 prodDump/
 temp/
+ssl/
 
 ## Ingest
 ingesters/.nb-gradle/private/
