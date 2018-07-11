@@ -41,16 +41,6 @@ const ticketOptions = {
     }
 };
 
-// const valueSetOptions = {
-//     host: config.vsac.host,
-//     port: config.vsac.port,
-//     path: config.vsac.valueSet.path,
-//     method: 'GET',
-//     agent: false,
-//     requestCert: true,
-//     rejectUnauthorized: false
-// };
-
 exports.getTGT = function (retries, cb) {
     function retry(retries, cb) {
         if (retries) {
