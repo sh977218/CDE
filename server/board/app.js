@@ -169,7 +169,7 @@ exports.init = function (app, daoManager) {
                     return a.toObject();
                 });
                 delete board._doc.owner.userId;
-                let idList = board.pins.map(p =>  board.type === 'cde' ? p.deTinyId : p.formTinyId);
+                let idList = board.pins.map(p => board.type === 'cde' ? p.deTinyId : p.formTinyId);
                 daoManager.getDao(board.type).elastic.byTinyIdList(idList, function (err, elts) {
                     if (req.query.type === "xml") {
                         res.setHeader("Content-Type", "application/xml");
@@ -193,13 +193,6 @@ exports.init = function (app, daoManager) {
                 res.status(404).send();
             }
         });
-    });
-
-    app.post('/comments/board/add', function (req, res) {
-        adminItemSvc.addComment(req, res, mongo_board);
-    });
-    app.post('/comments/board/remove', function (req, res) {
-        adminItemSvc.removeComment(req, res, mongo_board);
     });
 
     app.post('/board', function (req, res) {
@@ -301,12 +294,12 @@ exports.init = function (app, daoManager) {
                     else if (board.review.endDate && board.review.endDate < new Date()) return res.status(500).send('board has already ended review.');
                     else {
                         if (board.users.find(function (u) {
-                                if (u.username === req.user.username) {
-                                    u.status.approval = approval;
-                                    u.status.reviewedDate = new Date();
-                                    return true;
-                                }
-                            })) {
+                            if (u.username === req.user.username) {
+                                u.status.approval = approval;
+                                u.status.reviewedDate = new Date();
+                                return true;
+                            }
+                        })) {
                             mongo_board.PinningBoard.findOneAndUpdate({
                                 _id: board._id,
                                 "users.username": req.user.username

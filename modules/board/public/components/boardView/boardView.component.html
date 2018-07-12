@@ -39,12 +39,14 @@
                 </div>
                 <button *ngIf="userService.user?.username === board.owner.username" mat-raised-button
                         id="shareBoardBtn" (click)="shareBoard()">
-                    <mat-icon>share</mat-icon> Share
+                    <mat-icon>share</mat-icon>
+                    Share
                 </button>
-                <button id="discussBtn" role="button" title="Discuss CDE" mat-raised-button
+                <button id="discussBtn" role="button" title="Discuss Board" mat-raised-button
                         type="button" (click)="commentMode = !commentMode;">
-                    <mat-icon
-                       [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">comment</mat-icon> Discuss
+                    <mat-icon [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">comment
+                    </mat-icon>
+                    <span class="d-none d-sm-inline-block ml-1"> Discuss</span>
                 </button>
             </div>
         </div>
@@ -56,7 +58,8 @@
                     <button mat-raised-button type="button" id="export"
                             data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
-                        <mat-icon>play_for_work</mat-icon> Export Board
+                        <mat-icon>play_for_work</mat-icon>
+                        Export Board
                     </button>
                     <div class="dropdown-menu" aria-labelledby="export">
                         <a id="csvExport" class="dropdown-item" (click)="exportBoard()" onmouseover="">
@@ -73,7 +76,8 @@
                 <button *ngIf="userService.userOrgs?.length > 0 && elts.length > 0"
                         id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s"
                         mat-raised-button (click)="classifyEltBoard()">
-                    <mat-icon>folder_open</mat-icon> Classify All {{board.type==='form'?'Form':'CDE'}}s
+                    <mat-icon>folder_open</mat-icon>
+                    Classify All {{board.type==='form'?'Form':'CDE'}}s
                 </button>
                 <cde-create-form-from-board
                         *ngIf="userService.userOrgs?.length > 0 && elts.length > 0 && board.type === 'cde'"

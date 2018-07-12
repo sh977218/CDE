@@ -3,6 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { MatButtonModule, MatIconModule } from "@angular/material";
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { BoardModule } from 'board/public/board.module';
@@ -34,16 +35,15 @@ const boardRoutes: Routes = [
         FormSearchModule,
         NativeRenderModule,
         SearchModule,
+        MatButtonModule,
+        MatIconModule
     ],
     declarations: [
         BoardViewComponent,
     ],
-    entryComponents: [
-    ],
-    providers: [
-    ],
-    exports: [
-    ],
+    entryComponents: [],
+    providers: [],
+    exports: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class BoardViewModule {

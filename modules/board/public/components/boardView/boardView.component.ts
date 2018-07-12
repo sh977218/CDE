@@ -214,7 +214,7 @@ export class BoardViewComponent implements OnInit {
 
                 this.getReviewers();
 
-                this.http.get<Comment[]>('/comments/eltId/' + this.board._id).subscribe(
+                this.http.get<Comment[]>('/server/discuss/comments/eltId/' + this.board._id).subscribe(
                     res => this.hasComments = res && (res.length > 0),
                     () => this.alert.addAlert('danger', 'Error on loading comments. ')
                 );

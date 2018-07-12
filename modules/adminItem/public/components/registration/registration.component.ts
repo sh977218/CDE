@@ -45,7 +45,7 @@ export class RegistrationComponent implements OnInit {
     }
 
     openRegStatusUpdate() {
-        this.http.get<Comment[]>('/comments/eltId/' + this.elt.tinyId).subscribe((response) => {
+        this.http.get<Comment[]>('/server/discuss/comments/eltId/' + this.elt.tinyId).subscribe((response) => {
             if (Array.isArray(response) && response.filter(function (a) {
                     return a.status !== 'resolved' && a.status !== 'deleted';
                 }).length > 0) {

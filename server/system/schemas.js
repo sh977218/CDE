@@ -250,34 +250,6 @@ exports.propertySchema = {key: stringType, value: stringType, source: stringType
 
 exports.idSchema = {source: stringType, id: stringType, version: stringType, _id: false};
 
-exports.commentSchema = new Schema({
-    text: stringType,
-    user: {
-        userId: Schema.Types.ObjectId,
-        username: stringType
-    },
-    username: stringType,
-    created: Date,
-    pendingApproval: Boolean,
-    linkedTab: stringType,
-    status: Object.assign({enum: ["active", "resolved", "deleted"], default: "active"}, stringType),
-    replies: [{
-        text: stringType,
-        user: {
-            userId: Schema.Types.ObjectId,
-            username: stringType
-        },
-        username: stringType,
-        created: Date,
-        pendingApproval: Boolean,
-        status: Object.assign({enum: ["active", "resolved", "deleted"], default: "active"}, stringType)
-    }],
-    element: {
-        eltType: Object.assign({enum: ["cde", "form", "board"]}, stringType),
-        eltId: stringType
-    }
-}, {usePushEach: true,});
-
 exports.helpItemSchema = new Schema({
     permalink: stringType,
     title: stringType,

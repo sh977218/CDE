@@ -24,15 +24,17 @@ const tabMap = {
 
 @Component({
     selector: 'cde-discuss-area',
-    templateUrl: './discussArea.component.html',
-    styles: [`
-    `]
+    templateUrl: './discussArea.component.html'
 })
 export class DiscussAreaComponent {
+    newComment: Comment = new Comment();
     private ownElt;
     private _elt;
     @Input() set elt(e) {
         this.ownElt = this.isAllowedModel.doesUserOwnElt(e);
+        if (!this.newComment.element) this.newComment.element = {};
+        this.newComment.element.eltType = e.elementType;
+        this.newComment.element.eltId = e.tinyId ? e.tinyId : e._id;
         this._elt = e;
     }
 
@@ -46,6 +48,7 @@ export class DiscussAreaComponent {
     private _currentTab = 'general_tab';
     @Input() set currentTab(tab: string) {
         this._currentTab = tabMap[tab];
+        this.newComment.linkedTab = this._currentTab;
     }
 
     get currentTab() {
@@ -54,7 +57,6 @@ export class DiscussAreaComponent {
 
     @Input() highlightedTabs = [];
     @Output() highlightedTabsChange = new EventEmitter();
-    newComment: Comment = new Comment();
 
     constructor(private http: HttpClient,
                 public isAllowedModel: IsAllowedService,
@@ -62,11 +64,8 @@ export class DiscussAreaComponent {
     }
 
     postNewComment() {
-        this.http.post('/comments/' + this._elt.elementType + '/add', {
-            comment: this.newComment.text,
-            linkedTab: this._currentTab,
-            element: {eltId: this.eltId}
-        }).subscribe(() => this.newComment.text = '');
+        this.http.post('/server/discuss/postComment', this.newComment)
+            .subscribe(() => this.newComment.text = '');
     }
 
 }

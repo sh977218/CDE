@@ -27,7 +27,7 @@ export class InboxComponent implements OnInit {
     }
 
     approveComment(msg) {
-        this.http.post('/comments/approve', {
+        this.http.post('/server/discuss/approveComment', {
             commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
         }, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
@@ -80,7 +80,7 @@ export class InboxComponent implements OnInit {
     }
 
     declineComment(msg) {
-        this.http.post('/comments/decline', {
+        this.http.post('/server/discuss/declineComment', {
             commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
         }, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
@@ -9,49 +9,56 @@ import * as io from 'socket.io-client';
 
 import { IsAllowedService } from 'core/isAllowed.service';
 import { UserService } from '_app/user.service';
+import { Reply } from 'discuss/discuss.model';
 
 @Component({
     selector: 'cde-comments',
     templateUrl: './comments.component.html',
     styles: [`
-    .currentComment {
-        position: relative;
-        left: -50px;
-    }
-    .outer-arrow{
-        border-top: none;
-        border-bottom: 24px solid transparent;
-        border-left: none;
-        border-right: 24px solid #ddd;
-        left: -21px;
-        top: 0px;
-        z-index: -1;
-        height: 0;
-        position: absolute;
-        width: 0;
-    }
-    .inner-arrow{
-        cursor: default;
-        border-top: none;
-        border-bottom: 26px solid transparent;
-        border-left: none;
-        border-right: 26px solid #fff;
-        left: -18px;
-        z-index: 501;
-        top: 1px;
-        height: 0;
-        position: absolute;
-        width: 0;
-    }
-    .strike {
-        text-decoration: line-through;
-    }
-    .commentDiv{
-        background-color: white;box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    }
-    .commentBox{
-        background-color: rgb(245, 245, 245);
-    }
+        .currentComment {
+            position: relative;
+            left: -50px;
+        }
+
+        .outer-arrow {
+            border-top: none;
+            border-bottom: 24px solid transparent;
+            border-left: none;
+            border-right: 24px solid #ddd;
+            left: -21px;
+            top: 0px;
+            z-index: -1;
+            height: 0;
+            position: absolute;
+            width: 0;
+        }
+
+        .inner-arrow {
+            cursor: default;
+            border-top: none;
+            border-bottom: 26px solid transparent;
+            border-left: none;
+            border-right: 26px solid #fff;
+            left: -18px;
+            z-index: 501;
+            top: 1px;
+            height: 0;
+            position: absolute;
+            width: 0;
+        }
+
+        .strike {
+            text-decoration: line-through;
+        }
+
+        .commentDiv {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .commentBox {
+            background-color: rgb(245, 245, 245);
+        }
     `]
 })
 export class CommentsComponent implements OnInit, OnDestroy {
@@ -68,7 +75,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
     comments: Array<any> = [];
-    newReply = {};
+    newReply: Reply = new Reply();
     socket = io((<any>window).publicUrl + '/comment');
     subscriptions: any = {};
     private emitCurrentReplying = new Subject<{ _id: string, comment: string }>();
@@ -110,13 +117,13 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
     loadComments() {
-        this.http.get<Array<any>>('/comments/eltId/' + this.eltId)
-            .subscribe(response => {
-                response.forEach(comment => {
-                    comment.currentComment = comment.linkedTab === this._currentTab;
-                    comment.newReply = {};
+        this.http.get<Array<any>>('/server/discuss/comments/eltId/' + this.eltId)
+            .subscribe(res => {
+                res.forEach(c => {
+                    c.currentComment = c.linkedTab === this._currentTab;
+                    c.newReply = {};
                 });
-                this.comments = response;
+                this.comments = res;
             });
     }
 
@@ -133,33 +140,32 @@ export class CommentsComponent implements OnInit, OnDestroy {
         return com.status !== 'resolved' && this.canRemoveComment(com);
     }
 
-
     removeComment(commentId) {
-        this.http.post('/comment/status/delete', {commentId: commentId}).subscribe();
+        this.http.post('/server/discuss/deleteComment', {commentId: commentId}).subscribe();
     }
 
     resolveComment(commentId) {
-        this.http.post('/comment/status/resolve', {commentId: commentId}).subscribe();
+        this.http.post('/server/discuss/resolveComment', {commentId: commentId}).subscribe();
     }
 
     reopenComment(commentId) {
-        this.http.post('/comment/status/active', {commentId: commentId}).subscribe();
+        this.http.post('/server/discuss/reopenComment', {commentId: commentId}).subscribe();
     }
 
     removeReply(replyId) {
-        this.http.post('/reply/status/delete', {replyId: replyId}).subscribe();
+        this.http.post('/server/discuss/deleteReply', {replyId: replyId}).subscribe();
     }
 
     resolveReply(replyId) {
-        this.http.post('/reply/status/resolve', {replyId: replyId}).subscribe();
+        this.http.post('/server/discuss/resolveReply', {replyId: replyId}).subscribe();
     }
 
     reopenReply(replyId) {
-        this.http.post('/reply/status/active', {replyId: replyId}).subscribe();
+        this.http.post('/server/discuss/reopenReply', {replyId: replyId}).subscribe();
     }
 
     replyToComment(comment) {
-        this.http.post('/comments/reply', {
+        this.http.post('/server/discuss/replyComment', {
             commentId: comment._id,
             eltName: this.eltName,
             reply: comment.newReply.text
@@ -174,7 +180,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
         this.emitCurrentReplying.next({_id: comment._id, comment: comment.newReply});
     }
 
-    showReply(comment, j) {
+    showReply(comment: any, j) {
         if (comment.showAllReplies) return true;
         else if (j < 2 || j > comment.replies.length - 3) return true;
         else return false;
