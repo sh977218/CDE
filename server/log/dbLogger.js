@@ -81,7 +81,7 @@ exports.logError = function (message, callback) { // all server errors, express 
     });
 
     new LogErrorModel(message).save(err => {
-        if (err) noDbLogger.noDbLogger.info("ERROR: ");
+        if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
         let msg = {
             title: 'Server Side Error',
             options: {
@@ -181,8 +181,8 @@ exports.respondError = function(err, options) {
     if (options.req) {
         log.request = {
             url: options.req.url,
-            params: options.req.params,
-            body: options.req.body,
+            params: JSON.stringify(options.req.params),
+            body: JSON.stringify(options.req.body),
             username: options.req.username,
             ip: options.req.ip
         }

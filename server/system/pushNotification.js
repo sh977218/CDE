@@ -6,11 +6,11 @@ const dbLogger = require('../log/dbLogger.js');
 const mongo_data = require('./mongo-data');
 
 exports.checkDatabase = (callback = _.noop) => {
-    mongo_data.pushById('000000000000000000000000', dbLogger.handleError({origin: 'pushNotification.checkDatabase'}, push => {
+    mongo_data.pushById('000000000000000000000000', dbLogger.handleError({}, push => {
         function createDbTag() {
             mongo_data.pushCreate(
                 {_id: mongo_data.ObjectId('000000000000000000000000'), userId: config.publicUrl},
-                dbLogger.handleError({origin: 'pushNotification.checkDatabase'}, callback)
+                dbLogger.handleError({}, callback)
             );
         }
 
@@ -19,7 +19,7 @@ exports.checkDatabase = (callback = _.noop) => {
             return;
         }
         if (push.userId !== config.publicUrl) {
-            mongo_data.pushClearDb(dbLogger.handleError({publicMessage: 'could not remove', origin: 'pushNotification.checkDatabase'},
+            mongo_data.pushClearDb(dbLogger.handleError({publicMessage: 'could not remove'},
                 createDbTag));
             return;
         }
@@ -34,10 +34,7 @@ exports.create = (req, res) => {
     if (!req.body.subscription || !req.body.subscription.endpoint) {
         return exports.createUnsubscribed(req, res);
     }
-    mongo_data.pushesByEndpoint(req.body.subscription.endpoint, dbLogger.handleError({
-        res,
-        origin: 'pushNotification.create'
-    }, pushes => {
+    mongo_data.pushesByEndpoint(req.body.subscription.endpoint, dbLogger.handleError({req, res}, pushes => {
         if (!pushes || !pushes.length) {
             return exports.createUnsubscribed(req, res);
         }
@@ -46,7 +43,7 @@ exports.create = (req, res) => {
             let push = ownPushes[0];
             if (!push.loggedIn) {
                 push.loggedIn = true;
-                push.save(dbLogger.handleError({res, origin: 'pushNotification.create'}, () => {
+                push.save(dbLogger.handleError({req, res}, () => {
                     res.send({subscribed: true});
                 }));
             } else {
@@ -56,7 +53,7 @@ exports.create = (req, res) => {
             pushes.forEach(push => {
                 if (push.loggedIn) {
                     push.loggedIn = false;
-                    push.save(dbLogger.handleError({res, origin: 'pushNotification.create'}, _.noop));
+                    push.save(dbLogger.handleError({req, res}, _.noop));
                 }
             });
             mongo_data.pushCreate({

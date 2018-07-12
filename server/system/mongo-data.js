@@ -198,9 +198,9 @@ exports.pushEndpointUpdate = (endpoint, commandObj, callback) => {
 };
 
 exports.pushGetAdministratorRegistrations = callback => {
-    exports.siteAdmins(handleError({origin: "pushGetAdministratorRegistrations"}, users => {
+    exports.siteAdmins(handleError({}, users => {
         let userIds = users.map(u => u._id.toString());
-        PushRegistration.find({}).exec(handleError({origin: "pushGetAdministratorRegistrations.find"}, registrations => {
+        PushRegistration.find({}).exec(handleError({}, registrations => {
             callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
         }));
     }));

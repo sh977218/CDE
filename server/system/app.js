@@ -612,14 +612,14 @@ exports.init = function (app) {
     app.post('/addOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.addOrgCurator);
     app.post('/removeOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.removeOrgCurator);
 
-    app.post('/updateUserRoles', [authorization.isOrgAuthorityMiddleware], function (req, res) {
-        usersrvc.updateUserRoles(req.body, handleError({res, origin: '/updateUserRoles'}, () => {
+    app.post('/updateUserRoles', [authorization.isOrgAuthorityMiddleware], (req, res) => {
+        usersrvc.updateUserRoles(req.body, handleError({req, res}, () => {
             res.status(200).end();
         }));
     });
 
-    app.post('/updateUserAvatar', [authorization.isOrgAuthorityMiddleware], function (req, res) {
-        usersrvc.updateUserAvatar(req.body, handleError({res, origin: '/updateUserAvatar'}, () => {
+    app.post('/updateUserAvatar', [authorization.isOrgAuthorityMiddleware], (req, res) => {
+        usersrvc.updateUserAvatar(req.body, handleError({req, res}, () => {
             res.status(200).end();
         }));
     });
@@ -646,7 +646,7 @@ exports.init = function (app) {
         if (!req.body.orgName || !req.body.categories) return res.status(400).send("Bad Request");
         let elements = req.body.elements;
         if (elements.length <= 50)
-            adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, handleError({res, origin: '/classification/bulk/'}, () => {
+            adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, handleError({req, res}, () => {
                 res.send("Done");
             }));
         else {
@@ -765,12 +765,12 @@ exports.init = function (app) {
     });
 
     app.post('/embed/', [authorization.isOrgAdminMiddleware], function (req, res) {
-        mongo_data.embeds.save(req.body, handleError({res, publicMessage: 'There was an error saving this embed.', origin: '/embed'}, embed =>
+        mongo_data.embeds.save(req.body, handleError({req, res, publicMessage: 'There was an error saving this embed.'}, embed =>
             res.send(embed)));
     });
 
-    app.delete('/embed/:id', [authorization.loggedInMiddleware], function (req, res) {
-        const errorOptions = {res, publicMessage: 'There was an error removing this embed.', origin: '/embed/'};
+    app.delete('/embed/:id', [authorization.loggedInMiddleware], (req, res) => {
+        const errorOptions = {req, res, publicMessage: 'There was an error removing this embed.'};
         mongo_data.embeds.find({_id: req.params.id}, handleError(errorOptions, embeds => {
             if (embeds.length !== 1) {
                 res.status.send("Expectation not met: one document.");
@@ -973,9 +973,8 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/comment/:commentId', function (req, res) {
-        mongo_data.Comment.findById(req.params.commentId, dbLogger.handleError(
-            {res: res, origin: "/comment/"}, comment => res.send(comment)));
+    app.get('/comment/:commentId', (req, res) => {
+        mongo_data.Comment.findById(req.params.commentId, dbLogger.handleError({req, res}, comment => res.send(comment)));
     });
 
     app.get('/commentsfor/:username/:from/:size', adminItemSvc.commentsForUser);
@@ -1004,8 +1003,7 @@ exports.init = function (app) {
 
     /*    @TODO This endpoint will be improved in discuss module ticket */
     app.post('/comment/status/delete', [authorization.isAuthenticatedMiddleware], function (req, res) {
-        mongo_data.Comment.findById(req.body.commentId, dbLogger.handleError(
-            {res: res, origin: "/comment/status/delete/"}, comment => {
+        mongo_data.Comment.findById(req.body.commentId, dbLogger.handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send("Comment not found");
                 let type = comment.element.eltType;
                 adminItemSvc.removeComment(req, res, comment, daoManager.getDao(type));
@@ -1015,8 +1013,7 @@ exports.init = function (app) {
     });
     /*    @TODO This endpoint will be improved in discuss module ticket */
     app.post('/reply/status/delete', [authorization.isAuthenticatedMiddleware], function (req, res) {
-        mongo_data.Comment.findOne({'replies._id': req.body.replyId}, dbLogger.handleError(
-            {res: res, origin: "/comment/status/delete/"}, comment => {
+        mongo_data.Comment.findOne({'replies._id': req.body.replyId}, dbLogger.handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send("Comment not found");
                 let index = comment.replies.map(r => r._id.toString()).indexOf(req.body.replyId);
                 if (index === -1) return res.status(404).send("Reply not found");
