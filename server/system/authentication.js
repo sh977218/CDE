@@ -103,7 +103,7 @@ exports.updateUserAfterLogin = function (user, ip) {
 
 exports.umlsAuth = function (user, password, cb) {
     request.post(
-        'https://uts-ws.nlm.nih.gov/restful/isValidUMLSUser',
+        config.umls.wsHost + '/restful/isValidUMLSUser',
         {
             form: {
                 licenseCode: config.umls.licenseCode

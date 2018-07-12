@@ -6,21 +6,16 @@ const request = require('request');
 const dbLogger = require('../log/dbLogger.js');
 
 const authData = querystring.stringify({
-    username: config.vsac.username
-    , password: config.vsac.password
+    username: config.vsac.username,
+    password: config.vsac.password
 });
-
 const ticketData = querystring.stringify({
     service: config.uts.service
 });
-
-const vsacHost = config.vsac.host;
-const vsacPort = config.vsac.port;
-
 const tgtOptions = {
-    host: vsacHost,
-    hostname: vsacHost,
-    port: vsacPort,
+    host: config.vsac.host,
+    hostname: config.vsac.host,
+    port: config.vsac.port,
     path: config.vsac.ticket.path,
     method: 'POST',
     agent: false,
@@ -31,12 +26,10 @@ const tgtOptions = {
         'Content-Length': authData.length
     }
 };
-
-
 const ticketOptions = {
-    host: vsacHost,
-    hostname: vsacHost,
-    port: vsacPort,
+    host: config.vsac.host,
+    hostname: config.vsac.host,
+    port: config.vsac.port,
     path: config.vsac.ticket.path,
     method: 'POST',
     requestCert: true,
@@ -48,19 +41,14 @@ const ticketOptions = {
     }
 };
 
-const valueSetOptions = {
-    host: vsacHost,
-    port: vsacPort,
-    path: config.vsac.valueSet.path,
-    method: 'GET',
-    agent: false,
-    requestCert: true,
-    rejectUnauthorized: false
-};
-
-let vsacTGT = '';
-
-exports.getTGT = function (cb) {
+exports.getTGT = function (retries, cb) {
+    function retry(retries, cb) {
+        if (retries) {
+            setTimeout(exports.getTGT, 6000, --retries, cb);
+            return;
+        }
+        dbLogger.consoleLog('getTgt: ERROR TIMEDOUT: check credentials');
+    }
     let req = https.request(tgtOptions, function (res) {
         let output = '';
         res.setEncoding('utf8');
@@ -68,21 +56,38 @@ exports.getTGT = function (cb) {
             output += chunk;
         });
         res.on('end', function () {
-            vsacTGT = output;
-            ticketOptions.path = config.vsac.ticket.path + '/' + vsacTGT;
-            if (cb) cb(vsacTGT);
+            if (!output) {
+                dbLogger.consoleLog('getTgt: ERROR no TGT: check credentials');
+                retry(retries, cb);
+                return;
+            }
+            if (output.indexOf('TGT-') !== 0) {
+                bLogger.consoleLog('getTgt: ERROR bad TGT');
+                retry(retries, cb);
+                return;
+            }
+            ticketOptions.path = config.vsac.ticket.path + '/' + output;
+            if (cb) cb(output);
         });
     });
 
     req.on('error', function (e) {
         dbLogger.consoleLog('getTgt: ERROR with request: ' + e, 'error');
+        retry(retries, cb);
     });
 
     req.write(authData);
     req.end();
 };
 
-exports.getTicket = function (cb) {
+exports.getTicket = function (retries, cb) {
+    function retry(retries, cb) {
+        if (retries) {
+            exports.getTGT(0, () => exports.getTicket(--retries, cb));
+            return;
+        }
+        dbLogger.consoleLog('getTicket: ERROR TIMEDOUT: no tgt');
+    }
     let req = https.request(ticketOptions, function (res) {
         let output = '';
         res.setEncoding('utf8');
@@ -90,12 +95,23 @@ exports.getTicket = function (cb) {
             output += chunk;
         });
         res.on('end', function () {
+            if (output.indexOf('"error":"Not Found"') > -1) {
+                dbLogger.consoleLog('getTicket: ERROR 404');
+                retry(retries, cb);
+                return;
+            }
+            if (output.indexOf('ST-') !== 0) {
+                dbLogger.consoleLog('getTicket: ERROR bad');
+                retry(retries, cb);
+                return;
+            }
             cb(output);
         });
     });
 
     req.on('error', function (e) {
         dbLogger.consoleLog('getTicket: ERROR with request ' + e, 'error');
+        retry(retries, cb);
     });
 
     req.write(ticketData);
@@ -103,14 +119,14 @@ exports.getTicket = function (cb) {
 };
 
 exports.getValueSet = function (oid, cb) {
-    this.getTicket(vsacTicket => {
+    this.getTicket(1, vsacTicket => {
         request({url: "https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet" + "?id="
             + oid + "&ticket=" + vsacTicket, strictSSL: false}, cb);
     });
 };
 
 exports.getAtomsFromUMLS = function (cui, source, res) {
-    this.getTicket(function (oneTimeTicket) {
+    this.getTicket(1, function (oneTimeTicket) {
         let url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source +
             "&pageSize=500&ticket=" + oneTimeTicket;
         request({url: url, strictSSL: false}, function (err, response, body) {
@@ -123,7 +139,7 @@ exports.getAtomsFromUMLS = function (cui, source, res) {
 };
 
 exports.umlsCuiFromSrc = function (id, src, res) {
-    this.getTicket(function (oneTimeTicket) {
+    this.getTicket(1, function (oneTimeTicket) {
         let url = config.umls.wsHost + "/rest/search/current?string=" + id +
             "&searchType=exact&inputType=sourceUi&sabs=" + src +
             "&includeObsolete=true&includeSuppressible=true&ticket=" + oneTimeTicket;
@@ -132,7 +148,7 @@ exports.umlsCuiFromSrc = function (id, src, res) {
 };
 
 exports.searchUmls = function (term, res) {
-    this.getTicket((oneTimeTicket) => {
+    this.getTicket(1, (oneTimeTicket) => {
         let url = config.umls.wsHost + "/rest/search/current?ticket=" +
             oneTimeTicket + "&string=" + term;
         request.get({url: url, strictSSL: false}).pipe(res);
@@ -140,8 +156,8 @@ exports.searchUmls = function (term, res) {
 };
 
 exports.getCrossWalkingVocabularies = function (source, code, targetSource, cb) {
-    this.getTicket(function (oneTimeTicket) {
-        let url = "https://uts-ws.nlm.nih.gov/rest/crosswalk/current/source/"
+    this.getTicket(1, function (oneTimeTicket) {
+        let url = config.umls.wsHost + "/rest/crosswalk/current/source/"
             + source + "/" + code + "?targetSource=" + targetSource
             + "&ticket=" + oneTimeTicket;
         request({url: url, strictSSL: false}, function (err, response) {
@@ -149,4 +165,3 @@ exports.getCrossWalkingVocabularies = function (source, code, targetSource, cb) 
         });
     });
 };
-

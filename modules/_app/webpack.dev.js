@@ -25,6 +25,6 @@ module.exports = merge(baseConfig, {
         ]
     },
     plugins: [
-        new CleanWebpackPlugin(['dist/app'], {root: path.resolve(__dirname, '../..')})
+        new CleanWebpackPlugin(['dist/app'], {root: process.cwd()})
     ]
 });
