@@ -102,7 +102,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     loadComments(de, cb = _noop) {
-        this.http.get<Comment[]>('/comments/eltId/' + de.tinyId)
+        this.http.get<Comment[]>('/server/discuss/comments/eltId/' + de.tinyId)
             .subscribe(res => {
                 this.hasComments = res && (res.length > 0);
                 this.tabsCommented = res.map(c => c.linkedTab + '_tab');

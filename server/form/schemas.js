@@ -2,6 +2,7 @@ const config = require("config");
 const Schema = require('mongoose').Schema;
 
 const sharedSchemas = require('../system/schemas.js');
+const discussDb = require('../discuss/discussDb');
 
 const instructionSchema = new Schema({
     value: sharedSchemas.stringType,

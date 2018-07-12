@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const _ = require('lodash');
 const sharedSchemas = require('../system/schemas.js');
+const discussDb = require('../discuss/discussDb');
 
 var conceptSchema = new Schema({
     name: sharedSchemas.stringType,
@@ -84,12 +85,6 @@ var deJson = {
     properties: [sharedSchemas.propertySchema], // Attribute not otherwise documented by structured CDE record
     ids: [sharedSchemas.idSchema], // Identifier used to establish or indicate what CDE is within a specific context
     dataSets: [sharedSchemas.dataSetSchema], // A list of datasets that use this CDE
-    mappingSpecifications: [{
-        content: sharedSchemas.stringType,
-        spec_type: sharedSchemas.stringType,
-        script: sharedSchemas.stringType,
-        _id: false
-    }], // Deprecated
     archived: {type: Boolean, default: false, index: true}, // Indication of historical record. True for previous versions.
     forkOf: sharedSchemas.stringType, // May point to a tinyID if the CDE is a fork
     attachments: [sharedSchemas.attachmentSchema],

@@ -226,6 +226,12 @@ express.response.render = function (view, module, msg) {
 };
 
 try {
+    let discussModule = require("./server/discuss/discussRoutes").module({
+        allComments: [authorization.isOrgAuthorityMiddleware],
+        manageComment: [authorization.canApproveCommentMiddleware]
+    });
+    app.use('/server/discuss', discussModule);
+    
     let logModule = require("./server/log/logRoutes").module({
         feedbackLog: [authorization.isOrgAuthorityMiddleware]
     });

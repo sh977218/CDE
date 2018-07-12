@@ -168,7 +168,7 @@ export class FormViewComponent implements OnInit {
     }
 
     loadComments(form, cb = _noop) {
-        this.http.get<Comment[]>('/comments/eltId/' + form.tinyId).subscribe(res => {
+        this.http.get<Comment[]>('/server/discuss/comments/eltId/' + form.tinyId).subscribe(res => {
             this.hasComments = res && (res.length > 0);
             this.tabsCommented = res.map(c => c.linkedTab + '_tab');
             cb();
