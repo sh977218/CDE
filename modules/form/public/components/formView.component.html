@@ -56,7 +56,9 @@
     </h1>
     <div class="pull-left mb-1">
         <button id="export" mat-raised-button title="Export" [matMenuTriggerFor]="exportMenu">
-            <mat-icon>play_for_work</mat-icon> <span class="d-none d-sm-inline ml-1">Export</span> <mat-icon>arrow_drop_down</mat-icon>
+            <mat-icon>play_for_work</mat-icon>
+            <span class="d-none d-sm-inline ml-1"> Export </span>
+            <mat-icon>arrow_drop_down</mat-icon>
         </button>
         <mat-menu #exportMenu>
             <ng-container *ngIf="userService.loggedIn()">
@@ -89,7 +91,8 @@
                     <a href="https://projectredcap.org/" target="_blank" title="Information"><i
                             class="fa fa-info-circle"></i></a>
                 </span>
-                <span id='formCdesExport' (click)="exportService.formCdeExport(elt)" mat-menu-item>CDE Dictionary (CSV)</span>
+                <span id='formCdesExport' (click)="exportService.formCdeExport(elt)"
+                      mat-menu-item>CDE Dictionary (CSV)</span>
                 <span mat-menu-item>
                     <a id="asQuestionnaire" href="formById/{{elt._id}}?subtype=fhirQuestionnaire"
                        target="_blank">FHIR Questionnaire</a>
@@ -105,21 +108,26 @@
         </mat-menu>
         <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
                 mat-raised-button (click)="quickBoardService.addToQuickBoard(elt)">
-            <mat-icon>add</mat-icon> <span class="d-none d-sm-inline ml-1">Add to Quick Board</span>
+            <mat-icon>add</mat-icon>
+            <span class="d-none d-sm-inline ml-1">Add to Quick Board</span>
         </button>
         <button id="addToBoard" mat-raised-button (click)="mltPinModal.open([elt], 'cde')">
             <i class="fa fa-thumb-tack"></i><span class="d-none d-sm-inline ml-1">Add to Board</span>
         </button>
         <button *ngIf="userService.loggedIn()" mat-raised-button
                 id="pinAllCdes" (click)="pinAllCdesIntoBoard()">
-            <mat-icon>add_shopping_cart</mat-icon> <span class="d-none d-sm-inline ml-1">Pin CDEs</span>
+            <mat-icon>add_shopping_cart</mat-icon>
+            <span class="d-none d-sm-inline ml-1">Pin CDEs</span>
         </button>
-        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyFormBtn" mat-raised-button (click)="openCopyElementModal()">
-            <mat-icon>file_copy</mat-icon> <span class="d-none d-sm-inline ml-1">Copy</span>
+        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyFormBtn" mat-raised-button
+                (click)="openCopyElementModal()">
+            <mat-icon>file_copy</mat-icon>
+            <span class="d-none d-sm-inline ml-1">Copy</span>
         </button>
         <button id="discussBtn" mat-raised-button (click)="commentMode = !commentMode">
             <mat-icon [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">comment
-            </mat-icon> <span class="d-none d-sm-inline ml-1">Discuss</span>
+            </mat-icon>
+            <span class="d-none d-sm-inline ml-1">Discuss</span>
         </button>
         <span class="navbar-expand-md navbar-light">
             <button class="btn btn-outline-dark navbar-toggler" title="Tab Menu"
@@ -132,7 +140,7 @@
     <div class="pull-right text-right">
         <ng-container *ngIf="elt.isDraft">
             {{savingText}}
-            <button id="deleteDraftBtn"class="btn btn-danger" title="Delete Draft"
+            <button id="deleteDraftBtn" class="btn btn-danger" title="Delete Draft"
                     (click)="deleteModal.openDeleteModal()">
                 <i class="fa fa-trash fa-lg"></i><span class="d-none d-sm-inline-block ml-1">Delete Draft</span>
             </button>

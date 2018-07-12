@@ -408,13 +408,9 @@ export class User {
     email: string;
     formViewHistory: string[];
     hasMail: boolean;
-    lastLogin: Date;
     lastViewNotification: Date;
-    lockCounter: number;
-    knownIPs: string[];
     orgAdmin: string[];
     orgCurator: string[];
-    password: string;
     publishedForms: {
         id: ObjectId,
         name: string,

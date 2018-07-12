@@ -14,16 +14,14 @@ export class LatestCommentsComponent {
     comments: DiscussionComments = {currentCommentsPage: 1, totalItems: 10000, latestComments: undefined};
     getEltLink = UserService.getEltLink;
 
-    constructor(
-        private http: HttpClient,
-        private route: ActivatedRoute
-    ) {
+    constructor(private http: HttpClient,
+                private route: ActivatedRoute) {
         this.getComments(1);
     }
 
-    getComments (page) {
+    getComments(page) {
         let commentsUrl = this.route.snapshot.data['commentsUrl'];
-        if (!commentsUrl) commentsUrl = '/allComments';
+        if (!commentsUrl) commentsUrl = '/server/discuss/allComments';
         this.http.get<Comment[]>(commentsUrl + '/' + (page - 1) * 30 + '/30').subscribe(comments => {
             this.comments.latestComments = comments;
             if (this.comments.latestComments.length === 0) {
@@ -34,7 +32,7 @@ export class LatestCommentsComponent {
         });
     }
 
-    pageChange () {
+    pageChange() {
         this.getComments(this.comments.currentCommentsPage);
     }
 }

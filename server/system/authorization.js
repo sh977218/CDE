@@ -11,9 +11,18 @@ exports.canEditMiddleware = function (req, res, next) {
         // TODO: should consider adding to error log
         return res.status(403).send();
     }
-    if (next) {
-        next();
-    }
+    if (next) next();
+};
+
+exports.canCommentMiddleware = function (req, res, next) {
+    if (!req.user) return res.status(401).send();
+    else if (!authorizationShared.canComment(req.user)) res.status(401).send();
+    else next();
+};
+
+exports.canApproveCommentMiddleware = function (req, res, next) {
+    if (authorizationShared.hasRole(req.user, "CommentReviewer")) next();
+    else res.send(401).send();
 };
 
 exports.isOrgAdminMiddleware = (req, res, next) => {
@@ -26,12 +35,8 @@ exports.isOrgAdminMiddleware = (req, res, next) => {
 };
 
 exports.isOrgAuthorityMiddleware = (req, res, next) => {
-    if (!authorizationShared.canOrgAuthority(req.user)) {
-        return res.status(403).send();
-    }
-    if (next) {
-        next();
-    }
+    if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send();
+    next();
 };
 
 exports.isSiteAdminMiddleware = (req, res, next) => {
