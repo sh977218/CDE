@@ -15,6 +15,7 @@ const appStatus = require('../system/status');
 const elastic_system = require('../system/elastic');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const handleError = require('../log/dbLogger').handleError;
+const multer = require('multer');
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_cde);
@@ -149,7 +150,7 @@ exports.init = function (app, daoManager) {
             if (result.statusCode === 200)
                 return res.send({result: JSON.parse(result.body).result});
             return res.send({result: []});
-        });
+        }));
     });
 
     app.get('/searchUmls', authorization.isAuthenticatedMiddleware, (req, res) => {
