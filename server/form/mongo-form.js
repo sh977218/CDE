@@ -53,6 +53,7 @@ exports.byTinyIdList = function (tinyIdList, callback) {
 };
 
 exports.byTinyId = function (tinyId, cb) {
+    return cb("really bad error");
     Form.findOne({'tinyId': tinyId, archived: false}, cb);
 };
 

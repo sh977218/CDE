@@ -166,8 +166,7 @@ exports.priorForms = function (req, res) {
 exports.byTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_form.byTinyId(tinyId, function (err, form) {
-        if (err) return res.status(500).send("ERROR - get form by tinyid");
+    mongo_form.byTinyId(tinyId, handleError({req, res}, form => {
         if (!form) return res.status(404).send();
         fetchWholeFormOutdated(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - form by tinyId whole form");
@@ -196,7 +195,7 @@ exports.byTinyId = function (req, res) {
             });
             mongo_data.addFormToViewHistory(wholeForm, req.user);
         });
-    });
+    }));
 };
 
 exports.byTinyIdVersion = function (req, res) {
