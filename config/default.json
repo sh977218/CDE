@@ -39,9 +39,6 @@
     "ticket": {
       "path": "/vsac/ws/Ticket"
     },
-    "valueSet": {
-      "path": "/vsac/ws/RetrieveValueSet"
-    },
     "port": 443
   },
   "uts": {

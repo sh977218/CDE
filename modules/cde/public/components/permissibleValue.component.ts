@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 
 import { UserService } from '_app/user.service';
@@ -34,7 +34,9 @@ export class PermissibleValueComponent {
             debounceTime(300),
             distinctUntilChanged(),
             switchMap(term => term
-                ? this.http.get('/searchUmls?searchTerm=' + term)
+                ? this.http.get('/searchUmls?searchTerm=' + term).pipe(
+                    catchError(() => EmptyObservable.create<string[]>())
+                )
                 : EmptyObservable.create<string[]>()
             )
         ).subscribe((res: any) => {

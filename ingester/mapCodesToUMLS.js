@@ -22,8 +22,8 @@ var srcOptions = {
 };
 
 function getUMLSBySourceId(source, id, cb) {
-    umls.getTicket(function(oneTimeTicket) {
-        var url = "https://uts-ws.nlm.nih.gov/rest/search/current?ticket=" +
+    umls.getTicket(1, function(oneTimeTicket) {
+        var url = config.umls.wsHost + "/rest/search/current?ticket=" +
             oneTimeTicket + "&searchType=exact&returnIdType=concept&string=" + id + "&inputType=sourceUi&sabs=" + source;
 
         request.get(url, function(err, response, body) {
@@ -40,8 +40,8 @@ function getUMLSBySourceId(source, id, cb) {
 }
 
 function getAtomFromUMLS(cui, source, cb) {
-    umls.getTicket(function(oneTimeTicket) {
-        var url = "https://uts-ws.nlm.nih.gov/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source
+    umls.getTicket(1, function(oneTimeTicket) {
+        var url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source
             + "&pageSize=500&ticket=" + oneTimeTicket;
         request.get(url, function(err, response, body) {
             if (response.statusCode === 200)
@@ -181,7 +181,7 @@ function startMapping() {
     });
 }
 
-umls.getTGT(function() {
+umls.getTGT(5, function() {
     startMapping();
 
 });

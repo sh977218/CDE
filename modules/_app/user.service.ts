@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
+import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
@@ -20,7 +20,7 @@ export class UserService {
             switchMap(term => term.length < 3 || !isOrgAdmin(this.user) ? [] :
                 this.http.get<any>('/server/user/searchUsers/' + term).pipe(
                     map((r: any) => r.users.map(u => u.username)),
-                    catchError(() => of([]))
+                    catchError(() => EmptyObservable.create<string[]>())
                 )
             )
         ));

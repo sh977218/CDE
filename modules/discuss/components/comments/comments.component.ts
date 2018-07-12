@@ -1,11 +1,11 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import * as io from 'socket.io-client';
-import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
-import { Subject } from 'rxjs/Subject';
-import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { MatDialog } from '@angular/material';
+import { Subject } from 'rxjs/Subject';
+import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
+import { TimerObservable } from 'rxjs/observable/TimerObservable';
+import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
+import * as io from 'socket.io-client';
 
 import { IsAllowedService } from 'core/isAllowed.service';
 import { UserService } from '_app/user.service';
@@ -106,7 +106,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
             distinctUntilChanged(),
             map(obj => {
                 this.socket.emit('currentReplying', this.eltId, obj._id);
-                return of<string[]>([]);
+                return EmptyObservable.create<string[]>();
             })
         ).subscribe();
 

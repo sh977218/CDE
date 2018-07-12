@@ -129,12 +129,11 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    let fetchRemoteData = function () {
-        vsac.getTGT();
+    // run every 1 hour
+    function fetchRemoteData() {
+        vsac.getTGT(300); // retry for half hour every 6 seconds
         elastic.fetchPVCodeSystemList();
-    };
-
-    // run every 1 hours
+    }
     fetchRemoteData();
     setInterval(fetchRemoteData, 1000 * 60 * 60);
 
