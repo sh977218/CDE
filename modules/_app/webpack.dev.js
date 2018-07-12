@@ -26,7 +26,7 @@ module.exports = merge(baseConfig, {
         ]
     },
     plugins: [
-        new CleanWebpackPlugin(['dist/app'], {root: path.resolve(__dirname, '../..')}),
+        new CleanWebpackPlugin(['dist/app'], {root: process.cwd()}),
         new CopyWebpackPlugin([
             {from: 'modules/_app/assets/'},
             {from: 'node_modules/material-design-lite/material.min.js'},

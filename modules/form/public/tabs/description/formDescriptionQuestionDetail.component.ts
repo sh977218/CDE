@@ -6,10 +6,8 @@ import { TreeNode } from 'angular-tree-component';
 import _clone from 'lodash/clone';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
-import { debounceTime, map } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/delay';
+import { debounceTime, map } from 'rxjs/operators';
 
 import { AlertService } from '_app/alert.service';
 import { DataTypeService } from 'core/dataType.service';
@@ -17,9 +15,9 @@ import { OrgHelperService } from 'core/orgHelper.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
 import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
+import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
 import { CodeAndSystem, FormattedValue } from 'shared/models.model';
 import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'shared/form/form.model';
-import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
 
 @Component({
     selector: 'cde-form-description-question-detail',

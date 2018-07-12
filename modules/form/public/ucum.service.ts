@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
+import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
 import { CodeAndSystem } from 'shared/models.model';
@@ -14,7 +14,7 @@ export class UcumService {
         debounceTime(200),
         distinctUntilChanged(),
         switchMap(term => {
-            if (term === '') return of([]);
+            if (term === '') return EmptyObservable.create<string[]>();
             else {
                 return this.http.get('/ucumNames?uom=' + encodeURIComponent(term)).pipe(
                     map((r: any[]) => {
