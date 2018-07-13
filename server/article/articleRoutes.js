@@ -6,15 +6,14 @@ exports.module = function (roleConfig) {
 
     router.get('/:key', (req, res) => {
         db.byKey(req.params.key, handleError({res: res, origin: "/article/key"}, article => {
+            if(!article) return res.status(404).send();
             res.send(article);
         }));
     });
 
     router.post('/:key', roleConfig.update, (req, res) => {
         if (req.body.key !== req.params.key) return res.status(400).send();
-        db.update(req.body, handleError({res: res, origin: "POST /article/key"}, article => {
-            res.send(article);
-        }))
+        db.update(req.body, handleError({res: res, origin: "POST /article/key"}, article => res.send(article)));
     });
 
     return router;

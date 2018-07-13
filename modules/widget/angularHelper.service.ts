@@ -1,6 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 
 export class AngularHelperService {
+    private constructor() {}
+
     static httpErrorMessage(err: any) {
         if (err.error instanceof Error) { // client-side
             return err.error.message;
