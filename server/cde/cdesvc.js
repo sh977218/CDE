@@ -12,11 +12,10 @@ const mongo_cde = require('./mongo-cde');
 const mongo_data = require('../system/mongo-data');
 const vsac = require('./vsac-io');
 
-exports.byId = function (req, res) {
+exports.byId = (req, res) => {
     let id = req.params.id;
     if (!id) return res.status(400).send();
-    mongo_cde.byId(id, function (err, dataElement) {
-        if (err) return res.status(500).send("ERROR - cannot query CDE by Id");
+    mongo_cde.byId(id, handleError({req, res}, dataElement => {
         if (!dataElement) return res.status(404).send();
         if (!req.user) hideProprietaryCodes(dataElement);
         if (req.query.type === 'xml') {
@@ -29,14 +28,13 @@ exports.byId = function (req, res) {
         res.send(dataElement);
         mongo_cde.inCdeView(dataElement);
         mongo_data.addCdeToViewHistory(dataElement, req.user);
-    });
+    }));
 };
 
-exports.priorDataElements = function (req, res) {
+exports.priorDataElements = (req, res) => {
     let id = req.params.id;
     if (!id) return res.status(400).send();
-    mongo_cde.byId(id, function (err, dataElement) {
-        if (err) return res.status(500).send("ERROR - Cannot get prior DEs");
+    mongo_cde.byId(id, handleError ({req, res}, dataElement => {
         if (!dataElement) return res.status(404).send();
         let history = dataElement.history.concat([dataElement._id]).reverse();
         mongo_cde.DataElement.find({}, {
@@ -50,14 +48,13 @@ exports.priorDataElements = function (req, res) {
             mongo_data.sortArrayByArray(priorDataElements, history);
             res.send(priorDataElements);
         });
-    });
+    }));
 };
 
-exports.byTinyId = function (req, res) {
+exports.byTinyId = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_cde.byTinyId(tinyId, function (err, dataElement) {
-        if (err) return res.status(500).send("ERROR - cannot get CDE by tinyId");
+    mongo_cde.byTinyId(tinyId, handleError ({req, res}, dataElement => {
         if (!dataElement) return res.status(404).send();
         if (!req.user) hideProprietaryCodes(dataElement);
         if (req.query.type === 'xml') {
@@ -70,49 +67,41 @@ exports.byTinyId = function (req, res) {
         res.send(dataElement);
         mongo_cde.inCdeView(dataElement);
         mongo_data.addCdeToViewHistory(dataElement, req.user);
-    });
+    }));
 };
 
-exports.byTinyIdVersion = function (req, res) {
+exports.byTinyIdVersion = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     let version = req.params.version;
-    mongo_cde.byTinyIdVersion(tinyId, version, function (err, dataElement) {
-        if (err) return res.status(500).send("ERROR - cannot get CDE by tinyId / Version");
+    mongo_cde.byTinyIdVersion(tinyId, version, handleError ({req, res}, dataElement => {
         if (!dataElement) return res.status(404).send();
         res.send(dataElement);
-    });
+    }));
 };
 
-exports.byTinyIdAndVersion = function (req, res) {
+exports.byTinyIdAndVersion = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     let version = req.params.version;
-    mongo_cde.byTinyIdAndVersion(tinyId, version, function (err, dataElement) {
-        if (err) return res.status(500).send("ERROR - cannot get CDE by tinyId / Version");
+    mongo_cde.byTinyIdAndVersion(tinyId, version, handleError({req, res}, dataElement => {
         if (!dataElement) return res.status(404).send();
         res.send(dataElement);
-    });
+    }));
 };
 
-exports.draftDataElement = function (req, res) {
+exports.draftDataElement = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_cde.draftDataElement(tinyId, function (err, dataElement) {
-        if (err) return res.status(500).send("ERROR - get draft data element. " + tinyId);
-        res.send(dataElement);
-    });
+    mongo_cde.draftDataElement(tinyId, handleError({req, res}, dataElement => res.send(dataElement)));
 };
-exports.draftDataElementById = function (req, res) {
+exports.draftDataElementById = (req, res) => {
     let id = req.params.id;
     if (!id) return res.status(400).send();
-    mongo_cde.draftDataElementById(id, function (err, dataElement) {
-        if (err) return res.status(500).send("ERROR - get draft data element. " + id);
-        res.send(dataElement);
-    });
+    mongo_cde.draftDataElementById(id, handleError({req, res}, dataElement => res.send(dataElement)));
 };
 
-exports.saveDraftDataElement = function (req, res) {
+exports.saveDraftDataElement = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     let elt = req.body;
@@ -120,96 +109,68 @@ exports.saveDraftDataElement = function (req, res) {
     if (req.user && req.user.username) elt.updatedBy.username = req.user.username;
     if (!elt.created) elt.created = new Date();
     elt.updated = new Date();
-    mongo_cde.saveDraftDataElement(elt, function (err, dataElement) {
-        if (err) {
-            logError({
-                publicMessage: "Error saving draft: " + tinyId,
-                origin: "cdeSvc.saveDraftDataElement",
-                stack: err,
-                details: ""
-            });
-            return res.status(500).send("ERROR - save draft data element. " + tinyId);
-        }
-        res.send(dataElement);
-    });
+    mongo_cde.saveDraftDataElement(elt, handleError({req, res}, dataElement => res.send(dataElement)));
 };
 
-exports.deleteDraftDataElement = function (req, res) {
+exports.deleteDraftDataElement = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_cde.deleteDraftDataElement(tinyId, function (err) {
-        if (err) return res.status(500).send("ERROR - delete draft data element. " + tinyId);
-        res.send();
-    });
+    mongo_cde.deleteDraftDataElement(tinyId, handleError({req, res}, () => res.send()));
 };
 
-exports.byTinyIdList = function (req, res) {
+exports.byTinyIdList = (req, res) => {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) return res.status(400).send();
     tinyIdList = tinyIdList.split(",");
-    mongo_cde.byTinyIdList(tinyIdList, function (err, dataElements) {
-        if (err) return res.status(500).send("ERROR - Cannot get De by idlist");
+    mongo_cde.byTinyIdList(tinyIdList, handleError({req, res}, dataElements => {
         res.send(dataElements.map(mongo_data.formatElt));
-    });
+    }));
 };
 
-exports.latestVersionByTinyId = function (req, res) {
+exports.latestVersionByTinyId = (req, res) => {
     let tinyId = req.params.tinyId;
-    mongo_cde.latestVersionByTinyId(tinyId, function (err, latestVersion) {
-        if (err) return res.status(500).send("ERROR - cannot get latest de by tinyId");
-        res.send(latestVersion);
-    });
+    mongo_cde.latestVersionByTinyId(tinyId, handleError({req, res}, latestVersion => res.send(latestVersion)));
 };
 
-exports.createDataElement = function (req, res) {
+exports.createDataElement = (req, res) => {
     let id = req.params.id;
     if (id) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("You are not authorized to do this.");
     let elt = req.body;
     let user = req.user;
-    authorization.allowCreate(user, elt, function (err) {
-        if (err) return res.status(500).send("ERROR - create cde - cannot allow");
-        mongo_cde.create(elt, user, function (err, dataElement) {
-            if (err) return res.status(500).send("ERROR - create cde");
-            res.send(dataElement);
-        });
-    });
+    authorization.allowCreate(user, elt, handleError({req, res}, () => {
+        mongo_cde.create(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
+    }));
 };
 
-exports.updateDataElement = function (req, res) {
+exports.updateDataElement = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
     let elt = req.body;
-    authorization.allowUpdate(req.user, elt, function (err) {
-        if (err) return res.status(500).send("ERROR - update - cannot allow");
+    authorization.allowUpdate(req.user, elt, handleError({req, res}, () => {
         deValidator.wipeDatatype(elt);
-        mongo_data.orgByName(elt.stewardOrg.name, function (err, org) {
+        mongo_data.orgByName(elt.stewardOrg.name, handleError({req, res}, org => {
             let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
             if (org && org.workingGroupOf && org.workingGroupOf.length > 0
                 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
                 return res.status(403).send("Not authorized");
             }
-            mongo_cde.update(elt, req.user, function (err, response) {
-                if (err) return res.status(500).send("ERROR - cannot update de");
-                mongo_cde.deleteDraftDataElement(elt.tinyId, err => {
-                    if (err) return res.status(500).send("ERROR - cannot delete draft. ");
-                    res.send(response);
-                });
-            });
-        });
-    });
+            mongo_cde.update(elt, req.user, handleError({req, res}, response => {
+                mongo_cde.deleteDraftDataElement(elt.tinyId, handleError(() => res.send(response)));
+            }));
+        }));
+    }));
 };
-exports.publishDataElement = function (req, res) {
+
+exports.publishDataElement = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
-    mongo_cde.byTinyId(tinyId, function (err, item) {
-        if (err) return res.status(500).send("ERROR - update find by tinyId");
+    mongo_cde.byTinyId(tinyId, handleError({req, res}, item => {
         if (!item) return res.status(404).send();
-        authorization.allowUpdate(req.user, item, function (err) {
-            if (err) return res.status(500).send("ERROR - update - cannot allow");
-            mongo_data.orgByName(item.stewardOrg.name, function (err, org) {
+        authorization.allowUpdate(req.user, item, handleError({req, res}, () => {
+            mongo_data.orgByName(item.stewardOrg.name, handleError({req, res}, org => {
                 let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0
                     && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) {
@@ -219,20 +180,16 @@ exports.publishDataElement = function (req, res) {
                 elt.classification = item.classification;
                 elt.attachments = item.attachments;
                 deValidator.wipeDatatype(elt);
-                mongo_cde.update(elt, req.user, function (err, response) {
-                    if (err) return res.status(500).send("ERROR - cannot update de");
-                    mongo_cde.deleteDraftDataElement(elt.tinyId, err => {
-                        if (err) return res.status(500).send("ERROR - cannot delete draft. ");
-                        res.send(response);
-                    });
-                });
-            });
-        });
-    });
+                mongo_cde.update(elt, req.user, handleError({req, res}, response => {
+                    mongo_cde.deleteDraftDataElement(elt.tinyId, handleError( () => res.send(response)));
+                }));
+            }));
+        }));
+    }));
 };
 
 let parser = new xml2js.Parser();
-exports.vsacId = function (req, res) {
+exports.vsacId = (req, res) => {
     if (!req.user) return res.status(202).send({error: {message: "Please login to see VSAC mapping."}});
     vsac.getValueSet(req.params.vsacId, handleError({req, res, message: 'Error retrieving from VSAC'}, result => {
         if (result.statusCode === 404 || result === 400) return res.status(404).end();
@@ -242,7 +199,7 @@ exports.vsacId = function (req, res) {
     }));
 };
 
-exports.viewHistory = function (req, res) {
+exports.viewHistory = (req, res) => {
     if (!req.user) return res.send("You must be logged in to do that");
     let splicedArray = req.user.viewHistory.splice(0, 10);
     let tinyIdList = [];
@@ -250,11 +207,10 @@ exports.viewHistory = function (req, res) {
         if (tinyIdList.indexOf(splicedArray[i]) === -1)
             tinyIdList.push(splicedArray[i]);
     }
-    mongo_cde.byTinyIdList(tinyIdList, function (err, dataElements) {
-        if (err) return res.status(500).send("ERROR - cannot view history id list");
+    mongo_cde.byTinyIdList(tinyIdList, handleError({req, res}, dataElements => {
         dataElements.forEach(de => hideProprietaryCodes(de, req.user));
         return res.send(dataElements);
-    });
+    }));
 };
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
@@ -262,7 +218,7 @@ exports.viewHistory = function (req, res) {
 exports.show = function (req, res, cb) {
     let cdeId = req.params.id;
     if (!cdeId) return res.send("No Data Element Id");
-    mongo_cde.byId(cdeId, function (err, cde) {
+    mongo_cde.byId(cdeId, handleError({req, res}, cde => {
         cb(cde);
         // Following have no callback because it's no big deal if it fails.
         if (cde) {
@@ -271,13 +227,11 @@ exports.show = function (req, res, cb) {
                 mongo_cde.addCdeToViewHistory(cde, req.user);
             }
         }
-    });
+    }));
 };
 
-exports.save = function (req, res) {
-    adminSvc.save(req, res, mongo_cde, function () {
-        elastic.fetchPVCodeSystemList();
-    });
+exports.save = (req, res) => {
+    adminSvc.save(req, res, mongo_cde, elastic.fetchPVCodeSystemList());
 };
 
 var hideProprietaryCodes = function (cdes, user) {

@@ -437,14 +437,14 @@ exports.init = function (app) {
         res.render('supportedBrowsers', 'system');
     });
 
-    app.get('/listOrgs', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/listOrgs', exportShared.nocacheMiddleware, (req, res) => {
         mongo_data.listOrgs(function (err, orgs) {
             if (err) return res.status(500).send("ERROR - unable to list orgs");
             res.send(orgs);
         });
     });
 
-    app.get('/listOrgsDetailedInfo', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/listOrgsDetailedInfo', exportShared.nocacheMiddleware, (req, res) => {
         mongo_data.listOrgsDetailedInfo(function (err, orgs) {
             if (err) {
                 logging.errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}));
@@ -453,14 +453,14 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/loginText', csrf(), function (req, res) {
+    app.get('/loginText', csrf(), (req, res) => {
         let token = req.csrfToken();
         res.render("loginText", "system", {csrftoken: token});
     });
 
     let failedIps = [];
 
-    app.get('/csrf', csrf(), function (req, res) {
+    app.get('/csrf', csrf(), (req, res) => {
         exportShared.nocacheMiddleware(req, res);
         let resp = {csrf: req.csrfToken()};
         let failedIp = findFailedIp(getRealIp(req));
@@ -526,32 +526,24 @@ exports.init = function (app) {
             });
     });
 
-    app.post('/logout', function (req, res) {
+    app.post('/logout', (req, res) => {
         if (!req.session) return res.status(403).end();
-        req.session.destroy(function () {
+        req.session.destroy(() => {
             req.logout();
             res.clearCookie('connect.sid');
             res.redirect('/login');
         });
     });
 
-    app.get('/org/:name', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/org/:name', exportShared.nocacheMiddleware, (req, res) => {
         return mongo_data.orgByName(req.params.name, function (err, result) {
             res.send(result);
         });
     });
 
-    app.get('/usernamesByIp/:ip', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            return mongo_data.usernamesByIp(req.params.ip, function (err, result) {
-                if (err) return res.status(500).send("Error retrieving username by IP");
-                else res.send(result);
-            });
-        } else {
-            res.status(401).send();
-        }
+    app.get('/usernamesByIp/:ip', authorization.isSiteAdminMiddleware, (req, res) => {
+        mongo_data.usernamesByIp(req.params.ip, handleError({req, res}, result => res.send(result)));
     });
-
 
     app.get('/siteAdmins', [authorization.isSiteAdminMiddleware], (req, res) => {
         mongo_data.siteAdmins((err, users) => res.send(users));
@@ -561,41 +553,25 @@ exports.init = function (app) {
         mongo_data.orgAuthorities((err, users) => res.send(users));
     });
 
-    app.get('/managedOrgs', function (req, res) {
+    app.get('/managedOrgs', (req, res) => {
         orgsvc.managedOrgs(req, res);
     });
 
-    app.post('/addOrg', function (req, res) {
-        if (authorizationShared.canOrgAuthority(req.user)) {
-
-            orgsvc.addOrg(req, res);
-        } else {
-            res.status(401).send();
-        }
+    app.post('/addOrg', authorization.isOrgAuthorityMiddleware, (req, res) => {
+        orgsvc.addOrg(req, res);
     });
 
-    app.post('/updateOrg', function (req, res) {
-        if (authorizationShared.canOrgAuthority(req.user)) {
-            mongo_data.updateOrg(req.body, res);
-        } else {
-            res.status(401).send();
-        }
+    app.post('/updateOrg', authorization.isOrgAuthorityMiddleware, (req, res) => {
+        mongo_data.updateOrg(req.body, res);
     });
 
-    app.get('/user/:search', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) return res.send({});
-        else if (!req.params.search) {
+    app.get('/user/:search', [exportShared.nocacheMiddleware, authorization.isAuthenticatedMiddleware], (req, res) => {
+        if (!req.params.search) {
             return res.send({});
         } else if (req.params.search === 'me') {
-            mongo_data.userById(req.user._id, function (err, user) {
-                if (err) return res.status(500).send("ERROR retrieve user by id");
-                res.send(user);
-            });
+            mongo_data.userById(req.user._id, handleError({req, res}, user => res.send(user)));
         } else {
-            mongo_data.usersByName(req.params.search, function (err, users) {
-                if (err) return res.status(500).send("ERROR getting user by name");
-                res.send(users);
-            });
+            mongo_data.usersByName(req.params.search, handleError({req, res}, users => res.send(users)));
         }
     });
 
@@ -628,20 +604,20 @@ exports.init = function (app) {
             res.render('siteaccountmanagement', "system");
     });
 
-    app.get('/orgaccountmanagement', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/orgaccountmanagement', exportShared.nocacheMiddleware, (req, res) => {
         res.render('orgAccountManagement', "system");
     });
 
-    app.get('/data/:imgtag', function (req, res) {
+    app.get('/data/:imgtag', (req, res) => {
         mongo_data.getFile(req.user, req.params.imgtag, res);
     });
 
-    app.post('/transferSteward', function (req, res) {
+    app.post('/transferSteward', (req, res) => {
         orgsvc.transferSteward(req, res);
     });
 
     // TODO this works only for CDEs. Forms TODO later.
-    app.post('/classification/bulk/tinyId', function (req, res) {
+    app.post('/classification/bulk/tinyId', (req, res) => {
         if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(403).send("Not Authorized");
         if (!req.body.orgName || !req.body.categories) return res.status(400).send("Bad Request");
         let elements = req.body.elements;
@@ -664,7 +640,7 @@ exports.init = function (app) {
         });
     });
 
-    app.get("/bulkClassifyCdeStatus/:eltId", function (req, res) {
+    app.get("/bulkClassifyCdeStatus/:eltId", (req, res) => {
         let formId = req.param("eltId");
         if (!formId) return res.status(400).send("Bad Request");
         let result = adminItemSvc.bulkClassifyCdesStatus[req.user.username + req.params.eltId];
@@ -672,7 +648,7 @@ exports.init = function (app) {
         else res.send({});
     });
 
-    app.get("/resetBulkClassifyCdesStatus/:eltId", function (req, res) {
+    app.get("/resetBulkClassifyCdesStatus/:eltId", (req, res) => {
         let formId = req.param("eltId");
         if (!formId) return res.status(400).send("Bad Request");
         adminItemSvc.resetBulkClassifyCdesStatus(req.user.username + req.param("eltId"));
@@ -680,7 +656,7 @@ exports.init = function (app) {
     });
 
 
-    app.post('/mail/messages/new', function (req, res) {
+    app.post('/mail/messages/new', (req, res) => {
         if (req.isAuthenticated()) {
             let message = req.body;
             if (message.author.authorType === "user") {
@@ -695,7 +671,7 @@ exports.init = function (app) {
         }
     });
 
-    app.post('/mail/messages/update', function (req, res) {
+    app.post('/mail/messages/update', (req, res) => {
         if (req.isAuthenticated()) {
             mongo_data.updateMessage(req.body, function (err) {
                 if (err) {
@@ -706,7 +682,7 @@ exports.init = function (app) {
         } else res.status(401).send();
     });
 
-    app.post('/mail/messages/:type', function (req, res) {
+    app.post('/mail/messages/:type', (req, res) => {
         if (req.isAuthenticated()) {
             mongo_data.getMessages(req, function (err, messages) {
                 if (err) res.status(404).send(err);
@@ -717,7 +693,7 @@ exports.init = function (app) {
         }
     });
 
-    app.post('/addUserRole', function (req, res) {
+    app.post('/addUserRole', (req, res) => {
         if (authorizationShared.hasRole(req.user, "CommentReviewer")) {
             mongo_data.addUserRole(req.body, function (err) {
                 if (err) {
@@ -735,7 +711,7 @@ exports.init = function (app) {
     });
 
     // @TODO this should be POST
-    app.get('/attachment/approve/:id', function (req, res) {
+    app.get('/attachment/approve/:id', (req, res) => {
         if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
         mongo_data.alterAttachmentStatus(req.params.id, "approved", function (err) {
             if (err) res.status(500).send("Unable to approve attachment");
@@ -743,7 +719,7 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/attachment/decline/:id', function (req, res) {
+    app.get('/attachment/decline/:id', (req, res) => {
         if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
         daoManager.getDaoList().forEach(function (dao) {
             if (dao.removeAttachmentLinks)
@@ -753,7 +729,7 @@ exports.init = function (app) {
         res.send("Attachment declined");
     });
 
-    app.post('/getClassificationAuditLog', function (req, res) {
+    app.post('/getClassificationAuditLog', (req, res) => {
         if (authorizationShared.canOrgAuthority(req.user)) {
             mongo_data.getClassificationAuditLog(req.body, function (err, result) {
                 if (err) return res.status(500).send();
@@ -764,7 +740,7 @@ exports.init = function (app) {
         }
     });
 
-    app.post('/embed/', [authorization.isOrgAdminMiddleware], function (req, res) {
+    app.post('/embed/', [authorization.isOrgAdminMiddleware], (req, res) => {
         mongo_data.embeds.save(req.body, handleError({req, res, publicMessage: 'There was an error saving this embed.'}, embed =>
             res.send(embed)));
     });
@@ -786,7 +762,7 @@ exports.init = function (app) {
     });
 
 
-    app.get('/embed/:id', function (req, res) {
+    app.get('/embed/:id', (req, res) => {
         mongo_data.embeds.find({_id: req.params.id}, function (err, embeds) {
             if (err) return res.status(500).send();
             if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
@@ -795,7 +771,7 @@ exports.init = function (app) {
 
     });
 
-    app.get('/embeds/:org', function (req, res) {
+    app.get('/embeds/:org', (req, res) => {
         mongo_data.embeds.find({org: req.params.org}, function (err, embeds) {
             if (err) res.status(500).send();
             else res.send(embeds);
@@ -820,7 +796,7 @@ exports.init = function (app) {
     });
 
 
-    app.post('/disableRule', function (req, res) {
+    app.post('/disableRule', (req, res) => {
         if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
         mongo_data.disableRule(req.body, function (err, org) {
             if (err) res.status(500).send(org);
@@ -828,7 +804,7 @@ exports.init = function (app) {
         });
     });
 
-    app.post('/enableRule', function (req, res) {
+    app.post('/enableRule', (req, res) => {
         if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
         mongo_data.enableRule(req.body, function (err, org) {
             if (err) res.status(500).send(org);
@@ -836,7 +812,7 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/meshClassification', function (req, res) {
+    app.get('/meshClassification', (req, res) => {
         if (!req.query.classification) return res.status(400).send("Missing Classification Parameter");
         mongo_data.findMeshClassification({flatClassification: req.query.classification}, function (err, mm) {
             if (err) return res.status(500).send();
@@ -844,7 +820,7 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/meshByEltId/:id', function (req, res) {
+    app.get('/meshByEltId/:id', (req, res) => {
         if (!req.params.id) return res.status(400).send("Missing Id parameter");
         mongo_data.findMeshClassification({eltId: req.params.id}, function (err, mm) {
             if (err) return res.status(500).send();
@@ -853,7 +829,7 @@ exports.init = function (app) {
     });
 
 
-    app.get('/meshClassifications', function (req, res) {
+    app.get('/meshClassifications', (req, res) => {
         mongo_data.findMeshClassification({}, function (err, mm) {
             if (err) return res.status(500).send();
             return res.send(mm);
@@ -904,7 +880,7 @@ exports.init = function (app) {
         });
     }
 
-    app.post('/meshClassification', function (req, res) {
+    app.post('/meshClassification', (req, res) => {
         if (req.body._id) {
             let id = req.body._id;
             delete req.body._id;
@@ -931,14 +907,14 @@ exports.init = function (app) {
         }
     });
 
-    app.post("/syncWithMesh", function (req, res) {
+    app.post("/syncWithMesh", (req, res) => {
         if (!config.autoSyncMesh && !authorizationShared.canOrgAuthority(req.user))
             return res.status(403).send("Not Authorized");
         elastic.syncWithMesh();
         res.send();
     });
 
-    app.get('/syncWithMesh', function (req, res) {
+    app.get('/syncWithMesh', (req, res) => {
         res.send(elastic.meshSyncStatus);
     });
 

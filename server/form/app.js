@@ -125,9 +125,8 @@ exports.init = function (app, daoManager) {
                     let firstElt = true;
                     res.type('application/json');
                     res.write("[");
-                    elastic_system.elasticSearchExport((err, elt) => {
-                        if (err) return res.status(500).send("ERROR - cannot search export");
-                        else if (elt) {
+                    elastic_system.elasticSearchExport(handleError({req, res}, elt => {
+                        if (elt) {
                             if (!firstElt) res.write(',');
                             elt = exportShared.stripBsonIds(elt);
                             elt = elastic_system.removeElasticFields(elt);
@@ -137,7 +136,7 @@ exports.init = function (app, daoManager) {
                             res.write("]");
                             res.send();
                         }
-                    }, query, 'form');
+                    }, query, 'form'));
                 }
             }
         };
@@ -156,8 +155,7 @@ exports.init = function (app, daoManager) {
         if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send(invalidateRequest);
-        classificationNode_system.addClassification(req.body, mongo_form, function (err, result) {
-            if (err) return res.status(500).send("ERROR - cannot add form classif");
+        classificationNode_system.addClassification(req.body, mongo_form, handleError({req, res}, result => {
             if (result === "Classification Already Exists") return res.status(409).send(result); else res.send(result);
             mongo_data_system.addToClassifAudit({
                 date: new Date(), user: {
@@ -166,16 +164,14 @@ exports.init = function (app, daoManager) {
                     _id: req.body.eltId
                 }], action: "add", path: [req.body.orgName].concat(req.body.categories)
             });
-
-        });
+        }));
     });
 
     app.post("/removeFormClassification/", function (req, res) {
         if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send({error: "You do not permission to do this."});
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send({error: invalidateRequest});
-        classificationNode_system.removeClassification(req.body, mongo_form, function (err, elt) {
-            if (err) return res.status(500).send({error: err}); else res.send(elt);
+        classificationNode_system.removeClassification(req.body, mongo_form, handleError({req, res}, elt => {
             mongo_data_system.addToClassifAudit({
                 date: new Date(), user: {
                     username: req.user.username
@@ -183,7 +179,7 @@ exports.init = function (app, daoManager) {
                     _id: req.body.eltId
                 }], action: "delete", path: [req.body.orgName].concat(req.body.categories)
             });
-        });
+        }));
     });
 
     // This is for tests only
