@@ -157,7 +157,7 @@ exports.updateDataElement = (req, res) => {
                 return res.status(403).send("Not authorized");
             }
             mongo_cde.update(elt, req.user, handleError({req, res}, response => {
-                mongo_cde.deleteDraftDataElement(elt.tinyId, handleError(() => res.send(response)));
+                mongo_cde.deleteDraftDataElement(elt.tinyId, handleError({req, res}, () => res.send(response)));
             }));
         }));
     }));
@@ -181,7 +181,7 @@ exports.publishDataElement = (req, res) => {
                 elt.attachments = item.attachments;
                 deValidator.wipeDatatype(elt);
                 mongo_cde.update(elt, req.user, handleError({req, res}, response => {
-                    mongo_cde.deleteDraftDataElement(elt.tinyId, handleError( () => res.send(response)));
+                    mongo_cde.deleteDraftDataElement(elt.tinyId, handleError({req, res}, () => res.send(response)));
                 }));
             }));
         }));
