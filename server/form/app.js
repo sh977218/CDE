@@ -172,6 +172,7 @@ exports.init = function (app, daoManager) {
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send({error: invalidateRequest});
         classificationNode_system.removeClassification(req.body, mongo_form, handleError({req, res}, elt => {
+            res.send(elt);
             mongo_data_system.addToClassifAudit({
                 date: new Date(), user: {
                     username: req.user.username

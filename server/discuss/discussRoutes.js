@@ -39,7 +39,7 @@ exports.module = function (roleConfig) {
                             element: {
                                 eltId: savedComment.element.eltId,
                                 name: dao.getPrimaryName(elt),
-                                eltType: dao.typediscussRoutes.js
+                                eltType: dao.type
                             },
                             comment: {
                                 commentId: savedComment._id,
