@@ -136,7 +136,7 @@ exports.init = function (app, daoManager) {
                             res.write("]");
                             res.send();
                         }
-                    }, query, 'form'));
+                    }), query, 'form');
                 }
             }
         };
