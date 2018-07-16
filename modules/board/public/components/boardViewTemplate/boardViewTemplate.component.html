@@ -5,8 +5,8 @@
         <a *ngIf="headerLink" href="/board/{{board._id}}" target="_blank"> {{board.name}}</a>
         <ng-container *ngIf="!headerLink">{{board.name}}</ng-container>
         <div class="float-right" *ngIf="canEdit">
-            <mat-icon (click)="openEditBoardModal();">edit</mat-icon>
-            <mat-icon (click)="openDeleteBoardModal();">delete</mat-icon>
+            <mat-icon class="editBoard" (click)="openEditBoardModal();">edit</mat-icon>
+            <mat-icon class="deleteBoard" (click)="openDeleteBoardModal();">delete</mat-icon>
         </div>
     </div>
     <div class="card-body">
