@@ -583,9 +583,9 @@ exports.init = function (app) {
     });
 
     app.get('/user/:search', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) return res.send();
+        if (!req.user) return res.send({});
         else if (!req.params.search) {
-            return res.send();
+            return res.send({});
         } else if (req.params.search === 'me') {
             mongo_data.userById(req.user._id, function (err, user) {
                 if (err) return res.status(500).send("ERROR retrieve user by id");
