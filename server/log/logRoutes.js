@@ -4,6 +4,7 @@ const dbLogger = require('./dbLogger');
 const handleError = require('./dbLogger').handleError;
 const mongo_data = require('../system/mongo-data');
 const pushNotification = require('../system/pushNotification');
+const userDb = require('../user/userDb');
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
@@ -20,10 +21,21 @@ exports.module = function (roleConfig) {
     });
 
     router.post('/serverErrors', (req, res) => {
+        req.user.notificationDate.serverLogDate = new Date();
+        userDb.byId(req.user._id, handleError({req, res}, user => {
+            if (user) user.notificationDate = req.user.notificationDate;
+            user.save();
+        }));
         dbLogger.getServerErrors(req.body, handleError({req, res}, result => res.send(result)));
     });
 
     router.post('/clientErrors', (req, res) => {
+        req.user.notificationDate.clientLogDate = new Date();
+        userDb.byId(req.user._id, handleError({req, res}, user => {
+            if (user) user.notificationDate = req.user.notificationDate;
+            user.save();
+        }));
+
         dbLogger.getClientErrors(req.body, handleError({req, res}, result => {
             res.send(result.map(r => {
                 let l = r.toObject();

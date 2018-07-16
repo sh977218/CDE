@@ -1,15 +1,15 @@
-const clientError = require('../log/schemas').clientErrorSchema;
-const logError = require('../log/schemas').logErrorSchema;
+const ClientErrorModel = require('../log/dbLogger').ClientErrorModel;
+const LogErrorModel = require('../log/dbLogger').LogErrorModel;
 
 exports.getNumberServerError = (user, callback) => {
     if (user.notificationDate.serverLogDate) {
-        logError.count({}, callback);
+        LogErrorModel.count({date: {$lt: user.notificationDate.serverLogDate}}, callback);
     }
-    else logError.count({date: {$lt: user.notificationDate.serverLogDate}}, callback)
+    else LogErrorModel.count({}, callback);
 };
 exports.getNumberClientError = (user, callback) => {
     if (user.notificationDate.clientLogDate) {
-        clientError.count({}, callback);
+        ClientErrorModel.count({date: {$lt: user.notificationDate.clientLogDate}}, callback);
     }
-    else clientError.count({date: {$lt: user.notificationDate.clientLogDate}}, callback)
+    else ClientErrorModel.count({}, callback);
 };

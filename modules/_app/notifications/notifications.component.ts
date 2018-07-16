@@ -43,8 +43,8 @@ export class NotificationsComponent {
     }
 
     getNotifications(cb?) {
-        let serverObs = this.http.get<any[]>("/server/notification/serverError");
-        let clientObs = this.http.get<any[]>("/server/notification/clientError");
+        let serverObs = this.http.get("/server/notification/serverError");
+        let clientObs = this.http.get("/server/notification/clientError");
         forkJoin([serverObs, clientObs]).subscribe(results => {
             this.numberServerError = results[0];
             this.numberClientError = results[1];
