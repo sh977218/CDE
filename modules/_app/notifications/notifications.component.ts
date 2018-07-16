@@ -6,16 +6,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 
 @Component({
     selector: 'cde-notifications',
-    templateUrl: 'notifications.component.html',
-    styles: [`
-        .notificationMenu {
-            width: 200px;
-        }
-
-        .mat-menu-item {
-            line-height: 11px;
-        }
-    `]
+    templateUrl: 'notifications.component.html'
 })
 export class NotificationsComponent {
 

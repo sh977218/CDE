@@ -7,7 +7,7 @@
 
 <mat-menu #navDropdown="matMenu" panelClass="notificationMenu">
     <a routerLink="/siteAudit" *ngIf="numberServerError" id="serverError" mat-menu-item>
-        {{numberServerError}} Errors</a>
+        {{numberServerError}} Server Errors</a>
     <a routerLink="/siteAudit" *ngIf="numberClientError" id="clientError" mat-menu-item>
         {{numberClientError}} Client Errors</a>
 </mat-menu>
