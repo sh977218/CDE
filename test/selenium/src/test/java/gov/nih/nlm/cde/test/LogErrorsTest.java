@@ -1,7 +1,6 @@
 package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import gov.nih.nlm.system.SelectBrowser;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -26,7 +25,6 @@ public class LogErrorsTest extends NlmCdeBaseTest {
 
         textPresent("ReferenceError: trigger is not defined");
         textPresent("/triggerServerErrorExpress");
-        textPresent("app.express.error");
 
         clickElement(By.id("notifications"));
         textPresent("trigger server error test", By.id("notificationsDropdown"));
