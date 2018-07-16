@@ -16,7 +16,7 @@ repositories {
 dependencies {
     def seleniumVersion = "3.13.0"
 
-    testCompile 'com.paulhammant:ngwebdriver:1.1.4'
+    testCompile 'com.github.ludetc:ngWebDriver:1.0001'
     testCompile group: 'org.testng', name: 'testng', version: '6.8'
     testCompile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: "$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
