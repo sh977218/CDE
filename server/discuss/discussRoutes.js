@@ -48,7 +48,7 @@ exports.module = function (roleConfig) {
                         };
                         adminItemService.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                     }
-                    res.send({});
+                    res.send();;
                 }));
             })
         );
@@ -69,7 +69,7 @@ exports.module = function (roleConfig) {
             comment.replies.push(reply);
             discussDb.save(comment, handleError({res, origin: "/replyComment/"}, savedComment => {
                 ioServerCommentUpdated(req.user.username);
-                res.send({});
+                res.send();;
                 if (reply.pendingApproval) {
                     let details = {
                         element: {
@@ -124,7 +124,7 @@ exports.module = function (roleConfig) {
                         }
                         comment.remove(handleError({res, origin: "/deleteComment/"}, () => {
                                 ioServerCommentUpdated(req.user.username);
-                                res.send({});
+                                res.send();;
                             })
                         );
                     })
@@ -148,7 +148,7 @@ exports.module = function (roleConfig) {
                         comment.replies = comment.replies.filter(r => r._id.toString() !== replyId);
                         comment.save(handleError({res, origin: "/deleteComment/"}, () => {
                                 ioServerCommentUpdated(req.user.username);
-                                res.send({});
+                                res.send();;
                             })
                         );
                     })
@@ -228,7 +228,7 @@ exports.module = function (roleConfig) {
                 comment.status = 'resolved';
                 comment.save(handleError({res, origin: "/resolveComment/"}, () => {
                     ioServerCommentUpdated(req.user.username);
-                    res.send({});
+                    res.send();;
                 }));
             })
         )
@@ -239,7 +239,7 @@ exports.module = function (roleConfig) {
                 comment.status = 'active';
                 comment.save(handleError({res, origin: "/reopenComment/"}, () => {
                     ioServerCommentUpdated(req.user.username);
-                    res.send({});
+                    res.send();;
                 }));
             })
         )
@@ -254,7 +254,7 @@ exports.module = function (roleConfig) {
                 });
                 comment.save(handleError({res, origin: "/resolveReply/"}, () => {
                     ioServerCommentUpdated(req.user.username);
-                    res.send({});
+                    res.send();;
                 }));
             })
         )
@@ -268,7 +268,7 @@ exports.module = function (roleConfig) {
                 });
                 comment.save(handleError({res, origin: "/reopenReply/"}, () => {
                     ioServerCommentUpdated(req.user.username);
-                    res.send({});
+                    res.send();;
                 }));
             })
         )

@@ -8,7 +8,7 @@ exports.module = function (roleConfig) {
     const router = require('express').Router();
 
     router.get('/', [exportShared.nocacheMiddleware], (req, res) => {
-        if (!req.user) return res.send({});
+        if (!req.user) return res.send();;
         userDb.byId(req.user._id, handleError({res, origin: "/user"}, user => {
             if (!user) return res.status(404).send();
             res.send(user);

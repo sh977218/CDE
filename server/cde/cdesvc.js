@@ -139,7 +139,7 @@ exports.deleteDraftDataElement = function (req, res) {
     if (!tinyId) return res.status(400).send();
     mongo_cde.deleteDraftDataElement(tinyId, function (err) {
         if (err) return res.status(500).send("ERROR - delete draft data element. " + tinyId);
-        res.send({});
+        res.send();;
     });
 };
 

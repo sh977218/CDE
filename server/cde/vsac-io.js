@@ -132,7 +132,7 @@ exports.getAtomsFromUMLS = function (cui, source, res) {
         request({url: url, strictSSL: false}, function (err, response, body) {
             if (!err && response.statusCode === 200) res.send(body);
             else {
-                res.send({});
+                res.send();;
             }
         });
     });
