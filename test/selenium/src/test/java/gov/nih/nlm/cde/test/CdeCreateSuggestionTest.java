@@ -13,8 +13,8 @@ public class CdeCreateSuggestionTest extends BaseClassificationTest {
         // wait for page to load
         textPresent("Please enter a name for the new CDE");
         textNotPresent("Possible Matches");
-        findElement(By.name("eltName")).sendKeys("ind");
+        findElement(By.name("eltName")).sendKeys("fad");
         textPresent("Possible Matches");
-        textPresent("Family Assessment Device (FAD) - Individually accept indicator");
+        textPresent("Family Assessment Device (FAD)");
     }
 }
