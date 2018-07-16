@@ -1,4 +1,3 @@
-const multer = require('multer');
 const authorization = require('../system/authorization');
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const cdesvc = require('./cdesvc');
@@ -16,7 +15,7 @@ const appStatus = require('../system/status');
 const elastic_system = require('../system/elastic');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const handleError = require('../log/dbLogger').handleError;
-
+const multer = require('multer');
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_cde);
@@ -38,7 +37,7 @@ exports.init = function (app, daoManager) {
 
     app.delete("/draftDataElement/:tinyId", (req, res, next) => {
         if (!authorizationShared.isOrgCurator(req.user)) return res.status(401).send();
-        mongo_cde.byTinyId(req.params.tinyId, handleError({res, origin: "DEL /draftDataElement"}, dataElement => {
+        mongo_cde.byTinyId(req.params.tinyId, handleError({req, res}, dataElement => {
             if (!dataElement) return res.send();
             if (!authorizationShared.isOrgCurator(req.user, dataElement.stewardOrg.name)) return res.status(401).send();
             next();
@@ -53,78 +52,69 @@ exports.init = function (app, daoManager) {
 
     /* ---------- PUT NEW REST API above ---------- */
 
-    app.post('/myBoards', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) return res.status(403).send();
-        elastic.myBoards(req.user, req.body, function (err, result) {
-            if (err) return res.status(500).send("ERROR getting myBoards");
+    app.post('/myBoards', [exportShared.nocacheMiddleware, authorization.isAuthenticatedMiddleware], (req, res) => {
+        elastic.myBoards(req.user, req.body, handleError({req, res}, result => {
             res.send(result);
-        });
+        }));
     });
 
-    app.post('/cdesByTinyIdList', function (req, res) {
-        mongo_cde.byTinyIdList(req.body, function (err, cdes) {
-            if (err) return res.status(500).send();
+    app.post('/cdesByTinyIdList', (req, res) => {
+        mongo_cde.byTinyIdList(req.body, handleError({req, res}, cdes => {
             res.send(cdes);
-        });
+        }));
     });
 
-    app.post('/elasticSearch/cde', function (req, res) {
-        return elastic.elasticsearch(req.user, req.body, function (err, result) {
+    app.post('/elasticSearch/cde', (req, res) => {
+        elastic.elasticsearch(req.user, req.body, function (err, result) {
             if (err) return res.status(400).send("invalid query");
             result.cdes = cdesvc.hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
         });
     });
 
-    app.get('/elasticSearch/count', function (req, res) {
-        return elastic_system.nbOfCdes(function (err, result) {
-            res.send("" + result);
-        });
+    app.get('/elasticSearch/count', (req, res) => {
+        elastic_system.nbOfCdes((err, result) => res.send("" + result));
     });
 
-    app.post('/classification/cde/moveclassif', function (req, res) {
-        classificationNode.moveClassifications(req, function (err, cde) {
-            if (err) return res.status(500).send("ERROR moving classification");
+    app.post('/classification/cde/moveclassif', (req, res) => {
+        classificationNode.moveClassifications(req, handleError({req, res}, cde => {
             res.send(cde);
-        });
+        }));
     });
 
-    app.post('/attachments/cde/add', multer(config.multer), function (req, res) {
+    app.post('/attachments/cde/add', multer(config.multer), (req, res) => {
         adminItemSvc.addAttachment(req, res, mongo_cde);
     });
 
-    app.post('/attachments/cde/remove', function (req, res) {
+    app.post('/attachments/cde/remove', (req, res) => {
         adminItemSvc.removeAttachment(req, res, mongo_cde);
     });
 
-    app.post('/attachments/cde/setDefault', function (req, res) {
+    app.post('/attachments/cde/setDefault', (req, res) => {
         adminItemSvc.setAttachmentDefault(req, res, mongo_cde);
     });
 
-    app.get('/moreLikeCde/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/moreLikeCde/:tinyId', exportShared.nocacheMiddleware, (req, res) => {
         elastic.morelike(req.params.tinyId, function (result) {
             result.cdes = cdesvc.hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
         });
     });
 
-    app.get("/cde/derivationOutputs/:inputCdeTinyId", function (req, res) {
-        mongo_cde.derivationOutputs(req.params.inputCdeTinyId, function (err, cdes) {
-            if (err) res.status(500).send();
-            else {
-                res.send(cdes);
-            }
-        });
+    app.get("/cde/derivationOutputs/:inputCdeTinyId", (req, res) => {
+        mongo_cde.derivationOutputs(req.params.inputCdeTinyId, handleError({req, res}, cdes => {
+            res.send(cdes);
+        }));
     });
 
-    app.post('/desByConcept', function (req, res) {
-        mongo_cde.desByConcept(req.body, function (result) {
+    app.post('/desByConcept', (req, res) => {
+        mongo_cde.desByConcept(req.body, result => {
             res.send(cdesvc.hideProprietaryCodes(result, req.user));
         });
     });
 
-    app.get('/deCount', function (req, res) {
-        mongo_cde.count({archived: false}, function (err, result) {
+    app.get('/deCount', (req, res) => {
+        mongo_cde.count({archived: false}, (err, result) => {
             res.send({count: result});
         });
     });
@@ -137,16 +127,15 @@ exports.init = function (app, daoManager) {
     fetchRemoteData();
     setInterval(fetchRemoteData, 1000 * 60 * 60);
 
-
     // from others to UMLS
-    app.get('/umlsCuiFromSrc/:id/:src', function (req, res) {
+    app.get('/umlsCuiFromSrc/:id/:src', (req, res) => {
         if (!config.umls.sourceOptions[req.params.src])
             return res.send("Source cannot be looked up, use UTS Instead.");
         vsac.umlsCuiFromSrc(req.params.id, req.params.src, res);
     });
 
     // from UMLS to others
-    app.get('/umlsAtomsBridge/:id/:src', function (req, res) {
+    app.get('/umlsAtomsBridge/:id/:src', (req, res) => {
         if (!config.umls.sourceOptions[req.params.src])
             return res.send("Source cannot be looked up, use UTS Instead.");
         if (config.umls.sourceOptions[req.params.src].requiresLogin && !req.user)
@@ -154,50 +143,45 @@ exports.init = function (app, daoManager) {
         vsac.getAtomsFromUMLS(req.params.id, req.params.src, res);
     });
 
-    app.get('/crossWalkingVocabularies/:source/:code/:targetSource/', function (req, res) {
+    app.get('/crossWalkingVocabularies/:source/:code/:targetSource/', (req, res) => {
         if (!req.params.source || !req.params.code || !req.params.targetSource)
             return res.status(401).end();
-        vsac.getCrossWalkingVocabularies(req.params.source, req.params.code, req.params.targetSource, function (err, result) {
-            if (err) return res.status(500).send("ERROR getting crosswalk");
+        vsac.getCrossWalkingVocabularies(req.params.source, req.params.code, req.params.targetSource, handleError({req, res}, result => {
             if (result.statusCode === 200)
                 return res.send({result: JSON.parse(result.body).result});
             return res.send({result: []});
-        });
+        }));
     });
 
-    app.get('/searchUmls', function (req, res) {
-        if (!req.user) return res.status(403).send();
+    app.get('/searchUmls', authorization.isAuthenticatedMiddleware, (req, res) => {
         vsac.searchUmls(req.query.searchTerm, res);
     });
 
-    app.get('/permissibleValueCodeSystemList', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/permissibleValueCodeSystemList', exportShared.nocacheMiddleware, (req, res) => {
         res.send(elastic.pVCodeSystemList);
     });
 
     app.get('/status/cde', appStatus.status);
 
-    app.post('/pinEntireSearchToBoard', function (req, res) {
-        if (!req.isAuthenticated()) res.send("Please login first.");
+    app.post('/pinEntireSearchToBoard', authorization.isAuthenticatedMiddleware, (req, res) => {
         let query = elastic_system.buildElasticSearchQuery(req.user, req.body.query);
         if (query.size > config.maxPin) return res.status(403).send("Maximum number excesses.");
-        elastic_system.elasticsearch('cde', query, req.body.query, function (err, cdes) {
+        elastic_system.elasticsearch('cde', query, req.body.query, (err, cdes) => {
             boardsvc.pinAllToBoard(req, res, cdes.cdes);
         });
     });
 
-    app.get('/cde/properties/keys', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/cde/properties/keys', exportShared.nocacheMiddleware, (req, res) => {
         adminItemSvc.allPropertiesKeys(req, res, mongo_cde);
     });
 
-    app.post('/getCdeAuditLog', function (req, res) {
-        if (authorizationShared.canOrgAuthority(req.user)) {
-            mongo_cde.getCdeAuditLog(req.body, function (err, result) {
-                res.send(result);
-            });
-        } else return res.status(401).send("Not Authorized");
+    app.post('/getCdeAuditLog', authorization.isOrgAuthorityMiddleware, (req, res) => {
+        mongo_cde.getCdeAuditLog(req.body, (err, result) => {
+            res.send(result);
+        });
     });
 
-    app.post('/elasticSearchExport/cde', function (req, res) {
+    app.post('/elasticSearchExport/cde', (req, res) => {
         let query = elastic_system.buildElasticSearchQuery(req.user, req.body);
         let exporters = {
             json: {
@@ -231,7 +215,7 @@ exports.init = function (app, daoManager) {
         exporters.json.export(res);
     });
 
-    app.post('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
+    app.post('/cdeCompletion/:term', exportShared.nocacheMiddleware, (req, res) => {
         let term = req.params.term;
         elastic_system.completionSuggest(term, req.user, req.body, config.elastic.index.name, resp => {
             resp.hits.hits.forEach(r => r._index = undefined);
@@ -239,7 +223,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/api/cde/modifiedElements', function (req, res) {
+    app.get('/api/cde/modifiedElements', (req, res) => {
         let dstring = req.query.from;
 
         function badDate() {
@@ -260,9 +244,9 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.post('/classification/cde', function (req, res) {
+    app.post('/classification/cde', (req, res) => {
         if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send("Not Authorized.");
-        classificationNode_system.eltClassification(req.body, classificationShared.actions.create, mongo_cde, function (err) {
+        classificationNode_system.eltClassification(req.body, classificationShared.actions.create, mongo_cde, err => {
             if (!err) {
                 res.send({code: 200, msg: "Classification Added"});
                 mongo_data_system.addToClassifAudit({
@@ -282,12 +266,11 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.post('/addCdeClassification/', function (req, res) {
+    app.post('/addCdeClassification/', (req, res) => {
         if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send(invalidateRequest);
-        classificationNode_system.addClassification(req.body, mongo_cde, function (err, result) {
-            if (err) return res.status(500).send("ERROR adding classification");
+        classificationNode_system.addClassification(req.body, mongo_cde, handleError({req, res}, result => {
             if (result === "Classification Already Exists") return res.status(409).send(result);
             res.send(result);
             mongo_data_system.addToClassifAudit({
@@ -302,14 +285,13 @@ exports.init = function (app, daoManager) {
                 path: [req.body.orgName].concat(req.body.categories)
             });
 
-        });
+        }));
     });
-    app.post("/removeCdeClassification/", function (req, res) {
+    app.post("/removeCdeClassification/", (req, res) => {
         if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send({error: "You do not permission to do this."});
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send({error: invalidateRequest});
-        classificationNode_system.removeClassification(req.body, mongo_cde, function (err, elt) {
-            if (err) return res.status(500).send({error: err});
+        classificationNode_system.removeClassification(req.body, mongo_cde, handleError({req, res}, elt => {
             res.send(elt);
             mongo_data_system.addToClassifAudit({
                 date: new Date(),
@@ -322,7 +304,7 @@ exports.init = function (app, daoManager) {
                 action: "delete",
                 path: [req.body.orgName].concat(req.body.categories)
             });
-        });
+        }));
     });
 
     require('mongoose-schema-jsonschema')(require('mongoose'));
