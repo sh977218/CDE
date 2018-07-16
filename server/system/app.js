@@ -481,17 +481,20 @@ exports.init = function (app) {
         csrf()(req, res, next);
     }
 
-    const validLoginBody = ["username", "password", "_csrf", "recaptcha"];
-    app.post('/login', myCsrf, (req, res, next) => {
+    function checkLoginReq(req, res, next) {
         if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
             traffic.banIp(getRealIp(req), "Invalid Login body");
             return res.status(401).send();
         }
-        if (req.params.length) {
+        if (Object.keys(req.query).length) {
             traffic.banIp(getRealIp(req), "Passing params to /login");
             return res.status(401).send();
         }
+        return next();
+    }
 
+    const validLoginBody = ["username", "password", "_csrf", "recaptcha"];
+    app.post('/login', [checkLoginReq, myCsrf], (req, res, next) => {
         let failedIp = findFailedIp(getRealIp(req));
         async.series([
                 function checkCaptcha(captchaDone) {
