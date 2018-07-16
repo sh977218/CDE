@@ -81,7 +81,7 @@ exports.logError = function (message, callback) { // all server errors, express 
     });
 
     new LogErrorModel(message).save(err => {
-        if (err) noDbLogger.noDbLogger.info("ERROR: ");
+        if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
         let msg = {
             title: 'Server Side Error',
             options: {
@@ -158,6 +158,7 @@ exports.handleError = function (options, cb) {
     return function errorHandler(err, ...args) {
         if (err) {
             exports.respondError(err, options);
+            return;
         }
         cb(...args);
     };
@@ -165,16 +166,28 @@ exports.handleError = function (options, cb) {
 
 // @TODO: Combine with logError() which publishes notifications
 exports.respondError = function(err, options) {
-    if (options && options.res) {
+    if (!options) options = {};
+    if (options.res) {
         let message = options.publicMessage || "Generic Server Failure. Please submit an issue.";
         options.res.status(500).send('Error: ' + message);
     }
-    exports.logError({
+
+    const log = {
         message: options.message || err.message,
         origin: options.origin,
         stack: err.stack,
         details: options.details
-    });
+    };
+    if (options.req) {
+        log.request = {
+            url: options.req.url,
+            params: JSON.stringify(options.req.params),
+            body: JSON.stringify(options.req.body),
+            username: options.req.username,
+            ip: options.req.ip
+        }
+    }
+    exports.logError(log);
 };
 
 exports.httpLogs = function (body, callback) {
