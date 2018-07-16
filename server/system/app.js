@@ -669,7 +669,7 @@ exports.init = function (app) {
         if (!formId) return res.status(400).send("Bad Request");
         let result = adminItemSvc.bulkClassifyCdesStatus[req.user.username + req.params.eltId];
         if (result) res.send(result);
-        else res.send();
+        else res.send({});
     });
 
     app.get("/resetBulkClassifyCdesStatus/:eltId", function (req, res) {
