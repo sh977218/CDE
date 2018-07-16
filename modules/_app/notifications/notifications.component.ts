@@ -8,9 +8,10 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
     selector: 'cde-notifications',
     templateUrl: 'notifications.component.html',
     styles: [`
-        .notifMenu {
+        .notificationMenu {
             width: 200px;
         }
+
         .mat-menu-item {
             line-height: 11px;
         }
@@ -48,16 +49,6 @@ export class NotificationsComponent {
             this.readNotifications = results[1];
             if (cb) cb();
         }, err => this.alert.addAlert('danger', err));
-    }
-
-    viewNotification(notification) {
-        this.http.get("/viewedNotification")
-            .subscribe(() => this.getNotifications(() => NotificationsComponent.navigateNotification(notification)),
-                err => this.alert.addAlert('danger', err));
-    }
-
-    static navigateNotification(notification) {
-        if (notification && notification._id && notification._id.url) window.open(notification._id.url, '_blank');
     }
 
 }
