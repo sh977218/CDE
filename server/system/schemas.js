@@ -402,7 +402,7 @@ exports.trafficFilterSchema = new Schema({
         strikes: {type: Number, default: 1},
         _id: false
     }]
-});
+}, {usePushEach: true});
 
 exports.notificationSchema = new Schema({
     title: String,
