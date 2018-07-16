@@ -16,12 +16,11 @@ export class UnpinBoardComponent {
     @Input() eltIndex: number;
     pinModal: any;
 
-    constructor(
-        private alert: AlertService,
-        private boardListService: BoardListService,
-        private http: HttpClient,
-        public userService: UserService,
-    ) {}
+    constructor(private alert: AlertService,
+                private boardListService: BoardListService,
+                private http: HttpClient,
+                public userService: UserService) {
+    }
 
     unpin() {
         let url = '/pin/' + this.boardListService.board.type + '/' + this.elt.tinyId + '/' + this.boardListService.board._id;

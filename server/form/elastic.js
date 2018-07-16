@@ -30,7 +30,7 @@ exports.updateOrInsert = function (elt) {
     });
 };
 
-exports.byTinyIdList = function (idList, cb) {
+exports.byTinyIdList = function (idList, size, cb) {
     esClient.search({
         index: config.elastic.formIndex.name,
         type: "form",
@@ -40,12 +40,12 @@ exports.byTinyIdList = function (idList, cb) {
                     "values": idList
                 }
             },
-            "size": 20
+            "size": size
         }
     }, function (error, response) {
         if (error) {
-            dbLogger.errorLogger.error("Error DataElementDistinct", {
-                origin: "form.elastic.getByTinyIdList",
+            dbLogger.errorLogger.error("Error FormDistinct", {
+                origin: "form.elastic.byTinyIdList",
                 stack: new Error().stack,
                 details: "Error " + error + "response" + JSON.stringify(response)
             });

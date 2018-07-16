@@ -12,7 +12,7 @@ export class EmbeddedFormSearchResultComponent {
     @Input() searchViewSettings;
     @Input() embed;
 
-    concatenateQuestions (form) {
+    concatenateQuestions(form) {
         return getFormCdes(form).map(c => c.name).join(",");
     }
 

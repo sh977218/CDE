@@ -39,7 +39,7 @@ exports.init = function (app, daoManager) {
     app.delete("/draftDataElement/:tinyId", (req, res, next) => {
         if (!authorizationShared.isOrgCurator(req.user)) return res.status(401).send();
         mongo_cde.byTinyId(req.params.tinyId, handleError({res, origin: "DEL /draftDataElement"}, dataElement => {
-            if (!dataElement) return res.send();
+            if (!dataElement) return res.send({});
             if (!authorizationShared.isOrgCurator(req.user, dataElement.stewardOrg.name)) return res.status(401).send();
             next();
         }));
@@ -222,7 +222,7 @@ exports.init = function (app, daoManager) {
                             firstElt = false;
                         } else {
                             res.write("]");
-                            res.send();
+                            res.send({});
                         }
                     }, query, 'cde');
                 }
