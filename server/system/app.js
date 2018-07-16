@@ -88,7 +88,7 @@ exports.init = function (app) {
     if (!config.proxy) {
         app.post("/site-version", (req, res) => {
             version = version + ".";
-            res.send();;
+            res.send();
         });
     }
 
@@ -583,9 +583,9 @@ exports.init = function (app) {
     });
 
     app.get('/user/:search', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) return res.send();;
+        if (!req.user) return res.send();
         else if (!req.params.search) {
-            return res.send();;
+            return res.send();
         } else if (req.params.search === 'me') {
             mongo_data.userById(req.user._id, function (err, user) {
                 if (err) return res.status(500).send("ERROR retrieve user by id");
@@ -669,7 +669,7 @@ exports.init = function (app) {
         if (!formId) return res.status(400).send("Bad Request");
         let result = adminItemSvc.bulkClassifyCdesStatus[req.user.username + req.params.eltId];
         if (result) res.send(result);
-        else res.send();;
+        else res.send();
     });
 
     app.get("/resetBulkClassifyCdesStatus/:eltId", function (req, res) {
@@ -688,7 +688,7 @@ exports.init = function (app) {
             }
             message.date = new Date();
             mongo_data.createMessage(message, function () {
-                res.send();;
+                res.send();
             });
         } else {
             res.status(401).send();
@@ -701,7 +701,7 @@ exports.init = function (app) {
                 if (err) {
                     res.statusCode = 404;
                     res.send("Error while updating the message");
-                } else res.send();;
+                } else res.send();
             });
         } else res.status(401).send();
     });
@@ -935,7 +935,7 @@ exports.init = function (app) {
         if (!config.autoSyncMesh && !authorizationShared.canOrgAuthority(req.user))
             return res.status(403).send("Not Authorized");
         elastic.syncWithMesh();
-        res.send();;
+        res.send();
     });
 
     app.get('/syncWithMesh', function (req, res) {
@@ -958,7 +958,7 @@ exports.init = function (app) {
                     elt.ipList.splice(foundIndex, 1);
                     elt.save(() => res.send());
                 } else {
-                    res.send();;
+                    res.send();
                 }
             });
         } else res.status(401).send();
@@ -1009,7 +1009,7 @@ exports.init = function (app) {
     app.get('/viewedNotification', authorization.loggedInMiddleware, (req, res) => {
         mongo_data.updateUserLastViewNotification(req.user, err => {
             if (err) res.status(500).send("Error Updating User's Last View Notification Date.");
-            else res.send();;
+            else res.send();
         });
     });
 

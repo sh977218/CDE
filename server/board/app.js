@@ -62,7 +62,7 @@ exports.init = function (app, daoManager) {
                 moveFunc(board, index);
                 board.save(function (err) {
                     if (err) res.status(500).send();
-                    else res.send();;
+                    else res.send();
                 });
             } else
                 res.status(400).send("Nothing to move");
@@ -104,7 +104,7 @@ exports.init = function (app, daoManager) {
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_cde, function (err) {
             if (err) res.status(500).send("ERROR - cannot classify cdes in board");
-            else res.send();;
+            else res.send();
         });
     });
     app.post('/classifyFormBoard', function (req, res) {
@@ -113,7 +113,7 @@ exports.init = function (app, daoManager) {
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_form, function (err) {
             if (err) res.status(500).send("ERROR - cannot classify forms in board");
-            else res.send();;
+            else res.send();
         });
     });
 
@@ -216,7 +216,7 @@ exports.init = function (app, daoManager) {
                         mongo_board.newBoard(board, function (err) {
                             if (err) res.status(500).send("An error occurred. ");
                             elastic.boardRefresh(function () {
-                                res.send();;
+                                res.send();
                             });
                         });
                     } else {
@@ -310,7 +310,7 @@ exports.init = function (app, daoManager) {
                                 }
                             }, function (err) {
                                 if (err) res.status(500);
-                                return res.send();;
+                                return res.send();
                             });
                         } else return res.status(500).send('not authorized.');
                     }
@@ -338,7 +338,7 @@ exports.init = function (app, daoManager) {
                 if (err) {
                     res.status(500).send();
                 } else {
-                    res.send();;
+                    res.send();
                     board.users.filter(function (u) {
                         return u.role === 'reviewer';
                     }).map(function (u) {
@@ -388,7 +388,7 @@ exports.init = function (app, daoManager) {
             board.review.endDate = new Date();
             board.save(function (err) {
                 if (err) res.status(500);
-                return res.send();;
+                return res.send();
             });
         });
     });

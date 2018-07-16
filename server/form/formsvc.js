@@ -238,7 +238,7 @@ exports.draftForm = function (req, res) {
     if (!tinyId) return res.status(400).send();
     mongo_form.draftForm(tinyId, function (err, form) {
         if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
-        if (!form) return res.send();;
+        if (!form) return res.send();
         fetchWholeFormOutdated(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
             res.send(wholeForm);
@@ -250,7 +250,7 @@ exports.draftFormById = function (req, res) {
     if (!id) return res.status(400).send();
     mongo_form.draftFormById(id, function (err, form) {
         if (err) return res.status(500).send("ERROR - get draft form. " + id);
-        if (!form) return res.send();;
+        if (!form) return res.send();
         exports.fetchWholeForm(form.toObject(), function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR - get draft form. " + id);
             res.send(wholeForm);
@@ -284,7 +284,7 @@ exports.deleteDraftForm = function (req, res) {
     if (!tinyId) return res.status(400).send();
     mongo_form.deleteDraftForm(tinyId, function (err) {
         if (err) return res.status(500).send("ERROR - delete draft form. " + tinyId);
-        res.send();;
+        res.send();
     });
 };
 

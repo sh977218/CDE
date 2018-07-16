@@ -48,7 +48,7 @@ exports.pinForms = function (req, res) {
         board.pins = _.uniqWith(board.pins.concat(formPins), (a, b) => a.formTinyId === b.formTinyId);
         board.save(e => {
             if (e) return res.status(500).send(e);
-            res.send();;
+            res.send();
         });
     });
 };
