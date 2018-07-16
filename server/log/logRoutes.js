@@ -8,23 +8,23 @@ const pushNotification = require('../system/pushNotification');
 exports.module = function (roleConfig) {
     const router = require('express').Router();
     router.post('/httpLogs', (req, res) => {
-        dbLogger.httpLogs(req.body, handleError({res, origin: "/httpLogs"}, result => res.send(result)));
+        dbLogger.httpLogs(req.body, handleError({req, res}, result => res.send(result)));
     });
 
     router.post('/appLogs', (req, res) => {
-        dbLogger.appLogs(req.body, handleError({res, origin: "/appLogs"}, result => res.send(result)));
+        dbLogger.appLogs(req.body, handleError({req, res}, result => res.send(result)));
     });
 
     router.get('/dailyUsageReportLogs', (req, res) => {
-        dbLogger.usageByDay(handleError({res, origin: "/dailyUsageReportLogs"}, result => res.send(result)));
+        dbLogger.usageByDay(handleError({req, res}, result => res.send(result)));
     });
 
     router.post('/serverErrors', (req, res) => {
-        dbLogger.getServerErrors(req.body, handleError({res, origin: "/serverErrors"}, result => res.send(result)));
+        dbLogger.getServerErrors(req.body, handleError({req, res}, result => res.send(result)));
     });
 
     router.post('/clientErrors', (req, res) => {
-        dbLogger.getClientErrors(req.body, handleError({res, origin: "/clientErrors"}, result => {
+        dbLogger.getClientErrors(req.body, handleError({req, res}, result => {
             res.send(result.map(r => {
                 let l = r.toObject();
                 l.agent = userAgent.parse(r.userAgent).toAgent();
@@ -36,11 +36,11 @@ exports.module = function (roleConfig) {
 
 
     router.post('/feedbackIssues', roleConfig.feedbackLog, (req, res) => {
-        dbLogger.getFeedbackIssues(req.body, handleError({res, origin: "/feedbackIssues"}, result => res.send(result)));
+        dbLogger.getFeedbackIssues(req.body, handleError({req, res}, result => res.send(result)));
     });
 
     router.post('/clientExceptionLogs', (req, res) => {
-        dbLogger.logClientError(req, handleError({res, origin: "/clientExceptionLogs"}, result => res.send(result)));
+        dbLogger.logClientError(req, handleError({req, res}, result => res.send(result)));
     });
 
     router.get('/triggerServerErrorExpress', (req, res) => {

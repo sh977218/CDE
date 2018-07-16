@@ -276,7 +276,7 @@ app.use((req, res, next) => {
 });
 
 
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
     console.log("ERROR3: " + err);
     console.log(err.stack);
     if (req && req.body && req.body.password) req.body.password = "";
@@ -302,7 +302,7 @@ app.use(function (err, req, res, next) {
     next();
 });
 
-domain.run(function () {
+domain.run(() => {
     let server = http.createServer(app);
     exports.server = server;
     server.listen(app.get('port'), function () {
