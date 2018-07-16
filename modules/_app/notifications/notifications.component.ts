@@ -23,6 +23,7 @@ export class NotificationsComponent {
     unreadNotifications = [];
     numberServerError;
     numberClientError;
+    numberError;
 
     constructor(private http: HttpClient,
                 private userService: UserService,
@@ -43,11 +44,12 @@ export class NotificationsComponent {
     }
 
     getNotifications(cb?) {
-        let serverObs = this.http.get("/server/notification/serverError");
-        let clientObs = this.http.get("/server/notification/clientError");
+        let serverObs = this.http.get<any>("/server/notification/serverError");
+        let clientObs = this.http.get<any>("/server/notification/clientError");
         forkJoin([serverObs, clientObs]).subscribe(results => {
-            this.numberServerError = results[0];
-            this.numberClientError = results[1];
+            this.numberServerError = results[0].count;
+            this.numberClientError = results[1].count;
+            this.numberError = this.numberServerError + this.numberClientError;
             if (cb) cb();
         }, err => this.alert.addAlert('danger', err));
     }

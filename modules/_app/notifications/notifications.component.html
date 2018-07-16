@@ -1,12 +1,14 @@
 <a [matMenuTriggerFor]="navDropdown">
-    <mat-icon style="font-size: 1.3em; margin-top: 10px" [matBadge]="unreadNotifications.length"
-              matBadgeColor="warn" matBadgeSize="small" [matBadgeHidden]="unreadNotifications.length === 0">
+    <mat-icon style="font-size: 1.3em; margin-top: 10px" [matBadge]="numberError" matBadgeColor="warn"
+              matBadgeSize="small" [matBadgeHidden]="numberError">
         notifications
     </mat-icon>
 </a>
 
 <mat-menu #navDropdown="matMenu" panelClass="notificationMenu">
-    <a routerLink="/siteAudit" id="serverError" mat-menu-item>Server Error</a>
-    <a routerLink="/siteAudit" id="clientError" mat-menu-item>Client Error</a>
+    <a routerLink="/siteAudit" *ngIf="numberServerError" id="serverError" mat-menu-item>
+        {{numberServerError}} Errors</a>
+    <a routerLink="/siteAudit" *ngIf="numberClientError" id="clientError" mat-menu-item>
+        {{numberClientError}} Client Errors</a>
 </mat-menu>
 
