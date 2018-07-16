@@ -20,8 +20,9 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 export class NotificationsComponent {
 
     currentVersion = (window as any).version;
-    readNotifications = [{_id: {title: "You have no new notifications. "}}];
     unreadNotifications = [];
+    numberServerError;
+    numberClientError;
 
     constructor(private http: HttpClient,
                 private userService: UserService,
@@ -42,11 +43,11 @@ export class NotificationsComponent {
     }
 
     getNotifications(cb?) {
-        let obs1 = this.http.get<any[]>("/unreadNotifications");
-        let obs2 = this.http.get<any[]>("/notifications");
-        forkJoin([obs1, obs2]).subscribe(results => {
-            this.unreadNotifications = results[0];
-            this.readNotifications = results[1];
+        let serverObs = this.http.get<any[]>("/server/notification/serverError");
+        let clientObs = this.http.get<any[]>("/server/notification/clientError");
+        forkJoin([serverObs, clientObs]).subscribe(results => {
+            this.numberServerError = results[0];
+            this.numberClientError = results[1];
             if (cb) cb();
         }, err => this.alert.addAlert('danger', err));
     }

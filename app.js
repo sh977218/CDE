@@ -252,6 +252,10 @@ try {
         manage: [authorization.isOrgAuthorityMiddleware]
     });
     app.use('/server/user', userModule);
+
+    let notificationModule = require("./server/notification/notificationRoutes").module({});
+    app.use('/server/notification', authorization.loggedInMiddleware, notificationModule);
+
 } catch (e) {
     console.log(e.stack);
     process.exit();
