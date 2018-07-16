@@ -1,7 +1,5 @@
 const Ajv = require('ajv');
-const async = require('async');
 const fs = require('fs');
-const _ = require('lodash');
 const path = require('path');
 
 const config = require('../system/parseConfig');
@@ -17,7 +15,6 @@ const redCap = require("./redCapForm");
 const publishForm = require("./publishForm");
 const toQuestionnaire = require('@std/esm')(module)('../../shared/mapping/fhir/to/toQuestionnaire');
 const handleError = require('../log/dbLogger').handleError;
-const logError = require('../log/dbLogger').logError;
 const respondError = require('../log/dbLogger').respondError;
 
 const ajv = new Ajv({schemaId: 'auto'}); // current FHIR schema uses legacy JSON Schema version 4
@@ -92,34 +89,27 @@ function wipeRenderDisallowed(form, req, cb) {
     } else cb();
 }
 
-exports.byId = function (req, res) {
+exports.byId = (req, res) => {
     let id = req.params.id;
     if (!id) return res.status(400).send();
-    mongo_form.byId(id, function (err, form) {
-        if (err) return res.status(500).send("ERROR - cannot get form by id");
+    mongo_form.byId(id, handleError({req, res}, form => {
         if (!form) return res.status(404).send();
-        fetchWholeFormOutdated(form.toObject(), function (err, wholeForm) {
-            if (err) return res.status(500).send("ERROR - cannot fetch whole form");
-            wipeRenderDisallowed(wholeForm, req, function (err) {
-                if (err) return res.status(500).send("ERROR - cannot wipe form data");
+        fetchWholeFormOutdated(form.toObject(), handleError({req, res}, wholeForm => {
+            wipeRenderDisallowed(wholeForm, req, handleError({req, res}, () => {
                 if (req.query.type === 'xml') {
                     setResponseXmlHeader(res);
                     if (req.query.subtype === 'odm') {
-                        odm.getFormOdm(wholeForm, function (err, xmlForm) {
-                            if (err) return res.status(500).send("ERROR - canont get form as odm");
+                        odm.getFormOdm(wholeForm, handleError({req, res}, xmlForm => {
                             res.setHeader("Content-Type", "text/xml");
                             return res.send(xmlForm);
-                        });
+                        }));
                     } else if (req.query.subtype === 'sdc') {
                         sdc.formToSDC({form: wholeForm, renderer: req.query.renderer, validate: req.query.validate}, (err, sdcForm) => {
                             if (err) return res.send(err);
                             return res.send(sdcForm);
                         });
                     } else {
-                        nih.getFormNih(wholeForm, function (err, xmlForm) {
-                            if (err) return res.status(500).send("ERROR - cannot get json export");
-                            return res.send(xmlForm);
-                        });
+                        nih.getFormNih(wholeForm, handleError({req, res}, xmlForm => res.send(xmlForm)));
                     }
                 } else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
                     redCap.getZipRedCap(wholeForm, res);
@@ -142,17 +132,16 @@ exports.byId = function (req, res) {
                         res.send(wholeForm);
                     }
                 }
-            });
+            }));
             mongo_data.addFormToViewHistory(wholeForm, req.user);
-        });
-    });
+        }));
+    }));
 };
 
-exports.priorForms = function (req, res) {
+exports.priorForms = (req, res) => {
     let id = req.params.id;
     if (!id) return res.status(400).send();
-    mongo_form.byId(id, function (err, form) {
-        if (err) res.status(500).send("ERROR - cannot get form by id for prior");
+    mongo_form.byId(id, handleError({req, res}, form => {
         if (!form) res.status(404).send();
         let history = form.history.concat([form._id]).reverse();
         mongo_form.Form.find({}, {"updatedBy.username": 1, updated: 1, "changeNote": 1, version: 1, elementType: 1})
@@ -160,105 +149,83 @@ exports.priorForms = function (req, res) {
             mongo_data.sortArrayByArray(priorForms, history);
             res.send(priorForms);
         });
-    });
+    }));
 };
 
-exports.byTinyId = function (req, res) {
+exports.byTinyId = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_form.byTinyId(tinyId, function (err, form) {
-        if (err) return res.status(500).send("ERROR - get form by tinyid");
+    mongo_form.byTinyId(tinyId, handleError({req, res}, form => {
         if (!form) return res.status(404).send();
-        fetchWholeFormOutdated(form.toObject(), function (err, wholeForm) {
-            if (err) return res.status(500).send("ERROR - form by tinyId whole form");
-            wipeRenderDisallowed(wholeForm, req, function (err) {
-                if (err) return res.status(500).send("ERROR - form by tinyId - wipe");
+        fetchWholeFormOutdated(form.toObject(), handleError({req, res}, wholeForm => {
+            wipeRenderDisallowed(wholeForm, req, handleError({req, res}, () => {
                 if (req.query.type === 'xml') {
                     setResponseXmlHeader(res);
                     if (req.query.subtype === 'odm')
-                        odm.getFormOdm(wholeForm, function (err, xmlForm) {
-                            if (err) return res.status(500).send("ERROR - form by tinyId odm ");
+                        odm.getFormOdm(wholeForm, handleError({req, res}, xmlForm => {
                             res.setHeader("Content-Type", "text/xml");
                             return res.send(xmlForm);
-                        });
+                        }));
                     else if (req.query.subtype === 'sdc')
                         sdc.formToSDC({form: wholeForm, renderer: req.query.renderer, validate: req.query.validate}, (err, sdcForm) => {
                             if (err) return res.send(err);
                             return res.send(sdcForm);
                         });
-                    else nih.getFormNih(wholeForm, function (err, xmlForm) {
-                            if (err) return res.status(500).send("ERROR - form by tinyId json");
-                            return res.send(xmlForm);
-                        });
+                    else nih.getFormNih(wholeForm, handleError({req, res}, xmlForm => res.send(xmlForm)));
                 } else if (req.query.type && req.query.type.toLowerCase() === 'redcap')
                     redCap.getZipRedCap(wholeForm, res);
                 else res.send(wholeForm);
-            });
+            }));
             mongo_data.addFormToViewHistory(wholeForm, req.user);
-        });
-    });
+        }));
+    }));
 };
 
-exports.byTinyIdVersion = function (req, res) {
+exports.byTinyIdVersion = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     let version = req.params.version;
-    mongo_form.byTinyIdVersion(tinyId, version, function (err, form) {
-        if (err) return res.status(500).send();
+    mongo_form.byTinyIdVersion(tinyId, version, handleError({req, res}, form => {
         if (!form) return res.status(404).send();
-        exports.fetchWholeForm(form.toObject(), function (err, wholeForm) {
-            if (err) return res.status(500).send("ERROR - form by id / version");
-            wipeRenderDisallowed(wholeForm, req, function (err) {
-                if (err) return res.status(500).send("ERROR - form by id version wipe");
+        exports.fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
+            wipeRenderDisallowed(wholeForm, req, handleError({req, res}, () => {
                 res.send(wholeForm);
-            });
-        });
-    });
+            }));
+        }));
+    }));
 };
 
-exports.byTinyIdAndVersion = function (req, res) {
+exports.byTinyIdAndVersion = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     let version = req.params.version;
-    mongo_form.byTinyIdAndVersion(tinyId, version, function (err, form) {
-        if (err) return res.status(500).send();
+    mongo_form.byTinyIdAndVersion(tinyId, version, handleError({req, res}, form => {
         if (!form) return res.status(404).send();
-        exports.fetchWholeForm(form.toObject(), function (err, wholeForm) {
-            if (err) return res.status(500).send("ERROR - form by id / version");
-            wipeRenderDisallowed(wholeForm, req, function (err) {
-                if (err) return res.status(500).send("ERROR - form by id version wipe");
-                res.send(wholeForm);
-            });
-        });
-    });
+        exports.fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
+            wipeRenderDisallowed(wholeForm, req, handleError({req, res}, () => res.send(wholeForm)));
+        }));
+    }));
 };
 
-exports.draftForm = function (req, res) {
+exports.draftForm = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_form.draftForm(tinyId, function (err, form) {
-        if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
+    mongo_form.draftForm(tinyId, handleError({req, res}, form => {
         if (!form) return res.send();
-        fetchWholeFormOutdated(form.toObject(), function (err, wholeForm) {
-            if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
-            res.send(wholeForm);
-        });
-    });
+        fetchWholeFormOutdated(form.toObject(), handleError({req, res}, wholeForm => res.send(wholeForm)));
+    }));
 };
-exports.draftFormById = function (req, res) {
+
+exports.draftFormById = (req, res) => {
     let id = req.params.id;
     if (!id) return res.status(400).send();
-    mongo_form.draftFormById(id, function (err, form) {
-        if (err) return res.status(500).send("ERROR - get draft form. " + id);
+    mongo_form.draftFormById(id, handleError({req, res}, form => {
         if (!form) return res.send();
-        exports.fetchWholeForm(form.toObject(), function (err, wholeForm) {
-            if (err) return res.status(500).send("ERROR - get draft form. " + id);
-            res.send(wholeForm);
-        });
-    });
+        exports.fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => res.send(wholeForm)));
+    }));
 };
 
-exports.saveDraftForm = function (req, res) {
+exports.saveDraftForm = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     let elt = req.body;
@@ -266,106 +233,77 @@ exports.saveDraftForm = function (req, res) {
     if (req.user && req.user.username) elt.createdBy.username = req.user.username;
     if (!elt.created) elt.created = new Date();
     elt.updated = new Date();
-    mongo_form.saveDraftForm(elt, function (err, form) {
-        if (err) {
-            logError({
-                message: "Error saving draft: " + tinyId,
-                origin: "formSvc.saveDraftDataElement",
-                stack: err,
-                details: ""
-            });
-            return res.status(500).send("ERROR - save draft form. " + tinyId);
-        }
-        res.send(form);
-    });
-};
-exports.deleteDraftForm = function (req, res) {
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
-    mongo_form.deleteDraftForm(tinyId, function (err) {
-        if (err) return res.status(500).send("ERROR - delete draft form. " + tinyId);
-        res.send();
-    });
+    mongo_form.saveDraftForm(elt, handleError({req, res}, form => res.send(form)));
 };
 
-exports.byTinyIdList = function (req, res) {
+exports.deleteDraftForm = (req, res) => {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    mongo_form.deleteDraftForm(tinyId, handleError({req, res}, () => res.send()));
+};
+
+exports.byTinyIdList = (req, res) => {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) return res.status(400).send();
     tinyIdList = tinyIdList.split(",");
-    mongo_form.byTinyIdList(tinyIdList, function (err, forms) {
-        if (err) res.status(500).send("ERROR - form by idList");
-        res.send(forms.map(mongo_data.formatElt));
-    });
+    mongo_form.byTinyIdList(tinyIdList, handleError({req, res}, forms => res.send(forms.map(mongo_data.formatElt))));
 };
 
-exports.latestVersionByTinyId = function (req, res) {
+exports.latestVersionByTinyId = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_form.latestVersionByTinyId(tinyId, function (err, latestVersion) {
-        if (err) return res.status(500).send("ERROR - form by latest id");
-        res.send(latestVersion);
-    });
+    mongo_form.latestVersionByTinyId(tinyId, handleError({req, res}, latestVersion => res.send(latestVersion)));
 };
 
-exports.publishForm = function (req, res) {
+exports.publishForm = (req, res) => {
     if (!req.params.id) return res.status(400).send();
-    mongo_form.byId(req.params.id, handleError({res, origin: "Publish form"}, form => {
+    mongo_form.byId(req.params.id, handleError({req, res}, form => {
         if (!form) return res.status(400).send('form not found');
-        exports.fetchWholeForm(form.toObject(), handleError({res, message: 'Fetch whole for publish', origin: "publishForm"}, wholeForm => {
+        exports.fetchWholeForm(form.toObject(), handleError({req, res, message: 'Fetch whole for publish'}, wholeForm => {
             publishForm.getFormForPublishing(wholeForm, req, res);
         }));
     }));
 };
 
-exports.createForm = function (req, res) {
+exports.createForm = (req, res) => {
     let id = req.params.id;
     if (id) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
     let elt = req.body;
     let user = req.user;
-    authorization.allowCreate(user, elt, function (err) {
-        if (err) return res.status(500).send("ERROR - cannot allow to create form ");
-        mongo_form.create(elt, user, function (err, dataElement) {
-            if (err) return res.status(500).send("ERROR - cannot create form");
-            res.send(dataElement);
-        });
-    });
+    authorization.allowCreate(user, elt, handleError({req, res}, () => {
+        mongo_form.create(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
+    }));
 };
 
-exports.updateForm = function (req, res) {
+exports.updateForm = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
     let elt = req.body;
-    authorization.allowUpdate(req.user, elt, function (err) {
-        if (err) return res.status(500).send("ERROR - update - cannot allow");
-        mongo_data.orgByName(elt.stewardOrg.name, function (err, org) {
+    authorization.allowUpdate(req.user, elt, handleError({req, res}, () => {
+        mongo_data.orgByName(elt.stewardOrg.name, handleError({req, res}, org => {
             let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
             if (org && org.workingGroupOf && org.workingGroupOf.length > 0
                 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
                 return res.status(403).send("Not authorized");
             }
             formShared.trimWholeForm(elt);
-            mongo_form.update(elt, req.user, function (err, response) {
-                if (err) return res.status(500).send("ERROR - cannot update form. ");
-                mongo_form.deleteDraftForm(elt.tinyId, err => {
-                    if (err) return res.status(500).send("ERROR - cannot delete draft. ");
-                    res.send(response);
-                });
-            });
-        });
-    });
+            mongo_form.update(elt, req.user, handleError({req, res}, response => {
+                mongo_form.deleteDraftForm(elt.tinyId, handleError({req, res}, () => res.send(response)));
+            }));
+        }));
+    }));
 };
-exports.publishTheForm = function (req, res) {
+
+exports.publishTheForm = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
-    mongo_form.byTinyId(tinyId, function (err, item) {
-        if (err) return res.status(500).send("ERROR - update find by tinyId");
+    mongo_form.byTinyId(tinyId, handleError({req, res}, item => {
         if (!item) return res.status(404).send();
-        authorization.allowUpdate(req.user, item, function (err) {
-            if (err) return res.status(500).send("ERROR - update - cannot allow");
-            mongo_data.orgByName(item.stewardOrg.name, function (err, org) {
+        authorization.allowUpdate(req.user, item, handleError({req, res}, () => {
+            mongo_data.orgByName(item.stewardOrg.name, handleError({req, res}, org => {
                 let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0
                     && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) {
@@ -375,14 +313,10 @@ exports.publishTheForm = function (req, res) {
                 elt.classification = item.classification;
                 elt.attachments = item.attachments;
                 formShared.trimWholeForm(elt);
-                mongo_form.update(elt, req.user, function (err, response) {
-                    if (err) return res.status(500).send("ERROR - cannot update form. ");
-                    mongo_form.deleteDraftForm(elt.tinyId, err => {
-                        if (err) return res.status(500).send("ERROR - cannot delete draft. ");
-                        res.send(response);
-                    });
-                });
-            });
-        });
-    });
+                mongo_form.update(elt, req.user, handleError({req, res}, response => {
+                    mongo_form.deleteDraftForm(elt.tinyId,  handleError({req, res}, () => res.send(response)));
+                }));
+            }));
+        }));
+    }));
 };
