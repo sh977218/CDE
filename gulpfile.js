@@ -187,7 +187,7 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
         useminTask.on('end', function () {
             if (item.filename === 'index.ejs') {
                 if (useminOutputs.length !== 3) {
-                    console.log("useminOutputs:"+ useminOutputs);
+                    console.log("useminOutputs:" + useminOutputs);
                     throw new Error('service worker creation failed');
                 }
                 gulp.src(config.node.buildDir + '/dist/app/sw.js') // does not preserve order
@@ -224,11 +224,12 @@ gulp.task('es', function _es() {
     let esClient = new elasticsearch.Client({
         hosts: config.elastic.hosts
     });
-
-    esInit.indices.forEach(index => {
-        esClient.indices.delete({index: index.indexName, timeout: "2s"}, () => {});
+    let allIndex = esInit.indices.map(i => i.indexName);
+    return new Promise(function (resolve) {
+        esClient.indices.delete({index: allIndex, timeout: "6s"}, () => {
+            resolve();
+        });
     });
-    setTimeout(() => process.exit(0), 3000);
 });
 
 // Procedure calling task in README
@@ -245,7 +246,7 @@ gulp.task('buildHome', function _buildHome() {
                     async: true,
                     defer: false
                 },
-                html: [ htmlmin({
+                html: [htmlmin({
                     collapseInlineTagWhitespace: true,
                     collapseWhitespace: true,
                     conservativeCollapse: true,
@@ -256,7 +257,7 @@ gulp.task('buildHome', function _buildHome() {
                     removeComments: true,
                     removeScriptTypeAttributes: true,
                     removeStyleLinkTypeAttributes: true,
-                }) ],
+                })],
                 assetsDir: "./dist/",
                 inlinecss: [minifyCss, 'concat'],
                 inlinejs: [uglify({mangle: false}), 'concat'],
@@ -266,7 +267,13 @@ gulp.task('buildHome', function _buildHome() {
             .pipe(gulp.dest('./modules/system/views'));
     });
 });
-
-gulp.task('default', gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin'));
+gulp.task('checkDbConnection', function _buildHome() {
+    return new Promise(function (resolve, reject) {
+        let isRequireDbConnection = !!require.cache[require.resolve('./server/system/connections')];
+        if (isRequireDbConnection) reject("DB connection cannot be included in gulp.");
+        else resolve();
+    });
+});
+gulp.task('default', gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection'));
 
 
