@@ -403,10 +403,3 @@ exports.trafficFilterSchema = new Schema({
         _id: false
     }]
 }, {usePushEach: true});
-
-exports.notificationSchema = new Schema({
-    title: String,
-    url: String,
-    date: {type: Date, index: true, default: new Date()},
-    roles: {type: [String], index: true, default: []}
-});

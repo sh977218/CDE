@@ -1,11 +1,12 @@
 <a [matMenuTriggerFor]="navDropdown">
-    <mat-icon style="font-size: 1.3em; margin-top: 10px" [matBadge]="numberError" matBadgeColor="warn"
-              matBadgeSize="small" [matBadgeHidden]="numberError">
-        notifications
+    <mat-icon id="notificationBellIcon" [matBadge]="numberError" matBadgeColor="warn"
+              matBadgeSize="small" [matBadgeHidden]="!numberError">notifications
     </mat-icon>
 </a>
 
 <mat-menu #navDropdown="matMenu" panelClass="notificationMenu">
+    <span *ngIf="numberVersionError" id="versionError" mat-menu-item>A new version of this site is available. To enjoy the new features, \n" +
+        "please close all instances / tabs of this site then load again. </span>
     <a routerLink="/siteAudit" *ngIf="numberServerError" id="serverError" mat-menu-item>
         {{numberServerError}} Server Errors</a>
     <a routerLink="/siteAudit" *ngIf="numberClientError" id="clientError" mat-menu-item>

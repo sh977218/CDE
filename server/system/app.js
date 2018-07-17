@@ -984,25 +984,4 @@ exports.init = function (app) {
             res.status(401).send();
         }
     });
-
-    app.get('/viewedNotification', authorization.loggedInMiddleware, (req, res) => {
-        mongo_data.updateUserLastViewNotification(req.user, err => {
-            if (err) res.status(500).send("Error Updating User's Last View Notification Date.");
-            else res.send();
-        });
-    });
-
-    app.get('/notifications', authorization.loggedInMiddleware, (req, res) => {
-        mongo_data.getNotifications(req.user, (err, result) => {
-            if (err) return res.status(500).send("Error Retrieving Notifications.");
-            else res.send(result);
-        });
-    });
-    app.get('/unreadNotifications', authorization.loggedInMiddleware, (req, res) => {
-        mongo_data.getUnreadNotifications(req.user, (err, result) => {
-            if (err) return res.status(500).send("Error Retrieving Unread Notifications.");
-            else res.send(result);
-        });
-    });
-
 };

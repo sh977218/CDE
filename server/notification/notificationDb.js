@@ -3,13 +3,13 @@ const LogErrorModel = require('../log/dbLogger').LogErrorModel;
 
 exports.getNumberServerError = (user, callback) => {
     if (user.notificationDate.serverLogDate) {
-        LogErrorModel.count({date: {$lt: user.notificationDate.serverLogDate}}, callback);
+        LogErrorModel.count({date: {$gt: user.notificationDate.serverLogDate}}, callback);
     }
     else LogErrorModel.count({}, callback);
 };
 exports.getNumberClientError = (user, callback) => {
     if (user.notificationDate.clientLogDate) {
-        ClientErrorModel.count({date: {$lt: user.notificationDate.clientLogDate}}, callback);
+        ClientErrorModel.count({date: {$gt: user.notificationDate.clientLogDate}}, callback);
     }
     else ClientErrorModel.count({}, callback);
 };

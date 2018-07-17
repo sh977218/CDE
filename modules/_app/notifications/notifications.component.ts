@@ -11,7 +11,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 export class NotificationsComponent {
 
     currentVersion = (window as any).version;
-    unreadNotifications = [];
+    numberVersionError;
     numberServerError;
     numberClientError;
     numberError;
@@ -19,13 +19,12 @@ export class NotificationsComponent {
     constructor(private http: HttpClient,
                 private userService: UserService,
                 private alert: AlertService) {
-        setInterval(async () => {
+        let versionCheckFn = setInterval(async () => {
             try {
                 const latestVersion = await this.http.get("/site-version", {responseType: 'text'}).toPromise();
                 if (latestVersion !== this.currentVersion) {
-                    let note = "A new version of this site is available. To enjoy the new features, \n" +
-                        "please close all instances / tabs of this site then load again. ";
-                    this.unreadNotifications.unshift({_id: {title: note}});
+                    this.numberVersionError++;
+                    clearInterval(versionCheckFn);
                 }
             } catch (e) {
                 this.alert.addAlert('danger', e);
