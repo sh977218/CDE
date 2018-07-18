@@ -5,6 +5,8 @@ import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { CdeForm } from 'shared/form/form.model';
 import { isMappedTo } from 'shared/form/formAndFe';
+import { MatDialog } from '@angular/material';
+import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 
 @Component({
     selector: 'cde-form-general-details',
@@ -28,7 +30,8 @@ export class FormGeneralDetailsComponent {
     tagFhirResource: string;
     userOrgs = [];
 
-    constructor(public userService: UserService,
+    constructor(public dialog: MatDialog,
+                public userService: UserService,
                 public orgHelperService: OrgHelperService) {
         this.userService.then(() => {
             this.userOrgs = this.userService.userOrgs;
@@ -63,4 +66,18 @@ export class FormGeneralDetailsComponent {
         }
         this.onEltChange.emit();
     }
+
+
+    openProcedureMapping() {
+        let dialogRef = this.dialog.open(FhirProcedureMappingComponent, {
+            width: '550px',
+            data: {
+            }
+        });
+        dialogRef.componentInstance.onChanged.subscribe(() => {
+            console.log("mapping changed");
+        });
+        dialogRef.componentInstance.onClosed.subscribe(() => dialogRef.close());
+    }
+
 }

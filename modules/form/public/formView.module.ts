@@ -38,6 +38,7 @@ import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selec
 import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { WidgetModule } from 'widget/widget.module';
+import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -87,13 +88,15 @@ const appRoutes: Routes = [
         FormDescriptionSectionComponent,
         FormGeneralDetailsComponent,
         FormTermMappingComponent,
+        FhirProcedureMappingComponent,
         NativeRenderFullComponent,
         QuestionAnswerEditContentComponent,
         SelectQuestionLabelComponent
     ],
     entryComponents: [
         QuestionAnswerEditContentComponent,
-        SelectQuestionLabelComponent
+        SelectQuestionLabelComponent,
+        FhirProcedureMappingComponent,
     ],
     exports: [],
     providers: [
