@@ -28,7 +28,7 @@ export class MyBoardsComponent {
         this.http.delete('/board/' + board._id, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Deleted.');
             this.myBoardsSvc.waitAndReload();
-        });
+        }, err => this.alert.httpErrorMessageAlert('danger', err));
     }
 
 

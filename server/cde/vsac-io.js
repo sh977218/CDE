@@ -62,7 +62,7 @@ exports.getTGT = function (retries, cb) {
                 return;
             }
             if (output.indexOf('TGT-') !== 0) {
-                bLogger.consoleLog('getTgt: ERROR bad TGT');
+                dbLogger.consoleLog('getTgt: ERROR bad TGT');
                 retry(retries, cb);
                 return;
             }

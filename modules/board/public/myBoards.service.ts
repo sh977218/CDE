@@ -19,9 +19,8 @@ export class MyBoardsService {
     };
     reloading: boolean = false;
 
-    constructor(
-        private http: HttpClient
-    ) {}
+    constructor(private http: HttpClient) {
+    }
 
     loadMyBoards(type = null) {
         this.filter.selectedShareStatus = this.filter.shareStatus.filter(a => a.checked).map(a => a.key);

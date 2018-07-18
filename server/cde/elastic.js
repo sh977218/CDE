@@ -478,7 +478,7 @@ exports.get = function (id, cb) {
 };
 
 
-exports.byTinyIdList = function (idList, cb) {
+exports.byTinyIdList = function (idList, size, cb) {
     esClient.search({
         index: config.elastic.index.name,
         type: "dataelement",
@@ -488,7 +488,7 @@ exports.byTinyIdList = function (idList, cb) {
                     "values": idList
                 }
             },
-            "size": 20
+            "size": size
         }
     }, function (error, response) {
         if (error) {

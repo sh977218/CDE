@@ -16,17 +16,16 @@ export class CreateBoardComponent {
         this._module = module;
         if (this.newBoard) this.newBoard.type = module;
     }
+
     @ViewChild('createBoardModal') createBoardModal: NgbModalModule;
     _module = undefined;
     modalRef: NgbModalRef;
     newBoard: any;
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public modalService: NgbModal,
-        private myBoardsSvc: MyBoardsService
-    ) {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public modalService: NgbModal,
+                private myBoardsSvc: MyBoardsService) {
     }
 
     doCreateBoard() {

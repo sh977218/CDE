@@ -10,22 +10,27 @@ export class EmbeddedCdeSearchResultComponent {
     @Input() searchViewSettings;
     @Input() embed;
 
-    concatenatePVs (elt) {
+    concatenatePVs(elt) {
         return elt.valueDomain.permissibleValues.map(a => a.permissibleValue).join(",");
     };
 
     lfLimit = 3;
-    raiseLfLimit () {
+
+    raiseLfLimit() {
         return this.lfLimit = 100;
     }
-    lowerLfLimit () {
+
+    lowerLfLimit() {
         return this.lfLimit = 3;
     };
+
     clLimit = 3;
-    raiseClLimit () {
+
+    raiseClLimit() {
         return this.clLimit = 100;
     }
-    lowerClLimit () {
+
+    lowerClLimit() {
         return this.clLimit = 3;
     };
 

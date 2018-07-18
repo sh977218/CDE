@@ -1,12 +1,12 @@
 <div class="card mb-1 cdeBoard" [id]="board.name">
     <div class="card-header" (click)="clickHeader(board);">
-        <i class="fa fa-globe" *ngIf="board.shareStatus ==='Public'"></i>
-        <i class="fa fa-lock" *ngIf="board.shareStatus ==='Private'"></i>
+        <mat-icon *ngIf="board.shareStatus ==='Public'">public</mat-icon>
+        <mat-icon *ngIf="board.shareStatus ==='Private'">lock</mat-icon>
         <a *ngIf="headerLink" href="/board/{{board._id}}" target="_blank"> {{board.name}}</a>
         <ng-container *ngIf="!headerLink">{{board.name}}</ng-container>
         <div class="float-right" *ngIf="canEdit">
-            <i class="fa fa-pencil editBoard" (click)="openEditBoardModal();"></i>
-            <i class="fa fa-trash deleteBoard" (click)="openDeleteBoardModal();"></i>
+            <mat-icon class="editBoard" (click)="openEditBoardModal();">edit</mat-icon>
+            <mat-icon class="deleteBoard" (click)="openDeleteBoardModal();">delete</mat-icon>
         </div>
     </div>
     <div class="card-body">
