@@ -170,7 +170,7 @@ exports.init = function (app, daoManager) {
                 });
                 delete board._doc.owner.userId;
                 let idList = board.pins.map(p => board.type === 'cde' ? p.deTinyId : p.formTinyId);
-                daoManager.getDao(board.type).elastic.byTinyIdList(idList, function (err, elts) {
+                daoManager.getDao(board.type).elastic.byTinyIdList(idList, size, function (err, elts) {
                     if (req.query.type === "xml") {
                         res.setHeader("Content-Type", "application/xml");
                         if (board.type === 'cde') {
