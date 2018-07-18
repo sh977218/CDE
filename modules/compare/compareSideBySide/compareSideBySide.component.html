@@ -1,4 +1,4 @@
-<button *ngIf="elements.length > 1" id="qb_compare" class="btn btn-outline-dark"
+<button *ngIf="elements.length > 1" id="qb_compare" mat-raised-button
         (click)="openCompareSideBySideContent();">
     <i class="fa fa-search"></i> Side by Side View
 </button>
@@ -98,7 +98,6 @@
         </ng-container>
     </div>
     <div class="modal-footer" id="compareSideBySideModalFooter">
-        <button class="btn  btn-warning" id="closeCompareSideBySideBtn" (click)="c();">Close
-        </button>
+        <button mat-raised-button id="closeCompareSideBySideBtn" (click)="c()">Close</button>
     </div>
 </ng-template>

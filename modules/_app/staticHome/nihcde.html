@@ -10,38 +10,47 @@
                     <div class="android-header-spacer mdl-layout-spacer"></div>
                     <div class="android-navigation-container">
                         <nav class="android-navigation mdl-navigation">
-                            <a
-                                    class="mdl-navigation__link mdl-typography--text-uppercase"
-                                    id="menu_cdes_link"
-
-                                    href="/cde/search">CDEs</a><a
-                                class="mdl-navigation__link mdl-typography--text-uppercase "
+                            <a class="mdl-navigation__link mdl-typography--text-uppercase"
+                               id="menu_cdes_link" href="/cde/search">CDEs</a>
+                            <a class="mdl-navigation__link mdl-typography--text-uppercase"
                                 id="menu_forms_link" href="/form/search">Forms</a>
-                            <a
-                                    class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
+                            <a class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
                                     id="boardsMenu" href="/boardList">Boards</a>
 
-                            <mat-menu class="ng-tns-c0-1 ng-star-inserted"></mat-menu>
                             <a class="mdl-navigation__link mdl-typography--text-uppercase"
-                               id="menu_qb_link" href="/quickBoard">Quick Board (0)</a><a
-                                class="mdl-navigation__link mdl-typography--text-uppercase"
-                                id="apiDocumentationLink" href="/api">API</a><a
+                               id="menu_qb_link" href="/quickBoard">Quick Board (0)</a>
 
-                                class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
+                            <a id="helpLink" class="mdl-navigation__link mdl-typography--text-uppercase">Help&nbsp;▼</a>
+                            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                                for="helpLink">
+                                <li class="mdl-menu__item">
+                                    <a id="apiDocumentationLink"
+                                       class="mdl-menu__item mdl-typography--text-uppercase"
+                                       href="/api">API</a>
+                                </li>
+                                <li class="mdl-menu__item">
+                                    <a id="whatsNewLink" href="/whatsNew"
+                                       class="mdl-menu__item mdl-typography--text-uppercase">New Features</a>
+                                </li>
+                                <li class="mdl-menu__item">
+                                    <a id="takeATourLink" href="/home?tour=yes"
+                                       class="mdl-menu__item mdl-typography--text-uppercase">Take a Tour</a>
+                                </li>
+                            </ul>
+
+                            <a class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
                                 id="login_link" href="/login">Login</a><a
                                 id="notifications">
-                            <cde-notifications _nghost-c0=""><a
-                                    aria-haspopup="true">
-                                <mat-icon
-                                        class="mat-badge mat-icon mat-badge-warn material-icons mat-badge-overlap mat-badge-above mat-badge-after mat-badge-small mat-badge-hidden"
-                                        matbadgecolor="warn" matbadgesize="small" role="img"
-                                        style="font-size: 1.3em; margin-top: 10px" aria-hidden="true">
-                                    notifications<span id="mat-badge-content-0"
-                                                       class="mat-badge-content mat-badge-active">0</span>
-                                </mat-icon>
-                            </a>
-                                <mat-menu panelclass="notifMenu" class="ng-tns-c0-0">
-                                </mat-menu>
+                            <cde-notifications _nghost-c0="">
+                                <a aria-haspopup="true">
+                                    <mat-icon
+                                            class="mat-badge mat-icon mat-badge-warn material-icons mat-badge-overlap mat-badge-above mat-badge-after mat-badge-small mat-badge-hidden"
+                                            matbadgecolor="warn" matbadgesize="small" role="img"
+                                            style="font-size: 1.3em; margin-top: 10px" aria-hidden="true">
+                                        notifications<span id="mat-badge-content-0"
+                                                           class="mat-badge-content mat-badge-active">0</span>
+                                    </mat-icon>
+                                </a>
                             </cde-notifications>
                         </a><a id="searchSettings"
                                style="padding-right: 24px" href="/searchPreferences"><i
@@ -88,10 +97,8 @@
                                             structured human and machine-readable definitions of data elements that
                                             have been recommended or required by NIH Institutes and Centers and
                                             other organizations for use in research and for other purposes. </p>
-                                            <p> Visit the <a
-                                                    class="homeDescriptionLink"
-                                                    href="http://cde.nih.gov"
-                                                    rel="noopener" target="_blank">NIH CDE
+                                            <p> Visit the <a class="homeDescriptionLink" href="http://cde.nih.gov"
+                                                             rel="noopener" target="_blank">NIH CDE
                                                 Resource Portal</a> for contextual information about the repository.
                                             </p></div>
                                     </div>
@@ -115,8 +122,7 @@
                                             <div class="carousel-inner">
                                                 <div class="carousel-item ng-star-inserted active">
                                                     <picture class="ng-star-inserted">
-                                                        <source
-                                                                data-srcset="/launch/244362287d8ba68d11f54c6272af7439.webp"
+                                                        <source data-srcset="/launch/244362287d8ba68d11f54c6272af7439.webp"
                                                                 type="image/webp">
                                                         <img alt="Discuss" class="slideContent"
                                                              data-src="/launch/51ca497081e1b19098cad324bbf77874.png">
@@ -127,8 +133,7 @@
                                                 </div>
                                                 <div class="carousel-item ng-star-inserted">
                                                     <picture class="ng-star-inserted">
-                                                        <source
-                                                                data-srcset="/launch/67f4537ab77283a954b5b6361d65b9f3.webp"
+                                                        <source data-srcset="/launch/67f4537ab77283a954b5b6361d65b9f3.webp"
                                                                 type="image/webp">
                                                         <img alt="Draft of a Form"
                                                              class="slideContent"
@@ -139,8 +144,7 @@
                                                 </div>
                                                 <div class="carousel-item ng-star-inserted">
                                                     <picture class="ng-star-inserted">
-                                                        <source
-                                                                data-srcset="/launch/a7ade3b9aaed194996670c387259e8c2.webp"
+                                                        <source data-srcset="/launch/a7ade3b9aaed194996670c387259e8c2.webp"
                                                                 type="image/webp">
                                                         <img alt="More Like This"
                                                              class="slideContent"
@@ -151,8 +155,7 @@
                                                 </div>
                                                 <div class="carousel-item ng-star-inserted">
                                                     <picture class="ng-star-inserted">
-                                                        <source
-                                                                data-srcset="/launch/a99a42f273fc2bcab5ba49f592ad3a51.webp"
+                                                        <source data-srcset="/launch/a99a42f273fc2bcab5ba49f592ad3a51.webp"
                                                                 type="image/webp">
                                                         <img alt="History" class="slideContent"
                                                              data-src="/launch/6b08d2ac63f10ee2e9284a683e2787c0.png">
@@ -163,17 +166,15 @@
                                                 </div>
                                                 <div class="carousel-item ng-star-inserted">
                                                     <picture class="ng-star-inserted">
-                                                        <source
-                                                                data-srcset="/launch/92f71526029f43b0bd5054e57aa3b277.webp"
+                                                        <source data-srcset="/launch/92f71526029f43b0bd5054e57aa3b277.webp"
                                                                 type="image/webp">
-                                                        <img
-                                                                alt="Screenshot of finding and using forms"
-                                                                class="slideContent"
-                                                                data-src="/launch/d921c3ff95c754a763f7988e5d8277cc.png">
+                                                        <img alt="Screenshot of finding and using forms"
+                                                             class="slideContent"
+                                                             data-src="/launch/d921c3ff95c754a763f7988e5d8277cc.png">
                                                     </picture>
                                                     <div class="carousel-caption ng-star-inserted">
-                                                        <h3>Export and Publish in Multiple
-                                                            Formats</h3></div>
+                                                        <h3>Export and Publish in Multiple Formats</h3>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <a class="carousel-control-prev" role="button"><span aria-hidden="true"

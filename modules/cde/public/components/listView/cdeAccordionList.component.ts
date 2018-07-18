@@ -8,7 +8,6 @@ import { Elt, User } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({
-    selector: 'cde-cde-accordion-list',
     templateUrl: './cdeAccordionList.component.html'
 })
 export class CdeAccordionListComponent {

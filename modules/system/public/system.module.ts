@@ -7,6 +7,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { OrgAdminComponent } from 'system/public/components/siteAdmin/orgAdmin/orgAdmin.component';
 import { UsersMgtComponent } from 'system/public/components/siteAdmin/usersMgt/usersMgt.component';
 import { WidgetModule } from 'widget/widget.module';
+import { MatButtonModule, MatIconModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -14,8 +15,9 @@ import { WidgetModule } from 'widget/widget.module';
         FormsModule,
         NgbModule,
         NgSelectModule,
-        // core
         WidgetModule,
+        MatButtonModule,
+        MatIconModule
         // internal
     ],
     declarations: [
