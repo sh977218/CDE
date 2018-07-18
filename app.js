@@ -252,6 +252,12 @@ try {
         manage: [authorization.isOrgAuthorityMiddleware]
     });
     app.use('/server/user', userModule);
+
+    let articleModule = require("./server/article/articleRoutes").module({
+        update: [authorization.isSiteAdminMiddleware],
+    });
+    app.use('/server/article', articleModule);
+
 } catch (e) {
     console.log(e.stack);
     process.exit();

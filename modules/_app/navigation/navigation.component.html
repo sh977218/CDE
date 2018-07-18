@@ -90,8 +90,17 @@
                        class="mdl-navigation__link mdl-typography--text-uppercase"
                        [textContent]="'Quick&nbsp;Board&nbsp;(' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"></a>
 
-                    <a id="apiDocumentationLink" class="mdl-navigation__link mdl-typography--text-uppercase"
-                       routerLink="/api">API</a>
+
+                    <a id="helpLink" class="mdl-navigation__link mdl-typography--text-uppercase"
+                       [matMenuTriggerFor]="helpMenu">Help&nbsp;▼</a>
+                    <mat-menu #helpMenu="matMenu">
+                        <a id="apiDocumentationLink" class="mdl-navigation__link mdl-typography--text-uppercase"
+                           mat-menu-item routerLink="/api">API</a>
+                        <a id="whatsNewLink" routerLink="/whatsNew"
+                           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">New Features</a>
+                        <a id="takeATourLink" routerLink="/home" [queryParams]="{tour: 'yes'}"
+                           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Take a Tour</a>
+                    </mat-menu>
 
                     <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
 

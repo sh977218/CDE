@@ -1,13 +1,13 @@
 <form name="form" class="form-inline pt40 pb40" novalidate>
     <span class="mr-2">Make</span>
-    <div class="form-group">
-        <input class="form-control" name="message" [(ngModel)]="newAdmin"
-               placeholder="enter username" autocomplete="off"
+    <mat-form-field>
+        <input matInput name="message" [(ngModel)]="newAdmin"
+               placeholder="Username" autocomplete="off"
                [ngbTypeahead]="userService.searchTypeahead"
                required/>
-    </div>
+    </mat-form-field>
     <span class="mx-2">a site admin</span>
-    <button class="btn btn-warning ml-1" (click)="addSiteAdmin()" id="saveMessage">Make Admin</button>
+    <button mat-raised-button (click)="addSiteAdmin()" id="saveMessage">Make Admin</button>
 </form>
 
 <table class="table table-bordered table-responsive">
@@ -16,17 +16,17 @@
     </tr>
     <tr *ngFor="let user of siteAdmins">
         <td>
-            <span id="existingSiteAdmin-{{index}}">{{user.username}}</span>
-            <i class="fa fa-trash-o hand-cursor" (click)="removeSiteAdmin(user._id)"
-               id="removeSiteAdmin-{{index}}" title="Remove"></i>
+            <span class="mr-1" id="existingSiteAdmin-{{index}}">{{user.username}}</span>
+            <mat-icon (click)="removeSiteAdmin(user._id)" id="removeSiteAdmin-{{index}}">delete</mat-icon>
         </td>
     </tr>
 </table>
+
 <table class="table table-bordered table-responsive">
     <tr>
         <th>Org Authorities:</th>
     </tr>
     <tr *ngFor="let user of orgAuthorities">
-        <td> {{user.username}}</td>
+        <td>{{user.username}}</td>
     </tr>
 </table>

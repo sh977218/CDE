@@ -1615,6 +1615,7 @@ public class NlmCdeBaseTest {
 
 
     protected void swaggerApi(String api, String text, String tinyId, String version) {
+        clickElement(By.id("helpLink"));
         clickElement(By.id("apiDocumentationLink"));
         hangon(1);
         driver.switchTo().frame(findElement(By.cssSelector("iframe")));
@@ -1815,12 +1816,12 @@ public class NlmCdeBaseTest {
     protected void reopenComment(String message) {
         goToDiscussArea();
         WebElement weResolved = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
-        Assert.assertEquals(true, weResolved.getAttribute("class").contains("strike"));
+        Assert.assertEquals(weResolved.getAttribute("class").contains("strike"), true);
         String xpath = getCommentIconXpath(message, "comment", "reopen");
         clickElement(By.xpath(xpath));
         isCommentOrReplyExists(message, true);
         WebElement weReopened = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
-        Assert.assertEquals(false, weReopened.getAttribute("class").contains("strike"));
+        Assert.assertEquals(weReopened.getAttribute("class").contains("strike"), false);
     }
 
     private Map<String, String> COMMENT_Title_Case_MAP = new HashMap<String, String>() {

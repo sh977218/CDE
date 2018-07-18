@@ -16,11 +16,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     private void addClassificationMethodDo(String[] categories) {
-        try {
-            new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
-        } catch (Exception ignored) {
-            System.out.println("Ingnored exception: " + ignored);
-        }
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         textPresent(categories[1]);
         String classifyBtnId = "";
         for (int i = 1; i < categories.length - 1; i++) {

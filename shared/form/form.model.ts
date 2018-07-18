@@ -1,6 +1,5 @@
 import {
     copyArray,
-    CdeId,
     CodeAndSystem,
     DerivationRule,
     Elt,

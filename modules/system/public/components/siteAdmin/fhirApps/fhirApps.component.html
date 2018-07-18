@@ -3,25 +3,27 @@
 </div>
 
 <div *ngIf="fhirApps?.length">
-    <table>
+    <table class="table-striped" style="width: -webkit-fill-available">
         <ng-container *ngFor="let app of fhirApps">
             <tr>
                 <td rowspan="2"><i class="fa fa-trash-o" (click)="deleteApp(app)"></i></td>
                 <td rowspan="2">{{app._id}}</td>
                 <td>
-                    <label>Data Endpoint URL
-                        <input [(ngModel)]="app.dataEndpointUrl" class="form-control" (change)="saveApp(app)">
-                    </label>
+                    <mat-form-field>
+                        <input placeholder="Data Endpoint URL:" [(ngModel)]="app.dataEndpointUrl"
+                               matInput (change)="saveApp(app)">
+                    </mat-form-field>
                 </td>
                 <td>
-                    <label>Client Id:
-                        <input [(ngModel)]="app.clientId" class="form-control" (change)="saveApp(app)">
-                    </label>
+                    <mat-form-field>
+                        <input placeholder="Client Id:" [(ngModel)]="app.clientId" matInput (change)="saveApp(app)">
+                    </mat-form-field>
                 </td>
                 <td>
-                    <label>Forms (separate with ,)
-                        <input class="form-control" (change)="formsUpdated($event, app)" [value]="getFormIds(app)">
-                    </label>
+                    <mat-form-field>
+                        <input placeholder="Forms (separate with ,)" matInput
+                               (change)="formsUpdated($event, app)" [value]="getFormIds(app)">
+                    </mat-form-field>
                 </td>
             </tr>
             <tr><td colspan="3">
@@ -64,6 +66,5 @@
         </ng-container>
     </table>
 </div>
-
 
 <button class="btn btn-primary" (click)="newApp()"><i class="fa fa-plus"></i> Add</button>
