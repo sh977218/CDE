@@ -11,7 +11,8 @@ const auth = require('./server/system/authentication');
 const logging = require('./server/system/logging.js');
 const daoManager = require('./server/system/moduleDaoManager.js');
 const domain = require('domain').create();
-const ipFilter = require('express-ipfilter');
+const ipFilter = require('express-ipfilter').IpFilter;
+const IpDeniedError = require('express-ipfilter').IpDeniedError;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
@@ -91,7 +92,7 @@ let getRealIp = function (req) {
 };
 
 let blackIps = [];
-app.use(ipFilter(blackIps, {errorMessage: "You are not authorized. Please contact support if you believe you should not see this error."}));
+app.use(ipFilter(() => blackIps, {errorMessage: ""}));
 const banEndsWith = config.banEndsWith || [];
 const banStartsWith = config.banStartsWith || [];
 
@@ -107,6 +108,7 @@ setInterval(() => {
         blackIps = record.ipList.filter(ipElt => ((Date.now() - ipElt.date) < releaseHackersFrequency * ipElt.strikes)).map(r => r.ip);
     });
 }, 60 * 1000);
+
 
 // check https
 app.use((req, res, next) => {
@@ -277,6 +279,11 @@ app.use((req, res, next) => {
 
 
 app.use((err, req, res, next) => {
+
+    if(err instanceof IpDeniedError) {
+        return res.status(403).send("You are not authorized. Please contact support if you believe you should not see this error.");
+    }
+
     console.log("ERROR3: " + err);
     console.log(err.stack);
     if (req && req.body && req.body.password) req.body.password = "";
