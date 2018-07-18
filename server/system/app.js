@@ -703,11 +703,16 @@ exports.init = function (app) {
     });
 
     app.delete('/embed/:id', [authorization.loggedInMiddleware], (req, res) => {
-        if (!req.isAuthenticated()) return res.status(401).send("Not Authorized");
         const errorOptions = {req, res, publicMessage: 'There was an error removing this embed.'};
         mongo_data.embeds.find({_id: req.params.id}, handleError(errorOptions, embeds => {
-            if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
-            if (authorizationShared.isOrgAdmin(req.user, embeds[0].org)) return res.status(401).send();
+            if (embeds.length !== 1) {
+                res.status.send("Expectation not met: one document.");
+                return;
+            }
+            if (!req.isAuthenticated() || !authorizationShared.isOrgAdmin(req.user, embeds[0].org)) {
+                res.status(401).send();
+                return;
+            }
             mongo_data.embeds.delete(req.params.id, handleError(errorOptions, () => res.send()));
         }));
     });
