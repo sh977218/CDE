@@ -76,13 +76,6 @@ exports.log = function (message, callback) { // express only, all others dbLogge
 exports.logError = function (message, callback) { // all server errors, express and not
     message.date = new Date();
     let description = (message.message || message.publicMessage || '').substr(0, 30);
-
-    mongo_data.saveNotification({
-        title: "Server Side Error: " + description,
-        url: "/siteAudit#serverError",
-        roles: ['siteAdmin']
-    });
-
     new LogErrorModel(message).save(err => {
         if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
         let msg = {
@@ -142,12 +135,6 @@ exports.logClientError = function (req, callback) {
 
         let ua = userAgent.is(req.headers['user-agent']);
         if (ua.chrome || ua.firefox || ua.edge) {
-            mongo_data.saveNotification({
-                title: "Client Side Error: " + exc.message.substr(0, 30),
-                url: "/siteAudit#clientErrors",
-                roles: ['siteAdmin']
-            });
-
             mongo_data.pushGetAdministratorRegistrations(registrations => {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
             });
