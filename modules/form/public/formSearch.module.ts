@@ -16,13 +16,13 @@ import { WidgetModule } from "widget/widget.module";
 import { FormTableViewPreferencesComponent } from "../../search/tableViewPreferences/formTableViewPreferencesComponent";
 import {
     MatButtonModule,
-    MatIconModule,
     MatInputModule,
     MatMenuModule,
     MatPaginatorModule,
     MatCheckboxModule,
     MatDialogModule,
     MatGridListModule,
+    MatIconModule,
     MatListModule,
     MatSelectModule,
     MatAutocompleteModule
@@ -47,10 +47,10 @@ import {
         MatMenuModule,
         MatCheckboxModule,
         MatGridListModule,
+        MatIconModule,
         MatListModule,
         MatDialogModule,
         MatSelectModule,
-        MatIconModule
     ],
     declarations: [
         BoardFormSummaryListComponent,

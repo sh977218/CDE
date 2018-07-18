@@ -106,7 +106,7 @@ exports.module = function (roleConfig) {
             };
 
             mongo_data.pushGetAdministratorRegistrations(registrations => {
-                registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
             });
             res.send({});
         });

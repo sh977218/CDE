@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material';
+import { MatButtonModule, MatIconModule, MatInputModule } from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CKEditorModule } from 'ng2-ckeditor';
@@ -15,6 +15,7 @@ import { EditSiteAdminsComponent } from 'system/public/components/siteAdmin/edit
 import { ServerStatusComponent } from 'system/public/components/siteAdmin/serverStatus/serverStatus.component';
 import { SiteManagementComponent } from 'system/public/components/siteAdmin/siteManagement/siteManagement.component';
 import { WidgetModule } from 'widget/widget.module';
+import { WhatsNewAdminComponent } from 'system/public/components/siteAdmin/whatsNew/whatsNewAdminComponent';
 
 
 const appRoutes: Routes = [
@@ -27,6 +28,8 @@ const appRoutes: Routes = [
         CommonModule,
         FormsModule,
         MatIconModule,
+        MatInputModule,
+        MatButtonModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core
@@ -42,6 +45,7 @@ const appRoutes: Routes = [
         DraftsListAdminComponent,
         ServerStatusComponent,
         SiteManagementComponent,
+        WhatsNewAdminComponent,
     ],
     entryComponents: [
     ],

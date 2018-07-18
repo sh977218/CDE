@@ -7,6 +7,7 @@ import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { CdeModule } from 'cde/public/cde.module';
 import { CreateDataElementComponent } from 'cde/public/components/createDataElement.component';
 import { WidgetModule } from 'widget/widget.module';
+import { MatButtonModule, MatIconModule } from '@angular/material';
 
 
 const appRoutes: Routes = [
@@ -23,6 +24,8 @@ const appRoutes: Routes = [
         // internal
         AdminItemModule,
         CdeModule,
+        MatButtonModule,
+        MatIconModule
     ],
     declarations: [],
     entryComponents: [],
