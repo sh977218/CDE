@@ -256,6 +256,11 @@ try {
     let notificationModule = require("./server/notification/notificationRoutes").module({});
     app.use('/server/notification', authorization.loggedInMiddleware, notificationModule);
 
+    let articleModule = require("./server/article/articleRoutes").module({
+        update: [authorization.isSiteAdminMiddleware],
+    });
+    app.use('/server/article', articleModule);
+
 } catch (e) {
     console.log(e.stack);
     process.exit();

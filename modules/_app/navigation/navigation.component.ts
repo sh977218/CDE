@@ -98,7 +98,7 @@ import '../../../node_modules/material-design-lite/material.js';
             /* ... and now make sure the content is actually LTR */
             direction: ltr;
             justify-content: flex-end;
-            width: 800px;
+            width: 1000px;
         }
 
         .android-search-box.is-focused + .android-navigation-container {

@@ -3,7 +3,6 @@ import { BrowserService } from 'widget/browser.service';
 import { Elt } from 'shared/models.model';
 
 @Component({
-    selector: 'cde-accordion-list-heading',
     templateUrl: './accordionListHeading.component.html'
 })
 export class AccordionListHeadingComponent {

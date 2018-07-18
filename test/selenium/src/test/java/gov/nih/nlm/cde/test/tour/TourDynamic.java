@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.tour;
 
 import org.testng.annotations.Test;
 

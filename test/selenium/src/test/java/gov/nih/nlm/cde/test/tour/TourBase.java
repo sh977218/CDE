@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.tour;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 public class TourBase extends NlmCdeBaseTest {
 
     private String[] steps = new String[]{
-            "Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here.",
+            "Welcome to the NIH CDE Repository. This tour will guide you through the application. If you close this tour, you can restart it here.",
             "Click here to start browsing CDEs",
             "Or here to browse forms",
             "Boards allow registered users to group CDEs or Forms. Boards can be private or public. Boards are persistent and will not disappear unless you remove them.",
