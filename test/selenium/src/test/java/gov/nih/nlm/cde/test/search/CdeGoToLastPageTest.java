@@ -11,6 +11,8 @@ public class CdeGoToLastPageTest extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("search_by_classification_NHLBI"));
         textPresent("29 results for");
+        findElement(By.xpath("//*[@id='goToPage']//input")).clear();
+        hangon(1);
         findElement(By.xpath("//*[@id='goToPage']//input")).sendKeys("2");
         textPresent("21 - 29 of 29");
     }
