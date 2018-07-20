@@ -138,7 +138,9 @@
 
             <button mat-raised-button [matMenuTriggerFor]="exportMenu" *ngIf="!embedded"
                     id="export" class="ml-1">
-                <mat-icon>play_for_work</mat-icon> Export <mat-icon>arrow_drop_down</mat-icon>
+                <mat-icon>play_for_work</mat-icon>
+                Export
+                <mat-icon>arrow_drop_down</mat-icon>
             </button>
 
             <mat-menu #exportMenu>
@@ -345,7 +347,7 @@
 
                 <div>
                     <div class="float-right">
-                        <mat-form-field class="float-left " style="width:20%;">
+                        <mat-form-field class="float-left " style="width:20%;" id="goToPage">
                             <input matInput placeholder="Go to page:" type="number" min="1"
                                    [max]="totalItemsLimited" [ngModel]="searchSettings.page"
                                    (ngModelChange)="pageChange({pageIndex:$event-1})">
