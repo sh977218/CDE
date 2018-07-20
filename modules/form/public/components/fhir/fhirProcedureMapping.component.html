@@ -21,11 +21,11 @@
                 <small>{{q.question.cde.tinyId}}</small> - {{q.label}}</mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-form-field *ngIf="mapping.procedureCodeSystem === 'static'" style="margin: 0 10px 0 30px">
-        <input matInput placeholder="Code System">
+    <mat-form-field *ngIf="mapping.procedureQuestionID === 'static'" style="margin: 0 10px 0 30px">
+        <input matInput [(ngModel)]="mapping.procedureCodeSystem" placeholder="Code System">
     </mat-form-field>
-    <mat-form-field *ngIf="mapping.procedureCode === 'static'">
-        <input matInput placeholder="Code">
+    <mat-form-field *ngIf="mapping.procedureQuestionID === 'static'">
+        <input matInput [(ngModel)]="mapping.procedureCode" placeholder="Code">
     </mat-form-field>
 </div>
 
@@ -37,8 +37,8 @@
                 <small>{{q.question.cde.tinyId}}</small> - {{q.label}}</mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-form-field *ngIf="mapping.status === 'static'" style="margin-left: 30px">
-        <mat-select placeholder="Static Value for Status">
+    <mat-form-field *ngIf="mapping.statusQuestionID === 'static'" style="margin-left: 30px">
+        <mat-select placeholder="Static Value for Status" [(ngModel)]="mapping.statusStatic">
             <mat-option value="preparation">preparation</mat-option>
             <mat-option value="in-progress">in-progress</mat-option>
             <mat-option value="suspended">suspended</mat-option>
@@ -57,26 +57,26 @@
                 <small>{{q.question.cde.tinyId}}</small> - {{q.label}}</mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-form-field *ngIf="mapping.bodySiteCodeSystem === 'static'" style="margin: 0 10px 0 30px">
-        <input matInput placeholder="Code System">
+    <mat-form-field *ngIf="mapping.bodySiteQuestionID === 'static'" style="margin: 0 10px 0 30px">
+        <input matInput placeholder="Code System" [(ngModel)]="mapping.bodySiteCodeSystem">
     </mat-form-field>
-    <mat-form-field *ngIf="mapping.bodySiteCode === 'static'">
-        <input matInput placeholder="Code">
+    <mat-form-field *ngIf="mapping.bodySiteQuestionID === 'static'">
+        <input matInput placeholder="Code" [(ngModel)]="mapping.bodySiteCode">
     </mat-form-field>
 </div>
 
 <div>
     <mat-form-field>
-        <mat-select placeholder="Used Reference" [(ngModel)]="mapping.usedRefs" (modelChange)="initRefMaps()">
+        <mat-select placeholder="Used Reference" [(ngModel)]="usedRefs" (ngModelChange)="initRefMaps($event)">
             <mat-option>None</mat-option>
             <mat-option *ngFor="let q of valueListQuestions" [value]="q">
                 <small>{{q.question.cde.tinyId}}</small> - {{q.label}}</mat-option>
         </mat-select>
     </mat-form-field>
-    <div *ngIf="mapping.usedRefs" style="margin-left: 30px;">
+    <div *ngIf="usedRefs" style="margin-left: 30px;">
         <mat-icon matTooltip="Map each answer to a usedReference. Example: Medication/M123 where M123 is a medication identifier in your EHR. Leave empty if an answer means no usedReference.">info</mat-icon>
-        <span *ngFor="let answer of mapping.usedRefs.question.cde.permissibleValues; let index = index">
-            <mat-form-field style="margin-right: 10px">
+        <span *ngFor="let answer of usedRefs.question.cde.permissibleValues; let index = index">
+            <mat-form-field style="margin-right: 10px" *ngIf="mapping.usedReferencesMaps && mapping.usedReferencesMaps.length > index -1">
                 <input matInput [placeholder]="answer.valueMeaningName" [(ngModel)]="mapping.usedReferencesMaps[index]">
             </mat-form-field>
         </span>
@@ -87,7 +87,7 @@
     <mat-form-field>
         <mat-select placeholder="Complication" [(ngModel)]="mapping.complications">
             <mat-option>None</mat-option>
-            <mat-option *ngFor="let q of valueListQuestions" [value]="q">
+            <mat-option *ngFor="let q of valueListQuestions" [value]="q.question.cde.tinyId">
                 <small>{{q.question.cde.tinyId}}</small> - {{q.label}}</mat-option>
         </mat-select>
     </mat-form-field>

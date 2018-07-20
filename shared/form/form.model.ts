@@ -117,7 +117,7 @@ export class CdeFormElastic extends CdeForm {
 
 export class FhirProcedureMapping {
     statusQuestionID?: string;
-    status?: string;
+    statusStatic?: string;
     performedDate?: Date;
     procedureQuestionID?: string;
     procedureCode?: string;

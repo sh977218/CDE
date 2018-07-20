@@ -24,12 +24,16 @@ export class FhirProcedureMappingComponent {
         this.dateQuestions = this.questions.filter(q => q.question.datatype === 'Date');
         this.valueListQuestions = this.questions.filter(q => q.question.datatype === 'Value List');
         this.mapping = data.mapping || {};
+        if (data.usedRefs) {
+            this.usedRefs = data.usedRefs;
+        }
+
     }
 
-    initRefMaps () {
-        if (this.usedRefs) {
-            this.mapping.usedReferencesMaps = new Array(this.usedRefs.question.cde.permissibleValues.length);
-            this.mapping.usedReferences = this.usedRefs.question.cde.tinyId;
+    initRefMaps (usedRefs) {
+        if (usedRefs) {
+            this.mapping.usedReferencesMaps = new Array(usedRefs.question.cde.permissibleValues.length);
+            this.mapping.usedReferences = usedRefs.question.cde.tinyId;
         }
     }
 

@@ -9,6 +9,7 @@ import { BrowserService } from 'widget/browser.service';
 import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { getFormQuestionsReal } from 'shared/form/formShared';
 import { MatDialog } from '@angular/material';
+import { findQuestionByTinyId } from 'shared/form/formShared';
 
 type DisplayProfileVM = {
     aliases: {
@@ -525,14 +526,14 @@ export class DisplayProfileComponent {
     };
 
     openProcedureMapping(dpvm) {
-        let dialogRef = this.dialog.open(FhirProcedureMappingComponent, {
+        this.dialog.open(FhirProcedureMappingComponent, {
             width: '700px',
             data: {
                 questions: getFormQuestionsReal(this.elt),
-                mapping: this.elt.displayProfiles[0].fhirProcedureMapping
+                mapping: this.elt.displayProfiles[0].fhirProcedureMapping,
+                usedRefs: findQuestionByTinyId(this.elt.displayProfiles[0].fhirProcedureMapping.usedReferences, this.elt)
             }
-        });
-        dialogRef.afterClosed().subscribe(result => {
+        }).afterClosed().subscribe(result => {
             if (result) {
                 dpvm.profile.fhirProcedureMapping = result;
                 this.onEltChange.emit();
