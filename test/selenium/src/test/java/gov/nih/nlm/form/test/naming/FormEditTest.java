@@ -21,7 +21,7 @@ public class FormEditTest extends BaseFormTest {
     private void editQuestion() {
         scrollToViewById("question_0-0");
         startEditQuestionById("question_0-0");
-        selectQuestionLabelByIndex("question_0", 1);
+        selectQuestionLabelByIndex("question_0-0", 1);
 
         String newQuestionInstruction = "New Question Instruction";
         clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'editQuestionInstruction')]//i[contains(@class,'fa-edit')]"));
