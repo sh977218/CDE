@@ -1,13 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import _noop from 'lodash/noop';
-
-import { getFormQuestionsReal } from 'shared/form/formShared';
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { CdeForm } from 'shared/form/form.model';
 import { isMappedTo } from 'shared/form/formAndFe';
-import { MatDialog } from '@angular/material';
-import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 
 @Component({
     selector: 'cde-form-general-details',
@@ -31,8 +27,7 @@ export class FormGeneralDetailsComponent {
     tagFhirResource: string;
     userOrgs = [];
 
-    constructor(public dialog: MatDialog,
-                public userService: UserService,
+    constructor(public userService: UserService,
                 public orgHelperService: OrgHelperService) {
         this.userService.then(() => {
             this.userOrgs = this.userService.userOrgs;
@@ -66,22 +61,6 @@ export class FormGeneralDetailsComponent {
             this.elt.mapTo.fhir.resourceType = this.tagFhirResource === 'Default Mapping' ? undefined : this.tagFhirResource;
         }
         this.onEltChange.emit();
-    }
-
-    openProcedureMapping() {
-        let dialogRef = this.dialog.open(FhirProcedureMappingComponent, {
-            width: '700px',
-            data: {
-                questions: getFormQuestionsReal(this.elt),
-                mapping: this.elt.displayProfiles[0].fhirProcedureMapping
-            }
-        });
-        dialogRef.afterClosed().subscribe(result => {
-            if (result && this.elt.displayProfiles[0]) {
-                this.elt.displayProfiles[0].fhirProcedureMapping = result;
-                this.onEltChange.emit();
-            }
-        });
     }
 
 }

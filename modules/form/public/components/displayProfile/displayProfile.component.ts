@@ -6,6 +6,9 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/formShared';
 import { CodeAndSystem } from 'shared/models.model';
 import { BrowserService } from 'widget/browser.service';
+import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
+import { getFormQuestionsReal } from 'shared/form/formShared';
+import { MatDialog } from '@angular/material';
 
 type DisplayProfileVM = {
     aliases: {
@@ -56,7 +59,9 @@ export class DisplayProfileComponent {
     uomsDate: Date;
     uomsPromise: Promise<void>;
 
-    constructor(private ucumService: UcumService, private formViewComponent: FormViewComponent) {
+    constructor(public dialog: MatDialog,
+                private ucumService: UcumService,
+                private formViewComponent: FormViewComponent) {
     }
 
     addProfile() {
@@ -518,5 +523,21 @@ export class DisplayProfileComponent {
             }
         ]
     };
+
+    openProcedureMapping(dpvm) {
+        let dialogRef = this.dialog.open(FhirProcedureMappingComponent, {
+            width: '700px',
+            data: {
+                questions: getFormQuestionsReal(this.elt),
+                mapping: this.elt.displayProfiles[0].fhirProcedureMapping
+            }
+        });
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                dpvm.profile.fhirProcedureMapping = result;
+                this.onEltChange.emit();
+            }
+        });
+    }
 
 }
