@@ -1,53 +1,53 @@
-<ngb-tabset class="container-fluid">
-    <ngb-tab title="Logs" *ngIf="isAdmin">
+<ngb-tabset class="container-fluid" #tabs>
+    <ngb-tab title="Logs" id="log" *ngIf="isAdmin">
         <ng-template ngbTabContent>
             <cde-log-audit></cde-log-audit>
         </ng-template>
     </ngb-tab>
 
-    <ngb-tab title="App Logs" *ngIf="isAdmin">
+    <ngb-tab title="App Logs" id="appLog" *ngIf="isAdmin">
         <ng-template ngbTabContent>
             <cde-app-log></cde-app-log>
         </ng-template>
     </ngb-tab>
 
-    <ngb-tab title="Usage" *ngIf="isAdmin">
+    <ngb-tab title="Usage" id="usage" *ngIf="isAdmin">
         <ng-template ngbTabContent>
             <cde-daily-usage></cde-daily-usage>
         </ng-template>
     </ngb-tab>
 
-    <ngb-tab title="CDE Audit Log">
+    <ngb-tab title="CDE Audit Log" id="cdeAuditLog">
         <ng-template ngbTabContent>
             <cde-audit-log></cde-audit-log>
         </ng-template>
     </ngb-tab>
 
-    <ngb-tab title="Classification Audit Log">
+    <ngb-tab title="Classification Audit Log" id="classificationAuditLog">
         <ng-template ngbTabContent>
             <cde-classification-audit-log></cde-classification-audit-log>
         </ng-template>
     </ngb-tab>
 
-    <ngb-tab title="Active Bans">
+    <ngb-tab title="Active Bans" id="activeBan">
         <ng-template ngbTabContent>
             <cde-active-bans></cde-active-bans>
         </ng-template>
     </ngb-tab>
 
-    <ngb-tab title="Reported Issues">
+    <ngb-tab title="Reported Issues" id="reportedIssue">
         <ng-template ngbTabContent>
             <cde-feedback-issues></cde-feedback-issues>
         </ng-template>
     </ngb-tab>
 
-    <ngb-tab title="Server Errors" *ngIf="isAdmin">
+    <ngb-tab title="Server Errors" id="serverError" *ngIf="isAdmin">
         <ng-template ngbTabContent>
             <cde-server-errors></cde-server-errors>
         </ng-template>
     </ngb-tab>
 
-    <ngb-tab title="Client Errors" *ngIf="isAdmin">
+    <ngb-tab title="Client Errors" id="clientError" *ngIf="isAdmin">
         <ng-template ngbTabContent>
             <cde-client-errors></cde-client-errors>
         </ng-template>
