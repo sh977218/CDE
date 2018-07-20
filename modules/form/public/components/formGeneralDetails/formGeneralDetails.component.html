@@ -79,7 +79,8 @@
                     <option value="Observation">Observation</option>
                     <option value="Procedure">Procedure</option>
                 </select>
-                <button mat-raised-button *ngIf="tagFhirResource === 'Procedure'" (click)="openProcedureMapping()">Procedure Mapping</button>
+                <button mat-raised-button *ngIf="tagFhirResource === 'Procedure' && elt.displayProfiles.length"
+                        (click)="openProcedureMapping()">Procedure Mapping</button>
             </dd>
         </ng-container>
     </dl>

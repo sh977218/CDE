@@ -126,11 +126,11 @@ input.ng-invalid:not([matInput]) {
     border-left: 5px solid #a94442 !important;
 }
 
-.ng-valid[required], .ng-valid.required {
+.ng-valid[required]:not(mat-form-field):not([matInput]):not(mat-select), .ng-valid.required {
     border-left: 5px solid #42A948; /* green */
 }
 
-.ng-invalid:not(form):not(mat-form-field):not([matInput]) {
+.ng-invalid:not(form):not(mat-form-field):not([matInput]):not(mat-select) {
     border-left: 5px solid #a94442; /* red */
 }
 /* end validation error */

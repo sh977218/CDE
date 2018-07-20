@@ -30,6 +30,7 @@ declare function findQuestionByTinyId(tinyId: string, elt: FormElementsContainer
 declare function flattenFormElement(fe: FormElement): FormElement[];
 declare function getFormCdes(form: FormElementsContainer): QuestionCde[];
 declare function getFormQuestions(form: FormElementsContainer): FormQuestion[];
+declare function getFormQuestionsReal(form: FormElementsContainer): FormQuestion[];
 declare function getFormOdm(form: FormElementsContainer, cb: (error: string, odm: any) => void): void;
 declare function getLabel(fe: FormElement): string;
 declare function isSubForm(node: any): boolean;

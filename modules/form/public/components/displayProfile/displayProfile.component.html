@@ -3,12 +3,12 @@
     <mat-expansion-panel *ngFor="let dPVM of dPVMs; index as index" id="profile_{{index}}">
         <mat-expansion-panel-header>
             <mat-panel-title>
-                <h3 style="line-height: initial; margin-bottom: 0; width: 100%">
+                <h3 style="line-height: initial; width: 100%">
                     {{dPVM.profile.name}}
-                    <div class="pull-right" *ngIf="canEdit">
+                    <span class="pull-right" *ngIf="canEdit">
                         <cde-delete-with-confirm (click)="BrowserService.interruptEvent($event)"
                                                  (deleted)="removeDisplayProfile(index)"></cde-delete-with-confirm>
-                    </div>
+                    </span>
                 </h3>
             </mat-panel-title>
         </mat-expansion-panel-header>

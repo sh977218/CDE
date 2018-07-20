@@ -5,7 +5,7 @@ import {
     MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatExpansionModule, MatGridListModule,
     MatIconModule,
     MatInputModule, MatMenuModule,
-    MatSelectModule, MatSliderModule, MatTabsModule
+    MatSelectModule, MatSliderModule, MatTabsModule, MatTooltipModule
 } from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -65,6 +65,7 @@ const appRoutes: Routes = [
         MatSelectModule,
         MatSliderModule,
         MatTabsModule,
+        MatTooltipModule,
         // core
         WidgetModule,
         // internal

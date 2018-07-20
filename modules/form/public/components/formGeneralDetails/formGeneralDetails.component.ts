@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import _noop from 'lodash/noop';
 
+import { getFormQuestionsReal } from 'shared/form/formShared';
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { CdeForm } from 'shared/form/form.model';
@@ -67,17 +68,20 @@ export class FormGeneralDetailsComponent {
         this.onEltChange.emit();
     }
 
-
     openProcedureMapping() {
         let dialogRef = this.dialog.open(FhirProcedureMappingComponent, {
-            width: '550px',
+            width: '700px',
             data: {
+                questions: getFormQuestionsReal(this.elt),
+                mapping: this.elt.displayProfiles[0].fhirProcedureMapping
             }
         });
-        dialogRef.componentInstance.onChanged.subscribe(() => {
-            console.log("mapping changed");
+        dialogRef.afterClosed().subscribe(result => {
+            if (result && this.elt.displayProfiles[0]) {
+                this.elt.displayProfiles[0].fhirProcedureMapping = result;
+                this.onEltChange.emit();
+            }
         });
-        dialogRef.componentInstance.onClosed.subscribe(() => dialogRef.close());
     }
 
 }

@@ -17,6 +17,7 @@ import {
 } from 'shared/de/dataElement.model';
 import { iterateFeSync } from 'shared/form/formShared';
 import { deepCopy } from 'shared/system/util';
+import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 
 
 export class CdeForm extends Elt implements FormElementsContainer {
@@ -114,6 +115,21 @@ export class CdeFormElastic extends CdeForm {
     }
 }
 
+export class FhirProcedureMapping {
+    statusQuestionID?: string;
+    status?: string;
+    performedDate?: Date;
+    procedureQuestionID?: string;
+    procedureCode?: string;
+    procedureCodeSystem?: string;
+    bodySiteQuestionID?: string;
+    bodySiteCode?: string;
+    bodySiteCodeSystem?: string;
+    usedReferences?: string;
+    usedReferencesMaps?: string[];
+    complications?: string;
+}
+
 export class DisplayProfile {
     _id: ObjectId = null;
     answerDropdownLimit: number = 10;
@@ -129,7 +145,7 @@ export class DisplayProfile {
     repeatFormat: string = '#.';
     sectionsAsMatrix: boolean = true;
     unitsOfMeasureAlias: {alias: string, unitOfMeasure: CodeAndSystem}[] = [];
-
+    fhirProcedureMapping: FhirProcedureMapping;
     constructor(name: string = '') {
         this.name = name;
     }
