@@ -11,6 +11,10 @@ exports.userSchema = new Schema({
     password: stringType,
     lastLogin: Date,
     lastViewNotification: Date,
+    notificationDate: {
+        serverLogDate: Date,
+        clientLogDate: Date
+    },
     lockCounter: Number,
     orgAdmin: [stringType],
     orgCurator: [stringType],
@@ -84,5 +88,7 @@ exports.byUsername = (username, callback) => {
 exports.save = (user, callback) => {
     new User(user).save(callback);
 };
-
+exports.setNotificationDate = (notificationDate, callback) => {
+    User.update()
+};
 

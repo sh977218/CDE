@@ -7,7 +7,6 @@ const elastic = require('./elastic');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const handleError = require('../log/dbLogger').handleError;
-const logError = require('../log/dbLogger').logError;
 const mongo_cde = require('./mongo-cde');
 const mongo_data = require('../system/mongo-data');
 const vsac = require('./vsac-io');

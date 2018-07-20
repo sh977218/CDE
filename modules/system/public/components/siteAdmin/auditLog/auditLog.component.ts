@@ -13,10 +13,8 @@ export class AuditLogComponent {
     records: AuditLogRecord[] = [];
     currentPage: number = 1;
 
-    constructor(
-        private http: HttpClient,
-        private cdeDiff: CdeDiffPopulateService
-    ) {
+    constructor(private http: HttpClient,
+                private cdeDiff: CdeDiffPopulateService) {
         this.gotoPageLocal();
     }
 
