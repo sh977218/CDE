@@ -1847,4 +1847,16 @@ public class NlmCdeBaseTest {
         else textNotPresent(commentText, By.xpath("//cde-comments"));
     }
 
+    protected void selectQuestionLabelByIndex(String questionId, int index) {
+        clickElement(By.xpath("//*[@id='" + questionId + "']//i[contains(@class,'changeQuestionLabelIcon')]"));
+        textPresent("Select a question label from a CDE Name");
+        clickElement(By.xpath("//*[@id='q_select_name_" + index + "']/div/button"));
+    }
+
+    protected void selectQuestionNoLabel(String questionId) {
+        clickElement(By.xpath("//*[@id='" + questionId + "']//i[contains(@class,'changeQuestionLabelIcon')]"));
+        textPresent("Select a question label from a CDE Name");
+        clickElement(By.id("selectQuestionNoLabel"));
+    }
+
 }
