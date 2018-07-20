@@ -180,7 +180,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             }
         });
         dialogRef.componentInstance.onSelect.subscribe(designation => {
-            if (!designation.designation) {
+            if (!designation || !designation.designation) {
                 question.label = '';
                 question.hideLabel = true;
             } else {
