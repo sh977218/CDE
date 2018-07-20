@@ -117,7 +117,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer: ViewContainerRef;
     @ViewChild('tbset') public tabset: NgbTabset;
     @ViewChild('validRulesModal') validRulesModal: NgbModal;
-    @ViewChild('autoCompleteInput', { read: MatAutocompleteTrigger }) autoCompleteInput: MatAutocompleteTrigger;
+    @ViewChild('autoCompleteInput', {read: MatAutocompleteTrigger}) autoCompleteInput: MatAutocompleteTrigger;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
     add: EventEmitter<any>;
@@ -197,7 +197,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 term.length >= 3 ?
                     this.http.post<any[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
                         this.elasticService.buildElasticQuerySettings(this.searchSettings)).pipe(
-                            map(res => {
+                        map(res => {
                                 let final = new Set();
                                 this.lastTypeahead = {};
                                 res.forEach(e => {
@@ -206,7 +206,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                                 });
                                 return Array.from(final);
                             }
-                            )).subscribe(res => this.autocompleteSuggestions = res)
+                        )).subscribe(res => this.autocompleteSuggestions = res)
                     : empty();
             });
     }
@@ -514,7 +514,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     pageChange(newPage) {
         this.searchSettings.page = newPage.pageIndex + 1;
-        if (this.searchSettings.page < 1 || this.searchSettings.page > this.totalItems / this.resultPerPage) {
+        if (this.searchSettings.page < 1 || this.searchSettings.page > (this.totalItems / this.resultPerPage + 1)) {
             this.alert.addAlert("danger", "Invalid page: " + this.searchSettings.page);
         } else this.doSearch();
     }
