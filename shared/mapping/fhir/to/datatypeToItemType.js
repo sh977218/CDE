@@ -1,6 +1,6 @@
-import { codeSystemOut } from 'shared/mapping/fhir/fhirDatatypes';
-import { newCodeableConcept } from 'shared/mapping/fhir/datatypes/codeableConcept';
-import { newCoding } from 'shared/mapping/fhir/datatypes/coding';
+import { codeSystemOut } from 'shared/mapping/fhir';
+import { newCodeableConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
+import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
 import { capString } from 'shared/system/util';
 
 export function containerToItemType(container) { // http://hl7.org/fhir/item-type

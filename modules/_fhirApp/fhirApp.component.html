@@ -24,7 +24,7 @@
                         Encounter
                         <span *ngIf="selectedEncounter" class="badge badge-primary"
                               style="background-color: #007bff;white-space: normal">
-                            <span *ngIf="selectedEncounter.type">{{selectedEncounter.type + ' - '}}</span>
+                            <span *ngIf="selectedEncounter.types">{{selectedEncounter.types + ' - '}}</span>
                             {{selectedEncounter.period.start}}
                         </span>
                     </button>
@@ -63,6 +63,7 @@
                             <th width="80px"></th>
                             <th>Type</th>
                             <th>Reason</th>
+                            <th>Text</th>
                             <th>Date</th>
                         </tr>
                         </thead>
@@ -72,11 +73,13 @@
                             <td>
                                 <mat-icon *ngIf="e === selectedEncounter">check_box</mat-icon>
                                 <mat-icon *ngIf="e !== selectedEncounter">check_box_outline_blank</mat-icon>
-                                <mat-icon (click)="openViewObs(e)">open_in_new</mat-icon>
+                                <mat-icon (click)="BrowserService.interruptEvent($event);openViewEncounter(e)"
+                                          class="hand-cursor" title="View">open_in_new</mat-icon>
                             </td>
-                            <td>{{e.type}}</td>
-                            <td>{{e.reason}}</td>
-                            <td>{{e.period.start}}</td>
+                            <td>{{e.types}}</td>
+                            <td>{{e.reasons}}</td>
+                            <td><span *ngIf="e.text" [innerHtml]="e.text.div"></span></td>
+                            <td>{{getDateString(e, 'period')}}</td>
                         </tr>
                         </tbody>
                         <tfoot>

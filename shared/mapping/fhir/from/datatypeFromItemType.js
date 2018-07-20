@@ -1,4 +1,4 @@
-import { codeSystemOut } from 'shared/mapping/fhir/fhirDatatypes';
+import { codeSystemOut } from 'shared/mapping/fhir';
 
 export function isCodingToValueList(container, coding) {
     function isCodingInContainer(container, c) {

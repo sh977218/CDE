@@ -1,7 +1,11 @@
 import { reduceOptionalArray } from 'shared/system/util';
 
 export function getText(concept) {
-    return concept && concept.text || Array.isArray(concept.coding) && concept.coding.some(c => c.display) || '';
+    return concept && concept.text || Array.isArray(concept.coding) && concept.coding.some() || '';
+}
+
+export function getTextFromArray(conceptArray) {
+    return Array.isArray(conceptArray) ? conceptArray.map(getText).join(', ') : '';
 }
 
 export function newCodeableConcept(coding, text) {

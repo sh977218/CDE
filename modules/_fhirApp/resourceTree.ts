@@ -1,9 +1,9 @@
 import { CdeForm, FormElement } from 'shared/form/form.model';
 import { isMappedTo } from 'shared/form/formAndFe';
-import { getRef } from 'shared/mapping/fhir/fhirDatatypes';
 import { FhirDomainResource, FhirEncounter, FhirObservation } from 'shared/mapping/fhir/fhirResource.model';
-import { newEncounter } from 'shared/mapping/fhir/resource/encounter';
-import { newObservation } from 'shared/mapping/fhir/resource/observation';
+import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
+import { newEncounter } from 'shared/mapping/fhir/resource/fhirEncounter';
+import { newObservation } from 'shared/mapping/fhir/resource/fhirObservation';
 import { deepCopy } from 'shared/system/util';
 
 export const types = new Map<string, {self: Object, child: string | undefined, create: Function | null}>();
@@ -11,12 +11,18 @@ types.set('Encounter', {self: FhirEncounter, child: 'Observation', create: newEn
 types.set('Observation', {self: FhirObservation, child: undefined, create: newObservation});
 
 export class ResourceTree {
-    children: ResourceTree[];
+    children: ResourceTree[] = [];
     crossReference?: any;
     parentAttribute?: string;
     resource?: any;
     resourceRemote?: any;
     resourceType?: string;
+
+    constructor(resource: FhirDomainResource, fe?: CdeForm) {
+        this.crossReference = fe;
+        this.resource = resource;
+        this.resourceType =  resource.resourceType;
+    }
 
     static addNode(parent: ResourceTree, resource?: FhirDomainResource, fe?: FormElement|CdeForm, resourceType?: string): ResourceTree {
         let node: ResourceTree = {children: [], crossReference: fe};
@@ -70,7 +76,7 @@ export class ResourceTree {
         switch (node.resource.resourceType) {
             case 'Observation':
                 if (parent.resource && parent.resource.resourceType && parent.resource.id) {
-                    node.resource.context = getRef(parent.resource);
+                    node.resource.context = toRef(parent.resource);
                 }
                 break;
             default:
