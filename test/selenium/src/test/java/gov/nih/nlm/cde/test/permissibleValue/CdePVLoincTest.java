@@ -1,10 +1,7 @@
 package gov.nih.nlm.cde.test.permissibleValue;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import static com.jayway.restassured.RestAssured.given;
 
 public class CdePVLoincTest extends NlmCdeBaseTest {
     String[] urls = new String[]{
