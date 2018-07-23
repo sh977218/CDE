@@ -24,6 +24,7 @@ exports.byId = (req, res) => {
             let cde = dataElement.toObject();
             return res.send(js2xml("dataElement", exportShared.stripBsonIds(cde)));
         }
+        if (!req.user) hideProprietaryCodes(dataElement);
         res.send(dataElement);
         mongo_cde.inCdeView(dataElement);
         mongo_data.addCdeToViewHistory(dataElement, req.user);
@@ -33,7 +34,7 @@ exports.byId = (req, res) => {
 exports.priorDataElements = (req, res) => {
     let id = req.params.id;
     if (!id) return res.status(400).send();
-    mongo_cde.byId(id, handleError ({req, res}, dataElement => {
+    mongo_cde.byId(id, handleError({req, res}, dataElement => {
         if (!dataElement) return res.status(404).send();
         let history = dataElement.history.concat([dataElement._id]).reverse();
         mongo_cde.DataElement.find({}, {
@@ -53,7 +54,7 @@ exports.priorDataElements = (req, res) => {
 exports.byTinyId = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_cde.byTinyId(tinyId, handleError ({req, res}, dataElement => {
+    mongo_cde.byTinyId(tinyId, handleError({req, res}, dataElement => {
         if (!dataElement) return res.status(404).send();
         if (!req.user) hideProprietaryCodes(dataElement);
         if (req.query.type === 'xml') {
@@ -63,6 +64,7 @@ exports.byTinyId = (req, res) => {
             let cde = dataElement.toObject();
             return res.send(js2xml("dataElement", exportShared.stripBsonIds(cde)));
         }
+        if (!req.user) hideProprietaryCodes(dataElement);
         res.send(dataElement);
         mongo_cde.inCdeView(dataElement);
         mongo_data.addCdeToViewHistory(dataElement, req.user);
@@ -73,8 +75,9 @@ exports.byTinyIdVersion = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     let version = req.params.version;
-    mongo_cde.byTinyIdVersion(tinyId, version, handleError ({req, res}, dataElement => {
+    mongo_cde.byTinyIdVersion(tinyId, version, handleError({req, res}, dataElement => {
         if (!dataElement) return res.status(404).send();
+        if (!req.user) hideProprietaryCodes(dataElement);
         res.send(dataElement);
     }));
 };
@@ -85,6 +88,7 @@ exports.byTinyIdAndVersion = (req, res) => {
     let version = req.params.version;
     mongo_cde.byTinyIdAndVersion(tinyId, version, handleError({req, res}, dataElement => {
         if (!dataElement) return res.status(404).send();
+        if (!req.user) hideProprietaryCodes(dataElement);
         res.send(dataElement);
     }));
 };
@@ -92,12 +96,18 @@ exports.byTinyIdAndVersion = (req, res) => {
 exports.draftDataElement = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_cde.draftDataElement(tinyId, handleError({req, res}, dataElement => res.send(dataElement)));
+    mongo_cde.draftDataElement(tinyId, handleError({req, res}, dataElement => {
+        if (!req.user) hideProprietaryCodes(dataElement);
+        res.send(dataElement)
+    }));
 };
 exports.draftDataElementById = (req, res) => {
     let id = req.params.id;
     if (!id) return res.status(400).send();
-    mongo_cde.draftDataElementById(id, handleError({req, res}, dataElement => res.send(dataElement)));
+    mongo_cde.draftDataElementById(id, handleError({req, res}, dataElement => {
+        if (!req.user) hideProprietaryCodes(dataElement);
+        res.send(dataElement)
+    }));
 };
 
 exports.saveDraftDataElement = (req, res) => {
@@ -122,7 +132,12 @@ exports.byTinyIdList = (req, res) => {
     if (!tinyIdList) return res.status(400).send();
     tinyIdList = tinyIdList.split(",");
     mongo_cde.byTinyIdList(tinyIdList, handleError({req, res}, dataElements => {
-        res.send(dataElements.map(mongo_data.formatElt));
+        let result = dataElements.map(elt => {
+            let r = mongo_data.formatElt(elt);
+            if (!req.user) hideProprietaryCodes(r);
+            return r;
+        });
+        res.send(result);
     }));
 };
 
