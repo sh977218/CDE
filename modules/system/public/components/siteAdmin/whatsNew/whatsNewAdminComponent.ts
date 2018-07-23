@@ -5,8 +5,7 @@ import { AlertService } from '_app/alert.service';
 
 @Component({
     selector: 'cde-whats-new-admin',
-    templateUrl: './whatsNewAdmin.component.html',
-    styles: []
+    templateUrl: './whatsNewAdmin.component.html'
 })
 export class WhatsNewAdminComponent {
 
@@ -15,13 +14,13 @@ export class WhatsNewAdminComponent {
     constructor(private http: HttpClient,
                 private alertSvc: AlertService) {
         this.http.get<Article>("/server/article/whatsNew").subscribe(article => {
-            if (article) this.article = article;
-            else this.article = {key: "whatsNew", body: ""}
+            this.article = article ? article : {key: "whatsNew", body: ""};
         });
     }
 
-    save () {
-        this.http.post("/server/article/whatsNew", this.article).subscribe(() => this.alertSvc.addAlert("info", "Saved"));
+    save() {
+        this.http.post("/server/article/whatsNew", this.article).subscribe(() =>
+            this.alertSvc.addAlert("info", "Saved"));
     }
 
 }
