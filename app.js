@@ -256,7 +256,7 @@ try {
     app.use('/server/user', userModule);
 
     let notificationModule = require("./server/notification/notificationRoutes").module({
-        errorLog: [authorization.isSiteAdminMiddleware()]
+        errorLog: [authorization.isSiteAdminMiddleware]
     });
     app.use('/server/notification', authorization.loggedInMiddleware, notificationModule);
 
