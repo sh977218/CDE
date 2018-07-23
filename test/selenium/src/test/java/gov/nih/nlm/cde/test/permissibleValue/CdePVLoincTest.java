@@ -19,8 +19,8 @@ public class CdePVLoincTest extends NlmCdeBaseTest {
     public void cdeNotLoginCannotSeeLoinc() {
         mustBeLoggedOut();
         for (String url : urls) {
-            String response = given().when().get(baseUrl + url).asString();
-            Assert.assertFalse(response.contains("LA6270-8"));
+            driver.get(baseUrl + url);
+            textNotPresent("LA6270-8");
         }
     }
 
@@ -28,8 +28,8 @@ public class CdePVLoincTest extends NlmCdeBaseTest {
     public void cdeLoginCanSeeLoinc() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         for (String url : urls) {
-            String response = given().when().get(baseUrl + url).asString();
-            Assert.assertTrue(response.contains("LA6270-8"));
+            driver.get(baseUrl + url);
+            textPresent("LA6270-8");
         }
     }
 }
