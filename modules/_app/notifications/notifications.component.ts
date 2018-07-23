@@ -39,14 +39,11 @@ export class NotificationsComponent {
         }, (window as any).versionCheckIntervalInSeconds * 1000);
     }
 
-    getNotifications(cb?) {
-        let serverObs = this.http.get<any>("/server/notification/serverError");
-        let clientObs = this.http.get<any>("/server/notification/clientError");
+    getNotifications() {
         this.http.get('/server/notification/').subscribe((result: any) => {
             this.numberServerError = result.serverErrorCount;
             this.numberClientError = result.clientErrorCount;
             this.numberError = this.numberServerError + this.numberClientError;
-            if (cb) cb();
         }, err => this.alert.addAlert('danger', err));
     }
 

@@ -23,6 +23,7 @@ exports.module = function (roleConfig) {
     router.post('/serverErrors', (req, res) => {
         req.user.notificationDate.serverLogDate = new Date();
         userDb.byId(req.user._id, handleError({req, res}, user => {
+            if (!user) return res.status(404).send("User not found.");
             if (user) user.notificationDate = req.user.notificationDate;
             user.save();
         }));
@@ -32,6 +33,7 @@ exports.module = function (roleConfig) {
     router.post('/clientErrors', (req, res) => {
         req.user.notificationDate.clientLogDate = new Date();
         userDb.byId(req.user._id, handleError({req, res}, user => {
+            if (!user) return res.status(404).send("User not found.");
             if (user) user.notificationDate = req.user.notificationDate;
             user.save();
         }));
