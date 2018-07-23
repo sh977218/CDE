@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test.permissibleValue;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import org.junit.Assert;
 import org.testng.annotations.Test;
 
 public class CdePVLoincTest extends NlmCdeBaseTest {
@@ -17,7 +18,8 @@ public class CdePVLoincTest extends NlmCdeBaseTest {
         mustBeLoggedOut();
         for (String url : urls) {
             driver.get(baseUrl + url);
-            textNotPresent("LA6270-8");
+            String source = driver.getPageSource();
+            Assert.assertFalse(source.contains("LA6270-8"));
         }
     }
 
@@ -26,7 +28,8 @@ public class CdePVLoincTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         for (String url : urls) {
             driver.get(baseUrl + url);
-            textPresent("LA6270-8");
+            String source = driver.getPageSource();
+            Assert.assertTrue(source.contains("LA6270-8"));
         }
     }
 }
