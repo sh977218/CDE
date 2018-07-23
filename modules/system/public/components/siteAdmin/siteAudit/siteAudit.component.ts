@@ -23,13 +23,15 @@ export class SiteAuditComponent implements OnInit, AfterViewChecked {
         if (this.route.snapshot.queryParams['triggerClientError']) {
             throw new Error("An exception has been thrown");
         }
+        setTimeout(() => {
+            if (this.route.snapshot.queryParams['tab']) {
+                let tab = this.route.snapshot.queryParams['tab'];
+                this.tabs.select(tab);
+            }
+        }, 0);
     }
 
     ngAfterViewChecked(): void {
-        if (this.route.snapshot.queryParams['tab']) {
-            let tab = this.route.snapshot.queryParams['tab'];
-            this.tabs.select(tab);
-        }
     }
 
 }
