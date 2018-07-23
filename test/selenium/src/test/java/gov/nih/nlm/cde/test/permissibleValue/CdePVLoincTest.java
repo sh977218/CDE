@@ -8,8 +8,7 @@ public class CdePVLoincTest extends NlmCdeBaseTest {
     String[] urls = new String[]{
             "/de/mkmhYJOnk7l",
             "/de/mkmhYJOnk7l/version/",
-            "/deById/559d7fae9c174b8015072624/",
-            "/deById/559d7fae9c174b8015072624/priorDataElements/",
+            "/deById/5b55fc19c805703830125b6a/",
             "/deList/mkmhYJOnk7l"
     };
 
@@ -19,7 +18,11 @@ public class CdePVLoincTest extends NlmCdeBaseTest {
         for (String url : urls) {
             driver.get(baseUrl + url);
             String source = driver.getPageSource();
-            Assert.assertFalse(source.contains("LA6270-8"));
+            boolean isContains = source.contains("LA6270-8");
+            Assert.assertFalse(url + " failed.\n" +
+                            "<source>" + source + "</source>\n" +
+                            "<isContains>" + isContains + "</isContains>\n"
+                    , isContains);
         }
     }
 
@@ -29,7 +32,11 @@ public class CdePVLoincTest extends NlmCdeBaseTest {
         for (String url : urls) {
             driver.get(baseUrl + url);
             String source = driver.getPageSource();
-            Assert.assertTrue(source.contains("LA6270-8"));
+            boolean isContains = source.contains("LA6270-8");
+            Assert.assertTrue(url + " failed.\n" +
+                            "<source>" + source + "</source>\n" +
+                            "<isContains>" + isContains + "</isContains>\n"
+                    , isContains);
         }
     }
 }
