@@ -1031,14 +1031,14 @@ public class NlmCdeBaseTest {
             hangon(1);
             try {
                 wait.until(ExpectedConditions.textToBePresentInElementLocated(
-                        By.xpath("//mat-panel-title[normalize-space( text() )='" + cdeName + "']"), cdeName));
+                        By.cssSelector("ngb-accordion"), cdeName));
                 break;
             } catch (Exception e) {
                 clickElement(By.linkText("Next"));
             }
 
         }
-        clickElement(By.xpath("//mat-panel-title[normalize-space( text() )='" + cdeName + "']"));
+        clickElement(By.xpath("//ngb-accordion//a[contains (., '" + cdeName + "')]"));
     }
 
     protected void setVisibleStatus(String id) {
