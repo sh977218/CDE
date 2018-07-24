@@ -4,28 +4,26 @@ const dbLogger = require('./dbLogger');
 const handleError = require('./dbLogger').handleError;
 const mongo_data = require('../system/mongo-data');
 const pushNotification = require('../system/pushNotification');
-const userDb = require('../user/userDb');
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
-    router.post('/httpLogs', (req, res) => {
+    router.post('/httpLogs', roleConfig.siteAdminLog, (req, res) => {
         dbLogger.httpLogs(req.body, handleError({req, res}, result => res.send(result)));
     });
 
-    router.post('/appLogs', (req, res) => {
+    router.post('/appLogs', roleConfig.siteAdminLog, (req, res) => {
         dbLogger.appLogs(req.body, handleError({req, res}, result => res.send(result)));
     });
 
-    router.get('/dailyUsageReportLogs', (req, res) => {
+    router.get('/dailyUsageReportLogs', roleConfig.siteAdminLog, (req, res) => {
         dbLogger.usageByDay(handleError({req, res}, result => res.send(result)));
     });
 
-    router.post('/serverErrors', (req, res) => {
-        req.user.notificationDate.serverLogDate = new Date();
+    router.post('/serverErrors', roleConfig.siteAdminLog, (req, res) => {
         dbLogger.getServerErrors(req.body, handleError({req, res}, result => res.send(result)));
     });
 
-    router.post('/clientErrors', (req, res) => {
+    router.post('/clientErrors', roleConfig.siteAdminLog, (req, res) => {
         dbLogger.getClientErrors(req.body, handleError({req, res}, result => {
             res.send(result.map(r => {
                 let l = r.toObject();
