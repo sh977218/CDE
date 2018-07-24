@@ -643,8 +643,19 @@ export class FhirAppComponent {
                                 break;
                             case 'usedReference':
                                 let refs = procedure[properties[match]];
-                                if (refs.length) {
-                                    q.question.answer = refs[0].reference;
+                                if (Array.isArray(refs) && refs.length) {
+                                    q.question.answer = refs.map(r => r.reference).map(r => {
+                                        if (Array.isArray(procedureMapping.usedReferencesMaps)) {
+                                            let i = procedureMapping.usedReferencesMaps.indexOf(r);
+                                            if (i > -1 && Array.isArray(q.question.answers)) {
+                                                let pv = q.question.answers[i];
+                                                if (pv && pv.permissibleValue) {
+                                                    return pv.permissibleValue;
+                                                }
+                                            }
+                                        }
+                                        return r;
+                                    });
                                 }
                         }
                         properties.splice(match, 1);
@@ -962,7 +973,7 @@ export class FhirAppComponent {
                     }
                     switch (self.parentAttribute) {
                         // date question not implemented
-                        case 'bodysite':
+                        case 'bodySite':
                             if (!Array.isArray(parent.resource.bodySite)) parent.resource.bodySite = [];
                             if (q.question.cde.tinyId === procedureMapping.bodySiteQuestionID) {
                                 if (FhirAppComponent.questionAnswered(q.question.answer)) {
@@ -1016,11 +1027,24 @@ export class FhirAppComponent {
                         case 'usedReference':
                             if (q.question.cde.tinyId === procedureMapping.usedReferences) {
                                 if (FhirAppComponent.questionAnswered(q.question.answer) && Array.isArray(q.question.answer)) {
-                                    parent.resource.usedReference = q.question.answer.map(newReference);
+                                    parent.resource.usedReference = q.question.answer.map(a => {
+                                        if (Array.isArray(procedureMapping.usedReferencesMaps)) {
+                                            let matches = q.question.answers.filter(pv => pv.permissibleValue === a);
+                                            if (matches.length) {
+                                                let staticValue = procedureMapping.usedReferencesMaps[q.question.answers.indexOf(matches[0])];
+                                                if (staticValue) {
+                                                    return staticValue;
+                                                }
+                                            }
+                                            return a;
+                                        }
+                                    }).map(newReference);
                                     ResourceTree.setResourceNonFhir(self, parent.resource.usedReference, 'usedReference');
                                 }
                             }
-                            if (parent.resource.usedReference.length === 0) parent.resource.usedReference = undefined;
+                            if (Array.isArray(parent.resource.usedReference) && parent.resource.usedReference.length === 0) {
+                                parent.resource.usedReference = undefined;
+                            }
                             break;
                         default:
                             throw new Error('unsupported procedure field');
