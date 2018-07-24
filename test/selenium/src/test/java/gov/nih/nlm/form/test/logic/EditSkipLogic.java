@@ -51,7 +51,7 @@ public class EditSkipLogic extends BaseFormTest {
 
         editSkipLogic(inputXpath, "\"To what degree did your fatigue interfere with your physical functioning?\"", 2, 2,
                 true, "Unexpected number of tokens in expression 9");
-        editSkipLogic(inputXpath, FormCdeExport "=", 6, 1, true, "Unexpected number of tokens in expression 10");
+        editSkipLogic(inputXpath, "=", 6, 1, true, "Unexpected number of tokens in expression 10");
         editSkipLogic(inputXpath, "\"3\" - Somewhat", 5, 3, false, "Unexpected number of tokens in expression 10");
 
         saveEditQuestionById("question_3-2");
