@@ -1,7 +1,7 @@
 import {
     FhirAddress, FhirBase64Binary, FhirCode,
     FhirCodeableConcept, FhirCoding,
-    FhirContactPoint, FhirDateTime, FhirDuration, FhirEffective, FhirExtension,
+    FhirContactPoint, FhirDateTime, FhirDuration, FhirEffective, FhirElement, FhirExtension,
     FhirHumanName,
     FhirIdentifier, FhirInstant, FhirMeta, FhirNarrative, FhirPeriod, FhirQuantity, FhirRange, FhirRatio,
     FhirReference, FhirSampledData, FhirTime, FhirUri, FhirValue
@@ -23,7 +23,14 @@ export class FhirDomainResource extends FhirResource {
 }
 
 export type FhirAccount = any;
-export type FhirAnnotation = any;
+
+export class FhirAnnotation extends FhirElement {
+    authorReference?: FhirReference<FhirPractitioner|FhirPatient|FhirRelatedPerson>;
+    authorString?: string;
+    time?: FhirDateTime;
+    text: string;
+}
+
 export type FhirAppointment = any;
 
 export class FhirBundle {
@@ -223,11 +230,11 @@ export class FhirOrganization extends FhirDomainResource {
 export type FhirPatient = any;
 export type FhirPractitioner = any;
 
-export class FhirProcedure {
+export class FhirProcedure extends FhirDomainResource {
     basedOn?: FhirReference<any>[];
     bodySite?: FhirCodeableConcept[];
-    category?: FhirCodeableConcept; // ?????????????
-    code: FhirCodeableConcept; // ??????????
+    category?: FhirCodeableConcept;
+    code: FhirCodeableConcept;
     complication?: FhirCodeableConcept[];
     complicationDetail?: FhirReference<FhirCondition>[];
     context?: FhirReference<FhirEncounter|FhirEpisodeOfCare>;

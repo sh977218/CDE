@@ -1,14 +1,17 @@
-import { CdeForm, FormElement } from 'shared/form/form.model';
-import { isMappedTo } from 'shared/form/formAndFe';
-import { FhirDomainResource, FhirEncounter, FhirObservation } from 'shared/mapping/fhir/fhirResource.model';
+import { CdeForm } from 'shared/form/form.model';
+import {
+    FhirDomainResource, FhirEncounter, FhirObservation, FhirProcedure
+} from 'shared/mapping/fhir/fhirResource.model';
 import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
 import { newEncounter } from 'shared/mapping/fhir/resource/fhirEncounter';
 import { newObservation } from 'shared/mapping/fhir/resource/fhirObservation';
+import { newProcedure } from 'shared/mapping/fhir/resource/fhirProcedure';
 import { deepCopy } from 'shared/system/util';
 
 export const types = new Map<string, {self: Object, child: string | undefined, create: Function | null}>();
 types.set('Encounter', {self: FhirEncounter, child: 'Observation', create: newEncounter});
 types.set('Observation', {self: FhirObservation, child: undefined, create: newObservation});
+types.set('Procedure', {self: FhirProcedure, child: undefined, create: newProcedure});
 
 export class ResourceTree {
     children: ResourceTree[] = [];
@@ -22,30 +25,6 @@ export class ResourceTree {
         this.crossReference = fe;
         this.resource = resource;
         this.resourceType =  resource.resourceType;
-    }
-
-    static addNode(parent: ResourceTree, resource?: FhirDomainResource, fe?: FormElement|CdeForm, resourceType?: string): ResourceTree {
-        let node: ResourceTree = {children: [], crossReference: fe};
-        if (resource) {
-            ResourceTree.setResource(node, resource);
-        } else if (fe && isMappedTo(fe, 'fhir') && fe.mapTo.fhir.resourceType) {
-            node.resourceType = fe.mapTo.fhir.resourceType;
-        } else if (fe && fe.elementType === 'question') {
-            if (parent.resourceType === 'Observation') {
-                node.parentAttribute = 'component';
-            } else {
-                node.resourceType = types.get(parent.resourceType).child;
-            }
-        } else if (resourceType) {
-            node.resourceType = resourceType;
-        }
-
-        if (node.resourceType || node.parentAttribute) {
-            parent.children.push(node);
-            return node;
-        } else {
-            return parent;
-        }
     }
 
     static recurse(node: ResourceTree, parent: ResourceTree, action: Function) {
@@ -75,6 +54,7 @@ export class ResourceTree {
         }
         switch (node.resource.resourceType) {
             case 'Observation':
+            case 'Procedure':
                 if (parent.resource && parent.resource.resourceType && parent.resource.id) {
                     node.resource.context = toRef(parent.resource);
                 }

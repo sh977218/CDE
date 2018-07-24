@@ -17,7 +17,6 @@ import {
 } from 'shared/de/dataElement.model';
 import { iterateFeSync } from 'shared/form/formShared';
 import { deepCopy } from 'shared/system/util';
-import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 
 
 export class CdeForm extends Elt implements FormElementsContainer {
@@ -62,6 +61,10 @@ export class CdeForm extends Elt implements FormElementsContainer {
 
     getEltUrl() {
         return '/formView?tinyId=' + this.tinyId;
+    }
+
+    static isForm(f: CdeForm|FormInForm): f is CdeForm {
+        return f.hasOwnProperty('tinyId');
     }
 
     static validate(elt: CdeForm) {

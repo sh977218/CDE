@@ -2,7 +2,7 @@ import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
 
 export function newProcedure(encounter = null, patient = null) {
     return {
-        resourceType: 'Observation',
+        resourceType: 'Procedure',
         bodySite: undefined,
         category: undefined,
         code: undefined,

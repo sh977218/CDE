@@ -4,6 +4,7 @@ export const externalCodeSystems = [
     {id: 'Assessment Center', uri: 'http://www.neuroqol.org/ContactUs/Pages/default.aspx'},
     {id: 'LOINC', uri: 'http://loinc.org'},
     {id: 'NLM', uri: 'https://cde.nlm.nih.gov'},
+    {id: 'SNOMED', uri: 'http://snomed.info/sct'},
     {id: 'UCUM', uri: 'http://unitsofmeasure.org'}
 ];
 
@@ -11,6 +12,7 @@ export const externalCodeSystemsMap = {
     'Assessment Center': 'http://www.neuroqol.org/ContactUs/Pages/default.aspx',
     'LOINC': 'http://loinc.org',
     'NLM': 'https://cde.nlm.nih.gov',
+    'SNOMED': 'http://snomed.info/sct',
     'UCUM': 'http://unitsofmeasure.org',
 };
 

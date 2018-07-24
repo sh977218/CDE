@@ -16,7 +16,7 @@ export class WhatsNewAdminComponent {
                 private alertSvc: AlertService) {
         this.http.get<Article>("/server/article/whatsNew").subscribe(article => {
             if (article) this.article = article;
-            else this.article = {key: "whatsNew", body: ""}
+            else this.article = {key: "whatsNew", body: ""};
         });
     }
 

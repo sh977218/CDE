@@ -26,6 +26,7 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 import { UcumService } from 'form/public/ucum.service';
 import { FormViewComponent } from 'form/public/components/formView.component';
 import { DisplayProfileComponent } from 'form/public/components/displayProfile/displayProfile.component';
+import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { FormClassificationComponent } from 'form/public/components/formClassification/formClassification.component';
 import { FormGeneralDetailsComponent } from 'form/public/components/formGeneralDetails/formGeneralDetails.component';
 import { FormTermMappingComponent } from 'form/public/components/formTermMapping/formTermMapping.component';
@@ -38,7 +39,6 @@ import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selec
 import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { WidgetModule } from 'widget/widget.module';
-import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},

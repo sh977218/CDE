@@ -1,7 +1,8 @@
+import { getTextFromArray as codingGetTextFromArray } from 'shared/mapping/fhir/datatype/fhirCoding';
 import { reduceOptionalArray } from 'shared/system/util';
 
 export function getText(concept) {
-    return concept && concept.text || Array.isArray(concept.coding) && concept.coding.some() || '';
+    return concept && (concept.text || codingGetTextFromArray(concept.coding)) || '';
 }
 
 export function getTextFromArray(conceptArray) {
