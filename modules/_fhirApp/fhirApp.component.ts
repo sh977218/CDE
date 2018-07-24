@@ -644,7 +644,7 @@ export class FhirAppComponent {
                             case 'usedReference':
                                 let refs = procedure[properties[match]];
                                 if (Array.isArray(refs) && refs.length) {
-                                    q.question.answer = refs.map(r => r.reference).map(r => {
+                                    let answers = refs.map(r => r.reference).map(r => {
                                         if (Array.isArray(procedureMapping.usedReferencesMaps)) {
                                             let i = procedureMapping.usedReferencesMaps.indexOf(r);
                                             if (i > -1 && Array.isArray(q.question.answers)) {
@@ -656,6 +656,8 @@ export class FhirAppComponent {
                                         }
                                         return r;
                                     });
+                                    q.question.answer = !q.question.multiselect && Array.isArray(answers)
+                                        ? answers[0] : answers;
                                 }
                         }
                         properties.splice(match, 1);
@@ -1027,7 +1029,8 @@ export class FhirAppComponent {
                         case 'usedReference':
                             if (q.question.cde.tinyId === procedureMapping.usedReferences) {
                                 if (FhirAppComponent.questionAnswered(q.question.answer) && Array.isArray(q.question.answer)) {
-                                    parent.resource.usedReference = q.question.answer.map(a => {
+                                    let answers = q.question.multiselect ? q.question.answer : [q.question.answer];
+                                    parent.resource.usedReference = answers.map(a => {
                                         if (Array.isArray(procedureMapping.usedReferencesMaps)) {
                                             let matches = q.question.answers.filter(pv => pv.permissibleValue === a);
                                             if (matches.length) {
