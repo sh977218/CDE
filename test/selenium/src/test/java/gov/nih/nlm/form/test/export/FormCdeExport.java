@@ -17,11 +17,8 @@ public class FormCdeExport extends NlmCdeBaseTest {
     public void formCdeExport() {
         mustBeLoggedInAs(test_username, password);
         goToFormByName("Form In Form Num Questions");
-        hangon(2);
         clickElement(By.id("export"));
-        hangon(2);
         clickElement(By.id("formCdesExport"));
-        hangon(2);
         checkAlert("Export downloaded");
 
         String[] expected = {
