@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { AlertService } from '_app/alert.service';
 
 type ServerErrorRecord = any;
 
@@ -19,7 +20,8 @@ export class ServerErrorsComponent implements OnInit {
         this.gotoPage();
     }
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient,
+                private alert: AlertService) {
     }
 
     addExcludeFilter(toAdd) {
@@ -30,11 +32,15 @@ export class ServerErrorsComponent implements OnInit {
     }
 
     gotoPage() {
-        this.http.post<ServerErrorRecord[]>('/server/log/serverErrors', {
-            skip: (this.currentPage - 1) * 50,
-            limit: 50
-        }).subscribe(response => {
-            this.records = response;
-        });
+        this.http.post('/server/user/update', {serverLogDate: new Date()})
+            .subscribe(() => {
+                this.http.post<ServerErrorRecord[]>('/server/log/serverErrors', {
+                    skip: (this.currentPage - 1) * 50,
+                    limit: 50
+                }).subscribe(response => {
+                    this.records = response;
+                }, err => this.alert.httpErrorMessageAlert(err));
+            }, err => this.alert.httpErrorMessageAlert(err));
+
     }
 }

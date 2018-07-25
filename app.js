@@ -251,7 +251,8 @@ try {
 
     let userModule = require("./server/user/userRoutes").module({
         search: [authorization.isOrgAdminMiddleware],
-        manage: [authorization.isOrgAuthorityMiddleware]
+        manage: [authorization.isOrgAuthorityMiddleware],
+        notificationDate:[authorization.isSiteAdminMiddleware]
     });
     app.use('/server/user', userModule);
 
