@@ -202,7 +202,9 @@ export class ExportService {
         this.alertService.addAlert("", 'Fetching cdes. Please wait...');
         let elts = [];
         for (let qCde of getFormCdes(form)) {
-            const cde = await this.http.get<DataElement>('/de/' + qCde.tinyId).toPromise().catch(_noop);
+            const cde = await this.http.get<DataElement>('/de/' + qCde.tinyId).toPromise().catch(e => {
+                console.log("Error formCdeExport: " + e);
+            });
             elts.push(cde);
         }
 
