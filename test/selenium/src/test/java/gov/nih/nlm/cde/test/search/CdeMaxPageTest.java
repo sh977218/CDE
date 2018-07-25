@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class CdeMaxPageTest extends NlmCdeBaseTest {
     @Test
-    public void cdeGoToLastPage() {
+    public void cdeMaxPage() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         clickElement(By.id("search_by_classification_NHLBI"));
