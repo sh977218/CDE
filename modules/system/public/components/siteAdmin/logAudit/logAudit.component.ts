@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
     selector: 'cde-log-audit',
     templateUrl: './logAudit.component.html',
     styles: [`
-        :host >>> .fa.fa-fw.fa-sort{
+        .fa.fa-fw.fa-sort{
             color:lightgrey;
         }
     `]

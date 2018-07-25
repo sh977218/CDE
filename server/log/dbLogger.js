@@ -165,7 +165,7 @@ exports.handleError = function (options, cb) {
 };
 
 // @TODO: Combine with logError() which publishes notifications
-exports.respondError = function(err, options) {
+exports.respondError = function (err, options) {
     if (!options) options = {};
     if (options.res) {
         let message = options.publicMessage || "Generic Server Failure. Please submit an issue.";
@@ -199,7 +199,7 @@ exports.httpLogs = function (body, callback) {
     if (body.itemsPerPage) itemsPerPage = Number.parseInt(body.itemsPerPage);
     let skip = (currentPage - 1) * itemsPerPage;
     let query = {};
-    if (body.ip) query = {ip: body.ipAddress};
+    if (body.ipAddress) query = {remoteAddr: body.ipAddress};
     let modal = LogModel.find(query);
     if (body.fromDate) modal.where("date").gte(moment(body.fromDate));
     if (body.toDate) modal.where("date").lte(moment(body.toDate));
