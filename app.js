@@ -236,7 +236,7 @@ try {
 
     let logModule = require("./server/log/logRoutes").module({
         feedbackLog: [authorization.isOrgAuthorityMiddleware],
-        siteAdminLog: [authorization.isSiteAdminMiddleware]
+        superLog: [authorization.isSiteAdminMiddleware]
     });
     app.use('/server/log', logModule);
 
