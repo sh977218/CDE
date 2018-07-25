@@ -5,7 +5,7 @@ const authorizationShared = require('@std/esm')(module)('../../shared/system/aut
 exports.module = function (roleConfig) {
     const router = require('express').Router();
 
-    router.get('/', roleConfig.errorLog, (req, res) => {
+    router.get('/', (req, res) => {
         if (!req.user || !authorizationShared.isSiteAdmin(req.user)) {
             return res.send({serverErrorCount: 0, clientErrorCount: 0});
         }

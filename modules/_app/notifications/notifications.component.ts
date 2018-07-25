@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { isSiteAdmin } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-notifications',
@@ -35,7 +35,7 @@ export class NotificationsComponent {
             } catch (e) {
                 this.alert.addAlert('danger', e);
             }
-            if (this.userService.user) this.getNotifications();
+            if (isSiteAdmin(this.userService.user)) this.getNotifications();
         }, (window as any).versionCheckIntervalInSeconds * 1000);
     }
 
