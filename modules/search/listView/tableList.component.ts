@@ -61,7 +61,7 @@ export class TableListComponent implements OnInit {
         if (tableSetup.registrationStatus) this.headings.push('Registration Status');
         if (tableSetup.administrativeStatus) this.headings.push('Admin Status');
         if (tableSetup.ids) {
-            if (tableSetup.ids.length > 0) tableSetup.ids.forEach(i => this.headings.push(i));
+            if (tableSetup.identifiers.length > 0) tableSetup.identifiers.forEach(i => this.headings.push(i));
             else this.headings.push('Identifiers');
         }
         if (tableSetup.source) this.headings.push('Source');
@@ -140,8 +140,8 @@ export class TableListComponent implements OnInit {
                 });
             }
             if (tableSetup.ids) {
-                if (tableSetup.ids.length > 0) {
-                    tableSetup.ids.forEach(i => {
+                if (tableSetup.identifiers.length > 0) {
+                    tableSetup.identifiers.forEach(i => {
                         let value = '';
                         e.ids.forEach(id => {
                             if (id.source === i) {
@@ -213,8 +213,8 @@ export class TableListComponent implements OnInit {
         if (tableSetup.registrationStatus) this.headings.push('Registration Status');
         if (tableSetup.administrativeStatus) this.headings.push('Admin Status');
         if (tableSetup.ids) {
-            if (tableSetup.ids.length > 0) {
-                tableSetup.ids.forEach(i => {
+            if (tableSetup.identifiers.length > 0) {
+                tableSetup.identifiers.forEach(i => {
                     this.headings.push(i);
                 });
             } else this.headings.push('Identifiers');
@@ -263,8 +263,8 @@ export class TableListComponent implements OnInit {
                 });
             }
             if (tableSetup.ids) {
-                if (tableSetup.ids.length > 0) {
-                    tableSetup.ids.forEach(i => {
+                if (tableSetup.identifiers.length > 0) {
+                    tableSetup.identifiers.forEach(i => {
                         let value = '';
                         e.ids.forEach(id => {
                             if (id.source === i) {

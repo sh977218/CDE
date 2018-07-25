@@ -424,6 +424,7 @@ export class User {
         tableViewFields: {
             administrativeStatus: boolean,
             ids: boolean,
+            identifiers: string[],
             name: boolean,
             naming: boolean,
             nbOfPVs: boolean,
