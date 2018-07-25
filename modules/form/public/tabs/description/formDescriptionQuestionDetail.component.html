@@ -321,17 +321,54 @@
             <ng-container *ngIf="question.question.datatype==='Value List'">
                 <dt class="col-2">CDE Permissible Values:</dt>
                 <dd class="col-10 cdePVs">
-                    <div *ngFor="let cdePv of question.question.cde.permissibleValues;let i = index;">
-                        <mat-form-field>
-                            <input matInput placeholder="Permissible Value" [(ngModel)]="cdePv.permissibleValue">
-                        </mat-form-field>
-                    </div>
-                    <div>
-                        <mat-form-field class="newCdePv">
-                            <input matInput placeholder="Permissible Value" [(ngModel)]="newCdePv.permissibleValue">
-                        </mat-form-field>
-                        <i class="fa fa-plus hand-cursor" (click)="addNewCdePv(newCdePv);"></i>
-                    </div>
+                    <table class="table table-border table-responsive">
+                        <thead>
+                        <tr>
+                            <th>Value</th>
+                            <th>Code Name</th>
+                            <th>Code</th>
+                            <th>Code System</th>
+                            <th>Code Description</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let cdePv of question.question.cde.permissibleValues;let i = index;">
+                            <td>
+                                <cde-inline-edit [(model)]="cdePv.permissibleValue" [isAllowed]="true"
+                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                            </td>
+                            <td>
+                                <cde-inline-edit [(model)]="cdePv.valueMeaningName" [isAllowed]="true"
+                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                            <td>
+                                <cde-inline-edit [(model)]="cdePv.valueMeaningCode" [isAllowed]="true"
+                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                            </td>
+                            <td>
+                                <cde-inline-edit [(model)]="cdePv.codeSystemName" [isAllowed]="true"
+                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                            </td>
+                            <td>
+                                <cde-inline-edit [(model)]="cdePv.valueMeaningDefinition" [isAllowed]="true"
+                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                            </td>
+                            <td>
+                                <i class="fa fa-trash hand-cursor" (click)="removeCdePv(i);"></i>
+                            </td>
+                        </tr>
+                        <tr class="newCdePv">
+                            <td><input [(ngModel)]="newCdePv.permissibleValue" class="w-100 permissibleValue"/></td>
+                            <td><input [(ngModel)]="newCdePv.valueMeaningName" class="w-100 pvName"/></td>
+                            <td><input [(ngModel)]="newCdePv.valueMeaningCode" class="w-100 pvCode"/></td>
+                            <td><input [(ngModel)]="newCdePv.codeSystemName" class="w-100 pvCodeSystem"/></td>
+                            <td><input [(ngModel)]="newCdePv.valueMeaningDefinition" class="w-100 pvDefinition"/></td>
+                            <td>
+                                <i class="fa fa-plus hand-cursor" (click)="addNewCdePv(newCdePv);"></i>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </dd>
             </ng-container>
         </ng-container>
