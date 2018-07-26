@@ -1,15 +1,14 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatDialog } from '@angular/material';
 
-import { FormViewComponent } from 'form/public/components/formView.component';
 import { UcumService } from 'form/public/ucum.service';
+import { FormViewComponent } from 'form/public/components/formView.component';
+import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
-import { iterateFeSync } from 'shared/form/formShared';
+import { getMapToFhirResource } from 'shared/form/formAndFe';
+import { findQuestionByTinyId, getFormQuestionsReal, iterateFeSync } from 'shared/form/formShared';
 import { CodeAndSystem } from 'shared/models.model';
 import { BrowserService } from 'widget/browser.service';
-import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
-import { getFormQuestionsReal } from 'shared/form/formShared';
-import { MatDialog } from '@angular/material';
-import { findQuestionByTinyId } from 'shared/form/formShared';
 
 type DisplayProfileVM = {
     aliases: {
@@ -56,6 +55,7 @@ export class DisplayProfileComponent {
     BrowserService = BrowserService;
     private _elt: CdeForm;
     dPVMs: DisplayProfileVM[] = [];
+    getMapToFhirResource = getMapToFhirResource;
     uoms: {u: CodeAndSystem, a: string[]}[] = [];
     uomsDate: Date;
     uomsPromise: Promise<void>;

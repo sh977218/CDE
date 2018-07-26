@@ -61,7 +61,7 @@
                                   [(ngModel)]="dPVM.profile.metadata.device"
                                   (change)="onEltChange.emit()">Display Metadata Device</mat-checkbox>
                 </mat-card>
-                <mat-card *ngIf="elt.mapTo.fhir.resourceType === 'Procedure'">
+                <mat-card *ngIf="getMapToFhirResource(elt) === 'Procedure'">
                     <h4>Procedure Mapping</h4>
                     <mat-card-content>
                         <button mat-raised-button (click)="openProcedureMapping(dPVM)">Procedure Mapping</button>

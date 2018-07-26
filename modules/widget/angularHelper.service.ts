@@ -4,6 +4,9 @@ export class AngularHelperService {
     private constructor() {}
 
     static httpErrorMessage(err: any) {
+        if (!err) {
+            return '';
+        }
         if (err.error instanceof Error) { // client-side
             return err.error.message;
         } else if (typeof(err.error) === 'string') { // server-side

@@ -63,16 +63,7 @@ function addNode(parent: ResourceTree, resource?: FhirDomainResource, fe?: FormE
             if (parent.crossReference && parent.crossReference.displayProfiles.length
                 && parent.crossReference.displayProfiles[0].fhirProcedureMapping) {
                 let q = fe as FormQuestion;
-                let map = parent.crossReference.displayProfiles[0].fhirProcedureMapping;
-                let properties = ['bodySite', 'complication', 'status', 'usedReference'];
-                let questionIds = [map.bodySiteQuestionID, map.complications, map.statusQuestionID, map.usedReferences].filter((r, i) => {
-                    if (!r || r === 'static') {
-                        properties[i] = undefined;
-                        return false;
-                    }
-                    return true;
-                });
-                properties = properties.filter(p => !!p);
+                let [properties, questionIds] = getProcedureQuestions(parent.crossReference.displayProfiles[0].fhirProcedureMapping);
 
                 let match = questionIds.indexOf(q.question.cde.tinyId);
                 if (match > -1) {
@@ -92,6 +83,28 @@ function addNode(parent: ResourceTree, resource?: FhirDomainResource, fe?: FormE
     } else {
         return parent;
     }
+}
+
+function getProcedureQuestions(procedureMapping?: FhirProcedureMapping) {
+    if (!procedureMapping) {
+        return [[], []];
+    }
+    let properties = ['bodySite', 'complication', 'performedDateTime', 'status', 'usedReference'];
+    let questionIds = [
+        procedureMapping.bodySiteQuestionID,
+        procedureMapping.complications,
+        procedureMapping.performedDate,
+        procedureMapping.statusQuestionID,
+        procedureMapping.usedReferences
+    ].filter((r, i) => {
+        if (!r || r === 'static') {
+            properties[i] = undefined;
+            return false;
+        }
+        return true;
+    });
+    properties = properties.filter(p => !!p);
+    return [properties, questionIds];
 }
 
 function getDateString(resource: FhirDomainResource, periodName = '', dateTimeName = '', instanceName = ''): string {
@@ -610,20 +623,7 @@ export class FhirAppComponent {
             ));
             if (procedures.length) {
                 let procedure = procedures[0];
-                let properties = ['bodySite', 'complication', 'status', 'usedReference'];
-                let questionIds = [
-                    procedureMapping.bodySiteQuestionID,
-                    procedureMapping.complications,
-                    procedureMapping.statusQuestionID,
-                    procedureMapping.usedReferences
-                ].filter((r, i) => {
-                    if (!r || r === 'static') {
-                        properties[i] = undefined;
-                        return false;
-                    }
-                    return true;
-                });
-                properties = properties.filter(p => !!p);
+                let [properties, questionIds] = getProcedureQuestions(procedureMapping);
                 iterateFeSync(f, undefined, undefined, (q: FormQuestion) => {
                     let match = questionIds.indexOf(q.question.cde.tinyId);
                     if (match > -1) {
@@ -638,6 +638,7 @@ export class FhirAppComponent {
                                     }
                                 }
                                 break;
+                            case 'performedDateTime':
                             case 'status':
                                 q.question.answer = procedure[properties[match]];
                                 break;
@@ -823,7 +824,7 @@ export class FhirAppComponent {
 
         };
         const saveCb = () => {
-            saveTree(resourceTree, (err: string) => {
+            saveTree(resourceTree, err => {
                 if (err) this.saveMessage = err;
                 else this.saved = true;
                 setTimeout(() => this.saved = false, 5000);
@@ -1016,6 +1017,14 @@ export class FhirAppComponent {
                         //     }
                         //     if (parent.resource.note.length === 0) parent.resource.note = undefined;
                         //     break;
+                        case 'performedDateTime':
+                            if (q.question.cde.tinyId === procedureMapping.performedDate) {
+                                if (FhirAppComponent.questionAnswered(q.question.answer)) {
+                                    parent.resource.performedDateTime = q.question.answer;
+                                    ResourceTree.setResourceNonFhir(self, parent.resource.status, 'performedDateTime');
+                                }
+                            }
+                            break;
                         case 'status':
                             if (q.question.cde.tinyId === procedureMapping.statusQuestionID) {
                                 if (FhirAppComponent.questionAnswered(q.question.answer)) {
