@@ -26,7 +26,7 @@ import { FormService } from 'nativeRender/form.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElementsContainer, FormSection } from 'shared/form/form.model';
 import { addFormIds, convertFormToSection, isSubForm, iterateFeSync } from 'shared/form/formShared';
-import { BrowserService } from 'widget/browser.service';
+import { scrollTo, waitRendered } from 'widget/browser';
 
 const TOOL_BAR_OFF_SET = 64;
 
@@ -284,9 +284,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             question.edit = true;
             this.addFormElement(question);
             this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
-            BrowserService.waitRendered(
+            waitRendered(
                 () => document.getElementById('question_' + question.feId),
-                () => BrowserService.scrollTo('question_' + question.feId)
+                () => scrollTo('question_' + question.feId)
             );
             this.isModalOpen = false;
         });
