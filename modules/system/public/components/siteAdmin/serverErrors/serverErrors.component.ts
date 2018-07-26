@@ -32,7 +32,7 @@ export class ServerErrorsComponent implements OnInit {
     }
 
     gotoPage() {
-        this.http.post('/server/user/update', {serverLogDate: new Date()})
+        this.http.post('/server/user/updateNotificationDate', {serverLogDate: new Date()})
             .subscribe(() => {
                 this.http.post<ServerErrorRecord[]>('/server/log/serverErrors', {
                     skip: (this.currentPage - 1) * 50,
