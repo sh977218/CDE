@@ -512,11 +512,18 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         });
     }
 
+    goToPage = 1;
+
     pageChange(newPage) {
-        this.searchSettings.page = newPage.pageIndex + 1;
-        if (this.searchSettings.page < 1 || this.searchSettings.page > (this.totalItems / this.resultPerPage + 1)) {
-            this.alert.addAlert("danger", "Invalid page: " + this.searchSettings.page);
-        } else this.doSearch();
+        this.goToPage = newPage.pageIndex + 1;
+        if (this.goToPage !== 0) {
+            if (this.goToPage < 1 || this.goToPage > this.numPages) {
+                this.alert.addAlert("danger", "Invalid page: " + this.goToPage);
+            } else {
+                this.searchSettings.page = this.goToPage;
+                this.doSearch();
+            }
+        }
     }
 
     pinAll(promise: Promise<any>) {
