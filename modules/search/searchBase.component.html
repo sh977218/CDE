@@ -227,7 +227,7 @@
                                   placement="right" style="font-size: 1rem; padding-top: 5px">add_box
                         </mat-icon>
                     </div>
-                    <ng-container *ngFor="let t of aggregations.orgs.buckets; trackBy: helperObjectsService.trackByKey">
+                    <ng-container *ngFor="let t of aggregations.orgs.buckets; trackBy: trackByKey">
                         <ng-container *ngIf="getCurrentSelectedOrg(); else classifOrg">
                             <ng-container *ngIf="t.key === getCurrentSelectedOrg()">
                                 <div *ngIf="getCurrentSelectedClassification()?.length; else classifSelf"
@@ -265,7 +265,7 @@
                             </div>
                         </ng-template>
                     </ng-container>
-                    <div *ngFor="let b of (altClassificationFilterMode?aggregations.flatClassificationsAlt:aggregations.flatClassifications); trackBy: helperObjectsService.trackByName"
+                    <div *ngFor="let b of (altClassificationFilterMode?aggregations.flatClassificationsAlt:aggregations.flatClassifications); trackBy: trackByName"
                          id="classif-{{b.name}}" class="treeChild hand-cursor"
                          [class.treeItem]="getCurrentSelectedClassification().length"
                          (click)="selectElement(b.name)" role="link">
@@ -290,7 +290,7 @@
                             </div>
                         </ng-template>
                     </div>
-                    <div *ngFor="let b of aggregations.topics; trackBy: helperObjectsService.trackByName"
+                    <div *ngFor="let b of aggregations.topics; trackBy: trackByName"
                          id="topic-{{b.name}}" class="treeChild hand-cursor"
                          [class.treeItem]="getCurrentSelectedTopic().length > 1"
                          (click)="selectTopic(b.name)" role="link">

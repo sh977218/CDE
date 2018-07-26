@@ -11,21 +11,20 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatAutocompleteTrigger, MatPaginator } from '@angular/material';
 import { NavigationStart } from '@angular/router';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
 import { empty } from 'rxjs/observable/empty';
-
+import { debounceTime, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 
 import { SearchSettings } from 'search/search.model';
 import { ElasticQueryResponse, Elt, User } from 'shared/models.model';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
-import { BrowserService } from 'widget/browser.service';
-import { HelperObjectsService } from 'widget/helperObjects.service';
-import { MatAutocompleteTrigger, MatPaginator } from "@angular/material";
-import { debounceTime, map } from "rxjs/operators";
+import { trackByKey, trackByName } from 'widget/angularHelper';
+import { scrollTo } from 'widget/browser';
 
 export const searchStyles: string = `
     #searchResultInfoBar {
@@ -133,7 +132,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         xml: {id: "xmlExport", display: "XML Export"}
     };
     filterMode = true;
-    helperObjectsService = HelperObjectsService;
     lastQueryTimeStamp: number;
     private lastTypeahead = {};
     module: string;
@@ -154,6 +152,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     topicsKeys: string[];
     totalItems: any;
     totalItemsLimited: any;
+    trackByKey = trackByKey;
+    trackByName = trackByName;
     user: User;
     validRulesStatus: string;
     view: string;
@@ -255,14 +255,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.searchSettings.selectedOrg = orgName;
 
         this.doSearch();
-        if (!this.embedded) BrowserService.scrollTo('top');
+        if (!this.embedded) scrollTo('top');
     }
 
     browseTopic(topic) {
         this.searchSettings.meshTree = topic;
 
         this.doSearch();
-        if (!this.embedded) BrowserService.scrollTo('top');
+        if (!this.embedded) scrollTo('top');
     }
 
     browseByTopic(event) {
@@ -498,10 +498,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.modalService.open(this.validRulesModal).result.then((report) => {
             report.searchSettings = this.searchSettings;
             delete report.searchSettings.resultPerPage;
-            let params = new URLSearchParams;
-            params.set('searchSettings', JSON.stringify(report.searchSettings));
-            params.set('status', report.status);
-            let uri = params.toString();
+            // let params = new URLSearchParams;
+            // params.set('searchSettings', JSON.stringify(report.searchSettings));
+            // params.set('status', report.status);
+            // let uri = params.toString();
             this.router.navigate(['/cdeStatusReport'], {
                 queryParams: {
                     searchSettings: JSON.stringify(report.searchSettings),
@@ -639,7 +639,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             let orgsCreatedPromise = new Promise(resolve => {
                 this.filterOutWorkingGroups(() => {
                     this.orgHelperService.then(orgsDetailedInfo => {
-                        this.orgHelperService.addLongNameToOrgs(this.aggregations.orgs.buckets, orgsDetailedInfo);
+                        this.orgHelperService.addLongNameToOrgs(this.aggregations.orgs.buckets);
                     }, _noop);
                     this.aggregations.orgs.buckets.sort(function (a, b) {
                         let A = a.key.toLowerCase();

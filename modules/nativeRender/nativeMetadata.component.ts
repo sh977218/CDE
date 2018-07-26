@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 
 import './metadata-item.scss';
 import { NativeQuestionComponent } from 'nativeRender/nativeQuestion.component';
+import { textTruncate } from 'widget/browser';
 
 const ACCESSGUDID_LOOKUP = 'https://accessgudid.nlm.nih.gov/api/v1/devices/lookup.json';
 const ACCESSGUDID_PARSEUDI = 'https://accessgudid.nlm.nih.gov/api/v1/parse_udi.json?udi=';
@@ -15,6 +16,7 @@ export class NativeMetadataComponent {
     componentClass = NativeMetadataComponent;
     metadataSearch: string;
     metadataSearchResult: any;
+    textTruncate = textTruncate;
     watchNewState: string;
 
     constructor(public nativeFe: NativeQuestionComponent, private http: HttpClient) {}
@@ -60,6 +62,10 @@ export class NativeMetadataComponent {
         } else {
             return ids.deviceId;
         }
+    }
+
+    static ensureArray(obj) {
+        return Array.isArray(obj) ? obj : [obj];
     }
 
     moveFocus(field: HTMLElement) {

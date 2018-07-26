@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { Elt } from 'shared/models.model';
-import { BrowserService } from 'widget/browser.service';
+import { interruptEvent } from 'widget/browser';
 
 @Component({
     selector: 'cde-pin-quickboard',
@@ -11,8 +11,7 @@ import { BrowserService } from 'widget/browser.service';
 export class PinQuickboardComponent {
     @Input() elt: Elt;
     @Input() eltIndex: number;
-
-    BrowserService = BrowserService;
+    interruptEvent = interruptEvent;
 
     constructor(public quickBoardService: QuickBoardListService) {}
 }

@@ -79,7 +79,7 @@
                     <a href="https://github.com/esacinc/sdc-schema-package" target="_blank" title="Information">
                         <i class="fa fa-info-circle"></i></a>
                 </span>
-                <a *ngIf="!browserService.isIe()" id='sdcHtmlExport' mat-menu-item
+                <a *ngIf="!isIe()" id='sdcHtmlExport' mat-menu-item
                    href="formById/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
                    target="_blank">XML File, SDC Schema with XSL Transform</a>
                 <a id='nihXml' href="formById/{{elt._id}}?type=xml" target="_blank" mat-menu-item>
