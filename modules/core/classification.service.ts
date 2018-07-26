@@ -6,7 +6,7 @@ import _uniqWith from 'lodash/uniqWith';
 
 import { AlertService } from '_app/alert.service';
 import { ElasticService } from '_app/elastic.service';
-import { AngularHelperService } from 'widget/angularHelper.service';
+import { httpErrorMessage } from 'widget/angularHelper';
 
 
 @Injectable()
@@ -48,7 +48,7 @@ export class ClassificationService {
             () => {
                 this.updateClassificationLocalStorage(postBody);
                 cb();
-            }, err => cb(AngularHelperService.httpErrorMessage(err)));
+            }, err => cb(httpErrorMessage(err)));
     }
 
     removeClassification(elt, org, classifArray, endPoint, cb) {

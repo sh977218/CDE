@@ -1,7 +1,7 @@
-import { Injectable } from "@angular/core";
-import { Subject } from "rxjs/Subject";
-import { AngularHelperService } from 'widget/angularHelper.service';
-import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from "@angular/material";
+import { Injectable } from '@angular/core';
+import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
+
+import { httpErrorMessage } from 'widget/angularHelper';
 
 export class Alert {
     id: number;
@@ -15,15 +15,15 @@ export class Alert {
         this.id = new Date().getTime();
     }
 
-    public setMessage(msg) {
+    setMessage(msg) {
         this.message = msg;
     }
 }
 
 @Injectable()
 export class AlertService {
-    currentSnack: MatSnackBarRef<SimpleSnackBar>;
     alertTime: number;
+    currentSnack: MatSnackBarRef<SimpleSnackBar>;
 
     constructor(private snackBar: MatSnackBar) {
         this.alertTime = (window as any).userAlertTime;
@@ -35,9 +35,8 @@ export class AlertService {
     }
 
     httpErrorMessageAlert(err, info: string = '') {
-        let errorMessage = AngularHelperService.httpErrorMessage(err);
+        let errorMessage = httpErrorMessage(err);
         this.currentSnack = this.snackBar.open(info ? info + ' ' + errorMessage : errorMessage, "Dismiss",
             {duration: this.alertTime});
     }
-
 }
