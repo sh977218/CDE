@@ -73,7 +73,7 @@
                             <td>
                                 <mat-icon *ngIf="e === selectedEncounter">check_box</mat-icon>
                                 <mat-icon *ngIf="e !== selectedEncounter">check_box_outline_blank</mat-icon>
-                                <mat-icon (click)="BrowserService.interruptEvent($event);openViewEncounter(e)"
+                                <mat-icon (click)="interruptEvent($event);openViewEncounter(e)"
                                           class="hand-cursor" title="View">open_in_new</mat-icon>
                             </td>
                             <td>{{e.types}}</td>

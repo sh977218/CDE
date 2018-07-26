@@ -40,7 +40,7 @@ import { getPatientName } from 'shared/mapping/fhir/resource/fhirPatient';
 import { questionValueToFhirValue } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { deepCopy, reduceOptionalArray } from 'shared/system/util';
 import { newProcedure } from 'shared/mapping/fhir/resource/fhirProcedure';
-import { BrowserService } from 'widget/browser.service';
+import { interruptEvent } from 'widget/browser';
 
 let compareCodingId = (a, b) => a['system'] === codeSystemOut(b['source']) && a['code'] === b['id'];
 
@@ -217,7 +217,6 @@ export class FhirStandaloneComponent {
 })
 export class FhirAppComponent {
     static readonly SCOPE = 'patient/*.*';
-    BrowserService = BrowserService;
     baseUrl: string;
     elt: CdeForm;
     errorMessage: string;
@@ -225,6 +224,7 @@ export class FhirAppComponent {
     getDisplayFunc = this.getDisplay.bind(this);
     getPatientName = getPatientName;
     ioInProgress: boolean;
+    interruptEvent = interruptEvent;
     lookupObservationCategories = async_memoize((code, done) => {
         this.http.get('/fhirObservationInfo?id=' + code).subscribe((r: any) => {
             done(null, r ? r.categories : undefined);
