@@ -5,7 +5,7 @@ import { UcumService } from 'form/public/ucum.service';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/formShared';
 import { CodeAndSystem } from 'shared/models.model';
-import { BrowserService } from 'widget/browser.service';
+import { interruptEvent } from 'widget/browser';
 
 type DisplayProfileVM = {
     aliases: {
@@ -49,9 +49,9 @@ export class DisplayProfileComponent {
     }
     @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
-    BrowserService = BrowserService;
     private _elt: CdeForm;
     dPVMs: DisplayProfileVM[] = [];
+    interruptEvent = interruptEvent;
     uoms: {u: CodeAndSystem, a: string[]}[] = [];
     uomsDate: Date;
     uomsPromise: Promise<void>;

@@ -26,8 +26,8 @@ import { CdeForm, FormElement, FormElementsContainer } from 'shared/form/form.mo
 import {
     addFormIds, areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, noopSkipCb
 } from 'shared/form/formShared';
-import { AngularHelperService } from 'widget/angularHelper.service';
-import { BrowserService } from 'widget/browser.service';
+import { httpErrorMessage } from 'widget/angularHelper';
+import { isIe, scrollTo } from 'widget/browser';
 
 class LocatableError {
     id: string;
@@ -56,8 +56,6 @@ export class FormViewComponent implements OnInit {
     @ViewChild('mltPinModalCde') public mltPinModalCde: PinBoardModalComponent;
     @ViewChild('exportPublishModal') public exportPublishModal: NgbModalModule;
     @ViewChild('saveModal') public saveModal: SaveModalComponent;
-
-    browserService = BrowserService;
     commentMode;
     currentTab = 'preview_tab';
     drafts = [];
@@ -68,6 +66,7 @@ export class FormViewComponent implements OnInit {
     formInput;
     hasComments;
     highlightedTabs = [];
+    isIe = isIe;
     missingCdes = [];
     modalRef: NgbModalRef;
     savingText: string = '';
@@ -133,7 +132,7 @@ export class FormViewComponent implements OnInit {
                 if (res.version) newCde.version = res.version;
                 if (cb) cb();
             }, err => {
-                newCde.error = AngularHelperService.httpErrorMessage(err);
+                newCde.error = httpErrorMessage(err);
                 this.alert.httpErrorMessageAlert(err);
             });
     }
@@ -285,7 +284,7 @@ export class FormViewComponent implements OnInit {
 
     removeDraft() {
         this.http.delete('/draftForm/' + this.elt.tinyId, {responseType: 'text'})
-            .subscribe(res => {
+            .subscribe(() => {
                 this.loadForm(() => this.drafts = []);
             }, err => this.alert.httpErrorMessageAlert(err));
     }
@@ -341,7 +340,7 @@ export class FormViewComponent implements OnInit {
 
     scrollToDescriptionId(id: string) {
         this.currentTab = 'description_tab';
-        setTimeout(BrowserService.scrollTo, 0, id);
+        setTimeout(scrollTo, 0, id);
     }
 
     setDefault(index) {

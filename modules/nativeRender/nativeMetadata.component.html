@@ -27,10 +27,38 @@
                 <label>Brand:</label> {{meta.value.gudid.device.brandName}}</div>
             <div *ngIf="meta.value.gudid.device.versionModelNumber">
                 <label>Model:</label> {{meta.value.gudid.device.versionModelNumber}}</div>
+            <div *ngIf="meta.value.gudid.device.deviceSizes?.deviceSize">
+                <label>{{meta.value.gudid.device.deviceSizes.deviceSize.sizeType}}:</label>
+                {{meta.value.gudid.device.deviceSizes.deviceSize.sizeText}}
+                <ng-container *ngIf="meta.value.gudid.device.deviceSizes?.deviceSize?.size?.value"> {{meta.value.gudid.device.deviceSizes.deviceSize.size.value}}</ng-container>
+                <ng-container *ngIf="meta.value.gudid.device.deviceSizes?.deviceSize?.size?.unit"> {{meta.value.gudid.device.deviceSizes.deviceSize.size.unit}}</ng-container>
+            </div>
+            <div *ngIf="meta.value.gudid.device.productCodes?.fdaProductCode">
+                <label style="padding-right: 0">FDA Product Codes:</label>
+                <ng-container *ngFor="let code of componentClass.ensureArray(meta.value.gudid.device.productCodes.fdaProductCode)">
+                    <label style="padding-left: .3rem;"> {{code.productCode}}:</label>{{code.productCodeName}}
+                </ng-container>
+            </div>
+            <div *ngIf="meta.value.gudid.device.labeledContainsNRL === 'true'"><label>Labeled Contains Latex</label></div>
+            <div *ngIf="meta.value.gudid.device.labeledNoNRL === 'true'"><label>Labeled Contains No Latex</label></div>
+            <div *ngIf="meta.value.gudid.device.singleUse === 'true'"><label>Single Use Only</label></div>
+            <div *ngIf="meta.value.gudid.device.rx === 'true'"><label>Must Be Prescribed</label></div>
+            <div *ngIf="meta.value.gudid.device.otc === 'true'"><label>Available Over-the-Counter</label></div>
+            <div *ngIf="meta.value.gudid.device.deviceKit === 'true'"><label>This is a kit.</label></div>
+            <div *ngIf="meta.value.gudid.device.deviceCombinationProduct === 'true'"><label>Combination Product</label></div>
+            <div *ngIf="meta.value.gudid.device.MRISafetyStatus">
+                <label>MRI Safety Status:</label> {{meta.value.gudid.device.MRISafetyStatus}}</div>
             <div *ngIf="meta.value.gudid.device.expirationDate === 'true' && (!meta.value.udi || !meta.value.udi.expiration_date)">
                 <label>Expires</label></div>
+            <div *ngIf="meta.value.gudid.device.gmdnTerms?.gmdn">
+                <ng-container *ngFor="let gmdn of componentClass.ensureArray(meta.value.gudid.device.gmdnTerms.gmdn)">
+                    <label>GMDN:</label> {{gmdn.gmdnPTName}}
+                </ng-container>
+            </div>
             <div *ngIf="meta.value.gudid.device.deviceDescription">
-                <label>Description:</label> {{meta.value.gudid.device.deviceDescription}}</div>
+                <label>Description:</label>
+                {{textTruncate(100, meta.value.gudid.device.deviceDescription)}}
+            </div>
         </article>
     </article>
     <footer class="noPrint">
