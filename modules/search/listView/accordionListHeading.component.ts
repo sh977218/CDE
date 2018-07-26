@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { BrowserService } from 'widget/browser.service';
+
 import { Elt } from 'shared/models.model';
+import { interruptEvent, openUrl } from 'widget/browser';
 
 @Component({
     templateUrl: './accordionListHeading.component.html'
@@ -12,16 +13,13 @@ export class AccordionListHeadingComponent {
     @Input() openInNewTab: boolean;
     @Output() add = new EventEmitter<Elt>();
 
-    BrowserService = BrowserService;
-
     clickAdd(event) {
-        this.BrowserService.interruptEvent(event);
+        interruptEvent(event);
         this.add.emit(this.elt);
     }
 
     clickView(event) {
-        this.BrowserService.openUrl(this.elt.getEltUrl(), event);
-        this.BrowserService.interruptEvent(event);
+        openUrl(this.elt.getEltUrl(), event);
+        interruptEvent(event);
     }
-
 }

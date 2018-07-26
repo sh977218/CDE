@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { Elt } from 'shared/models.model';
-import { BrowserService } from 'widget/browser.service';
+import { interruptEvent } from 'widget/browser';
 
 @Component({
     selector: 'cde-pin-board',
@@ -11,7 +11,7 @@ export class PinBoardComponent {
     @Input() elt: Elt;
     @Input() eltIndex: number;
     @Input() module: any;
-    BrowserService = BrowserService;
+    interruptEvent = interruptEvent;
     pinModal: any;
 
     constructor() {}

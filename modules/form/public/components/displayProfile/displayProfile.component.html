@@ -6,7 +6,7 @@
                 <h3 style="line-height: initial; width: 100%">
                     {{dPVM.profile.name}}
                     <span class="pull-right" *ngIf="canEdit">
-                        <cde-delete-with-confirm (click)="BrowserService.interruptEvent($event)"
+                        <cde-delete-with-confirm (click)="interruptEvent($event)"
                                                  (deleted)="removeDisplayProfile(index)"></cde-delete-with-confirm>
                     </span>
                 </h3>
