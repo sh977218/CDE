@@ -66,7 +66,7 @@ export function getCdeCsvHeader(settings) {
 
 export function projectFormForExport(ele) {
     const form = {
-        name: ele.naming[0].designation
+        name: ele.designations[0].designation
         , ids: ele.ids.map(function (id) {
             return id.source + ": " + id.id + (id.version ? " v" + id.version : "");
         })
@@ -82,10 +82,10 @@ export function projectFormForExport(ele) {
 
 export function projectCdeForExport(ele, settings) {
     let cde = {
-        name: ele.naming[0].designation
+        name: ele.designations[0].designation
     };
     if (settings.questionTexts) {
-        cde.questionTexts = ele.naming.filter(function (n) {
+        cde.questionTexts = ele.designations.filter(function (n) {
             return n.tags.filter(function (t) {
                 return t.indexOf("Question Text") > -1;
             }).length > 0;
@@ -96,7 +96,7 @@ export function projectCdeForExport(ele, settings) {
         });
     }
     if (settings.naming) {
-        cde.otherNames = ele.naming.filter(function (n) {
+        cde.otherNames = ele.designations.filter(function (n) {
             return n.tags.filter(function (t) {
                 return t.indexOf("Question Text") > -1;
             }).length === 0;

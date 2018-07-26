@@ -202,8 +202,6 @@ export class ExportService {
         this.alertService.addAlert("", 'Fetching cdes. Please wait...');
         let tinyIdList = getFormCdes(form).map(f => f.tinyId);
         let elts = await this.http.get<DataElement>('/deList/' + tinyIdList).toPromise().catch(_noop);
-        console.log("formCdeExport: \n\n\n\n" + JSON.stringify(elts));
-
         let csv = await this.resultToCsv(elts);
         if (csv) {
             let blob = new Blob([csv], {type: 'text/csv'});
