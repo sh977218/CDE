@@ -206,6 +206,7 @@ export class ExportService {
             elts.push(cde);
         }
 
+        console.log("formCdeExport: \n\n\n" + JSON.stringify(elts));
         let csv = await this.resultToCsv(elts);
         if (csv) {
             let blob = new Blob([csv], {type: 'text/csv'});
