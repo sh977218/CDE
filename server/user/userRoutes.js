@@ -62,7 +62,7 @@ exports.module = function (roleConfig) {
         userDb.byId(req.user._id, handleError({req, res}, user => {
             if (!user) return res.status(404).send("User not found.");
             if (user) user.notificationDate = notificationDate;
-            user.save(handleError({req, res}, () => res.status.send()));
+            user.save(handleError({req, res}, () => res.send()));
         }));
     });
     return router;

@@ -28,7 +28,7 @@ public class LogClientErrors extends NlmCdeBaseTest {
         clickElement(By.linkText("Audit"));
 
         clickElement(By.linkText("Client Errors"));
-        textPresent("An exception has been thown");
+        textPresent("An exception has been thrown");
 
         textNotPresent("IE 11");
         textNotPresent("inIE=true");
