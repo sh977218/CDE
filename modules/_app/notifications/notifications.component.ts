@@ -8,6 +8,10 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
     selector: 'cde-notifications',
     templateUrl: 'notifications.component.html',
     styles: [`
+        #notificationBellIcon {
+            font-size: 1.3em;
+            margin-top: 10px
+        }
         .notifMenu {
             width: 200px;
         }

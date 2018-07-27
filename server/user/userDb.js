@@ -85,4 +85,3 @@ exports.save = (user, callback) => {
     new User(user).save(callback);
 };
 
-

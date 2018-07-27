@@ -233,9 +233,10 @@ try {
         manageComment: [authorization.canApproveCommentMiddleware]
     });
     app.use('/server/discuss', discussModule);
-    
+
     let logModule = require("./server/log/logRoutes").module({
-        feedbackLog: [authorization.isOrgAuthorityMiddleware]
+        feedbackLog: [authorization.isOrgAuthorityMiddleware],
+        superLog: [authorization.isSiteAdminMiddleware]
     });
     app.use('/server/log', logModule);
 
@@ -280,7 +281,7 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
 
-    if(err instanceof IpDeniedError) {
+    if (err instanceof IpDeniedError) {
         return res.status(403).send("You are not authorized. Please contact support if you believe you should not see this error.");
     }
 
