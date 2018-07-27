@@ -16,7 +16,6 @@ public class CreateForm extends BaseClassificationTest {
         String formV = "0.1alpha";
         String formOrg = "TEST";
 
-        goHome();
         clickElement(By.id("createEltLink"));
         clickElement(By.id("createFormLink"));
         textPresent("Please enter a name for the new Form");

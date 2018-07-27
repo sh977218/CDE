@@ -1043,7 +1043,6 @@ public class NlmCdeBaseTest {
 
     protected void setVisibleStatus(String id) {
         goToSearch("cde");
-        goHome();
         clickElement(By.id("searchSettings"));
         clickElement(By.id(id));
         hangon(1);
@@ -1625,6 +1624,7 @@ public class NlmCdeBaseTest {
             clickElement(By.cssSelector("a[href='#/CDE']"));
         }
         findElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//a")).click();
+        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
         clickIFrameElement(By.xpath("//button[. = 'Try it out ']"));
         sendKeyIFrameElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input"), tinyId);
         if (version != null)
