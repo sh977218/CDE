@@ -7,23 +7,23 @@ const pushNotification = require('../system/pushNotification');
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
-    router.post('/httpLogs', (req, res) => {
+    router.post('/httpLogs', roleConfig.superLog, (req, res) => {
         dbLogger.httpLogs(req.body, handleError({req, res}, result => res.send(result)));
     });
 
-    router.post('/appLogs', (req, res) => {
+    router.post('/appLogs', roleConfig.superLog, (req, res) => {
         dbLogger.appLogs(req.body, handleError({req, res}, result => res.send(result)));
     });
 
-    router.get('/dailyUsageReportLogs', (req, res) => {
+    router.get('/dailyUsageReportLogs', roleConfig.superLog, (req, res) => {
         dbLogger.usageByDay(handleError({req, res}, result => res.send(result)));
     });
 
-    router.post('/serverErrors', (req, res) => {
+    router.post('/serverErrors', roleConfig.superLog, (req, res) => {
         dbLogger.getServerErrors(req.body, handleError({req, res}, result => res.send(result)));
     });
 
-    router.post('/clientErrors', (req, res) => {
+    router.post('/clientErrors', roleConfig.superLog, (req, res) => {
         dbLogger.getClientErrors(req.body, handleError({req, res}, result => {
             res.send(result.map(r => {
                 let l = r.toObject();
