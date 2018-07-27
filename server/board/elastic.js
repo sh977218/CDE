@@ -6,6 +6,9 @@ const boardIndexName = config.elastic.boardIndex.name;
 const esClient = new ElasticSearch.Client({
     hosts: config.elastic.hosts
 });
+exports.boardRefresh = function (cb) {
+    esClient.indices.refresh({index: config.elastic.boardIndex.name}, cb);
+};
 
 exports.updateOrInsertBoardById = (id, board) => {
     esClient.index({

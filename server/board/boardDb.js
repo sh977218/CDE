@@ -1,41 +1,44 @@
 const Schema = require('mongoose').Schema;
 
 const sharedSchemas = require('../system/schemas.js');
+const stringType = sharedSchemas.stringType;
 
 // for DAO manager
 exports.type = 'board';
 
 let pinSchema = new Schema({
-    name: sharedSchemas.stringType,
+    name: stringType,
+    tinyId: stringType,
+    type: Object.assign({default: 'cde', enum: ['cde', 'form']}, stringType),
     pinnedDate: Date,
-    deTinyId: sharedSchemas.stringType,
-    deName: sharedSchemas.stringType,
-    formTinyId: sharedSchemas.stringType,
-    formName: sharedSchemas.stringType
+    deTinyId: stringType,
+    deName: stringType,
+    formTinyId: stringType,
+    formName: stringType
 }, {_id: false});
 
 let pinningBoardSchema = new Schema({
-    name: sharedSchemas.stringType,
-    description: sharedSchemas.stringType,
-    type: Object.assign({default: 'cde', enum: ['cde', 'form']}, sharedSchemas.stringType),
-    tags: [sharedSchemas.stringType],
-    shareStatus: sharedSchemas.stringType,
+    name: stringType,
+    description: stringType,
+    type: Object.assign({default: 'cde', enum: ['cde', 'form']}, stringType),
+    tags: [stringType],
+    shareStatus: stringType,
     createdDate: Date,
     updatedDate: Date,
     owner: {
         userId: Schema.Types.ObjectId,
-        username: sharedSchemas.stringType
+        username: stringType
     },
     pins: [pinSchema],
     users: [{
-        username: sharedSchemas.stringType,
-        role: Object.assign({default: 'viewer', enum: ['viewer', 'reviewer']}, sharedSchemas.stringType),
+        username: stringType,
+        role: Object.assign({default: 'viewer', enum: ['viewer', 'reviewer']}, stringType),
         lastViewed: Date,
         status: {
             approval: Object.assign({
                 default: 'invited',
                 enum: ['invited', 'approved', 'disapproved']
-            }, sharedSchemas.stringType),
+            }, stringType),
             reviewedDate: Date
         }
     }],
@@ -89,15 +92,8 @@ exports.boardsByUserId = function (userId, callback) {
     });
 };
 
-exports.publicBoardsByDeTinyId = function (tinyId, callback) {
-    PinningBoard.find({"pins.deTinyId": tinyId, "shareStatus": "Public"}).exec(function (err, result) {
-        callback(result);
-    });
-};
-exports.publicBoardsByFormTinyId = function (tinyId, callback) {
-    PinningBoard.find({"pins.formTinyId": tinyId, "shareStatus": "Public"}).exec(function (err, result) {
-        callback(result);
-    });
+exports.publicBoardsByPinTinyId = (tinyId, callback) => {
+    PinningBoard.find({"pins.tinyId": tinyId, "shareStatus": "Public"}, callback);
 };
 
 exports.nbBoardsByUserId = function (userId, callback) {

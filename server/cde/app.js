@@ -60,7 +60,7 @@ exports.init = function (app, daoManager) {
     app.post('/elasticSearch/cde', (req, res) => {
         elastic.elasticsearch(req.user, req.body, function (err, result) {
             if (err) return res.status(400).send("invalid query");
-            result.cdes = cdesvc.hideProprietaryCodes(result.cdes, req.user);
+            cdesvc.hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
         });
     });
@@ -89,7 +89,7 @@ exports.init = function (app, daoManager) {
 
     app.get('/moreLikeCde/:tinyId', exportShared.nocacheMiddleware, (req, res) => {
         elastic.morelike(req.params.tinyId, function (result) {
-            result.cdes = cdesvc.hideProprietaryCodes(result.cdes, req.user);
+            cdesvc.hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
         });
     });
@@ -102,7 +102,8 @@ exports.init = function (app, daoManager) {
 
     app.post('/desByConcept', (req, res) => {
         mongo_cde.desByConcept(req.body, result => {
-            res.send(cdesvc.hideProprietaryCodes(result, req.user));
+            cdesvc.hideProprietaryCodes(result, req.user);
+            res.send(result);
         });
     });
 

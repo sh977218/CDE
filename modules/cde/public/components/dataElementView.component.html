@@ -56,7 +56,7 @@
             <span class="d-none d-sm-inline-block"> Add to Quick Board</span>
         </button>
         <button id="addToBoard" mat-raised-button title="Add to Board"
-                (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
+                (click)="mltPinModal.pinMultiple([elt], mltPinModal.open())">
             <i class="fa fa-thumb-tack mr-1"></i><span class="d-none d-sm-inline-block"> Add to Board</span>
         </button>
         <button *ngIf="isAllowedModel.isOrgCurator()" id="copyCdeBtn" mat-raised-button

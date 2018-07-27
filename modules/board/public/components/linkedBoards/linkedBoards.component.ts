@@ -27,7 +27,7 @@ export class LinkedBoardsComponent {
     }
 
     openLinkedBoardsModal() {
-        this.http.get<any>('/server/board/deBoards/' + this.elt.tinyId).subscribe(response => {
+        this.http.get<any>('/server/board/byPinTinyId/' + this.elt.tinyId).subscribe(response => {
             if (response.error) {
                 this.boards = [];
                 this.alert.addAlert('danger', 'Error retrieving boards.');
