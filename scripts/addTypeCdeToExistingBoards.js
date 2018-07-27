@@ -1,11 +1,8 @@
-var mongo_board = require('../server/board/mongo-board'),
-    async = require('async')
-    ;
-
+const boardDb = require('../server/board/boardDb');
 
 function doStream(dao) {
-    var i = 0;
-    var stream = mongo_board.getStream({});
+    let i = 0;
+    let stream = boardDb.getStream({});
     stream.on('data', function (elt) {
         console.log(i++);
         stream.pause();
@@ -22,4 +19,4 @@ function doStream(dao) {
     })
 }
 
-doStream(mongo_board);
+doStream(boardDb);

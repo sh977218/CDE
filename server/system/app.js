@@ -32,7 +32,7 @@ const cdeElastic = require('../cde/elastic.js');
 const formElastic = require('../form/elastic.js');
 const app_status = require("./status.js");
 const traffic = require('./traffic');
-
+const classificationNode_system = require('./classificationNode');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -932,6 +932,25 @@ exports.init = function (app) {
         mongo_data.getUnreadNotifications(req.user, (err, result) => {
             if (err) return res.status(500).send("Error Retrieving Unread Notifications.");
             res.send(result);
+        });
+    });
+
+    app.post('/classifyCdeBoard', function (req, res) {
+        if (!authorizationShared.isOrgCurator(req.user, req.body.newClassification.orgName)) {
+            return res.status(401).send();
+        }
+        classificationNode_system.classifyEltsInBoard(req, mongo_cde, function (err) {
+            if (err) return res.status(500).send("ERROR - cannot classify cdes in board");
+            res.send('');
+        });
+    });
+    app.post('/classifyFormBoard', function (req, res) {
+        if (!authorizationShared.isOrgCurator(req.user, req.body.newClassification.orgName)) {
+            return res.status(401).send('');
+        }
+        classificationNode_system.classifyEltsInBoard(req, mongo_form, function (err) {
+            if (err) return res.status(500).send("ERROR - cannot classify forms in board");
+            res.send('');
         });
     });
 

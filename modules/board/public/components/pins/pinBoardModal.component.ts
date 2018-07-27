@@ -29,7 +29,7 @@ export class PinBoardModalComponent {
 
     pinMultiple(elts: any, promise: Promise<any>) {
         promise.then(board => {
-            let url = '/board/id/' + board._id;
+            let url = '/server/board/id/' + board._id;
             if (this.module === 'cde') {
                 url += '/dataElements/';
             }
@@ -47,7 +47,7 @@ export class PinBoardModalComponent {
 
     pinOne(elt: any, promise: Promise<any>) {
         promise.then(board => {
-            let url = '/pin/' + this.module + '/' + elt.tinyId + '/' + board._id;
+            let url = '/server/board/pin/' + this.module + '/' + elt.tinyId + '/' + board._id;
             this.http.put(url, {}, {observe: 'response', responseType: 'text'}).subscribe(r => {
                 this.alert.addAlert(r.status === 200 ? 'success' : 'warning', r.body);
                 this.modalRef.close();

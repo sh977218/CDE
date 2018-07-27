@@ -96,7 +96,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     boardApproval(approval) {
-        this.http.post('/board/approval', {boardId: this.board._id, approval: approval}).subscribe(() => {
+        this.http.post('/server/board/approval', {boardId: this.board._id, approval: approval}).subscribe(() => {
             this.boardStatus = approval;
             this.reload();
         });
@@ -111,7 +111,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     endReview() {
-        this.http.post('/board/endReview', {boardId: this.board._id}).subscribe(() => {
+        this.http.post('/server/board/endReview', {boardId: this.board._id}).subscribe(() => {
             this.reload();
         }, err => {
             this.alert.httpErrorMessageAlert(err);
@@ -120,7 +120,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     exportBoard() {
-        this.http.get<any>('/board/' + this.board._id + '/0/500/?type=csv').subscribe(response => {
+        this.http.get<any>('/server/board/' + this.board._id + '/0/500/?type=csv').subscribe(response => {
             let settings = this.esService.searchSettings;
             let csv = getCdeCsvHeader(settings.tableViewFields);
             response.elts.forEach(ele => {
@@ -158,7 +158,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     okShare() {
-        this.http.post('/board/users', {
+        this.http.post('/server/board/users', {
             boardId: this.board._id,
             users: this.users
         }, {responseType: 'text'}).subscribe(() => {
@@ -169,7 +169,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     reload() {
-        this.http.get<any>('/board/' + this.boardId + '/' + ((this.currentPage - 1) * 20)).subscribe(response => {
+        this.http.get<any>('/server/board/' + this.boardId + '/' + ((this.currentPage - 1) * 20)).subscribe(response => {
             if (response.board) {
                 this.board = response.board;
                 this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
@@ -236,7 +236,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     startReview() {
-        this.http.post('/board/startReview', {boardId: this.board._id}, {responseType: 'text'}).subscribe(() => {
+        this.http.post('/server/board/startReview', {boardId: this.board._id}, {responseType: 'text'}).subscribe(() => {
                 this.reload();
             }, err => {
                 this.alert.httpErrorMessageAlert(err);

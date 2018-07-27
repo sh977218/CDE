@@ -5,10 +5,10 @@ export const ITEM_MAP = {
         view: '/board/',
         item: {
             cde: {
-                api: '/deBoards/'
+                api: '/server/board/deBoards/'
             },
             form: {
-                api: '/formBoards/'
+                api: '/server/board/formBoards/'
             }
         }
     },

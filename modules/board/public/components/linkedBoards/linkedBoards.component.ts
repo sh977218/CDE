@@ -10,7 +10,7 @@ import { AlertService } from '_app/alert.service';
     providers: [NgbActiveModal],
     templateUrl: 'linkedBoards.component.html',
     styles: [`
-        :host >>> .linkedBoardDiv .card {
+        .linkedBoardDiv .card {
         width:100%!important;
             }
     `]
@@ -27,7 +27,7 @@ export class LinkedBoardsComponent {
     }
 
     openLinkedBoardsModal() {
-        this.http.get<any>('/deBoards/' + this.elt.tinyId).subscribe(response => {
+        this.http.get<any>('/server/board/deBoards/' + this.elt.tinyId).subscribe(response => {
             if (response.error) {
                 this.boards = [];
                 this.alert.addAlert('danger', 'Error retrieving boards.');

@@ -1,7 +1,6 @@
 const config = require('config');
 const hash = require('crypto');
-
-
+const boardElasticSearchMapping = require('../board/elasticSearchMapping');
 
 exports.createIndexJson = {
     "mappings": {
@@ -311,22 +310,6 @@ exports.riverFunction = function (_elt, cb) {
     });
 };
 
-exports.createBoardIndexJson = {
-    "mappings": {
-        "board": {
-            "properties": {
-                "type": {"type": "string", "index": "not_analyzed"},
-                "tags": {"type": "string", "index": "not_analyzed"},
-                "shareStatus": {"type": "string", "index": "not_analyzed"}
-            }
-        }
-    }, settings: {
-        index: {
-            "number_of_replicas": config.elastic.number_of_replicas
-        }
-    }
-};
-
 var shortHash = function (content) {
     return hash.createHash('md5')
         .update(JSON.stringify(content)).digest("hex")
@@ -340,7 +323,7 @@ if (config.elastic.formIndex.name === "auto") {
     config.elastic.formIndex.name = "form_v3_" + shortHash(exports.createFormIndexJson);
 }
 if (config.elastic.boardIndex.name === "auto") {
-    config.elastic.boardIndex.name = "board_" + shortHash(exports.createBoardIndexJson);
+    config.elastic.boardIndex.name = "board_" + shortHash(boardElasticSearchMapping.createIndexJson);
 }
 
 exports.indices = [
@@ -359,7 +342,7 @@ exports.indices = [
     {
         name: "board",
         indexName: config.elastic.boardIndex.name,
-        indexJson: exports.createBoardIndexJson
+        indexJson: boardElasticSearchMapping.createIndexJson
     }
 ];
 

@@ -9,7 +9,7 @@ const esInit = require('./elasticSearchInit');
 const dbLogger = require('../log/dbLogger.js');
 const mongo_cde = require("../cde/mongo-cde");
 const mongo_form = require("../form/mongo-form");
-const mongo_board = require("../board/mongo-board");
+const boardDb = require("../board/boardDb");
 const mongo_data = require("./mongo-data");
 const noDbLogger = require("./noDbLogger");
 
@@ -116,7 +116,7 @@ exports.daoMap = {
     },
     "board": {
         condition: {},
-        dao: mongo_board
+        dao: boardDb
     }
 };
 

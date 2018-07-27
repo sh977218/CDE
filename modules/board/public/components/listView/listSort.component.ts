@@ -25,15 +25,15 @@ export class ListSortComponent {
     ) {}
 
     moveUp(id) {
-        this.movePin('/board/pin/move/up', id);
+        this.movePin('/server/board/pin/move/up', id);
     }
 
     moveDown(id) {
-        this.movePin('/board/pin/move/down', id);
+        this.movePin('/server/board/pin/move/down', id);
     }
 
     moveTop(id) {
-        this.movePin('/board/pin/move/top', id);
+        this.movePin('/server/board/pin/move/top', id);
     }
 
     movePin(endPoint, pinId) {

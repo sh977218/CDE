@@ -1,4 +1,4 @@
-const mongo_board = require('../board/mongo-board');
+const boardDb = require('../board/boardDb');
 const mongo_data_system = require('./mongo-data');
 const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared');
 const daoManager = require('./moduleDaoManager');
@@ -213,7 +213,7 @@ exports.classifyEltsInBoard = function (req, dao, cb) {
         };
         classification.eltClassification(classifReq, classificationShared.actions.create, dao, actionCallback);
     };
-    mongo_board.boardById(boardId, function (err, board) {
+    boardDb.byId(boardId, function (err, board) {
         if (err) return cb(err);
         if (!board) return cb("No such board");
         var tinyIds = board.pins.map(function (elt) {
