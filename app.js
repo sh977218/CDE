@@ -235,7 +235,8 @@ try {
     app.use('/server/discuss', discussModule);
 
     let logModule = require("./server/log/logRoutes").module({
-        feedbackLog: [authorization.isOrgAuthorityMiddleware]
+        feedbackLog: [authorization.isOrgAuthorityMiddleware],
+        superLog: [authorization.isSiteAdminMiddleware]
     });
     app.use('/server/log', logModule);
 

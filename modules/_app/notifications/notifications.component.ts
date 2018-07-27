@@ -12,6 +12,14 @@ import { isSiteAdmin } from 'shared/system/authorizationShared';
             font-size: 1.3em;
             margin-top: 10px
         }
+
+        .notifMenu {
+            width: 200px;
+        }
+
+        .mat-menu-item {
+            line-height: 11px;
+        }
     `]
 })
 export class NotificationsComponent {

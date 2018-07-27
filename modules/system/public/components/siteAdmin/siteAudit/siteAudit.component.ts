@@ -1,6 +1,6 @@
-import { Component, OnInit, AfterViewChecked, ViewChild } from '@angular/core';
-import _noop from 'lodash/noop';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
+import _noop from 'lodash/noop';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 
 import { UserService } from '_app/user.service';
@@ -10,7 +10,7 @@ import { isSiteAdmin } from 'shared/system/authorizationShared';
     selector: 'cde-site-audit',
     templateUrl: './siteAudit.component.html'
 })
-export class SiteAuditComponent implements OnInit, AfterViewChecked {
+export class SiteAuditComponent implements OnInit {
     isAdmin = false;
     @ViewChild('tabs') private tabs: NgbTabset;
 
@@ -29,9 +29,6 @@ export class SiteAuditComponent implements OnInit, AfterViewChecked {
                 this.tabs.select(tab);
             }
         }, 0);
-    }
-
-    ngAfterViewChecked(): void {
     }
 
 }

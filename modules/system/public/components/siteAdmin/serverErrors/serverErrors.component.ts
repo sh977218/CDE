@@ -4,7 +4,6 @@ import { AlertService } from '_app/alert.service';
 
 type ServerErrorRecord = any;
 
-
 @Component({
     selector: 'cde-server-errors',
     templateUrl: './serverErrors.component.html'
@@ -41,6 +40,5 @@ export class ServerErrorsComponent implements OnInit {
                     this.records = response;
                 }, err => this.alert.httpErrorMessageAlert(err));
             }, err => this.alert.httpErrorMessageAlert(err));
-
     }
 }
