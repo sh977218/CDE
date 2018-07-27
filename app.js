@@ -246,9 +246,7 @@ try {
 
     require(path.join(__dirname, './server/form/app.js')).init(app, daoManager);
 
-    let boardModule = require("./server/board/boardRoutes").module({
-        create: [authorization.loggedInMiddleware]
-    });
+    let boardModule = require("./server/board/boardRoutes").module({});
     app.use('/server/board', boardModule);
 
     require(path.join(__dirname, './modules/swagger/index.js')).init(app);

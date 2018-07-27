@@ -4,12 +4,10 @@ const js2xml = require('js2xmlparser');
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const authorization = require('../system/authorization');
 const loggedInMiddleware = authorization.loggedInMiddleware;
+const nocacheMiddleware = authorization.nocacheMiddleware;
 const isAuthenticatedMiddleware = authorization.isAuthenticatedMiddleware;
 
-const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
-const nocacheMiddleware = exportShared.nocacheMiddleware;
-
-const stripBsonIds = exportShared.stripBsonIds;
+const stripBsonIds = require('@std/esm')(module)('../../shared/system/exportShared').stripBsonIds;
 const checkBoardOwnerShip = authorization.checkBoardOwnerShip;
 const checkBoardViewerShip = authorization.checkBoardViewerShip;
 
@@ -106,37 +104,50 @@ exports.module = function (roleConfig) {
 
     });
 
-    function boardMove(req, res, moveFunc) {
-        authorization.boardOwnership(req, res, req.body.boardId, function (board) {
-            let match = board.get('pins').find(function (p, i) {
-                return (p.get('deTinyId') ? p.get('deTinyId') : p.get('formTinyId')) === req.body.tinyId;
-            });
-            let index = match ? match.__index : -1;
-            if (index !== -1) {
-                moveFunc(board, index);
-                board.save(function (err) {
-                    if (err) res.status(500).send();
-                    else res.send();
-                });
-            } else
-                res.status(400).send("Nothing to move");
-        });
-    }
-
-    router.post('/pin/move/up', function (req, res) {
-        boardMove(req, res, function (board, index) {
-            board.pins.splice(index - 1, 0, board.pins.splice(index, 1)[0]);
-        });
+    router.post('/pin/move/up', (req, res) => {
+        let boardId = req.params.boardId;
+        let tinyId = req.body.tinyId;
+        boardDb.byId(boardId, handleError({req, res}, board => {
+                if (!board) return res.status(404).send("No board found.");
+                if (!checkBoardOwnerShip(board, req.user)) return res.status(401).send("You must own a board to delete it.");
+                let match = board.get('pins').find(p => p.tinyId === tinyId);
+                let index = match ? match.__index : -1;
+                if (index !== -1) {
+                    board.pins.splice(index - 1, 0, board.pins.splice(index, 1)[0]);
+                    board.save(handleError({req, res}, () => res.send()));
+                } else res.status(400).send("Nothing to move");
+            })
+        );
     });
-    router.post('/pin/move/down', function (req, res) {
-        boardMove(req, res, function (board, index) {
-            board.pins.splice(index + 1, 0, board.pins.splice(index, 1)[0]);
-        });
+    router.post('/pin/move/down', (req, res) => {
+        let boardId = req.params.boardId;
+        let tinyId = req.body.tinyId;
+        boardDb.byId(boardId, handleError({req, res}, board => {
+                if (!board) return res.status(404).send("No board found.");
+                if (!checkBoardOwnerShip(board, req.user)) return res.status(401).send("You must own a board to delete it.");
+                let match = board.get('pins').find(p => p.tinyId === tinyId);
+                let index = match ? match.__index : -1;
+                if (index !== -1) {
+                    board.pins.splice(index + 1, 0, board.pins.splice(index, 1)[0]);
+                    board.save(handleError({req, res}, () => res.send()));
+                } else res.status(400).send("Nothing to move");
+            })
+        );
     });
-    router.post('/pin/move/top', function (req, res) {
-        boardMove(req, res, function (board, index) {
-            board.pins.splice(0, 0, board.pins.splice(index, 1)[0]);
-        });
+    router.post('/pin/move/top', (req, res) => {
+        let boardId = req.params.boardId;
+        let tinyId = req.body.tinyId;
+        boardDb.byId(boardId, handleError({req, res}, board => {
+                if (!board) return res.status(404).send("No board found.");
+                if (!checkBoardOwnerShip(board, req.user)) return res.status(401).send("You must own a board to delete it.");
+                let match = board.get('pins').find(p => p.tinyId === tinyId);
+                let index = match ? match.__index : -1;
+                if (index !== -1) {
+                    board.pins.splice(0, 0, board.pins.splice(index, 1)[0]);
+                    board.save(handleError({req, res}, () => res.send()));
+                } else res.status(400).send("Nothing to move");
+            })
+        );
     });
 
     router.delete('/:boardId', (req, res) => {
@@ -207,7 +218,7 @@ exports.module = function (roleConfig) {
         return shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher");
     }
 
-    router.post('/', isAuthenticatedMiddleware, (req, res) => {
+    router.post('/', loggedInMiddleware, (req, res) => {
         let boardQuota = config.boardQuota || 50;
         let board = req.body;
         if (!board._id) {
@@ -408,6 +419,6 @@ exports.module = function (roleConfig) {
         );
     });
 
+    return router;
 
-}
-;
+};
