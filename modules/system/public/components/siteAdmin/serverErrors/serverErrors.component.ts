@@ -15,22 +15,21 @@ export class ServerErrorsComponent implements OnInit {
     error: any = {};
     excludeFilterToAdd: any[] = [];
 
-    ngOnInit () {
+    ngOnInit() {
         this.gotoPage();
     }
 
-    constructor(
-        private http: HttpClient
-    ) {}
+    constructor(private http: HttpClient) {
+    }
 
-    addExcludeFilter (toAdd) {
+    addExcludeFilter(toAdd) {
         if (toAdd.length > 0 && this.excludeFilters.indexOf(toAdd) === -1) {
             this.excludeFilters.push(toAdd.trim());
             this.gotoPage();
         }
     }
 
-    gotoPage () {
+    gotoPage() {
         this.http.post<ServerErrorRecord[]>('/server/log/serverErrors', {
             skip: (this.currentPage - 1) * 50,
             limit: 50
