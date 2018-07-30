@@ -24,6 +24,7 @@ public class CreateForm extends BaseClassificationTest {
         findElement(By.id("eltDefinition")).sendKeys(formDef);
         fillInput("Version", formV);
 
+        hangon(2);
         new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText(formOrg);
         hangon(2);
         addClassificationMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
