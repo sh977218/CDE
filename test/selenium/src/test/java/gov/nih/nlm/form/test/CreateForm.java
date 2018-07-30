@@ -36,7 +36,6 @@ public class CreateForm extends BaseClassificationTest {
 
         if (checkEs) {
             waitForESUpdate();
-
             goToFormByName(formName);
             goToGeneralDetail();
             textPresent(formDef);
