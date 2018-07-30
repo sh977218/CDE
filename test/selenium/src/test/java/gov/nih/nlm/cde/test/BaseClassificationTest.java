@@ -12,12 +12,7 @@ import java.util.List;
 
 public class BaseClassificationTest extends NlmCdeBaseTest {
     public void addClassificationMethod(String[] categories) {
-        hangon(3);
-        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
-        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
-        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
-        hangon(3);
-        clickElement(By.xpath("//button[@id='openClassificationModalBtn']"));
+        findElement(By.id("openClassificationModalBtn")).click();
         textPresent("Please select at least one classification");
         addClassificationMethodDo(categories);
     }
