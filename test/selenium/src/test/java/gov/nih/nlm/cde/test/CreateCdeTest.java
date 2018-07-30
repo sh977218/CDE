@@ -22,7 +22,7 @@ public class CreateCdeTest extends BaseClassificationTest {
         findElement(By.id("eltName")).sendKeys(cdeName);
         findElement(By.id("eltDefinition")).sendKeys(cdeDef);
 
-        textPresent("Please select a steward for the new Form");
+        textPresent("Please select a steward for the new CDE");
         new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText(cdeOrg);
         addClassificationMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
         modalGone();

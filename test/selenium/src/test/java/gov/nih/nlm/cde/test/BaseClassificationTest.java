@@ -11,6 +11,7 @@ import java.util.List;
 
 public class BaseClassificationTest extends NlmCdeBaseTest {
     public void addClassificationMethod(String[] categories) {
+        scrollDownBy(10);
         clickElement(By.id("openClassificationModalBtn"));
         textPresent("Please select at least one classification");
         addClassificationMethodDo(categories);
