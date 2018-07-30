@@ -13,7 +13,6 @@ public class CreateCdeTest extends BaseClassificationTest {
     public void createCde(String cdeName, boolean checkEs) {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String cdeDef = "Fill out carefully!";
-        String cdeV = "0.1alpha";
         String cdeOrg = "TEST";
 
         clickElement(By.id("createEltLink"));
@@ -22,8 +21,8 @@ public class CreateCdeTest extends BaseClassificationTest {
 
         findElement(By.id("eltName")).sendKeys(cdeName);
         findElement(By.id("eltDefinition")).sendKeys(cdeDef);
-        fillInput("Version", cdeV);
 
+        textPresent("Please select a steward for the new Form");
         new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText(cdeOrg);
         addClassificationMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
         modalGone();
