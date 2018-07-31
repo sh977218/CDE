@@ -25,28 +25,27 @@ import { ActivatedRoute, Router } from '@angular/router';
             font-weight: 900;
         }
 
-        :host >>> .carousel-control-next, :host >>> .carousel-control-prev {
+        .carousel-control-next, :host >>> .carousel-control-prev {
             display: none;
             /*background-color: #eee;*/
             /*width: 10%;*/
         }
 
-        :host >>> .carousel-indicators > li {
+        .carousel-indicators > li {
             height: 10px;
         }
 
-        :host >>> .carousel-indicators li {
+        .carousel-indicators li {
             background-color: #fff;
             border: 1px solid #0275d8;
         }
 
-        :host >>> .carousel-indicators li.active {
+        .carousel-indicators li.active {
             background-color: #0275d8;
         }
     `],
     templateUrl: 'home.component.html'
 })
-
 export class HomeComponent implements OnInit {
     displayCarousel: Boolean = (window.screen.width > 575);
 
@@ -55,15 +54,15 @@ export class HomeComponent implements OnInit {
         this.displayCarousel = (window.screen.width > 575);
     }
 
+    constructor(private route: ActivatedRoute,
+                private router: Router) {
+    }
+
     ngOnInit() {
         if (this.route.snapshot.queryParams.tour) {
             this.takeATour();
             this.router.navigate(['/home']);
         }
-    }
-
-    constructor(private route: ActivatedRoute,
-                private router: Router) {
     }
 
     takeATour() {
