@@ -276,7 +276,7 @@ const formSteps = [
 
 @Injectable()
 export class TourService {
-
+    static started = false;
     static steps = navigationSteps.concat(searchResultSteps).concat(cdeSteps).concat(formSteps);
 
     static clickAndGoNext(tour, clickWhat: string, waitForWhat: string, cb) {
@@ -301,6 +301,7 @@ export class TourService {
         });
         tour.init();
         tour.start(true);
+        this.started = true;
     }
 
 }
