@@ -58,7 +58,7 @@ const searchResultSteps: Array<any> = [
         title: " 10/42 Search Result",
         element: "#resultList",
         content: "Browsing can return hundreds of elements sorted by relevance.",
-        placement: "bottom"
+        placement: "top"
     },
     {
         title: " 11/42 Classification Filter",
@@ -276,7 +276,6 @@ const formSteps = [
 
 @Injectable()
 export class TourService {
-    static started = false;
     static steps = navigationSteps.concat(searchResultSteps).concat(cdeSteps).concat(formSteps);
 
     static clickAndGoNext(tour, clickWhat: string, waitForWhat: string, cb) {
@@ -301,7 +300,6 @@ export class TourService {
         });
         tour.init();
         tour.start(true);
-        this.started = true;
     }
 
 }
