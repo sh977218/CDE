@@ -25,6 +25,7 @@ import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { trackByKey, trackByName } from 'widget/angularHelper';
 import { scrollTo } from 'widget/browser';
+import { TourService } from 'home/tour.service';
 
 export const searchStyles: string = `
     #searchResultInfoBar {
@@ -250,19 +251,19 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     browseOrg(orgName) {
-        window.scrollTo(0, 0);
+        if (!TourService.tourStarted) window.scrollTo(0, 0);
 
         this.searchSettings.selectedOrg = orgName;
 
         this.doSearch();
-        if (!this.embedded) scrollTo('top');
+        if (!this.embedded && !TourService.tourStarted) scrollTo('top');
     }
 
     browseTopic(topic) {
         this.searchSettings.meshTree = topic;
 
         this.doSearch();
-        if (!this.embedded) scrollTo('top');
+        if (!this.embedded && !TourService.tourStarted) scrollTo('top');
     }
 
     browseByTopic(event) {
@@ -839,7 +840,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     static waitScroll(count, previousSpot) {
-        if (count > 0) setTimeout(() => SearchBaseComponent.waitScroll(count - 1, previousSpot), 100);
-        else window.scrollTo(0, previousSpot);
+        if (TourService.tourStarted) {
+            if (count > 0) setTimeout(() => SearchBaseComponent.waitScroll(count - 1, previousSpot), 100);
+            else window.scrollTo(0, previousSpot);
+        }
     }
 }
