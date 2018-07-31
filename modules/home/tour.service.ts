@@ -58,7 +58,7 @@ const searchResultSteps: Array<any> = [
         title: " 10/42 Search Result",
         element: "#resultList",
         content: "Browsing can return hundreds of elements sorted by relevance.",
-        placement: "top"
+        placement: "right"
     },
     {
         title: " 11/42 Classification Filter",
