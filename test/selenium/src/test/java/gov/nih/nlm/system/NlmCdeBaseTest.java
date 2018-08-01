@@ -100,7 +100,6 @@ public class NlmCdeBaseTest {
     private int videoRate = 300;
 
     private NgWebDriver ngdriver;
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     private ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Time", "Number", "Externally Defined", "File"));
     private Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
@@ -136,16 +135,17 @@ public class NlmCdeBaseTest {
         if (b == null) b = browser;
 
         hangon(new Random().nextInt(10));
-        String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
+        String windows_detected_message = "MS Windows Detected";
         if (isWindows()) {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
             System.setProperty("webdriver.ie.driver", "./IEDriverServer.exe");
         } else {
-            System.out.println(windows_detected_message);
+            System.out.println("None " + windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver");
         }
         MutableCapabilities caps;
+        System.out.println("Starting " + b.trim());
         if ("firefox".equals(b)) {
             DesiredCapabilities options = DesiredCapabilities.firefox();
             options.setBrowserName(b);
@@ -202,6 +202,7 @@ public class NlmCdeBaseTest {
 
         JavascriptExecutor js = (JavascriptExecutor) driver;
         driver.manage().timeouts().setScriptTimeout(9, TimeUnit.SECONDS);
+        driver.manage().window().maximize();
         ngdriver = new NgWebDriver(js);
 
     }
@@ -775,6 +776,7 @@ public class NlmCdeBaseTest {
 
     protected void loginAs(String username, String password) {
         clickElement(By.id("login_link"));
+        textPresent("Please Log In");
         String usernameStr = username;
         if (username.length() > 17) {
             usernameStr = usernameStr.substring(0, 17) + "...";
