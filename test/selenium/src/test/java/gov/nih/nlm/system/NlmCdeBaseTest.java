@@ -135,15 +135,6 @@ public class NlmCdeBaseTest {
         if (b == null) b = browser;
 
         hangon(new Random().nextInt(10));
-        String windows_detected_message = "MS Windows Detected";
-        if (isWindows()) {
-            System.out.println(windows_detected_message);
-            System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
-            System.setProperty("webdriver.ie.driver", "./IEDriverServer.exe");
-        } else {
-            System.out.println("None " + windows_detected_message);
-            System.setProperty("webdriver.chrome.driver", "./chromedriver");
-        }
         MutableCapabilities caps;
         System.out.println("Starting " + b.trim());
         if ("firefox".equals(b)) {
