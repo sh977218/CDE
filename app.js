@@ -178,8 +178,13 @@ app.use(flash());
 auth.init(app);
 
 const logFormat = {
-    remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status",
-    date: ":date", referrer: ":referrer", responseTime: ":response-time"
+    remoteAddr: ":real-remote-addr",
+    url: ":url",
+    method: ":method",
+    httpStatus: ":status",
+    date: ":date",
+    referrer: ":referrer",
+    responseTime: ":response-time"
 };
 
 morganLogger.token('real-remote-addr', function (req) {
