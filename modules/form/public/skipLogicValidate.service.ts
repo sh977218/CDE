@@ -58,9 +58,6 @@ export class SkipLogicValidateService {
 
         if (!options) options = [];
         let optionsFiltered = options.filter(o => o.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1);
-        if (optionsFiltered.length > 6) {
-            optionsFiltered = optionsFiltered.slice(optionsFiltered.length - 6, optionsFiltered.length);
-        }
         if (optionsFiltered.length > 0) {
             options = optionsFiltered;
         }
@@ -74,12 +71,12 @@ export class SkipLogicValidateService {
 
         if (q.question.datatype === 'Value List') {
             return q.question.answers.map(a => {
-                let pv = tokenSanitizer(a.permissibleValue);
-                let pvString = `"${pv}" `;
-                let nameString = a.valueMeaningName !== a.permissibleValue
-                    ? `"${pv}" - ${tokenSanitizer(a.valueMeaningName)}` : pvString;
-                this.optionsMap.set(nameString, pvString);
-                return nameString;
+                    let pv = tokenSanitizer(a.permissibleValue);
+                    let pvString = `"${pv}" `;
+                    let nameString = a.valueMeaningName !== a.permissibleValue
+                        ? `"${pv}" - ${tokenSanitizer(a.valueMeaningName)}` : pvString;
+                    this.optionsMap.set(nameString, pvString);
+                    return nameString;
             });
         }
         if (q.question.datatype === 'Number') {
