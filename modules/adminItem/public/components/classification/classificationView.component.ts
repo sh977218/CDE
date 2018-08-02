@@ -10,20 +10,17 @@ import { isSiteAdmin } from 'shared/system/authorizationShared';
 
 const actionMapping: IActionMapping = {
     mouse: {
-        click: () => {},
-        expanderClick: () => {}
+        click: () => {
+        },
+        expanderClick: () => {
+        }
     }
 };
 
 @Component({
     selector: "cde-classification-view",
     providers: [NgbActiveModal],
-    templateUrl: "./classificationView.component.html",
-    styles: [`
-        .modal-dialog {
-            z-index: 50000 !important;
-        }
-    `]
+    templateUrl: "./classificationView.component.html"
 })
 export class ClassificationViewComponent {
     @ViewChild("deleteClassificationContent") public deleteClassificationContent: NgbModalModule;
@@ -49,7 +46,7 @@ export class ClassificationViewComponent {
         this.orgHelperService.then(() => this.orgHelperLoaded = true, _noop);
     }
 
-    getClassifLink () {
+    getClassifLink() {
         return '/' + this.elt.elementType + '/search';
     }
 
