@@ -24,6 +24,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         System.out.println(Arrays.asList(categories)); // [TEST, Classify Board, Classif_Board_Sub]
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         textPresent(categories[1]);
+        
         String classifyBtnId = "";
         for (int i = 1; i < categories.length - 1; i++) {
             clickElement(By.xpath("//*[@id='" + categories[i] + "-expander']//span"));
