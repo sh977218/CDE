@@ -46,7 +46,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
 	    	System.out.println("-----------------------DOM DUMP END---------------------------");
 	    	try {
 				Thread.sleep(600000);
-			} catch (InterruptedException e) {}
+			} catch (InterruptedException ee) {}
 	    	throw e;
 	    }
     }
