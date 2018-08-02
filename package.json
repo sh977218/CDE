@@ -105,7 +105,7 @@
     "@angular/platform-browser": "6.0.3",
     "@angular/platform-browser-dynamic": "6.0.3",
     "@angular/router": "6.0.3",
-    "@ng-bootstrap/ng-bootstrap": "1.1.2",
+    "@ng-bootstrap/ng-bootstrap": "^2.2.1",
     "@ng-select/ng-select": "1.4.0",
     "@ngtools/webpack": "6.0.3",
     "@types/async": "2.0.47",
