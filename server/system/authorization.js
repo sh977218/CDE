@@ -77,13 +77,13 @@ exports.checkOwnership = function (dao, id, req, cb) {
 
 exports.checkBoardOwnerShip = function (board, user) {
     if (!user || !board) return false;
-    return board.owner.userId.equal(user._id);
+    return board.owner.userId.equals(user._id);
 };
 
 exports.checkBoardViewerShip = function (board, user) {
     if (!user || !board) return false;
     let viewers = board.users.filter(u => u.role === 'viewer' || u.role === 'reviewer').map(u => u.username.toLowerCase());
-    return viewers.indexOf(user.username.toLowerCase()) > -1 || checkBoardOwnerShip(board, user);
+    return viewers.indexOf(user.username.toLowerCase()) > -1 || exports.checkBoardOwnerShip(board, user);
 };
 
 exports.allowCreate = function (user, elt, cb) {

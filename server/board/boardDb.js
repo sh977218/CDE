@@ -2,6 +2,7 @@ const Schema = require('mongoose').Schema;
 
 const sharedSchemas = require('../system/schemas.js');
 const stringType = sharedSchemas.stringType;
+const elastic = require('./elastic');
 
 // for DAO manager
 exports.type = 'board';
