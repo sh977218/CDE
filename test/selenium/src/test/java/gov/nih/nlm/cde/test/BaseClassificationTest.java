@@ -20,8 +20,8 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     private void addClassificationMethodDo(String[] categories) {
-    	System.out.println("-------------------------FAILING TEST START-------------------------");
-    	System.out.println(Arrays.asList(categories)); // [TEST, Classify Board, Classif_Board_Sub]
+        System.out.println("-------------------------FAILING TEST START-------------------------");
+        System.out.println(Arrays.asList(categories)); // [TEST, Classify Board, Classif_Board_Sub]
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         textPresent(categories[1]);
         String classifyBtnId = "";
@@ -38,17 +38,21 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         } catch (Exception ignored) {
         }
         try {
-        	Assert.assertTrue(findElement(By.xpath("//*[@id='" + classifyBtnId + "']")).getText().equals(categories[categories.length - 1]));
-	    } catch (org.openqa.selenium.TimeoutException e) {
-	    	Object output = ((JavascriptExecutor)driver).executeScript("return document.body.innerHTML;");
-	    	System.out.println("-----------------------DOM DUMP START---------------------------");
-	    	System.out.println(output);
-	    	System.out.println("-----------------------DOM DUMP END---------------------------");
+            Assert.assertTrue(findElement(By.xpath("//*[@id='" + classifyBtnId + "']")).getText().equals(categories[categories.length - 1]));
+        } catch (org.openqa.selenium.TimeoutException e) {
+            Object output = ((JavascriptExecutor) driver).executeScript("return document.body.innerHTML;");
+            System.out.println("-----------------------DOM DUMP START---------------------------");
+            System.out.println(output);
+            System.out.println("-----------------------DOM DUMP END---------------------------");
 	    	/*try {
 				Thread.sleep(600000);
 			} catch (InterruptedException ee) {}*/
-	    	throw e;
-	    }
+            throw e;
+        }
+        WebElement ngbTemplate = findElement(By.xpath("//ngb-modal-window"));
+        System.out.println("-----------------------START ngb-modal-window--------------------------");
+        System.out.println(ngbTemplate.getAttribute("outerHTML"));
+        System.out.println("-----------------------END   ngb-modal-window--------------------------");
     }
 
     public void checkRecentlyUsedClassifications(String[] categories) {
