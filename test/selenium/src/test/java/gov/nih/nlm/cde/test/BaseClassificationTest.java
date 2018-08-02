@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -18,20 +19,35 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     private void addClassificationMethodDo(String[] categories) {
+    	System.out.println("-------------------------FAILING TEST START-------------------------");
+    	System.out.println(Arrays.asList(categories));
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         textPresent(categories[1]);
         String classifyBtnId = "";
         for (int i = 1; i < categories.length - 1; i++) {
             clickElement(By.xpath("//*[@id='" + categories[i] + "-expander']//span"));
             classifyBtnId = classifyBtnId + categories[i] + ",";
+            System.out.println("classifyBtnId=" + classifyBtnId);
         }
         classifyBtnId = classifyBtnId + categories[categories.length - 1];
+        System.out.println("classifyBtnId=" + classifyBtnId);
         clickElement(By.xpath("//*[@id='" + classifyBtnId + "-classifyBtn']"));
         try {
             closeAlert();
         } catch (Exception ignored) {
         }
-        Assert.assertTrue(findElement(By.xpath("//*[@id='" + classifyBtnId + "']")).getText().equals(categories[categories.length - 1]));
+        try {
+        	Assert.assertTrue(findElement(By.xpath("//*[@id='" + classifyBtnId + "']")).getText().equals(categories[categories.length - 1]));
+	    } catch (org.openqa.selenium.TimeoutException e) {
+	    	Object output = ((JavascriptExecutor)driver).executeScript("return document.body.innerHTML;");
+	    	System.out.println("-----------------------DOM DUMP START---------------------------");
+	    	System.out.println(output);
+	    	System.out.println("-----------------------DOM DUMP END---------------------------");
+	    	try {
+				Thread.sleep(600000);
+			} catch (InterruptedException e) {}
+	    	throw e;
+	    }
     }
 
     public void checkRecentlyUsedClassifications(String[] categories) {
