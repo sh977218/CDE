@@ -18,7 +18,12 @@ const actionMapping: IActionMapping = {
 @Component({
     selector: "cde-classification-view",
     providers: [NgbActiveModal],
-    templateUrl: "./classificationView.component.html"
+    templateUrl: "./classificationView.component.html",
+    styles: [`
+        .modal-dialog {
+            z-index: 50000 !important;
+        }
+    `]
 })
 export class ClassificationViewComponent {
     @ViewChild("deleteClassificationContent") public deleteClassificationContent: NgbModalModule;
