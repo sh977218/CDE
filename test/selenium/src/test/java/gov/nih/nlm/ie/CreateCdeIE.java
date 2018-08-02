@@ -10,7 +10,6 @@ public class CreateCdeIE extends NlmCdeBaseTest {
     private CreateCdeTest parentTest = new CreateCdeTest();
 
     @Test
-    @SelectBrowser
     public void createCdeIE() {
         parentTest.createCde("Create IECde Name", false);
     }
