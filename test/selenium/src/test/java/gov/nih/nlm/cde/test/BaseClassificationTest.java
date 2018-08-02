@@ -21,7 +21,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
 
     private void addClassificationMethodDo(String[] categories) {
     	System.out.println("-------------------------FAILING TEST START-------------------------");
-    	System.out.println(Arrays.asList(categories));
+    	System.out.println(Arrays.asList(categories)); // [TEST, Classify Board, Classif_Board_Sub]
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         textPresent(categories[1]);
         String classifyBtnId = "";
@@ -44,9 +44,9 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
 	    	System.out.println("-----------------------DOM DUMP START---------------------------");
 	    	System.out.println(output);
 	    	System.out.println("-----------------------DOM DUMP END---------------------------");
-	    	try {
+	    	/*try {
 				Thread.sleep(600000);
-			} catch (InterruptedException ee) {}
+			} catch (InterruptedException ee) {}*/
 	    	throw e;
 	    }
     }
