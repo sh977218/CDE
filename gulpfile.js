@@ -20,6 +20,9 @@ require('es6-promise').polyfill();
 
 gulp.task('npm', function _npm() {
     run('node --version').exec();
+    console.log('*************\nStart Running npm config ls -l\n****************');
+    run('npm config ls -l').exec();
+    console.log('*************\nEnd   Running npm config ls -l\n****************');
     return gulp.src(['./package.json'])
         .pipe(install());
 });
