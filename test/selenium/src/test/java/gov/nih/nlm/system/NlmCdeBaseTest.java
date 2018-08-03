@@ -73,7 +73,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             System.setProperty("webdriver.ie.driver", "./IEDriverServer.exe");
         } else {
             System.out.println(windows_detected_message);
-            System.setProperty("webdriver.chrome.driver", "./chromedriver");
+            System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         }
         MutableCapabilities caps;
         if ("firefox".equals(b)) {
@@ -92,12 +92,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             caps = chromeOptions;
         } else if ("ie".equals(b)) {
             DesiredCapabilities ieOptions = DesiredCapabilities.internetExplorer();
-            ieOptions.setCapability("nativeEvents", false);
-            ieOptions.setCapability("unexpectedAlertBehaviour", "accept");
-            ieOptions.setCapability("ignoreProtectedModeSettings", true);
-            ieOptions.setCapability("disable-popup-blocking", true);
-            ieOptions.setCapability("enablePersistentHover", true);
-            ieOptions.setCapability("ignoreZoomSetting", true);
             ieOptions.setBrowserName(b);
             caps = ieOptions;
         } else {
