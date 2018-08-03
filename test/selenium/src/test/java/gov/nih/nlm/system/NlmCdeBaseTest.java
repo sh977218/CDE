@@ -39,7 +39,7 @@ import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import com.paulhammant.ngwebdriver.NgWebDriver;
 
 @Listeners({ScreenShotListener.class})
-public class NlmCdeBaseTest {
+public class NlmCdeBaseTest implements USERNAME {
 
     public static WebDriver driver;
     public static WebDriverWait wait;
@@ -53,44 +53,6 @@ public class NlmCdeBaseTest {
     protected static String browser = System.getProperty("browser");
     public static String baseUrl = System.getProperty("testUrl");
 
-    protected static String nlm_username = "nlm";
-    protected static String nlm_password = "nlm";
-    protected static String cabigAdmin_username = "cabigAdmin";
-    protected static String promis_username = "promis";
-    protected static String ctepCurator_username = "ctepCurator";
-    protected static String test_username = "testuser";
-    protected static String history_username = "historyuser";
-    protected static String ninds_username = "ninds";
-    protected static String wguser_username = "wguser";
-    protected static String reguser_username = "reguser";
-    protected static String boarduser1_username = "boarduser1";
-    protected static String boardSearchUser_username = "boardsearchuser";
-    protected static String boarduser2_username = "boarduser2";
-    protected static String boarduserEdit_username = "boarduserEdit";
-    protected static String boardUser = "boarduser";
-    protected static String boardUser_username = "boarduser";
-    protected static String formboarduser = "formboarduser";
-    protected static String pinUser = "pinuser";
-    protected static String unpinUser = "unpinuser";
-    protected static String classificationMgtUser_username = "classMgtUser";
-    protected static String transferStewardUser_username = "transferStewardUser";
-    protected static String anonymousCommentUser2_username = "CommentUser2";
-    protected static String anonymousCommentUser_password = "pass";
-    protected static String commentEditor_username = "commentEditor";
-    protected static String commentEditor_password = "pass";
-    protected static String attachmentReviewer_username = "attachmentReviewer";
-    protected static String ctep_fileCurator_username = "ctep_fileCurator";
-    protected static String tableViewUser_username = "tableViewUser";
-    protected static String pinAllBoardUser_username = "pinAllBoardUser";
-    protected static String testAdmin_username = "testAdmin";
-    protected static String classifyBoardUser_username = "classifyBoardUser";
-    static String oldUser_username = "oldUser";
-    protected static String boardPublisherTest_username = "boardPublisherTest";
-    protected static String doublepinuser_username = "doublepinuser";
-    protected static String boardBot_username = "boardBot";
-
-    protected static String password = "pass";
-
     private HashSet<PosixFilePermission> filePerms;
 
     private String className = this.getClass().getSimpleName();
@@ -99,7 +61,6 @@ public class NlmCdeBaseTest {
     private int videoRate = 300;
 
     private NgWebDriver ngdriver;
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     private ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Time", "Number", "Externally Defined", "File"));
     private Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
@@ -146,27 +107,33 @@ public class NlmCdeBaseTest {
         }
         MutableCapabilities caps;
         if ("firefox".equals(b)) {
-            DesiredCapabilities options = DesiredCapabilities.firefox();
-            options.setBrowserName(b);
-            caps = options;
+            DesiredCapabilities firefoxOptions = DesiredCapabilities.firefox();
+            firefoxOptions.setBrowserName(b);
+            caps = firefoxOptions;
         } else if ("chrome".equals(b)) {
-            ChromeOptions options = new ChromeOptions();
-            if (u != null) options.addArguments("--user-agent=googleBot");
+            ChromeOptions chromeOptions = new ChromeOptions();
+            if (u != null) chromeOptions.addArguments("--user-agent=googleBot");
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
-            options.setExperimentalOption("prefs", prefs);
-            options.addArguments("disable-shared-workers");
-            options.addArguments("start-maximized");
-            options.addArguments("unsafely-treat-insecure-origin-as-secure");
-            caps = options;
+            chromeOptions.setExperimentalOption("prefs", prefs);
+            chromeOptions.addArguments("disable-shared-workers");
+            chromeOptions.addArguments("start-maximized");
+            chromeOptions.addArguments("unsafely-treat-insecure-origin-as-secure");
+            caps = chromeOptions;
         } else if ("ie".equals(b)) {
-            DesiredCapabilities options = DesiredCapabilities.internetExplorer();
-            options.setBrowserName(b);
-            caps = options;
+            DesiredCapabilities ieOptions = DesiredCapabilities.internetExplorer();
+            ieOptions.setCapability("nativeEvents", false);
+            ieOptions.setCapability("unexpectedAlertBehaviour", "accept");
+            ieOptions.setCapability("ignoreProtectedModeSettings", true);
+            ieOptions.setCapability("disable-popup-blocking", true);
+            ieOptions.setCapability("enablePersistentHover", true);
+            ieOptions.setCapability("ignoreZoomSetting", true);
+            ieOptions.setBrowserName(b);
+            caps = ieOptions;
         } else {
-            DesiredCapabilities options = DesiredCapabilities.chrome();
-            options.setBrowserName(b);
-            caps = options;
+            DesiredCapabilities otherOptions = DesiredCapabilities.chrome();
+            otherOptions.setBrowserName(b);
+            caps = otherOptions;
         }
 
         LoggingPreferences loggingPreferences = new LoggingPreferences();
