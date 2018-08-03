@@ -74,6 +74,7 @@ test/selenium/dependency/
 test/selenium/nlm-cde-test.iml
 test/selenium/out/
 test/selenium/IntegerDatatypeTest_integerDatatype.gif
+test/selenium/selenium-server-standalone*
 test-console.out
 test-console.o
 
