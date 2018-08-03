@@ -39,7 +39,7 @@ import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import com.paulhammant.ngwebdriver.NgWebDriver;
 
 @Listeners({ScreenShotListener.class})
-public class NlmCdeBaseTest implements USERNAME {
+public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     public static WebDriver driver;
     public static WebDriverWait wait;
@@ -61,36 +61,6 @@ public class NlmCdeBaseTest implements USERNAME {
     private int videoRate = 300;
 
     private NgWebDriver ngdriver;
-
-    private ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Time", "Number", "Externally Defined", "File"));
-    private Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
-        {
-            put("rename", "fa-pencil");
-            put("remove", "fa-trash-o");
-            put("reclassify", "fa-retweet");
-            put("addchildclassification", "fa-share ");
-            put("meshmapping", "fa-link");
-        }
-    };
-    private Map<String, String> SWAGGER_API_TYPE = new HashMap<String, String>() {
-        {
-            put("cdeTinyId", "operations-CDE-get_de__tinyId_");
-            put("cdeTinyIdVersion", "operations-CDE-get_de__tinyId__version__version_");
-            put("formTinyId", "operations-Form-get_form__tinyId_");
-            put("formTinyIdVersion", "operations-Form-get_form__tinyId__version__version_");
-        }
-    };
-    private Map<String, Integer> regStatusSortMap = new HashMap<String, Integer>() {
-        {
-            put("Retired", 6);
-            put("Incomplete", 5);
-            put("Candidate", 4);
-            put("Recorded", 3);
-            put("Qualified", 2);
-            put("Standard", 1);
-            put("Preferred Standard", 0);
-        }
-    };
 
     private void setDriver(String b, String u) {
         if (b == null) b = browser;
@@ -1699,15 +1669,11 @@ public class NlmCdeBaseTest implements USERNAME {
         for (ListIterator<WebElement> iterator = registrationStatusList.listIterator(); iterator.hasNext(); ) {
             WebElement webElement = iterator.next();
             String status = webElement.getText().trim();
-            if (order > 6) order = regStatusSortMap.get(status);
-            int currentOrder = regStatusSortMap.get(status);
+            if (order > 6) order = REG_STATUS_SORT_MAP.get(status);
+            int currentOrder = REG_STATUS_SORT_MAP.get(status);
             if (currentOrder < order)
                 org.junit.Assert.fail("Registration status order incorrect. Current:" + currentOrder + " Previous: " + order);
         }
-    }
-
-    protected int getRandomNumber() {
-        return (int) (Math.random() * 10000);
     }
 
     protected void addComment(String message) {
