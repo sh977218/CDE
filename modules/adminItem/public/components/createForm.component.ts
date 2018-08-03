@@ -64,10 +64,8 @@ export class CreateFormComponent implements OnInit {
             eltId: this.elt._id,
             orgName: event.selectedOrg
         };
-        let eltCopy = _cloneDeep(this.elt);
-        classifyItem(eltCopy, event.selectedOrg, event.classificationArray);
+        classifyItem(this.elt, event.selectedOrg, event.classificationArray);
         this.updateClassificationLocalStorage(postBody);
-        this.elt = eltCopy;
         this.modalRef.close();
     }
 
@@ -89,14 +87,10 @@ export class CreateFormComponent implements OnInit {
     }
 
     confirmDelete(event) {
-        let eltCopy = _cloneDeep(this.elt);
-        let steward = findSteward(eltCopy, event.deleteOrgName);
+        let steward = findSteward(this.elt, event.deleteOrgName);
         removeCategory(steward.object, event.deleteClassificationArray, err => {
             if (err) this.alert.addAlert('danger', err);
-            else {
-                this.elt = eltCopy;
-                this.alert.addAlert('success', 'Classification removed.');
-            }
+            else this.alert.addAlert('success', 'Classification removed.');
         });
     }
 

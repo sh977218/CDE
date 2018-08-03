@@ -42,7 +42,7 @@
             <div class="form-group">
                 <button (click)="cancelCreateForm()" mat-raised-button color="accent"> Cancel</button>
                 <button id="submit" type="submit" (click)="createForm()" mat-raised-button color="primary"
-                        [disabled]="!dataElementForm.form.valid"> Submit
+                        [disabled]="!dataElementForm.form.valid || validationErrors(elt)"> Submit
                 </button>
             </div>
             <hr/>
