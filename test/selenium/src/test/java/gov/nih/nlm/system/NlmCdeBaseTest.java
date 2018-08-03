@@ -75,7 +75,6 @@ public class NlmCdeBaseTest {
     protected static String classificationMgtUser_username = "classMgtUser";
     protected static String transferStewardUser_username = "transferStewardUser";
     protected static String anonymousCommentUser2_username = "CommentUser2";
-    protected static String anonymousFormCommentUser_username = "FormCommentUser";
     protected static String anonymousCommentUser_password = "pass";
     protected static String commentEditor_username = "commentEditor";
     protected static String commentEditor_password = "pass";
@@ -202,6 +201,7 @@ public class NlmCdeBaseTest {
 
         JavascriptExecutor js = (JavascriptExecutor) driver;
         driver.manage().timeouts().setScriptTimeout(9, TimeUnit.SECONDS);
+        driver.manage().window().maximize();
         ngdriver = new NgWebDriver(js);
 
     }
@@ -774,7 +774,10 @@ public class NlmCdeBaseTest {
     }
 
     protected void loginAs(String username, String password) {
-        clickElement(By.id("login_link"));
+        WebElement loginWe = findElement(By.linkText("LOGIN"));
+        System.out.println("log in text: " + loginWe.getText());
+        loginWe.click();
+        clickElement(By.linkText("LOGIN"));
         String usernameStr = username;
         if (username.length() > 17) {
             usernameStr = usernameStr.substring(0, 17) + "...";
