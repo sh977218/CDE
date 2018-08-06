@@ -20,6 +20,7 @@ require('es6-promise').polyfill();
 
 gulp.task('npm', function _npm() {
     run('node --version').exec();
+    run('npm cache verify').exec();
     return gulp.src(['./package.json'])
         .pipe(install());
 });

@@ -16,7 +16,6 @@ public class CreateForm extends BaseClassificationTest {
         String formV = "0.1alpha";
         String formOrg = "TEST";
 
-        goHome();
         clickElement(By.id("createEltLink"));
         clickElement(By.id("createFormLink"));
         textPresent("Please enter a name for the new Form");
@@ -25,6 +24,7 @@ public class CreateForm extends BaseClassificationTest {
         findElement(By.id("eltDefinition")).sendKeys(formDef);
         fillInput("Version", formV);
 
+        textPresent("Please select a steward for the new Form");
         new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText(formOrg);
         addClassificationMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
         modalGone();
@@ -35,7 +35,6 @@ public class CreateForm extends BaseClassificationTest {
 
         if (checkEs) {
             waitForESUpdate();
-
             goToFormByName(formName);
             goToGeneralDetail();
             textPresent(formDef);
