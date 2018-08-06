@@ -268,7 +268,6 @@ gulp.task('buildHome', function _buildHome() {
             .pipe(gulp.dest('./modules/system/views'));
     });
 });
-
 gulp.task('checkDbConnection', function _buildHome() {
     return new Promise(function (resolve, reject) {
         let isRequireDbConnection = !!require.cache[require.resolve('./server/system/connections')];
