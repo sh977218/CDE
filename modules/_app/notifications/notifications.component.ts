@@ -34,7 +34,6 @@ export class NotificationsComponent {
                 private userService: UserService,
                 private alert: AlertService) {
         setInterval(async () => {
-            console.log('currentVersion: ' + this.currentVersion);
             try {
                 const latestVersion = await this.http.get("/site-version", {responseType: 'text'}).toPromise();
                 if (latestVersion !== this.currentVersion) {
