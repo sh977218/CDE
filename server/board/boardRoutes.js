@@ -185,19 +185,19 @@ exports.module = function (roleConfig) {
 
     router.get('/:boardId/:start/:size?/', nocacheMiddleware, (req, res) => {
         let size = 20;
-        if (req.params.size) size = req.params.size;
+        if (req.params.size) size = Number.parseInt(req.params.size);
         if (size > 500) return res.status(403).send("Request too large");
         let boardId = req.params.boardId;
-        let start = req.params.start;
+        let start = Number.parseInt(req.params.start);
         boardDb.byId(boardId, handleError({req, res}, board => {
                 if (!board) return res.status(404).send("No board found.");
                 if (board.shareStatus !== "Public" && !checkBoardViewerShip(board, req.user)) {
                     return res.status(401).status("Not Authorized");
                 }
-                let totalItems = board.pins.length;
-                board.pins.splice(start, size);
                 delete board._doc.owner.userId;
-                let tinyIdList = board.pins.map(p => p.tinyId);
+                let totalItems = board.pins.length;
+                let tinyIdList = board.pins.splice(start, size).map(p => p.tinyId);
+                board.pins = [];
                 daoManager.getDao(board.type).elastic.byTinyIdList(tinyIdList, size, handleError({req, res}, elts => {
                     if (board.type === 'cde') cdeSvc.hideProprietaryCodes(elts, req.user);
                     let exportBoard = {

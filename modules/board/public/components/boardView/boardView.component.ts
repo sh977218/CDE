@@ -173,22 +173,9 @@ export class BoardViewComponent implements OnInit {
         this.http.get<any>('/server/board/' + this.boardId + '/' + ((this.currentPage - 1) * 20)).subscribe(response => {
             if (response.board) {
                 this.board = response.board;
-                this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
-
+                this.elts = response.elts;
                 this.totalItems = response.totalItems;
-                // $scope.numPages = $scope.totalItems / 20;
-                let pins = this.board.pins;
-                let respElts = response.elts;
-                this.elts = [];
-                pins.forEach(pin => {
-                    respElts.forEach(elt => {
-                        if (pin.tinyId === elt.tinyId) {
-                            pins.elt = elt;
-                            this.elts.push(elt);
-                        }
-                    });
-                });
-
+                this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
                 this.userService.then(user => {
                     this.board.users.forEach(u => {
                         if (u.username === user.username &&
