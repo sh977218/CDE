@@ -15,6 +15,9 @@ const FeedbackModel = conn.model('FeedbackIssue', schemas.feedbackIssueSchema);
 const consoleLogModel = conn.model('consoleLogs', schemas.consoleLogSchema);
 const userAgent = require('useragent');
 
+exports.LogErrorModel = LogErrorModel;
+exports.ClientErrorModel = ClientErrorModel;
+
 exports.consoleLog = function (message, level) { // no express errors see dbLogger.log(message)
     new consoleLogModel({message: message, level: level}).save(err => {
         if (err) noDbLogger.noDbLogger.error("Cannot log to DB: " + err);
@@ -73,13 +76,6 @@ exports.log = function (message, callback) { // express only, all others dbLogge
 exports.logError = function (message, callback) { // all server errors, express and not
     message.date = new Date();
     let description = (message.message || message.publicMessage || '').substr(0, 30);
-
-    mongo_data.saveNotification({
-        title: "Server Side Error: " + description,
-        url: "/siteAudit#serverError",
-        roles: ['siteAdmin']
-    });
-
     new LogErrorModel(message).save(err => {
         if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
         let msg = {
@@ -139,12 +135,6 @@ exports.logClientError = function (req, callback) {
 
         let ua = userAgent.is(req.headers['user-agent']);
         if (ua.chrome || ua.firefox || ua.edge) {
-            mongo_data.saveNotification({
-                title: "Client Side Error: " + exc.message.substr(0, 30),
-                url: "/siteAudit#clientErrors",
-                roles: ['siteAdmin']
-            });
-
             mongo_data.pushGetAdministratorRegistrations(registrations => {
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
             });
@@ -165,7 +155,7 @@ exports.handleError = function (options, cb) {
 };
 
 // @TODO: Combine with logError() which publishes notifications
-exports.respondError = function(err, options) {
+exports.respondError = function (err, options) {
     if (!options) options = {};
     if (options.res) {
         let message = options.publicMessage || "Generic Server Failure. Please submit an issue.";
@@ -230,7 +220,7 @@ exports.appLogs = function (body, callback) {
     });
 };
 
-exports.getServerErrors = function (params, callback) {
+exports.getServerErrors = (params, callback) => {
     if (!params.limit) params.limit = 20;
     if (!params.skip) params.skip = 0;
     const filter = {};

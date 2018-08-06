@@ -10,7 +10,10 @@ exports.userSchema = new Schema({
     email: stringType,
     password: stringType,
     lastLogin: Date,
-    lastViewNotification: Date,
+    notificationDate: {
+        serverLogDate: Date,
+        clientLogDate: Date
+    },
     lockCounter: Number,
     orgAdmin: [stringType],
     orgCurator: [stringType],
