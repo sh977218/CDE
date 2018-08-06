@@ -17,7 +17,7 @@ import { ServerErrorsComponent } from 'system/public/components/siteAdmin/server
 import { SiteAuditComponent } from 'system/public/components/siteAdmin/siteAudit/siteAudit.component';
 import { WidgetModule } from 'widget/widget.module';
 import { ActiveBansComponent } from "./components/siteAdmin/activeBans/activeBans.component";
-import { MatButtonModule, MatIconModule } from '@angular/material';
+import { MatButtonModule, MatIconModule, MatExpansionModule } from '@angular/material';
 
 const appRoutes: Routes = [
     {path: '', component: SiteAuditComponent},
@@ -32,7 +32,8 @@ const appRoutes: Routes = [
         // core
         WidgetModule,
         MatButtonModule,
-        MatIconModule
+        MatIconModule,
+        MatExpansionModule,
         // internal
     ],
     declarations: [
@@ -48,10 +49,8 @@ const appRoutes: Routes = [
         ServerErrorsComponent,
         SiteAuditComponent,
     ],
-    entryComponents: [
-    ],
-    exports: [
-    ],
+    entryComponents: [],
+    exports: [],
     providers: [
         CdeDiffPopulateService,
     ],

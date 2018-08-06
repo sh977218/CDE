@@ -9,7 +9,7 @@ import static com.jayway.restassured.RestAssured.get;
 
 public class LogErrorsTest extends NlmCdeBaseTest {
     @Test
-    public void logServerErrors() {
+    public void logErrors() {
         String response = get(baseUrl + "/server/log/triggerServerErrorExpress").asString();
         Assert.assertEquals("received", response);
         response = get(baseUrl + "/server/log/triggerServerErrorMongoose").asString();
@@ -26,9 +26,5 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         textPresent("ReferenceError: trigger is not defined");
         textPresent("/triggerServerErrorExpress");
 
-        clickElement(By.id("notifications"));
-        textPresent("trigger server error test", By.id("notificationsDropdown"));
-        textPresent("trigger server error test", By.id("notificationsDropdown"));
-        textPresent("trigger client error test", By.id("notificationsDropdown"));
     }
 }
