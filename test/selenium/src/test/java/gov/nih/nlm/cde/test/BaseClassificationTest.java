@@ -3,10 +3,8 @@ package gov.nih.nlm.cde.test;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 
 import java.util.Arrays;
@@ -14,8 +12,7 @@ import java.util.List;
 
 public class BaseClassificationTest extends NlmCdeBaseTest {
     public void addClassificationMethod(String[] categories) {
-        findElement(By.id("openClassificationModalBtn")).click();
-        textPresent("Please select at least one classification");
+        clickElement(By.id("openClassificationModalBtn"));
         addClassificationMethodDo(categories);
     }
 
