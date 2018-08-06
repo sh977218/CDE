@@ -87,17 +87,20 @@ exports.module = function (roleConfig) {
     router.put('/pinToBoard/', isAuthenticatedMiddleware, (req, res) => {
         let boardId = req.body.boardId;
         let type = req.body.type;
-        let tinyIdList = req.body.tinyId;
+        let tinyIdList = req.body.tinyIdList;
         boardDb.byId(boardId, handleError({req, res}, board => {
                 if (!board) return res.status(404).send("No board found.");
                 if (!checkBoardOwnerShip(board, req.user)) return res.status(401).status("Not Authorized");
                 daoManager.getDao(type).byTinyIdList(tinyIdList, handleError({req, res}, elts => {
-                    let eltsPins = elts.forEach(e => {
-                        e.pinnedDate = new Date();
-                        e.type = type;
-                        e.name = e.designations[0].designation;
+                    let newPins = elts.map(e => {
+                        return {
+                            pinnedDate: new Date(),
+                            type: type,
+                            name: e.designations[0].designation,
+                            tinyId: e.tinyId
+                        }
                     });
-                    board.pins = _.uniqWith(board.pins.concat(eltsPins), 'tinyId');
+                    board.pins = _.uniqWith(board.pins.concat(newPins), 'tinyId');
                     board.save(handleError({req, res}, () => res.send()));
                 }))
             })
