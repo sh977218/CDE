@@ -181,9 +181,8 @@ export class BoardViewComponent implements OnInit {
                 let respElts = response.elts;
                 this.elts = [];
                 pins.forEach(pin => {
-                    let pinId = this.board.type === 'cde' ? pin.deTinyId : pin.formTinyId;
                     respElts.forEach(elt => {
-                        if (pinId === elt.tinyId) {
+                        if (pin.tinyId === elt.tinyId) {
                             pins.elt = elt;
                             this.elts.push(elt);
                         }
