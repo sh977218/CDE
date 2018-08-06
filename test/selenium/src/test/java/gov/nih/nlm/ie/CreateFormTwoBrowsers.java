@@ -12,12 +12,12 @@ public class CreateFormTwoBrowsers extends NlmCdeBaseTest {
     @Test
     @SelectBrowser
     public void createFormOnIE() {
-        parentTest.createForm("Create IEForm Name", false);
+        parentTest.createForm("Create Form Name on IE", false);
     }
 
     @Test
     public void createFormOnChrome() {
-        parentTest.createForm("Create Chrome Form Name", false);
+        parentTest.createForm("Create Form Name on Chrome", false);
     }
 
 
