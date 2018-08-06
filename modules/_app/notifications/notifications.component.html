@@ -1,23 +1,17 @@
 <a [matMenuTriggerFor]="navDropdown">
-    <mat-icon [matBadge]="unreadNotifications.length" id="notificationBellIcon"
-              matBadgeColor="warn" matBadgeSize="small" [matBadgeHidden]="unreadNotifications.length === 0">
-        notifications
+    <mat-icon id="notificationBellIcon" [matBadge]="numberError" matBadgeColor="warn"
+              matBadgeSize="small" [matBadgeHidden]="!numberError">notifications
     </mat-icon>
 </a>
 
-<mat-menu #navDropdown="matMenu" panelClass="notifMenu">
-    <span id="notificationsDropdown">
-        <span mat-menu-item *ngFor="let notification of unreadNotifications"
-              (click)="viewNotification(notification)" style="padding:0.2rem 1rem; font-size: 0.7em">
-            <p><ng-container *ngIf="notification.count > 0">({{notification.count}}) </ng-container>{{notification._id.title}}</p>
-            <small *ngIf="notification.date">{{notification.date | timeAgo}}</small>
-        </span>
-        <span mat-menu-item *ngFor="let notification of readNotifications"
-              (click)="viewNotification(notification)"
-              style="padding:0.2rem 1rem; background-color: lightgray; font-size: 0.7em">
-            <p><ng-container *ngIf="notification.count > 0">({{notification.count}}) </ng-container>{{notification._id.title}}</p>
-            <small *ngIf="notification.date">{{notification.date | timeAgo}}</small>
-        </span>
-    </span>
+<mat-menu #navDropdown="matMenu" panelClass="notificationMenu">
+    <span *ngIf="numberVersionError" id="versionError" mat-menu-item>A new version of this site is available. To enjoy the new features, \n" +
+        "please close all instances / tabs of this site then load again. </span>
+    <a routerLink="/siteAudit" [queryParams]="{tab:'serverError'}" target="_blank" *ngIf="numberServerError"
+       id="serverError" mat-menu-item>
+        {{numberServerError}} Server Errors</a>
+    <a routerLink="/siteAudit" [queryParams]="{tab:'clientError'}" target="_blank" *ngIf="numberClientError"
+       id="clientError" mat-menu-item>
+        {{numberClientError}} Client Errors</a>
 </mat-menu>
 

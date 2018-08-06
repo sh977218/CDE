@@ -914,6 +914,7 @@ exports.init = function (app) {
             });
         } else res.status(401).send();
     });
+<<<<<<< HEAD
 
     app.get('/viewedNotification', authorization.loggedInMiddleware, (req, res) => {
         mongo_data.updateUserLastViewNotification(req.user, err => {

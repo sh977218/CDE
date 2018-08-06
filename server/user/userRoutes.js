@@ -58,5 +58,14 @@ exports.module = function (roleConfig) {
             userDb.save(newUser, handleError({req, res}, () => res.send(username + " added.")));
         }))
     });
+
+    router.post('/updateNotificationDate', roleConfig.notificationDate, (req, res) => {
+        let notificationDate = req.body;
+        userDb.byId(req.user._id, handleError({req, res}, user => {
+            if (!user) return res.status(404).send("User not found.");
+            if (user) user.notificationDate = notificationDate;
+            user.save(handleError({req, res}, () => res.send()));
+        }));
+    });
     return router;
 };
