@@ -52,7 +52,7 @@ export class BoardViewComponent implements OnInit {
 
     ngOnInit() {
         this.boardId = this.route.snapshot.params['boardId'];
-        this.http.get('/server/board/viewBoard/' + this.boardId).subscribe();
+        if (this.userService.user) this.http.get('/server/board/viewBoard/' + this.boardId).subscribe();
         this.reload();
         this.url = location.href;
     }
