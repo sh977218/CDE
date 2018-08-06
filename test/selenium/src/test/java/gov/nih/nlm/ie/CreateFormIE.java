@@ -6,11 +6,9 @@ import gov.nih.nlm.system.SelectBrowser;
 import org.testng.annotations.Test;
 
 public class CreateFormIE extends NlmCdeBaseTest {
-
     private CreateForm parentTest = new CreateForm();
 
     @Test
-    @SelectBrowser
     public void createFormIE() {
         parentTest.createForm("Create IEForm Name", false);
     }
