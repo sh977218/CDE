@@ -18,12 +18,11 @@ const usemin = require('gulp-usemin');
 
 require('es6-promise').polyfill();
 
-gulp.task('npmVersion', () => run('node --version').exec());
-gulp.task('npmCacheVerify', () => run('npm cache verify').exec());
-
-gulp.task('npm', gulp.series('npmVersion', 'npmCache', function _npm() {
-    return gulp.src(['./package.json']).pipe(install());
-}));
+gulp.task('npm', function _npm() {
+    run('node --version').exec();
+    return gulp.src(['./package.json'])
+        .pipe(install());
+});
 
 gulp.task('npmRebuildNodeSass', gulp.series('npm', function _npmRebuildNodeSass() {
     return run('npm rebuild node-sass').exec();
