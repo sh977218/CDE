@@ -28,15 +28,17 @@
             </div>
             <div class="form-group" *ngIf="elt.stewardOrg.name">
                 <button id="openClassificationModalBtn" mat-raised-button (click)="openClassifyItemModal()">
-                    <mat-icon>folder_open</mat-icon> Classify this {{ elt.elementType | uppercase}}
+                    <mat-icon>folder_open</mat-icon>
+                    Classify this {{ elt.elementType | uppercase}}
                 </button>
-                <div id="classificationBody" class="overflowHidden">
+                <div id="classificationBody" class="d-inline-block">
                     <cde-classification-view [elt]="elt" (confirmDelete)="confirmDelete($event);">
                     </cde-classification-view>
                 </div>
             </div>
             <div *ngIf="validationErrors(elt) !== null" class="form-group text-danger">
-                <mat-icon>warning</mat-icon> {{validationErrors(elt)}}
+                <mat-icon>warning</mat-icon>
+                {{validationErrors(elt)}}
             </div>
             <div class="clearfix"></div>
             <div class="form-group">

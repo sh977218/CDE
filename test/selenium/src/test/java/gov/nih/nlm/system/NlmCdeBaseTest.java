@@ -66,16 +66,17 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         if (b == null) b = browser;
 
         hangon(new Random().nextInt(10));
-        String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
+        String windows_detected_message = "MS Windows Detected";
         if (isWindows()) {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
             System.setProperty("webdriver.ie.driver", "./IEDriverServer.exe");
         } else {
-            System.out.println(windows_detected_message);
+            System.out.println("None " + windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         }
         MutableCapabilities caps;
+        System.out.println("Starting " + b.trim());
         if ("firefox".equals(b)) {
             DesiredCapabilities firefoxOptions = DesiredCapabilities.firefox();
             firefoxOptions.setBrowserName(b);
@@ -705,10 +706,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void loginAs(String username, String password) {
-        WebElement loginWe = findElement(By.linkText("LOGIN"));
-        System.out.println("log in text: " + loginWe.getText());
-        loginWe.click();
-        clickElement(By.linkText("LOGIN"));
+        clickElement(By.id("login_link"));
+        textPresent("Please Log In");
         String usernameStr = username;
         if (username.length() > 17) {
             usernameStr = usernameStr.substring(0, 17) + "...";
@@ -977,7 +976,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void setVisibleStatus(String id) {
         goToSearch("cde");
-        goHome();
         clickElement(By.id("searchSettings"));
         clickElement(By.id(id));
         hangon(1);
@@ -1559,6 +1557,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             clickElement(By.cssSelector("a[href='#/CDE']"));
         }
         findElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//a")).click();
+        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
         clickIFrameElement(By.xpath("//button[. = 'Try it out ']"));
         sendKeyIFrameElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input"), tinyId);
         if (version != null)

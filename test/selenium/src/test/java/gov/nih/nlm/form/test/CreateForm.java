@@ -23,6 +23,7 @@ public class CreateForm extends BaseClassificationTest {
         findElement(By.id("eltDefinition")).sendKeys(formDef);
         fillInput("Version", formV);
 
+        textPresent("Please select a steward for the new Form");
         new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText(formOrg);
         addClassificationMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
         modalGone();
@@ -33,7 +34,6 @@ public class CreateForm extends BaseClassificationTest {
 
         if (checkEs) {
             waitForESUpdate();
-
             goToFormByName(formName);
             goToGeneralDetail();
             textPresent(formDef);
