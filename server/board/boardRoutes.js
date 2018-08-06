@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const js2xml = require('js2xmlparser');
 
-const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const authorization = require('../system/authorization');
 const loggedInMiddleware = authorization.loggedInMiddleware;
 const nocacheMiddleware = authorization.nocacheMiddleware;
@@ -15,6 +14,8 @@ const handleError = require('../log/dbLogger').handleError;
 const logError = require('../log/dbLogger').logError;
 
 const boardDb = require('./boardDb');
+const userDb = require('../user/userDb');
+const mongo_data = require('../system/mongo-data');
 const elastic = require('./elastic');
 const elastic_system = require('../system/elastic');
 const config = require('../system/parseConfig');
@@ -214,10 +215,6 @@ exports.module = function (roleConfig) {
         );
     });
 
-    function checkUnauthorizedPublishing(user, shareStatus) {
-        return shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher");
-    }
-
     router.post('/', loggedInMiddleware, (req, res) => {
         let boardQuota = config.boardQuota || 50;
         let board = req.body;
@@ -227,7 +224,7 @@ exports.module = function (roleConfig) {
                 userId: req.user._id,
                 username: req.user.username
             };
-            if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) {
+            if (authorization.unauthorizedPublishing(req.user, req.body)) {
                 return res.status(403).send("You don't have permission to make boards public!");
             }
             boardDb.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
@@ -250,7 +247,7 @@ exports.module = function (roleConfig) {
                 b.shareStatus = board.shareStatus;
                 b.pins = board.pins;
                 b.tags = board.tags;
-                if (checkUnauthorizedPublishing(req.user, b.shareStatus)) {
+                if (authorization.unauthorizedPublishing(req.user, b)) {
                     return res.status(403).send("You don't have permission to make boards public!");
                 }
                 b.save(handleError({req, res}, () => {
@@ -303,9 +300,9 @@ exports.module = function (roleConfig) {
 
                 board.users.forEach(u => {
                     if (u.role === 'reviewer') {
-                        mongo_data_system.userByName(u.username, function (err, u) {
+                        userDb.userByUsername(u.username, function (err, u) {
                             if (u && u.username && u.username.length > 0) {
-                                mongo_data_system.Message.findOneAndUpdate({
+                                mongo_data.Message.findOneAndUpdate({
                                     'type': 'BoardApproval',
                                     'author.authorType': "user",
                                     'author.name': req.user.username,
@@ -361,9 +358,9 @@ exports.module = function (roleConfig) {
                 res.send("done");
                 board.users.forEach(u => {
                     if (u.role === 'reviewer' && u.status.approval === 'invited') {
-                        mongo_data_system.userByName(u.username, handleError({req, res}, user => {
+                        userDb.userByUsername(u.username, handleError({req, res}, user => {
                             if (user) {
-                                mongo_data_system.Message.findOneAndUpdate({
+                                mongo_data.Message.findOneAndUpdate({
                                     'type': 'BoardApproval',
                                     'author.authorType': "user",
                                     'author.name': req.user.username,
@@ -420,5 +417,6 @@ exports.module = function (roleConfig) {
     });
 
     return router;
+
 
 };

@@ -103,3 +103,7 @@ exports.allowCreate = function (user, elt, cb) {
 exports.allowUpdate = function (user, item, cb) {
     return cb(authorizationShared.canEditCuratedItem(user, item) ? undefined : 'Not authorized');
 };
+
+exports.unauthorizedPublishing = function (user, board) {
+    return board.shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher");
+};
