@@ -5,13 +5,20 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import gov.nih.nlm.system.SelectBrowser;
 import org.testng.annotations.Test;
 
-public class CreateFormIE extends NlmCdeBaseTest {
+public class CreateFormTwoBrowsers extends NlmCdeBaseTest {
 
     private CreateForm parentTest = new CreateForm();
 
     @Test
-    public void createFormIE() {
+    @SelectBrowser
+    public void createFormOnIE() {
         parentTest.createForm("Create IEForm Name", false);
     }
+
+    @Test
+    public void createFormOnChrome() {
+        parentTest.createForm("Create Chrome Form Name", false);
+    }
+
 
 }

@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 public class CreateFormBoard extends BoardTest {
 
     @Test
-    public void createFormOnlyBoard() {
+    public void createFormFromBoard() {
         mustBeLoggedInAs(formboarduser, password);
         String boardName = "formOnlyBoard";
         String boardDefinition = "this board only has forms.";
