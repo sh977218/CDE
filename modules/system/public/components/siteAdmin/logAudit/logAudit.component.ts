@@ -6,8 +6,8 @@ import { Component } from '@angular/core';
     selector: 'cde-log-audit',
     templateUrl: './logAudit.component.html',
     styles: [`
-        .fa.fa-fw.fa-sort{
-            color:lightgrey;
+        .fa.fa-fw.fa-sort {
+            color: lightgrey;
         }
     `]
 })
@@ -50,7 +50,8 @@ export class LogAuditComponent {
 
     constructor(
         private http: HttpClient
-    ) {}
+    ) {
+    }
 
     searchLogs(newSearch = false) {
         let postBody = {
