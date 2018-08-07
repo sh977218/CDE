@@ -338,6 +338,7 @@
             </div>
             <!-- SEARCH RESULTS -->
             <div id="resultList" [ngClass]="filterMode?'col-12 col-sm-10':'col-12'" class="px-1">
+                <div id="resultListTour"></div>
                 <span [hidden]="elts.length >= 0" class="h1 pl130">
                     <i class="fa fa-spinner fa-pulse"></i>Searching...</span>
                 <span [hidden]="elts.length !== 0" class="h4"><i class="fa fa-frown-o"></i>
