@@ -35,8 +35,8 @@ export class PinBoardModalComponent {
                 tinyIdList: elts.map(e => e.tinyId),
                 type: this.module
             }, {observe: 'response', responseType: 'text'}).subscribe(r => {
-                if (elts.length === 1) this.alert.httpErrorMessageAlert('Added to Board');
-                else this.alert.httpErrorMessageAlert('All elements pinned.');
+                if (elts.length === 1) this.alert.addAlert('success', 'Added to Board');
+                else this.alert.addAlert('success', 'All elements pinned.');
                 this.modalRef.close();
             }, err => this.alert.httpErrorMessageAlert(err));
         }, err => this.alert.httpErrorMessageAlert(err));

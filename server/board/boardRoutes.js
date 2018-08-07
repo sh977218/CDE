@@ -91,7 +91,8 @@ exports.module = function (roleConfig) {
         boardDb.byId(boardId, handleError({req, res}, board => {
                 if (!board) return res.status(404).send("No board found.");
                 if (!checkBoardOwnerShip(board, req.user)) return res.status(401).status("Not Authorized");
-                if(_.intersection(board.pins.map(p=>p.tinyId),tinyIdList))return res.status(409).send("Already added");
+                let intersection = _.intersection(board.pins.map(p => p.tinyId), tinyIdList);
+                if (!_.isEmpty(intersection)) return res.status(409).send("Already added");
                 daoManager.getDao(type).byTinyIdList(tinyIdList, handleError({req, res}, elts => {
                     let newPins = elts.map(e => {
                         return {
