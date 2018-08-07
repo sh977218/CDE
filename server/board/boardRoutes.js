@@ -408,7 +408,7 @@ exports.module = function (roleConfig) {
                 let query = elastic_system.buildElasticSearchQuery(req.user, req.body.query);
                 if (query.size > config.maxPin) return res.status(403).send("Maximum number excesses.");
                 elastic_system.elasticsearch('cde', query, req.body.query, handleError({req, res}, result => {
-                    let eltsPins = result.cde.forEach(e => {
+                    let eltsPins = result.cdes.forEach(e => {
                         e.pinnedDate = new Date();
                         e.type = 'cde';
                         e.tinyId = e.id;

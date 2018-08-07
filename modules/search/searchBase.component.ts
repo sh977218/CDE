@@ -539,9 +539,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 tags: []
             };
             let data = {
-                query: this.elasticService.buildElasticQuerySettings(this.searchSettings)
-                , board: selectedBoard
-                , itemType: this.module
+                query: this.elasticService.buildElasticQuerySettings(this.searchSettings),
+                boardId: selectedBoard._id,
+                itemType: this.module
             };
             data.query.resultPerPage = (<any>window).maxPin;
             this.http.post('/server/board/pinEntireSearchToBoard', data, {responseType: 'text'}).subscribe(() => {
