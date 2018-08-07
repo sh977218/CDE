@@ -72,9 +72,9 @@ exports.module = function (roleConfig) {
         boardDb.publicBoardsByPinTinyId(req.params.tinyId, handleError({req, res}, boards => res.send(boards)));
     });
 
-    router.delete('/deletePin/:boardId/:tinyId', isAuthenticatedMiddleware, (req, res) => {
-        let boardId = req.params.boardId;
-        let tinyId = req.params.tinyId;
+    router.post('/deletePin/', isAuthenticatedMiddleware, (req, res) => {
+        let boardId = req.body.boardId;
+        let tinyId = req.body.tinyId;
         boardDb.byId(boardId, handleError({req, res}, board => {
                 if (!board) return res.status(404).send("No board found.");
                 if (!checkBoardOwnerShip(board, req.user)) return res.status(401).send("You must own a board to do this.");
