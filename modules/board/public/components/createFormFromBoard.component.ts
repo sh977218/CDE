@@ -24,9 +24,9 @@ export class CreateFormFromBoardComponent {
     }
 
     openCreateFormModal() {
-        this.http.get<any>('/board/' + this.board._id + '/0/500').subscribe(
+        this.http.get<any>('/server/board/' + this.board.id + '/0/500').subscribe(
             res => {
-                if (res.board.pins && res.board.pins.length > 0) {
+                if (res.elts.length > 0) {
                     res.elts.forEach(p => {
                         this.formService.convertCdeToQuestion(p, q => {
                             this.elt.formElements[0].formElements.push(q);
