@@ -111,7 +111,7 @@ exports.module = function (roleConfig) {
     });
 
     router.post('/pinMoveUp', (req, res) => {
-        let boardId = req.params.boardId;
+        let boardId = req.body.boardId;
         let tinyId = req.body.tinyId;
         boardDb.byId(boardId, handleError({req, res}, board => {
                 if (!board) return res.status(404).send("No board found.");
