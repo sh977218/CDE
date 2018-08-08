@@ -78,7 +78,8 @@ exports.module = function (roleConfig) {
         boardDb.byId(boardId, handleError({req, res}, board => {
                 if (!board) return res.status(404).send("No board found.");
                 if (!checkBoardOwnerShip(board, req.user)) return res.status(401).send("You must own a board to do this.");
-                board.pins = _.dropWhile(board.pins, p => p.tinyId === tinyId);
+                let index = board.pins.map(p => p.tinyId).indexOf(tinyId);
+                if (index > -1) board.pins.splice(index, 1);
                 board.save(handleError({req, res}, () => res.send("Removed")));
             })
         );
