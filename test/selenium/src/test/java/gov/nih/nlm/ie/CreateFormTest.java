@@ -5,8 +5,7 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import gov.nih.nlm.system.SelectBrowser;
 import org.testng.annotations.Test;
 
-public class CreateFormTwoBrowsers extends NlmCdeBaseTest {
-
+public class CreateFormTest extends NlmCdeBaseTest {
     private CreateForm parentTest = new CreateForm();
 
     @Test
@@ -19,6 +18,4 @@ public class CreateFormTwoBrowsers extends NlmCdeBaseTest {
     public void createFormOnChrome() {
         parentTest.createForm("Create Form Name on Chrome", false);
     }
-
-
 }
