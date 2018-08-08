@@ -6,9 +6,8 @@ import org.testng.Assert;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-public class CreateCdeTest extends BaseClassificationTest {
+public class CreateCde extends BaseClassificationTest {
 
-    @Test
     @Parameters("Create Cde Test Name")
     public void createCde(String cdeName, boolean checkEs) {
         mustBeLoggedInAs(nlm_username, nlm_password);
