@@ -73,14 +73,17 @@ export class SkipLogicValidateService {
         if (!q) return [];
 
         if (q.question.datatype === 'Value List') {
-            return q.question.answers.map(a => {
-                let pv = tokenSanitizer(a.permissibleValue);
-                let pvString = `"${pv}" `;
-                let nameString = a.valueMeaningName !== a.permissibleValue
-                    ? `"${pv}" - ${tokenSanitizer(a.valueMeaningName)}` : pvString;
-                this.optionsMap.set(nameString, pvString);
-                return nameString;
-            });
+            if (!q.question.answers) return [];
+            else {
+                return q.question.answers.map(a => {
+                    let pv = tokenSanitizer(a.permissibleValue);
+                    let pvString = `"${pv}" `;
+                    let nameString = a.valueMeaningName !== a.permissibleValue
+                        ? `"${pv}" - ${tokenSanitizer(a.valueMeaningName)}` : pvString;
+                    this.optionsMap.set(nameString, pvString);
+                    return nameString;
+                });
+            }
         }
         if (q.question.datatype === 'Number') {
             return ['{{' + q.question.datatype + '}}'];
