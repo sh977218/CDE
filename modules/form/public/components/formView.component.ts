@@ -24,7 +24,7 @@ import { Comment } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormElementsContainer } from 'shared/form/form.model';
 import {
-    addFormIds, areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, noopSkipCb
+    addFormIds, areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, noopSkipIterCb
 } from 'shared/form/formShared';
 import { httpErrorMessage } from 'widget/angularHelper';
 import { isIe, scrollTo } from 'widget/browser';
@@ -402,7 +402,7 @@ export class FormViewComponent implements OnInit {
 
     // cb()
     validateUoms(callback) {
-        iterateFe(this.elt, noopSkipCb, undefined, (q, cb) => {
+        iterateFe(this.elt, noopSkipIterCb, undefined, (q, cb) => {
             this.ucumService.validateUoms(q.question, () => {
                 if (q.question.uomsValid.some(e => !!e)) {
                     this.validationErrors.push(new LocatableError(

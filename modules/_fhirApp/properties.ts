@@ -1,0 +1,212 @@
+import _isEqual from 'lodash/isEqual';
+
+import { FhirMapped, getMapPropertyFromId, supportedResourcesMaps } from '_fhirApp/resources';
+import { ResourceTree } from '_fhirApp/resourceTree';
+import { FormQuestion } from 'shared/form/form.model';
+import { codeSystemOut } from 'shared/mapping/fhir';
+import { newCodeableConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
+import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
+import { newPeriod } from 'shared/mapping/fhir/datatype/fhirPeriod';
+import { getRef, newReference } from 'shared/mapping/fhir/datatype/fhirReference';
+
+export function propertyToQuestion(q: FormQuestion, parent: ResourceTree, name: string): boolean {
+    let map: supportedResourcesMaps = parent.map;
+    let resource = parent.resource;
+    let [propertyMap] = getMapPropertyFromId(map, q.question.cde.tinyId);
+    if (!resource || !propertyMap) {
+        return false;
+    }
+    let value;
+    switch (propertyMap.type) {
+        case 'backbone':
+            throw new Error('BAD');
+        case 'choiceType':
+            if (_isEqual(propertyMap.properties, ['dateTime', 'Period'])) {
+                let date = resource[propertyMap.property + 'DateTime'];
+                if (date) value = [date];
+                let period = resource[propertyMap.property + 'Period'];
+                if (period) value = [period.start, period.end];
+            } else {
+                throw new Error('BAD');
+            }
+            break;
+        default:
+            let answer = resource[name]
+                ? (propertyMap.max === -1 || propertyMap.max > 1
+                    ? resource[name]
+                    : [resource[name]]
+                )
+                : [];
+            switch (propertyMap.type) {
+                // case 'Period': // different from the rest [start, end]
+                //     answer = newPeriod(...value);
+                //     break;
+                case 'FhirAnnotation':
+                    value = answer.map(v => v.text);
+                    break;
+                case 'FhirCodeableConcept':
+                    // take first only
+                    value = answer.map(v => v.coding[0] && v.coding[0].code);
+                    break;
+                case 'FhirReference':
+                    value = answer.map(getRef);
+                    break;
+                default:
+                    value = answer;
+            }
+            if (name === 'usedReference' && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
+                value = value.map(a => {
+                    let i = map.mapping.usedReferencesMaps.indexOf(a);
+                    if (i > -1 && q.question.answers[i] && q.question.answers[i].permissibleValue) {
+                        return q.question.answers[i].permissibleValue;
+                    }
+                    return a;
+                });
+            }
+    }
+    // for mismatch array to single-select, only take first
+    q.question.answer = q.question.multiselect ? value : value[0];
+    return true;
+}
+
+export function questionToProperty(q: FormQuestion, parent: ResourceTree, name: string): boolean {
+    let map: supportedResourcesMaps = parent.map;
+    let resource = parent.resource;
+    let [propertyMap] = getMapPropertyFromId(map, q.question.cde.tinyId);
+    if (!resource || !propertyMap) {
+        return false;
+    }
+    let value = q.question.multiselect ? q.question.answer : [q.question.answer];
+    if (!value.length && propertyMap.default) {
+        value = [propertyMap.default];
+    }
+    if (!value) value = [];
+    switch (propertyMap.type) {
+        case 'backbone':
+            throw new Error('BAD');
+        case 'choiceType':
+            if (_isEqual(propertyMap.properties, ['dateTime', 'Period'])) {
+                switch (value.length) {
+                    case 2:
+                        resource[propertyMap.property + 'DateTime'] = undefined;
+                        resource[propertyMap.property + 'Period'] = newPeriod(value[0], value[1]);
+                        break;
+                    case 1:
+                        resource[propertyMap.property + 'DateTime'] = value[0];
+                        resource[propertyMap.property + 'Period'] = undefined;
+                        break;
+                    default:
+                        resource[propertyMap.property + 'DateTime'] = undefined;
+                        resource[propertyMap.property + 'Period'] = undefined;
+                }
+            } else {
+                throw new Error('BAD');
+            }
+            break;
+        default:
+            if (name === 'usedReference' && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
+                value = value.map(a => {
+                    let match = q.question.answers.filter(pv => pv.permissibleValue === a)[0];
+                    if (match) {
+                        let staticValue = map.mapping.usedReferencesMaps[q.question.answers.indexOf(match)];
+                        if (staticValue) {
+                            return staticValue;
+                        }
+                    }
+                    return a;
+                });
+            }
+            let answer: any = value.map(v => typedValueToProperty(propertyMap, v));
+            if (propertyMap.max === -1 || propertyMap.max > 1) {
+                if (q.question.multiselect) {
+                    // replace
+                    resource[name] = answer.length ? answer : undefined;
+                } else {
+                    // mismatch single-select to array, partial update, no delete
+                    if (!Array.isArray(resource[name])) resource[name] = [];
+                    value.forEach((v, i) => {
+                        let index = presentIndex(resource[name], propertyMap, value[0]);
+                        if (index > -1) {
+                            resource[name][index] = answer[i];
+                        } else {
+                            resource[name].push(answer[i]);
+                        }
+                    });
+                    if (resource[name].length === 0) resource[name] = undefined;
+                }
+            } else {
+                resource[name] = answer[0];
+            }
+            if (propertyMap.min > 0 && !resource[name]) {
+                throw new Error('BAD');
+            }
+    }
+    return true;
+}
+
+function presentIndex(list: any[], propertyMap: FhirMapped, v: any): number {
+    let match = list.filter(l => {
+        switch (propertyMap.type) {
+            // case 'Period': // won't work without value
+            //     return l.start === value[0] && l.end === value[1];
+            case 'FhirAnnotation':
+                return l.text === v;
+            case 'FhirCodeableConcept':
+                return l.coding.some(c => c.system === codeSystemOut(propertyMap.subTypes[0] || 'SNOMED') && c.code === v);
+            case 'FhirReference':
+                return l.reference === v;
+            default:
+                return l === v;
+        }
+    });
+    return match.length ? list.indexOf(match[0]) : -1;
+}
+
+export function staticToProperty(self: ResourceTree) {
+    let ids = self.map.questionIds;
+    let map: supportedResourcesMaps = self.map;
+    let resource = self.resource;
+    if (!resource || !map) {
+        return false;
+    }
+    self.map.questionProperties.forEach((propertyMap, i) => {
+        if (ids[i] === 'static') {
+            let value = map.mapping[propertyMap.mapFieldValue];
+            if (value) {
+                let answer = typedValueToProperty(propertyMap, value, map.mapping[propertyMap.mapFieldValue + 'System']);
+                let name = propertyMap.property;
+                if (propertyMap.max === -1 || propertyMap.max > 1) {
+                    resource[name] = answer ? [answer] : undefined;
+                } else {
+                    resource[name] = answer;
+                }
+            } else {
+                if (typeof(resource[name]) !== 'undefined') {
+                    resource[name] = undefined;
+                }
+            }
+            if (propertyMap.min > 0 && !resource[name]) {
+                throw new Error('BAD');
+            }
+        }
+    });
+}
+
+function typedValueToProperty(propertyMap: FhirMapped, value: string, system?: string) {
+    switch (propertyMap.type) {
+        // case 'Period': // different from the rest [start, end]
+        //     answer = newPeriod(...value);
+        //     break;
+        case 'FhirAnnotation':
+            return ({text: value});
+        case 'FhirCodeableConcept':
+            return newCodeableConcept([newCoding(
+                codeSystemOut(system || propertyMap.subTypes[0] || 'SNOMED'),
+                value
+            )]);
+        case 'FhirReference':
+            return newReference(value);
+        default:
+            return value;
+    }
+}

@@ -264,6 +264,12 @@ exports.init = function (app) {
         app.get(path, (req, res) => res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml));
     });
 
+    app.get('/fhir/launch/:param', (req, res) => {
+        res.sendFile(path.join(__dirname, '../../modules/_fhirApp', 'fhirAppLaunch.html'), undefined, err => {
+            if (err) res.sendStatus(404);
+        });
+    });
+
     app.get('/fhir/form/:param', (req, res) => {
         res.sendFile(path.join(__dirname, '../../modules/_fhirApp', 'fhirApp.html'), undefined, err => {
             if (err) res.sendStatus(404);

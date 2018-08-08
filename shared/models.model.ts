@@ -1,6 +1,9 @@
 import { CdeForm } from 'shared/form/form.model';
 import { DataElement } from 'shared/de/dataElement.model';
 
+export type supportedFhirResources = 'Observation'|'Procedure';
+export const supportedFhirResourcesArray = ['Observation', 'Procedure'];
+
 export class Attachment {
     comment: string;
     fileid: string;

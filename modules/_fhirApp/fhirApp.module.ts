@@ -14,7 +14,10 @@ import {
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 
+import { CdeFhirService, SelectOneDialogComponent } from '_fhirApp/cdeFhir.service';
 import { FhirAppComponent, FhirStandaloneComponent, ViewFhirEncounterDialogComponent } from '_fhirApp/fhirApp.component';
+import { FhirSmartService } from '_fhirApp/fhirSmart.service';
+import { FhirBrowserEncounterComponent } from '_fhirApp/browser/fhirBrowserEncounter.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 
 const appRoutes: Routes = [
@@ -39,13 +42,19 @@ const appRoutes: Routes = [
     ],
     declarations: [
         FhirAppComponent,
+        FhirBrowserEncounterComponent,
         FhirStandaloneComponent,
+        SelectOneDialogComponent,
         ViewFhirEncounterDialogComponent,
-
     ],
     entryComponents: [
         FhirAppComponent,
+        SelectOneDialogComponent,
         ViewFhirEncounterDialogComponent,
+    ],
+    providers: [
+        CdeFhirService,
+        FhirSmartService,
     ],
     bootstrap: [FhirStandaloneComponent]
 })
