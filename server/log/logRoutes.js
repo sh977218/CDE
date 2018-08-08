@@ -4,6 +4,7 @@ const dbLogger = require('./dbLogger');
 const handleError = require('./dbLogger').handleError;
 const mongo_data = require('../system/mongo-data');
 const pushNotification = require('../system/pushNotification');
+const userDb = require('../user/userDb');
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
@@ -45,43 +46,22 @@ exports.module = function (roleConfig) {
 
     router.get('/triggerServerErrorExpress', (req, res) => {
         res.send("received");
-        mongo_data.saveNotification({
-            title: 'trigger server error test',
-            url: '/triggerServerErrorExpress',
-            roles: ['siteAdmin']
-        });
         trigger.error(); // jshint ignore:line
     });
 
     router.get('/triggerServerErrorMongoose', (req, res) => {
         res.send("received");
         mongo_data.orgByName("none");
-        mongo_data.saveNotification({
-            title: 'trigger server mongoose error test',
-            url: '/triggerServerErrorMongoose',
-            roles: ['siteAdmin']
-        });
         trigger.error(); // jshint ignore:line
 
     });
 
     router.get('/triggerClientError', (req, res) => {
         res.send("received");
-        mongo_data.saveNotification({
-            title: 'trigger client error test',
-            url: '/triggerClientError',
-            roles: ['siteAdmin']
-        });
         trigger.error();
     });
 
     router.post('/feedback/report', (req, res) => {
-        mongo_data.saveNotification({
-            title: 'Feedback Error: ' + req.body.feedback ? JSON.parse(req.body.feedback).note.substr(0, 15) : '',
-            url: "/siteAudit#userFeedback",
-            roles: ['siteAdmin']
-        });
-
         dbLogger.saveFeedback(req, () => {
             let msg = {
                 title: 'New Feedback Message\'',

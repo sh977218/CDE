@@ -10,8 +10,10 @@ import { isSiteAdmin } from 'shared/system/authorizationShared';
 
 const actionMapping: IActionMapping = {
     mouse: {
-        click: () => {},
-        expanderClick: () => {}
+        click: () => {
+        },
+        expanderClick: () => {
+        }
     }
 };
 
@@ -44,7 +46,7 @@ export class ClassificationViewComponent {
         this.orgHelperService.then(() => this.orgHelperLoaded = true, _noop);
     }
 
-    getClassifLink () {
+    getClassifLink() {
         return '/' + this.elt.elementType + '/search';
     }
 
