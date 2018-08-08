@@ -152,13 +152,6 @@ setInterval(() => {
                             ]
                         }
                     };
-
-                    mongo_data.saveNotification({
-                        title: 'Elastic Search Index Error',
-                        url: "/status/cde",
-                        roles: ['siteAdmin']
-                    });
-
                     mongo_data.pushGetAdministratorRegistrations(registrations => {
                         registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
                     });

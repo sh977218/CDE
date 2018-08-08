@@ -252,9 +252,13 @@ try {
 
     let userModule = require("./server/user/userRoutes").module({
         search: [authorization.isOrgAdminMiddleware],
-        manage: [authorization.isOrgAuthorityMiddleware]
+        manage: [authorization.isOrgAuthorityMiddleware],
+        notificationDate:[authorization.isSiteAdminMiddleware]
     });
     app.use('/server/user', userModule);
+
+    let notificationModule = require("./server/notification/notificationRoutes").module({});
+    app.use('/server/notification', authorization.loggedInMiddleware, notificationModule);
 
     let articleModule = require("./server/article/articleRoutes").module({
         update: [authorization.isSiteAdminMiddleware],

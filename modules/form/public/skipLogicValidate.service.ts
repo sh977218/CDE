@@ -10,9 +10,6 @@ export class SkipLogicValidateService {
     previousSkipLogicPriorToSelect = '';
     optionsMap: Map<string, string> = new Map;
 
-    constructor() {
-    }
-
     static checkAndUpdateLabel(section, oldLabel, newLabel = undefined) {
         let result = false;
         section.formElements.forEach((fe) => {
@@ -58,10 +55,7 @@ export class SkipLogicValidateService {
 
         if (!options) options = [];
         let optionsFiltered = options.filter(o => o.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1);
-        if (optionsFiltered.length > 0) {
-            options = optionsFiltered;
-        }
-
+        if (optionsFiltered.length > 0) options = optionsFiltered;
         return options;
     }
 
@@ -70,14 +64,17 @@ export class SkipLogicValidateService {
         if (!q) return [];
 
         if (q.question.datatype === 'Value List') {
-            return q.question.answers.map(a => {
+            if (!q.question.answers) return [];
+            else {
+                return q.question.answers.map(a => {
                     let pv = tokenSanitizer(a.permissibleValue);
                     let pvString = `"${pv}" `;
                     let nameString = a.valueMeaningName !== a.permissibleValue
                         ? `"${pv}" - ${tokenSanitizer(a.valueMeaningName)}` : pvString;
                     this.optionsMap.set(nameString, pvString);
                     return nameString;
-            });
+                });
+            }
         }
         if (q.question.datatype === 'Number') {
             return ['{{' + q.question.datatype + '}}'];

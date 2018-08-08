@@ -56,7 +56,7 @@ const searchResultSteps: Array<any> = [
     },
     {
         title: " 10/42 Search Result",
-        element: "#resultList",
+        element: "#resultListTour",
         content: "Browsing can return hundreds of elements sorted by relevance.",
         placement: "top"
     },
@@ -276,7 +276,6 @@ const formSteps = [
 
 @Injectable()
 export class TourService {
-
     static steps = navigationSteps.concat(searchResultSteps).concat(cdeSteps).concat(formSteps);
 
     static clickAndGoNext(tour, clickWhat: string, waitForWhat: string, cb) {
