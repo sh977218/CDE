@@ -110,7 +110,7 @@ exports.module = function (roleConfig) {
 
     });
 
-    router.post('/pin/move/up', (req, res) => {
+    router.post('/pinMoveUp', (req, res) => {
         let boardId = req.params.boardId;
         let tinyId = req.body.tinyId;
         boardDb.byId(boardId, handleError({req, res}, board => {
@@ -125,8 +125,8 @@ exports.module = function (roleConfig) {
             })
         );
     });
-    router.post('/pin/move/down', (req, res) => {
-        let boardId = req.params.boardId;
+    router.post('/pinMoveDown', (req, res) => {
+        let boardId = req.body.boardId;
         let tinyId = req.body.tinyId;
         boardDb.byId(boardId, handleError({req, res}, board => {
                 if (!board) return res.status(404).send("No board found.");
@@ -140,8 +140,8 @@ exports.module = function (roleConfig) {
             })
         );
     });
-    router.post('/pin/move/top', (req, res) => {
-        let boardId = req.params.boardId;
+    router.post('/pinMoveTop', (req, res) => {
+        let boardId = req.body.boardId;
         let tinyId = req.body.tinyId;
         boardDb.byId(boardId, handleError({req, res}, board => {
                 if (!board) return res.status(404).send("No board found.");

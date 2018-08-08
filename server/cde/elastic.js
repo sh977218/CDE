@@ -246,6 +246,10 @@ exports.byTinyIdList = function (idList, size, cb) {
             });
             cb(error);
         } else {
+            // @TODO possible to move this sort to elastic search?
+            response.hits.hits.sort((a, b) => {
+                return idList.indexOf(a._id) - idList.indexOf(b._id);
+            });
             cb(null, response.hits.hits.map(h => h._source));
         }
     });
