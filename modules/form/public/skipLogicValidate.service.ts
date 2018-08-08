@@ -10,9 +10,6 @@ export class SkipLogicValidateService {
     previousSkipLogicPriorToSelect = '';
     optionsMap: Map<string, string> = new Map;
 
-    constructor() {
-    }
-
     static checkAndUpdateLabel(section, oldLabel, newLabel = undefined) {
         let result = false;
         section.formElements.forEach((fe) => {
@@ -58,13 +55,7 @@ export class SkipLogicValidateService {
 
         if (!options) options = [];
         let optionsFiltered = options.filter(o => o.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1);
-        if (optionsFiltered.length > 6) {
-            optionsFiltered = optionsFiltered.slice(optionsFiltered.length - 6, optionsFiltered.length);
-        }
-        if (optionsFiltered.length > 0) {
-            options = optionsFiltered;
-        }
-
+        if (optionsFiltered.length > 0) options = optionsFiltered;
         return options;
     }
 
