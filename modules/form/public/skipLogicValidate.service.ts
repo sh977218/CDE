@@ -91,9 +91,7 @@ export class SkipLogicValidateService {
         if (event && event.item) {
             skipLogic.condition = this.previousSkipLogicPriorToSelect
                 + (this.optionsMap.size ? this.optionsMap.get(event.item) : event.item);
-        } else {
-            skipLogic.condition = event;
-        }
+        } else skipLogic.condition = event;
 
         return SkipLogicValidateService.validateSkipLogic(parent, fe);
     }
