@@ -408,11 +408,13 @@ exports.module = function (roleConfig) {
                 let query = elastic_system.buildElasticSearchQuery(req.user, req.body.query);
                 if (query.size > config.maxPin) return res.status(403).send("Maximum number excesses.");
                 elastic_system.elasticsearch('cde', query, req.body.query, handleError({req, res}, result => {
-                    let eltsPins = result.cdes.forEach(e => {
-                        e.pinnedDate = new Date();
-                        e.type = 'cde';
-                        e.tinyId = e.id;
-                        e.name = e.designations[0].designation;
+                    let eltsPins = result.cdes.map(e => {
+                        return {
+                            pinnedDate: new Date(),
+                            type: 'cde',
+                            tinyId: e.tinyId,
+                            name: e.designations[0].designation,
+                        }
                     });
                     board.pins = _.uniqWith(board.pins.concat(eltsPins), 'tinyId');
                     board.save(handleError({req, res}, () => res.send("Added to Board")));
