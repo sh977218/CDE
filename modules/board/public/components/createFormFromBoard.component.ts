@@ -24,21 +24,21 @@ export class CreateFormFromBoardComponent {
     }
 
     openCreateFormModal() {
-        if (this.board.pins && this.board.pins.length > 0) {
-            this.elt = new CdeForm();
-            this.elt.designations.push(new Designation(this.board.name));
-            this.elt.definitions.push(new Definition());
-            this.elt.formElements.push(new FormSection());
-            this.http.get<any>('/board/' + this.board._id + '/0/500').subscribe(
-                res => {
+        this.http.get<any>('/server/board/' + this.board.id + '/0/500').subscribe(
+            res => {
+                if (res.elts.length > 0) {
+                    this.elt = new CdeForm();
+                    this.elt.designations.push(new Designation(this.board.name));
+                    this.elt.definitions.push(new Definition());
+                    this.elt.formElements.push(new FormSection());
                     res.elts.forEach(p => {
                         this.formService.convertCdeToQuestion(p, q => {
                             this.elt.formElements[0].formElements.push(q);
                         });
                     });
                     this.modalRef = this.modalService.open(this.createFormContent, {size: 'lg'});
-                }, err => this.alert.addAlert('danger', 'Error on load elements in board ' + err)
-            );
-        }
+                } else this.alert.addAlert('danger', 'No elements in board.');
+            }, err => this.alert.addAlert('danger', 'Error on load elements in board ' + err)
+        );
     }
 }

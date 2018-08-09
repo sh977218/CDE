@@ -1,5 +1,7 @@
 const authorization = require('../system/authorization');
-const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
+const nocacheMiddleware = authorization.nocacheMiddleware;
+const loggedInMiddleware = authorization.loggedInMiddleware;
+
 const handleError = require('../log/dbLogger').handleError;
 const mongo_data = require('../system/mongo-data');
 const userDb = require('./userDb');
@@ -7,7 +9,7 @@ const userDb = require('./userDb');
 exports.module = function (roleConfig) {
     const router = require('express').Router();
 
-    router.get('/', [exportShared.nocacheMiddleware], (req, res) => {
+    router.get('/', [nocacheMiddleware], (req, res) => {
         if (!req.user) return res.send({});
         userDb.byId(req.user._id, handleError({req, res}, user => {
             if (!user) return res.status(404).send();
@@ -29,7 +31,7 @@ exports.module = function (roleConfig) {
         }))
     });
 
-    router.get('/mailStatus', [authorization.loggedInMiddleware], (req, res) => {
+    router.get('/mailStatus', [loggedInMiddleware], (req, res) => {
         mongo_data.mailStatus(req.user, handleError({req, res}, mails => {
             if (!mails) return res.status(404).send();
             res.send({count: mails.length})

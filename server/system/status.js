@@ -3,7 +3,7 @@ const async = require('async');
 const config = require('./parseConfig');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
-const mongo_board = require('../board/mongo-board');
+const boardDb = require('../board/boardDb');
 const mongo_data = require('./mongo-data');
 const elastic = require('./elastic');
 const esInit = require('./elasticSearchInit');
@@ -105,7 +105,7 @@ app_status.getStatus = getStatusDone => {
                     });
                 },
                 done => {
-                    mongo_board.count({}, function (err, boardCount) {
+                    boardDb.count({}, function (err, boardCount) {
                         esInit.indices[2].totalCount = boardCount;
                         app_status.checkElasticCount(boardCount, config.elastic.boardIndex.name, "board", (up, message) => {
                             app_status.statusReport.elastic.indices.push({

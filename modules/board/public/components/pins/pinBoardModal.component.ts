@@ -27,33 +27,19 @@ export class PinBoardModalComponent {
                 private userService: UserService) {
     }
 
+
     pinMultiple(elts: any, promise: Promise<any>) {
         promise.then(board => {
-            let url = '/board/id/' + board._id;
-            if (this.module === 'cde') {
-                url += '/dataElements/';
-            }
-            if (this.module === 'form') {
-                url += '/forms/';
-            }
-
-            this.http.put(url, elts, {observe: 'response', responseType: 'text'}).subscribe(r => {
-                this.alert.addAlert(r.status === 200 ? 'success' : 'warning', r.body);
+            this.http.put('/server/board/pinToBoard/', {
+                boardId: board._id,
+                tinyIdList: elts.map(e => e.tinyId),
+                type: this.module
+            }, {observe: 'response', responseType: 'text'}).subscribe(r => {
+                if (elts.length === 1) this.alert.addAlert('success', 'Added to Board');
+                else this.alert.addAlert('success', 'All elements pinned.');
                 this.modalRef.close();
             }, err => this.alert.httpErrorMessageAlert(err));
-        }, () => {
-        });
-    }
-
-    pinOne(elt: any, promise: Promise<any>) {
-        promise.then(board => {
-            let url = '/pin/' + this.module + '/' + elt.tinyId + '/' + board._id;
-            this.http.put(url, {}, {observe: 'response', responseType: 'text'}).subscribe(r => {
-                this.alert.addAlert(r.status === 200 ? 'success' : 'warning', r.body);
-                this.modalRef.close();
-            }, err => this.alert.httpErrorMessageAlert(err));
-        }, () => {
-        });
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     open() {

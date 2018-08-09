@@ -26,7 +26,7 @@ export class MyBoardsService {
         this.filter.selectedShareStatus = this.filter.shareStatus.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
-        this.http.post<ElasticQueryResponse>("/myBoards", this.filter).subscribe(res => {
+        this.http.post<ElasticQueryResponse>("/server/board/myBoards", this.filter).subscribe(res => {
             if (res.hits) {
                 this.boards = res.hits.hits.map(h => {
                     h._source._id = h._id;

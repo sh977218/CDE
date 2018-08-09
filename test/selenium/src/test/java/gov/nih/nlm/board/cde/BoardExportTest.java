@@ -49,7 +49,7 @@ public class BoardExportTest extends BoardTest {
         }
 
 
-        String url_string = baseUrl + "/board/" + EltIdMaps.eltMap.get(board_name) + "/0/500";
+        String url_string = baseUrl + "/server/board/" + EltIdMaps.eltMap.get(board_name) + "/0/500";
         String response = given().when().get(url_string).asString();
         String[] expected2 = {
                 "\"name\":\"Board Export Test\",\"description\":\"Test for board export\",\"shareStatus\":\"Public\"",

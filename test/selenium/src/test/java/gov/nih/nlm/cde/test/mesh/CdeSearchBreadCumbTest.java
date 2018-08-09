@@ -17,11 +17,11 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
         int count = 0;
         int num = 0;
         while (count < 5 && num < 11) {
-            num = Integer.parseInt(findElement(By.id("searchResultNum")).getText());
+            num = getNumberOfResults();
             System.out.println("searchResultNum: " + num + ".  refreshing page " + count + " times.");
             hangon(20);
             count++;
-            num = Integer.parseInt(findElement(By.id("searchResultNum")).getText());
+            num = getNumberOfResults();
             driver.navigate().refresh();
         }
         Assert.assertTrue(num >= 11, "Not enough elements: " + num);
