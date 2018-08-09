@@ -28,7 +28,7 @@ public class FormSearch extends BaseFormTest {
         // this test will be removed when the features are implemented.
         goToFormSearch();
         clickElement(By.id("browseOrg-NINDS"));
-        Assert.assertTrue(Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim()) > 600);
+        Assert.assertTrue(getNumberOfResults() > 600);
         textNotPresent("Pin All");
     }
 

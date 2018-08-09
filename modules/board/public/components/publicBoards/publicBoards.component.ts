@@ -32,7 +32,7 @@ export class PublicBoardsComponent implements OnInit {
     loadPublicBoards() {
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
-        this.http.post<ElasticQueryResponse>('/boardSearch', this.filter).subscribe(response => {
+        this.http.post<ElasticQueryResponse>('/server/board/boardSearch', this.filter).subscribe(response => {
                 this.boards = response.hits.hits.map(h => {
                     h._source._id = h._id;
                     return h._source;
@@ -44,7 +44,7 @@ export class PublicBoardsComponent implements OnInit {
                 this.filter.types.forEach(t => t.checked = (this.filter.selectedTypes.indexOf(t.key) > -1));
 
 
-            }, () => this.alert.addAlert('danger', 'An error occured')
+            }, () => this.alert.addAlert('danger', 'An error occurred')
         );
     }
 

@@ -61,8 +61,10 @@ const User = conn.model('User', exports.userSchema);
 
 exports.User = User;
 
+const userProject = {password: 0};
+
 exports.byId = (id, callback) => {
-    User.findById(id, {password: 0}, callback);
+    User.findById(id, userProject, callback);
 };
 
 exports.updateUser = (id, fields, callback) => {
@@ -77,11 +79,14 @@ exports.avatarByUsername = (username, callback) => {
 };
 
 exports.usersByUsername = (username, callback) => {
-    User.find({'username': new RegExp(username, 'i')}, {password: 0}, callback);
+    User.find({'username': new RegExp(username, 'i')}, userProject, callback);
+};
+exports.userByUsername = (username, callback) => {
+    User.findOne({'username': new RegExp(username, 'i')}, userProject, callback);
 };
 
 exports.byUsername = (username, callback) => {
-    User.findOne({username: username}, callback);
+    User.findOne({username: username}, userProject, callback);
 };
 
 exports.save = (user, callback) => {

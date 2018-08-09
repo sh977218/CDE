@@ -9,12 +9,14 @@ import { Elt } from 'shared/models.model';
 
 @Component({
     selector: 'cde-unpin-board',
-    templateUrl: './unpinBoard.component.html',
+    template: `
+        <i id="unpin_{{eltIndex}}" class="fa fa-thumb-tack fa-rotate-90 hand-cursor mx-1" title="Unpin from Board"
+           role="link" (click)="unpin();"> </i>
+    `,
 })
 export class UnpinBoardComponent {
     @Input() elt: Elt;
     @Input() eltIndex: number;
-    pinModal: any;
 
     constructor(private alert: AlertService,
                 private boardListService: BoardListService,
@@ -23,8 +25,10 @@ export class UnpinBoardComponent {
     }
 
     unpin() {
-        let url = '/pin/' + this.boardListService.board.type + '/' + this.elt.tinyId + '/' + this.boardListService.board._id;
-        this.http.delete(url, {responseType: 'text'}).subscribe(() => {
+        this.http.post('/server/board/deletePin/', {
+            boardId: this.boardListService.board.id,
+            tinyId: this.elt.tinyId
+        }, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Unpinned.');
             this.boardListService.reload.emit();
         }, (response) => {

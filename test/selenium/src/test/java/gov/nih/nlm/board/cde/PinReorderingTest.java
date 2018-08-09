@@ -13,8 +13,6 @@ public class PinReorderingTest extends BoardTest {
         clickElement(By.id("moveDown-0"));
         closeAlert();
         textPresent("Ethnicity USA maternal category", By.id("linkToElt_0"));
-        driver.navigate().refresh();
-        textPresent("Ethnicity USA maternal category", By.id("linkToElt_0"));
         clickElement(By.id("moveUp-1"));
         closeAlert();
         textPresent("Medication affecting cardiovascular function type exam day indicator", By.id("linkToElt_0"));

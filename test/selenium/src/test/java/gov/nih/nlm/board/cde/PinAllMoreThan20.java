@@ -17,7 +17,7 @@ public class PinAllMoreThan20 extends BoardTest {
         clickElement(By.id("classif-Classification"));
         clickElement(By.id("classif-Core"));
         hangon(3);
-        int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
+        int searchResultNum_int = getNumberOfResults();
         Assert.assertTrue(searchResultNum_int > 20);
         scrollToTop();
         clickElement(By.id("pinAll"));

@@ -50,7 +50,13 @@ exports.byTinyIdList = function (idList, size, cb) {
                 details: "Error " + error + "response" + JSON.stringify(response)
             });
             cb(error);
-        } else cb(null, response.hits.hits.map(h => h._source));
+        } else {
+            // @TODO possible to move this sort to elastic search?
+            response.hits.hits.sort((a, b) => {
+                return idList.indexOf(a._id) - idList.indexOf(b._id);
+            });
+            cb(null, response.hits.hits.map(h => h._source));
+        }
     });
 };
 

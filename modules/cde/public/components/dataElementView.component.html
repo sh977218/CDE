@@ -56,7 +56,7 @@
             <span class="d-none d-sm-inline-block"> Add to Quick Board</span>
         </button>
         <button id="addToBoard" mat-raised-button title="Add to Board"
-                (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
+                (click)="mltPinModal.pinMultiple([elt], mltPinModal.open())">
             <i class="fa fa-thumb-tack mr-1"></i><span class="d-none d-sm-inline-block"> Add to Board</span>
         </button>
         <button *ngIf="isAllowedModel.isOrgCurator()" id="copyCdeBtn" mat-raised-button
@@ -218,7 +218,7 @@
         </div>
         <div *ngIf="commentMode" [ngClass]="{'col-3':commentMode,'':!commentMode}"
              style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-            <cde-discuss-area #commentAreaComponent [currentTab]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
+            <cde-discuss-area #commentAreaComponent [currentTab]="currentTab" [elt]="elt"
                               (highlightedTabsChange)="loadHighlightedTabs($event)"
                               [eltName]="elt.designations[0].designation"></cde-discuss-area>
         </div>

@@ -18,7 +18,7 @@ public class PinAllLessThan20 extends BoardTest {
         clickElement(By.id("classif-Classification"));
         clickElement(By.id("classif-Exploratory"));
         textPresent("9 results for All Terms");
-        int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
+        int searchResultNum_int = getNumberOfResults();
         clickElement(By.id("pinAll"));
         textPresent("Choose a Board to pin");
         clickBoardHeaderByName(boardName);

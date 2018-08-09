@@ -30,7 +30,7 @@ export class CreateBoardComponent {
 
     doCreateBoard() {
         this.newBoard.shareStatus = 'Private';
-        this.http.post('/board', this.newBoard, {responseType: 'text'}).subscribe(() => {
+        this.http.post('/server/board', this.newBoard, {responseType: 'text'}).subscribe(() => {
             this.myBoardsSvc.waitAndReload();
             this.modalRef.close();
             this.alert.addAlert('success', 'Board created.');
