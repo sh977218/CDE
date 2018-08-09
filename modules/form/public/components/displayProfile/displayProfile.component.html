@@ -3,12 +3,12 @@
     <mat-expansion-panel *ngFor="let dPVM of dPVMs; index as index" id="profile_{{index}}">
         <mat-expansion-panel-header>
             <mat-panel-title>
-                <h3 style="line-height: initial; margin-bottom: 0; width: 100%">
+                <h3 style="line-height: initial; width: 100%">
                     {{dPVM.profile.name}}
-                    <div class="pull-right" *ngIf="canEdit">
+                    <span class="pull-right" *ngIf="canEdit">
                         <cde-delete-with-confirm (click)="interruptEvent($event)"
                                                  (deleted)="removeDisplayProfile(index)"></cde-delete-with-confirm>
-                    </div>
+                    </span>
                 </h3>
             </mat-panel-title>
         </mat-expansion-panel-header>
@@ -60,6 +60,12 @@
                     <mat-checkbox id="displayMetadataDevice_{{index}}" [disabled]="!canEdit"
                                   [(ngModel)]="dPVM.profile.metadata.device"
                                   (change)="onEltChange.emit()">Display Metadata Device</mat-checkbox>
+                </mat-card>
+                <mat-card *ngIf="getMapToFhirResource(elt) === 'Procedure'">
+                    <h4>Procedure Mapping</h4>
+                    <mat-card-content>
+                        <button mat-raised-button (click)="openProcedureMapping(dPVM)">Procedure Mapping</button>
+                    </mat-card-content>
                 </mat-card>
             </div>
             <div class="col-lg-7 col-sm-12">

@@ -19,7 +19,7 @@ export class FhirAddress extends FhirElement {
 }
 
 export type FhirBase64Binary = string[];
-export type FhirCode = string;
+export type FhirCode<T = string> = T;
 
 export class FhirCodeableConcept extends FhirElement {
     coding?: FhirCoding[];

@@ -13,71 +13,143 @@ import _intersectionWith from 'lodash/intersectionWith';
 import _noop from 'lodash/noop';
 import _uniq from 'lodash/uniq';
 
-import { ResourceTree } from '_fhirApp/resourceTree';
+import { ResourceTree, types } from '_fhirApp/resourceTree';
 import { valueSets } from '_fhirApp/valueSets';
 import { CdeId, PermissibleValue } from 'shared/models.model';
-import { iterateFeSync, iterateFe } from 'shared/form/formShared';
 import {
-    CdeForm, DisplayProfile, FhirApp, FormElement, FormInForm, FormQuestion
+    CdeForm, DisplayProfile, FhirApp, FhirProcedureMapping, FormElement, FormInForm, FormQuestion
 } from 'shared/form/form.model';
+import { getMapToFhirResource, isMappedTo } from 'shared/form/formAndFe';
+import { iterateFeSync, iterateFe, iterateFeSyncOptions, IterateOptionsSync } from 'shared/form/formShared';
 import {
     FhirDevice, FhirDeviceMetric, FhirDomainResource, FhirEncounter, FhirObservation, FhirObservationComponent,
-    FhirOrganization, FhirPatient
+    FhirOrganization, FhirPatient, FhirProcedure
 } from 'shared/mapping/fhir/fhirResource.model';
-import { codeSystemOut, codingArrayPreview, getRef, valuePreview } from 'shared/mapping/fhir/fhirDatatypes';
+import { codeSystemOut } from 'shared/mapping/fhir';
+import { codingArrayPreview, valuePreview } from 'shared/mapping/fhir/fhirDatatypes';
 import { FhirReference } from 'shared/mapping/fhir/fhir.model';
-import { getText, newCodeableConcept, reduce as reduceConcept } from 'shared/mapping/fhir/datatypes/codeableConcept';
-import { newCoding } from 'shared/mapping/fhir/datatypes/coding';
+import {
+    getText, getTextFromArray, newCodeableConcept, reduce as reduceConcept
+} from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
+import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
+import { asRefString, newReference, parseRef } from 'shared/mapping/fhir/datatype/fhirReference';
 import { typedValueToValue, valuedElementToItemType } from 'shared/mapping/fhir/from/datatypeFromItemType';
-import { newEncounter } from 'shared/mapping/fhir/resource/encounter';
-import { observationComponentFromForm, observationFromForm } from 'shared/mapping/fhir/resource/observation';
-import { getPatientName } from 'shared/mapping/fhir/resource/patient';
+import { newEncounter } from 'shared/mapping/fhir/resource/fhirEncounter';
+import { observationComponentFromForm, observationFromForm } from 'shared/mapping/fhir/resource/fhirObservation';
+import { getPatientName } from 'shared/mapping/fhir/resource/fhirPatient';
 import { questionValueToFhirValue } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { deepCopy, reduceOptionalArray } from 'shared/system/util';
+import { newProcedure } from 'shared/mapping/fhir/resource/fhirProcedure';
+import { interruptEvent } from 'widget/browser';
 
 let compareCodingId = (a, b) => a['system'] === codeSystemOut(b['source']) && a['code'] === b['id'];
 
-function iterResourceTreeAddNode(fe: FormElement|CdeForm, cb, parent: ResourceTree) {
-    let self = ResourceTree.addNode(parent, undefined, fe);
+function iterResourceTreeAddNode(fe: FormElement | CdeForm, cb, parent: ResourceTree) {
+    let self = addNode(parent, undefined, fe);
     cb(undefined, self);
     return self;
+}
+
+function addNode(parent: ResourceTree, resource?: FhirDomainResource, fe?: FormElement|CdeForm, resourceType?: string): ResourceTree {
+    let node: ResourceTree = {children: [], crossReference: fe};
+    if (resource) {
+        ResourceTree.setResource(node, resource);
+    } else if (fe && isMappedTo(fe, 'fhir') && fe.mapTo.fhir.resourceType) {
+        node.resourceType = fe.mapTo.fhir.resourceType;
+    } else if (fe && fe.elementType === 'question') {
+        if (parent.resourceType === 'Observation') {
+            node.parentAttribute = 'component';
+        } else if (parent.resourceType === 'Procedure') {
+            if (parent.crossReference && parent.crossReference.displayProfiles.length
+                && parent.crossReference.displayProfiles[0].fhirProcedureMapping) {
+                let q = fe as FormQuestion;
+                let [properties, questionIds] = getProcedureQuestions(parent.crossReference.displayProfiles[0].fhirProcedureMapping);
+
+                let match = questionIds.indexOf(q.question.cde.tinyId);
+                if (match > -1) {
+                    node.parentAttribute = properties[match];
+                }
+            }
+        } else {
+            node.resourceType = types.get(parent.resourceType).child;
+        }
+    } else if (resourceType) {
+        node.resourceType = resourceType;
+    }
+
+    if (node.resourceType || node.parentAttribute) {
+        parent.children.push(node);
+        return node;
+    } else {
+        return parent;
+    }
+}
+
+function getProcedureQuestions(procedureMapping?: FhirProcedureMapping) {
+    if (!procedureMapping) {
+        return [[], []];
+    }
+    let properties = ['bodySite', 'complication', 'performedDateTime', 'status', 'usedReference'];
+    let questionIds = [
+        procedureMapping.bodySiteQuestionID,
+        procedureMapping.complications,
+        procedureMapping.performedDate,
+        procedureMapping.statusQuestionID,
+        procedureMapping.usedReferences
+    ].filter((r, i) => {
+        if (!r || r === 'static') {
+            properties[i] = undefined;
+            return false;
+        }
+        return true;
+    });
+    properties = properties.filter(p => !!p);
+    return [properties, questionIds];
+}
+
+function getDateString(resource: FhirDomainResource, periodName = '', dateTimeName = '', instanceName = ''): string {
+    if (resource[periodName]) {
+        return resource[periodName].start + ' - ' + resource[periodName].end;
+    } else if (resource[dateTimeName]) {
+        return resource[dateTimeName];
+    } else if (resource[instanceName]) {
+        return resource[instanceName]; // TODO: conversion from machine format
+    } else {
+        return '';
+    }
+}
+function getIds(f: CdeForm|FormInForm) {
+    return CdeForm.isForm(f) ? f.ids : f.inForm.form.ids;
+}
+
+function getObservationViewCode(observation: FhirObservation): string {
+    return observation.code ? codingArrayPreview(observation.code.coding) : '';
+}
+function getObservationViewValue(observation: FhirObservation): string {
+    return valuePreview(observation);
 }
 
 class EncounterVM extends FhirEncounter {
     types: string;
     reasons: string[];
-    observations: ObservationVM[];
-    forms?: {form: CdeForm, reference: PatientForm}[];
+    observations: FhirObservation[];
+    procedures: FhirProcedure[];
+    forms?: { form: CdeForm, reference: PatientForm }[];
 }
+
 function encounterVM(encounter: FhirEncounter): EncounterVM {
     return Object.create(encounter, {
-        type: {
-            value: encounter.type ? encounter.type.map(getText).join(', ') : null
+        types: {
+            value: getTextFromArray(encounter.type)
         },
-        reason: {
-            value: encounter.reason ? encounter.reason.map(getText) : null
+        reasons: {
+            value: getTextFromArray(encounter.reason)
         },
         observations: {
             value: []
         },
-    });
-}
-
-class ObservationVM extends FhirObservation {
-    encounter: string;
-    preview: string;
-    value: string;
-}
-function observationVM(observation: FhirObservation): ObservationVM {
-    return Object.create(observation, {
-        preview: {
-            value: observation.code ? codingArrayPreview(observation.code.coding) : JSON.stringify(observation)
-        },
-        encounter: {
-            value: observation.context ? observation.context.reference : undefined
-        },
-        value: {
-            value: valuePreview(observation)
+        procedures: {
+            value: []
         },
     });
 }
@@ -95,7 +167,8 @@ type PatientForm = {
     selector: 'cde-fhir-standalone',
     template: '<router-outlet></router-outlet>'
 })
-export class FhirStandaloneComponent {}
+export class FhirStandaloneComponent {
+}
 
 @Component({
     selector: 'cde-fhir-form',
@@ -106,29 +179,38 @@ export class FhirStandaloneComponent {}
             font-stretch: extra-condensed;
             width: 90px;
         }
+
         .info-label {
             font-size: large;
             font-weight: 600;
         }
+
         .isSelected {
             background-color: #f5f5f5;
         }
-        .addbtn  {
+
+        .addbtn {
             background-color: #61c200;
             color: white;
             margin-left: 0;
             padding: 4px 8px 2px 8px;
             vertical-align: baseline;
         }
+
         .spin {
             animation-duration: 1s;
             animation-name: spin;
             animation-iteration-count: infinite;
             animation-timing-function: linear;
         }
+
         @keyframes spin {
-            from {transform:rotate(0deg);}
-            to {transform:rotate(360deg);}
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
     `],
     templateUrl: './fhirApp.component.html'
@@ -138,9 +220,11 @@ export class FhirAppComponent {
     baseUrl: string;
     elt: CdeForm;
     errorMessage: string;
+    getDateString = getDateString;
     getDisplayFunc = this.getDisplay.bind(this);
     getPatientName = getPatientName;
     ioInProgress: boolean;
+    interruptEvent = interruptEvent;
     lookupObservationCategories = async_memoize((code, done) => {
         this.http.get('/fhirObservationInfo?id=' + code).subscribe((r: any) => {
             done(null, r ? r.categories : undefined);
@@ -165,11 +249,11 @@ export class FhirAppComponent {
     patientForms: PatientForm[] = [];
     patientDevices: FhirDevice[] = [];
     patientEncounters: EncounterVM[] = [];
-    patientObservations: ObservationVM[] = [];
+    patientObservations: FhirObservation[] = [];
     patientOrganization: FhirOrganization;
+    patientProcedures: FhirProcedure[] = [];
     saveMessage: string = null;
     selectedEncounter: EncounterVM;
-    selectedObservations: ObservationVM[] = [];
     selectedProfile: DisplayProfile;
     selectedProfileName: string;
     smart: any;
@@ -195,7 +279,7 @@ export class FhirAppComponent {
                 (<any>window).FHIR.oauth2.authorize({
                     'client_id': fhirApp.clientId,
                     'redirect_uri': '/' + this.route.snapshot.paramMap.get('config'),
-                    'scope':  FhirAppComponent.SCOPE,
+                    'scope': FhirAppComponent.SCOPE,
                 });
             }
             this.baseUrl = fhirApp.dataEndpointUrl;
@@ -249,13 +333,13 @@ export class FhirAppComponent {
         });
 
         if (!found) {
-            // query for Device
+            // TODO: query for Device
         }
 
         return found;
     }
 
-    static applyCodeMapping(fhirApp, ids: (CdeId|PermissibleValue)[], systemProp: string, codeProp: string): void {
+    static applyCodeMapping(fhirApp, ids: (CdeId | PermissibleValue)[], systemProp: string, codeProp: string): void {
         function highestPriority(ids, index) {
             if (index > 0) {
                 let temp = ids[0];
@@ -288,7 +372,6 @@ export class FhirAppComponent {
     }
 
     encounterSelected() {
-        this.filterObservations();
         if (!this.selectedEncounter) {
             return;
         }
@@ -338,7 +421,10 @@ export class FhirAppComponent {
                     });
                     resolve();
                 });
+            } else if (resource.resourceType === 'Procedure') {
+                resolve();
             }
+            // stop all other types
         });
     }
 
@@ -357,6 +443,9 @@ export class FhirAppComponent {
                 if (response.data.resourceType === 'Observation') {
                     this.observationsReplace(response.data);
                 }
+                if (response.data.resourceType === 'Procedure') {
+                    this.proceduresReplace(response.data);
+                }
                 cb(undefined, response.data);
             }, cb);
         } else {
@@ -371,17 +460,15 @@ export class FhirAppComponent {
                 if (response.data.resourceType === 'Observation') {
                     this.observationsAdd(response.data);
                 }
+                if (response.data.resourceType === 'Procedure') {
+                    this.proceduresAdd(response.data);
+                }
                 cb(undefined, response.data);
             }, cb);
         }
     }
 
-    filterObservations() {
-        this.selectedObservations = this.selectedEncounter
-            ? this.selectedEncounter.observations : this.patientObservations;
-    }
-
-    getDisplay(system, code): Promise<string|undefined> {
+    getDisplay(system, code): Promise<string | undefined> {
         if (system === 'LOINC') {
             return new Promise(resolve => {
                 this.lookupLoincName(code, (err, data) => resolve(err ? undefined : data));
@@ -411,30 +498,43 @@ export class FhirAppComponent {
 
             this.ioInProgress = true;
             async_parallel([
+                // TODO: patient selector
+                // cb => {
+                //     this.smart.api.search({type: 'Patient'}).then(results => {
+                //         cb();
+                //     });
+                // },
                 cb => {
-                    this.smart.patient.api.fetchAll({type: 'Encounter'})
-                        .then(results => {
-                            results.forEach(encounter => this.encounterAdd(encounter));
-                            cb();
-                        });
+                    this.smart.patient.api.fetchAll({type: 'Encounter'}).then(results => {
+                        results.forEach(encounter => this.encounterAdd(encounter));
+                        cb();
+                    });
                 },
                 cb => {
-                    this.smart.patient.api.fetchAll({type: 'Observation'})
-                        .then(results => {
-                            results.forEach(observation =>
-                                this.patientObservations.push(observationVM(observation))
-                            );
-                            cb();
-                        });
+                    this.smart.patient.api.fetchAll({type: 'Observation'}).then(results => {
+                        results.forEach(observation => this.patientObservations.push(observation));
+                        cb();
+                    });
                 },
                 cb => {
-                    this.smart.patient.api.search({type: 'Organization'})
-                        .then(results => {
-                            if (results && results.data && results.data.entry && results.data.entry.length) {
-                                this.patientOrganization = results.data.entry[0].resource;
-                            }
-                            cb();
-                        });
+                    this.smart.patient.api.search({type: 'Organization'}).then(results => {
+                        if (results && results.data && results.data.entry && results.data.entry.length) {
+                            this.patientOrganization = results.data.entry[0].resource;
+                        }
+                        cb();
+                    });
+                },
+                cb => {
+                    // TODO: get partial reads working, next()?
+                    // this.smart.patient.api.search({type: 'Procedure'}).done(function (results) {
+                    //     if (results && results.data && results.data.entry && results.data.entry.length) {
+                    //         this.patientProcedures = results.data.entry.map(e => e.resource);
+                    //     }
+                    // });
+                    this.smart.patient.api.fetchAll({type: 'Procedure'}).then(results => {
+                        this.patientProcedures = results;
+                        cb();
+                    });
                 }
             ], () => {
                 this.patientEncounters.sort((a, b) => {
@@ -448,8 +548,8 @@ export class FhirAppComponent {
                 });
                 this.patientObservations.forEach(o => {
                     let e;
-                    if (o.encounter && o.encounter.startsWith('Encounter/')) {
-                        let id = o.encounter.substr(10);
+                    let [, id] = parseRef(o.context, 'Encounter');
+                    if (id) {
                         let encounters = this.patientEncounters.filter(e => e.id === id);
                         if (encounters.length) {
                             encounters[0].observations.push(o);
@@ -457,10 +557,19 @@ export class FhirAppComponent {
                         }
                     }
                     if (o.device) {
-                        this.addDevice(o.device, [o, e]);
+                        this.addDevice(o.device, e ? [o, e] : [o]);
                     }
                 });
-                this.filterObservations();
+                this.patientProcedures.forEach(p => {
+                    let [, id] = parseRef(p.context, 'Encounter');
+                    if (id) {
+                        let encounters = this.patientEncounters.filter(e => e.id === id);
+                        if (encounters.length) {
+                            encounters[0].procedures.push(p);
+                        }
+                    }
+                    // TODO: some fields contain devices
+                });
                 this.ioInProgress = false;
             });
         });
@@ -471,42 +580,120 @@ export class FhirAppComponent {
         this.loadFhirDataToForm(this.elt);
     }
 
-    loadFhirDataToForm(formElt) {
-        let searchInForms = (f: FormInForm) => {
-            this.selectedEncounter.observations.some(o => {
-                let matchedCodes = _intersectionWith(o.code.coding, f.inForm.form.ids, compareCodingId);
-                if (matchedCodes.length) {
-                    iterateFeSync(f, undefined, undefined, (q: FormQuestion) => {
-                        o.component.some(c => {
-                            let matchedCodes = _intersectionWith(c.code.coding, q.question.cde.ids, compareCodingId);
-                            if (matchedCodes.length) {
-                                let qType = valuedElementToItemType(c);
-                                typedValueToValue(q.question, qType, c);
-                                return true;
-                            }
-                        });
-                    });
-                    return true;
-                }
-            });
+    loadFhirDataToForm(formElt: CdeForm) {
+        let procedureMapping: FhirProcedureMapping = formElt.displayProfiles.length
+            ? formElt.displayProfiles[0].fhirProcedureMapping : undefined;
+
+        // TODO: reimplement with ResourceTree
+        function matchComponentObservation(f, obs) {
+            let matchedCodes = _intersectionWith(obs.code.coding, getIds(f), compareCodingId);
+            if (matchedCodes.length) {
+                iterateFeSync(f, undefined, undefined, (q: FormQuestion) => {
+                    obs.component.some(c => matchSimpleObservation(q, c));
+                });
+                return true;
+            }
+        }
+        function matchSimpleObservation(q, obsOrComp) {
+            let matchedCodes = _intersectionWith(obsOrComp.code.coding, q.question.cde.ids, compareCodingId);
+            if (matchedCodes.length) {
+                typedValueToValue(q.question, valuedElementToItemType(obsOrComp), obsOrComp);
+                return true;
+            }
+        }
+        // only maps if the optional code is a match, code is not optional on CDE side
+        function matchProcedure(id, p, f) {
+            return !!_intersectionWith(p.code && p.code.coding, [id], compareCodingId).length;
+        }
+
+        const loadObservationToForm = (f: CdeForm|FormInForm, ret: any, options: IterateOptionsSync) => {
+            if (this.selectedEncounter.observations.some(o => matchComponentObservation(f, o))) {
+                options.skip = true; // don't look for observations inside Component Observation Forms
+            }
         };
-        iterateFeSync(formElt, searchInForms, undefined, (q: FormQuestion) => {
-            this.selectedEncounter.observations.some(o => {
-                let matchedCodes = _intersectionWith(o.code.coding, q.question.cde.ids, compareCodingId);
-                if (matchedCodes.length) {
-                    let qType = valuedElementToItemType(o);
-                    typedValueToValue(q.question, qType, o);
-                    return true;
-                }
-            });
-        });
+        const loadObservationToQuestion = (q: FormQuestion) => {
+            this.selectedEncounter.observations.some(o => matchSimpleObservation(q, o));
+        };
+        const loadProcedureToForm = (f: CdeForm|FormInForm, ret: any, options: IterateOptionsSync) => {
+            if (!procedureMapping || !procedureMapping.procedureCode) throw new Error('bad procedure form');
+            let procedures = this.selectedEncounter.procedures.filter(p => matchProcedure(
+                {source: procedureMapping.procedureCodeSystem || 'SNOMED', id: procedureMapping.procedureCode},
+                p,
+                f
+            ));
+            if (procedures.length) {
+                let procedure = procedures[0];
+                let [properties, questionIds] = getProcedureQuestions(procedureMapping);
+                iterateFeSync(f, undefined, undefined, (q: FormQuestion) => {
+                    let match = questionIds.indexOf(q.question.cde.tinyId);
+                    if (match > -1) {
+                        switch (properties[match]) {
+                            case 'bodySite':
+                            case 'complication':
+                                let concepts = procedure[properties[match]];
+                                if (Array.isArray(concepts) && concepts.length) {
+                                    let codings = concepts[0].coding;
+                                    if (Array.isArray(codings) && codings.length) {
+                                        q.question.answer = codings[0].code;
+                                    }
+                                }
+                                break;
+                            case 'performedDateTime':
+                            case 'status':
+                                q.question.answer = procedure[properties[match]];
+                                break;
+                            case 'usedReference':
+                                let refs = procedure[properties[match]];
+                                if (Array.isArray(refs) && refs.length) {
+                                    let answers = refs.map(r => r.reference).map(r => {
+                                        if (Array.isArray(procedureMapping.usedReferencesMaps)) {
+                                            let i = procedureMapping.usedReferencesMaps.indexOf(r);
+                                            if (i > -1 && Array.isArray(q.question.answers)) {
+                                                let pv = q.question.answers[i];
+                                                if (pv && pv.permissibleValue) {
+                                                    return pv.permissibleValue;
+                                                }
+                                            }
+                                        }
+                                        return r;
+                                    });
+                                    q.question.answer = !q.question.multiselect && Array.isArray(answers)
+                                        ? answers[0] : answers;
+                                }
+                        }
+                        properties.splice(match, 1);
+                        questionIds.splice(match, 1);
+                    }
+                });
+            }
+            options.skip = true;
+        };
+        const loadResourceToFe = (fe: CdeForm|FormInForm, ret: any, options: IterateOptionsSync) => {
+            switch (getMapToFhirResource(fe)) {
+                case 'Procedure':
+                    loadProcedureToForm(fe, ret, options);
+                    break;
+                default:
+                    loadObservationToForm(fe, ret, options);
+            }
+        };
+
+        let options: any = {};
+        loadResourceToFe(formElt, undefined, options);
+        if (!options.skip) {
+            iterateFeSyncOptions(formElt, loadResourceToFe, undefined, loadObservationToQuestion);
+        }
     }
 
     loadForm(err = null, elt = null) {
-        if (err) return this.errorMessage = 'Sorry, we are unable to retrieve this element.';
+        if (err) {
+            this.errorMessage = 'Sorry, we are unable to retrieve this element.';
+            return;
+        }
         this.elt = elt;
-        if (!this.selectedProfileName) this.selectedProfile = this.elt.displayProfiles[0];
-        else {
+        if (!this.selectedProfileName) {
+            this.selectedProfile = this.elt.displayProfiles[0];
+        } else {
             let selectedProfileArray = this.elt.displayProfiles.filter(d => d.name === this.selectedProfileName);
             if (selectedProfileArray && selectedProfileArray.length > 0) this.selectedProfile = selectedProfileArray[0];
             else this.selectedProfile = null;
@@ -521,7 +708,7 @@ export class FhirAppComponent {
             data: JSON.stringify(newEncounter(
                 this.newEncounterDate + ':00-00:00',
                 'Patient/' + this.patient.id,
-                this.patientOrganization ? getRef(this.patientOrganization) : undefined
+                this.patientOrganization ? asRefString(this.patientOrganization) : undefined
             ))
         }).then(response => {
             let encounter: FhirEncounter = response.data;
@@ -550,26 +737,39 @@ export class FhirAppComponent {
     }
 
     observationsAdd(observation: FhirObservation) {
-        let obs = observationVM(observation);
-        this.patientObservations.push(obs);
-        this.selectedEncounter.observations.push(obs);
+        this.patientObservations.push(observation);
+        this.selectedEncounter.observations.push(observation);
     }
 
     observationsReplace(observation: FhirObservation) {
-        let obs = observationVM(observation);
         let index = this.patientObservations.findIndex(o => o.id === observation.id);
-        if (index > -1) this.patientObservations[index] = obs;
+        if (index > -1) this.patientObservations[index] = observation;
         index = this.selectedEncounter.observations.findIndex(o => o.id === observation.id);
-        if (index > -1) this.selectedEncounter.observations[index] = obs;
+        if (index > -1) this.selectedEncounter.observations[index] = observation;
     }
 
-    openViewObs(e) {
+    openViewEncounter(e) {
         this.selectedEncounter = e;
         this.encounterSelected();
-        this.dialog.open(ViewFhirObservationDialogComponent, {
+        this.dialog.open(ViewFhirEncounterDialogComponent, {
+            data: {
+                observations: this.selectedEncounter.observations,
+                procedures: this.selectedEncounter.procedures,
+            },
             width: '700px',
-            data: { selectedObservations: this.selectedObservations}
         });
+    }
+
+    proceduresAdd(procedure: FhirProcedure) {
+        this.patientProcedures.push(procedure);
+        this.selectedEncounter.procedures.push(procedure);
+    }
+
+    proceduresReplace(procedure: FhirProcedure) {
+        let index = this.patientProcedures.findIndex(p => p.id === procedure.id);
+        if (index > -1) this.patientProcedures[index] = procedure;
+        index = this.selectedEncounter.procedures.findIndex(p => p.id === procedure.id);
+        if (index > -1) this.selectedEncounter.procedures[index] = procedure;
     }
 
     static questionAnswered(answer) {
@@ -578,12 +778,7 @@ export class FhirAppComponent {
 
     submitFhir() {
         this.saving = true;
-        const resourceTree: ResourceTree = {
-            children: [],
-            crossReference: this.elt,
-            resource: Object.getPrototypeOf(this.selectedEncounter),
-            resourceType: this.selectedEncounter.resourceType
-        };
+        let resourceTree = new ResourceTree(Object.getPrototypeOf(this.selectedEncounter), this.elt);
         const save = (node: ResourceTree, done: Function) => {
             if (node.resourceRemote && !node.resource.id) {
                 throw new Error('Error: ResourceTree bad state');
@@ -614,7 +809,7 @@ export class FhirAppComponent {
                                 if (!response || !response.data || !response.data.id) {
                                     return done('Device not created.');
                                 }
-                                node.resource.device = getRef(response.data);
+                                node.resource.device = asRefString(response.data);
                                 save(node, done);
                             }, done);
                         } else {
@@ -629,7 +824,7 @@ export class FhirAppComponent {
 
         };
         const saveCb = () => {
-            saveTree(resourceTree, (err: string) => {
+            saveTree(resourceTree, err => {
                 if (err) this.saveMessage = err;
                 else this.saved = true;
                 setTimeout(() => this.saved = false, 5000);
@@ -639,17 +834,27 @@ export class FhirAppComponent {
             });
         };
 
-        let informAddNode = async(f: FormInForm, cb, parent) => {
+        let informAddNode = async (f: CdeForm|FormInForm, cb, parent) => {
             if (parent.resource instanceof Promise) {
                 await parent.resource;
             }
             let self = iterResourceTreeAddNode(f, _noop, parent);
             if (parent.resourceType === 'Encounter' && self.resourceType === 'Observation') {
                 if (!self.resource) {
-                    let foundObs = this.selectedEncounter.observations.some(o => {
-                        let matchedCodes = _intersectionWith(o.code.coding, f.inForm.form.ids, compareCodingId);
+                    let found = this.selectedEncounter.observations.some(o => {
+                        let matchedCodes = _intersectionWith(o.code.coding, getIds(f), compareCodingId);
                         if (matchedCodes.length) {
-                            ResourceTree.setResource(self, Object.getPrototypeOf(o));
+                            ResourceTree.setResource(self, o);
+                            return true;
+                        }
+                    });
+                }
+            } else if (parent.resourceType === 'Encounter' && self.resourceType === 'Procedure') {
+                if (!self.resource) {
+                    let found = this.selectedEncounter.procedures.some(p => {
+                        let matchedCodes = _intersectionWith(p.code.coding, getIds(f), compareCodingId);
+                        if (matchedCodes.length) {
+                            ResourceTree.setResource(self, p);
                             return true;
                         }
                     });
@@ -657,6 +862,44 @@ export class FhirAppComponent {
             }
             cb(undefined, self);
         };
+        let procedureMapping: FhirProcedureMapping = this.elt.displayProfiles.length
+            ? this.elt.displayProfiles[0].fhirProcedureMapping : undefined;
+        if (getMapToFhirResource(this.elt) === 'Procedure') {
+            if (!procedureMapping || !procedureMapping.procedureCode) throw new Error('bad procedure form');
+            let self = iterResourceTreeAddNode(this.elt, _noop, resourceTree);
+            let found = this.selectedEncounter.procedures.some(p => {
+                if (p.code) {
+                    // let matchedCodes = _intersectionWith(p.code.coding, this.elt.ids, compareCodingId);
+                    let matchedCodes = _intersectionWith(
+                        p.code.coding,
+                        [{source: procedureMapping.procedureCodeSystem || 'SNOMED', id: procedureMapping.procedureCode}],
+                        compareCodingId
+                    );
+                    if (matchedCodes.length) {
+                        ResourceTree.setResource(self, p);
+                        return true;
+                    }
+                }
+            });
+            if (!found) {
+                let procedure = newProcedure(this.selectedEncounter, this.patient);
+                ResourceTree.setResource(self, null, procedure);
+            }
+            self.resource.code = newCodeableConcept(
+                [newCoding(procedureMapping.procedureCodeSystem, procedureMapping.procedureCode)]);
+            if (procedureMapping.bodySiteQuestionID === 'static') {
+                self.resource.bodySite = [newCodeableConcept(
+                    [newCoding(procedureMapping.bodySiteCodeSystem, procedureMapping.bodySiteCode)])];
+            }
+            // procedureMapping.complications no static
+            if (procedureMapping.statusQuestionID === 'static') {
+                self.resource.status = procedureMapping.statusStatic;
+            }
+            // procedureMapping.usedReferences no static
+            if (self.resource) {
+                resourceTree = self;
+            }
+        }
         iterateFe(this.elt, informAddNode, iterResourceTreeAddNode, async (q: FormQuestion, cb, parent) => {
             if (parent.resource instanceof Promise) {
                 await parent.resource;
@@ -672,7 +915,7 @@ export class FhirAppComponent {
                     let foundObs = this.selectedEncounter.observations.some(o => {
                         let matchedCodes = _intersectionWith(o.code.coding, q.question.cde.ids, compareCodingId);
                         if (matchedCodes.length) {
-                            ResourceTree.setResource(self, Object.getPrototypeOf(o));
+                            ResourceTree.setResource(self, o);
                             questionValueToFhirValue(q, self.resource, true);
                             return true;
                         }
@@ -696,33 +939,134 @@ export class FhirAppComponent {
                     if (!parent.resource) {
                         let observationPromise = observationFromForm(parent.crossReference, this.getDisplayFunc,
                             this.selectedEncounter, this.patient);
-                        ResourceTree.setResource(parent, null, observationPromise );
+                        ResourceTree.setResource(parent, null, observationPromise);
                         let observation = await observationPromise;
-                        ResourceTree.setResource(parent, null, observation );
+                        ResourceTree.setResource(parent, null, observation);
                     }
                     if (!Array.isArray(parent.resource.component)) parent.resource.component = [];
-                    let foundComponent = parent.resource.component.some(c => {
+                    let found: FhirObservationComponent;
+                    parent.resource.component.some(c => {
                         let matchedCodes = _intersectionWith(c.code.coding, q.question.cde.ids, compareCodingId);
                         if (matchedCodes.length) {
-                            ResourceTree.setResourceNonFhir(self, c, 'component');
-                            questionValueToFhirValue(q, self.resource, true);
+                            found = c;
                             return true;
                         }
                     });
-                    if (!foundComponent && FhirAppComponent.questionAnswered(q.question.answer)) {
+                    if (!found && FhirAppComponent.questionAnswered(q.question.answer)) {
                         let componentPromise = observationComponentFromForm(q, this.getDisplayFunc);
                         ResourceTree.setResourceNonFhir(self, componentPromise, 'component');
-                        let component = await componentPromise;
-                        ResourceTree.setResourceNonFhir(self, component, 'component');
-                        if (!Array.isArray(parent.resource.component)) parent.resource.component = [];
-                        parent.resource.component.push(component);
+                        found = await componentPromise;
+                        parent.resource.component.push(found);
+                    }
+                    if (found) {
+                        ResourceTree.setResourceNonFhir(self, found, 'component');
                         questionValueToFhirValue(q, self.resource, true);
                     }
                     if (parent.resource.component.length === 0) parent.resource.component = undefined;
                 }
+            } else if (parent.resourceType === 'Procedure' && self.parentAttribute && procedureMapping) {
+                if (self.resource) {
+                    if (self.resource instanceof Promise) {
+                        self.resource = await self.resource;
+                    }
+                } else {
+                    if (!parent.resource) {
+                        let procedure = newProcedure(this.selectedEncounter, this.patient);
+                        ResourceTree.setResource(parent, null, procedure);
+                    }
+                    switch (self.parentAttribute) {
+                        // date question not implemented
+                        case 'bodySite':
+                            if (!Array.isArray(parent.resource.bodySite)) parent.resource.bodySite = [];
+                            if (q.question.cde.tinyId === procedureMapping.bodySiteQuestionID) {
+                                if (FhirAppComponent.questionAnswered(q.question.answer)) {
+                                    parent.resource.bodySite[0] = newCodeableConcept(
+                                        [newCoding('SNOMED', q.question.answer)]);
+                                    ResourceTree.setResourceNonFhir(self, parent.resource.bodySite, 'bodySite');
+                                }
+                            }
+                            if (parent.resource.bodySite.length === 0) parent.resource.bodySite = undefined;
+                            break;
+                        // case 'category':
+                        //     if (q.question.cde.tinyId === procedureMapping.categoryQuestionID) {
+                        //         if (FhirAppComponent.questionAnswered(q.question.answer)) {
+                        //             parent.resource.category = newCodeableConcept(
+                        //                 [newCoding('system???', q.question.answer)]);
+                        //             ResourceTree.setResourceNonFhir(self, parent.resource.category, 'category');
+                        //         }
+                        //     }
+                        //     break;
+                        case 'complication':
+                            if (!Array.isArray(parent.resource.complication)) parent.resource.complication = [];
+                            if (q.question.cde.tinyId === procedureMapping.complications) {
+                                if (FhirAppComponent.questionAnswered(q.question.answer)) {
+                                    parent.resource.complication[0] = newCodeableConcept(
+                                        [newCoding('SNOMED', q.question.answer)]);
+                                    ResourceTree.setResourceNonFhir(self, parent.resource.complication, 'complication');
+                                }
+                            }
+                            if (parent.resource.complication.length === 0) parent.resource.complication = undefined;
+                            break;
+                        // case 'note':
+                        //     if (!Array.isArray(parent.resource.note)) parent.resource.note = [];
+                        //     if (q.question.cde.tinyId === procedureMapping.noteQuestionID) {
+                        //         if (FhirAppComponent.questionAnswered(q.question.answer)) {
+                        //             parent.resource.note[0] = {text: q.question.answer};
+                        //             ResourceTree.setResourceNonFhir(self, parent.resource.note, 'note');
+                        //         }
+                        //     }
+                        //     if (parent.resource.note.length === 0) parent.resource.note = undefined;
+                        //     break;
+                        case 'performedDateTime':
+                            if (q.question.cde.tinyId === procedureMapping.performedDate) {
+                                if (FhirAppComponent.questionAnswered(q.question.answer)) {
+                                    parent.resource.performedDateTime = q.question.answer;
+                                    ResourceTree.setResourceNonFhir(self, parent.resource.status, 'performedDateTime');
+                                }
+                            }
+                            break;
+                        case 'status':
+                            if (q.question.cde.tinyId === procedureMapping.statusQuestionID) {
+                                if (FhirAppComponent.questionAnswered(q.question.answer)) {
+                                    parent.resource.status = q.question.answer;
+                                    ResourceTree.setResourceNonFhir(self, parent.resource.status, 'status');
+                                } else {
+                                    parent.resource.status = 'unknown';
+                                }
+                            }
+                            break;
+                        case 'usedReference':
+                            if (q.question.cde.tinyId === procedureMapping.usedReferences) {
+                                if (FhirAppComponent.questionAnswered(q.question.answer) && Array.isArray(q.question.answer)) {
+                                    let answers = q.question.multiselect ? q.question.answer : [q.question.answer];
+                                    parent.resource.usedReference = answers.map(a => {
+                                        if (Array.isArray(procedureMapping.usedReferencesMaps)) {
+                                            let matches = q.question.answers.filter(pv => pv.permissibleValue === a);
+                                            if (matches.length) {
+                                                let staticValue = procedureMapping.usedReferencesMaps[q.question.answers.indexOf(matches[0])];
+                                                if (staticValue) {
+                                                    return staticValue;
+                                                }
+                                            }
+                                            return a;
+                                        }
+                                    }).map(newReference);
+                                    ResourceTree.setResourceNonFhir(self, parent.resource.usedReference, 'usedReference');
+                                }
+                            }
+                            if (Array.isArray(parent.resource.usedReference) && parent.resource.usedReference.length === 0) {
+                                parent.resource.usedReference = undefined;
+                            }
+                            break;
+                        default:
+                            throw new Error('unsupported procedure field');
+                    }
+                }
             } else {
-                throw new Error('Error: not supported FHIR relationship: parent ' + parent.resourceType
-                    + ', child ' + self.resourceType + '.');
+                if (parent !== self) {
+                    throw new Error('Error: not supported FHIR relationship: parent ' + parent.resourceType
+                        + ', child ' + self.resourceType + '.');
+                }
             }
             cb(undefined, self);
         }, saveCb, resourceTree);
@@ -761,10 +1105,32 @@ export class FhirAppComponent {
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let o of data.selectedObservations">
-                    <td>{{o.preview}}</td>
-                    <td><pre>{{o.value}}</pre></td>
-                    <td>{{o.issued}}</td>
+                <tr *ngFor="let o of data.observations">
+                    <td>{{getObservationViewCode(o)}}</td>
+                    <td>
+                        <pre>{{getObservationViewValue(o)}}</pre>
+                    </td>
+                    <td>{{getDateString(o, 'effectivePeriod', 'effectiveDateTime')}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Code</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let p of data.procedures">
+                    <td>{{getText(p.category)}}</td>
+                    <td>{{getText(p.code)}}</td>
+                    <td>{{getTextFromArray(p.reasonCode)}}</td>
+                    <td>{{p.status}}</td>
+                    <td>{{getDateString(p, 'performedPeriod', 'performedDateTime')}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -774,7 +1140,13 @@ export class FhirAppComponent {
         </div>
     `,
 })
-export class ViewFhirObservationDialogComponent {
-    constructor(@Inject(MAT_DIALOG_DATA) public data: any) { }
+export class ViewFhirEncounterDialogComponent {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+    }
+    getDateString = getDateString;
+    getObservationViewCode = getObservationViewCode;
+    getObservationViewValue = getObservationViewValue;
+    getText = getText;
+    getTextFromArray = getTextFromArray;
 }
 

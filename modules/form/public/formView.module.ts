@@ -3,7 +3,8 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
     MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatExpansionModule,
-    MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, MatSliderModule, MatTabsModule
+    MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, MatSliderModule, MatTabsModule,
+    MatTooltipModule
 } from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -24,6 +25,7 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 import { UcumService } from 'form/public/ucum.service';
 import { FormViewComponent } from 'form/public/components/formView.component';
 import { DisplayProfileComponent } from 'form/public/components/displayProfile/displayProfile.component';
+import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { FormClassificationComponent } from 'form/public/components/formClassification/formClassification.component';
 import { FormGeneralDetailsComponent } from 'form/public/components/formGeneralDetails/formGeneralDetails.component';
 import { FormTermMappingComponent } from 'form/public/components/formTermMapping/formTermMapping.component';
@@ -63,7 +65,8 @@ const appRoutes: Routes = [
         MatSliderModule,
         MatTabsModule,
         MatChipsModule,
-        // core
+        MatTooltipModule,
+// core
         WidgetModule,
         // internal
         AdminItemModule,
@@ -86,20 +89,23 @@ const appRoutes: Routes = [
         FormDescriptionSectionComponent,
         FormGeneralDetailsComponent,
         FormTermMappingComponent,
+        FhirProcedureMappingComponent,
         NativeRenderFullComponent,
         QuestionAnswerEditContentComponent,
         SelectQuestionLabelComponent
     ],
     entryComponents: [
         QuestionAnswerEditContentComponent,
-        SelectQuestionLabelComponent
+        SelectQuestionLabelComponent,
+        FhirProcedureMappingComponent
     ],
     exports: [],
     providers: [
         SkipLogicValidateService,
-        UcumService,
+        UcumService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
+
 export class FormViewModule {
 }

@@ -19,9 +19,9 @@ const respondError = require('../log/dbLogger').respondError;
 
 const ajv = new Ajv({schemaId: 'auto'}); // current FHIR schema uses legacy JSON Schema version 4
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
-fs.readdirSync(path.resolve(__dirname, '../../shared/mapping/fhir/schema/')).forEach(file => {
+fs.readdirSync(path.resolve(__dirname, '../../shared/mapping/fhir/assets/schema/')).forEach(file => {
     if (file.indexOf('.schema.json') > -1) {
-        ajv.addSchema(require('../../shared/mapping/fhir/schema/' + file));
+        ajv.addSchema(require('../../shared/mapping/fhir/assets/schema/' + file));
     }
 });
 
@@ -117,7 +117,7 @@ exports.byId = (req, res) => {
                     if (req.query.subtype === 'fhirQuestionnaire') {
                         formShared.addFormIds(wholeForm);
                         if (req.query.hasOwnProperty('validate')) {
-                            let p = path.resolve(__dirname, '../../shared/mapping/fhir/schema/Questionnaire.schema.json');
+                            let p = path.resolve(__dirname, '../../shared/mapping/fhir/assets/schema/Questionnaire.schema.json');
                             fs.readFile(p, (err, data) => {
                                 if (err || !data) return respondError(err, {res, publicMessage: 'schema missing', origin: 'formsvc'});
                                 let result = ajv.validate(JSON.parse(data),

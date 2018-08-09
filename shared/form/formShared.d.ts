@@ -4,10 +4,11 @@ import {
 
 // async callbacks
 type cb = (error?: string) => void;
+type IterateOptions = any;
 type continueCb = (error?: string, options?: any) => void; // options (skip: skip children) (return: pass data to children) extendable
-type informCb = (fe: FormInForm, continueCb: continueCb, options?: any) => void;
-type quesCb = (fe: FormQuestion, continueCb: continueCb, options?: any) => void;
-type sectionCb = (fe: FormSection, continueCb: continueCb, options?: any) => void;
+type informCb = (fe: FormInForm, continueCb: continueCb, options?: IterateOptions) => void;
+type quesCb = (fe: FormQuestion, continueCb: continueCb, options?: IterateOptions) => void;
+type sectionCb = (fe: FormSection, continueCb: continueCb, options?: IterateOptions) => void;
 
 // sync callbacks
 // returns data as "pass" to children
@@ -19,9 +20,10 @@ type sectionCbSync = (fe: FormSection, pass?: any) => any;
 // returns data as "pass" to children
 // options are extendable
 //     skip: skip children
-type informOptionsCbSync = (fe: FormInForm, pass?: any, options?: any) => any;
-type quesOptionsCbSync = (fe: FormQuestion, pass?: any, options?: any) => any;
-type sectionOptionsCbSync = (fe: FormSection, pass?: any, options?: any) => any;
+type IterateOptionsSync = IterateOptions;
+type informOptionsCbSync = (fe: FormInForm, pass?: any, options?: IterateOptionsSync) => any;
+type quesOptionsCbSync = (fe: FormQuestion, pass?: any, options?: IterateOptionsSync) => any;
+type sectionOptionsCbSync = (fe: FormSection, pass?: any, options?: IterateOptionsSync) => any;
 
 declare function addFormIds(parent: CdeForm, parentId?: string): void;
 declare function areDerivationRulesSatisfied(elt: FormElementsContainer): {tinyId: string}[];
@@ -30,13 +32,14 @@ declare function findQuestionByTinyId(tinyId: string, elt: FormElementsContainer
 declare function flattenFormElement(fe: FormElement): FormElement[];
 declare function getFormCdes(form: FormElementsContainer): QuestionCde[];
 declare function getFormQuestions(form: FormElementsContainer): FormQuestion[];
+declare function getFormQuestionsReal(form: FormElementsContainer): FormQuestion[];
 declare function getFormOdm(form: FormElementsContainer, cb: (error: string, odm: any) => void): void;
 declare function getLabel(fe: FormElement): string;
 declare function isSubForm(node: any): boolean;
-declare function iterateFe(fe, formCb?: informCb, sectionCb?: sectionCb, questionCb?: quesCb, callback?: cb, options?: any): void;
+declare function iterateFe(fe, formCb?: informCb, sectionCb?: sectionCb, questionCb?: quesCb, callback?: cb, options?: IterateOptions): void;
 declare function iterateFeSync(fe: FormElementsContainer, formCb?: informCbSync, sectionCb?: sectionCbSync, questionCb?: quesCbSync, pass?: any): any;
 declare function iterateFeSyncOptions(fe: FormElementsContainer, formCb?: informOptionsCbSync, sectionCb?: sectionOptionsCbSync, questionCb?: quesOptionsCbSync, pass?: any): any;
-declare function iterateFes(fes: FormElement[], formCb?: informCb, sectionCb?: sectionCb, questionCb?: quesCb, callback?: cb, options?: any): void;
+declare function iterateFes(fes: FormElement[], formCb?: informCb, sectionCb?: sectionCb, questionCb?: quesCb, callback?: cb, options?: IterateOptions): void;
 declare function iterateFesSync(fes: FormElement[], formCb?: informCbSync, sectionCb?: sectionCbSync, questionCb?: quesCbSync, pass?: any): any;
 declare function iterateFesSyncOptions(fes: FormElement[], formCb?: informOptionsCbSync, sectionCb?: sectionOptionsCbSync, questionCb?: quesOptionsCbSync, pass?: any): any;
 declare function iterateFormElements(fe?: any, option?: any, cb?: any): void;
