@@ -1,11 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatChipInputEvent, MatDialog } from '@angular/material';
 import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from 'angular-tree-component';
 import _clone from 'lodash/clone';
-import _isEqual from 'lodash/isEqual';
-import _isEmpty from 'lodash/isEmpty';
 import { Observable } from 'rxjs/Observable';
 import { debounceTime, map } from 'rxjs/operators';
 
@@ -17,11 +15,26 @@ import { UcumService } from 'form/public/ucum.service';
 import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
 import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
 import { CodeAndSystem, FormattedValue } from 'shared/models.model';
-import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'shared/form/form.model';
+import { FormElement, FormQuestion, SkipLogic } from 'shared/form/form.model';
+import { ENTER } from '@angular/cdk/keycodes';
 
 @Component({
     selector: 'cde-form-description-question-detail',
-    templateUrl: 'formDescriptionQuestionDetail.component.html'
+    templateUrl: 'formDescriptionQuestionDetail.component.html',
+    styles: [`
+        mat-form-field {
+            margin-left: 1px;
+            margin-right: 1px;
+        }
+
+        .green {
+            color: green
+        }
+
+        .blue {
+            color: blue
+        }
+    `]
 })
 export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() canEdit: boolean = false;
@@ -49,30 +62,24 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl: TemplateRef<any>;
     @ViewChild('editAnswerModal') editAnswerModal: NgbModalModule;
     @ViewChild('slInput') slInput: ElementRef;
-    answersSelected: Array<string>;
-    answerList = [];
+    answerListItems = [];
     dataTypeList = [];
-    defaultAnswerList = [];
+    defaultAnswerListItems = [];
     getSkipLogicOptions = ((text$: Observable<string>) => text$.pipe(
         debounceTime(300),
         map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question))
     ));
     static inputEvent = new Event('input');
-    newCdePv = {};
-    newCdeId = {};
-    newCdeDesignation = {};
     newUom = '';
     newUomSystem = 'UCUM';
     question: FormQuestion;
     parent: FormElement;
     tag = [];
+    readonly separatorKeysCodes: number[] = [ENTER];
 
     ngOnInit() {
-        this.answerList = this.question.question.cde.permissibleValues.map(answer => {
-            answer['id'] = answer.permissibleValue;
-            return answer;
-        });
-        this.syncAnswerList();
+        this.syncAnswerListItems();
+        this.syncDefaultAnswerListItems();
         let stewardOrgName = this.elt.stewardOrg.name;
         this.tag = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
     }
@@ -84,47 +91,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 private orgHelperService: OrgHelperService,
                 public skipLogicValidateService: SkipLogicValidateService,
                 private ucumService: UcumService) {
-        this.dataTypeList = DataTypeService.getDataTypeItemList();
-    }
-
-    addNewCdeId(newCdeId) {
-        if (!_isEmpty(newCdeId)) {
-            if (!this.question.question.cde.ids) {
-                this.question.question.cde.ids = [];
-            }
-            this.question.question.cde.ids.push(newCdeId);
-            this.newCdeId = {};
-            this.onEltChange.emit();
-        } else {
-            this.alert.addAlert('danger', 'Empty identifier.');
-        }
-    }
-
-    addNewCdeDesignation(newCdeDesignation) {
-        if (!_isEmpty(newCdeDesignation)) {
-            this.question.question.cde.designations.push(newCdeDesignation);
-            this.newCdeDesignation = {};
-            this.onEltChange.emit();
-        } else this.alert.addAlert('danger', 'Empty designation.');
-    }
-
-    addNewCdePv(newCdePv) {
-        if (!_isEmpty(newCdePv)) {
-            this.question.question.cde.permissibleValues.push(newCdePv);
-            this.question.question.answers.push(newCdePv);
-            this.newCdePv = {};
-            this.onEltChange.emit();
-        } else this.alert.addAlert('danger', 'Empty PV.');
-    }
-
-    checkAnswers(answers) {
-        let newAnswers = (Array.isArray(answers.value) ? answers.value.filter(answer => answer !== '') : []);
-        if (!_isEqual(this.answersSelected, newAnswers)) {
-            this.question.question.answers = this.question.question.cde.permissibleValues
-                .filter(a => newAnswers.indexOf(a.permissibleValue) > -1) as PermissibleFormValue[];
-            this.answersSelected = this.question.question.answers.map(a => a.permissibleValue);
-            this.onEltChange.emit();
-        }
+        this.dataTypeList = DataTypeService.dataElementDataType;
     }
 
     getRepeatLabel(fe) {
@@ -144,7 +111,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     onAnswerListAdd() {
-        this.syncAnswerList();
+        this.syncDefaultAnswerListItems();
         this.onEltChange.emit();
     }
 
@@ -152,7 +119,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         if (removedAnswer && removedAnswer.value.valueMeaningName === this.question.question.defaultAnswer) {
             this.question.question.defaultAnswer = '';
         }
-        this.syncAnswerList();
+        this.syncDefaultAnswerListItems();
         this.onEltChange.emit();
     }
 
@@ -195,28 +162,73 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         dialogRef.componentInstance.onClosed.subscribe(() => dialogRef.close());
     }
 
+    addCdeId(event: MatChipInputEvent): void {
+        const input = event.input;
+        const value = event.value;
+
+        if ((value || '').trim()) {
+            let idArray = value.trim().split(';');
+            if (idArray.length !== 2) {
+                return this.alert.addAlert("danger", "Incorrect Identifier Format");
+            }
+            this.question.question.cde.ids.push(<any>{
+                source: idArray[0].trim(),
+                id: idArray[1].trim()
+            });
+        }
+
+        // Reset the input value
+        if (input) input.value = '';
+        this.onEltChange.emit();
+    }
+
     removeCdeId(i) {
         this.question.question.cde.ids.splice(i, 1);
         this.onEltChange.emit();
     }
 
-    removeCdeDesignation(i) {
-        if (this.question.question.cde.designations.length === 1) {
-            return this.alert.addAlert('danger', 'Data element must have at least one name.');
+    addCdeDesignation(event: MatChipInputEvent): void {
+        const input = event.input;
+        const value = event.value;
+
+        if ((value || '').trim()) {
+            this.question.question.cde.designations.push(<any>{
+                designation: value.trim()
+            });
         }
+
+        // Reset the input value
+        if (input) input.value = '';
+        this.onEltChange.emit();
+    }
+
+    removeCdeDesignation(i) {
         this.question.question.cde.designations.splice(i, 1);
+        this.onEltChange.emit();
+    }
+
+    addCdePv(event: MatChipInputEvent): void {
+        const input = event.input;
+        const value = event.value;
+
+        if ((value || '').trim()) {
+            this.question.question.cde.permissibleValues.push(<any>{
+                permissibleValue: value.trim(),
+                valueMeaningName: value.trim()
+            });
+        }
+
+        // Reset the input value
+        if (input) input.value = '';
+        this.syncDefaultAnswerListItems();
+        this.question.question.answers = <any>this.question.question.cde.permissibleValues.concat([]);
         this.onEltChange.emit();
     }
 
     removeCdePv(i) {
         this.question.question.cde.permissibleValues.splice(i, 1);
-        this.onEltChange.emit();
-    }
-
-    // TODO : remove me
-    removeNode(node) {
-        node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
-        node.treeModel.update();
+        this.question.question.answers = <any>this.question.question.cde.permissibleValues.concat([]);
+        this.syncDefaultAnswerListItems();
         this.onEltChange.emit();
     }
 
@@ -234,11 +246,13 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
-    private syncAnswerList() {
-        this.defaultAnswerList = this.question.question.answers.map(answer => {
-            answer['id'] = answer.permissibleValue;
-            return answer;
-        });
+    private syncAnswerListItems() {
+        this.answerListItems = this.question.question.cde.permissibleValues.concat([]);
+        this.syncDefaultAnswerListItems();
+    }
+
+    private syncDefaultAnswerListItems() {
+        this.defaultAnswerListItems = this.question.question.answers.concat([]);
     }
 
     typeaheadSkipLogic(parent, fe, event) {

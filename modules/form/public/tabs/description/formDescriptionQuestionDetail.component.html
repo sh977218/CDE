@@ -198,22 +198,24 @@
                 <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect"
                        (change)="onEltChange.emit()"/>
             </dd>
-            <dt class="col-2 answerListLabel">Answer List
-                <i *ngIf="question.question.answers.length > 0" class="fa fa-pencil hand-cursor"
-                   (click)="openEditAnswerModal(question)"></i>:
-            </dt>
-            <dd class="col-10 answerList">
-                <ng-select [(ngModel)]="question.question.answers" [items]="answerList"
-                           [multiple]="true" bindLabel="valueMeaningName" placeholder="Select Answer"
-                           [appendTo]="'body'" [hideSelected]="true" (add)="onAnswerListAdd();"
-                           (remove)="onAnswerListRemove($event)" (clear)="onEltChange.emit();">
-                </ng-select>
-            </dd>
+            <ng-container *ngIf="question.question.cde.tinyId">
+                <dt class="col-2 answerListLabel">Answer List
+                    <i *ngIf="question.question.answers.length > 0" class="fa fa-pencil hand-cursor"
+                       (click)="openEditAnswerModal(question)"></i>:
+                </dt>
+                <dd class="col-10 answerList">
+                    <ng-select [(ngModel)]="question.question.answers" [items]="answerListItems"
+                               [multiple]="true" bindLabel="valueMeaningName" placeholder="Select Answer"
+                               [appendTo]="'body'" [hideSelected]="true" (add)="onAnswerListAdd();"
+                               (remove)="onAnswerListRemove($event)" (clear)="onEltChange.emit();">
+                    </ng-select>
+                </dd>
+            </ng-container>
         </ng-container>
         <dt class="col-2">Default Answer:</dt>
         <dd class="col-10 defaultAnswer">
             <ng-container *ngIf="question.question.datatype === 'Value List'">
-                <ng-select [(ngModel)]="question.question.defaultAnswer" [items]="defaultAnswerList"
+                <ng-select [(ngModel)]="question.question.defaultAnswer" [(items)]="defaultAnswerListItems"
                            bindLabel="valueMeaningName" bindValue="valueMeaningName" placeholder="Select Default Answer"
                            [appendTo]="'body'" [hideSelected]="true" (change)="onEltChange.emit()">
                 </ng-select>
@@ -230,147 +232,61 @@
                        (change)="onEltChange.emit()"/>
             </dd>
         </ng-container>
-        <ng-container *ngIf="!question.question.cde.tinyId">
-            <dt class="col-2">CDE Designations:</dt>
-            <dd class="col-10 cdeDesignations">
-                <table class="table table-border table-responsive">
-                    <thead>
-                    <tr>
-                        <th>Designation</th>
-                        <th>Tags</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let cdeDesignation of question.question.cde.designations;let i = index;">
-                        <td>
-                            <cde-inline-edit [(model)]="cdeDesignation.designation" [isAllowed]="true"
-                                             (modelChange)="onEltChange.emit();"></cde-inline-edit>
-                        </td>
-                        <td>
-                            <ng-select [(ngModel)]="cdeDesignation.tags" [items]="tag" [hideSelected]="true"
-                                       multiple="true" [appendTo]="'body'" [hideSelected]="true"
-                                       (change)="onEltChange.emit();">
-                            </ng-select>
-                        </td>
-                        <td>
-                            <i class="fa fa-trash hand-cursor" (click)="removeCdeDesignation(i);"></i>
-                        </td>
-                    </tr>
-                    <tr class="newCdeDesignation">
-                        <td><input [(ngModel)]="newCdeDesignation.designation" class="w-100 newCdeDesignation"/></td>
-                        <td class="newCdeTags">
-                            <ng-select [(ngModel)]="newCdeDesignation.tags" [items]="tag" [hideSelected]="true"
-                                       multiple="true" bindLabel="name" bindValue="name" [appendTo]="'body'"
-                                       [hideSelected]="true">
-                            </ng-select>
-                        </td>
-                        <td>
-                            <i class="fa fa-plus hand-cursor" (click)="addNewCdeDesignation(newCdeDesignation);"></i>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </dd>
-            <dt class="col-2">CDE Identifiers:</dt>
-            <dd class="col-10 cdeIdentifier">
-                <table class="table table-border table-responsive">
-                    <thead>
-                    <tr>
-                        <th>Source</th>
-                        <th>ID</th>
-                        <th>Version</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let cdeId of question.question.cde.ids;let i = index;">
-                        <td>
-                            <cde-inline-edit [(model)]="cdeId.source" [isAllowed]="true"
-                                             (modelChange)="onEltChange.emit();"></cde-inline-edit>
-                        </td>
-                        <td>
-                            <cde-inline-edit [(model)]="cdeId.id" [isAllowed]="true"
-                                             (modelChange)="onEltChange.emit();"></cde-inline-edit>
-                        </td>
-                        <td>
-                            <cde-inline-edit [(model)]="cdeId.version" [isAllowed]="true"
-                                             (modelChange)="onEltChange.emit();"></cde-inline-edit>
-                        </td>
-                        <td>
-                            <i class="fa fa-trash hand-cursor" (click)="removeCdeId(i);"></i>
-                        </td>
-                    </tr>
-                    <tr class="newCdeIdentifier">
-                        <td><input [(ngModel)]="newCdeId.source" class="w-100 newCdeSource"/></td>
-                        <td><input [(ngModel)]="newCdeId.id" class="w-100 newCdeId"/></td>
-                        <td><input [(ngModel)]="newCdeId.version" class="w-100 newCdeVersion"/></td>
-                        <td><i class="fa fa-plus hand-cursor" (click)="addNewCdeId(newCdeId);"></i></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </dd>
-            <dt class="col-2">CDE Datatype:</dt>
-            <dd class="col-10 cdeDataType">
-                <ng-select [(ngModel)]="question.question.datatype"
-                           [items]="dataTypeList" bindValue="value"
-                           placeholder="Select data type" [appendTo]="'body'" [hideSelected]="true"
-                           (change)="onEltChange.emit()">
-                </ng-select>
-            </dd>
-            <ng-container *ngIf="question.question.datatype==='Value List'">
-                <dt class="col-2">CDE Permissible Values:</dt>
-                <dd class="col-10 cdePVs">
-                    <table class="table table-border table-responsive">
-                        <thead>
-                        <tr>
-                            <th>Value</th>
-                            <th>Code Name</th>
-                            <th>Code</th>
-                            <th>Code System</th>
-                            <th>Code Description</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr *ngFor="let cdePv of question.question.cde.permissibleValues;let i = index;">
-                            <td>
-                                <cde-inline-edit [(model)]="cdePv.permissibleValue" [isAllowed]="true"
-                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
-                            </td>
-                            <td>
-                                <cde-inline-edit [(model)]="cdePv.valueMeaningName" [isAllowed]="true"
-                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
-                            <td>
-                                <cde-inline-edit [(model)]="cdePv.valueMeaningCode" [isAllowed]="true"
-                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
-                            </td>
-                            <td>
-                                <cde-inline-edit [(model)]="cdePv.codeSystemName" [isAllowed]="true"
-                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
-                            </td>
-                            <td>
-                                <cde-inline-edit [(model)]="cdePv.valueMeaningDefinition" [isAllowed]="true"
-                                                 (modelChange)="onEltChange.emit();"></cde-inline-edit>
-                            </td>
-                            <td>
-                                <i class="fa fa-trash hand-cursor" (click)="removeCdePv(i);"></i>
-                            </td>
-                        </tr>
-                        <tr class="newCdePv">
-                            <td><input [(ngModel)]="newCdePv.permissibleValue" class="w-100 permissibleValue"/></td>
-                            <td><input [(ngModel)]="newCdePv.valueMeaningName" class="w-100 pvName"/></td>
-                            <td><input [(ngModel)]="newCdePv.valueMeaningCode" class="w-100 pvCode"/></td>
-                            <td><input [(ngModel)]="newCdePv.codeSystemName" class="w-100 pvCodeSystem"/></td>
-                            <td><input [(ngModel)]="newCdePv.valueMeaningDefinition" class="w-100 pvDefinition"/></td>
-                            <td>
-                                <i class="fa fa-plus hand-cursor" (click)="addNewCdePv(newCdePv);"></i>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </dd>
-            </ng-container>
-        </ng-container>
     </dl>
+
+    <mat-card *ngIf="!question.question.cde.tinyId">
+        <mat-card-header>
+            <mat-card-title>Create New CDE</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-form-field class="w-50 newCdeDesignations">
+                <mat-chip-list #designationChipList>
+                    <mat-chip *ngFor="let designation of question.question.cde.designations;let i =index;"
+                              [selectable]="true" [removable]="true" (removed)="removeCdeDesignation(i)">
+                        {{designation.designation}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="New Name..."
+                           [matChipInputFor]="designationChipList"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           [matChipInputAddOnBlur]="addOnBlur"
+                           (matChipInputTokenEnd)="addCdeDesignation($event)">
+                </mat-chip-list>
+            </mat-form-field>
+            <mat-form-field class="w-50 newCdeIdentifiers">
+                <mat-chip-list #idChipList>
+                    <mat-chip *ngFor="let id of question.question.cde.ids;let i =index;"
+                              [selectable]="true" [removable]="true" (removed)="removeCdeId(i)">
+                        <span class="green mr-1">{{id.source}}</span> <span class="blue ml-1">{{id.id}}</span>
+                        <mat-icon matChipRemove class="removeIdentifier">cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="New Identifier...(Example: LOINC;12345-6)"
+                           [matChipInputFor]="idChipList"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           [matChipInputAddOnBlur]="addOnBlur"
+                           (matChipInputTokenEnd)="addCdeId($event)">
+                </mat-chip-list>
+            </mat-form-field>
+            <mat-form-field class="w-50 newCdeDataType">
+                <mat-select placeholder="CDE Data Type" [(ngModel)]="question.question.datatype"
+                            (selectionChange)="onEltChange.emit();">
+                    <mat-option *ngFor="let dataType of dataTypeList" [value]="dataType">{{dataType}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="w-50 newCdePvs" *ngIf="question.question.datatype==='Value List'">
+                <mat-chip-list #pvChipList>
+                    <mat-chip *ngFor="let pv of question.question.cde.permissibleValues;let i =index;"
+                              [selectable]="true" [removable]="true" (removed)="removeCdePv(i)">
+                        {{pv.permissibleValue}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="New Permissible Value"
+                           [matChipInputFor]="pvChipList"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           [matChipInputAddOnBlur]="addOnBlur"
+                           (matChipInputTokenEnd)="addCdePv($event)">
+                </mat-chip-list>
+            </mat-form-field>
+        </mat-card-content>
+    </mat-card>
 </ng-template>

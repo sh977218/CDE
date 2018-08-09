@@ -793,10 +793,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         scrollTo(0);
     }
 
-    protected boolean checkElementDoesNotExistByCSS(String selector) {
-        return !(driver.findElements(By.cssSelector(selector)).size() > 0);
-    }
-
     protected void checkElementDoesNotExistByLocator(By locator) {
         Assert.assertTrue(!(driver.findElements(locator).size() > 0));
     }
@@ -806,35 +802,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
     }
 
-    protected void scrollUpBy(Integer y) {
-        String jsScroll = "window.scrollBy(0,-" + Integer.toString(y) + ");";
-        ((JavascriptExecutor) driver).executeScript(jsScroll, "");
-    }
-
     protected void scrollDownBy(Integer y) {
         String jsScroll = "window.scrollBy(0," + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
         hangon(5);
-    }
-
-    protected void scrollContainerDownBy(WebElement c, Integer y) {
-        String jsScroll = "arguments[0].scrollTop += " + Integer.toString(y) + ";";
-        ((JavascriptExecutor) driver).executeScript(jsScroll, c);
-    }
-
-    protected void scrollModalsToBottom() {
-        // Angular
-        JavascriptExecutor je = (JavascriptExecutor) driver;
-        List<WebElement> modals = driver.findElements(By.cssSelector("ngb-modal-window"));
-        for (WebElement modal : modals) {
-            je.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight;", modal);
-        }
-
-        // AngularJS
-        modals = driver.findElements(By.cssSelector("div.modal"));
-        for (WebElement modal : modals) {
-            je.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight;", modal);
-        }
     }
 
     protected void scrollToView(By by) {
@@ -848,10 +819,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         scrollToView(By.id(id));
     }
 
-    protected void scrollToViewByXpath(String xpath) {
-        scrollToView(By.xpath(xpath));
-    }
-
     protected int getCurrentYOffset() {
         String scrollLocation = (((JavascriptExecutor) driver)
                 .executeScript("return window.pageYOffset", "")).toString();
@@ -862,35 +829,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         Actions action = new Actions(driver);
         action.moveToElement(ele);
         action.perform();
-    }
-
-    protected void enterUsernamePasswordSubmit(String username, String password, String checkText) {
-        findElement(By.id("uname")).clear();
-        findElement(By.id("passwd")).clear();
-        findElement(By.id("uname")).sendKeys(username);
-        findElement(By.id("passwd")).sendKeys(password);
-        clickElement(By.id("login_button"));
-        try {
-            textPresent(checkText.toUpperCase());
-            // sometimes an issue with csrf, need to reload the whole page.
-        } catch (TimeoutException e) {
-            // csrf collision, wait random before re-trying
-            hangon(new Random().nextInt(10));
-            System.out.println("Login failed. Re-trying. error: "
-                    + e.getMessage());
-            System.out.println("*************checkText:" + checkText);
-            goHome();
-            WebElement loginLinkList = driver.findElement(By.id("login_link"));
-            if (loginLinkList.isDisplayed()) {
-                findElement(By.id("login_link")).click();
-                findElement(By.id("uname")).clear();
-                findElement(By.id("uname")).sendKeys(username);
-                findElement(By.id("passwd")).clear();
-                findElement(By.id("passwd")).sendKeys(password);
-                clickElement(By.id("login_button"));
-            }
-            textPresent(checkText);
-        }
     }
 
     /**
@@ -1647,6 +1585,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void selectNgSelectDropdownByText(String text) {
         clickElement(By.xpath("//ng-dropdown-panel//div[contains(@class,'ng-option') and contains(., '" + text + "')]"));
+    }
+
+    protected void selectMatSelectDropdownByText(String text) {
+        clickElement(By.xpath("//div[contains(@class,'mat-select-content')]//mat-option[contains(@class,'mat-option') and normalize-space(.) = '" + text + "']"));
     }
 
     protected void openTableViewPreferenceModal() {

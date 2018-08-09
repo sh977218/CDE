@@ -18,8 +18,6 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         assertNoElt(By.xpath("//dd[@id='dd_status']//i[@class='fa fa-edit']"));
 
         // Can't edit Value Type or add / remove pv
-        String prefix = "//*[@id='permissibleValueDiv']//*[@id='";
-        String postfix = "']";
         goToPermissibleValues();
         textPresent("Values Allowed");
 
