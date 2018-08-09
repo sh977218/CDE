@@ -1,7 +1,9 @@
 const Schema = require('mongoose').Schema;
+const stringType = require('../system/schemas').stringType;
+const config = require('../system/parseConfig');
+const connHelper = require('../system/connections');
+const conn = connHelper.establishConnection(config.database.appData);
 
-const sharedSchemas = require('../system/schemas.js');
-const stringType = sharedSchemas.stringType;
 const elastic = require('./elastic');
 
 // for DAO manager
@@ -60,13 +62,19 @@ pinningBoardSchema.pre('save', function (next) {
     let id = this._id.toString();
     let board = this.toObject();
     delete board._id;
-    elastic.updateOrInsertBoardById(id, board);
-    next();
+    elastic.updateOrInsertBoardById(id, board, err => {
+        if (err)
+            console.log(err);
+        next();
+    });
 });
 pinningBoardSchema.pre('remove', function (next) {
     let id = this._id.toString();
-    elastic.deleteBoardById(id);
-    next();
+    elastic.deleteBoardById(id, err => {
+        if (err)
+            console.log(err);
+        next();
+    });
 });
 
 pinningBoardSchema.virtual('elementType').get(() => 'board');

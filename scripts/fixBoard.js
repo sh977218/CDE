@@ -4,9 +4,8 @@ const User = require('../server/user/userDb').User;
 let count = 0;
 
 exports.run = function () {
-    Board.find({}, (error, boards) => {
-        if (error) throw error;
-        boards.forEach(board => {
+    Board.find({}).cursor().eachAsync(board => {
+        return new Promise((res, rej) => {
             board.pins.forEach(p => {
                 p.type = 'cde';
                 p.tinyId = p.deTinyId;
@@ -20,22 +19,34 @@ exports.run = function () {
             if (board.owner && board.owner.username) {
                 let username = board.owner.username;
                 User.findOne({username: username}, (err, userObj) => {
-                    if (err) throw err;
+                    if (err) {
+                        console.log(err);
+                        rej();
+                    }
                     else if (!userObj) throw "No user found " + username;
                     else {
                         board.owner = {
                             userId: userObj._id,
                             username: userObj.username
-                        }
+                        };
+                        board.save(err => {
+                            if (err) {
+                                console.log(err);
+                                rej();
+                            }
+                            count++;
+                            console.log('count: ' + count);
+                            res();
+                        })
                     }
                 })
+            } else {
+                console.log("board: " + board.name + " do not have owner.");
+                rej();
             }
-            board.save(() => {
-                count++;
-                console.log('count: ' + count);
-            })
         })
-    })
+    });
+
 };
 
 exports.run();
