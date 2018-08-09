@@ -17,7 +17,6 @@ import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selec
 import { CodeAndSystem, FormattedValue } from 'shared/models.model';
 import { FormElement, FormQuestion, SkipLogic } from 'shared/form/form.model';
 import { ENTER } from '@angular/cdk/keycodes';
-import { FormControl } from '@angular/forms';
 
 @Component({
     selector: 'cde-form-description-question-detail',
@@ -188,7 +187,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.onEltChange.emit();
     }
 
-
     addCdeDesignation(event: MatChipInputEvent): void {
         const input = event.input;
         const value = event.value;
@@ -208,7 +206,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.question.question.cde.designations.splice(i, 1);
         this.onEltChange.emit();
     }
-
 
     addCdePv(event: MatChipInputEvent): void {
         const input = event.input;
