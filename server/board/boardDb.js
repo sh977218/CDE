@@ -5,6 +5,7 @@ const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
 
 const elastic = require('./elastic');
+const dbLogger = require('../log/dbLogger.js');
 
 // for DAO manager
 exports.type = 'board';
@@ -63,16 +64,28 @@ pinningBoardSchema.pre('save', function (next) {
     let board = this.toObject();
     delete board._id;
     elastic.updateOrInsertBoardById(id, board, err => {
-        if (err)
-            console.log(err);
+        if (err) {
+            dbLogger.logError({
+                message: "Unable to index board: " + id,
+                origin: "board.elastic.boardUpdateOrInsert",
+                stack: err,
+                details: ""
+            });
+        }
         next();
     });
 });
 pinningBoardSchema.pre('remove', function (next) {
     let id = this._id.toString();
     elastic.deleteBoardById(id, err => {
-        if (err)
-            console.log(err);
+        if (err) {
+            dbLogger.logError({
+                message: "Unable to delete board: " + id,
+                origin: "board.elastic.deleteBoardById",
+                stack: err,
+                details: ""
+            });
+        }
         next();
     });
 });
