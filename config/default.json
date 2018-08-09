@@ -1,0 +1,166 @@
+{
+  "name": "Sample Localhost Configuration",
+  "hostname": "localhost",
+  "publicUrl": "https://cde.nlm.nih.gov",
+  "debugEnabled": false,
+  "umls": {
+    "licenseCode": "NLM-4110134256",
+    "wsHost": "https://uts-ws.nlm.nih.gov",
+    "sourceOptions": {
+      "NCI": {},
+      "UMLS": {},
+      "LNC": {
+        "requiresLogin": true
+      },
+      "SNOMEDCT_US": {
+        "requiresLogin": true
+      }
+    }
+  },
+  "mesh": {
+    "baseUrl": "https://meshb.nlm.nih.gov"
+  },
+  "banEndsWith": [
+    ".php",
+    ".cfm",
+    ".jsp",
+    ".asp",
+    ".do",
+    ".aspx"
+  ],
+  "banStartsWith": [
+    "/admin/",
+    "/cgi-bin"
+  ],
+  "vsac": {
+    "username": "cdevsac",
+    "password": "DO_NOT_TRY_TO_GUESS",
+    "host": "vsac.nlm.nih.gov",
+    "ticket": {
+      "path": "/vsac/ws/Ticket"
+    },
+    "port": 443
+  },
+  "uts": {
+    "service": "http://umlsks.nlm.nih.gov",
+    "ticketValidation": {
+      "host": "utslogin.nlm.nih.gov",
+      "path": "/cas/serviceValidate",
+      "port": 443
+    }
+  },
+  "logdir": "",
+  "port": 3000,
+  "elastic": {
+    "hosts": [
+      "http://localhost:9200"
+    ],
+    "index": {
+      "name": "auto"
+    },
+    "formIndex": {
+      "name": "auto"
+    },
+    "boardIndex": {
+      "name": "auto"
+    },
+    "number_of_replicas": 2
+  },
+  "database": {
+    "servers": [
+      {
+        "host": "localhost",
+        "port": 27017
+      }
+    ],
+    "appData": {
+      "db": "test",
+      "username": "cdeuser",
+      "password": "password",
+      "options": {
+        "ssl": false
+      }
+    },
+    "log": {
+      "db": "cde-logs-test",
+      "username": "cdeuser",
+      "password": "password",
+      "options": {
+        "ssl": false
+      },
+      "cappedCollectionSizeMB": 262144000
+    },
+    "migration": {
+      "db": "migration",
+      "username": "miguser",
+      "password": "password"
+    }
+  },
+  "node": {
+    "scripts": {
+      "stop": "",
+      "start": "node --harmony ../run/node-js/app &"
+    },
+    "buildDir": "../build"
+  },
+  "test": {
+    "forkNb": 12,
+    "timeout": 8,
+    "browser": "chrome",
+    "testsToRun": "--tests gov.nih.nlm.cde.test.*"
+  },
+  "modules": {
+    "forms": {
+      "attachments": true,
+      "comments": true,
+      "sectionLevels": 10,
+      "localRender": true,
+      "loincRender": true,
+      "loincRenderUrl": "https://lforms.nlm.nih.gov/preview/nlmcde/"
+    },
+    "cde": {
+      "attachments": true,
+      "comments": true,
+      "highlight": true,
+      "audit": true
+    }
+  },
+  "status": {
+    "timeouts": {
+      "statusCheck": 5000,
+      "clusterStatus": 30,
+      "notificationTimeout": 60000
+    }
+  },
+  "account": "CDE Account <cdeuser@nlm.nih.gov>",
+  "maxLogsPerMinute": 1000,
+  "maxPin": 500,
+  "userAlertTime": 5000,
+  "expressToStdout": false,
+  "logBufferSize": 1000,
+  "viewsIncrementThreshold": 3,
+  "versionCheckIntervalInSeconds": 60,
+  "webtrends": false,
+  "antivirus": {
+    "ip": "127.0.0.1",
+    "port": 3310
+  },
+  "pm": {
+    "port": 3081,
+    "tempDir": "/tmp/",
+    "extractDir": ".."
+  },
+  "pmRunOnStartup": [],
+  "multer": {
+    "inMemory": true
+  },
+  "prodDump": {
+    "enabled": true,
+    "url": "https://local-cde-1.nlm.nih.gov/cde/public/assets/dailyDump.tz"
+  },
+  "pmNodeProcess": "node",
+  "captchaCode": "Override actual here.",
+  "siteKey": "6LdAmh4TAAAAABf_PCxKsd4ikR-S5pSSa25PGqUV",
+  "useCaptcha": true,
+  "sessionKey": "Kfji76R"
+}

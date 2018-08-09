@@ -1,0 +1,94 @@
+## Generated
+*.orig
+*.pem
+*.sqlite
+.esm-cache
+.nide
+bin
+dependencies/
+dist/
+!dist/launch/
+dump/
+migration/
+nbproject
+node_modules
+modules/cde/public/assets/fonts/
+modules/cde/public/assets/img/robot.png
+modules/system/views/version.html
+modules/system/public/html/version.html
+prodDump/
+temp/
+ssl/
+
+## Ingest
+ingesters/.nb-gradle/private/
+ingesters/build/
+ingester/debug.log
+ingester/ninds/ingesters/.gradle/
+ingester/ninds/ingesters/1.17.5_0.crx
+ingester/ninds/ingesters/build/
+ingester/ninds/ingesters/gradle/
+ingester/ninds/ingesters/src/main/resources/
+ingester/ninds/ingesters/src/test/
+ingester/src/
+
+## Local Files
+my-*
+config/cluster.json
+config/prod.json
+config/qa-live.json
+config/qa-mig.json
+config/migration.json
+config/peter.json
+mongo.pem.txt
+mongo-rootca.pem.txt
+
+## Logs
+cde.log
+cdeError.log
+debug.log
+expressLog*
+expressErrorLog*
+logs
+
+## Tests
+*.iml
+.gradle/
+chromedriver.exe
+gradle setting.txt
+groovy/out/
+protractor/reports/
+test/.settings/
+test/bin/
+test/build/
+test/report/
+test/selenium/.gradle
+test/selenium/.nb-gradle/private/
+test/selenium/.nb-gradle/profiles/private/
+test/selenium/*.log
+test/selenium/*.png
+test/selenium/build/
+test/selenium/dependency/
+test/selenium/nlm-cde-test.iml
+test/selenium/out/
+test/selenium/IntegerDatatypeTest_integerDatatype.gif
+test/selenium/selenium-server-standalone*
+test/selenium/driver
+test-console.out
+test-console.o
+
+## WebStorm - TODO: temporary until settings are moved here
+.idea
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.npmignore
+Icon?
+ehthumbs.db
+Thumbs.db
+*~

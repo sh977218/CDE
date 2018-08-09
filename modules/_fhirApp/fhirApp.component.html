@@ -1,0 +1,147 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xl-3 col-lg-4 col-12">
+            <div class="mx-3 mt-5 mb-3">
+                <div *ngIf="smart?.userId">
+                    <span class="info-heading">Logged in as:</span>
+                    <span class="info-label">{{smart.userId}}</span>
+                    <hr>
+                </div>
+                <div>
+                    <span class="info-heading">Patient:</span>
+                    <span class="info-label">{{getPatientName(patient)}}</span>
+                </div>
+                <div>
+                    <span class="info-heading">Date of Birth:</span>
+                    <span class="info-label">{{patient?.birthDate}}</span>
+                </div>
+                <div>
+                    <span class="info-heading">Gender:</span>
+                    <span class="info-label" style="text-transform: capitalize">{{patient?.gender}}</span>
+                </div>
+                <div class="list-group mt-3">
+                    <button type="button" class="list-group-item" (click)="summary = true">
+                        Encounter
+                        <span *ngIf="selectedEncounter" class="badge badge-primary"
+                              style="background-color: #007bff;white-space: normal">
+                            <span *ngIf="selectedEncounter.type">{{selectedEncounter.type + ' - '}}</span>
+                            {{selectedEncounter.period.start}}
+                        </span>
+                    </button>
+                </div>
+                <div class="list-group mt-3">
+                    <div class="info-heading">Panels:</div>
+                    <button type="button" class="list-group-item" *ngFor="let f of patientForms"
+                            (click)="summary = false; getForm(f.tinyId, methodLoadForm);">
+                        {{f.name}}
+                        <span style="float: right">
+                            <span *ngIf="f.total" style="display: table-cell; width: 60px;">
+                                <div style="font-size: smaller; text-align: center">{{f.observed}} / {{f.total}}</div>
+                                <div class="progress" style="height: 4px; margin-bottom: auto">
+                                    <div class="progress-bar progress-bar-info" role="progressbar"
+                                         aria-valuemin="0" aria-valuemax="100" attr.aria-valuenow="{{f.percent}}"
+                                         [style.width]="f.percent + '%'"></div>
+                                </div>
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="'col-xl-9 col-lg-8 col-12'">
+            <div style="padding: 5px; max-width: 1010px; margin: 0 auto">
+                <h2 *ngIf="ioInProgress || !elt && !errorMessage && !summary" class="text-center mt20">
+                    Loading Patient Data from FHIR Server
+                    <mat-spinner style="margin: auto"></mat-spinner>
+                </h2>
+                <h2 *ngIf="errorMessage" class="text-center mt20" style="color: red">{{errorMessage}}</h2>
+                <div *ngIf="!ioInProgress && summary && patient" style="margin-top: 25px">
+                    <h1>Encounters:</h1>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th width="80px"></th>
+                            <th>Type</th>
+                            <th>Reason</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let e of patientEncounters" [class.isSelected]="e === selectedEncounter"
+                            (click)="selectedEncounter = e; encounterSelected()">
+                            <td>
+                                <mat-icon *ngIf="e === selectedEncounter">check_box</mat-icon>
+                                <mat-icon *ngIf="e !== selectedEncounter">check_box_outline_blank</mat-icon>
+                                <mat-icon (click)="openViewObs(e)">open_in_new</mat-icon>
+                            </td>
+                            <td>{{e.type}}</td>
+                            <td>{{e.reason}}</td>
+                            <td>{{e.period.start}}</td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <ng-container *ngIf="newEncounter; else addNewEncounter">
+                                    <td>
+                                        <button mat-icon-button color="basic" style="width: 25px"
+                                                [disabled]="!newEncounterValid" title="Add" (click)="newEncounterAdd()">
+                                            <mat-icon>add</mat-icon>
+                                        </button>
+                                        <button mat-icon-button title="Cancel"  style="width: 25px"
+                                                (click)="newEncounterReset()">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <mat-form-field>
+                                            <input matInput style="width: 185px" [(ngModel)]="newEncounterType" disabled
+                                                   (ngModelChange)="newEncounterVerify()" placeholder="Encounter Type">
+                                        </mat-form-field>
+                                    </td>
+                                    <td>
+                                        <mat-form-field>
+                                            <input matInput [(ngModel)]="newEncounterReason"
+                                                   (ngModelChange)="newEncounterVerify()" placeholder="Reason">
+                                        </mat-form-field>
+                                    </td>
+                                    <td>
+                                        <mat-form-field>
+                                            <input matInput type="datetime-local" [(ngModel)]="newEncounterDate"
+                                                   (ngModelChange)="newEncounterVerify()" placeholder="Date and Time"
+                                                   step="3600">
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+                                <ng-template #addNewEncounter>
+                                    <td colspan="4">
+                                        <button mat-raised-button (click)="newEncounter = true; newEncounterVerify()">
+                                            <mat-icon>add</mat-icon>Add
+                                        </button>
+                                    </td>
+                                </ng-template>
+                            </tr>
+                            <tr [hidden]="!newEncounterErrorMessage">
+                                <td colspan="4" style="color: red; text-align: center">{{newEncounterErrorMessage}}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+
+                <ng-container *ngIf="!summary && elt">
+                    <cde-native-render [elt]="elt" [submitForm]="true"
+                                       [profile]="selectedProfile"
+                                       nativeRenderType="default">
+                    </cde-native-render>
+                    <button mat-raised-button color="primary" [disabled]="saving"
+                            type="submit" id="button_submit" (click)="submitFhir()" style="margin-left: 0; margin-top: 20px; font-weight: bold; width: 100px">
+                        <mat-icon *ngIf="saving" class="spin">refresh</mat-icon>
+                        <mat-icon *ngIf="saved">done</mat-icon>
+                        Submit
+                    </button>
+                    {{saveMessage}}
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

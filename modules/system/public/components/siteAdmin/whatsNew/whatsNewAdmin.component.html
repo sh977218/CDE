@@ -1,0 +1,3 @@
+<cde-inline-area-edit *ngIf="article"
+        [(model)]="article.body" [defFormat]="'html'" [isAllowed]="true"
+        (modelChange)="save()"></cde-inline-area-edit>

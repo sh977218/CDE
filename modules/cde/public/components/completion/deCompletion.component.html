@@ -1,0 +1,36 @@
+<div id="accordionList" *ngIf="deCompletionService.suggestedCdes?.length > 0">
+    <h4>Possible Matches</h4>
+    <div class="card" *ngFor="let de of deCompletionService.suggestedCdes;let index = index;">
+        <div class="card-header">
+            <button *ngIf="adding" mat-raised-button type="button" color="accent" (click)="add.emit(de)">
+                <i class="fa fa-plus"></i> Add
+            </button>
+            <span class="hand-cursor" (click)="de.isCollapsed = !de.isCollapsed">
+                {{de.designations[0].designation}}
+            </span>
+            <a routerLink="/deView" [queryParams]="{tinyId: de.tinyId}" target="_blank">
+                <i class="fa fa-eye iconColor"></i></a>
+            <cde-pin-board [elt]="de" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
+            <cde-pin-quickboard [elt]="de" [eltIndex]="index"></cde-pin-quickboard>
+        </div>
+        <div class="card-body" [ngbCollapse]="!de.isCollapsed">
+            <div *ngIf="de.definitions[0]">
+                {{de.definitions[0].definition}}
+            </div>
+            <div *ngIf="de.valueDomain.permissibleValues.length > 0">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Value</th>
+                        <th>Code Name</th>
+                        <th>Code</th>
+                    </tr>
+                    <tr *ngFor="let pv of de.valueDomain.permissibleValues">
+                        <td>{{pv.permissibleValue}}</td>
+                        <td>{{pv.valueMeaningName}}
+                        <td>{{pv.valueMeaningCode}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

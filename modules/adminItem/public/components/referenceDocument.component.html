@@ -1,0 +1,86 @@
+<div id="referenceDocumentsDiv">
+    <h4>Reference Documents</h4>
+    <div *ngIf="elt.referenceDocuments.length === 0">There are no ReferenceDocuments.</div>
+    <ng-container *ngFor="let rd of elt.referenceDocuments;let i = index">
+        <dl class="row">
+            <dt class="col-3 text-right">
+                <ng-container *ngIf="canEdit && rd.edit">Confirm Delete
+                    <mat-icon (click)="removeReferenceDocumentByIndex(i)" id="confirmRemoveReferenceDocument-{{i}}">check</mat-icon>
+                    <mat-icon (click)="rd.edit = false" id="cancelRemoveReferenceDocument-{{i}}">cancel</mat-icon>
+                </ng-container>
+                <mat-icon (click)="rd.edit = true" *ngIf="canEdit && !rd.edit" id="removeReferenceDocument-{{i}}">delete</mat-icon>
+                <cde-sortable-array [theArray]="elt.referenceDocuments" [index]="i" (cb)="onEltChange.emit()"></cde-sortable-array>
+                ID:
+            </dt>
+            <dd id="id_{{i}}" class="col-9">{{rd.referenceDocumentId}}</dd>
+            <dt class="col-3 text-right">Title:</dt>
+            <dd id="title_{{i}}" class="col-9">{{rd.title}}</dd>
+            <dt class="col-3 text-right">URI:</dt>
+            <dd id="uri_{{i}}" class="col-9"><a href="{{rd.uri}}" target="_blank">{{rd.uri}}</a></dd>
+            <dt class="col-3 text-right">Provider Org:</dt>
+            <dd id="providerOrg_{{i}}" class="col-9">{{rd.providerOrg}}</dd>
+            <dt class="col-3 text-right">Language Code:</dt>
+            <dd id="languageCode_{{i}}" class="col-9">{{rd.languageCode}}</dd>
+            <dt class="col-3 text-right">Document:</dt>
+            <dd id="document_{{i}}" class="col-9">{{rd.document}}</dd>
+        </dl>
+        <hr>
+    </ng-container>
+    <button *ngIf="canEdit" id="openNewReferenceDocumentModalBtn" mat-raised-button
+            (click)="openNewReferenceDocumentModal();">
+        <mat-icon>add</mat-icon> Add Reference Document
+    </button>
+</div>
+<ng-template #newReferenceDocumentContent id="newReferenceDocumentModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="newReferenceDocumentModalHeader">
+        <h4 class="modal-title">Add ReferenceDocument</h4>
+    </div>
+    <form #newReferenceDocumentForm="ngForm" (ngSubmit)="addNewReferenceDocument()">
+        <div class="modal-body" id="newReferenceDocumentModalBody">
+            <div class="form-group">
+                <label for="newId">ID:</label>
+                <input class="form-control" [(ngModel)]="newReferenceDocument.referenceDocumentId"
+                       id="newId" name="newId" Placeholder="ID"/>
+            </div>
+            <div class="form-group">
+                <label for="newTitle">Title:</label>
+                <input class="form-control" [(ngModel)]="newReferenceDocument.title"
+                       id="newTitle" name="newTitle" Placeholder="Title"/>
+            </div>
+            <div class="form-group">
+                <label for="newDocType">Doc Type:</label>
+                <input class="form-control" [(ngModel)]="newReferenceDocument.docType"
+                       id="newDocType" name="newDocType" Placeholder="Doc Type"/>
+            </div>
+            <div class="form-group">
+                <label for="newUri">URI:</label>
+                <input class="form-control" id="newUri" name="newUri"
+                       [(ngModel)]="newReferenceDocument.uri" Placeholder="URI"/>
+            </div>
+            <div class="form-group">
+                <label for="newProviderOrg">Provider Org:</label>
+                <input class="form-control" id="newProviderOrg" name="newProviderOrg"
+                       [(ngModel)]="newReferenceDocument.providerOrg" Placeholder="Provider Org"/>
+            </div>
+            <div class="form-group">
+                <label for="newLanguageCode">Language Code:</label>
+                <input class="form-control" id="newLanguageCode" name="newLanguageCode"
+                       [(ngModel)]="newReferenceDocument.languageCode" Placeholder="Language Code"/>
+            </div>
+            <div class="form-group">
+                <label for="newDocument">Document:</label>
+                <input class="form-control" id="newDocument" name="newDocument"
+                       [(ngModel)]="newReferenceDocument.document" Placeholder="Document"/>
+            </div>
+        </div>
+        <div class="modal-footer" id="newReferenceDocumentModalFooter">
+            <button id="cancelNewReferenceDocumentBtn" type="button" (click)="c('Close click')"
+                    mat-raised-button color="warn">
+                Cancel
+            </button>
+            <button id="createNewReferenceDocumentBtn" mat-raised-button color="primary">
+                Save
+            </button>
+        </div>
+    </form>
+</ng-template>

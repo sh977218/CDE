@@ -1,0 +1,24 @@
+<button mat-raised-button id="openLinkedFormsModalBtn" (click)="openLinkedFormsModal()">Linked Forms</button>
+
+<ng-template #linkedFormsContent id="linkedFormsModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="linkedFormsModalHeader">
+        <h4 class="modal-title">Linked Forms</h4>
+    </div>
+    <form #linkedFormsForm="ngForm">
+        <div class="modal-body" id="linkedFormsModalBody">
+            <p>{{getFormText()}}</p>
+            <a *ngIf="forms && forms.length > 0" class="btn btn-outline-dark" id="seeAllLinkedFormsButton"
+               href="/form/search?q={{elt.tinyId}}" target="_blank">
+                <i class="fa fa-file-text-o"></i> See all linked forms</a>
+            <hr/>
+            <div *ngIf="forms && forms.length > 0">
+                <h4>Preview: </h4>
+                <cde-summary-list id="linkedFormsAccordionList" [contentComponent]="formSummaryContentComponent"
+                                  [elts]="forms" (select)="d()"></cde-summary-list>
+            </div>
+        </div>
+        <div class="modal-footer" id="linkedFormsModalFooter">
+            <button (click)="c('Close click')" id="closeLinkedFormsModalBtn" mat-raised-button>Close</button>
+        </div>
+    </form>
+</ng-template>

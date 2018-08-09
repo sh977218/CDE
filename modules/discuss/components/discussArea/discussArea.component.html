@@ -1,0 +1,20 @@
+<h4 *ngIf="elt.isDraft">
+    Discussion is not available in Drafts. Click the Draft slider above to view the current Published version.
+</h4>
+
+<div *ngIf="!elt.isDraft">
+    <div *ngIf="!userService.user" class="ml-2 my-4">
+        Please <a routerLink="/login">log in</a> to comment.
+    </div>
+    <div *ngIf="userService.user" class="ml-2 my-4">
+        <form #newCommentForm="ngForm" name="newCommentForm" id="newCommentForm" novalidate
+              (ngSubmit)="postNewComment();">
+            <textarea [(ngModel)]="newComment.text" class="form-control" id="newCommentTextArea"
+                      name="newCommentTextArea" rows="3" placeholder="Join the discussion..." required></textarea>
+            <button class="btn btn-outline-dark" id="commentBtn" name="commentBtn" type="submit"
+                    [disabled]="!newCommentForm.form.valid">Post New Comment
+            </button>
+        </form>
+    </div>
+    <cde-comments [eltId]="eltId" [eltName]="eltName" [currentTab]="_currentTab" [ownElt]="ownElt"></cde-comments>
+</div>

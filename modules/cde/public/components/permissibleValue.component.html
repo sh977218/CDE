@@ -1,0 +1,337 @@
+<div id="permissibleValueDiv">
+    <h4>Values Allowed</h4>
+    <dl class="row">
+        <dt class="col-3 text-right">Value Type:</dt>
+        <dd id="datatypeSelect" class="col-9">
+            <ng-select [(ngModel)]="elt.valueDomain.datatype" [items]="dataTypeList" bindValue="value"
+                       placeholder="Select data type" [appendTo]="'body'" [hideSelected]="true"
+                       (change)="onDataTypeChange();" [disabled]="!canEdit">
+            </ng-select>
+        </dd>
+        <ng-container *ngIf="elt.valueDomain.definition">
+            <dt class="col-3 text-right">Instructions:</dt>
+            <dd id="instructions" class="col-9">
+                {{elt.valueDomain.definition}}
+            </dd>
+        </ng-container>
+        <dt class="col-3 text-right">Unit of Measure:</dt>
+        <dd class="col-9">
+            <cde-inline-edit id="uom" [(model)]="elt.valueDomain.uom" (modelChange)="onEltChange.emit();"
+                             [isAllowed]="canEdit"></cde-inline-edit>
+        </dd>
+        <ng-container *ngIf="elt.valueDomain.ids?.length > 0">
+            <dt class="col-3 text-right">Ids:</dt>
+            <dd id="identifiers" class="col-9">
+                <div *ngFor="let id of elt.valueDomain.ids">
+                    {{id.source}}: {{id.id}}<span *ngIf="id.version">, version: </span>{{id.version}}
+                </div>
+            </dd>
+        </ng-container>
+        <ng-container [ngSwitch]="elt.valueDomain.datatype">
+            <ng-container *ngSwitchCase="'Value List'">
+            </ng-container>
+            <ng-container *ngSwitchCase="'Date'">
+            </ng-container>
+            <ng-container *ngSwitchCase="'Number'">
+                <dt class="col-3 text-right">Minimum Value:</dt>
+                <dd class="col-9">
+                    <cde-inline-edit id="datatypeNumberMin" [(model)]="elt.valueDomain.datatypeNumber.minValue"
+                                     [inputType]="'Number'" (modelChange)="onEltChange.emit();"
+                                     [isAllowed]="canEdit"></cde-inline-edit>
+                </dd>
+                <dt class="col-3 text-right">Maximum Value:</dt>
+                <dd class="col-9">
+                    <cde-inline-edit id="datatypeNumberMax" [(model)]="elt.valueDomain.datatypeNumber.maxValue"
+                                     [inputType]="'Number'" (modelChange)="onEltChange.emit();"
+                                     [isAllowed]="canEdit"></cde-inline-edit>
+                </dd>
+                <dt class="col-3 text-right">Precision:</dt>
+                <dd class="col-9">
+                    <cde-inline-edit id="datatypeNumberPrecision" [(model)]="elt.valueDomain.datatypeNumber.precision"
+                                     (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+                </dd>
+            </ng-container>
+            <ng-container *ngSwitchCase="'Text'">
+                <dt class="col-3 text-right">Minimum Length:</dt>
+                <dd class="col-9">
+                    <cde-inline-edit id="datatypeTextMin" [(model)]="elt.valueDomain.datatypeText.minLength"
+                                     [inputType]="'Number'" (modelChange)="onEltChange.emit();"
+                                     [isAllowed]="canEdit"></cde-inline-edit>
+                </dd>
+                <dt class="col-3 text-right">Maximum Length:</dt>
+                <dd class="col-9">
+                    <cde-inline-edit id="datatypeTextMax" [(model)]="elt.valueDomain.datatypeText.maxLength"
+                                     [inputType]="'Number'" (modelChange)="onEltChange.emit();"
+                                     [isAllowed]="canEdit"></cde-inline-edit>
+                </dd>
+                <dt class="col-3 text-right">Regular Expression:</dt>
+                <dd class="col-9">
+                    <cde-inline-edit id="datatypeTextRegex" [(model)]="elt.valueDomain.datatypeText.regex"
+                                     (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+                </dd>
+                <dt class="col-3 text-right">Free Text Rule:</dt>
+                <dd class="col-9">
+                    <cde-inline-edit id="datatypeTextRule" [(model)]="elt.valueDomain.datatypeText.rule"
+                                     (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+                </dd>
+            </ng-container>
+            <ng-container *ngSwitchCase="'File'">
+                <dt class="col-3 text-right">File:</dt>
+                <dd class="col-9"></dd>
+            </ng-container>
+            <ng-container *ngSwitchCase="'Time'">
+            </ng-container>
+            <ng-container *ngSwitchCase="'Externally Defined'">
+                <dt class="col-3 text-right">Link:</dt>
+                <dd class="col-9">
+                    <cde-inline-edit id="datatypeExternallyDefinedLink"
+                                     [(model)]="elt.valueDomain.datatypeExternallyDefined.link"
+                                     (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+                </dd>
+                <dt class="col-3 text-right">Description:</dt>
+                <dd class="col-9">
+                    <cde-inline-area-edit [(model)]="elt.valueDomain.datatypeExternallyDefined.description"
+                                          [isAllowed]="canEdit"
+                                          [(defFormat)]="elt.valueDomain.datatypeExternallyDefined.descriptionFormat">
+                    </cde-inline-area-edit>
+                </dd>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+                <div style="font-size: large; color: red">Unknown Type. Will be treated as text.</div>
+            </ng-container>
+        </ng-container>
+    </dl>
+    <ng-container *ngIf="elt.valueDomain.datatype === 'Value List'">
+        <h4>Permissible Value</h4>
+        <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
+            <span *ngFor="let source of keys(SOURCES)" style="margin-left: 50px">
+                <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox"
+                       [(ngModel)]="SOURCES[source].selected"
+                       [disabled]="SOURCES[source].disabled && !userService.loggedIn()"
+                       (ngModelChange)="lookupAsSource(source)">{{source}} Codes
+                <span *ngIf="!userService.loggedIn() && SOURCES[source].disabled"> (Login to enable)</span>
+        </span>
+        </div>
+        <ng-container *ngIf="!(elt.valueDomain.permissibleValues.length > 0)">
+            <h4>No Permissible Values</h4>
+        </ng-container>
+        <ng-container *ngIf="elt.valueDomain.permissibleValues.length > 0">
+            <table class="table table-bordered table-condensed table-striped table-responsive">
+                <tr>
+                    <th>Value</th>
+                    <th>Code Name</th>
+                    <th>Code</th>
+                    <th>Code System</th>
+                    <th *ngIf="SOURCES['UMLS'].selected" colspan="2">UMLS</th>
+                    <th *ngIf="SOURCES['NCI Thesaurus'].selected" colspan="2">NCI Thesaurus</th>
+                    <th *ngIf="SOURCES['LOINC'].selected" colspan="2">LOINC</th>
+                    <th *ngIf="SOURCES['SNOMEDCT US'].selected" colspan="2">SNOMEDCT US</th>
+                    <th>Code Description</th>
+                    <th>Actions</th>
+                </tr>
+                <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index" id="pv_{{i}}">
+                    <td id="pvValue_{{i}}">
+                        <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="canEdit"
+                                         (modelChange)="checkPvUnicity();onEltChange.emit();"></cde-inline-edit>
+                    </td>
+                    <td id="pvMeaningName_{{i}}">
+                        <cde-inline-edit [(model)]="pv.valueMeaningName" [isAllowed]="canEdit"
+                                         (modelChange)="checkPvUnicity();onEltChange.emit();"></cde-inline-edit>
+                    <td id="pvMeaningCode_{{i}}">{{pv.valueMeaningCode}}</td>
+                    <td id="pvCodeSystem_{{i}}">{{pv.codeSystemName}}</td>
+                    <td *ngIf="SOURCES['UMLS'].selected" id="codeAsUMLS_{{i}}">
+                        {{SOURCES['UMLS'].codes[pv.valueMeaningCode].code}}
+                    </td>
+                    <td *ngIf="SOURCES['UMLS'].selected" id="nameAsUMLS_{{i}}">
+                        {{SOURCES['UMLS'].codes[pv.valueMeaningCode].meaning}}
+                    </td>
+                    <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="codeAsNCI_{{i}}">
+                        {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode].code}}
+                    </td>
+                    <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="nameAsNCI_{{i}}">
+                        {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode].meaning}}
+                    </td>
+                    <td *ngIf="SOURCES['LOINC'].selected" id="codeAsLNC_{{i}}">
+                        {{SOURCES['LOINC'].codes[pv.valueMeaningCode].code}}
+                    </td>
+                    <td *ngIf="SOURCES['LOINC'].selected" id="nameAsLNC_{{i}}">
+                        {{SOURCES['LOINC'].codes[pv.valueMeaningCode].meaning}}
+                    </td>
+                    <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="codeAsSCT_{{i}}">
+                        {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode].code}}
+                    </td>
+                    <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="nameAsSCT_{{i}}">
+                        {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode].meaning}}
+                    </td>
+                    <td id="pvMeaningDefinition_{{i}}">
+                        <cde-inline-edit [(model)]="pv.valueMeaningDefinition"
+                                         [isAllowed]="canEdit"
+                                         (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                    </td>
+                    <td id="pvAction_{{i}}">
+                        <ng-container *ngIf="pv.notValid">
+                            <span class="btn-outline-dark fa fa-warning text-danger" id="pv-{{i}}-notValid"></span>
+                        </ng-container>
+                        <ng-container *ngIf="canEdit">
+                            <span id="pvRemove_{{i}}" class="btn-outline-dark fa fa-trash-o" (click)="removePv(i)"
+                                  title="Remove"></span>
+                            <cde-sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
+                                                (cb)="onEltChange.emit()"></cde-sortable-array>
+                        </ng-container>
+                    </td>
+                </tr>
+            </table>
+        </ng-container>
+        <div>
+            <div *ngIf="!elt.allValid && elt.valueDomain.permissibleValues.length > 0" class="alert alert-danger mt20"
+                 role="alert">There are validation errors. {{elt.pvNotValidMsg }}
+            </div>
+            <ng-container *ngIf="canEdit">
+                <button class="btn btn-outline-dark" role="button" id="openAddPermissibleValueModelBtn"
+                        title="Add Permissible Value"
+                        (click)="openNewPermissibleValueModal()">
+                    <i class="fa fa-plus"></i> Add Permissible Value
+                </button>
+                <button class="btn btn-outline-dark" role="button" id="removeAllPermissibleValueBtn"
+                        title="Remove All Values"
+                        (click)="removeAllPermissibleValues()">
+                    <i class="fa fa-trash-o"></i> Remove All Values
+                </button>
+                <button class="btn btn-outline-dark" role="button" id="openImportPVModalBtn"
+                        title="Import All Values" (click)="openImportPermissibleValueModal()">
+                    <i class="fa fa-download"></i> Import PVs From CDE
+                </button>
+            </ng-container>
+        </div>
+
+        <h4>VSAC Value Set</h4>
+        <a href="https://vsac.nlm.nih.gov" target="_blank">Lookup Value Sets here.</a>
+        <div *ngIf="vsacMappingExists()">
+            <dl class="dl-horizontal">
+                <dt>Value Set Name:</dt>
+                <dd>{{elt.dataElementConcept.conceptualDomain.vsac.name}}</dd>
+                <dt>Value Set ID:</dt>
+                <dd>{{elt.dataElementConcept.conceptualDomain.vsac.id}}</dd>
+                <dt>Value Set Version:</dt>
+                <dd>{{elt.dataElementConcept.conceptualDomain.vsac.version}}</dd>
+            </dl>
+        </div>
+
+        <div *ngIf="!vsacMappingExists()">No Value Set specified.</div>
+        <div *ngIf="userService.loggedIn()">
+            <div>{{vsacError}}</div>
+            <div *ngIf="!editMode">
+                <a *ngIf="canEdit" class="btn btn-outline-dark"
+                   id="updateOIDBtn" (click)="editMode=true">Update O.I.D</a>
+                <a *ngIf="canEdit && vsacMappingExists()" class="btn btn-outline-dark"
+                   id="removeVSButton" (click)="removeVSMapping()">Remove Mapping</a>
+            </div>
+            <div *ngIf="editMode">
+                <input name="vsacId" type="text" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id"
+                       placeholder="VSAC O.I.D"/>
+                <i id="vsacIdCheck" class="fa fa-check" (click)="checkVsacId(elt)"></i>
+                <i class="fa fa-times" (click)="editMode = false"></i>
+            </div>
+        </div>
+        <hr/>
+
+        <table *ngIf="vsacValueSet.length > 0" id="vsacTableBody" class="table-bordered table-condensed table-striped">
+            <tr>
+                <th>Code Name</th>
+                <th>Code</th>
+                <th>Code System</th>
+                <th id="validation">Match</th>
+                <th *ngIf="canEdit">Actions</th>
+            </tr>
+            <tr *ngFor="let con of vsacValueSet; let i = index;">
+                <td>{{con.displayName}}</td>
+                <td>{{con.code}}</td>
+                <td>{{con.codeSystemName}}</td>
+                <td>
+                    <i *ngIf="con.isValid" class="fa fa-check text-success" id="vset-{{i}}-valid"></i>
+                    <i *ngIf="!con.isValid" class="fa fa-exclamation text-warning" id="vset-{{i}}-warning"></i>
+                </td>
+                <td>
+                    <i *ngIf="!isVsInPv(con)" class="fa fa fa-plus" id="addVsacValue_{{i}}"
+                       (click)="addVsacValue(con)"></i>
+                </td>
+            </tr>
+        </table>
+        <div *ngIf="vsacMappingExists() && !userService.loggedIn()">Please log in to see VSAC mapping.</div>
+        <a *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()"
+           class="btn btn-outline-dark mt20"
+           (click)="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
+    </ng-container>
+</div>
+
+<ng-template #newPermissibleValueContent id="newPermissibleValueModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="newPermissibleValueModalHeader">
+        <h4 class="modal-title">Add A New Permissible Value</h4>
+    </div>
+    <form #newPermissibleValueForm="ngForm" (ngSubmit)="addNewPermissibleValue()">
+        <div class="modal-body" id="newPermissibleValueModalBody">
+            <div class="form-group">
+                <label for="permissibleValueInput">Value</label>
+                <input class="form-control" [(ngModel)]="newPermissibleValue.permissibleValue"
+                       id="permissibleValueInput"
+                       name="permissibleValueInput" Placeholder="Permissible Value" required/>
+            </div>
+            <div class="form-group">
+                <label for="valueMeaningNameInput">Code Name</label>
+                <input class="form-control" [(ngModel)]="newPermissibleValue.valueMeaningName"
+                       id="valueMeaningNameInput" name="valueMeaningNameInput" (keyup)="lookupUmls()"
+                       Placeholder="Code Name" (ngModelChange)="lookupUmls()"/>
+            </div>
+            <div class="form-group">
+                <label for="valueMeaningCodeInput">Code</label>
+                <input class="form-control" [(ngModel)]="newPermissibleValue.valueMeaningCode"
+                       id="valueMeaningCodeInput"
+                       name="valueMeaningCodeInput" Placeholder="Code"/>
+            </div>
+            <div class="form-group">
+                <label for="valueMeaningDescInput">Description</label>
+                <input class="form-control" [(ngModel)]="newPermissibleValue.valueMeaningDefinition"
+                       id="valueMeaningDescInput" name="valueMeaningDescInput" Placeholder="Description"/>
+            </div>
+            <div class="form-group" *ngIf="newPermissibleValue.valueMeaningCode?.length > 0">
+                <label for="codeSystemInput">Code System</label>
+                <input class="form-control" [(ngModel)]="newPermissibleValue.codeSystemName" id="codeSystemInput"
+                       name="codeSystemInput" Placeholder="Code System" required/>
+            </div>
+            <div *ngIf="umlsTerms.length > 0">
+                <h4>Choices from UMLS: </h4>
+                <div *ngFor="let term of umlsTerms; let i = index;">
+                    <a *ngIf="i<10" (click)="selectFromUmls(term)">{{term.ui}} : {{term.name}}</a>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" id="newPermissibleValueModalFooter">
+            <button class="btn btn-outline-dark" (click)="c('Close click')" id="cancelNewPermissibleValueBtn"
+                    name="cancelNewPermissibleValueBtn"
+                    type="button">Cancel
+            </button>
+            <button class="btn btn-warning" [disabled]="!newPermissibleValueForm.form.valid"
+                    id="createNewPermissibleValueBtn" name="createNewPermissibleValueBtn" type="submit">Save
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #importPermissibleValueContent id="importPermissibleValueModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="importPermissibleValueModalHeader">
+        <h4 class="modal-title">Import Permissible Values from CDE</h4>
+    </div>
+    <form #importPermissibleValueForm="ngForm" (ngSubmit)="importPermissibleValue()">
+        <div class="modal-body" id="importPermissibleValueModalBody">
+            <cde-cde-search addMode="true" [embedded]="true" (add)="importPv($event);"
+                            [searchSettingsInput]="searchSettings">
+            </cde-cde-search>
+        </div>
+        <div class="modal-footer" id="importPermissibleValueModalFooter">
+            <button class="btn btn-outline-dark" (click)="c('Close click')" id="closeImportPermissibleValueBtn"
+                    name="closeImportPermissibleValueBtn"
+                    type="button">Close
+            </button>
+        </div>
+    </form>
+</ng-template>

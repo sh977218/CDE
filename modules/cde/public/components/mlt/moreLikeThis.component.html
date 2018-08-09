@@ -1,0 +1,75 @@
+<button mat-raised-button id="mltButton" (click)="open()">More Like This</button>
+
+<ng-template #mltModal id="mltModal" let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3 class="modal-title">More Like This</h3>
+    </div>
+    <div class="modal-body">
+        <div class="overflowHidden">
+            <div *ngIf="!cdes">
+                <h4 class="pt60 pb40 text-center">
+                    <i class="fa fa-spinner fa-pulse"></i> Loading...
+                </h4>
+            </div>
+            <div *ngIf="cdes">
+                <div *ngIf="cdes.length === 0"><h4>No similar elements to show.</h4></div>
+                <cde-pin-board-modal #mltPinModal module="cde"></cde-pin-board-modal>
+                <div id="mltAccordion">
+                    <div class="card" *ngFor="let cde of cdes;let index = index;">
+                        <div class="card-header">
+                            <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed"> {{cde.designations[0].designation}}</span>
+                            <a href="deView?tinyId={{cde.tinyId}}" target="_blank">
+                                <i class="fa fa-eye iconColor"></i></a>
+                            <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
+                            <cde-pin-quickboard [elt]="cde" [eltIndex]="index"></cde-pin-quickboard>
+                        </div>
+                        <div class="card-body" [ngbCollapse]="!cde.isCollapsed">
+                            <div class="row">
+                                <div class="col-md-4 col-sm-12 col-xs-12">
+                                    <dl class="row">
+                                        <dt class="col-3">Steward:</dt>
+                                        <dd class="col-9">{{cde.stewardOrg.name}}</dd>
+                                        <dt class="col-3">Source:</dt>
+                                        <dd class="col-9">{{cde.source}}</dd>
+                                    </dl>
+                                </div>
+                                <div class="col-md-4 col-sm-6 col-xs-12"
+                                     *ngIf="cde.valueDomain.permissibleValues.length > 0">
+                                    <table class="table-bordered">
+                                        <tr>
+                                            <th>Value</th>
+                                            <th>Code Name</th>
+                                            <th>Code</th>
+                                        </tr>
+                                        <tr *ngFor="let pv of cde.valueDomain.permissibleValues">
+                                            <td>{{pv.permissibleValue}}</td>
+                                            <td>{{pv.valueMeaningName}}
+                                            <td>{{pv.valueMeaningCode}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-4 col-sm-6 col-xs-12" *ngIf="cde.ids.length > 0">
+                                    <table class="table cdeTable">
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Version</th>
+                                            <th>Source</th>
+                                        </tr>
+                                        <tr *ngFor="let id of cde.ids">
+                                            <td>{{id.id}}</td>
+                                            <td>{{id.version}}
+                                            <td>{{id.source}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button mat-raised-button id="closeMoreLikeThisBtn" (click)="d();">Close</button>
+    </div>
+</ng-template>

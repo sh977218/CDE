@@ -1,0 +1,17 @@
+<button mat-raised-button id="openLinkedBoardsModalBtn" (click)="openLinkedBoardsModal()">Linked Boards
+</button>
+
+<ng-template #linkedBoardsContent id="linkedFormsModal" let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3 class="modal-title">Linked Boards</h3>
+    </div>
+    <div class="modal-body linkedBoardDiv">
+        <div *ngIf="!(boards?.length > 0)">No boards use this element</div>
+        <div *ngFor="let board of boards; let i = index">
+            <cde-board-view-template [board]="board"></cde-board-view-template>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button id="closeLinkedBoardBtn" (click)="d()" mat-raised-button>Close</button>
+    </div>
+</ng-template>

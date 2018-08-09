@@ -1,0 +1,37 @@
+<div class="modal-header">
+    <h3>Edit Answer</h3>
+</div>
+<div class="modal-body">
+    <table class="table table-border">
+        <thead>
+        <tr>
+            <th>Value</th>
+            <th>Code Name</th>
+            <th>Code</th>
+            <th>Description</th>
+            <th>Code System</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let answer of answers;let i=index">
+            <td>{{answer.permissibleValue}}</td>
+            <td>{{answer.valueMeaningName}}</td>
+            <td>{{answer.valueMeaningCode}}</td>
+            <td>{{answer.valueMeaningDefinition}}</td>
+            <td>{{answer.codeSystemName}}</td>
+            <td>
+                <cde-sortable-array [theArray]="answers" [index]="i"></cde-sortable-array>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-danger" style="margin-right: auto"
+            (click)="answers.length = 0; onCleared.emit(); onSaved.emit(answers);">Clear All</button>
+    <button class="btn btn-outline-dark" (click)="activeModal.close('Close click');" id="cancelEditAnswerBtn">
+        Cancel
+    </button>
+    <button class="btn btn-warning" (click)="onSaved.emit(answers);" id="saveEditAnswerBtn">Save</button>
+</div>

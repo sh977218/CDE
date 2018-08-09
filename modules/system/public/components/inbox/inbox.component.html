@@ -1,0 +1,197 @@
+<div class="container-fluid">
+    <h4 *ngIf='mail.received.length==0 && mail.sent.length==0 && mail.archived.length==0'
+        class="centerText">Your Inbox is empty.</h4>
+
+    <div *ngIf="mail.received.length > 0">
+        <h3>Received</h3>
+        <ng-container *ngTemplateOutlet="mailTemplate; context: {type: 'received'}"></ng-container>
+    </div>
+
+    <div *ngIf="mail.sent.length > 0">
+        <h3>Sent</h3>
+        <ng-container *ngTemplateOutlet="mailTemplate; context: {type: 'sent'}"></ng-container>
+    </div>
+
+    <div *ngIf="mail.archived.length > 0">
+        <h3>Sent</h3>
+        <ng-container *ngTemplateOutlet="mailTemplate; context: {type: 'archived'}"></ng-container>
+    </div>
+</div>
+
+<ng-template #approveUserModal let-d="dismiss">
+    <div class="modal-header">
+        <h3 class="modal-title">Please confirm</h3>
+    </div>
+    <div class="modal-body">
+        The user will be able to post comments without an approval.<br>
+        Do you want to proceed?
+    </div>
+    <div class="modal-footer">
+        <button id="authorizeUserOK" class="btn btn-outline-dark" (click)="authorizeUser(currentMessage)">Yes</button>
+        <button class="btn  btn-warning" (click)="d()">No</button>
+    </div>
+</ng-template>
+
+<ng-template #mailTemplate let-type="type">
+    <ngb-accordion [closeOthers]="true">
+        <ng-container *ngFor="let message of mail[type] | slice:0:20">
+            <div *ngIf="message.type === 'CommentReply'">
+                <ngb-panel>
+                    <ng-template ngbPanelTitle>
+                        {{message.date | date : medium}} |
+                        {{message.humanType}} |
+                        {{message.author.name}} |
+                        {{message.typeCommentReply.comment.text | slice:0:30}}
+                    </ng-template>
+                    <ng-template ngbPanelContent>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-3 text-right">User</dt>
+                                <dd class="col-9">{{message.author.name}}</dd>
+                            </dl>
+                            <dl class="dl-horizontal">
+                                <dt class="col-3 text-right">Reply</dt>
+                                <dd class="col-9">{{message.typeCommentReply.comment.text}}</dd>
+                            </dl>
+                            <dl class="dl-horizontal">
+                                <dt class="col-3 text-right">Element</dt>
+                                <dd class="col-9">
+                                    <a target="_blank" class="linkToElt"
+                                       href="/{{message.typeCommentReply.element.eltType==='cde'?'deView':'formView'}}?tinyId={{message.typeCommentReply.element.eltId}}">{{message.typeCommentReply.element.name}}</a>
+                                </dd>
+                            </dl>
+
+                            <button *ngIf="type === 'received'" class="approveComment btn   btn-outline-dark"
+                                    [ngClass]="{disabled: message.states[0].action==='Approved'}"
+                                    (click)="closeMessage(message)" type="button">Archive
+                            </button>
+                        </div>
+                    </ng-template>
+                </ngb-panel>
+            </div>
+            <div *ngIf="message.type === 'CommentApproval'">
+                <ngb-panel>
+                    <ng-template ngbPanelTitle>
+                        {{message.date | date : medium}} | {{message.humanType}} | {{message.author.name}} |
+                        {{message.typeCommentApproval.comment.text | slice:0:60}}
+                    </ng-template>
+                    <ng-template ngbPanelContent>
+                        <div class="card-body">
+                            <h4>{{message.humanType}}</h4>
+                            <dl class="row">
+                                <dt class="col-3 text-right">User</dt>
+                                <dd class="col-9">{{message.author.name}}
+                                    <button class="btn btn-xs btn-outline-dark authorizeUser"
+                                            (click)="openAuthorizeUserModal(message)"
+                                            type="button">Authorize User Permanently
+                                    </button>
+                                </dd>
+                            </dl>
+                            <dl class="row">
+                                <dt class="col-3 text-right">Comment</dt>
+                                <dd class="col-9">{{message.typeCommentApproval.comment.text}}</dd>
+                            </dl>
+                            <dl class="row">
+                                <dt class="col-3 text-right">Element</dt>
+                                <dd class="col-9">
+                                    <a target="_blank" class="linkToElt"
+                                       href="/{{message.typeCommentApproval.element.eltType==='cde'?'deView':'formView'}}?tinyId={{message.typeCommentApproval.element.eltId}}">{{message.typeCommentApproval.element.name}}</a>
+                                </dd>
+                            </dl>
+                            <ng-container *ngIf="type === 'received'">
+                                <button class="approveComment btn btn-outline-dark"
+                                        (click)="approveComment(message)"
+                                        [ngClass]="{disabled: message.states[0].action === 'Approved'}"
+                                        type="button">Approve Comment
+                                </button>
+                                <button class="declineComment btn btn-outline-dark"
+                                        (click)="declineComment(message)"
+                                        [ngClass]="{disabled: message.states[0].action === 'Approved'}"
+                                        type="button">Decline Comment
+                                </button>
+                                <span *ngIf="message.states[0].action === 'Approved'">Approved on {{ message.states[0].date | date }}</span>
+                            </ng-container>
+                        </div>
+                    </ng-template>
+                </ngb-panel>
+            </div>
+            <div *ngIf="message.type === 'AttachmentApproval'">
+                <ngb-panel>
+                    <ng-template ngbPanelTitle>
+                        {{message.date | date : medium}} |
+                        {{message.humanType}}
+                        ( {{message.typeAttachmentApproval.filename}} ) | {{message.author.name}}
+                    </ng-template>
+                    <ng-template ngbPanelContent>
+                        <div class="card-body">
+                            <h4>{{ message.humanType}}</h4>
+                            <dl class="row">
+                                <dt class="col-3 text-right">User:</dt>
+                                <dd class="col-9">{{message.author.name}}
+
+                                <dt class="col-3 text-right">File:</dt>
+                                <dd class="col-9"><a class="viewAttachmentLink" target="_blank"
+                                                     href="/data/{{message.typeAttachmentApproval.fileid}}">
+                                    {{message.typeAttachmentApproval.filename}}</a></dd>
+
+                                <dt class="col-3 text-right">Date:</dt>
+                                <dd class="col-9">{{message.typeAttachmentApproval.uploadDate | date : medium }}</dd>
+
+                                <dt class="col-3 text-right">Scanned:</dt>
+                                <dd class="col-9">
+                                    <span *ngIf="message.typeAttachmentApproval.scanned">Scanned by ClamAV</span>
+                                    <span class="text-danger" *ngIf="!message.typeAttachmentApproval.scanned">This file was not scanned by antivirus!</span>
+                                </dd>
+                            </dl>
+
+
+                            <button *ngIf="type === 'received'" class="approveAttachment btn   btn-outline-dark"
+                                    id='approve-{{message.typeAttachmentApproval.filename}}'
+                                    [ngClass]="{disabled: message.states[0].action === 'Approved'}" type="button"
+                                    (click)="approveAttachment(message)">Approve Attachment
+                            </button>
+                            <span *ngIf="message.states[0].action==='Approved'">Approved on {{ message.states[0].date | date }}</span>
+                            <button class="declineAttachment btn btn-outline-dark"
+                                    id='decline-{{message.typeAttachmentApproval.filename}}'
+                                    (click)="declineAttachment(message)"
+                                    [ngClass]="{disabled: message.states[0].action === 'Approved'}" type="button">
+                                Decline Attachment
+                            </button>
+                        </div>
+                    </ng-template>
+                </ngb-panel>
+
+            </div>
+            <div *ngIf="message.type === 'BoardApproval'">
+                <ngb-panel>
+                    <ng-template ngbPanelTitle>
+                        {{message.date | date : medium}} |
+                        {{message.humanType}} |
+                        {{message.author.name}}
+                    </ng-template>
+                    <ng-template ngbPanelContent>
+                        <div class="card-body">
+                            <h4>{{message.humanType}}</h4>
+                            <dl class="row">
+                                <dt class="col-3 text-right">User</dt>
+                                <dd class="col-9">{{message.author.name}}</dd>
+                            </dl>
+                            <dl class="row">
+                                <dt class="col-3 text-right">Element</dt>
+                                <dd class="col-9">
+                                    <a target="_blank" class="linkToElt"
+                                       id="board_{{message.typeBoardApproval.element.name}}"
+                                       href="/board/{{message.typeBoardApproval.element.eltId}}">{{message.typeBoardApproval.element.name}}</a>
+                                </dd>
+                            </dl>
+                            <button *ngIf="type === 'received'" class="approveComment btn   btn-outline-dark"
+                                    (click)="closeMessage(message)"
+                                    [ngClass]="{disabled: message.states[0].action === 'Approved'}">Archive
+                            </button>
+                        </div>
+                    </ng-template>
+                </ngb-panel>
+            </div>
+        </ng-container>
+    </ngb-accordion>
+</ng-template>

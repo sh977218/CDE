@@ -1,0 +1,12 @@
+<script type="text/javascript">
+	(function () {
+		window.maxPin = <%= config.maxPin %>;
+		window.userAlertTime = <%= config.userAlertTime || 5000 %>;
+		window.publicUrl = '<%= config.publicUrl %>';
+		window.siteKey = '<%= config.siteKey  %>';
+		window.meshUrl = '<%= config.mesh.baseUrl %>';
+		window.version = '<%= version %>';
+		window.versionCheckIntervalInSeconds = '<%= config.versionCheckIntervalInSeconds %>';
+	})();
+</script>
+

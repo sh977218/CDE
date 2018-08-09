@@ -1,0 +1,8 @@
+exports.regOID = "59073750-29F5-45BC-B9D2-8263AC26E493";
+
+
+exports.token = "389785B0-0038-448C-A27D-84AB7C666A54";
+
+
+
+

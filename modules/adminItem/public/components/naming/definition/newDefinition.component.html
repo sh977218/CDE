@@ -1,0 +1,41 @@
+<div class="modal-header" id="newDefinitionModalHeader">
+    <h4 class="modal-title">Add a Designation</h4>
+</div>
+<form role="form" #newDefinitionForm="ngForm" (ngSubmit)="onSave.emit(newDefinition)">
+    <div class="modal-body" id="newDefinitionModalBody">
+        <div class="form-group">
+            <div id="newDefinition">
+                <button type="button" (click)="newDefinition.definitionFormat = ''" mat-raised-button>
+                    Plain Text
+                </button>
+                <button type="button" mat-raised-button (click)="newDefinition.definitionFormat = 'html'">
+                    Rich Text
+                </button>
+                <textarea name="definition" *ngIf="newDefinition.definitionFormat !== 'html'"
+                          [(ngModel)]="newDefinition.definition" required
+                          class="form-control" Placeholder="Definition"></textarea>
+                <ckeditor name="definition" *ngIf="newDefinition.definitionFormat === 'html'"
+                          [config]="{extraPlugins: 'divarea'}" [(ngModel)]="newDefinition.definition"
+                          Placeholder="Definition">
+                </ckeditor>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="newDefinitionTags">Tags</label>
+            <div id="newDefinitionTags">
+                <ng-select [(ngModel)]="newDefinition.tags" [items]="tags" [hideSelected]="true" [hideSelected]="true"
+                           [placeholder]="noTagFoundMessage" multiple="true"  name="newTags">
+                </ng-select>
+            </div>
+        </div>
+        <div class="alert alert-info">
+            Tags are managed in Org Management > List Management
+        </div>
+    </div>
+    <div class="modal-footer" id="newDefinitionModalFooter">
+        <button (click)="activeModal.close('Close click')" id="cancelNewDefinitionBtn" type="button"
+            mat-raised-button color="warn">Cancel</button>
+        <button mat-raised-button color="primary" [disabled]="!newDefinitionForm.form.valid"
+                id="createNewDefinitionBtn" type="submit">Save</button>
+    </div>
+</form>

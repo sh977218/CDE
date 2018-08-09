@@ -1,0 +1,1 @@
+mongodump -u siteRootAdmin -p password -d test --collection forms --authenticationDatabase admin

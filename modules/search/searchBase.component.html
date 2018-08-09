@@ -1,0 +1,389 @@
+<ng-container *ngIf="view === 'welcome'; then welcomeSearch else searchResults"></ng-container>
+
+<ng-template #welcomeSearch>
+    <div class="container">
+        <div *ngIf="!addMode" class="jumbotron bg-white text-center d-none d-lg-block">
+            <img [hidden]="embedded" id="homeNihCdeLogo" class="img-center-responsive"
+                 alt="NIH Common Data Elements (CDE) log" src="/cde/public/assets/img/min/NIH-CDE.png"/>
+        </div>
+        <div class="row justify-content-md-center" id="searchDiv">
+            <div class="col-12 col-md-10 mx-auto">
+                <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="max-width: 1000px">
+                    <mat-form-field style="width: 100%; font-size: 25px">
+                        <input matInput name="q" id="ftsearch-input" placeholder="Search"
+                               [formControl]="searchTermFC" maxlength="500" [matAutocomplete]="auto">
+                        <mat-icon matSuffix (click)="termSearch()" id="search.submit">search</mat-icon>
+                    </mat-form-field>
+                    <button style="display: none" type="submit" (click)="termSearch()"></button>
+
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="typeaheadSelect($event)">
+                        <mat-option *ngFor="let option of autocompleteSuggestions" [value]="option">
+                            {{ option }}
+                        </mat-option>
+                    </mat-autocomplete>
+
+                    <!-- Error display area -->
+                    <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
+                       class="error-block">
+                        <span>Query terms must be 500 characters or less.</span>
+                    </p>
+                </form>
+            </div>
+        </div>
+        <cde-search-export-button id="exportEverything" class="pull-right btn-group mt-3 mb-2" *ngIf="!embedded"
+                                  (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})"
+                                  [module]="module">
+        </cde-search-export-button>
+        <div class="mt-3" id="tabs">
+            <ngb-tabset #tbset="ngbTabset" (tabChange)="browseByTopic($event)">
+                <ngb-tab id="browseByClassification" title="Browse by Classification">
+                    <ng-template ngbTabContent>
+                        <div *ngIf="orgs?.length === 0">
+                            <h1 class="pl130">
+                                <i class="fa fa-spinner fa-pulse"></i> Searching...
+                            </h1>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-4 col-sm-6 col-12" *ngFor="let org of orgs"
+                                 id="search_by_classification_{{org.name}}">
+                                <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor"
+                                          (click)="browseOrg(org.name)">
+                                    <legend>
+                                        <span id="browseOrg-{{org.name}}" class="browseLink">{{org.name}}</span>
+                                    </legend>
+                                    <div *ngIf="org.longName">{{org.longName}}</div>
+                                    <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span>
+                                        elements
+                                    </div>
+                                    <div *ngIf="org.extraInfo">{{org.extraInfo}}</div>
+                                    <div *ngIf="org.source"><a href="{{org.source}}" target="_blank" rel="noopener">Source</a>
+                                    </div>
+                                </fieldset>
+                                <i class="fa fa-info welcomeDetailIcon hand-cursor" *ngIf="org.htmlOverview"
+                                   id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org)"></i>
+                            </div>
+                        </div>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab *ngIf="topics?.Diseases" title="Browse by Topic" id="browseByTopic">
+                    <ng-template ngbTabContent>
+                        <div class="row">
+                            <div class="col-4" *ngFor="let key of topicsKeys; let i = index;">
+                                <hr *ngIf="i > 2">
+                                <h4>{{key}}</h4>
+                                <ul style="list-style-type: none">
+                                    <li *ngFor="let t of topics[key]">
+                                        <span class="fake-link" (click)="browseTopic(key + ';' + t.name)">
+                                            {{t.name}} ({{t.count}})</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ng-template>
+                </ngb-tab>
+            </ngb-tabset>
+        </div>
+        <div class="mt-3">
+            <span id="totalItems">{{totalItems}}</span><span> elements across all classifications</span>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #orgDetailsModal>
+    <div style="margin: 25px" [innerHtml]="orgHtmlOverview"></div>
+</ng-template>
+
+<ng-template #searchResults>
+    <nav *ngIf="elts && aggregations" class="navbar navbar-expand-lg navbar-light bg-light px-1" id="searchDiv">
+        <form class="input-group">
+            <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#searchBarContent" aria-controls="searchBarContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <mat-form-field style="width: 90%; padding-left: 30px; margin-bottom: -20px">
+                <input matInput name="q" id="ftsearch-input" placeholder="Search" #autoCompleteInput
+                       [formControl]="searchTermFC" maxlength="500" [matAutocomplete]="auto">
+                <mat-icon matSuffix (click)="termSearch()" id="search.submit">search</mat-icon>
+            </mat-form-field>
+            <button style="display: none" type="submit" (click)="termSearch()"></button>
+
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="typeaheadSelect($event)">
+                <mat-option *ngFor="let option of autocompleteSuggestions" [value]="option">
+                    {{ option }}
+                </mat-option>
+            </mat-autocomplete>
+
+        </form>
+        <div class="ml-auto collapse navbar-collapse" style="width:auto;"
+             id="searchBarContent" role="group" aria-label="Basic example">
+            <button mat-raised-button *ngIf="embedded" id="resetSearch" class="mr-1" name="resetSearch"
+                    type="button" (click)="reset()">
+                <i class="fa fa-trash-o"></i> Reset
+            </button>
+            <button id="pinAll" (click)="openPinModal()" class="mx-1" mat-raised-button
+                    [hidden]="totalItems <= 0 || module === 'form'" *ngIf="!embedded">
+                <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
+            </button>
+            <button (click)="hideShowFilter()" class="mx-1" id="showHideFilters" mat-raised-button>
+                <div [hidden]="filterMode">
+                    <i class="glyphicon glyphicon-filter"></i> Show Filters
+                </div>
+                <div [hidden]="!filterMode">
+                    <i class="glyphicon glyphicon-filter"></i> Hide Filters
+                </div>
+            </button>
+            <cde-list-view-controls [(listView)]="resultsView" *ngIf="!embedded"></cde-list-view-controls>
+
+            <button mat-raised-button [matMenuTriggerFor]="exportMenu" *ngIf="!embedded"
+                    id="export" class="ml-1">
+                <mat-icon>play_for_work</mat-icon>
+                Export
+                <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+
+            <mat-menu #exportMenu>
+                <ng-container *ngIf="userService.user || module === 'cde'; else exportFormNotAuthorized">
+                    <a *ngFor="let key of keys(exporters)" id="{{exporters[key].id}}" mat-menu-item
+                       (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})"
+                    >{{exporters[key].display}}</a>
+                </ng-container>
+                <ng-template #exportFormNotAuthorized>
+                    <a routerLink="/login" mat-menu-item>Please login to export forms.</a>
+                </ng-template>
+                <a *ngIf="userService.user && displayValidation()" id="exportValidRule" mat-menu-item
+                   (click)="openValidRulesModal()"> Validation Rules</a>
+            </mat-menu>
+        </div>
+    </nav>
+    <!-- BREADCRUMBS -->
+    <div *ngIf="elts && aggregations" class="mx-1 my-3" id="searchResultInfoBar">
+        <strong id="searchResultNum">{{totalItems}}</strong> results for
+        <span id="term_crumb">
+            <span *ngIf="!searchedTerm" class="badge badge-secondary mx-1">All Terms</span>
+            <span *ngIf="searchedTerm" class="badge badge-success mx-1">{{searchedTerm}}
+                <i id="removeTerm" class="fa fa-times hand-cursor dark-icon pl-1"
+                   ngbTooltip="Remove this search term filter" placement="right" container="body"
+                   (click)="searchSettings.q = ''; doSearch()"></i>
+            </span>
+        </span>
+        <span id="classif_filter">
+            <span *ngIf="!hasSelectedClassifications()" class="badge badge-secondary mx-1">
+                All Classifications</span>
+            <span *ngIf="hasSelectedClassifications()" class="badge badge-success mx-1">{{getSelectedClassifications()}}
+                <i id="removeClassifications" class="fa fa-times hand-cursor dark-icon pl-1"
+                   ngbTooltip="Remove this classification filter" placement="right" container="body"
+                   (click)="clearSelectedClassifications()"></i>
+            </span>
+        </span>
+        <span *ngIf="altClassificationFilterMode" id="classifAlt_filter">and
+            <span class="badge badge-success">{{getSelectedClassificationsAlt()}}
+                <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl-1"
+                   (click)="clearSelectedClassificationsAlt()"
+                   ngbTooltip="Remove this classifications filter" placement="right" container="body">
+                </i>
+            </span>
+        </span>
+        <span id="topic_crumb">
+            <span *ngIf="!hasSelectedTopics()" class="badge badge-secondary mx-1">All Topics</span>
+            <span *ngIf="hasSelectedTopics()" class="badge badge-success mx-1">{{getSelectedTopics()}}
+                <i id="removeTopics" class="fa fa-times hand-cursor dark-icon pl-1"
+                   ngbTooltip="Remove this topics filter" placement="right" container="body"
+                   (click)="clearSelectedTopics()"></i>
+            </span>
+        </span>
+        <span id="status_crumb">
+            <span *ngIf="!hasSelectedStatuses()" class="badge badge-secondary mx-1">All Statuses</span>
+            <span *ngIf="hasSelectedStatuses()" class="badge badge-success mx-1">{{getSelectedStatuses()}}
+                <i id="removeStatuses" class="fa fa-times hand-cursor dark-icon pl-1"
+                   ngbTooltip="Remove this registration statuses filter" placement="right" container="body"
+                   (click)="clearSelectedStatuses()"></i>
+            </span>
+        </span>
+        <span *ngIf="module === 'cde'" id="datatype_crumb">|
+            <span *ngIf="!hasSelectedDatatypes()" class="badge badge-secondary mx-1">All Datatypes</span>
+            <span *ngIf="hasSelectedDatatypes()" class="badge badge-success mx-1">{{getSelectedDatatypes()}}
+                <i id="removeDatatypes" class="fa fa-times hand-cursor dark-icon pl-1"
+                   (click)="clearSelectedDatatypes()"
+                   ngbTooltip="Remove this datatypes filter" placement="right" container="body"></i>
+            </span>
+        </span>
+        <small> ({{took / 1000}} secs)</small>
+    </div>
+    <div *ngIf="elts && aggregations" class="container-fluid ml-0">
+        <div class="row">
+            <!--FILTERS-->
+            <div *ngIf="filterMode" [ngClass]="filterMode?'col-12 col-sm-2':'col-12'" class="px-1">
+                <p class="text-muted">Filter by:</p>
+                <!-- CLASSIFICATION AGGREGATIONS -->
+                <div *ngIf="aggregations.orgs.buckets" id="classificationListHolder" class="my-3">
+                    <div>
+                        <span class="treeTitle" style="vertical-align: top">Classification</span>
+                        <mat-icon *ngIf="!altClassificationFilterMode && !embedded"
+                                  id="altClassificationFilterModeToggle"
+                                  class="hand-cursor" (click)="setAltClassificationFilterMode()" role="link"
+                                  ngbTooltip="Add a second classifications filter as an AND condition"
+                                  placement="right" style="font-size: 1rem; padding-top: 5px">add_box
+                        </mat-icon>
+                    </div>
+                    <ng-container *ngFor="let t of aggregations.orgs.buckets; trackBy: trackByKey">
+                        <ng-container *ngIf="getCurrentSelectedOrg(); else classifOrg">
+                            <ng-container *ngIf="t.key === getCurrentSelectedOrg()">
+                                <div *ngIf="getCurrentSelectedClassification()?.length; else classifSelf"
+                                     id="classif-{{t.key}}" class="treeParent hand-cursor"
+                                     (click)="alterOrgFilter(t.key)" role="link"
+                                     [ngbTooltip]="t.longName" placement="right" container="body">
+                                    <i class="treeItemIcon fa fa-angle-left"></i>
+                                    <a class="treeItemText"> {{t.key}}</a>
+                                </div>
+                                <ng-template #classifSelf>
+                                    <div id="classif-{{t.key}}" class="treeCurrent treeItemText"
+                                         [ngbTooltip]="t.longName" placement="right" container="body">{{t.key}}
+                                    </div>
+                                </ng-template>
+                            </ng-container>
+                        </ng-container>
+                        <ng-template #classifOrg>
+                            <div id="classif-{{t.key}}" class="treeChild hand-cursor" (click)="alterOrgFilter(t.key)"
+                                 role="link" [ngbTooltip]="t.longName" placement="right" container="body">
+                                <i class="treeItemIcon fa fa-angle-right"></i>
+                                <a class="treeItemText">{{t.key}} (<span
+                                        id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)</a>
+                            </div>
+                        </ng-template>
+                    </ng-container>
+                    <ng-container *ngFor="let e of getCurrentSelectedClassification(); index as i; last as isLast">
+                        <div *ngIf="!isLast; else classifSelf2" id="classif-{{e}}" class="treeParent hand-cursor"
+                             (click)="selectElement(e)" role="link">
+                            <i class="fa fa-angle-left treeItemIcon"></i>
+                            <a class="treeItemText"> {{e}}</a>
+                        </div>
+                        <ng-template #classifSelf2>
+                            <div id="classif-{{e}}" class="treeCurrent treeItemText"
+                                 [class.treeItem]="getCurrentSelectedClassification().length">{{e}}
+                            </div>
+                        </ng-template>
+                    </ng-container>
+                    <div *ngFor="let b of (altClassificationFilterMode?aggregations.flatClassificationsAlt:aggregations.flatClassifications); trackBy: trackByName"
+                         id="classif-{{b.name}}" class="treeChild hand-cursor"
+                         [class.treeItem]="getCurrentSelectedClassification().length"
+                         (click)="selectElement(b.name)" role="link">
+                        <i class="treeItemIcon fa fa-angle-right"></i>
+                        <a class="treeItemText">{{b.name}} (<span
+                                id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)</a>
+                    </div>
+                </div>
+                <!-- TOPIC AGGREGATIONS -->
+                <div *ngIf="searchSettings.meshTree || aggregations.topics.length" id="meshTreesListHolder"
+                     class="my-3">
+                    <span class="treeTitle">Topics</span>
+                    <div *ngFor="let e of getCurrentSelectedTopic(); index as i; last as isLast"
+                         id="topic-{{e}}" class="hand-cursor" (click)="selectTopic(e)" role="link">
+                        <div *ngIf="!isLast; else topicSelf" class="treeParent">
+                            <i class="treeItemIcon treeItemIconSelected fa fa-angle-left"></i>
+                            <a class="treeItemText">{{e}}</a>
+                        </div>
+                        <ng-template #topicSelf>
+                            <div class="treeCurrent treeItemText"
+                                 [class.treeItem]="getCurrentSelectedTopic().length > 1">{{e}}
+                            </div>
+                        </ng-template>
+                    </div>
+                    <div *ngFor="let b of aggregations.topics; trackBy: trackByName"
+                         id="topic-{{b.name}}" class="treeChild hand-cursor"
+                         [class.treeItem]="getCurrentSelectedTopic().length > 1"
+                         (click)="selectTopic(b.name)" role="link">
+                        <i class="treeItemIcon fa fa-angle-right"></i>
+                        <a class="treeItemText">{{b.name}} (<span
+                                id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)</a>
+                    </div>
+                </div>
+                <!-- REGISTRATION STATUS AGGREGATION -->
+                <div *ngIf="aggregations.statuses.statuses.buckets" id="registrationStatusListHolder" class="my-3">
+                    <span class="treeTitle">Registration Status</span>
+                    <ng-container *ngFor="let t of aggregations.statuses.statuses.buckets">
+                        <div *ngIf="t.doc_count > 0" id="regstatus-{{t.key}}" class="treeItem hand-cursor"
+                             (click)="addStatusFilter(t.key)" role="link"
+                             [ngbTooltip]="getRegStatusHelp(t.key)" placement="right" container="body">
+                            <ng-container
+                                    *ngIf="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1; else else06">
+                                <i class="treeItemIcon treeItemIconSelected fa fa-check-square-o"></i>
+                            </ng-container>
+                            <ng-template #else06>
+                                <i class="treeItemIcon fa fa-square-o"></i>
+                            </ng-template>
+                            <a class="treeItemText">{{t.key}} ({{t.doc_count}})</a>
+                        </div>
+                    </ng-container>
+                </div>
+                <!--DATA TYPE AGGREGATION-->
+                <div *ngIf="module === 'cde' && aggregations.datatype.datatype.buckets.length" id="datatypeListHolder"
+                     class="my-3">
+                    <span class="treeTitle">Data Types</span>
+                    <ng-container *ngFor="let t of aggregations.datatype.datatype.buckets">
+                        <div *ngIf="t.doc_count > 0" id="datatype-{{t.key}}" class="treeItem hand-cursor"
+                             (click)="addDatatypeFilter(t.key)" role="link">
+                            <ng-container
+                                    *ngIf="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1; else else07">
+                                <i class="treeItemIcon treeItemIconSelected fa fa-check-square-o"></i>
+                            </ng-container>
+                            <ng-template #else07>
+                                <i class="treeItemIcon fa fa-square-o"></i>
+                            </ng-template>
+                            <a class="treeItemText">{{t.key}} ({{t.doc_count}})</a>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+            <!-- SEARCH RESULTS -->
+            <div id="resultList" [ngClass]="filterMode?'col-12 col-sm-10':'col-12'" class="px-1">
+                <div id="resultListTour"></div>
+                <span [hidden]="elts.length >= 0" class="h1 pl130">
+                    <i class="fa fa-spinner fa-pulse"></i>Searching...</span>
+                <span [hidden]="elts.length !== 0" class="h4"><i class="fa fa-frown-o"></i>
+                    No results were found. Try other criterias or selecting more statuses</span>
+                <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
+                               (add)="add.emit($event)"></cde-list-view>
+
+                <div>
+                    <div class="float-right">
+                        <mat-form-field class="float-left " style="width:20%;" id="goToPage">
+                            <input matInput placeholder="Go to page:" type="number" min="1"
+                                   [max]="numPages" [ngModel]="searchSettings.page"
+                                   (ngModelChange)="pageChange({pageIndex:$event-1})">
+                        </mat-form-field>
+                        <mat-paginator class="float-left" (page)="pageChange($event)" [length]="totalItemsLimited"
+                                       [pageIndex]="searchSettings.page - 1"
+                                       [pageSize]="resultPerPage" [hidePageSize]="true" style="font-size: 1.4em">
+                        </mat-paginator>
+                        <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-container #pinModal></ng-container>
+</ng-template>
+
+<ng-template #validRulesModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>Export CDEs not passing validation rules</h3>
+    </div>
+    <div class="modal-body">
+        <label for="selectStatus">Registration Status</label>
+        <select id="selectStatus" [(ngModel)]="validRulesStatus" class="form-control">
+            <option>Incomplete</option>
+            <option>Candidate</option>
+            <option id="recorded">Recorded</option>
+            <option>Qualified</option>
+            <option>Standard</option>
+            <option>Preferred Standard</option>
+        </select>
+        The export will list the CDE(s) that fail registration status rules for the selected status.
+    </div>
+    <div class="modal-footer">
+        <button class="btn  btn-warning" (click)="d()" id="cancelCopy">Cancel</button>
+        <button class="btn  btn-success" (click)="c({status: validRulesStatus})" id="exportVR">Export</button>
+    </div>
+</ng-template>

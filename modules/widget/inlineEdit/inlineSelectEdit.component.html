@@ -1,0 +1,15 @@
+<div>
+    <div *ngIf="!editMode">
+        <i *ngIf="isAllowed" title="Edit" role="link" class="fa fa-edit" (click)="edit();"></i>
+        <span>{{value}}</span>
+    </div>
+    <div *ngIf="editMode">
+        <select class="form-control" [(ngModel)]="_value" name="inlineSelect">
+            <option *ngFor="let selectOption of selectOptions;" [selected]="selectOption === _value">
+                {{selectOption}}
+            </option>
+        </select>
+        <button type="button" class="fa fa-check" (click)="confirmSave()">Confirm</button>
+        <button type="button" class="fa fa-times" (click)="discard()"> Discard</button>
+    </div>
+</div>

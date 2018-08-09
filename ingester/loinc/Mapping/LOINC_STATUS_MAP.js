@@ -1,0 +1,3 @@
+exports.map = {
+    'Active': 'Qualified'
+};

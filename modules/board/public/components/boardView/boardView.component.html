@@ -1,0 +1,160 @@
+<div class="container-fluid">
+    <div *ngIf="board" class="row overflowHidden">
+        <div class="col-lg-12 mt-4 mb-2">
+            <h3 class="ib pull-left" id="board_name_{{board.name}}">
+                {{board.name}} <span *ngIf="isModifiedSinceReview">(Board has been modified since last review)</span>
+            </h3>
+            <div class="ml-auto pull-right">
+                <div *ngIf="reviewers?.length > 0" class="boxed-div p-0 m-0 d-inline-block">
+                    <div class="overflowHidden p-1">
+                        <b *ngIf="!board.review?.startDate && !board.review?.endDate">Not started</b>
+                        <b *ngIf="board.review?.startDate && board.review?.endDate">Ended</b>
+                        <b *ngIf="board.review?.startDate && !board.review?.endDate">In progress</b>
+                        <span *ngIf="board.review?.startDate">{{board.review.startDate | date: 'MM/dd/yyyy'}}</span>
+                        <span *ngIf="board.review?.endDate"> ~ {{board.review.endDate | date: 'MM/dd/yyyy'}}</span>
+                        <span *ngFor="let reviewer of reviewers"
+                              title="{{reviewer.username}} {{reviewer.status.approval}}{{reviewer.lastViewedLocal?'. viewed on '+reviewer.lastViewedLocal :''}}">
+                        <i class="fa fa-lg fa-user-circle mr2 ml2"></i>
+                        <i class="fa overlay-lower-right" id="reviewer_{{reviewer.username}}_status"
+                           [ngClass]="{'fa-check green-icon':reviewer.status.approval === 'approved',
+                                       'fa-times red-icon':reviewer.status.approval === 'disapproved'}"></i>
+                        </span>
+                        <button *ngIf="!isReviewActive() && userService.user?.username === board.owner.username "
+                                mat-raised-button id="startReviewBtn" (click)="startReview()"> Start Review
+                        </button>
+                        <button *ngIf="isReviewActive() && userService.user?.username === board.owner.username"
+                                mat-raised-button id="endReviewBtn" (click)="endReview()"> End Review
+                        </button>
+                        <ng-container *ngIf="canReview">
+                            <button mat-raised-button id="approveBoardBtn"
+                                    [ngClass]="{'bg-color-green white-icon':boardStatus==='approved'}"
+                                    (click)="boardApproval('approved')">
+                                <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
+                            <button mat-raised-button id="disApproveBoardBtn"
+                                    [ngClass]="{'bg-color-red white-icon':boardStatus==='disapproved'}"
+                                    (click)="boardApproval('disapproved')">
+                                <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
+                        </ng-container>
+                    </div>
+                </div>
+                <button *ngIf="userService.user?.username === board.owner.username" mat-raised-button
+                        id="shareBoardBtn" (click)="shareBoard()">
+                    <mat-icon>share</mat-icon>
+                    Share
+                </button>
+                <button id="discussBtn" role="button" title="Discuss Board" mat-raised-button
+                        type="button" (click)="commentMode = !commentMode;">
+                    <mat-icon [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">comment
+                    </mat-icon>
+                    <span class="d-none d-sm-inline-block ml-1"> Discuss</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class=" mb-3 pull-right">
+                <cde-list-view-controls *ngIf="elts.length > 0" [(listView)]="listViews"></cde-list-view-controls>
+
+                <div *ngIf="board.type === 'cde' && elts.length > 0" class="dropdown mr-1 pull-left">
+                    <button mat-raised-button type="button" id="export"
+                            data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        <mat-icon>play_for_work</mat-icon>
+                        Export Board
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="export">
+                        <a id="csvExport" class="dropdown-item" (click)="exportBoard()" onmouseover="">
+                            CSV File, NIH/CDE</a>
+                        <a id='jsonExport' class="dropdown-item" href="/server/board/{{board.id}}/0/500/?type=json"
+                           target="_blank">
+                            JSON File, NIH/CDE Schema</a>
+                        <a id='xmlExport' class="dropdown-item" href="/server/board/{{board.id}}/0/500/?type=xml"
+                           target="_blank">
+                            XML File, NIH/CDE Schema</a>
+                    </div>
+                </div>
+
+                <button *ngIf="userService.userOrgs?.length > 0 && elts.length > 0"
+                        id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s"
+                        mat-raised-button (click)="classifyEltBoard()">
+                    <mat-icon>folder_open</mat-icon>
+                    Classify All {{board.type==='form'?'Form':'CDE'}}s
+                </button>
+                <cde-create-form-from-board
+                        *ngIf="userService.userOrgs?.length > 0 && elts.length > 0 && board.type === 'cde'"
+                        [board]="board"></cde-create-form-from-board>
+            </div>
+        </div>
+
+        <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
+            <div *ngIf="elts.length === 0">The board is empty.</div>
+            <cde-list-view [board]="board" [currentPage]="currentPage" location="board" [elts]="elts"
+                           [(listView)]="listViews" [module]="board.type" [totalItems]="totalItems"
+                           (add)="reload()"></cde-list-view>
+            <ngb-pagination [collectionSize]="totalItems" [page]="currentPage" (pageChange)="setPage($event)"
+                            [maxSize]="20">
+            </ngb-pagination>
+        </div>
+        <div *ngIf="commentMode" class="pl-10" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
+             style="box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
+            <cde-discuss-area [elt]="board" [eltName]="board.name"></cde-discuss-area>
+        </div>
+    </div>
+</div>
+<ng-template #shareBoardModal let-d="dismiss">
+    <div class="modal-header">
+        <h3>Share this board</h3>
+    </div>
+    <div class="modal-body">
+        <label for="sharedLink">Link to share (only accessible by collaborators)</label>
+        <input id="sharedLink" class="w-100" readonly="readonly" type="text" value="{{url}}" onclick="this.select()">
+
+        <div>Who has access</div>
+        <div class="p-10">
+            <table class="table">
+                <tbody>
+                <tr *ngFor="let user of users; let $index = index">
+                    <td class="centerText bg-color-grey">
+                        <i class="fa fa-user"></i>
+                    </td>
+                    <td>
+                        {{user.username}} {{board.owner.username === user.username?'(you)':''}}
+                    </td>
+                    <td>
+                        <select [(ngModel)]="user.role">
+                            <option *ngFor="let role of allRoles" [value]="role.name">
+                                {{ role.label}}
+                            </option>
+                        </select>
+                    </td>
+                    <td>
+                        <i class="fa fa-trash-o" (click)="deleteUser($index)"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>
+                    <td>
+                        <input placeholder="Enter username..." style="width:100%" id="newUser_username"
+                               [(ngModel)]="newUser.username" required/>
+                    </td>
+                    <td>
+                        <select [(ngModel)]="newUser.role" id="newUser_role">
+                            <option *ngFor="let role of allRoles" [value]="role.name">
+                                {{ role.label}}
+                            </option>
+                        </select>
+                    </td>
+                    <td>
+                        <i class="fa fa-plus" id="addUserBtn" (click)="addUser(newUser)" *ngIf="newUser.username"></i>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button mat-raised-button (click)="okShare()" id="sendBtn">Send</button>
+        <button mat-raised-button class="pull-right" (click)="d()" id="closeShareModal">Cancel</button>
+    </div>
+</ng-template>
+<cde-classify-item-modal #classifyCdesModal [elt]="board" [modalTitle]="modalTitle"
+                         (onEltSelected)="addClassification($event)"></cde-classify-item-modal>

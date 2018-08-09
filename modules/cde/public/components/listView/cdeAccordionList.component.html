@@ -1,0 +1,83 @@
+<div *ngIf="elts" id="accordionList">
+    <div class="card" *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index">
+        <div class="card-header">
+            <button class="btn btn-outline-danger hand-cursor" (click)="add.emit(elt);">
+                <i class="fa fa-plus"></i> Add
+            </button>
+            <span class="hand-cursor" (click)="elt.isCollapsed = !elt.isCollapsed"> {{elt.designations[0].designation}}</span>
+            <a href="deView?tinyId={{elt.tinyId}}" target="_blank" id="acc_link_{{i}}">
+                <i class="fa fa-eye iconColor"></i>
+            </a>
+            <cde-pin-board [elt]="elt" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
+            <cde-pin-quickboard [elt]="elt" [eltIndex]="index"></cde-pin-quickboard>
+            <small class="matched-by hidden-sm-down pull-right">
+                Matched by: <strong>Classification</strong>
+            </small>
+        </div>
+        <div class="card-body" [ngbCollapse]="!elt.isCollapsed">
+            <div class="row">
+                <div class="col-md-4 col-sm-12 col-xs-12">
+                    <div [innerHtml]="elt.primaryDefinitionCopy"></div>
+                    <dl class="row">
+                        <ng-container *ngIf="elt.usedBy">
+                            <dt class="col-4 text-right">Used By:</dt>
+                            <dd class="col-8" id="usedBy_{{i}}">
+                                <div *ngIf="elt.classification.length === 0">None</div>
+                                <div *ngIf="elt.classification.length > 0">
+                                    <span *ngFor="let ub of elt.usedBy">{{ub}} </span>
+                                </div>
+                            </dd>
+                        </ng-container>
+                        <dt class="col-4 text-right">Steward:</dt>
+                        <dd class="col-8">{{elt.stewardOrg.name}}</dd>
+                        <ng-container *ngIf="elt.source">
+                            <dt class="col-4 text-right">Source:</dt>
+                            <dd class="col-8">{{elt.source}}</dd>
+                        </ng-container>
+                    </dl>
+                </div>
+                <div class="col-md-4 col-sm-6 col-xs-12"
+                     *ngIf="elt.valueDomain.permissibleValues.length > 0">
+                    <table class="table-bordered">
+                        <tr>
+                            <th>Value</th>
+                            <th>Code Name</th>
+                            <th>Code</th>
+                        </tr>
+                        <tr *ngFor="let pv of elt.valueDomain.permissibleValues">
+                            <td>{{pv.permissibleValue}}</td>
+                            <td>{{pv.valueMeaningName}}
+                            <td>{{pv.valueMeaningCode}}</td>
+                        </tr>
+                    </table>
+                    <img *ngFor="let attachment of elt.attachments.filter(Elt.isDefault)"
+                         alt="Image attached to the CDE" src="/data/{{attachment.fileid}}"
+                         class='cdeAttachmentThumbnail'/>
+                </div>
+                <div class="col-md-4 col-sm-6 col-xs-12" *ngIf="elt.ids.length > 0">
+                    <table class="table cdeTable">
+                        <tr>
+                            <th>Id</th>
+                            <th>Version</th>
+                            <th>Source</th>
+                        </tr>
+                        <tr *ngFor="let id of elt.ids">
+                            <td>{{id.id}}</td>
+                            <td>{{id.version}}
+                            <td>{{id.source}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row justify-content-end">
+                <div class="col">
+                    <a href="/sdcview?tinyId={{elt.tinyId}}" target="_blank" aria-label="SDC View"
+                       id="sdcView_{{index}}">
+                        <i class="fa fa-share-square-o"></i> SDC View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<cde-pin-board-modal #pinModalCde module="cde"></cde-pin-board-modal>

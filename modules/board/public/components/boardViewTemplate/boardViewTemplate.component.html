@@ -1,0 +1,75 @@
+<div class="card mb-1 cdeBoard" [id]="board.name">
+    <div class="card-header" (click)="clickHeader(board);">
+        <mat-icon *ngIf="board.shareStatus ==='Public'">public</mat-icon>
+        <mat-icon *ngIf="board.shareStatus ==='Private'">lock</mat-icon>
+        <a *ngIf="headerLink" href="/board/{{board._id}}" target="_blank"> {{board.name}}</a>
+        <ng-container *ngIf="!headerLink">{{board.name}}</ng-container>
+        <div class="float-right" *ngIf="canEdit">
+            <mat-icon class="editBoard" (click)="openEditBoardModal();">edit</mat-icon>
+            <mat-icon class="deleteBoard" (click)="openDeleteBoardModal();">delete</mat-icon>
+        </div>
+    </div>
+    <div class="card-body">
+        <span class="card-text numElement">{{board.pins.length + ' '}}</span>{{board.type ==='form'?'Form(s)':'CDE(s)'}}
+        <p class="card-text">{{board.description}}</p>
+        <p class="card-text">
+            <small class="text-muted">
+                Modified {{board.updatedDate | date: 'MM/dd/yyyy'}}
+            </small>
+        </p>
+    </div>
+    <div class="card-footer" *ngIf="board.tags.length > 0">
+        <ng-container *ngFor="let tag of board.tags">
+            <span class="badge badge-secondary"><i class="fa fa-hashtag"></i>{{tag}}</span>
+        </ng-container>
+    </div>
+</div>
+
+<ng-template #editBoardContent id="editBoardModal" let-c="close" let-d="dismiss">
+    <form role="form" #editBoardForm="ngForm" (ngSubmit)="save(board);">
+        <div class="modal-header" id="editBoardModalHeader">
+            <mat-form-field class="w-100">
+                <input name="boardName" id="boardName" matInput placeholder="Board Name" [(ngModel)]="board.name">
+            </mat-form-field>
+        </div>
+        <div class="modal-body" id="editBoardModalBody">
+            <mat-form-field class="w-100">
+                <textarea name="boardDescription" id="boardDescription" matInput placeholder="Board Description"
+                          [(ngModel)]="board.description"></textarea>
+            </mat-form-field>
+            <mat-button-toggle-group [value]="board.shareStatus" (change)="onBoardShareStatusChange($event)">
+                <mat-button-toggle value="Public" id="makePublicBtn">
+                    <mat-icon>public</mat-icon>
+                    Public
+                </mat-button-toggle>
+                <mat-button-toggle value="Private" id="makePrivateBtn">
+                    <mat-icon>lock</mat-icon>
+                    Private
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+            <ng-select id="boardTag" name="boardTag" [ngModel]="board.tags" [items]="board.tags" [addTag]="true"
+                       multiple="true"></ng-select>
+        </div>
+        <div class="modal-footer" id="editBoardModalFooter">
+            <button mat-raised-button (click)="c('Close click')" id="cancelEditBoardBtn" color="warn"
+                    name="cancelNewNamingBtn">Cancel
+            </button>
+            <button mat-raised-button color="primary" [disabled]="!editBoardForm.form.valid" id="saveEditBoardBtn"
+                    name="saveEditBoardBtn" type="submit">Save
+            </button>
+        </div>
+    </form>
+</ng-template>
+<ng-template #deleteBoardContent id="editBoardModal" let-c="close" let-d="dismiss">
+    <form role="form" #deleteBoardForm="ngForm" (ngSubmit)="delete(board);">
+        <div class="modal-header" id="deleteBoardModalHeader">
+            Delete {{board.name}}?
+        </div>
+        <div class="modal-body" id="deleteBoardModalBody">
+        </div>
+        <div class="modal-footer" id="deleteBoardModalFooter">
+            <button mat-raised-button color="warn" (click)="c('Close click')" id="cancelDeleteBoardBtn">Cancel</button>
+            <button mat-raised-button color="primary" id="saveDeleteBoardBtn" type="submit">Save</button>
+        </div>
+    </form>
+</ng-template>

@@ -1,0 +1,293 @@
+<ng-template [ngTemplateOutlet]="getTemplate()" [ngTemplateOutletContext]="{ $implicit: question }"></ng-template>
+
+<ng-template #formDescriptionQuestionTmpl>
+    <div class="my-1">
+        <span *ngIf="question.question.multiselect" class="badge badge-success formViewSummaryLabel">
+            Select Multiple
+        </span>
+        <span *ngIf="question.question?.datatypeText?.minLength" class="badge badge-success formViewSummaryLabel">
+            At least: {{question.question?.datatypeText?.minLength}} characters
+        </span>
+        <span *ngIf="question.question?.datatypeText?.maxLength" class="badge badge-success formViewSummaryLabel">
+            At most: {{question.question?.datatypeText?.maxLength}} characters
+        </span>
+        <span *ngIf="question.question?.datatypeNumber?.minValue" class="badge badge-success formViewSummaryLabel">
+            At least: {{question.question?.datatypeNumber.minValue}}
+        </span>
+        <span *ngIf="question.question?.datatypeNumber?.maxValue" class="badge badge-success formViewSummaryLabel">
+            At most: {{question.question?.datatypeNumber?.maxValue}}
+        </span>
+        <span *ngIf="question.question?.datatypeDate?.format" class="badge badge-success formViewSummaryLabel">
+            Format: {{question.question?.datatypeDate?.format}}
+        </span>
+        <span *ngIf="getRepeatLabel(question)" class="badge badge-primary formViewSummaryLabel">
+            Repeats: {{getRepeatLabel(question)}} times
+        </span>
+        <span *ngIf="isScore(question)" class="badge badge-primary formViewSummaryLabel">
+            Score: <span [textContent]="question.question.scoreFormula"></span>
+        </span>
+        <span *ngIf="question.question.required" class="badge badge-danger formViewSummaryLabel">
+            Required
+        </span>
+        <span *ngIf="question.question.invisible" class="badge badge-secondary formViewSummaryLabel"
+              style="background-color: #666">
+            Invisible
+        </span>
+        <span *ngIf="question.question.editable === false" class="badge badge-secondary formViewSummaryLabel"
+              style="background-color: #666">
+            Disabled
+        </span>
+        <span *ngIf="question.skipLogic?.condition?.length > 0 && parent"
+              class="badge badge-warning formViewSummaryLabel">
+            Show if: {{question.skipLogic.condition}}
+        </span>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div *ngIf="question.instructions?.value" class="questionInstruction">
+                <span class="formViewQuestionLabel">Instructions:</span>
+                <span *ngIf="question.instructions.valueFormat === 'html'"
+                      [innerHtml]="question.instructions.value"></span>
+                <span *ngIf="question.instructions.valueFormat !== 'html'"
+                      [textContent]="question.instructions.value"></span>
+            </div>
+            <div class="answerList"
+                 *ngIf="question.question.datatype === 'Value List' && question.question.answers && question.question.answers.length > 0">
+                <span class="formViewQuestionLabel">Answer Choices:</span>
+                <span *ngFor="let pv of question.question.answers" class="badge badge-secondary formViewSummaryLabel"
+                      style="background-color: #666" [textContent]="pv?.valueMeaningName"></span>
+            </div>
+            <div *ngIf="question.question.datatype === 'Date' && question.question.datatypeDate.precision !== 'Day'"
+                 class="defaultAnswer">
+                <span class="formViewQuestionLabel">Precision:</span>
+                <span class="badge badge-secondary formViewSummaryLabel"
+                      style="background-color: #666">{{question.question.datatypeDate.precision}}</span>
+            </div>
+            <div *ngIf="question.question.defaultAnswer"
+                 class="defaultAnswer">
+                <span class="formViewQuestionLabel">Default Answer:</span>
+                <span class="badge badge-secondary formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
+            </div>
+            <div *ngIf="question.question.unitsOfMeasure.length > 0" class="questionUom">
+                <span class="formViewQuestionLabel">Units of Measure:</span>
+                <span *ngFor="let u of question.question.unitsOfMeasure; let index = index"
+                      class="badge badge-info formViewSummaryLabel"
+                      [ngClass]="{'badge-danger': (question.question.uomsValid && question.question.uomsValid[index])}">
+                    <ng-container *ngIf="u.system">{{u.system}}/</ng-container>{{u.code}}<ng-container
+                        *ngIf="question.question.uomsValid && question.question.uomsValid[index]">&nbsp;(Error: {{question.question.uomsValid[index]}})</ng-container>
+                </span>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #formDescriptionQuestionEditTmpl>
+    <dl class="row">
+        <dt class="col-2">Label:</dt>
+        <dd class="col-10">
+            <i class="fa fa-pencil changeQuestionLabelIcon hand-cursor mr-1" title="Change question label"
+               (click)="openNameSelect(question, parent)"></i>
+            <span *ngIf="!question.hideLabel">{{question.label}}</span>
+            <span *ngIf="question.hideLabel">(No label)</span>
+        </dd>
+        <dt class="col-2">Instructions:</dt>
+        <dd class="col-10 editQuestionInstruction">
+            <cde-inline-area-edit
+                    [(model)]="question.instructions.value"
+                    [(defFormat)]="question.instructions.valueFormat"
+                    [isAllowed]="true" (modelChange)="onEltChange.emit()">
+            </cde-inline-area-edit>
+        </dd>
+        <ng-container *ngIf="question.question.datatype === 'Date'">
+            <dt class="col-2 font-weight-bold">Date Precision:</dt>
+            <dd class="col-10">
+                <select [(ngModel)]="question.question.datatypeDate.precision" (change)="onEltChange.emit()"
+                        class="form-control" style="width: fit-content">
+                    <option>Year</option>
+                    <option>Month</option>
+                    <option>Day</option>
+                    <option>Hour</option>
+                    <option>Minute</option>
+                    <option>Second</option>
+                </select>
+
+            </dd>
+        </ng-container>
+        <dt class="col-2">Required:</dt>
+        <dd class="col-10">
+            <input type="checkbox" title="Required" [(ngModel)]="question.question.required"
+                   (change)="onEltChange.emit()"/>
+        </dd>
+        <dt class="col-2">Invisible:</dt>
+        <dd class="col-10 editQuestionInvisible">
+            <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible"
+                   (change)="onEltChange.emit()">
+        </dd>
+        <ng-container *ngIf="parent">
+            <dt class="col-2">Show if:</dt>
+            <dd class="col-10 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
+                <input #slInput type="text" title="Show if"
+                       (focus)="slOptionsRetrigger()"
+                       [ngModel]="question.skipLogic.condition"
+                       (ngModelChange)="typeaheadSkipLogic(parent, question, $event);"
+                       class="form-control skipLogicCondition"
+                       placeholder="Start typing a question name to find options"
+                       [ngbTypeahead]="getSkipLogicOptions"
+                       (selectItem)="onSelectItem(parent, question, $event,slInput);"/>
+                <span style="color: red">{{question.skipLogic?.validationError}}</span>
+            </dd>
+        </ng-container>
+        <ng-container *ngIf="question.question.datatype === 'Number' || question.question.datatype === 'Text'">
+            <dt class="col-2">Units of Measure:</dt>
+            <dd class="col-10 questionUom">
+                <div class="border rounded p-1">
+                    <span *ngFor="let u of question.question.unitsOfMeasure;let i = index;"
+                          class="badge badge-info formViewSummaryLabel">
+                        <i class="fa fa-times hand-cursor dark-icon pl-1"
+                           (click)="removeUomByIndex(i);"></i>
+                        <ng-container *ngIf="u.system">{{u.system}}/</ng-container>{{u.code}}
+                    </span>
+                    <ng-template #rt let-r="result" let-t="term">
+                        <dl class="row" *ngIf="r.name">
+                            <dt class="col-2">synonyms:</dt>
+                            <dd class="col-10 mb-0">
+                                <span *ngFor="let s of r.synonyms">{{s}} </span>
+                            </dd>
+                            <dt class="col-2">name:</dt>
+                            <dd class="col-10 mb-0">{{ r.name}}</dd>
+                            <dt class="col-2">code:</dt>
+                            <dd class="col-10 mb-0">{{r.code}}</dd>
+                        </dl>
+                        <span *ngIf="!r.name">
+                            <i class="fa fa-warning"> {{r.code}} is not a valid UCUM Unit</i>
+                        </span>
+                    </ng-template>
+                    <div class="p-1">
+                        Add
+                        <select class="form-control d-inline-block" style="max-width: 100px"
+                                [(ngModel)]="newUomSystem" title="New Unit of Measure System">
+                            <option value="UCUM">UCUM</option>
+                            <option value="">Other</option>
+                        </select>
+                        <ng-container *ngIf="newUomSystem === 'UCUM'; else manualUom">
+                            <input class="form-control d-inline-block" style="max-width: 200px"
+                                   [ngbTypeahead]="ucumService.search" title="New Unit of Measure Code"
+                                   [resultTemplate]="rt" [(ngModel)]="newUom" [container]="'body'"
+                                   (selectItem)="uomAddSelected($event);"/>
+                        </ng-container>
+                        <ng-template #manualUom>
+                            <input class="form-control d-inline-block" style="max-width: 200px" [(ngModel)]="newUom"/>
+                            <button class="btn btn-outline-dark" style="vertical-align: baseline"
+                                    (click)="uomAddNew()"><i class="fa fa-plus"></i></button>
+                        </ng-template>
+                        <ng-container *ngFor="let e of question.question.uomsValid; index as i">
+                            <div *ngIf="e" style="color: red">
+                                <ng-container *ngIf="question.question.unitsOfMeasure[i].system">
+                                    {{question.question.unitsOfMeasure[i].system}}/
+                                </ng-container>
+                                {{question.question.unitsOfMeasure[i].code}} - {{e}}
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </dd>
+        </ng-container>
+        <ng-container *ngIf="question.question.datatype === 'Value List'">
+            <dt class="col-2">Multiple Selection:</dt>
+            <dd class="col-10 multipleSelection">
+                <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect"
+                       (change)="onEltChange.emit()"/>
+            </dd>
+            <ng-container *ngIf="question.question.cde.tinyId">
+                <dt class="col-2 answerListLabel">Answer List
+                    <i *ngIf="question.question.answers.length > 0" class="fa fa-pencil hand-cursor"
+                       (click)="openEditAnswerModal(question)"></i>:
+                </dt>
+                <dd class="col-10 answerList">
+                    <ng-select [(ngModel)]="question.question.answers" [items]="answerListItems"
+                               [multiple]="true" bindLabel="valueMeaningName" placeholder="Select Answer"
+                               [appendTo]="'body'" [hideSelected]="true" (add)="onAnswerListAdd();"
+                               (remove)="onAnswerListRemove($event)" (clear)="onEltChange.emit();">
+                    </ng-select>
+                </dd>
+            </ng-container>
+        </ng-container>
+        <dt class="col-2">Default Answer:</dt>
+        <dd class="col-10 defaultAnswer">
+            <ng-container *ngIf="question.question.datatype === 'Value List'">
+                <ng-select [(ngModel)]="question.question.defaultAnswer" [(items)]="defaultAnswerListItems"
+                           bindLabel="valueMeaningName" bindValue="valueMeaningName" placeholder="Select Default Answer"
+                           [appendTo]="'body'" [hideSelected]="true" (change)="onEltChange.emit()">
+                </ng-select>
+            </ng-container>
+            <ng-container *ngIf="question.question.datatype !== 'Value List'">
+                <cde-inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true"
+                                 (modelChange)="onEltChange.emit()"></cde-inline-edit>
+            </ng-container>
+        </dd>
+        <ng-container *ngIf="question.question.defaultAnswer">
+            <dt class="col-2">Editable:</dt>
+            <dd class="col-10">
+                <input type="checkbox" title="Editable" [(ngModel)]="question.question.editable"
+                       (change)="onEltChange.emit()"/>
+            </dd>
+        </ng-container>
+    </dl>
+
+    <mat-card *ngIf="!question.question.cde.tinyId">
+        <mat-card-header>
+            <mat-card-title>Create New CDE</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-form-field class="w-50 newCdeDesignations">
+                <mat-chip-list #designationChipList>
+                    <mat-chip *ngFor="let designation of question.question.cde.designations;let i =index;"
+                              [selectable]="true" [removable]="true" (removed)="removeCdeDesignation(i)">
+                        {{designation.designation}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="New Name..."
+                           [matChipInputFor]="designationChipList"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           [matChipInputAddOnBlur]="addOnBlur"
+                           (matChipInputTokenEnd)="addCdeDesignation($event)">
+                </mat-chip-list>
+            </mat-form-field>
+            <mat-form-field class="w-50 newCdeIdentifiers">
+                <mat-chip-list #idChipList>
+                    <mat-chip *ngFor="let id of question.question.cde.ids;let i =index;"
+                              [selectable]="true" [removable]="true" (removed)="removeCdeId(i)">
+                        <span class="green mr-1">{{id.source}}</span> <span class="blue ml-1">{{id.id}}</span>
+                        <mat-icon matChipRemove class="removeIdentifier">cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="New Identifier...(Example: LOINC;12345-6)"
+                           [matChipInputFor]="idChipList"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           [matChipInputAddOnBlur]="addOnBlur"
+                           (matChipInputTokenEnd)="addCdeId($event)">
+                </mat-chip-list>
+            </mat-form-field>
+            <mat-form-field class="w-50 newCdeDataType">
+                <mat-select placeholder="CDE Data Type" [(ngModel)]="question.question.datatype"
+                            (selectionChange)="onEltChange.emit();">
+                    <mat-option *ngFor="let dataType of dataTypeList" [value]="dataType">{{dataType}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="w-50 newCdePvs" *ngIf="question.question.datatype==='Value List'">
+                <mat-chip-list #pvChipList>
+                    <mat-chip *ngFor="let pv of question.question.cde.permissibleValues;let i =index;"
+                              [selectable]="true" [removable]="true" (removed)="removeCdePv(i)">
+                        {{pv.permissibleValue}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="New Permissible Value"
+                           [matChipInputFor]="pvChipList"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           [matChipInputAddOnBlur]="addOnBlur"
+                           (matChipInputTokenEnd)="addCdePv($event)">
+                </mat-chip-list>
+            </mat-form-field>
+        </mat-card-content>
+    </mat-card>
+
+</ng-template>

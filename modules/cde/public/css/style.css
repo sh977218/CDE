@@ -1,0 +1,254 @@
+/* over write a link to pass chrome audit low contrast ratio */
+a {
+    color: #337ab7;
+}
+
+button {
+    margin-right: 0.2rem !important;
+}
+
+.displayProfileRenderDiv > * {
+    font-size: 60%;
+}
+.displayProfileRenderDiv input {
+    transform: scale(0.8);
+}
+
+
+/* home component */
+.homeDescriptionLink {
+    color: #0F4E9D;
+}
+/* end */
+
+@media (min-width: 575px) {
+    .text-right-md {
+        text-align: right
+    }
+}
+
+.modal-lg {
+    max-width: 90%;
+}
+
+.modal {
+    overflow-y: scroll !important;
+}
+
+.bg-white {
+    background-color: white;
+}
+
+.browseLink {
+    color: #337ab7;
+}
+
+.browseLink:hover {
+    color: #23527c;
+    text-decoration: underline;
+}
+
+#tabs > ul, .nav {
+    margin-bottom: 1rem;
+}
+
+/*boostrap override*/
+.fake-link,
+a:not([href]):not([tabindex]).fake-link {
+    color: #337ab7;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.fake-link:hover,
+a:not([href]):not([tabindex]).fake-link:hover {
+    color: #23527c;
+    text-decoration: underline;
+}
+
+.rotate90 {
+    transform: rotate(90deg);
+}
+
+.rotate180 {
+    transform: rotate(180deg);
+}
+
+.rotate270 {
+    transform: rotate(270deg);
+}
+
+/* feedback */
+@media (max-width: 768px) {
+    .feedback-btn {
+        display: none;
+    }
+}
+
+.feedback-btn.feedback-btn-gray {
+    font-family: inherit !important;
+    border-top-left-radius: 6px !important;
+    border-top-right-radius: 6px !important;
+    font-size: 11px;
+    right: 20px !important;
+    z-index: 3;
+}
+
+#feedback-note-tmp {
+    min-height: 200px;
+}
+
+#feedback-overview-note {
+    width: 350px;
+    height: 317px !important;
+}
+
+#feedback-highlighter {
+    cursor: move;
+    height: 574px !important;
+}
+
+/* Font Awesome */
+.dark-icon {
+    color: black;
+}
+
+.dark-icon:hover {
+    color: white;
+}
+
+.iconColor {
+    color: #292b2c;
+}
+
+/* begin validation error */
+input.ng-invalid:not([matInput]) {
+    border-left: 5px solid #a94442 !important;
+}
+
+.ng-valid[required], .ng-valid.required {
+    border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid:not(form):not(mat-form-field):not([matInput]) {
+    border-left: 5px solid #a94442; /* red */
+}
+/* end validation error */
+
+/* begin alternatives */
+@media print {
+    @page {
+        size: 330mm 427mm;
+        margin: 14mm;
+    }
+
+    .container {
+        width: 1170px;
+    }
+
+    .keep-with-previous {
+        page-break-before: avoid;
+        break-before: avoid;
+    }
+
+    .keep-together {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .noPrint {
+        display: none !important;
+    }
+}
+/* end alternatives */
+
+/* cde (remove) */
+.boxed-div {
+    border: 1px solid rgb(220, 220, 220);
+    border-radius: 5px;
+    margin: 5px;
+    padding: 10px;
+    word-wrap: break-word;
+}
+
+.loading {
+    display: none;
+}
+
+nih-cde:empty + .loading {
+    display: block;
+}
+
+.my-board-card {
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    margin: 3px;
+    padding: 15px;
+    min-height: 160px;
+    position: relative;
+}
+
+.eltCommentView {
+    -webkit-box-shadow: 10px 0 5px -2px #888;
+}
+
+.cdeFieldset {
+    overflow: hidden;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    margin: 10px 0 10px 0;
+    padding: 0 10px;
+}
+
+.cdeFieldset.welcomeSearchFieldset {
+    height: 140px;
+}
+
+.cdeFieldset.hand-cursor:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+.hand-cursor {
+    cursor: pointer;
+}
+
+.cdeFieldset > legend {
+    width: auto;
+    border-bottom: none;
+    padding: 0 5px 0 5px;
+    margin-bottom: 10px;
+    background-color: white;
+    font-size: 21px;
+}
+
+.cdeTable, .gridListView td {
+    table-layout: fixed;
+}
+
+.cdeTable td, .cdeTable th {
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.cdeTable th {
+    padding: 0
+}
+
+.cdeTable td {
+    padding: 0
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "|";
+}
+
+.breadcrumb {
+    background-color: white;
+}
+
+.cdeAttachmentThumbnail {
+    max-width: 100%;
+    max-height: 200px;
+}

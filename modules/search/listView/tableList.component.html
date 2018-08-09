@@ -1,0 +1,65 @@
+<table id="gridList" class="gridListView table table-condensed table-striped table-bordered table-responsive">
+    <thead>
+    <tr>
+        <th *ngFor="let heading of headings">{{heading}}
+            <mat-icon *ngIf="heading === 'Name'" id="tableViewSettings" (click)="openTableViewPreferences()">settings
+            </mat-icon>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let row of rows">
+        <td *ngFor="let prop of row"
+            [class]="prop.css">
+            <ng-container [ngSwitch]="prop.css">
+                <ng-container *ngSwitchCase="'name'">
+                    <a routerLink="/{{prop.elt.elementType==='cde'?'de':'form'}}View"
+                       [queryParams]="{tinyId: prop.elt.tinyId}">{{prop.elt.designations[0].designation}}</a>
+                </ng-container>
+                <ng-container *ngSwitchCase="'naming'">
+                    <ul>
+                        <li *ngFor="let v of prop.values; let last = last"
+                            [ngClass]="{lastItem: last}">{{v}}
+                        </li>
+                    </ul>
+                </ng-container>
+                <ng-container *ngSwitchCase="'ids'">
+                    <ng-container *ngIf="esService.searchSettings.tableViewFields.identifiers.length === 0">
+                        <ul>
+                            <li *ngFor="let id of prop.values">{{id.source}}:
+                                <strong>{{id.id}}</strong>
+                                <span *ngIf="id.version"> v{{id.version}}</span>
+                            </li>
+                        </ul>
+                    </ng-container>
+                </ng-container>
+                <ng-container
+                        *ngIf="esService.searchSettings.tableViewFields.ids && esService.searchSettings.tableViewFields.identifiers.length > 0">
+                    <ng-container
+                            *ngFor="let identifier of esService.searchSettings.tableViewFields.identifiers">
+                        <ng-container *ngSwitchCase="identifier">
+                            {{prop.values}}
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="'permissibleValues multiline-ellipsis'">
+                    {{prop.datatype}}
+                    <ng-container *ngIf="prop.values?.length > 0">:
+                        <ul>
+                            <li *ngFor="let v of prop.values; let last = last"
+                                [ngClass]="{lastItem: last}">{{v}}
+                            </li>
+                        </ul>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="'linkedForms'">
+                    <div *ngFor="let v of prop.values">
+                        <a routerLink="/formView" [queryParams]="{tinyId: v.tinyId}" target="_blank">{{v.name}}</a>
+                    </div>
+                </ng-container>
+                <ng-container *ngSwitchDefault>{{prop.value}}</ng-container>
+            </ng-container>
+        </td>
+    </tr>
+    </tbody>
+</table>

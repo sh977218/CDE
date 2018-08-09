@@ -1,0 +1,13 @@
+<ngb-tabset #tbset="ngbTabset" [activeId]="defaultQuickBoard"
+            (tabChange)="quickBoardService.setDefaultQuickBoard($event)">
+    <ngb-tab id="dataElementQuickBoard" title="CDE QuickBoard ({{quickBoardService.number_dataElements}})">
+        <ng-template ngbTabContent>
+            <cde-data-element-quick-board></cde-data-element-quick-board>
+        </ng-template>
+    </ngb-tab>
+    <ngb-tab id="formQuickBoard" title="Form QuickBoard ({{quickBoardService.number_forms}})">
+        <ng-template ngbTabContent>
+            <cde-form-quick-board></cde-form-quick-board>
+        </ng-template>
+    </ngb-tab>
+</ngb-tabset>

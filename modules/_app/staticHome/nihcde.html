@@ -1,0 +1,212 @@
+<nih-cde ng-version="6.0.3">
+    <cde-navigation _nghost-c0="">
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
+                <div class="mdl-layout__header-row">
+                        <span class="android-title mdl-layout-title">
+                            <a href="/" id="homeLink">
+                            <img class="logo-image"
+                                 src="/cde/public/assets/img/min/nih-cde-logo-simple.png"></a></span>
+                    <div class="android-header-spacer mdl-layout-spacer"></div>
+                    <div class="android-navigation-container">
+                        <nav class="android-navigation mdl-navigation">
+                            <a class="mdl-navigation__link mdl-typography--text-uppercase"
+                               id="menu_cdes_link" href="/cde/search">CDEs</a>
+                            <a class="mdl-navigation__link mdl-typography--text-uppercase"
+                                id="menu_forms_link" href="/form/search">Forms</a>
+                            <a class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
+                                    id="boardsMenu" href="/boardList">Boards</a>
+
+                            <a class="mdl-navigation__link mdl-typography--text-uppercase"
+                               id="menu_qb_link" href="/quickBoard">Quick Board (0)</a>
+
+                            <a id="helpLink" class="mdl-navigation__link mdl-typography--text-uppercase">Help&nbsp;▼</a>
+                            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                                for="helpLink">
+                                <li class="mdl-menu__item">
+                                    <a id="apiDocumentationLink"
+                                       class="mdl-menu__item mdl-typography--text-uppercase"
+                                       href="/api">API</a>
+                                </li>
+                                <li class="mdl-menu__item">
+                                    <a id="whatsNewLink" href="/whatsNew"
+                                       class="mdl-menu__item mdl-typography--text-uppercase">New Features</a>
+                                </li>
+                                <li class="mdl-menu__item">
+                                    <a id="takeATourLink" href="/home?tour=yes"
+                                       class="mdl-menu__item mdl-typography--text-uppercase">Take a Tour</a>
+                                </li>
+                            </ul>
+
+                            <a class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
+                                id="login_link" href="/login">Login</a><a
+                                id="notifications">
+                            <cde-notifications _nghost-c0="">
+                                <a aria-haspopup="true">
+                                    <mat-icon
+                                            class="mat-badge mat-icon mat-badge-warn material-icons mat-badge-overlap mat-badge-above mat-badge-after mat-badge-small mat-badge-hidden"
+                                            matbadgecolor="warn" matbadgesize="small" role="img"
+                                            style="font-size: 1.3em; margin-top: 10px" aria-hidden="true">
+                                        notifications<span id="mat-badge-content-0"
+                                                           class="mat-badge-content mat-badge-active">0</span>
+                                    </mat-icon>
+                                </a>
+                            </cde-notifications>
+                        </a><a id="searchSettings"
+                               style="padding-right: 24px" href="/searchPreferences"><i
+                                class="material-icons"
+                                style="font-size: 1.3em; margin-top: 10px">settings</i></a>
+                        </nav>
+                    </div>
+                    <span class="android-mobile-title mdl-layout-title"><img
+                            class="logo-image"
+                            src="/cde/public/assets/img/min/nih-cde-logo-simple.png"></span>
+                </div>
+            </div>
+            <div class="android-drawer mdl-layout__drawer" aria-hidden="true"><span
+                    class="mdl-layout-title"><img class="logo-image"
+                                                  src="/cde/public/assets/img/min/nih-cde-logo-simple.png"></span>
+                <nav class="mdl-navigation"><a class="mdl-navigation__link"
+                                               href="/cde/search">CDEs</a><a
+                        class="mdl-navigation__link" href="/form/search">Forms</a>
+                    <div class="android-drawer-separator"></div>
+                    <a class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
+                            id="boardsMenu" href="/boardList">Boards</a>
+                    <div class="android-drawer-separator"></div>
+                    <mat-menu class="ng-tns-c0-2 ng-star-inserted"></mat-menu>
+                    <a class="mdl-navigation__link" href="/quickBoard">Quick Board</a>
+                    <a class="mdl-navigation__link" href="/api" id="apiDocumentationLink">API</a>
+                    <div class="android-drawer-separator"></div>
+                    <a class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
+                            id="login_link" href="/login">Login</a></nav>
+            </div>
+            <div class="android-content mdl-layout__content">
+                <cde-home _nghost-c0="" class="ng-star-inserted">
+                    <section class="sectionPage"
+                             style="background-color: #eee; padding: 10px; padding-bottom: 40px">
+                        <div class="" style="padding: 2rem 1rem; margin-bottom: 0;">
+                            <div class=" mt-0 mt-sm-5">
+                                <div class="row align-items-center">
+                                    <div class="col-lg-3 col-12 "><img
+                                            alt="NIH Common Data Elements (CDE) logo"
+                                            class="img-fluid"
+                                            src="/cde/public/assets/img/min/NIH-CDE.png"
+                                            style="margin-bottom: 20px">
+                                        <div id="introduction"><p>The NIH Common
+                                            Data Elements (CDE) Repository has been designed to provide access to
+                                            structured human and machine-readable definitions of data elements that
+                                            have been recommended or required by NIH Institutes and Centers and
+                                            other organizations for use in research and for other purposes. </p>
+                                            <p> Visit the <a class="homeDescriptionLink" href="http://cde.nih.gov"
+                                                             rel="noopener" target="_blank">NIH CDE
+                                                Resource Portal</a> for contextual information about the repository.
+                                            </p></div>
+                                    </div>
+                                    <div
+                                            class="col-lg-6 d-none d-sm-inline-block ng-star-inserted">
+                                        <ngb-carousel class="carousel slide" id="featureCarousel"
+                                                      data-ride="carousel"
+                                                      style="margin: auto; display: block;" tabindex="0">
+                                            <ol class="carousel-indicators">
+                                                <li id="ngb-slide-0" class="ng-star-inserted active"
+                                                    data-target="#featureCarousel" data-slide-to="0"></li>
+                                                <li id="ngb-slide-1" class="ng-star-inserted"
+                                                    data-target="#featureCarousel" data-slide-to="1"></li>
+                                                <li id="ngb-slide-2" class="ng-star-inserted"
+                                                    data-target="#featureCarousel" data-slide-to="2"></li>
+                                                <li id="ngb-slide-3" class="ng-star-inserted"
+                                                    data-target="#featureCarousel" data-slide-to="3"></li>
+                                                <li id="ngb-slide-4" class="ng-star-inserted"
+                                                    data-target="#featureCarousel" data-slide-to="4"></li>
+                                            </ol>
+                                            <div class="carousel-inner">
+                                                <div class="carousel-item ng-star-inserted active">
+                                                    <picture class="ng-star-inserted">
+                                                        <source data-srcset="/launch/244362287d8ba68d11f54c6272af7439.webp"
+                                                                type="image/webp">
+                                                        <img alt="Discuss" class="slideContent"
+                                                             data-src="/launch/51ca497081e1b19098cad324bbf77874.png">
+                                                    </picture>
+                                                    <div class="carousel-caption ng-star-inserted">
+                                                        <h3>Search, Discuss and Collaborate</h3>
+                                                    </div>
+                                                </div>
+                                                <div class="carousel-item ng-star-inserted">
+                                                    <picture class="ng-star-inserted">
+                                                        <source data-srcset="/launch/67f4537ab77283a954b5b6361d65b9f3.webp"
+                                                                type="image/webp">
+                                                        <img alt="Draft of a Form"
+                                                             class="slideContent"
+                                                             data-src="/launch/e7d02c03a8777ea715b10f7eaa7d667c.png">
+                                                    </picture>
+                                                    <div class="carousel-caption ng-star-inserted">
+                                                        <h3>Create, Draft and Share</h3></div>
+                                                </div>
+                                                <div class="carousel-item ng-star-inserted">
+                                                    <picture class="ng-star-inserted">
+                                                        <source data-srcset="/launch/a7ade3b9aaed194996670c387259e8c2.webp"
+                                                                type="image/webp">
+                                                        <img alt="More Like This"
+                                                             class="slideContent"
+                                                             data-src="/launch/851aa5c48b216fd67b780c51ef4866d8.png">
+                                                    </picture>
+                                                    <div class="carousel-caption ng-star-inserted">
+                                                        <h3>Compare and Harmonize</h3></div>
+                                                </div>
+                                                <div class="carousel-item ng-star-inserted">
+                                                    <picture class="ng-star-inserted">
+                                                        <source data-srcset="/launch/a99a42f273fc2bcab5ba49f592ad3a51.webp"
+                                                                type="image/webp">
+                                                        <img alt="History" class="slideContent"
+                                                             data-src="/launch/6b08d2ac63f10ee2e9284a683e2787c0.png">
+                                                    </picture>
+                                                    <div class="carousel-caption ng-star-inserted">
+                                                        <h3>Track Changes Across Versions</h3>
+                                                    </div>
+                                                </div>
+                                                <div class="carousel-item ng-star-inserted">
+                                                    <picture class="ng-star-inserted">
+                                                        <source data-srcset="/launch/92f71526029f43b0bd5054e57aa3b277.webp"
+                                                                type="image/webp">
+                                                        <img alt="Screenshot of finding and using forms"
+                                                             class="slideContent"
+                                                             data-src="/launch/d921c3ff95c754a763f7988e5d8277cc.png">
+                                                    </picture>
+                                                    <div class="carousel-caption ng-star-inserted">
+                                                        <h3>Export and Publish in Multiple Formats</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a class="carousel-control-prev" role="button"><span aria-hidden="true"
+                                                                                                 class="carousel-control-prev-icon"></span><span
+                                                    class="sr-only">Previous</span></a><a
+                                                class="carousel-control-next" role="button"><span aria-hidden="true"
+                                                                                                  class="carousel-control-next-icon"></span><span
+                                                class="sr-only">Next</span></a></ngb-carousel>
+                                    </div>
+                                    <div class="col-lg-3 col-12 btn-group-vertical" id="searchDiv">
+                                        <a class="btn btn-outline-dark my-1" id="browseCdes"
+                                           href="/cde/search"><i
+                                                class="fa fa-search"></i>
+                                            Browse CDEs</a><a class="btn btn-outline-dark my-1"
+                                                              id="browseForms"
+                                                              href="/form/search"><i
+                                            class="fa fa-search"></i>
+                                        Browse Forms</a><a href="/tour"
+                                                           class="btn btn-outline-dark my-1 hand-cursor"
+                                                           id="takeATourBtn"><i
+                                            class="fa fa-flag faa-wrench faa-slow animated"></i>
+                                        Interactive Tour </a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </cde-home>
+            </div>
+            <div class="mdl-layout__obfuscator"></div>
+        </div>
+    </cde-navigation>
+    <cde-alert>
+        <div class="fixed-bottom" id="alertSection"></div>
+    </cde-alert>
+</nih-cde>

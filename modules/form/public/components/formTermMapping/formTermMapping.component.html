@@ -1,0 +1,40 @@
+<fieldset class="cdeFieldset" id="formTermMapping">
+    <legend>Mesh Descriptors:
+        <button id="addTermMap" *ngIf="isAllowedModel.isAllowed(elt)" mat-raised-button
+                (click)="openAddTermMap()"><mat-icon>edit</mat-icon> Add</button>
+    </legend>
+    <ul>
+        <li *ngFor="let desc of mapping.meshDescriptors; let i = index">
+            {{desc}} - {{descToName[desc]}}
+            <cde-delete-with-confirm *ngIf="isAllowedModel.isAllowed(elt)"
+                                     (deleted)="removeMeshDescriptor(i)"></cde-delete-with-confirm>
+        </li>
+    </ul>
+
+</fieldset>
+
+<ng-template #newTermMap id="newTermMapModal" let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>Mesh Mappings</h3>
+    </div>
+    <div class="modal-body" id="addClassificationModalBody">
+        <form #newMeshDescForm="ngForm" class="form-inline pt20">
+            <div class="form-group">
+                <label for="mesh.search">MeSH Descriptor: </label>
+                <input [(ngModel)]="meshTerm" name="mesh.search" id="mesh.search" class="form-control" required
+                       (ngModelChange)="loadDescriptor()" autocomplete="off">
+            </div>
+            <div *ngIf="descriptor">
+                {{descriptor.id}} -- {{descriptor.name}}
+                <button type="submit" class="btn btn-outline-dark "
+                        id="addMeshDescButton" (click)="addMeshDescriptor()"
+                        *ngIf="descriptor.name.length > 0"
+                        [disabled]="mapping.meshDescriptors?.indexOf(descriptor.id) > -1">Add
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-outline-dark done" (click)="d()" id="closeModal">Close</button>
+    </div>
+</ng-template>
