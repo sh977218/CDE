@@ -100,12 +100,17 @@ export function flattenFormElement(fe) {
     return result;
 }
 
+// TODO rename this one. It gets question.question
 export function getFormQuestions(form) {
+    return getFormQuestionsReal(form).map(a => a.question);
+}
+
+export function getFormQuestionsReal(form) {
     let getQuestions = function (fe) {
         let qs = [];
         if (fe.formElements) {
             fe.formElements.forEach(function (e) {
-                if (e.elementType === 'question') qs.push(e.question);
+                if (e.elementType === 'question') qs.push(e);
                 else qs = qs.concat(getQuestions(e));
             });
         }
@@ -115,9 +120,7 @@ export function getFormQuestions(form) {
 }
 
 export function getFormCdes(form) {
-    return getFormQuestions(form).map(function (q) {
-        return q.cde;
-    });
+    return getFormQuestions(form).map(q => q.cde);
 }
 
 export function getFormOdm(form, cb) {

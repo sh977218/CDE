@@ -1,5 +1,5 @@
-import { newPeriod } from 'shared/mapping/fhir/datatypes/period';
-import { newReference } from 'shared/mapping/fhir/fhirDatatypes';
+import { newPeriod } from 'shared/mapping/fhir/datatype/fhirPeriod';
+import { newReference } from 'shared/mapping/fhir/datatype/fhirReference';
 
 export function newEncounter(date, subject, serviceProvider) {
     return {

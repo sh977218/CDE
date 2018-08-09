@@ -1,6 +1,6 @@
-import { getRef, newReference } from 'shared/mapping/fhir/fhirDatatypes';
-import { newCodeableConcept } from 'shared/mapping/fhir/datatypes/codeableConcept';
-import { newCoding } from 'shared/mapping/fhir/datatypes/coding';
+import { newCodeableConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
+import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
+import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
 
 /* Limitations:
  *  * only transfer the first LOINC code to FHIR, no other codes
@@ -13,8 +13,8 @@ export function newObservation(encounter = null, patient = null) {
         status: 'final',
         category: undefined,
         code: undefined,
-        subject: patient ? newReference(getRef(patient)) : undefined,
-        context: encounter ? newReference(getRef(encounter)) : undefined,
+        subject: patient ? toRef(patient) : undefined,
+        context: encounter ? toRef(encounter) : undefined,
         effectiveDateTime: encounter ? encounter.period.start : undefined,
         issued: encounter ? encounter.period.start : undefined
     };
@@ -53,7 +53,7 @@ export function observationFromForm(fe, getDisplay, encounter = null, patient = 
         if (Array.isArray(fe.metadataTags)) {
             let devices = fe.metadataTags.filter(m => m.key === 'device');
             if (devices.length) {
-                observation.device = newReference(getRef(devices[0].value));
+                observation.device = toRef(devices[0].value);
             }
         }
         return observation;

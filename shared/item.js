@@ -18,6 +18,7 @@ export const ITEM_MAP = {
         apiById_prior: '/priorDataElements',
         apiDraft: '/draftDataElement/',
         apiDraftById: '/draftDataElementById/',
+        schema: '/schema/cde',
         view: '/deView?tinyId=',
         viewById: '/deView?cdeId=',
     },
@@ -27,6 +28,7 @@ export const ITEM_MAP = {
         apiById_prior: '/priorForms',
         apiDraft: '/draftForm/',
         apiDraftById: '/draftFormById/',
+        schema: '/schema/form',
         view: '/formView?tinyId=',
         viewById: '/formView?formId=',
     }

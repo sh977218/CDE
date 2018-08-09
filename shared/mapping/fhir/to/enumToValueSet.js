@@ -16,12 +16,3 @@ export function regStatusToPublicationStatus(status) { // http://hl7.org/fhir/pu
             return 'unknown';
     }
 }
-
-export function sourceToUriMap(source) {
-    switch (source) {
-        case 'Assessment Center':
-            return 'http://www.neuroqol.org/ContactUs/Pages/default.aspx';
-        default:
-            return source;
-    }
-}
