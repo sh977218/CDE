@@ -1,7 +1,12 @@
+import { getTextFromArray as codingGetTextFromArray } from 'shared/mapping/fhir/datatype/fhirCoding';
 import { reduceOptionalArray } from 'shared/system/util';
 
 export function getText(concept) {
-    return concept && concept.text || Array.isArray(concept.coding) && concept.coding.some(c => c.display) || '';
+    return concept && (concept.text || codingGetTextFromArray(concept.coding)) || '';
+}
+
+export function getTextFromArray(conceptArray) {
+    return Array.isArray(conceptArray) ? conceptArray.map(getText).join(', ') : '';
 }
 
 export function newCodeableConcept(coding, text) {

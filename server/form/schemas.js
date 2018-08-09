@@ -155,6 +155,20 @@ exports.formJson = {
         , repeatFormat: Object.assign({default: ''}, sharedSchemas.stringType)
         , answerDropdownLimit: {type: Number, min: 0}
         , unitsOfMeasureAlias: [{unitOfMeasure: sharedSchemas.codeAndSystemSchema, alias: sharedSchemas.stringType}]
+        , fhirProcedureMapping: {
+            statusQuestionID: String,
+            statusStatic: String,
+            performedDate: String,
+            procedureQuestionID: String,
+            procedureCode: String,
+            procedureCodeSystem: String,
+            bodySiteQuestionID: String,
+            bodySiteCode: String,
+            bodySiteCodeSystem: String,
+            usedReferences: String,
+            usedReferencesMaps: [String],
+            complications: String,
+        }
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]

@@ -1,7 +1,18 @@
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
-const mongo_board = require('../board/mongo-board');
 
 // Middleware
+
+exports.nocacheMiddleware = function (req, res, next) {
+    if (req && req.headers['user-agent']) {
+        if (req.headers['user-agent'].indexOf("Chrome") < 0 || req.headers['user-agent'].indexOf("Firefox") < 0) {
+            res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+            res.header('Expires', '-1');
+            res.header('Pragma', 'no-cache');
+        }
+    }
+    next();
+};
+
 exports.isAuthenticatedMiddleware = function (req, res, next) {
     if (req.isAuthenticated()) next();
     else res.status(401).send();
@@ -64,15 +75,15 @@ exports.checkOwnership = function (dao, id, req, cb) {
     });
 };
 
-exports.boardOwnership = function (req, res, boardId, next) {
-    if (!req.isAuthenticated()) return res.status(401).send();
-    mongo_board.boardById(boardId, function (err, board) {
-        if (err) return res.status(500).send("ERROR - cannot find board ownership by id.");
-        if (!board) return res.status(404).send();
-        if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))
-            return res.status(401).send();
-        next(board);
-    });
+exports.checkBoardOwnerShip = function (board, user) {
+    if (!user || !board) return false;
+    return board.owner.userId.equals(user._id);
+};
+
+exports.checkBoardViewerShip = function (board, user) {
+    if (!user || !board) return false;
+    let viewers = board.users.filter(u => u.role === 'viewer' || u.role === 'reviewer').map(u => u.username.toLowerCase());
+    return viewers.indexOf(user.username.toLowerCase()) > -1 || exports.checkBoardOwnerShip(board, user);
 };
 
 exports.allowCreate = function (user, elt, cb) {
@@ -91,4 +102,8 @@ exports.allowCreate = function (user, elt, cb) {
 
 exports.allowUpdate = function (user, item, cb) {
     return cb(authorizationShared.canEditCuratedItem(user, item) ? undefined : 'Not authorized');
+};
+
+exports.unauthorizedPublishing = function (user, board) {
+    return board.shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher");
 };

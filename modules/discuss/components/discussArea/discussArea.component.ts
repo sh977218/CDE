@@ -34,7 +34,8 @@ export class DiscussAreaComponent {
         this.ownElt = this.isAllowedModel.doesUserOwnElt(e);
         if (!this.newComment.element) this.newComment.element = {};
         this.newComment.element.eltType = e.elementType;
-        this.newComment.element.eltId = e.tinyId ? e.tinyId : e._id;
+        this.newComment.element.eltId = e.tinyId ? e.tinyId : e.id;
+        this.eltId = e.tinyId ? e.tinyId : e.id;
         this._elt = e;
     }
 
@@ -42,7 +43,6 @@ export class DiscussAreaComponent {
         return this._elt;
     }
 
-    @Input() public eltId: string;
     @Input() public eltName: string;
 
     private _currentTab = 'general_tab';
@@ -57,6 +57,7 @@ export class DiscussAreaComponent {
 
     @Input() highlightedTabs = [];
     @Output() highlightedTabsChange = new EventEmitter();
+    eltId: string;
 
     constructor(private http: HttpClient,
                 public isAllowedModel: IsAllowedService,

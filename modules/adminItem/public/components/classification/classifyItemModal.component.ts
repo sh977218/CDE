@@ -39,13 +39,11 @@ export class ClassifyItemModalComponent {
     selectedOrg: any;
     treeNode: TreeNode;
 
-    constructor(
-        private classificationSvc: ClassificationService,
-        private http: HttpClient,
-        private localStorageService: LocalStorageService,
-        public modalService: NgbModal,
-        public userService: UserService,
-    ) {
+    constructor(private classificationSvc: ClassificationService,
+                private http: HttpClient,
+                private localStorageService: LocalStorageService,
+                public modalService: NgbModal,
+                public userService: UserService) {
     }
 
     classifyItemByRecentlyAdd(classificationRecentlyAdd) {

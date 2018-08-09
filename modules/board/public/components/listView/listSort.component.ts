@@ -25,19 +25,19 @@ export class ListSortComponent {
     ) {}
 
     moveUp(id) {
-        this.movePin('/board/pin/move/up', id);
+        this.movePin('/server/board/pinMoveUp', id);
     }
 
     moveDown(id) {
-        this.movePin('/board/pin/move/down', id);
+        this.movePin('/server/board/pinMoveDown', id);
     }
 
     moveTop(id) {
-        this.movePin('/board/pin/move/top', id);
+        this.movePin('/server/board/pinMoveTop', id);
     }
 
     movePin(endPoint, pinId) {
-        this.http.post(endPoint, {boardId: this.boardListService.board._id, tinyId: pinId}, {responseType: 'text'}).subscribe(() => {
+        this.http.post(endPoint, {boardId: this.boardListService.board.id, tinyId: pinId}, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Saved');
             this.boardListService.reload.emit();
         }, err => {

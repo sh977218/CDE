@@ -1,10 +1,11 @@
 import { ITEM_MAP } from 'shared/item';
 import { getQuestionPriorByLabel, tokenSplitter } from 'shared/form/skipLogic';
+import { codeSystemOut } from 'shared/mapping/fhir/index';
 import {
     containerToItemType, itemTypeToItemDatatype, permissibleValueToCoding, valueToTypedValue
 } from 'shared/mapping/fhir/to/datatypeToItemType';
-import { regStatusToPublicationStatus, sourceToUriMap} from 'shared/mapping/fhir/to/enumToValueSet';
-import { newIdentifier} from 'shared/mapping/fhir/to/toFhir';
+import { regStatusToPublicationStatus } from 'shared/mapping/fhir/to/enumToValueSet';
+import { newIdentifier } from 'shared/mapping/fhir/to/toFhir';
 import { capString } from 'shared/system/util';
 
 /*
@@ -17,7 +18,7 @@ export function formToQuestionnaire(form, options, config) {
         contact: [{ name: 'CDE Repository', telecom: [{system: 'url', value: config.publicUrl}]}],
         copyright: form.copyright && form.copyright.text ? form.copyright.text || form.copyright.authority : undefined,
         date: form.updated ? form.updated.toISOString() : form.created.toISOString(),
-        identifier: [newIdentifier(config.publicUrl + '/schema/form', form.tinyId, 'official')],
+        identifier: [newIdentifier(config.publicUrl + ITEM_MAP.form.schema, form.tinyId, 'official')],
         item: [],
         name: form.designations[0].designation,
         publisher: 'NIH, National Library of Medicine, Common Data Elements Repository',
@@ -29,7 +30,7 @@ export function formToQuestionnaire(form, options, config) {
         version: form.version || undefined,
     };
     if (Array.isArray(form.ids)) {
-        form.ids.forEach(id => Q.identifier.push(newIdentifier(sourceToUriMap(id.source), id.id, 'usual')));
+        form.ids.forEach(id => Q.identifier.push(newIdentifier(codeSystemOut(id.source), id.id, 'usual')));
     }
     if (Array.isArray(form.formElements)) {
         form.formElements.forEach(fe => Q.item.push(feToQuestionnaireItem(form, fe, options, config)));

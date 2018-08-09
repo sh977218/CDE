@@ -323,7 +323,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected int getNumberOfResults() {
-        return Integer.parseInt(findElement(By.id("searchResultNum")).getText());
+        return Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
     }
 
     protected void goToCdeByName(String name) {

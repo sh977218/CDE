@@ -6,6 +6,7 @@ type itemActionsApi = {
     apiById_prior: string,
     apiDraft: string,
     apiDraftById: string,
+    schema: string,
     view: string,
     viewById: string,
 };

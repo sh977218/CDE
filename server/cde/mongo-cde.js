@@ -2,7 +2,6 @@ const _ = require("lodash");
 const config = require('../system/parseConfig');
 const schemas = require('./schemas');
 const mongo_data_system = require('../system/mongo-data');
-const mongo_board = require('../board/mongo-board');
 const connHelper = require('../system/connections');
 const dbLogger = require('../log/dbLogger');
 const logging = require('../system/logging');

@@ -63,6 +63,10 @@ export class CdeForm extends Elt implements FormElementsContainer {
         return '/formView?tinyId=' + this.tinyId;
     }
 
+    static isForm(f: CdeForm|FormInForm): f is CdeForm {
+        return f.hasOwnProperty('tinyId');
+    }
+
     static validate(elt: CdeForm) {
         elt.displayProfiles.forEach(dp => {
             if (!dp.metadata) dp.metadata = {};
@@ -114,6 +118,21 @@ export class CdeFormElastic extends CdeForm {
     }
 }
 
+export class FhirProcedureMapping {
+    statusQuestionID?: string;
+    statusStatic?: string;
+    performedDate?: string;
+    procedureQuestionID?: string;
+    procedureCode?: string;
+    procedureCodeSystem?: string;
+    bodySiteQuestionID?: string;
+    bodySiteCode?: string;
+    bodySiteCodeSystem?: string;
+    usedReferences?: string;
+    usedReferencesMaps?: string[];
+    complications?: string;
+}
+
 export class DisplayProfile {
     _id: ObjectId = null;
     answerDropdownLimit: number = 10;
@@ -129,7 +148,7 @@ export class DisplayProfile {
     repeatFormat: string = '#.';
     sectionsAsMatrix: boolean = true;
     unitsOfMeasureAlias: {alias: string, unitOfMeasure: CodeAndSystem}[] = [];
-
+    fhirProcedureMapping: FhirProcedureMapping;
     constructor(name: string = '') {
         this.name = name;
     }

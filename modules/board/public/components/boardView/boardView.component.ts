@@ -52,6 +52,7 @@ export class BoardViewComponent implements OnInit {
 
     ngOnInit() {
         this.boardId = this.route.snapshot.params['boardId'];
+        if (this.userService.user) this.http.get('/server/board/viewBoard/' + this.boardId).subscribe();
         this.reload();
         this.url = location.href;
     }
@@ -69,7 +70,7 @@ export class BoardViewComponent implements OnInit {
         let _timeout = setInterval(() => this.alert.addAlert('warning', 'Classification task is still in progress. Please hold on.'), 3000);
         this.http.post(this.board.type === 'form' ? '/classifyFormBoard' : '/classifyCdeBoard',
             {
-                boardId: this.board._id,
+                boardId: this.boardId,
                 newClassification: {
                     categories: event.classificationArray,
                     orgName: event.selectedOrg
@@ -96,7 +97,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     boardApproval(approval) {
-        this.http.post('/board/approval', {boardId: this.board._id, approval: approval}).subscribe(() => {
+        this.http.post('/server/board/approval', {boardId: this.boardId, approval: approval}).subscribe(() => {
             this.boardStatus = approval;
             this.reload();
         });
@@ -111,7 +112,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     endReview() {
-        this.http.post('/board/endReview', {boardId: this.board._id}).subscribe(() => {
+        this.http.post('/server/board/endReview', {boardId: this.boardId}).subscribe(() => {
             this.reload();
         }, err => {
             this.alert.httpErrorMessageAlert(err);
@@ -120,7 +121,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     exportBoard() {
-        this.http.get<any>('/board/' + this.board._id + '/0/500/?type=csv').subscribe(response => {
+        this.http.get<any>('/server/board/' + this.boardId + '/0/500/?type=csv').subscribe(response => {
             let settings = this.esService.searchSettings;
             let csv = getCdeCsvHeader(settings.tableViewFields);
             response.elts.forEach(ele => {
@@ -158,8 +159,8 @@ export class BoardViewComponent implements OnInit {
     }
 
     okShare() {
-        this.http.post('/board/users', {
-            boardId: this.board._id,
+        this.http.post('/server/board/users', {
+            boardId: this.boardId,
             users: this.users
         }, {responseType: 'text'}).subscribe(() => {
             this.shareModalRef.close();
@@ -169,26 +170,12 @@ export class BoardViewComponent implements OnInit {
     }
 
     reload() {
-        this.http.get<any>('/board/' + this.boardId + '/' + ((this.currentPage - 1) * 20)).subscribe(response => {
+        this.http.get<any>('/server/board/' + this.boardId + '/' + ((this.currentPage - 1) * 20)).subscribe(response => {
             if (response.board) {
                 this.board = response.board;
-                this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
-
+                this.elts = response.elts;
                 this.totalItems = response.totalItems;
-                // $scope.numPages = $scope.totalItems / 20;
-                let pins = this.board.pins;
-                let respElts = response.elts;
-                this.elts = [];
-                pins.forEach(pin => {
-                    let pinId = this.board.type === 'cde' ? pin.deTinyId : pin.formTinyId;
-                    respElts.forEach(elt => {
-                        if (pinId === elt.tinyId) {
-                            pins.elt = elt;
-                            this.elts.push(elt);
-                        }
-                    });
-                });
-
+                this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
                 this.userService.then(user => {
                     this.board.users.forEach(u => {
                         if (u.username === user.username &&
@@ -214,7 +201,7 @@ export class BoardViewComponent implements OnInit {
 
                 this.getReviewers();
 
-                this.http.get<Comment[]>('/server/discuss/comments/eltId/' + this.board._id).subscribe(
+                this.http.get<Comment[]>('/server/discuss/comments/eltId/' + this.boardId).subscribe(
                     res => this.hasComments = res && (res.length > 0),
                     () => this.alert.addAlert('danger', 'Error on loading comments. ')
                 );
@@ -236,7 +223,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     startReview() {
-        this.http.post('/board/startReview', {boardId: this.board._id}, {responseType: 'text'}).subscribe(() => {
+        this.http.post('/server/board/startReview', {boardId: this.boardId}, {responseType: 'text'}).subscribe(() => {
                 this.reload();
             }, err => {
                 this.alert.httpErrorMessageAlert(err);

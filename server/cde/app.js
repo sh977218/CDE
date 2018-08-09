@@ -1,7 +1,6 @@
 const authorization = require('../system/authorization');
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const cdesvc = require('./cdesvc');
-const boardsvc = require('../board/boardsvc');
 const mongo_cde = require('./mongo-cde');
 const mongo_data_system = require('../system/mongo-data');
 const classificationNode_system = require('../system/classificationNode');
@@ -52,12 +51,6 @@ exports.init = function (app, daoManager) {
 
     /* ---------- PUT NEW REST API above ---------- */
 
-    app.post('/myBoards', [exportShared.nocacheMiddleware, authorization.isAuthenticatedMiddleware], (req, res) => {
-        elastic.myBoards(req.user, req.body, handleError({req, res}, result => {
-            res.send(result);
-        }));
-    });
-
     app.post('/cdesByTinyIdList', (req, res) => {
         mongo_cde.byTinyIdList(req.body, handleError({req, res}, cdes => {
             res.send(cdes);
@@ -67,7 +60,7 @@ exports.init = function (app, daoManager) {
     app.post('/elasticSearch/cde', (req, res) => {
         elastic.elasticsearch(req.user, req.body, function (err, result) {
             if (err) return res.status(400).send("invalid query");
-            result.cdes = cdesvc.hideProprietaryCodes(result.cdes, req.user);
+            cdesvc.hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
         });
     });
@@ -96,7 +89,7 @@ exports.init = function (app, daoManager) {
 
     app.get('/moreLikeCde/:tinyId', exportShared.nocacheMiddleware, (req, res) => {
         elastic.morelike(req.params.tinyId, function (result) {
-            result.cdes = cdesvc.hideProprietaryCodes(result.cdes, req.user);
+            cdesvc.hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
         });
     });
@@ -109,7 +102,8 @@ exports.init = function (app, daoManager) {
 
     app.post('/desByConcept', (req, res) => {
         mongo_cde.desByConcept(req.body, result => {
-            res.send(cdesvc.hideProprietaryCodes(result, req.user));
+            cdesvc.hideProprietaryCodes(result, req.user);
+            res.send(result);
         });
     });
 
@@ -162,14 +156,6 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/status/cde', appStatus.status);
-
-    app.post('/pinEntireSearchToBoard', authorization.isAuthenticatedMiddleware, (req, res) => {
-        let query = elastic_system.buildElasticSearchQuery(req.user, req.body.query);
-        if (query.size > config.maxPin) return res.status(403).send("Maximum number excesses.");
-        elastic_system.elasticsearch('cde', query, req.body.query, (err, cdes) => {
-            boardsvc.pinAllToBoard(req, res, cdes.cdes);
-        });
-    });
 
     app.get('/cde/properties/keys', exportShared.nocacheMiddleware, (req, res) => {
         adminItemSvc.allPropertiesKeys(req, res, mongo_cde);

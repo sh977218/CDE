@@ -1,4 +1,4 @@
-const mongo_board = require('../board/mongo-board');
+const boardDb = require('../board/boardDb');
 const mongo_data_system = require('./mongo-data');
 const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared');
 const daoManager = require('./moduleDaoManager');
@@ -202,61 +202,51 @@ exports.addOrgClassification = function (body, cb) {
 };
 
 exports.classifyEltsInBoard = function (req, dao, cb) {
-    var boardId = req.body.boardId;
-    var newClassification = req.body.newClassification;
+    let boardId = req.body.boardId;
+    let newClassification = req.body.newClassification;
 
-    var action = function (id, actionCallback) {
-        var classifReq = {
-            orgName: newClassification.orgName
-            , categories: newClassification.categories
-            , cdeId: id
+    let action = function (id, actionCallback) {
+        let classifReq = {
+            orgName: newClassification.orgName,
+            categories: newClassification.categories,
+            cdeId: id
         };
         classification.eltClassification(classifReq, classificationShared.actions.create, dao, actionCallback);
     };
-    mongo_board.boardById(boardId, function (err, board) {
+    boardDb.byId(boardId, function (err, board) {
         if (err) return cb(err);
         if (!board) return cb("No such board");
-        var tinyIds = board.pins.map(function (elt) {
-            if (elt.deTinyId)
-                return elt.deTinyId;
-            else
-                return elt.formTinyId;
-        });
+        let tinyIds = board.pins.map(p => p.tinyId);
         dao.byTinyIdList(tinyIds, function (err, cdes) {
-            var ids = cdes.map(function (cde) {
-                return cde._id;
-            });
+            let ids = cdes.map(cde => cde._id);
             adminItemSvc.bulkAction(ids, action, cb);
             mongo_data_system.addToClassifAudit({
-                date: new Date()
-                , user: {
+                date: new Date(),
+                user: {
                     username: req.user.username
-                }
-                , elements: cdes.map(function (e) {
+                },
+                elements: cdes.map(function (e) {
                     return {tinyId: e.tinyId};
-                })
-                , action: "reclassify"
-                , path: [newClassification.orgName].concat(newClassification.categories)
+                }),
+                action: "reclassify",
+                path: [newClassification.orgName].concat(newClassification.categories)
             });
         });
     });
 };
 
 exports.classifyEntireSearch = function (req, cb) {
-
     async.each(daoManager.getDaoList(), function (dao, oneDaoDone) {
-        var query = elastic.buildElasticSearchQuery(req.body.user, req.body.query);
+        let query = elastic.buildElasticSearchQuery(req.body.user, req.body.query);
         elastic.elasticsearch(dao.type, query, req.body.query, function (err, result) {
             if (err) return;
-            var ids = result[dao.type + 's'].map(function (cde) {
-                return cde.tinyId;
-            });
+            let ids = result[dao.type + 's'].map(cde => cde.tinyId);
 
-            var action = function (id, actionCallback) {
-                var classifReq = {
-                    orgName: req.body.newClassification.orgName
-                    , categories: req.body.newClassification.categories
-                    , tinyId: id
+            let action = function (id, actionCallback) {
+                let classifReq = {
+                    orgName: req.body.newClassification.orgName,
+                    categories: req.body.newClassification.categories,
+                    tinyId: id
                 };
                 classification.eltClassification(classifReq, classificationShared.actions.create, dao, actionCallback);
             };
@@ -264,15 +254,15 @@ exports.classifyEntireSearch = function (req, cb) {
             adminItemSvc.bulkAction(ids, action, oneDaoDone);
 
             mongo_data_system.addToClassifAudit({
-                date: new Date()
-                , user: {
+                date: new Date(),
+                user: {
                     username: req.user.username
-                }
-                , elements: result[dao.type + 's'].map(function (e) {
+                },
+                elements: result[dao.type + 's'].map(e => {
                     return {tinyId: e.tinyId};
-                })
-                , action: "reclassify"
-                , path: [req.body.newClassification.orgName].concat(req.body.newClassification.categories)
+                }),
+                action: "reclassify",
+                path: [req.body.newClassification.orgName].concat(req.body.newClassification.categories)
             });
         });
     }, cb);

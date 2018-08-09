@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import _noop from 'lodash/noop';
-
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { CdeForm } from 'shared/form/form.model';
@@ -63,4 +62,5 @@ export class FormGeneralDetailsComponent {
         }
         this.onEltChange.emit();
     }
+
 }

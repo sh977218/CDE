@@ -18,14 +18,14 @@ export class MyBoardsComponent {
     }
 
     saveBoard(board) {
-        this.http.post('/board', board, {responseType: 'text'}).subscribe(() => {
+        this.http.post('/server/board/', board, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Saved.');
             this.myBoardsSvc.waitAndReload();
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     deleteBoard(board) {
-        this.http.delete('/board/' + board._id, {responseType: 'text'}).subscribe(() => {
+        this.http.delete('/server/board/' + board._id, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Deleted.');
             this.myBoardsSvc.waitAndReload();
         }, err => this.alert.httpErrorMessageAlert('danger', err));

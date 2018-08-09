@@ -1,9 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatDialog } from '@angular/material';
 
-import { FormViewComponent } from 'form/public/components/formView.component';
 import { UcumService } from 'form/public/ucum.service';
+import { FormViewComponent } from 'form/public/components/formView.component';
+import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
-import { iterateFeSync } from 'shared/form/formShared';
+import { getMapToFhirResource } from 'shared/form/formAndFe';
+import { findQuestionByTinyId, getFormQuestionsReal, iterateFeSync } from 'shared/form/formShared';
 import { CodeAndSystem } from 'shared/models.model';
 import { interruptEvent } from 'widget/browser';
 
@@ -51,12 +54,15 @@ export class DisplayProfileComponent {
     @Output() onEltChange = new EventEmitter();
     private _elt: CdeForm;
     dPVMs: DisplayProfileVM[] = [];
+    getMapToFhirResource = getMapToFhirResource;
     interruptEvent = interruptEvent;
     uoms: {u: CodeAndSystem, a: string[]}[] = [];
     uomsDate: Date;
     uomsPromise: Promise<void>;
 
-    constructor(private ucumService: UcumService, private formViewComponent: FormViewComponent) {
+    constructor(public dialog: MatDialog,
+                private ucumService: UcumService,
+                private formViewComponent: FormViewComponent) {
     }
 
     addProfile() {
@@ -518,5 +524,21 @@ export class DisplayProfileComponent {
             }
         ]
     };
+
+    openProcedureMapping(dpvm) {
+        this.dialog.open(FhirProcedureMappingComponent, {
+            width: '700px',
+            data: {
+                questions: getFormQuestionsReal(this.elt),
+                mapping: this.elt.displayProfiles[0].fhirProcedureMapping,
+                usedRefs: findQuestionByTinyId(this.elt.displayProfiles[0].fhirProcedureMapping.usedReferences, this.elt)
+            }
+        }).afterClosed().subscribe(result => {
+            if (result) {
+                dpvm.profile.fhirProcedureMapping = result;
+                this.onEltChange.emit();
+            }
+        });
+    }
 
 }
