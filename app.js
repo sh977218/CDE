@@ -311,7 +311,8 @@ app.use((err, req, res, next) => {
             headers: {'user-agent': req.headers['user-agent']}
         }
     };
-    if (err.code !== 'EBADCSRFTOKEN') logging.errorLogger.error('error', "Error: Express Default Error Handler", meta);
+    if (err.code === 'EBADCSRFTOKEN') res.status(401).send('CSRF Error');
+    logging.errorLogger.error('error', "Error: Express Default Error Handler", meta);
     if (err.status === 403) res.status(403).send("Unauthorized");
     else res.status(500).send('Something broke!');
     next();
