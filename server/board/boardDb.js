@@ -1,7 +1,9 @@
 const Schema = require('mongoose').Schema;
+const stringType = require('../system/schemas').stringType;
+const config = require('../system/parseConfig');
+const connHelper = require('../system/connections');
+const conn = connHelper.establishConnection(config.database.appData);
 
-const sharedSchemas = require('../system/schemas.js');
-const stringType = sharedSchemas.stringType;
 const elastic = require('./elastic');
 
 // for DAO manager

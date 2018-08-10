@@ -408,15 +408,12 @@ exports.init = function (app) {
         res.status(401).send();
     });
 
-    app.get('/serverStatuses', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            app_status.getStatus(() => {
-                mongo_data.getClusterHostStatuses((err, statuses) => {
-                    return res.send({esIndices: esInit.indices, statuses: statuses});
-                });
+    app.get('/serverStatuses', [authorization.isAuthenticatedMiddleware, authorization.isSiteAdminMiddleware], (req, res) => {
+        app_status.getStatus(() => {
+            mongo_data.getClusterHostStatuses((err, statuses) => {
+                return res.send({esIndices: esInit.indices, statuses: statuses});
             });
-        }
-        res.status(401).send();
+        });
     });
 
     app.get("/supportedBrowsers", (req, res) => res.render('supportedBrowsers', 'system'));
