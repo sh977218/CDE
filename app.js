@@ -289,33 +289,27 @@ app.use((req, res, next) => {
 });
 
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
 
+    // Do Not Log Errors
     if (err instanceof IpDeniedError) {
         return res.status(403).send("You are not authorized. Please contact support if you believe you should not see this error.");
     }
+    if (err.code === 'EBADCSRFTOKEN') {
+        return res.status(401).send('CSRF Error');
+    }
 
+    // Do Log Errors
     console.log("ERROR3: " + err);
     console.log(err.stack);
-    if (req && req.body && req.body.password) req.body.password = "";
+    req.body.password = "";
     let meta = {
         stack: err.stack,
         origin: "app.express.error",
-        request: {
-            username: req.user ? req.user.username : null,
-            method: req.method,
-            url: req.url,
-            params: req.params,
-            body: req.body,
-            ip: req.ip,
-            headers: {'user-agent': req.headers['user-agent']}
-        }
+        request: req
     };
-    if (err.code === 'EBADCSRFTOKEN') res.status(401).send('CSRF Error');
     logging.errorLogger.error('error', "Error: Express Default Error Handler", meta);
-    if (err.status === 403) res.status(403).send("Unauthorized");
-    else res.status(500).send('Something broke!');
-    next();
+    res.status(500).send('Something broke!');
 });
 
 domain.run(() => {
