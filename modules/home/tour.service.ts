@@ -242,7 +242,7 @@ const formSteps = [
     },
     {
         title: " 38/42 Search Result",
-        element: "#resultList",
+        element: "#resultListTour",
         content: "We will now go into a form.",
         placement: "top",
         onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#linkToElt_0", "addToQuickBoard", resolve))
