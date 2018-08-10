@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -57,74 +58,47 @@ public class QuestionTest extends BaseFormTest {
         else clickElement(By.xpath("(//*[@id='accordionList']//div[@class='card-header']//button)[1]"));
     }
 
-    public void addCdeDesignationById(String questionId, String newDesignation, String[] newTags) {
+    public void addCdeDesignationById(String questionId, String newDesignation) {
         openQuestionEdit(questionId);
-        String preXpath = "//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeDesignation')]//*[@class='newCdeDesignation']";
-        if (newDesignation != null)
-            findElement(By.xpath(preXpath + "//*[contains(@class,'newCdeDesignation')]")).sendKeys(newDesignation);
-        if (newTags != null) {
-            String tagsInputXpath = preXpath + "//*[contains(@class,'newCdeTags')]//input";
-            for (String newTag : newTags) {
-                clickElement(By.xpath(tagsInputXpath));
-                selectNgSelectDropdownByText(newTag);
-                textPresent(newTag, By.xpath(preXpath + "//*[contains(@class,'newCdeTags')]"));
-            }
-        }
-        clickElement(By.xpath(preXpath + "//*[contains(@class,'fa fa-plus')]"));
+        String xpath = "//*[@id='" + questionId + "']//mat-card//*[contains(@class,'newCdeDesignations')]//input";
+        findElement(By.xpath(xpath)).sendKeys(newDesignation + Keys.ENTER);
     }
 
-    public void addCdeIdentifierById(String questionId, String newSource, String newIdentifier, String newVersion) {
+    public void addCdeIdentifierById(String questionId, String newSource, String newIdentifier) {
         openQuestionEdit(questionId);
-        String preXpath = "//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeIdentifier')]//*[@class='newCdeIdentifier']";
-        if (newSource != null)
-            findElement(By.xpath(preXpath + "//*[contains(@class,'newCdeSource')]")).sendKeys(newSource);
-        if (newIdentifier != null)
-            findElement(By.xpath(preXpath + "//*[contains(@class,'newCdeId')]")).sendKeys(newIdentifier);
-        if (newVersion != null)
-            findElement(By.xpath(preXpath + "//*[contains(@class,'newCdeVersion')]")).sendKeys(newVersion);
-        clickElement(By.xpath(preXpath + "//*[contains(@class,'fa fa-plus')]"));
+        String xpath = "//*[@id='" + questionId + "']//mat-card//*[contains(@class,'newCdeIdentifiers')]//input";
+        findElement(By.xpath(xpath)).sendKeys(newSource + ";" + newIdentifier + Keys.ENTER);
     }
 
-    public void deleteCdeNameById(String questionId, int i) {
+    public void deleteCdeNameById(String questionId, String designation) {
         openQuestionEdit(questionId);
-        clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeDesignation')]//table/tbody/tr[" + i + "]//i[contains(@class,'fa fa-trash')]"));
+        clickElement(By.xpath("//*[@id='" + questionId + "']//mat-card//*[contains(@class,'newCdeDesignations')]//mat-chip-list//mat-chip[normalize-space(text())='" + designation + "']//mat-icon"));
     }
 
-    public void deleteCdeIdentifierById(String questionId, int i) {
-        openQuestionEdit(questionId);
-        clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeIdentifier')]/table/tbody/tr[" + i + "]//i[contains(@class,'fa fa-trash')]"));
+    public void deleteCdeIdentifierById(String questionId, String source, String id) {
+        clickElement(By.xpath("//*[@id='" + questionId + "']//mat-card//*[contains(@class,'newCdeIdentifiers')]//mat-chip-list//mat-chip[contains(normalize-space(.),'" + source + "') and contains(normalize-space(.),'" + id + "')]"));
     }
 
     public void editCdeDataTypeById(String questionId, String dataType) {
         openQuestionEdit(questionId);
-        clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeDataType')]/ng-select//input"));
-        clickElement(By.xpath("//ng-dropdown-panel//div[contains(@class,'ng-option') and contains(., '" + dataType + "')]"));
+        clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'newCdeDataType')]//mat-select"));
+        selectMatSelectDropdownByText(dataType);
     }
 
     public void openQuestionEdit(String questionId) {
-        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdeDesignation')]")).size() > 0;
+        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'changeQuestionLabelIcon')]")).size() > 0;
         if (!isQuestionOpen) startEditQuestionById(questionId);
     }
 
-    public void addCdePvById(String questionId, String pv, String codeName, String code, String codeSystem, String codeDescription) {
+    public void addCdePvById(String questionId, String pv) {
         openQuestionEdit(questionId);
-        String preXpath = "//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdePVs')]//*[@class='newCdePv']";
-        if (pv != null)
-            findElement(By.xpath(preXpath + "//*[contains(@class,'permissibleValue')]")).sendKeys(pv);
-        if (codeName != null)
-            findElement(By.xpath(preXpath + "//*[contains(@class,'pvName')]")).sendKeys(codeName);
-        if (code != null)
-            findElement(By.xpath(preXpath + "//*[contains(@class,'pvCode')]")).sendKeys(code);
-        if (codeSystem != null)
-            findElement(By.xpath(preXpath + "//*[contains(@class,'pvCodeSystem')]")).sendKeys(codeSystem);
-        if (codeDescription != null)
-            findElement(By.xpath(preXpath + "//*[contains(@class,'pvDefinition')]")).sendKeys(codeDescription);
-        clickElement(By.xpath(preXpath + "//*[contains(@class,'fa fa-plus')]"));
+        String xpath = "//*[@id='" + questionId + "']//mat-card//*[contains(@class,'newCdePvs')]//input";
+        findElement(By.xpath(xpath)).sendKeys(pv + Keys.ENTER);
     }
 
-    public void deleteCdePvById(String questionId, int i) {
-        openQuestionEdit(questionId);;
-        clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'cdePVs')]/table/tbody/tr[" + i + "]//i[contains(@class,'fa fa-trash')]"));
+    public void deleteCdePvById(String questionId, String pv) {
+        openQuestionEdit(questionId);
+        clickElement(By.xpath("//*[@id='" + questionId + "']//mat-card//*[contains(@class,'newCdePvs')]//mat-chip-list//mat-chip[normalize-space(text())='" + pv + "']//mat-icon"));
     }
 
     public void addQuestionToSectionUnsafe(String cdeName, int sectionNumber) {

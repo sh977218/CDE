@@ -29,6 +29,6 @@ export class SelectQuestionLabelComponent {
                     this.alert.addAlert("danger", "Error load CDE.");
                     this.onClosed.emit();
                 });
-        }
+        } else this.cde = this.question.cde;
     }
 }

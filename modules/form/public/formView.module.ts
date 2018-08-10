@@ -2,10 +2,9 @@ import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
-    MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatExpansionModule, MatGridListModule,
-    MatIconModule,
-    MatInputModule, MatMenuModule,
-    MatSelectModule, MatSliderModule, MatTabsModule, MatTooltipModule
+    MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatExpansionModule,
+    MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, MatSliderModule, MatTabsModule,
+    MatTooltipModule
 } from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -65,8 +64,9 @@ const appRoutes: Routes = [
         MatSelectModule,
         MatSliderModule,
         MatTabsModule,
+        MatChipsModule,
         MatTooltipModule,
-        // core
+// core
         WidgetModule,
         // internal
         AdminItemModule,
@@ -97,14 +97,15 @@ const appRoutes: Routes = [
     entryComponents: [
         QuestionAnswerEditContentComponent,
         SelectQuestionLabelComponent,
-        FhirProcedureMappingComponent,
+        FhirProcedureMappingComponent
     ],
     exports: [],
     providers: [
         SkipLogicValidateService,
-        UcumService,
+        UcumService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
+
 export class FormViewModule {
 }
