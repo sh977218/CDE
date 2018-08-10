@@ -259,7 +259,7 @@ try {
     let userModule = require("./server/user/userRoutes").module({
         search: [authorization.isOrgAdminMiddleware],
         manage: [authorization.isOrgAuthorityMiddleware],
-        notificationDate:[authorization.isSiteAdminMiddleware]
+        notificationDate: [authorization.isSiteAdminMiddleware]
     });
     app.use('/server/user', userModule);
 
@@ -311,12 +311,9 @@ app.use((err, req, res, next) => {
             headers: {'user-agent': req.headers['user-agent']}
         }
     };
-    logging.errorLogger.error('error', "Error: Express Default Error Handler", meta);
-    if (err.status === 403) {
-        res.status(403).send("Unauthorized");
-    } else {
-        res.status(500).send('Something broke!');
-    }
+    if (err.code !== 'EBADCSRFTOKEN') logging.errorLogger.error('error', "Error: Express Default Error Handler", meta);
+    if (err.status === 403) res.status(403).send("Unauthorized");
+    else res.status(500).send('Something broke!');
     next();
 });
 
