@@ -142,7 +142,6 @@ exports.reIndex = function (index, cb) {
             let stream = exports.daoMap[index.name].dao.getStream(condition);
             stream.on('data', function (elt) {
                 stream.pause();
-                console.log(elt.tinyId);
                 riverFunction(elt.toObject(), function (afterRiverElt) {
                     injector.queueDocument(afterRiverElt, function () {
                         index.count++;

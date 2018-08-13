@@ -1,10 +1,16 @@
+const async = require('async');
 const Board = require('../server/board/boardDb').PinningBoard;
 const User = require('../server/user/userDb').User;
 
 let count = 0;
 
+fetchDeName = function (tinyId) {
+
+};
+
 exports.run = function () {
     Board.find({}).cursor().eachAsync(board => {
+        console.log('boardId: ' + board.id);
         return new Promise((res, rej) => {
             board.pins.forEach(p => {
                 p.type = 'cde';
