@@ -75,6 +75,9 @@ exports.run = function () {
                 }
             });
         })
+    }).then(() => {
+        console.log('total count: ' + count);
+        process.exit(1);
     });
 
 };
