@@ -289,7 +289,7 @@ app.use((req, res, next) => {
 });
 
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
 
     // Do Not Log Errors
     if (err instanceof IpDeniedError) {
@@ -316,7 +316,7 @@ app.use((err, req, res) => {
             headers: {'user-agent': req.headers['user-agent']}
         }
     };
-    logging.errorLogger.error('error', "Error: Express Default Error Handler", meta);
+    logging.errorLogger.error('error', "Error: Express Default Error Handler", JSON.stringify(meta));
     res.status(500).send('Something broke!');
 });
 
