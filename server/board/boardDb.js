@@ -15,10 +15,6 @@ let pinSchema = new Schema({
     tinyId: stringType,
     type: Object.assign({default: 'cde', enum: ['cde', 'form']}, stringType),
     pinnedDate: Date,
-    deTinyId: stringType,
-    deName: stringType,
-    formTinyId: stringType,
-    formName: stringType
 }, {_id: false});
 
 let pinningBoardSchema = new Schema({
