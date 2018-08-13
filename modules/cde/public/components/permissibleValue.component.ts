@@ -81,10 +81,12 @@ export class PermissibleValueComponent {
     }
 
     addAllVsac() {
+        this.removeSourceSelection();
         this.vsacValueSet.forEach(v => this.addVsacValue(v));
     }
 
     addNewPermissibleValue() {
+        this.removeSourceSelection();
         this.elt.valueDomain.permissibleValues.push(this.newPermissibleValue);
         this.modalRef.close();
         this.runManualValidation();
@@ -177,6 +179,7 @@ export class PermissibleValueComponent {
     }
 
     importPv(de) {
+        this.removeAllPermissibleValues();
         let vd = de.valueDomain;
         if (vd && vd.datatype) {
             if (vd.datatype === 'Value List') {
@@ -302,6 +305,10 @@ export class PermissibleValueComponent {
         this.runManualValidation();
         this.initSrcOptions();
         this.onEltChange.emit();
+    }
+
+    removeSourceSelection () {
+        Object.keys(this.SOURCES).forEach(sourceKey => this.SOURCES[sourceKey].selected = false);
     }
 
     removeVSMapping() {

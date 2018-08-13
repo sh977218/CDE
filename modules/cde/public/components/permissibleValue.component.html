@@ -140,28 +140,28 @@
                     <td id="pvMeaningCode_{{i}}">{{pv.valueMeaningCode}}</td>
                     <td id="pvCodeSystem_{{i}}">{{pv.codeSystemName}}</td>
                     <td *ngIf="SOURCES['UMLS'].selected" id="codeAsUMLS_{{i}}">
-                        {{SOURCES['UMLS'].codes[pv.valueMeaningCode].code}}
+                        {{SOURCES['UMLS'].codes[pv.valueMeaningCode]?.code}}
                     </td>
                     <td *ngIf="SOURCES['UMLS'].selected" id="nameAsUMLS_{{i}}">
-                        {{SOURCES['UMLS'].codes[pv.valueMeaningCode].meaning}}
+                        {{SOURCES['UMLS'].codes[pv.valueMeaningCode]?.meaning}}
                     </td>
                     <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="codeAsNCI_{{i}}">
-                        {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode].code}}
+                        {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode]?.code}}
                     </td>
                     <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="nameAsNCI_{{i}}">
-                        {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode].meaning}}
+                        {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode]?.meaning}}
                     </td>
                     <td *ngIf="SOURCES['LOINC'].selected" id="codeAsLNC_{{i}}">
-                        {{SOURCES['LOINC'].codes[pv.valueMeaningCode].code}}
+                        {{SOURCES['LOINC'].codes[pv.valueMeaningCode]?.code}}
                     </td>
                     <td *ngIf="SOURCES['LOINC'].selected" id="nameAsLNC_{{i}}">
-                        {{SOURCES['LOINC'].codes[pv.valueMeaningCode].meaning}}
+                        {{SOURCES['LOINC'].codes[pv.valueMeaningCode]?.meaning}}
                     </td>
                     <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="codeAsSCT_{{i}}">
-                        {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode].code}}
+                        {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode]?.code}}
                     </td>
                     <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="nameAsSCT_{{i}}">
-                        {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode].meaning}}
+                        {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode]?.meaning}}
                     </td>
                     <td id="pvMeaningDefinition_{{i}}">
                         <cde-inline-edit [(model)]="pv.valueMeaningDefinition"
