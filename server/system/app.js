@@ -408,7 +408,7 @@ exports.init = function (app) {
         res.status(401).send();
     });
 
-    app.get('/serverStatuses', [authorization.isAuthenticatedMiddleware, authorization.isSiteAdminMiddleware], function (req, res) {
+    app.get('/serverStatuses', [authorization.isAuthenticatedMiddleware, authorization.isSiteAdminMiddleware], (req, res) => {
         app_status.getStatus(() => {
             mongo_data.getClusterHostStatuses((err, statuses) => {
                 return res.send({esIndices: esInit.indices, statuses: statuses});
