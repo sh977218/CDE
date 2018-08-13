@@ -302,11 +302,19 @@ app.use((err, req, res) => {
     // Do Log Errors
     console.log("ERROR3: " + err);
     console.log(err.stack);
-    req.body.password = "";
+    if (req && req.body && req.body.password) req.body.password = "";
     let meta = {
         stack: err.stack,
         origin: "app.express.error",
-        request: req
+        request: {
+            username: req.user ? req.user.username : null,
+            method: req.method,
+            url: req.url,
+            params: req.params,
+            body: req.body,
+            ip: req.ip,
+            headers: {'user-agent': req.headers['user-agent']}
+        }
     };
     logging.errorLogger.error('error', "Error: Express Default Error Handler", meta);
     res.status(500).send('Something broke!');
