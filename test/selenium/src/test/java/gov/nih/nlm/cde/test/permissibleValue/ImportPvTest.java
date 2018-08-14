@@ -14,7 +14,6 @@ public class ImportPvTest extends NlmCdeBaseTest {
         goToPermissibleValues();
         clickElement(By.id("openImportPVModalBtn"));
         importPvByTinyId("mJQiShWEW");
-        textPresent("There are validation errors. Duplicate Permissible Value");
         checkElementDoesNotExistByLocator(By.id("openSave"));
         deleteDraft();
 
