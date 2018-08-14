@@ -23,8 +23,11 @@ exports.module = function (roleConfig) {
         }))
     });
 
-    router.post('/postComment', authorization.loggedInMiddleware, (req, res) => {
+    router.post('/postComment', authorization.loggedInMiddleware, async (req, res) => {
         let comment = req.body;
+        let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username)
+            .catch(handleError({req, res}));
+        if (numberUnapprovedMessages >= 5) return res.status(401).send('You have too many unapproved messages.');
         let dao = daoManager.getDao(comment.element.eltType);
         let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
         idRetrievalFunc(comment.element.eltId, handleError({req, res}, elt => {

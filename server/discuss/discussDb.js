@@ -103,3 +103,6 @@ exports.orgComments = (myOrgs, from, size, callback) => {
         }, {$sort: {created: -1}}, {$skip: from}, {$limit: size}], callback);
 };
 
+exports.numberUnapprovedMessageByUsername =  username => {
+    return Comment.count({'user.username': username, pendingApproval: true}).exec();
+};

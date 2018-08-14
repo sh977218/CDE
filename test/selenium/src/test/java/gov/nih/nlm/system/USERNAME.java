@@ -26,7 +26,6 @@ public interface USERNAME {
     String anonymousCommentUser2_username = "CommentUser2";
     String anonymousCommentUser_password = "pass";
     String commentEditor_username = "commentEditor";
-    String commentEditor_password = "pass";
     String attachmentReviewer_username = "attachmentReviewer";
     String ctep_fileCurator_username = "ctep_fileCurator";
     String tableViewUser_username = "tableViewUser";
@@ -37,5 +36,6 @@ public interface USERNAME {
     String boardPublisherTest_username = "boardPublisherTest";
     String doublepinuser_username = "doublepinuser";
     String boardBot_username = "boardBot";
+    String unapprovedMessage_username = "unapprovedmessageuser";
     String password = "pass";
 }

@@ -10,6 +10,7 @@ import * as io from 'socket.io-client';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { UserService } from '_app/user.service';
 import { Reply } from 'discuss/discuss.model';
+import { AlertService } from '_app/alert.service';
 
 @Component({
     selector: 'cde-comments',
@@ -83,7 +84,8 @@ export class CommentsComponent implements OnInit, OnDestroy {
     constructor(private http: HttpClient,
                 public dialog: MatDialog,
                 public isAllowedModel: IsAllowedService,
-                public userService: UserService) {
+                public userService: UserService,
+                public alsertService: AlertService) {
     }
 
     ngOnInit() {
@@ -171,7 +173,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
             reply: comment.newReply.text
         }).subscribe(() => {
             comment.newReply = {};
-        });
+        }, err => this.alsertService.httpErrorMessageAlert(err));
     }
 
     cancelReply = comment => comment.newReply = {};
