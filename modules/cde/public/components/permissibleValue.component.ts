@@ -179,7 +179,6 @@ export class PermissibleValueComponent {
     }
 
     importPv(de) {
-        this.removeAllPermissibleValues();
         let vd = de.valueDomain;
         if (vd && vd.datatype) {
             if (vd.datatype === 'Value List') {
