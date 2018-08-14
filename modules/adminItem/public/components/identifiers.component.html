@@ -29,7 +29,7 @@
                        href="http://s.details.loinc.org/LOINC/{{id.id}}.html?sections=Comprehensive"
                        target="_blank">{{id.id}}</a>
                     <a *ngSwitchCase="'PhenX'"
-                       href="https://www.phenxtoolkit.org/index.php?pageLink=browse.protocoldetails&id={{id.id}}"
+                       href="https://www.phenxtoolkit.org/protocols/view/{{id.id}}"
                        target="_blank">{{id.id}}</a>
                     <span *ngSwitchDefault>{{id.id}}</span>
                 </ng-container>
