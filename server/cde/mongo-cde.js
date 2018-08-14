@@ -1,28 +1,30 @@
 const _ = require("lodash");
+
 const config = require('../system/parseConfig');
 const schemas = require('./schemas');
 const mongo_data_system = require('../system/mongo-data');
 const connHelper = require('../system/connections');
-const dbLogger = require('../log/dbLogger');
+const conn = connHelper.establishConnection(config.database.appData);
+
 const logging = require('../system/logging');
 const cdediff = require("./cdediff");
-const async = require('async');
 const elastic = require('./elastic');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
+
 const draftSchema = require('./schemas').draftSchema;
-const boardDb = require('../board/boardDb');
+const DataElementDraft = conn.model('DataElementDraft', draftSchema);
+const User = require('../user/userDb').User;
+const CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
+const DataElement = conn.model('DataElement', schemas.dataElementSchema);
+
+const mongo_data = this;
 
 exports.type = "cde";
 exports.name = "CDEs";
 
-schemas.dataElementSchema.post('remove', function (doc, next) {
-    elastic.dataElementDelete(doc, function (err) {
-        next(err);
-    });
-});
 schemas.dataElementSchema.pre('save', function (next) {
-    var self = this;
-    var cdeError = deValidator.checkPvUnicity(self.valueDomain);
+    let self = this;
+    let cdeError = deValidator.checkPvUnicity(self.valueDomain);
     if (cdeError && cdeError.pvNotValidMsg) {
         logging.errorLogger.error(cdeError);
         next(cdeError);
@@ -36,19 +38,9 @@ schemas.dataElementSchema.pre('save', function (next) {
     }
 });
 
-
-var conn = connHelper.establishConnection(config.database.appData);
-
-var User = require('../user/userDb').User;
-var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
-var DataElementDraft = conn.model('DataElementDraft', draftSchema);
 exports.User = User;
 exports.DataElementDraft = DataElementDraft;
 exports.elastic = elastic;
-
-var mongo_data = this;
-
-var DataElement = conn.model('DataElement', schemas.dataElementSchema);
 exports.DataElement = DataElement;
 
 exports.byId = function (id, cb) {
@@ -184,8 +176,8 @@ exports.cdesByIdList = function (idList, callback) {
 
 exports.cdesByTinyIdListInOrder = function (idList, callback) {
     exports.byTinyIdList(idList, function (err, cdes) {
-        var reorderedCdes = idList.map(function (id) {
-            for (var i = 0; i < cdes.length; i++) {
+        let reorderedCdes = idList.map(id => {
+            for (let i = 0; i < cdes.length; i++) {
                 if (id === cdes[i].tinyId) return cdes[i];
             }
         });
@@ -193,9 +185,9 @@ exports.cdesByTinyIdListInOrder = function (idList, callback) {
     });
 };
 
-var viewedCdes = {};
-var threshold = config.viewsIncrementThreshold || 50;
 exports.inCdeView = function (cde) {
+    let threshold = config.viewsIncrementThreshold || 50;
+    let viewedCdes = {};
     if (!viewedCdes[cde._id]) viewedCdes[cde._id] = 0;
     viewedCdes[cde._id]++;
     if (viewedCdes[cde._id] >= threshold && cde && cde._id) {
@@ -206,9 +198,7 @@ exports.inCdeView = function (cde) {
 
 // TODO this method should be removed.
 exports.save = function (mongooseObject, callback) {
-    mongooseObject.save(function (err) {
-        callback(err, mongooseObject);
-    });
+    mongooseObject.save(callback);
 };
 
 exports.create = function (cde, user, callback) {
@@ -305,16 +295,12 @@ exports.update = function (elt, user, callback, special) {
 exports.archiveCde = function (cde, callback) {
     DataElement.findOne({'_id': cde._id}, function (err, cde) {
         cde.archived = true;
-        cde.save(function () {
-            callback("", cde);
-        });
+        cde.save(callback);
     });
 };
 
 exports.getDistinct = function (what, callback) {
-    DataElement.distinct(what).exec(function (err, result) {
-        callback(err, result);
-    });
+    DataElement.distinct(what).exec(callback);
 };
 
 exports.query = function (query, callback) {
@@ -322,9 +308,7 @@ exports.query = function (query, callback) {
 };
 
 exports.transferSteward = function (from, to, callback) {
-    DataElement.update({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, {multi: true}).exec(function (err, result) {
-        callback(err, result.nModified);
-    });
+    DataElement.update({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, {multi: true}).exec(callback);
 };
 
 let auditModifications = function (oldDe, newDe, user) {
@@ -367,9 +351,7 @@ exports.getCdeAuditLog = function (params, callback) {
         .sort('-date')
         .skip(params.skip)
         .limit(params.limit)
-        .exec(function (err, logs) {
-            callback(err, logs);
-        });
+        .exec(callback);
 };
 
 exports.removeAttachmentLinks = function (id) {
@@ -426,9 +408,7 @@ exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, versio
         "registrationState.registrationStatus": {$ne: "Retired"}
     }).elemMatch("ids", {
         source: source, id: id, version: version
-    }).exec(function (err, cdes) {
-        cb(err, cdes);
-    });
+    }).exec(cb);
 };
 
 exports.fileUsed = function (id, cb) {
@@ -457,7 +437,4 @@ exports.findModifiedElementsSince = function (date, cb) {
         {$sort: {updated: -1}},
         {$group: {"_id": "$tinyId"}}
     ]).exec(cb);
-
-
-    //find({updated: {$gte: date}}).distinct('tinyId').limit(1000).sort({updated: -1}).exec(cb);
 };
