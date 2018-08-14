@@ -689,7 +689,7 @@ exports.init = function (app) {
 
     app.post('/getClassificationAuditLog', (req, res) => {
         if (authorizationShared.canOrgAuthority(req.user)) {
-            mongo_data.getClassificationAuditLog(req.body,  (err, result) => {
+            mongo_data.getClassificationAuditLog(req.body, (err, result) => {
                 if (err) return res.status(500).send();
                 res.send(result);
             });
@@ -697,7 +697,11 @@ exports.init = function (app) {
     });
 
     app.post('/embed/', [authorization.isOrgAdminMiddleware], (req, res) => {
-        mongo_data.embeds.save(req.body, handleError({req, res, publicMessage: 'There was an error saving this embed.'}, embed =>
+        mongo_data.embeds.save(req.body, handleError({
+            req,
+            res,
+            publicMessage: 'There was an error saving this embed.'
+        }, embed =>
             res.send(embed)));
     });
 
@@ -911,7 +915,7 @@ exports.init = function (app) {
             });
         } else res.status(401).send();
     });
-    
+
     app.post('/classifyCdeBoard', function (req, res) {
         if (!authorizationShared.isOrgCurator(req.user, req.body.newClassification.orgName)) {
             return res.status(401).send();

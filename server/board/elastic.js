@@ -1,6 +1,5 @@
 const ElasticSearch = require('elasticsearch');
 const config = require('../system/parseConfig');
-const dbLogger = require('../log/dbLogger.js');
 const boardIndexName = config.elastic.boardIndex.name;
 
 const esClient = new ElasticSearch.Client({
@@ -10,39 +9,21 @@ exports.boardRefresh = function (cb) {
     esClient.indices.refresh({index: config.elastic.boardIndex.name}, cb);
 };
 
-exports.updateOrInsertBoardById = (id, board) => {
+exports.updateOrInsertBoardById = (id, board, callback) => {
     esClient.index({
         index: config.elastic.boardIndex.name,
         type: "board",
         id: id,
         body: board
-    }, err => {
-        if (err) {
-            dbLogger.logError({
-                message: "Unable to index board: " + id,
-                origin: "cde.elastic.boardUpdateOrInsert",
-                stack: err,
-                details: ""
-            });
-        }
-    });
+    }, callback);
 };
 
-exports.deleteBoardById = id => {
+exports.deleteBoardById = (id, callback) => {
     esClient.delete({
         index: config.elastic.boardIndex.name,
         type: "board",
         id: id
-    }, err => {
-        if (err) {
-            dbLogger.logError({
-                message: "Unable to delete board: " + id,
-                origin: "cde.elastic.boardDelete",
-                stack: err,
-                details: ""
-            });
-        }
-    });
+    }, callback);
 };
 
 exports.boardSearch = (filter, callback) => {
