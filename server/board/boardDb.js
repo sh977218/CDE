@@ -11,7 +11,6 @@ const dbLogger = require('../log/dbLogger.js');
 exports.type = 'board';
 
 let pinSchema = new Schema({
-    name: stringType,
     tinyId: stringType,
     type: Object.assign({default: 'cde', enum: ['cde', 'form']}, stringType),
     pinnedDate: Date,
