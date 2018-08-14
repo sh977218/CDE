@@ -5,6 +5,7 @@ const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
 
 const elastic = require('./elastic');
+const dbLogger = require('../log/dbLogger.js');
 
 // for DAO manager
 exports.type = 'board';
@@ -14,10 +15,6 @@ let pinSchema = new Schema({
     tinyId: stringType,
     type: Object.assign({default: 'cde', enum: ['cde', 'form']}, stringType),
     pinnedDate: Date,
-    deTinyId: stringType,
-    deName: stringType,
-    formTinyId: stringType,
-    formName: stringType
 }, {_id: false});
 
 let pinningBoardSchema = new Schema({
@@ -62,13 +59,31 @@ pinningBoardSchema.pre('save', function (next) {
     let id = this._id.toString();
     let board = this.toObject();
     delete board._id;
-    elastic.updateOrInsertBoardById(id, board);
-    next();
+    elastic.updateOrInsertBoardById(id, board, err => {
+        if (err) {
+            dbLogger.logError({
+                message: "Unable to index board: " + id,
+                origin: "board.elastic.boardUpdateOrInsert",
+                stack: err,
+                details: ""
+            });
+        }
+        next();
+    });
 });
 pinningBoardSchema.pre('remove', function (next) {
     let id = this._id.toString();
-    elastic.deleteBoardById(id);
-    next();
+    elastic.deleteBoardById(id, err => {
+        if (err) {
+            dbLogger.logError({
+                message: "Unable to delete board: " + id,
+                origin: "board.elastic.deleteBoardById",
+                stack: err,
+                details: ""
+            });
+        }
+        next();
+    });
 });
 
 pinningBoardSchema.virtual('elementType').get(() => 'board');
