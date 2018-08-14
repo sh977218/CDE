@@ -16,8 +16,6 @@ const publishForm = require("./publishForm");
 const toQuestionnaire = require('@std/esm')(module)('../../shared/mapping/fhir/to/toQuestionnaire');
 const handleError = require('../log/dbLogger').handleError;
 const respondError = require('../log/dbLogger').respondError;
-const async = require('async');
-let _ = require("lodash");
 
 const ajv = new Ajv({schemaId: 'auto'}); // current FHIR schema uses legacy JSON Schema version 4
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
@@ -33,55 +31,30 @@ function setResponseXmlHeader(res) {
     res.setHeader("Content-Type", "application/xml");
 }
 
+// callback(err, form)
 exports.fetchWholeForm = function (form, callback) {
-    let formOutdated = false;
-    let maxDepth = 20;
-    let depth = 0;
-    let loopFormElements = function (f, cb) {
-        if (!f) return cb();
-        if (!f.formElements) f.formElements = [];
-        async.forEachSeries(f.formElements, (fe, doneOne) => {
-            if (fe.elementType === "form") {
-                depth++;
-                if (depth < maxDepth) {
-                    let tinyId = fe.inForm.form.tinyId;
-                    let version = fe.inForm.form.version;
-                    mongo_form.byTinyIdAndVersion(tinyId, version, (err, result) => {
-                        if (err) return cb("Retrieving form tinyId: " + fe.inForm.form.tinyId + " version: " + fe.inForm.form.version + " has error: " + err);
-                        result = result.toObject();
-                        fe.formElements = result.formElements;
-                        loopFormElements(fe, () => {
-                            depth--;
-                            doneOne();
-                        });
-                    });
-                } else doneOne();
-            } else if (fe.elementType === "section") {
-                loopFormElements(fe, doneOne);
-            } else {
-                let tinyId = fe.question.cde.tinyId;
-                let version = fe.question.cde.version ? fe.question.cde.version : null;
-                mongo_cde.DataElement.findOne({tinyId: tinyId, archived: false}, {version: 1}, (err, elt) => {
-                    if (err || !elt) cb(err);
-                    else {
-                        let systemDeVersion = elt.version ? elt.version : null;
-                        if (!_.isEqual(version, systemDeVersion)) {
-                            fe.question.cde.outdated = true;
-                            formOutdated = true;
-                        }
-                        doneOne();
-                    }
-
-                });
+    formShared.iterateFe(form,
+        (f, cb, options) => {
+            if (options.return.indexOf(f.inForm.form.tinyId) > -1) {
+                cb(undefined, {skip: true});
+                return;
             }
-        }, cb);
-    };
-    if (!form) return callback();
-    loopFormElements(form, err => {
-        if (formOutdated) form.outdated = true;
-        callback(err, form);
-    });
-}
+            mongo_form.byTinyIdAndVersion(f.inForm.form.tinyId, f.inForm.form.version, function (err, result) {
+                if (err) {
+                    cb('Retrieving form tinyId: ' + f.inForm.form.tinyId + ' version: ' + f.inForm.form.version
+                        + ' has error: ' + err);
+                    return;
+                }
+                f.formElements = result.toObject().formElements;
+                cb(undefined, {return: options.return.concat(f.inForm.form.tinyId)});
+            });
+        },
+        formShared.noopIterCb,
+        undefined,
+        err => callback(err, form),
+        {return: [form.tinyId]}
+    );
+};
 
 // callback(err, form)
 // outdated is not necessary for endpoints by version

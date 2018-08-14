@@ -44,8 +44,9 @@ declare function iterateFesSync(fes: FormElement[], formCb?: informCbSync, secti
 declare function iterateFesSyncOptions(fes: FormElement[], formCb?: informOptionsCbSync, sectionCb?: sectionOptionsCbSync, questionCb?: quesOptionsCbSync, pass?: any): any;
 declare function iterateFormElements(fe?: any, option?: any, cb?: any): void;
 declare function noopIterCb(fe: FormElement, continueCb: continueCb, options?: IterateOptions): void;
-declare function noopSkipIterCb(_: any, cb: continueCb): void;
-declare function noopSkipSync(_?: any): boolean;
+declare function noopSkipIterCb(_: FormElement, cb: continueCb): void;
+declare function noopSkipSync(_: FormElement, pass?: any, options?: IterateOptionsSync): any;
+declare function noopSync(_: FormElement, pass: any): any;
 declare function questionAnswered(q: FormQuestion): boolean;
 declare function score(question: FormQuestion, elt: FormElementsContainer): any; // returns number for success and string for failure
 declare function trimWholeForm(elt: CdeForm): void;

@@ -22,9 +22,11 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 import { UcumService } from 'form/public/ucum.service';
 import { Comment } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm, FormElement, FormElementsContainer } from 'shared/form/form.model';
+import { CdeForm, FormElement, FormElementsContainer, FormInForm } from 'shared/form/form.model';
 import {
-    addFormIds, areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, noopSkipIterCb
+    addFormIds, areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, iterateFesSync, iterateFesSyncOptions,
+    iterateFeSync,
+    noopSkipIterCb, noopSync
 } from 'shared/form/formShared';
 import { httpErrorMessage } from 'widget/angularHelper';
 import { isIe, scrollTo } from 'widget/browser';
@@ -380,8 +382,20 @@ export class FormViewComponent implements OnInit {
     // cb()
     validate(cb = _noop): void {
         this.validationErrors.length = 0;
+        this.validateNoFeCycle();
         this.validateSkipLogic();
         this.validateUoms(cb);
+    }
+
+    validateNoFeCycle() {
+        iterateFeSync(this.elt, (f: FormInForm, tinyId: string) => {
+            if (f.inForm.form.tinyId === tinyId) {
+                this.validationErrors.push(new LocatableError(
+                    'Form or Subform refers to itself meaning the form never ends.', f.elementType + '_' + f.feId
+                ));
+            }
+            return tinyId;
+        }, noopSync, undefined, this.elt.tinyId);
     }
 
     validateSkipLogic() {

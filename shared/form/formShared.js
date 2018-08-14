@@ -394,7 +394,7 @@ export function iterateFes(fes, formCb = noopIterCb, sectionCb = noopIterCb, que
 }
 
 // feCb(fe, pass): return
-export function iterateFesSync(fes, formCb = _noop, sectionCb = _noop, questionCb = _noop, pass = undefined) {
+export function iterateFesSync(fes, formCb = noopSync, sectionCb = noopSync, questionCb = noopSync, pass = undefined) {
     if (!Array.isArray(fes)) {
         return;
     }
@@ -416,7 +416,7 @@ export function iterateFesSync(fes, formCb = _noop, sectionCb = _noop, questionC
 
 // implemented options: skip
 // feCb(fe, pass, options): return
-export function iterateFesSyncOptions(fes, formCb = _noop, sectionCb = _noop, questionCb = _noop, pass = undefined) {
+export function iterateFesSyncOptions(fes, formCb = noopSync, sectionCb = noopSync, questionCb = noopSync, pass = undefined) {
     if (!Array.isArray(fes)) {
         return;
     }
@@ -450,6 +450,15 @@ export function noopIterCb(dummy, cb, options) {
 
 export function noopSkipIterCb(dummy, cb) {
     cb(undefined, {skip: true});
+}
+
+export function noopSkipSync(dummy, pass, options) {
+    options.skip = true;
+    return pass;
+}
+
+export function noopSync(dummy, pass) {
+    return pass;
 }
 
 export function questionAnswered(q) {
