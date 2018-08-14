@@ -85,7 +85,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
                 public dialog: MatDialog,
                 public isAllowedModel: IsAllowedService,
                 public userService: UserService,
-                public alsertService: AlertService) {
+                public alertService: AlertService) {
     }
 
     ngOnInit() {
@@ -171,9 +171,8 @@ export class CommentsComponent implements OnInit, OnDestroy {
             commentId: comment._id,
             eltName: this.eltName,
             reply: comment.newReply.text
-        }).subscribe(() => {
-            comment.newReply = {};
-        }, err => this.alsertService.httpErrorMessageAlert(err));
+        }).subscribe(() => comment.newReply = {},
+            err => this.alertService.addAlert('danger', err.error));
     }
 
     cancelReply = comment => comment.newReply = {};

@@ -27,7 +27,7 @@ exports.module = function (roleConfig) {
         let comment = req.body;
         let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username)
             .catch(handleError({req, res}));
-        if (numberUnapprovedMessages >= 5) return res.status(401).send('You have too many unapproved messages.');
+        if (numberUnapprovedMessages >= 5) return res.status(403).send('You have too many unapproved messages.');
         let dao = daoManager.getDao(comment.element.eltType);
         let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
         idRetrievalFunc(comment.element.eltId, handleError({req, res}, elt => {
@@ -57,7 +57,10 @@ exports.module = function (roleConfig) {
         );
 
     });
-    router.post('/replyComment', [authorization.isAuthenticatedMiddleware], (req, res) => {
+    router.post('/replyComment', authorization.isAuthenticatedMiddleware, async (req, res) => {
+        let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username)
+            .catch(handleError({req, res}));
+        if (numberUnapprovedMessages >= 5) return res.status(403).send('You have too many unapproved messages.');
         discussDb.byId(req.body.commentId, handleError({req, res}, comment => {
             if (!comment) return res.status(404).send("Comment not found.");
             if (!comment.replies) comment.replies = [];
