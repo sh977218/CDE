@@ -11,6 +11,7 @@ const CronJob = require('cron').CronJob;
 const elastic = require('./elastic');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 const draftSchema = require('./schemas').draftSchema;
+const boardDb = require('../board/boardDb');
 
 exports.type = "cde";
 exports.name = "CDEs";
@@ -447,7 +448,7 @@ exports.derivationOutputs = function (inputTinyId, cb) {
 
 let correctBoardPinsForCde = function (doc, cb) {
     if (doc)
-        mongo_board.PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.designations[0].designation}).exec(function (err) {
+        boardDb.PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.designations[0].designation}).exec(function (err) {
             if (err) throw err;
             if (cb) cb();
         });
@@ -462,7 +463,7 @@ new CronJob('00 00 4 * * *', () => {
     dbLogger.consoleLog("Repairing Board <-> CDE references.");
     let dayBeforeYesterday = new Date();
     dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
-    mongo_board.PinningBoard.find().distinct('pins.deTinyId', function (err, ids) {
+    boardDb.PinningBoard.find().distinct('pins.deTinyId', function (err, ids) {
         if (err) throw "Cannot repair CDE references.";
         async.eachSeries(ids, function (id, cb) {
             DataElement.findOne({tinyId: id, archived: false}).exec(function (err, de) {
