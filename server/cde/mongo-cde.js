@@ -22,6 +22,11 @@ const mongo_data = this;
 exports.type = "cde";
 exports.name = "CDEs";
 
+schemas.dataElementSchema.post('remove', function (doc, next) {
+    elastic.dataElementDelete(doc, function (err) {
+        next(err);
+    });
+});
 schemas.dataElementSchema.pre('save', function (next) {
     let self = this;
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
@@ -196,11 +201,6 @@ exports.inCdeView = function (cde) {
     }
 };
 
-// TODO this method should be removed.
-exports.save = function (mongooseObject, callback) {
-    mongooseObject.save(callback);
-};
-
 exports.create = function (cde, user, callback) {
     let newDe = new DataElement(cde);
     if (!newDe.registrationState || !newDe.registrationState.registrationStatus) {
@@ -290,17 +290,6 @@ exports.update = function (elt, user, callback, special) {
             }
         });
     });
-};
-
-exports.archiveCde = function (cde, callback) {
-    DataElement.findOne({'_id': cde._id}, function (err, cde) {
-        cde.archived = true;
-        cde.save(callback);
-    });
-};
-
-exports.getDistinct = function (what, callback) {
-    DataElement.distinct(what).exec(callback);
 };
 
 exports.query = function (query, callback) {
