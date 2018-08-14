@@ -8,7 +8,7 @@ import {
     MatDialogModule,
     MatIconModule,
     MatInputModule,
-    MatProgressSpinnerModule,
+    MatProgressSpinnerModule, MatSelectModule,
     MatSnackBarModule,
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -37,6 +37,7 @@ const appRoutes: Routes = [
         MatButtonModule,
         MatProgressSpinnerModule,
         MatDialogModule,
+        MatSelectModule,
         MatSnackBarModule,
         RouterModule.forRoot(appRoutes),
     ],

@@ -29,7 +29,7 @@
                     </button>
                 </div>
                 <div class="list-group mt-1">
-                    <button type="button" class="list-group-item" (click)="setMode('browse')">
+                    <button type="button" class="list-group-item" (click)="mode = 'browse'">
                         Browse
                     </button>
                 </div>
@@ -66,8 +66,17 @@
                     </div>
                 </div>
                 <div *ngIf="mode === 'browse' && cdeFhir.fhirData.patient" class="my-3">
-                    Browse
-                    <cde-fhir-browser-encounter [encounters]="browseEncounters"></cde-fhir-browser-encounter>
+                    <h2>
+                        Browse
+                        <mat-form-field>
+                            <mat-select placeholder="Select Type" [(ngModel)]="browseMode"
+                                        (selectionChange)="browseModeSelected($event)">
+                                <mat-option *ngFor="let option of browseOptions" [value]="option">{{option}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </h2>
+                    <cde-fhir-browser-encounter *ngIf="browseEncounters"
+                                                [encounters]="browseEncounters"></cde-fhir-browser-encounter>
                 </div>
                 <ng-container *ngIf="mode === 'form' && cdeFhir.renderedResourceTree.crossReference">
                     <cde-native-render [elt]="cdeFhir.renderedResourceTree.crossReference" [submitForm]="true"

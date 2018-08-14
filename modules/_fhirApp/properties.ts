@@ -22,10 +22,13 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTree, name: 
             throw new Error('BAD');
         case 'choiceType':
             if (_isEqual(propertyMap.properties, ['dateTime', 'Period'])) {
-                let date = resource[propertyMap.property + 'DateTime'];
-                if (date) value = [date];
                 let period = resource[propertyMap.property + 'Period'];
-                if (period) value = [period.start, period.end];
+                if (period) {
+                    value = [period.start, period.end];
+                } else {
+                    let date = resource[propertyMap.property + 'DateTime'];
+                    value = date ? [date] : [];
+                }
             } else {
                 throw new Error('BAD');
             }

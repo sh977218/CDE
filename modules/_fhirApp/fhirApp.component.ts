@@ -69,7 +69,9 @@ export class FhirStandaloneComponent {
     templateUrl: './fhirApp.component.html'
 })
 export class FhirAppComponent {
-    browseEncounters: FhirEncounter[];
+    browseEncounters?: FhirEncounter[];
+    browseMode = '';
+    readonly browseOptions = ['', 'Encounter'];
     errorMessage: string;
     getDateString = getDateString;
     getPatientName = getPatientName;
@@ -88,20 +90,20 @@ export class FhirAppComponent {
         cdeFhir.init(this.route.snapshot, err => this.errorMessage = err);
     }
 
+    browseModeSelected(mode) {
+        this.browseEncounters = undefined;
+        if (this.browseMode === 'Encounter') {
+            this.cdeFhir.fhirData.search<FhirEncounter>('Encounter', {}).then(e => {
+                this.browseEncounters = e;
+            });
+        }
+    }
+
     loadForm(f) {
         this.saving = true;
         this.cdeFhir.loadFormData(f, () => {
             this.saving = false;
         });
-    }
-
-    setMode(mode) {
-        if (mode === 'browse') {
-            this.cdeFhir.fhirData.search<FhirEncounter>('Encounter', {}).then(e => {
-                this.browseEncounters = e;
-                this.mode = 'browse';
-            });
-        }
     }
 
     submitForm() {
