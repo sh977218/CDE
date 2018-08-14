@@ -321,17 +321,15 @@
     <div class="modal-header" id="importPermissibleValueModalHeader">
         <h4 class="modal-title">Import Permissible Values from CDE</h4>
     </div>
-    <form #importPermissibleValueForm="ngForm" (ngSubmit)="importPermissibleValue()">
-        <div class="modal-body" id="importPermissibleValueModalBody">
-            <cde-cde-search addMode="true" [embedded]="true" (add)="importPv($event);"
-                            [searchSettingsInput]="searchSettings">
-            </cde-cde-search>
-        </div>
-        <div class="modal-footer" id="importPermissibleValueModalFooter">
-            <button class="btn btn-outline-dark" (click)="c('Close click')" id="closeImportPermissibleValueBtn"
-                    name="closeImportPermissibleValueBtn"
-                    type="button">Close
-            </button>
-        </div>
-    </form>
+    <div class="modal-body" id="importPermissibleValueModalBody">
+        <cde-cde-search addMode="true" [embedded]="true" (add)="importPv($event);"
+                        [searchSettingsInput]="searchSettings">
+        </cde-cde-search>
+    </div>
+    <div class="modal-footer" id="importPermissibleValueModalFooter">
+        <button class="btn btn-outline-dark" (click)="c('Close click')"
+                id="closeImportPermissibleValueBtn" name="closeImportPermissibleValueBtn"
+                type="button">Close
+        </button>
+    </div>
 </ng-template>
