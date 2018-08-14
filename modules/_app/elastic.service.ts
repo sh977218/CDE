@@ -94,7 +94,6 @@ export class ElasticService {
     }
 
     static highlightElt(cde) {
-        if (!cde.highlight) return;
         ElasticService.highlightOne("stewardOrgCopy.name", cde);
         ElasticService.highlightOne("primaryNameCopy", cde);
         ElasticService.highlightOne("primaryDefinitionCopy", cde);
@@ -102,6 +101,7 @@ export class ElasticService {
     }
 
     static highlightOne(field, cde) {
+        if (!cde.highlight) return;
         if (cde.highlight[field]) {
             if (field.indexOf(".") < 0) {
                 if (cde.highlight[field][0].replace(/<strong>/g, "").replace(/<\/strong>/g, "")
@@ -121,24 +121,27 @@ export class ElasticService {
     }
 
     static highlightResults(elts) {
-        elts.forEach(function (elt) {
-            ElasticService.highlightElt(elt);
-        });
+        elts.forEach(elt => ElasticService.highlightElt(elt));
     }
 
     static setMatchedBy(cde) {
-        if (cde.highlight.primaryNameCopy) return;
-        let field = null;
-        let matched = Object.keys(cde.highlight)[0];
-        if (matched === "definitions.definition" || matched === "primaryDefinitionCopy") field = "Definition";
-        if (matched.indexOf("classification.") > -1) field = "Classification";
-        if (matched.indexOf(".concepts.") > -1) field = "Concepts";
-        if (matched.substr(0, 11) === "valueDomain") field = "Permissible Values";
-        if (matched.substr(0, 15) === "flatProperties") field = "Properties";
-        if (matched === "designations.designation") field = "Alternative Name";
-        if (matched === "stewardOrgCopy.name") field = "Steward";
-        if (matched === "flatIds") field = "Identifier";
-        cde.highlight.matchedBy = field;
+        let field = "Full Document";
+        if (!cde.highlight) {
+            cde.highlight.matchedBy = field;
+            return;
+        } else {
+            if (cde.highlight.primaryNameCopy || cde.highlight.primaryDefinitionCopy) return;
+            let matched = Object.keys(cde.highlight)[0];
+            if (matched === "definitions.definition") field = "Definition";
+            if (matched.indexOf("classification.") > -1) field = "Classification";
+            if (matched.indexOf(".concepts.") > -1) field = "Concepts";
+            if (matched.substr(0, 11) === "valueDomain") field = "Permissible Values";
+            if (matched.substr(0, 15) === "flatProperties") field = "Properties";
+            if (matched === "designations.designation") field = "Other Name";
+            if (matched === "stewardOrgCopy.name") field = "Steward";
+            if (matched === "flatIds") field = "Identifiers";
+            cde.highlight.matchedBy = field;
+        }
     }
 
     getExport(query, type, cb) {
