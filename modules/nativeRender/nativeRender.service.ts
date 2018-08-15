@@ -168,12 +168,20 @@ export class NativeRenderService {
     }
 
     checkboxOnChange($event: any, model: Question, value: any) {
-        model = NativeRenderService.checkboxNullCheck(model);
-        if ($event.target.checked) model.answer.push(value);
-        else model.answer.splice(model.answer.indexOf(value), 1);
+        if (!Array.isArray(model.answer)) model.answer = [];
+        let index = model.answer.indexOf(value);
+        if ($event.target.checked) {
+            if (index === -1) {
+                model.answer.push(value);
+            }
+        } else {
+            if (index > -1) {
+                model.answer.splice(model.answer.indexOf(value), 1);
+            }
+        }
     }
     checkboxIsChecked(model: Question, value: any) {
-        model = NativeRenderService.checkboxNullCheck(model);
+        if (!Array.isArray(model.answer)) model.answer = [];
         return (model.answer.indexOf(value) !== -1);
     }
 
@@ -198,12 +206,6 @@ export class NativeRenderService {
                 question.answer = $event[0];
             }
         }
-    }
-
-
-    static checkboxNullCheck(model: any) {
-        if (!Array.isArray(model.answer)) model.answer = [];
-        return model;
     }
 
     static cloneForm(form: CdeForm): CdeForm {

@@ -4,8 +4,12 @@ export function asRefString(resource) {
     return resource.resourceType + '/' + resource.id;
 }
 
+export function getRef(ref) {
+    return ref ? ref.reference : undefined;
+}
+
 export function isRef(ref) {
-    return ref && ref.reference;
+    return !!getRef(ref);
 }
 
 export function isRefType(resourceType, ref) {
