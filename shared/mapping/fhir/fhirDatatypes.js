@@ -10,6 +10,18 @@ function codingPreview(coding) {
     return coding.display + ' ' + codeSystemIn(coding.system) + ':' + coding.code;
 }
 
+export function getDateString(resource, periodName = '', dateTimeName = '', instanceName = '') {
+    if (resource[periodName]) {
+        return resource[periodName].start + ' - ' + resource[periodName].end;
+    } else if (resource[dateTimeName]) {
+        return resource[dateTimeName];
+    } else if (resource[instanceName]) {
+        return resource[instanceName]; // TODO: conversion from machine format
+    } else {
+        return '';
+    }
+}
+
 export function valuePreview(container, prefix = 'value') {
     if (!container) {
         return '';

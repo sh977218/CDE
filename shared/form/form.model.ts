@@ -7,7 +7,7 @@ import {
     FormattedValue,
     Instruction,
     ObjectId,
-    PermissibleValue,
+    PermissibleValue, supportedFhirResources,
 } from 'shared/models.model';
 import {
     DatatypeContainer,
@@ -166,7 +166,7 @@ export class DisplayProfile {
 
 export class ExternalMappings {
     fhir?: {
-        resourceType?: string,
+        resourceType?: supportedFhirResources,
     };
 }
 

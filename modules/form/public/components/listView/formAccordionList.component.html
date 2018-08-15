@@ -23,7 +23,7 @@
                         <dt class="col-3 text-right">Steward:</dt>
                         <dd class="col-9" [innerHtml]="elt.stewardOrg.name"></dd>
                         <dt class="col-3 text-right">Definition:</dt>
-                        <dd id="dd_def" class="col-9" [innerHtml]="elt.definitions[0].definition || 'N/A'"></dd>
+                        <dd id="dd_def" class="col-9" [innerHtml]="elt.definitions[0]?.definition || 'N/A'"></dd>
                         <ng-container *ngIf="elt.classification.length > 0">
                             <dt class="col-3 text-right">Used By:</dt>
                             <dd id="usedBy_{{eltIndex}}" class="col-9">
