@@ -81,7 +81,7 @@ exports.logError = function (message, callback) { // all server errors, express 
         let msg = {
             title: 'Server Side Error',
             options: {
-                body: "Server Side Error: " + description,
+                body: description,
                 icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
                 badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
                 tag: 'cde-server-side',
@@ -119,7 +119,7 @@ exports.logClientError = function (req, callback) {
         let msg = {
             title: 'Client Side Error',
             options: {
-                body: "Client Side Error: " + exc.message.substr(0, 30),
+                body: exc.message.substr(0, 30),
                 icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
                 badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
                 tag: 'cde-client-side',
