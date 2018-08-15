@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import _noop from 'lodash/noop';
+
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
+import { supportedFhirResources, supportedFhirResourcesArray } from 'shared/models.model';
 import { CdeForm } from 'shared/form/form.model';
 import { isMappedTo } from 'shared/form/formAndFe';
 
@@ -24,7 +26,8 @@ export class FormGeneralDetailsComponent {
         multiple: false,
         tags: true
     };
-    tagFhirResource: string;
+    supportedFhirResourcesArray = supportedFhirResourcesArray;
+    tagFhirResource: 'Not Mapped'|'Default Mapping'|supportedFhirResources;
     userOrgs = [];
 
     constructor(public userService: UserService,
@@ -62,5 +65,4 @@ export class FormGeneralDetailsComponent {
         }
         this.onEltChange.emit();
     }
-
 }

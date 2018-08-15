@@ -6,7 +6,7 @@ import { FormViewComponent } from 'form/public/components/formView.component';
 import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { getMapToFhirResource } from 'shared/form/formAndFe';
-import { findQuestionByTinyId, getFormQuestionsReal, iterateFeSync } from 'shared/form/formShared';
+import { findQuestionByTinyId, getFormQuestions, iterateFeSync } from 'shared/form/formShared';
 import { CodeAndSystem } from 'shared/models.model';
 import { interruptEvent } from 'widget/browser';
 
@@ -529,7 +529,7 @@ export class DisplayProfileComponent {
         this.dialog.open(FhirProcedureMappingComponent, {
             width: '700px',
             data: {
-                questions: getFormQuestionsReal(this.elt),
+                questions: getFormQuestions(this.elt),
                 mapping: this.elt.displayProfiles[0].fhirProcedureMapping,
                 usedRefs: findQuestionByTinyId(this.elt.displayProfiles[0].fhirProcedureMapping.usedReferences, this.elt)
             }

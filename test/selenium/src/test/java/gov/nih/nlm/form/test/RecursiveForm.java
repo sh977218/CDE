@@ -11,6 +11,6 @@ public class RecursiveForm extends NlmCdeBaseTest {
     public void recursiveForm () {
         goToFormByName("Recursive Form");
         findElement(By.xpath("//h4[. = 'Recursive Form']"));
-        Assert.assertEquals(findElements(By.xpath("//h4[. = 'Recursive Form']")).size(), 20);
+        Assert.assertEquals(findElements(By.xpath("//h4[. = 'Recursive Form']")).size(), 1);
     }
 }

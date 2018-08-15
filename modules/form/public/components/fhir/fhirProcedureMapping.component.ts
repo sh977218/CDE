@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
 import './fhirMapping.scss';
-import { FhirProcedureMapping, FormQuestion } from 'shared/form/form.model';
+import { CdeForm, FhirProcedureMapping, FormQuestion } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-fhir-procedure-mappin',
@@ -37,4 +37,8 @@ export class FhirProcedureMappingComponent {
         }
     }
 
+    isTinyIdSingleSelect(tinyId: string): boolean {
+        let match = this.questions.filter(q => q.question.cde.tinyId === tinyId);
+        return !!match.length && !match[0].question.multiselect;
+    }
 }
