@@ -37,5 +37,6 @@ public interface USERNAME {
     String doublepinuser_username = "doublepinuser";
     String boardBot_username = "boardBot";
     String unapprovedMessage_username = "unapprovedmessageuser";
+    String oneUnapprovedReply_username = "oneunapprovedreplyuser";
     String password = "pass";
 }

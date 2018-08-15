@@ -8,6 +8,8 @@ const userService = require("../system/usersrvc");
 const mongo_data = require('../system/mongo-data');
 const adminItemService = require('../system/adminItemSvc');
 
+const loggedInMiddleware = authorization.loggedInMiddleware;
+
 exports.module = function (roleConfig) {
     const router = require('express').Router();
 
@@ -23,7 +25,7 @@ exports.module = function (roleConfig) {
         }))
     });
 
-    router.post('/postComment', authorization.loggedInMiddleware, async (req, res) => {
+    router.post('/postComment', loggedInMiddleware, async (req, res) => {
         let comment = req.body;
         let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username)
             .catch(handleError({req, res}));
@@ -57,12 +59,14 @@ exports.module = function (roleConfig) {
         );
 
     });
-    router.post('/replyComment', authorization.isAuthenticatedMiddleware, async (req, res) => {
+    router.post('/replyComment', loggedInMiddleware, async (req, res) => {
         let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username)
             .catch(handleError({req, res}));
         if (numberUnapprovedMessages >= 5) return res.status(403).send('You have too many unapproved messages.');
         discussDb.byId(req.body.commentId, handleError({req, res}, comment => {
             if (!comment) return res.status(404).send("Comment not found.");
+            let numberUnapprovedReplies = comment.replies.filter(r => r.pendingApproval && r.user.username === req.user.username).length;
+            if (numberUnapprovedReplies > 0) return res.status(403).send("You cannot do this.");
             if (!comment.replies) comment.replies = [];
             let reply = {
                 user: req.user,
@@ -116,7 +120,7 @@ exports.module = function (roleConfig) {
         }))
     });
 
-    router.post('/deleteComment', [authorization.isAuthenticatedMiddleware], (req, res) => {
+    router.post('/deleteComment', loggedInMiddleware, (req, res) => {
         let commentId = req.body.commentId;
         discussDb.byId(commentId, handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send("Comment not found");
@@ -139,7 +143,7 @@ exports.module = function (roleConfig) {
             })
         )
     });
-    router.post('/deleteReply', [authorization.isAuthenticatedMiddleware], (req, res) => {
+    router.post('/deleteReply', loggedInMiddleware, (req, res) => {
         let replyId = req.body.replyId;
         discussDb.byReplyId(replyId, handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send("Reply not found");
@@ -164,7 +168,7 @@ exports.module = function (roleConfig) {
         )
     });
 
-    router.get('/commentsFor/:username/:from/:size', [authorization.isAuthenticatedMiddleware], (req, res) => {
+    router.get('/commentsFor/:username/:from/:size', loggedInMiddleware, (req, res) => {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
         let username = req.params.username;
@@ -228,7 +232,7 @@ exports.module = function (roleConfig) {
         )
     });
 
-    router.post('/resolveComment', [authorization.isAuthenticatedMiddleware], (req, res) => {
+    router.post('/resolveComment', loggedInMiddleware, (req, res) => {
         discussDb.byId(req.body.commentId, handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.status = 'resolved';
@@ -239,7 +243,7 @@ exports.module = function (roleConfig) {
             })
         )
     });
-    router.post('/reopenComment', [authorization.isAuthenticatedMiddleware], (req, res) => {
+    router.post('/reopenComment', loggedInMiddleware, (req, res) => {
         discussDb.byId(req.body.commentId, handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.status = 'active';
@@ -251,7 +255,7 @@ exports.module = function (roleConfig) {
         )
     });
 
-    router.post('/resolveReply', [authorization.isAuthenticatedMiddleware], (req, res) => {
+    router.post('/resolveReply', loggedInMiddleware, (req, res) => {
         let replyId = req.body.replyId;
         discussDb.byReplyId(replyId, handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send();
@@ -265,7 +269,7 @@ exports.module = function (roleConfig) {
             })
         )
     });
-    router.post('/reopenReply', [authorization.isAuthenticatedMiddleware], (req, res) => {
+    router.post('/reopenReply', loggedInMiddleware, (req, res) => {
         let replyId = req.body.replyId;
         discussDb.byReplyId(replyId, handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send();
