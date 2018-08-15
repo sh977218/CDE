@@ -24,7 +24,9 @@ public class ImportPvTest extends NlmCdeBaseTest {
         goToHistory();
         selectHistoryAndCompare(1, 2);
 
-        String[] ethnicity = {"American Indian or Alaska Native", "Asian", "White", "Black or African American", "Not Reported", "Unknown", "Native Hawaiian or other Pacific Islander"};
+        String[] ethnicity = {"American Indian or Alaska Native", "Asian", "White",
+                "Black or African American", "Not Reported", "Unknown",
+                "Native Hawaiian or other Pacific Islander"};
         for (int i = 0; i < ethnicity.length; i++) {
             textPresent(ethnicity[i], By.xpath("(//*[@id='Value List']//*[contains(@class,'arrayObjAdd')])[" + ++i + "]"));
         }

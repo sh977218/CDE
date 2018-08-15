@@ -81,10 +81,12 @@ export class PermissibleValueComponent {
     }
 
     addAllVsac() {
+        this.removeSourceSelection();
         this.vsacValueSet.forEach(v => this.addVsacValue(v));
     }
 
     addNewPermissibleValue() {
+        this.removeSourceSelection();
         this.elt.valueDomain.permissibleValues.push(this.newPermissibleValue);
         this.modalRef.close();
         this.runManualValidation();
@@ -254,7 +256,8 @@ export class PermissibleValueComponent {
                     this.http.get<any>('/umlsAtomsBridge/' + code + '/' + targetSource)
                         .subscribe(
                             res => {
-                                let l = res.result.filter(r => r.termType === this.SOURCES[src].termType);
+                                let l = [];
+                                if (res && res.result) l = res.result.filter(r => r.termType === this.SOURCES[src].termType);
                                 if (l[0]) {
                                     this.SOURCES[src].codes[pv.valueMeaningCode] = {
                                         code: l[0].ui,
@@ -301,6 +304,10 @@ export class PermissibleValueComponent {
         this.runManualValidation();
         this.initSrcOptions();
         this.onEltChange.emit();
+    }
+
+    removeSourceSelection () {
+        Object.keys(this.SOURCES).forEach(sourceKey => this.SOURCES[sourceKey].selected = false);
     }
 
     removeVSMapping() {
