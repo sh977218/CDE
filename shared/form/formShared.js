@@ -100,12 +100,7 @@ export function flattenFormElement(fe) {
     return result;
 }
 
-// TODO rename this one. It gets question.question
 export function getFormQuestions(form) {
-    return getFormQuestionsReal(form).map(a => a.question);
-}
-
-export function getFormQuestionsReal(form) {
     let getQuestions = function (fe) {
         let qs = [];
         if (fe.formElements) {
@@ -119,8 +114,12 @@ export function getFormQuestionsReal(form) {
     return getQuestions(form);
 }
 
-export function getFormCdes(form) {
-    return getFormQuestions(form).map(q => q.cde);
+export function getFormQuestionsAsQuestion(form) {
+    return getFormQuestions(form).map(q => q.question);
+}
+
+export function getFormQuestionsAsQuestionCde(form) {
+    return getFormQuestions(form).map(q => q.question.cde);
 }
 
 export function getFormOdm(form, cb) {
@@ -334,7 +333,9 @@ export function isSubForm(node) {
     return n.data.elementType === 'form';
 }
 
-// feCb(fe, cbContinue(error, options?: any))  (noopSkipCb: (dummy, cb) => cb(undefined, {skip: true}))
+// implemented options: return, skip
+// feCb(fe, cbContinue(error, newOptions), options)
+//     cbContinue skip: noopSkipIterCb()
 // callback(error)
 export function iterateFe(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, callback = undefined, options = undefined) {
     if (fe) {
@@ -342,23 +343,26 @@ export function iterateFe(fe, formCb = undefined, sectionCb = undefined, questio
     }
 }
 
-// cb(fe, pass): return
+// feCb(fe, pass): return
 export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, pass = undefined) {
     if (fe) {
         return iterateFesSync(fe.formElements, formCb, sectionCb, questionCb, pass);
     }
 }
 
-// cb(fe, pass, options): return
+// implemented options: skip
+// feCb(fe, pass, options): return
 export function iterateFeSyncOptions(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, pass = undefined) {
     if (fe) {
         return iterateFesSyncOptions(fe.formElements, formCb, sectionCb, questionCb, pass);
     }
 }
 
-// feCb(fe, cbContinue(error, options?: any))  (noopSkipCb: (dummy, cb) => cb(undefined, {skip: true}))
+// implemented options: return, skip
+// feCb(fe, cbContinue(error, newOptions), options)
+//     cbContinue skip: noopSkipIterCb()
 // callback(error)
-export function iterateFes(fes, formCb = noopCb, sectionCb = noopCb, questionCb = noopCb, callback = _noop, options = undefined) {
+export function iterateFes(fes, formCb = noopIterCb, sectionCb = noopIterCb, questionCb = noopIterCb, callback = _noop, options = undefined) {
     if (!Array.isArray(fes)) {
         return;
     }
@@ -389,8 +393,8 @@ export function iterateFes(fes, formCb = noopCb, sectionCb = noopCb, questionCb 
     }, callback);
 }
 
-// cb(fe, pass): return
-export function iterateFesSync(fes, formCb = _noop, sectionCb = _noop, questionCb = _noop, pass = undefined) {
+// feCb(fe, pass): return
+export function iterateFesSync(fes, formCb = noopSync, sectionCb = noopSync, questionCb = noopSync, pass = undefined) {
     if (!Array.isArray(fes)) {
         return;
     }
@@ -410,8 +414,9 @@ export function iterateFesSync(fes, formCb = _noop, sectionCb = _noop, questionC
     return pass;
 }
 
-// cb(fe, pass, options): return
-export function iterateFesSyncOptions(fes, formCb = _noop, sectionCb = _noop, questionCb = _noop, pass = undefined) {
+// implemented options: skip
+// feCb(fe, pass, options): return
+export function iterateFesSyncOptions(fes, formCb = noopSync, sectionCb = noopSync, questionCb = noopSync, pass = undefined) {
     if (!Array.isArray(fes)) {
         return;
     }
@@ -439,12 +444,26 @@ export function iterateFesSyncOptions(fes, formCb = _noop, sectionCb = _noop, qu
     return pass;
 }
 
-function noopCb(dummy, cb) {
-    cb();
+export function noopIterCb(dummy, cb, options) {
+    cb(undefined, options);
 }
 
-export function noopSkipCb(dummy, cb) {
-    cb(undefined, true);
+export function noopSkipIterCb(dummy, cb) {
+    cb(undefined, {skip: true});
+}
+
+export function noopSkipSync(dummy, pass, options) {
+    options.skip = true;
+    return pass;
+}
+
+export function noopSync(dummy, pass) {
+    return pass;
+}
+
+export function questionAnswered(q) {
+    return typeof(q.question.answer) !== 'undefined'
+        && !(Array.isArray(q.question.answer) && q.question.answer.length === 0);
 }
 
 export function score(question, elt) {
