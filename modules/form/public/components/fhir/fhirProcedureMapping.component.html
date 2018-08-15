@@ -17,13 +17,15 @@
     <mat-form-field>
         <mat-select required placeholder="Procedure Type Code" [(ngModel)]="mapping.procedureQuestionID">
             <mat-option [value]="'static'">Static Value</mat-option>
+            <mat-option *ngFor="let q of valueListQuestions" [value]="q.question.cde.tinyId">
+                <small>{{q.question.cde.tinyId}}</small> - {{q.label}}</mat-option>
         </mat-select>
     </mat-form-field>
     <mat-form-field *ngIf="mapping.procedureQuestionID === 'static'" style="margin: 0 10px 0 30px">
         <input matInput [(ngModel)]="mapping.procedureCodeSystem" placeholder="Code System">
     </mat-form-field>
     <mat-form-field *ngIf="mapping.procedureQuestionID === 'static'">
-        <input matInput [(ngModel)]="mapping.procedureCode" placeholder="Code" required>
+        <input matInput [(ngModel)]="mapping.procedureCode" placeholder="Code">
     </mat-form-field>
 </div>
 
@@ -47,6 +49,10 @@
 </div>
 
 <div>
+    <div *ngIf="isTinyIdSingleSelect(mapping.bodySiteQuestionID)"
+         class="alert alert-warning" role="alert">
+        Warning: The selected question is single-select while used to edit a multi-select field. The answers will only be used to append values.
+    </div>
     <mat-form-field>
         <mat-select placeholder="Body Site" [(ngModel)]="mapping.bodySiteQuestionID">
             <mat-option>[Empty]</mat-option>
@@ -64,6 +70,10 @@
 </div>
 
 <div>
+    <div *ngIf="usedRefs && !usedRefs.question.multiselect"
+         class="alert alert-warning" role="alert">
+        Warning: The selected question is single-select while used to edit a multi-select field. The answers will only be used to append values.
+    </div>
     <mat-form-field>
         <mat-select placeholder="Used Reference" [(ngModel)]="usedRefs" (ngModelChange)="initRefMaps($event)">
             <mat-option>None</mat-option>
@@ -82,6 +92,10 @@
 </div>
 
 <div>
+    <div *ngIf="isTinyIdSingleSelect(mapping.complications)"
+         class="alert alert-warning" role="alert">
+        Warning: The selected question is single-select while used to edit a multi-select field. The answers will only be used to append values.
+    </div>
     <mat-form-field>
         <mat-select placeholder="Complication" [(ngModel)]="mapping.complications">
             <mat-option>None</mat-option>
