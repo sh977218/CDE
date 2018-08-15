@@ -14,7 +14,7 @@
                         <span *ngIf="board.review?.endDate"> ~ {{board.review.endDate | date: 'MM/dd/yyyy'}}</span>
                         <span *ngFor="let reviewer of reviewers"
                               title="{{reviewer.username}} {{reviewer.status.approval}}{{reviewer.lastViewedLocal?'. viewed on '+reviewer.lastViewedLocal :''}}">
-                        <i class="fa fa-lg fa-user-circle mr2 ml2"></i>
+                        <mat-icon class="mr2 ml2">person</mat-icon>
                         <i class="fa overlay-lower-right" id="reviewer_{{reviewer.username}}_status"
                            [ngClass]="{'fa-check green-icon':reviewer.status.approval === 'approved',
                                        'fa-times red-icon':reviewer.status.approval === 'disapproved'}"></i>

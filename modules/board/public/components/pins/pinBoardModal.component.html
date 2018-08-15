@@ -5,8 +5,7 @@
         </h3>
     </div>
     <div class="modal-body">
-        <i *ngIf="myBoardsSvc.reloading" class="fa fa-spinner fa-spin"></i>
-        <i *ngIf="!myBoardsSvc.boards" class="fa fa-spinner fa-spin"></i>
+        <mat-icon *ngIf="myBoardsSvc.reloading || !myBoardsSvc.boards" class="spin">autorenew</mat-icon>
         <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0" class="ml-10"> You don't have any boards
         </div>
         <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length > 0">

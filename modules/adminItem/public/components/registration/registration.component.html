@@ -60,23 +60,13 @@
 
                 <div id="effectiveDateDiv">
                     <label for="effectiveDate">Effective Date</label>
-                    <div class="input-group">
-                        <input class="form-control" name="newEffectiveDate" id="newEffectiveDate"
-                               [(ngModel)]="newState.effectiveDate" ngbDatepicker #dpEf="ngbDatepicker">
-                        <div class="input-group-addon" (click)="dpEf.toggle()">
-                            <i class="fa fa-calendar" aria-hidden="true"></i>
-                        </div>
-                    </div>
+                    <input class="form-control" name="newEffectiveDate" id="newEffectiveDate"
+                           [(ngModel)]="newState.effectiveDate" type="date">
                 </div>
                 <div id="untilDateDiv">
                     <label for="untilDate">Until Date</label>
-                    <div class="input-group">
-                        <input class="form-control" name="newUntilDate" id="newUntilDate"
-                               [(ngModel)]="newState.untilDate" ngbDatepicker #dpUn="ngbDatepicker">
-                        <div class="input-group-addon" (click)="dpUn.toggle()">
-                            <i class="fa fa-calendar" aria-hidden="true"></i>
-                        </div>
-                    </div>
+                    <input class="form-control" name="newUntilDate" id="newUntilDate"
+                           [(ngModel)]="newState.untilDate" type="date">
                 </div>
                 <div class="form-group">
                     <label for="administrativeStatus">Administrative Status</label>
