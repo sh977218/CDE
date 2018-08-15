@@ -83,7 +83,7 @@ exports.elasticsearch = function (user, settings, cb) {
         };
 
     if (!settings.fullRecord) {
-        // query._source = {excludes: ["flatProperties", "properties", "classification.elements", "formElements"]};
+        query._source = {excludes: ["flatProperties", "properties", "classification.elements", "formElements"]};
     }
 
     sharedElastic.elasticsearch('cde', query, settings, (err, result) => {
@@ -177,7 +177,7 @@ exports.morelike = function (id, callback) {
 };
 
 exports.DataElementDistinct = function (field, cb) {
-    var distinctQuery = {
+    let distinctQuery = {
         "size": 0,
         "aggs": {
             "aggregationsName": {
@@ -211,10 +211,7 @@ exports.DataElementDistinct = function (field, cb) {
 exports.pVCodeSystemList = [];
 
 exports.fetchPVCodeSystemList = function () {
-    var elastic = this;
-    this.DataElementDistinct("valueDomain.permissibleValues.codeSystemName", function (result) {
-        elastic.pVCodeSystemList = result;
-    });
+    this.DataElementDistinct("valueDomain.permissibleValues.codeSystemName", result => this.pVCodeSystemList = result);
 };
 
 exports.get = function (id, cb) {

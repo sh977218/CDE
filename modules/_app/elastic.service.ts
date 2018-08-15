@@ -138,7 +138,7 @@ export class ElasticService {
             if (matched.indexOf(".concepts.") > -1) field = "Concepts";
             if (matched.substr(0, 11) === "valueDomain") field = "Permissible Values";
             if (matched.substr(0, 15) === "flatProperties") field = "Properties";
-            if (matched === "designations.designation") field = "Other Name";
+            if (matched === "designations.designation") field = "Other Names";
             if (matched === "stewardOrgCopy.name") field = "Steward";
             if (matched === "flatIds") field = "Identifiers";
             cde.highlight.matchedBy = field;

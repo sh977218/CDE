@@ -534,6 +534,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     // highlight search results if part of the following fields.
     queryStuff.highlight = {
+        "require_field_match": false,
         "order": "score"
         , "pre_tags": ["<strong>"]
         , "post_tags": ["</strong>"]
@@ -562,7 +563,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
             , "classification.elements.name": {}
             , "classification.elements.elements.name": {}
             , "classification.elements.elements.elements.name": {}
-
         }
     };
     return queryStuff;
