@@ -1,35 +1,41 @@
-import { CdeForm } from 'shared/form/form.model';
-import {
-    FhirDomainResource, FhirEncounter, FhirObservation, FhirProcedure
-} from 'shared/mapping/fhir/fhirResource.model';
+import { resourceMap, supportedResourcesMaps } from '_fhirApp/resources';
+import { CdeForm, FormElement } from 'shared/form/form.model';
+import { getFhirResourceMap, getMapToFhirResource } from 'shared/form/formAndFe';
 import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
-import { newEncounter } from 'shared/mapping/fhir/resource/fhirEncounter';
-import { newObservation } from 'shared/mapping/fhir/resource/fhirObservation';
-import { newProcedure } from 'shared/mapping/fhir/resource/fhirProcedure';
+import { FhirDomainResource } from 'shared/mapping/fhir/fhirResource.model';
 import { deepCopy } from 'shared/system/util';
-
-export const types = new Map<string, {self: Object, child: string | undefined, create: Function | null}>();
-types.set('Encounter', {self: FhirEncounter, child: 'Observation', create: newEncounter});
-types.set('Observation', {self: FhirObservation, child: undefined, create: newObservation});
-types.set('Procedure', {self: FhirProcedure, child: undefined, create: newProcedure});
 
 export class ResourceTree {
     children: ResourceTree[] = [];
     crossReference?: any;
+    map?: supportedResourcesMaps;
     parentAttribute?: string;
     resource?: any;
     resourceRemote?: any;
     resourceType?: string;
 
-    constructor(resource: FhirDomainResource, fe?: CdeForm) {
-        this.crossReference = fe;
-        this.resource = resource;
-        this.resourceType =  resource.resourceType;
+    constructor(resource: FhirDomainResource, fe?: CdeForm|FormElement) {
+        if (fe) ResourceTree.setCrossReference(this, fe);
+        if (resource) ResourceTree.setResource(this, resource);
+        if (!this.resourceType) this.resourceType = 'bundle';
+    }
+
+    static isResource(node: ResourceTree): boolean {
+        return !!node.resourceType;
     }
 
     static recurse(node: ResourceTree, parent: ResourceTree, action: Function) {
         action(node, parent);
         node.children.forEach(c => ResourceTree.recurse(c, node, action));
+    }
+
+    static setCrossReference(node: ResourceTree, fe?: CdeForm|FormElement) {
+        node.crossReference = fe;
+        node.resourceType = getMapToFhirResource(fe);
+        let map = resourceMap[node.resourceType];
+        if (map) {
+            node.map = new map(getFhirResourceMap(fe));
+        }
     }
 
     static setResource(node: ResourceTree, resource, resourceAfter?) {

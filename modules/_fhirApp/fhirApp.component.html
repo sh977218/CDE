@@ -1,38 +1,42 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-xl-3 col-lg-4 col-12">
-            <div class="mx-3 mt-5 mb-3">
-                <div *ngIf="smart?.userId">
+            <div class="mx-3 mt-3 mb-3">
+                <div *ngIf="cdeFhir.fhirData.smart?.userId">
                     <span class="info-heading">Logged in as:</span>
-                    <span class="info-label">{{smart.userId}}</span>
+                    <span class="info-label">{{cdeFhir.fhirData.smart.userId}}</span>
                     <hr>
                 </div>
                 <div>
                     <span class="info-heading">Patient:</span>
-                    <span class="info-label">{{getPatientName(patient)}}</span>
+                    <span class="info-label">{{getPatientName(cdeFhir.fhirData.patient)}}</span>
                 </div>
                 <div>
                     <span class="info-heading">Date of Birth:</span>
-                    <span class="info-label">{{patient?.birthDate}}</span>
+                    <span class="info-label">{{cdeFhir.fhirData.patient?.birthDate}}</span>
                 </div>
                 <div>
                     <span class="info-heading">Gender:</span>
-                    <span class="info-label" style="text-transform: capitalize">{{patient?.gender}}</span>
+                    <span class="info-label" style="text-transform: capitalize">{{cdeFhir.fhirData.patient?.gender}}</span>
                 </div>
                 <div class="list-group mt-3">
-                    <button type="button" class="list-group-item" (click)="summary = true">
-                        Encounter
-                        <span *ngIf="selectedEncounter" class="badge badge-primary"
+                    <button type="button" class="list-group-item" (click)="mode = 'filter'">
+                        Filter
+                        <span *ngIf="cdeFhir.fhirData.context" class="badge badge-primary"
                               style="background-color: #007bff;white-space: normal">
-                            <span *ngIf="selectedEncounter.types">{{selectedEncounter.types + ' - '}}</span>
-                            {{selectedEncounter.period.start}}
+                            {{cdeFhir.fhirData.context.id}}
                         </span>
+                    </button>
+                </div>
+                <div class="list-group mt-1">
+                    <button type="button" class="list-group-item" (click)="mode = 'browse'">
+                        Browse
                     </button>
                 </div>
                 <div class="list-group mt-3">
                     <div class="info-heading">Panels:</div>
-                    <button type="button" class="list-group-item" *ngFor="let f of patientForms"
-                            (click)="summary = false; getForm(f.tinyId, methodLoadForm);">
+                    <button type="button" class="list-group-item" *ngFor="let f of cdeFhir.patientForms"
+                            (click)="mode = 'form'; loadForm(f)">
                         {{f.name}}
                         <span style="float: right">
                             <span *ngIf="f.total" style="display: table-cell; width: 60px;">
@@ -48,96 +52,40 @@
                 </div>
             </div>
         </div>
-        <div class="'col-xl-9 col-lg-8 col-12'">
+        <div class="col-xl-9 col-lg-8 col-12">
             <div style="padding: 5px; max-width: 1010px; margin: 0 auto">
-                <h2 *ngIf="ioInProgress || !elt && !errorMessage && !summary" class="text-center mt20">
-                    Loading Patient Data from FHIR Server
-                    <mat-spinner style="margin: auto"></mat-spinner>
-                </h2>
-                <h2 *ngIf="errorMessage" class="text-center mt20" style="color: red">{{errorMessage}}</h2>
-                <div *ngIf="!ioInProgress && summary && patient" style="margin-top: 25px">
-                    <h1>Encounters:</h1>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th width="80px"></th>
-                            <th>Type</th>
-                            <th>Reason</th>
-                            <th>Text</th>
-                            <th>Date</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr *ngFor="let e of patientEncounters" [class.isSelected]="e === selectedEncounter"
-                            (click)="selectedEncounter = e; encounterSelected()">
-                            <td>
-                                <mat-icon *ngIf="e === selectedEncounter">check_box</mat-icon>
-                                <mat-icon *ngIf="e !== selectedEncounter">check_box_outline_blank</mat-icon>
-                                <mat-icon (click)="interruptEvent($event);openViewEncounter(e)"
-                                          class="hand-cursor" title="View">open_in_new</mat-icon>
-                            </td>
-                            <td>{{e.types}}</td>
-                            <td>{{e.reasons}}</td>
-                            <td><span *ngIf="e.text" [innerHtml]="e.text.div"></span></td>
-                            <td>{{getDateString(e, 'period')}}</td>
-                        </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <ng-container *ngIf="newEncounter; else addNewEncounter">
-                                    <td>
-                                        <button mat-icon-button color="basic" style="width: 25px"
-                                                [disabled]="!newEncounterValid" title="Add" (click)="newEncounterAdd()">
-                                            <mat-icon>add</mat-icon>
-                                        </button>
-                                        <button mat-icon-button title="Cancel"  style="width: 25px"
-                                                (click)="newEncounterReset()">
-                                            <mat-icon>delete</mat-icon>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <mat-form-field>
-                                            <input matInput style="width: 185px" [(ngModel)]="newEncounterType" disabled
-                                                   (ngModelChange)="newEncounterVerify()" placeholder="Encounter Type">
-                                        </mat-form-field>
-                                    </td>
-                                    <td>
-                                        <mat-form-field>
-                                            <input matInput [(ngModel)]="newEncounterReason"
-                                                   (ngModelChange)="newEncounterVerify()" placeholder="Reason">
-                                        </mat-form-field>
-                                    </td>
-                                    <td>
-                                        <mat-form-field>
-                                            <input matInput type="datetime-local" [(ngModel)]="newEncounterDate"
-                                                   (ngModelChange)="newEncounterVerify()" placeholder="Date and Time"
-                                                   step="3600">
-                                        </mat-form-field>
-                                    </td>
-                                </ng-container>
-                                <ng-template #addNewEncounter>
-                                    <td colspan="4">
-                                        <button mat-raised-button (click)="newEncounter = true; newEncounterVerify()">
-                                            <mat-icon>add</mat-icon>Add
-                                        </button>
-                                    </td>
-                                </ng-template>
-                            </tr>
-                            <tr [hidden]="!newEncounterErrorMessage">
-                                <td colspan="4" style="color: red; text-align: center">{{newEncounterErrorMessage}}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                <h2 *ngIf="errorMessage" class="my-3 text-center" style="color: red">{{errorMessage}}</h2>
+                <div *ngIf="mode === 'filter'" class="my-3">
+                    <div class="my-2">
+                        <button mat-raised-button color="primary"
+                                (click)="cdeFhir.selectPatient()">Patient</button> {{cdeFhir.fhirData.patient?.id}}
+                    </div>
+                    <div class="my-2">
+                        <button mat-raised-button color="primary"
+                                (click)="cdeFhir.selectEncounter()">Encounter</button> {{cdeFhir.fhirData.context?.id}}
+                    </div>
                 </div>
-
-
-                <ng-container *ngIf="!summary && elt">
-                    <cde-native-render [elt]="elt" [submitForm]="true"
+                <div *ngIf="mode === 'browse' && cdeFhir.fhirData.patient" class="my-3">
+                    <h2>
+                        Browse
+                        <mat-form-field>
+                            <mat-select placeholder="Select Type" [(ngModel)]="browseMode"
+                                        (selectionChange)="browseModeSelected($event)">
+                                <mat-option *ngFor="let option of browseOptions" [value]="option">{{option}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </h2>
+                    <cde-fhir-browser-encounter *ngIf="browseEncounters"
+                                                [encounters]="browseEncounters"></cde-fhir-browser-encounter>
+                </div>
+                <ng-container *ngIf="mode === 'form' && cdeFhir.renderedResourceTree.crossReference">
+                    <cde-native-render [elt]="cdeFhir.renderedResourceTree.crossReference" [submitForm]="true"
                                        [profile]="selectedProfile"
                                        nativeRenderType="default">
                     </cde-native-render>
                     <button mat-raised-button color="primary" [disabled]="saving"
-                            type="submit" id="button_submit" (click)="submitFhir()" style="margin-left: 0; margin-top: 20px; font-weight: bold; width: 100px">
+                            type="submit" id="button_submit" (click)="submitForm()"
+                            style="margin-left: 0; margin-top: 20px; font-weight: bold; width: 100px">
                         <mat-icon *ngIf="saving" class="spin">refresh</mat-icon>
                         <mat-icon *ngIf="saved">done</mat-icon>
                         Submit
