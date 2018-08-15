@@ -79,7 +79,11 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.searchTerms.pipe(
             debounceTime(300),
             distinctUntilChanged(),
-            tap(() => this.searching = true),
+            tap(() => {
+                this.searching = true;
+                this.descriptorName = '';
+                this.descriptorID = '';
+            }),
             switchMap(term => {
                 let url = (window as any).meshUrl + '/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=' + term;
                 return term ? this.http.get(url) : EmptyObservable.create<string[]>();
@@ -92,6 +96,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             }
             this.searching = false;
         }, err => {
+            this.searching = false;
             this.descriptorName = '';
             this.descriptorID = '';
             this.alert.addAlert('danger', err);
