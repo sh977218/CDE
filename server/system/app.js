@@ -221,41 +221,43 @@ exports.init = function (app) {
         });
     });
 
+
+    new CronJob('00 00 4 * * *', () => elastic.syncWithMesh(), null, true, 'America/New_York');
+
     // every sunday at 4:07 AM
-    new CronJob('* 7 4 * * 6',
-        () => {
-            dbLogger.consoleLog("Creating sitemap");
-            let wstream = fs.createWriteStream('./dist/app/sitemap.txt');
-            let cond = {
-                'archived': false,
-                'registrationState.registrationStatus': 'Qualified'
-            };
-            async.series([
-                cb => {
-                    let stream = mongo_cde.DataElement.find(cond, "tinyId").stream();
-                    let formatter = doc => config.publicUrl + "/deView?tinyId=" + doc.tinyId + "\n";
-                    stream.on('data', doc => wstream.write(formatter(doc)));
-                    stream.on('err', err => cb(err));
-                    stream.on('end', cb);
-                },
-                cb => {
-                    let stream = mongo_form.Form.find(cond, "tinyId").stream();
-                    let formatter = doc => config.publicUrl + "/formView?tinyId=" + doc.tinyId + "\n";
-                    stream.on('data', doc => wstream.write(formatter(doc)));
-                    stream.on('err', err => cb(err));
-                    stream.on('end', cb);
-                }
-            ], err => {
-                if (err) {
-                    logging.errorLogger.error("Error generating sitemap", {
-                        stack: err.stack,
-                        origin: req.url
-                    });
-                }
-                dbLogger.consoleLog("done with sitemap");
-                wstream.end();
-            });
-        }, null, true, 'America/New_York', this, true);
+    new CronJob('* 7 4 * * 6', () => {
+        dbLogger.consoleLog("Creating sitemap");
+        let wstream = fs.createWriteStream('./dist/app/sitemap.txt');
+        let cond = {
+            'archived': false,
+            'registrationState.registrationStatus': 'Qualified'
+        };
+        async.series([
+            cb => {
+                let stream = mongo_cde.DataElement.find(cond, "tinyId").stream();
+                let formatter = doc => config.publicUrl + "/deView?tinyId=" + doc.tinyId + "\n";
+                stream.on('data', doc => wstream.write(formatter(doc)));
+                stream.on('err', err => cb(err));
+                stream.on('end', cb);
+            },
+            cb => {
+                let stream = mongo_form.Form.find(cond, "tinyId").stream();
+                let formatter = doc => config.publicUrl + "/formView?tinyId=" + doc.tinyId + "\n";
+                stream.on('data', doc => wstream.write(formatter(doc)));
+                stream.on('err', err => cb(err));
+                stream.on('end', cb);
+            }
+        ], err => {
+            if (err) {
+                logging.errorLogger.error("Error generating sitemap", {
+                    stack: err.stack,
+                    origin: req.url
+                });
+            }
+            dbLogger.consoleLog("done with sitemap");
+            wstream.end();
+        });
+    }, null, true, 'America/New_York', this, true);
 
     ["/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404", "whatsNew",
@@ -865,8 +867,6 @@ exports.init = function (app) {
     app.get('/syncWithMesh', (req, res) => {
         res.send(elastic.meshSyncStatus);
     });
-
-    new CronJob('00 00 4 * * *', () => elastic.syncWithMesh(), null, true, 'America/New_York');
 
     app.get('/activeBans', (req, res) => {
         if (req.isAuthenticated() && req.user.siteAdmin) {
