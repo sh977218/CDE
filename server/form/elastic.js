@@ -31,6 +31,7 @@ exports.updateOrInsert = function (elt) {
 };
 
 exports.byTinyIdList = function (idList, size, cb) {
+    idList = idList.filter(id => !!id);
     esClient.search({
         index: config.elastic.formIndex.name,
         type: "form",
