@@ -176,7 +176,7 @@ exports.morelike = function (id, callback) {
 };
 
 exports.DataElementDistinct = function (field, cb) {
-    var distinctQuery = {
+    let distinctQuery = {
         "size": 0,
         "aggs": {
             "aggregationsName": {
@@ -199,9 +199,7 @@ exports.DataElementDistinct = function (field, cb) {
                 details: "query " + JSON.stringify(distinctQuery) + "error " + error + "response" + JSON.stringify(response)
             });
         } else {
-            let list = response.aggregations.aggregationsName.buckets.map(function (b) {
-                return b.key;
-            });
+            let list = response.aggregations.aggregationsName.buckets.map(b => b.key);
             cb(list);
         }
     });
@@ -210,10 +208,7 @@ exports.DataElementDistinct = function (field, cb) {
 exports.pVCodeSystemList = [];
 
 exports.fetchPVCodeSystemList = function () {
-    var elastic = this;
-    this.DataElementDistinct("valueDomain.permissibleValues.codeSystemName", function (result) {
-        elastic.pVCodeSystemList = result;
-    });
+    this.DataElementDistinct("valueDomain.permissibleValues.codeSystemName", result => this.pVCodeSystemList = result);
 };
 
 exports.get = function (id, cb) {
@@ -226,6 +221,7 @@ exports.get = function (id, cb) {
 
 
 exports.byTinyIdList = function (idList, size, cb) {
+    idList = idList.filter(id => !!id);
     esClient.search({
         index: config.elastic.index.name,
         type: "dataelement",
@@ -237,7 +233,7 @@ exports.byTinyIdList = function (idList, size, cb) {
             },
             "size": size
         }
-    }, function (error, response) {
+    }, (error, response) => {
         if (error) {
             logging.errorLogger.error("Error getByTinyIdList", {
                 origin: "cde.elastic.byTinyIdList",
@@ -247,9 +243,7 @@ exports.byTinyIdList = function (idList, size, cb) {
             cb(error);
         } else {
             // @TODO possible to move this sort to elastic search?
-            response.hits.hits.sort((a, b) => {
-                return idList.indexOf(a._id) - idList.indexOf(b._id);
-            });
+            response.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
             cb(null, response.hits.hits.map(h => h._source));
         }
     });
