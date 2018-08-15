@@ -1,5 +1,5 @@
 import {
-    CdeForm, FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, QuestionCde
+    CdeForm, FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, Question, QuestionCde
 } from 'shared/form/form.model';
 
 // async callbacks
@@ -30,9 +30,9 @@ declare function areDerivationRulesSatisfied(elt: FormElementsContainer): {tinyI
 declare function convertFormToSection(elt: CdeForm): FormInForm;
 declare function findQuestionByTinyId(tinyId: string, elt: FormElementsContainer): FormQuestion;
 declare function flattenFormElement(fe: FormElement): FormElement[];
-declare function getFormCdes(form: FormElementsContainer): QuestionCde[];
 declare function getFormQuestions(form: FormElementsContainer): FormQuestion[];
-declare function getFormQuestionsReal(form: FormElementsContainer): FormQuestion[];
+declare function getFormQuestionsAsQuestion(form: FormElementsContainer): Question[];
+declare function getFormQuestionsAsQuestionCde(form: FormElementsContainer): QuestionCde[];
 declare function getFormOdm(form: FormElementsContainer, cb: (error: string, odm: any) => void): void;
 declare function getLabel(fe: FormElement): string;
 declare function isSubForm(node: any): boolean;
@@ -43,7 +43,10 @@ declare function iterateFes(fes: FormElement[], formCb?: informCb, sectionCb?: s
 declare function iterateFesSync(fes: FormElement[], formCb?: informCbSync, sectionCb?: sectionCbSync, questionCb?: quesCbSync, pass?: any): any;
 declare function iterateFesSyncOptions(fes: FormElement[], formCb?: informOptionsCbSync, sectionCb?: sectionOptionsCbSync, questionCb?: quesOptionsCbSync, pass?: any): any;
 declare function iterateFormElements(fe?: any, option?: any, cb?: any): void;
-declare function noopSkipCb(_: any, cb: continueCb): void;
-declare function noopSkipSync(_?: any): boolean;
+declare function noopIterCb(fe: FormElement, continueCb: continueCb, options?: IterateOptions): void;
+declare function noopSkipIterCb(_: FormElement, cb: continueCb): void;
+declare function noopSkipSync(_: FormElement, pass?: any, options?: IterateOptionsSync): any;
+declare function noopSync(_: FormElement, pass: any): any;
+declare function questionAnswered(q: FormQuestion): boolean;
 declare function score(question: FormQuestion, elt: FormElementsContainer): any; // returns number for success and string for failure
 declare function trimWholeForm(elt: CdeForm): void;

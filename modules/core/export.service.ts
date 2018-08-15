@@ -12,7 +12,7 @@ import { UserService } from '_app/user.service';
 import { RegistrationValidatorService } from 'core/registrationValidator.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
-import { getFormCdes, getFormOdm } from 'shared/form/formShared';
+import { getFormQuestionsAsQuestionCde, getFormOdm } from 'shared/form/formShared';
 import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'shared/system/exportShared';
 
 
@@ -62,7 +62,7 @@ export class ExportService {
                         for (let hit of (esResp as any).hits.hits) {
                             formCounter++;
                             let esForm = hit._source;
-                            let formCdes = getFormCdes(esForm);
+                            let formCdes = getFormQuestionsAsQuestionCde(esForm);
                             let interArr = _intersectionWith(
                                 nonEmptyResults,
                                 formCdes,
@@ -200,7 +200,7 @@ export class ExportService {
 
     async formCdeExport (form) {
         this.alertService.addAlert("", 'Fetching cdes. Please wait...');
-        let tinyIdList = getFormCdes(form).map(f => f.tinyId);
+        let tinyIdList = getFormQuestionsAsQuestionCde(form).map(f => f.tinyId);
         let elts = await this.http.get<DataElement>('/deList/' + tinyIdList).toPromise().catch(_noop);
         let csv = await this.resultToCsv(elts);
         if (csv) {
