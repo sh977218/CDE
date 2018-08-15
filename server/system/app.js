@@ -279,11 +279,11 @@ exports.init = function (app) {
     });
 
     app.get('/fhirObservationInfo', (req, res) => {
-        fhirObservationInfo.get(res, req.query.id, data => res.send(data));
+        fhirObservationInfo.get(res, req.query.id, res.send);
     });
 
     app.put('/fhirObservationInfo', [authorization.loggedInMiddleware], (req, res) => {
-        fhirObservationInfo.put(res, req.body, data => res.send(data));
+        fhirObservationInfo.put(res, req.body, res.send);
     });
 
     app.get('/nativeRender', (req, res) => {
@@ -535,29 +535,30 @@ exports.init = function (app) {
 
     app.get('/orgAuthorities', [authorization.isSiteAdminMiddleware], (req, res) => mongo_data.orgAuthorities((err, users) => res.send(users)));
 
-    app.get('/managedOrgs', (req, res) => orgsvc.managedOrgs(req, res));
+    app.get('/managedOrgs', orgsvc.managedOrgs);
+    app.post('/addOrg', [authorization.isOrgAuthorityMiddleware], orgsvc.addOrg);
+    app.post('/updateOrg', [authorization.isOrgAuthorityMiddleware], (req, res) => mongo_data.updateOrg(req.body, res));
 
-    app.post('/addOrg', authorization.isOrgAuthorityMiddleware, (req, res) => orgsvc.addOrg(req, res));
-
-    app.post('/updateOrg', authorization.isOrgAuthorityMiddleware, (req, res) => mongo_data.updateOrg(req.body, res));
-
-    app.get('/user/:search', [exportShared.nocacheMiddleware, authorization.isAuthenticatedMiddleware], (req, res) => {
-        if (!req.params.search) return res.send({});
-        else if (req.params.search === 'me') mongo_data.userById(req.user._id, handleError({req, res}, user =>
-            res.send(user)));
-        else mongo_data.usersByName(req.params.search, handleError({req, res}, users => res.send(users)));
+    app.get('/user/:search', [exportShared.nocacheMiddleware, authorization.loggedInMiddleware], (req, res) => {
+        if (!req.params.search) {
+            return res.send({});
+        } else if (req.params.search === 'me') {
+            mongo_data.userById(req.user._id, handleError({req, res}, user => res.send(user)));
+        } else {
+            mongo_data.usersByName(req.params.search, handleError({req, res}, users => res.send(users)));
+        }
     });
 
     app.post('/addSiteAdmin', [authorization.isSiteAdminMiddleware], usersrvc.addSiteAdmin);
     app.post('/removeSiteAdmin', [authorization.isSiteAdminMiddleware], usersrvc.removeSiteAdmin);
 
-    app.get('/myOrgsAdmins', [exportShared.nocacheMiddleware], usersrvc.myOrgsAdmins);
+    app.get('/myOrgsAdmins', [exportShared.nocacheMiddleware, authorization.loggedInMiddleware], usersrvc.myOrgsAdmins);
 
-    app.get('/orgAdmins', [exportShared.nocacheMiddleware], usersrvc.orgAdmins);
+    app.get('/orgAdmins', [exportShared.nocacheMiddleware, authorization.isOrgAuthorityMiddleware], usersrvc.orgAdmins);
     app.post('/addOrgAdmin', [authorization.isOrgAdminMiddleware], usersrvc.addOrgAdmin);
     app.post('/removeOrgAdmin', [authorization.isOrgAdminMiddleware], usersrvc.removeOrgAdmin);
 
-    app.get('/orgCurators', [exportShared.nocacheMiddleware], usersrvc.orgCurators);
+    app.get('/orgCurators', [exportShared.nocacheMiddleware, authorization.isOrgAdminMiddleware], usersrvc.orgCurators);
     app.post('/addOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.addOrgCurator);
     app.post('/removeOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.removeOrgCurator);
 

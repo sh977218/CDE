@@ -20,13 +20,11 @@ import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
-import { Comment } from 'shared/models.model';
+import { Cb, Comment, ObjectId } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm, FormElement, FormElementsContainer, FormInForm } from 'shared/form/form.model';
+import { CdeForm, FormElement, FormElementsContainer, FormInForm, QuestionCde } from 'shared/form/form.model';
 import {
-    addFormIds, areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, iterateFesSync, iterateFesSyncOptions,
-    iterateFeSync,
-    noopSkipIterCb, noopSync
+    addFormIds, areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb
 } from 'shared/form/formShared';
 import { httpErrorMessage } from 'widget/angularHelper';
 import { isIe, scrollTo } from 'widget/browser';
@@ -35,7 +33,7 @@ class LocatableError {
     id: string;
     message: string;
 
-    constructor(m, id) {
+    constructor(m: string, id: string) {
         this.id = id;
         this.message = m;
     }
@@ -53,26 +51,26 @@ class LocatableError {
     `]
 })
 export class FormViewComponent implements OnInit {
-    @ViewChild('commentAreaComponent') public commentAreaComponent: DiscussAreaComponent;
-    @ViewChild('copyFormContent') public copyFormContent: NgbModalModule;
-    @ViewChild('mltPinModalCde') public mltPinModalCde: PinBoardModalComponent;
-    @ViewChild('exportPublishModal') public exportPublishModal: NgbModalModule;
-    @ViewChild('saveModal') public saveModal: SaveModalComponent;
+    @ViewChild('commentAreaComponent') commentAreaComponent!: DiscussAreaComponent;
+    @ViewChild('copyFormContent') copyFormContent!: NgbModalModule;
+    @ViewChild('mltPinModalCde') mltPinModalCde!: PinBoardModalComponent;
+    @ViewChild('exportPublishModal') exportPublishModal!: NgbModalModule;
+    @ViewChild('saveModal') saveModal!: SaveModalComponent;
     commentMode;
     currentTab = 'preview_tab';
-    drafts = [];
+    drafts: CdeForm[] = [];
     draftSubscription: Subscription;
     elt: CdeForm;
-    eltCopy = {};
-    formId;
+    eltCopy?: CdeForm;
+    formId?: ObjectId;
     formInput;
     hasComments;
     highlightedTabs = [];
     isIe = isIe;
-    missingCdes = [];
-    modalRef: NgbModalRef;
+    missingCdes: string[] = [];
+    modalRef?: NgbModalRef;
     savingText: string = '';
-    tabsCommented = [];
+    tabsCommented: string[] = [];
     validationErrors: { message: string, id: string }[] = [];
 
     ngOnInit() {
@@ -98,17 +96,11 @@ export class FormViewComponent implements OnInit {
     ) {
     }
 
-    beforeChange(event) {
-        this.currentTab = event.nextId;
-        if (this.commentMode) {
-        }
-    }
-
     canEdit() {
         return this.isAllowedModel.isAllowed(this.elt) && (this.drafts.length === 0 || this.elt.isDraft);
     }
 
-    createDataElement(newCde, cb) {
+    createDataElement(newCde: any, cb: Cb) {
         let dataElement = {
             designations: newCde.designations,
             definitions: newCde.definitions,
@@ -147,17 +139,16 @@ export class FormViewComponent implements OnInit {
             () => {
                 this.userService.reload();
                 this.alert.addAlert('info', 'Done. Go to your profile to see all your published forms');
-                this.modalRef.close();
+                this.modalRef!.close();
             }, err => {
                 this.alert.httpErrorMessageAlert(err, 'Error when publishing form.');
-                this.modalRef.close();
+                this.modalRef!.close();
             }
         );
     }
 
     formLoaded(elt: CdeForm, cb = _noop) {
         if (elt) {
-            elt = new CdeForm(elt);
             CdeForm.validate(elt);
             this.elt = elt;
             this.loadComments(this.elt);
@@ -168,7 +159,7 @@ export class FormViewComponent implements OnInit {
         }
     }
 
-    loadComments(form, cb = _noop) {
+    loadComments(form: CdeForm, cb = _noop) {
         this.http.get<Comment[]>('/server/discuss/comments/eltId/' + form.tinyId).subscribe(res => {
             this.hasComments = res && (res.length > 0);
             this.tabsCommented = res.map(c => c.linkedTab + '_tab');
@@ -291,7 +282,7 @@ export class FormViewComponent implements OnInit {
             }, err => this.alert.httpErrorMessageAlert(err));
     }
 
-    saveDraft(cb) {
+    saveDraft(cb: Cb<CdeForm>) {
         this.savingText = 'Saving ...';
         this.elt._id = this.formId;
         let username = this.userService.user.username;
@@ -305,7 +296,7 @@ export class FormViewComponent implements OnInit {
         }
         this.elt.updated = new Date();
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
-        this.draftSubscription = this.http.post('/draftForm/' + this.elt.tinyId, this.elt).subscribe(res => {
+        this.draftSubscription = this.http.post<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt).subscribe(res => {
             this.elt.isDraft = true;
             if (!this.drafts.length) {
                 this.drafts = [this.elt];
@@ -321,7 +312,7 @@ export class FormViewComponent implements OnInit {
     }
 
     saveForm() {
-        let newCdes = [];
+        let newCdes: QuestionCde[] = [];
         iterateFes(this.elt.formElements, undefined, undefined, (fe, cb) => {
             fe.question.cde.datatype = fe.question.datatype;
             if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
@@ -345,7 +336,7 @@ export class FormViewComponent implements OnInit {
         setTimeout(scrollTo, 0, id);
     }
 
-    setDefault(index) {
+    setDefault(index: number) {
         this.http.post<CdeForm>('/attachments/form/setDefault',
             {
                 index: index,
@@ -359,7 +350,7 @@ export class FormViewComponent implements OnInit {
     }
 
     upload(event) {
-        if (event.srcElement.files) {
+        if (event.srcElement && event.srcElement.files) {
             let files = event.srcElement.files;
             let formData = new FormData();
             for (let i = 0; i < files.length; i++) {
@@ -395,7 +386,7 @@ export class FormViewComponent implements OnInit {
                 ));
             }
             return tinyId;
-        }, noopSync, undefined, this.elt.tinyId);
+        }, undefined, undefined, this.elt.tinyId);
     }
 
     validateSkipLogic() {

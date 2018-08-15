@@ -25,7 +25,7 @@ export class AuditLogComponent {
         }).subscribe(response => {
             this.records = response;
             this.records.forEach(rec => {
-                if (rec.diff) rec.diff.forEach(d => this.cdeDiff.makeHumanReadable(d));
+                if (rec.diff) rec.diff.forEach((d: any) => this.cdeDiff.makeHumanReadable(d));
             });
         });
     }

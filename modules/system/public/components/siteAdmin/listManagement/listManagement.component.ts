@@ -3,13 +3,14 @@ import { Component, OnInit } from '@angular/core';
 
 import { AlertService } from '_app/alert.service';
 import { OrgHelperService } from 'core/orgHelper.service';
+import { Organization } from 'shared/models.model';
 
 @Component({
     selector: 'cde-list-management',
     templateUrl: './listManagement.component.html'
 })
 export class ListManagementComponent implements OnInit {
-    orgs: any[];
+    orgs?: any[];
     allPropertyKeys: String[] = [];
     allTags: String[] = [];
 
@@ -23,8 +24,8 @@ export class ListManagementComponent implements OnInit {
     }
 
     getOrgs() {
-        this.http.get<any>('/managedOrgs').subscribe(response => {
-            this.orgs = response.orgs;
+        this.http.get<Organization[]>('/managedOrgs').subscribe(orgs => {
+            this.orgs = orgs;
             this.orgs.forEach(o => {
                 if (o.propertyKeys) {
                     this.allPropertyKeys = this.allPropertyKeys.concat(o.propertyKeys);
@@ -39,7 +40,7 @@ export class ListManagementComponent implements OnInit {
         });
     }
 
-    saveOrg(org) {
+    saveOrg(org: Organization) {
         this.http.post('/updateOrg', org)
             .subscribe(() => this.orgHelperService.reload().then(() => this.Alert.addAlert('success', 'Org Updated')),
                 () => this.Alert.addAlert('danger', 'Error. Unable to save.'));

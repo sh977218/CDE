@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { SummaryComponent } from 'search/listView/summaryListItem.component';
-import { Elt } from 'shared/models.model';
+import { Attachment } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 
 
@@ -19,7 +19,7 @@ export class CdeSummaryListContentComponent implements SummaryComponent {
     @Input() eltIndex: number;
     @Output() select = new EventEmitter<string>();
 
-    defaultAttachmentsFilter = Elt.isDefault;
+    defaultAttachmentsFilter = Attachment.isDefault;
     module = 'cde';
 
     constructor() {

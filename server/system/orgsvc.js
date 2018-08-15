@@ -6,7 +6,7 @@ const authorizationShared = require('@std/esm')(module)("../../shared/system/aut
 
 exports.managedOrgs = function (req, res) {
     mongo_data.managedOrgs(function (err, orgs) {
-        res.send({"orgs": orgs});
+        res.send(orgs);
     });
 };
 

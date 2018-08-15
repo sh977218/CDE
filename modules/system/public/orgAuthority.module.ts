@@ -8,7 +8,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { ListManagementComponent } from 'system/public/components/siteAdmin/listManagement/listManagement.component';
 import { StatusValidationRulesComponent } from 'system/public/components/siteAdmin/statusValidationRules/statusValidationRules.component';
 import { OrgAuthorityComponent } from 'system/public/components/siteAdmin/orgAuthority/orgAuthority.component';
-import { OrgsEditComponent } from 'system/public/components/siteAdmin/orgsEdit/orgEdits.component';
+import { OrgsEditComponent } from 'system/public/components/siteAdmin/orgsEdit/orgsEdit.component';
 import { DiscussModule } from 'discuss/discuss.module';
 import { SystemModule } from 'system/public/system.module';
 import { WidgetModule } from 'widget/widget.module';

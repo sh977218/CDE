@@ -145,7 +145,7 @@ exports.init = function (app, daoManager) {
         }));
     });
 
-    app.get('/searchUmls', authorization.isAuthenticatedMiddleware, (req, res) => {
+    app.get('/searchUmls', [authorization.loggedInMiddleware], (req, res) => {
         vsac.searchUmls(req.query.searchTerm, res);
     });
 

@@ -11,12 +11,12 @@ const SCOPE = 'patient/*.*';
 
 @Injectable()
 export class FhirSmartService {
-    baseUrl: string;
-    context: FhirEncounter|FhirEpisodeOfCare;
-    patient: FhirPatient;
+    baseUrl?: string;
+    context?: FhirEncounter|FhirEpisodeOfCare;
+    patient?: FhirPatient;
     smart: any;
 
-    static authorize(clientId, config) {
+    static authorize(clientId: string, config: string) {
         (<any>window).FHIR.oauth2.authorize({
             'client_id': clientId,
             'redirect_uri': '/' + config,
@@ -25,9 +25,9 @@ export class FhirSmartService {
     }
 
     init() {
-        (<any>window).FHIR.oauth2.ready(smart => {
+        (<any>window).FHIR.oauth2.ready((smart: any) => {
             this.smart = smart;
-            this.smart.patient.read().then(patient => this.patient = patient);
+            this.smart.patient.read().then((patient: FhirPatient) => this.patient = patient);
         });
     }
 
@@ -52,7 +52,7 @@ export class FhirSmartService {
         }
     }
 
-    search<T>(resourceType, query): Promise<T[]> {
+    search<T>(resourceType: string, query: any): Promise<T[]> {
         let contextQuery = deepCopy(query);
         if (this.patient) {
             contextQuery.patient = asRefString(this.patient);
@@ -63,11 +63,11 @@ export class FhirSmartService {
         return this.searchAll(resourceType, contextQuery);
     }
 
-    searchAll<T>(resourceType, query): Promise<T[]> {
+    searchAll<T>(resourceType: string, query: any): Promise<T[]> {
         return Promise.resolve(this.smart.api.search({type: resourceType, query})).then(r => {
             if (r && r.data) {
                 if (r.data.total > 0 && r.data.entry && Array.isArray(r.data.entry)) {
-                    return r.data.entry.map(e => e.resource);
+                    return r.data.entry.map((e: any) => e.resource);
                 } else {
                     return [];
                 }

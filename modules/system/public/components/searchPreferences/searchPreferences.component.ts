@@ -21,7 +21,7 @@ export class SearchPreferencesComponent {
     }
 
     loadDefault() {
-        let defaultSettings = this.esService.getDefault();
+        let defaultSettings: any = this.esService.getDefault();
         Object.keys(defaultSettings).forEach(key => {
             this.searchSettings[key] = defaultSettings[key];
         });

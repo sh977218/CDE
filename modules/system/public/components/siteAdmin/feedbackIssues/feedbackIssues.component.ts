@@ -10,12 +10,12 @@ type FeedbackErrorRecord = any;
     templateUrl: './feedbackIssues.component.html'
 })
 export class FeedbackIssuesComponent implements OnInit {
-    @ViewChild('rawHtmlModal') public rawHtmlModal: NgbModalModule;
-    @ViewChild('screenshotModal') public screenshotModal: NgbModalModule;
+    @ViewChild('rawHtmlModal') rawHtmlModal!: NgbModalModule;
+    @ViewChild('screenshotModal') screenshotModal!: NgbModalModule;
     currentPage: number = 1;
     records: FeedbackErrorRecord[] = [];
-    screenshot: string;
-    rawHtml: string;
+    screenshot?: string;
+    rawHtml?: string;
 
     ngOnInit () {
         this.gotoPage();
@@ -24,7 +24,7 @@ export class FeedbackIssuesComponent implements OnInit {
     constructor(private http: HttpClient,
                 public modalService: NgbModal) {}
 
-    gotoPage () {
+    gotoPage() {
         this.http.post<FeedbackErrorRecord[]>('/server/log/feedbackIssues', {
             skip: (this.currentPage - 1) * 5,
             limit: 5
@@ -33,12 +33,12 @@ export class FeedbackIssuesComponent implements OnInit {
         });
     }
 
-    showRawHtml (raw) {
+    showRawHtml(raw: string) {
         this.rawHtml = raw;
         this.modalService.open(this.rawHtmlModal, {size: 'lg'});
     }
 
-    showScreenshot (sc) {
+    showScreenshot(sc: string) {
         this.screenshot = sc;
         this.modalService.open(this.screenshotModal, {size: 'lg'});
     }

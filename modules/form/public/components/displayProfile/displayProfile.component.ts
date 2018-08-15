@@ -4,10 +4,11 @@ import { MatDialog } from '@angular/material';
 import { UcumService } from 'form/public/ucum.service';
 import { FormViewComponent } from 'form/public/components/formView.component';
 import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
-import { CdeForm, DisplayProfile } from 'shared/form/form.model';
+import { CdeForm, DisplayProfile, FormElement } from 'shared/form/form.model';
 import { getMapToFhirResource } from 'shared/form/formAndFe';
 import { findQuestionByTinyId, getFormQuestions, iterateFeSync } from 'shared/form/formShared';
 import { CodeAndSystem } from 'shared/models.model';
+import { deepCopy } from 'shared/system/util';
 import { interruptEvent } from 'widget/browser';
 
 type DisplayProfileVM = {
@@ -80,12 +81,8 @@ export class DisplayProfileComponent {
                 edit: false,
             },
             profile: profile,
-            sample: DisplayProfileComponent.getSample(),
+            sample: deepCopy(this.sampleElt as CdeForm),
         };
-    }
-
-    static getSample() {
-        return JSON.parse(JSON.stringify(this.sampleElt));
     }
 
     getUoms(): Promise<void> {
@@ -108,6 +105,22 @@ export class DisplayProfileComponent {
                     });
                 }
             });
+        });
+    }
+
+    openProcedureMapping(dpvm) {
+        this.dialog.open(FhirProcedureMappingComponent, {
+            width: '700px',
+            data: {
+                questions: getFormQuestions(this.elt),
+                mapping: this.elt.displayProfiles[0].fhirProcedureMapping,
+                usedRefs: findQuestionByTinyId(this.elt.displayProfiles[0].fhirProcedureMapping.usedReferences, this.elt)
+            }
+        }).afterClosed().subscribe(result => {
+            if (result) {
+                dpvm.profile.fhirProcedureMapping = result;
+                this.onEltChange.emit();
+            }
         });
     }
 
@@ -173,7 +186,7 @@ export class DisplayProfileComponent {
     }
 
     setDisplayType(dPVM: DisplayProfileVM) {
-        let profile = DisplayProfile.copy(dPVM.profile);
+        let profile = deepCopy(dPVM.profile);
         this.substituteProfile(dPVM, profile);
         this.onEltChange.emit();
     }
@@ -195,6 +208,25 @@ export class DisplayProfileComponent {
     }
 
     static sampleElt = {
+        "_id": "",
+        "archived": false,
+        "attachments": [],
+        "classification": [],
+        "comments": [],
+        "definitions": [],
+        "designations": [],
+        "displayProfiles": [],
+        "history": [],
+        "ids": [],
+        "label": "",
+        "properties": [],
+        "referenceDocuments": [],
+        "registrationState": {
+            "registrationStatus": "Incomplete"
+        },
+        "sources": [],
+        "stewardOrg": "",
+        "tinyId": "",
         "formElements": [
             {
                 "label": "Section",
@@ -244,8 +276,14 @@ export class DisplayProfileComponent {
                                     "editable": true,
                                     "required": false,
                                     "unitsOfMeasure": [],
+                                    "uomsAlias": [],
+                                    "uomsValid": [],
                                     "cde": {
+                                        "definitions": [],
+                                        "derivationRules": [],
+                                        "designations": [],
                                         "ids": [],
+                                        "naming": [],
                                         "permissibleValues": [
                                             {
                                                 "permissibleValue": "5",
@@ -268,6 +306,7 @@ export class DisplayProfileComponent {
                                                 "valueMeaningName": "Never"
                                             }
                                         ],
+                                        "tinyId": "",
                                     }
                                 },
                                 "cardinality": {
@@ -311,8 +350,14 @@ export class DisplayProfileComponent {
                                     "invisible": true,
                                     "required": false,
                                     "unitsOfMeasure": [],
+                                    "uomsAlias": [],
+                                    "uomsValid": [],
                                     "cde": {
+                                        "definitions": [],
+                                        "derivationRules": [],
+                                        "designations": [],
                                         "ids": [],
+                                        "naming": [],
                                         "permissibleValues": [
                                             {
                                                 "permissibleValue": "5",
@@ -334,25 +379,29 @@ export class DisplayProfileComponent {
                                                 "permissibleValue": "1",
                                                 "valueMeaningName": "Never"
                                             }
-                                        ]
+                                        ],
+                                        "tinyId": "",
                                     }
-                                },
-                                "cardinality": {
-                                    "min": 1,
-                                    "max": 1
                                 },
                                 "hideLabel": false
                             }
                         ],
                         "question": {
                             "answers": [],
+                            "datatype": "Value List",
                             "editable": true,
                             "required": false,
-                            "unitsOfMeasure": []
-                        },
-                        "cardinality": {
-                            "min": 1,
-                            "max": 1
+                            "unitsOfMeasure": [],
+                            "uomsAlias": [],
+                            "uomsValid": [],
+                            "cde": {
+                                "definitions": [],
+                                "derivationRules": [],
+                                "designations": [],
+                                "ids": [],
+                                "naming": [],
+                                "tinyId": "",
+                            }
                         },
                         "hideLabel": false
                     },
@@ -420,8 +469,14 @@ export class DisplayProfileComponent {
                             "editable": true,
                             "required": false,
                             "unitsOfMeasure": [],
+                            "uomsAlias": [],
+                            "uomsValid": [],
                             "cde": {
+                                "definitions": [],
+                                "derivationRules": [],
+                                "designations": [],
                                 "ids": [],
+                                "naming": [],
                                 "permissibleValues": [
                                     {
                                         "permissibleValue": "Never attended/Kindergarten only",
@@ -471,12 +526,9 @@ export class DisplayProfileComponent {
                                         "permissibleValue": "11th Grade",
                                         "valueMeaningName": "11th Grade"
                                     }
-                                ]
+                                ],
+                                "tinyId": "",
                             }
-                        },
-                        "cardinality": {
-                            "min": 1,
-                            "max": 1
                         },
                         "hideLabel": false
                     },
@@ -494,13 +546,16 @@ export class DisplayProfileComponent {
                             "editable": true,
                             "required": false,
                             "unitsOfMeasure": [],
+                            "uomsAlias": [],
+                            "uomsValid": [],
                             "cde": {
-                                "ids": []
+                                "ids": [],
+                                "definitions": [],
+                                "derivationRules": [],
+                                "designations": [],
+                                "naming": [],
+                                "tinyId": "",
                             }
-                        },
-                        "cardinality": {
-                            "min": 1,
-                            "max": 1
                         },
                         "instructions": {
                             "value": "Include year and month but no day."
@@ -510,13 +565,21 @@ export class DisplayProfileComponent {
                 ],
                 "question": {
                     "answers": [],
+                    "datatype": "Value List",
                     "editable": true,
                     "required": false,
-                    "unitsOfMeasure": []
-                },
-                "cardinality": {
-                    "min": 1,
-                    "max": 1
+                    "unitsOfMeasure": [],
+                    "uomsAlias": [],
+                    "uomsValid": [],
+                    "cde": {
+                        "definitions": [],
+                        "derivationRules": [],
+                        "designations": [],
+                        "ids": [],
+                        "naming": [],
+                        "permissibleValues": [],
+                        "tinyId": "",
+                    }
                 },
                 "instructions": {
                     "value": "Fill out to the best of your knowledge."
@@ -524,21 +587,4 @@ export class DisplayProfileComponent {
             }
         ]
     };
-
-    openProcedureMapping(dpvm) {
-        this.dialog.open(FhirProcedureMappingComponent, {
-            width: '700px',
-            data: {
-                questions: getFormQuestions(this.elt),
-                mapping: this.elt.displayProfiles[0].fhirProcedureMapping,
-                usedRefs: findQuestionByTinyId(this.elt.displayProfiles[0].fhirProcedureMapping.usedReferences, this.elt)
-            }
-        }).afterClosed().subscribe(result => {
-            if (result) {
-                dpvm.profile.fhirProcedureMapping = result;
-                this.onEltChange.emit();
-            }
-        });
-    }
-
 }

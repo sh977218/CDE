@@ -11,6 +11,7 @@ import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardMod
 import { ExportService } from 'core/export.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { SearchBaseComponent, searchStyles } from 'search/searchBase.component';
+import { CdeForm } from 'shared/form/form.model';
 
 
 @Component({
@@ -19,12 +20,10 @@ import { SearchBaseComponent, searchStyles } from 'search/searchBase.component';
     templateUrl: '../../../../search/searchBase.component.html'
 })
 export class FormSearchComponent extends SearchBaseComponent {
-    @Input() addMode: string = undefined;
+    @Input() addMode = '';
     @Input() embedded = false;
-    @Output() add = new EventEmitter<any>();
+    @Output() add = new EventEmitter<CdeForm>();
 
-    module = 'form';
-    pinComponent: any = PinBoardModalComponent;
 
     constructor(
         protected _componentFactoryResolver: ComponentFactoryResolver,
@@ -41,7 +40,8 @@ export class FormSearchComponent extends SearchBaseComponent {
     ) {
         super(_componentFactoryResolver, alert, backForwardService, elasticService, exportService, http, modalService,
             orgHelperService, route, router, userService);
-
         this.exporters.odm = {id: 'odmExport', display: 'ODM Export'};
+        this.module = 'form';
+        this.pinComponent = PinBoardModalComponent;
     }
 }
