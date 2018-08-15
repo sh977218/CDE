@@ -127,13 +127,14 @@ export class ElasticService {
     static setMatchedBy(cde) {
         let field = "Full Document";
         if (!cde.highlight) {
-            cde.highlight.matchedBy = field;
+            cde.highlight = {matchedBy: field};
             return;
         } else {
             if (cde.highlight.primaryNameCopy || cde.highlight.primaryDefinitionCopy) return;
             let matched = Object.keys(cde.highlight)[0];
             if (matched === "definitions.definition") field = "Definition";
             if (matched.indexOf("classification.") > -1) field = "Classification";
+            if (matched.indexOf("valueDomain.permissibleValues") > -1) field = "Permissible Values";
             if (matched.indexOf(".concepts.") > -1) field = "Concepts";
             if (matched.substr(0, 11) === "valueDomain") field = "Permissible Values";
             if (matched.substr(0, 15) === "flatProperties") field = "Properties";

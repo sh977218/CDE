@@ -65,12 +65,6 @@ exports.createIndexJson = {
                         "filename": {"type": "string", "index": "no"}
                     }
                 }
-                , "comments": {
-                    properties: {
-                        "text": {"type": "string", "index": "no"}
-                        , "user": {"type": "string", "index": "no"}
-                    }
-                }
                 , "history": {"type": "string", "index": "no"}
                 , "imported": {"type": "date", "index": "no"}
                 , "version": {"type": "string", "index": "no"}
@@ -217,7 +211,7 @@ exports.riverFunction = function (_elt, cb) {
             return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        var flatArray = [];
+        let flatArray = [];
 
         function doClassif(currentString, classif) {
             if (currentString.length > 0) {
@@ -225,33 +219,26 @@ exports.riverFunction = function (_elt, cb) {
             }
             currentString = currentString + classif.name;
             flatArray.push(currentString);
-            if (classif.elements) {
-                for (var i = 0; i < classif.elements.length; i++) {
-                    doClassif(currentString, classif.elements[i]);
-                }
-            }
+            if (classif.elements) classif.elements.forEach(e => doClassif(currentString, e));
         }
 
         function flattenClassification(doc) {
             if (doc.classification) {
-                for (var i = 0; i < doc.classification.length; i++) {
-                    if (doc.classification[i].elements) {
-                        for (var j = 0; j < doc.classification[i].elements.length; j++) {
-                            doClassif(doc.classification[i].stewardOrg.name, doc.classification[i].elements[j]);
-                        }
+                doc.classification.forEach(dc => {
+                    if (dc.elements) {
+                        dc.elements.forEach(dce => doClassif(dc.stewardOrg.name, dce));
                     }
-                }
+                });
             }
         }
 
         function findFormQuestionNr(fe) {
-            var n = 0;
+            let n = 0;
             if (fe.formElements) {
-                for (var i = 0; i < fe.formElements.length; i++) {
-                    var e = fe.formElements[i];
-                    if (e.elementType && e.elementType === 'question') n++;
-                    else n = n + findFormQuestionNr(e);
-                }
+                fe.formElements.forEach(fee => {
+                    if (fee.elementType === 'question') n++;
+                    else n = n + findFormQuestionNr(fee);
+                });
             }
             return n;
         }
@@ -271,11 +258,14 @@ exports.riverFunction = function (_elt, cb) {
         elt.primaryNameCopy = elt.designations[0] ? escapeHTML(elt.designations[0].designation) : '';
         elt.primaryNameSuggest = elt.primaryNameCopy;
         elt.primaryDefinitionCopy = elt.definitions[0] ? elt.definitions[0].definition : '';
-        if (elt.definitions[0] && elt.definitions[0].definitionFormat === 'html')
+        if (elt.definitions[0] && elt.definitions[0].definitionFormat === 'html') {
             elt.primaryDefinitionCopy = elt.primaryDefinitionCopy.replace(/<(?:.|\\n)*?>/gm, '');
-        else elt.primaryDefinitionCopy = escapeHTML(elt.primaryDefinitionCopy);
+        }
+        else {
+            elt.primaryDefinitionCopy = escapeHTML(elt.primaryDefinitionCopy);
+        }
 
-        var regStatusSortMap = {
+        let regStatusSortMap = {
             Retired: 6,
             Incomplete: 5,
             Candidate: 4,
@@ -286,7 +276,7 @@ exports.riverFunction = function (_elt, cb) {
         };
         elt.registrationState.registrationStatusSortOrder = regStatusSortMap[elt.registrationState.registrationStatus];
         if (elt.classification) {
-            var size = elt.classification.length;
+            let size = elt.classification.length;
             if (size > 10) {
                 elt.classificationBoost = 2.1;
             }
@@ -296,21 +286,14 @@ exports.riverFunction = function (_elt, cb) {
         } else {
             elt.classificationBoost = 0.1;
         }
-        elt.flatIds = elt.ids.map(function (id) {
-            return id.source + ' ' + id.id + ' ' + id.version;
-        });
-        elt.flatProperties = elt.properties.map(function (p) {
-            return p.key + ' ' + p.value;
-        });
-        if (elt.forkOf) {
-            elt.isFork = true;
-        }
+        elt.flatIds = elt.ids.map(id => id.source + ' ' + id.id + ' ' + id.version);
+        elt.flatProperties = elt.properties.map(p => p.key + ' ' + p.value);
 
         return cb(elt);
     });
 };
 
-var shortHash = function (content) {
+let shortHash = function (content) {
     return hash.createHash('md5')
         .update(JSON.stringify(content)).digest("hex")
         .substr(0, 5).toLowerCase();
