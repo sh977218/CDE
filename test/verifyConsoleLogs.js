@@ -15,7 +15,6 @@ let expectedContent = {
     "formTinyIdSwaggerApi": "docs/swagger-ui-bundle.js 51:49866 \"Could not find component\"",
     "formTinyIdVersionSwaggerApi": "docs/swagger-ui-bundle.js 51:49866 \"Could not find component\"",
     "logClientErrors": "*",
-    "importPv": "deView?tinyId=mJQiShWEW - Form submission canceled because the form is not connected",
     "meshTopics": "classificationmanagement - Form submission canceled because the form is not connected",
     "pageNotFound": "de/abc - Failed to load resource: the server responded with a status of 404 (Not Found)",
     "publicVsPrivateBoards": "board/5750474d89949d54384ee640/0 - Failed to load resource: the server responded with a status of",
