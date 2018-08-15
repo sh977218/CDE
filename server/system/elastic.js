@@ -151,7 +151,7 @@ exports.reIndex = function (index, cb) {
             });
             stream.on('end', function () {
                 injector.inject(function () {
-                    let info = "done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.";
+                    let info = "done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs. count: " + index.count;
                     noDbLogger.noDbLogger.info(info);
                     dbLogger.consoleLog(info);
                     if (cb) cb();

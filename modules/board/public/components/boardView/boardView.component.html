@@ -91,7 +91,7 @@
                            [(listView)]="listViews" [module]="board.type" [totalItems]="totalItems"
                            (add)="reload()"></cde-list-view>
             <ngb-pagination [collectionSize]="totalItems" [page]="currentPage" (pageChange)="setPage($event)"
-                            [maxSize]="20">
+                            [maxSize]="25" [pageSize]="20">
             </ngb-pagination>
         </div>
         <div *ngIf="commentMode" class="pl-10" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
