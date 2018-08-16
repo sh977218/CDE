@@ -15,8 +15,7 @@
                   style="width: 87px;">
                 <i class="fa fa-cube"></i><span class="toolQuestion"></span>
             </span>
-            <span *ngIf="elt.formElements.length > 0" role="button" id="startAddingForms"
-                  class="btn btn-light formDescriptionTool"
+            <span role="button" id="startAddingForms" class="btn btn-light formDescriptionTool"
                   (dragstart)="dragActive = true" (dragend)="dragActive = false"
                   [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true"
                   style="width: 68px;">

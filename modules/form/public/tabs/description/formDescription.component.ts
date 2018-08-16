@@ -81,6 +81,7 @@ const TOOL_BAR_OFF_SET = 64;
         :host >>> .drag-active .node-drop-slot:not(.is-dragging-over) {
             border: 1px dashed;
             border-radius: 4px;
+            height: 50px;
             background-color: #ffc6d0;
         }
 
@@ -146,14 +147,17 @@ const TOOL_BAR_OFF_SET = 64;
 export class FormDescriptionComponent implements OnInit, AfterViewInit {
     private _elt: CdeForm;
     @Input() canEdit: boolean = false;
+
     @Input() set elt(e: CdeForm) {
         this._elt = e;
         this.addExpanded(e);
         addFormIds(e);
     }
+
     get elt() {
         return this._elt;
     }
+
     @Output() onEltChange = new EventEmitter();
     @ViewChild(TreeComponent) tree: TreeComponent;
     @ViewChild('formSearchTmpl') formSearchTmpl: TemplateRef<any>;
@@ -213,7 +217,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         },
         childrenField: 'formElements',
         displayField: 'label',
-        dropSlotHeight: 100,
+        dropSlotHeight: 20,
         isExpandedField: 'expanded'
     };
 
@@ -229,7 +233,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         private localStorageService: LocalStorageService,
         public modalService: NgbModal,
         public matDialog: MatDialog,
-    ) {}
+    ) {
+    }
 
     ngOnInit(): void {
         this._hotkeysService.add([
@@ -249,7 +254,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     addExpanded(fe) {
         fe.expanded = true;
-        let expand = fe => { fe.expanded = true; };
+        let expand = fe => {
+            fe.expanded = true;
+        };
         iterateFeSync(fe, undefined, expand, expand);
     }
 
