@@ -279,11 +279,11 @@ exports.init = function (app) {
     });
 
     app.get('/fhirObservationInfo', (req, res) => {
-        fhirObservationInfo.get(res, req.query.id, res.send);
+        fhirObservationInfo.get(res, req.query.id, info => res.send(info));
     });
 
     app.put('/fhirObservationInfo', [authorization.loggedInMiddleware], (req, res) => {
-        fhirObservationInfo.put(res, req.body, res.send);
+        fhirObservationInfo.put(res, req.body, info => res.send(info));
     });
 
     app.get('/nativeRender', (req, res) => {

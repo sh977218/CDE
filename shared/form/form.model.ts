@@ -275,7 +275,7 @@ export class Question extends DatatypeContainer {
     answerDate?: any; // volatile, working storage for date part
     answerTime?: any; // volatile, working storage for time part
     answers: PermissibleFormValue[] = []; // mutable
-    cde!: QuestionCde;
+    cde: QuestionCde = new QuestionCde();
     defaultAnswer?: string; // all datatypes, defaulted by areDerivationRulesSatisfied
     editable?: boolean = true;
     invisible?: boolean;
