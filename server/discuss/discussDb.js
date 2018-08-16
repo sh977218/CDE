@@ -10,20 +10,20 @@ exports.commentSchema = new Schema({
     text: stringType,
     user: {
         userId: Schema.Types.ObjectId,
-        username: stringType
+        username: {type: stringType, index: true}
     },
     created: Date,
-    pendingApproval: Boolean,
+    pendingApproval: {type: Boolean, index: true},
     linkedTab: stringType,
     status: Object.assign({enum: ["active", "resolved", "deleted"], default: "active"}, stringType),
     replies: [{
         text: stringType,
         user: {
             userId: Schema.Types.ObjectId,
-            username: stringType
+            username: {type: stringType, index: true}
         },
         created: Date,
-        pendingApproval: Boolean,
+        pendingApproval: {type: Boolean, index: true},
         status: Object.assign({enum: ["active", "resolved", "deleted"], default: "active"}, stringType)
     }],
     element: {
