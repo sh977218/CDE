@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const stringType = require('../system/schemas').stringType;
+const stringIndexType = require('../system/schemas').stringIndexType;
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
@@ -10,7 +11,7 @@ exports.commentSchema = new Schema({
     text: stringType,
     user: {
         userId: Schema.Types.ObjectId,
-        username: {type: stringType, index: true}
+        username: stringIndexType
     },
     created: Date,
     pendingApproval: {type: Boolean, index: true},
@@ -20,7 +21,7 @@ exports.commentSchema = new Schema({
         text: stringType,
         user: {
             userId: Schema.Types.ObjectId,
-            username: {type: stringType, index: true}
+            username: stringIndexType
         },
         created: Date,
         pendingApproval: {type: Boolean, index: true},
