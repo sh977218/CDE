@@ -43,7 +43,7 @@ exports.module = function (roleConfig) {
         dbLogger.logClientError(req, handleError({req, res}, result => res.send(result)));
     });
 
-    router.get('/triggerServerErrorExpress', roleConfig.triggerError, (req, res) => {
+    router.get('/triggerServerErrorExpress', roleConfig.superLog, (req, res) => {
         res.send("received");
         trigger.error(); // jshint ignore:line
     });
