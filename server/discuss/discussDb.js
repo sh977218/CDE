@@ -107,7 +107,7 @@ exports.orgComments = (myOrgs, from, size, callback) => {
 exports.numberUnapprovedMessageByUsername = username => {
     return Comment.count({
         $or: [{'user.username': username, pendingApproval: true},
-            {'replies.user.username': username, pendingApproval: true}]
+            {'replies.user.username': username, 'replies.pendingApproval': true}]
     }).exec();
 };
 
