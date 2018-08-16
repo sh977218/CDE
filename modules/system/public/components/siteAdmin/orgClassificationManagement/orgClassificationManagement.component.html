@@ -140,8 +140,7 @@
             <h4 class="modal-title">Mesh Mappings</h4>
         </div>
         <div class="modal-body" id="mapClassificationMeshModalBody">
-            Here are MeSH Terms mapped to VSAC :
-            <div ng-if="mapping.meshDescriptors.length === 0">
+            <div *ngIf="mapping.meshDescriptors.length === 0">
                 No mapping. Add more below.
             </div>
 
@@ -150,24 +149,24 @@
                 {{desc}} -{{descToName[desc]}}
             </div>
 
-            <label for="mapClassificationMeshInput">MeSH Descriptor: </label>
-            <input class="form-control" [(ngModel)]="meshSearchTerm" name="meshSearchTerm"
-                   id="mapClassificationMeshInput" pattern="^[^;]+$" (keyup)="searchMesh()"
-                   (ngModelChange)="searchMesh()" required>
+            <mat-form-field>
+                <input matInput [(ngModel)]="meshSearchTerm" name="meshSearchTerm"
+                       id="mapClassificationMeshInput" pattern="^[^;]+$" (change)="searchMesh()"
+                       (ngModelChange)="searchMesh()" required placeholder="MeSH Descriptor">
+            </mat-form-field>
+
             <span *ngIf="searching">searching...</span>
 
             <div *ngIf="descriptorID">
                 {{descriptorID}} -- {{descriptorName}}
-                <button *ngIf="descriptorName.length > 0" class="btn btn-outline-dark " id="addMeshDescButton"
+                <button *ngIf="descriptorName.length > 0" mat-raised-button id="addMeshDescButton"
                         type="submit" [disabled]="mapping.meshDescriptors.indexOf(descriptorID) > -1">Add
                 </button>
             </div>
 
         </div>
         <div class="modal-footer" id="mapClassificationMeshModalFooter">
-            <button class="btn btn-outline-dark" (click)="c('cancel')" id="cancelMapClassificationMeshBtn"
-                    name="cancelDeleteClassificationBtn">Close
-            </button>
+            <button mat-raised-button (click)="c('cancel')" id="cancelMapClassificationMeshBtn">Close</button>
         </div>
     </form>
 </ng-template>
