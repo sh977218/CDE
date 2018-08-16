@@ -15,6 +15,7 @@ public class BoardFiveUnapprovedMessagesPerUserReply extends NlmCdeBaseTest {
         goToBoard(boardName);
         goToDiscussArea();
         findElement(By.id("newReplyTextArea_0")).sendKeys(reply);
+        hangon(1);
         clickElement(By.id("replyBtn_0"));
         textNotPresent(reply);
         checkAlert("You have too many unapproved messages.");
