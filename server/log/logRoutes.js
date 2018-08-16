@@ -2,7 +2,6 @@ const userAgent = require('useragent');
 
 const dbLogger = require('./dbLogger');
 const handleError = require('./dbLogger').handleError;
-const respondError = require('./dbLogger').respondError;
 const mongo_data = require('../system/mongo-data');
 const pushNotification = require('../system/pushNotification');
 
