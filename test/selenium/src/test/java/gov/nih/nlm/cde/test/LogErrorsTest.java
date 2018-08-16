@@ -2,23 +2,14 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static com.jayway.restassured.RestAssured.get;
-
 public class LogErrorsTest extends NlmCdeBaseTest {
-    String[] triggerErrorUrls = new String[]{"/server/log/triggerServerErrorExpress",
-            "/server/log/triggerServerErrorMongoose",
-            "/server/log/triggerClientError"};
-
     @Test
     public void logErrors() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        for (String triggerErrorUrl : triggerErrorUrls) {
-            driver.get(baseUrl + triggerErrorUrl);
-            textPresent("received");
-        }
+        driver.get(baseUrl + "/server/log/triggerServerErrorExpress");
+        textPresent("received");
         goHome();
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
