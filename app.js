@@ -178,8 +178,13 @@ app.use(flash());
 auth.init(app);
 
 const logFormat = {
-    remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status",
-    date: ":date", referrer: ":referrer", responseTime: ":response-time"
+    remoteAddr: ":real-remote-addr",
+    url: ":url",
+    method: ":method",
+    httpStatus: ":status",
+    date: ":date",
+    referrer: ":referrer",
+    responseTime: ":response-time"
 };
 
 morganLogger.token('real-remote-addr', function (req) {
@@ -254,7 +259,7 @@ try {
     let userModule = require("./server/user/userRoutes").module({
         search: [authorization.isOrgAdminMiddleware],
         manage: [authorization.isOrgAuthorityMiddleware],
-        notificationDate:[authorization.isSiteAdminMiddleware]
+        notificationDate: [authorization.isSiteAdminMiddleware]
     });
     app.use('/server/user', userModule);
 
@@ -286,10 +291,15 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
 
+    // Do Not Log Errors
     if (err instanceof IpDeniedError) {
         return res.status(403).send("You are not authorized. Please contact support if you believe you should not see this error.");
     }
+    if (err.code === 'EBADCSRFTOKEN') {
+        return res.status(401).send('CSRF Error');
+    }
 
+    // Do Log Errors
     console.log("ERROR3: " + err);
     console.log(err.stack);
     if (req && req.body && req.body.password) req.body.password = "";
@@ -306,13 +316,8 @@ app.use((err, req, res, next) => {
             headers: {'user-agent': req.headers['user-agent']}
         }
     };
-    logging.errorLogger.error('error', "Error: Express Default Error Handler", meta);
-    if (err.status === 403) {
-        res.status(403).send("Unauthorized");
-    } else {
-        res.status(500).send('Something broke!');
-    }
-    next();
+    logging.errorLogger.error('error', "Error: Express Default Error Handler", JSON.stringify(meta));
+    res.status(500).send('Something broke!');
 });
 
 domain.run(() => {
