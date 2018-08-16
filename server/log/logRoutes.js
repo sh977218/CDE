@@ -44,19 +44,19 @@ exports.module = function (roleConfig) {
         dbLogger.logClientError(req, handleError({req, res}, result => res.send(result)));
     });
 
-    router.get('/triggerServerErrorExpress', (req, res) => {
+    router.get('/triggerServerErrorExpress', roleConfig.triggerError, (req, res) => {
         res.send("received");
         trigger.error(); // jshint ignore:line
     });
 
-    router.get('/triggerServerErrorMongoose', (req, res) => {
+    router.get('/triggerServerErrorMongoose', roleConfig.triggerError, (req, res) => {
         res.send("received");
         mongo_data.orgByName("none");
         trigger.error(); // jshint ignore:line
 
     });
 
-    router.get('/triggerClientError', (req, res) => {
+    router.get('/triggerClientError', roleConfig.triggerError, (req, res) => {
         res.send("received");
         trigger.error();
     });
