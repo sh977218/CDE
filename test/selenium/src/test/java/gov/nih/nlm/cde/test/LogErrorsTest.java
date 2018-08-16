@@ -10,7 +10,7 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         driver.get(baseUrl + "/server/log/triggerServerErrorExpress");
         textPresent("received");
-        goHome();
+        driver.get(baseUrl);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
 
