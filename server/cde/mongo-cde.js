@@ -10,6 +10,7 @@ const async = require('async');
 const elastic = require('./elastic');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 const draftSchema = require('./schemas').draftSchema;
+const boardDb = require('../board/boardDb');
 
 exports.type = "cde";
 exports.name = "CDEs";
