@@ -317,7 +317,6 @@ export class Organization {
 export type ObjectId = string;
 
 export class PermissibleValue {
-    [key: string]: any;
     codeSystemName?: string;
     codeSystemVersion?: string;
     permissibleValue!: string;
