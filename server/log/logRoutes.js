@@ -2,6 +2,7 @@ const userAgent = require('useragent');
 
 const dbLogger = require('./dbLogger');
 const handleError = require('./dbLogger').handleError;
+const respondError = require('./dbLogger').respondError;
 const mongo_data = require('../system/mongo-data');
 const pushNotification = require('../system/pushNotification');
 
@@ -46,6 +47,18 @@ exports.module = function (roleConfig) {
     router.get('/triggerServerErrorExpress', roleConfig.superLog, (req, res) => {
         res.send("received");
         trigger.error(); // jshint ignore:line
+    });
+
+    router.get('/triggerServerErrorMongoose', roleConfig.superLog, (req, res) => {
+        res.send("received");
+        mongo_data.orgByName("none");
+        trigger.error(); // jshint ignore:line
+
+    });
+
+    router.get('/triggerClientError', roleConfig.superLog, (req, res) => {
+        res.send("received");
+        trigger.error();
     });
 
     router.post('/feedback/report', (req, res) => {
