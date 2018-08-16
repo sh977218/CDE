@@ -629,7 +629,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             e.printStackTrace();
         }
     }
-s
+
     protected void checkAlert(String text) {
         int i = 0;
         while (i < 7) {
