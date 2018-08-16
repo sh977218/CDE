@@ -52,9 +52,7 @@ exports.init = function (app, daoManager) {
     /* ---------- PUT NEW REST API above ---------- */
 
     app.post('/cdesByTinyIdList', (req, res) => {
-        mongo_cde.byTinyIdList(req.body, handleError({req, res}, cdes => {
-            res.send(cdes);
-        }));
+        mongo_cde.byTinyIdList(req.body, handleError({req, res}, cdes => res.send(cdes)));
     });
 
     app.post('/elasticSearch/cde', (req, res) => {
