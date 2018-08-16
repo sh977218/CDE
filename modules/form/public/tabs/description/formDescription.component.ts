@@ -18,8 +18,6 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import { Hotkey, HotkeysService } from "angular2-hotkeys";
 import _isEmpty from 'lodash/isEmpty';
 
-import { ElasticService } from '_app/elastic.service';
-import { AlertService } from '_app/alert.service';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
@@ -215,7 +213,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         },
         childrenField: 'formElements',
         displayField: 'label',
-        dropSlotHeight: 3,
+        dropSlotHeight: 100,
         isExpandedField: 'expanded'
     };
 
