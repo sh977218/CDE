@@ -94,7 +94,6 @@ export class ElasticService {
     }
 
     static highlightElt(cde) {
-        ElasticService.highlightOne("stewardOrgCopy.name", cde);
         ElasticService.highlightOne("primaryNameCopy", cde);
         ElasticService.highlightOne("primaryDefinitionCopy", cde);
         ElasticService.setMatchedBy(cde);
