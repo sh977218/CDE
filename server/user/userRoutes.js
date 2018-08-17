@@ -62,7 +62,10 @@ exports.module = function (roleConfig) {
         let notificationDate = req.body;
         userDb.byId(req.user._id, handleError({req, res}, user => {
             if (!user) return res.status(404).send("User not found.");
-            if (user) user.notificationDate = notificationDate;
+            if (user) {
+                if (notificationDate.clientLogDate) user.notificationDate.clientLogDate = notificationDate.clientLogDate;
+                if (notificationDate.serverLogDate) user.notificationDate.serverLogDate = notificationDate.serverLogDate;
+            }
             user.save(handleError({req, res}, () => res.send()));
         }));
     });

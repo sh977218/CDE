@@ -4,7 +4,6 @@ const dbLogger = require('./dbLogger');
 const handleError = require('./dbLogger').handleError;
 const mongo_data = require('../system/mongo-data');
 const pushNotification = require('../system/pushNotification');
-const userDb = require('../user/userDb');
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
@@ -44,21 +43,9 @@ exports.module = function (roleConfig) {
         dbLogger.logClientError(req, handleError({req, res}, result => res.send(result)));
     });
 
-    router.get('/triggerServerErrorExpress', (req, res) => {
+    router.get('/triggerServerErrorExpress', roleConfig.superLog, (req, res) => {
         res.send("received");
         trigger.error(); // jshint ignore:line
-    });
-
-    router.get('/triggerServerErrorMongoose', (req, res) => {
-        res.send("received");
-        mongo_data.orgByName("none");
-        trigger.error(); // jshint ignore:line
-
-    });
-
-    router.get('/triggerClientError', (req, res) => {
-        res.send("received");
-        trigger.error();
     });
 
     router.post('/feedback/report', (req, res) => {
