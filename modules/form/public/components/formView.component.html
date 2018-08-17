@@ -112,7 +112,7 @@
             <span class="d-none d-sm-inline ml-1">Add to Quick Board</span>
         </button>
         <button id="addToBoard" mat-raised-button (click)="mltPinModal.open([elt], 'cde')">
-            <i class="fa fa-thumb-tack"></i><span class="d-none d-sm-inline ml-1">Add to Board</span>
+            <mat-icon svgIcon="thumb_tack"></mat-icon> Add to Board</span>
         </button>
         <button *ngIf="userService.loggedIn()" mat-raised-button
                 id="pinAllCdes" (click)="pinAllCdesIntoBoard()">
