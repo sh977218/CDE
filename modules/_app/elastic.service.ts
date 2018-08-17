@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { LocalStorageService } from 'angular-2-local-storage';
 
 import { UserService } from '_app/user.service';
-import { ElasticQueryResponse } from 'shared/models.model';
+import { Cb, CbErr, ElasticQueryResponse } from 'shared/models.model';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { orderedList } from 'shared/system/regStatusShared';
@@ -50,22 +50,14 @@ export class ElasticService {
         };
     }
 
-    generalSearchQuery(settings, type, cb) {
-        let search = (good, bad) => {
+    generalSearchQuery(settings, type: 'cde'|'form', cb: CbErr<ElasticQueryResponse, boolean>) {
+        let search = (good: Cb<ElasticQueryResponse>, bad: CbErr) => {
             this.http.post("/elasticSearch/" + type, settings).subscribe(good, bad);
         };
 
-        function success(isRetry, response: ElasticQueryResponse) {
-            // Convert Elastic JSON to Elt Object
-            if (type === 'cde') {
-                response[type + 's'].forEach((elt: DataElementElastic, i, elts) => elts[i] = DataElementElastic.copy(elt));
-            }
-            if (type === 'form') {
-                response[type + 's'].forEach((elt: CdeFormElastic, i, elts) => elts[i] = CdeFormElastic.copy(elt));
-            }
-
+        function success(isRetry: boolean, response: ElasticQueryResponse) {
             ElasticService.highlightResults(response[type + 's']);
-            cb(null, response, isRetry);
+            cb('', response, isRetry);
         }
 
         search(success.bind(null, false), function failOne() {

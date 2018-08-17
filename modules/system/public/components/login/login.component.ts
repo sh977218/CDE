@@ -53,12 +53,12 @@ import { UserService } from '_app/user.service';
     `]
 })
 export class LoginComponent implements OnInit {
-    csrf: string;
-    password: string;
-    recaptcha: string;
-    showCaptcha: boolean;
+    csrf?: string;
+    password?: string;
+    recaptcha?: string;
+    showCaptcha?: boolean;
     siteKey: string = (window as any).siteKey;
-    username: string;
+    username?: string;
 
     ngOnInit() {
         this.getCsrf();
@@ -113,7 +113,7 @@ export class LoginComponent implements OnInit {
 
     }
 
-    resolved(e) {
+    resolved(e: any) {
         this.recaptcha = e;
     }
 }

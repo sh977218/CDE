@@ -14,7 +14,7 @@ export class ResourceTree {
     resourceRemote?: any;
     resourceType?: string;
 
-    constructor(resource: FhirDomainResource, fe?: CdeForm|FormElement) {
+    constructor(resource?: FhirDomainResource, fe?: CdeForm|FormElement) {
         if (fe) ResourceTree.setCrossReference(this, fe);
         if (resource) ResourceTree.setResource(this, resource);
         if (!this.resourceType) this.resourceType = 'bundle';
@@ -29,16 +29,16 @@ export class ResourceTree {
         node.children.forEach(c => ResourceTree.recurse(c, node, action));
     }
 
-    static setCrossReference(node: ResourceTree, fe?: CdeForm|FormElement) {
+    static setCrossReference(node: ResourceTree, fe: CdeForm|FormElement) {
         node.crossReference = fe;
         node.resourceType = getMapToFhirResource(fe);
-        let map = resourceMap[node.resourceType];
+        let map = node.resourceType && resourceMap[node.resourceType];
         if (map) {
             node.map = new map(getFhirResourceMap(fe));
         }
     }
 
-    static setResource(node: ResourceTree, resource, resourceAfter?) {
+    static setResource(node: ResourceTree, resource: any, resourceAfter?: any) {
         if (!resourceAfter) resourceAfter = deepCopy(resource);
         node.parentAttribute = undefined;
         node.resource = resourceAfter;
@@ -47,11 +47,11 @@ export class ResourceTree {
         node.children.forEach(c => ResourceTree.recurse(c, node, ResourceTree.updateParentRef));
     }
 
-    static setResourceNonFhir(node: ResourceTree, resource, parentAttribute) {
+    static setResourceNonFhir(node: ResourceTree, resource: any, parentAttribute: string) {
         node.parentAttribute = parentAttribute;
         node.resource = resource;
         node.resourceRemote = undefined;
-        node.resourceType = null;
+        node.resourceType = undefined;
     }
 
     static updateParentRef(node: ResourceTree, parent: ResourceTree) {

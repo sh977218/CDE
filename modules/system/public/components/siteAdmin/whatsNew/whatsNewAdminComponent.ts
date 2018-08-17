@@ -8,8 +8,7 @@ import { AlertService } from '_app/alert.service';
     templateUrl: './whatsNewAdmin.component.html'
 })
 export class WhatsNewAdminComponent {
-
-    article: Article;
+    article?: Article;
 
     constructor(private http: HttpClient,
                 private alertSvc: AlertService) {

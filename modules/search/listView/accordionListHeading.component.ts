@@ -12,6 +12,7 @@ export class AccordionListHeadingComponent {
     @Input() eltIndex: number;
     @Input() openInNewTab: boolean;
     @Output() add = new EventEmitter<Elt>();
+    Elt = Elt;
 
     clickAdd(event) {
         interruptEvent(event);
@@ -19,7 +20,7 @@ export class AccordionListHeadingComponent {
     }
 
     clickView(event) {
-        openUrl(this.elt.getEltUrl(), event);
+        openUrl(Elt.getEltUrl(this.elt), event);
         interruptEvent(event);
     }
 }

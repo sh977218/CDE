@@ -22,10 +22,10 @@ class HistoryForm extends CdeForm {
     user?: string;
 }
 
-type History = HistoryDe | HistoryForm;
+type History = HistoryDe|HistoryForm;
 
 function createHistory(elt: DataElement | CdeForm): History {
-    return Object.create(elt.elementType === 'cde' ? DataElement.copy(elt as DataElement) : CdeForm.copy(elt as CdeForm));
+    return Object.create(elt);
 }
 
 @Component({
@@ -33,11 +33,11 @@ function createHistory(elt: DataElement | CdeForm): History {
     templateUrl: './history.component.html'
 })
 export class HistoryComponent implements OnInit {
-    @Input() public elt: DataElement | CdeForm;
-    @Input() public canEdit: boolean = false;
+    @Input() elt: DataElement|CdeForm;
+    @Input() canEdit = false;
     showVersioned: boolean = false;
-    public priorElements: History[];
-    public numberSelected: number = 0;
+    priorElements: History[];
+    numberSelected: number = 0;
 
     constructor(public modalService: NgbModal,
                 private alert: AlertService,

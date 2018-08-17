@@ -13,11 +13,11 @@ export class ActiveBansComponent {
         this.refresh();
     }
 
-    refresh () {
+    refresh() {
         this.http.get("/activeBans").subscribe((result: any) => this.ipList = result.ipList);
     }
 
-    remove (ip) {
+    remove(ip: string) {
         this.http.post("/removeBan", {ip: ip}).subscribe(() => this.refresh());
     }
 

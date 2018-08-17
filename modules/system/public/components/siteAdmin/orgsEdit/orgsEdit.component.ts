@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { AlertService } from '_app/alert.service';
 import { OrgHelperService } from 'core/orgHelper.service';
+import { Cb, Organization } from 'shared/models.model';
+import { stringCompare } from 'shared/system/util';
 
 
 @Component({
@@ -12,7 +14,7 @@ import { OrgHelperService } from 'core/orgHelper.service';
 export class OrgsEditComponent implements OnInit {
     editWG: any = {};
     newOrg: any = {};
-    orgs: any;
+    orgs?: Organization[];
 
     ngOnInit () {
         this.getOrgs();
@@ -38,17 +40,17 @@ export class OrgsEditComponent implements OnInit {
             );
     }
 
-    getOrgs (cb?) {
-        this.http.get<any>('/managedOrgs')
-            .subscribe(response => {
-                this.orgs = response.orgs.sort((a, b) => a.name - b.name);
+    getOrgs (cb?: Cb) {
+        this.http.get<Organization[]>('/managedOrgs')
+            .subscribe(orgs => {
+                this.orgs = orgs.sort((a, b) => stringCompare(a.name, b.name));
                 if (cb) cb();
             });
     }
 
-    updateOrg (org) {
+    updateOrg (org: Organization) {
         this.http.post('/updateOrg', org).subscribe(res => {
-            this.orgs = this.getOrgs(() => {
+            this.getOrgs(() => {
                 this.orgHelperService.reload().then(() => this.Alert.addAlert('success', 'Saved'));
             });
         }, () => this.Alert.addAlert('danger', 'There was an issue updating this org.')

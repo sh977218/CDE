@@ -18,12 +18,11 @@ import { SearchBaseComponent, searchStyles } from 'search/searchBase.component';
     templateUrl: '../../../../search/searchBase.component.html'
 })
 export class CdeSearchComponent extends SearchBaseComponent {
-    @Input() addMode: string = undefined;
+    @Input() addMode?: string;
     @Input() embedded = false;
     @Output() add = new EventEmitter<any>();
-
-    module = 'cde';
-    pinComponent: any = PinBoardModalComponent;
+    module: 'cde'|'form' = 'cde';
+    pinComponent = PinBoardModalComponent;
 
     constructor(
         protected _componentFactoryResolver: ComponentFactoryResolver,

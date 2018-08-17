@@ -89,7 +89,7 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     hasHeading(q: FormQuestion): boolean {
-        return this.hasLabel(q) || q.instructions && q.instructions.value;
+        return this.hasLabel(q) || q.instructions && !!q.instructions.value;
     }
 
     hasLabel(q: FormQuestion): boolean {

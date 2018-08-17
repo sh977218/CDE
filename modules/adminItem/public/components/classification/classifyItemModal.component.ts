@@ -1,13 +1,15 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, ViewChild, Output, EventEmitter } from "@angular/core";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { LocalStorageService } from "angular-2-local-storage/dist";
-import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
-import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
+import { Component, Input, ViewChild, Output, EventEmitter } from '@angular/core';
+import { NgbModalModule, NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap/tabset/tabset';
+import { LocalStorageService } from 'angular-2-local-storage/dist';
+import { TreeNode } from 'angular-tree-component/dist/models/tree-node.model';
+import { IActionMapping } from 'angular-tree-component/dist/models/tree-options.model';
 import _noop from 'lodash/noop';
 
 import { UserService } from '_app/user.service';
 import { ClassificationService } from 'core/classification.service';
+import { ClassificationClassified, ClassificationHistory } from 'shared/models.model';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -18,26 +20,25 @@ const actionMapping: IActionMapping = {
 
 
 @Component({
-    selector: "cde-classify-item-modal",
-    templateUrl: "classifyItemModal.component.html",
+    selector: 'cde-classify-item-modal',
+    templateUrl: 'classifyItemModal.component.html',
     providers: [NgbActiveModal]
 })
 export class ClassifyItemModalComponent {
-    @Input() modalTitle: string = "Classify this CDE";
-    @Output() onEltSelected = new EventEmitter();
-    @ViewChild("classifyItemContent") classifyItemContent: NgbModalModule;
-    modalRef: NgbModalRef;
+    @Input() modalTitle: string = 'Classify this CDE';
+    @Output() onEltSelected = new EventEmitter<ClassificationClassified>();
+    @ViewChild('classifyItemContent') classifyItemContent!: NgbModalModule;
     orgClassificationsTreeView: any;
-    orgClassificationsRecentlyAddView: any;
+    orgClassificationsRecentlyAddView?: ClassificationHistory[];
     options = {
-        idField: "name",
-        childrenField: "elements",
-        displayField: "name",
-        isExpandedField: "expanded",
+        idField: 'name',
+        childrenField: 'elements',
+        displayField: 'name',
+        isExpandedField: 'expanded',
         actionMapping: actionMapping
     };
-    selectedOrg: any;
-    treeNode: TreeNode;
+    selectedOrg?: string;
+    treeNode?: TreeNode;
 
     constructor(private classificationSvc: ClassificationService,
                 private http: HttpClient,
@@ -46,7 +47,7 @@ export class ClassifyItemModalComponent {
                 public userService: UserService) {
     }
 
-    classifyItemByRecentlyAdd(classificationRecentlyAdd) {
+    classifyItemByRecentlyAdd(classificationRecentlyAdd: ClassificationHistory) {
         this.classificationSvc.updateClassificationLocalStorage({
             categories: classificationRecentlyAdd.categories,
             orgName: classificationRecentlyAdd.orgName
@@ -57,7 +58,7 @@ export class ClassifyItemModalComponent {
         });
     }
 
-    classifyItemByTree(treeNode) {
+    classifyItemByTree(treeNode: TreeNode) {
         this.treeNode = treeNode;
         let classificationArray = [treeNode.data.name];
         let _treeNode = treeNode;
@@ -77,17 +78,17 @@ export class ClassifyItemModalComponent {
         });
     }
 
-    onChangeClassifyView(event) {
-        if (event.nextId === "recentlyAddViewTab") {
-            this.orgClassificationsRecentlyAddView = this.localStorageService.get("classificationHistory");
+    onChangeClassifyView(event: NgbTabChangeEvent) {
+        if (event.nextId === 'recentlyAddViewTab') {
+            this.orgClassificationsRecentlyAddView = this.localStorageService.get('classificationHistory');
         } else {
             this.orgClassificationsTreeView = null;
         }
     }
 
-    onChangeOrg(value) {
+    onChangeOrg(value: string) {
         if (value) {
-            let url = "/org/" + encodeURIComponent(value);
+            let url = '/org/' + encodeURIComponent(value);
             //noinspection TypeScriptValidateTypes
             this.http.get(url).subscribe(
                 res => {
@@ -101,7 +102,7 @@ export class ClassifyItemModalComponent {
 
     openModal() {
         this.orgClassificationsTreeView = null;
-        this.orgClassificationsRecentlyAddView = null;
+        this.orgClassificationsRecentlyAddView = undefined;
         if (this.selectedOrg) {
             this.onChangeOrg(this.selectedOrg);
         } else {

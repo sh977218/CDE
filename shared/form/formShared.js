@@ -14,7 +14,7 @@ export function addFormIds(parent, parentId = '') {
 }
 
 export function areDerivationRulesSatisfied(elt) {
-    let missingCdes = [];
+    let missingCdeTinyIds = [];
     let allCdes = {};
     let allQuestions = [];
     iterateFeSync(elt, undefined, undefined, (q) => {
@@ -38,13 +38,13 @@ export function areDerivationRulesSatisfied(elt) {
                     if (allCdes[input]) {
                         allCdes[input].partOf = 'score';
                     } else {
-                        missingCdes.push({tinyId: input});
+                        missingCdeTinyIds.push(input);
                         quest.incompleteRule = true;
                     }
                 });
             });
     });
-    return missingCdes;
+    return missingCdeTinyIds;
 }
 
 export function convertFormToSection(form) {
@@ -322,7 +322,7 @@ export function getLabel(fe) {
         return fe.label;
     if (fe.question && fe.question.cde)
         return fe.question.cde.name;
-    return null;
+    return '';
 }
 
 export function isSubForm(node) {
