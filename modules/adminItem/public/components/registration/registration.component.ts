@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, ViewChild, OnInit } from '@angular/core';
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
 
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
-import { Comment } from 'shared/models.model';
+import { Comment, RegistrationState } from 'shared/models.model';
 import { statusList } from 'shared/system/regStatusShared';
 
 @Component({
@@ -20,7 +19,7 @@ export class RegistrationComponent implements OnInit {
     @Output() onEltChange = new EventEmitter();
     @ViewChild('regStatusEdit') regStatusEditModal: NgbModalModule;
     helpMessage: string;
-    newState: any = {effectiveDate: ""};
+    newState: RegistrationState;
     modalRef: NgbModalRef;
     validRegStatuses: string[] = ['Retired', 'Incomplete', 'Candidate'];
 
@@ -32,14 +31,11 @@ export class RegistrationComponent implements OnInit {
         private alert: AlertService,
         private http: HttpClient,
         public modalService: NgbModal,
-        private parserFormatter: NgbDateParserFormatter,
         private userService: UserService,
     ) {}
 
     ok() {
         this.elt.registrationState = this.newState;
-        this.elt.registrationState.effectiveDate = this.parserFormatter.format(this.newState.effectiveDate);
-        this.elt.registrationState.untilDate = this.parserFormatter.format(this.newState.untilDate);
         this.onEltChange.emit();
         this.modalRef.close();
     }
@@ -71,7 +67,7 @@ export class RegistrationComponent implements OnInit {
     }
 
     setHelpMessage(newValue) {
-        statusList.forEach((status) => {
+        statusList.forEach(status => {
             if (status.name === newValue) this.helpMessage = status.curHelp;
         });
     }
