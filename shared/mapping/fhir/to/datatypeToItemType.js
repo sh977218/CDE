@@ -2,6 +2,7 @@ import { codeSystemOut } from 'shared/mapping/fhir';
 import { newCodeableConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
 import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
 import { capString } from 'shared/system/util';
+import { questionMulti } from 'shared/form/fe';
 
 export function containerToItemType(container) { // http://hl7.org/fhir/item-type
     // NOT IMPLEMENTED: boolean, time, url, open-choice(choice+string), attachment, reference
@@ -33,18 +34,10 @@ export function containerValueListToCoding(container, value, multi = false) {
     }
     if (Array.isArray(value)) {
         let result = value.map(v => valueToCoding(container, v));
-        if (multi) {
-            return result.length ? result : undefined;
-        } else {
-            return result.length ? result[0] : undefined;
-        }
+        return multi ? (result.length ? result : undefined) : result[0];
     } else {
         let result = valueToCoding(container, value);
-        if (multi) {
-            return [result];
-        } else {
-            return result;
-        }
+        return multi ? [result] : result;
     }
 }
 
@@ -58,10 +51,23 @@ export function permissibleValueToCoding(pv) {
         pv.valueMeaningName && pv.valueMeaningName !== pv.permissibleValue ? pv.valueMeaningName : undefined);
 }
 
-export function questionValueToFhirValue(q, container, hasCodeableConcept = false) {
+export function questionToFhirValue(q, fhirObj, fhirMulti = false, prefix = undefined, hasCodeableConcept = false) {
     let qType = containerToItemType(q.question);
-    container['value' + capString(itemTypeToItemDatatype(qType, hasCodeableConcept))]
-        = valueToTypedValue(q.question, qType, q.question.answer, undefined, q.question.answerUom, hasCodeableConcept);
+    if (fhirMulti) {
+        let answer = questionMulti(q) ? q.question.answer : [q.question.answer];
+        storeTypedValue(
+            answer.map(a => valueToTypedValue(q.question, qType, a, undefined, q.question.answerUom, hasCodeableConcept)),
+            fhirObj, qType, prefix, hasCodeableConcept);
+    } else {
+        let answer = questionMulti(q) ? q.question.answer[0] : q.question.answer;
+        storeTypedValue(
+            valueToTypedValue(q.question, qType, answer, undefined, q.question.answerUom, hasCodeableConcept),
+            fhirObj, qType, prefix, hasCodeableConcept);
+    }
+}
+
+export function storeTypedValue(value, obj, qType, prefix = 'value', hasCodeableConcept = false) {
+    obj[prefix + capString(itemTypeToItemDatatype(qType, hasCodeableConcept))] = value;
 }
 
 export function valueToQuantity(container, value, comparator, valueUom) {

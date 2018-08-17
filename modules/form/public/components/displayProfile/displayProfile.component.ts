@@ -6,7 +6,7 @@ import { FormViewComponent } from 'form/public/components/formView.component';
 import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { CdeForm, DisplayProfile, FormElement } from 'shared/form/form.model';
 import { getMapToFhirResource } from 'shared/form/formAndFe';
-import { findQuestionByTinyId, getFormQuestions, iterateFeSync } from 'shared/form/formShared';
+import { findQuestionByTinyId, getFormQuestions, iterateFeSync } from 'shared/form/fe';
 import { CodeAndSystem } from 'shared/models.model';
 import { deepCopy } from 'shared/system/util';
 import { interruptEvent } from 'widget/browser';
