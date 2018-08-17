@@ -20,7 +20,7 @@ export class RegistrationComponent implements OnInit {
     @Output() onEltChange = new EventEmitter();
     @ViewChild('regStatusEdit') regStatusEditModal: NgbModalModule;
     helpMessage: string;
-    newState: any = {};
+    newState: any = {effectiveDate: ""};
     modalRef: NgbModalRef;
     validRegStatuses: string[] = ['Retired', 'Incomplete', 'Candidate'];
 
