@@ -4,6 +4,7 @@ import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
 
 import { OrgHelperService } from 'core/orgHelper.service';
+import { Organization, StatusValidationRules } from 'shared/models.model';
 
 
 @Component({
@@ -11,8 +12,8 @@ import { OrgHelperService } from 'core/orgHelper.service';
     templateUrl: './statusValidationRules.component.html'
 })
 export class StatusValidationRulesComponent implements OnInit {
-    @ViewChild('removeRuleModal') public removeRuleModal: NgbModalModule;
-    @ViewChild('addNewRuleModal') public addNewRuleModal: NgbModalModule;
+    @ViewChild('removeRuleModal') removeRuleModal!: NgbModalModule;
+    @ViewChild('addNewRuleModal') addNewRuleModal!: NgbModalModule;
     fields: string[] = [
         'stewardOrg.name'
         , 'properties.key'
@@ -48,15 +49,16 @@ export class StatusValidationRulesComponent implements OnInit {
         , 'referenceDocuments.title'
     ];
     orgNames: string[] = [];
-    newRule: any = {id: Math.random(), rule: {}};
-    userOrgs: any = {};
+    newRule: StatusValidationRules = {id: Math.random(), rule: {}};
+    newRuleOrg = '';
+    userOrgs: {[org: string]: StatusValidationRules[]} = {};
     userOrgsArray: string[] = [];
 
     ngOnInit() {
         this.orgHelperService.then(orgsDetailedInfo => {
             this.orgNames = Object.keys(orgsDetailedInfo);
             Object.keys(orgsDetailedInfo).forEach(orgName => {
-                this.userOrgs[orgName] = orgsDetailedInfo[orgName].cdeStatusValidationRules;
+                this.userOrgs[orgName] = orgsDetailedInfo[orgName].cdeStatusValidationRules || [];
             });
             this.userOrgsArray = Object.keys(this.userOrgs).sort();
         }, _noop);
@@ -68,24 +70,23 @@ export class StatusValidationRulesComponent implements OnInit {
         private orgHelperService: OrgHelperService,
     ) {}
 
-    disableRule(orgName, rule) {
+    disableRule(orgName: string, rule: StatusValidationRules) {
         // @TODO does not refresh page
        this.modalService.open(this.removeRuleModal, {size: 'lg'}).result.then(() => {
-           this.http.post<any>('/disableRule', {orgName: orgName, rule: rule}).subscribe(response => {
-               this.userOrgs[orgName] = response.cdeStatusValidationRules;
+           this.http.post<Organization>('/disableRule', {orgName: orgName, rule: rule}).subscribe(response => {
+               this.userOrgs[orgName] = response.cdeStatusValidationRules || [];
            });
        }, () => {});
     }
 
     openAddRuleModal() {
         this.modalService.open(this.addNewRuleModal, {size: 'lg'}).result.then(() => {
-            this.http.post<any>('/enableRule', {
-                orgName: this.newRule.org,
+            this.http.post<Organization>('/enableRule', {
+                orgName: this.newRuleOrg,
                 rule: this.newRule
             }).subscribe(response => {
-                this.userOrgs[this.newRule.org] = response.cdeStatusValidationRules;
-            }, () => {
-            });
+                this.userOrgs[this.newRuleOrg] = response.cdeStatusValidationRules || [];
+            }, () => {});
         });
     }
 }

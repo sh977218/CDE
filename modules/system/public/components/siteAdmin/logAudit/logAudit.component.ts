@@ -15,12 +15,12 @@ export class LogAuditComponent {
     currentPage: number = 1;
     gridLogEvents: any[] = [];
     ipAddress: any;
-    itemsPerPage: number;
+    itemsPerPage?: number;
     fromDate: any;
-    totalItems: number;
+    totalItems?: number;
     toDate: any;
     sortingBy: any = {date: 'desc'};
-    sortMap = {
+    sortMap: {[field: string]: {title: string, property: string}} = {
         date: {
             title: 'Date',
             property: 'date',
@@ -53,7 +53,7 @@ export class LogAuditComponent {
     ) {
     }
 
-    searchLogs(newSearch = false) {
+    searchLogs() {
         let postBody = {
             currentPage: this.currentPage,
             ipAddress: this.ipAddress,
@@ -63,12 +63,11 @@ export class LogAuditComponent {
             toDate: this.toDate,
             sort: this.sortingBy
         };
-        //noinspection TypeScriptValidateTypes
         this.http.post<any>('/server/log/httpLogs', postBody)
             .subscribe(res => {
                 if (res.totalItems) this.totalItems = res.totalItems;
                 if (res.itemsPerPage) this.itemsPerPage = res.itemsPerPage;
-                this.gridLogEvents = res.logs.map(log => {
+                this.gridLogEvents = res.logs.map((log: any) => {
                     return {
                         date: new Date(log.date).toLocaleString(),
                         ip: log.remoteAddr,
@@ -81,7 +80,7 @@ export class LogAuditComponent {
             });
     }
 
-    sort(p) {
+    sort(p: string) {
         p = this.sortMap[p].property;
         if (this.sortingBy[p] === 'desc') {
             this.sortingBy[p] = 'asc';

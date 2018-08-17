@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from '@angular/router';
 import _noop from 'lodash/noop';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 
@@ -12,7 +12,7 @@ import { isSiteAdmin } from 'shared/system/authorizationShared';
 })
 export class SiteAuditComponent implements OnInit {
     isAdmin = false;
-    @ViewChild('tabs') private tabs: NgbTabset;
+    @ViewChild('tabs') private tabs!: NgbTabset;
 
     constructor(public userService: UserService,
                 private route: ActivatedRoute) {
@@ -30,5 +30,4 @@ export class SiteAuditComponent implements OnInit {
             }
         }, 0);
     }
-
 }

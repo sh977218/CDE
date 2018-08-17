@@ -81,7 +81,6 @@ export class DataElementViewComponent implements OnInit {
 
     eltLoaded(elt: DataElement, cb = _noop) {
         if (elt) {
-            elt = new DataElement(elt);
             DataElement.validate(elt);
             this.elt = elt;
             this.loadComments(this.elt);

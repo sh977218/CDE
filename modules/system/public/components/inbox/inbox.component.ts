@@ -5,15 +5,16 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from '_app/alert.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 
+type InboxMessage = any;
 
 @Component({
     selector: 'cde-inbox',
     templateUrl: 'inbox.component.html'
 })
 export class InboxComponent implements OnInit {
-    @ViewChild('saveModal') saveModal: SaveModalComponent;
-    @ViewChild('approveUserModal') approveUserModal: SaveModalComponent;
-    approveUserModalRef: NgbModalRef;
+    @ViewChild('saveModal') saveModal!: SaveModalComponent;
+    @ViewChild('approveUserModal') approveUserModal!: SaveModalComponent;
+    approveUserModalRef?: NgbModalRef;
     currentMessage: any;
     mail: any = {received: [], sent: [], archived: []};
 
@@ -26,7 +27,7 @@ export class InboxComponent implements OnInit {
                 public modalService: NgbModal) {
     }
 
-    approveComment(msg) {
+    approveComment(msg: InboxMessage) {
         this.http.post('/server/discuss/approveComment', {
             commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
         }, {responseType: 'text'}).subscribe(response => {
@@ -35,22 +36,22 @@ export class InboxComponent implements OnInit {
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
-    approveAttachment(msg) {
+    approveAttachment(msg: InboxMessage) {
         this.http.get('/attachment/approve/' + msg.typeAttachmentApproval.fileid, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
-    authorizeUser(msg) {
+    authorizeUser(msg: InboxMessage) {
         let request = {username: msg.author.name, role: 'CommentAuthor'};
         this.http.post('/addUserRole', request, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
         }, err => this.alert.httpErrorMessageAlert(err));
-        this.approveUserModalRef.close();
+        this.approveUserModalRef!.close();
     }
 
-    closeMessage(message) {
+    closeMessage(message: InboxMessage) {
         message.states.unshift({
             action: 'Approved',
             date: new Date(),
@@ -64,7 +65,7 @@ export class InboxComponent implements OnInit {
         });
     }
 
-    decamelize(str) {
+    decamelize(str: string) {
         let result = str
             .replace(/([a-z\d])([A-Z])/g, '$1 $2')
             .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1 $2')
@@ -72,14 +73,14 @@ export class InboxComponent implements OnInit {
         return result.charAt(0).toUpperCase() + result.slice(1);
     }
 
-    declineAttachment(msg) {
+    declineAttachment(msg: InboxMessage) {
         this.http.get('/attachment/decline/' + msg.typeAttachmentApproval.fileid, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
-    declineComment(msg) {
+    declineComment(msg: InboxMessage) {
         this.http.post('/server/discuss/declineComment', {
             commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
         }, {responseType: 'text'}).subscribe(response => {
@@ -94,7 +95,7 @@ export class InboxComponent implements OnInit {
         this.getMail('archived');
     }
 
-    getMail(type) {
+    getMail(type: string) {
         // TODO make sure it's ordered by date
         this.http.post<any[]>('/mail/messages/' + type, {}).subscribe(mail => {
             this.mail[type] = mail;
@@ -102,7 +103,7 @@ export class InboxComponent implements OnInit {
         });
     }
 
-    openAuthorizeUserModal(message) {
+    openAuthorizeUserModal(message: InboxMessage) {
         this.currentMessage = message;
         this.approveUserModalRef = this.modalService.open(this.approveUserModal);
     }

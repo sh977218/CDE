@@ -7,10 +7,11 @@ import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
 import * as io from 'socket.io-client';
 
-import { IsAllowedService } from 'core/isAllowed.service';
-import { UserService } from '_app/user.service';
-import { Reply } from 'discuss/discuss.model';
 import { AlertService } from '_app/alert.service';
+import { UserService } from '_app/user.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { CommentReply } from 'shared/models.model';
+
 
 @Component({
     selector: 'cde-comments',
@@ -76,7 +77,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
     comments: Array<any> = [];
-    newReply: Reply = new Reply();
+    newReply: CommentReply = new CommentReply();
     socket = io((<any>window).publicUrl + '/comment');
     subscriptions: any = {};
     private emitCurrentReplying = new Subject<{ _id: string, comment: string }>();

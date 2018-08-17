@@ -2,8 +2,8 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Outp
 import _cloneDeep from 'lodash/cloneDeep';
 
 @Component({
-    selector: "cde-inline-area-edit",
-    templateUrl: "./inlineAreaEdit.component.html",
+    selector: 'cde-inline-area-edit',
+    templateUrl: './inlineAreaEdit.component.html',
     styles: [`
         button {
             display: inline-block;
@@ -24,16 +24,15 @@ import _cloneDeep from 'lodash/cloneDeep';
     `]
 })
 export class InlineAreaEditComponent implements OnInit, AfterViewInit {
-    @Input() model;
-    @Input() inputType: string = "text";
-    @Input() isAllowed: boolean = false;
+    @Input() model!: string;
+    @Input() inputType = 'text';
+    @Input() isAllowed = false;
     @Output() modelChange = new EventEmitter<string>();
-    @Input() defFormat: string = "";
+    @Input() defFormat = '';
     @Output() defFormatChange = new EventEmitter<string>();
-
-    public editMode: boolean;
-    public value: string;
-    public localFormat: string;
+    editMode?: boolean;
+    value!: string;
+    localFormat?: string;
 
     constructor(private elementRef: ElementRef) {}
 
@@ -43,43 +42,10 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        let s = document.createElement("script");
-        s.type = "text/javascript";
-        s.src = "https://cdn.ckeditor.com/4.7.0/standard-all/ckeditor.js";
+        let s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.src = 'https://cdn.ckeditor.com/4.7.0/standard-all/ckeditor.js';
         this.elementRef.nativeElement.appendChild(s);
-    }
-
-    setHtml(html) {
-        this.localFormat = html ? 'html' : '';
-    }
-
-    edit() {
-        this.editMode = true;
-    }
-
-    discard() {
-        this.value = _cloneDeep(this.model);
-        this.localFormat = _cloneDeep(this.defFormat);
-        this.editMode = false;
-    }
-
-    static isInvalidHtml(html) {
-        let srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
-        if (srcs) {
-            for (let i = 0; i < srcs.length; i++) {
-                let src = srcs[i];
-                let urls = src.match(/\s*["'](.+?)["']/ig);
-                if (urls) {
-                    for (let j = 0; j < urls.length; j++) {
-                        let url = urls[j].replace(/["]/g, "").replace(/[']/g, "");
-                        if (url.indexOf("/data/") !== 0 && url.indexOf((window as any).publicUrl + "/data/") !== 0) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     confirmSave() {
@@ -92,4 +58,36 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
         }
     }
 
+    discard() {
+        this.value = _cloneDeep(this.model);
+        this.localFormat = _cloneDeep(this.defFormat);
+        this.editMode = false;
+    }
+
+    edit() {
+        this.editMode = true;
+    }
+
+    static isInvalidHtml(html: string) {
+        let srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
+        if (srcs) {
+            for (let i = 0; i < srcs.length; i++) {
+                let src = srcs[i];
+                let urls = src.match(/\s*["'](.+?)["']/ig);
+                if (urls) {
+                    for (let j = 0; j < urls.length; j++) {
+                        let url = urls[j].replace(/["]/g, "").replace(/[']/g, "");
+                        if (url.indexOf('/data/') !== 0 && url.indexOf((window as any).publicUrl + '/data/') !== 0) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    setHtml(html: boolean) {
+        this.localFormat = html ? 'html' : '';
+    }
 }

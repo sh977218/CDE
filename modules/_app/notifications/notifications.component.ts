@@ -23,7 +23,6 @@ import { isSiteAdmin } from 'shared/system/authorizationShared';
     `]
 })
 export class NotificationsComponent {
-
     currentVersion = (window as any).version;
     numberVersionError = 0;
     numberServerError = 0;

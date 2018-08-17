@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { UserService } from '_app/user.service';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { Comment } from 'discuss/discuss.model';
+import { Comment } from 'shared/models.model';
 import { AlertService } from '_app/alert.service';
 
 const tabMap = {
