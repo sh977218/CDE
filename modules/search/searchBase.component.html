@@ -56,7 +56,7 @@
                                         elements
                                     </div>
                                     <div *ngIf="org.extraInfo">{{org.extraInfo}}</div>
-                                    <div *ngIf="org.source"><a href="{{org.source}}" target="_blank" rel="noopener">Source</a>
+                                    <div *ngIf="org.uri"><a href="{{org.uri}}" target="_blank" rel="noopener">Source</a>
                                     </div>
                                 </fieldset>
                                 <i class="fa fa-info welcomeDetailIcon hand-cursor" *ngIf="org.htmlOverview"
@@ -152,7 +152,7 @@
                 <ng-template #exportFormNotAuthorized>
                     <a routerLink="/login" mat-menu-item>Please login to export forms.</a>
                 </ng-template>
-                <a *ngIf="userService.user && displayValidation()" id="exportValidRule" mat-menu-item
+                <a *ngIf="displayValidation()" id="exportValidRule" mat-menu-item
                    (click)="openValidRulesModal()"> Validation Rules</a>
             </mat-menu>
         </div>
@@ -351,7 +351,7 @@
                         <mat-form-field class="float-left " style="width:20%;" id="goToPage">
                             <input matInput placeholder="Go to page:" type="number" min="1"
                                    [max]="numPages" [ngModel]="searchSettings.page"
-                                   (ngModelChange)="pageChange({pageIndex:$event-1})">
+                                   (ngModelChange)="pageChange({pageIndex: $event-1})">
                         </mat-form-field>
                         <mat-paginator class="float-left" (page)="pageChange($event)" [length]="totalItemsLimited"
                                        [pageIndex]="searchSettings.page - 1"

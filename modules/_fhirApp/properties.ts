@@ -4,15 +4,17 @@ import { FhirMapped, getMapPropertyFromId, supportedResourcesMaps } from '_fhirA
 import { ResourceTree } from '_fhirApp/resourceTree';
 import { FormQuestion } from 'shared/form/form.model';
 import { codeSystemOut } from 'shared/mapping/fhir';
+import { FhirCodeableConcept, FhirCoding } from 'shared/mapping/fhir/fhir.model';
+import { FhirAnnotation } from 'shared/mapping/fhir/fhirResource.model';
 import { newCodeableConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
 import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
 import { newPeriod } from 'shared/mapping/fhir/datatype/fhirPeriod';
 import { getRef, newReference } from 'shared/mapping/fhir/datatype/fhirReference';
 
 export function propertyToQuestion(q: FormQuestion, parent: ResourceTree, name: string): boolean {
-    let map: supportedResourcesMaps = parent.map;
+    let map: supportedResourcesMaps|undefined = parent.map;
     let resource = parent.resource;
-    let [propertyMap] = getMapPropertyFromId(map, q.question.cde.tinyId);
+    let [propertyMap] = getMapPropertyFromId(q.question.cde.tinyId, map);
     if (!resource || !propertyMap) {
         return false;
     }
@@ -45,11 +47,11 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTree, name: 
                 //     answer = newPeriod(...value);
                 //     break;
                 case 'FhirAnnotation':
-                    value = answer.map(v => v.text);
+                    value = answer.map((v: FhirAnnotation) => v.text);
                     break;
                 case 'FhirCodeableConcept':
                     // take first only
-                    value = answer.map(v => v.coding[0] && v.coding[0].code);
+                    value = answer.map((v: FhirCodeableConcept) => v.coding && v.coding[0] && v.coding[0].code);
                     break;
                 case 'FhirReference':
                     value = answer.map(getRef);
@@ -57,9 +59,9 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTree, name: 
                 default:
                     value = answer;
             }
-            if (name === 'usedReference' && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
-                value = value.map(a => {
-                    let i = map.mapping.usedReferencesMaps.indexOf(a);
+            if (name === 'usedReference' && map && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
+                value = value.map((a: string) => {
+                    let i = map!.mapping.usedReferencesMaps!.indexOf(a);
                     if (i > -1 && q.question.answers[i] && q.question.answers[i].permissibleValue) {
                         return q.question.answers[i].permissibleValue;
                     }
@@ -73,9 +75,9 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTree, name: 
 }
 
 export function questionToProperty(q: FormQuestion, parent: ResourceTree, name: string): boolean {
-    let map: supportedResourcesMaps = parent.map;
+    let map: supportedResourcesMaps|undefined = parent.map;
     let resource = parent.resource;
-    let [propertyMap] = getMapPropertyFromId(map, q.question.cde.tinyId);
+    let [propertyMap] = getMapPropertyFromId(q.question.cde.tinyId, map);
     if (!resource || !propertyMap) {
         return false;
     }
@@ -107,11 +109,11 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTree, name: 
             }
             break;
         default:
-            if (name === 'usedReference' && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
-                value = value.map(a => {
+            if (name === 'usedReference' && map && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
+                value = value.map((a: string) => {
                     let match = q.question.answers.filter(pv => pv.permissibleValue === a)[0];
                     if (match) {
-                        let staticValue = map.mapping.usedReferencesMaps[q.question.answers.indexOf(match)];
+                        let staticValue = map!.mapping.usedReferencesMaps![q.question.answers.indexOf(match)];
                         if (staticValue) {
                             return staticValue;
                         }
@@ -119,7 +121,7 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTree, name: 
                     return a;
                 });
             }
-            let answer: any = value.map(v => typedValueToProperty(propertyMap, v));
+            let answer: any = value.map((a: string) => typedValueToProperty(propertyMap!, a));
             if (propertyMap.max === -1 || propertyMap.max > 1) {
                 if (q.question.multiselect) {
                     // replace
@@ -127,8 +129,8 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTree, name: 
                 } else {
                     // mismatch single-select to array, partial update, no delete
                     if (!Array.isArray(resource[name])) resource[name] = [];
-                    value.forEach((v, i) => {
-                        let index = presentIndex(resource[name], propertyMap, value[0]);
+                    value.forEach((v: string, i: number) => {
+                        let index = presentIndex(resource[name], propertyMap!, value[0]);
                         if (index > -1) {
                             resource[name][index] = answer[i];
                         } else {
@@ -155,7 +157,7 @@ function presentIndex(list: any[], propertyMap: FhirMapped, v: any): number {
             case 'FhirAnnotation':
                 return l.text === v;
             case 'FhirCodeableConcept':
-                return l.coding.some(c => c.system === codeSystemOut(propertyMap.subTypes[0] || 'SNOMED') && c.code === v);
+                return l.coding.some((c: FhirCoding) => c.system === codeSystemOut(propertyMap.subTypes[0] || 'SNOMED') && c.code === v);
             case 'FhirReference':
                 return l.reference === v;
             default:
@@ -166,15 +168,15 @@ function presentIndex(list: any[], propertyMap: FhirMapped, v: any): number {
 }
 
 export function staticToProperty(self: ResourceTree) {
+    if (!self.resource || !self.map) {
+        return false;
+    }
     let ids = self.map.questionIds;
     let map: supportedResourcesMaps = self.map;
     let resource = self.resource;
-    if (!resource || !map) {
-        return false;
-    }
     self.map.questionProperties.forEach((propertyMap, i) => {
         if (ids[i] === 'static') {
-            let value = map.mapping[propertyMap.mapFieldValue];
+            let value = propertyMap.mapFieldValue && map.mapping[propertyMap.mapFieldValue];
             if (value) {
                 let answer = typedValueToProperty(propertyMap, value, map.mapping[propertyMap.mapFieldValue + 'System']);
                 let name = propertyMap.property;

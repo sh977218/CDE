@@ -1,4 +1,4 @@
-import { iterateFesSync, score } from 'shared/form/formShared';
+import { getLabel as getLabelShared, iterateFesSync, score } from 'shared/form/formShared';
 
 export function evaluateSkipLogic(condition, parent, fe, nrs) {
     if (!condition) return true;
@@ -95,9 +95,7 @@ export function evaluateSkipLogic(condition, parent, fe, nrs) {
 }
 
 export function getLabel(q) {
-    if (q.label) return q.label.trim();
-    if (q.question && q.question.cde) return q.question.cde.name.trim();
-    return ''; // ERROR: question is malformed, validation should catch this
+    return getLabelShared(q).trim();
 }
 
 export function getQuestions(fes, filter = undefined) {

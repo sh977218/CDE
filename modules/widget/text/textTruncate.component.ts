@@ -1,8 +1,8 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: "cde-text-truncate",
-    templateUrl: "./textTruncate.component.html",
+    selector: 'cde-text-truncate',
+    templateUrl: './textTruncate.component.html',
     styles: [`
         .collapseText {
             display: block;
@@ -17,20 +17,17 @@ import { Component, Input } from "@angular/core";
         }
     `]
 })
-
 export class TextTruncateComponent {
-
-    @Input() text: string;
-    @Input() textType: string = "plainText";
+    @Input() text!: string;
+    @Input() textType: string = 'plainText';
     @Input() threshold: number = 500;
-    @Input() customMoreLabel: string;
-    @Input() customLessLabel: string;
-
-    open: boolean;
-    _class: string = "collapseText";
+    @Input() customMoreLabel!: string;
+    @Input() customLessLabel!: string;
+    _class = 'collapseText';
+    open = false;
 
     toggleShow () {
         this.open = !this.open;
-        this._class = (this._class === "collapseText") ? "expandText" : "collapseText";
+        this._class = (this._class === 'collapseText') ? 'expandText' : 'collapseText';
     }
 }

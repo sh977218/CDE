@@ -45,7 +45,7 @@ export interface FhirEffective {
 }
 
 export class FhirExtension extends FhirElement implements FhirValue {
-    url: FhirUri;
+    url!: FhirUri;
     valueAddress?: FhirAddress;
     valueAttachment?: any;
     valueBase64Binary?: FhirBase64Binary;
@@ -129,12 +129,12 @@ export class FhirReference<T> {
 }
 
 export class FhirSampledData extends FhirElement {
-    data: string;
-    dimensions: number; // int
+    data!: string;
+    dimensions: number = NaN; // unsigned int >0
     factor?: number;
     lowerLimit?: number;
-    origin: FhirSimpleQuantity;
-    period: number;
+    origin!: FhirSimpleQuantity;
+    period: number = NaN;
     upperLimit?: number;
 }
 

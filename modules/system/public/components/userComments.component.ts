@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 
 import { UserService } from '_app/user.service';
-import { Comment, DiscussionComments } from 'shared/models.model';
+import { Comment, DiscussionComments, User } from 'shared/models.model';
 
 
 @Component({
@@ -10,11 +10,11 @@ import { Comment, DiscussionComments } from 'shared/models.model';
     templateUrl: './userComments.component.html'
 })
 export class UserCommentsComponent implements OnInit {
-    @Input() user: any;
+    @Input() user!: User;
     comments: DiscussionComments;
     getEltLink = UserService.getEltLink;
-    pageSize: Number = 30;
-    page: Number = 1;
+    pageSize: number = 30;
+    page: number = 1;
 
     ngOnInit() {
         this.getComments(1);
@@ -26,7 +26,7 @@ export class UserCommentsComponent implements OnInit {
         this.comments = {currentCommentsPage: 1, totalItems: 10000, latestComments: []};
     }
 
-    getComments(page) {
+    getComments(page: number) {
         //noinspection TypeScriptValidateTypes
         this.http.get<Comment[]>('/server/discuss/commentsFor/' + this.user.username + '/' + (page - 1) * 30 + '/30').subscribe(comments => {
             this.comments.latestComments = comments;

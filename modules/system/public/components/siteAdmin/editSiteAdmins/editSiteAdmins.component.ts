@@ -41,7 +41,7 @@ export class EditSiteAdminsComponent implements OnInit {
         this.http.get('/orgAuthorities').subscribe(response => this.orgAuthorities = response);
     }
 
-    removeSiteAdmin(byId) {
+    removeSiteAdmin(byId: string) {
         this.http.post('/removeSiteAdmin', {id: byId}).subscribe(() => {
                 this.Alert.addAlert('success', 'Removed');
                 this.getSiteAdmins();

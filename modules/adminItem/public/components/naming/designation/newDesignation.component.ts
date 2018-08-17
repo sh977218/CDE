@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { Designation } from '../../../../../../shared/models.model';
+import { Designation } from 'shared/models.model';
 
 @Component({
     selector: 'cde-designation',

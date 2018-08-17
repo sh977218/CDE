@@ -101,9 +101,13 @@ public class DisplayProfilesTest extends BaseFormTest {
         clickElement(By.id("displayProfiles_tab"));
 
         deleteWithConfirm(By.cssSelector("#profile_0"));
+        hangon(1);
         deleteWithConfirm(By.cssSelector("#profile_0"));
+        hangon(1);
         deleteWithConfirm(By.cssSelector("#profile_0"));
+        hangon(1);
         deleteWithConfirm(By.cssSelector("#profile_0"));
+        hangon(1);
         deleteWithConfirm(By.cssSelector("#profile_0"));
 
         newFormVersion();

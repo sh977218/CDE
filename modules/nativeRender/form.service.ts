@@ -1,12 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import _noop from 'lodash/noop';
 
 import { DataElementService } from 'cde/public/dataElement.service';
-import { CodeAndSystem } from 'shared/models.model';
+import { CodeAndSystem, ObjectId } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm, FormQuestion } from 'shared/form/form.model';
-import { iterateFe } from 'shared/form/formShared';
+import { CdeForm, FormQuestion, PermissibleFormValue } from 'shared/form/form.model';
 
 @Injectable()
 export class FormService {
@@ -16,7 +14,7 @@ export class FormService {
     ) {}
 
     // TODO: use Mongo cde and move to shared, currently open to using Elastic cde
-    convertCdeToQuestion(de: DataElement, cb: (q?: FormQuestion) => (void)): void {
+    convertCdeToQuestion(de: DataElement, cb: (q?: FormQuestion) => void): void {
         if (!de || de.valueDomain === undefined) {
             throw new Error('Cde ' + de.tinyId + ' is not valid');
         }
@@ -51,20 +49,20 @@ export class FormService {
         }
         if (!q.label) q.hideLabel = true;
 
-        function convertPv(q, cde) {
+        function convertPv(q: FormQuestion, cde: DataElement) {
             cde.valueDomain.permissibleValues.forEach(pv => {
                 if (!pv.valueMeaningName || pv.valueMeaningName.trim().length === 0) {
                     pv.valueMeaningName = pv.permissibleValue;
                 }
-                q.question.answers.push(pv);
+                q.question.answers.push(Object.assign({formElements: []}, pv));
                 q.question.cde.permissibleValues.push(pv);
             });
         }
         if (de.valueDomain.permissibleValues.length > 0) {
             // elastic only store 10 pv, retrieve pv when have more than 9 pv.
             if (de.valueDomain.permissibleValues.length > 9) {
-                this.dataElementService.fetchDe(de.tinyId, de.version || '').then(result => {
-                    convertPv(q, result);
+                this.dataElementService.fetchDe(de.tinyId, de.version || '').then(de => {
+                    convertPv(q, de);
                     cb(q);
                 }, cb);
             } else {
@@ -76,7 +74,7 @@ export class FormService {
         }
     }
 
-    fetchForm(tinyId, version = undefined): Promise<CdeForm> {
+    fetchForm(tinyId: string, version?: string): Promise<CdeForm> {
         return new Promise<CdeForm>((resolve, reject) => {
             if (version || version === '') {
                 this.http.get<CdeForm>('/form/' + tinyId + '/version/' + version).subscribe(resolve, reject);
@@ -86,9 +84,9 @@ export class FormService {
         });
     }
 
-    fetchFormById(id): Promise<CdeForm> {
+    fetchFormById(id: ObjectId): Promise<CdeForm> {
         return new Promise<CdeForm>((resolve, reject) => {
-            this.http.get('/formById/' + id).subscribe(resolve, reject);
+            this.http.get<CdeForm>('/formById/' + id).subscribe(resolve, reject);
         });
     }
 }
