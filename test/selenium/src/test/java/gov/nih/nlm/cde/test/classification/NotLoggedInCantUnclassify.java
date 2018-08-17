@@ -13,13 +13,13 @@ public class NotLoggedInCantUnclassify extends NlmCdeBaseTest {
         goToCdeByName("Lower limb tone findings result");
         goToClassification();
         textPresent("Assessments");
-        Assert.assertTrue(driver.findElements(By.cssSelector(".fa-trash-o")).size() > 0);
+        Assert.assertTrue(driver.findElements(By.xpath("//mat-icon[.  = 'delete_outline']")).size() > 0);
 
         logout();
         goToCdeByName("Lower limb tone findings result");
         goToClassification();
         textPresent("Assessments");
-        Assert.assertEquals(driver.findElements(By.cssSelector(".fa-trash-o")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//mat-icon[.  = 'delete_outline']")).size(), 0);
     }
 
 }

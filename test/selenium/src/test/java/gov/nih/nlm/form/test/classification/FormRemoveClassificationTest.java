@@ -12,7 +12,7 @@ public class FormRemoveClassificationTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToClassification();
-        clickElement(By.xpath("//i[@id = 'PROMIS Instruments,Adult Item Banks,Mental Health-unclassifyBtn']"));
+        clickElement(By.xpath("//mat-icon[@id = 'PROMIS Instruments,Adult Item Banks,Mental Health-unclassifyBtn']"));
         clickElement(By.id("confirmDeleteClassificationBtn"));
         checkAlert("Classification removed.");
         textNotPresent("Mental Health");
