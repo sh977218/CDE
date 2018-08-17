@@ -14,36 +14,35 @@ exports.module = function (roleConfig) {
         userDb.byId(req.user._id, handleError({req, res}, user => {
             if (!user) return res.status(404).send();
             res.send(user);
-        }))
+        }));
     });
 
     router.post('/', (req, res) => {
         userDb.updateUser(req.user._id, req.body, handleError({req, res}, user => {
             if (!user) return res.status(404).send();
             res.send(user);
-        }))
+        }));
     });
 
     router.get('/avatar/:username', (req, res) => {
         userDb.avatarByUsername(req.params.username, handleError({req, res}, avatar => {
             if (!avatar) return res.status(404).send();
             res.send(avatar);
-        }))
+        }));
     });
 
     router.get('/mailStatus', [loggedInMiddleware], (req, res) => {
         mongo_data.mailStatus(req.user, handleError({req, res}, mails => {
             if (!mails) return res.status(404).send();
-            res.send({count: mails.length})
+            res.send({count: mails.length});
         }));
     });
 
     router.get('/searchUsers/:username?', roleConfig.search, (req, res) => {
         userDb.usersByUsername(req.params.username, handleError({req, res}, users => {
-                if (!users) return res.status(404).send();
-                res.send({users: users})
-            })
-        )
+            if (!users) return res.status(404).send();
+            res.send(users);
+        }));
     });
 
     router.post('/addUser', roleConfig.manage, (req, res) => {
@@ -56,7 +55,7 @@ exports.module = function (roleConfig) {
                 quota: 1024 * 1024 * 1024
             };
             userDb.save(newUser, handleError({req, res}, () => res.send(username + " added.")));
-        }))
+        }));
     });
 
     router.post('/updateNotificationDate', roleConfig.notificationDate, (req, res) => {

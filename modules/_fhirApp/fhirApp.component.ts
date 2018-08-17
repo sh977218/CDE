@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 
-import { CdeFhirService } from '_fhirApp/cdeFhir.service';
+import { CdeFhirService, PatientForm } from '_fhirApp/cdeFhir.service';
 import { FhirDomainResource, FhirEncounter, FhirObservation } from 'shared/mapping/fhir/fhirResource.model';
 import { codingArrayPreview, getDateString, valuePreview } from 'shared/mapping/fhir/fhirDatatypes';
 import { getText, getTextFromArray } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
@@ -15,6 +15,8 @@ function getObservationViewCode(observation: FhirObservation): string {
 function getObservationViewValue(observation: FhirObservation): string {
     return valuePreview(observation);
 }
+
+export type FhirAppViewModes = 'browse'|'filter'|'form';
 
 @Component({
     selector: 'cde-fhir-standalone',
@@ -72,15 +74,15 @@ export class FhirAppComponent {
     browseEncounters?: FhirEncounter[];
     browseMode = '';
     readonly browseOptions = ['', 'Encounter'];
-    errorMessage: string;
+    errorMessage?: string;
     getDateString = getDateString;
     getPatientName = getPatientName;
     interruptEvent = interruptEvent;
-    mode: 'browse'|'filter'|'form' = 'filter';
-    saveMessage: string = null;
+    mode: FhirAppViewModes = 'filter';
+    saveMessage?: string;
     selectedProfileName: string;
-    saving: boolean;
-    saved: boolean;
+    saving = false;
+    saved = false;
 
     constructor(public cdeFhir: CdeFhirService,
                 public dialog: MatDialog,
@@ -90,7 +92,7 @@ export class FhirAppComponent {
         cdeFhir.init(this.route.snapshot, err => this.errorMessage = err);
     }
 
-    browseModeSelected(mode) {
+    browseModeSelected() {
         this.browseEncounters = undefined;
         if (this.browseMode === 'Encounter') {
             this.cdeFhir.fhirData.search<FhirEncounter>('Encounter', {}).then(e => {
@@ -99,7 +101,7 @@ export class FhirAppComponent {
         }
     }
 
-    loadForm(f) {
+    loadForm(f: PatientForm) {
         this.saving = true;
         this.cdeFhir.loadFormData(f, () => {
             this.saving = false;

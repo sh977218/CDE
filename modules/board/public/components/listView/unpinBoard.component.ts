@@ -31,8 +31,8 @@ export class UnpinBoardComponent {
         }, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Unpinned.');
             this.boardListService.reload.emit();
-        }, (response) => {
-            this.alert.addAlert('danger', response.data);
+        }, err => {
+            this.alert.httpErrorMessageAlert(err);
             this.boardListService.reload.emit();
         });
     }

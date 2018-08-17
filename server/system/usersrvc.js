@@ -49,92 +49,55 @@ exports.removeSiteAdmin = function(req, res) {
     });
 };
 
-exports.myOrgsAdmins = function(req, res) {
-    if (!req.isAuthenticated()) {
-        res.send({orgs: []});
-    } else {
-        mongo_data.userById(req.user._id, function(err, foundUser) {
-            var result = {"orgs": []};
-            mongo_data.orgAdmins(function(err, users) {
-                var myOrgs = foundUser.orgAdmin;
-                for (var i = 0; i < myOrgs.length; i++) {
-                    var usersList = [];
-                    users.forEach(function (u) {
-                        if (u.orgAdmin.indexOf(myOrgs[i]) > -1) {
-                            usersList.push({
-                                "username": u.username
-                                , "_id": u._id
-                            });
-                        }
-                    });
-                    if (usersList.length > 0) {
-                        result.orgs.push({
-                            "name": myOrgs[i]
-                            , "users": usersList
-                        });
-                    }
-                }
-               res.send(result); 
-            });
+exports.myOrgsAdmins = function (req, res) {
+    mongo_data.userById(req.user._id, function (err, foundUser) {
+        mongo_data.orgAdmins(function (err, users) {
+            res.send(foundUser.orgAdmin
+                .map(org => ({
+                    name: org,
+                    users: users
+                        .filter(u => u.orgAdmin.indexOf(org) > -1)
+                        .map(u => ({
+                            _id: u._id,
+                            username: u.username,
+                        })),
+                }))
+                .filter(r => r.users.length > 0));
         });
-    }
+    });
 };
 
-exports.orgCurators = function(req, res) {
-    if (!req.isAuthenticated()) {
-        res.send("You must log in to do this.");
-    } else {
-        mongo_data.userById(req.user._id, function(err, foundUser) {
-            var result = {"orgs": []};
-            if (foundUser.orgAdmin.length > 0) {
-                mongo_data.orgCurators(foundUser.orgAdmin, function(err, users) {
-                    var myOrgs = foundUser.orgAdmin;
-                    for (var i = 0; i < myOrgs.length; i++) {
-                        var usersList = [];
-                        for (var j in users) {
-                            if (users[j].orgCurator.indexOf(myOrgs[i]) > -1) {
-                                usersList.push({
-                                    "username": users[j].username
-                                    , "_id": users[j]._id
-                                });
-                            }
-                        }
-                        if (usersList.length > 0) {
-                            result.orgs.push({
-                                "name": myOrgs[i]
-                                , "users": usersList
-                            });
-                        }
-                    }
-                   res.send(result); 
-                });
-            } else {
-                res.send("User is not an Org Admin");
-            }
-        });
-    }
+exports.orgCurators = function (req, res) {
+    mongo_data.orgCurators(req.user.orgAdmin, function (err, users) {
+        res.send(req.user.orgAdmin
+            .map(org => ({
+                name: org,
+                users: users
+                    .filter(user => user.orgCurator.indexOf(org) > -1)
+                    .map(user => ({
+                        _id: user._id,
+                        username: user.username,
+                    })),
+            }))
+            .filter(org => org.users.length > 0)
+        );
+    });
 };
 
-exports.orgAdmins = function(req, res) {
-    if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
-
-    let result = {"orgs": []};
-    mongo_data.managedOrgs((err,managedOrgs) => {
+exports.orgAdmins = function (req, res) {
+    mongo_data.managedOrgs((err, managedOrgs) => {
         mongo_data.orgAdmins((err, users) => {
-            managedOrgs.forEach(mo => {
-                let newOrg = {"name": mo.name, "users": []};
-                result.orgs.push(newOrg);
-                // var usersList = [];
-                users.forEach(u => {
-                    if (u.orgAdmin.indexOf(mo.name) > -1) {
-                        newOrg.users.push({
-                            "username": u.username,
-                            "_id": u._id
-                        });
-                    }
-                });
-            });
-            res.send(result);
+            res.send(managedOrgs
+                .map(mo => ({
+                    name: mo.name,
+                    users: users
+                        .filter(u => u.orgAdmin.indexOf(mo.name) > -1)
+                        .map(u => ({
+                            _id: u._id,
+                            username: u.username,
+                        })),
+                }))
+            );
         });
     });
 };

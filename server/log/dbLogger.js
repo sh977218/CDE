@@ -144,6 +144,22 @@ exports.logClientError = function (req, callback) {
     });
 };
 
+exports.handle404 = function handle404(options, cb) { // Not Found
+    return function errorHandler(err, arg, ...args) {
+        if (err) {
+            exports.respondError(err, options);
+            return;
+        }
+        if (!arg) {
+            if (options && options.res) {
+                options.res.status(404).send();
+            }
+            return;
+        }
+        cb(arg, ...args);
+    };
+};
+
 exports.handleError = function (options, cb) {
     return function errorHandler(err, ...args) {
         if (err) {

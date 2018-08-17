@@ -6,6 +6,8 @@ import _noop from 'lodash/noop';
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
 
+type Embed = any;
+
 
 @Component({
     selector: 'cde-embed',
@@ -22,11 +24,11 @@ export class EmbedComponent implements OnInit {
         ids: []
     };
     embeds: any = {};
-    previewOn: boolean;
-    selectedOrg: any;
+    previewOn?: boolean;
+    selectedOrg: Embed;
     selection: any;
-    showDelete: boolean;
-    previewSrc: SafeResourceUrl;
+    showDelete?: boolean;
+    previewSrc?: SafeResourceUrl;
 
     ngOnInit() {
         this.reloadEmbeds();
@@ -54,7 +56,7 @@ export class EmbedComponent implements OnInit {
         this.selection.cde.otherNames.push({contextName: '', label: ''});
     }
 
-    addEmbed (org) {
+    addEmbed (org: string) {
         if (!this.embeds[org]) this.embeds[org] = [];
 
         this.embeds[org].push(
@@ -79,12 +81,12 @@ export class EmbedComponent implements OnInit {
         });
     }
 
-    edit (org, e) {
+    edit (org: string, e: Embed) {
         this.selection = e;
         this.selectedOrg = org;
     }
 
-    enableCde (b) {
+    enableCde (b: boolean) {
         if (b) {
             this.selection.cde = {lowestRegistrationStatus: 'Qualified'};
         } else {
@@ -92,7 +94,7 @@ export class EmbedComponent implements OnInit {
         }
     }
 
-    enablePreview (b) {
+    enablePreview (b: boolean) {
         this.previewOn = b;
         if (b) {
             this.previewSrc = this.sanitizer.bypassSecurityTrustResourceUrl('/embedded/public/html/index.html?id=' + this.selection._id);
@@ -107,7 +109,7 @@ export class EmbedComponent implements OnInit {
         }, _noop);
     }
 
-    remove (e) {
+    remove (e: Embed) {
         this.http.delete('/embed/' + e._id).subscribe(() => {
             this.alert.addAlert('success', 'Removed');
             this.reloadEmbeds();

@@ -4,6 +4,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-boots
 
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
+import { User } from 'shared/models.model';
 import { rolesEnum } from 'shared/system/authorizationShared';
 
 
@@ -13,10 +14,10 @@ import { rolesEnum } from 'shared/system/authorizationShared';
     templateUrl: './usersMgt.component.html'
 })
 export class UsersMgtComponent {
-    @ViewChild('newUserContent') public newUserContent: NgbModalModule;
+    @ViewChild('newUserContent') newUserContent!: NgbModalModule;
     foundUsers: any[] = [];
-    modalRef: NgbModalRef;
-    newUsername: string;
+    modalRef?: NgbModalRef;
+    newUsername = '';
     search: any = {username: ''};
     rolesEnum = rolesEnum;
 
@@ -28,12 +29,10 @@ export class UsersMgtComponent {
 
     addNewUser() {
         this.http.post('/server/user/addUser', {username: this.newUsername}, {responseType: 'text'}).subscribe(
-            () => {
-                this.Alert.addAlert('success', 'User created');
-            },
+            () => this.Alert.addAlert('success', 'User created'),
             () => this.Alert.addAlert('danger', 'Cannot create user. Does it already exist?')
         );
-        this.modalRef.close();
+        this.modalRef!.close();
     }
 
     openNewUserModal() {
@@ -42,20 +41,14 @@ export class UsersMgtComponent {
 
     searchUsers() {
         let uname = this.search.username.username ? this.search.username.username : this.search.username;
-        this.http.get<any>('/server/user/searchUsers/' + uname).subscribe(
-            result => {
-                this.foundUsers = result.users;
-            });
+        this.http.get<User[]>('/server/user/searchUsers/' + uname).subscribe(users => this.foundUsers = users);
     }
 
-    updateAvatar(user) {
-        this.http.post('/updateUserAvatar', user).subscribe(
-            () => this.Alert.addAlert('success', 'Saved.'));
+    updateAvatar(user: User) {
+        this.http.post('/updateUserAvatar', user).subscribe(() => this.Alert.addAlert('success', 'Saved.'));
     }
 
-    updateRoles(user) {
-        this.http.post('/updateUserRoles', user)
-            .subscribe(() => this.Alert.addAlert('success', 'Roles saved.'));
+    updateRoles(user: User) {
+        this.http.post('/updateUserRoles', user).subscribe(() => this.Alert.addAlert('success', 'Roles saved.'));
     }
-
 }

@@ -22,10 +22,10 @@ exports.module = function (roleConfig) {
                 });
             });
             res.send(comments);
-        }))
+        }));
     });
 
-    router.post('/postComment', loggedInMiddleware, (req, res) => {
+    router.post('/postComment', [loggedInMiddleware], (req, res) => {
         let comment = req.body;
         let dao = daoManager.getDao(comment.element.eltType);
         let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
@@ -56,7 +56,7 @@ exports.module = function (roleConfig) {
         );
 
     });
-    router.post('/replyComment', loggedInMiddleware, (req, res) => {
+    router.post('/replyComment', [loggedInMiddleware], (req, res) => {
         discussDb.byId(req.body.commentId, handleError({req, res}, comment => {
             if (!comment) return res.status(404).send("Comment not found.");
             let numberUnapprovedReplies = comment.replies.filter(r => r.pendingApproval && r.user.username === req.user.username).length;
@@ -111,10 +111,10 @@ exports.module = function (roleConfig) {
                     mongo_data.createMessage(message);
                 }
             }));
-        }))
+        }));
     });
 
-    router.post('/deleteComment', loggedInMiddleware, (req, res) => {
+    router.post('/deleteComment', [loggedInMiddleware], (req, res) => {
         let commentId = req.body.commentId;
         discussDb.byId(commentId, handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send("Comment not found");
@@ -132,12 +132,12 @@ exports.module = function (roleConfig) {
                             })
                         );
                     })
-                )
+                );
 
             })
-        )
+        );
     });
-    router.post('/deleteReply', loggedInMiddleware, (req, res) => {
+    router.post('/deleteReply', [loggedInMiddleware], (req, res) => {
         let replyId = req.body.replyId;
         discussDb.byReplyId(replyId, handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send("Reply not found");
@@ -156,26 +156,25 @@ exports.module = function (roleConfig) {
                             })
                         );
                     })
-                )
+                );
 
             })
-        )
+        );
     });
 
-    router.get('/commentsFor/:username/:from/:size', loggedInMiddleware, (req, res) => {
+    router.get('/commentsFor/:username/:from/:size', [loggedInMiddleware], (req, res) => {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
         let username = req.params.username;
         if (!username || from < 0 || size < 0) return res.status(422).send();
-        discussDb.commentsForUser(username, from, size, handleError({req, res}, comments =>
-            res.send(comments))
-        )
+        discussDb.commentsForUser(username, from, size, handleError({req, res}, comments => res.send(comments))
+        );
     });
     router.get('/allComments/:from/:size', roleConfig.allComments, (req, res) => {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
         if (from < 0 || size < 0) return res.status(422).send();
-        discussDb.allComments(from, size, handleError({req, res}, comments => res.send(comments)))
+        discussDb.allComments(from, size, handleError({req, res}, comments => res.send(comments)));
     });
     router.get('/orgComments/:from/:size', authorization.loggedInMiddleware, (req, res) => {
         let myOrgs = userService.myOrgs(req.user);
@@ -183,9 +182,7 @@ exports.module = function (roleConfig) {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
         if (from < 0 || size < 0) return res.status(422).send();
-        discussDb.orgComments(myOrgs, from, size, handleError({req, res}, comments =>
-            res.send(comments))
-        )
+        discussDb.orgComments(myOrgs, from, size, handleError({req, res}, comments => res.send(comments)));
     });
 
     router.post('/approveComment', roleConfig.manageComment, (req, res) => {
@@ -194,7 +191,7 @@ exports.module = function (roleConfig) {
                 comment.pendingApproval = false;
                 comment.save(handleError({req, res}, () => res.send("Approved")));
             })
-        )
+        );
     });
     router.post('/declineComment', roleConfig.manageComment, (req, res) => {
         discussDb.byId(req.body.commentId, handleError({req, res}, comment => {
@@ -202,7 +199,7 @@ exports.module = function (roleConfig) {
                 comment.pendingApproval = false;
                 comment.remove(handleError({req, res}, () => res.send("Declined")));
             })
-        )
+        );
     });
 
     router.post('/approveReply', roleConfig.manageComment, (req, res) => {
@@ -214,7 +211,7 @@ exports.module = function (roleConfig) {
                 });
                 comment.save(handleError({req, res}, () => res.send("Approved")));
             })
-        )
+        );
     });
     router.post('/declineReply', roleConfig.manageComment, (req, res) => {
         let replyId = req.body.replyId;
@@ -223,10 +220,10 @@ exports.module = function (roleConfig) {
                 comment.replies = comment.replies.filter(r => r._id.toString() !== replyId);
                 comment.save(handleError({req, res}, () => res.send("Approved")));
             })
-        )
+        );
     });
 
-    router.post('/resolveComment', loggedInMiddleware, (req, res) => {
+    router.post('/resolveComment', [loggedInMiddleware], (req, res) => {
         discussDb.byId(req.body.commentId, handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.status = 'resolved';
@@ -235,9 +232,9 @@ exports.module = function (roleConfig) {
                     res.send({});
                 }));
             })
-        )
+        );
     });
-    router.post('/reopenComment', loggedInMiddleware, (req, res) => {
+    router.post('/reopenComment', [loggedInMiddleware], (req, res) => {
         discussDb.byId(req.body.commentId, handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send();
                 comment.status = 'active';
@@ -246,10 +243,10 @@ exports.module = function (roleConfig) {
                     res.send({});
                 }));
             })
-        )
+        );
     });
 
-    router.post('/resolveReply', loggedInMiddleware, (req, res) => {
+    router.post('/resolveReply', [loggedInMiddleware], (req, res) => {
         let replyId = req.body.replyId;
         discussDb.byReplyId(replyId, handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send();
@@ -261,9 +258,9 @@ exports.module = function (roleConfig) {
                     res.send({});
                 }));
             })
-        )
+        );
     });
-    router.post('/reopenReply', loggedInMiddleware, (req, res) => {
+    router.post('/reopenReply', [loggedInMiddleware], (req, res) => {
         let replyId = req.body.replyId;
         discussDb.byReplyId(replyId, handleError({req, res}, comment => {
                 if (!comment) return res.status(404).send();
@@ -275,7 +272,7 @@ exports.module = function (roleConfig) {
                     res.send({});
                 }));
             })
-        )
+        );
     });
 
     return router;
@@ -283,4 +280,4 @@ exports.module = function (roleConfig) {
 };
 
 // @TODO emit should have room Id.
-ioServerCommentUpdated = username => ioServer.ioServer.of("/comment").emit('commentUpdated', {username: username});
+let ioServerCommentUpdated = username => ioServer.ioServer.of("/comment").emit('commentUpdated', {username: username});

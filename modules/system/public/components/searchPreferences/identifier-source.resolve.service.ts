@@ -4,7 +4,7 @@ import { Resolve } from '@angular/router';
 
 @Injectable()
 export class IdentifierSourcesResolve implements Resolve<any> {
-    identifierSources = [];
+    identifierSources: any[] = [];
 
     constructor(private http: HttpClient) {
     }

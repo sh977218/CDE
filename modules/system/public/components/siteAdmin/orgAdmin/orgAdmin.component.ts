@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
 import { IsAllowedService } from 'core/isAllowed.service';
+import { UsersOrgQuery } from 'shared/models.model';
 
 
 @Component({
@@ -25,7 +26,7 @@ export class OrgAdminComponent implements OnInit {
         public userService: UserService,
     ) {}
 
-    addOrgAdmin () {
+    addOrgAdmin() {
         this.http.post('/addOrgAdmin', {
             username: this.newAdmin.username,
             org: this.newAdmin.orgName
@@ -36,15 +37,15 @@ export class OrgAdminComponent implements OnInit {
         this.newAdmin.username = '';
     }
 
-    getAdmins () {
+    getAdmins() {
         if (this.isAllowedModel.hasRole('OrgAuthority')) {
-            return this.http.get('/orgAdmins').subscribe(r => this.setOrgs(r));
+            return this.http.get<UsersOrgQuery[]>('/orgAdmins').subscribe(r => this.setOrgs(r));
         } else {
-            return this.http.get('/myOrgsAdmins').subscribe(r => this.setOrgs(r));
+            return this.http.get<UsersOrgQuery[]>('/myOrgsAdmins').subscribe(r => this.setOrgs(r));
         }
     }
 
-    removeOrgAdmin (orgName, userId) {
+    removeOrgAdmin(orgName: string, userId: string) {
         this.http.post('/removeOrgAdmin', {
             org: orgName,
             userId: userId
@@ -54,8 +55,10 @@ export class OrgAdminComponent implements OnInit {
         }, () => this.alert.addAlert('danger', 'An error occured.'));
     }
 
-    setOrgs (r) {
-        this.orgAdmins = r.orgs;
-        if (this.orgAdmins && this.orgAdmins.length === 1) this.newAdmin.orgName = this.orgAdmins[0].name;
+    setOrgs(r: UsersOrgQuery[]) {
+        this.orgAdmins = r;
+        if (this.orgAdmins && this.orgAdmins.length === 1) {
+            this.newAdmin.orgName = this.orgAdmins[0].name;
+        }
     }
 }

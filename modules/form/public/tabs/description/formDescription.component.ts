@@ -17,14 +17,16 @@ import { TREE_ACTIONS, TreeComponent } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { Hotkey, HotkeysService } from "angular2-hotkeys";
 import _isEmpty from 'lodash/isEmpty';
+import _noop from 'lodash/noop';
 
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from '_app/alert.service';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
+import { Cb } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm, FormElementsContainer, FormSection } from 'shared/form/form.model';
+import { CdeForm, FormElement, FormElementsContainer, FormInForm, FormSection } from 'shared/form/form.model';
 import { addFormIds, convertFormToSection, isSubForm, iterateFeSync } from 'shared/form/formShared';
 import { scrollTo, waitRendered } from 'widget/browser';
 
@@ -146,12 +148,12 @@ const TOOL_BAR_OFF_SET = 64;
 })
 
 export class FormDescriptionComponent implements OnInit, AfterViewInit {
-    private _elt: CdeForm;
+    private _elt?: CdeForm;
     @Input() canEdit: boolean = false;
-    @Input() set elt(e: CdeForm) {
-        this._elt = e;
-        this.addExpanded(e);
-        addFormIds(e);
+    @Input() set elt(form: CdeForm) {
+        this._elt = form;
+        this.addExpanded(form);
+        addFormIds(form);
     }
     get elt() {
         return this._elt;
@@ -195,7 +197,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                         } else if (from.ref === 'form') {
                             this.openFormSearch();
                         } else if (from.ref === 'pasteSection') {
-                            let copiedSection = this.localStorageService.get('sectionCopied');
+                            let copiedSection: FormSection = this.localStorageService.get('sectionCopied');
                             this.formElementEditing.formElement = copiedSection;
                             this.addFormElement(copiedSection);
                         } else {
@@ -249,13 +251,13 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.doIt();
     }
 
-    addExpanded(fe) {
+    addExpanded(fe: FormElementsContainer) {
         fe.expanded = true;
-        let expand = fe => { fe.expanded = true; };
+        let expand = (fe: FormElement) => { fe.expanded = true; };
         iterateFeSync(fe, undefined, expand, expand);
     }
 
-    addFormElement(fe) {
+    addFormElement(fe: FormElement) {
         if (this.formElementEditing.formElements) {
             this.formElementEditing.formElements.splice(this.formElementEditing.index, 0, fe);
         }
@@ -264,28 +266,28 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.onEltChange.emit();
     }
 
-    addFormFromSearch(fe, cb = null) {
-        this.http.get<CdeForm>('/form/' + fe.tinyId).subscribe(form => {
-            let inForm: FormElementsContainer = convertFormToSection(form);
+    addFormFromSearch(form: CdeForm, cb: Cb<FormInForm> = _noop) {
+        this.http.get<CdeForm>('/form/' + form.tinyId).subscribe(form => {
+            let inForm = convertFormToSection(form);
             if (!inForm) return;
             this.addExpanded(inForm);
             this.formElementEditing.formElement = inForm;
             this.addFormElement(inForm);
             this.setCurrentEditing(this.formElementEditing.formElements, inForm, this.formElementEditing.index);
             this.isModalOpen = false;
-            if (cb) cb(inForm);
+            cb(inForm);
         });
     }
 
-    addQuestionFromSearch(cde) {
-        this.formService.convertCdeToQuestion(cde, question => {
+    addQuestionFromSearch(de: DataElement) {
+        this.formService.convertCdeToQuestion(de, question => {
             question.formElements = [];
             question.expanded = true;
             question.edit = true;
             this.addFormElement(question);
             this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
             waitRendered(
-                () => document.getElementById('question_' + question.feId),
+                () => !!document.getElementById('question_' + question.feId),
                 () => scrollTo('question_' + question.feId)
             );
             this.isModalOpen = false;
@@ -325,7 +327,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.addQuestionDialogRef.afterClosed().subscribe(() => this.isModalOpen = false);
 
         setTimeout(() => {
-            if (this.questionModelMode === 'add') window.document.getElementById("newDEName").focus();
+            if (this.questionModelMode === 'add') document.getElementById("newDEName")!.focus();
         }, 0);
     }
 

@@ -47,7 +47,7 @@
         <form id="addRuleForm" #newRuleForm="ngForm">
             <div class="form-group">
                 <label for="org">Organization</label>
-                <select id="org" [(ngModel)]="newRule.org" class="form-control" name="org" required>
+                <select id="org" [(ngModel)]="newRuleOrg" class="form-control" name="org" required>
                     <option *ngFor="let org of userOrgsArray">{{org}}</option>
                 </select>
             </div>

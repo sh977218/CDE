@@ -1,5 +1,6 @@
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 
+// --------------------------------------------------
 // Middleware
 
 exports.nocacheMiddleware = function (req, res, next) {
@@ -13,58 +14,67 @@ exports.nocacheMiddleware = function (req, res, next) {
     next();
 };
 
-exports.isAuthenticatedMiddleware = function (req, res, next) {
-    if (req.isAuthenticated()) next();
-    else res.status(401).send();
-};
 exports.canEditMiddleware = function (req, res, next) {
     if (!authorizationShared.canEditCuratedItem(req.user, req.body)) {
-        // TODO: should consider adding to error log
-        return res.status(403).send();
+        // TODO: consider ban
+        res.status(403).send();
+        return;
     }
-    if (next) next();
+    next();
 };
 
 exports.canCommentMiddleware = function (req, res, next) {
-    if (!req.user) return res.status(401).send();
-    else if (!authorizationShared.canComment(req.user)) res.status(401).send();
-    else next();
+    if (!authorizationShared.canComment(req.user)) {
+        res.status(401).send();
+        return;
+    }
+    next();
 };
 
 exports.canApproveCommentMiddleware = function (req, res, next) {
-    if (authorizationShared.hasRole(req.user, "CommentReviewer")) next();
-    else res.send(401).send();
+    if (!authorizationShared.hasRole(req.user, "CommentReviewer")) {
+        res.send(401).send();
+        return;
+    }
+    next();
 };
 
 exports.isOrgAdminMiddleware = (req, res, next) => {
-    if (!req.isAuthenticated() || !authorizationShared.isOrgAdmin(req.user, req.body.org)) {
-        return res.status(403).send();
+    if (!authorizationShared.isOrgAdmin(req.user, req.body.org)) {
+        res.status(403).send();
+        return;
     }
-    if (next) {
-        next();
-    }
+    next();
 };
 
 exports.isOrgAuthorityMiddleware = (req, res, next) => {
-    if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send();
+    if (!authorizationShared.canOrgAuthority(req.user)) {
+        res.status(403).send();
+        return;
+    }
     next();
 };
 
 exports.isSiteAdminMiddleware = (req, res, next) => {
-    if (!req.isAuthenticated() || !authorizationShared.isSiteAdmin(req.user)) {
-        return res.status(403).send();
+    if (!authorizationShared.isSiteAdmin(req.user)) {
+        res.status(403).send();
+        return;
     }
-    if (next) {
-        next();
-    }
+    next();
 };
 
 exports.loggedInMiddleware = function (req, res, next) {
-    if (!req.user) return res.status(401).send();
-    if (next) next();
+    if (!req.isAuthenticated()) {
+        res.status(401).send();
+        return;
+    }
+    next();
 };
 
+// --------------------------------------------------
 // Permission Helpers with Request/Response
+// --------------------------------------------------
+
 exports.checkOwnership = function (dao, id, req, cb) {
     if (!req.isAuthenticated()) return cb("You are not authorized.", null);
     dao.byId(id, function (err, elt) {

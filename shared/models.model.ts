@@ -1,38 +1,47 @@
-import { CdeForm } from 'shared/form/form.model';
-import { DataElement } from 'shared/de/dataElement.model';
+import { CdeFormElastic } from 'shared/form/form.model';
+import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
+
+export function assertUnreachable(x: never): never {
+    throw new Error("Didn't expect to get here");
+}
 
 export type supportedFhirResources = 'Observation'|'Procedure';
 export const supportedFhirResourcesArray = ['Observation', 'Procedure'];
 
 export class Attachment {
-    comment: string;
-    fileid: string;
-    filename: string;
-    filesize: number;
-    filetype: string;
-    isDefault: boolean;
-    pendingApproval: boolean;
-    scanned: boolean;
-    uploadedBy: {
-        userId: ObjectId,
-        username: string,
+    comment?: string;
+    fileid?: string;
+    filename?: string;
+    filesize?: number;
+    filetype?: string;
+    isDefault?: boolean;
+    pendingApproval?: boolean;
+    scanned?: boolean;
+    uploadedBy?: {
+        userId?: ObjectId,
+        username?: string,
     };
-    uploadDate: Date;
+    uploadDate?: Date;
+
+    static isDefault(attachment: Attachment) {
+        return attachment.isDefault === true;
+    }
 }
 
+export type Cb<T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => void;
+export type CbErr<T = never, U = never, V = never> = (error?: string, t?: T, u?: U, v?: V) => void;
+export type CbRet<R = never, T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => R;
+
 export class CdeId {
+    [key: string]: string|undefined;
     _id?: ObjectId;
-    id: string;
-    source: string;
+    id?: string;
+    source?: string;
     version?: string;
 
-    constructor(source = undefined, id = undefined) {
+    constructor(source?: string, id?: string) {
         this.source = source;
         this.id = id;
-    }
-
-    static copy(id: CdeId) {
-        return Object.assign(new CdeId(), id);
     }
 }
 
@@ -40,22 +49,30 @@ export class Classification {
     elements: ClassficationElements[] = [];
     stewardOrg: {
         name: string
-    };
-    workingGroup: boolean;
+    } = {name};
+    workingGroup?: boolean;
+}
 
-    static copy(c: Classification) {
-        return Object.assign(new Classification(), c ? JSON.parse(JSON.stringify(c)) : undefined);
-    }
+export class ClassificationClassified {
+    classificationArray?: string[];
+    selectedOrg?: string;
 }
 
 class ClassficationElements {
     elements: any[] = [];
-    name: string;
+    name?: string;
+}
+
+export class ClassificationHistory {
+    categories?: string[];
+    cdeId?: string;
+    eltId?: string;
+    orgName?: string;
 }
 
 export class CodeAndSystem {
-    code: string;
-    system: string;
+    code?: string;
+    system?: string;
 
     constructor(system: string, code: string) {
         this.system = system;
@@ -76,237 +93,217 @@ export class CodeAndSystem {
 }
 
 export class Comment {
-    created: Date;
-    element: {
-        eltId: string,
-        eltType: string,
+    _id?: string;
+    created?: Date;
+    currentComment: boolean = false; // calculated, used by CommentsComponent
+    currentlyReplying?: boolean; // calculated, used by CommentsComponent
+    element?: {
+        eltId?: string,
+        eltType?: 'board' | 'cde' | 'form',
     };
-    linkedTab: string;
-    pendingApproval: boolean;
-    replies: CommentReply[];
-    status: string = "active";
-    text: string;
-    user: string;
-    username: string;
-
-    static copy(comment: Comment) {
-        return Object.assign(new Comment(), comment ? JSON.parse(JSON.stringify(comment)) : undefined);
-    }
+    linkedTab?: string;
+    pendingApproval?: boolean;
+    replies?: CommentReply[];
+    status: string = 'active';
+    text?: string;
+    user?: string;
+    username?: string;
 }
 
-class CommentReply {
-    created: Date;
-    pendingApproval: boolean;
-    status: string = "active";
-    text: string;
-    user: string;
-    username: string;
+export class CommentReply {
+    created?: Date;
+    pendingApproval?: boolean;
+    status: string = 'active';
+    text?: string;
+    user?: string;
+    username?: string;
+}
+
+export type CurationStatus = 'Incomplete'|'Recorded'|'Candidate'|'Qualified'|'Standard'|'Preferred Standard'|'Retired';
+
+export enum CurationStatusEnum {
+    'Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired'
 }
 
 export class DataSource {
-    copyright: FormattedValue;
-    created: Date;
-    datatype: string;
-    registrationStatus: string;
-    sourceName: string;
-    updated: Date;
-
-    static copy(dataSource: DataSource) {
-        let newDataSource = Object.assign(new DataSource(), dataSource);
-        newDataSource.copyright = Object.assign(new FormattedValue(),
-            dataSource.copyright ? JSON.parse(JSON.stringify(dataSource.copyright)) : undefined);
-        return newDataSource;
-    }
+    copyright?: FormattedValue;
+    created?: Date;
+    datatype?: string;
+    registrationStatus?: string;
+    sourceName?: string;
+    updated?: Date;
 }
 
 export class DiscussionComments {
-    currentCommentsPage: number;
-    latestComments: Comment[];
-    totalItems: number;
+    currentCommentsPage?: number;
+    latestComments?: Comment[];
+    totalItems?: number;
+}
+
+export interface ElasticQueryParams {
+    selectedOrg: string;
+    q: string;
+    page: number;
+    classification: string[];
+    classificationAlt: string[];
+    regStatuses: CurationStatus[];
 }
 
 export interface ElasticQueryResponse {
-    _shards: any;
-    aggregations: any; // Elastic aggregated grouping
-    cdes: DataElement[]; // optional
-    forms: CdeForm[]; // optional
+    _shards?: any;
+    aggregations?: any; // Elastic aggregated grouping
+    cdes?: DataElementElastic[];
+    forms?: CdeFormElastic[];
     hits: {
         max_score: number,
-        hits: {
-            _id: string,
-            _index: string,
-            _score: number,
-            _source: any,
-            _type: string
-        }[],
+        hits: ElasticQueryResponseHit[],
         total: number
     };
     maxScore: number; // Elastic highest score on query
     took: number; // Elastic time to process query in milliseconds
-    timed_out: boolean;
+    timed_out?: boolean;
     totalNumber: number; // Elastic number of results
 }
 
+export interface ElasticQueryResponseAggregationBucket {
+    key: string;
+    doc_count: number;
+}
+
+export interface ElasticQueryResponseHit {
+    _id: string;
+    _index?: string;
+    _score?: number;
+    _source?: any;
+    _type?: string;
+}
+
 export abstract class Elt {
-    _id: ObjectId;
+    _id!: ObjectId;
     archived: boolean = false;
-    attachments: Attachment[];
-    changeNote: string;
-    checked: boolean; // volatile, used by quickboard
+    attachments: Attachment[] = [];
+    changeNote?: string;
+    checked?: boolean; // volatile, used by quickboard
     classification: Classification[] = []; // mutable
     comments: Comment[] = []; // mutable
-    created: Date;
-    createdBy: UserReference;
-    highlight: any; // volatile, Elastic
-    history: ObjectId[];
-    ids: CdeId[];
-    imported: Date;
-    isDraft: boolean; // optional, draft only
-    lastMigrationScript: string;
+    created?: Date;
+    createdBy?: UserReference;
+    highlight?: any; // volatile, Elastic
+    history: ObjectId[] = [];
+    ids: CdeId[] = [];
+    imported?: Date;
+    isDefault?: boolean; // client only
+    isDraft?: boolean; // optional, draft only
+    lastMigrationScript?: string;
     designations: Designation[] = [];
     definitions: Definition[] = [];
-    origin: string;
-    primaryDefinitionCopy: string; // volatile, Elastic
-    primaryNameCopy: string; // volatile, Elastic
-    primaryNameSuggest: string; // volatile, Elastic
+    origin?: string;
+    primaryDefinitionCopy?: string; // volatile, Elastic
+    primaryNameCopy?: string; // volatile, Elastic
+    primaryNameSuggest?: string; // volatile, Elastic
     properties: Property[] = []; // mutable
     referenceDocuments: ReferenceDocument[] = []; // mutable
     registrationState: RegistrationState = new RegistrationState();
     stewardOrg: {
-        name: string,
-    } = {name: undefined};
-    score: number; // volatile, Elastic _score
-    source: string; // obsolete
-    sources: DataSource[];
-    tinyId: string = undefined; // server generated
-    updated: Date;
-    updatedBy: UserReference;
-    usedBy: string[]; // volatile, Classification stewardOrg names
-    version: string; // ??? elastic(version) or mongo(__v)
+        name?: string,
+    } = {};
+    score?: number; // volatile, Elastic _score
+    source?: string; // obsolete
+    sources: DataSource[] = [];
+    tinyId!: string; // server generated
+    updated?: Date;
+    updatedBy?: UserReference;
+    usedBy?: string[]; // volatile, Classification stewardOrg names
+    version?: string; // ??? elastic(version) or mongo(__v)
 
-    constructor(elt: Elt = undefined) {
-        if (!elt) return;
-
-        // immutable
-        this._id = elt._id;
-        this.archived = elt.archived;
-        this.attachments = elt.attachments.concat();
-        this.changeNote = elt.changeNote;
-        this.created = elt.created;
-        this.createdBy = elt.createdBy;
-        this.highlight = elt.highlight;
-        this.history = elt.history.concat();
-        this.ids = elt.ids.concat();
-        this.imported = elt.imported;
-        this.isDraft = elt.isDraft;
-        this.lastMigrationScript = elt.lastMigrationScript;
-        this.origin = elt.origin;
-        this.primaryDefinitionCopy = elt.primaryDefinitionCopy;
-        this.primaryNameCopy = elt.primaryNameCopy;
-        this.primaryNameSuggest = elt.primaryNameSuggest;
-        this.registrationState = elt.registrationState;
-        this.score = elt.score;
-        this.source = elt.source;
-        this.sources = elt.sources.concat();
-        this.tinyId = elt.tinyId;
-        this.updated = elt.updated;
-        this.updatedBy = elt.updatedBy;
-        this.version = elt.version;
-
-        // mutable
-        copyArray(elt.classification, this.classification, Classification);
-        copyArray(elt.comments, this.comments, Comment);
-        copyArray(elt.designations, this.designations, Designation);
-        copyArray(elt.definitions, this.definitions, Definition);
-        copyArray(elt.properties, this.properties, Property);
-        copyArray(elt.referenceDocuments, this.referenceDocuments, ReferenceDocument);
-        this.stewardOrg = {name: elt.stewardOrg ? elt.stewardOrg.name : ''};
+    static isDefault(elt: Elt) {
+        return elt.isDefault === true;
     }
 
-    static isDefault(a) {
-        return a.isDefault === true;
+    static getEltUrl: (elt: Elt) => string;
+
+    static getLabel(elt: Elt) {
+        return elt.primaryNameCopy || elt.designations[0].designation;
     }
 
-    abstract getEltUrl();
-
-    getLabel() {
-        if (this.primaryNameCopy) {
-            return this.primaryNameCopy;
-        } else {
-            return this.designations[0].designation;
-        }
-    }
-
-    static trackByElt(index: number, elt: any): number {
+    static trackByElt(index: number, elt: Elt): string {
         return elt.tinyId;
     }
 }
 
 export class EltRef {
-    ids?: CdeId[] = [];
+    ids: CdeId[] = [];
     name?: string;
     outdated?: boolean; // calculated, by server for client
-    tinyId?: string;
+    tinyId!: string;
     version?: string;
-
-    static copy(inForm: EltRef) {
-        return Object.assign(new EltRef(), inForm ? JSON.parse(JSON.stringify(inForm)) : undefined);
-    }
 }
 
 export class FormattedValue {
-    value: string = "";
-    valueFormat: string = "";
+    value: string;
+    valueFormat?: 'html'|undefined;
+
+    constructor(value = '') {
+        this.value = value;
+    }
 }
 
 export type Instruction = FormattedValue;
 
 export class Designation {
     designation: string;
-    tags: string[];
+    tags: string[] = [];
 
     constructor(designation = '') {
         this.designation = designation;
-    }
-
-    static copy(designation: Designation) {
-        let newDesignation = Object.assign(new Designation(), designation);
-        newDesignation.tags = newDesignation.tags.concat();
-        return newDesignation;
     }
 }
 
 export class Definition {
     definition: string;
-    definitionFormat: string;
-    tags: string[];
+    definitionFormat?: 'html'|undefined; // TODO: change to use FormattedValue
+    tags: string[] = [];
 
     constructor(definition = '') {
         this.definition = definition;
     }
+}
 
-    static copy(definition: Definition) {
-        let newDefinition = Object.assign(new Definition(), definition);
-        newDefinition.tags = newDefinition.tags.concat();
-        return newDefinition;
-    }
+export class DerivationRule {
+    formula?: DerivationRuleFormula;
+    fullCdes?: DataElement[];
+    inputs?: string[];
+    name?: string;
+    outputs?: string[];
+    ruleType?: DerivationRuleType;
+}
+
+type DerivationRuleFormula = 'sumAll'|'mean';
+type DerivationRuleType = 'score'|'panel';
+
+export class Notification {
+    _id?: {
+        title?: string,
+        url?: string
+    };
 }
 
 export class Organization {
-    cdeStatusValidationRules: StatusValidationRules[];
-    classifications: ClassficationElements[];
-    emailAddress: string;
-    extraInfo: string;
-    htmlOverview: string;
-    longName: string;
-    mailAddress: string;
-    name: string;
-    nameContexts: any[];
-    nameTags: any[];
-    phoneNumber: string;
-    propertyKeys: any[];
-    uri: string;
-    workingGroupOf: string;
+    cdeStatusValidationRules?: StatusValidationRules[];
+    classifications?: ClassficationElements[];
+    count?: number; // calculated, from elastic
+    emailAddress?: string;
+    extraInfo?: string;
+    htmlOverview?: string;
+    longName?: string;
+    mailAddress?: string;
+    name!: string;
+    nameContexts?: any[];
+    nameTags?: any[];
+    phoneNumber?: string;
+    propertyKeys?: any[];
+    uri?: string;
+    workingGroupOf?: string;
 
     static validate(o: Organization) {
         if (!o.cdeStatusValidationRules) o.cdeStatusValidationRules = [];
@@ -320,148 +317,117 @@ export class Organization {
 export type ObjectId = string;
 
 export class PermissibleValue {
-    codeSystemName: string;
-    codeSystemVersion: string;
-    permissibleValue: string;
-    valueMeaningCode: string;
-    valueMeaningDefinition: string;
-    valueMeaningName: string;
-
-    static copy(pv: PermissibleValue) {
-        return Object.assign(new PermissibleValue(), pv);
-    }
-}
-
-enum RuleType {
-    'score', 'panel'
-}
-
-enum Formula {
-    'sumAll', 'mean'
-}
-
-export class DerivationRule {
-    name: string;
-    inputs: string[];
-    outputs: string[];
-    ruleType: string;
-    formula: string;
-
-    static copy(rule: DerivationRule) {
-        return Object.assign(new DerivationRule(), rule);
-    }
+    codeSystemName?: string;
+    codeSystemVersion?: string;
+    permissibleValue!: string;
+    valueMeaningCode?: string;
+    valueMeaningDefinition?: string;
+    valueMeaningName?: string;
 }
 
 export class Property {
-    _id: ObjectId;
-    key: string;
-    source: string;
-    value: string;
-    valueFormat: string;
+    _id?: ObjectId;
+    key?: string;
+    source?: string;
+    value?: string;
+    valueFormat?: string;
+}
 
-    static copy(property: Property) {
-        return Object.assign(new Property(), property);
-    }
+export class PublishedForm {
+    _id?: ObjectId;
+    name?: string;
 }
 
 export class ReferenceDocument {
-    _id: ObjectId;
-    document: string;
-    docType: string;
-    languageCode: string;
-    providerOrg: string;
-    referenceDocumentId: string;
-    source: string;
-    text: string;
-    title: string;
-    uri: string;
-
-    static copy(ref: ReferenceDocument) {
-        return Object.assign(new ReferenceDocument(), ref);
-    }
+    _id?: ObjectId;
+    document?: string;
+    docType?: string;
+    languageCode?: string;
+    providerOrg?: string;
+    referenceDocumentId?: string;
+    source?: string;
+    text?: string;
+    title?: string;
+    uri?: string;
 }
 
 export class RegistrationState {
-    administrativeNote: string;
-    administrativeStatus: string;
-    effectiveDate: Date;
-    registrationStatus: string = 'Incomplete';
-    replacedBy: {
-        tinyId: string,
-    } = {tinyId: undefined};
-    unresolvedIssue: string;
-    untilDate: Date;
+    administrativeNote?: string;
+    administrativeStatus?: string;
+    effectiveDate?: Date;
+    registrationStatus: CurationStatus = 'Incomplete';
+    replacedBy?: {
+        tinyId?: string,
+    };
+    unresolvedIssue?: string;
+    untilDate?: Date;
 }
 
-class StatusValidationRules {
-    field: string;
-    id: number;
+export class StatusValidationRules {
+    id!: number;
+    field?: string;
+    occurence?: 'exactlyOne'|'atLeastOne'|'all';
     rule: {
-        regex: string
-    } = {regex: undefined};
-    ruleName: string;
-    occurence: string; // enum: ["exactlyOne", "atLeastOne", "all"]
-    targetStatus: string; // enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]
+        regex?: string
+    } = {};
+    ruleName?: string;
+    targetStatus?: CurationStatus;
 }
 
 export class User {
-    _id: ObjectId;
-    accessToken: string;
-    avatarUrl: string;
-    email: string;
-    formViewHistory: string[];
-    hasMail: boolean;
-    lastViewNotification: Date;
-    orgAdmin: string[];
-    orgCurator: string[];
-    publishedForms: {
-        id: ObjectId,
-        name: string,
-    }[];
-    quota: number;
-    refreshToken: string;
-    roles: string[];
-    searchSettings: {
-        defaultSearchView: string,
-        lowestRegistrationStatus: string,
-        tableViewFields: {
-            administrativeStatus: boolean,
-            ids: boolean,
-            identifiers: string[],
-            name: boolean,
-            naming: boolean,
-            nbOfPVs: boolean,
-            numQuestions: boolean,
-            permissibleValues: boolean,
-            questionTexts: boolean,
-            registrationStatus: boolean,
-            source: boolean,
-            stewardOrg: boolean,
-            tinyId: boolean,
-            uom: boolean,
-            updated: boolean,
-            usedBy: boolean,
+    _id!: ObjectId;
+    accessToken?: string;
+    avatarUrl?: string;
+    email?: string;
+    formViewHistory?: string[];
+    hasMail?: boolean;
+    lastViewNotification?: Date;
+    orgAdmin: string[] = [];
+    orgCurator: string[] = [];
+    publishedForms?: PublishedForm[];
+    quota?: number;
+    refreshToken?: string;
+    roles?: string[];
+    searchSettings?: {
+        defaultSearchView?: string,
+        lowestRegistrationStatus?: string,
+        tableViewFields?: {
+            administrativeStatus?: boolean,
+            ids?: boolean,
+            identifiers?: string[],
+            name?: boolean,
+            naming?: boolean,
+            nbOfPVs?: boolean,
+            numQuestions?: boolean,
+            permissibleValues?: boolean,
+            questionTexts?: boolean,
+            registrationStatus?: boolean,
+            source?: boolean,
+            stewardOrg?: boolean,
+            tinyId?: boolean,
+            uom?: boolean,
+            updated?: boolean,
+            usedBy?: boolean,
         },
-        version: number,
+        version?: number,
     };
-    siteAdmin: boolean;
-    tester: boolean;
-    username: string;
-    viewHistory: string[];
+    siteAdmin?: boolean;
+    tester?: boolean;
+    username?: string;
+    viewHistory?: string[];
 }
 
-export class UserReference {
+export interface UserReference {
     userId: ObjectId;
     username: string;
 }
 
-export function copyArray(from: any[], to: any[], classType) {
-    if (Array.isArray(from) && Array.isArray(to)) {
-        from.forEach(fromElem => {
-            let toElem = classType.copy(fromElem);
-            if (toElem) {
-                to.push(toElem);
-            }
-        });
-    }
+export interface UserReferenceSecondary {
+    _id: ObjectId;
+    username?: string;
+}
+
+export interface UsersOrgQuery {
+    name: string;
+    users: UserReferenceSecondary[];
 }
