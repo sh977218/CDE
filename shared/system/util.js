@@ -16,3 +16,7 @@ export function deepCopy(obj) {
 export function reduceOptionalArray(arr, cb, initialValue) {
     return Array.isArray(arr) ? arr.reduce(cb, initialValue) : initialValue;
 }
+
+export function stringCompare(a, b) {
+    return a > b ? 1 : (a < b ? -1 : 0);
+}

@@ -10,10 +10,9 @@ type ServerErrorRecord = any;
 })
 export class ServerErrorsComponent implements OnInit {
     currentPage: number = 1;
-    excludeFilters: any[] = [];
+    excludeFilters: string[] = [];
+    excludeFilterToAdd = '';
     records: ServerErrorRecord[] = [];
-    error: any = {};
-    excludeFilterToAdd: any[] = [];
 
     ngOnInit() {
         this.gotoPage();
@@ -23,7 +22,7 @@ export class ServerErrorsComponent implements OnInit {
                 private alert: AlertService) {
     }
 
-    addExcludeFilter(toAdd) {
+    addExcludeFilter(toAdd: string) {
         if (toAdd.length > 0 && this.excludeFilters.indexOf(toAdd) === -1) {
             this.excludeFilters.push(toAdd.trim());
             this.gotoPage();

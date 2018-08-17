@@ -11,12 +11,12 @@ type ClientErrorRecord = any;
     templateUrl: './clientErrors.component.html'
 })
 export class ClientErrorsComponent implements OnInit {
-    @ViewChild('errorDetailModal') public errorDetailModal: NgbModalModule;
+    @ViewChild('errorDetailModal') errorDetailModal!: NgbModalModule;
     currentPage: number = 1;
     records: ClientErrorRecord[] = [];
     filteredRecords: ClientErrorRecord[] = [];
-    error: any = {};
-    browserInclude = {
+    error?: ClientErrorRecord;
+    browserInclude: {[browser: string]: boolean} = {
         chrome: true,
         firefox: true,
         ie: false,
@@ -51,7 +51,7 @@ export class ClientErrorsComponent implements OnInit {
             }, err => this.alert.httpErrorMessageAlert(err));
     }
 
-    openErrorDetail(error) {
+    openErrorDetail(error: ClientErrorRecord) {
         this.error = error;
         this.modalService.open(this.errorDetailModal, {size: 'lg'});
     }

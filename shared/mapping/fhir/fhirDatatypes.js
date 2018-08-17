@@ -3,7 +3,7 @@ import { getText as conceptGetText } from 'shared/mapping/fhir/datatype/fhirCode
 
 // TODO: remove, only get text, not "text system:code"
 export function codingArrayPreview(codings) {
-    return codings.reduce((a, v) => a += codingPreview(v) + '\n', '');
+    return codings ? codings.reduce((a, v) => a += codingPreview(v) + '\n', '') : undefined;
 }
 
 function codingPreview(coding) {

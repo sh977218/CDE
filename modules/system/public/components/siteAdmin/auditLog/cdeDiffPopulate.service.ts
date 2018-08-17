@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 @Injectable()
 export class CdeDiffPopulateService {
 
-    pathFieldMap = {
+    pathFieldMap: {[num: number]: {fieldName: string, path: (string|number)[]}[]} = {
         1: [
             {fieldName: "Designations", path: ["designations"]}
             , {fieldName: "Definitions", path: ["definitions"]}
@@ -121,7 +121,7 @@ export class CdeDiffPopulateService {
         ]
     };
 
-    comparePaths (patternPath, realPath) {
+    comparePaths (patternPath: (string|number)[], realPath: (string|number)[]) {
         let equal = true;
         if (patternPath) {
             patternPath.forEach((el, i) => {
@@ -133,7 +133,7 @@ export class CdeDiffPopulateService {
         return equal;
     }
 
-    stringify (obj) {
+    stringify (obj: any) {
         try {
             if (typeof obj === "string") return obj;
             if (typeof obj === "number") return obj;
@@ -145,12 +145,12 @@ export class CdeDiffPopulateService {
         }
     }
 
-    stringifyClassif (obj) {
+    stringifyClassif (obj: any): string {
         if (obj && obj.elements) return " > " + obj.name + this.stringifyClassif(obj.elements[0]);
         else return "";
     }
 
-    public makeHumanReadable (change) {
+    public makeHumanReadable (change: any) {
         if (!change) return;
 
         if (change.kind === "E") {

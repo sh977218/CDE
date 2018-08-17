@@ -3,6 +3,8 @@ import { Component, DoCheck, Input, ViewChild, OnChanges, Output, EventEmitter, 
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
 
 import { QuickBoardListService } from '_app/quickBoardList.service';
+import { DerivationRule } from 'shared/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({
     selector: 'cde-derivation-rules',
@@ -10,13 +12,13 @@ import { QuickBoardListService } from '_app/quickBoardList.service';
     templateUrl: './derivationRules.component.html'
 })
 export class DerivationRulesComponent implements DoCheck, OnChanges {
-    @Input() canEdit;
+    @Input() canEdit!: boolean;
     @Input() elt: any;
     @Output() onEltChange = new EventEmitter();
-    @ViewChild('newScoreContent') newScoreContent: NgbModalModule;
+    @ViewChild('newScoreContent') newScoreContent!: NgbModalModule;
     invalidCdeMessage: string = '';
-    modalRef: NgbModalRef;
-    newDerivationRule: any = {
+    modalRef?: NgbModalRef;
+    newDerivationRule: DerivationRule = {
         ruleType: 'score',
         formula: 'sumAll',
         inputs: []
@@ -31,7 +33,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         }
     }
 
-    ngOnChanges(changes) {
+    ngOnChanges() {
         this.previousCdeId = this.elt._id;
         this.updateRules();
         this.findDerivationOutputs();
@@ -51,7 +53,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         });
         this.elt.derivationRules.push(this.newDerivationRule);
         this.updateRules();
-        this.modalRef.close();
+        this.modalRef!.close();
         this.onEltChange.emit();
     }
 
@@ -69,7 +71,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     findDerivationOutputs() {
         if (!this.elt.derivationOutputs) {
             this.elt.derivationOutputs = [];
-            this.http.get<any>('/cde/derivationOutputs/' + this.elt.tinyId).subscribe(result => {
+            this.http.get<DataElement[]>('/cde/derivationOutputs/' + this.elt.tinyId).subscribe(result => {
                 result.forEach(outputCde => {
                     outputCde.derivationRules.forEach(derRule => {
                         if (derRule.inputs.indexOf(this.elt.tinyId) > -1) {
@@ -81,7 +83,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         }
     }
 
-    getViewCdes(dr) {
+    getViewCdes(dr: DerivationRule) {
         if (!dr.fullCdes) return [];
         return dr.fullCdes.filter((item, index) => index < 8);
     }
@@ -106,7 +108,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     }
 
 
-    removeDerivationRule(index) {
+    removeDerivationRule(index: number) {
         this.elt.derivationRules.splice(index, 1);
         this.onEltChange.emit();
     }
@@ -131,8 +133,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
                             ' contains a Permissible Value that is not a number. It may not be added to a score.';
                     }
                 });
-            }
-            else {
+            } else {
                 this.invalidCdeMessage = 'CDE ' + qbElt.designations[0].designation +
                     " has a datatype other than 'Number' and may not be added to a score";
             }
@@ -141,8 +142,10 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
 
     updateRules() {
         if (this.elt.derivationRules) {
-            this.elt.derivationRules.forEach((dr: any) => {
-                if (dr.inputs[0] !== null) this.http.post('/cdesByTinyIdList', dr.inputs).subscribe(data => dr.fullCdes = data);
+            this.elt.derivationRules.forEach((dr: DerivationRule) => {
+                if (dr.inputs[0] !== null) {
+                    this.http.post<DataElement[]>('/cdesByTinyIdList', dr.inputs).subscribe(data => dr.fullCdes = data);
+                }
             });
         }
     }

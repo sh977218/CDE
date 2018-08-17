@@ -60,7 +60,11 @@ export class PermissibleValueComponent {
     newPermissibleValue: any = {};
     pVTypeheadVsacNameList;
     searchSettings: SearchSettings = {
-        datatypes: ["Value List"]
+        classification: [],
+        classificationAlt: [],
+        datatypes: ['Value List'],
+        meshTree: '',
+        regStatuses: [],
     };
     private searchTerms = new Subject<string>();
     vsacValueSet = [];

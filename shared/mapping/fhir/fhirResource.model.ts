@@ -18,7 +18,7 @@ export class FhirDomainResource extends FhirResource {
     contained?: FhirResource[];
     extension?: FhirExtension[];
     modifierExtension?: FhirExtension[];
-    resourceType: string; // not documented, XML: is the node name
+    resourceType!: string; // not documented, XML: is the node name
     text?: FhirNarrative;
 }
 
@@ -28,7 +28,7 @@ export class FhirAnnotation extends FhirElement {
     authorReference?: FhirReference<FhirPractitioner|FhirPatient|FhirRelatedPerson>;
     authorString?: string;
     time?: FhirDateTime;
-    text: string;
+    text!: string;
 }
 
 export type FhirAppointment = any;
@@ -77,7 +77,7 @@ export class FhirBundle {
     }[];
     signature?: FhirSignature;
     total?: number; // unsigned int, type=searchset only
-    type: FhirCode<'document'|'message'|'transaction'|'transaction-response'|'batch'|'batch-response'|'history'|'searchset'|'collection'>;
+    type!: FhirCode<'document'|'message'|'transaction'|'transaction-response'|'batch'|'batch-response'|'history'|'searchset'|'collection'>;
 }
 
 export type FhirCondition = any;
@@ -155,7 +155,7 @@ export class FhirEncounter extends FhirDomainResource {
     priority?: FhirCodeableConcept;
     reason?: FhirCodeableConcept[];
     serviceProvider?: FhirReference<FhirOrganization>;
-    status: FhirCode;
+    status!: FhirCode;
     statusHistory?: {
         status: FhirCode,
         period: FhirPeriod
@@ -172,7 +172,7 @@ export type FhirMedicalAdministration = any;
 export type FhirMedication = any;
 
 export class FhirObservationComponent extends FhirDomainResource implements FhirValue {
-    code: FhirCodeableConcept;
+    code!: FhirCodeableConcept;
     dataAbsentReason?: FhirCodeableConcept;
     interpretation?: FhirCodeableConcept;
     referenceRange?: any[];
@@ -205,7 +205,7 @@ export class FhirObservation extends FhirObservationComponent implements FhirEff
     performer?: FhirReference<FhirPatient | any>[];
     related?: any[];
     specimen?: FhirReference<any>;
-    status: FhirCode;
+    status!: FhirCode;
     subject?: FhirReference<FhirPatient | FhirGroup | any>;
 }
 
@@ -234,7 +234,7 @@ export class FhirProcedure extends FhirDomainResource {
     basedOn?: FhirReference<any>[];
     bodySite?: FhirCodeableConcept[];
     category?: FhirCodeableConcept;
-    code: FhirCodeableConcept;
+    code?: FhirCodeableConcept;
     complication?: FhirCodeableConcept[];
     complicationDetail?: FhirReference<FhirCondition>[];
     context?: FhirReference<FhirEncounter|FhirEpisodeOfCare>;
@@ -261,8 +261,8 @@ export class FhirProcedure extends FhirDomainResource {
     reasonCode?: FhirCodeableConcept[];
     reasonReference?: FhirReference<FhirCondition|FhirObservation>[];
     report?: FhirReference<any>;
-    status: FhirCode<'preparation'|'in-progress'|'suspended'|'aborted'|'completed'|'entered-in-error'|'unknown'>;
-    subject?: FhirReference<FhirPatient|FhirGroup>;
+    status!: FhirCode<'preparation'|'in-progress'|'suspended'|'aborted'|'completed'|'entered-in-error'|'unknown'>;
+    subject!: FhirReference<FhirPatient|FhirGroup>;
     usedCode?: FhirCodeableConcept[];
     usedReference?: FhirReference<FhirDevice|FhirMedication|FhirSubstance>[];
 }

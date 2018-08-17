@@ -7,7 +7,7 @@ export class Alert {
     id: number;
     message: string;
     type: string;
-    expired: Boolean;
+    expired = false;
 
     constructor (_type: string, _message: string) {
         this.type = _type;
@@ -15,7 +15,7 @@ export class Alert {
         this.id = new Date().getTime();
     }
 
-    setMessage(msg) {
+    setMessage(msg: string) {
         this.message = msg;
     }
 }
@@ -23,7 +23,7 @@ export class Alert {
 @Injectable()
 export class AlertService {
     alertTime: number;
-    currentSnack: MatSnackBarRef<SimpleSnackBar>;
+    currentSnack?: MatSnackBarRef<SimpleSnackBar>;
 
     constructor(private snackBar: MatSnackBar) {
         this.alertTime = (window as any).userAlertTime;
@@ -34,7 +34,7 @@ export class AlertService {
         this.currentSnack = this.snackBar.open(message, "Dismiss", {duration: this.alertTime});
     }
 
-    httpErrorMessageAlert(err, info: string = '') {
+    httpErrorMessageAlert(err: any, info = '') {
         let errorMessage = httpErrorMessage(err);
         this.currentSnack = this.snackBar.open(info ? info + ' ' + errorMessage : errorMessage, "Dismiss",
             {duration: this.alertTime});

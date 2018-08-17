@@ -34,7 +34,7 @@
             The following CDEs are part of a score but are missing from this form:
             <ul class="list-inline">
                 <li *ngFor="let missCde of missingCdes;let i = index;">
-                    <a href="/deView?tinyId={{missCde.tinyId}}" target="_blank">CDE {{i+1}},id: {{missCde.tinyId}}</a>
+                    <a href="/deView?tinyId={{missCde}}" target="_blank">CDE {{i+1}},id: {{missCde}}</a>
                     <span *ngIf="i < missingCdes.length">,</span></li>
             </ul>
         </div>

@@ -7,24 +7,24 @@ import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from '
 
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { ITEM_MAP } from 'shared/item';
-import { User } from 'shared/models.model';
+import { CbErr, Comment, User } from 'shared/models.model';
 import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
 
 @Injectable()
 export class UserService {
-    private promise: Promise<User>;
+    private promise!: Promise<User>;
     searchTypeahead = ((text$: Observable<string>) =>
         text$.pipe(
             debounceTime(300),
             distinctUntilChanged(),
-            switchMap(term => term.length < 3 || !isOrgAdmin(this.user) ? [] :
-                this.http.get<any>('/server/user/searchUsers/' + term).pipe(
-                    map((r: any) => r.users.map(u => u.username)),
+            switchMap(term => term.length < 3 || !isOrgAdmin(this.user!) ? [] :
+                this.http.get<User[]>('/server/user/searchUsers/' + term).pipe(
+                    map(r => r.map(u => u.username),
                     catchError(() => EmptyObservable.create<string[]>())
                 )
             )
-        ));
-    user: User;
+        )));
+    user?: User;
     userOrgs: string[] = [];
 
     constructor(
@@ -33,17 +33,17 @@ export class UserService {
         this.reload();
     }
 
-    catch(cb): Promise<User> {
+    catch(cb: CbErr): Promise<any> {
         return this.promise.catch(cb);
     }
 
     clear() {
-        this.user = null;
+        this.user = undefined;
         this.userOrgs.length = 0;
     }
 
-    static getEltLink(c) {
-        return ITEM_MAP[c.element.eltType].view + c.element.eltId;
+    static getEltLink(c: Comment) {
+        return ITEM_MAP[c.element!.eltType!].view + c.element!.eltId;
     }
 
     loggedIn() {
@@ -51,7 +51,7 @@ export class UserService {
     }
 
     isOrgCurator () {
-        return isOrgCurator(this.user);
+        return this.user && isOrgCurator(this.user);
     }
 
     reload() {
@@ -62,8 +62,11 @@ export class UserService {
                     return reject();
                 }
                 this.user = response;
+                if (!this.user.orgAdmin) this.user.orgAdmin = [];
+                if (!this.user.orgCurator) this.user.orgCurator = [];
                 this.setOrganizations();
-                this.http.get<any>('/server/user/mailStatus').subscribe(response => this.user.hasMail = response.count > 0);
+                this.http.get<{count: number}>('/server/user/mailStatus').subscribe(response =>
+                    this.user!.hasMail = response.count > 0);
                 resolve(this.user);
             }, reject);
         });
@@ -71,15 +74,15 @@ export class UserService {
     }
 
     setOrganizations() {
-        if (this.user.orgAdmin) {
+        if (this.user && this.user.orgAdmin) {
             this.userOrgs = this.user.orgAdmin.slice(0);
-            this.user.orgCurator.forEach(c => {
+            this.user.orgCurator && this.user.orgCurator.forEach(c => {
                 if (this.userOrgs.indexOf(c) < 0) this.userOrgs.push(c);
             });
         }
     }
 
-    then(cb, errorCb = undefined): Promise<any> {
+    then(cb: (user: User) => any, errorCb?: CbErr): Promise<any> {
         return this.promise.then(cb, errorCb);
     }
 }

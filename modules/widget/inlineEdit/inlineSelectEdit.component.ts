@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import _cloneDeep from 'lodash/cloneDeep';
 
 @Component({
-    selector: "cde-inline-select-edit",
-    templateUrl: "./inlineSelectEdit.component.html",
+    selector: 'cde-inline-select-edit',
+    templateUrl: './inlineSelectEdit.component.html',
     styles: [`
         button {
             display: inline-block;
@@ -24,25 +24,24 @@ import _cloneDeep from 'lodash/cloneDeep';
     `]
 })
 export class InlineSelectEditComponent {
-    @Input() value: string = 'N/A';
-    @Input() selectOptions: Array<any> = [];
-    @Input() isAllowed: boolean = false;
+    @Input() value = 'N/A';
+    @Input() selectOptions = [];
+    @Input() isAllowed = false;
     @Output() save = new EventEmitter<string>();
+    _value!: string;
+    editMode = false;
 
-    _value;
-    public editMode: boolean = false;
-
-    edit() {
-        this._value = _cloneDeep(this.value);
-        this.editMode = true;
+    confirmSave() {
+        this.save.emit(this._value);
+        this.editMode = false;
     }
 
     discard() {
         this.editMode = false;
     }
 
-    confirmSave() {
-        this.save.emit(this._value);
-        this.editMode = false;
+    edit() {
+        this._value = _cloneDeep(this.value);
+        this.editMode = true;
     }
 }

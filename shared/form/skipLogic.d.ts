@@ -1,8 +1,9 @@
 import { FormElement, FormElementsContainer, FormQuestion } from 'shared/form/form.model';
+import { NativeRenderService } from 'nativeRender/nativeRender.service';
 
 type filter = (fe: FormElement) => boolean;
 
-declare function evaluateSkipLogic(condition: string, parent: FormElementsContainer, fe: FormElement, nrs): boolean;
+declare function evaluateSkipLogic(condition: string, parent: FormElementsContainer, fe: FormElement, nrs: NativeRenderService): boolean;
 declare function getLabel(q: FormQuestion): string;
 declare function getQuestions(fes: FormElement[], filter?: filter): FormQuestion[];
 declare function getQuestionsPrior(parent: FormElementsContainer, fe: FormElement, filter?: filter): FormQuestion[];

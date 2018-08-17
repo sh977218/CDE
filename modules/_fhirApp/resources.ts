@@ -1,38 +1,40 @@
 import { ResourceTree } from '_fhirApp/resourceTree';
-import { supportedFhirResources } from 'shared/models.model';
+import { CbErr, CdeId } from 'shared/models.model';
 import { CdeForm, FhirProcedureMapping, FormElement, FormQuestion } from 'shared/form/form.model';
 import { getMapToFhirResource } from 'shared/form/formAndFe';
 import { codeSystemOut } from 'shared/mapping/fhir';
+import { FhirCoding } from 'shared/mapping/fhir/fhir.model';
 import { FhirDomainResource, FhirEncounter, FhirObservation, FhirProcedure } from 'shared/mapping/fhir/fhirResource.model';
 import { newEncounter } from 'shared/mapping/fhir/resource/fhirEncounter';
 import { newObservation } from 'shared/mapping/fhir/resource/fhirObservation';
 import { newProcedure } from 'shared/mapping/fhir/resource/fhirProcedure';
 
-export function addEmptyNode(fe: FormElement | CdeForm, cb, parent: ResourceTree) {
-    let self = addNode(parent, undefined, fe);
+export function addEmptyNode(fe: FormElement | CdeForm, cb: CbErr<ResourceTree>, parent: ResourceTree) {
+    let self = addNode(parent, fe);
     cb(undefined, self);
     return self;
 }
 
-function addNode(parent: ResourceTree, resource?: FhirDomainResource, fe?: FormElement|CdeForm, resourceType?: string): ResourceTree {
+function addNode(parent: ResourceTree, fe: FormElement|CdeForm, resource?: FhirDomainResource, resourceType?: string): ResourceTree {
     let node: ResourceTree = {children: []};
     ResourceTree.setCrossReference(node, fe);
     if (resource) {
         ResourceTree.setResource(node, resource);
     } else if (getMapToFhirResource(fe)) {
     } else if (fe && fe.elementType === 'question') {
+        let q = fe as FormQuestion;
         if (parent.resourceType === 'Observation') {
             node.parentAttribute = 'component';
         } else if (parent.resourceType === 'Procedure') {
             if (parent.map) {
-                let q = fe as FormQuestion;
-                let [prop] = getMapPropertyFromId(parent.map, (fe as FormQuestion).question.cde.tinyId);
+                let [prop] = getMapPropertyFromId(q.question.cde.tinyId, parent.map);
                 if (prop) {
                     node.parentAttribute = prop.property;
                 }
             }
         } else {
-            node.resourceType = fhirTypes.get(parent.resourceType).child;
+            let fhirType = parent.resourceType && fhirTypes.get(parent.resourceType);
+            node.resourceType = fhirType && fhirType.child;
         }
     } else if (resourceType) {
         node.resourceType = resourceType;
@@ -46,7 +48,7 @@ function addNode(parent: ResourceTree, resource?: FhirDomainResource, fe?: FormE
     }
 }
 
-export let compareCodingId = (a, b) => a['system'] === codeSystemOut(b['source']) && a['code'] === b['id'];
+export let compareCodingId = (a: FhirCoding, b: CdeId) => a.system === codeSystemOut(b.source) && a.code === b.id;
 
 export type FhirMappedRegularTypes = 'FhirAnnotation'|'FhirCodeableConcept'|'FhirReference'|'code';
 export type FhirMapped = { type: 'backbone', property: string, properties: any, min: number, max: number, default?: any, mapFieldId: string, mapFieldValue?: string }
@@ -59,13 +61,13 @@ function getQuestionRefs(map: any, procedureMapping?: FhirProcedureMapping): [Fh
     }
     return [
         map.mappedProperties.concat(),
-        map.mappedProperties.map(p => procedureMapping[p.mapFieldId])
+        map.mappedProperties.map((p: FhirMapped) => procedureMapping[p.mapFieldId])
     ];
 }
 
 export class FhirProcedureMap {
     // static commonProperties = [ 'code', 'context', 'identifier', 'subject' ];
-    static resourceName: supportedFhirResources = 'Procedure';
+    // static resourceName: supportedFhirResources = 'Procedure';
     static readonly mappedProperties: FhirMapped[] = [
         {property: 'bodySite', type: 'FhirCodeableConcept', subTypes: ['http://hl7.org/fhir/ValueSet/body-site'], min: 0, max: -1, mapFieldId: 'bodySiteQuestionID', mapFieldValue: 'bodySiteCode'},
         {property: 'code', type: 'FhirCodeableConcept', subTypes: ['http://hl7.org/fhir/ValueSet/procedure-code'], min: 0, max: 1, mapFieldId: 'procedureQuestionID', mapFieldValue: 'procedureCode'},
@@ -87,7 +89,7 @@ export class FhirProcedureMap {
 
 export type supportedResourcesMaps = FhirProcedureMap;
 
-export const fhirTypes = new Map<string, {self: Object, child: string | undefined, create: Function | null, map: any}>();
+export const fhirTypes = new Map<string, {self: Object|undefined, child: string | undefined, create: Function | undefined, map: any}>();
 fhirTypes.set('bundle', {self: undefined, child: 'Observation', create: undefined, map: undefined});
 fhirTypes.set('Encounter', {self: FhirEncounter, child: 'Observation', create: newEncounter, map: undefined});
 fhirTypes.set('Observation', {self: FhirObservation, child: undefined, create: newObservation, map: undefined});
@@ -96,7 +98,7 @@ fhirTypes.set('Procedure', {self: FhirProcedure, child: undefined, create: newPr
 export const resourceMap: any = {};
 resourceMap['Procedure'] = FhirProcedureMap;
 
-export function getMapPropertyFromId(map: supportedResourcesMaps, id: string): [FhirMapped, string] {
+export function getMapPropertyFromId(id: string, map?: supportedResourcesMaps): [FhirMapped|undefined, string|undefined] {
     if (!map || !map.questionIds) {
         return [undefined, undefined];
     }
@@ -104,7 +106,7 @@ export function getMapPropertyFromId(map: supportedResourcesMaps, id: string): [
     return i > -1 ? [map.questionProperties[i], map.questionIds[i]] : [undefined, undefined];
 }
 
-export function getMapPropertyFromName(map: supportedResourcesMaps, name: string): [FhirMapped, string] {
+export function getMapPropertyFromName(map: supportedResourcesMaps, name: string): [FhirMapped|undefined, string|undefined] {
     let propertyMapped = map.questionProperties.filter(m => m.property === name)[0];
     if (!propertyMapped) {
         return [undefined, undefined];
