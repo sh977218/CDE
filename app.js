@@ -316,7 +316,7 @@ app.use((err, req, res, next) => {
             headers: {'user-agent': req.headers['user-agent']}
         }
     };
-    logging.errorLogger.error('error', "Error: Express Default Error Handler", JSON.stringify(meta));
+    logging.errorLogger.error('error', "Error: Express Default Error Handler", meta);
     res.status(500).send('Something broke!');
 });
 

@@ -48,18 +48,6 @@ exports.module = function (roleConfig) {
         trigger.error(); // jshint ignore:line
     });
 
-    router.get('/triggerServerErrorMongoose', roleConfig.superLog, (req, res) => {
-        res.send("received");
-        mongo_data.orgByName("none");
-        trigger.error(); // jshint ignore:line
-
-    });
-
-    router.get('/triggerClientError', roleConfig.superLog, (req, res) => {
-        res.send("received");
-        trigger.error();
-    });
-
     router.post('/feedback/report', (req, res) => {
         dbLogger.saveFeedback(req, () => {
             let msg = {
