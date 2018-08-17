@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import _cloneDeep from 'lodash/cloneDeep';
 
 @Component({
-    selector: "cde-inline-edit",
-    templateUrl: "./inlineEdit.component.html",
+    selector: 'cde-inline-edit',
+    templateUrl: './inlineEdit.component.html',
     styles: [`
         button {
             display: inline-block;
@@ -24,7 +24,7 @@ import _cloneDeep from 'lodash/cloneDeep';
     `]
 })
 export class InlineEditComponent {
-    private _model: any;
+    private _model!: string;
     @Input() set model(v: any) {
         this._model = v;
         if (!this.inputType) this.inputType = 'text';
@@ -33,30 +33,26 @@ export class InlineEditComponent {
     get model() {
         return this._model;
     }
-
-    @Input() inputType: string = "text";
-    @Input() selectOptions: Array<any> = [];
-    @Input() isAllowed: boolean = false;
-    @Input() linkSource: string;
+    @Input() inputType = 'text';
+    @Input() selectOptions = [];
+    @Input() isAllowed = false;
+    @Input() linkSource!: string;
     @Output() modelChange = new EventEmitter<string>();
-
-    public INPUT_TYPE_ARRAY = ["text", "email", "number"];
-
-    public editMode: boolean = false;
-    public value: any;
-
-    edit() {
-        this.editMode = true;
-    }
+    INPUT_TYPE_ARRAY = ['text', 'email', 'number'];
+    editMode = false;
+    value!: string;
 
     discard() {
         this.value = _cloneDeep(this.model);
         this.editMode = false;
     }
 
+    edit() {
+        this.editMode = true;
+    }
+
     save() {
         this.editMode = false;
         this.modelChange.emit(this.value);
     }
-
 }

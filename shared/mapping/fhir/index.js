@@ -21,7 +21,7 @@ export function codeSystemIn(uri) {
     return results.length ? results[0].id : '';
 }
 
-export function codeSystemOut(system, fe = null) {
+export function codeSystemOut(system = undefined, fe = undefined) {
     let s = system;
     if (fe && fe.question && fe.question.cde && Array.isArray(fe.question.cde.ids) && fe.question.cde.ids.length) {
         s = fe.question.cde.ids[0].source;

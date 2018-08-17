@@ -1,4 +1,4 @@
-import { CdeForm } from 'shared/form/form.model';
+import { CurationStatus } from 'shared/models.model';
 
-declare const statusList: {name: string, help: string, curHelp: string}[];
+declare const statusList: {name: CurationStatus, help: string, curHelp: string}[];
 declare const orderedList: string[];

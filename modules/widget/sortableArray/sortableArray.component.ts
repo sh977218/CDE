@@ -4,11 +4,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
     selector: 'cde-sortable-array',
     templateUrl: './sortableArray.component.html'
 })
-
 export class SortableArrayComponent {
-
     @Input() theArray = [];
-    @Input() index;
+    @Input() index!: number;
     @Output() cb = new EventEmitter();
 
     moveUp () {
@@ -23,5 +21,4 @@ export class SortableArrayComponent {
         this.theArray.splice(0, 0, this.theArray.splice(this.index, 1)[0]);
         this.cb.emit();
     }
-
 }

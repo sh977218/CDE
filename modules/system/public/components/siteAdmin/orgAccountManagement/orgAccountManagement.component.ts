@@ -3,16 +3,19 @@ import { Component, OnInit } from '@angular/core';
 
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
+import { ObjectId } from 'shared/models.model';
+import { stringCompare } from 'shared/system/util';
 
+type OrgUsers = {org: string, users: {_id: ObjectId, username: string}[]};
 
 @Component({
     selector: 'cde-org-account-management',
     templateUrl: './orgAccountManagement.component.html',
 })
 export class OrgAccountManagementComponent implements OnInit {
-    newUsername: string;
-    newOrgName: string;
-    orgCurators = [];
+    newUsername!: string;
+    newOrgName!: string;
+    orgCurators?: OrgUsers[];
     transferStewardObj = {};
 
     ngOnInit() {
@@ -38,12 +41,12 @@ export class OrgAccountManagementComponent implements OnInit {
     }
 
     getOrgCurators() {
-        this.http.get<any>('/orgCurators').subscribe(response => {
-            this.orgCurators = response.orgs.sort((a, b) => a.name - b.name);
+        this.http.get<OrgUsers[]>('/orgCurators').subscribe(response => {
+            this.orgCurators = response.sort((a, b) => stringCompare(a.org, b.org));
         });
     }
 
-    removeOrgCurator(orgName, userId) {
+    removeOrgCurator(orgName: string, userId: string) {
         this.http.post('/removeOrgCurator', {
             org: orgName,
             userId: userId

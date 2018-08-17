@@ -13,22 +13,25 @@ import { FhirApp } from 'shared/form/form.model';
     `]
 })
 export class FhirAppsComponent {
-    fhirApps: FhirApp[];
+    fhirApps!: FhirApp[];
 
     constructor(private http: HttpClient) {
         this.loadAllApps();
     }
 
-    deleteApp(app) {
+    deleteApp(app: FhirApp) {
         this.http.delete("/fhirApp/" + app._id).subscribe(() => this.loadAllApps());
     }
 
-    formsUpdated(event, app) {
-        app.forms = event.target.value.split(",").map(id => ({tinyId: id.trim()})).filter(form => form.tinyId);
+    formsUpdated(event: any, app: FhirApp) {
+        app.forms = event.target.value.split(",")
+            .map((id: string) => id.trim())
+            .filter((id: string) => id)
+            .map((id: string) => ({tinyId: id}));
         this.saveApp(app);
     }
 
-    getFormIds(app) {
+    getFormIds(app: FhirApp) {
         return app.forms.map(f => f.tinyId).join(",");
     }
 
@@ -40,7 +43,7 @@ export class FhirAppsComponent {
         this.saveApp(new FhirApp);
     }
 
-    saveApp(app) {
+    saveApp(app: FhirApp) {
         this.http.post("/fhirApp", app).subscribe(() => this.loadAllApps());
     }
 }

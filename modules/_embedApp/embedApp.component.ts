@@ -29,7 +29,7 @@ export class EmbedAppComponent  {
         , resultPerPage: 5
         , selectedOrg: ''
     };
-    searchType = 'cde';
+    searchType: 'cde'|'form' = 'cde';
     searchViewSettings: any;
     selectedClassif: string = '';
     took: number;
@@ -231,7 +231,7 @@ export class EmbedAppComponent  {
                         let flatClassifs = this.flattenClassification(c);
                         let exclude = new RegExp(eCl.exclude);
                         c.embed[eCl.label] = flatClassifs.filter(cl => {
-                            result = cl.indexOf(eCl.startsWith) === 0;
+                            let result = cl.indexOf(eCl.startsWith) === 0;
                             if (eCl.exclude) result = result && !cl.match(exclude);
                             if (eCl.selectedOnly) {
                                 result = result && cl.indexOf(this.embed.org + ';' +

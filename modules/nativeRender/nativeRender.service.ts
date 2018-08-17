@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
-import { CodeAndSystem } from 'shared/models.model';
+import { assertUnreachable, CdeId, CodeAndSystem } from 'shared/models.model';
 import { pvGetDisplayValue, pvGetLabel } from 'shared/de/deShared';
 import {
-    CdeForm, DisplayProfile, FormElement, FormQuestion, FormSectionOrForm, PermissibleFormValue, Question
+    CdeForm, DisplayProfile, FormElement, FormOrElement, FormQuestion, FormSection, FormSectionOrForm,
+    PermissibleFormValue, Question
 } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/formShared';
 import { getShowIfQ } from 'shared/form/skipLogic';
+import { FormService } from 'nativeRender/form.service';
+
+type SkipLogicOperators = '=' | '!=' | '>' | '<' | '>=' | '<=';
 
 
 @Injectable()
@@ -16,14 +20,14 @@ export class NativeRenderService {
     static readonly FOLLOW_UP: string = 'Follow-up';
     static readonly getPvDisplayValue = pvGetDisplayValue;
     static readonly getPvLabel = pvGetLabel;
-    private _nativeRenderType: string = undefined;
-    private _nativeRenderTypeOn: boolean;
+    private _nativeRenderType?: string;
+    private _nativeRenderTypeOn?: boolean;
     elt: CdeForm;
     private errors: string[] = [];
     followForm: any;
     flatMapping: any;
-    profile: DisplayProfile;
-    submitForm: boolean;
+    profile?: DisplayProfile;
+    submitForm?: boolean;
     vm: any;
 
     constructor(public skipLogicService: SkipLogicService) {}
@@ -230,7 +234,7 @@ export class NativeRenderService {
             let qs = getShowIfQ(followEligibleQuestions, fe);
             if (qs.length > 0) {
                 let substitution = 0;
-                let parentQ = qs[0][0];
+                let parentQ: FormQuestion = qs[0][0];
                 qs.forEach(match => {
                     function getNotMappedSuffix() {
                         let value = substitution++;
@@ -289,8 +293,8 @@ export class NativeRenderService {
         return transformed;
     }
 
-    static createRelativeText(v: string[], oper: string, isValuelist: boolean): string {
-        let values = JSON.parse(JSON.stringify(v));
+    static createRelativeText(v: string[], oper: SkipLogicOperators, isValuelist: boolean): string {
+        let values: string[] = JSON.parse(JSON.stringify(v));
         values.forEach((e, i, a) => {
             if (e === "") {
                 a[i] = isValuelist ? 'none' : 'empty';
@@ -309,32 +313,41 @@ export class NativeRenderService {
                 return NativeRenderService.min(values) + ' or more';
             case '<=':
                 return NativeRenderService.max(values) + ' or less';
+            default:
+                return assertUnreachable(oper);
         }
     }
 
-    static max(values) {
+    static max(values: string[]) {
         return values.length > 0 && values[0].indexOf('/') > -1 ? values[0] : Math.max.apply(null, values);
     }
 
-    static min(values) {
+    static min(values: string[]) {
         return values.length > 0 && values[0].indexOf('/') > -1 ? values[0] : Math.max.apply(null, values);
     }
 
     static assignValueListRows(formElements: FormElement[]) {
         formElements && formElements.forEach(fe => {
-            if (fe.elementType === 'section' || fe.elementType === 'form') return NativeRenderService.assignValueListRows(fe.formElements);
+            switch (fe.elementType) {
+                case 'form':
+                case 'section':
+                    return NativeRenderService.assignValueListRows(fe.formElements);
+                case 'question':
+                    if ((fe as FormQuestion).question && (fe as FormQuestion).question.answers) {
+                        let index = -1;
+                        (fe as FormQuestion).question.answers.forEach((pv: PermissibleFormValue, i, a) => {
+                            if (NativeRenderService.hasOwnRow(pv) || index === -1 && (i + 1 < a.length
+                                && NativeRenderService.hasOwnRow(a[i + 1]) || i + 1 === a.length)) {
+                                pv.index = index = -1;
+                            }
+                            else pv.index = ++index;
 
-            if ((fe as FormQuestion).question && (fe as FormQuestion).question.answers) {
-                let index = -1;
-                (fe as FormQuestion).question.answers.forEach((pv: PermissibleFormValue, i, a) => {
-                    if (NativeRenderService.hasOwnRow(pv) || index === -1 && (i + 1 < a.length
-                            && NativeRenderService.hasOwnRow(a[i + 1]) || i + 1 === a.length)) {
-                        pv.index = index = -1;
+                            if (pv.formElements) NativeRenderService.assignValueListRows(pv.formElements);
+                        });
                     }
-                    else pv.index = ++index;
-
-                    if (pv.formElements) NativeRenderService.assignValueListRows(pv.formElements);
-                });
+                    break;
+                default:
+                    return assertUnreachable(fe);
             }
         });
     }
@@ -343,12 +356,22 @@ export class NativeRenderService {
         return !!e.formElements;
     }
 
-    static flattenForm(elt) {
-        let startSection = (elt.formElements && (elt.formElements.length > 1 || elt.formElements.length === 0) ? elt : elt.formElements[0]);
-        return flattenFormSection(startSection, [startSection.label], '', '');
+    static flattenForm(elt: CdeForm) {
+        type QuestionStruct = {question: string, name: string, ids: CdeId[], tinyId: string, answerUom?: CodeAndSystem};
+        type SectionQuestions = {section: string, questions: QuestionStruct[]};
+        function isSectionQuestions(a: SectionQuestions | QuestionStruct): a is SectionQuestions {
+            return a.hasOwnProperty('section');
+        }
 
-        function flattenFormSection(fe, sectionHeading, namePrefix, repeatNum) {
-            function addSection(repeatSection, questions) {
+        if (!elt.formElements || elt.formElements.length === 0) {
+            return flattenFormSection(elt, [], '', '');
+        } else {
+            let startSection = elt.formElements[0] as FormSection;
+            return flattenFormSection(startSection, [startSection.label], '', '');
+        }
+
+        function flattenFormSection(fe: CdeForm | FormSectionOrForm, sectionHeading: string[], namePrefix: string, repeatNum: string): SectionQuestions[] {
+            function addSection(repeatSection: SectionQuestions[], questions: QuestionStruct[]): QuestionStruct[] {
                 if (questions.length) {
                     repeatSection.push({
                         section: sectionHeading[sectionHeading.length - 1] + repeatNum,
@@ -360,20 +383,20 @@ export class NativeRenderService {
                 return questions;
             }
             let repeats = NativeRenderService.getRepeatNumber(fe);
-            let repeatSection = [];
-            let questions = [];
-            let output: any;
+            let repeatSection: SectionQuestions[] = [];
+            let questions: QuestionStruct[] = [];
+            let output: SectionQuestions[] | QuestionStruct[];
             for (let i = 0; i < repeats; i++) {
                 if (repeats > 1) repeatNum = ' #' + i;
-                fe.formElements.forEach( feIter => {
+                fe.formElements.forEach(feIter => {
                     output = flattenFormFe(feIter, sectionHeading.concat(feIter.label), namePrefix + (repeats > 1 ? i + '_' : ''), repeatNum);
 
                     if (output.length !== 0) {
-                        if (typeof output[0].section !== 'undefined' && typeof output[0].questions !== 'undefined') {
+                        if (isSectionQuestions(output[0])) {
                             questions = addSection(repeatSection, questions);
-                            repeatSection = repeatSection.concat(output);
+                            repeatSection = repeatSection.concat(output as SectionQuestions[]);
                         } else {
-                            questions = questions.concat(output);
+                            questions = questions.concat(output as QuestionStruct[]);
                         }
                     }
                 });
@@ -382,11 +405,11 @@ export class NativeRenderService {
             return repeatSection;
         }
 
-        function flattenFormQuestion(fe, sectionHeading, namePrefix, repeatNum) {
-            let questions = [];
+        function flattenFormQuestion(fe: FormQuestion, sectionHeading: string[], namePrefix: string, repeatNum: string): QuestionStruct[] {
+            let questions: QuestionStruct[] = [];
             let repeats = NativeRenderService.getRepeatNumber(fe);
             for (let i = 0; i < repeats; i++) {
-                let q: any = {
+                let q: QuestionStruct = {
                     question: fe.label,
                     name: namePrefix + (repeats > 1 ? i + '_' : '') + fe.feId,
                     ids: fe.question.cde.ids,
@@ -399,29 +422,33 @@ export class NativeRenderService {
             }
             fe.question.answers && fe.question.answers.forEach(a => {
                 a.formElements && a.formElements.forEach(sq => {
-                    questions = questions.concat(flattenFormFe(sq, sectionHeading, namePrefix, repeatNum));
+                    questions = questions.concat(flattenFormFe(sq, sectionHeading, namePrefix, repeatNum) as QuestionStruct[]);
                 });
             });
             return questions;
         }
 
-        function flattenFormFe(fe, sectionHeading, namePrefix, repeatNum) {
-            if (fe.elementType === 'question') return flattenFormQuestion(fe, sectionHeading, namePrefix, repeatNum);
-            if (fe.elementType === 'section' || fe.elementType === 'form') {
-                return flattenFormSection(fe, sectionHeading, namePrefix, repeatNum);
+        function flattenFormFe(fe: FormElement, sectionHeading: string[], namePrefix: string, repeatNum: string) {
+            switch (fe.elementType) {
+                case 'form':
+                case 'section':
+                    return flattenFormSection(fe, sectionHeading, namePrefix, repeatNum);
+                case 'question':
+                    return flattenFormQuestion(fe, sectionHeading, namePrefix, repeatNum);
+                default:
+                    return assertUnreachable(fe);
             }
         }
     }
 
-    static getFirstQuestion(fe): any {
-        let firstQuestion: FormQuestion;
+    static getFirstQuestion(fe: FormElement | null): any {
+        let firstQuestion: FormQuestion | undefined;
         while (fe) {
-            if (fe.elementType !== 'question') {
-                if (!fe.formElements && fe.formElements.length > 0) break;
-                fe = fe.formElements[0];
-            } else {
+            if (fe.elementType === 'question') {
                 firstQuestion = fe;
                 break;
+            } else {
+                fe = fe.formElements && fe.formElements.length ? fe.formElements[0] : null;
             }
         }
 
@@ -430,7 +457,10 @@ export class NativeRenderService {
         return firstQuestion;
     }
 
-    static getRepeatNumber(fe: FormElement): number {
+    static getRepeatNumber(fe: FormOrElement): number {
+        if (fe instanceof CdeForm) {
+            return 1;
+        }
         if (fe.repeat) {
             if (fe.repeat[0] === 'F') {
                 let firstQ = NativeRenderService.getFirstQuestion(fe);

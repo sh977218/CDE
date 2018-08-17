@@ -1,8 +1,7 @@
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
 
 @Component({
-    selector: "cde-site-management",
-    templateUrl: "./siteManagement.component.html"
+    selector: 'cde-site-management',
+    templateUrl: './siteManagement.component.html'
 })
-
 export class SiteManagementComponent {}

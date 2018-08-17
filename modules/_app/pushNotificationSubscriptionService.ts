@@ -2,23 +2,23 @@ import _noop from 'lodash/noop';
 
 export class PushNotificationSubscriptionService {
     static get lastEndpoint() {
-        return window.localStorage.getItem('nlmcde.push');
+        return window.localStorage.getItem('nlmcde.push') || '';
     }
-    static set lastEndpoint(endpoint) {
+    static set lastEndpoint(endpoint: string) {
         window.localStorage.setItem('nlmcde.push', endpoint);
     }
     static get lastUser() {
-        return window.localStorage.getItem('nlmcde.push1');
+        return window.localStorage.getItem('nlmcde.push1') || '';
     }
-    static set lastUser(userId) {
+    static set lastUser(userId: string) {
         window.localStorage.setItem('nlmcde.push1', userId);
     }
     static registration = new Promise<ServiceWorkerRegistration>((resolve, reject) => {
         PushNotificationSubscriptionService.registrationResolve = resolve;
         PushNotificationSubscriptionService.registrationReject = reject;
     });
-    static registrationResolve;
-    static registrationReject;
+    static registrationResolve: (value?: ServiceWorkerRegistration | PromiseLike<ServiceWorkerRegistration>) => void;
+    static registrationReject: (reason?: any) => void;
 
     static askNotificationPermission(): Promise<void> {
         // handle both old callback and new Promise implementations
@@ -59,7 +59,7 @@ export class PushNotificationSubscriptionService {
         }
     }
 
-    static fetchError(error) {
+    static fetchError(error: Error) {
         PushNotificationSubscriptionService.handleError(error);
         if (error instanceof Error
             && (error.message === 'Failed to fetch' || error.message === 'Unexpected token < in JSON at position 0')) {
@@ -68,7 +68,7 @@ export class PushNotificationSubscriptionService {
         return Promise.reject(error);
     }
 
-    static handleError(error) {
+    static handleError(error: Error) {
         fetch('./server/log/clientExceptionLogs', {
             method: 'post',
             headers: {
@@ -85,7 +85,7 @@ export class PushNotificationSubscriptionService {
     }
 
     static subscriptionCheckClient(): boolean {
-        return PushNotificationSubscriptionService.lastEndpoint && !!PushNotificationSubscriptionService.lastUser;
+        return !!PushNotificationSubscriptionService.lastEndpoint && !!PushNotificationSubscriptionService.lastUser;
     }
 
     static async subscriptionDelete(userId: string): Promise<void> {
@@ -146,8 +146,8 @@ export class PushNotificationSubscriptionService {
         }
     }
 
-    static async subscriptionNewCreate(registration, applicationServerKey, userId) {
-        function urlBase64ToUint8Array(base64String) {
+    static async subscriptionNewCreate(registration: ServiceWorkerRegistration, applicationServerKey: string, userId: string) {
+        function urlBase64ToUint8Array(base64String: string) {
             const padding = '='.repeat((4 - base64String.length % 4) % 4);
             const base64 = (base64String + padding)
                 .replace(/\-/g, '+')
@@ -162,7 +162,7 @@ export class PushNotificationSubscriptionService {
                 userVisibleOnly: true,
             });
             if (!pushSubscription || !pushSubscription.getKey || !pushSubscription.endpoint) {
-                return;
+                return this.fetchError(new Error('Bad syntax.'));
             }
             await fetch('./pushRegistrationSubscribe', {
                 method: 'post',
@@ -184,7 +184,7 @@ export class PushNotificationSubscriptionService {
         }
     }
 
-    static async subscriptionServerUpdate(userId): Promise<void> {
+    static async subscriptionServerUpdate(userId: string): Promise<void> {
         if (this.lastEndpoint) {
             try {
                 let response: Response = await fetch('./pushRegistrationUpdate', {
