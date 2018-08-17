@@ -128,11 +128,12 @@ public class EltIdMaps {
         eltMap.put("PHQ-9 quick depression assessment panel [Reported.PHQ]", "mJsGoMU1m");
         eltMap.put("Patient Health Questionnaire - 9 (PHQ-9) Depression Scale", "mJP_B1HrFg");
         eltMap.put("PROMIS Bank v1.0 - Anxiety", "mksbrh_YIx");
+        eltMap.put("PROMIS Bank v1.2 - Physical Function", "Xko4nuKLg");
+        eltMap.put("PROMIS Parent Proxy SF v1.0 - Peer Relations 7a", "Q1N5NhuY8g");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
         eltMap.put("PROMIS SF v1.0 - Applied Cog Abilities 4a", "Q1Ogr2OtIe");
         eltMap.put("PROMIS SF v1.0 - Pain Behavior 7a", "QkggxHhuF8x");
-        eltMap.put("PROMIS Bank v1.2 - Physical Function", "Xko4nuKLg");
         eltMap.put("PROMIS SF v1.0-Sleep Disturbance 4a", "Q1JxnV2OYIx");
         eltMap.put("PROMIS SF v1.0-Sleep Disturbance 6a", "QJbbHnOFUl");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 4a", "mkG_EhdYIe");
@@ -181,9 +182,9 @@ public class EltIdMaps {
         eltMap.put("Stomach Cancer", "55f19755541fd83c2166cbc1");
         eltMap.put("Test Pinning Board", "5755db5a4dace9c03f784a9f");
         eltMap.put("Unpin Board", "57114b5328329938330f5c7f");
+        eltMap.put("Depression", "55f198ac541fd83c2166cbdc");
 
         eltMap.put("Gender Self-Identified", "7yXnzmPgZ");
-
     }
 
 }

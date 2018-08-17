@@ -10,7 +10,7 @@ public class ReviewerCanComment extends NlmCdeBaseTest {
     public void reviewerCanCommentOnCdeTest() {
         String cdeName = "Pulmonary function lung function measurement";
         String commentText = "Comment made by reviewer";
-        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
+        mustBeLoggedInAs(commentEditor_username, password);
         goToCdeByName(cdeName);
         addComment(commentText);
         logout();
