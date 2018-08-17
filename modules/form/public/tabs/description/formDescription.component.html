@@ -47,9 +47,9 @@
         </div>
 
         <ng-container *ngFor="let eltIter of [elt]">
-            <tree-root [ngClass]="{'drag-active': dragActive}"
-                    #tree [nodes]="eltIter.formElements" [options]="treeOptions" style="min-height: 400px">
-                <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
+            <tree-root #tree [ngClass]="{'drag-active': dragActive}" [nodes]="eltIter.formElements"
+                       [options]="treeOptions" style="min-height: 400px">
+            <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
                     <div class="tree-node tree-node-level-{{ node.level }}" [id]="node.data.elementType + '_' + node.data.feId"
                          [class]="node.getClass()"
                          [class.tree-node-expanded]="node.isExpanded && node.hasChildren"

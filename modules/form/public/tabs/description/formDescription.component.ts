@@ -59,6 +59,7 @@ const TOOL_BAR_OFF_SET = 64;
         }
 
         :host >>> .node-drop-slot {
+            background-color: lightblue;
             height: 10px;
             margin-bottom: 1px;
         }
@@ -83,7 +84,7 @@ const TOOL_BAR_OFF_SET = 64;
         :host >>> .drag-active .node-drop-slot:not(.is-dragging-over) {
             border: 1px dashed;
             border-radius: 4px;
-            height: 50px;
+            margin:10px 0px;
             background-color: #ffc6d0;
         }
 
@@ -218,7 +219,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         },
         childrenField: 'formElements',
         displayField: 'label',
-        dropSlotHeight: 20,
+        dropSlotHeight: 40,
         isExpandedField: 'expanded'
     };
 
