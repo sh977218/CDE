@@ -4,6 +4,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { Comment } from 'shared/models.model';
+import { AlertService } from '_app/alert.service';
 
 const tabMap = {
     preview_tab: 'preview',
@@ -61,12 +62,14 @@ export class DiscussAreaComponent {
 
     constructor(private http: HttpClient,
                 public isAllowedModel: IsAllowedService,
-                public userService: UserService) {
+                public userService: UserService,
+                public alertService: AlertService) {
     }
 
     postNewComment() {
         this.http.post('/server/discuss/postComment', this.newComment)
-            .subscribe(() => this.newComment.text = '');
+            .subscribe(() => this.newComment.text = '',
+                err => this.alertService.addAlert('danger', err.error));
     }
 
 }

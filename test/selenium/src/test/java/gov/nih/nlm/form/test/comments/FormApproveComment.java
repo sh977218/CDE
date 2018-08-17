@@ -12,7 +12,7 @@ public class FormApproveComment extends NlmCdeBaseTest {
         goToFormByName(formName);
         goToDiscussArea();
         isCommentOrReplyExists(commentText, false);
-        approveComment(commentEditor_username, commentEditor_password, anonymousCommentUser2_username, commentText);
+        approveComment(commentEditor_username, password, anonymousCommentUser2_username, commentText);
 
         mustBeLoggedInAs(anonymousCommentUser2_username, anonymousCommentUser_password);
         goToFormByName(formName);
