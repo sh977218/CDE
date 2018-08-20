@@ -87,8 +87,12 @@ const TOOL_BAR_OFF_SET = 64;
         }
 
         :host ::ng-deep .node-drop-slot {
-            height: 10px;
+            height: 20px;
             margin-bottom: 10px;
+        }
+
+        :host ::ng-deep .drag-active .node-drop-slot:not(.is-dragging-over) {
+            background-color: lightblue;
         }
 
         .panel-body-form {
