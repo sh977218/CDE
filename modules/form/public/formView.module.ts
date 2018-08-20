@@ -51,7 +51,7 @@ const appRoutes: Routes = [
         RouterModule.forChild(appRoutes),
         NgSelectModule,
         HotkeyModule.forRoot(),
-        TreeModule,
+        TreeModule.forRoot(),
         MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
