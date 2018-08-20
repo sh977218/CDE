@@ -46,10 +46,6 @@ const TOOL_BAR_OFF_SET = 64;
             font-size: 100%;
         }
 
-        :host >>> .tree {
-            cursor: default;
-        }
-
         :host >>> .panel {
             margin-bottom: 1px;
         }
@@ -61,7 +57,7 @@ const TOOL_BAR_OFF_SET = 64;
         :host >>> .node-drop-slot {
             background-color: lightblue;
             height: 10px;
-            margin-bottom: 1px;
+            margin: 10px 0px;
         }
 
         :host >>> .panel-badge-btn {
@@ -81,14 +77,18 @@ const TOOL_BAR_OFF_SET = 64;
             box-shadow: inset 0 0 0;
         }
 
-        :host >>> .drag-active .node-drop-slot:not(.is-dragging-over) {
+        :host >>> .drag-active .node-drop-slot {
             border: 1px dashed;
             border-radius: 4px;
-            margin:10px 0px;
-            background-color: #ffc6d0;
+            margin: 10px 0px;
+            background-color: lightgreen;
         }
 
-        .node-content-wrapper.is-dragging-over {
+        :host >>> .is-dragging-over-disabled {
+            background: white;
+        }
+
+        :host >>> .is-dragging-over {
             background-color: #ddffee;
             box-shadow: inset 0 0 1px #999;
         }
@@ -150,6 +150,7 @@ const TOOL_BAR_OFF_SET = 64;
 export class FormDescriptionComponent implements OnInit, AfterViewInit {
     private _elt?: CdeForm;
     @Input() canEdit: boolean = false;
+
     @Input() set elt(form: CdeForm) {
         this._elt = form;
         this.addExpanded(form);
@@ -256,7 +257,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     addExpanded(fe: FormElementsContainer) {
         fe.expanded = true;
-        let expand = (fe: FormElement) => { fe.expanded = true; };
+        let expand = (fe: FormElement) => {
+            fe.expanded = true;
+        };
         iterateFeSync(fe, undefined, expand, expand);
     }
 
