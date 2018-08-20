@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const stringType = require('../system/schemas').stringType;
+const stringIndexType = require('../system/schemas').stringIndexType;
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
@@ -10,20 +11,20 @@ exports.commentSchema = new Schema({
     text: stringType,
     user: {
         userId: Schema.Types.ObjectId,
-        username: stringType
+        username: stringIndexType
     },
     created: Date,
-    pendingApproval: Boolean,
+    pendingApproval: {type: Boolean, index: true},
     linkedTab: stringType,
     status: Object.assign({enum: ["active", "resolved", "deleted"], default: "active"}, stringType),
     replies: [{
         text: stringType,
         user: {
             userId: Schema.Types.ObjectId,
-            username: stringType
+            username: stringIndexType
         },
         created: Date,
-        pendingApproval: Boolean,
+        pendingApproval: {type: Boolean, index: true},
         status: Object.assign({enum: ["active", "resolved", "deleted"], default: "active"}, stringType)
     }],
     element: {
@@ -101,5 +102,12 @@ exports.orgComments = (myOrgs, from, size, callback) => {
                 ]
             }
         }, {$sort: {created: -1}}, {$skip: from}, {$limit: size}], callback);
+};
+
+exports.numberUnapprovedMessageByUsername = username => {
+    return Comment.count({
+        $or: [{'user.username': username, pendingApproval: true},
+            {'replies.user.username': username, 'replies.pendingApproval': true}]
+    }).exec();
 };
 
