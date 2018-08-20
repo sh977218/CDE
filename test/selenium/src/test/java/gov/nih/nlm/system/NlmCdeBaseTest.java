@@ -632,7 +632,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void checkAlert(String text) {
         int i = 0;
-        while (i < 4) {
+        while (i < 7) {
             try {
                 shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(".mat-simple-snackbar"), text));
                 closeAlert();
