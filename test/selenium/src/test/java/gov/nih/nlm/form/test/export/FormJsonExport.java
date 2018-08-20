@@ -12,8 +12,9 @@ public class FormJsonExport extends NlmCdeBaseTest {
         mustBeLoggedInAs(reguser_username, password);
         String form = "Adverse Event Tracking Log";
         goToFormByName(form);
-
+        hangon(1);
         clickElement(By.id("export"));
+        hangon(1);
         clickElement(By.id("nihJson"));
         switchTab(1);
 

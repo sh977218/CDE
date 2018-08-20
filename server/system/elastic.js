@@ -534,6 +534,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     // highlight search results if part of the following fields.
     queryStuff.highlight = {
+        "require_field_match": false,
         "order": "score"
         , "pre_tags": ["<strong>"]
         , "post_tags": ["</strong>"]
@@ -541,8 +542,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
             "stewardOrgCopy.name": {}
             , "primaryNameCopy": {}
             , "primaryDefinitionCopy": {"number_of_fragments": 1}
-            , "naming.designation": {}
-            , "naming.definition": {}
+            , "designations.designation": {}
+            , "definitions.definition": {}
             , "dataElementConcept.concepts.name": {}
             , "dataElementConcept.concepts.origin": {}
             , "dataElementConcept.concepts.originId": {}
@@ -553,13 +554,15 @@ exports.buildElasticSearchQuery = function (user, settings) {
             , "objectClass.concepts.origin": {}
             , "objectClass.concepts.originId": {}
             , "valueDomain.datatype": {}
+            , "valueDomain.permissibleValues.permissibleValue": {}
+            , "valueDomain.permissibleValues.valueMeaningName": {}
+            , "valueDomain.permissibleValues.valueMeaningCode": {}
             , "flatProperties": {}
             , "flatIds": {}
             , "classification.stewardOrg.name": {}
             , "classification.elements.name": {}
             , "classification.elements.elements.name": {}
             , "classification.elements.elements.elements.name": {}
-
         }
     };
     return queryStuff;
@@ -695,7 +698,7 @@ exports.elasticsearch = function (type, query, settings, cb) {
     let search = searchTemplate[type];
     if (!search) return cb("Invalid query");
     search.body = query;
-    esClient.search(search, function (error, response) {
+    esClient.search(search, (error, response) => {
         if (error) {
             if (response && response.status === 400) {
                 if (response.error.type !== 'search_phase_execution_exception') {
