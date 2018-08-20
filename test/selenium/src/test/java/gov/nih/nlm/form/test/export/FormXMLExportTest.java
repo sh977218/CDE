@@ -14,7 +14,7 @@ public class FormXMLExportTest extends NlmCdeBaseTest {
         String form = "Parenchymal Imaging";
         mustBeLoggedInAs(reguser_username, password);
         goToFormByName(form);
-
+        hangon(1);
         clickElement(By.id("export"));
         String url = findElement(By.id("nihXml")).getAttribute("href");
         String response = get(url).asString().replaceAll("\\s+", "");

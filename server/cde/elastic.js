@@ -60,7 +60,7 @@ exports.elasticsearch = function (user, settings, cb) {
     if (query.size > 100) return cb("size exceeded");
     if ((query.from + query.size) > 10000) return cb("page size exceeded");
     if (!config.modules.cde.highlight) {
-        Object.keys(query.highlight.fields).forEach(function (field) {
+        Object.keys(query.highlight.fields).forEach(field => {
             if (!(field === "primaryNameCopy" || field === "primaryDefinitionCopy")) {
                 delete query.highlight.fields[field];
             }
@@ -82,10 +82,11 @@ exports.elasticsearch = function (user, settings, cb) {
             }
         };
 
-    if (!settings.fullRecord)
+    if (!settings.fullRecord) {
         query._source = {excludes: ["flatProperties", "properties", "classification.elements", "formElements"]};
+    }
 
-    sharedElastic.elasticsearch('cde', query, settings, function (err, result) {
+    sharedElastic.elasticsearch('cde', query, settings, (err, result) => {
         if (result && result.cdes && result.cdes.length > 0) {
             dbLogger.storeQuery(settings);
         }
