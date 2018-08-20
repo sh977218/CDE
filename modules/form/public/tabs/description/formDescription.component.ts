@@ -53,10 +53,8 @@ const TOOL_BAR_OFF_SET = 64;
             padding-left: 0;
         }
 
-        :host ::ng-deep .node-drop-slot {
+        :host ::ng-deep .dragActive {
             background-color: lightblue;
-            height: 10px;
-            margin: 10px 0px;
         }
 
         :host ::ng-deep .panel-badge-btn {
@@ -88,6 +86,11 @@ const TOOL_BAR_OFF_SET = 64;
             background-color: lightgreen !important;
         }
 
+        :host ::ng-deep .node-drop-slot {
+            height: 10px;
+            margin-bottom: 10px;
+        }
+
         .panel-body-form {
             background-color: rgba(0, 0, 0, 0.03);
         }
@@ -96,8 +99,7 @@ const TOOL_BAR_OFF_SET = 64;
             color: #9d9d9d;
             background-color: #343a40;
             position: fixed;
-            padding: 5px;
-            padding-left: 20px;
+            padding: 5px 5px 5px 20px;
             top: ${TOOL_BAR_OFF_SET} px;
             border-bottom-left-radius: 50px;
             right: 0;

@@ -49,8 +49,9 @@
         <ng-container *ngFor="let eltIter of [elt]">
             <tree-root #tree [ngClass]="{'drag-active': dragActive}" [nodes]="eltIter.formElements"
                        [options]="treeOptions" style="min-height: 400px">
-            <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
-                    <div class="tree-node tree-node-level-{{ node.level }}" [id]="node.data.elementType + '_' + node.data.feId"
+                <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
+                    <div class="tree-node tree-node-level-{{ node.level }}"
+                         [id]="node.data.elementType + '_' + node.data.feId"
                          [class]="node.getClass()"
                          [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
                          [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"
@@ -62,7 +63,7 @@
                         <div class="card" [@copySection]="node.data.isCopied">
                             <div class="card-header">
                                 <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
-                                    <div class="node-content-wrapper w-100"
+                                    <div class="node-content-wrapper w-100" [ngClass]="{'dragActive':dragActive}"
                                          (click)="node.mouseAction('click', $event)"
                                          (dblclick)="node.mouseAction('dblClick', $event)"
                                          (contextmenu)="node.mouseAction('contextMenu', $event)"
@@ -148,7 +149,8 @@
             </div>
             <div mat-dialog-actions align="end">
                 <button mat-raised-button color="accent" type="submit" [disabled]="!newDataElementForm.valid"
-                        id="createNewDataElement">Create</button>
+                        id="createNewDataElement">Create
+                </button>
             </div>
         </form>
     </ng-container>
