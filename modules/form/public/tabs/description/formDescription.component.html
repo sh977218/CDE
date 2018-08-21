@@ -15,8 +15,7 @@
                   style="width: 87px;">
                 <i class="fa fa-cube"></i><span class="toolQuestion"></span>
             </span>
-            <span *ngIf="elt.formElements.length > 0" role="button" id="startAddingForms"
-                  class="btn btn-light formDescriptionTool"
+            <span role="button" id="startAddingForms" class="btn btn-light formDescriptionTool"
                   (dragstart)="dragActive = true" (dragend)="dragActive = false"
                   [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true"
                   style="width: 68px;">
@@ -48,10 +47,11 @@
         </div>
 
         <ng-container *ngFor="let eltIter of [elt]">
-            <tree-root [ngClass]="{'drag-active': dragActive}"
-                    #tree [nodes]="eltIter.formElements" [options]="treeOptions" style="min-height: 400px">
+            <tree-root #tree [ngClass]="{'drag-active': dragActive}" [nodes]="eltIter.formElements"
+                       [options]="treeOptions" style="min-height: 400px">
                 <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
-                    <div class="tree-node tree-node-level-{{ node.level }}" [id]="node.data.elementType + '_' + node.data.feId"
+                    <div class="tree-node tree-node-level-{{ node.level }}"
+                         [id]="node.data.elementType + '_' + node.data.feId"
                          [class]="node.getClass()"
                          [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
                          [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"
@@ -63,7 +63,7 @@
                         <div class="card" [@copySection]="node.data.isCopied">
                             <div class="card-header">
                                 <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
-                                    <div class="node-content-wrapper w-100"
+                                    <div class="node-content-wrapper w-100" [ngClass]="{'dragActive':dragActive}"
                                          (click)="node.mouseAction('click', $event)"
                                          (dblclick)="node.mouseAction('dblClick', $event)"
                                          (contextmenu)="node.mouseAction('contextMenu', $event)"
@@ -149,7 +149,8 @@
             </div>
             <div mat-dialog-actions align="end">
                 <button mat-raised-button color="accent" type="submit" [disabled]="!newDataElementForm.valid"
-                        id="createNewDataElement">Create</button>
+                        id="createNewDataElement">Create
+                </button>
             </div>
         </form>
     </ng-container>
