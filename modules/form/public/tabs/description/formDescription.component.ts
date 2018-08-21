@@ -18,9 +18,6 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import { Hotkey, HotkeysService } from "angular2-hotkeys";
 import _isEmpty from 'lodash/isEmpty';
 import _noop from 'lodash/noop';
-
-import { ElasticService } from '_app/elastic.service';
-import { AlertService } from '_app/alert.service';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
@@ -38,59 +35,64 @@ const TOOL_BAR_OFF_SET = 64;
     animations: [copySectionAnimation],
     providers: [DeCompletionService],
     styles: [`
-        :host >>> .hover-bg {
+        :host ::ng-deep .hover-bg {
             background-color: lightblue;
             border: 1px;
             border-radius: 10px;
         }
 
-        :host >>> .badge {
+        :host ::ng-deep .badge {
             font-size: 100%;
         }
 
-        :host >>> .tree {
-            cursor: default;
-        }
-
-        :host >>> .panel {
+        :host ::ng-deep .panel {
             margin-bottom: 1px;
         }
 
-        :host >>> .tree-children {
+        :host ::ng-deep .tree-children {
             padding-left: 0;
         }
 
-        :host >>> .node-drop-slot {
-            height: 10px;
-            margin-bottom: 1px;
+        :host ::ng-deep .dragActive {
+            background-color: lightblue;
         }
 
-        :host >>> .panel-badge-btn {
+        :host ::ng-deep .panel-badge-btn {
             color: white;
             background-color: #333;
         }
 
-        :host >>> .badge.formViewSummaryLabel {
+        :host ::ng-deep .badge.formViewSummaryLabel {
             display: inline-flex;
             margin-left: 4px;
             margin-top: 2px;
             white-space: normal;
         }
 
-        :host >>> .node-content-wrapper:hover {
+        :host ::ng-deep .node-content-wrapper:hover {
             background: transparent;
             box-shadow: inset 0 0 0;
         }
 
-        :host >>> .drag-active .node-drop-slot:not(.is-dragging-over) {
+        :host ::ng-deep .is-dragging-over-disabled {
             border: 1px dashed;
             border-radius: 4px;
-            background-color: #ffc6d0;
+            background: lightpink !important;
         }
 
-        .node-content-wrapper.is-dragging-over {
-            background-color: #ddffee;
-            box-shadow: inset 0 0 1px #999;
+        :host ::ng-deep .is-dragging-over {
+            border: 1px dashed;
+            border-radius: 4px;
+            background-color: lightgreen !important;
+        }
+
+        :host ::ng-deep .node-drop-slot {
+            height: 20px;
+            margin-bottom: 10px;
+        }
+
+        :host ::ng-deep .drag-active .node-drop-slot:not(.is-dragging-over) {
+            background-color: lightblue;
         }
 
         .panel-body-form {
@@ -101,8 +103,7 @@ const TOOL_BAR_OFF_SET = 64;
             color: #9d9d9d;
             background-color: #343a40;
             position: fixed;
-            padding: 5px;
-            padding-left: 20px;
+            padding: 5px 5px 5px 20px;
             top: ${TOOL_BAR_OFF_SET} px;
             border-bottom-left-radius: 50px;
             right: 0;
@@ -150,14 +151,17 @@ const TOOL_BAR_OFF_SET = 64;
 export class FormDescriptionComponent implements OnInit, AfterViewInit {
     private _elt?: CdeForm;
     @Input() canEdit: boolean = false;
+
     @Input() set elt(form: CdeForm) {
         this._elt = form;
         this.addExpanded(form);
         addFormIds(form);
     }
+
     get elt() {
         return this._elt;
     }
+
     @Output() onEltChange = new EventEmitter();
     @ViewChild(TreeComponent) tree: TreeComponent;
     @ViewChild('formSearchTmpl') formSearchTmpl: TemplateRef<any>;
@@ -217,7 +221,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         },
         childrenField: 'formElements',
         displayField: 'label',
-        dropSlotHeight: 3,
         isExpandedField: 'expanded'
     };
 
@@ -233,7 +236,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         private localStorageService: LocalStorageService,
         public modalService: NgbModal,
         public matDialog: MatDialog,
-    ) {}
+    ) {
+    }
 
     ngOnInit(): void {
         this._hotkeysService.add([
@@ -253,7 +257,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     addExpanded(fe: FormElementsContainer) {
         fe.expanded = true;
-        let expand = (fe: FormElement) => { fe.expanded = true; };
+        let expand = (fe: FormElement) => {
+            fe.expanded = true;
+        };
         iterateFeSync(fe, undefined, expand, expand);
     }
 
