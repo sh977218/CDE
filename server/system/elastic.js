@@ -10,7 +10,7 @@ const dbLogger = require('../log/dbLogger.js');
 const mongo_cde = require("../cde/mongo-cde");
 const mongo_form = require("../form/mongo-form");
 const boardDb = require("../board/boardDb");
-const mongo_data = require("./mongo-data");
+const meshDb = require("../mesh/meshDb");
 const noDbLogger = require("./noDbLogger");
 
 
@@ -585,7 +585,7 @@ let searchTemplate = {
 
 
 exports.syncWithMesh = function () {
-    mongo_data.findMeshClassification({}, (err, allMappings) => doSyncWithMesh(allMappings));
+    meshDb.findAll((err, allMappings) => doSyncWithMesh(allMappings));
 };
 
 function doSyncWithMesh(allMappings) {

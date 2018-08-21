@@ -81,7 +81,7 @@ export class FormTermMappingComponent implements OnInit {
     reloadMeshTerms() {
         this.mapping.eltId = this.elt.tinyId;
         this.flatMeshSimpleTrees = [];
-        this.http.get<any>('/server/mesh/id/' + this.elt.tinyId).subscribe(response => {
+        this.http.get<any>('/server/mesh/eltId/' + this.elt.tinyId).subscribe(response => {
             if (!response) return this.alert.addAlert('danger', 'There was an issue getting Mesh Terms.');
 
             if (response.eltId) this.mapping = response;

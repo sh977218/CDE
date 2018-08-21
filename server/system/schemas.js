@@ -387,13 +387,6 @@ exports.classificationAudit = new Schema({
 });
 exports.classificationAudit.set('collection', 'classificationAudit');
 
-exports.meshClassification = new Schema({
-    flatClassification: stringType,
-    eltId: stringType,
-    meshDescriptors: [stringType],
-    flatTrees: [stringType]
-});
-
 exports.trafficFilterSchema = new Schema({
     ipList: [{
         ip: String,

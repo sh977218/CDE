@@ -33,6 +33,7 @@ const formElastic = require('../form/elastic.js');
 const app_status = require("./status.js");
 const traffic = require('./traffic');
 const classificationNode_system = require('./classificationNode');
+const meshDb = require('../mesh/meshDb');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -767,19 +768,11 @@ exports.init = function (app) {
 
     app.get('/meshClassification', (req, res) => {
         if (!req.query.classification) return res.status(400).send("Missing Classification Parameter");
-        mongo_data.findMeshClassification({flatClassification: req.query.classification}, (err, mm) => {
-            if (err) return res.status(500).send();
-            res.send(mm[0]);
-        });
+        meshDb.byFlatClassification(req.query.classification, handleError({req, res}, mm => res.send(mm[0])))
     });
 
-
-
     app.get('/meshClassifications', (req, res) => {
-        mongo_data.findMeshClassification({}, (err, mm) => {
-            if (err) return res.status(500).send();
-            res.send(mm);
-        });
+        meshDb.findAll(handleError({req, res}, mm => res.send(mm)));
     });
 
     let meshTopTreeMap = {
@@ -832,21 +825,16 @@ exports.init = function (app) {
             delete req.body._id;
             flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function (trees) {
                 req.body.flatTrees = trees;
-                mongo_data.MeshClassification.findOne({_id: id}, function (err, elt) {
+                meshDb.byId(id, handleError({req, res}, elt => {
                     elt.meshDescriptors = req.body.meshDescriptors;
                     elt.flatTrees = req.body.flatTrees;
-                    elt.save(function (err, o) {
-                        res.send(o);
-                    });
-                });
+                    elt.save(handleError({req, res}, o => res.send(o)));
+                }));
             });
         } else {
             flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function (trees) {
                 req.body.flatTrees = trees;
-                new mongo_data.MeshClassification(req.body).save(function (err, obj) {
-                    if (err) return res.status(500).send();
-                    res.send(obj);
-                });
+                meshDb.newMesh(req.body, handleError({req, res}, o => res.send(o)));
             });
         }
     });

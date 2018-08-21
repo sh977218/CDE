@@ -15,6 +15,21 @@ let meshClassificationSchema = new Schema({
 const MeshClassification = conn.model('meshClassification', meshClassificationSchema);
 exports.MeshClassification = MeshClassification;
 
-exports.findMeshClassification = (query, callback) => {
-    MeshClassification.find(query, callback);
+exports.byId = (id, callback) => {
+    MeshClassification.findOne(id, callback);
+};
+exports.byEltId = (eltId, callback) => {
+    MeshClassification.findById({eltId: eltId}, callback);
+};
+
+exports.byFlatClassification = (flatClassification, callback) => {
+    MeshClassification.find({flatClassification: flatClassification}, callback);
+};
+
+exports.findAll = callback => {
+    MeshClassification.find({}, callback)
+};
+
+exports.newMesh = (mesh, callback) => {
+    new MeshClassification(mesh).save(callback);
 };
