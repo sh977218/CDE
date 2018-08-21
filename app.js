@@ -245,6 +245,9 @@ try {
     });
     app.use('/server/log', logModule);
 
+    let meshModule = require("./server/mesh/meshRoutes").module({});
+    app.use('/server/mesh', meshModule);
+
     require(path.join(__dirname, './server/cde/app.js')).init(app, daoManager);
 
     require(path.join(__dirname, './server/system/app.js')).init(app, daoManager);
