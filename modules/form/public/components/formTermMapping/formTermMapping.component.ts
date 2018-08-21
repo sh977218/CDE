@@ -45,13 +45,11 @@ export class FormTermMappingComponent implements OnInit {
         this.reloadMeshTerms();
     }
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public isAllowedModel: IsAllowedService,
-        public modalService: NgbModal,
-        public userService: UserService,
-    ) {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public isAllowedModel: IsAllowedService,
+                public modalService: NgbModal,
+                public userService: UserService) {
     }
 
     addMeshDescriptor() {
