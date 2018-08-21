@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class OrgAdminTasks extends BaseClassificationTest {
@@ -28,7 +27,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
                 for (int j = 0; j < userLength; j++) {
                     if ("userToPromote".equals(findElement(
                             By.xpath("//span[@id='existingOrgCuratorUsername-" + i + "-" + j + "']")).getText())) {
-                        findElement(By.xpath("//i[@id='removeOrgCuratorUsername-" + i + "-" + j + "']")).click();
+                        findElement(By.xpath("//mat-icon[@id='removeOrgCuratorUsername-" + i + "-" + j + "']")).click();
                         j = userLength;
                         i = orgLength;
                     }
@@ -50,7 +49,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
                 int userLength = driver.findElements(By.xpath("//span[starts-with(@id, 'existingOrgAdminUsername-" + i + "-')]")).size();
                 for (int j = 0; j < userLength; j++) {
                     if ("userToPromote".equals(findElement(By.xpath("//span[@id='existingOrgAdminUsername-" + i + "-" + j + "']")).getText())) {
-                        findElement(By.xpath("//i[@id='removeOrgAdminUsername-" + i + "-" + j + "']")).click();
+                        findElement(By.xpath("//mat-icon[@id='removeOrgAdminUsername-" + i + "-" + j + "']")).click();
                         j = userLength;
                         i = orgLength;
                     }
