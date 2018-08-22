@@ -59,20 +59,20 @@ export class ServerStatusComponent {
     }
 
     syncMesh() {
-        this.http.post('/syncWithMesh', {}).subscribe();
+        this.http.post('/server/mesh/syncWithMesh', {}).subscribe();
         let indexFn = setInterval(() => {
-            this.http.get<any>('/syncWithMesh').subscribe(response => {
+            this.http.get<any>('/syncWithMesh').subscribe(res => {
                 this.meshSyncs = [];
-                for (let p in response) {
-                    if (response.hasOwnProperty(p)) this.meshSyncs.push(response[p]);
+                for (let p in res) {
+                    if (res.hasOwnProperty(p)) this.meshSyncs.push(res[p]);
                 }
-                if (response.dataelement.done === response.dataelement.total
-                    && response.form.done === response.form.total) {
+                if (res.dataelement.done === res.dataelement.total
+                    && res.form.done === res.form.total) {
                     clearInterval(indexFn);
                     this.Alert.addAlert('success', 'Done syncing');
                     this.meshSyncs = null;
                 }
-            });
+            }, err => this.Alert.addAlert('danger', err));
         }, 1000);
     }
 }

@@ -33,7 +33,6 @@ const formElastic = require('../form/elastic.js');
 const app_status = require("./status.js");
 const traffic = require('./traffic');
 const classificationNode_system = require('./classificationNode');
-const meshDb = require('../mesh/meshDb');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -480,6 +479,7 @@ exports.init = function (app) {
     }
 
     const validLoginBody = ["username", "password", "_csrf", "recaptcha"];
+
     app.post('/login', [checkLoginReq, myCsrf], (req, res, next) => {
         let failedIp = findFailedIp(getRealIp(req));
         async.series([
@@ -629,7 +629,6 @@ exports.init = function (app) {
         res.end();
     });
 
-
     app.post('/mail/messages/new', (req, res) => {
         if (req.isAuthenticated()) {
             let message = req.body;
@@ -728,7 +727,6 @@ exports.init = function (app) {
         }));
     });
 
-
     app.get('/embed/:id', (req, res) => {
         mongo_data.embeds.find({_id: req.params.id}, (err, embeds) => {
             if (err) return res.status(500).send();
@@ -764,90 +762,6 @@ exports.init = function (app) {
             if (err) return res.status(500).send(org);
             res.send(org);
         });
-    });
-
-    app.get('/meshClassification', (req, res) => {
-        if (!req.query.classification) return res.status(400).send("Missing Classification Parameter");
-        meshDb.byFlatClassification(req.query.classification, handleError({req, res}, mm => res.send(mm[0])))
-    });
-
-    app.get('/meshClassifications', (req, res) => {
-        meshDb.findAll(handleError({req, res}, mm => res.send(mm)));
-    });
-
-    let meshTopTreeMap = {
-        'A': "Anatomy",
-        'B': "Organisms",
-        'C': "Diseases",
-        'D': "Chemicals and Drugs",
-        'E': "Analytical, Diagnostic and Therapeutic Techniques, and Equipment",
-        'F': "Psychiatry and Psychology",
-        'G': "Phenomena and Processes",
-        'H': "Disciplines and Occupations",
-        'I': "Anthropology, Education, Sociology, and Social Phenomena",
-        'J': "Technology, Industry, and Agriculture",
-        'K': "Humanities",
-        'L': "Information Science",
-        'M': "Named Groups",
-        'N': "Health Care",
-        'V': "Publication Characteristics",
-        'Z': "Geographicals"
-    };
-
-    function flatTreesFromMeshDescriptorArray(descArr, cb) {
-        let allTrees = new Set();
-        async.each(descArr, function (desc, oneDescDone) {
-            request(config.mesh.baseUrl + "/api/record/ui/" + desc, {json: true}, function (err, response, oneDescBody) {
-                async.each(oneDescBody.TreeNumberList.TreeNumber, function (treeNumber, tnDone) {
-                    request(config.mesh.baseUrl + "/api/tree/parents/" + treeNumber.t, {json: true}, function (err, response, oneTreeBody) {
-                        let flatTree = meshTopTreeMap[treeNumber.t.substr(0, 1)];
-                        if (oneTreeBody && oneTreeBody.length > 0) {
-                            flatTree = flatTree + ";" + oneTreeBody.map(function (a) {
-                                return a.RecordName;
-                            }).join(";");
-                        }
-                        flatTree = flatTree + ";" + oneDescBody.DescriptorName.String.t;
-                        allTrees.add(flatTree);
-                        tnDone();
-                    });
-                }, function allTnDone() {
-                    oneDescDone();
-                });
-            });
-        }, function allDescDone() {
-            cb(Array.from(allTrees));
-        });
-    }
-
-    app.post('/meshClassification', (req, res) => {
-        if (req.body._id) {
-            let id = req.body._id;
-            delete req.body._id;
-            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function (trees) {
-                req.body.flatTrees = trees;
-                meshDb.byId(id, handleError({req, res}, elt => {
-                    elt.meshDescriptors = req.body.meshDescriptors;
-                    elt.flatTrees = req.body.flatTrees;
-                    elt.save(handleError({req, res}, o => res.send(o)));
-                }));
-            });
-        } else {
-            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function (trees) {
-                req.body.flatTrees = trees;
-                meshDb.newMesh(req.body, handleError({req, res}, o => res.send(o)));
-            });
-        }
-    });
-
-    app.post("/syncWithMesh", (req, res) => {
-        if (!config.autoSyncMesh && !authorizationShared.canOrgAuthority(req.user))
-            return res.status(403).send("Not Authorized");
-        elastic.syncWithMesh();
-        res.send();
-    });
-
-    app.get('/syncWithMesh', (req, res) => {
-        res.send(elastic.meshSyncStatus);
     });
 
     app.get('/activeBans', (req, res) => {
