@@ -284,6 +284,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     clearSelectedClassifications() {
         this.searchSettings.selectedOrg = undefined;
         this.searchSettings.classification.length = 0;
+        this.searchSettings.page = 1;
 
         if (this.hasSelectedClassificationsAlt()) {
             this.searchSettings.selectedOrg = this.searchSettings.selectedOrgAlt;
@@ -300,14 +301,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.altClassificationFilterMode = false;
         this.searchSettings.selectedOrgAlt = undefined;
         this.searchSettings.classificationAlt.length = 0;
-
+        this.searchSettings.page = 1;
         this.doSearch();
     }
 
     clearSelectedDatatypes() {
         if (this.searchSettings.datatypes) {
             this.searchSettings.datatypes.length = 0;
-
+            this.searchSettings.page = 1;
             this.doSearch();
         }
     }
@@ -315,14 +316,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     clearSelectedStatuses() {
         if (this.searchSettings.regStatuses) {
             this.searchSettings.regStatuses.length = 0;
-
+            this.searchSettings.page = 1;
             this.doSearch();
         }
     }
 
     clearSelectedTopics() {
         this.searchSettings.meshTree = '';
-
+        this.searchSettings.page = 1;
         this.doSearch();
     }
 
