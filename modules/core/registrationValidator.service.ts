@@ -3,11 +3,12 @@ import { OrgHelperService } from "core/orgHelper.service";
 
 @Injectable()
 export class RegistrationValidatorService {
-    constructor (private orgHelperService: OrgHelperService) {}
+    constructor(private orgHelperService: OrgHelperService) {
+    }
 
     evalCde(cde, orgName, status, cdeOrgRules) {
         let orgRules = cdeOrgRules[orgName];
-        let rules = orgRules.filter(function (r) {
+        let rules = orgRules.filter(r => {
             let s = r.targetStatus;
             if (status === 'Incomplete') return s === 'Incomplete';
             if (status === 'Candidate') return s === 'Incomplete' || s === 'Candidate';
@@ -17,7 +18,7 @@ export class RegistrationValidatorService {
             return true;
         });
         if (rules.length === 0) return [];
-        return rules.map((r) => {
+        return rules.map(r => {
             return {ruleName: r.ruleName, cdePassingRule: this.cdePassingRule(cde, r)};
         });
     }
@@ -25,19 +26,14 @@ export class RegistrationValidatorService {
     conditionsMetForStatusWithinOrg(cde, orgName, status, cdeOrgRules) {
         if (!cdeOrgRules[orgName]) return true;
         let results = this.evalCde(cde, orgName, status, cdeOrgRules);
-        return results.every(function (x) {
-            return x.passing;
-        });
+        return results.every(x => x.passing);
     }
 
     cdePassingRule(cde, rule) {
-        function checkRe(field, rule) {
-            return new RegExp(rule.rule.regex).test(field);
-        }
         function lookForPropertyInNestedObject(object, rule, level) {
             let key = rule.field.split(".")[level];
             if (!object[key]) return false;
-            if (level === rule.field.split(".").length - 1) return checkRe(object[key], rule);
+            if (level === rule.field.split(".").length - 1) return new RegExp(rule.rule.regex).test(object[key]);
             if (!Array.isArray(object[key])) return lookForPropertyInNestedObject(object[key], rule, level + 1);
             if (Array.isArray(object[key])) {
                 let result;
@@ -57,29 +53,29 @@ export class RegistrationValidatorService {
                 }
             }
         }
+
         return lookForPropertyInNestedObject(cde, rule, 0);
     }
 
     getOrgRulesForCde(cde) {
         let result = {};
-        cde.classification.forEach((org) => {
-            result[org.stewardOrg.name] = this.orgHelperService.getStatusValidationRules(org.stewardOrg.name);
-        });
+        cde.classification.forEach(org =>
+            result[org.stewardOrg.name] = this.orgHelperService.getStatusValidationRules(org.stewardOrg.name));
         return result;
     }
 
     getStatusRules(cdeOrgRules) {
         let cdeStatusRules = {
-            Incomplete: {},
-            Candidate: {},
-            Recorded: {},
-            Qualified: {},
-            Standard: {},
+            "Incomplete": {},
+            "Candidate": {},
+            "Recorded": {},
+            "Qualified": {},
+            "Standard": {},
             "Preferred Standard": {}
         };
 
-        Object.keys(cdeOrgRules).forEach(function (orgName) {
-            cdeOrgRules[orgName].forEach(function (rule) {
+        Object.keys(cdeOrgRules).forEach(orgName => {
+            cdeOrgRules[orgName].forEach(rule => {
                 if (!cdeStatusRules[rule.targetStatus][orgName]) cdeStatusRules[rule.targetStatus][orgName] = [];
                 cdeStatusRules[rule.targetStatus][orgName].push(rule);
             });

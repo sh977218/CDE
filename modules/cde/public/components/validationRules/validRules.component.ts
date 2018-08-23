@@ -12,9 +12,10 @@ export class ValidRulesComponent implements OnInit {
     cdePassingRule: any;
     keys = Object.keys;
 
-    constructor (private registrationValidatorService: RegistrationValidatorService) {}
+    constructor(private registrationValidatorService: RegistrationValidatorService) {
+    }
 
-    ngOnInit () {
+    ngOnInit() {
         let cdeOrgRules = this.registrationValidatorService.getOrgRulesForCde(this.elt);
         this.cdeStatusRules = this.registrationValidatorService.getStatusRules(cdeOrgRules);
         this.cdePassingRule = this.registrationValidatorService.cdePassingRule;

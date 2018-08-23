@@ -5,7 +5,7 @@ export function assertUnreachable(x: never): never {
     throw new Error("Didn't expect to get here");
 }
 
-export type supportedFhirResources = 'Observation'|'Procedure';
+export type supportedFhirResources = 'Observation' | 'Procedure';
 export const supportedFhirResourcesArray = ['Observation', 'Procedure'];
 
 export class Attachment {
@@ -33,7 +33,8 @@ export type CbErr<T = never, U = never, V = never> = (error?: string, t?: T, u?:
 export type CbRet<R = never, T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => R;
 
 export class CdeId {
-    [key: string]: string|undefined;
+    [key: string]: string | undefined;
+
     _id?: ObjectId;
     id?: string;
     source?: string;
@@ -119,7 +120,14 @@ export class CommentReply {
     username?: string;
 }
 
-export type CurationStatus = 'Incomplete'|'Recorded'|'Candidate'|'Qualified'|'Standard'|'Preferred Standard'|'Retired';
+export type CurationStatus =
+    'Incomplete'
+    | 'Recorded'
+    | 'Candidate'
+    | 'Qualified'
+    | 'Standard'
+    | 'Preferred Standard'
+    | 'Retired';
 
 export enum CurationStatusEnum {
     'Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired'
@@ -247,7 +255,7 @@ export class EltRef {
 
 export class FormattedValue {
     value: string;
-    valueFormat?: 'html'|undefined;
+    valueFormat?: 'html' | undefined;
 
     constructor(value = '') {
         this.value = value;
@@ -267,7 +275,7 @@ export class Designation {
 
 export class Definition {
     definition: string;
-    definitionFormat?: 'html'|undefined; // TODO: change to use FormattedValue
+    definitionFormat?: 'html' | undefined; // TODO: change to use FormattedValue
     tags: string[] = [];
 
     constructor(definition = '') {
@@ -284,8 +292,8 @@ export class DerivationRule {
     ruleType?: DerivationRuleType;
 }
 
-type DerivationRuleFormula = 'sumAll'|'mean';
-type DerivationRuleType = 'score'|'panel';
+type DerivationRuleFormula = 'sumAll' | 'mean' | 'a/b^2';
+type DerivationRuleType = 'score' | 'panel';
 
 export class Notification {
     _id?: {
@@ -372,7 +380,7 @@ export class RegistrationState {
 export class StatusValidationRules {
     id!: number;
     field?: string;
-    occurence?: 'exactlyOne'|'atLeastOne'|'all';
+    occurence?: 'exactlyOne' | 'atLeastOne' | 'all';
     rule: {
         regex?: string
     } = {};
