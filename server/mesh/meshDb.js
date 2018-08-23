@@ -1,23 +1,15 @@
 const Schema = require('mongoose').Schema;
+const stringType = require('../system/schemas').stringType;
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
 
 let meshClassificationSchema = new Schema({
-    flatClassification: String,
-    eltId: String,
-    meshDescriptors: [String],
-    flatTrees: [String]
+    flatClassification: stringType,
+    eltId: stringType,
+    meshDescriptors: [stringType],
+    flatTrees: [stringType]
 });
-meshClassificationSchema.plugin((schema, options) => {
-    for (let o in schema.obj) {
-        console.log(o);
-        if (o.type === 'string')
-            console.log('a');
-    }
-    console.log(schema);
-    console.log(options);
-}, {index: true});
 
 const MeshClassification = conn.model('meshClassification', meshClassificationSchema);
 exports.MeshClassification = MeshClassification;
