@@ -31,11 +31,13 @@ public class ResetSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void resetFromWelcome() {
+        String searchTerm = "some search";
         goToCdeSearch();
-        findElement(By.id("ftsearch-input")).sendKeys("some search");
+        findElement(By.id("ftsearch-input")).sendKeys(searchTerm);
         clickElement(By.id("search.submit"));
         textPresent("results for some search");
         clickElement(By.id("menu_cdes_link"));
+        textNotPresent(searchTerm, By.id("ftsearch-input"));
         textPresent("Browse by Classification");
     }
 

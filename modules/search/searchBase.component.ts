@@ -195,7 +195,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     ngOnInit() {
         // TODO: remove OnInit when OnChanges inputs is implemented for Dynamic Components
         this.route.queryParams.subscribe(() => this.search());
-
         this.searchTermFC.valueChanges.subscribe(v => this.searchSettings.q = v);
 
         this.searchTermFC.valueChanges
@@ -738,7 +737,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         // TODO: replace with router
         let params = SearchBaseComponent.searchParamsGet();
         if (params['q']) this.searchSettings.q = params['q'];
-        else this.searchSettings.q = '';
+        else this.searchTermFC.reset();
         this.searchSettings.page = parseInt(params['page']);
         if (!this.searchSettings.page) this.searchSettings.page = 1;
         this.searchSettings.selectedOrg = params['selectedOrg'];
