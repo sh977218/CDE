@@ -2,27 +2,46 @@ package gov.nih.nlm.cde.test.search;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.List;
 
 public class ResetPageNumberTest extends NlmCdeBaseTest {
 
     @Test
-    public void resetSearch() {
+    public void resetPageNumber() {
+        setLowStatusesVisible();
+        includeRetiredSetting();
         goToCdeSearch();
-        clickElement(By.id("browseOrg-NINDS"));
         findElement(By.id("ftsearch-input")).sendKeys("patient");
         clickElement(By.id("search.submit"));
-        textPresent("Patient Ethnic Group Category");
-        clickElement(By.id("regstatus-Qualified"));
+        textPresent("Patient Ethnic Group Category ");
+
+        // clear registration status reset page to 1
+        clickElement(By.xpath("//*[@id='regstatus-Qualified']"));
         findElement(By.xpath("//*[@id='goToPage']//input")).clear();
         hangon(1);
         findElement(By.xpath("//*[@id='goToPage']//input")).sendKeys("2");
         textNotPresent("Patient Ethnic Group Category");
-        clickElement(By.id(""));
+        clickElement(By.id("removeStatuses"));
+        textPresent("Patient Ethnic Group Category ");
+
+        // clear data type reset page to 1
+        clickElement(By.xpath("//*[@id='datatype-Value List']"));
+        findElement(By.xpath("//*[@id='goToPage']//input")).clear();
+        hangon(1);
+        findElement(By.xpath("//*[@id='goToPage']//input")).sendKeys("2");
+        textNotPresent("Patient Ethnic Group Category");
+        clickElement(By.id("removeDatatypes"));
+        textPresent("Patient Ethnic Group Category ");
+
+        // clear classification reset page to 1
+        clickElement(By.xpath("//*[@id='classif-NINDS']"));
+        findElement(By.xpath("//*[@id='goToPage']//input")).clear();
+        hangon(1);
+        findElement(By.xpath("//*[@id='goToPage']//input")).sendKeys("2");
+        textNotPresent("Patient Ethnic Group Category");
+        clickElement(By.id("removeClassifications"));
+        textPresent("Patient Ethnic Group Category ");
 
     }
 }
