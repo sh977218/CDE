@@ -226,7 +226,7 @@ const cdeSteps: Array<any> = [
     },
     {
         title: "Forms",
-        orphan: true
+        orphan: true,
         content: "We will now continue the tour and show Form features.",
         onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_forms_link", "browseByClassification", resolve))
     }
