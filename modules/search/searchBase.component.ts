@@ -842,4 +842,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (count > 0) setTimeout(() => SearchBaseComponent.waitScroll(count - 1, previousSpot), 100);
         else window.scrollTo(0, previousSpot);
     }
+
+
 }
