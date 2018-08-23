@@ -37,9 +37,8 @@
                         <td>
                             <div *ngFor="let user of orgCurator.users; let $index = index">
                                 <span id="existingOrgCuratorUsername-{{$pindex}}-{{$index}}">{{user.username}}</span>
-                                <i class="fa fa-trash-o hand-cursor"
-                                   (click)="removeOrgCurator(orgCurator.name, user._id)"
-                                   id="removeOrgCuratorUsername-{{$pindex}}-{{$index}}" title="Remove"></i>
+                                <mat-icon (click)="removeOrgCurator(orgCurator.name, user._id)"
+                                   id="removeOrgCuratorUsername-{{$pindex}}-{{$index}}">delete_outline</mat-icon>
                             </div>
                         </td>
                     </tr>

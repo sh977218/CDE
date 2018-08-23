@@ -22,9 +22,8 @@
                                 (click)="$event.stopPropagation()">ONC</a>)
             </span>
             <span id="printableLogicCb" (click)="overridePrintable = !overridePrintable" mat-menu-item>
-                Print View: <i class="fa fa-fw"
-                               [class.fa-check-square-o]="overridePrintable"
-                               [class.fa-square-o]="!overridePrintable"></i>
+                Print View: <mat-icon *ngIf="overridePrintable">check_box</mat-icon>
+                <mat-icon *ngIf="!overridePrintable">check_box_outline</mat-icon>
             </span>
         </mat-menu>
     </div>

@@ -4,8 +4,8 @@
     <div *ngFor="let derRule of elt.derivationRules; let i = index">
         <div class="row">
             <div class="col-lg-1" *ngIf="canEdit">
-                <a class="fa fa-trash-o" id="removeDerivationRule-{{i}}"
-                   title="Remove" (click)="removeDerivationRule(i)"></a>
+                <mat-icon class="fake-link" id="removeDerivationRule-{{i}}"
+                          (click)="removeDerivationRule(i)">delete_outline</mat-icon>
             </div>
             <div class="col-lg-11">
                 <dl class="dl-horizontal">
