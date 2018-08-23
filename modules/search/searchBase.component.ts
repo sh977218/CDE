@@ -737,7 +737,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     search() {
         // TODO: replace with router
         let params = SearchBaseComponent.searchParamsGet();
-        this.searchSettings.q = params['q'];
+        if (params['q']) this.searchSettings.q = params['q'];
+        else this.searchSettings.q = '';
         this.searchSettings.page = parseInt(params['page']);
         if (!this.searchSettings.page) this.searchSettings.page = 1;
         this.searchSettings.selectedOrg = params['selectedOrg'];
