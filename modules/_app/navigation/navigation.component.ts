@@ -2,9 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { LoginService } from '_app/login.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import {
-    canCreateForms, canOrgAuthority, isOrgAdmin, isOrgCurator, isSiteAdmin
-} from 'shared/system/authorizationShared';
+import { canOrgAuthority, isOrgAdmin, isOrgCurator, isSiteAdmin } from 'shared/system/authorizationShared';
 import './navigation.scss';
 import '../../../node_modules/material-design-lite/material.css';
 import '../../../node_modules/material-design-lite/material.js';
@@ -182,7 +180,6 @@ import '../../../node_modules/material-design-lite/material.js';
 export class NavigationComponent {
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();
-    canCreateForms = canCreateForms;
     canOrgAuthority = canOrgAuthority;
     isOrgAdmin = isOrgAdmin;
     isOrgCurator = isOrgCurator;
