@@ -14,7 +14,7 @@
                         <span *ngIf="board.review?.endDate"> ~ {{board.review.endDate | date: 'MM/dd/yyyy'}}</span>
                         <span *ngFor="let reviewer of reviewers"
                               title="{{reviewer.username}} {{reviewer.status.approval}}{{reviewer.lastViewedLocal?'. viewed on '+reviewer.lastViewedLocal :''}}">
-                        <i class="fa fa-lg fa-user-circle mr2 ml2"></i>
+                        <mat-icon class="mr2 ml2">person</mat-icon>
                         <i class="fa overlay-lower-right" id="reviewer_{{reviewer.username}}_status"
                            [ngClass]="{'fa-check green-icon':reviewer.status.approval === 'approved',
                                        'fa-times red-icon':reviewer.status.approval === 'disapproved'}"></i>
@@ -29,11 +29,11 @@
                             <button mat-raised-button id="approveBoardBtn"
                                     [ngClass]="{'bg-color-green white-icon':boardStatus==='approved'}"
                                     (click)="boardApproval('approved')">
-                                <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
+                                <mat-icon>check</mat-icon>Approve</button>
                             <button mat-raised-button id="disApproveBoardBtn"
                                     [ngClass]="{'bg-color-red white-icon':boardStatus==='disapproved'}"
                                     (click)="boardApproval('disapproved')">
-                                <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
+                                <mat-icon>cancel</mat-icon>Disapprove</button>
                         </ng-container>
                     </div>
                 </div>
