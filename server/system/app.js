@@ -495,7 +495,7 @@ exports.init = function (app) {
                 if (err) return res.status(412).send(err);
                 // Regenerate is used so appscan won't complain
                 req.session.regenerate(() => {
-                    passport.authenticate('local', function (err, user) {
+                    passport.authenticate('local', (err, user) => {
                         if (err) return res.status(403).end();
                         if (!user) {
                             if (failedIp && config.useCaptcha) failedIp.nb++;
@@ -505,7 +505,7 @@ exports.init = function (app) {
                             }
                             return res.status(403).send();
                         }
-                        req.logIn(user, function (err) {
+                        req.logIn(user, err => {
                             if (err) return res.status(403).end();
                             req.session.passport = {user: req.user._id};
                             return res.send("OK");
