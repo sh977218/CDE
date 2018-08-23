@@ -4,8 +4,8 @@ import { LocalStorageService } from 'angular-2-local-storage';
 
 import { UserService } from '_app/user.service';
 import { Cb, CbErr, ElasticQueryResponse } from 'shared/models.model';
-import { DataElementElastic } from 'shared/de/dataElement.model';
-import { CdeFormElastic } from 'shared/form/form.model';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
 import { orderedList } from 'shared/system/regStatusShared';
 
 @Injectable()
@@ -57,6 +57,7 @@ export class ElasticService {
 
         function success(isRetry: boolean, response: ElasticQueryResponse) {
             ElasticService.highlightResults(response[type + 's']);
+            response[type + 's'].forEach(e => type === 'form' ? CdeForm.validate(e) : DataElement.validate(e));
             cb('', response, isRetry);
         }
 

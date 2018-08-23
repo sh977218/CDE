@@ -41,6 +41,8 @@ export class DataElement extends Elt {
     }
 
     static validate(de: DataElement) {
+        Elt.validate(de);
+
         if (!Array.isArray(de.derivationRules)) {
             de.derivationRules = [];
         }

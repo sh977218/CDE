@@ -229,6 +229,12 @@ export abstract class Elt {
     static trackByElt(index: number, elt: Elt): string {
         return elt.tinyId;
     }
+
+    static validate(elt: Elt) {
+        if (!elt.classification) elt.classification = [];
+        if (!elt.ids) elt.ids = [];
+    }
+
 }
 
 export class EltRef {
