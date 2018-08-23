@@ -29,11 +29,11 @@
                             <button mat-raised-button id="approveBoardBtn"
                                     [ngClass]="{'bg-color-green white-icon':boardStatus==='approved'}"
                                     (click)="boardApproval('approved')">
-                                <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
+                                <mat-icon>check</mat-icon>Approve</button>
                             <button mat-raised-button id="disApproveBoardBtn"
                                     [ngClass]="{'bg-color-red white-icon':boardStatus==='disapproved'}"
                                     (click)="boardApproval('disapproved')">
-                                <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
+                                <mat-icon>cancel</mat-icon>Disapprove</button>
                         </ng-container>
                     </div>
                 </div>
