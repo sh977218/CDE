@@ -200,7 +200,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.searchTermFC.valueChanges
             .pipe(debounceTime(500))
             .subscribe(term => {
-                term.length >= 3
+                term && term.length >= 3
                     ? this.http.post<ElasticQueryResponseHit[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
                         this.elasticService.buildElasticQuerySettings(this.searchSettings))
                         .pipe(
