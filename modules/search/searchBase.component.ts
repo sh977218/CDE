@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import {
+    Component,
     EventEmitter,
     HostListener,
     Input,
@@ -266,6 +267,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     browseByTopic(event) {
         this.byTopic = event.nextId !== 'browseByClassification';
+
         this.doSearch();
     }
 
@@ -636,7 +638,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
             let orgsCreatedPromise = new Promise(resolve => {
                 this.filterOutWorkingGroups(() => {
-                    this.orgHelperService.then(() => {
+                    this.orgHelperService.then(orgsDetailedInfo => {
                         this.orgHelperService.addLongNameToOrgs(this.aggregations.orgs.buckets);
                     }, _noop);
                     this.aggregations.orgs.buckets.sort(function (a, b) {
