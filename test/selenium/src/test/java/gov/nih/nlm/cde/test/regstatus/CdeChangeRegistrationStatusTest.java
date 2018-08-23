@@ -10,7 +10,7 @@ public class CdeChangeRegistrationStatusTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeByName(cdeName);
         textPresent("Qualified");
-        editRegistrationStatus("Recorded", "09/15/2013", "10/31/2014", "Admin Note 1", "Unresolved Issue 1");
+        editRegistrationStatus("Recorded", "09152013", "10312014", "Admin Note 1", "Unresolved Issue 1");
         newCdeVersion();
         setLowStatusesVisible();
         goToCdeByName(cdeName);

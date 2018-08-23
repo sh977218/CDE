@@ -124,15 +124,12 @@
             </button>
             <button id="pinAll" (click)="openPinModal()" class="mx-1" mat-raised-button
                     [hidden]="totalItems <= 0 || module === 'form'" *ngIf="!embedded">
-                <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
+                <mat-icon svgIcon="thumb_tack"></mat-icon> Pin All
             </button>
             <button (click)="hideShowFilter()" class="mx-1" id="showHideFilters" mat-raised-button>
-                <div [hidden]="filterMode">
-                    <i class="glyphicon glyphicon-filter"></i> Show Filters
-                </div>
-                <div [hidden]="!filterMode">
-                    <i class="glyphicon glyphicon-filter"></i> Hide Filters
-                </div>
+                <mat-icon>filter_list</mat-icon>
+                <ng-container *ngIf="!filterMode"> Show Filters</ng-container>
+                <ng-container *ngIf="filterMode"> Hide Filters</ng-container>
             </button>
             <cde-list-view-controls [(listView)]="resultsView" *ngIf="!embedded"></cde-list-view-controls>
 

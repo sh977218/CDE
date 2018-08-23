@@ -4,9 +4,9 @@
     </h4>
     <ng-container *ngIf="!elt.isDraft">
         <h4> Classification</h4>
-        <button *ngIf="isAllowedModel.isOrgCurator()" class="btn   btn-outline-dark" id="openClassificationModalBtn"
-                value="add" (click)="openClassifyItemModal()">
-            <i class="fa fa-folder-open-o"> </i> Classify this CDE
+        <button *ngIf="isAllowedModel.isOrgCurator()" mat-raised-button id="openClassificationModalBtn"
+                (click)="openClassifyItemModal()">
+            <mat-icon>folder_open</mat-icon> Classify this CDE
         </button>
         <div id="classificationBody">
             <cde-classification-view [elt]="elt" (confirmDelete)="removeClassif($event);"></cde-classification-view>

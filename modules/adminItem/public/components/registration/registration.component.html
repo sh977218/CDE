@@ -9,29 +9,29 @@
         <ng-container *ngIf="elt.registrationState.effectiveDate">
             <dt class="col-3 text-right">Effective Date:</dt>
             <dd id="effectiveDate" class="col-9">
-                {{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | cdePlaceholder}}
+                {{elt.registrationState.effectiveDate | date:'MM/dd/yyyy':'z'}}
             </dd>
         </ng-container>
-        <ng-container *ngIf="elt.registrationState.effectiveDate">
+        <ng-container *ngIf="elt.registrationState.untilDate">
             <dt class="col-3 text-right">Until Date:</dt>
             <dd id="untilDate" class="col-9">
-                {{elt.registrationState.untilDate | date: 'MM/dd/yyyy' | cdePlaceholder}}
+                {{elt.registrationState.untilDate | date:'MM/dd/yyyy':'z'}}
             </dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.administrativeNote">
             <dt class="col-3 text-right">Administrative Note:</dt>
             <dd id="administrativeNote" class="col-9">
-                {{elt.registrationState.administrativeNote | cdePlaceholder}}
+                {{elt.registrationState.administrativeNote}}
             </dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.unresolvedIssue">
             <dt class="col-3 text-right">Unresolved Issue:</dt>
-            <dd id="unresolvedIssue" class="col-9">{{elt.registrationState.unresolvedIssue | cdePlaceholder}}</dd>
+            <dd id="unresolvedIssue" class="col-9">{{elt.registrationState.unresolvedIssue}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.registrationStatus">
             <dt class="col-3 text-right">Registration Status:</dt>
             <dd id="registrationStatus" class="col-9">
-                {{elt.registrationState.registrationStatus | cdePlaceholder}}
+                {{elt.registrationState.registrationStatus}}
             </dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.administrativeStatus">
@@ -60,23 +60,13 @@
 
                 <div id="effectiveDateDiv">
                     <label for="effectiveDate">Effective Date</label>
-                    <div class="input-group">
-                        <input class="form-control" name="newEffectiveDate" id="newEffectiveDate"
-                               [(ngModel)]="newState.effectiveDate" ngbDatepicker #dpEf="ngbDatepicker">
-                        <div class="input-group-addon" (click)="dpEf.toggle()">
-                            <i class="fa fa-calendar" aria-hidden="true"></i>
-                        </div>
-                    </div>
+                    <input class="form-control" name="newEffectiveDate" id="newEffectiveDate"
+                           [(ngModel)]="newState.effectiveDate" type="date">
                 </div>
                 <div id="untilDateDiv">
                     <label for="untilDate">Until Date</label>
-                    <div class="input-group">
-                        <input class="form-control" name="newUntilDate" id="newUntilDate"
-                               [(ngModel)]="newState.untilDate" ngbDatepicker #dpUn="ngbDatepicker">
-                        <div class="input-group-addon" (click)="dpUn.toggle()">
-                            <i class="fa fa-calendar" aria-hidden="true"></i>
-                        </div>
-                    </div>
+                    <input class="form-control" name="newUntilDate" id="newUntilDate"
+                           [(ngModel)]="newState.untilDate" type="date">
                 </div>
                 <div class="form-group">
                     <label for="administrativeStatus">Administrative Status</label>

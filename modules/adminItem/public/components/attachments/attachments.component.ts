@@ -1,6 +1,5 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
 
-
 @Component({
     selector: 'cde-attachments',
     templateUrl: './attachments.component.html'
@@ -26,5 +25,9 @@ export class AttachmentsComponent {
             copyElement.remove();
             prompt('Copy the text below. (ctrl c, enter)', url);
         }
+    }
+
+    openFileDialog() {
+        document.getElementById("fileToUpload").click();
     }
 }
