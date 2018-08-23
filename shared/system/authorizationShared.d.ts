@@ -4,7 +4,6 @@ import { CdeForm } from 'shared/form/form.model';
 
 declare const rolesEnum: string[];
 declare function canComment(user?: User): boolean;
-declare function canCreateForms(user?: User): boolean;
 declare function canEditCuratedItem(user?: User, item?: DataElement|CdeForm): boolean;
 declare function canOrgAuthority(user?: User): boolean;
 declare function canRemoveComment(user?: User, comment?: Comment, element?: Elt): boolean;
