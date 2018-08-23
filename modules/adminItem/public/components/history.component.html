@@ -22,8 +22,8 @@
             <tr *ngIf="!showVersioned || priorElement?.version !== priorElements[i-1]?.version"
                 (click)="selectRow(i)" [ngClass]="{'isSelected':priorElement.selected}">
                 <td>
-                    <i class="fa fa-check-square-o" *ngIf="priorElement.selected" aria-hidden="true"></i>
-                    <i class="fa fa-square-o" *ngIf="!priorElement.selected" aria-hidden="true"></i>
+                    <mat-icon *ngIf="priorElement.selected">check_box</mat-icon>
+                    <mat-icon *ngIf="!priorElement.selected">check_box_outline_blank</mat-icon>
                 </td>
                 <td>
                     {{priorElement.updated | date: 'MM/dd/yyyy @ h:mma'}}
@@ -41,7 +41,7 @@
                         </ng-container>
                         <ng-template #notViewing>
                             <a [href]="priorElement.url" target="_blank">
-                                <span class="fa fa-eye fa-2x gray"></span>
+                                <mat-icon>visibility</mat-icon>
                             </a>
                         </ng-template>
                     </div>

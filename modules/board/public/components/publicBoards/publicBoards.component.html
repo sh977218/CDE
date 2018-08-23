@@ -9,7 +9,7 @@
         </div>
     </form>
     <span *ngIf="filter.search.length > 0 && boards.length === 0">
-        <h4><i class="fa fa-frown-o"></i> No results were found. Try other criteria.</h4>
+        <h4><mat-icon>sentiment_very_dissatisfied</mat-icon> No results were found. Try other criteria.</h4>
     </span>
     <div class="row" *ngIf="boards.length > 0">
         <div class="col-lg-2 col-4 noLeftRightPadding">

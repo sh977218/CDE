@@ -48,7 +48,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         clickElement(By.id("closeHistoryCompareModal"));
 
         // View Prior Version
-        clickElement(By.xpath("//*[@id='prior-1']//span"));
+        clickElement(By.xpath("//*[@id='prior-1']//mat-icon[. = 'visibility']"));
         switchTab(1);
         textPresent("Warning: this data element is archived.");
         clickElement(By.linkText("view the current version here"));

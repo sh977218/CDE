@@ -10,8 +10,8 @@ import { Elt } from 'shared/models.model';
 @Component({
     selector: 'cde-unpin-board',
     template: `
-        <i id="unpin_{{eltIndex}}" class="fa fa-thumb-tack fa-rotate-90 hand-cursor mx-1" title="Unpin from Board"
-           role="link" (click)="unpin();"> </i>
+        <mat-icon svgIcon="thumb_tack" id="unpin_{{eltIndex}}" class="hand-cursor" title="Unpin from Board"
+           role="link" (click)="unpin()" style="transform: rotate(90deg)"> </mat-icon>
     `,
 })
 export class UnpinBoardComponent {

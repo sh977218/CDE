@@ -19,4 +19,5 @@ if (PRODUCTION) enableProdMode();
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { CdeAppModule } from './app.module';
+import { MatIconRegistry } from '@angular/material';
 platformBrowserDynamic().bootstrapModule(CdeAppModule/*, options*/);

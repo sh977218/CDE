@@ -6,7 +6,7 @@
         <th>Reason</th>
     </tr>
     <tr *ngFor="let elt of ipList">
-        <td>{{elt.ip}} <i class="fa fa-trash-o" (click)="remove(elt.ip)"></i></td>
+        <td>{{elt.ip}} <mat-icon (click)="remove(elt.ip)">delete_outline</mat-icon></td>
         <td>{{elt.date | date : 'MMM d, y, h:mm a'}}</td>
         <td>{{elt.strikes}}</td>
         <td>{{elt.reason}}</td>

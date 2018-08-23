@@ -25,6 +25,6 @@ public class SearchResultOdmExportTest extends NlmCdeBaseTest {
                 hangon(5);
             }
         }
-        Assert.assertEquals(zipSize, 9070);
+        Assert.assertEquals(zipSize, 8910);
     }
 }
