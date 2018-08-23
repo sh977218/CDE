@@ -15,8 +15,9 @@ public class CdeLongComment extends NlmCdeBaseTest {
         clickElement(By.id("discussBtn"));
         clickElement(By.id("showAllRepliesButton_0"));
         textNotPresent("Show all 10 replies");
-        for (int k = 1; k <= 10; k++)
-            isCommentOrReplyExists("Reply to very long comment " + k, true);
+        for (int k = 1; k <= 10; k++) {
+            textPresent("Reply to very long comment " + k);
+        }
 
     }
 }

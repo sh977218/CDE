@@ -46,7 +46,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("Org Admins"));
 
-        clickElement(By.xpath("//span[contains(text(),'" + test_username + "')]/..//i[@title='Remove']"));
+        clickElement(By.xpath("//span[contains(text(),'" + test_username + "')]/..//mat-icon[. = 'delete_outline']"));
         textNotPresent(test_username);
 
     }

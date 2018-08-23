@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { WidgetModule } from 'widget/widget.module';
 
 import { CdeStatusReportComponent } from 'cde/public/components/statusReport/cdeStatusReport.component';
+import { MatIconModule } from '@angular/material';
 
 const appRoutes: Routes = [
     {path: '', component: CdeStatusReportComponent},
@@ -17,6 +18,7 @@ const appRoutes: Routes = [
         // core
         WidgetModule,
         // internal
+        MatIconModule,
     ],
     declarations: [
         CdeStatusReportComponent,

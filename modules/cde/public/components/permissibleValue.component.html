@@ -170,11 +170,10 @@
                     </td>
                     <td id="pvAction_{{i}}">
                         <ng-container *ngIf="pv.notValid">
-                            <span class="btn-outline-dark fa fa-warning text-danger" id="pv-{{i}}-notValid"></span>
+                            <mat-icon id="pv-{{i}}-notValid">warning</mat-icon>
                         </ng-container>
                         <ng-container *ngIf="canEdit">
-                            <span id="pvRemove_{{i}}" class="btn-outline-dark fa fa-trash-o" (click)="removePv(i)"
-                                  title="Remove"></span>
+                            <mat-icon id="pvRemove_{{i}}" (click)="removePv(i)">delete_outline</mat-icon>
                             <cde-sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
                                                 (cb)="onEltChange.emit()"></cde-sortable-array>
                         </ng-container>
@@ -187,15 +186,11 @@
                  role="alert">There are validation errors. {{elt.pvNotValidMsg }}
             </div>
             <ng-container *ngIf="canEdit">
-                <button class="btn btn-outline-dark" role="button" id="openAddPermissibleValueModelBtn"
-                        title="Add Permissible Value"
-                        (click)="openNewPermissibleValueModal()">
-                    <i class="fa fa-plus"></i> Add Permissible Value
+                <button mat-raised-button id="openAddPermissibleValueModelBtn" (click)="openNewPermissibleValueModal()">
+                    <mat-icon>add</mat-icon> Add Permissible Value
                 </button>
-                <button class="btn btn-outline-dark" role="button" id="removeAllPermissibleValueBtn"
-                        title="Remove All Values"
-                        (click)="removeAllPermissibleValues()">
-                    <i class="fa fa-trash-o"></i> Remove All Values
+                <button mat-raised-button id="removeAllPermissibleValueBtn" (click)="removeAllPermissibleValues()">
+                    <mat-icon>delete_outline</mat-icon> Remove All Values
                 </button>
                 <button class="btn btn-outline-dark" role="button" id="openImportPVModalBtn"
                         title="Import All Values" (click)="openImportPermissibleValueModal()">

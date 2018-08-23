@@ -1,17 +1,15 @@
 <div *ngIf="!elt">
-    <h1 class="pt60 pb40 text-center">
-        <i class="fa fa-spinner fa-pulse"></i>Loading...
-    </h1>
+    <mat-spinner style="margin: 0 auto"></mat-spinner>
 </div>
 <div *ngIf="elt?.tinyId" class="container-fluid" itemscope="http://schema.org/MedicalCode">
     <div id="warning">
         <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
+            <mat-icon>warning</mat-icon>
             <strong>Warning:</strong> this data element is archived. You can
             <a routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
         </div>
         <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
+            <mat-icon>warning</mat-icon>
             <strong>Warning:</strong> this data element is retired.
             <span *ngIf="elt.registrationState.replacedBy">
             <a routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
@@ -19,14 +17,14 @@
         </div>
         <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
              role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
+            <mat-icon>warning</mat-icon>
             <strong>Warning:</strong> this data element is about to be retired.
             <span *ngIf="elt.registrationState.replacedBy">
             <a routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible Replacement</a>
         </span>
         </div>
         <div *ngIf="displayStatusWarning" class="alert alert-info mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
+            <mat-icon>warning</mat-icon>
             <strong>Note:</strong> You may not edit this CDE because it is standard.
         </div>
     </div>
@@ -55,9 +53,8 @@
             <mat-icon>add</mat-icon>
             <span class="d-none d-sm-inline-block"> Add to Quick Board</span>
         </button>
-        <button id="addToBoard" mat-raised-button title="Add to Board"
-                (click)="mltPinModal.pinMultiple([elt], mltPinModal.open())">
-            <i class="fa fa-thumb-tack mr-1"></i><span class="d-none d-sm-inline-block"> Add to Board</span>
+        <button id="addToBoard" mat-raised-button (click)="mltPinModal.pinMultiple([elt], mltPinModal.open())">
+            <mat-icon svgIcon="thumb_tack"></mat-icon> Add To Board
         </button>
         <button *ngIf="isAllowedModel.isOrgCurator()" id="copyCdeBtn" mat-raised-button
                 title="Copy CDE" (click)="openCopyElementModal()">

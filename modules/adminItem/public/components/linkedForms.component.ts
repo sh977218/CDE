@@ -50,4 +50,8 @@ export class LinkedFormsComponent {
         });
     }
 
+    viewLinkedForms() {
+        window.open("/form/search?q=" + this.elt.tinyId, "_blank");
+    }
+
 }

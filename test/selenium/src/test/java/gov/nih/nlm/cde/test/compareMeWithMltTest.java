@@ -13,7 +13,7 @@ public class compareMeWithMltTest extends NlmCdeBaseTest {
         clickElement(By.id("addToQuickBoard"));
         checkAlert("Added to QuickBoard!");
         clickElement(By.id("mltButton"));
-        clickElement(By.xpath("//*[@id='mltAccordion']//div[contains(@class, 'card')]/div[span[contains(.,'Common Toxicity Criteria Adverse Event Platelet Count Grade')]]//i[@title='Add to Quick Board']"));
+        clickElement(By.xpath("//*[@id='mltAccordion']//div[contains(@class, 'card')]/div[span[contains(.,'Common Toxicity Criteria Adverse Event Platelet Count Grade')]]//mat-icon[@title='Add to Quick Board']"));
         clickElement(By.id("closeMoreLikeThisBtn"));
         checkAlert("Added to QuickBoard");
         textPresent("QUICK BOARD (2)");
