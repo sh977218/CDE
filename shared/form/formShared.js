@@ -473,6 +473,18 @@ export function score(question, elt) {
     let result = 0;
     question.question.cde.derivationRules.forEach(function (derRule) {
         if (derRule.ruleType === 'score') {
+            if (derRule.formula === 'a/b^2') {
+                let aQuestion = findQuestionByTinyId(derRule.inputs[0], elt);
+                if (!aQuestion.question.answerUom || aQuestion.question.answerUom.code != 'kg')
+                    return result = 'Incomplete answers (Weight UOM has to be kg)';
+                let a = parseFloat(aQuestion.question.answer);
+                let bQuestion = findQuestionByTinyId(derRule.inputs[1], elt);
+                if (!bQuestion.question.answerUom || bQuestion.question.answerUom.code != 'm')
+                    return result = 'Incomplete answers (Height UOM has to be m)';
+                let b = parseFloat(bQuestion.question.answer);
+                if (a && b) result = a / (b * b);
+                else result = 'Incomplete answers';
+            }
             if (derRule.formula === 'sumAll' || derRule.formula === 'mean') {
                 derRule.inputs.forEach(function (cdeTinyId) {
                     let q = findQuestionByTinyId(cdeTinyId, elt);
