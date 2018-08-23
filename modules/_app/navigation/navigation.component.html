@@ -54,7 +54,7 @@
        [matMenuTriggerFor]="createMenu">Create&nbsp;▼</a>
     <mat-menu #createMenu="matMenu">
         <a id="createCDELink" routerLink="/createCde" mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">CDE</a>
-        <a id="createFormLink" routerLink="/createForm" *ngIf="canCreateForms(userService.user)"
+        <a id="createFormLink" routerLink="/createForm"
            mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Form</a>
     </mat-menu>
 </ng-template>

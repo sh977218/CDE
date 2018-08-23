@@ -5,7 +5,7 @@ const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
 
-exports.userSchema = new Schema({
+let userSchema = new Schema({
     username: Object.assign({unique: true}, stringType),
     email: stringType,
     password: stringType,
@@ -57,7 +57,17 @@ exports.userSchema = new Schema({
     }]
 }, {usePushEach: true});
 
-const User = conn.model('User', exports.userSchema);
+// remove this once all formEditor roles have been removed.
+userSchema.pre('validate', function (next) {
+    let doc = this;
+    let formEditorIndex = doc.roles.indexOf("FormEditor");
+    if (formEditorIndex > -1) {
+        doc.roles.splice(formEditorIndex, 1);
+    }
+    next();
+});
+
+const User = conn.model('User', userSchema);
 
 exports.User = User;
 

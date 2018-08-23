@@ -124,12 +124,12 @@ exports.authBeforeVsac = function (req, username, password, done) {
         // Find the user by username in local datastore first and perform authentication.
         // If user is not found, authenticate with UMLS. If user is authenticated with UMLS,
         // add user to local datastore. Else, don't authenticate user and send error message.
-        mongo_data_system.userByName(username, function (err, user) {
+        mongo_data_system.userByName(username, (err, user) => {
             // If user was not found in local datastore || an error occurred || user was found and password equals 'umls'
             if (err || !user || (user && user.password === 'umls')) {
-                exports.umlsAuth(username, password, function (result) {
+                exports.umlsAuth(username, password, result => {
                     if (result.indexOf("true") > 0) {
-                        auth.findAddUserLocally({username: username, ip: req.ip}, function (user) {
+                        auth.findAddUserLocally({username: username, ip: req.ip}, user => {
                             return done(null, user);
                         });
                     } else {
@@ -143,15 +143,13 @@ exports.authBeforeVsac = function (req, username, password, done) {
                     // Initialize the lockCounter if it hasn't been
                     (user.lockCounter >= 0 ? user.lockCounter += 1 : user.lockCounter = 1);
 
-                    return user.save(function () {
+                    return user.save(() => {
                         return done(null, false, {message: 'Incorrect username or password'});
                     });
                 } else {
                     // Update user info in datastore
                     auth.updateUserAfterLogin(user, req.ip);
-                    return user.save(function (err, user) {
-                        return done(null, user);
-                    });
+                    return user.save(done);
                 }
             }
         });
