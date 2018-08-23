@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import {
-    Component,
     EventEmitter,
     HostListener,
     Input,
@@ -13,14 +12,26 @@ import {
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger, MatPaginator } from '@angular/material';
 import { NavigationStart } from '@angular/router';
-import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbTabChangeEvent, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
-import { empty } from 'rxjs/observable/empty';
+import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 
+import { AlertService } from '_app/alert.service';
+import { BackForwardService } from '_app/backForward.service';
+import { ElasticService } from '_app/elastic.service';
+import { UserService } from '_app/user.service';
+import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
+import { ExportService } from 'core/export.service';
+import { OrgHelperService } from 'core/orgHelper.service';
 import { SearchSettings } from 'search/search.model';
-import { ElasticQueryResponse, Elt, User } from 'shared/models.model';
+import {
+    CbErr,
+    CurationStatus, ElasticQueryResponse, ElasticQueryResponseAggregationBucket, ElasticQueryResponseHit, Elt,
+    Organization
+} from 'shared/models.model';
+import { DataType } from 'shared/de/dataElement.model';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { trackByKey, trackByName } from 'widget/angularHelper';
@@ -103,79 +114,74 @@ export const searchStyles: string = `
 `;
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
-
     @Input() searchSettingsInput?: SearchSettings;
-
     @HostListener('window:beforeunload') unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname)) {
             window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
         }
     }
-
-    @ViewChild('orgDetailsModal') orgDetailsModal: NgbModal;
-    @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer: ViewContainerRef;
-    @ViewChild('tbset') public tabset: NgbTabset;
-    @ViewChild('validRulesModal') validRulesModal: NgbModal;
-    @ViewChild('autoCompleteInput', {read: MatAutocompleteTrigger}) autoCompleteInput: MatAutocompleteTrigger;
-    @ViewChild(MatPaginator) paginator: MatPaginator;
-
-    add: EventEmitter<any>;
-    addMode: string;
+    @ViewChild('orgDetailsModal') orgDetailsModal!: NgbModal;
+    @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer!: ViewContainerRef;
+    @ViewChild('tbset') public tabset!: NgbTabset;
+    @ViewChild('validRulesModal') validRulesModal!: NgbModal;
+    @ViewChild('autoCompleteInput', {read: MatAutocompleteTrigger}) autoCompleteInput!: MatAutocompleteTrigger;
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+    add = new EventEmitter<any>();
+    addMode?: string;
     aggregations: any;
-    altClassificationFilterMode: boolean;
-    byTopic: boolean;
+    altClassificationFilterMode?: boolean;
+    autocompleteSuggestions?: string[];
+    byTopic?: boolean;
     cutoffIndex: any;
-    elts: Elt[];
+    elts?: Elt[];
     embedded = false;
-    exporters: any = {
-        json: {id: "jsonExport", display: "JSON Export"},
-        xml: {id: "xmlExport", display: "XML Export"}
+    exporters: {[format: string]: {id: string, display: string}} = {
+        json: {id: 'jsonExport', display: 'JSON Export'},
+        xml: {id: 'xmlExport', display: 'XML Export'}
     };
     filterMode = true;
-    lastQueryTimeStamp: number;
-    private lastTypeahead = {};
-    module: string;
+    lastQueryTimeStamp?: number;
+    private lastTypeahead: {[term: string]: string} = {};
+    module!: 'cde'|'form';
     numPages: any;
-    orgs: any[];
-    orgHtmlOverview: string;
-    pinComponent: Type<Component>;
+    orgs?: Organization[];
+    orgHtmlOverview?: string;
+    pinComponent!: Type<PinBoardModalComponent>;
     pinModalComponent: any;
-    previousUrl: string;
-    resultsView: string;
+    previousUrl?: string;
+    resultsView = '';
     resultPerPage = 20;
     routerSubscription: Subscription;
     searchSettings: SearchSettings = new SearchSettings;
-    searchedTerm: string;
+    searchedTerm?: string;
     searchTermFC: FormControl = new FormControl();
     took: any;
     topics: any;
-    topicsKeys: string[];
+    topicsKeys: string[] = [];
     totalItems: any;
     totalItemsLimited: any;
     trackByKey = trackByKey;
     trackByName = trackByName;
-    user: User;
-    validRulesStatus: string;
-    view: string;
-    autocompleteSuggestions: any[];
+    validRulesStatus?: CurationStatus;
+    view?: 'welcome'|'results';
 
-    constructor(protected _componentFactoryResolver,
-                protected alert,
-                protected backForwardService,
-                protected elasticService,
-                protected exportService,
+    constructor(protected _componentFactoryResolver: any,
+                protected alert: AlertService,
+                protected backForwardService: BackForwardService,
+                protected elasticService: ElasticService,
+                protected exportService: ExportService,
                 protected http: HttpClient,
-                protected modalService,
-                protected orgHelperService,
-                protected route,
-                protected router,
-                protected userService) {
+                protected modalService: any,
+                protected orgHelperService: OrgHelperService,
+                protected route: any,
+                protected router: any,
+                protected userService: UserService) {
         this.searchSettings.page = 1;
 
         this.routerSubscription = this.router.events.subscribe(e => {
             if (this.previousUrl && e instanceof NavigationStart) {
                 if (/^\/(cde|form)\/search/.exec(this.previousUrl)) this.scrollHistorySave();
-                this.previousUrl = null;
+                this.previousUrl = '';
             }
         });
 
@@ -192,26 +198,29 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
         this.searchTermFC.valueChanges.subscribe(v => this.searchSettings.q = v);
 
-        this.searchTermFC.valueChanges.pipe(debounceTime(500))
+        this.searchTermFC.valueChanges
+            .pipe(debounceTime(500))
             .subscribe(term => {
-                term.length >= 3 ?
-                    this.http.post<any[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
-                        this.elasticService.buildElasticQuerySettings(this.searchSettings)).pipe(
-                        map(res => {
+                term.length >= 3
+                    ? this.http.post<ElasticQueryResponseHit[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
+                        this.elasticService.buildElasticQuerySettings(this.searchSettings))
+                        .pipe(
+                        map(hits => {
                                 let final = new Set();
                                 this.lastTypeahead = {};
-                                res.forEach(e => {
+                                hits.forEach(e => {
                                     this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
                                     final.add(e._source.primaryNameSuggest);
                                 });
                                 return Array.from(final);
-                            }
-                        )).subscribe(res => this.autocompleteSuggestions = res)
-                    : empty();
+                            })
+                        )
+                        .subscribe(res => this.autocompleteSuggestions = res)
+                    : EmptyObservable.create<any[]>();
             });
     }
 
-    addDatatypeFilter(datatype) {
+    addDatatypeFilter(datatype: DataType) {
         if (!this.searchSettings.datatypes) this.searchSettings.datatypes = [];
         let index = this.searchSettings.datatypes.indexOf(datatype);
         if (index > -1) this.searchSettings.datatypes.splice(index, 1);
@@ -220,7 +229,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.doSearch();
     }
 
-    addStatusFilter(status) {
+    addStatusFilter(status: CurationStatus) {
         if (!this.searchSettings.regStatuses) this.searchSettings.regStatuses = [];
         let index = this.searchSettings.regStatuses.indexOf(status);
         if (index > -1) this.searchSettings.regStatuses.splice(index, 1);
@@ -229,8 +238,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.doSearch();
     }
 
-    alterOrgFilter(orgName) {
-        let orgToAlter = this.altClassificationFilterMode ? this.searchSettings.selectedOrgAlt : this.searchSettings.selectedOrg;
+    alterOrgFilter(orgName: string) {
+        let orgToAlter = this.getCurrentSelectedOrg();
 
         if (orgToAlter === undefined) {
             if (this.altClassificationFilterMode) {
@@ -249,7 +258,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         } else this.reset();
     }
 
-    browseOrg(orgName) {
+    browseOrg(orgName: string) {
         window.scrollTo(0, 0);
 
         this.searchSettings.selectedOrg = orgName;
@@ -258,28 +267,27 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (!this.embedded) scrollTo('top');
     }
 
-    browseTopic(topic) {
+    browseTopic(topic: string) {
         this.searchSettings.meshTree = topic;
 
         this.doSearch();
         if (!this.embedded) scrollTo('top');
     }
 
-    browseByTopic(event) {
+    browseByTopic(event: NgbTabChangeEvent) {
         this.byTopic = event.nextId !== 'browseByClassification';
-
         this.doSearch();
     }
 
     clearSelectedClassifications() {
-        this.searchSettings.selectedOrg = null;
-        if (this.searchSettings.classification) this.searchSettings.classification.length = 0;
+        this.searchSettings.selectedOrg = undefined;
+        this.searchSettings.classification.length = 0;
 
         if (this.hasSelectedClassificationsAlt()) {
             this.searchSettings.selectedOrg = this.searchSettings.selectedOrgAlt;
-            if (this.searchSettings.classificationAlt && this.searchSettings.classificationAlt.length > 0) {
+            if (this.searchSettings.classificationAlt.length > 0) {
                 this.searchSettings.classification = this.searchSettings.classificationAlt;
-                this.searchSettings.classificationAlt = null;
+                this.searchSettings.classificationAlt = [];
             }
         }
 
@@ -288,8 +296,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     clearSelectedClassificationsAlt() {
         this.altClassificationFilterMode = false;
-        this.searchSettings.selectedOrgAlt = null;
-        if (this.searchSettings.classificationAlt) this.searchSettings.classificationAlt.length = 0;
+        this.searchSettings.selectedOrgAlt = undefined;
+        this.searchSettings.classificationAlt.length = 0;
 
         this.doSearch();
     }
@@ -327,10 +335,13 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return NaN;
     }
 
-    displayValidation() {
+    displayValidation(): boolean {
+        if (!this.userService.user) {
+            return false;
+        }
         let org = this.searchSettings.selectedOrg;
-        let curatorOf = [].concat(this.userService.user.orgAdmin).concat(this.userService.user.orgCurator);
-        return curatorOf.indexOf(org) > -1 || hasRole(this.userService.user, 'OrgAuthority');
+        let curatorOf = this.userService.user.orgAdmin.concat(this.userService.user.orgCurator);
+        return org && curatorOf.indexOf(org) > -1 || hasRole(this.userService.user, 'OrgAuthority');
     }
 
     doSearch() {
@@ -344,10 +355,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return this.generateSearchForTerm(p);
     }
 
-    private filterOutWorkingGroups(cb) {
+    private filterOutWorkingGroups(cb: CbErr) {
         this.userService.catch(_noop).then(user => {
             this.orgHelperService.then(() => {
-                this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter(bucket =>
+                this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter((bucket: ElasticQueryResponseAggregationBucket) =>
                     this.orgHelperService.showWorkingGroup(bucket.key) || isSiteAdmin(user)
                 );
                 cb();
@@ -356,14 +367,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     static focusClassification() {
-        window.document.getElementById('classificationListHolder').focus();
+        document.getElementById('classificationListHolder')!.focus();
     }
 
     static focusTopic() {
-        window.document.getElementById('meshTreesListHolder').focus();
+        document.getElementById('meshTreesListHolder')!.focus();
     }
 
-    generateSearchForTerm(pageNumber = null) {
+    generateSearchForTerm(pageNumber = 0) {
         // TODO: replace with router
         let searchTerms: any = {};
         if (this.searchSettings.q) searchTerms.q = this.searchSettings.q;
@@ -374,23 +385,21 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             searchTerms.datatypes = this.searchSettings.datatypes.join(';');
         }
         if (this.searchSettings.selectedOrg) searchTerms.selectedOrg = this.searchSettings.selectedOrg;
-        if (this.searchSettings.classification && this.searchSettings.classification.length > 0) {
+        if (this.searchSettings.classification.length > 0) {
             searchTerms.classification = this.searchSettings.classification.join(';');
         }
         if (this.searchSettings.selectedOrgAlt) searchTerms.selectedOrgAlt = this.searchSettings.selectedOrgAlt;
-        if (this.altClassificationFilterMode) {
-            if (this.searchSettings.classificationAlt && this.searchSettings.classificationAlt.length > 0) {
-                searchTerms.classificationAlt = this.searchSettings.classificationAlt.join(';');
-            }
+        if (this.altClassificationFilterMode && this.searchSettings.classificationAlt.length > 0) {
+            searchTerms.classificationAlt = this.searchSettings.classificationAlt.join(';');
         }
-        if (pageNumber && pageNumber > 1) searchTerms.page = pageNumber;
+        if (pageNumber > 1) searchTerms.page = pageNumber;
         else if (this.searchSettings.page && this.searchSettings.page > 1) searchTerms.page = this.searchSettings.page;
         if (this.searchSettings.meshTree) searchTerms.topic = this.searchSettings.meshTree;
         if (this.byTopic && !this.isSearched()) searchTerms.byTopic = 1;
         return searchTerms;
     }
 
-    getCurrentSelectedClassification() {
+    getCurrentSelectedClassification(): string[] {
         return this.altClassificationFilterMode
             ? this.searchSettings.classificationAlt
             : this.searchSettings.classification;
@@ -406,31 +415,33 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return this.searchSettings.meshTree ? this.searchSettings.meshTree.split(';') : [];
     }
 
-    getRegStatusHelp(key) {
+    getRegStatusHelp(name: string) {
         let result = '';
         statusList.forEach(function (s) { // jshint ignore:line
-            if (s.name === key) result = s.help;
+            if (s.name === name) result = s.help;
         });
         return result;
     }
 
-    static getRegStatusIndex(rg) {
+    static getRegStatusIndex(rg: ElasticQueryResponseAggregationBucket) {
         return orderedList.indexOf(rg.key);
     }
 
     // Create string representation of what filters are selected. Use the hasSelected...() first.
-    getSelectedClassifications() {
-        let result = this.searchSettings.selectedOrg;
-        if (this.searchSettings.classification && this.searchSettings.classification.length > 0) {
-            result += ' > ' + this.searchSettings.classification.join(' > ');
-        }
-        return result;
+    getSelectedClassifications(): string {
+        return this.searchSettings.selectedOrg + (
+            this.searchSettings.classification && this.searchSettings.classification.length > 0
+                ? ' > ' + this.searchSettings.classification.join(' > ')
+                : ''
+        );
     }
 
-    getSelectedClassificationsAlt() {
-        let result = this.searchSettings.selectedOrgAlt;
-        if (this.searchSettings.classificationAlt.length > 0) result += ' > ' + this.searchSettings.classificationAlt.join(' > ');
-        return result;
+    getSelectedClassificationsAlt(): string {
+        return this.searchSettings.selectedOrgAlt + (
+            this.searchSettings.classificationAlt.length > 0
+                ? ' > ' + this.searchSettings.classificationAlt.join(' > ')
+                : ''
+        );
     }
 
     getSelectedDatatypes() {
@@ -480,11 +491,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return this.searchSettings.q || this.searchSettings.selectedOrg || this.searchSettings.meshTree;
     }
 
-    keys(obj) {
+    keys(obj: Object) {
         return Object.keys(obj);
     }
 
-    openOrgDetails(org) {
+    openOrgDetails(org: Organization) {
         this.orgHtmlOverview = org.htmlOverview;
         this.modalService.open(this.orgDetailsModal, {size: 'lg'});
     }
@@ -518,7 +529,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.goToPage = newPage.pageIndex + 1;
         if (this.goToPage !== 0) {
             if (this.goToPage < 1 || this.goToPage > this.numPages) {
-                this.alert.addAlert("danger", "Invalid page: " + this.goToPage);
+                this.alert.addAlert('danger', 'Invalid page: ' + this.goToPage);
             } else {
                 this.searchSettings.page = this.goToPage;
                 this.doSearch();
@@ -539,14 +550,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 tags: []
             };
             let data = {
-                query: this.elasticService.buildElasticQuerySettings(this.searchSettings)
-                , board: selectedBoard
-                , itemType: this.module
+                query: this.elasticService.buildElasticQuerySettings(this.searchSettings),
+                boardId: selectedBoard._id,
+                itemType: this.module
             };
             data.query.resultPerPage = (<any>window).maxPin;
-            this.http.post('/pinEntireSearchToBoard', data, {responseType: 'text'}).subscribe(() => {
+            this.http.post('/server/board/pinEntireSearchToBoard', data, {responseType: 'text'}).subscribe(() => {
                 this.alert.addAlert('success', 'All elements pinned.');
-                this.http.post('/myBoards', filter).subscribe();
+                this.http.post('/server/board/myBoards', filter).subscribe();
             }, () => this.alert.addAlert('danger', 'Not all elements were not pinned!'));
         }, () => {
         });
@@ -563,13 +574,15 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
         this.elasticService.generalSearchQuery(settings, this.module, (err: string, result: ElasticQueryResponse, corrected: boolean) => {
             this.searchedTerm = this.searchSettings.q;
-            if (corrected && this.searchSettings.q) this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
+            if (corrected && this.searchedTerm) {
+                this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
+            }
             if (err) {
                 this.alert.addAlert('danger', 'There was a problem with your query');
-                this[this.module + 's'] = [];
+                this.elts = [];
                 return;
             }
-            if (timestamp < this.lastQueryTimeStamp) return;
+            if (timestamp < this.lastQueryTimeStamp!) return;
             this.numPages = Math.ceil(result.totalNumber / this.resultPerPage);
             this.took = result.took;
             this.totalItems = result.totalNumber;
@@ -580,9 +593,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             if (this.searchSettings.page === 1 && result.totalNumber > 0) {
                 let maxJump = 0;
                 let maxJumpIndex = 100;
-                this.elts.map((e, i) => {
-                    if (!this.elts[i + 1]) return;
-                    let jump = e.score - this.elts[i + 1].score;
+                this.elts!.map((e, i) => {
+                    if (!this.elts![i + 1]) return;
+                    let jump = e.score - this.elts![i + 1].score;
                     if (jump > maxJump) {
                         maxJump = jump;
                         maxJumpIndex = i + 1;
@@ -596,7 +609,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             }
 
             this.orgHelperService.then(() => {
-                this.elts.forEach(elt => {
+                this.elts!.forEach(elt => {
                     elt.usedBy = this.orgHelperService.getUsedBy(elt);
                 });
             }, _noop);
@@ -605,7 +618,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
             if (result.aggregations !== undefined) {
                 if (result.aggregations.flatClassifications !== undefined) {
-                    this.aggregations.flatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets.map(function (c) {
+                    this.aggregations.flatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets.map((c: ElasticQueryResponseAggregationBucket) => {
                         return {name: c.key.split(';').pop(), count: c.doc_count};
                     });
                 } else {
@@ -613,7 +626,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 }
 
                 if (result.aggregations.flatClassificationsAlt !== undefined) {
-                    this.aggregations.flatClassificationsAlt = result.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(function (c) {
+                    this.aggregations.flatClassificationsAlt = result.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map((c: ElasticQueryResponseAggregationBucket) => {
                         return {name: c.key.split(';').pop(), count: c.doc_count};
                     });
                 } else {
@@ -622,11 +635,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
                 if (result.aggregations.meshTrees !== undefined) {
                     if (this.searchSettings.meshTree) {
-                        this.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map(function (c) {
+                        this.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map((c: ElasticQueryResponseAggregationBucket) => {
                             return {name: c.key.split(';').pop(), count: c.doc_count};
                         });
                     } else {
-                        this.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map(function (c) {
+                        this.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map((c: ElasticQueryResponseAggregationBucket) => {
                             return {name: c.key.split(';')[0], count: c.doc_count};
                         });
                     }
@@ -638,10 +651,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
             let orgsCreatedPromise = new Promise(resolve => {
                 this.filterOutWorkingGroups(() => {
-                    this.orgHelperService.then(orgsDetailedInfo => {
+                    this.orgHelperService.then(() => {
                         this.orgHelperService.addLongNameToOrgs(this.aggregations.orgs.buckets);
                     }, _noop);
-                    this.aggregations.orgs.buckets.sort(function (a, b) {
+                    this.aggregations.orgs.buckets.sort((a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) => {
                         let A = a.key.toLowerCase();
                         let B = b.key.toLowerCase();
                         if (B > A) return -1;
@@ -654,7 +667,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
             this.aggregations.flatClassifications.sort(SearchBaseComponent.compareObjName);
             this.aggregations.flatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
-            this.aggregations.statuses.statuses.buckets.sort(function (a, b) {
+            this.aggregations.statuses.statuses.buckets.sort(function (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) {
                 return SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b);
             });
             this.aggregations.topics.sort(SearchBaseComponent.compareObjName);
@@ -666,27 +679,27 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 if (this.aggregations) {
                     orgsCreatedPromise.then(() => {
                         this.orgHelperService.then(orgsDetailedInfo => {
-                            this.aggregations.orgs.buckets.forEach(org_t => {
+                            this.aggregations.orgs.buckets.forEach((org_t: ElasticQueryResponseAggregationBucket) => {
                                 if (orgsDetailedInfo[org_t.key]) {
-                                    this.orgs.push({
+                                    this.orgs!.push({
                                         name: org_t.key,
                                         longName: orgsDetailedInfo[org_t.key].longName,
                                         count: org_t.doc_count,
-                                        source: orgsDetailedInfo[org_t.key].uri,
+                                        uri: orgsDetailedInfo[org_t.key].uri,
                                         extraInfo: orgsDetailedInfo[org_t.key].extraInfo,
                                         htmlOverview: orgsDetailedInfo[org_t.key].htmlOverview
                                     });
                                 }
                             });
-                            this.orgs.sort(SearchBaseComponent.compareObjName);
+                            this.orgs!.sort(SearchBaseComponent.compareObjName);
                         }, _noop);
                     });
                 }
 
                 this.topics = {};
-                this.topicsKeys = [];
+                this.topicsKeys.length = 0;
                 if (this.aggregations) {
-                    this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach(term => {
+                    this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach((term: ElasticQueryResponseAggregationBucket) => {
                         let spli = term.key.split(';');
                         if (!this.topics[spli[0]]) {
                             this.topics[spli[0]] = [];
@@ -725,21 +738,21 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         // TODO: replace with router
         let params = SearchBaseComponent.searchParamsGet();
         this.searchSettings.q = params['q'];
-        this.searchSettings.page = params['page'];
+        this.searchSettings.page = parseInt(params['page']);
         if (!this.searchSettings.page) this.searchSettings.page = 1;
         this.searchSettings.selectedOrg = params['selectedOrg'];
         this.searchSettings.selectedOrgAlt = params['selectedOrgAlt'];
         this.altClassificationFilterMode = !!params['selectedOrgAlt'];
         this.searchSettings.classification = params['classification'] ? params['classification'].split(';') : [];
         this.searchSettings.classificationAlt = params['classificationAlt'] ? params['classificationAlt'].split(';') : [];
-        this.searchSettings.regStatuses = params['regStatuses'] ? params['regStatuses'].split(';') : [];
-        this.searchSettings.datatypes = params['datatypes'] ? params['datatypes'].split(';') : [];
+        this.searchSettings.regStatuses = params['regStatuses'] ? params['regStatuses'].split(';') as CurationStatus[] : [];
+        this.searchSettings.datatypes = params['datatypes'] ? params['datatypes'].split(';') as DataType[] : [];
         this.searchSettings.meshTree = params['topic'];
         this.byTopic = params.hasOwnProperty('byTopic');
         this.reload();
     }
 
-    static searchParamsGet(): string[] {
+    static searchParamsGet(): {[param: string]: string} {
         let params: any = {};
         location.search && location.search.substr(1).split('&').forEach(e => {
             let p = e.split('=');
@@ -749,11 +762,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return params;
     }
 
-    selectElement(e) {
-        if (this.altClassificationFilterMode && !this.searchSettings.classificationAlt) this.searchSettings.classificationAlt = [];
-        if (!this.altClassificationFilterMode && !this.searchSettings.classification) this.searchSettings.classification = [];
-
-        let classifToSelect = this.altClassificationFilterMode ? this.searchSettings.classificationAlt : this.searchSettings.classification;
+    selectElement(e: string) {
+        let classifToSelect = this.getCurrentSelectedClassification();
+        if (!classifToSelect) classifToSelect = [];
         if (classifToSelect.length === 0) {
             classifToSelect.length = 0;
             classifToSelect.push(e);
@@ -767,7 +778,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (!this.embedded) SearchBaseComponent.focusClassification();
     }
 
-    selectTopic(topic) {
+    selectTopic(topic: string) {
         let toSelect = !this.searchSettings.meshTree ? [] : this.searchSettings.meshTree.split(';');
         let i = toSelect.indexOf(topic);
         if (i > -1) toSelect.length = i + 1;
@@ -784,7 +795,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (!this.embedded) SearchBaseComponent.focusClassification();
     }
 
-    switchView(view) {
+    switchView(view: 'welcome'|'results') {
         if (this.view === view || view !== 'welcome' && view !== 'results') return;
 
         this.view = view;
@@ -815,7 +826,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.searchSettings.datatypes.length = 0;
         this.searchSettings.classification.length = 0;
         this.searchSettings.classificationAlt.length = 0;
-        this.searchSettings.selectedOrgAlt = null;
+        this.searchSettings.selectedOrgAlt = undefined;
         this.altClassificationFilterMode = false;
 
         if (this.searchSettings.meshTree) {
@@ -832,16 +843,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     typeaheadSelect(item) {
         if (!this.embedded) {
-            this.router.navigate([this.module === 'form' ? "formView" : "deView"],
+            this.router.navigate([this.module === 'form' ? 'formView' : 'deView'],
                 {queryParams: {tinyId: this.lastTypeahead[item.option.value]}});
         }
         else this.reload();
     }
 
-    static waitScroll(count, previousSpot) {
+    static waitScroll(count: number, previousSpot: number) {
         if (count > 0) setTimeout(() => SearchBaseComponent.waitScroll(count - 1, previousSpot), 100);
         else window.scrollTo(0, previousSpot);
     }
-
-
 }
