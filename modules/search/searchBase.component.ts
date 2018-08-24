@@ -345,6 +345,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     doSearch() {
+        if (!this.embedded) {
+            this.searchSettings.page = 1;
+            this.redirect(this.generateSearchForTerm());
+        }
+        else this.reload();
+    }
+
+    doSearchWithPage() {
         if (!this.embedded) this.redirect(this.generateSearchForTerm());
         else this.reload();
     }
@@ -532,7 +540,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.alert.addAlert('danger', 'Invalid page: ' + this.goToPage);
             } else {
                 this.searchSettings.page = this.goToPage;
-                this.doSearch();
+                this.doSearchWithPage();
             }
         }
     }

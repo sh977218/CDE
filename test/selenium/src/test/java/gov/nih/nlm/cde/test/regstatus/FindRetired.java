@@ -12,9 +12,7 @@ public class FindRetired extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         textNotPresent("Retired (");
-        clickElement(By.id("searchSettings"));
-        clickElement(By.id("includeRetired"));
-        clickElement(By.id("saveSettings"));
+        includeRetiredSetting();
         textPresent("Retired (");
         clickElement(By.id("regstatus-Retired"));
         checkSearchResultInfo(null, null, null, "All Topics", "Retired", null);
