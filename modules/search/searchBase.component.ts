@@ -51,6 +51,9 @@ export const searchStyles: string = `
         margin-left: 15px;
     }
     .treeItemIcon {
+        font-size: 14px;
+        height: 14px;
+        width: 5px;
     }
     .treeItemText {
         font-size: 80%;
@@ -110,6 +113,15 @@ export const searchStyles: string = `
     }
     .badge-secondary {
         background-color: #70777d;
+    }
+    .remove-filter {
+        font-size: 12px; height: 12px; width: 12px;
+    }
+    .filter-cb {
+        font-size: 14px;
+        height: 14px;
+        width: 14px;
+        vertical-align: middle;
     }
 `;
 
