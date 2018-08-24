@@ -1,3 +1,6 @@
+const async = require('async');
+const request = require('request');
+
 const handleError = require('../log/dbLogger').handleError;
 const isOrgAuthorityMiddleware = require('../system/authorization').isOrgAuthorityMiddleware;
 

@@ -15,7 +15,7 @@ const MeshClassification = conn.model('meshClassification', meshClassificationSc
 exports.MeshClassification = MeshClassification;
 
 exports.byId = (id, callback) => {
-    MeshClassification.findOne(id, callback);
+    MeshClassification.findById(id, callback);
 };
 exports.byEltId = (eltId, callback) => {
     MeshClassification.find({eltId: eltId}, callback);
