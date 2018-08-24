@@ -37,7 +37,8 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("search.submit"));
         textPresent("results for some search");
         clickElement(By.id("menu_cdes_link"));
-        textNotPresent(searchTerm, By.id("ftsearch-input"));
+        String actual = findElement(By.id("ftsearch-input")).getAttribute("value");
+        Assert.assertNotEquals(actual, searchTerm, "Actual searchTerm: " + actual + " Previous searchTerm: " + searchTerm);
         textPresent("Browse by Classification");
     }
 
