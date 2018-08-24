@@ -1,12 +1,8 @@
 export const rolesEnum = ['DocumentationEditor', 'BoardPublisher', 'CommentAuthor',
-    'CommentReviewer', 'AttachmentReviewer', 'OrgAuthority', 'FormEditor'];
+    'CommentReviewer', 'AttachmentReviewer', 'OrgAuthority'];
 
 export function canComment(user) {
     return hasRole(user, 'CommentAuthor') || hasRole(user, 'CommentReviewer') || isOrgCurator(user);
-}
-
-export function canCreateForms(user) {
-    return hasRole(user, 'FormEditor');
 }
 
 export function canEditCuratedItem(user, item) {
