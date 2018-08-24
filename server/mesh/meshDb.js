@@ -18,7 +18,7 @@ exports.byId = (id, callback) => {
     MeshClassification.findOne(id, callback);
 };
 exports.byEltId = (eltId, callback) => {
-    MeshClassification.findById({eltId: eltId}, callback);
+    MeshClassification.find({eltId: eltId}, callback);
 };
 
 exports.byFlatClassification = (flatClassification, callback) => {

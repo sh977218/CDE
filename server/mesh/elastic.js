@@ -1,7 +1,9 @@
+const _ = require('lodash');
 const ElasticSearch = require('elasticsearch');
 const config = require('../system/parseConfig');
 const meshDb = require('./meshDb');
 const logging = require('../system/logging');
+const dbLogger = require('../log/dbLogger.js');
 
 let esClient = new ElasticSearch.Client({
     hosts: config.elastic.hosts
@@ -9,6 +11,17 @@ let esClient = new ElasticSearch.Client({
 exports.meshSyncStatus = {
     dataelement: {done: 0},
     form: {done: 0}
+};
+
+let searchTemplate = {
+    cde: {
+        index: config.elastic.index.name,
+        type: "dataelement"
+    },
+    form: {
+        index: config.elastic.formIndex.name,
+        type: "form"
+    }
 };
 
 exports.syncWithMesh = function () {

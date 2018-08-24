@@ -28,8 +28,8 @@ let meshTopTreeMap = {
 exports.module = function (roleConfig) {
     const router = require('express').Router();
 
-    router.get('/eltId/:id', (req, res) => {
-        meshDb.byEltId(req.params.id, handleError({req, res}, mm => res.send(mm.length ? mm[0] : '{}')));
+    router.get('/eltId/:eltId', (req, res) => {
+        meshDb.byEltId(req.params.eltId, handleError({req, res}, mm => res.send(mm.length ? mm[0] : '{}')));
     });
 
     router.post('/meshClassification', (req, res) => {

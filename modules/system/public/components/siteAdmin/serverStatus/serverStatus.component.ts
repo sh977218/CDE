@@ -61,7 +61,7 @@ export class ServerStatusComponent {
     syncMesh() {
         this.http.post('/server/mesh/syncWithMesh', {}).subscribe();
         let indexFn = setInterval(() => {
-            this.http.get<any>('/syncWithMesh').subscribe(res => {
+            this.http.get<any>('/server/mesh/syncWithMesh').subscribe(res => {
                 this.meshSyncs = [];
                 for (let p in res) {
                     if (res.hasOwnProperty(p)) this.meshSyncs.push(res[p]);
