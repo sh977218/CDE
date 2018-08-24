@@ -62,8 +62,7 @@ exports.module = function (roleConfig) {
     });
 
 
-    router.post("/syncWithMesh", isOrgAuthorityMiddleware, (req, res) => {
-        if (!config.autoSyncMesh) return res.status(403).send("Not Authorized");
+    router.post("/syncWithMesh", [isOrgAuthorityMiddleware, roleConfig.allowSyncMesh], (req, res) => {
         elastic.syncWithMesh();
         res.send();
     });
