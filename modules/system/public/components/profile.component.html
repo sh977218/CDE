@@ -25,7 +25,9 @@
                     <span class="align-middle">
                         {{subscriptionStatusServer || (subscriptionStatusClient()?'Subscribed':'Not Subscribed')}}
                     </span>
-                    <button class="btn btn-outline-dark" (click)="checkSubscriptionServerStatus()">Check Server <i *ngIf="subscriptionStatusServer" class="fa fa-check-square-o"></i></button>
+                    <button mat-raised-button
+                            (click)="checkSubscriptionServerStatus()">Check Server <mat-icon *ngIf="subscriptionStatusServer">check_box</mat-icon>
+                    </button>
                     <button *ngIf="subscriptionStatusServer === 'Not Subscribed'"
                             class="btn btn-outline-dark" (click)="pushSubscribe()">Subscribe</button>
                     <button *ngIf="subscriptionStatusServer === 'Subscribed'"
@@ -43,7 +45,7 @@
                 <li class="list-group-item" *ngFor="let pf of user.publishedForms">
                     <a href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}}</a>
                     &nbsp; &nbsp;
-                    <i class="fa fa-trash" title="Remove" (click)="removePublishedForm(pf)"></i>
+                    <mat-icon title="Remove" (click)="removePublishedForm(pf)">delete_outline</mat-icon>
                 </li>
             </ul>
         </div>
@@ -58,7 +60,7 @@
                     {{cde.designations[0].designation}}
                 </span>
                 <a routerLink="/deView" [queryParams]="{tinyId: cde.tinyId}">
-                    <i class="fa fa-eye iconColor"></i></a>
+                    <mat-icon>visibility</mat-icon></a>
                 <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
                 <cde-pin-quickboard [elt]="cde" [eltIndex]="index"></cde-pin-quickboard>
             </div>
@@ -114,7 +116,7 @@
                     {{form.designations[0].designation}}
                 </span>
                 <a routerLink="/formView" [queryParams]="{tinyId: form.tinyId}">
-                    <i class="fa fa-eye iconColor"></i></a>
+                    <mat-icon>visibility</mat-icon></a>
                 <cde-pin-board [elt]="form" [eltIndex]="index" [module]="'form'"></cde-pin-board>
                 <cde-pin-quickboard [elt]="form" [eltIndex]="index"></cde-pin-quickboard>
             </div>

@@ -1,11 +1,11 @@
 <div class="p-1"
      [ngClass]="{'outdated-bg': question.question.cde.outdated && !question.hover,'hover-bg': question.hover}">
     <div *ngIf="!isSubForm && canEdit" class="d-inline-block">
-        <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"
-           [treeDrag]="node" [treeDragEnabled]="node.allowDrag()"></i>
-        <i *ngIf="question.skipLogic?.condition?.length > 0" class="fa fa-cog updatedSkipLogicIcon"
+        <mat-icon class="question-move-handle ui-sortable-handle"
+           [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">drag_handle</mat-icon>
+        <mat-icon *ngIf="question.skipLogic?.condition?.length > 0" class="updatedSkipLogicIcon"
            [ngClass]="{'fa-spin': question.updatedSkipLogic}"
-           title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
+           title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}">cog</mat-icon>
     </div>
     <div class="font-weight-bold d-inline-block" (click)="editQuestion(question);"
          [ngClass]="{'hand-cursor':!isSubForm && canEdit}"
@@ -13,7 +13,7 @@
         <span *ngIf="question.question.isScore">Score:</span>
         <span class="questionLabel ml-1" title="{{question.label}}">
             <ng-container *ngIf="question.hideLabel">
-                <i class="fa fa-question-circle" ngbTooltip="This question has no label" placement="right"></i>
+                <mat-icon ngbTooltip="This question has no label" placement="right">help</mat-icon>
                 <strong [textContent]="question.question.cde.name"></strong>
             </ng-container>
             <strong *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}} </strong>
@@ -31,7 +31,7 @@
     <div class="float-right">
         <a *ngIf="question.question.cde.tinyId" target="_blank" title="{{question.question.cde.name}}"
            href="/deView?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
-            <i class="fa fa-eye"></i> View CDE
+            <mat-icon>visibility</mat-icon> View CDE
         </a>
         <span *ngIf="!question.question.cde.tinyId" class="text-danger">(This is a new CDE)</span>
         <cde-delete-with-confirm *ngIf="!isSubForm && canEdit" (deleted)="removeNode(node)"></cde-delete-with-confirm>
@@ -43,7 +43,7 @@
         <h3>Confirm Changes:</h3>
     </div>
     <div class="modal-body">
-        <i *ngIf="reloading" class="fa fa-spinner fa-spin"></i>
+        <mat-icon *ngIf="reloading" class="spin">auto_renew</mat-icon>
         <div>
             <div class="row">
                 <div class="col-sm-2 font-weight-bold">Label:</div>
@@ -161,12 +161,12 @@
                 <div class="col-sm-8" id="mdd_d_cde">
                     <a [ngClass]="{mark: updateCdeVersion.bCde}"
                        href="/deView?tinyId={{updateCdeVersion.newQuestion.question.cde.tinyId}}&version={{updateCdeVersion.newQuestion.question.cde.version}}"
-                       target="_blank"><i class="fa fa-eye"></i>
+                       target="_blank"><mat-icon>visibility</mat-icon>
                         <span id="mdd_question_cde_name">{{updateCdeVersion.newQuestion.question.cde.name}}</span>
                     </a>
                     <span *ngIf="updateCdeVersion.bCde" class="text-danger">( was
                         <a href="/deView?tinyId={{updateCdeVersion.currentQuestion.question.cde.tinyId}}&version={{updateCdeVersion.currentQuestion.question.cde.version}}"
-                           target="_blank"><i class="fa fa-eye"></i>
+                           target="_blank"><mat-icon>visibility</mat-icon>
                             <span id="mdd_old_question_cde_name">{{updateCdeVersion.currentQuestion.question.cde.name}}</span>
                         </a> )
                     </span>

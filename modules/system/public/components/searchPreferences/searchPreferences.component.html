@@ -1,6 +1,6 @@
 <div class="container">
-    <h2><i class="fa fa-search"></i> Search Results </h2>
-    <h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>
+    <h2><mat-icon style="vertical-align: baseline">search</mat-icon> Search Results</h2>
+    <h3><mat-icon style="vertical-align: baseline">check_box</mat-icon> Registration Statuses</h3>
     <div class="form-group">
         <span>I want my search results to include these statuses</span>
         <div class="radio indent">
@@ -37,35 +37,35 @@
             Include Retired Content (this session only)</label>
     </div>
 
-    <h3><i class="fa fa-bars"></i> Default Search Results View</h3>
+    <h3><mat-icon style="vertical-align: baseline">sort</mat-icon> Default Search Results View</h3>
     <div class="form-group">
         <span>By default, I want to see results as </span>
         <div class="radio indent">
             <label>
                 <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" id="defaultView-summary"
                        value="summary">
-                <i class="fa fa-list"></i> Summary
+                <mat-icon>view_list</mat-icon> Summary
             </label>
         </div>
         <div class="radio indent">
             <label>
                 <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" id="defaultView-table" value="table">
-                <i class="fa fa-table"></i> Table
+                <mat-icon>table_chart</mat-icon> Table
             </label>
         </div>
     </div>
 
     <div class="row">
         <div class="ml-auto">
-            <button type="button" id="loadDefaultSettings" class="btn btn-outline-dark" (click)="loadDefault()">
-                <i class="fa fa-undo"></i> Load Default
+            <button id="loadDefaultSettings" mat-raised-button (click)="loadDefault()">
+                <mat-icon>undo</mat-icon> Load Default
             </button>
-            <button type="button" class="btn  btn-warning" (click)="cancelSettings()">
-                <i class="fa fa-times"></i>
+            <button mat-raised-button color="accent" (click)="cancelSettings()">
+                <mat-icon>cancel</mat-icon>
                 Cancel
             </button>
-            <button id="saveSettings" type="button" class="btn  btn-success" (click)="saveSettings()">
-                <i class="fa fa-check"></i> Save
+            <button id="saveSettings" mat-raised-button color="primary" (click)="saveSettings()">
+                <mat-icon>check</mat-icon> Save
             </button>
         </div>
     </div>

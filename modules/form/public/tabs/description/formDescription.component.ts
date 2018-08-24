@@ -145,6 +145,12 @@ const TOOL_BAR_OFF_SET = 64;
         .toolCopySection:before {
             content: ' Paste';
         }
+        
+        .toolbar-icon {
+            font-size: 20px;
+            height: 20px;
+            width: 20px;
+        }
     `]
 })
 
