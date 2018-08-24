@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, DoCheck, Input, ViewChild, OnChanges, Output, EventEmitter, } from '@angular/core';
+import { Component, DoCheck, Input, ViewChild, OnInit, Output, EventEmitter, } from '@angular/core';
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
 
 import { QuickBoardListService } from '_app/quickBoardList.service';
@@ -11,7 +11,7 @@ import { DataElement } from 'shared/de/dataElement.model';
     providers: [NgbActiveModal],
     templateUrl: './derivationRules.component.html'
 })
-export class DerivationRulesComponent implements DoCheck, OnChanges {
+export class DerivationRulesComponent implements OnInit {
     @Input() canEdit!: boolean;
     @Input() elt: any;
     @Output() onEltChange = new EventEmitter();
@@ -25,25 +25,18 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     };
     previousCdeId: string;
 
-    ngDoCheck() {
-        if (this.elt._id !== this.previousCdeId) {
-            this.previousCdeId = this.elt._id;
-            this.updateRules();
-            this.findDerivationOutputs();
-        }
-    }
-
-    ngOnChanges() {
-        this.previousCdeId = this.elt._id;
-        this.updateRules();
-        this.findDerivationOutputs();
-    }
-
     constructor(
         private http: HttpClient,
         public modalService: NgbModal,
         public quickBoardService: QuickBoardListService,
     ) {
+    }
+
+    ngOnInit() {
+        this.previousCdeId = this.elt._id;
+        this.updateRules();
+        this.findDerivationOutputs();
+        this.someCdesInvalid();
     }
 
     addNewScore() {
@@ -117,7 +110,6 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         this.invalidCdeMessage = '';
         if (this.quickBoardService.dataElements.length === 0) {
             this.invalidCdeMessage = 'There are no CDEs in your Quick Board. Add some before you can create a rule.';
-            return true;
         }
         this.quickBoardService.dataElements.forEach((qbElt: any) => {
             if (qbElt.tinyId === this.elt.tinyId) {
@@ -138,6 +130,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
                     " has a datatype other than 'Number' and may not be added to a score";
             }
         });
+        return !!this.invalidCdeMessage.length;
     }
 
     updateRules() {

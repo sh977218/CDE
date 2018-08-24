@@ -214,10 +214,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
                 findElement(By.xpath("//*[@id='" + id + "' and contains(@class, 'treeChild')]"));
         } else {
             if (state)
-                findElement(By.xpath("//*[@id='" + id + "']/*[contains(@class,'treeItemIconSelected')]"));
+                findElement(By.xpath("//*[@id='" + id + "']/*[. = 'check_box']"));
             else
-                Assert.assertTrue(driver.findElements(By.xpath(
-                        "//*[@id='" + id + "']/*[contains(@class,'treeItemIconSelected')]")).size() == 0);
+                Assert.assertTrue(driver.findElements(By.xpath("//*[@id='" + id + "']/*[. = 'treeItemIconSelected']")).size() == 0);
         }
     }
 
@@ -284,8 +283,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void deleteWithConfirm(By by) {
         WebElement element = findElement(by);
 
-        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.cssSelector(".fa-trash-o"))));
-        element.findElement(By.cssSelector(".fa-trash-o")).click();
+        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.xpath("//mat-icon[. = 'cancel']"))));
+        element.findElement(By.xpath("//mat-icon[. = 'cancel']")).click();
         wait.until(ExpectedConditions.visibilityOf(element.findElement(By.cssSelector(".badge > .fa-check"))));
         element.findElement(By.cssSelector(".badge > .fa-check")).click();
     }

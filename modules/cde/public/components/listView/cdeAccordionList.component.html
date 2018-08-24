@@ -2,11 +2,11 @@
     <div class="card" *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index">
         <div class="card-header">
             <button class="btn btn-outline-danger hand-cursor" (click)="add.emit(elt);">
-                <i class="fa fa-plus"></i> Add
+                <mat-icon>add</mat-icon> Add
             </button>
             <span class="hand-cursor" (click)="elt.isCollapsed = !elt.isCollapsed"> {{elt.designations[0]?.designation}}</span>
             <a href="deView?tinyId={{elt.tinyId}}" target="_blank" id="acc_link_{{i}}">
-                <i class="fa fa-eye iconColor"></i>
+                <mat-icon class="iconColor">visibility</mat-icon>
             </a>
             <cde-pin-board [elt]="elt" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
             <cde-pin-quickboard [elt]="elt" [eltIndex]="index"></cde-pin-quickboard>
@@ -67,13 +67,6 @@
                             <td>{{id.source}}</td>
                         </tr>
                     </table>
-                </div>
-            </div>
-            <div class="row justify-content-end">
-                <div class="col">
-                    <a href="/sdcview?tinyId={{elt.tinyId}}" target="_blank" aria-label="SDC View"
-                       id="sdcView_{{index}}">
-                        <i class="fa fa-share-square-o"></i> SDC View</a>
                 </div>
             </div>
         </div>
