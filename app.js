@@ -83,7 +83,7 @@ const expressSettings = {
     proxy: config.proxy,
     resave: false,
     saveUninitialized: false,
-    cookie: {httpOnly: true, secure: config.proxy}
+    cookie: {httpOnly: true, secure: config.proxy, maxAge: 59 * 60000}
 };
 
 let getRealIp = function (req) {
