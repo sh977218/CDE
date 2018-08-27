@@ -925,6 +925,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         setVisibleStatus("minStatus-Incomplete");
     }
 
+    protected void includeRetiredSetting() {
+        clickElement(By.id("searchSettings"));
+        clickElement(By.id("includeRetired"));
+        clickElement(By.id("saveSettings"));
+    }
+
     protected void loadDefaultTableViewSettings() {
         clickElement(By.id("list_gridView"));
         openTableViewPreferenceModal();
