@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.mesh;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -17,6 +18,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.xpath(getOrgClassificationIconXpath("meshMapping", new String[]{"Disease"})));
         findElement(By.id("mapClassificationMeshInput")).clear();
         findElement(By.id("mapClassificationMeshInput")).sendKeys("NINDS");
+        findElement(By.id("mapClassificationMeshInput")).sendKeys(Keys.TAB);
         textPresent("National Institute of Neurological Disorders and Stroke");
         clickElement(By.id("addMeshDescButton"));
         clickElement(By.id("cancelMapClassificationMeshBtn"));
