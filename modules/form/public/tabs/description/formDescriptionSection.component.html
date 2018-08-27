@@ -2,8 +2,8 @@
     <div class="text-truncate p-1"
          [ngClass]="{'outdated-bg': formSection?.inForm?.form?.outdated && !section.hover,'hover-bg':section.hover}">
         <div *ngIf="!isSubForm && canEdit" class="float-left">
-            <i class="fa fa-arrows fa-lg question-move-handle ml-1"
-               [treeDrag]="node" [treeDragEnabled]="node.allowDrag()"></i>
+            <mat-icon class="question-move-handle ml-1"
+               [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">drag_handle</mat-icon>
             <i *ngIf="section.skipLogic?.condition?.length > 0 && section.elementType === 'section'"
                class="fa fa-cog mx-1" [ngClass]="{'fa-spin': section.updatedSkipLogic}"
                title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}"></i>

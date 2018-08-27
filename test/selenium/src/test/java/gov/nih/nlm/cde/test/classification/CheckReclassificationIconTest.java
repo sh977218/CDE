@@ -27,7 +27,7 @@ public class CheckReclassificationIconTest extends NlmCdeBaseTest {
         String cdeName = "Brief Symptom Inventory-18 (BSI18)- Anxiety raw score";
         goToCdeByName(cdeName);
         goToClassification();
-        icons = driver.findElements(By.xpath("//mat-icon[. = 'fa-retweet']"));
+        icons = driver.findElements(By.xpath("//mat-icon[. = 'transform']"));
         Assert.assertTrue(icons.isEmpty());
     }
 }

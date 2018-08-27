@@ -11,7 +11,7 @@ public class WhatsNew extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Site Management"));
         clickElement(By.id("whatsNewTab"));
-        clickElement(By.xpath("//mat-icon[.  'edit']"));
+        clickElement(By.xpath("//mat-icon[. = 'edit']"));
         hangon(5);
         clickElement(By.xpath("//button[. = 'Plain Text']"));
         hangon(5);

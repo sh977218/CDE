@@ -31,7 +31,7 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='pvValue_" + index + "']//mat-icon"));
         findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).clear();
         findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).sendKeys(to);
-        clickElement(By.xpath("//*[@id='pvValue_" + index + "']//button/mat-icon[. = 'check')]"));
+        clickElement(By.xpath("//*[@id='pvValue_" + index + "']//button/mat-icon[. = 'check']"));
     }
 
     @Test

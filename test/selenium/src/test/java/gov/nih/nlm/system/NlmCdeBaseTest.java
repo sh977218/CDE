@@ -1707,13 +1707,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void selectQuestionLabelByIndex(String questionId, int index) {
-        clickElement(By.xpath("//*[@id='" + questionId + "']//i[contains(@class,'changeQuestionLabelIcon')]"));
+        clickElement(By.xpath("//*[@id='" + questionId + "']//mat-icon[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("Select a question label from a CDE Name");
         clickElement(By.xpath("//*[@id='q_select_name_" + index + "']/div/button"));
     }
 
     protected void selectQuestionNoLabel(String questionId) {
-        clickElement(By.xpath("//*[@id='" + questionId + "']//i[contains(@class,'changeQuestionLabelIcon')]"));
+        clickElement(By.xpath("//*[@id='" + questionId + "']//mat-icon[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("Select a question label from a CDE Name");
         clickElement(By.id("selectQuestionNoLabel"));
     }
