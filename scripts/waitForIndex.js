@@ -11,7 +11,7 @@ let indexInt = setInterval(() => {
                 body.indexOf('indices":[]') === -1 && body.indexOf('indices') > 0) {
                 console.log("indexing complete, status returned: ");
                 clearInterval(indexInt);
-                request.post("http://localhost:3001/syncWithMesh", {}, () => {
+                request.post("http://localhost:3001/server/mesh/syncWithMesh", {}, () => {
                     setInterval(() => {
                         request.get("http://localhost:3001/server/mesh/syncWithMesh", (err, res, body) => {
                             body = JSON.parse(body);
