@@ -13,7 +13,7 @@ let indexInt = setInterval(() => {
                 clearInterval(indexInt);
                 request.post("http://localhost:3001/syncWithMesh", {}, () => {
                     setInterval(() => {
-                        request.get("http://localhost:3001/syncWithMesh", (err, res, body) => {
+                        request.get("http://localhost:3001/server/mesh/syncWithMesh", (err, res, body) => {
                             body = JSON.parse(body);
                             console.log(body);
                             if (body.dataelement.done === body.dataelement.total &&
