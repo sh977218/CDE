@@ -30,9 +30,8 @@
                 </div>
             </div>
             <hr/>
-            <button class="btn   btn-outline-dark" *ngIf="canEdit" id="openNewConceptModalBtn"
-                    value="add" (click)="openNewConceptModal()">
-                <i class="fa fa-plus"> </i> Add Concept
+            <button mat-raised-button *ngIf="canEdit" id="openNewConceptModalBtn" (click)="openNewConceptModal()">
+                <mat-icon>add</mat-icon> Add Concept
             </button>
         </div>
     </div>
@@ -70,10 +69,10 @@
             </div>
         </div>
         <div class="modal-footer" id="newConceptModalFooter">
-            <button class="btn btn-outline-dark" (click)="c('Close click')" id="cancelNewConceptBtn" type="button">
+            <button mat-raised-button color="accent" (click)="c('Close click')" id="cancelNewConceptBtn" type="button">
                 Cancel
             </button>
-            <button class="btn  btn-warning" [disabled]="!newConceptForm.form.valid" id="createNewConceptBtn"
+            <button mat-raised-button color="primary" [disabled]="!newConceptForm.form.valid" id="createNewConceptBtn"
                     type="submit">Save
             </button>
         </div>

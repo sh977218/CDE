@@ -1,5 +1,4 @@
-<form class="form-inline pt40 pb40" #adminForm="ngForm" role="form" id="newOrgAdminForm" name="newOrgAdminForm"
-      novalidate>
+<form class="form-inline pt40 pb40" #adminForm="ngForm" role="form" id="newOrgAdminForm" novalidate>
     Make
     <div class="form-group mx-1">
         <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
@@ -30,9 +29,9 @@
         </td>
         <td>
             <div *ngFor="let user of orgAdmin.users; let uIndex = index">
-                <span id="existingOrgAdminUsername-{{admIndex}}-{{uIndex}}">{{user.username}}
-                </span> <i class="fa fa-trash-o hand-cursor" (click)="removeOrgAdmin(orgAdmin.name, user._id)"
-                           id="removeOrgAdminUsername-{{admIndex}}-{{uIndex}}" title="Remove"></i>
+                <span id="existingOrgAdminUsername-{{admIndex}}-{{uIndex}}" style="vertical-align: super">{{user.username}}
+                </span> <mat-icon (click)="removeOrgAdmin(orgAdmin.name, user._id)"
+                                  id="removeOrgAdminUsername-{{admIndex}}-{{uIndex}}">delete_outline</mat-icon>
             </div>
         </td>
     </tr>

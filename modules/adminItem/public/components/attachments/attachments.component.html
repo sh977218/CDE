@@ -55,13 +55,10 @@
             </dl>
             <hr>
         </ng-container>
-        <dl *ngIf="canEdit" class="row" id="attachment_">
-            <dt class="col-3 text-right">
-                <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files:</label>
-            </dt>
-            <dd class="col-9">
-                <input id="fileToUpload" style="display: none" type="file" (change)="upload.emit($event)">
-            </dd>
-        </dl>
+        <div *ngIf="canEdit" class="row" id="attachment_">
+            <label for="fileToUpload"><button mat-raised-button (click)="openFileDialog()">
+                <mat-icon>cloud_upload</mat-icon> Upload more files</button></label>
+            <input id="fileToUpload" style="display: none" type="file" (change)="upload.emit($event)">
+        </div>
     </ng-container>
 </div>

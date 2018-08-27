@@ -5,10 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
     selector: 'cde-home',
     styles: [`
-        .sectionPage {
-            /*min-height: 100vh;*/
-        }
-
         .slideContent {
             display: block;
             margin: auto;

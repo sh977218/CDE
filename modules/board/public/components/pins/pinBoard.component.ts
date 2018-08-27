@@ -6,8 +6,8 @@ import { interruptEvent } from 'widget/browser';
 @Component({
     selector: 'cde-pin-board',
     template: `
-        <i id="pinToBoard_{{eltIndex}}" class="fa fa-thumb-tack hand-cursor" title="Attach to Board" role="link"
-           (click)="interruptEvent($event);mltPinModal.pinMultiple([elt], mltPinModal.open())" tabindex="0"> </i>
+        <mat-icon id="pinToBoard_{{eltIndex}}" class="hand-cursor" title="Attach to Board" role="link"
+           (click)="interruptEvent($event);mltPinModal.pinMultiple([elt], mltPinModal.open())" svgIcon="thumb_tack"></mat-icon>
         <cde-pin-board-modal #mltPinModal [module]="module"></cde-pin-board-modal>
     `
 })

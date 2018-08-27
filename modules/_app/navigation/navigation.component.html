@@ -5,7 +5,7 @@
     </ng-template>
     <ng-container *ngIf="userService.user; else loginLink">
         <a routerLink="/inbox" *ngIf="userService.user.hasMail">
-            <i id="incomingMessage" class="fa fa-envelope text-danger"></i>
+            <mat-icon id="incomingMessage" class="text-danger">mail_outline</mat-icon>
         </a>
 
         <a id="username_link" class="mdl-navigation__link mdl-typography--text-uppercase"
@@ -54,7 +54,7 @@
        [matMenuTriggerFor]="createMenu">Create&nbsp;▼</a>
     <mat-menu #createMenu="matMenu">
         <a id="createCDELink" routerLink="/createCde" mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">CDE</a>
-        <a id="createFormLink" routerLink="/createForm" *ngIf="canCreateForms(userService.user)"
+        <a id="createFormLink" routerLink="/createForm"
            mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Form</a>
     </mat-menu>
 </ng-template>

@@ -3,6 +3,28 @@ a {
     color: #337ab7;
 }
 
+.mat-icon {
+    vertical-align: bottom;
+}
+
+
+/* these 2 styles because Peter and I, we can't figure out why .orpahn won't position in the middle */
+.popover[class*="tour-"].orphan {
+    left: 50% !important;
+    margin-top: 0;
+    position: fixed !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+.popover h3 {
+    margin-top: 2px;
+}
+.popover {
+    border: 3px solid rgb(167, 158, 45);
+}
+/* end of these 3 styles */
+
+
 button {
     margin-right: 0.2rem !important;
 }
@@ -161,6 +183,35 @@ input.ng-invalid:not([matInput]) {
     }
 }
 /* end alternatives */
+
+.spin {
+    -webkit-animation: spin 2s infinite linear;
+    animation: spin 2s infinite linear;
+}
+.pulse {
+    -webkit-animation: spin 1s infinite steps(8);
+    animation: spin 1s infinite steps(8);
+}
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
 
 /* cde (remove) */
 .boxed-div {
