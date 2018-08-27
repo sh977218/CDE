@@ -12,8 +12,8 @@ public class UserEmailTest extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
         textPresent("test@example.com");
-        Assert.assertEquals(findElement(By.id("user_email")).getText(), "test@example.com");
-        clickElement(By.xpath("//*[@id='emailEdit']//i[contains(@class,'fa fa-edit')]"));
+        Assert.assertEquals(findElement(By.xpath("//*[@id='user_email']/span/span/span")).getText(), "test@example.com");
+        clickElement(By.xpath("//*[@id='emailEdit']//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id='emailEdit']//input")).clear();
         findElement(By.xpath("//*[@id='emailEdit']//input")).sendKeys("me@");
         Assert.assertFalse(findElement(By.xpath("//cde-inline-edit[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());

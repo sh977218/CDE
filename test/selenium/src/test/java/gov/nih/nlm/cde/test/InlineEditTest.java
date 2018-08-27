@@ -53,7 +53,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         Alert errorAlert = driver.switchTo().alert();
         Assert.assertTrue(errorAlert.getText().contains("Error. Img src may only be a relative url starting with /data"));
         errorAlert.accept();
-        clickElement(By.cssSelector("button.fa-times"));
+        clickElement(By.xpath("//button/mat-icon[. = 'cancel']"));
 
         clickElement(By.xpath("//*[@id='value_0']//mat-icon[. = 'edit')]"));
         textPresent("Rich Text");

@@ -285,8 +285,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
         wait.until(ExpectedConditions.visibilityOf(element.findElement(By.xpath("//mat-icon[. = 'cancel']"))));
         element.findElement(By.xpath("//mat-icon[. = 'cancel']")).click();
-        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.cssSelector(".badge > .fa-check"))));
-        element.findElement(By.cssSelector(".badge > .fa-check")).click();
+        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.xpath("//mat-icon[. = 'check']"))));
+        element.findElement(By.xpath("//mat-icon[. = 'check']")).click();
     }
 
     protected void gotoClassificationMgt() {
@@ -942,7 +942,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void editDesignationByIndex(int index, String newDesignation, String[] tags) {
         String designationEditIconXpath = "//*[@id='designation_" + index + "']//mat-icon[. = 'edit']";
         String designationInputXpath = "//*[@id='designation_" + index + "']//input";
-        String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//mat-icon[. = 'check')]";
+        String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//mat-icon[. = 'check']";
         if (newDesignation != null) {
             clickElement(By.xpath(designationEditIconXpath));
             findElement(By.xpath(designationInputXpath)).sendKeys(newDesignation);
@@ -1374,8 +1374,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     public String getOrgClassificationIconXpath(String type, String[] categories) {
         String id = String.join(",", categories);
-        String fa = PREDEFINED_ORG_CLASSIFICATION_ICON.get(type.toLowerCase());
-        return "//*[@id='" + id + "']/following-sibling::a/i[contains(@class, '" + fa + "')]";
+        String icon = PREDEFINED_ORG_CLASSIFICATION_ICON.get(type.toLowerCase());
+        return "//*[@id='" + id + "']/following-sibling::a/mat-icon[. = '" + icon + "']";
     }
 
     protected void searchNestedClassifiedCdes() {

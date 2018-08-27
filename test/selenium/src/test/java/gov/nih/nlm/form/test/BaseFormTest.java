@@ -80,11 +80,11 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     public void editSectionTitle(String sectionId, String title) {
-        clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//i[contains(@class,'fa-edit')]"));
+        clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//mat-icon[. = 'edit']"));
         String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input";
         findElement(By.xpath(sectionInput)).clear();
         findElement(By.xpath(sectionInput)).sendKeys(title);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//button[contains(text(),'Confirm')]"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//button[. = 'Confirm']"));
     }
 
     public void questionEditAddUom(String id, String type, String text) {

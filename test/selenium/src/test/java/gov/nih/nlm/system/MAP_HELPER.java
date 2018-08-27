@@ -9,11 +9,11 @@ public interface MAP_HELPER {
     ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Time", "Number", "Externally Defined", "File"));
     Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
         {
-            put("rename", "fa-pencil");
-            put("remove", "fa-trash-o");
-            put("reclassify", "fa-retweet");
-            put("addchildclassification", "fa-share ");
-            put("meshmapping", "fa-link");
+            put("rename", "edit");
+            put("remove", "delete_outline");
+            put("reclassify", "transform");
+            put("addchildclassification", "subdirectory_arrow_left");
+            put("meshmapping", "link");
         }
     };
     Map<String, String> SWAGGER_API_TYPE = new HashMap<String, String>() {

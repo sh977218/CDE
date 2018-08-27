@@ -63,23 +63,23 @@ public class RenameOrgTest extends NlmCdeBaseTest {
 
         clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//input")).sendKeys(testOrgNotRenamed);
-        clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//button[text() = ' Discard']"));
+        clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//button[text() = 'Discard']"));
 
         clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//input")).sendKeys(testOrgMailingAddressNotRenamed);
-        clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//button[text() = ' Discard']"));
+        clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//button[text() = 'Discard']"));
 
         clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//input")).sendKeys(testOrgEmailingAddressNotRenamed);
-        clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//button[text() = ' Discard']"));
+        clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//button[text() = 'Discard']"));
 
         clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//input")).sendKeys(testOrgPhoneNumberNotRenamed);
-        clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//button[text() = ' Discard']"));
+        clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//button[text() = 'Discard']"));
 
         clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//input")).sendKeys(testOrgUriNotRenamed);
-        clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//button[text() = ' Discard']"));
+        clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//button[text() = 'Discard']"));
 
         textNotPresent(testOrgNotRenamed);
         textNotPresent(testOrgMailingAddressNotRenamed);
