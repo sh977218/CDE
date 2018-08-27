@@ -74,6 +74,7 @@ public class EltIdMaps {
         eltMap.put("Target Lesion Sum Short Longest Dimension Measurement", "_6G-NPfQK0G");
         eltMap.put("Tissue Donor Genetic Testing Other Disease or Disorder Specify", "nsMXB5NdFBA");
         eltMap.put("Temperature mean daily measurement", "rErbwwAasvz");
+        eltMap.put("Temperature peak measurement value", "zXfSfKPe5Uv");
         eltMap.put("Temperature measurement", "2V9Th1t2guY");
         eltMap.put("Temperature maximum daily measurement", "hO8j7EqG61K");
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
