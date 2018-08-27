@@ -12,7 +12,7 @@ public class MeanValue extends NlmCdeBaseTest {
         String cdeName = "Temperature mean daily measurement";
         String formName = "Mean Value Test";
         String cdeName1 = "Temperature measurement";
-        String cdeName2 = "Temperature maximum daily measurement";
+        String cdeName2 = "Temperature peak measurement value";
         mustBeLoggedInAs(nlm_username, nlm_password);
         emptyQuickBoardByModule("cde");
         addCdeToQuickBoard(cdeName1);
