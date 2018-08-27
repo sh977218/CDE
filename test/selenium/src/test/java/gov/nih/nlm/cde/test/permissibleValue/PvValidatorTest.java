@@ -28,10 +28,10 @@ public class PvValidatorTest extends NlmCdeBaseTest {
     }
 
     public void changeField(int index, String to) {
-        clickElement(By.xpath("//*[@id='pvValue_" + index + "']//i"));
+        clickElement(By.xpath("//*[@id='pvValue_" + index + "']//mat-icon"));
         findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).clear();
         findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).sendKeys(to);
-        clickElement(By.xpath("//*[@id='pvValue_" + index + "']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id='pvValue_" + index + "']//button/mat-icon[. = 'check')]"));
     }
 
     @Test
