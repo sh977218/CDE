@@ -4,7 +4,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -240,7 +239,11 @@ public class NindsFormLoader implements Runnable {
     }
 
     private void hangon(double i) {
-        Sleeper.sleepTight((long) (i * 1000));
+        try {
+            Thread.sleep((long) (i * 1000));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private WebElement findElement(By by) {

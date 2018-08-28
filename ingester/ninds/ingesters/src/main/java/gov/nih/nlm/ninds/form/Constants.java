@@ -11,11 +11,11 @@ public final class Constants {
     public static final int DISEASE_NUM;
     public static final int MAX_DATATYPE_SIZE = 5;
     public static final int MAX_INPUT_RESTRICTIONS_SIZE = 3;
-    public static final int TOTAL_PAGE = 31;
-    public static final int TOTAL_RECORD = 3037;
+    public static final int TOTAL_PAGE = 40;
+    public static final int TOTAL_RECORD = 3966;
     public static final String URL = "https://commondataelements.ninds.nih.gov/CRF.aspx";
 
-    public static String MONGO_URL = "mongodb://miguser:password@localhost:27017/migration";
+    public static String MONGO_URL = "mongodb://cdeuser:password@localhost:27017/test";
 
     static {
         Map<String, String> aMap = new HashMap<String, String>();
@@ -29,6 +29,7 @@ public final class Constants {
         aMap.put("Huntington’s Disease", "HD.aspx");
         aMap.put("Mitochondrial Disease", "MITO.aspx");
         aMap.put("Multiple Sclerosis", "MS.aspx");
+        aMap.put("Myalgic Encephalomyelitis/Chronic Fatigue Syndrome", "MECFS.aspx");
         aMap.put("Neuromuscular Diseases", "NMD.aspx");
         aMap.put("Congenital Muscular Dystrophy", "CMD.aspx");
         aMap.put("Duchenne/Becker Muscular Dystrophy", "DMD.aspx");
@@ -38,7 +39,6 @@ public final class Constants {
         aMap.put("Spinal Muscular Atrophy", "SMA.aspx");
         aMap.put("Parkinson's Disease", "PD.aspx");
         aMap.put("Spinal Cord Injury", "SCI.aspx");
-        aMap.put("Spinal Muscular Atrophy", "SMA.aspx");
         aMap.put("Stroke", "Stroke.aspx");
         aMap.put("Unruptured Cerebral Aneurysms and Subarachnoid Hemorrhage", "SAH.aspx");
         aMap.put("Traumatic Brain Injury", "TBI.aspx");

@@ -2,19 +2,15 @@ package gov.nih.nlm.ninds.form;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class NindsFormRunner {
     public static void main(String[] args) throws IOException, AWTException {
         int nbOfThread = 1;
-        int startingPage = 31;
-        int endingPages = 31;
-//        int endingPages = Constants.TOTAL_PAGE;
+        int startingPage = 1;
+        int endingPages = 40;
 
-/*
         ExecutorService executor1 = Executors.newFixedThreadPool(nbOfThread);
         for (int i = startingPage; i <= endingPages; i++) {
             Runnable worker = new NindsFormLoader(i);
@@ -25,7 +21,8 @@ public class NindsFormRunner {
         }
         System.out.println("Finished all forms. from " + startingPage + " to " + endingPages);
 
-*/
+
+/*
         ExecutorService executor2 = Executors.newFixedThreadPool(nbOfThread);
         Iterator it = Constants.DISEASE_MAP.entrySet().iterator();
         while (it.hasNext()) {
@@ -37,6 +34,7 @@ public class NindsFormRunner {
         while (!executor2.isTerminated()) {
         }
         System.out.println("Finished all forms in the map: " + Constants.DISEASE_MAP);
+*/
         System.exit(0);
     }
 }
