@@ -31,11 +31,14 @@ public class ResetSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void resetFromWelcome() {
+        String searchTerm = "some search";
         goToCdeSearch();
-        findElement(By.id("ftsearch-input")).sendKeys("some search");
+        findElement(By.id("ftsearch-input")).sendKeys(searchTerm);
         clickElement(By.id("search.submit"));
         textPresent("results for some search");
         clickElement(By.id("menu_cdes_link"));
+        String actual = findElement(By.id("ftsearch-input")).getAttribute("value");
+        Assert.assertNotEquals(actual, searchTerm, "Actual searchTerm: " + actual + " Previous searchTerm: " + searchTerm);
         textPresent("Browse by Classification");
     }
 
