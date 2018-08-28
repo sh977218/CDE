@@ -473,7 +473,7 @@ export function score(question, elt) {
     let result = 0;
     question.question.cde.derivationRules.forEach(function (derRule) {
         if (derRule.ruleType === 'score') {
-            if (derRule.formula === 'a/b^2') {
+            if (derRule.formula === 'bmi') {
                 let aQuestion = findQuestionByTinyId(derRule.inputs[0], elt);
                 if (!aQuestion.question.answerUom || aQuestion.question.answerUom.code != 'kg')
                     return result = 'Incomplete answers (Weight UOM has to be kg)';

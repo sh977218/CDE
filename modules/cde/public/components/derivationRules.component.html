@@ -5,7 +5,8 @@
         <div class="row">
             <div class="col-lg-1" *ngIf="canEdit">
                 <mat-icon class="fake-link" id="removeDerivationRule-{{i}}"
-                          (click)="removeDerivationRule(i)">delete_outline</mat-icon>
+                          (click)="removeDerivationRule(i)">delete_outline
+                </mat-icon>
             </div>
             <div class="col-lg-11">
                 <dl class="dl-horizontal">
@@ -28,7 +29,9 @@
         </div>
     </div>
 
-    <button *ngIf="canAddScore()" mat-raised-button id="addNewScore" (click)="openNewScoreModal()"><mat-icon></mat-icon> Add Score
+    <button *ngIf="canAddScore()" mat-raised-button id="addNewScore" (click)="openNewScoreModal()">
+        <mat-icon></mat-icon>
+        Add Score
     </button>
 
     <div *ngIf="elt.derivationOutputs && elt.derivationOutputs.length > 0">
@@ -78,12 +81,14 @@
                         [(ngModel)]="newDerivationRule.formula">
                     <option value="sumAll">Sum of All</option>
                     <option value="mean">Mean (Average)</option>
-                    <option value="a/b^2">A/B^2</option>
+                    <option value="bmi">Body Mass Index in KG/M^2</option>
                 </select>
             </div>
         </div>
         <div class="modal-footer" id="newScoreModalFooter">
-            <button mat-raised-button color="warn" (click)="c('Close click')" id="cancelNewScoreBtn" type="button"> Cancel</button>
+            <button mat-raised-button color="warn" (click)="c('Close click')" id="cancelNewScoreBtn" type="button">
+                Cancel
+            </button>
             <button type="submit" mat-raised-button color="primary"
                     [disabled]="someCdesInvalid() || !newScoreForm.form.valid" id="createDerivationRule">Save
             </button>

@@ -45,7 +45,7 @@ exports.derivationRuleSchema = new Schema({
     inputs: {type: [stringType], index: true}, // Information operated on by rule
     outputs: [stringType], // Information produced by rule
     ruleType: Object.assign({enum: ['score', 'panel']}, stringType),
-    formula: Object.assign({enum: ['sumAll', 'mean','a/b^2']}, stringType)
+    formula: Object.assign({enum: ['sumAll', 'mean', 'bmi']}, stringType)
 }, {_id: true});
 
 

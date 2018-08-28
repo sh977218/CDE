@@ -292,7 +292,7 @@ export class DerivationRule {
     ruleType?: DerivationRuleType;
 }
 
-type DerivationRuleFormula = 'sumAll' | 'mean' | 'a/b^2';
+type DerivationRuleFormula = 'sumAll' | 'mean' | 'bmi';
 type DerivationRuleType = 'score' | 'panel';
 
 export class Notification {
