@@ -146,9 +146,6 @@ exports.boardList = function (from, limit, searchOptions, callback) {
 };
 
 exports.newBoard = function (board, callback) {
-    var newBoard = new PinningBoard(board);
-    newBoard.save(function (err) {
-        callback(err, newBoard);
-    });
+    new PinningBoard(board).save(callback);
 };
 

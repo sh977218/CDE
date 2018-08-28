@@ -147,7 +147,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.descToName[this.descriptorID!] = this.descriptorName!;
         this.descriptorID = '';
         this.descriptorName = '';
-        this.http.post<any>('/meshClassification', this.mapping).subscribe(
+        this.http.post<any>('/server/mesh/meshClassification', this.mapping).subscribe(
             res => {
                 this.alert.addAlert('success', 'Saved');
                 this.mapping = res;
@@ -304,7 +304,7 @@ export class OrgClassificationManagementComponent implements OnInit {
 
     removeDescriptor(i: number) {
         this.mapping!.meshDescriptors.splice(i, 1);
-        this.http.post<any>('/meshClassification', this.mapping).subscribe(
+        this.http.post<any>('/server/mesh/meshClassification', this.mapping).subscribe(
             res => {
                 this.alert.addAlert('success', 'Saved');
                 this.mapping = res;
