@@ -245,6 +245,15 @@ try {
     });
     app.use('/server/log', logModule);
 
+    let meshModule = require("./server/mesh/meshRoutes").module({
+        allowSyncMesh: (req, res, next) => {
+            if (!config.autoSyncMesh && !authorizationShared.canOrgAuthority(req.user))
+                return res.status(401).send();
+            next();
+        }
+    });
+    app.use('/server/mesh', meshModule);
+
     require(path.join(__dirname, './server/cde/app.js')).init(app, daoManager);
 
     require(path.join(__dirname, './server/system/app.js')).init(app, daoManager);
