@@ -44,7 +44,6 @@ export class FormClassificationComponent {
             elements: allCdeIds
         };
 
-        //noinspection TypeScriptValidateTypes
         this.http.post('/server/classification/bulk/tinyId', postBody, {responseType: 'text'})
             .subscribe(res => {
                 if (res === 'Done') {
