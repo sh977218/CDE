@@ -19,7 +19,7 @@ public class DragHandleVisibility extends BaseFormTest {
         Assert.assertTrue(findElement(By.xpath(
                 "//*[@id='section_0']//div[contains(@class,'sectionTitle')]//mat-icon[. = 'drag_handle']"
         )).isDisplayed());
-        Assert.assertTrue(findElement(By.cssSelector("#question_0-0 .fa-arrows")).isDisplayed());
+        Assert.assertTrue(findElement(By.xpath("//*[@id = 'question_0-0']//mat-icon[. = 'drag_handle']")).isDisplayed());
     }
 
 }

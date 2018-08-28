@@ -283,7 +283,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void deleteWithConfirm(By by) {
         WebElement element = findElement(by);
 
-        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.xpath("//mat-icon[. = 'cancel']"))));
+        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.xpath("//mat-icon[. = 'delete_outline']"))));
         element.findElement(By.xpath("//mat-icon[. = 'cancel']")).click();
         wait.until(ExpectedConditions.visibilityOf(element.findElement(By.xpath("//mat-icon[. = 'check']"))));
         element.findElement(By.xpath("//mat-icon[. = 'check']")).click();

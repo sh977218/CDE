@@ -55,7 +55,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         errorAlert.accept();
         clickElement(By.xpath("//button/mat-icon[. = 'cancel']"));
 
-        clickElement(By.xpath("//*[@id='value_0']//mat-icon[. = 'edit')]"));
+        clickElement(By.xpath("//*[@id='value_0']//mat-icon[. = 'edit']"));
         textPresent("Rich Text");
         clickElement(By.xpath("//*[@id='value_0']//button[. = 'Rich Text']"));
         clickElement(By.cssSelector(".cke_button__source"));

@@ -20,7 +20,7 @@ public class CheckReclassificationIconTest extends NlmCdeBaseTest {
 
         // Check icons appear on classification management page
         gotoClassificationMgt();
-        List<WebElement> icons = driver.findElements(By.xpath("//i[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
+        List<WebElement> icons = driver.findElements(By.xpath("//mat-icon[. = 'transform']"));
         Assert.assertTrue(icons.size() > 1);
 
         // Check icons don't appear on CDE detail page
