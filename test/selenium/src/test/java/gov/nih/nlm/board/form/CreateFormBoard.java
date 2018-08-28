@@ -32,7 +32,7 @@ public class CreateFormBoard extends BoardTest {
         textPresent("Steward");
         textPresent("Registration Status");
 
-        switchTabAndClose(0);
+//        switchTabAndClose(0);
 
         goToFormByName(formName1);
 
