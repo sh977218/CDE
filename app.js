@@ -245,6 +245,9 @@ try {
     });
     app.use('/server/log', logModule);
 
+    let classificationModule = require("./server/classification/classificationRoutes").module({});
+    app.use('/server/classification', classificationModule);
+
     let meshModule = require("./server/mesh/meshRoutes").module({
         allowSyncMesh: (req, res, next) => {
             if (!config.autoSyncMesh && !authorizationShared.canOrgAuthority(req.user))
