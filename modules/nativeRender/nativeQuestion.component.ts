@@ -5,7 +5,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CodeAndSystem } from 'shared/models.model';
 import { FormQuestion } from 'shared/form/form.model';
-import { score } from 'shared/form/formShared';
+import { SkipLogicService } from 'nativeRender/skipLogic.service';
 
 @Component({
     selector: 'cde-native-question',
@@ -20,17 +20,17 @@ export class NativeQuestionComponent implements OnInit {
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
     metadataTagsNew: string;
     previousUom: CodeAndSystem;
-    // static readonly reHasTime = /[hHmsSkaAZ]/;
-    score = score;
 
-    ngOnInit () {
+    // static readonly reHasTime = /[hHmsSkaAZ]/;
+
+    ngOnInit() {
         this.previousUom = this.formElement.question.answerUom;
     }
 
-    constructor(
-        private http: HttpClient,
-        public nrs: NativeRenderService
-    ) {}
+    constructor(private http: HttpClient,
+                public slr: SkipLogicService,
+                public nrs: NativeRenderService) {
+    }
 
     classColumns(pvIndex, index) {
         let result = "";
