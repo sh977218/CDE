@@ -65,7 +65,6 @@ exports.module = function (roleConfig) {
 
 
     router.post("/syncWithMesh", [roleConfig.allowSyncMesh], (req, res) => {
-        if (!config.autoSyncMesh) return res.status(401).send();
         elastic.syncWithMesh();
         res.send();
     });
