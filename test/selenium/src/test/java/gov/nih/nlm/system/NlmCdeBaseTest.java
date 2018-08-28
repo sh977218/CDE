@@ -646,7 +646,15 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     public void textPresent(String text, By by) {
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
+        ScheduledExecutorService bringToFrontExec = Executors.newSingleThreadScheduledExecutor();
+        bringToFrontExec.scheduleAtFixedRate(() -> {
+            ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        }, 3, 3, TimeUnit.SECONDS);
+        try {
+            wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
+        } finally {
+            bringToFrontExec.shutdown();
+        }
     }
 
     public void textPresent(String text) {
