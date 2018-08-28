@@ -2,7 +2,6 @@ const async = require('async');
 const request = require('request');
 
 const handleError = require('../log/dbLogger').handleError;
-const isOrgAuthorityMiddleware = require('../system/authorization').isOrgAuthorityMiddleware;
 
 const config = require('../system/parseConfig');
 const elastic = require('./elastic');
@@ -65,7 +64,8 @@ exports.module = function (roleConfig) {
     });
 
 
-    router.post("/syncWithMesh", [isOrgAuthorityMiddleware, roleConfig.allowSyncMesh], (req, res) => {
+    router.post("/syncWithMesh", [roleConfig.allowSyncMesh], (req, res) => {
+        if (!config.autoSyncMesh) return res.status(401).send();
         elastic.syncWithMesh();
         res.send();
     });

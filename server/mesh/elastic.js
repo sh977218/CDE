@@ -8,10 +8,6 @@ const dbLogger = require('../log/dbLogger.js');
 let esClient = new ElasticSearch.Client({
     hosts: config.elastic.hosts
 });
-exports.meshSyncStatus = {
-    dataelement: {done: 0},
-    form: {done: 0}
-};
 
 let searchTemplate = {
     cde: {

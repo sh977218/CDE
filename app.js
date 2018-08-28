@@ -246,10 +246,7 @@ try {
     app.use('/server/log', logModule);
 
     let meshModule = require("./server/mesh/meshRoutes").module({
-        allowSyncMesh: (req, res, next) => {
-            if (!config.autoSyncMesh) return res.status(401).send();
-            next();
-        }
+        allowSyncMesh: authorization.isOrgAuthorityMiddleware
     });
     app.use('/server/mesh', meshModule);
 
