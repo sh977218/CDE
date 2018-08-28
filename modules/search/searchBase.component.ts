@@ -195,13 +195,12 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     ngOnInit() {
         // TODO: remove OnInit when OnChanges inputs is implemented for Dynamic Components
         this.route.queryParams.subscribe(() => this.search());
-
         this.searchTermFC.valueChanges.subscribe(v => this.searchSettings.q = v);
 
         this.searchTermFC.valueChanges
             .pipe(debounceTime(500))
             .subscribe(term => {
-                term.length >= 3
+                term && term.length >= 3
                     ? this.http.post<ElasticQueryResponseHit[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
                         this.elasticService.buildElasticQuerySettings(this.searchSettings))
                         .pipe(
@@ -345,6 +344,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     doSearch() {
+        if (!this.embedded) {
+            this.searchSettings.page = 1;
+            this.redirect(this.generateSearchForTerm());
+        }
+        else this.reload();
+    }
+
+    doSearchWithPage() {
         if (!this.embedded) this.redirect(this.generateSearchForTerm());
         else this.reload();
     }
@@ -532,7 +539,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.alert.addAlert('danger', 'Invalid page: ' + this.goToPage);
             } else {
                 this.searchSettings.page = this.goToPage;
-                this.doSearch();
+                this.doSearchWithPage();
             }
         }
     }
@@ -737,7 +744,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     search() {
         // TODO: replace with router
         let params = SearchBaseComponent.searchParamsGet();
-        this.searchSettings.q = params['q'];
+        if (params['q']) this.searchSettings.q = params['q'];
+        else this.searchTermFC.reset();
         this.searchSettings.page = parseInt(params['page']);
         if (!this.searchSettings.page) this.searchSettings.page = 1;
         this.searchSettings.selectedOrg = params['selectedOrg'];
