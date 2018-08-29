@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.mesh;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -15,7 +16,6 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.id("user_classifications"));
         clickElement(By.xpath(getOrgClassificationIconXpath("meshMapping", new String[]{"Disease"})));
-        findElement(By.id("mapClassificationMeshInput")).clear();
         findElement(By.id("mapClassificationMeshInput")).sendKeys("NINDS");
         textPresent("National Institute of Neurological Disorders and Stroke");
         clickElement(By.id("addMeshDescButton"));
@@ -53,6 +53,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.id("topic-United States Government Agencies"));
         clickElement(By.id("topic-United States Dept. of Health and Human Services"));
         clickElement(By.id("topic-United States Public Health Service"));
+        hangon(1);
         clickElement(By.id("topic-National Institutes of Health (U.S.)"));
         textPresent("National Institute of Neurological Disorders and Stroke");
         checkSearchResultInfo("All Terms", "All Classifications", null, "Health Care > Health Care Economics and Organizat...", "All Statuses", null);

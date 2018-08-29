@@ -2,7 +2,7 @@
     <div class="card-header" (click)="clickHeader(board);">
         <mat-icon *ngIf="board.shareStatus ==='Public'">public</mat-icon>
         <mat-icon *ngIf="board.shareStatus ==='Private'">lock</mat-icon>
-        <a *ngIf="headerLink" href="/board/{{board._id}}" target="_blank"> {{board.name}}</a>
+        <a *ngIf="headerLink" [routerLink]="'/board/' + board._id"> {{board.name}}</a>
         <ng-container *ngIf="!headerLink">{{board.name}}</ng-container>
         <div class="float-right" *ngIf="canEdit">
             <mat-icon class="editBoard" (click)="openEditBoardModal();">edit</mat-icon>
