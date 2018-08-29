@@ -74,7 +74,7 @@ public class MyForm {
         diseaseNameMap.put("Chiari I Malformation", "Chiari I Malformation");
     }
 
-    public MyForm() {
+    MyForm() {
     }
 
     public Date getCreateDate() {

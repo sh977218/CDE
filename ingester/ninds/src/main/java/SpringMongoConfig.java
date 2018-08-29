@@ -6,21 +6,17 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
 @Configuration
-public class SpringMongoConfig {
+class SpringMongoConfig {
 
-    public
     @Bean
-    MongoDbFactory mongoDbFactory() throws Exception {
+    protected MongoDbFactory mongoDbFactory() throws Exception {
         return new SimpleMongoDbFactory(new MongoClientURI(MyConstants.MONGO_URL));
     }
 
-    public
     @Bean
-    MongoTemplate mongoTemplate() throws Exception {
+    protected MongoTemplate mongoTemplate() throws Exception {
 
-        MongoTemplate mongoTemplate = new MongoTemplate(mongoDbFactory());
-
-        return mongoTemplate;
+        return new MongoTemplate(mongoDbFactory());
 
     }
 }

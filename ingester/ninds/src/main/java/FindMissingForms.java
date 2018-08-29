@@ -14,22 +14,21 @@ import java.util.Date;
 import java.util.List;
 
 public class FindMissingForms implements Runnable {
-    MongoOperations mongoOperation;
-    WebDriver driver;
-    WebDriverWait wait;
-    String url;
-    MyLog log = new MyLog();
-    CDEUtility cdeUtility = new CDEUtility();
-    String diseaseName;
-    ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+    private MongoOperations mongoOperation;
+    private WebDriver driver;
+    private WebDriverWait wait;
+    private String url;
+    private MyLog log = new MyLog();
+    private CDEUtility cdeUtility = new CDEUtility();
+    private String diseaseName;
 
     FindMissingForms(String url) {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         this.url = url;
+        ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
         this.mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
     }
 
-    @Override
     public void run() {
         System.out.println("start url: " + url);
         driver = new ChromeDriver();
@@ -47,18 +46,19 @@ public class FindMissingForms implements Runnable {
     }
 
 
-    public void goToSite(String url) {
+    private void goToSite(String url) {
         driver.get(url);
         String diseaseNameOuterXPath = "//*[@id=\"bcrumbTab\"]/following-sibling::h2[1]";
         String diseaseNameInnerXPath = "//*[@id=\"bcrumbTab\"]/following-sibling::h2[1]/p";
         List<WebElement> diseaseNameOuterList = driver.findElements(By.xpath(diseaseNameOuterXPath));
         List<WebElement> diseaseNameInnerList = driver.findElements(By.xpath(diseaseNameInnerXPath));
+        String diseaseNameOuter;
         if (diseaseNameOuterList.size() == 1 && diseaseNameInnerList.size() == 1) {
-            String diseaseNameOuter = diseaseNameOuterList.get(0).getText();
+            diseaseNameOuter = diseaseNameOuterList.get(0).getText();
             String diseaseNameInner = diseaseNameInnerList.get(0).getText();
             this.diseaseName = diseaseNameOuter.replace(diseaseNameInner, "").trim();
         } else if (diseaseNameOuterList.size() == 1 && diseaseNameInnerList.size() == 0) {
-            String diseaseNameOuter = diseaseNameOuterList.get(0).getText();
+            diseaseNameOuter = diseaseNameOuterList.get(0).getText();
             this.diseaseName = diseaseNameOuter;
         } else {
             System.out.println("cannot find disease on the page. url:" + this.url);
@@ -167,9 +167,8 @@ public class FindMissingForms implements Runnable {
     }
 
 
-    boolean textPresent(String text) {
+    private void textPresent(String text) {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
-        return true;
     }
 
     private void hangon(double i) {

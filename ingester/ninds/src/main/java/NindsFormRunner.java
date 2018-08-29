@@ -1,10 +1,8 @@
-import java.awt.*;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class NindsFormRunner {
-    public static void main(String[] args) throws IOException, AWTException {
+    public static void main(String[] args) {
         int nbOfThread = 1;
         int startingPage = 1;
         int endingPages = 40;
@@ -16,8 +14,6 @@ public class NindsFormRunner {
             executor1.execute(worker);
         }
         executor1.shutdown();
-        while (!executor1.isTerminated()) {
-        }
         System.out.println("Finished all forms. from " + startingPage + " to " + endingPages);
 
 

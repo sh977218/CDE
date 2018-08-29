@@ -12,8 +12,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 
-import java.awt.*;
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,22 +23,20 @@ public class NindsFormLoader implements Runnable {
     private WebDriver classificationDriver;
     private WebDriverWait wait;
     private int page;
-    MyLog log;
+    private MyLog log;
     private CDEUtility cdeUtility;
-    ApplicationContext ctx;
     private Map<String, Integer> formTableHeader = new HashMap<String, Integer>();
 
-    public NindsFormLoader(int p) throws IOException, AWTException {
+    NindsFormLoader(int p) {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         this.page = p;
-        ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+        ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
         this.mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
         log = new MyLog();
         this.log.setPageStart(this.page);
         cdeUtility = new CDEUtility();
     }
 
-    @Override
     public void run() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
@@ -208,7 +204,7 @@ public class NindsFormLoader implements Runnable {
         int cdesTotalPage = Integer.valueOf(cdesTotalPageStr);
         if (cdesTotalPage > 1) {
             for (int j = 1; j < cdesTotalPage; j++) {
-                //if (j == 5) refreshSession();
+                if (j == 5) refreshSession();
                 findElement(By.xpath("//*[ @id=\"viewer_ctl01_ctl01_ctl05_ctl00\"]/tbody/tr/td/input")).click();
                 String temp = "Page " + (j + 1) + " of " + cdesTotalPage;
                 textPresent(temp);
@@ -226,14 +222,13 @@ public class NindsFormLoader implements Runnable {
     }
 
 
-    private boolean textPresent(String text) {
+    private void textPresent(String text) {
         try {
             wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
         } catch (Exception e) {
             System.out.println("tried finding '" + text + "' once fail. try another. pageStart :" + page);
             wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
         }
-        return true;
     }
 
     private void hangon(double i) {
