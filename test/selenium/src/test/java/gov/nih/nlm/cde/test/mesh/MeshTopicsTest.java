@@ -16,9 +16,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.id("user_classifications"));
         clickElement(By.xpath(getOrgClassificationIconXpath("meshMapping", new String[]{"Disease"})));
-        findElement(By.id("mapClassificationMeshInput")).clear();
         findElement(By.id("mapClassificationMeshInput")).sendKeys("NINDS");
-        findElement(By.id("mapClassificationMeshInput")).sendKeys(Keys.TAB);
         textPresent("National Institute of Neurological Disorders and Stroke");
         clickElement(By.id("addMeshDescButton"));
         clickElement(By.id("cancelMapClassificationMeshBtn"));
