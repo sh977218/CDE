@@ -15,7 +15,7 @@ public final class Constants {
     public static final int TOTAL_RECORD = 3966;
     public static final String URL = "https://commondataelements.ninds.nih.gov/CRF.aspx";
 
-    public static String MONGO_URL = "mongodb://cdeuser:password@localhost:27017/migration";
+    public static String MONGO_URL = "mongodb://cdeuser:password@localhost:27017/test";
 
     static {
         Map<String, String> aMap = new HashMap<String, String>();

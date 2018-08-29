@@ -9,7 +9,7 @@ public class NindsFormRunner {
     public static void main(String[] args) throws IOException, AWTException {
         int nbOfThread = 1;
         int startingPage = 1;
-        int endingPages = 2;
+        int endingPages = 1;
 //        int endingPages = Constants.TOTAL_PAGE;
 
 
