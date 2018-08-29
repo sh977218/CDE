@@ -3,7 +3,6 @@ import { ErrorHandler, Injectable } from '@angular/core';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { findQuestionByTinyId } from 'shared/form/formShared';
 
-CDEUtility
 @Injectable()
 export class SkipLogicService {
     constructor(private errorHandler: ErrorHandler) {
