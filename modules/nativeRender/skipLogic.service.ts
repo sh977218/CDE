@@ -1,7 +1,7 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
-import { findQuestionByTinyId, score } from 'shared/form/formShared';
+import { findQuestionByTinyId } from 'shared/form/formShared';
 
 
 @Injectable()
