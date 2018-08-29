@@ -23,8 +23,8 @@ public class NindsFormLoader implements Runnable {
     private WebDriver classificationDriver;
     private WebDriverWait wait;
     private int page;
-    private MyLog log;
-    private CDEUtility cdeUtility;
+    private MyLog log = new MyLog();
+    private CDEUtility cdeUtility = new CDEUtility();
     private Map<String, Integer> formTableHeader = new HashMap<String, Integer>();
 
     NindsFormLoader(int p) {
@@ -32,16 +32,12 @@ public class NindsFormLoader implements Runnable {
         this.page = p;
         ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
         this.mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
-        log = new MyLog();
         this.log.setPageStart(this.page);
-        cdeUtility = new CDEUtility();
     }
 
     public void run() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
-        DesiredCapabilities caps = DesiredCapabilities.chrome();
-        caps.setCapability(ChromeOptions.CAPABILITY, options);
         this.driver = new ChromeDriver(options);
         this.classificationDriver = new ChromeDriver(options);
         this.wait = new WebDriverWait(driver, 120);
