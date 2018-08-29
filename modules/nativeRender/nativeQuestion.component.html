@@ -2,8 +2,10 @@
     <fieldset>
         <legend class="native-question-label"></legend>
         <ng-template #labelClause>
-            <ng-container *ngIf="parentValue">If {{parentValue}}: </ng-container>{{formElement.label}}
-            <ng-container *ngIf="nrs.profile.metadata.device && !metadataTagsNew && (!formElement.metadataTags || !formElement.metadataTags.length)">
+            <ng-container *ngIf="parentValue">If {{parentValue}}:</ng-container>
+            {{formElement.label}}
+            <ng-container
+                    *ngIf="nrs.profile.metadata.device && !metadataTagsNew && (!formElement.metadataTags || !formElement.metadataTags.length)">
                 <ng-container *ngTemplateOutlet="metadataAddButton"></ng-container>
             </ng-container>
         </ng-template>
@@ -31,11 +33,16 @@
             </ng-template>
         </div>
         <div attr.id="{{formElement.label}}_{{formElement.feId}}" [ngClass]="{'native-box': hasHeading(formElement)}">
-            <ng-template #scoreDisplay>Score: {{score(formElement, nrs.vm)}}</ng-template>
+            <ng-template #scoreDisplay>Score:
+                <ng-container *ngIf="sls.calculateScore(formElement, nrs.vm).score">{{sls.calculateScore(formElement, nrs.vm).score}}
+                </ng-container>
+                {{sls.calculateScore(formElement, nrs.vm).error}}
+            </ng-template>
             <ng-container *ngIf="!formElement.question.isScore; else scoreDisplay">
                 <ng-container [ngSwitch]="formElement.question.datatype">
                     <ng-container *ngSwitchCase="'Value List'">
-                        <ng-container *ngIf="nrs.nativeRenderType !== 'Dynamic' || nrs.profile?.answerDropdownLimit <= 0 || nrs.profile.answerDropdownLimit >= formElement.question?.answers.length; else dropdownValueList">
+                        <ng-container
+                                *ngIf="nrs.nativeRenderType !== 'Dynamic' || nrs.profile?.answerDropdownLimit <= 0 || nrs.profile.answerDropdownLimit >= formElement.question?.answers.length; else dropdownValueList">
                             <div class="row">
                                 <div *ngFor="let pv of formElement.question.answers; index as i"
                                      [ngClass]="classColumns(pv.index, i)" class="col-12">
