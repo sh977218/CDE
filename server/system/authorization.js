@@ -63,6 +63,14 @@ exports.isSiteAdminMiddleware = (req, res, next) => {
     next();
 };
 
+exports.isOrgAuthorityMiddleware = (req, res, next) => {
+    if (!authorizationShared.canOrgAuthority(req.user)) {
+        res.status(401).send();
+        return;
+    }
+    next();
+};
+
 exports.loggedInMiddleware = function (req, res, next) {
     if (!req.isAuthenticated()) {
         res.status(401).send();
