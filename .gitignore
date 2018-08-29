@@ -30,6 +30,7 @@ ingester/ninds/ingesters/build/
 ingester/ninds/ingesters/gradle/
 ingester/ninds/ingesters/src/main/resources/
 ingester/ninds/ingesters/src/test/
+ingester/ninds/target/
 ingester/src/
 
 ## Local Files
