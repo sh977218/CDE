@@ -24,7 +24,7 @@ public class PinCdesIntoBoardTest extends BoardTest {
 
         goToCdeByName(cdeName);
         clickElement(By.id("addToBoard"));
-        textPresent("Choose a Board to pin this element to");
+        textPresent("Choose a Board to pin this CDE to");
         clickBoardHeaderByName(boardName2);
         checkAlert("Added to Board");
 
