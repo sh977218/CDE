@@ -30,7 +30,7 @@ const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRule
 const gfs = Grid(conn.db, mongoose.mongo);
 const sessionStore = new MongoStore({
     mongooseConnection: conn,
-    touchAfter: 3600
+    touchAfter: 60
 });
 
 

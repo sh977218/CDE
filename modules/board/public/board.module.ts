@@ -25,6 +25,7 @@ import { WidgetModule } from "widget/widget.module";
         FormsModule,
         NgbModule,
         NgSelectModule,
+        RouterModule,
         MatButtonToggleModule,
         MatIconModule,
         MatInputModule,

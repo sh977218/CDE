@@ -16,8 +16,7 @@ public class NewSiteVersion extends NlmCdeBaseTest {
                 (By.id("notifications")));
 
         post(baseUrl + "/site-version");
-        // wait 20 seconds for pull to work
-        hangon(20);
+        goToFormSearch();
         clickElement(By.id("notifications"));
         textPresent("A new version of this site is available");
     }

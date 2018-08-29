@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
 import { isSiteAdmin } from 'shared/system/authorizationShared';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
     selector: 'cde-notifications',
@@ -31,18 +32,22 @@ export class NotificationsComponent {
 
     constructor(private http: HttpClient,
                 private userService: UserService,
-                private alert: AlertService) {
-        setInterval(async () => {
-            try {
-                const latestVersion = await this.http.get("/site-version", {responseType: 'text'}).toPromise();
-                if (latestVersion !== this.currentVersion) {
-                    this.numberVersionError++;
+                private alert: AlertService,
+                private router: Router) {
+
+        this.router.events.subscribe(async (event) => {
+            if (event instanceof NavigationEnd) {
+                try {
+                    const latestVersion = await this.http.get("/site-version", {responseType: 'text'}).toPromise();
+                    if (latestVersion !== this.currentVersion) {
+                        this.numberVersionError++;
+                    }
+                } catch (e) {
+                    this.alert.addAlert('danger', e);
                 }
-            } catch (e) {
-                this.alert.addAlert('danger', e);
+                if (isSiteAdmin(this.userService.user)) this.getNotifications();
             }
-            if (isSiteAdmin(this.userService.user)) this.getNotifications();
-        }, (window as any).versionCheckIntervalInSeconds * 1000);
+        });
     }
 
     getNotifications() {

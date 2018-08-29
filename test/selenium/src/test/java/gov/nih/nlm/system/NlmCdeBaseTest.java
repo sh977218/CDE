@@ -646,7 +646,15 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     public void textPresent(String text, By by) {
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
+        ScheduledExecutorService bringToFrontExec = Executors.newSingleThreadScheduledExecutor();
+        bringToFrontExec.scheduleAtFixedRate(() -> {
+            ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        }, 3, 3, TimeUnit.SECONDS);
+        try {
+            wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
+        } finally {
+            bringToFrontExec.shutdown();
+        }
     }
 
     public void textPresent(String text) {
@@ -1681,24 +1689,34 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         isCommentOrReplyExists(message, false);
     }
 
+    private void assertClass(By by, String className, boolean contains) {
+        for (Integer i = 0; i < 10; i++) {
+            WebElement we = findElement(by);
+            try {
+                Assert.assertEquals(contains, we.getAttribute("class").contains(className));
+                break;
+            } catch (Exception e) {
+                if (i == 9) Assert.fail("Could not find class: " + className + ". Actual: " + we.getAttribute("class"));
+                hangon(1);
+            }
+            }
+        }
+
     protected void resolveComment(String message) {
         goToDiscussArea();
         String xpath = getCommentIconXpath(message, "comment", "resolve");
         clickElement(By.xpath(xpath));
         isCommentOrReplyExists(message, true);
-        WebElement we = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
-        Assert.assertEquals(true, we.getAttribute("class").contains("strike"));
+        assertClass(By.xpath("//div[normalize-space()='" + message + "']/span"), "strike", true);
     }
 
     protected void reopenComment(String message) {
         goToDiscussArea();
-        WebElement weResolved = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
-        Assert.assertEquals(weResolved.getAttribute("class").contains("strike"), true);
+        assertClass(By.xpath("//div[normalize-space()='" + message + "']/span"), "strike", true);
         String xpath = getCommentIconXpath(message, "comment", "reopen");
         clickElement(By.xpath(xpath));
         isCommentOrReplyExists(message, true);
-        WebElement weReopened = findElement(By.xpath("//div[normalize-space()='" + message + "']/span"));
-        Assert.assertEquals(weReopened.getAttribute("class").contains("strike"), false);
+        assertClass(By.xpath("//div[normalize-space()='" + message + "']/span"), "strike", false);
     }
 
     private Map<String, String> COMMENT_Title_Case_MAP = new HashMap<String, String>() {
