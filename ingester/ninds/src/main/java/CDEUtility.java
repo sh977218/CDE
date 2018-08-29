@@ -1,3 +1,5 @@
+import org.bson.Document;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -13,12 +15,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CDEUtility {
-    public CDEUtility() {
-    }
 
     public void checkDataQuality(MongoOperations mongoOperation) {
         List dataTypeList = new LinkedList();
-        MongoCursor<String> dataTypeCursor = mongoOperation.getCollection("ninds").distinct("cdes.dataType", String.class);
+        MongoCollection<Document> nindsCollection = mongoOperation.getCollection("ninds");
+        MongoCursor<String> dataTypeCursor = nindsCollection.distinct("cdes.dataType", String.class).iterator();
         while (dataTypeCursor.hasNext()) {
             dataTypeList.add(dataTypeCursor.next());
         }
@@ -27,13 +28,21 @@ public class CDEUtility {
             System.out.println(Arrays.toString(dataTypeList.toArray()));
             System.exit(1);
         }
-        List inputRestrictionsList = mongoOperation.getCollection("ninds").distinct("cdes.inputRestrictions");
+        List inputRestrictionsList = new LinkedList();
+        MongoCursor<String> inputRestrictionCursor = nindsCollection.distinct("cdes.inputRestrictions", String.class).iterator();
+        while (inputRestrictionCursor.hasNext()) {
+            inputRestrictionsList.add(inputRestrictionCursor.next());
+        }
         if (inputRestrictionsList.size() > MyConstants.MAX_INPUT_RESTRICTIONS_SIZE) {
             System.out.println("inputRestrictionsList is not good. size: " + inputRestrictionsList.size());
             System.out.println(Arrays.toString(inputRestrictionsList.toArray()));
             System.exit(1);
         }
-        List distinctDiseaseNameList = mongoOperation.getCollection("ninds").distinct("diseaseName");
+        List distinctDiseaseNameList = new LinkedList();
+        MongoCursor<String> distinctDiseaseNameCursor = nindsCollection.distinct("diseaseName", String.class).iterator();
+        while (distinctDiseaseNameCursor.hasNext()) {
+            distinctDiseaseNameList.add(distinctDiseaseNameCursor.next());
+        }
         if (distinctDiseaseNameList.size() > MyConstants.DISEASE_NUM) {
             System.out.println("distinct diseaseName is not good. size: ");
             System.out.println(Arrays.toString(distinctDiseaseNameList.toArray()));
