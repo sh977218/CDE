@@ -10,6 +10,7 @@ import {
 import { addFormIds, iterateFeSync } from 'shared/form/formShared';
 import { getShowIfQ } from 'shared/form/skipLogic';
 import { FormService } from 'nativeRender/form.service';
+import { HttpClient } from '@angular/common/http';
 
 type SkipLogicOperators = '=' | '!=' | '>' | '<' | '>=' | '<=';
 
@@ -30,7 +31,9 @@ export class NativeRenderService {
     submitForm?: boolean;
     vm: any;
 
-    constructor(public skipLogicService: SkipLogicService) {}
+    constructor(private http: HttpClient,
+                public skipLogicService: SkipLogicService) {
+    }
 
     eltSet(elt) {
         if (elt !== this.elt) {
@@ -164,9 +167,11 @@ export class NativeRenderService {
     addError(msg: string) {
         if (this.errors.indexOf(msg) === -1) this.errors.push(msg);
     }
+
     hasErrors() {
         return !!this.errors.length;
     }
+
     getErrors() {
         return this.errors;
     }
@@ -184,6 +189,7 @@ export class NativeRenderService {
             }
         }
     }
+
     checkboxIsChecked(model: Question, value: any) {
         if (!Array.isArray(model.answer)) model.answer = [];
         return (model.answer.indexOf(value) !== -1);
@@ -240,6 +246,7 @@ export class NativeRenderService {
                         let value = substitution++;
                         return value ? '_fake' + value : '';
                     }
+
                     if (parentQ.question.datatype === 'Value List') {
                         if (match[3] === "") {
                             parentQ.question.answers.push({
@@ -286,7 +293,7 @@ export class NativeRenderService {
             // Post-Transform Processing
             if ((fe.elementType === 'section' || fe.elementType === 'form')
                 && NativeRenderService.transformFormToInline(fe)) {
-                    (fe as FormSectionOrForm).forbidMatrix = true;
+                (fe as FormSectionOrForm).forbidMatrix = true;
             }
             if (fe.skipLogic) fe.skipLogic = undefined;
         }
@@ -357,8 +364,9 @@ export class NativeRenderService {
     }
 
     static flattenForm(elt: CdeForm) {
-        type QuestionStruct = {question: string, name: string, ids: CdeId[], tinyId: string, answerUom?: CodeAndSystem};
-        type SectionQuestions = {section: string, questions: QuestionStruct[]};
+        type QuestionStruct = { question: string, name: string, ids: CdeId[], tinyId: string, answerUom?: CodeAndSystem };
+        type SectionQuestions = { section: string, questions: QuestionStruct[] };
+
         function isSectionQuestions(a: SectionQuestions | QuestionStruct): a is SectionQuestions {
             return a.hasOwnProperty('section');
         }
@@ -382,6 +390,7 @@ export class NativeRenderService {
                 }
                 return questions;
             }
+
             let repeats = NativeRenderService.getRepeatNumber(fe);
             let repeatSection: SectionQuestions[] = [];
             let questions: QuestionStruct[] = [];
@@ -472,5 +481,21 @@ export class NativeRenderService {
             }
         }
         return 1;
+    }
+
+
+    // cb(error, number)
+    convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb) {
+        if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
+            this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit.code) + '&to='
+                + encodeURIComponent(toUnit.code)).subscribe(v => cb(undefined, v), e => cb(e));
+        } else {
+            cb(undefined, value); // no conversion for other systems
+        }
+    }
+
+    convertUnitsPromise(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem) {
+        return this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit.code) + '&to='
+            + encodeURIComponent(toUnit.code)).toPromise();
     }
 }

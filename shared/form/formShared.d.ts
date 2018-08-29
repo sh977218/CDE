@@ -48,5 +48,4 @@ declare function noopSkipIterCb(_: FormElement, cb: continueCb): void;
 declare function noopSkipSync(_: FormElement, pass?: any, options?: IterateOptionsSync): any;
 declare function noopSync(_: FormElement, pass: any): any;
 declare function questionAnswered(q: FormQuestion): boolean;
-declare function score(question: FormQuestion, elt: FormElementsContainer): any; // returns number for success and string for failure
 declare function trimWholeForm(elt: CdeForm): void;

@@ -5,7 +5,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CodeAndSystem } from 'shared/models.model';
 import { FormQuestion } from 'shared/form/form.model';
-import { score } from 'shared/form/formShared';
+import { SkipLogicService } from 'nativeRender/skipLogic.service';
 
 @Component({
     selector: 'cde-native-question',
@@ -20,17 +20,16 @@ export class NativeQuestionComponent implements OnInit {
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
     metadataTagsNew: string;
     previousUom: CodeAndSystem;
-    // static readonly reHasTime = /[hHmsSkaAZ]/;
-    score = score;
 
-    ngOnInit () {
+    // static readonly reHasTime = /[hHmsSkaAZ]/;
+
+    ngOnInit() {
         this.previousUom = this.formElement.question.answerUom;
     }
 
-    constructor(
-        private http: HttpClient,
-        public nrs: NativeRenderService
-    ) {}
+    constructor(public sls: SkipLogicService,
+                public nrs: NativeRenderService) {
+    }
 
     classColumns(pvIndex, index) {
         let result = "";
@@ -68,7 +67,7 @@ export class NativeQuestionComponent implements OnInit {
 
             if (typeof(value) === 'number' && !isNaN(value)) {
                 let unit = this.formElement.question.answerUom;
-                this.convertUnits(value, this.previousUom, this.formElement.question.answerUom, (error, result) => {
+                this.nrs.convertUnits(value, this.previousUom, this.formElement.question.answerUom, (error, result) => {
                     if (!error && result !== undefined && !isNaN(result) && unit === this.formElement.question.answerUom) {
                         this.formElement.question.answer = result;
                     }
@@ -78,15 +77,6 @@ export class NativeQuestionComponent implements OnInit {
         this.previousUom = this.formElement.question.answerUom;
     }
 
-    // cb(error, number)
-    convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb) {
-        if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
-            this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit.code) + '&to='
-                + encodeURIComponent(toUnit.code)).subscribe(v => cb(undefined, v), e => cb(e));
-        } else {
-            cb(undefined, value); // no conversion for other systems
-        }
-    }
 
     hasHeading(q: FormQuestion): boolean {
         return this.hasLabel(q) || q.instructions && !!q.instructions.value;
