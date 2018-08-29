@@ -3,7 +3,6 @@ package gov.nih.nlm.ninds.form;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -176,7 +175,11 @@ public class FindMissingForms implements Runnable {
     }
 
     private void hangon(double i) {
-        Sleeper.sleepTight((long) (i * 1000));
+        try {
+            Thread.sleep((long) (i * 1000));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 

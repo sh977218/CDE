@@ -1,5 +1,4 @@
-package gov.nih.nlm.ninds.form;
-
+import com.mongodb.client.MongoCursor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class CDEUtility {
@@ -17,7 +17,11 @@ public class CDEUtility {
     }
 
     public void checkDataQuality(MongoOperations mongoOperation) {
-        List dataTypeList = mongoOperation.getCollection("ninds").distinct("cdes.dataType");
+        List dataTypeList = new LinkedList();
+        MongoCursor<String> dataTypeCursor = mongoOperation.getCollection("ninds").distinct("cdes.dataType", String.class);
+        while (dataTypeCursor.hasNext()) {
+            dataTypeList.add(dataTypeCursor.next());
+        }
         if (dataTypeList.size() > MyConstants.MAX_DATATYPE_SIZE) {
             System.out.println("data type is not good. size: " + dataTypeList.size());
             System.out.println(Arrays.toString(dataTypeList.toArray()));

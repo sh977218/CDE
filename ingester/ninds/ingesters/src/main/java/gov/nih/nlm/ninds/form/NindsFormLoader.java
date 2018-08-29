@@ -68,7 +68,7 @@ public class NindsFormLoader implements Runnable {
 
 
     private void goToNindsSiteAndGoToPageOf(int page) {
-        driver.get(Constants.URL);
+        driver.get(MyConstants.URL);
         textPresent("If you have difficulty accessing either the proprietary instruments/scales or the external links, please contact the NINDS");
         hangon(10);
         Select pageSizeSelect = new Select(findElement(By.id("ddlPageSize")));
@@ -78,32 +78,32 @@ public class NindsFormLoader implements Runnable {
         hangon(5);
         findElement(By.id("ContentPlaceHolder1_btnSearch")).click();
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", findElement(By.id("ContentPlaceHolder1_btnClear")));
-        textPresent(Constants.TOTAL_RECORD + " items found.");
+        textPresent(MyConstants.TOTAL_RECORD + " items found.");
         if (page > 15) {
             hangon(10);
             findElement(By.id("ContentPlaceHolder1_lbtnLast")).click();
-            textPresent("Page: " + Constants.TOTAL_PAGE + " of " + Constants.TOTAL_PAGE);
+            textPresent("Page: " + MyConstants.TOTAL_PAGE + " of " + MyConstants.TOTAL_PAGE);
             goToPageFromLast(page);
         } else {
             for (int i = 1; i < page; i++) {
                 hangon(10);
                 findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
-                textPresent("Page: " + i + " of " + Constants.TOTAL_PAGE);
+                textPresent("Page: " + i + " of " + MyConstants.TOTAL_PAGE);
             }
         }
     }
 
     private void goToPageFromLast(int pageStart) {
-        for (int n = Constants.TOTAL_PAGE; n > pageStart; n--) {
+        for (int n = MyConstants.TOTAL_PAGE; n > pageStart; n--) {
             findElement(By.id("ContentPlaceHolder1_lbtnPrev")).click();
             int num = n - 1;
-            String s = "Page: " + num + " of " + Constants.TOTAL_PAGE;
+            String s = "Page: " + num + " of " + MyConstants.TOTAL_PAGE;
             textPresent(s);
         }
     }
 
     private void findAndSaveToForms(int pageStart) {
-        String textToBePresent = "Page: " + String.valueOf(pageStart) + " of " + Constants.TOTAL_PAGE;
+        String textToBePresent = "Page: " + String.valueOf(pageStart) + " of " + MyConstants.TOTAL_PAGE;
         textPresent(textToBePresent);
         hangon(5);
         List<WebElement> trs = driver.findElements(By.xpath("//*[@id='ContentPlaceHolder1_dgCRF']/tbody/tr"));
@@ -121,7 +121,7 @@ public class NindsFormLoader implements Runnable {
 
     private void getDomainAndSubDomain(MyForm form) {
         String formId = form.getFormId().trim();
-        classificationDriver.get("https://commondataelements.ninds.nih.gov/" + Constants.DISEASE_MAP.get(form.getDiseaseName()));
+        classificationDriver.get("https://commondataelements.ninds.nih.gov/" + MyConstants.DISEASE_MAP.get(form.getDiseaseName()));
         String subDomianSelector = "//*[@title=\"" + formId + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
         String domianSelector = "//*[@title=\"" + formId + "\"]/ancestor::table/preceding-sibling::a[1]";
         String domianSelector1 = "//*[@title=\"" + formId + "\"]/ancestor::table/preceding-sibling::h3[1]/a";

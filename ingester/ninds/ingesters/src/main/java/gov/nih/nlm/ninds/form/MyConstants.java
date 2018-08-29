@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class Constants {
+public final class MyConstants {
 
     public static final Map<String, String> DISEASE_MAP;
     public static final Map<String, String> FIELD_PROPERTY_MAP;
@@ -81,7 +81,7 @@ public final class Constants {
         FIELD_PROPERTY_MAP = Collections.unmodifiableMap(aMap);
     }
 
-    private Constants() {
+    private MyConstants() {
         throw new AssertionError();
     }
 }
