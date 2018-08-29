@@ -53,6 +53,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.id("topic-United States Government Agencies"));
         clickElement(By.id("topic-United States Dept. of Health and Human Services"));
         clickElement(By.id("topic-United States Public Health Service"));
+        hangon(1);
         clickElement(By.id("topic-National Institutes of Health (U.S.)"));
         textPresent("National Institute of Neurological Disorders and Stroke");
         checkSearchResultInfo("All Terms", "All Classifications", null, "Health Care > Health Care Economics and Organizat...", "All Statuses", null);
