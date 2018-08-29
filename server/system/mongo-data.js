@@ -22,7 +22,6 @@ const FhirApps = conn.model('FhirApp', schemas.fhirAppSchema);
 const FhirObservationInfo = conn.model('FhirObservationInfo', schemas.fhirObservationInformationSchema);
 const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 const Message = conn.model('Message', schemas.message);
-const MeshClassification = conn.model('meshClassification', schemas.meshClassification);
 const Org = conn.model('Org', schemas.orgSchema);
 const PushRegistration = conn.model('PushRegistration', schemas.pushRegistration);
 const User = require('../user/userDb').User;
@@ -31,7 +30,7 @@ const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRule
 const gfs = Grid(conn.db, mongoose.mongo);
 const sessionStore = new MongoStore({
     mongooseConnection: conn,
-    touchAfter: 3600
+    touchAfter: 60
 });
 
 
@@ -62,7 +61,6 @@ exports.FhirApps = FhirApps;
 exports.FhirObservationInfo = FhirObservationInfo;
 exports.Org = Org;
 exports.User = User;
-exports.MeshClassification = MeshClassification;
 exports.JobQueue = JobQueue;
 
 var fs_files = conn.model('fs_files', schemas.fs_files);
@@ -89,10 +87,6 @@ exports.getClusterHostStatuses = callback => {
 exports.updateClusterHostStatus = (status, callback) => {
     status.lastUpdate = new Date();
     ClusterStatus.update({port: status.port, hostname: status.hostname}, status, {upsert: true}, callback);
-};
-
-exports.findMeshClassification = (query, callback) => {
-    MeshClassification.find(query, callback);
 };
 
 

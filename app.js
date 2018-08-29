@@ -83,7 +83,7 @@ const expressSettings = {
     proxy: config.proxy,
     resave: false,
     saveUninitialized: false,
-    cookie: {httpOnly: true, secure: config.proxy}
+    cookie: {httpOnly: true, secure: config.proxy, maxAge: 59 * 60000}
 };
 
 let getRealIp = function (req) {
@@ -244,6 +244,15 @@ try {
         superLog: [authorization.isSiteAdminMiddleware]
     });
     app.use('/server/log', logModule);
+
+    let meshModule = require("./server/mesh/meshRoutes").module({
+        allowSyncMesh: (req, res, next) => {
+            if (!config.autoSyncMesh && !authorizationShared.canOrgAuthority(req.user))
+                return res.status(401).send();
+            next();
+        }
+    });
+    app.use('/server/mesh', meshModule);
 
     require(path.join(__dirname, './server/cde/app.js')).init(app, daoManager);
 

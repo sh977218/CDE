@@ -466,42 +466,6 @@ export function questionAnswered(q) {
         && !(Array.isArray(q.question.answer) && q.question.answer.length === 0);
 }
 
-export function score(question, elt) {
-    if (!question.question.isScore) {
-        return;
-    }
-    let result = 0;
-    question.question.cde.derivationRules.forEach(function (derRule) {
-        if (derRule.ruleType === 'score') {
-            if (derRule.formula === 'sumAll' || derRule.formula === 'mean') {
-                derRule.inputs.forEach(function (cdeTinyId) {
-                    let q = findQuestionByTinyId(cdeTinyId, elt);
-                    if (isNaN(result)) {
-                        return;
-                    }
-                    if (q) {
-                        let answer = q.question.answer;
-                        if (typeof(answer) === "undefined" || answer === null) {
-                            result = 'Incomplete answers';
-                        } else if (isNaN(answer)) {
-                            result = 'Unable to score';
-                        } else {
-                            result = result + parseFloat(answer);
-                        }
-                    }
-                });
-            }
-            if (derRule.formula === 'mean') {
-                if (!isNaN(result)) {
-                    result = result / derRule.inputs.length;
-                }
-            }
-        }
-    });
-    return result;
-}
-
-
 export function iterateFormElements(fe = {}, option = {}, cb = undefined) {
     if (!fe.formElements) fe.formElements = [];
     if (!Array.isArray(fe.formElements)) {
