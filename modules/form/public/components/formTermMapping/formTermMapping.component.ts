@@ -17,14 +17,14 @@ import { ElasticQueryResponse } from 'shared/models.model';
 export class FormTermMappingComponent implements OnInit {
     @Input() elt: any;
     @ViewChild('newTermMap') public newTermMap: NgbModalModule;
-    descriptor: {name: string, id: string};
+    descriptor: { name: string, id: string };
     descToName: any = {};
     flatMeshSimpleTrees: any[] = [];
     mapping: any = {meshDescriptors: []};
     meshTerm: string;
     private searchTerms = new Subject<string>();
 
-    ngOnInit () {
+    ngOnInit() {
         this.searchTerms.pipe(
             debounceTime(300),
             distinctUntilChanged(),
@@ -45,18 +45,17 @@ export class FormTermMappingComponent implements OnInit {
         this.reloadMeshTerms();
     }
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public isAllowedModel: IsAllowedService,
-        public modalService: NgbModal,
-        public userService: UserService,
-    ) {}
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public isAllowedModel: IsAllowedService,
+                public modalService: NgbModal,
+                public userService: UserService) {
+    }
 
-    addMeshDescriptor () {
+    addMeshDescriptor() {
         this.mapping.meshDescriptors.push(this.descriptor.id);
 
-        this.http.post('/meshClassification', this.mapping).subscribe(response => {
+        this.http.post('/server/mesh/meshClassification', this.mapping).subscribe(response => {
             this.alert.addAlert('success', 'Saved');
             this.mapping = response;
             this.reloadMeshTerms();
@@ -65,20 +64,22 @@ export class FormTermMappingComponent implements OnInit {
         });
     }
 
-    loadDescriptor  () {
+    loadDescriptor() {
         this.searchTerms.next(this.meshTerm);
     }
 
-    openAddTermMap () {
+    openAddTermMap() {
         this.meshTerm = '';
         this.descriptor = null;
-        this.modalService.open(this.newTermMap, {size: 'lg'}).result.then(() => {}, () => {});
+        this.modalService.open(this.newTermMap, {size: 'lg'}).result.then(() => {
+        }, () => {
+        });
     }
 
-    reloadMeshTerms () {
+    reloadMeshTerms() {
         this.mapping.eltId = this.elt.tinyId;
         this.flatMeshSimpleTrees = [];
-        this.http.get<any>('/meshByEltId/' + this.elt.tinyId).subscribe(response => {
+        this.http.get<any>('/server/mesh/eltId/' + this.elt.tinyId).subscribe(response => {
             if (!response) return this.alert.addAlert('danger', 'There was an issue getting Mesh Terms.');
 
             if (response.eltId) this.mapping = response;
@@ -94,12 +95,13 @@ export class FormTermMappingComponent implements OnInit {
                     this.descToName[desc] = res.DescriptorName.String.t;
                 });
             });
-        }, function () {});
+        }, function () {
+        });
     }
 
-    removeMeshDescriptor (i) {
+    removeMeshDescriptor(i) {
         this.mapping.meshDescriptors.splice(i, 1);
-        this.http.post('/meshClassification', this.mapping).subscribe(response => {
+        this.http.post('/server/mesh/meshClassification', this.mapping).subscribe(response => {
             this.alert.addAlert('success', 'Saved');
             this.mapping = response;
             this.reloadMeshTerms();
