@@ -493,9 +493,4 @@ export class NativeRenderService {
             cb(undefined, value); // no conversion for other systems
         }
     }
-
-    convertUnitsPromise(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem) {
-        return this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit.code) + '&to='
-            + encodeURIComponent(toUnit.code)).toPromise();
-    }
 }

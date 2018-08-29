@@ -1,6 +1,4 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-// import * as moment from 'moment/min/moment.min';
 
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CodeAndSystem } from 'shared/models.model';
@@ -20,11 +18,20 @@ export class NativeQuestionComponent implements OnInit {
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
     metadataTagsNew: string;
     previousUom: CodeAndSystem;
+    score: number = 0;
 
     // static readonly reHasTime = /[hHmsSkaAZ]/;
 
     ngOnInit() {
         this.previousUom = this.formElement.question.answerUom;
+        if (this.formElement.question.isScore) {
+            setInterval(() => {
+                this.sls.calculateScore(this.formElement, this.nrs.vm, newScore => {
+                    this.score = newScore;
+                });
+            }, 5000);
+        }
+
     }
 
     constructor(public sls: SkipLogicService,
@@ -112,4 +119,12 @@ export class NativeQuestionComponent implements OnInit {
     //         this.formElement.question.answer = '';
     //     }
     // }
+
+    /*
+        convertUnitsPromise(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem) {
+            return this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit.code) + '&to='
+                + encodeURIComponent(toUnit.code)).toPromise();
+        }
+
+        */
 }
