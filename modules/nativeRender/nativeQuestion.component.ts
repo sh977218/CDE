@@ -28,7 +28,7 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     constructor(private http: HttpClient,
-                public slr: SkipLogicService,
+                public sls: SkipLogicService,
                 public nrs: NativeRenderService) {
     }
 
