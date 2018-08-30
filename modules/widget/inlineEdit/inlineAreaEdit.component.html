@@ -10,8 +10,8 @@
     </div>
     <div *ngIf="editMode">
         <div class="btn-group">
-            <button mat-raised-button (click)="setHtml(false)">Plain Text</button>
-            <button mat-raised-button (click)="setHtml(true)">Rich Text</button>
+            <button mat-raised-button (click)="setHtml(false)" type="button">Plain Text</button>
+            <button mat-raised-button (click)="setHtml(true)" type="button">Rich Text</button>
         </div>
 
         <textarea *ngIf="localFormat != 'html'" [(ngModel)]="value" class="form-control"></textarea>
