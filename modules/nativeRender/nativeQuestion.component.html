@@ -33,11 +33,7 @@
             </ng-template>
         </div>
         <div attr.id="{{formElement.label}}_{{formElement.feId}}" [ngClass]="{'native-box': hasHeading(formElement)}">
-            <ng-template #scoreDisplay>Score:
-                <ng-container *ngIf="sls.calculateScore(formElement, nrs.vm).score">{{sls.calculateScore(formElement, nrs.vm).score}}
-                </ng-container>
-                {{sls.calculateScore(formElement, nrs.vm).error}}
-            </ng-template>
+            <ng-template #scoreDisplay>Score:{{score}}{{scoreError}}</ng-template>
             <ng-container *ngIf="!formElement.question.isScore; else scoreDisplay">
                 <ng-container [ngSwitch]="formElement.question.datatype">
                     <ng-container *ngSwitchCase="'Value List'">
@@ -55,6 +51,7 @@
                                                        [name]="formElement.feId"
                                                        [attr.name]="formElement.feId"
                                                        [ngModel]="formElement.question.answer"
+                                                       (ngModelChange)="inputChanged();"
                                                        (click)="nrs.radioButtonSelect(formElement.question, $event.target.value)"
                                                        [value]="pv.permissibleValue" [attr.value]="pv.permissibleValue"
                                                        [required]="formElement.question.required"
@@ -84,8 +81,7 @@
                                                      class="native-question-header">
                                                     <cde-native-question *ngIf="fe.elementType === 'question'"
                                                                          [formElement]="fe"
-                                                                         [numSubQuestions]="pv.formElements.length"
-                                                    ></cde-native-question>
+                                                                         [numSubQuestions]="pv.formElements.length"></cde-native-question>
                                                     <cde-native-section
                                                             *ngIf="fe.elementType === 'section' || fe.elementType === 'form'"
                                                             [formElements]="pv.formElements"
@@ -121,6 +117,7 @@
                                [name]="formElement.feId"
                                [attr.name]="formElement.feId"
                                [(ngModel)]="formElement.question.answer"
+                               (ngModelChange)="inputChanged();"
                                [required]="formElement.question.required"
                                [disabled]="!formElement.question.editable"/>
                     </ng-container>
@@ -132,6 +129,7 @@
                                    [name]="formElement.feId"
                                    [attr.name]="formElement.feId"
                                    [(ngModel)]="formElement.question.answer"
+                                   (ngModelChange)="inputChanged();"
                                    [attr.min]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.minValue : null"
                                    [attr.max]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.maxValue : null"
                                    [required]="formElement.question.required"
@@ -144,7 +142,8 @@
                                            [name]="formElement.feId + '_uom'"
                                            [attr.name]="formElement.feId + '_uom'"
                                            class="mr-1"
-                                           [(ngModel)]="formElement.question.answerUom" (ngModelChange)="convert()"
+                                           [(ngModel)]="formElement.question.answerUom"
+                                           (ngModelChange)="convert();inputChanged();"
                                            [value]="formElement.question.unitsOfMeasure[i]"
                                            [attr.value]="formElement.question.unitsOfMeasure[i]"
                                            [required]="formElement.question.required || formElement.question.answer"
@@ -160,17 +159,18 @@
                                    [name]="formElement.feId"
                                    [attr.name]="formElement.feId"
                                    [(ngModel)]="formElement.question.answer"
+                                   (ngModelChange)="inputChanged();"
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable"/>
                             <div *ngIf="formElement.question.uomsAlias.length" class="input-group-append">
                                 <label *ngFor="let uom of formElement.question.uomsAlias; index as i"
                                        class="input-group-text"
                                        [ngClass]="{'nativeRequiredBox': formElement.question.required}">
-                                    <input type="radio"
+                                    <input type="radio" class="mr-1"
                                            [name]="formElement.feId + '_uom'"
                                            [attr.name]="formElement.feId + '_uom'"
-                                           class="mr-1"
-                                           [(ngModel)]="formElement.question.answerUom" (ngModelChange)="convert()"
+                                           [(ngModel)]="formElement.question.answerUom"
+                                           (ngModelChange)="convert();inputChanged();"
                                            [value]="formElement.question.unitsOfMeasure[i]"
                                            [attr.value]="formElement.question.unitsOfMeasure[i]"
                                            [required]="formElement.question.required || formElement.question.answer"
