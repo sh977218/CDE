@@ -245,7 +245,9 @@ try {
     });
     app.use('/server/log', logModule);
 
-    let classificationModule = require("./server/classification/classificationRoutes").module({});
+    let classificationModule = require("./server/classification/classificationRoutes").module({
+        allowClassify: (user, org) => authorizationShared.isOrgCurator(user, org)
+    });
     app.use('/server/classification', classificationModule);
 
     let meshModule = require("./server/mesh/meshRoutes").module({
