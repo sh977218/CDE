@@ -5,7 +5,7 @@ import { findQuestionByTinyId } from '../../shared/form/formShared';
 export class ScoreService {
     question;
     elt;
-    score: number = 0;
+    score: number;
     scoreError: string = '';
 
     calculateScore() {
