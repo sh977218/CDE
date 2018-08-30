@@ -133,6 +133,7 @@ export class FhirApp {
     dataEndpointUrl = '';
     forms: {tinyId?: string}[] = [];
     mapping: {cdeSystem?: string, cdeCode?: string, fhirSystem?: string, fhirCode?: string}[] = [];
+    timestamp?: Date;
 }
 
 export class FhirObservationInfo {
