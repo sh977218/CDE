@@ -37,6 +37,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         this.previousCdeId = this.elt._id;
         this.updateRules();
         this.findDerivationOutputs();
+        this.someCdesInvalid();
     }
 
     constructor(

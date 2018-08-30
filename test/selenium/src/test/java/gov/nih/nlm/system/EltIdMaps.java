@@ -47,6 +47,7 @@ public class EltIdMaps {
         eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");
         eltMap.put("Neoadjuvant Therapy", "7yN4tn_EW");
         eltMap.put("Number of Pregnancies", "oW10-UFbA2c");
+        eltMap.put("Oosterhuis score", "WEoSbBfqEDx");
         eltMap.put("Other Group Patient Identifier Number", "hvsUN03ToUz");
         eltMap.put("Patient Eligibility Ind-2", "obP4FhjUQTY");
         eltMap.put("Patient Gender Code", "bzGjaFPtQCs");

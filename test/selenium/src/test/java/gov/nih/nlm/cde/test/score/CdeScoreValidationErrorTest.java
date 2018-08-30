@@ -11,7 +11,7 @@ public class CdeScoreValidationErrorTest extends BaseFormTest {
     public void cdeScoreValidationError() {
         mustBeLoggedInAs(ninds_username, password);
         emptyQuickBoardByModule("cde");
-        goToCdeByName("DRS Total Score");
+        goToCdeByName("Oosterhuis score");
 
         goToScoreDerivations();
         clickElement(By.id("addNewScore"));
