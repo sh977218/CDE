@@ -100,15 +100,15 @@ public class DisplayProfilesTest extends BaseFormTest {
 
         clickElement(By.id("displayProfiles_tab"));
 
-        deleteWithConfirm("//*[@id = #profile_0]");
+        deleteWithConfirm("//*[@id = 'profile_0']");
         hangon(1);
-        deleteWithConfirm("//*[@id = #profile_0]");
+        deleteWithConfirm("//*[@id = 'profile_0']");
         hangon(1);
-        deleteWithConfirm("//*[@id = #profile_0]");
+        deleteWithConfirm("//*[@id = 'profile_0']");
         hangon(1);
-        deleteWithConfirm("//*[@id = #profile_0]");
+        deleteWithConfirm("//*[@id = 'profile_0']");
         hangon(1);
-        deleteWithConfirm("//*[@id = #profile_0]");
+        deleteWithConfirm("//*[@id = 'profile_0']");
 
         newFormVersion();
         goToPreview();
