@@ -586,7 +586,7 @@ exports.init = function (app) {
     });
 
     app.post('/getClassificationAuditLog', (req, res) => {
-        if (authorizationShared.canOrgAuthority(req.user)) {
+        if (authorizationShared.isOrgAuthority(req.user)) {
             mongo_data.getClassificationAuditLog(req.body, (err, result) => {
                 if (err) return res.status(500).send();
                 res.send(result);
@@ -640,7 +640,7 @@ exports.init = function (app) {
     app.delete('/fhirApp/:id', [authorization.isSiteAdminMiddleware], (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
 
     app.post('/disableRule', (req, res) => {
-        if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
+        if (!authorizationShared.isOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
         mongo_data.disableRule(req.body, function (err, org) {
             if (err) return res.status(500).send(org);
             res.send(org);
@@ -648,7 +648,7 @@ exports.init = function (app) {
     });
 
     app.post('/enableRule', (req, res) => {
-        if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
+        if (!authorizationShared.isOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
         mongo_data.enableRule(req.body, (err, org) => {
             if (err) return res.status(500).send(org);
             res.send(org);

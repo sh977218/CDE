@@ -252,7 +252,7 @@ try {
 
     let meshModule = require("./server/mesh/meshRoutes").module({
         allowSyncMesh: (req, res, next) => {
-            if (!config.autoSyncMesh && !authorizationShared.canOrgAuthority(req.user))
+            if (!config.autoSyncMesh && !authorizationShared.isOrgAuthority(req.user))
                 return res.status(401).send();
             next();
         }

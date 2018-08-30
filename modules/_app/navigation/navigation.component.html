@@ -19,13 +19,13 @@
             <a routerLink="/classificationmanagement" id="user_classifications" mat-menu-item
                *ngIf="isOrgCurator(userService.user)">Classifications</a>
             <a routerLink="/orgAuthority" id="user_org_authority" mat-menu-item
-               *ngIf="canOrgAuthority(userService.user)">Org Management</a>
+               *ngIf="isOrgAuthority(userService.user)">Org Management</a>
             <a routerLink="/orgaccountmanagement" id="user_account_management" mat-menu-item
                *ngIf="isOrgAdmin(userService.user)">Account Management</a>
             <a routerLink="/siteaccountmanagement" id="user_site_management" mat-menu-item
                *ngIf="isSiteAdmin(userService.user)">Site Management</a>
             <a routerLink="/siteAudit" id="user_audit" mat-menu-item
-               *ngIf="canOrgAuthority(userService.user)">Audit</a>
+               *ngIf="isOrgAuthority(userService.user)">Audit</a>
             <a (click)="loginSvc.logout()" target="_self" id="user_logout" mat-menu-item>Log Out</a>
         </mat-menu>
     </ng-container>
