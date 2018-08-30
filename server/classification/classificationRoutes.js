@@ -206,7 +206,7 @@ exports.module = function (roleConfig) {
                 res.send('Done')));
         }
         else {
-            res.send('Processing');
+            res.status(102).send('Processing');
             bulkClassifyCdes(req.user, req.body.eltId, elements, req.body);
         }
         mongo_data.addToClassifAudit({
