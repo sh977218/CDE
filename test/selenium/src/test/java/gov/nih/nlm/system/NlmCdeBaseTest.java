@@ -280,13 +280,15 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         }
     }
 
-    protected void deleteWithConfirm(By by) {
-        WebElement element = findElement(by);
+    protected void deleteWithConfirm(String xpath) {
+//        WebElement element = findElement(by);
 
-        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.xpath("//mat-icon[. = 'delete_outline']"))));
-        element.findElement(By.xpath("//mat-icon[. = 'delete_outline']")).click();
-        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.xpath("//mat-icon[. = 'check']"))));
-        element.findElement(By.xpath("//mat-icon[. = 'check']")).click();
+        clickElement(By.xpath(xpath + "//mat-icon[. = 'delete_outline']"));
+        clickElement(By.xpath(xpath + "//mat-icon[. = 'check']"));
+//        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.xpath("//mat-icon[. = 'delete_outline']"))));
+//        element.findElement(By.xpath("//mat-icon[. = 'delete_outline']")).click();
+//        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.xpath("//mat-icon[. = 'check']"))));
+//        element.findElement(By.xpath("//mat-icon[. = 'check']")).click();
     }
 
     protected void gotoClassificationMgt() {
