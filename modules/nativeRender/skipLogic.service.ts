@@ -10,6 +10,7 @@ export class SkipLogicService {
 
     evalSkipLogic(parent, fe, nrs) {
         try {
+//            return true;
             return this.evaluateSkipLogic(fe.skipLogic ? fe.skipLogic.condition : null, parent, fe, nrs);
         } catch (error) {
             this.errorHandler.handleError({
@@ -28,6 +29,7 @@ export class SkipLogicService {
     }
 
     calculateScore(question, elt) {
+        console.log('a');
         if (!question.question.isScore) {
             return;
         }
