@@ -2,7 +2,7 @@
     <h4>Possible Matches</h4>
     <div class="card" *ngFor="let de of deCompletionService.suggestedCdes;let index = index;">
         <div class="card-header">
-            <button *ngIf="adding" mat-raised-button color="accent" (click)="add.emit(de)">
+            <button *ngIf="adding" mat-raised-button color="accent" type="button" (click)="add.emit(de)">
                 <mat-icon>add</mat-icon> Add
             </button>
             <span class="hand-cursor" (click)="de.isCollapsed = !de.isCollapsed">
