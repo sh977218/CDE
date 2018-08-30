@@ -15,12 +15,9 @@ import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 
 import static gov.nih.nlm.system.NlmCdeBaseTest.driver;
 
