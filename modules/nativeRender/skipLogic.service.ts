@@ -1,16 +1,16 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
-import { findQuestionByTinyId } from 'shared/form/formShared';
+import { ScoreService } from 'nativeRender/score.service';
 
 @Injectable()
 export class SkipLogicService {
-    constructor(private errorHandler: ErrorHandler) {
+    constructor(private errorHandler: ErrorHandler,
+                private scoreService: ScoreService) {
     }
 
     evalSkipLogic(parent, fe, nrs) {
         try {
-//            return true;
             return this.evaluateSkipLogic(fe.skipLogic ? fe.skipLogic.condition : null, parent, fe, nrs);
         } catch (error) {
             this.errorHandler.handleError({
@@ -27,44 +27,6 @@ export class SkipLogicService {
         if (!skipLogicResult && fe.question) fe.question.answer = undefined;
         return skipLogicResult;
     }
-
-    calculateScore(question, elt) {
-        console.log('a');
-        if (!question.question.isScore) {
-            return;
-        }
-        let score: number = 0;
-        let error: string = '';
-        question.question.cde.derivationRules.forEach(derRule => {
-            if (derRule.ruleType === 'score') {
-                if (derRule.formula === 'sumAll' || derRule.formula === 'mean') {
-                    derRule.inputs.forEach(cdeTinyId => {
-                        let q = findQuestionByTinyId(cdeTinyId, elt);
-                        if (isNaN(score)) {
-                            return;
-                        }
-                        if (q) {
-                            let answer = q.question.answer;
-                            if (typeof(answer) === "undefined" || answer === null) {
-                                error = 'Incomplete answers';
-                            } else if (isNaN(answer)) {
-                                error = 'Unable to score';
-                            } else {
-                                score = score + parseFloat(answer);
-                            }
-                        }
-                    });
-                }
-                if (derRule.formula === 'mean') {
-                    if (!isNaN(score)) {
-                        score = score / derRule.inputs.length;
-                    }
-                }
-            }
-        });
-        return {error: error, score: score};
-    }
-
 
     evaluateSkipLogic(condition, parent, fe, nrs) {
         if (!condition) return true;
@@ -100,8 +62,7 @@ export class SkipLogicService {
         }
 
         let realAnswer = realAnswerObj.question.isScore
-            ? this.calculateScore(realAnswerObj, nrs.vm).score
-            : realAnswerObj.question.answer;
+            ? this.scoreService.score : realAnswerObj.question.answer;
         if (realAnswer === undefined || realAnswer === null ||
             (typeof realAnswer === 'number' && isNaN(realAnswer))) realAnswer = '';
 

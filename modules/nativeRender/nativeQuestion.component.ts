@@ -6,6 +6,7 @@ import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CodeAndSystem } from 'shared/models.model';
 import { FormQuestion } from 'shared/form/form.model';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { ScoreService } from 'nativeRender/score.service';
 
 @Component({
     selector: 'cde-native-question',
@@ -21,15 +22,17 @@ export class NativeQuestionComponent implements OnInit {
     metadataTagsNew: string;
     previousUom: CodeAndSystem;
 
-    score: number;
-    scoreError: string;
 
     ngOnInit() {
+        if (this.formElement.question.isScore) {
+            this.scoreService.question = this.formElement;
+            this.scoreService.elt = this.nrs.vm;
+        }
         this.previousUom = this.formElement.question.answerUom;
     }
 
     constructor(private http: HttpClient,
-                public sls: SkipLogicService,
+                public scoreService: ScoreService,
                 public nrs: NativeRenderService) {
     }
 
@@ -105,12 +108,6 @@ export class NativeQuestionComponent implements OnInit {
     isOneLiner(q: FormQuestion, numSubQuestions: number): boolean {
         return numSubQuestions && !this.hasHeading(q) && (!q.instructions || !q.instructions.value)
             && q.elementType === 'question' && q.question.datatype !== 'Value List';
-    }
-
-    inputChanged() {
-        let result = this.sls.calculateScore(this.formElement, this.nrs.vm);
-        this.score = result.score;
-        this.scoreError = result.error;
     }
 
 }

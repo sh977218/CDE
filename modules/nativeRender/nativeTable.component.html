@@ -35,7 +35,8 @@
                            [attr.name]="ni + q.name"
                            [value]="nrs.elt.formInput[ni + q.name]"
                            [attr.value]="nrs.elt.formInput[ni + q.name]"
-                           [(ngModel)]="nrs.elt.formInput[ni + q.name]"/>
+                           [(ngModel)]="nrs.elt.formInput[ni + q.name]"
+                           (ngModelChange)="scoreService.calculateScore();"/>
                 </div>
                 <div *ngIf="q.type === 'list'" class="radio native-table-cell native-table-list">
                     <label style="display: block" *ngFor="let a of q.question.answers">

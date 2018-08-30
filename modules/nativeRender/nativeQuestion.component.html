@@ -33,7 +33,7 @@
             </ng-template>
         </div>
         <div attr.id="{{formElement.label}}_{{formElement.feId}}" [ngClass]="{'native-box': hasHeading(formElement)}">
-            <ng-template #scoreDisplay>Score:{{score}}{{scoreError}}</ng-template>
+            <ng-template #scoreDisplay>Score:{{scoreService.score}}{{scoreService.scoreError}}</ng-template>
             <ng-container *ngIf="!formElement.question.isScore; else scoreDisplay">
                 <ng-container [ngSwitch]="formElement.question.datatype">
                     <ng-container *ngSwitchCase="'Value List'">
@@ -51,7 +51,7 @@
                                                        [name]="formElement.feId"
                                                        [attr.name]="formElement.feId"
                                                        [ngModel]="formElement.question.answer"
-                                                       (ngModelChange)="inputChanged();"
+                                                       (ngModelChange)="scoreService.calculateScore();"
                                                        (click)="nrs.radioButtonSelect(formElement.question, $event.target.value)"
                                                        [value]="pv.permissibleValue" [attr.value]="pv.permissibleValue"
                                                        [required]="formElement.question.required"
@@ -117,7 +117,7 @@
                                [name]="formElement.feId"
                                [attr.name]="formElement.feId"
                                [(ngModel)]="formElement.question.answer"
-                               (ngModelChange)="inputChanged();"
+                               (ngModelChange)="scoreService.calculateScore();"
                                [required]="formElement.question.required"
                                [disabled]="!formElement.question.editable"/>
                     </ng-container>
@@ -129,7 +129,7 @@
                                    [name]="formElement.feId"
                                    [attr.name]="formElement.feId"
                                    [(ngModel)]="formElement.question.answer"
-                                   (ngModelChange)="inputChanged();"
+                                   (ngModelChange)="scoreService.calculateScore();"
                                    [attr.min]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.minValue : null"
                                    [attr.max]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.maxValue : null"
                                    [required]="formElement.question.required"
@@ -143,7 +143,7 @@
                                            [attr.name]="formElement.feId + '_uom'"
                                            class="mr-1"
                                            [(ngModel)]="formElement.question.answerUom"
-                                           (ngModelChange)="convert();inputChanged();"
+                                           (ngModelChange)="convert();scoreService.calculateScore();"
                                            [value]="formElement.question.unitsOfMeasure[i]"
                                            [attr.value]="formElement.question.unitsOfMeasure[i]"
                                            [required]="formElement.question.required || formElement.question.answer"
@@ -159,7 +159,7 @@
                                    [name]="formElement.feId"
                                    [attr.name]="formElement.feId"
                                    [(ngModel)]="formElement.question.answer"
-                                   (ngModelChange)="inputChanged();"
+                                   (ngModelChange)="scoreService.calculateScore();"
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable"/>
                             <div *ngIf="formElement.question.uomsAlias.length" class="input-group-append">
@@ -170,14 +170,13 @@
                                            [name]="formElement.feId + '_uom'"
                                            [attr.name]="formElement.feId + '_uom'"
                                            [(ngModel)]="formElement.question.answerUom"
-                                           (ngModelChange)="convert();inputChanged();"
+                                           (ngModelChange)="convert();scoreService.calculateScore();"
                                            [value]="formElement.question.unitsOfMeasure[i]"
                                            [attr.value]="formElement.question.unitsOfMeasure[i]"
                                            [required]="formElement.question.required || formElement.question.answer"
                                            [disabled]="!formElement.question.editable"/>{{uom}}</label>
                             </div>
                         </div>
-                        <!--<div>{{nrs.form.$$element[0][formElement.feId].validationMessage}}</div>-->
                     </ng-container>
                 </ng-container>
             </ng-container>
