@@ -6,7 +6,6 @@ const fs = require('fs');
 const _ = require('lodash');
 const passport = require('passport');
 const path = require('path');
-const request = require('request');
 const useragent = require('useragent');
 const authorization = require('./authorization');
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
@@ -26,6 +25,7 @@ const daoManager = require('./moduleDaoManager');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const esInit = require('./elasticSearchInit');
 const elastic = require('./elastic.js');
+const meshElasitc = require('../mesh/elastic');
 const fhirApps = require('./fhir').fhirApps;
 const fhirObservationInfo = require('./fhir').fhirObservationInfo;
 const cdeElastic = require('../cde/elastic.js');
@@ -222,7 +222,7 @@ exports.init = function (app) {
     });
 
 
-    new CronJob('00 00 4 * * *', () => elastic.syncWithMesh(), null, true, 'America/New_York');
+    new CronJob('00 00 4 * * *', () => meshElasitc.syncWithMesh(), null, true, 'America/New_York');
 
     // every sunday at 4:07 AM
     new CronJob('* 7 4 * * 6', () => {
