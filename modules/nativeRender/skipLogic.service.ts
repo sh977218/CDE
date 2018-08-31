@@ -1,7 +1,7 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 
+import { findQuestionByTinyId } from 'shared/form/fe';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
-import { findQuestionByTinyId } from 'shared/form/formShared';
 
 @Injectable()
 export class SkipLogicService {
@@ -110,7 +110,7 @@ export class SkipLogicService {
                 if (realAnswer === '' || ('' + realAnswer).trim().length === 0) return true;
             }
         }
-        if (!realAnswer && realAnswer !== '') return false;
+        if (typeof(realAnswer) === 'undefined') return false;
         switch (realAnswerObj.question.datatype) {
             case 'Date':
                 // format HTML5 standard YYYY-MM-DD to American DD/MM/YYYY

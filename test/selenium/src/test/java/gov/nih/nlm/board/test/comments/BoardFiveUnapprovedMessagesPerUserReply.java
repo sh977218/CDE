@@ -14,6 +14,7 @@ public class BoardFiveUnapprovedMessagesPerUserReply extends NlmCdeBaseTest {
         mustBeLoggedInAs(unapprovedMessage_username, password);
         goToBoard(boardName);
         goToDiscussArea();
+        clickElement(By.id("newReplyTextArea_0"));
         findElement(By.id("newReplyTextArea_0")).sendKeys(reply);
         hangon(1);
         clickElement(By.id("replyBtn_0"));

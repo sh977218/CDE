@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from "@angular/material";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { TREE_ACTIONS, TreeComponent } from 'angular-tree-component';
+import { TREE_ACTIONS, TreeComponent, TreeNode } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { Hotkey, HotkeysService } from "angular2-hotkeys";
 import _isEmpty from 'lodash/isEmpty';
@@ -23,8 +23,9 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
 import { FormService } from 'nativeRender/form.service';
 import { Cb } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
+import { convertFormToSection } from 'shared/form/form';
 import { CdeForm, FormElement, FormElementsContainer, FormInForm, FormSection } from 'shared/form/form.model';
-import { addFormIds, convertFormToSection, isSubForm, iterateFeSync } from 'shared/form/formShared';
+import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { scrollTo, waitRendered } from 'widget/browser';
 
 const TOOL_BAR_OFF_SET = 64;
@@ -180,13 +181,13 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     newDataElement: DataElement = this.initNewDataElement();
     questionModelMode = 'search';
     treeOptions = {
-        allowDrag: element => !isSubForm(element) || element.data.elementType === 'form' && !isSubForm(element.parent),
+        allowDrag: element => !FormDescriptionComponent.isSubForm(element) || element.data.elementType === 'form' && !FormDescriptionComponent.isSubForm(element.parent),
         allowDrop: (element, {parent, index}) => {
             return element !== parent && parent.data.elementType !== 'question' && (!element
                 || !element.ref && (element.data.elementType !== 'question' || parent.data.elementType === 'section')
                 || element.ref === 'section' || element.ref === 'form' || element.ref === 'pasteSection'
                 || (element.ref === 'question' && parent.data.elementType === 'section')
-            ) && !isSubForm(parent);
+            ) && !FormDescriptionComponent.isSubForm(parent);
         },
         actionMapping: {
             mouse: {
@@ -324,6 +325,14 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         de.designations.push({designation: '', tags: ['Question Text']});
         de.valueDomain.datatype = 'Text';
         return de;
+    }
+
+    static isSubForm(node: TreeNode): boolean {
+        let n = node;
+        while (n.data.elementType !== 'form' && n.parent) {
+            n = n.parent;
+        }
+        return n.data.elementType === 'form';
     }
 
     openFormSearch() {

@@ -36,6 +36,20 @@ export function getTinyId(f) {
     }
 }
 
+export function getVersion(f) {
+    if (isForm(f)) {
+        return f.version;
+    }
+    switch (f.elementType) {
+        case 'form':
+            return f.inForm.form.version;
+        case 'section':
+            return undefined;
+        case 'question':
+            return f.question.cde.version;
+    }
+}
+
 export function isForm(f) {
     return f.hasOwnProperty('tinyId');
 }
