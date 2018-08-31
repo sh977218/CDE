@@ -24,15 +24,11 @@ export class NativeQuestionComponent implements OnInit {
 
 
     ngOnInit() {
-        if (this.formElement.question.isScore) {
-            this.scoreService.question = this.formElement;
-            this.scoreService.elt = this.nrs.vm;
-        }
         this.previousUom = this.formElement.question.answerUom;
     }
 
     constructor(private http: HttpClient,
-                public scoreService: ScoreService,
+                public ss: ScoreService,
                 public nrs: NativeRenderService) {
     }
 

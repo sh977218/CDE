@@ -33,7 +33,7 @@
             </ng-template>
         </div>
         <div attr.id="{{formElement.label}}_{{formElement.feId}}" [ngClass]="{'native-box': hasHeading(formElement)}">
-            <ng-template #scoreDisplay>Score:{{scoreService.score}}{{scoreService.scoreError}}</ng-template>
+            <ng-template #scoreDisplay>Score:{{formElement.question.score}}{{formElement.question.scoreError}}</ng-template>
             <ng-container *ngIf="!formElement.question.isScore; else scoreDisplay">
                 <ng-container [ngSwitch]="formElement.question.datatype">
                     <ng-container *ngSwitchCase="'Value List'">
@@ -51,7 +51,7 @@
                                                        [name]="formElement.feId"
                                                        [attr.name]="formElement.feId"
                                                        [ngModel]="formElement.question.answer"
-                                                       (ngModelChange)="scoreService.calculateScore();"
+                                                       (ngModelChange)="ss.triggerCalculateScore(formElement);"
                                                        (click)="nrs.radioButtonSelect(formElement.question, $event.target.value)"
                                                        [value]="pv.permissibleValue" [attr.value]="pv.permissibleValue"
                                                        [required]="formElement.question.required"

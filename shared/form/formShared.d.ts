@@ -31,6 +31,7 @@ declare function convertFormToSection(elt: CdeForm): FormInForm;
 declare function findQuestionByTinyId(tinyId: string, elt: FormElementsContainer): FormQuestion;
 declare function flattenFormElement(fe: FormElement): FormElement[];
 declare function getFormQuestions(form: FormElementsContainer): FormQuestion[];
+declare function getFormScoreQuestion(form: FormElementsContainer): FormQuestion[];
 declare function getFormQuestionsAsQuestion(form: FormElementsContainer): Question[];
 declare function getFormQuestionsAsQuestionCde(form: FormElementsContainer): QuestionCde[];
 declare function getFormOdm(form: FormElementsContainer, cb: (error: string, odm: any) => void): void;

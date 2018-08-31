@@ -1,39 +1,75 @@
 import { Injectable } from '@angular/core';
-import { findQuestionByTinyId } from '../../shared/form/formShared';
+import { findQuestionByTinyId, getFormScoreQuestion } from '../../shared/form/formShared';
+import { FormQuestion } from '../../shared/form/form.model';
 
 @Injectable()
 export class ScoreService {
-    question;
+    INPUT_SCORE_MAP = new Map<string, [Object]>();
     elt;
-    score: number;
-    scoreError: string = '';
 
-    calculateScore() {
-        if (!this.question.question.isScore) return;
-        this.question.question.cde.derivationRules.forEach(derRule => {
+    register(elt) {
+        this.elt = elt;
+        let formScoreQuestions = getFormScoreQuestion(elt);
+        formScoreQuestions.forEach(formScoreQuestion => {
+            formScoreQuestion.question.cde.derivationRules.forEach(derivationRule => {
+                derivationRule.inputs.forEach(cdeTinyId => {
+                    if (!this.INPUT_SCORE_MAP[cdeTinyId]) this.INPUT_SCORE_MAP[cdeTinyId] = [];
+                    this.INPUT_SCORE_MAP[cdeTinyId].push(formScoreQuestion);
+                });
+            });
+        });
+    }
+
+
+    /**
+     * @param {FormQuestion}inputQuestion FormQuestion which is input
+     */
+    triggerCalculateScore(inputQuestion: FormQuestion) {
+        let scoreQuestions = this.INPUT_SCORE_MAP[inputQuestion.question.cde.tinyId];
+        scoreQuestions.forEach(scoreQuestion => {
+            this.calculateScore(scoreQuestion);
+        });
+    }
+
+    /**
+     * @param {FormQuestion}scoreQuestion FormQuestion which is score
+     */
+    calculateScore(scoreQuestion: FormQuestion) {
+        if (!scoreQuestion.question.isScore) return;
+        scoreQuestion.question.cde.derivationRules.forEach(derRule => {
             if (derRule.ruleType === 'score') {
-                if (derRule.formula === 'sumAll' || derRule.formula === 'mean') {
+                if (derRule.formula === 'sumAll') {
                     derRule.inputs.forEach(cdeTinyId => {
                         let q = findQuestionByTinyId(cdeTinyId, this.elt);
-                        if (isNaN(this.score)) {
+                        if (!q) {
+                            scoreQuestion.question.scoreError = 'Can not find ' + cdeTinyId + ' in form ' + this.elt.tinyId;
                             return;
                         }
-                        if (q) {
-                            let answer = q.question.answer;
-                            if (typeof(answer) === "undefined" || answer === null) {
-                                this.scoreError = 'Incomplete answers';
-                            } else if (isNaN(answer)) {
-                                this.scoreError = 'Unable to score';
-                            } else {
-                                this.score = this.score + parseFloat(answer);
-                            }
+                        let answer = q.question.answer;
+                        if (isNaN(answer)) {
+                            scoreQuestion.question.scoreError = 'Unable to score ' + cdeTinyId;
+                            return;
                         }
+                        if (typeof scoreQuestion.question.score !== 'undefined') scoreQuestion.question.score = parseFloat(answer);
+                        scoreQuestion.question.score = scoreQuestion.question.score + parseFloat(answer);
                     });
                 }
                 if (derRule.formula === 'mean') {
-                    if (!isNaN(this.score)) {
-                        this.score = this.score / derRule.inputs.length;
-                    }
+                    derRule.inputs.forEach(cdeTinyId => {
+                        let q = findQuestionByTinyId(cdeTinyId, this.elt);
+                        if (!q) {
+                            scoreQuestion.question.scoreError = 'Can not find ' + cdeTinyId + ' in form ' + this.elt.tinyId;
+                            return;
+                        }
+                        let answer = q.question.answer;
+                        if (isNaN(answer)) {
+                            scoreQuestion.question.scoreError = 'Unable to score ' + cdeTinyId;
+                            return;
+                        }
+                        if (typeof scoreQuestion.question.score !== 'undefined') q.question.score = parseFloat(answer);
+                        scoreQuestion.question.score = scoreQuestion.question.score + parseFloat(answer);
+                    });
+                    scoreQuestion.question.score = scoreQuestion.question.score / derRule.inputs.length;
                 }
             }
         });

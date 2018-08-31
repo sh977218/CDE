@@ -62,7 +62,7 @@ export class SkipLogicService {
         }
 
         let realAnswer = realAnswerObj.question.isScore
-            ? this.scoreService.score : realAnswerObj.question.answer;
+            ? realAnswerObj.question.score : realAnswerObj.question.answer;
         if (realAnswer === undefined || realAnswer === null ||
             (typeof realAnswer === 'number' && isNaN(realAnswer))) realAnswer = '';
 

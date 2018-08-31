@@ -30,7 +30,7 @@ export class NativeRenderService {
     submitForm?: boolean;
     vm: any;
 
-    constructor(private scoreService: ScoreService,
+    constructor(private ss: ScoreService,
                 public skipLogicService: SkipLogicService) {
     }
 
@@ -120,7 +120,7 @@ export class NativeRenderService {
         } else {
             q.question.answer = undefined;
         }
-        this.scoreService.calculateScore();
+        this.ss.triggerCalculateScore(q);
     }
 
     render(renderType) {
@@ -176,7 +176,7 @@ export class NativeRenderService {
         return this.errors;
     }
 
-    checkboxOnChange($event: any, model: Question, value: any) {
+    checkboxOnChange($event: any, model: Question, value: any, q) {
         if (!Array.isArray(model.answer)) model.answer = [];
         let index = model.answer.indexOf(value);
         if ($event.target.checked) {
@@ -188,7 +188,7 @@ export class NativeRenderService {
                 model.answer.splice(model.answer.indexOf(value), 1);
             }
         }
-        this.scoreService.calculateScore();
+        this.ss.triggerCalculateScore(q);
     }
 
     checkboxIsChecked(model: Question, value: any) {
@@ -483,4 +483,5 @@ export class NativeRenderService {
         }
         return 1;
     }
+
 }
