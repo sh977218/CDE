@@ -1,12 +1,21 @@
 import { CdeFormElastic } from 'shared/form/form.model';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 
-export function assertUnreachable(x: never): never {
-    throw new Error("Didn't expect to get here");
+export function assertThrow(): never {
+    throw new Error('Please submit a bug report.');
 }
 
-export type supportedFhirResources = 'Observation' | 'Procedure';
-export const supportedFhirResourcesArray = ['Observation', 'Procedure'];
+export function assertTrue(x: boolean): void {
+    if (!PRODUCTION) {
+        if (!x) {
+            throw new Error('Assertion Failed.');
+        }
+    }
+}
+
+export function assertUnreachable(x: never): never {
+    throw new Error('Unreachable');
+}
 
 export class Attachment {
     comment?: string;
@@ -33,8 +42,7 @@ export type CbErr<T = never, U = never, V = never> = (error?: string, t?: T, u?:
 export type CbRet<R = never, T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => R;
 
 export class CdeId {
-    [key: string]: string | undefined;
-
+    [key: string]: string|undefined;
     _id?: ObjectId;
     id?: string;
     source?: string;
@@ -120,14 +128,7 @@ export class CommentReply {
     username?: string;
 }
 
-export type CurationStatus =
-    'Incomplete'
-    | 'Recorded'
-    | 'Candidate'
-    | 'Qualified'
-    | 'Standard'
-    | 'Preferred Standard'
-    | 'Retired';
+export type CurationStatus = 'Incomplete'|'Recorded'|'Candidate'|'Qualified'|'Standard'|'Preferred Standard'|'Retired';
 
 export enum CurationStatusEnum {
     'Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired'
@@ -159,7 +160,7 @@ export interface ElasticQueryParams {
 
 export interface ElasticQueryResponse {
     _shards?: any;
-    aggregations?: any; // Elastic aggregated grouping
+    aggregations?: ElasticQueryResponseAggregation&{[key: string]: ElasticQueryResponseAggregation}; // Elastic aggregated grouping
     cdes?: DataElementElastic[];
     forms?: CdeFormElastic[];
     hits: {
@@ -171,6 +172,10 @@ export interface ElasticQueryResponse {
     took: number; // Elastic time to process query in milliseconds
     timed_out?: boolean;
     totalNumber: number; // Elastic number of results
+}
+
+export interface ElasticQueryResponseAggregation {
+    [key: string]: { buckets: ElasticQueryResponseAggregationBucket[] };
 }
 
 export interface ElasticQueryResponseAggregationBucket {
@@ -255,7 +260,7 @@ export class EltRef {
 
 export class FormattedValue {
     value: string;
-    valueFormat?: 'html' | undefined;
+    valueFormat?: 'html'|undefined;
 
     constructor(value = '') {
         this.value = value;
@@ -275,7 +280,7 @@ export class Designation {
 
 export class Definition {
     definition: string;
-    definitionFormat?: 'html' | undefined; // TODO: change to use FormattedValue
+    definitionFormat?: 'html'|undefined; // TODO: change to use FormattedValue
     tags: string[] = [];
 
     constructor(definition = '') {
@@ -380,7 +385,7 @@ export class RegistrationState {
 export class StatusValidationRules {
     id!: number;
     field?: string;
-    occurence?: 'exactlyOne' | 'atLeastOne' | 'all';
+    occurence?: 'exactlyOne'|'atLeastOne'|'all';
     rule: {
         regex?: string
     } = {};

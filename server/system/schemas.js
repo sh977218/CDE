@@ -135,6 +135,7 @@ exports.fhirAppSchema = new Schema({
         }, {_id: false}),
         default: []
     }],
+    timestamp: Date,
 }, {collection: 'fhirapps'});
 
 exports.fhirObservationInformationSchema = new Schema({

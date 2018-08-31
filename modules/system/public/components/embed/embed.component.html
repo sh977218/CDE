@@ -27,9 +27,7 @@
 
     <div class="boxed-div" *ngIf="selection">
         <form name="editEmbed" #newEmbedForm="ngForm">
-            <label for="selection.org">Org to embed</label>
-            <input class="form-control" [(ngModel)]="selectedOrg" name="selectedOrg" id="selection.org" disabled>
-            <br>
+            <label class="mb-2">Org to embed: <strong>{{selection.org}}</strong></label>
 
             <label for="embedName">Name this embedded search:</label>
             <input class="form-control" [(ngModel)]="selection.name" name="n" id="embedName" required>
@@ -199,7 +197,7 @@
                     [disabled]="!newEmbedForm.valid" id="saveEmbed">
                 <i class="fa fa-save"></i> Save</button>
 
-            <button class="btn btn-outline-dark" (click)="cancel()" *ngIf="selection.cde || selection.form">
+            <button class="btn btn-outline-dark" (click)="reloadEmbedsOrg(selection.org)" *ngIf="selection.cde || selection.form">
                 <i class="fa fa-close"></i> Cancel</button>
 
             <div *ngIf="selection?._id" class="mt15"> preview:

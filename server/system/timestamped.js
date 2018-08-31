@@ -19,11 +19,13 @@ module.exports = function timestamped(model, noPost) {
                     respondError(new Error('id generation is not supported'), errorOptions);
                     return;
                 }
+                data.timestamp = new Date();
                 new model(data).save(handleError(errorOptions, cb));
                 return;
             }
             model.findOne({_id: data._id}, handleError(errorOptions, oldInfo => {
                 if (!oldInfo) {
+                    data.timestamp = new Date();
                     new model(data).save(handleError(errorOptions, cb));
                     return;
                 }

@@ -1,7 +1,9 @@
 import _isEqual from 'lodash/isEqual';
 
 import { FhirMapped, getMapPropertyFromId, supportedResourcesMaps } from '_fhirApp/resources';
-import { ResourceTree } from '_fhirApp/resourceTree';
+import { ResourceTreeResource } from '_fhirApp/resourceTree';
+import { assertThrow } from 'shared/models.model';
+import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
 import { codeSystemOut } from 'shared/mapping/fhir';
 import { FhirCodeableConcept, FhirCoding } from 'shared/mapping/fhir/fhir.model';
@@ -11,7 +13,7 @@ import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
 import { newPeriod } from 'shared/mapping/fhir/datatype/fhirPeriod';
 import { getRef, newReference } from 'shared/mapping/fhir/datatype/fhirReference';
 
-export function propertyToQuestion(q: FormQuestion, parent: ResourceTree, name: string): boolean {
+export function propertyToQuestion(q: FormQuestion, parent: ResourceTreeResource, name: string): boolean {
     let map: supportedResourcesMaps|undefined = parent.map;
     let resource = parent.resource;
     let [propertyMap] = getMapPropertyFromId(q.question.cde.tinyId, map);
@@ -21,7 +23,7 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTree, name: 
     let value;
     switch (propertyMap.type) {
         case 'backbone':
-            throw new Error('BAD');
+            throw assertThrow();
         case 'choiceType':
             if (_isEqual(propertyMap.properties, ['dateTime', 'Period'])) {
                 let period = resource[propertyMap.property + 'Period'];
@@ -32,7 +34,7 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTree, name: 
                     value = date ? [date] : [];
                 }
             } else {
-                throw new Error('BAD');
+                assertThrow();
             }
             break;
         default:
@@ -70,25 +72,25 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTree, name: 
             }
     }
     // for mismatch array to single-select, only take first
-    q.question.answer = q.question.multiselect ? value : value[0];
+    q.question.answer = questionMulti(q) ? value : value[0];
     return true;
 }
 
-export function questionToProperty(q: FormQuestion, parent: ResourceTree, name: string): boolean {
+export function questionToProperty(q: FormQuestion, parent: ResourceTreeResource, name: string): boolean {
     let map: supportedResourcesMaps|undefined = parent.map;
     let resource = parent.resource;
     let [propertyMap] = getMapPropertyFromId(q.question.cde.tinyId, map);
     if (!resource || !propertyMap) {
         return false;
     }
-    let value = q.question.multiselect ? q.question.answer : [q.question.answer];
+    let value = questionMulti(q) ? q.question.answer : [q.question.answer];
     if (!value.length && propertyMap.default) {
         value = [propertyMap.default];
     }
     if (!value) value = [];
     switch (propertyMap.type) {
         case 'backbone':
-            throw new Error('BAD');
+            throw assertThrow();
         case 'choiceType':
             if (_isEqual(propertyMap.properties, ['dateTime', 'Period'])) {
                 switch (value.length) {
@@ -105,7 +107,7 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTree, name: 
                         resource[propertyMap.property + 'Period'] = undefined;
                 }
             } else {
-                throw new Error('BAD');
+                assertThrow();
             }
             break;
         default:
@@ -123,7 +125,7 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTree, name: 
             }
             let answer: any = value.map((a: string) => typedValueToProperty(propertyMap!, a));
             if (propertyMap.max === -1 || propertyMap.max > 1) {
-                if (q.question.multiselect) {
+                if (questionMulti(q)) {
                     // replace
                     resource[name] = answer.length ? answer : undefined;
                 } else {
@@ -143,7 +145,7 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTree, name: 
                 resource[name] = answer[0];
             }
             if (propertyMap.min > 0 && !resource[name]) {
-                throw new Error('BAD');
+                assertThrow();
             }
     }
     return true;
@@ -167,7 +169,7 @@ function presentIndex(list: any[], propertyMap: FhirMapped, v: any): number {
     return match.length ? list.indexOf(match[0]) : -1;
 }
 
-export function staticToProperty(self: ResourceTree) {
+export function staticToProperty(self: ResourceTreeResource) {
     if (!self.resource || !self.map) {
         return false;
     }
@@ -191,7 +193,7 @@ export function staticToProperty(self: ResourceTree) {
                 }
             }
             if (propertyMap.min > 0 && !resource[name]) {
-                throw new Error('BAD');
+                assertThrow();
             }
         }
     });

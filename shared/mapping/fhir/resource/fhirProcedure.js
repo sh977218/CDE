@@ -1,6 +1,6 @@
 import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
 
-export function newProcedure(encounter = null, patient = null) {
+export function newProcedure(encounter = undefined, patient = undefined) {
     return {
         resourceType: 'Procedure',
         bodySite: undefined,
