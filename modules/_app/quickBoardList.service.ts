@@ -6,7 +6,7 @@ import _isEmpty from 'lodash/isEmpty';
 import _remove from 'lodash/remove';
 
 import { AlertService } from '_app/alert.service';
-import { iterateFesSync } from 'shared/form/formShared';
+import { iterateFesSync } from 'shared/form/fe';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 

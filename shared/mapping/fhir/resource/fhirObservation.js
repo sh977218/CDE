@@ -1,12 +1,13 @@
 import { newCodeableConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
 import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
 import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
+import { getIds } from 'shared/form/formAndFe';
 
 /* Limitations:
  *  * only transfer the first LOINC code to FHIR, no other codes
  */
 
-export function newObservation(encounter = null, patient = null) {
+export function newObservation(encounter = undefined, patient = undefined) {
     return {
         resourceType: 'Observation',
         id: undefined,
@@ -30,18 +31,11 @@ export function observationComponentFromForm(fe, getDisplay, observationComponen
     if (!observationComponent) {
         observationComponent = newObservationComponent();
     }
-    let eltRef = null;
-    if (fe.elementType === 'form') {
-        if (fe.inForm) {
-            eltRef = fe.inForm.form;
-        }
-    } else if (fe.elementType === 'question') {
-        eltRef = fe.question.cde;
+    let ids = getIds(fe) || [];
+    let id = ids.filter(id => id.source === 'LOINC')[0] || ids[0];
+    if (!id) {
+        throw new Error('cannot be here without ids');
     }
-    if (!Array.isArray(eltRef.ids) || !eltRef.ids.length) eltRef = fe;
-    if (!Array.isArray(eltRef.ids) || !eltRef.ids.length) throw new Error('cannot be here without ids');
-    let id = eltRef.ids[0];
-
     return getDisplay(id.source, id.id).then(display => {
         observationComponent.code = newCodeableConcept([newCoding(id.source, id.id, id.version, display)]);
         return observationComponent;

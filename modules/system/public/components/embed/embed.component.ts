@@ -5,8 +5,26 @@ import _noop from 'lodash/noop';
 
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
+import { ObjectId } from 'shared/models.model';
 
-type Embed = any;
+type Embed = {
+    _id?: ObjectId,
+    org: string,
+    width: number,
+    height: number,
+    cde: any,
+    form: any
+};
+
+const defaultCommon = JSON.stringify({
+    lowestRegistrationStatus: 'Qualified',
+    linkedForms: {},
+    pageSize: 5,
+    registrationStatus: {},
+    primaryDefinition: {},
+    otherNames: [],
+    ids: []
+});
 
 
 @Component({
@@ -14,19 +32,9 @@ type Embed = any;
     templateUrl: 'embed.component.html'
 })
 export class EmbedComponent implements OnInit {
-    defaultCommon: any = {
-        lowestRegistrationStatus: 'Qualified',
-        linkedForms: {},
-        pageSize: 5,
-        registrationStatus: {},
-        primaryDefinition: {},
-        otherNames: [],
-        ids: []
-    };
-    embeds: any = {};
+    embeds: Embed[][] = [];
     previewOn?: boolean;
-    selectedOrg: Embed;
-    selection: any;
+    selection: Embed;
     showDelete?: boolean;
     previewSrc?: SafeResourceUrl;
 
@@ -41,52 +49,40 @@ export class EmbedComponent implements OnInit {
         protected userService: UserService,
     ) {}
 
-    addCdeClassification () {
+    addCdeClassification() {
         if (!this.selection.cde.classifications) this.selection.cde.classifications = [];
         this.selection.cde.classifications.push({under: ''});
     }
 
-    addCdeId () {
+    addCdeId() {
         if (!this.selection.cde.ids) this.selection.cde.ids = [];
         this.selection.cde.ids.push({source: '', idLabel: 'Id', versionLabel: ''});
     }
 
-    addCdeName () {
+    addCdeName() {
         if (!this.selection.cde.otherNames) this.selection.cde.otherNames = [];
         this.selection.cde.otherNames.push({contextName: '', label: ''});
     }
 
-    addEmbed (org: string) {
+    addEmbed(org: string) {
         if (!this.embeds[org]) this.embeds[org] = [];
 
-        this.embeds[org].push(
-            {
-                org: org,
-                width: 1000,
-                height: 900,
-                cde: JSON.parse(JSON.stringify(this.defaultCommon)),
-                form: JSON.parse(JSON.stringify(this.defaultCommon))
-            }
-        );
-
-        this.selection = this.embeds[org][this.embeds[org].length - 1];
-        this.selectedOrg = org;
+        let embed: Embed = {
+            org: org,
+            width: 1000,
+            height: 900,
+            cde: JSON.parse(defaultCommon),
+            form: JSON.parse(defaultCommon)
+        };
+        this.embeds[org].push(embed);
+        this.selection = embed;
     }
 
-    cancel () {
-        this.http.get('/embeds/' + encodeURIComponent(this.selection.org)).subscribe(response => {
-            this.embeds[this.selection.org] = response;
-            this.selection = null;
-            this.previewOn = false;
-        });
-    }
-
-    edit (org: string, e: Embed) {
+    edit(org: string, e: Embed) {
         this.selection = e;
-        this.selectedOrg = org;
     }
 
-    enableCde (b: boolean) {
+    enableCde(b: boolean) {
         if (b) {
             this.selection.cde = {lowestRegistrationStatus: 'Qualified'};
         } else {
@@ -94,34 +90,41 @@ export class EmbedComponent implements OnInit {
         }
     }
 
-    enablePreview (b: boolean) {
+    enablePreview(b: boolean) {
         this.previewOn = b;
         if (b) {
             this.previewSrc = this.sanitizer.bypassSecurityTrustResourceUrl('/embedded/public/html/index.html?id=' + this.selection._id);
         }
     }
 
-    reloadEmbeds ()  {
+    reloadEmbeds()  {
         this.userService.then(() => {
-            this.userService.userOrgs.forEach(o => {
-                this.http.get('/embeds/' + encodeURIComponent(o)).subscribe(response => this.embeds[o] = response);
-            });
+            this.userService.userOrgs.forEach(org => this.reloadEmbedsOrg(org));
         }, _noop);
     }
 
-    remove (e: Embed) {
+    reloadEmbedsOrg(org: string) {
+        this.http.get<Embed[]>('/embeds/' + encodeURIComponent(org)).subscribe(response => {
+            this.embeds[org] = response;
+            this.selection = undefined;
+            this.previewOn = false;
+        });
+    }
+
+    remove(e: Embed) {
         this.http.delete('/embed/' + e._id).subscribe(() => {
             this.alert.addAlert('success', 'Removed');
             this.reloadEmbeds();
         });
     }
 
-    save () {
+    save() {
         this.http.post<any>('/embed', this.selection).subscribe(response => {
             if (!this.selection._id) this.selection._id = response._id;
             this.selection = null;
             this.previewOn = false;
             this.alert.addAlert('success', 'Saved.');
+            this.reloadEmbeds();
         }, () => this.alert.addAlert('danger', 'There was an issue saving this record.'));
     }
 }

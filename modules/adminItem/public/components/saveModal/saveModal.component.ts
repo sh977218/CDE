@@ -4,7 +4,7 @@ import { NgbModalRef, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstra
 import _isEqual from 'lodash/isEqual';
 
 import { AlertService } from '_app/alert.service';
-import { iterateFormElements } from 'shared/form/formShared';
+import { iterateFormElements } from 'shared/form/fe';
 
 
 @Component({

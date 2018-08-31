@@ -18,6 +18,10 @@ export class FhirAddress extends FhirElement {
     use?: FhirCode;
 }
 
+export class FhirBackboneElement extends FhirElement {
+    modifierExtension?: FhirExtension[];
+}
+
 export type FhirBase64Binary = string[];
 export type FhirCode<T = string> = T;
 
@@ -94,6 +98,7 @@ export class FhirIdentifier extends FhirElement {
     value?: string;
 }
 
+export type FhirMarkdown = string;
 export type FhirMeta = any;
 export type FhirNarrative = any;
 

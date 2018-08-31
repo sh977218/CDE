@@ -1,4 +1,4 @@
-import { getLabel as getLabelShared, iterateFesSync } from 'shared/form/formShared';
+import { getLabel as getLabelShared, iterateFesSync } from 'shared/form/fe';
 
 export function getLabel(q) {
     return getLabelShared(q).trim();

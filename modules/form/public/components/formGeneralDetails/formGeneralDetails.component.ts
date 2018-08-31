@@ -3,9 +3,9 @@ import _noop from 'lodash/noop';
 
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'core/orgHelper.service';
-import { supportedFhirResources, supportedFhirResourcesArray } from 'shared/models.model';
 import { CdeForm } from 'shared/form/form.model';
 import { isMappedTo } from 'shared/form/formAndFe';
+import { supportedFhirResources, supportedFhirResourcesArray } from 'shared/mapping/fhir/fhirResource.model';
 
 @Component({
     selector: 'cde-form-general-details',

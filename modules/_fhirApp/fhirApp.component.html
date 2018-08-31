@@ -20,7 +20,7 @@
                     <span class="info-label" style="text-transform: capitalize">{{cdeFhir.fhirData.patient?.gender}}</span>
                 </div>
                 <div class="list-group mt-3">
-                    <button type="button" class="list-group-item" (click)="mode = 'filter'">
+                    <button type="button" class="list-group-item" (click)="modeChange('filter')">
                         Filter
                         <span *ngIf="cdeFhir.fhirData.context" class="badge badge-primary"
                               style="background-color: #007bff;white-space: normal">
@@ -29,15 +29,16 @@
                     </button>
                 </div>
                 <div class="list-group mt-1">
-                    <button type="button" class="list-group-item" (click)="mode = 'browse'">
+                    <button type="button" class="list-group-item" (click)="modeChange('browse')">
                         Browse
                     </button>
                 </div>
                 <div class="list-group mt-3">
                     <div class="info-heading">Panels:</div>
                     <button type="button" class="list-group-item" *ngFor="let f of cdeFhir.patientForms"
-                            (click)="mode = 'form'; loadForm(f)">
+                            (click)="modeChange('form'); loadForm(f)">
                         {{f.name}}
+                        <span class="badge badge-secondary">{{formResourceLabel(f.form)}}</span>
                         <span style="float: right">
                             <span *ngIf="f.total" style="display: table-cell; width: 60px;">
                                 <div style="font-size: smaller; text-align: center">{{f.observed}} / {{f.total}}</div>
@@ -70,7 +71,7 @@
                         Browse
                         <mat-form-field>
                             <mat-select placeholder="Select Type" [(ngModel)]="browseMode"
-                                        (selectionChange)="browseModeSelected($event)">
+                                        (selectionChange)="browseResourceSelected($event)">
                                 <mat-option *ngFor="let option of browseOptions" [value]="option">{{option}}</mat-option>
                             </mat-select>
                         </mat-form-field>
