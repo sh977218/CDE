@@ -117,7 +117,7 @@ exports.module = function (roleConfig) {
             orgClassificationSvc.deleteOrgClassification(req.user, deleteClassification, settings,
                 handleError({req, res}, () => {
                 }));
-            res.status(102).send('Deleting in progress.');
+            res.status(202).send('Deleting in progress.');
         }));
     });
 
@@ -133,7 +133,7 @@ exports.module = function (roleConfig) {
             orgClassificationSvc.renameOrgClassification(req.user, newClassification, settings,
                 handleError({req, res}, () => {
                 }));
-            res.status(102).send('Renaming in progress.');
+            res.status(202).send('Renaming in progress.');
         }));
     });
 
@@ -161,7 +161,7 @@ exports.module = function (roleConfig) {
                 orgClassificationSvc.reclassifyOrgClassification(req.user, oldClassification, newClassification, settings,
                     handleError({req, res}, () => {
                     }));
-                res.status(102).send('Reclassifying in progress.');
+                res.status(202).send('Reclassifying in progress.');
             })
         )
     });
@@ -206,7 +206,7 @@ exports.module = function (roleConfig) {
                 res.send('Done')));
         }
         else {
-            res.status(102).send('Processing');
+            res.status(202).send('Processing');
             bulkClassifyCdes(req.user, req.body.eltId, elements, req.body);
         }
         mongo_data.addToClassifAudit({
