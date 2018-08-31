@@ -1,13 +1,11 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 
+import { findQuestionByTinyId } from 'shared/form/fe';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
-import { findQuestionByTinyId } from 'shared/form/formShared';
-import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class SkipLogicService {
-    constructor(private errorHandler: ErrorHandler,
-                private http: HttpClient) {
+    constructor(private errorHandler: ErrorHandler) {
     }
 
     evalSkipLogic(parent, fe, nrs) {
@@ -29,51 +27,18 @@ export class SkipLogicService {
         return skipLogicResult;
     }
 
-    a: number;
-    b: number;
-
-    calculateScore(question, elt, cb) {
+    calculateScore(question, elt) {
         if (!question.question.isScore) {
             return;
         }
-        let score;
+        let score: number = 0;
         let error: string = '';
-        question.question.cde.derivationRules.forEach(async derRule => {
+        question.question.cde.derivationRules.forEach(derRule => {
             if (derRule.ruleType === 'score') {
-
-                if (derRule.formula === 'bmi') {
-                    let aQuestion = findQuestionByTinyId(derRule.inputs[0], elt);
-                    if (!aQuestion.question.answerUom) {
-                        return error = 'Incomplete answers (Weight UOM has to be kg)';
-                    }
-                    let aResult;
-                    let a = parseFloat(aQuestion.question.answer);
-                    if (this.a !== a) {
-                        aResult = await this.http.get('/ucumConvert?value=' + a + '&from=' + aQuestion.question.answerUom.code + '&to=kg').toPromise();
-                        this.a = aResult;
-                    } else aResult = this.a;
-                    let bQuestion = findQuestionByTinyId(derRule.inputs[1], elt);
-                    if (!bQuestion.question.answerUom || bQuestion.question.answerUom.code !== 'm') {
-                        return error = 'Incomplete answers (Height UOM has to be m)';
-                    }
-                    let b = <number>  parseFloat(bQuestion.question.answer);
-                    let bResult;
-                    if (this.b !== b) {
-                        bResult = await this.http.get('/ucumConvert?value=' + b + '&from=' + bQuestion.question.answerUom.code + '&to=m').toPromise();
-                        this.b = bResult;
-                    } else bResult = this.b;
-                    if (aResult && bResult) {
-                        score = aResult / (bResult * bResult);
-                        cb(score);
-                    }
-                    else error = 'Incomplete answers';
-                }
                 if (derRule.formula === 'sumAll' || derRule.formula === 'mean') {
-                    console.log('a:');
                     derRule.inputs.forEach(cdeTinyId => {
                         let q = findQuestionByTinyId(cdeTinyId, elt);
                         if (isNaN(score)) {
-                            cb(score);
                             return;
                         }
                         if (q) {
@@ -131,10 +96,10 @@ export class SkipLogicService {
             nrs.addError('SkipLogic is incorrect. Question not found. ' + rule);
             return false;
         }
-        let realAnswer;
-        this.calculateScore(realAnswerObj, nrs.vm, newScore => {
-            realAnswer = realAnswerObj.question.isScore ? newScore : realAnswerObj.question.answer;
-        });
+
+        let realAnswer = realAnswerObj.question.isScore
+            ? this.calculateScore(realAnswerObj, nrs.vm).score
+            : realAnswerObj.question.answer;
         if (realAnswer === undefined || realAnswer === null ||
             (typeof realAnswer === 'number' && isNaN(realAnswer))) realAnswer = '';
 
@@ -145,7 +110,7 @@ export class SkipLogicService {
                 if (realAnswer === '' || ('' + realAnswer).trim().length === 0) return true;
             }
         }
-        if (!realAnswer && realAnswer !== '') return false;
+        if (typeof(realAnswer) === 'undefined') return false;
         switch (realAnswerObj.question.datatype) {
             case 'Date':
                 // format HTML5 standard YYYY-MM-DD to American DD/MM/YYYY
@@ -192,4 +157,5 @@ export class SkipLogicService {
                 return false;
         }
     }
+
 }

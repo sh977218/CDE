@@ -1,7 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
+// import * as moment from 'moment/min/moment.min';
 
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CodeAndSystem } from 'shared/models.model';
+import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 
@@ -18,23 +21,15 @@ export class NativeQuestionComponent implements OnInit {
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
     metadataTagsNew: string;
     previousUom: CodeAndSystem;
-    score: number = 0;
-
+    questionMulti = questionMulti;
     // static readonly reHasTime = /[hHmsSkaAZ]/;
 
     ngOnInit() {
         this.previousUom = this.formElement.question.answerUom;
-        if (this.formElement.question.isScore) {
-            setInterval(() => {
-                this.sls.calculateScore(this.formElement, this.nrs.vm, newScore => {
-                    this.score = newScore;
-                });
-            }, 5000);
-        }
-
     }
 
-    constructor(public sls: SkipLogicService,
+    constructor(private http: HttpClient,
+                public sls: SkipLogicService,
                 public nrs: NativeRenderService) {
     }
 
@@ -74,7 +69,7 @@ export class NativeQuestionComponent implements OnInit {
 
             if (typeof(value) === 'number' && !isNaN(value)) {
                 let unit = this.formElement.question.answerUom;
-                this.nrs.convertUnits(value, this.previousUom, this.formElement.question.answerUom, (error, result) => {
+                this.convertUnits(value, this.previousUom, this.formElement.question.answerUom, (error, result) => {
                     if (!error && result !== undefined && !isNaN(result) && unit === this.formElement.question.answerUom) {
                         this.formElement.question.answer = result;
                     }
@@ -84,6 +79,15 @@ export class NativeQuestionComponent implements OnInit {
         this.previousUom = this.formElement.question.answerUom;
     }
 
+    // cb(error, number)
+    convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb) {
+        if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
+            this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit.code) + '&to='
+                + encodeURIComponent(toUnit.code)).subscribe(v => cb(undefined, v), e => cb(e));
+        } else {
+            cb(undefined, value); // no conversion for other systems
+        }
+    }
 
     hasHeading(q: FormQuestion): boolean {
         return this.hasLabel(q) || q.instructions && !!q.instructions.value;
@@ -119,12 +123,4 @@ export class NativeQuestionComponent implements OnInit {
     //         this.formElement.question.answer = '';
     //     }
     // }
-
-    /*
-        convertUnitsPromise(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem) {
-            return this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit.code) + '&to='
-                + encodeURIComponent(toUnit.code)).toPromise();
-        }
-
-        */
 }

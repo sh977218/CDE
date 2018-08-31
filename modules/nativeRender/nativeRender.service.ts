@@ -7,10 +7,8 @@ import {
     CdeForm, DisplayProfile, FormElement, FormOrElement, FormQuestion, FormSection, FormSectionOrForm,
     PermissibleFormValue, Question
 } from 'shared/form/form.model';
-import { addFormIds, iterateFeSync } from 'shared/form/formShared';
+import { addFormIds, iterateFeSync, questionMulti } from 'shared/form/fe';
 import { getShowIfQ } from 'shared/form/skipLogic';
-import { FormService } from 'nativeRender/form.service';
-import { HttpClient } from '@angular/common/http';
 
 type SkipLogicOperators = '=' | '!=' | '>' | '<' | '>=' | '<=';
 
@@ -28,12 +26,11 @@ export class NativeRenderService {
     followForm: any;
     flatMapping: any;
     profile?: DisplayProfile;
+    questionMulti = questionMulti;
     submitForm?: boolean;
     vm: any;
 
-    constructor(private http: HttpClient,
-                public skipLogicService: SkipLogicService) {
-    }
+    constructor(public skipLogicService: SkipLogicService) {}
 
     eltSet(elt) {
         if (elt !== this.elt) {
@@ -68,12 +65,8 @@ export class NativeRenderService {
         }
     }
 
-    static isRadioOrCheckbox(fe: FormQuestion) { // returns true for radio and false for checkbox
-        return !fe.question.multiselect && !(fe.question.answers.length === 1 && !fe.question.required);
-    }
-
     static isPreselectedRadio(fe: FormQuestion) {
-        return fe.question.answers.length === 1 && fe.question.required && !fe.question.multiselect;
+        return !fe.question.multiselect && fe.question.answers.length === 1 && fe.question.required;
     }
 
     get nativeRenderType() {
@@ -167,11 +160,9 @@ export class NativeRenderService {
     addError(msg: string) {
         if (this.errors.indexOf(msg) === -1) this.errors.push(msg);
     }
-
     hasErrors() {
         return !!this.errors.length;
     }
-
     getErrors() {
         return this.errors;
     }
@@ -189,33 +180,26 @@ export class NativeRenderService {
             }
         }
     }
-
     checkboxIsChecked(model: Question, value: any) {
         if (!Array.isArray(model.answer)) model.answer = [];
         return (model.answer.indexOf(value) !== -1);
     }
 
-    selectModel(question: Question) {
-        if (question.multiselect || question.answer === undefined) {
-            return question.answer;
+    selectModel(q: FormQuestion) {
+        if (q.question.multiselect || q.question.answer === undefined) {
+            return q.question.answer;
         } else {
-            if (!Array.isArray(question.answerVM)) {
-                question.answerVM = [];
+            if (!Array.isArray(q.question.answerVM)) {
+                q.question.answerVM = [];
             }
-            question.answerVM.length = 0;
-            question.answerVM.push(question.answer);
-            return question.answerVM;
+            q.question.answerVM.length = 0;
+            q.question.answerVM.push(q.question.answer);
+            return q.question.answerVM;
         }
     }
 
-    selectModelChange($event: any, question: Question) {
-        if (question.multiselect) {
-            question.answer = $event;
-        } else {
-            if ($event.length) {
-                question.answer = $event[0];
-            }
-        }
+    selectModelChange($event: any, q: FormQuestion) {
+        q.question.answer = q.question.multiselect ? $event : $event[0];
     }
 
     static cloneForm(form: CdeForm): CdeForm {
@@ -246,7 +230,6 @@ export class NativeRenderService {
                         let value = substitution++;
                         return value ? '_fake' + value : '';
                     }
-
                     if (parentQ.question.datatype === 'Value List') {
                         if (match[3] === "") {
                             parentQ.question.answers.push({
@@ -293,7 +276,7 @@ export class NativeRenderService {
             // Post-Transform Processing
             if ((fe.elementType === 'section' || fe.elementType === 'form')
                 && NativeRenderService.transformFormToInline(fe)) {
-                (fe as FormSectionOrForm).forbidMatrix = true;
+                    (fe as FormSectionOrForm).forbidMatrix = true;
             }
             if (fe.skipLogic) fe.skipLogic = undefined;
         }
@@ -364,9 +347,8 @@ export class NativeRenderService {
     }
 
     static flattenForm(elt: CdeForm) {
-        type QuestionStruct = { question: string, name: string, ids: CdeId[], tinyId: string, answerUom?: CodeAndSystem };
-        type SectionQuestions = { section: string, questions: QuestionStruct[] };
-
+        type QuestionStruct = {question: string, name: string, ids: CdeId[], tinyId: string, answerUom?: CodeAndSystem};
+        type SectionQuestions = {section: string, questions: QuestionStruct[]};
         function isSectionQuestions(a: SectionQuestions | QuestionStruct): a is SectionQuestions {
             return a.hasOwnProperty('section');
         }
@@ -390,7 +372,6 @@ export class NativeRenderService {
                 }
                 return questions;
             }
-
             let repeats = NativeRenderService.getRepeatNumber(fe);
             let repeatSection: SectionQuestions[] = [];
             let questions: QuestionStruct[] = [];
@@ -481,16 +462,5 @@ export class NativeRenderService {
             }
         }
         return 1;
-    }
-
-
-    // cb(error, number)
-    convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb) {
-        if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
-            this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit.code) + '&to='
-                + encodeURIComponent(toUnit.code)).subscribe(v => cb(undefined, v), e => cb(e));
-        } else {
-            cb(undefined, value); // no conversion for other systems
-        }
     }
 }
