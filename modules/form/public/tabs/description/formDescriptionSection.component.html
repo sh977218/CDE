@@ -4,12 +4,12 @@
         <div *ngIf="!isSubForm && canEdit" class="float-left">
             <mat-icon class="question-move-handle ml-1"
                [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">drag_handle</mat-icon>
-            <i *ngIf="section.skipLogic?.condition?.length > 0 && section.elementType === 'section'"
-               class="fa fa-cog mx-1" [ngClass]="{'fa-spin': section.updatedSkipLogic}"
-               title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}"></i>
-            <i *ngIf="section.skipLogic?.condition?.length > 0 && section.elementType === 'form'"
-               class="fa fa-cog mr-1" [ngClass]="{'fa-spin': section.updatedSkipLogic}"
-               title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}"></i>
+            <mat-icon *ngIf="section.skipLogic?.condition?.length > 0 && section.elementType === 'section'"
+               [ngClass]="{'spin': section.updatedSkipLogic}"
+               title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}">cog</mat-icon>
+            <mat-icon *ngIf="section.skipLogic?.condition?.length > 0 && section.elementType === 'form'"
+                      [ngClass]="{'spin': section.updatedSkipLogic}"
+               title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}">cog</mat-icon>
         </div>
         <div id="innerForm_label_edit_icon_{{section.label}}"
              class="font-weight-bold float-left hand-cursor sectionLabel ml-1"
@@ -31,10 +31,10 @@
                title="{{section.inForm.form.name}}"
                [routerLink]="'/formView'"
                [queryParams]="{tinyId: section.inForm.form.tinyId, version: section.inForm.form.version}">
-                <i class="fa fa-eye"></i> View Form
+                <mat-icon>visibility</mat-icon> View Form
             </a>
-            <i *ngIf="section.elementType === 'section'" class="fa fa-copy copySection" title="Copy section"
-               (click)="copySection(section)"></i>
+            <mat-icon *ngIf="section.elementType === 'section'" class="copySection" title="Copy section"
+               (click)="copySection(section)">file_copy</mat-icon>
             <cde-delete-with-confirm (deleted)="removeNode(node)"></cde-delete-with-confirm>
         </div>
     </div>
