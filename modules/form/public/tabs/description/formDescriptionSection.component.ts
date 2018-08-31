@@ -17,9 +17,9 @@ import { FormDescriptionComponent } from 'form/public/tabs/description/formDescr
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { FormattedValue } from 'shared/models.model';
+import { convertFormToSection } from 'shared/form/form';
 import { CdeForm, FormElement, FormInForm, FormSection, SkipLogic } from 'shared/form/form.model';
 import { isMappedTo } from 'shared/form/formAndFe';
-import { convertFormToSection, isSubForm } from 'shared/form/formShared';
 
 
 @Component({
@@ -71,9 +71,9 @@ export class FormDescriptionSectionComponent implements OnInit {
         if (!this.section.skipLogic) this.section.skipLogic = new SkipLogic;
 
         if (this.node.data.elementType === "form") {
-            if (isSubForm(this.node.parent)) this.isSubForm = isSubForm(this.node);
+            if (FormDescriptionComponent.isSubForm(this.node.parent)) this.isSubForm = FormDescriptionComponent.isSubForm(this.node);
         } else {
-            if (isSubForm(this.node)) this.isSubForm = isSubForm(this.node);
+            if (FormDescriptionComponent.isSubForm(this.node)) this.isSubForm = FormDescriptionComponent.isSubForm(this.node);
         }
 
         this.checkRepeatOptions();

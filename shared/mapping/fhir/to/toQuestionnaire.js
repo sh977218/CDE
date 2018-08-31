@@ -13,12 +13,13 @@ import { capString } from 'shared/system/util';
  *      or formToQuestionnaire(form, options, require(./server/system/parseConfig))
  */
 export function formToQuestionnaire(form, options, config) {
+    let date = form.updated || form.created;
     let Q = {
         code: form.fhir && form.fhir.code ? form.fhir.code : undefined, // TODO: to be implemented by form tagging
         contact: [{ name: 'CDE Repository', telecom: [{system: 'url', value: config.publicUrl}]}],
         copyright: form.copyright && form.copyright.text ? form.copyright.text || form.copyright.authority : undefined,
-        date: form.updated ? form.updated.toISOString() : form.created.toISOString(),
-        identifier: [newIdentifier(config.publicUrl + ITEM_MAP.form.schema, form.tinyId, 'official')],
+        date: typeof(date) === 'object' ? date.toISOString() : date,
+        identifier: [newIdentifier(config.publicUrl, form.tinyId + '-' + form.version, 'official')],
         item: [],
         name: form.designations[0].designation,
         publisher: 'NIH, National Library of Medicine, Common Data Elements Repository',

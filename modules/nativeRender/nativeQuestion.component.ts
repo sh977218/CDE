@@ -4,6 +4,7 @@ import { Component, Input, OnInit } from '@angular/core';
 
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CodeAndSystem } from 'shared/models.model';
+import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 
@@ -20,7 +21,7 @@ export class NativeQuestionComponent implements OnInit {
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
     metadataTagsNew: string;
     previousUom: CodeAndSystem;
-
+    questionMulti = questionMulti;
     // static readonly reHasTime = /[hHmsSkaAZ]/;
 
     ngOnInit() {

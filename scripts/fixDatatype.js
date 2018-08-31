@@ -2,7 +2,7 @@ const DataElement = require('../server/cde/mongo-cde').DataElement;
 const DataElementDraft = require('../server/cde/mongo-cde').DataElementDraft;
 const Form = require('../server/form/mongo-form').Form;
 const FormDraft = require('../server/form/mongo-form').FormDraft;
-const formShared = require('@std/esm')(module)('../shared/form/formShared');
+const formShared = require('@std/esm')(module)('../shared/form/fe');
 
 const DATA_TYPE_MAP = {
     "": "Text",

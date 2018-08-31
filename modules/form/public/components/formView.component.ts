@@ -25,7 +25,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormElementsContainer, FormInForm, QuestionCde } from 'shared/form/form.model';
 import {
     addFormIds, areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb
-} from 'shared/form/formShared';
+} from 'shared/form/fe';
 import { httpErrorMessage } from 'widget/angularHelper';
 import { isIe, scrollTo } from 'widget/browser';
 
