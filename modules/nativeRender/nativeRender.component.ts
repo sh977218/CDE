@@ -1,17 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import './nativeRender.scss';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
-import { ScoreService } from 'nativeRender/score.service';
 
 @Component({
     selector: 'cde-native-render',
     providers: [NativeRenderService],
     templateUrl: './nativeRender.component.html',
 })
-export class NativeRenderComponent implements OnInit {
+export class NativeRenderComponent {
     @Input() set elt(e: CdeForm) {
         this.nrs.eltSet(e);
     }
@@ -35,7 +34,6 @@ export class NativeRenderComponent implements OnInit {
     readonly NRS = NativeRenderService;
 
     constructor(private sanitizer: DomSanitizer,
-                private ss: ScoreService,
                 public nrs: NativeRenderService) {
         this.formUrl = window.location.href;
         this.endpointUrl = (<any>window).endpointUrl;
@@ -43,9 +41,5 @@ export class NativeRenderComponent implements OnInit {
 
     getEndpointUrl() {
         return this.sanitizer.bypassSecurityTrustUrl(this.endpointUrl);
-    }
-
-    ngOnInit(): void {
-        this.ss.register(this.nrs.elt);
     }
 }

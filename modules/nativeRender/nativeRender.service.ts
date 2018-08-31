@@ -31,7 +31,7 @@ export class NativeRenderService {
     submitForm?: boolean;
     vm: any;
 
-    constructor(private ss: ScoreService,
+    constructor(private scoreSvc: ScoreService,
                 public skipLogicService: SkipLogicService) {
     }
 
@@ -50,6 +50,7 @@ export class NativeRenderService {
         if (this.submitForm && !this.flatMapping) {
             this.flatMapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
         }
+        this.scoreSvc.register(this.elt);
     }
 
     getAliases(f: FormQuestion) {
@@ -117,7 +118,7 @@ export class NativeRenderService {
         } else {
             q.question.answer = undefined;
         }
-        this.ss.triggerCalculateScore(q);
+        this.scoreSvc.triggerCalculateScore(q);
     }
 
     render(renderType) {
@@ -185,7 +186,7 @@ export class NativeRenderService {
                 model.answer.splice(model.answer.indexOf(value), 1);
             }
         }
-        this.ss.triggerCalculateScore(q);
+        this.scoreSvc.triggerCalculateScore(q);
     }
 
     checkboxIsChecked(model: Question, value: any) {

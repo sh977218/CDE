@@ -24,7 +24,7 @@ export class NativeTableComponent implements OnInit {
     datePrecisionToType = FormQuestion.datePrecisionToType;
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
 
-    constructor(private ss: ScoreService,
+    constructor(private scoreSvc:ScoreService,
                 public nrs: NativeRenderService) {
     }
 
@@ -38,7 +38,7 @@ export class NativeTableComponent implements OnInit {
         } else {
             obj[property] = undefined;
         }
-        this.ss.triggerCalculateScore(q.cde.tinyId);
+        this.scoreSvc.triggerCalculateScore(q.cde.tinyId);
     }
 
     render() {

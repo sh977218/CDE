@@ -8,6 +8,7 @@ export class ScoreService {
     elt;
 
     register(elt) {
+        // register all scores used by one question tinyId
         this.elt = elt;
         let formScoreQuestions = getFormScoreQuestion(elt);
         formScoreQuestions.forEach(formScoreQuestion => {
@@ -26,9 +27,7 @@ export class ScoreService {
      */
     triggerCalculateScore(inputQuestion: FormQuestion) {
         let scoreQuestions = this.INPUT_SCORE_MAP[inputQuestion.question.cde.tinyId];
-        scoreQuestions.forEach(scoreQuestion => {
-            this.calculateScore(scoreQuestion);
-        });
+        scoreQuestions.forEach(this.calculateScore);
     }
 
     /**
@@ -42,7 +41,7 @@ export class ScoreService {
                     derRule.inputs.forEach(cdeTinyId => {
                         let q = findQuestionByTinyId(cdeTinyId, this.elt);
                         if (!q) {
-                            scoreQuestion.question.scoreError = 'Can not find ' + cdeTinyId + ' in form ' + this.elt.tinyId;
+                            scoreQuestion.question.scoreError = 'Cannot find ' + cdeTinyId + ' in form ' + this.elt.tinyId;
                             return;
                         }
                         let answer = q.question.answer;
@@ -58,7 +57,7 @@ export class ScoreService {
                     derRule.inputs.forEach(cdeTinyId => {
                         let q = findQuestionByTinyId(cdeTinyId, this.elt);
                         if (!q) {
-                            scoreQuestion.question.scoreError = 'Can not find ' + cdeTinyId + ' in form ' + this.elt.tinyId;
+                            scoreQuestion.question.scoreError = 'Cannot find ' + cdeTinyId + ' in form ' + this.elt.tinyId;
                             return;
                         }
                         let answer = q.question.answer;
