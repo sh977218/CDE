@@ -4,6 +4,7 @@ const fs = require('fs');
 let expectedContent = {
     "assignVsacId": "vsacBridge/invalidId - Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
     "badQuery": "elasticSearch/cde - Failed to load resource: the server responded with a status of 400 (Bad Request)",
+    "boardFiveUnapprovedMessagesPerUserReply": "board - Failed to load resource: the server responded with a status of 403 (Forbidden)",
     "boardPublisher": "board - Failed to load resource: the server responded with a status of 403 (Forbidden)",
     "cdeAddClassification": "addCdeClassification/ - Failed to load resource: the server responded with a status of 409 (Conflict)",
     "cdeLiveCommentTest": "WARNING https://www.nlm.nih.gov/cde/ - The SSL certificate used to load resources from https://dnn506yrbagrg.cloudfront.net",
@@ -12,6 +13,7 @@ let expectedContent = {
     "checkDuplicatesClassification": "addCdeClassification/ - Failed to load resource: the server responded with a status of 409 (Conflict)",
     "declineComment": "comments/decline - Failed to load resource: the server responded with a status of 404 (Not Found)",
     "embedNinds": "orgaccountmanagement - [DOM] Input elements should have autocomplete attributes",
+    "formOneUnapprovedReplyPerUser": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
     "formFiveUnapprovedMessagesPerUserComment": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
     "formTinyIdSwaggerApi": "docs/swagger-ui-bundle.js 51:49866 \"Could not find component\"",
     "formTinyIdVersionSwaggerApi": "docs/swagger-ui-bundle.js 51:49866 \"Could not find component\"",
@@ -21,6 +23,7 @@ let expectedContent = {
     "pageNotFound": "de/abc - Failed to load resource: the server responded with a status of 404 (Not Found)",
     "publicVsPrivateBoards": "board/5750474d89949d54384ee640/0 - Failed to load resource: the server responded with a status of",
     "report": "cde/search 0:0 Uncaught SyntaxError: Unexpected token <",
+    "removeVsacId": "*",
     "searchPageSize": "elasticSearch/cde - Failed to load resource: the server responded with a status of 400 (Bad Request)",
     "tooManyBoards": "board - Failed to load resource: the server responded with a status of 403 (Forbidden)",
     "wrongLogin": "login - Failed to load resource: the server responded with a status of 403"
