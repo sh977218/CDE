@@ -1691,12 +1691,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     private void assertClass(By by, String className, boolean contains) {
         for (Integer i = 0; i < 10; i++) {
-            WebElement we = findElement(by);
             try {
-                Assert.assertEquals(contains, we.getAttribute("class").contains(className));
+                Assert.assertEquals(findElement(by).getAttribute("class").contains(className), contains);
                 break;
             } catch (Exception e) {
-                if (i == 9) Assert.fail("Could not find class: " + className + ". Actual: " + we.getAttribute("class"));
+                if (i == 9) Assert.fail("Could not find class: " + className + ". Actual: " + findElement(by).getAttribute("class"));
                 hangon(1);
             }
             }
