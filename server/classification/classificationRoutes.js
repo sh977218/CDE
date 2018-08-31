@@ -14,7 +14,7 @@ exports.module = function (roleConfig) {
 
     router.post('/addCdeClassification/', (req, res) => {
         if (!roleConfig.allowClassify(req.user, req.body.orgName)) {
-            return res.status(401).send('You do not permission to do this.');
+            return res.status(401).send();
         }
         let invalidateRequest = classificationNode.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send(invalidateRequest);
@@ -37,7 +37,7 @@ exports.module = function (roleConfig) {
     });
     router.post('/removeCdeClassification/', (req, res) => {
         if (!roleConfig.allowClassify(req.user, req.body.orgName)) {
-            return res.status(401).send({error: 'You do not permission to do this.'});
+            return res.status(401).send();
         }
         let invalidateRequest = classificationNode.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send({error: invalidateRequest});
@@ -59,7 +59,7 @@ exports.module = function (roleConfig) {
 
     router.post('/addFormClassification/', (req, res) => {
         if (!roleConfig.allowClassify(req.user, req.body.orgName)) {
-            return res.status(401).send('You do not permission to do this.');
+            return res.status(401).send();
         }
         let invalidateRequest = classificationNode.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send(invalidateRequest);
@@ -76,7 +76,7 @@ exports.module = function (roleConfig) {
     });
     router.post('/removeFormClassification/', (req, res) => {
         if (!roleConfig.allowClassify(req.user, req.body.orgName)) {
-            return res.status(401).send({error: 'You do not permission to do this.'});
+            return res.status(401).send();
         }
         let invalidateRequest = classificationNode.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send({error: invalidateRequest});
@@ -100,7 +100,7 @@ exports.module = function (roleConfig) {
     });
     router.post('/classifyFormBoard', (req, res) => {
         if (!roleConfig.allowClassify(req.user, req.body.newClassification.orgName)) {
-            return res.status(401).send('');
+            return res.status(401).send();
         }
         classificationNode.classifyEltsInBoard(req, mongo_form, handleError({req, res}, () => res.send('')));
     });
