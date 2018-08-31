@@ -91,12 +91,12 @@ function applyCodeMapping(fhirApp: FhirApp, ids: (CdeId|PermissibleValue)[], sys
     });
 }
 
-function isSupportedResourceRelationship(self: ResourceTreeResource, parent: ResourceTreeRoot|ResourceTreeResource) {
+function isSupportedResourceRelationship(self: ResourceTreeResource, parent: ResourceTreeResource) {
     switch (self.resourceType) {
         case 'Observation':
         case 'Procedure':
         case 'QuestionnaireResponse':
-            return ResourceTreeUtil.isRoot(parent) || ResourceTreeUtil.isResource(parent) && contextTypesArray.indexOf(parent.resourceType) > -1;
+            return !parent || ResourceTreeUtil.isResource(parent) && contextTypesArray.indexOf(parent.resourceType) > -1;
         default:
             assertUnreachable(self.resourceType);
     }
@@ -472,8 +472,12 @@ export class CdeFhirService {
             case 'QuestionnaireResponse':
                 return new Promise<ResourceTree>((resolve, reject) => {
                     let resource: FhirObservation|FhirQuestionnaireResponse;
+                    let codes = getIds(self.crossReference).filter(id => id.source === 'LOINC');
+                    if (codes.length === 0 && self.resourceType === 'Observation') {
+                        codes = getIds(self.crossReference).filter(id => id.source === 'NLM');
+                    }
                     async_some(
-                        getIds(self.crossReference).filter(id => id.source === 'LOINC'),
+                        codes,
                         (id: CdeId, done: CbErr<boolean>) => {
                             return this.fhirData.search<FhirObservation | FhirQuestionnaireResponse>(self.resourceType,
                                 {code: (id.source ? codeSystemOut(id.source) + '|' : '') + id.id})
