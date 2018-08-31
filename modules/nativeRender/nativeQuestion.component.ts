@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-// import * as moment from 'moment/min/moment.min';
 
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CodeAndSystem } from 'shared/models.model';
+import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
-import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { ScoreService } from 'nativeRender/score.service';
 
 @Component({
@@ -22,6 +21,7 @@ export class NativeQuestionComponent implements OnInit {
     metadataTagsNew: string;
     previousUom: CodeAndSystem;
 
+    questionMulti = questionMulti;
 
     ngOnInit() {
         this.previousUom = this.formElement.question.answerUom;

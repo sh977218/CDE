@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { FormElement, FormQuestion } from 'shared/form/form.model';
+
 import { ScoreService } from 'nativeRender/score.service';
+import { questionMulti } from 'shared/form/fe';
 
 @Component({
     selector: 'cde-native-table',
@@ -128,7 +130,7 @@ export class NativeTableComponent implements OnInit {
                 question: f.question,
                 style: sectionStyle.answerStyle
             });
-            if (f.question.datatype === 'Value List' && !NativeRenderService.isRadioOrCheckbox(f)) {
+            if (f.question.datatype === 'Value List' && questionMulti(f)) {
                 this.tableForm.rows.forEach((r, i) => {
                     this.nrs.elt.formInput[i + '_' + f.feId] = [];
                     this.nrs.elt.formInput[i + '_' + f.feId].answer = this.nrs.elt.formInput[i + '_' + f.feId];
@@ -208,7 +210,7 @@ export class NativeTableComponent implements OnInit {
     static getQuestionType(fe) {
         switch (fe.question.datatype) {
             case 'Value List':
-                return NativeRenderService.isRadioOrCheckbox(fe) ? 'list' : 'mlist';
+                return questionMulti(fe) ? 'mlist' : 'list';
             case 'Date':
                 return 'date';
             case 'Number':

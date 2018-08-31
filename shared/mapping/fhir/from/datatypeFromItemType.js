@@ -1,4 +1,5 @@
 import { codeSystemOut } from 'shared/mapping/fhir';
+import { questionQuestionMulti } from 'shared/form/fe';
 
 export function isCodingToValueList(container, coding) {
     function isCodingInContainer(container, c) {
@@ -14,6 +15,9 @@ export function isCodingToValueList(container, coding) {
 
 export function isItemTypeToContainer(container, type) { // http://hl7.org/fhir/item-type
     // NOT IMPLEMENTED: boolean, time, url, open-choice(choice+string), attachment, reference
+    if (container.datatype === 'Externally Defined') {
+        return true;
+    }
     switch (type) {
         case 'display':
             return container.isScore;
@@ -68,17 +72,11 @@ export function typedValueToValue(container, type, v) {
                 return false;
             }
             if (Array.isArray(coding)) {
-                if (container.multiselect) {
-                    container.answer = coding.map(c => c.code);
-                } else {
-                    container.answer = coding.length ? coding[0].code : undefined;
-                }
+                container.answer = questionQuestionMulti(container)
+                    ? coding.map(c => c.code)
+                    : (coding.length ? coding[0].code : undefined);
             } else {
-                if (container.multiselect) {
-                    container.answer = [coding.code];
-                } else {
-                    container.answer = coding.code;
-                }
+                container.answer = questionQuestionMulti(container) ? [coding.code] : coding.code;
             }
             return true;
         case 'boolean':

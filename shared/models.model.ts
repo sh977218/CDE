@@ -1,12 +1,21 @@
 import { CdeFormElastic } from 'shared/form/form.model';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 
-export function assertUnreachable(x: never): never {
-    throw new Error("Didn't expect to get here");
+export function assertThrow(): never {
+    throw new Error('Please submit a bug report.');
 }
 
-export type supportedFhirResources = 'Observation'|'Procedure';
-export const supportedFhirResourcesArray = ['Observation', 'Procedure'];
+export function assertTrue(x: boolean): void {
+    if (!PRODUCTION) {
+        if (!x) {
+            throw new Error('Assertion Failed.');
+        }
+    }
+}
+
+export function assertUnreachable(x: never): never {
+    throw new Error('Unreachable');
+}
 
 export class Attachment {
     comment?: string;
@@ -151,7 +160,7 @@ export interface ElasticQueryParams {
 
 export interface ElasticQueryResponse {
     _shards?: any;
-    aggregations?: any; // Elastic aggregated grouping
+    aggregations?: ElasticQueryResponseAggregation&{[key: string]: ElasticQueryResponseAggregation}; // Elastic aggregated grouping
     cdes?: DataElementElastic[];
     forms?: CdeFormElastic[];
     hits: {
@@ -163,6 +172,10 @@ export interface ElasticQueryResponse {
     took: number; // Elastic time to process query in milliseconds
     timed_out?: boolean;
     totalNumber: number; // Elastic number of results
+}
+
+export interface ElasticQueryResponseAggregation {
+    [key: string]: { buckets: ElasticQueryResponseAggregationBucket[] };
 }
 
 export interface ElasticQueryResponseAggregationBucket {

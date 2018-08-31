@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { findQuestionByTinyId, getFormScoreQuestion } from '../../shared/form/formShared';
+import { findQuestionByTinyId, getFormScoreQuestion } from '../../shared/form/fe';
 import { FormQuestion } from '../../shared/form/form.model';
 
 @Injectable()

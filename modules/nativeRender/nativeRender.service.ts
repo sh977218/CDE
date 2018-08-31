@@ -7,7 +7,7 @@ import {
     CdeForm, DisplayProfile, FormElement, FormOrElement, FormQuestion, FormSection, FormSectionOrForm,
     PermissibleFormValue, Question
 } from 'shared/form/form.model';
-import { addFormIds, iterateFeSync } from 'shared/form/formShared';
+import { addFormIds, iterateFeSync, questionMulti } from 'shared/form/fe';
 import { getShowIfQ } from 'shared/form/skipLogic';
 import { ScoreService } from 'nativeRender/score.service';
 
@@ -27,6 +27,7 @@ export class NativeRenderService {
     followForm: any;
     flatMapping: any;
     profile?: DisplayProfile;
+    questionMulti = questionMulti;
     submitForm?: boolean;
     vm: any;
 
@@ -67,12 +68,8 @@ export class NativeRenderService {
         }
     }
 
-    static isRadioOrCheckbox(fe: FormQuestion) { // returns true for radio and false for checkbox
-        return !fe.question.multiselect && !(fe.question.answers.length === 1 && !fe.question.required);
-    }
-
     static isPreselectedRadio(fe: FormQuestion) {
-        return fe.question.answers.length === 1 && fe.question.required && !fe.question.multiselect;
+        return !fe.question.multiselect && fe.question.answers.length === 1 && fe.question.required;
     }
 
     get nativeRenderType() {
@@ -196,27 +193,21 @@ export class NativeRenderService {
         return (model.answer.indexOf(value) !== -1);
     }
 
-    selectModel(question: Question) {
-        if (question.multiselect || question.answer === undefined) {
-            return question.answer;
+    selectModel(q: FormQuestion) {
+        if (q.question.multiselect || q.question.answer === undefined) {
+            return q.question.answer;
         } else {
-            if (!Array.isArray(question.answerVM)) {
-                question.answerVM = [];
+            if (!Array.isArray(q.question.answerVM)) {
+                q.question.answerVM = [];
             }
-            question.answerVM.length = 0;
-            question.answerVM.push(question.answer);
-            return question.answerVM;
+            q.question.answerVM.length = 0;
+            q.question.answerVM.push(q.question.answer);
+            return q.question.answerVM;
         }
     }
 
-    selectModelChange($event: any, question: Question) {
-        if (question.multiselect) {
-            question.answer = $event;
-        } else {
-            if ($event.length) {
-                question.answer = $event[0];
-            }
-        }
+    selectModelChange($event: any, q: FormQuestion) {
+        q.question.answer = q.question.multiselect ? $event : $event[0];
     }
 
     static cloneForm(form: CdeForm): CdeForm {
