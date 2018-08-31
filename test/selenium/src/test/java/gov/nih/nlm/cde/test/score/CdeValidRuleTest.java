@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class CdeValidRuleTest extends NlmCdeBaseTest {
-    @Test
+    @Test(dependsOnMethods={"gov.nih.nlm.cde.test.score.CdeScoreValidationErrorTest.cdeScoreValidationError"})
     public void cdeValidRule() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         emptyQuickBoardByModule("cde");

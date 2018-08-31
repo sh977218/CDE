@@ -19,7 +19,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         findElement(By.id("mapClassificationMeshInput")).sendKeys("NINDS");
         int j = 20;
         while (j > 0) {
-            if ("NINDS".equals(findElement(By.id("mapClassificationMeshInput")).getText()))
+            if ("NINDS".equals(findElement(By.id("mapClassificationMeshInput")).getAttribute("value")))
                 break;
             hangon(1);
             j--;
