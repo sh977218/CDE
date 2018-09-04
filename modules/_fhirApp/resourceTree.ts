@@ -104,7 +104,7 @@ export class ResourceTreeUtil {
 
     static setCrossReference(node: ResourceTree, fe: CdeForm|FormElement) {
         node.crossReference = fe;
-        node.resourceType = getMapToFhirResource(fe);
+        node.resourceType = getMapToFhirResource(fe) || node.resourceType;
         if (ResourceTreeUtil.isResource(node)) {
             let map = resourceMap[node.resourceType];
             if (map) {
