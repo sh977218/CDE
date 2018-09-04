@@ -31,6 +31,8 @@ export function addRootNode(fe: FormElement|CdeForm, parent?: ResourceTreeRoot|R
             node = ResourceTreeUtil.createResource(resource.resourceType, fe, resource);
         } else if (getMapToFhirResource(fe)) {
             node = ResourceTreeUtil.createResource(undefined, fe);
+        } else if (fe && fe.elementType === 'question') {
+            node = ResourceTreeUtil.createResource('Observation', fe);
         } else if (resourceType) {
             node = ResourceTreeUtil.createResource(resourceType, fe);
         } else {
