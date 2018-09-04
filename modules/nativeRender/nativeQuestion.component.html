@@ -50,7 +50,7 @@
                                         <label class="form-check-label native-valuelist-label"
                                                [ngClass]="{'native-question-oneline-l': pv.formElements
                                                           && isOneLiner(pv.formElements[0], pv.formElements.length)}">
-                                            <ng-container *ngIf="NRS.isRadioOrCheckbox(formElement); else checkMulti">
+                                            <ng-container *ngIf="!questionMulti(formElement); else checkMulti">
                                                 <input type="radio" class="form-check-input"
                                                        [name]="formElement.feId"
                                                        [attr.name]="formElement.feId"
@@ -103,8 +103,8 @@
                                     [name]="formElement.feId"
                                     [attr.name]="formElement.feId"
                                     [multiple]="formElement.question.multiselect"
-                                    [ngModel]="nrs.selectModel(formElement.question)"
-                                    (ngModelChange)="nrs.selectModelChange($event, formElement.question)">
+                                    [ngModel]="nrs.selectModel(formElement)"
+                                    (ngModelChange)="nrs.selectModelChange($event, formElement)">
                                 <option *ngFor="let pv of formElement.question.answers"
                                         [value]="pv.permissibleValue"
                                         [attr.value]="pv.permissibleValue">{{NRS.getPvLabel(pv)}}

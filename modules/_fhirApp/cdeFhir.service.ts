@@ -11,31 +11,55 @@ import diff from 'deep-diff';
 import _intersectionWith from 'lodash/intersectionWith';
 import _noop from 'lodash/noop';
 import _uniq from 'lodash/uniq';
+import { isArray } from 'util';
 
+import { FhirAppViewModes } from '_fhirApp/fhirApp.component';
 import { propertyToQuestion, questionToProperty, staticToProperty } from '_fhirApp/properties';
-import { ResourceTree } from '_fhirApp/resourceTree';
-import { addEmptyNode, compareCodingId, resourceMap } from '_fhirApp/resources';
+import {
+    contextTypesArray,
+    ResourceTree, ResourceTreeAttribute, ResourceTreeIntermediate, ResourceTreeResource, ResourceTreeRoot,
+    ResourceTreeUtil
+} from '_fhirApp/resourceTree';
+import { addEmptyNode, compareCodingId, resourceMap, setResourceAndUpdateParentResource } from '_fhirApp/resources';
 import { FhirSmartService } from '_fhirApp/fhirSmart.service';
 import { valueSets } from '_fhirApp/valueSets';
 import {
-    CbErr, CbRet, CdeId, PermissibleValue, supportedFhirResources, supportedFhirResourcesArray
+    assertThrow, assertTrue, assertUnreachable, Cb, CbErr, CbRet, CdeId, PermissibleValue
 } from 'shared/models.model';
-import { CdeForm, FhirApp, FormElement, FormQuestion } from 'shared/form/form.model';
-import { getIds, getMapToFhirResource } from 'shared/form/formAndFe';
-import { iterateFe, iterateFeSync, questionAnswered, findQuestionByTinyId } from 'shared/form/formShared';
+import { CdeForm, FhirApp, FormQuestion, Question } from 'shared/form/form.model';
+import { getIds, getTinyId, getVersion } from 'shared/form/formAndFe';
+import {
+    iterateFe, iterateFeSync, questionAnswered, findQuestionByTinyId, isQuestion, questionMulti
+} from 'shared/form/fe';
 import { codeSystemOut } from 'shared/mapping/fhir';
 import { FhirCodeableConcept } from 'shared/mapping/fhir/fhir.model';
 import {
-    FhirDomainResource, FhirEncounter, FhirObservation, FhirObservationComponent, FhirProcedure
+    FhirDomainResource, FhirEncounter, FhirObservation, FhirObservationComponent, FhirProcedure, FhirQuestionnaire,
+    FhirQuestionnaireResponse, FhirQuestionnaireResponseItem, supportedFhirResourcesArray
 } from 'shared/mapping/fhir/fhirResource.model';
 import { newCodeableConcept, reduce as reduceConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
 import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
 import { typedValueToValue, valuedElementToItemType } from 'shared/mapping/fhir/from/datatypeFromItemType';
+import { asRefString, toRef } from 'shared/mapping/fhir/datatype/fhirReference';
 import { observationComponentFromForm, observationFromForm } from 'shared/mapping/fhir/resource/fhirObservation';
 import { newProcedure } from 'shared/mapping/fhir/resource/fhirProcedure';
-import { questionValueToFhirValue } from 'shared/mapping/fhir/to/datatypeToItemType';
+import {
+    newQuestionnaireResponse, newQuestionnaireResponseItem
+} from 'shared/mapping/fhir/resource/fhirQuestionnaireResponse';
+import {
+    containerToItemType,
+    questionToFhirValue, storeTypedValue, valueToTypedValue
+} from 'shared/mapping/fhir/to/datatypeToItemType';
+import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
 import { deepCopy, reduceOptionalArray } from 'shared/system/util';
-import { FhirAppViewModes } from '_fhirApp/fhirApp.component';
+
+function isFhirObservation(resource: FhirDomainResource): resource is FhirObservation {
+    return resource.resourceType === 'Observation';
+}
+
+function isFhirProcedure(resource: FhirDomainResource): resource is FhirProcedure {
+    return resource.resourceType === 'Procedure';
+}
 
 function applyCodeMapping(fhirApp: FhirApp, ids: (CdeId|PermissibleValue)[], systemProp: string, codeProp: string): void {
     function highestPriority(ids: (CdeId|PermissibleValue)[], index: number) {
@@ -67,15 +91,18 @@ function applyCodeMapping(fhirApp: FhirApp, ids: (CdeId|PermissibleValue)[], sys
     });
 }
 
-function isSupportedParentType(self: ResourceTree, parent: ResourceTree) {
+function isSupportedResourceRelationship(self: ResourceTreeResource, parent: ResourceTreeResource) {
     switch (self.resourceType) {
         case 'Observation':
         case 'Procedure':
-            return parent.resourceType && ['bundle', 'Encounter'].indexOf(parent.resourceType) > -1;
+        case 'QuestionnaireResponse':
+            return !parent || ResourceTreeUtil.isResource(parent) && contextTypesArray.indexOf(parent.resourceType) > -1;
+        default:
+            assertUnreachable(self.resourceType);
     }
 }
 
-function resourceCodeableConceptMatch(resources: FhirDomainResource[], transform: CbRet<FhirCodeableConcept[], FhirDomainResource>, ids: CdeId[]) {
+function resourceCodeableConceptMatch(resources: FhirDomainResource[], transform: CbRet<FhirCodeableConcept[], any>, ids: CdeId[]) {
     let found = undefined;
     resources.some(r => {
         if (codeableConceptMatch(transform(r), ids)) {
@@ -96,13 +123,13 @@ export type PatientForm = {
     name: string,
     observed: number,
     percent: number,
-    resourceType: supportedFhirResources,
     tinyId: string,
     total: number,
 };
 
 @Injectable()
 export class CdeFhirService {
+    cleanupPatient: Cb;
     getDisplayFunc = this.getDisplay.bind(this);
     lookupObservationCategories: (code: string, cb: CbErr) => void = async_memoize((code: string, done: CbErr<string>) => {
         this.http.get('/fhirObservationInfo?id=' + code).subscribe((r: {categories: 'social-history'|'vital-signs'|'imaging'|'laboratory'|'procedure'|'survey'|'exam'|'therapy'}) => {
@@ -118,36 +145,72 @@ export class CdeFhirService {
     });
     patientForms: PatientForm[] = [];
     renderedPatientForm?: PatientForm;
-    renderedResourceTree?: ResourceTree;
+    renderedResourceTree?: ResourceTreeRoot|ResourceTreeResource;
 
     constructor(public dialog: MatDialog,
                 public fhirData: FhirSmartService,
                 private http: HttpClient) {
     }
 
-    async createObservation(self: ResourceTree, q: FormQuestion) {
-        let observationPromise = observationFromForm(q, this.getDisplayFunc, this.fhirData.context, this.fhirData.patient);
-        ResourceTree.setResource(self, null, observationPromise);
-        let resource = await observationPromise;
-        ResourceTree.setResource(self, null, resource);
-        return resource;
-    }
-
-    async createObservationComponent(parent: ResourceTree, self: ResourceTree, q: FormQuestion) {
-        let componentPromise = observationComponentFromForm(q, this.getDisplayFunc);
-        ResourceTree.setResourceNonFhir(self, componentPromise, 'component');
-        let resource: FhirObservationComponent = await componentPromise;
-        ResourceTree.setResourceNonFhir(self, resource, 'component');
-        if (!Array.isArray(parent.resource.component)) {
-            parent.resource.component = [];
+    async createParents(self: ResourceTree): Promise<void> {
+        // setResource for all created
+        if (self.resource) {
+            return;
         }
-        parent.resource.component.push(resource);
-        return resource;
-    }
-
-    createProcedure(parent: ResourceTree) {
-        let procedure = newProcedure(this.fhirData.context, this.fhirData.patient);
-        ResourceTree.setResource(parent, null, procedure);
+        if (ResourceTreeUtil.isResource(self)) {
+            let resource: FhirDomainResource;
+            switch (self.root.resourceType) {
+                case 'Observation':
+                    let observationPromise = observationFromForm(self.crossReference, this.getDisplayFunc,
+                        this.fhirData.context, this.fhirData.patient);
+                    ResourceTreeUtil.setResource(self, null, observationPromise);
+                    resource = await observationPromise;
+                    break;
+                case 'Procedure':
+                    resource = newProcedure(this.fhirData.context, this.fhirData.patient);
+                    break;
+                case 'QuestionnaireResponse':
+                    resource = newQuestionnaireResponse(this.fhirData.context, this.fhirData.patient, self.lookupResource);
+                    break;
+                default:
+                    assertUnreachable(self.root.resourceType);
+            }
+            ResourceTreeUtil.setResource(self, null, resource);
+        } else {
+            return this.createParents(self.parent).then(async () => {
+                await self.parent.resource;
+                if (self.resource) {
+                    return;
+                }
+                if (ResourceTreeUtil.isIntermediate(self)) {
+                    switch (self.root.resourceType) {
+                        case 'Observation':
+                        case 'Procedure':
+                            break;
+                        case 'QuestionnaireResponse':
+                            setResourceAndUpdateParentResource(self, 'item', newQuestionnaireResponseItem(self.crossReference.feId));
+                            break;
+                        default:
+                            assertUnreachable(self.root.resourceType);
+                    }
+                } else if (ResourceTreeUtil.isAttribute(self)) {
+                    switch (self.root.resourceType) {
+                        case 'Observation':
+                            let componentPromise = observationComponentFromForm(self.crossReference, this.getDisplayFunc);
+                            ResourceTreeUtil.setResource(self, componentPromise);
+                            setResourceAndUpdateParentResource(self, 'component', await componentPromise);
+                            break;
+                        case 'Procedure':
+                            break;
+                        case 'QuestionnaireResponse':
+                            setResourceAndUpdateParentResource(self, 'item', newQuestionnaireResponseItem(self.crossReference.feId));
+                            break;
+                        default:
+                            assertUnreachable(self.root.resourceType);
+                    }
+                }
+            });
+        }
     }
 
     getDisplay(system?: string, code?: string): Promise<string | undefined> {
@@ -166,7 +229,8 @@ export class CdeFhirService {
     }
 
     // cb(err)
-    init(snapshot: ActivatedRouteSnapshot, cb: CbErr) {
+    init(snapshot: ActivatedRouteSnapshot, cleanupPatient: Cb, cb: CbErr) {
+        this.cleanupPatient = cleanupPatient;
         this.http.get<FhirApp>('/fhirApp/' + snapshot.paramMap.get('config')).subscribe(fhirApp => {
             if (!fhirApp || !fhirApp.dataEndpointUrl || !fhirApp.clientId) {
                 cb('Application not setup correctly.');
@@ -181,14 +245,10 @@ export class CdeFhirService {
             fhirApp.forms.forEach(f => {
                 this.http.get<CdeForm>('/form/' + f.tinyId).subscribe(form => {
                     CdeForm.validate(form);
-                    if (!getMapToFhirResource(form)) {
-                        return;
-                    }
                     let patientForm: PatientForm = {
                         tinyId: form.tinyId,
                         name: form.designations[0].designation,
                         form: form,
-                        resourceType: getMapToFhirResource(form)!,
                         observed: 0,
                         percent: 0,
                         total: 0,
@@ -220,159 +280,240 @@ export class CdeFhirService {
     // cb()
     loadFormData(patientForm: PatientForm, cb = _noop) {
         this.renderedPatientForm = patientForm;
-        this.renderedResourceTree = new ResourceTree(undefined, deepCopy(patientForm.form));
+        this.renderedResourceTree = addEmptyNode(deepCopy(patientForm.form), _noop, undefined);
         this.read(this.renderedResourceTree)
             .then(() => this.updateProgress(this.renderedPatientForm!, this.renderedResourceTree!.crossReference))
             .then(cb);
     }
 
-    async read(tree: ResourceTree): Promise<void> {
-        if (getMapToFhirResource(tree.crossReference)) {
-            await this.readResource(tree, tree);
+    progressClear() {
+        this.patientForms.forEach(f => {
+            f.observed = 0;
+            f.total = 0;
+            f.percent = 0;
+        });
+    }
+
+    questionnaireGet(f: CdeForm): Promise<FhirQuestionnaire> {
+        return this.questionnaireSearch(f).then(r => {
+            return r ? r : this.save(formToQuestionnaire(f, null, {publicUrl: codeSystemOut('NLM')}));
+        });
+    }
+
+    questionnaireSearch(f: CdeForm): Promise<FhirQuestionnaire|undefined> {
+        return this.fhirData.searchAll<FhirQuestionnaire>('Questionnaire',
+            {identifier: codeSystemOut('NLM') + '|' + getTinyId(f) + '-' + getVersion(f)})
+            .then(r => r.length > 1 ? this.selectOne('edit', r, 'Text', r => r.text ? r.text.div : '') : r[0]);
+    }
+
+    async read(tree: ResourceTreeRoot|ResourceTreeResource): Promise<void> {
+        if (!ResourceTreeUtil.isRoot(tree) && ResourceTreeUtil.isResource(tree)) {
+            await this.readResource(tree);
         }
         return new Promise<void>((resolve, reject) => {
             iterateFe(tree.crossReference,
-                async (f, cb, options) => {
+                async (f, cb, options, i) => {
                     let parent = await options.return;
                     let self = addEmptyNode(f, _noop, parent);
-                    let retOptions = {return: parent};
-                    if (getMapToFhirResource(f)) { // self !== parent
-                        await this.readResource(parent, self);
-                        retOptions.return = self;
+                    if (self && ResourceTreeUtil.isNotRoot(self)) {
+                        if (ResourceTreeUtil.isResource(self)) {
+                            await this.readResource(self);
+                        }
+                        if (ResourceTreeUtil.isIntermediate(self)) {
+                            CdeFhirService.readIntermediate(self, i);
+                        }
                     }
-                    // else do not use form
-                    cb(undefined, retOptions);
+                    cb(undefined, {return: self || parent});
                 },
-                undefined,
-                async (q, cb, options) => {
+                async (s, cb, options, i) => {
+                    let parent = await options.return;
+                    let self = addEmptyNode(s, _noop, parent);
+                    if (self && ResourceTreeUtil.isNotRoot(self)) {
+                        if (ResourceTreeUtil.isIntermediate(self)) {
+                            CdeFhirService.readIntermediate(self, i);
+                        }
+                    }
+                    cb(undefined, {return: self || parent});
+                },
+                async (q, cb, options, i) => {
                     let parent = await options.return;
                     let self = addEmptyNode(q, _noop, parent);
-                    let retOptions = {return: parent};
-                    if (getMapToFhirResource(q)) { // self !== parent
-                        await this.readResource(parent, self);
-                        CdeFhirService.readQuestion(self);
-                        retOptions.return = self;
-                    } else if (self.parentAttribute) { // self !== parent
-                        CdeFhirService.readQuestionProperty(parent, self, q);
-                        retOptions.return = self;
+                    if (self && ResourceTreeUtil.isNotRoot(self)) {
+                        if (ResourceTreeUtil.isResource(self)) {
+                            await this.readResource(self);
+                            CdeFhirService.readQuestion(self);
+                        } else if (ResourceTreeUtil.isAttribute(self)) {
+                            CdeFhirService.readQuestionProperty(self, i);
+                        }
                     }
-                    // else do not use question
-                    cb(undefined, retOptions);
+                    cb(undefined, {return: self || parent});
                 },
-                err => {
-                    if (err) reject();
-                    else resolve();
-                },
+                err => err ? reject() : resolve(),
                 {return: tree}
             );
         });
     }
 
-    async readAgain(parent: ResourceTree, self: ResourceTree): Promise<void> {
-        if (self.resource && self.resource.resourceType) {
-            await this.readResource(parent, self);
-            if (self.crossReference.elementType === 'question') {
-                CdeFhirService.readQuestion(self);
+    async readAgain(self: any, parent?: ResourceTreeRoot|ResourceTreeResource|ResourceTreeIntermediate): Promise<void> {
+        if (!ResourceTreeUtil.isRoot(self)) {
+            if (ResourceTreeUtil.isResource(self) && self.resource && self.resource.resourceType) {
+                await this.readResource(self);
+                if (self.crossReference.elementType === 'question') {
+                    CdeFhirService.readQuestion(self);
+                }
+            } else if (ResourceTreeUtil.isAttribute(self) && !ResourceTreeUtil.isRoot(parent)) {
+                CdeFhirService.readQuestionProperty(self, self.crossReference);
             }
-        } else if (self.parentAttribute) {
-            CdeFhirService.readQuestionProperty(parent, self, self.crossReference);
         }
-        return Promise.all(self.children.map(c => this.readAgain(self, c)))
-            .then(() => {
-                return;
-            });
+        if (ResourceTreeUtil.isRoot(self) || !ResourceTreeUtil.isAttribute(self)) {
+            return Promise.all(self.children.map(c => this.readAgain(c, self)))
+                .then(_noop);
+        }
+    }
+
+    static readIntermediate(self: ResourceTreeIntermediate, i: any) {
+        switch (self.root.resourceType) {
+            case 'Observation':
+            case 'Procedure':
+                throw assertThrow();
+            case 'QuestionnaireResponse':
+                if (self.parent.resource) {
+                    ResourceTreeUtil.setResource(self, self.parent.resource.item[i]);
+                    assertTrue(self.resource.linkId === self.crossReference.feId);
+                }
+                break;
+            default:
+                assertUnreachable(self.root.resourceType);
+        }
     }
 
     static readQuestion(self: ResourceTree) {
         if (self.resource && self.resource.resourceType === 'Observation') {
-            if (self.resource.component) {
-                throw new Error('BAD');
-            }
+            assertTrue(!self.resource.component);
             typedValueToValue(self.crossReference.question, valuedElementToItemType(self.resource), self.resource);
         }
     }
 
-    static readQuestionProperty(parent: ResourceTree, self: ResourceTree, q: FormQuestion) {
-        if (parent.resource) {
-            switch (parent.resourceType) {
-                case 'Observation':
-                    if (self.resourceType === 'Observation') {
-                        throw new Error('BAD');
-                    } else if (parent.resourceType === 'Observation' && self.parentAttribute === 'component') {
-                        let found: FhirObservationComponent|undefined = resourceCodeableConceptMatch(parent.resource.component,
-                            (r: any) => [r.code], q.question.cde.ids);
-                        if (found) {
-                            typedValueToValue(q.question, valuedElementToItemType(found), found);
-                            ResourceTree.setResourceNonFhir(self, found, 'component');
+    static readQuestionProperty(self: ResourceTreeAttribute, i: any) {
+        if (!self.parent.resource) {
+            return;
+        }
+        let q: FormQuestion = self.crossReference;
+        switch (self.root.resourceType) {
+            case 'Observation':
+                if (self.parentAttribute) {
+                    let found = CdeFhirService.readQuestionPropertyMatch(self, self.parent.resource[self.parentAttribute] || []);
+                    if (found) {
+                        ResourceTreeUtil.setResource(self, found);
+                        typedValueToValue(q.question, valuedElementToItemType(self.resource), self.resource);
+                    }
+                }
+                break;
+            case 'Procedure':
+                if (propertyToQuestion(q, self.root, self.parentAttribute)) {
+                    ResourceTreeUtil.setResource(self, self.root.resource[self.parentAttribute]);
+                }
+                break;
+            case 'QuestionnaireResponse':
+                if (self.parentAttribute) {
+                    let found = CdeFhirService.readQuestionPropertyMatch(self, self.parent.resource[self.parentAttribute] || []);
+                    if (found) {
+                        ResourceTreeUtil.setResource(self, found);
+                        if (self.resource.answer) {
+                            let question = deepCopy(q.question);
+                            let answer = self.resource.answer.map(a => {
+                                typedValueToValue(question, valuedElementToItemType(a), a);
+                                return questionMulti(q) ? question.answer[0] : question.answer;
+                            });
+                            q.question.answer = questionMulti(q) ? answer : answer[0];
                         }
                     }
-                    break;
-                case 'Procedure':
-                    if (propertyToQuestion(q, parent, self.parentAttribute!)) {
-                        ResourceTree.setResourceNonFhir(self, parent.resource[self.parentAttribute!], self.parentAttribute!);
-                    }
-                    break;
-                default:
-                    throw new Error('BAD');
-            }
+                }
+                break;
+            default:
+                assertUnreachable(self.root.resourceType);
+        }
+    }
+
+    static readQuestionPropertyMatch(self: ResourceTreeAttribute, resources: any[]): FhirObservationComponent|FhirQuestionnaireResponseItem|undefined {
+        switch (self.root.resourceType) {
+            case 'Observation':
+                return resourceCodeableConceptMatch(resources, r => [r.code], getIds(self.crossReference));
+            case 'Procedure':
+                return resourceCodeableConceptMatch(resources, r => r ? [r] : [], getIds(self.crossReference));
+            case 'QuestionnaireResponse':
+                return resources.filter((item: FhirQuestionnaireResponseItem) => item.linkId === self.crossReference.feId)[0];
+            default:
+                assertUnreachable(self.root.resourceType);
         }
     }
 
     // set resource if found
-    async readResource(parent: ResourceTree, self: ResourceTree): Promise<ResourceTree> {
+    async readResource(self: ResourceTreeResource): Promise<ResourceTree> {
         // the following functions call ResourceTree.setResource(self, resource)
-        if (await this.readResourceById(self)) {
+        if (await this.readResourceById(self)) { // (one) only if you already have a resource
             return self;
         }
-        // TODO: implement
-        // if (await this.readResourceByIdentifier(parent, self)) {
-        //     return self;
-        // }
-        if (await this.readResourceByCode(parent, self)) {
+        if (await this.readResourceByIdentifier(self)) { // (many) by low-grade CDE TinyId for conversion
+            return self; // TODO: combine with code search
+        }
+        if (await this.readResourceByCode(self)) { // (many) ideal way to find
+            return self;
+        }
+        if (await this.readResourceByParentRef(self)) {
             return self;
         }
         return self;
     }
 
-    readResourceByCode(parent: ResourceTree, self: ResourceTree): Promise<ResourceTree|undefined> {
-        let f: CdeForm|FormElement = self.crossReference;
-        let procedureMapping = self.map ? self.map.mapping : undefined;
+    readResourceByCode(self: ResourceTreeResource): Promise<ResourceTree|undefined> {
         switch (self.resourceType) {
             case 'Observation':
                 return new Promise<ResourceTree>((resolve, reject) => {
-                    let observation: FhirObservation;
-                    async_some(getIds(f), (id: CdeId, done: CbErr<boolean>) => {
-                        return this.fhirData.search<FhirObservation>('Observation',
-                            {code: (id.source ? codeSystemOut(id.source) + '|' : '') + id.id})
-                            .then(r => this.selectOne('edit', r))
-                            .then(r => {
-                                if (r) {
-                                    observation = r;
-                                    done(undefined, true);
-                                } else {
-                                    done(undefined, false);
-                                }
-                            }, done);
-                    }, (err: string) => {
-                        if (err) {
-                            reject(err);
-                            return;
+                    let resource: FhirObservation|FhirQuestionnaireResponse;
+                    let codes = getIds(self.crossReference).filter(id => id.source === 'LOINC');
+                    if (codes.length === 0) {
+                        codes = getIds(self.crossReference).filter(id => id.source === 'NLM');
+                    }
+                    async_some(
+                        codes,
+                        (id: CdeId, done: CbErr<boolean>) => {
+                            return this.fhirData.search<FhirObservation | FhirQuestionnaireResponse>(self.resourceType,
+                                {code: (id.source ? codeSystemOut(id.source) + '|' : '') + id.id})
+                                .then(r => this.selectOne('edit', r, 'Last Edit', r => r.meta && new Date(r.meta.lastUpdated) || ''))
+                                .then(r => {
+                                    if (r) {
+                                        resource = r;
+                                        done(undefined, true);
+                                    } else {
+                                        done(undefined, false);
+                                    }
+                                }, done);
+                        },
+                        (err: string) => {
+                            if (err) {
+                                reject(err);
+                                return;
+                            }
+                            if (resource) {
+                                ResourceTreeUtil.setResource(self, resource);
+                                resolve(self);
+                                return;
+                            }
+                            resolve();
                         }
-                        if (observation) {
-                            ResourceTree.setResource(self, observation);
-                        }
-                        resolve(self);
-                    });
+                    );
                 });
             case 'Procedure':
+                let procedureMapping = self.map ? self.map.mapping : undefined;
                 if (procedureMapping) {
                     if (procedureMapping.procedureQuestionID === 'static') {
                         if (procedureMapping.procedureCode) {
                             return this.fhirData.search<FhirProcedure>('Procedure',
                                 {code: (procedureMapping.procedureCodeSystem || 'SNOMED') + '|' + procedureMapping.procedureCode})
-                                .then(r => this.selectOne('edit', r))
+                                .then(r => this.selectOne('edit', r, 'Text', r => r.text ? r.text.div : ''))
                                 .then(r => {
-                                    if (r) ResourceTree.setResource(self, r);
+                                    if (r) ResourceTreeUtil.setResource(self, r);
                                     return self;
                                 });
                         }
@@ -392,9 +533,9 @@ export class CdeFhirService {
                                             return;
                                         });
                                 }))
-                                    .then(() => this.selectOne('edit', procedures))
+                                    .then(() => this.selectOne('edit', procedures, 'Text', r => r.text ? r.text.div : ''))
                                     .then(r => {
-                                        if (r) ResourceTree.setResource(self, r);
+                                        if (r) ResourceTreeUtil.setResource(self, r);
                                         return self;
                                     });
                             }
@@ -402,53 +543,70 @@ export class CdeFhirService {
                     }
                 }
                 return Promise.resolve(undefined);
+            case 'QuestionnaireResponse':
+                return Promise.resolve(undefined);
             default:
-                throw new Error('BAD');
+                assertUnreachable(self.resourceType);
         }
     }
 
-    readResourceById(self: ResourceTree): Promise<ResourceTree|undefined> {
+    readResourceById(self: ResourceTreeResource): Promise<ResourceTreeResource|undefined> {
         if (!self.resource || !self.resource.id || !self.resource.resourceType) {
             return Promise.resolve(undefined);
         }
-        return this.fhirData.search(self.resource.resourceType, {_id: self.resource.id})
-            .then(r => this.selectOne('edit', r))
+        return this.fhirData.search<any>(self.resource.resourceType, {_id: self.resource.id})
+            .then(r => r.length > 1 ? this.selectOne('edit', r, 'Last Edit', r => r.meta && new Date(r.meta.lastUpdated) || '') : r[0])
             .then(r => {
-                if (r) ResourceTree.setResource(self, r);
-                return self;
+                if (r) {
+                    ResourceTreeUtil.setResource(self, r);
+                    return self;
+                }
             });
     }
 
-    // readResourceByCode(parent, self, f) {
-    //     // query observations and procedures for codes array with application filters
-    //     if (supportedFhirResourcesArray.indexOf(self.resourceType) > -1 && this.isSupportedParentType(self, parent)) {
-    //         if (!self.resource) {
-    //             let ids = getIds(f); // q.question.cde.ids
-    //             let resources;
-    //             let transform;
-    //             switch (self.resourceType) {
-    //                 case 'Observation':
-    //                     resources = observations;
-    //                     transform = r => [r.code];
-    //                     break;
-    //                 case 'Procedure':
-    //                     resources = procedures;
-    //                     transform = r => r ? [r] : [];
-    //             }
-    //             let found = this.resourceCodeableConceptMatch(resources, transform, ids);
-    //             if (found) {
-    //                 ResourceTree.setResource(self, found);
-    //             }
-    //         }
-    //     } else {
-    //         throw new Error('BAD');
-    //     }
-    //     return self;
-    // }
+    readResourceByIdentifier(self: ResourceTreeResource): Promise<ResourceTreeResource|undefined> {
+        if (self.resourceType === 'Observation') {
+            return Promise.resolve(undefined);
+        }
+        return this.fhirData.search<any>(self.resourceType,
+            {identifier: codeSystemOut('NLM') + '|' + getTinyId(self.crossReference)})
+            .then(r => r.length > 1 ? this.selectOne('edit', r, 'Last Edit', r => r.meta && new Date(r.meta.lastUpdated) || '') : r[0])
+            .then(r => {
+                if (r) {
+                    ResourceTreeUtil.setResource(self, r);
+                    return self;
+                }
+            });
+    }
 
-    save(resource: FhirDomainResource): Promise<FhirDomainResource> {
-        return new Promise<FhirDomainResource>(resolve => {
-            if (resource.resourceType === 'Observation') { // has category
+    readResourceByParentRef(self: ResourceTreeResource): Promise<ResourceTreeResource|undefined> {
+        switch (self.resourceType) {
+            case 'Observation':
+            case 'Procedure':
+                return undefined;
+            case 'QuestionnaireResponse':
+                return this.questionnaireSearch(self.crossReference).then(questionnaire => {
+                    if (questionnaire) {
+                        self.lookupResource = questionnaire;
+                        return this.fhirData.search<FhirQuestionnaireResponse>(self.resourceType,
+                            {questionnaire: asRefString(self.lookupResource)})
+                            .then(r => this.selectOne('edit', r, 'Last Edit', r => r.meta && new Date(r.meta.lastUpdated) || ''))
+                            .then(r => {
+                                if (r) {
+                                    ResourceTreeUtil.setResource(self, r);
+                                    return self;
+                                }
+                            });
+                    }
+                });
+            default:
+                assertUnreachable(self.resourceType);
+        }
+    }
+
+    save<T extends FhirDomainResource>(resource: T): Promise<T> {
+        return new Promise<T>(resolve => {
+            if (isFhirObservation(resource)) { // has category
                 // fill in category from database config
                 const system = codeSystemOut('LOINC');
                 let categoryAble = resource as FhirObservation;
@@ -460,7 +618,7 @@ export class CdeFhirService {
                 let categories: string[] = [];
                 async_forEach(codes, (code: string, doneOne: CbErr) => {
                     this.getObservationCategory('LOINC', code, cats => {
-                        if (Array.isArray(cats)) {
+                        if (isArray(cats)) {
                             categories = categories.concat(cats);
                         }
                         doneOne();
@@ -488,38 +646,66 @@ export class CdeFhirService {
                     });
                     resolve(resource);
                 });
-            } else if (resource.resourceType === 'Procedure') {
+            } else {
                 resolve(resource);
             }
         }).then(this.fhirData.save.bind(this.fhirData));
     }
 
     // cb(err)
-    saveTree(node: ResourceTree, cb: CbErr<any>) {
+    saveTree(node: ResourceTreeRoot | ResourceTree, cb: CbErr<any>) {
         async_series([
-            (done: CbErr) => this.saveTreeNode(node, done),
-            async_apply(async_forEach, node.children, this.saveTree.bind(this))
+            (done: CbErr) => {
+                if (ResourceTreeUtil.isNotRoot(node) && ResourceTreeUtil.isResource(node)) {
+                    this.saveTreeNode(node, done);
+                } else {
+                    done();
+                }
+            },
+            (done: CbErr) => {
+                if (ResourceTreeUtil.isRoot(node) || !ResourceTreeUtil.isAttribute(node)) {
+                    async_forEach(node.children, this.saveTree.bind(this), done);
+                } else {
+                    done();
+                }
+            }
         ], cb);
     }
 
     // cb(err, resource)
-    saveTreeNode(node: ResourceTree, cb: CbErr<any>) {
-        if (node.resourceType && node.resource && (node.resourceRemote === null || node.resourceRemote
+    saveTreeNode(node: ResourceTreeResource, cb: CbErr<any>) {
+        if (node.resource && (node.resourceRemote === null || node.resourceRemote
             && diff.diff(node.resourceRemote, node.resource))) {
             if (node.resourceRemote && !node.resource.id) {
                 throw new Error('Error: ResourceTree bad state');
             }
-            // // save Device then Observation
-            // if (node.resource.device && node.resource.device.indexOf('Device/new') > -1) {
-            //     let device = devices[parseInt(p.after.device.slice(10))];
-            //     service.save(device).then(device => {
-            //         node.resource.device = asRefString(device);
-            //         save(node, done);
-            //     }, done);
-            // } else
-            this.save(node.resource).then(resource => {
-                ResourceTree.setResource(node, resource);
-                cb(undefined, resource);
+            Promise.resolve().then(() => {
+                switch (node.resourceType) {
+                    case 'Observation':
+                        // if (node.resource.device && node.resource.device.indexOf('Device/new') > -1) {
+                        //     let device = devices[parseInt(p.after.device.slice(10))];
+                        //     return service.save(device).then(device => {
+                        //         node.resource.device = asRefString(device);
+                        //     });
+                        // }
+                        break;
+                    case 'Procedure':
+                        break;
+                    case 'QuestionnaireResponse':
+                        if (!node.resource.questionnaire) {
+                            return this.questionnaireGet(node.crossReference).then(questionnaire => {
+                                node.resource.questionnaire = toRef(questionnaire);
+                            });
+                        }
+                        break;
+                    default:
+                        assertUnreachable(node.resourceType);
+                }
+            }).then(() => {
+                this.save(node.resource).then(resource => {
+                    ResourceTreeUtil.setResource(node, resource);
+                    cb(undefined, resource);
+                }, cb);
             }, cb);
         } else {
             cb();
@@ -528,16 +714,17 @@ export class CdeFhirService {
 
     selectEncounter() {
         this.fhirData.search<FhirEncounter>('Encounter', {})
-            .then(r => this.selectOne('filter', r))
+            .then(r => this.selectOne('filter', r, 'Text', r => r.text ? r.text.div : ''))
             .then(r => {
                 this.fhirData.context = r;
+                this.progressClear();
             });
     }
 
-    selectOne<T>(type: 'filter'|'edit', resources: T[]): Promise<T> {
+    selectOne<T>(type: 'filter'|'edit', resources: T[], ...columns: (string|CbRet<any, T>)[]): Promise<T|undefined> {
         return new Promise<T>(resolve => {
             const dialogRef = this.dialog.open(SelectOneDialogComponent, {
-                data: {resources, type}
+                data: {resources, type, columns}
             });
             dialogRef.afterClosed().subscribe(result => {
                 resolve(result);
@@ -546,97 +733,113 @@ export class CdeFhirService {
     }
 
     selectPatient() {
-        this.fhirData.searchAll('Patient', {})
-            .then(r => this.selectOne('filter', r))
+        this.fhirData.searchAll<FhirProcedure>('Patient', {})
+            .then(r => this.selectOne('filter', r, 'Name', r => r.text ? r.text.div : ''))
             .then(r => {
                 if (r) {
                     this.fhirData.patient = r;
+                    this.cleanupPatient();
+                    this.progressClear();
+                    this.fhirData.context = undefined;
                 }
             });
     }
 
     submit(cb: CbErr) {
-        this.write(this.renderedResourceTree!, this.renderedResourceTree!).then(() => {
+        this.write(this.renderedResourceTree!).then(() => {
             this.saveTree(this.renderedResourceTree!, err => {
                 if (err) {
                     cb(err);
                     return;
                 }
-                this.readAgain(this.renderedResourceTree!, this.renderedResourceTree!)
+                this.readAgain(this.renderedResourceTree!)
                     .then(() => this.updateProgress(this.renderedPatientForm!, this.renderedResourceTree!.crossReference))
                     .then(() => cb());
             });
         });
     }
 
-    async write(parent: ResourceTree, self: ResourceTree): Promise<void> {
-        if (self.crossReference.elementType === 'question') {
-            await parent.resource;
-            const q = self.crossReference;
-            if (self.resourceType && supportedFhirResourcesArray.indexOf(self.resourceType) > -1 && isSupportedParentType(self, parent)) {
-                await this.writeResourceQuestion(self, q);
-            } else if (parent.resourceType && supportedFhirResourcesArray.indexOf(parent.resourceType) > -1 && self.parentAttribute
-                && (!resourceMap[parent.resourceType] || parent.map)) {
-                await this.writeResourceQuestion(self, q, parent);
+    async write(self: any, parentResource?: ResourceTreeResource): Promise<void> {
+        if (ResourceTreeUtil.isNotRoot(self) && isQuestion(self.crossReference)) {
+            if (ResourceTreeUtil.isResource(self) && supportedFhirResourcesArray.indexOf(self.resourceType) > -1
+                && isSupportedResourceRelationship(self, parentResource)) {
+                await this.writeQuestionResource(self);
+                parentResource = self;
+            } else if (ResourceTreeUtil.isAttribute(self) && supportedFhirResourcesArray.indexOf(self.root.resourceType) > -1
+                && (!resourceMap[self.root.resourceType] || self.root.map)) {
+                await self.parent.resource;
+                await this.writeQuestionAttribute(self);
             } else {
-                if (parent !== self) {
-                    throw new Error('Error: not supported FHIR relationship: parent ' + parent.resourceType
+                if (parentResource !== self) {
+                    throw new Error('Error: not supported FHIR relationship: parent '
+                        + parentResource && parentResource.resourceType
                         + ', child ' + self.resourceType + '.');
                 }
             }
         }
-        return Promise.all(self.children.map(c => this.write(self, c)))
-            .then(() => {
-                if (ResourceTree.isResource(self)) {
-                    staticToProperty(self);
-                }
-                return;
-            });
+        if (ResourceTreeUtil.isRoot(self) || !ResourceTreeUtil.isAttribute(self)) {
+            return Promise.all(self.children.map(c => this.write(c, parentResource)))
+                .then(() => {
+                    if (!ResourceTreeUtil.isRoot(self) && ResourceTreeUtil.isResource(self)) {
+                        staticToProperty(self);
+                    }
+                    return;
+                });
+        }
     }
 
-    async writeResourceQuestion(self: ResourceTree, q: FormQuestion, parent?: ResourceTree) {
+    async writeQuestionAttribute(self: ResourceTree) {
+        let q: FormQuestion = self.crossReference;
         if (!self.resource && questionAnswered(q)) {
-            switch (parent ? parent.resourceType : self.resourceType) {
-                case 'Observation':
-                    if (parent) { // 'component' property is the only one supported
-                        if (!parent.resource) {
-                            await this.createObservation(parent, parent.crossReference);
-                        }
-                        let found = resourceCodeableConceptMatch(parent.resource.component, (r: any) => [r.code], q.question.cde.ids);
-                        if (found) {
-                            ResourceTree.setResourceNonFhir(self, found, 'component');
-                        } else {
-                            await this.createObservationComponent(parent, self, q);
-                        }
-                    } else {
-                        await this.createObservation(self, q);
-                    }
-                    break;
-                case 'Procedure':
-                    if (!parent) {
-                        throw new Error('BAD');
-                    }
-                    if (!parent.resource) {
-                        this.createProcedure(parent);
-                    }
-                    break;
-                default:
-                    throw new Error('BAD');
-            }
+            await this.createParents(self);
         }
-        switch (parent ? parent.resourceType : self.resourceType) {
-            case 'Observation':
+        switch (self.root.resourceType) {
+            case 'Observation': // Component Observation
                 if (self.resource) {
-                    questionValueToFhirValue(q, self.resource, true);
+                    questionToFhirValue(q, self.resource, false, 'value', true);
                 }
                 break;
             case 'Procedure':
-                if (parent && self.parentAttribute && self.resource || questionAnswered(q)) { // creates/deletes the property object
-                    questionToProperty(q, parent!, self.parentAttribute!);
+                if (ResourceTreeUtil.isAttribute(self) && (self.resource || questionAnswered(q))) { // creates/deletes the property object
+                    questionToProperty(q, self.root, self.parentAttribute);
+                }
+                break;
+            case 'QuestionnaireResponse':
+                if (self.resource) {
+                    self.resource.answer = [];
+                    let answer = questionMulti(q) ? q.question.answer : [q.question.answer];
+                    let qType = containerToItemType(q.question);
+                    answer.forEach(a => {
+                        let fhirValue = {};
+                        storeTypedValue(
+                            answer.map(a => valueToTypedValue(q.question, qType, a, undefined,
+                                q.question.answerUom, false))[0],
+                            fhirValue, qType, 'value', false);
+                        self.resource.answer.push(fhirValue);
+                    });
                 }
                 break;
             default:
-                throw new Error('BAD');
+                assertUnreachable(self.root.resourceType);
+        }
+    }
+
+    async writeQuestionResource(self: ResourceTreeResource) {
+        let q: FormQuestion = self.crossReference;
+        switch (self.resourceType) {
+            case 'Observation': // Question Observation
+                if (!self.resource && questionAnswered(q)) {
+                    await this.createParents(self);
+                }
+                if (self.resource) {
+                    questionToFhirValue(q, self.resource, false, 'value', true);
+                }
+                break;
+            case 'Procedure':
+            case 'QuestionnaireResponse':
+                throw assertThrow();
+            default:
+                assertUnreachable(self.resourceType);
         }
     }
 
@@ -655,14 +858,39 @@ export class CdeFhirService {
 }
 
 @Component({
+    styles: [`
+        .mat-raised-button, .mat-raised-button ::ng-deep .mat-button-wrapper {
+            line-height: 28px;
+        }
+        .table th, .table td {
+            padding: .4rem;
+        }
+    `],
     template: `
         <h2 mat-dialog-title>Select One {{data.resources[0]?.resourceType}}:</h2>
         <div mat-dialog-content>
-            <div *ngFor="let resource of data.resources" class="m-1">
-                <button mat-raised-button color="primary"
-                        [mat-dialog-close]="resource">Select</button>{{resource.id}}
-            </div>
-            <div *ngIf="data.resources.length === 10" style="text-align: center">... (more)</div>
+            <table *ngIf="data.resources.length; else noneFound" class="table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Id</th>
+                    <th *ngFor="let name of columnNames">{{name}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let resource of data.resources">
+                    <td>
+                        <button mat-raised-button color="primary" [mat-dialog-close]="resource">Select</button>
+                    </td>
+                    <td>{{resource.id}}</td>
+                    <td *ngFor="let get of columnGetters" [innerHtml]="get(resource)"></td>
+                </tr>
+                <tr *ngIf="data.resources.length === 10" style="text-align: center">
+                    <td [attr.colspan]="2 + columnNames.length">... (more)</td>
+                </tr>
+                </tbody>
+            </table>
+            <ng-template #noneFound>None Found</ng-template>
         </div>
         <div mat-dialog-actions>
             <button mat-raised-button color="basic" mat-dialog-close cdkFocusInitial>{{data.type==='filter'?'None':'New'}}</button>
@@ -670,5 +898,13 @@ export class CdeFhirService {
     `,
 })
 export class SelectOneDialogComponent {
-    constructor(@Inject(MAT_DIALOG_DATA) public data: {resources: FhirDomainResource[], type: FhirAppViewModes}) {}
+    columnNames: string[] = [];
+    columnGetters: CbRet<any, any>[] = [];
+    constructor(@Inject(MAT_DIALOG_DATA) public data: {resources: FhirDomainResource[], type: FhirAppViewModes, columns: any}) {
+        let size = Math.floor(data.columns.length / 2);
+        for (let i = 0; i < size; i++) {
+            this.columnNames[i] = data.columns[i * 2];
+            this.columnGetters[i] = data.columns[i * 2 + 1];
+        }
+    }
 }

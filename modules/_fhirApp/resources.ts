@@ -1,51 +1,96 @@
-import { ResourceTree } from '_fhirApp/resourceTree';
-import { CbErr, CdeId } from 'shared/models.model';
-import { CdeForm, FhirProcedureMapping, FormElement, FormQuestion } from 'shared/form/form.model';
-import { getMapToFhirResource } from 'shared/form/formAndFe';
+import { isArray, isUndefined } from 'util';
+
+import {
+    ResourceTree, ResourceTreeAttribute, ResourceTreeIntermediate, ResourceTreeResource, ResourceTreeRoot,
+    ResourceTreeUtil
+} from '_fhirApp/resourceTree';
+import { assertThrow, assertUnreachable, CbErr, CdeId } from 'shared/models.model';
+import { isQuestion } from 'shared/form/fe';
+import { CdeForm, FhirProcedureMapping, FormElement } from 'shared/form/form.model';
+import { getMapToFhirResource, isForm } from 'shared/form/formAndFe';
 import { codeSystemOut } from 'shared/mapping/fhir';
 import { FhirCoding } from 'shared/mapping/fhir/fhir.model';
-import { FhirDomainResource, FhirEncounter, FhirObservation, FhirProcedure } from 'shared/mapping/fhir/fhirResource.model';
-import { newEncounter } from 'shared/mapping/fhir/resource/fhirEncounter';
-import { newObservation } from 'shared/mapping/fhir/resource/fhirObservation';
-import { newProcedure } from 'shared/mapping/fhir/resource/fhirProcedure';
+import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 
-export function addEmptyNode(fe: FormElement | CdeForm, cb: CbErr<ResourceTree>, parent: ResourceTree) {
-    let self = addNode(parent, fe);
+export function addEmptyNode(fe: FormElement | CdeForm, cb: CbErr<ResourceTree>, parent: ResourceTreeRoot|ResourceTreeResource|ResourceTreeIntermediate) {
+    let self;
+    if (isUndefined(parent) || ResourceTreeUtil.isRoot(parent)) {
+        self = addRootNode(fe, parent, undefined,
+            parent && ResourceTreeUtil.isNotRoot(parent) && ResourceTreeUtil.isResource(parent) ? parent.childResourceType : undefined);
+    } else {
+        self = addNode(fe, parent);
+    }
     cb(undefined, self);
     return self;
 }
 
-function addNode(parent: ResourceTree, fe: FormElement|CdeForm, resource?: FhirDomainResource, resourceType?: string): ResourceTree {
-    let node: ResourceTree = {children: []};
-    ResourceTree.setCrossReference(node, fe);
-    if (resource) {
-        ResourceTree.setResource(node, resource);
-    } else if (getMapToFhirResource(fe)) {
-    } else if (fe && fe.elementType === 'question') {
-        let q = fe as FormQuestion;
-        if (parent.resourceType === 'Observation') {
-            node.parentAttribute = 'component';
-        } else if (parent.resourceType === 'Procedure') {
-            if (parent.map) {
-                let [prop] = getMapPropertyFromId(q.question.cde.tinyId, parent.map);
-                if (prop) {
-                    node.parentAttribute = prop.property;
-                }
-            }
+export function addRootNode(fe: FormElement|CdeForm, parent?: ResourceTreeRoot|ResourceTreeResource, resource?: any, resourceType?: supportedFhirResources) {
+    if (isUndefined(parent) || ResourceTreeUtil.isRoot(parent)) {
+        let node;
+        if (resource) {
+            node = ResourceTreeUtil.createResource(resource.resourceType, fe, resource);
+        } else if (getMapToFhirResource(fe)) {
+            node = ResourceTreeUtil.createResource(undefined, fe);
+        } else if (fe && fe.elementType === 'question') {
+            node = ResourceTreeUtil.createResource('Observation', fe);
+        } else if (resourceType) {
+            node = ResourceTreeUtil.createResource(resourceType, fe);
         } else {
-            let fhirType = parent.resourceType && fhirTypes.get(parent.resourceType);
-            node.resourceType = fhirType && fhirType.child;
+            node = ResourceTreeUtil.createRoot(fe, parent);
         }
-    } else if (resourceType) {
-        node.resourceType = resourceType;
+        if (node) {
+            if (parent) {
+                parent.children.push(node);
+            }
+            return node;
+        }
+    } else {
+        assertThrow();
     }
+}
 
-    if (node.resourceType || node.parentAttribute) {
+function addNode(fe: FormElement|CdeForm, parent: ResourceTreeResource|ResourceTreeIntermediate): ResourceTree|undefined {
+    let node;
+    if (!isForm(fe) && !isQuestion(fe)) {
+        if (parent.resourceType === 'QuestionnaireResponse') {
+            node = ResourceTreeUtil.createIntermediate(parent, fe);
+        }
+    } else if (!isForm(fe) && isQuestion(fe)) {
+        switch (parent.root.resourceType) {
+            case 'Observation':
+                node = ResourceTreeUtil.createAttritube(parent, 'component', fe);
+                break;
+            case 'Procedure':
+                if (parent.root.map) {
+                    let [prop] = getMapPropertyFromId(fe.question.cde.tinyId, parent.root.map);
+                    if (prop) {
+                        node = ResourceTreeUtil.createAttritube(parent, prop.property, fe);
+                    }
+                }
+                break;
+            case 'QuestionnaireResponse':
+                node = ResourceTreeUtil.createAttritube(parent, 'item', fe);
+                break;
+            default:
+                assertUnreachable(parent.root.resourceType);
+                // let fhirType = parent.resourceType && fhirTypes.get(parent.resourceType);
+                // node.resourceType = fhirType ? fhirType.child : undefined;
+        }
+    }
+    if (node) {
         parent.children.push(node);
         return node;
-    } else {
-        return parent;
     }
+    return undefined;
+}
+
+export function setResourceAndUpdateParentResource(self: ResourceTreeIntermediate|ResourceTreeAttribute, attribute: string, resource: any): any {
+    ResourceTreeUtil.setResource(self, resource);
+    if (!isArray(self.parent.resource[attribute])) {
+        self.parent.resource[attribute] = [];
+    }
+    self.parent.resource[attribute].push(resource);
+    return resource;
 }
 
 export let compareCodingId = (a: FhirCoding, b: CdeId) => a.system === codeSystemOut(b.source) && a.code === b.id;
@@ -89,11 +134,11 @@ export class FhirProcedureMap {
 
 export type supportedResourcesMaps = FhirProcedureMap;
 
-export const fhirTypes = new Map<string, {self: Object|undefined, child: string | undefined, create: Function | undefined, map: any}>();
-fhirTypes.set('bundle', {self: undefined, child: 'Observation', create: undefined, map: undefined});
-fhirTypes.set('Encounter', {self: FhirEncounter, child: 'Observation', create: newEncounter, map: undefined});
-fhirTypes.set('Observation', {self: FhirObservation, child: undefined, create: newObservation, map: undefined});
-fhirTypes.set('Procedure', {self: FhirProcedure, child: undefined, create: newProcedure, map: FhirProcedureMap});
+// export const fhirTypes = new Map<string, {self: Object|undefined, child: supportedFhirResources|undefined, create: Function|undefined, map: any}>();
+// fhirTypes.set('bundle', {self: undefined, child: 'Observation', create: undefined, map: undefined});
+// fhirTypes.set('Encounter', {self: FhirEncounter, child: 'Observation', create: newEncounter, map: undefined});
+// fhirTypes.set('Observation', {self: FhirObservation, child: undefined, create: newObservation, map: undefined});
+// fhirTypes.set('Procedure', {self: FhirProcedure, child: undefined, create: newProcedure, map: FhirProcedureMap});
 
 export const resourceMap: any = {};
 resourceMap['Procedure'] = FhirProcedureMap;

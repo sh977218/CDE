@@ -11,8 +11,6 @@ import { FormDescriptionComponent } from 'form/public/tabs/description/formDescr
 import { FormService } from 'nativeRender/form.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { FormElement, FormQuestion } from 'shared/form/form.model';
-import { isSubForm } from 'shared/form/formShared';
-
 
 @Component({
     selector: 'cde-form-description-question',
@@ -39,7 +37,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
     ngOnInit() {
         this.question = this.node.data;
         this.parent = this.node.parent.data;
-        this.isSubForm = isSubForm(this.node);
+        this.isSubForm = FormDescriptionComponent.isSubForm(this.node);
     }
 
     constructor(

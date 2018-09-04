@@ -10,7 +10,7 @@ const install = require('gulp-install');
 const merge = require('merge-stream');
 const minifyCss = require('gulp-clean-css');
 const replace = require('gulp-replace');
-const rename = require("gulp-rename");
+const rename = require('gulp-rename');
 const rev = require('gulp-rev');
 const run = require('gulp-run');
 const uglify = require('gulp-uglify');
@@ -57,62 +57,65 @@ gulp.task('createDist', gulp.series('thirdParty', function _createDist() {
 gulp.task('copyCode', function _copyCode() {
     let streamArray = [];
 
+    streamArray.push(gulp.src('./modules/_fhirApp/fhirAppLaunch.html')
+        .pipe(gulp.dest(config.node.buildDir + '/modules/_fhirApp/')));
+
     ['cde', 'form', 'processManager', 'system', 'board'].forEach(module => {
         streamArray.push(gulp.src('./modules/' + module + '/**/*.png')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/')));
+            .pipe(gulp.dest(config.node.buildDir + '/modules/' + module + '/')));
         streamArray.push(gulp.src('./modules/' + module + '/**/*.ico')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/')));
+            .pipe(gulp.dest(config.node.buildDir + '/modules/' + module + '/')));
         streamArray.push(gulp.src('./modules/' + module + '/**/*.gif')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/')));
+            .pipe(gulp.dest(config.node.buildDir + '/modules/' + module + '/')));
         streamArray.push(gulp.src('./modules/' + module + '/views/**/*.html')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/views/')));
+            .pipe(gulp.dest(config.node.buildDir + '/modules/' + module + '/views/')));
         streamArray.push(gulp.src('./modules/' + module + '/views/bot/*.ejs')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/views/bot/')));
+            .pipe(gulp.dest(config.node.buildDir + '/modules/' + module + '/views/bot/')));
     });
 
     ['supportedBrowsers.ejs', 'loginText.ejs'].forEach(function (file) {
         streamArray.push(gulp.src('./modules/system/views/' + file)
-            .pipe(gulp.dest(config.node.buildDir + "/modules/system/views/")));
+            .pipe(gulp.dest(config.node.buildDir + '/modules/system/views/')));
     });
     streamArray.push(gulp.src('./modules/processManager/pmApp.js')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/processManager/")));
+        .pipe(gulp.dest(config.node.buildDir + '/modules/processManager/')));
 
     streamArray.push(gulp.src('./modules/swagger/index.js')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/")));
+        .pipe(gulp.dest(config.node.buildDir + '/modules/swagger/')));
     streamArray.push(gulp.src('./modules/swagger/api/swagger.yaml')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/api/")));
+        .pipe(gulp.dest(config.node.buildDir + '/modules/swagger/api/')));
     streamArray.push(gulp.src('./modules/swagger/public/swagger.css')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/public")));
+        .pipe(gulp.dest(config.node.buildDir + '/modules/swagger/public')));
 
     streamArray.push(gulp.src('./modules/system/public/robots.txt')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/system/public/")));
+        .pipe(gulp.dest(config.node.buildDir + '/modules/system/public/')));
 
 
     streamArray.push(gulp.src('./config/*.json')
-        .pipe(gulp.dest(config.node.buildDir + "/config/")));
+        .pipe(gulp.dest(config.node.buildDir + '/config/')));
 
     streamArray.push(gulp.src('./app.js')
-        .pipe(gulp.dest(config.node.buildDir + "/")));
+        .pipe(gulp.dest(config.node.buildDir + '/')));
     streamArray.push(gulp.src('./package.json')
-        .pipe(gulp.dest(config.node.buildDir + "/")));
+        .pipe(gulp.dest(config.node.buildDir + '/')));
 
     streamArray.push(gulp.src('./deploy/*')
-        .pipe(gulp.dest(config.node.buildDir + "/deploy/")));
+        .pipe(gulp.dest(config.node.buildDir + '/deploy/')));
 
     streamArray.push(gulp.src('./ingester/**')
-        .pipe(gulp.dest(config.node.buildDir + "/ingester/")));
+        .pipe(gulp.dest(config.node.buildDir + '/ingester/')));
 
     streamArray.push(gulp.src('./modules/form/public/html/lformsRender.html')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/html/")));
+        .pipe(gulp.dest(config.node.buildDir + '/modules/form/public/html/')));
 
     streamArray.push(gulp.src('./modules/form/public/assets/**')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/")));
+        .pipe(gulp.dest(config.node.buildDir + '/modules/form/public/assets/')));
 
     streamArray.push(gulp.src('./server/**')
-        .pipe(gulp.dest(config.node.buildDir + "/server/")));
+        .pipe(gulp.dest(config.node.buildDir + '/server/')));
 
     streamArray.push(gulp.src('./shared/**')
-        .pipe(gulp.dest(config.node.buildDir + "/shared/")));
+        .pipe(gulp.dest(config.node.buildDir + '/shared/')));
 
     return merge(streamArray);
 });
@@ -126,10 +129,10 @@ gulp.task('copyNpmDeps', gulp.series('copyCode', 'npmRebuildNodeSass', function 
 
 gulp.task('prepareVersion', gulp.series('copyCode', function _prepareVersion() {
     return git.revParse({args: '--short HEAD'}, function (err, hash) {
-        fs.writeFile(config.node.buildDir + "/server/system/version.js", "exports.version = '" + hash + "';",
+        fs.writeFile(config.node.buildDir + '/server/system/version.js', 'exports.version = "' + hash + '";',
             function (err) {
-                if (err) console.log("ERROR generating version.html: " + err);
-                else console.log("generated " + config.node.buildDir + "/server/system/version.js");
+                if (err) console.log('ERROR generating version.html: ' + err);
+                else console.log('generated ' + config.node.buildDir + '/server/system/version.js');
             });
     });
 }));
@@ -151,11 +154,11 @@ gulp.task('copyDist', gulp.series('createDist',
 gulp.task('usemin', gulp.series('copyDist', function _usemin() {
     let streamArray = [];
     [
-        {folder: "./modules/system/views/", filename: "index.ejs"},
-        {folder: "./modules/system/views/", filename: "index-legacy.ejs"},
-        {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
-        {folder: "./modules/_fhirApp/", filename: "fhirApp.html"},
-        {folder: "./modules/_nativeRenderApp/", filename: "nativeRenderApp.html"},
+        {folder: './modules/system/views/', filename: 'index.ejs'},
+        {folder: './modules/system/views/', filename: 'index-legacy.ejs'},
+        {folder: './modules/_embedApp/public/html/', filename: 'index.html'},
+        {folder: './modules/_fhirApp/', filename: 'fhirApp.html'},
+        {folder: './modules/_nativeRenderApp/', filename: 'nativeRenderApp.html'},
     ].forEach(item => {
         let useminOutputs = [];
 
@@ -173,11 +176,11 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
                 jsAttributes: {
                     defer: false
                 },
-                assetsDir: "./dist/",
+                assetsDir: './dist/',
                 webpcss: ['concat', rev(), data(outputFile)],
                 webpcssLegacy: ['concat', rev()],
-                css: [minifyCss({target: "./dist/app", rebase: true}), 'concat', rev(), data(outputFile)],
-                cssLegacy: [minifyCss({target: "./dist/app", rebase: true}), 'concat', rev()],
+                css: [minifyCss({target: './dist/app', rebase: true}), 'concat', rev(), data(outputFile)],
+                cssLegacy: [minifyCss({target: './dist/app', rebase: true}), 'concat', rev()],
                 poly: [uglify({mangle: false}), 'concat', rev()],
                 polyLegacy: [uglify({mangle: false}), 'concat', rev()],
                 webp: ['concat', rev(), data(outputFile)],
@@ -188,7 +191,7 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
         useminTask.on('end', function () {
             if (item.filename === 'index.ejs') {
                 if (useminOutputs.length !== 3) {
-                    console.log("useminOutputs:" + useminOutputs);
+                    console.log('useminOutputs:' + useminOutputs);
                     throw new Error('service worker creation failed');
                 }
                 gulp.src(config.node.buildDir + '/dist/app/sw.js') // does not preserve order
@@ -206,15 +209,15 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
 gulp.task('copyUsemin', gulp.series('usemin', function _usemin() {
     let streamArray = [];
     [
-        {folder: "./modules/system/views/bot/", filename: "*.ejs"},
-        {folder: "./modules/system/views/", filename: "index.ejs"},
-        {folder: "./modules/system/views/", filename: "index-legacy.ejs"},
-        {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
-        {folder: "./modules/_nativeRenderApp/", filename: "nativeRenderApp.html"},
-        {folder: "./modules/_fhirApp/", filename: "fhirApp.html"}
+        {folder: './modules/system/views/bot/', filename: '*.ejs'},
+        {folder: './modules/system/views/', filename: 'index.ejs'},
+        {folder: './modules/system/views/', filename: 'index-legacy.ejs'},
+        {folder: './modules/_embedApp/public/html/', filename: 'index.html'},
+        {folder: './modules/_nativeRenderApp/', filename: 'nativeRenderApp.html'},
+        {folder: './modules/_fhirApp/', filename: 'fhirApp.html'}
     ].forEach(item => {
         streamArray.push(gulp.src(config.node.buildDir + '/dist/' + item.filename)
-            .pipe(gulp.dest(config.node.buildDir + "/" + item.folder)));
+            .pipe(gulp.dest(config.node.buildDir + '/' + item.folder)));
     });
     return merge(streamArray);
 }));
@@ -227,7 +230,7 @@ gulp.task('es', function _es() {
     });
     let allIndex = esInit.indices.map(i => i.indexName);
     return new Promise(function (resolve) {
-        esClient.indices.delete({index: allIndex, timeout: "6s"}, () => {
+        esClient.indices.delete({index: allIndex, timeout: '6s'}, () => {
             resolve();
         });
     });
@@ -259,7 +262,7 @@ gulp.task('buildHome', function _buildHome() {
                     removeScriptTypeAttributes: true,
                     removeStyleLinkTypeAttributes: true,
                 })],
-                assetsDir: "./dist/",
+                assetsDir: './dist/',
                 inlinecss: [minifyCss, 'concat'],
                 inlinejs: [uglify({mangle: false}), 'concat'],
             }))
@@ -271,7 +274,7 @@ gulp.task('buildHome', function _buildHome() {
 gulp.task('checkDbConnection', function _buildHome() {
     return new Promise(function (resolve, reject) {
         let isRequireDbConnection = !!require.cache[require.resolve('./server/system/connections')];
-        if (isRequireDbConnection) reject("DB connection cannot be included in gulp.");
+        if (isRequireDbConnection) reject('DB connection cannot be included in gulp.');
         else resolve();
     });
 });

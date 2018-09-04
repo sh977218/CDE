@@ -6,7 +6,7 @@ import {
     FormattedValue,
     Instruction,
     ObjectId,
-    PermissibleValue, supportedFhirResources,
+    PermissibleValue,
 } from 'shared/models.model';
 import {
     DatatypeContainer,
@@ -14,7 +14,8 @@ import {
     QuestionTypeNumber,
     QuestionTypeText,
 } from 'shared/de/dataElement.model';
-import { iterateFeSync } from 'shared/form/formShared';
+import { iterateFeSync } from 'shared/form/fe';
+import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 
 
 export class CdeForm extends Elt implements FormElementsContainer {
@@ -35,10 +36,6 @@ export class CdeForm extends Elt implements FormElementsContainer {
 
     static getEltUrl(elt: Elt) {
         return '/formView?tinyId=' + elt.tinyId;
-    }
-
-    static isForm(f: CdeForm|FormInForm): f is CdeForm {
-        return f.hasOwnProperty('tinyId');
     }
 
     static validate(elt: CdeForm) {
@@ -136,6 +133,7 @@ export class FhirApp {
     dataEndpointUrl = '';
     forms: {tinyId?: string}[] = [];
     mapping: {cdeSystem?: string, cdeCode?: string, fhirSystem?: string, fhirCode?: string}[] = [];
+    timestamp?: Date;
 }
 
 export class FhirObservationInfo {
@@ -151,7 +149,7 @@ export interface FormElementsContainer {
 
 interface FormElementPart extends FormElementsContainer {
     _id?: ObjectId; // TODO: remove
-    readonly elementType: 'section' | 'form' | 'question';
+    readonly elementType: 'section'|'form'|'question';
     expanded?: boolean; // calculated, formDescription view model
     feId?: string; // calculated, nativeRender and formView view model
     formElements: FormElement[];
@@ -272,7 +270,7 @@ export class PermissibleFormValue extends PermissibleValue implements FormElemen
 
 export class Question extends DatatypeContainer {
     answer?: any; // volatile, input value
-    answerVM?: any; // volatile, input value for select
+    answerVM?: any[]; // volatile, input value for select
     answerUom?: CodeAndSystem; // volatile, input uom value
     answerDate?: any; // volatile, working storage for date part
     answerTime?: any; // volatile, working storage for time part

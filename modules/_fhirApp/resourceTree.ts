@@ -1,72 +1,145 @@
 import { resourceMap, supportedResourcesMaps } from '_fhirApp/resources';
+import { assertUnreachable } from 'shared/models.model';
 import { CdeForm, FormElement } from 'shared/form/form.model';
 import { getFhirResourceMap, getMapToFhirResource } from 'shared/form/formAndFe';
 import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
-import { FhirDomainResource } from 'shared/mapping/fhir/fhirResource.model';
+import { FhirDomainResource, supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 import { deepCopy } from 'shared/system/util';
 
-export class ResourceTree {
-    children: ResourceTree[] = [];
-    crossReference?: any;
-    map?: supportedResourcesMaps;
-    parentAttribute?: string;
-    resource?: any;
-    resourceRemote?: any;
-    resourceType?: string;
+export type contextTypes = 'Encounter'|'EpisodeOfCare';
+export const contextTypesArray = ['Encounter', 'EpisodeOfCare'];
 
-    constructor(resource?: FhirDomainResource, fe?: CdeForm|FormElement) {
-        if (fe) ResourceTree.setCrossReference(this, fe);
-        if (resource) ResourceTree.setResource(this, resource);
-        if (!this.resourceType) this.resourceType = 'bundle';
+export type ResourceTreeRoot = {
+    crossReference?: any,
+    children: (ResourceTreeRoot|ResourceTreeResource)[],
+    parent?: ResourceTreeRoot,
+};
+export type ResourceTreeResource = {
+    resourceType: supportedFhirResources,
+    children: ResourceTree[],
+    childResourceType?: supportedFhirResources,
+    crossReference?: any,
+    map?: supportedResourcesMaps,
+    lookupResource?: any;
+    resource?: any,
+    resourceRemote?: any,
+    root: ResourceTreeResource,
+};
+export type ResourceTreeIntermediate = {
+    resourceType: undefined,
+    children: ResourceTree[],
+    crossReference?: any,
+    parent: ResourceTreeResource|ResourceTreeIntermediate,
+    resource?: any,
+    root: ResourceTreeResource,
+};
+export type ResourceTreeAttribute = {
+    resourceType: undefined,
+    crossReference?: any,
+    parent: ResourceTreeResource|ResourceTreeIntermediate,
+    parentAttribute: string,
+    resource?: any,
+    root: ResourceTreeResource,
+};
+export type ResourceTree = ResourceTreeResource|ResourceTreeIntermediate|ResourceTreeAttribute;
+
+export class ResourceTreeUtil {
+    static createAttritube(parent: ResourceTreeResource|ResourceTreeIntermediate, parentAttribute: string, fe?: CdeForm|FormElement, resource?: FhirDomainResource): ResourceTreeAttribute {
+        let node: ResourceTreeAttribute = {parent, parentAttribute, resourceType: undefined, root: parent.root};
+        if (fe) ResourceTreeUtil.setCrossReference(node, fe);
+        if (resource) ResourceTreeUtil.setResource(node, resource);
+        return node;
     }
 
-    static isResource(node: ResourceTree): boolean {
-        return !!node.resourceType;
+    static createIntermediate(parent: ResourceTreeResource|ResourceTreeIntermediate, fe?: CdeForm|FormElement, resource?: FhirDomainResource) {
+        let node: ResourceTreeIntermediate = {children: [], parent: parent, resourceType: undefined, root: parent.root};
+        if (fe) ResourceTreeUtil.setCrossReference(node, fe);
+        if (resource) ResourceTreeUtil.setResource(node, resource);
+        return node;
+    }
+
+    static createResource(resourceType: supportedFhirResources, fe?: CdeForm|FormElement, resource?: FhirDomainResource): ResourceTreeResource {
+        let partial: any = {children: [], resourceType};
+        partial.root = partial;
+        let node: ResourceTreeResource = partial;
+        if (fe) ResourceTreeUtil.setCrossReference(node, fe);
+        if (resource) ResourceTreeUtil.setResource(node, resource);
+        return node;
+    }
+
+    static createRoot(fe: CdeForm|FormElement, parent?: ResourceTreeRoot) {
+        return {children: [], crossReference: fe, parent};
+    }
+
+    static isRoot(node: ResourceTreeRoot|ResourceTree): node is ResourceTreeRoot {
+        return !node.hasOwnProperty('resourceType');
+    }
+
+    static isNotRoot(node: ResourceTreeRoot|ResourceTree): node is ResourceTree {
+        return node.hasOwnProperty('resourceType');
+    }
+
+    static isResource(node: ResourceTree): node is ResourceTreeResource {
+        return !!node.resourceType && !ResourceTreeUtil.isIntermediate(node);
+    }
+
+    static isFhirResource(node: ResourceTree): node is ResourceTreeResource {
+        return !!getMapToFhirResource(node.crossReference);
+    }
+
+    static isIntermediate(node: ResourceTree): node is ResourceTreeIntermediate {
+        return node.resourceType === undefined && !node.hasOwnProperty('parentAttribute');
+    }
+
+    static isAttribute(node: ResourceTree): node is ResourceTreeAttribute {
+        return !!node['parentAttribute'];
     }
 
     static recurse(node: ResourceTree, parent: ResourceTree, action: Function) {
         action(node, parent);
-        node.children.forEach(c => ResourceTree.recurse(c, node, action));
+        if (ResourceTreeUtil.isResource(node)) {
+            node.children.forEach(c => ResourceTreeUtil.recurse(c, node, action));
+        }
     }
 
     static setCrossReference(node: ResourceTree, fe: CdeForm|FormElement) {
         node.crossReference = fe;
-        node.resourceType = getMapToFhirResource(fe);
-        let map = node.resourceType && resourceMap[node.resourceType];
-        if (map) {
-            node.map = new map(getFhirResourceMap(fe));
+        node.resourceType = getMapToFhirResource(fe) || node.resourceType;
+        if (ResourceTreeUtil.isResource(node)) {
+            let map = resourceMap[node.resourceType];
+            if (map) {
+                node.map = new map(getFhirResourceMap(fe));
+            }
         }
     }
 
     static setResource(node: ResourceTree, resource: any, resourceAfter?: any) {
-        if (!resourceAfter) resourceAfter = deepCopy(resource);
-        node.parentAttribute = undefined;
-        node.resource = resourceAfter;
-        node.resourceRemote = resource;
-        node.resourceType = resourceAfter.resourceType;
-        node.children.forEach(c => ResourceTree.recurse(c, node, ResourceTree.updateParentRef));
-    }
-
-    static setResourceNonFhir(node: ResourceTree, resource: any, parentAttribute: string) {
-        node.parentAttribute = parentAttribute;
-        node.resource = resource;
-        node.resourceRemote = undefined;
-        node.resourceType = undefined;
-    }
-
-    static updateParentRef(node: ResourceTree, parent: ResourceTree) {
-        if (!node.resource || !node.resource.resourceType) {
-            return;
+        if (ResourceTreeUtil.isResource(node)) {
+            if (!resourceAfter) resourceAfter = deepCopy(resource);
+            node.resource = resourceAfter;
+            node.resourceRemote = resource;
+            if (!(node.resource instanceof Promise)) {
+                node.resourceType = resourceAfter.resourceType;
+                node.children.forEach(c => ResourceTreeUtil.recurse(c, node, ResourceTreeUtil.updateContext));
+            }
+        } else {
+            node.resource = resource;
         }
-        switch (node.resource.resourceType) {
-            case 'Observation':
-            case 'Procedure':
-                if (parent.resource && parent.resource.resourceType && parent.resource.id) {
-                    node.resource.context = toRef(parent.resource);
-                }
-                break;
-            default:
-                throw new Error('Error: update parent ref');
+    }
+
+    static updateContext(node: ResourceTree, parent: ResourceTree) {
+        if (ResourceTreeUtil.isResource(node) && node.resource && node.resource.resourceType) {
+            switch (node.resourceType) {
+                case 'Observation':
+                case 'Procedure':
+                case 'QuestionnaireResponse':
+                    if (parent.resource && contextTypesArray.indexOf(parent.resource.resourceType) > -1 && parent.resource.id) {
+                        node.resource.context = toRef(parent.resource);
+                    }
+                    break;
+                default:
+                    assertUnreachable(node.resourceType);
+            }
         }
     }
 }

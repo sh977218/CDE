@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { getFormQuestionsAsQuestionCde } from 'shared/form/formShared';
+import { getFormQuestionsAsQuestionCde } from 'shared/form/fe';
 
 @Component({
     selector: "cde-embedded-form-search-result",

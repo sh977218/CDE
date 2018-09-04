@@ -12,7 +12,6 @@ public class FhirQuestionnaireExport extends BaseFormTest {
         mustBeLoggedInAs(reguser_username, password);
         String response = get(baseUrl + "/formById/58497234bb2d48e00466acd7?subtype=fhirQuestionnaire").asString();
         String[] expectedResults = {
-                "/schema/form",
                 "/deView?tinyId=OtsN78xANu1",
                 "{\"valueCoding\":{\"code\":\"Unknown\",\"userSelected\":false}",
                 "\"linkId\":\"0-2\"",

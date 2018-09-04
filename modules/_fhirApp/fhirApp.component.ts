@@ -3,7 +3,9 @@ import { MatDialog, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 
 import { CdeFhirService, PatientForm } from '_fhirApp/cdeFhir.service';
-import { FhirDomainResource, FhirEncounter, FhirObservation } from 'shared/mapping/fhir/fhirResource.model';
+import { CdeForm } from 'shared/form/form.model';
+import { getMapToFhirResource } from 'shared/form/formAndFe';
+import { FhirEncounter, FhirObservation } from 'shared/mapping/fhir/fhirResource.model';
 import { codingArrayPreview, getDateString, valuePreview } from 'shared/mapping/fhir/fhirDatatypes';
 import { getText, getTextFromArray } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
 import { getPatientName } from 'shared/mapping/fhir/resource/fhirPatient';
@@ -72,7 +74,7 @@ export class FhirStandaloneComponent {
 })
 export class FhirAppComponent {
     browseEncounters?: FhirEncounter[];
-    browseMode = '';
+    browseMode: ''|'Encounter' = '';
     readonly browseOptions = ['', 'Encounter'];
     errorMessage?: string;
     getDateString = getDateString;
@@ -89,16 +91,29 @@ export class FhirAppComponent {
                 public snackBar: MatSnackBar,
                 private route: ActivatedRoute) {
         this.selectedProfileName = this.route.snapshot.queryParams['selectedProfile'];
-        cdeFhir.init(this.route.snapshot, err => this.errorMessage = err);
+        cdeFhir.init(this.route.snapshot, this.cleanupPatient.bind(this), err => this.errorMessage = err);
     }
 
-    browseModeSelected() {
+    browseResourceSelected() {
         this.browseEncounters = undefined;
         if (this.browseMode === 'Encounter') {
             this.cdeFhir.fhirData.search<FhirEncounter>('Encounter', {}).then(e => {
                 this.browseEncounters = e;
             });
         }
+    }
+
+    cleanupPatient() {
+        this.browseMode = '';
+        this.browseEncounters = undefined;
+    }
+
+    modeChange(mode: FhirAppViewModes) {
+        this.mode = mode;
+    }
+
+    formResourceLabel(form: CdeForm) {
+        return getMapToFhirResource(form) || '';
     }
 
     loadForm(f: PatientForm) {
