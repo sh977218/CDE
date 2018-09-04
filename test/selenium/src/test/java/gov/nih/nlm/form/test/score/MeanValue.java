@@ -32,6 +32,7 @@ public class MeanValue extends NlmCdeBaseTest {
         clickElement(By.id("preview_tab"));
         findElement(By.name("0-0")).sendKeys("8");
         findElement(By.name("0-1")).sendKeys("11");
+        clickElement(By.name("0-2"));
         textPresent("9.5");
     }
 
