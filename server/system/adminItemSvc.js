@@ -1,17 +1,13 @@
 const mongo_data_system = require('./mongo-data');
 const async = require('async');
 const auth = require('./authorization');
-const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const fs = require('fs');
 const md5 = require("md5-file");
 const clamav = require('clamav.js');
 const config = require('./parseConfig');
 const logging = require('./logging');
 const streamifier = require('streamifier');
-const ioServer = require("./ioServer");
-const usersrvc = require('./usersrvc');
-const dbLogger = require('../log/dbLogger');
-const classificationNode = require('./classificationNode');
+const classificationNode = require('../classification/classificationNode');
 const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared.js');
 const mongo_cde = require('../cde/mongo-cde');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
@@ -218,33 +214,4 @@ exports.hideProprietaryIds = function (elt) {
             }
         });
     }
-};
-
-
-exports.bulkClassifyCdesStatus = {};
-exports.bulkClassifyCdes = function (user, eltId, elements, body, cb) {
-    if (!exports.bulkClassifyCdesStatus[user.username + eltId]) {
-        exports.bulkClassifyCdesStatus[user.username + eltId] = {
-            numberProcessed: 0,
-            numberTotal: elements.length
-        }
-    }
-    async.forEachSeries(elements, function (element, doneOneElement) {
-        let classifReq = {
-            orgName: body.orgName,
-            categories: body.categories,
-            tinyId: element.id,
-            version: element.version
-        };
-        classificationNode.eltClassification(classifReq, classificationShared.actions.create, mongo_cde, function (err) {
-            exports.bulkClassifyCdesStatus[user.username + eltId].numberProcessed++;
-            doneOneElement();
-        });
-    }, function doneAllElement(errs) {
-        if (cb) cb(errs);
-    })
-};
-
-exports.resetBulkClassifyCdesStatus = function (statusObjId) {
-    delete exports.bulkClassifyCdesStatus[statusObjId];
 };

@@ -10,7 +10,7 @@ import {
 } from '@angular/router';
 
 import { UserService } from '_app/user.service';
-import { canOrgAuthority } from 'shared/system/authorizationShared';
+import { isOrgAuthority } from 'shared/system/authorizationShared';
 
 @Injectable()
 export class OrgAuthorityGuard implements CanActivate, CanActivateChild, CanLoad {
@@ -30,7 +30,7 @@ export class OrgAuthorityGuard implements CanActivate, CanActivateChild, CanLoad
 
     checkLogin(): Promise<boolean> {
         return this.userService.then(user => {
-            if (canOrgAuthority(user)) {
+            if (isOrgAuthority(user)) {
                 return true;
             } else {
                 this.router.navigate(['/home']);
