@@ -33,7 +33,8 @@
             </ng-template>
         </div>
         <div attr.id="{{formElement.label}}_{{formElement.feId}}" [ngClass]="{'native-box': hasHeading(formElement)}">
-            <ng-template #scoreDisplay>Score:{{formElement.question.score}}{{formElement.question.scoreError}}</ng-template>
+            <ng-template #scoreDisplay>Score:{{formElement.question.score}}{{formElement.question.scoreError}}
+            </ng-template>
             <ng-container *ngIf="!formElement.question.isScore; else scoreDisplay">
                 <ng-container [ngSwitch]="formElement.question.datatype">
                     <ng-container *ngSwitchCase="'Value List'">
@@ -117,7 +118,7 @@
                                [name]="formElement.feId"
                                [attr.name]="formElement.feId"
                                [(ngModel)]="formElement.question.answer"
-                               (ngModelChange)="scoreService.calculateScore();"
+                               (ngModelChange)="scoreSvc.triggerCalculateScore(formElement);"
                                [required]="formElement.question.required"
                                [disabled]="!formElement.question.editable"/>
                     </ng-container>
@@ -129,7 +130,7 @@
                                    [name]="formElement.feId"
                                    [attr.name]="formElement.feId"
                                    [(ngModel)]="formElement.question.answer"
-                                   (ngModelChange)="scoreService.calculateScore();"
+                                   (ngModelChange)="scoreSvc.triggerCalculateScore(formElement);"
                                    [attr.min]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.minValue : null"
                                    [attr.max]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.maxValue : null"
                                    [required]="formElement.question.required"
@@ -143,7 +144,7 @@
                                            [attr.name]="formElement.feId + '_uom'"
                                            class="mr-1"
                                            [(ngModel)]="formElement.question.answerUom"
-                                           (ngModelChange)="convert();scoreService.calculateScore();"
+                                           (ngModelChange)="convert();scoreSvc.triggerCalculateScore(formElement);"
                                            [value]="formElement.question.unitsOfMeasure[i]"
                                            [attr.value]="formElement.question.unitsOfMeasure[i]"
                                            [required]="formElement.question.required || formElement.question.answer"
@@ -159,7 +160,7 @@
                                    [name]="formElement.feId"
                                    [attr.name]="formElement.feId"
                                    [(ngModel)]="formElement.question.answer"
-                                   (ngModelChange)="scoreService.calculateScore();"
+                                   (ngModelChange)="scoreSvc.triggerCalculateScore(formElement);"
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable"/>
                             <div *ngIf="formElement.question.uomsAlias.length" class="input-group-append">
@@ -170,7 +171,7 @@
                                            [name]="formElement.feId + '_uom'"
                                            [attr.name]="formElement.feId + '_uom'"
                                            [(ngModel)]="formElement.question.answerUom"
-                                           (ngModelChange)="convert();scoreService.calculateScore();"
+                                           (ngModelChange)="convert();scoreSvc.triggerCalculateScore(formElement);"
                                            [value]="formElement.question.unitsOfMeasure[i]"
                                            [attr.value]="formElement.question.unitsOfMeasure[i]"
                                            [required]="formElement.question.required || formElement.question.answer"

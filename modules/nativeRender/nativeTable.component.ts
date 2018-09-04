@@ -24,7 +24,7 @@ export class NativeTableComponent implements OnInit {
     datePrecisionToType = FormQuestion.datePrecisionToType;
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
 
-    constructor(private scoreSvc:ScoreService,
+    constructor(private scoreSvc: ScoreService,
                 public nrs: NativeRenderService) {
     }
 
@@ -32,13 +32,13 @@ export class NativeTableComponent implements OnInit {
         this.render();
     }
 
-    radioButtonSelect(required: boolean, obj, property, value: string,q) {
+    radioButtonSelect(required: boolean, obj, property, value: string, q) {
         if (required || obj[property] !== value) {
             obj[property] = value;
         } else {
             obj[property] = undefined;
         }
-        this.scoreSvc.triggerCalculateScore(q.cde.tinyId);
+        this.scoreSvc.triggerCalculateScore(q);
     }
 
     render() {
