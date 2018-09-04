@@ -34,7 +34,7 @@
         </div>
         <div attr.id="{{formElement.label}}_{{formElement.feId}}" [ngClass]="{'native-box': hasHeading(formElement)}">
             <ng-template #scoreDisplay>Score:
-                <ng-container *ngIf="!formElement.question.scoreError">{{formElement.question.score}}</ng-container>{{formElement.question.scoreError}}
+                {{formElement.question.score | number }}{{formElement.question.scoreError}}
             </ng-template>
             <ng-container *ngIf="!formElement.question.isScore; else scoreDisplay">
                 <ng-container [ngSwitch]="formElement.question.datatype">
