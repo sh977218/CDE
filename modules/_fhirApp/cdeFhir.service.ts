@@ -91,12 +91,12 @@ function applyCodeMapping(fhirApp: FhirApp, ids: (CdeId|PermissibleValue)[], sys
     });
 }
 
-function isSupportedResourceRelationship(self: ResourceTreeResource, parent: ResourceTreeRoot|ResourceTreeResource) {
+function isSupportedResourceRelationship(self: ResourceTreeResource, parent: ResourceTreeResource) {
     switch (self.resourceType) {
         case 'Observation':
         case 'Procedure':
         case 'QuestionnaireResponse':
-            return ResourceTreeUtil.isRoot(parent) || ResourceTreeUtil.isResource(parent) && contextTypesArray.indexOf(parent.resourceType) > -1;
+            return !parent || ResourceTreeUtil.isResource(parent) && contextTypesArray.indexOf(parent.resourceType) > -1;
         default:
             assertUnreachable(self.resourceType);
     }
@@ -469,11 +469,14 @@ export class CdeFhirService {
     readResourceByCode(self: ResourceTreeResource): Promise<ResourceTree|undefined> {
         switch (self.resourceType) {
             case 'Observation':
-            case 'QuestionnaireResponse':
                 return new Promise<ResourceTree>((resolve, reject) => {
                     let resource: FhirObservation|FhirQuestionnaireResponse;
+                    let codes = getIds(self.crossReference).filter(id => id.source === 'LOINC');
+                    if (codes.length === 0) {
+                        codes = getIds(self.crossReference).filter(id => id.source === 'NLM');
+                    }
                     async_some(
-                        getIds(self.crossReference).filter(id => id.source === 'LOINC'),
+                        codes,
                         (id: CdeId, done: CbErr<boolean>) => {
                             return this.fhirData.search<FhirObservation | FhirQuestionnaireResponse>(self.resourceType,
                                 {code: (id.source ? codeSystemOut(id.source) + '|' : '') + id.id})
@@ -540,6 +543,8 @@ export class CdeFhirService {
                     }
                 }
                 return Promise.resolve(undefined);
+            case 'QuestionnaireResponse':
+                return Promise.resolve(undefined);
             default:
                 assertUnreachable(self.resourceType);
         }
@@ -560,6 +565,9 @@ export class CdeFhirService {
     }
 
     readResourceByIdentifier(self: ResourceTreeResource): Promise<ResourceTreeResource|undefined> {
+        if (self.resourceType === 'Observation') {
+            return Promise.resolve(undefined);
+        }
         return this.fhirData.search<any>(self.resourceType,
             {identifier: codeSystemOut('NLM') + '|' + getTinyId(self.crossReference)})
             .then(r => r.length > 1 ? this.selectOne('edit', r, 'Last Edit', r => r.meta && new Date(r.meta.lastUpdated) || '') : r[0])
