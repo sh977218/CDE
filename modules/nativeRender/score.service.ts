@@ -55,19 +55,18 @@ export class ScoreService {
 
     sum(tinyIds, callback) {
         let sum = null;
-        tinyIds.forEach(cdeTinyId => {
+        for (let cdeTinyId of tinyIds) {
             let q = findQuestionByTinyId(cdeTinyId, this.elt);
             if (!q) return callback('Cannot find ' + cdeTinyId + ' in form ' + this.elt.tinyId);
             else {
-                let qAnswer = q.question.answer;
-                if (isNaN(qAnswer)) return callback('Unable to score ' + cdeTinyId);
+                let answer = parseFloat(q.question.answer);
+                if (isNaN(answer)) return callback("Incomplete answers");
                 else {
-                    let answer = parseFloat(qAnswer);
                     if (isNaN(sum)) sum = answer;
                     else sum = sum + answer;
                 }
             }
-        });
+        }
         callback(null, sum);
     }
 }
