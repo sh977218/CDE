@@ -51,7 +51,6 @@ export class NativeRenderService {
             this.flatMapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
         }
         this.scoreSvc.register(this.elt);
-        this.skipLogicService.register(this.elt);
     }
 
     getAliases(f: FormQuestion) {
@@ -175,7 +174,7 @@ export class NativeRenderService {
         return this.errors;
     }
 
-    checkboxOnChange($event: any, model: Question, value: any, q) {
+    checkboxOnChange($event: any, model: Question, value: any) {
         if (!Array.isArray(model.answer)) model.answer = [];
         let index = model.answer.indexOf(value);
         if ($event.target.checked) {
@@ -187,7 +186,6 @@ export class NativeRenderService {
                 model.answer.splice(model.answer.indexOf(value), 1);
             }
         }
-        this.scoreSvc.triggerCalculateScore(q);
     }
 
     checkboxIsChecked(model: Question, value: any) {
