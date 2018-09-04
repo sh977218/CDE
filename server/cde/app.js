@@ -2,10 +2,6 @@ const authorization = require('../system/authorization');
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const cdesvc = require('./cdesvc');
 const mongo_cde = require('./mongo-cde');
-const mongo_data_system = require('../system/mongo-data');
-const classificationNode_system = require('../system/classificationNode');
-const classificationNode = require('./classificationNode');
-const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared');
 const vsac = require('./vsac-io');
 const config = require('../system/parseConfig');
 const elastic = require('./elastic');
@@ -65,12 +61,6 @@ exports.init = function (app, daoManager) {
 
     app.get('/elasticSearch/count', (req, res) => {
         elastic_system.nbOfCdes((err, result) => res.send("" + result));
-    });
-
-    app.post('/classification/cde/moveclassif', (req, res) => {
-        classificationNode.moveClassifications(req, handleError({req, res}, cde => {
-            res.send(cde);
-        }));
     });
 
     app.post('/attachments/cde/add', multer(config.multer), (req, res) => {
@@ -226,69 +216,6 @@ exports.init = function (app, daoManager) {
                 return {tinyId: e._id};
             }));
         });
-    });
-
-    app.post('/classification/cde', (req, res) => {
-        if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send("Not Authorized.");
-        classificationNode_system.eltClassification(req.body, classificationShared.actions.create, mongo_cde, err => {
-            if (!err) {
-                res.send({code: 200, msg: "Classification Added"});
-                mongo_data_system.addToClassifAudit({
-                    date: new Date(),
-                    user: {
-                        username: req.user.username
-                    },
-                    elements: [{
-                        _id: req.body.cdeId
-                    }],
-                    action: "add",
-                    path: [req.body.orgName].concat(req.body.categories)
-                });
-                return;
-            }
-            res.send({code: 403, msg: "Classification Already Exists"});
-        });
-    });
-
-    app.post('/addCdeClassification/', (req, res) => {
-        if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
-        let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
-        if (invalidateRequest) return res.status(400).send(invalidateRequest);
-        classificationNode_system.addClassification(req.body, mongo_cde, handleError({req, res}, result => {
-            if (result === "Classification Already Exists") return res.status(409).send(result);
-            res.send(result);
-            mongo_data_system.addToClassifAudit({
-                date: new Date(),
-                user: {
-                    username: req.user.username
-                },
-                elements: [{
-                    _id: req.body.eltId
-                }],
-                action: "add",
-                path: [req.body.orgName].concat(req.body.categories)
-            });
-
-        }));
-    });
-    app.post("/removeCdeClassification/", (req, res) => {
-        if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(401).send({error: "You do not permission to do this."});
-        let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
-        if (invalidateRequest) return res.status(400).send({error: invalidateRequest});
-        classificationNode_system.removeClassification(req.body, mongo_cde, handleError({req, res}, elt => {
-            res.send(elt);
-            mongo_data_system.addToClassifAudit({
-                date: new Date(),
-                user: {
-                    username: req.user.username
-                },
-                elements: [{
-                    _id: req.body.eltId
-                }],
-                action: "delete",
-                path: [req.body.orgName].concat(req.body.categories)
-            });
-        }));
     });
 
     require('mongoose-schema-jsonschema')(require('mongoose'));
