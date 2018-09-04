@@ -18,7 +18,7 @@ export function canEditCuratedItem(user, item) {
     return isOrgCurator(user, item.stewardOrg.name);
 }
 
-export function canOrgAuthority(user) {
+export function isOrgAuthority(user) {
     return hasRole(user, 'OrgAuthority');
 }
 
@@ -48,7 +48,7 @@ export function isOrgCurator(user, org = undefined) {
 
 export function isOrgAdmin(user, org = undefined) {
     if (!user) return false;
-    if (canOrgAuthority(user)) return true;
+    if (isOrgAuthority(user)) return true;
     return user.orgAdmin && (org
             ? user.orgAdmin.indexOf(org) > -1
             : user.orgAdmin.length > 0

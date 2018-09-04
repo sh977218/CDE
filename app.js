@@ -23,6 +23,7 @@ const ioServer = require('./server/system/ioServer');
 const winston = require('winston');
 const authorization = require('./server/system/authorization');
 const traffic = require('./server/system/traffic');
+const authorizationShared = require('./shared/system/authorizationShared');
 
 require('./server/system/elastic').initEs();
 
@@ -245,9 +246,14 @@ try {
     });
     app.use('/server/log', logModule);
 
+    let classificationModule = require("./server/classification/classificationRoutes").module({
+        allowClassify: (user, org) => authorizationShared.isOrgCurator(user, org)
+    });
+    app.use('/server/classification', classificationModule);
+
     let meshModule = require("./server/mesh/meshRoutes").module({
         allowSyncMesh: (req, res, next) => {
-            if (!config.autoSyncMesh && !authorizationShared.canOrgAuthority(req.user))
+            if (!config.autoSyncMesh && !authorizationShared.isOrgAuthority(req.user))
                 return res.status(401).send();
             next();
         }
