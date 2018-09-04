@@ -115,7 +115,7 @@ export class ClassificationService {
             deleteClassification: deleteClassification,
             settings: settings,
         };
-        this.http.post('/orgClassificationDelete/', ro, {responseType: 'text'}).subscribe(
+        this.http.post('/server/classification/deleteOrgClassification/', ro, {responseType: 'text'}).subscribe(
             res => cb(res),
             err => this.alert.addAlert('danger', err));
     }
@@ -132,7 +132,7 @@ export class ClassificationService {
             oldClassification: oldClassification,
             newClassification: newClassification
         };
-        this.http.post('/orgReclassification/', postBody, {responseType: 'text'}).subscribe(
+        this.http.post('/server/classification/reclassifyOrgClassification/', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
             err => this.alert.addAlert('danger', err));
     }
@@ -148,7 +148,7 @@ export class ClassificationService {
             settings: settings,
             newClassification: newClassification
         };
-        this.http.post('/OrgClassification/rename', postBody, {responseType: 'text'}).subscribe(
+        this.http.post('/server/classification/renameOrgClassification', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
             err => this.alert.addAlert('danger', err));
     }
@@ -157,7 +157,7 @@ export class ClassificationService {
         let putBody = {
             newClassification: newClassification
         };
-        this.http.put('/orgClassification/', putBody, {responseType: 'text'}).subscribe(
+        this.http.put('/server/classification/addOrgClassification/', putBody, {responseType: 'text'}).subscribe(
             res => cb(res),
             err => this.alert.addAlert('danger', err));
     }

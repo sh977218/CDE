@@ -6,7 +6,6 @@ const fs = require('fs');
 const _ = require('lodash');
 const passport = require('passport');
 const path = require('path');
-const request = require('request');
 const useragent = require('useragent');
 const authorization = require('./authorization');
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
@@ -20,8 +19,6 @@ const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
 const pushNotification = require('./pushNotification');
 const usersrvc = require('./usersrvc');
-const orgClassificationSvc = require('./orgClassificationSvc');
-const adminItemSvc = require("./adminItemSvc");
 const daoManager = require('./moduleDaoManager');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const esInit = require('./elasticSearchInit');
@@ -32,7 +29,6 @@ const cdeElastic = require('../cde/elastic.js');
 const formElastic = require('../form/elastic.js');
 const app_status = require("./status.js");
 const traffic = require('./traffic');
-const classificationNode_system = require('./classificationNode');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -304,73 +300,6 @@ exports.init = function (app) {
     app.post('/pushRegistrationSubscribe', [authorization.loggedInMiddleware], pushNotification.subscribe);
     app.post('/pushRegistrationUpdate', pushNotification.updateStatus);
 
-    // @TODO: classification to own file
-    // delete org classification
-    app.post('/orgClassificationDelete/', (req, res) => {
-        let deleteClassification = req.body.deleteClassification;
-        let settings = req.body.settings;
-        if (!deleteClassification || !settings) return res.status(400).send();
-        if (!authorizationShared.isOrgCurator(req.user, deleteClassification.orgName)) return res.status(403).end();
-        mongo_data.jobStatus("deleteClassification", (err, j) => {
-            if (err) return res.status(409).send("Error - delete classification is in processing, try again later.");
-            if (j) return res.status(401).send();
-            orgClassificationSvc.deleteOrgClassification(req.user, deleteClassification, settings, err => {
-                if (err) dbLogger.logError(err);
-            });
-            res.send("Deleting in progress.");
-        });
-    });
-
-    // rename org classification
-    app.post('/orgClassification/rename', function (req, res) {
-        let newClassification = req.body.newClassification;
-        let newName = req.body.newClassification.newName;
-        let settings = req.body.settings;
-        if (!newName || !newClassification || !settings) return res.status(400).send();
-        if (!authorizationShared.isOrgCurator(req.user, newClassification.orgName)) return res.status(403).end();
-        mongo_data.jobStatus("renameClassification", (err, j) => {
-            if (err) return res.status(409).send("Error - rename classification is in processing, try again later.");
-            if (j) return res.status(401).send();
-            orgClassificationSvc.renameOrgClassification(req.user, newClassification, settings, err => {
-                if (err) dbLogger.logError(err);
-            });
-            res.send("Renaming in progress.");
-        });
-    });
-
-    // add org classification
-    app.put('/orgClassification/', function (req, res) {
-        let newClassification = req.body.newClassification;
-        if (!newClassification) return res.status(400).send();
-        if (!authorizationShared.isOrgCurator(req.user, newClassification.orgName)) return res.status(403).end();
-        mongo_data.jobStatus("addClassification", (err, j) => {
-            if (err) return res.status(409).send("Error - delete classification is in processing, try again later.");
-            if (j) return res.status(401).send();
-            orgClassificationSvc.addOrgClassification(newClassification, err => {
-                if (err) return res.status(500).send(err);
-                res.send("Classification added.");
-            });
-        });
-    });
-
-    // reclassify org classification
-    app.post('/orgReclassification', function (req, res) {
-        let oldClassification = req.body.oldClassification;
-        let newClassification = req.body.newClassification;
-        let settings = req.body.settings;
-        if (!oldClassification || !newClassification || !settings) return res.status(400).send();
-        if (!authorizationShared.isOrgCurator(req.user, newClassification.orgName)) return res.status(403).end();
-        mongo_data.jobStatus("reclassifyClassification", (err, j) => {
-            if (err) return res.status(409).send("Error - reclassify classification is in processing, try again later.");
-            if (j) return res.status(401).send();
-            orgClassificationSvc.reclassifyOrgClassification(req.user, oldClassification, newClassification, settings, err => {
-                if (err) logging.log(err);
-            });
-            res.send("Reclassifying in progress.");
-        });
-
-    });
-
     app.get('/jobStatus/:type', function (req, res) {
         let jobType = req.params.type;
         if (!jobType) return res.status(400).end();
@@ -591,44 +520,6 @@ exports.init = function (app) {
         orgsvc.transferSteward(req, res);
     });
 
-    // TODO this works only for CDEs. Forms TODO later.
-    app.post('/classification/bulk/tinyId', (req, res) => {
-        if (!authorizationShared.isOrgCurator(req.user, req.body.orgName)) return res.status(403).send("Not Authorized");
-        if (!req.body.orgName || !req.body.categories) return res.status(400).send("Bad Request");
-        let elements = req.body.elements;
-        if (elements.length <= 50)
-            adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, handleError({req, res}, () =>
-                res.send("Done")));
-        else {
-            res.send("Processing");
-            adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body);
-        }
-        mongo_data.addToClassifAudit({
-            date: new Date(),
-            user: {
-                username: req.user.username
-            },
-            elements: elements,
-            action: "add",
-            path: [req.body.orgName].concat(req.body.categories)
-        });
-    });
-
-    app.get("/bulkClassifyCdeStatus/:eltId", (req, res) => {
-        let formId = req.param("eltId");
-        if (!formId) return res.status(400).send("Bad Request");
-        let result = adminItemSvc.bulkClassifyCdesStatus[req.user.username + req.params.eltId];
-        if (result) return res.send(result);
-        res.send({});
-    });
-
-    app.get("/resetBulkClassifyCdesStatus/:eltId", (req, res) => {
-        let formId = req.param("eltId");
-        if (!formId) return res.status(400).send("Bad Request");
-        adminItemSvc.resetBulkClassifyCdesStatus(req.user.username + req.param("eltId"));
-        res.end();
-    });
-
     app.post('/mail/messages/new', (req, res) => {
         if (req.isAuthenticated()) {
             let message = req.body;
@@ -695,7 +586,7 @@ exports.init = function (app) {
     });
 
     app.post('/getClassificationAuditLog', (req, res) => {
-        if (authorizationShared.canOrgAuthority(req.user)) {
+        if (authorizationShared.isOrgAuthority(req.user)) {
             mongo_data.getClassificationAuditLog(req.body, (err, result) => {
                 if (err) return res.status(500).send();
                 res.send(result);
@@ -749,7 +640,7 @@ exports.init = function (app) {
     app.delete('/fhirApp/:id', [authorization.isSiteAdminMiddleware], (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
 
     app.post('/disableRule', (req, res) => {
-        if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
+        if (!authorizationShared.isOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
         mongo_data.disableRule(req.body, function (err, org) {
             if (err) return res.status(500).send(org);
             res.send(org);
@@ -757,7 +648,7 @@ exports.init = function (app) {
     });
 
     app.post('/enableRule', (req, res) => {
-        if (!authorizationShared.canOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
+        if (!authorizationShared.isOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
         mongo_data.enableRule(req.body, (err, org) => {
             if (err) return res.status(500).send(org);
             res.send(org);
@@ -816,25 +707,6 @@ exports.init = function (app) {
                 });
             });
         } else res.status(401).send();
-    });
-
-    app.post('/classifyCdeBoard', function (req, res) {
-        if (!authorizationShared.isOrgCurator(req.user, req.body.newClassification.orgName)) {
-            return res.status(401).send();
-        }
-        classificationNode_system.classifyEltsInBoard(req, mongo_cde, function (err) {
-            if (err) return res.status(500).send("ERROR - cannot classify cdes in board");
-            res.send('');
-        });
-    });
-    app.post('/classifyFormBoard', function (req, res) {
-        if (!authorizationShared.isOrgCurator(req.user, req.body.newClassification.orgName)) {
-            return res.status(401).send('');
-        }
-        classificationNode_system.classifyEltsInBoard(req, mongo_form, function (err) {
-            if (err) return res.status(500).send("ERROR - cannot classify forms in board");
-            res.send('');
-        });
     });
 
 };

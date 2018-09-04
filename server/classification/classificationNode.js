@@ -1,11 +1,11 @@
 const boardDb = require('../board/boardDb');
-const mongo_data_system = require('./mongo-data');
+const mongo_data_system = require('../system/mongo-data');
 const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared');
-const daoManager = require('./moduleDaoManager');
-const adminItemSvc = require("./adminItemSvc");
-const elastic = require('./elastic');
+const daoManager = require('../system/moduleDaoManager');
+const adminItemSvc = require("../system/adminItemSvc");
+const elastic = require('../system/elastic');
 const async = require('async');
-const logging = require('./logging.js');
+const logging = require('../system/logging.js');
 
 var classification = this;
 

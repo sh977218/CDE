@@ -68,7 +68,7 @@ export class BoardViewComponent implements OnInit {
 
     addClassification(event) {
         let _timeout = setInterval(() => this.alert.addAlert('warning', 'Classification task is still in progress. Please hold on.'), 3000);
-        this.http.post(this.board.type === 'form' ? '/classifyFormBoard' : '/classifyCdeBoard',
+        this.http.post(this.board.type === 'form' ? '/server/classification/classifyFormBoard' : '/server/classification/classifyCdeBoard',
             {
                 boardId: this.boardId,
                 newClassification: {

@@ -1,10 +1,10 @@
 const async = require('async');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
-const mongo_data = require('./mongo-data');
+const mongo_data = require('../system/mongo-data');
 const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared');
-const elastic = require('./elastic');
-const logger = require('./logging.js').MongoLogger;
+const elastic = require('../system/elastic');
+const logger = require('../system/logging.js').MongoLogger;
 
 exports.deleteOrgClassification = (user, deleteClassification, settings, callback) => {
     if (!(deleteClassification.categories instanceof Array))

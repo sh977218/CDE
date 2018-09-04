@@ -44,8 +44,7 @@ export class FormClassificationComponent {
             elements: allCdeIds
         };
 
-        //noinspection TypeScriptValidateTypes
-        this.http.post('/classification/bulk/tinyId', postBody, {responseType: 'text'})
+        this.http.post('/server/classification/bulk/tinyId', postBody, {responseType: 'text'})
             .subscribe(res => {
                 if (res === 'Done') {
                     this.classifyCdesModalRef.close('success');
@@ -54,14 +53,14 @@ export class FormClassificationComponent {
                 else if (res === 'Processing') {
                     let fn = setInterval(() => {
                         //noinspection TypeScriptValidateTypes
-                        this.http.get<any>('/bulkClassifyCdeStatus/' + this.elt._id)
+                        this.http.get<any>('/server/classification/bulkClassifyCdeStatus/' + this.elt._id)
                             .subscribe(
                                 res => {
                                     this.showProgressBar = true;
                                     this.numberProcessed = res.numberProcessed;
                                     this.numberTotal = res.numberTotal;
                                     if (this.numberProcessed >= this.numberTotal) {
-                                        this.http.get('/resetBulkClassifyCdesStatus/' + this.elt._id)
+                                        this.http.get('/server/classification/resetBulkClassifyCdesStatus/' + this.elt._id)
                                             .subscribe(() => {
                                                 //noinspection TypeScriptUnresolvedFunction
                                                 clearInterval(fn);
@@ -84,7 +83,7 @@ export class FormClassificationComponent {
 
     classifyItem(event) {
         this.classificationSvc.classifyItem(this.elt, event.selectedOrg, event.classificationArray,
-            '/addFormClassification/', (err) => {
+            '/server/classification/addFormClassification/', (err) => {
                 this.classifyItemModalRef.close();
                 if (err) this.alert.addAlert('danger', err);
                 else this.reloadElt(() => this.alert.addAlert('success', 'Classification added.'));
@@ -126,7 +125,7 @@ export class FormClassificationComponent {
 
     removeClassif (event) {
         this.classificationSvc.removeClassification(this.elt, event.deleteOrgName,
-            event.deleteClassificationArray, '/removeFormClassification/', err => {
+            event.deleteClassificationArray, '/server/classification/removeFormClassification/', err => {
                 if (err) {
                     this.alert.addAlert('danger', err);
                 } else {
