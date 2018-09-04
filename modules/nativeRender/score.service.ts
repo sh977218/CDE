@@ -27,7 +27,7 @@ export class ScoreService {
      */
     triggerCalculateScore(inputQuestion: FormQuestion) {
         let scoreQuestions = this.INPUT_SCORE_MAP[inputQuestion.question.cde.tinyId];
-        scoreQuestions.forEach(scoreQuestion => this.calculateScore(scoreQuestion));
+        if (scoreQuestions) scoreQuestions.forEach(scoreQuestion => this.calculateScore(scoreQuestion));
     }
 
     /**

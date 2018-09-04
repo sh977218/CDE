@@ -91,7 +91,7 @@ export function getFormQuestions(form) {
     return getQuestions(form);
 }
 
-export function getFormScoreQuestion(form){
+export function getFormScoreQuestion(form) {
     let getQuestions = function (fe) {
         let scoreQuestions = [];
         if (fe.formElements) {
@@ -101,6 +101,20 @@ export function getFormScoreQuestion(form){
             });
         }
         return scoreQuestions;
+    };
+    return getQuestions(form);
+}
+
+export function getFormSkipLogicQuestion(form) {
+    let getQuestions = function (fe) {
+        let skipLogicQuestions = [];
+        if (fe.formElements) {
+            fe.formElements.forEach(function (e) {
+                if (e.elementType === 'question' && e.skipLogic.condition.length > 0) skipLogicQuestions.push(e);
+                else skipLogicQuestions = skipLogicQuestions.concat(getQuestions(e));
+            });
+        }
+        return skipLogicQuestions;
     };
     return getQuestions(form);
 }

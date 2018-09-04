@@ -53,8 +53,7 @@
                                                        [name]="formElement.feId"
                                                        [attr.name]="formElement.feId"
                                                        [ngModel]="formElement.question.answer"
-                                                       (change)="ss.triggerCalculateScore(formElement);"
-                                                       (click)="nrs.radioButtonSelect(formElement.question, $event.target.value)"
+                                                       (click)="nrs.radioButtonSelect(formElement, $event.target.value);scoreSvc.triggerCalculateScore(formElement);"
                                                        [value]="pv.permissibleValue" [attr.value]="pv.permissibleValue"
                                                        [required]="formElement.question.required"
                                                        [disabled]="!formElement.question.editable"/>

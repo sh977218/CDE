@@ -51,6 +51,7 @@ export class NativeRenderService {
             this.flatMapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
         }
         this.scoreSvc.register(this.elt);
+        this.skipLogicService.register(this.elt);
     }
 
     getAliases(f: FormQuestion) {
