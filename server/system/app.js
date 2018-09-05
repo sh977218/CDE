@@ -23,6 +23,7 @@ const daoManager = require('./moduleDaoManager');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const esInit = require('./elasticSearchInit');
 const elastic = require('./elastic.js');
+const meshElastic = require('../mesh/elastic');
 const fhirApps = require('./fhir').fhirApps;
 const fhirObservationInfo = require('./fhir').fhirObservationInfo;
 const cdeElastic = require('../cde/elastic.js');
@@ -218,7 +219,7 @@ exports.init = function (app) {
     });
 
 
-    new CronJob('00 00 4 * * *', () => elastic.syncWithMesh(), null, true, 'America/New_York');
+    new CronJob('00 00 4 * * *', () => meshElastic.syncWithMesh(), null, true, 'America/New_York');
 
     // every sunday at 4:07 AM
     new CronJob('* 7 4 * * 6', () => {
