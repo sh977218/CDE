@@ -280,7 +280,6 @@ export class Question extends DatatypeContainer {
     editable?: boolean = true;
     invisible?: boolean;
     isScore?: boolean;
-    score?: number;
     scoreError?: string;
     multiselect?: boolean;
     partOf?: string; // volatile, display '(part of ...)' in Form Description

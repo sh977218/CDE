@@ -38,35 +38,33 @@ export class ScoreService {
         scoreQuestion.question.cde.derivationRules.forEach(derRule => {
             if (derRule.ruleType === 'score') {
                 if (derRule.formula === 'sumAll') {
-                    this.sum(derRule.inputs, (err, sum) => {
-                        scoreQuestion.question.score = sum;
-                        scoreQuestion.question.scoreError = err;
-                    });
+                    let result: any = this.sum(derRule.inputs);
+                    scoreQuestion.question.answer = result.sum;
+                    scoreQuestion.question.scoreError = result.error;
                 }
                 if (derRule.formula === 'mean') {
-                    this.sum(derRule.inputs, (err, sum) => {
-                        scoreQuestion.question.score = sum / derRule.inputs.length;
-                        scoreQuestion.question.scoreError = err;
-                    });
+                    let result: any = this.sum(derRule.inputs);
+                    scoreQuestion.question.answer = result.sum / derRule.inputs.length;
+                    scoreQuestion.question.scoreError = result.error;
                 }
             }
         });
     }
 
-    sum(tinyIds, callback) {
+    sum(tinyIds) {
         let sum = null;
         for (let cdeTinyId of tinyIds) {
             let q = findQuestionByTinyId(cdeTinyId, this.elt);
-            if (!q) return callback('Cannot find ' + cdeTinyId + ' in form ' + this.elt.tinyId);
+            if (!q) return {error: 'Cannot find ' + cdeTinyId + ' in form ' + this.elt.tinyId};
             else {
                 let answer = parseFloat(q.question.answer);
-                if (isNaN(answer)) return callback("Incomplete answers");
+                if (isNaN(answer)) return {error: "Incomplete answers"};
                 else {
                     if (isNaN(sum)) sum = answer;
                     else sum = sum + answer;
                 }
             }
         }
-        callback(null, sum);
+        return {sum: sum};
     }
 }
