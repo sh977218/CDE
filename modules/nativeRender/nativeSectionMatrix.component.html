@@ -14,7 +14,7 @@
         </td>
         <td *ngFor="let qa of q.question.answers">
             <input type="radio" [title]="qa.permissibleValue" [name]="q.feId" [attr.name]="q.feId"
-                   [ngModel]="q.question.answer" (click)="nrs.radioButtonSelect(q.question, $event.target.value)"
+                   [ngModel]="q.question.answer" (click)="nrs.radioButtonSelect(q, $event.target.value)"
                    [value]="qa.permissibleValue" [attr.value]="qa.permissibleValue">
             <span class="native-value" *ngIf="nrs.profile.displayValues">{{NRS.getPvDisplayValue(qa)}}</span>
         </td>
