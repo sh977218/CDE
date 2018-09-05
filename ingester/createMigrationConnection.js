@@ -6,8 +6,7 @@ let cde_schemas = require('../server/cde/schemas');
 let form_schemas = require('../server/form/schemas');
 let sharedSchemas = require('../server/system/schemas.js');
 
-let mongoMigrationUri = config.mongoMigrationUri;
-let migrationConn = mongoose.createConnection(mongoMigrationUri);
+let migrationConn = mongoose.createConnection(config.database.migration.uri);
 migrationConn.once('open', function callback() {
     console.log('mongodb ' + config.database.migration.db + ' connection open');
 });

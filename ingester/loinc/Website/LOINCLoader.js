@@ -1,38 +1,38 @@
-var async = require('async');
-var webdriver = require('selenium-webdriver');
-var By = webdriver.By;
+const async = require('async');
+const webdriver = require('selenium-webdriver');
+const By = webdriver.By;
 
-var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
+const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 
-var ParseLoincNameTable = require('./ParseLoincNameTable');
-var ParsePanelHierarchyTable = require('./ParsePanelHierarchyTable');
-var ParseNameTable = require('./ParseNameTable');
-var ParseDefinitionDescriptionsTable = require('./ParseDefinitionDescriptionsTable');
-var ParsePartTable = require('./ParsePartTable');
-var ParseBasicAttributesTable = require('./ParseBasicAttributesTable');
-var ParseHL7AttributesTable = require('./ParseHL7AttributesTable');
-var ParseSubmittersInformationTable = require('./ParseSubmittersInformationTable');
-var ParseMemberOfThesePanelsTable = require('./ParseMemberOfThesePanelsTable');
-var ParsingAnswerListTable = require('./ParseAnswerListTable');
-var ParseSurveyQuestionTable = require('./ParseSurveyQuestionTable');
-var ParseLanguageVariantsTable = require('./ParseLanguageVariantsTable');
-var ParseRelatedNamesTable = require('./ParseRelatedNamesTable');
-var ParseExampleUnitsTable = require('./ParseExampleUnitsTable');
-var ParseCopyrightTable = require('./ParseCopyrightTable');
-var ParseWebContentTable = require('./ParseWebContentTable');
-var ParseArticleTable = require('./ParseArticleTable');
-var ParseCopyrightText = require('./ParseCopyrightText');
-var ParsingVersion = require('./ParseVersion');
-var ParseQuestion = require('./ParseQuestion');
-var CheckLformViewer = require('./checkLformViewer');
+const ParseLoincNameTable = require('./ParseLoincNameTable');
+const ParsePanelHierarchyTable = require('./ParsePanelHierarchyTable');
+const ParseNameTable = require('./ParseNameTable');
+const ParseDefinitionDescriptionsTable = require('./ParseDefinitionDescriptionsTable');
+const ParsePartTable = require('./ParsePartTable');
+const ParseBasicAttributesTable = require('./ParseBasicAttributesTable');
+const ParseHL7AttributesTable = require('./ParseHL7AttributesTable');
+const ParseSubmittersInformationTable = require('./ParseSubmittersInformationTable');
+const ParseMemberOfThesePanelsTable = require('./ParseMemberOfThesePanelsTable');
+const ParsingAnswerListTable = require('./ParseAnswerListTable');
+const ParseSurveyQuestionTable = require('./ParseSurveyQuestionTable');
+const ParseLanguageVariantsTable = require('./ParseLanguageVariantsTable');
+const ParseRelatedNamesTable = require('./ParseRelatedNamesTable');
+const ParseExampleUnitsTable = require('./ParseExampleUnitsTable');
+const ParseCopyrightTable = require('./ParseCopyrightTable');
+const ParseWebContentTable = require('./ParseWebContentTable');
+const ParseArticleTable = require('./ParseArticleTable');
+const ParseCopyrightText = require('./ParseCopyrightText');
+const ParsingVersion = require('./ParseVersion');
+const ParseQuestion = require('./ParseQuestion');
+const CheckLformViewer = require('./checkLformViewer');
 
-var loincCount = 0;
+let loincCount = 0;
 
-var url_prefix = 'http://r.details.loinc.org/LOINC/';
-var url_postfix = '.html';
-var url_postfix_para = '?sections=Comprehensive';
+const url_prefix = 'http://r.details.loinc.org/LOINC/';
+const url_postfix = '.html';
+const url_postfix_para = '?sections=Comprehensive';
 
-var tasks = [
+const tasks = [
     {
         sectionName: 'PANEL HIERARCHY',
         function: ParsePanelHierarchyTable.parsePanelHierarchyTable,
@@ -148,7 +148,7 @@ var tasks = [
         xpath: '//p[contains(text(),"Generated from LOINC version")]'
     }
 ];
-var specialTasks = [
+const specialTasks = [
     {
         function: ParseQuestion.parseQuestion
     },
@@ -156,7 +156,7 @@ var specialTasks = [
         function: CheckLformViewer.checkLformViewer
     }
 ];
-var currentVersion = '2.58';
+let currentVersion = '2.58';
 
 exports.setCurrentVersion = function (v) {
     currentVersion = v;
@@ -169,11 +169,11 @@ function logMessage(obj, messange) {
 function doTask(driver, task, obj, cb) {
     driver.findElements(By.xpath(task.xpath)).then(function (elements) {
         if (elements && elements.length === 0) {
-            var message = 'Cannot find ' + task.sectionName + ' for loinc: ' + obj.loincId;
+            let message = 'Cannot find ' + task.sectionName + ' for loinc: ' + obj.loincId;
             logMessage(obj, message);
             cb();
         } else if (elements && elements.length > 1) {
-            var message = 'find ' + elements.length + ' ' + task.sectionName + ' for loinc: ' + obj.loincId;
+            let message = 'find ' + elements.length + ' ' + task.sectionName + ' for loinc: ' + obj.loincId;
             logMessage(obj, message);
             cb();
         } else if (elements && elements.length === 1) {
@@ -192,10 +192,10 @@ function doTask(driver, task, obj, cb) {
 
 exports.runArray = function (array, orgName, doneItem, doneArray) {
     ParsePanelHierarchyTable.setOrgName(orgName);
-    var results = [];
+    let results = [];
     async.series([
         function () {
-            var driver = new webdriver.Builder().forBrowser('chrome').build();
+            let driver = new webdriver.Builder().forBrowser('chrome').build();
             async.forEachSeries(array, function (loincId, doneOneLoinc) {
                 MigrationLoincModel.find({
                     loincId: loincId,
@@ -203,9 +203,9 @@ exports.runArray = function (array, orgName, doneItem, doneArray) {
                 }).exec(function (error, existingLoincs) {
                     if (error) throw error;
                     if (existingLoincs.length === 0) {
-                        var url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
+                        let url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
                         driver.get(url).then(function () {
-                            var obj = {URL: url, orgName: orgName, loincId: loincId, info: ''};
+                            let obj = {URL: url, orgName: orgName, loincId: loincId, info: ''};
                             async.forEach(tasks, function (task, doneOneTask) {
                                 doTask(driver, task, obj, doneOneTask);
                             }, function doneAllTasks() {
@@ -231,7 +231,7 @@ exports.runArray = function (array, orgName, doneItem, doneArray) {
                 });
             }, function doneAllLoinc() {
                 console.log('Finished all. loincCount: ' + loincCount);
-                driver.quit();
+                driver.close();
                 if (doneArray) doneArray(results);
                 else process.exit(1);
             });

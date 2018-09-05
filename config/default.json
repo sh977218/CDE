@@ -93,7 +93,10 @@
     "migration": {
       "db": "migration",
       "username": "miguser",
-      "password": "password"
+      "password": "password",
+      "options": {
+        "ssl": false
+      }
     }
   },
   "node": {
