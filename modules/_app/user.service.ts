@@ -9,6 +9,7 @@ import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscr
 import { ITEM_MAP } from 'shared/item';
 import { CbErr, Comment, User } from 'shared/models.model';
 import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
+import { LoginService } from '_app/login.service';
 
 @Injectable()
 export class UserService {
@@ -26,11 +27,14 @@ export class UserService {
         )));
     user?: User;
     userOrgs: string[] = [];
+    logoutTimeout: number;
 
     constructor(
         private http: HttpClient,
+        private loginSvc: LoginService
     ) {
         this.reload();
+        document.body.addEventListener('click', () => this.resetInactivityTimeout());
     }
 
     catch(cb: CbErr): Promise<any> {
@@ -80,6 +84,17 @@ export class UserService {
                 if (this.userOrgs.indexOf(c) < 0) this.userOrgs.push(c);
             });
         }
+    }
+
+    resetInactivityTimeout () {
+        clearTimeout(this.logoutTimeout);
+        // @ts-ignore
+        this.logoutTimeout = setTimeout(() => {
+            this.loginSvc.goToLogin();
+            // this.router.navigate(["/login"]);
+            console.log("10 secs have elapsed");
+        }, 10000);
+        console.log(typeof this.logoutTimeout);
     }
 
     then(cb: (user: User) => any, errorCb?: CbErr): Promise<any> {

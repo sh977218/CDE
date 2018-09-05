@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
@@ -65,5 +65,6 @@ import { OrgHelperService } from 'core/orgHelper.service';
     ],
     bootstrap: [CdeAppComponent]
 })
+
 export class CdeAppModule {
 }
