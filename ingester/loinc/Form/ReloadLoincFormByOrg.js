@@ -1,38 +1,38 @@
-var async = require('async');
-var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
-var MigrationOrgModel = require('../../createMigrationConnection').MigrationOrgModel;
-var OrgModel = require('../../createNlmcdeConnection').OrgModel;
-var mongo_form = require('../../../server/form/mongo-form');
-var FormModel = mongo_form.Form;
+const async = require('async');
+const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
+const MigrationOrgModel = require('../../createMigrationConnection').MigrationOrgModel;
+const OrgModel = require('../../createNlmcdeConnection').OrgModel;
+const mongo_form = require('../../../server/form/mongo-form');
+const FormModel = mongo_form.Form;
 
-var orgMapping = require('../Mapping/ORG_INFO_MAP').map;
-var formUlt = require('./formUlt');
+const orgMapping = require('../Mapping/ORG_INFO_MAP').map;
+const formUlt = require('./formUlt');
 
-var lastEightHours = new Date();
+const lastEightHours = new Date();
 lastEightHours.setHours(new Date().getHours() - 8);
 
 exports.reloadLoincFormsByOrg = function (orgName, next) {
-    var org;
-    var orgInfo = orgMapping[orgName];
+    let org;
+    let orgInfo = orgMapping[orgName];
     async.series([
         function (cb) {
-            MigrationOrgModel.remove({}, function (removeMigrationOrgError) {
-                if (removeMigrationOrgError) throw removeMigrationOrgError;
+            MigrationOrgModel.remove({}, function (err) {
+                if (err) throw err;
                 console.log('Removed all migration org');
                 cb(null, 'Finished removing migration org');
             })
         },
         function (cb) {
-            new MigrationOrgModel({name: orgName}).save(function (createMigrationOrgError, o) {
-                if (createMigrationOrgError) throw createMigrationOrgError;
+            new MigrationOrgModel({name: orgName}).save(function (err, o) {
+                if (err) throw err;
                 console.log('Created migration org of ' + orgName);
                 org = o;
                 cb(null, 'Finished creating migration org');
             });
         },
         function (cb) {
-            var findFormCond = {orgName: orgName, isForm: true, dependentSection: false};
-            MigrationLoincModel.find(findFormCond).exec(function (findFormError, loincs) {
+            let findFormCond = {orgName: orgName, isForm: true, dependentSection: false};
+            MigrationLoincModel.find(findFormCond, (findFormError, loincs) => {
                 if (findFormError) throw findFormError;
                 console.log('Processing ' + loincs.length + ' forms');
                 async.forEachSeries(loincs, function (loinc, doneOneForm) {
@@ -44,7 +44,6 @@ exports.reloadLoincFormsByOrg = function (orgName, next) {
                     })
                 }, function doneAllSimpleForms() {
                     console.log('Finished creating forms');
-                    org.markModified('classifications');
                     org.save(function (e) {
                         if (e) throw e;
                         console.log('Finished saving org into migration.');
@@ -54,7 +53,7 @@ exports.reloadLoincFormsByOrg = function (orgName, next) {
             })
         },
         function (cb) {
-            OrgModel.findOne({name: orgInfo['classificationOrgName']}).exec(function (findOrgError, o) {
+            OrgModel.findOne({name: orgInfo['classificationOrgName']}, (findOrgError, o) => {
                 if (findOrgError) throw findOrgError;
                 if (orgInfo['classification'].length === 0) {
                     o.classifications = org.classifications;
@@ -65,7 +64,6 @@ exports.reloadLoincFormsByOrg = function (orgName, next) {
                         }
                     })
                 }
-                o.markModified('classifications');
                 o.save(function (e) {
                     if (e) throw e;
                     console.log('Finished saving org into production.');
@@ -81,7 +79,7 @@ exports.reloadLoincFormsByOrg = function (orgName, next) {
                 'classification.stewardOrg.name': orgInfo['stewardOrgName'],
                 'classification.elements.name': orgInfo['classificationOrgName'],
                 'archived': false
-            }).exec(function (findRetiredFormError, retireForms) {
+            }, (findRetiredFormError, retireForms) => {
                 if (findRetiredFormError) throw findRetiredFormError;
                 console.log('There are ' + retireForms.length + ' forms need to be retired.');
                 async.forEachSeries(retireForms, function (retireForm, doneOneRetireForm) {

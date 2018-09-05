@@ -1,17 +1,17 @@
-var async = require('async');
-var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
-var MigrationDataElementModel = require('../../createMigrationConnection').MigrationDataElementModel;
-var MigrationOrgModel = require('../../createMigrationConnection').MigrationOrgModel;
-var orgMapping = require('../Mapping/ORG_INFO_MAP').map;
-var LoadLoincCdeIntoMigration = require('../CDE/LoadLoincCdeIntoMigration');
+const async = require('async');
+const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
+const MigrationDataElementModel = require('../../createMigrationConnection').MigrationDataElementModel;
+const MigrationOrgModel = require('../../createMigrationConnection').MigrationOrgModel;
+const orgMapping = require('../Mapping/ORG_INFO_MAP').map;
+const LoadLoincCdeIntoMigration = require('../CDE/LoadLoincCdeIntoMigration');
 
-var orgName = 'PHQ9';
-var cdeCount = 0;
-var loincIdArray = [];
+const orgName = 'External Forms';
+let cdeCount = 0;
+let loincIdArray = [];
 
 function run() {
-    var org;
-    var orgInfo = orgMapping[orgName];
+    let org;
+    let orgInfo = orgMapping[orgName];
     async.series([
         function (cb) {
             MigrationDataElementModel.remove({}, function (removeMigrationDataelementError) {
@@ -45,16 +45,14 @@ function run() {
             }).exec(function (findCdeError, Cdes) {
                 if (findCdeError) throw findCdeError;
                 console.log('Total # Cde: ' + Cdes.length);
-                Cdes.forEach(function (n) {
-                    loincIdArray.push(n.get('loincId'));
-                });
+                loincIdArray = Cdes.map(c => c.get('loincId'));
                 cb(null, 'Finished retrieving all ' + orgName + ' cde id.');
             })
         },
         function (cb) {
             LoadLoincCdeIntoMigration.runArray(loincIdArray, org, orgInfo, function (one, next) {
-                MigrationDataElementModel.find({'ids.id': one.ids[0].id}).exec(function (findMigrationDataElementError, existingCdes) {
-                    if (findMigrationDataElementError) throw findMigrationDataElementError;
+                MigrationDataElementModel.find({'ids.id': one.ids[0].id}, (error, existingCdes) => {
+                    if (error) throw error;
                     if (existingCdes.length === 0) {
                         one.classification = [{
                             elements: [{
@@ -66,8 +64,7 @@ function run() {
                             }
                         }
                         ];
-                        var obj = new MigrationDataElementModel(one);
-                        obj.save(function (e) {
+                        new MigrationDataElementModel(one).save(function (e) {
                             if (e) throw e;
                             cdeCount++;
                             console.log('cdeCount: ' + cdeCount);
@@ -78,7 +75,6 @@ function run() {
                     }
                 });
             }, function (results) {
-                org.markModified('classifications');
                 org.save(function (err) {
                     if (err) throw err;
                     cb();

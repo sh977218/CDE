@@ -1,15 +1,14 @@
-var async = require('async');
-var CLASSIFICATION_TYPE_MAP = require('../Mapping/LOINC_CLASSIFICATION_TYPE_MAP').map;
-var MigrationLoincClassMappingModel = require('../../createMigrationConnection').MigrationLoincClassificationMappingModel;
-var classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
+const CLASSIFICATION_TYPE_MAP = require('../Mapping/LOINC_CLASSIFICATION_TYPE_MAP').map;
+const MigrationLoincClassMappingModel = require('../../createMigrationConnection').MigrationLoincClassificationMappingModel;
+const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
 
 exports.parseClassification = function (loinc, elt, org, classificationOrgName, classificationArray, cb) {
-    var classTypeString = '';
-    var classification = '';
-    var classificationType = '';
+    let classTypeString = '';
+    let classification = '';
+    let classificationType = '';
     if (loinc['BASIC ATTRIBUTES']) {
         classTypeString = loinc['BASIC ATTRIBUTES']['BASIC ATTRIBUTES']['Class/Type'];
-        var classTypeArray = classTypeString.split('/');
+        let classTypeArray = classTypeString.split('/');
         if (classTypeArray.length === 0) {
             console.log('No Class/Type found in loinc id: ' + loinc.loincId);
             process.exit(1);
@@ -24,12 +23,12 @@ exports.parseClassification = function (loinc, elt, org, classificationOrgName, 
             process.exit(1);
         }
     }
-    var classificationToAdd = JSON.parse(JSON.stringify(classificationArray));
+    let classificationToAdd = JSON.parse(JSON.stringify(classificationArray));
     classificationToAdd.push('Classification');
     MigrationLoincClassMappingModel.find({
         Type: CLASSIFICATION_TYPE_MAP[classificationType],
         Abbreviation: classification
-    }).exec(function (err, mappings) {
+    }, (err, mappings) => {
         if (err) throw err;
         else if (mappings.length === 0) {
             console.log("Can not find classification map.");
