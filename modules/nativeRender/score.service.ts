@@ -47,6 +47,23 @@ export class ScoreService {
                     scoreQuestion.question.answer = result.sum / derRule.inputs.length;
                     scoreQuestion.question.scoreError = result.error;
                 }
+                if (derRule.formula === 'bmi') {
+                    let sum = null;
+                    let aQuestion = findQuestionByTinyId(derRule.inputs[0], this.elt);
+                    if (!aQuestion) scoreQuestion.question.scoreError = 'Cannot find ' + derRule.inputs[0] + ' in form ' + this.elt.tinyId;
+                    let aAnswer = parseFloat(aQuestion.question.answer);
+                    if (isNaN(aAnswer)) scoreQuestion.question.scoreError = "Incomplete answers";
+
+                    let bQuestion = findQuestionByTinyId(derRule.inputs[1], this.elt);
+                    if (!bQuestion) scoreQuestion.question.scoreError = 'Cannot find ' + derRule.inputs[1] + ' in form ' + this.elt.tinyId;
+                    let bAnswer = parseFloat(aQuestion.question.answer);
+                    if (isNaN(bAnswer)) scoreQuestion.question.scoreError = "Incomplete answers";
+
+                    if (aAnswer && bAnswer) {
+                        scoreQuestion.question.answer = aAnswer / bAnswer * bAnswer;
+                        scoreQuestion.question.scoreError = '';
+                    }
+                }
             }
         });
     }
