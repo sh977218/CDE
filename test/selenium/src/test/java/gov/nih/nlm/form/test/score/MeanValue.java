@@ -2,7 +2,7 @@ package gov.nih.nlm.form.test.score;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 
 public class MeanValue extends NlmCdeBaseTest {
@@ -15,7 +15,7 @@ public class MeanValue extends NlmCdeBaseTest {
         clickElement(By.id("preview_tab"));
         findElement(By.name("0-0")).sendKeys("8");
         findElement(By.name("0-1")).sendKeys("11");
-        clickElement(By.name("0-2"));
+        findElement(By.name("0-1")).sendKeys(Keys.TAB);
         textPresent("9.5");
     }
 
