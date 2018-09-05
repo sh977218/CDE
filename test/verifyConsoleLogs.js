@@ -11,10 +11,8 @@ let expectedContent = {
     "cdeTinyIdSwaggerApi": "docs/swagger-ui-bundle.js 51:49866 \"Could not find component\"",
     "cdeTinyIdVersionSwaggerApi": "docs/swagger-ui-bundle.js 51:49866 \"Could not find component\"",
     "checkDuplicatesClassification": "addCdeClassification/ - Failed to load resource: the server responded with a status of 409 (Conflict)",
-    "declineComment": "comments/decline - Failed to load resource: the server responded with a status of 404 (Not Found)",
-    "embedNinds": "orgaccountmanagement - [DOM] Input elements should have autocomplete attributes",
-    "formOneUnapprovedReplyPerUser": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
     "formFiveUnapprovedMessagesPerUserComment": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "formOneUnapprovedReplyPerUser": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
     "formTinyIdSwaggerApi": "docs/swagger-ui-bundle.js 51:49866 \"Could not find component\"",
     "formTinyIdVersionSwaggerApi": "docs/swagger-ui-bundle.js 51:49866 \"Could not find component\"",
     "logClientErrors": "*",
@@ -23,7 +21,6 @@ let expectedContent = {
     "pageNotFound": "de/abc - Failed to load resource: the server responded with a status of 404 (Not Found)",
     "publicVsPrivateBoards": "board/5750474d89949d54384ee640/0 - Failed to load resource: the server responded with a status of",
     "report": "cde/search 0:0 Uncaught SyntaxError: Unexpected token <",
-    "removeVsacId": "*",
     "searchPageSize": "elasticSearch/cde - Failed to load resource: the server responded with a status of 400 (Bad Request)",
     "tooManyBoards": "board - Failed to load resource: the server responded with a status of 403 (Forbidden)",
     "wrongLogin": "login - Failed to load resource: the server responded with a status of 403"
@@ -37,7 +34,7 @@ fs.readdirSync(logFolder).forEach(file => {
     let actualLines = fs.readFileSync(logFolder + "/" + file, 'utf-8').split("\n").filter(Boolean);
 
     actualLines.forEach(l => {
-        if (l.indexOf("Slow network is detected") > 1 || expectedLines !== "*") return;
+        if (l.indexOf("Slow network is detected") > 1 || expectedLines === "*") return;
         if (!expectedLines || (expectedLines && l.indexOf(expectedLines) === -1)) {
             errors.push("ERROR: Unexpected content in console logs: " + file + "--> " + l);
         }
