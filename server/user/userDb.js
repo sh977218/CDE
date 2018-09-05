@@ -103,3 +103,14 @@ exports.save = (user, callback) => {
     new User(user).save(callback);
 };
 
+
+// Site Admin
+exports.usernamesByIp = (ip, callback) => {
+    User.find({"knownIPs": {$in: [ip]}}, {username: 1}, callback);
+};
+
+exports.siteAdmins = callback => {
+    User.find({'siteAdmin': true}, 'username email', callback);
+};
+
+

@@ -16,7 +16,6 @@ const config = require('./parseConfig');
 const schemas = require('./schemas');
 
 const conn = connHelper.establishConnection(config.database.appData);
-const ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus);
 const Embeds = conn.model('Embed', schemas.embedSchema);
 const FhirApps = conn.model('FhirApp', schemas.fhirAppSchema);
 const FhirObservationInfo = conn.model('FhirObservationInfo', schemas.fhirObservationInformationSchema);
@@ -74,19 +73,6 @@ exports.updateJobStatus = (type, status, callback) => {
 };
 exports.removeJobStatus = (type, callback) => {
     JobQueue.remove({type: type}, callback);
-};
-
-exports.getClusterHostStatus = (server, callback) => {
-    ClusterStatus.findOne({hostname: server.hostname, port: server.port}, callback);
-};
-
-exports.getClusterHostStatuses = callback => {
-    ClusterStatus.find({}, callback);
-};
-
-exports.updateClusterHostStatus = (status, callback) => {
-    status.lastUpdate = new Date();
-    ClusterStatus.update({port: status.port, hostname: status.hostname}, status, {upsert: true}, callback);
 };
 
 
@@ -203,10 +189,6 @@ exports.usersByName = (name, callback) => {
     User.find({'username': new RegExp('^' + name + '$', "i")}, userProject, callback);
 };
 
-exports.usernamesByIp = (ip, callback) => {
-    User.find({"knownIPs": {$in: [ip]}}, {username: 1}, callback);
-};
-
 exports.userById = (id, callback) => {
     User.findOne({'_id': id}, userProject, callback);
 };
@@ -214,10 +196,6 @@ exports.userById = (id, callback) => {
 exports.addUser = (user, callback) => {
     user.username = user.username.toLowerCase();
     new User(user).save(callback);
-};
-
-exports.siteAdmins = callback => {
-    User.find({'siteAdmin': true}, 'username email', callback);
 };
 exports.orgAuthorities = callback => {
     User.find({'roles': 'OrgAuthority'}, 'username', callback);

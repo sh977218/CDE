@@ -1,0 +1,53 @@
+const authorization = require('../system/authorization');
+const nocacheMiddleware = authorization.nocacheMiddleware;
+const app_status = require("./status.js");
+
+const handleError = require('../log/dbLogger').handleError;
+
+const userDb = require('../user/userDb');
+const clusterStatusDb = require('./clusterStatusDb');
+
+exports.module = function (roleConfig) {
+    const router = require('express').Router();
+
+    router.post('/addSiteAdmin', (req, res) => {
+        let username = req.body.username;
+        if (!username) return res.status(400).send();
+        userDb.userByUsername(username, handleError({req, res}, user => {
+            if (!user) return res.send("Unknown Username");
+            user.siteAdmin = true;
+            user.save(handleError({req, res}, () => res.send("User Added")));
+        }));
+    });
+    router.post('/removeSiteAdmin', (req, res) => {
+        let username = req.body.username;
+        if (!username) return res.status(400).send();
+        userDb.userByUsername(username, handleError({req, res}, user => {
+            if (!user) return res.send("Unknown Username");
+            user.siteAdmin = false;
+            user.save(handleError({req, res}, () => res.send("Site Administrator Removed")));
+        }));
+    });
+
+    router.get('/siteAdmins', (req, res) => userDb.siteAdmins(handleError({req, res}, users => res.send(users))));
+
+    router.get('/orgAuthorities', (req, res) => mongo_data.orgAuthorities((err, users) => res.send(users)));
+
+    router.get('/siteaccountmanagement', nocacheMiddleware, (req, res) => {
+        res.render('siteaccountmanagement', "system");
+    });
+    router.get('/serverStatuses', (req, res) => {
+        app_status.getStatus(() => {
+            clusterStatusDb.getClusterHostStatuses((err, statuses) => {
+                return res.send({esIndices: esInit.indices, statuses: statuses});
+            });
+        });
+    });
+
+
+    router.get('/usernamesByIp/:ip', (req, res) => {
+        userDb.usernamesByIp(req.params.ip, handleError({req, res}, result => res.send(result)));
+    });
+
+    return router;
+};
