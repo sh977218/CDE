@@ -9,6 +9,7 @@ import {
 } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync, questionMulti } from 'shared/form/fe';
 import { getShowIfQ } from 'shared/form/skipLogic';
+import { ScoreService } from 'nativeRender/score.service';
 
 type SkipLogicOperators = '=' | '!=' | '>' | '<' | '>=' | '<=';
 
@@ -30,7 +31,9 @@ export class NativeRenderService {
     submitForm?: boolean;
     vm: any;
 
-    constructor(public skipLogicService: SkipLogicService) {}
+    constructor(private scoreSvc: ScoreService,
+                public skipLogicService: SkipLogicService) {
+    }
 
     eltSet(elt) {
         if (elt !== this.elt) {
@@ -47,6 +50,7 @@ export class NativeRenderService {
         if (this.submitForm && !this.flatMapping) {
             this.flatMapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
         }
+        this.scoreSvc.register(this.elt);
     }
 
     getAliases(f: FormQuestion) {
@@ -108,12 +112,13 @@ export class NativeRenderService {
         }
     }
 
-    radioButtonSelect(question: Question, value: string) {
-        if (question.required || question.answer !== value) {
-            question.answer = value;
+    radioButtonSelect(q: FormQuestion, value: string) {
+        if (q.question.required || q.question.answer !== value) {
+            q.question.answer = value;
         } else {
-            question.answer = undefined;
+            q.question.answer = undefined;
         }
+        this.scoreSvc.triggerCalculateScore(q);
     }
 
     render(renderType) {
@@ -160,9 +165,11 @@ export class NativeRenderService {
     addError(msg: string) {
         if (this.errors.indexOf(msg) === -1) this.errors.push(msg);
     }
+
     hasErrors() {
         return !!this.errors.length;
     }
+
     getErrors() {
         return this.errors;
     }
@@ -180,6 +187,7 @@ export class NativeRenderService {
             }
         }
     }
+
     checkboxIsChecked(model: Question, value: any) {
         if (!Array.isArray(model.answer)) model.answer = [];
         return (model.answer.indexOf(value) !== -1);
@@ -230,6 +238,7 @@ export class NativeRenderService {
                         let value = substitution++;
                         return value ? '_fake' + value : '';
                     }
+
                     if (parentQ.question.datatype === 'Value List') {
                         if (match[3] === "") {
                             parentQ.question.answers.push({
@@ -276,7 +285,7 @@ export class NativeRenderService {
             // Post-Transform Processing
             if ((fe.elementType === 'section' || fe.elementType === 'form')
                 && NativeRenderService.transformFormToInline(fe)) {
-                    (fe as FormSectionOrForm).forbidMatrix = true;
+                (fe as FormSectionOrForm).forbidMatrix = true;
             }
             if (fe.skipLogic) fe.skipLogic = undefined;
         }
@@ -347,8 +356,9 @@ export class NativeRenderService {
     }
 
     static flattenForm(elt: CdeForm) {
-        type QuestionStruct = {question: string, name: string, ids: CdeId[], tinyId: string, answerUom?: CodeAndSystem};
-        type SectionQuestions = {section: string, questions: QuestionStruct[]};
+        type QuestionStruct = { question: string, name: string, ids: CdeId[], tinyId: string, answerUom?: CodeAndSystem };
+        type SectionQuestions = { section: string, questions: QuestionStruct[] };
+
         function isSectionQuestions(a: SectionQuestions | QuestionStruct): a is SectionQuestions {
             return a.hasOwnProperty('section');
         }
@@ -372,6 +382,7 @@ export class NativeRenderService {
                 }
                 return questions;
             }
+
             let repeats = NativeRenderService.getRepeatNumber(fe);
             let repeatSection: SectionQuestions[] = [];
             let questions: QuestionStruct[] = [];
@@ -463,4 +474,5 @@ export class NativeRenderService {
         }
         return 1;
     }
+
 }

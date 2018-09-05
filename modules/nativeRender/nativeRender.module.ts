@@ -11,7 +11,7 @@ import { NativeSectionMatrixComponent } from 'nativeRender/nativeSectionMatrix.c
 import { NativeQuestionComponent } from 'nativeRender/nativeQuestion.component';
 import { NativeTableComponent } from 'nativeRender/nativeTable.component';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
-
+import { ScoreService } from 'nativeRender/score.service';
 
 @NgModule({
     imports: [
@@ -39,6 +39,7 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
     providers: [
         FormService,
         SkipLogicService,
+        ScoreService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
