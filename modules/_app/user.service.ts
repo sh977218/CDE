@@ -33,6 +33,7 @@ export class UserService {
     constructor(private http: HttpClient,
                 private dialog: MatDialog) {
         this.reload();
+        this.resetInactivityTimeout();
         document.body.addEventListener('click', () => this.resetInactivityTimeout());
     }
 
@@ -92,11 +93,7 @@ export class UserService {
             this.dialog.open(InactivityLoggedOutComponent, {
                 width: '250px'
             });
-            // this.loginSvc.goToLogin();
-            // this.router.navigate(["/login"]);
-            console.log("10 secs have elapsed");
         }, 10000);
-        console.log(typeof this.logoutTimeout);
     }
 
     then(cb: (user: User) => any, errorCb?: CbErr): Promise<any> {
