@@ -29,7 +29,7 @@ let expectedContent = {
 }
 
 let errors = [];
-let ignoreErrors = ["Slow network is detected", "Report Only", "reportOnly"]
+let ignoreErrors = ["Slow network is detected", "Report Only", "reportOnly", "Failed to decode downloaded font"]
 
 fs.readdirSync(logFolder).forEach(file => {
 
