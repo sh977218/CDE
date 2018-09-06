@@ -9,8 +9,7 @@ import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscr
 import { ITEM_MAP } from 'shared/item';
 import { CbErr, Comment, User } from 'shared/models.model';
 import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
-import { LoginService } from '_app/login.service';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog } from '@angular/material';
 
 @Injectable()
 export class UserService {
@@ -88,12 +87,17 @@ export class UserService {
 
     resetInactivityTimeout () {
         clearTimeout(this.logoutTimeout);
-        // @ts-ignore
-        this.logoutTimeout = setTimeout(() => {
-            this.dialog.open(InactivityLoggedOutComponent, {
-                width: '250px'
-            });
-        }, 10000);
+        if (this.loggedIn()) {
+            // @ts-ignore
+            this.logoutTimeout = setTimeout(() => {
+                if (this.loggedIn()) {
+                    this.reload();
+                    if (!this.loggedIn()) {
+                        this.dialog.open(InactivityLoggedOutComponent);
+                    }
+                }
+            }, (window as any).inactivityTimeout);
+        }
     }
 
     then(cb: (user: User) => any, errorCb?: CbErr): Promise<any> {
@@ -102,15 +106,14 @@ export class UserService {
 }
 
 @Component({
-    template: 'You are logged out',
+    template: `
+        <h1 mat-dialog-title>Inactivity timeout</h1>
+        <div mat-dialog-content>
+            <p>Your session was automatically timed out. </p>
+        </div>
+        <div mat-dialog-actions>
+            <button mat-raised-button [mat-dialog-close]="" class="float-right">OK</button>
+        </div>
+    `,
 })
-export class InactivityLoggedOutComponent {
-
-    constructor(
-        public dialogRef: MatDialogRef<InactivityLoggedOutComponent>) {}
-
-    onNoClick(): void {
-        this.dialogRef.close();
-    }
-
-}
+export class InactivityLoggedOutComponent {}
