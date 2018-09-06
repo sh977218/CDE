@@ -1,5 +1,5 @@
 exports.parseIds = function (loinc) {
-    var ids = [];
+    let ids = [];
     ids.push({source: 'LOINC', id: loinc.loincId, version: loinc.version});
     if (loinc.deId) {
         ids.push({source: 'AHRQ', id: loinc.deId, version: '1.2'})

@@ -7,6 +7,6 @@ exports.map = {
     'External Forms': {
         stewardOrgName: 'External Forms',
         classificationOrgName: 'External Forms',
-        classification: ['External Forms']
+        classification: []
     }
 };

@@ -1,21 +1,21 @@
-var async = require('async');
-var REQUIRED_MAP = require('../Mapping/LOINC_REQUIRED_MAP').map;
-var MULTISELECT_MAP = require('../Mapping/LOINC_MULTISELECT_MAP').map;
-var CARDINALITY_MAP = require('../Mapping/LOINC_CARDINALITY_MAP').map;
+const async = require('async');
+const REQUIRED_MAP = require('../Mapping/LOINC_REQUIRED_MAP').map;
+const MULTISELECT_MAP = require('../Mapping/LOINC_MULTISELECT_MAP').map;
+const CARDINALITY_MAP = require('../Mapping/LOINC_CARDINALITY_MAP').map;
 
-var DataElementModel = require('../../createNlmcdeConnection').DataElementModel;
-var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
+const DataElementModel = require('../../createNlmcdeConnection').DataElementModel;
+const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 
-var updateShare = require('../../updateShare');
-var classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
-var mongo_form = require('../../../server/form/mongo-form');
-var FormModel = mongo_form.Form;
-var CreateElt = require('../Shared/CreateElt');
+const updateShare = require('../../updateShare');
+const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
+const mongo_form = require('../../../server/form/mongo-form');
+const FormModel = mongo_form.Form;
+const CreateElt = require('../Shared/CreateElt');
 
-var importDate = new Date().toJSON();
+const importDate = new Date().toJSON();
 
 
-var formCount = 0;
+let formCount = 0;
 
 exports.createForm = function (loinc, org, orgInfo, cb) {
     FormModel.find({
@@ -267,18 +267,18 @@ exports.loadForm = function (element, fe, org, orgInfo, next) {
 
 exports.saveObj = function (form, next) {
     var loincId;
-    form.ids.forEach(function(i){
-        if(i.source==='LOINC') loincId = i.id;
+    form.ids.forEach(function (i) {
+        if (i.source === 'LOINC') loincId = i.id;
     });
     FormModel.find({'ids.id': loincId}).exec(function (er, existingForms) {
-        if(er) throw er;
-        if(existingForms.length === 0 ){
+        if (er) throw er;
+        if (existingForms.length === 0) {
             var obj = new FormModel(form);
-            obj.save(function(err,o){
+            obj.save(function (err, o) {
                 formCount++;
                 console.log('Finished process form : ' + o.get('ids')[0].id);
                 console.log('Form count: ' + formCount);
-                if(err) throw err;
+                if (err) throw err;
                 next(o);
             })
         } else {

@@ -1,8 +1,7 @@
-const _ = require('lodash');
 const CLASSIFICATION_TYPE_MAP = require('../Mapping/LOINC_CLASSIFICATION_TYPE_MAP').map;
 const MigrationLoincClassificationMappingModel = require('../../createMigrationConnection').MigrationLoincClassificationMappingModel;
 
-exports.parseClassification = function (loinc) {
+exports.parseClassification = function (loinc, orgInfo) {
     return new Promise(async (resolve, reject) => {
         let classification = '';
         let classificationType = '';
@@ -27,7 +26,13 @@ exports.parseClassification = function (loinc) {
         }).catch(e => {
             throw e
         });
-
-        resolve([]);
+        let classificationArray = [{
+            stewardOrg: {name: orgInfo.classificationOrgName},
+            elements: [{
+                name: classificationMap.get('Value'),
+                elements: []
+            }]
+        }];
+        resolve(classificationArray);
     })
-}
+};

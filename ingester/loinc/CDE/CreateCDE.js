@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const mongo_data = require('../../../server/system/mongo-data');
+const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
 
 const ParseDesignations = require('../Shared/ParseDesignations');
 const ParseDefinitions = require('../Shared/ParseDefinitions');
@@ -12,11 +12,15 @@ const ParseValueDomain = require('./ParseValueDomain');
 const ParseConcept = require('./ParseConcept');
 const ParseSources = require('../Shared/ParseSources');
 
+
+const orgMapping = require('../Mapping/ORG_INFO_MAP').map;
+
 const today = new Date().toJSON();
 const stewardOrgName = 'NLM';
 const ParseClassification = require('../Shared/ParseClassification');
 
-exports.createCde = function (loinc, orgInfo) {
+exports.createCde = function (loinc, orgName) {
+    let orgInfo = orgMapping[orgName];
     return new Promise(async (resolve, reject) => {
         if (_.isEmpty(stewardOrgName)) reject('StewardOrgName is empty. Please set it first.');
 
@@ -29,11 +33,10 @@ exports.createCde = function (loinc, orgInfo) {
         let concepts = ParseConcept.parseConcepts(loinc);
         let stewardOrg = ParseStewardOrg.parseStewardOrg(orgInfo);
         let sources = ParseSources.parseSources(loinc);
-        let classification = await ParseClassification.parseClassification(loinc);
-        classificationShared.classifyItem(elt, classificationOrgName, classificationToAdd);
-        classificationShared.addCategory({elements: org.classifications}, classificationToAdd);
+        let classification = await ParseClassification.parseClassification(loinc, orgInfo);
+
         let newCde = {
-            tinyId: mongo_data.generateTinyId(),
+            tinyId: generateTinyId(),
             createdBy: {username: 'batchLoader'},
             created: today,
             imported: today,
