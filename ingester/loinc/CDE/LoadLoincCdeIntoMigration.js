@@ -1,7 +1,5 @@
 const async = require('async');
 const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
-const CreateCDE = require('./CreateCDE');
-const ParseClassification = require('../Shared/ParseClassification');
 
 exports.runArray = function (loincIdArray, org, orgInfo, doneItem, doneAllArray) {
     let allNewCdes = [];
@@ -24,5 +22,14 @@ exports.runArray = function (loincIdArray, org, orgInfo, doneItem, doneAllArray)
     }, function doneAllLoincs() {
         console.log('Finished All loinc');
         doneAllArray(allNewCdes);
+    })
+};
+
+exports.runOne = function (loincId, org, orgInfo) {
+    return new Promise(async (resolve, reject) => {
+        if (!loinc) reject("LoincId " + loincId + " not found.");
+        else {
+            resolve(newCde);
+        }
     })
 };

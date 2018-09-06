@@ -1,12 +1,8 @@
-const async = require('async');
 const mongo_cde = require('../../../server/cde/mongo-cde');
 const cdediff = require('../../../server/cde/cdediff');
 const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
 const MigrationDataElement = require('../../createMigrationConnection').MigrationDataElementModel;
 const DataElement = mongo_cde.DataElement;
-const MigrationOrg = require('../../createMigrationConnection').MigrationOrgModel;
-const Org = require('../../../server/system/mongo-data').Org;
-const updateShare = require('../../updateShare');
 
 const source = 'LOINC';
 const classificationOrgName = 'NLM';
@@ -14,7 +10,6 @@ const classificationOrgName = 'NLM';
 const today = new Date().toJSON();
 const lastEightHours = new Date();
 lastEightHours.setHours(new Date().getHours() - 8);
-let retired = 0;
 
 function removeClassificationTree(cde) {
     for (let i = 0; i < cde.classification.length; i++) {

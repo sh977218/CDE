@@ -3,87 +3,85 @@ const MigrationLoincModel = require('../../createMigrationConnection').Migration
 const MigrationDataElementModel = require('../../createMigrationConnection').MigrationDataElementModel;
 const MigrationOrgModel = require('../../createMigrationConnection').MigrationOrgModel;
 const orgMapping = require('../Mapping/ORG_INFO_MAP').map;
-const LoadLoincCdeIntoMigration = require('../CDE/LoadLoincCdeIntoMigration');
+const CreateCDE = require('../CDE/CreateCDE');
 
 const orgName = 'External Forms';
 let cdeCount = 0;
-let loincIdArray = [];
 
-function run() {
-    let org;
+async function run() {
     let orgInfo = orgMapping[orgName];
-    async.series([
-        function (cb) {
-            MigrationDataElementModel.remove({}, function (removeMigrationDataelementError) {
-                if (removeMigrationDataelementError) throw removeMigrationDataelementError;
-                console.log('Removed all migration dataelement');
-                cb(null, 'Finished removing migration dataelement');
-            });
-        },
-        function (cb) {
-            MigrationOrgModel.remove({}, function (removeMigrationOrgError) {
-                if (removeMigrationOrgError) throw removeMigrationOrgError;
-                console.log('Removed all migration org');
-                cb(null, 'Finished removing migration org');
-            })
-        },
-        function (cb) {
-            new MigrationOrgModel({
-                name: orgInfo['classificationOrgName'],
-                classifications: []
-            }).save(function (createMigrationOrgError, o) {
-                if (createMigrationOrgError) throw createMigrationOrgError;
-                console.log('Created migration org of ' + orgInfo['classificationOrgName']);
-                org = o;
-                cb(null, 'Finished creating migration org');
-            });
-        },
-        function (cb) {
-            MigrationLoincModel.find({
-                compoundForm: null,
-                orgName: orgName
-            }).exec(function (findCdeError, Cdes) {
-                if (findCdeError) throw findCdeError;
-                console.log('Total # Cde: ' + Cdes.length);
-                loincIdArray = Cdes.map(c => c.get('loincId'));
-                cb(null, 'Finished retrieving all ' + orgName + ' cde id.');
-            })
-        },
-        function (cb) {
-            LoadLoincCdeIntoMigration.runArray(loincIdArray, org, orgInfo, function (one, next) {
-                MigrationDataElementModel.find({'ids.id': one.ids[0].id}, (error, existingCdes) => {
-                    if (error) throw error;
-                    if (existingCdes.length === 0) {
-                        one.classification = [{
-                            elements: [{
-                                name: "PHQ9",
-                                elements: []
-                            }],
-                            stewardOrg: {
-                                name: "NLM"
-                            }
-                        }
-                        ];
-                        new MigrationDataElementModel(one).save(function (e) {
-                            if (e) throw e;
-                            cdeCount++;
-                            console.log('cdeCount: ' + cdeCount);
-                            next();
-                        })
-                    } else {
-                        next();
-                    }
-                });
-            }, function (results) {
-                org.save(function (err) {
-                    if (err) throw err;
-                    cb();
-                })
-            })
-        }
-    ], function (err, results) {
-        process.exit(0);
+
+    await MigrationDataElementModel.remove({}).catch(e => {
+        throw e;
     });
+    console.log('Removed all migration dataelement');
+
+    await MigrationOrgModel.remove({}).catch(e => {
+        throw e
+    });
+    console.log('Removed all migration org');
+
+    let org = await new MigrationOrgModel({
+        name: orgInfo['classificationOrgName'],
+        classifications: []
+    }).save().catch(e => {
+        throw e
+    });
+    console.log('Created migration org of ' + orgInfo['classificationOrgName']);
+
+    let cdeCond = {compoundForm: null, orgName: orgName};
+    let migrationCdes = await MigrationLoincModel.find(cdeCond).catch(e => {
+        throw e;
+    });
+    let loincIdArray = migrationCdes.map(c => c.get('loincId'));
+    console.log('Total # Cde: ' + loincIdArray.length);
+
+    loincIdArray.forEach(async loincId => {
+        let loinc = await MigrationLoincModel.findOne({loincId: loincId}).catch(e => {
+            throw e
+        });
+        if (!loinc) throw "LoincId " + loincId + " not found.";
+        let loincObj = loinc.toObject();
+        let newCde = await CreateCDE.createCde(loincObj, orgInfo);
+        await ParseClassification.parseClassification(loinc, newCde, org, orgInfo['classificationOrgName'], orgInfo['classification']);
+
+        console.log('a');
+    })
+
+    /*
+        LoadLoincCdeIntoMigration.runArray(loincIdArray, org, orgInfo, function (one, next) {
+            MigrationDataElementModel.find({'ids.id': one.ids[0].id}, (error, existingCdes) => {
+                if (error) throw error;
+                if (existingCdes.length === 0) {
+                    one.classification = [{
+                        elements: [{
+                            name: "PHQ9",
+                            elements: []
+                        }],
+                        stewardOrg: {
+                            name: "NLM"
+                        }
+                    }
+                    ];
+                    new MigrationDataElementModel(one).save(function (e) {
+                        if (e) throw e;
+                        cdeCount++;
+                        console.log('cdeCount: ' + cdeCount);
+                        next();
+                    })
+                } else {
+                    next();
+                }
+            });
+        }, function (results) {
+            org.save(function (err) {
+                if (err) throw err;
+                process.exit(1);
+            })
+        })
+    */
 }
 
-run();
+run().then().catch(e => {
+    throw e
+});
