@@ -10,6 +10,7 @@ let expectedContent = {
     "cdeLiveCommentTest": "*",
     "cdeTinyIdSwaggerApi": "docs/swagger-ui-bundle.js 51:49866 \"Could not find component\"",
     "cdeTinyIdVersionSwaggerApi": "docs/swagger-ui-bundle.js 51:49866 \"Could not find component\"",
+    "checkDuplicatesClassification": "the server responded with a status of 409",
     "emptyAnswers": "the server responded with a status of 500",
     "formFiveUnapprovedMessagesPerUserComment": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
     "formOneUnapprovedReplyPerUser": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
