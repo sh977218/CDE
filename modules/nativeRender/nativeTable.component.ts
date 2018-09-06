@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { FormElement, FormQuestion } from 'shared/form/form.model';
+
+import { ScoreService } from 'nativeRender/score.service';
 import { questionMulti } from 'shared/form/fe';
 
 @Component({
@@ -22,18 +24,21 @@ export class NativeTableComponent implements OnInit {
     datePrecisionToType = FormQuestion.datePrecisionToType;
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
 
-    constructor(public nrs: NativeRenderService) {}
+    constructor(private scoreSvc: ScoreService,
+                public nrs: NativeRenderService) {
+    }
 
     ngOnInit() {
         this.render();
     }
 
-    radioButtonSelect(required: boolean, obj, property, value: string) {
+    radioButtonSelect(required: boolean, obj, property, value: string, q) {
         if (required || obj[property] !== value) {
             obj[property] = value;
         } else {
             obj[property] = undefined;
         }
+        this.scoreSvc.triggerCalculateScore(q);
     }
 
     render() {
@@ -85,7 +90,7 @@ export class NativeTableComponent implements OnInit {
         this.tableForm.s[level].q.push(section);
         let tcontent = this.getSectionLevel(level + 1);
         let retr = 0;
-        s.formElements && s.formElements.forEach(f =>  {
+        s.formElements && s.formElements.forEach(f => {
             let ret = this.renderFormElement(f, tcontent, level, retr, r, c, sectionStyle);
             retr = ret.retr;
             c = ret.c;
@@ -94,6 +99,7 @@ export class NativeTableComponent implements OnInit {
         section.cspan = c;
         return {r: r, c: c};
     }
+
     renderFormElement(f, tcontent, level, retr, r, c, sectionStyle) {
         if (f.elementType === 'section' || f.elementType === 'form') {
             if (!f.repeat) {
@@ -150,6 +156,7 @@ export class NativeTableComponent implements OnInit {
         }
         return {retr: retr, c: c};
     }
+
     setDepth(r) {
         this.tableForm.s.forEach((s, level) => {
             s.q.forEach(q => {
@@ -157,6 +164,7 @@ export class NativeTableComponent implements OnInit {
             });
         });
     }
+
     getSectionLevel(level) {
         if (this.tableForm.s.length <= level) this.tableForm.s[level] = {q: []};
         return this.tableForm.s[level];
@@ -194,6 +202,7 @@ export class NativeTableComponent implements OnInit {
             answerStyle: {backgroundColor: '#fff5fc'}
         },
     ];
+
     getSectionStyle(i) {
         return this.theme[i % this.theme.length];
     }

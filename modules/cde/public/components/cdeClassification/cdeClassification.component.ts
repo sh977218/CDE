@@ -29,7 +29,7 @@ export class CdeClassificationComponent {
 
     classifyItem(event) {
         this.classificationSvc.classifyItem(this.elt, event.selectedOrg, event.classificationArray,
-            '/addCdeClassification/', err => {
+            '/server/classification/addCdeClassification/', err => {
                 this.classifyItemModalRef.close();
                 if (err) {
                     this.alert.addAlert('danger', err);
@@ -55,7 +55,7 @@ export class CdeClassificationComponent {
 
     removeClassif (event) {
         this.classificationSvc.removeClassification(this.elt, event.deleteOrgName,
-            event.deleteClassificationArray, '/removeCdeClassification/', err => {
+            event.deleteClassificationArray, '/server/classification/removeCdeClassification/', err => {
                 if (err) {
                     this.alert.addAlert('danger', err);
                 } else {
