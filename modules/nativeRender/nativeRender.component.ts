@@ -14,16 +14,20 @@ export class NativeRenderComponent {
     @Input() set elt(e: CdeForm) {
         this.nrs.eltSet(e);
     }
+
     @Input() set profile(p: DisplayProfile) {
         this.nrs.profileSet(p);
     }
+
     @Input() set nativeRenderType(userType) {
         this.nrs.nativeRenderType = userType;
     }
+
     @Input() set submitForm(flag: boolean) {
         this.nrs.submitForm = flag;
         this.nrs.eltSet(this.nrs.elt);
     }
+
     @Input() showTitle: boolean = true;
     endpointUrl: string;
     formUrl: string;
