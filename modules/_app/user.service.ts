@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
@@ -10,6 +10,7 @@ import { ITEM_MAP } from 'shared/item';
 import { CbErr, Comment, User } from 'shared/models.model';
 import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
 import { LoginService } from '_app/login.service';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Injectable()
 export class UserService {
@@ -29,10 +30,8 @@ export class UserService {
     userOrgs: string[] = [];
     logoutTimeout: number;
 
-    constructor(
-        private http: HttpClient,
-        private loginSvc: LoginService
-    ) {
+    constructor(private http: HttpClient,
+                private dialog: MatDialog) {
         this.reload();
         document.body.addEventListener('click', () => this.resetInactivityTimeout());
     }
@@ -90,7 +89,10 @@ export class UserService {
         clearTimeout(this.logoutTimeout);
         // @ts-ignore
         this.logoutTimeout = setTimeout(() => {
-            this.loginSvc.goToLogin();
+            this.dialog.open(InactivityLoggedOutComponent, {
+                width: '250px'
+            });
+            // this.loginSvc.goToLogin();
             // this.router.navigate(["/login"]);
             console.log("10 secs have elapsed");
         }, 10000);
@@ -100,4 +102,18 @@ export class UserService {
     then(cb: (user: User) => any, errorCb?: CbErr): Promise<any> {
         return this.promise.then(cb, errorCb);
     }
+}
+
+@Component({
+    template: 'You are logged out',
+})
+export class InactivityLoggedOutComponent {
+
+    constructor(
+        public dialogRef: MatDialogRef<InactivityLoggedOutComponent>) {}
+
+    onNoClick(): void {
+        this.dialogRef.close();
+    }
+
 }
