@@ -12,11 +12,14 @@ public class BmiTest extends NlmCdeBaseTest {
         String formName = "Body Mass Index";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
-        clickElement(By.id("preview_tab"));
-        findElement(By.name("0-0")).sendKeys("80");
-        findElement(By.name("0-1")).sendKeys("1.8");
-        findElement(By.name("0-1")).sendKeys(Keys.TAB);
-        textPresent("", By.id("BMI_0-2"));
+
+        findElement(By.name("0-0")).sendKeys("180");
+        clickElement(By.name("0-0_uom_1"));
+
+        findElement(By.name("0-1")).sendKeys("70");
+        clickElement(By.name("0-1_uom_1"));
+
+        textPresent("25.827", By.id("BMI_0-2"));
     }
 
 }
