@@ -42,7 +42,7 @@ export class ScoreService {
      */
     calculateScore(scoreQuestion: FormQuestion) {
         if (!scoreQuestion.question.isScore) return;
-        scoreQuestion.question.cde.derivationRules.forEach(derRule => {
+        scoreQuestion.question.cde.derivationRules.forEach(async derRule => {
             if (derRule.ruleType === 'score') {
                 if (derRule.formula === 'sumAll') {
                     let result: any = this.sum(derRule.inputs);
@@ -69,20 +69,11 @@ export class ScoreService {
                     else scoreQuestion.question.scoreError = '';
 
                     if (aAnswer && bAnswer) {
-                        async_series([
-                            cb => {
-                                this.http.get('/ucumConvert?value=' + aAnswer + '&from=' + aQuestion.question.answerUom.code + '&to=kg').subscribe(res => {
-                                    aAnswer = <number>res;
-                                    cb();
-                                }, err => this.alert.addAlert('danger', err));
-                            },
-                            cb => {
-                                this.http.get('/ucumConvert?value=' + bAnswer + '&from=' + bQuestion.question.answerUom.code + '&to=m').subscribe(res => {
-                                    bAnswer = <number>res;
-                                    cb();
-                                }, err => this.alert.addAlert('danger', err));
-                            }
-                        ], () => {
+                        let aPromise = this.ucumConvter(aAnswer, aQuestion.question.answerUom.code, 'kg');
+                        let bPromise = this.ucumConvter(bAnswer, bQuestion.question.answerUom.code, 'm');
+                        Promise.all([aPromise, bPromise]).then(values => {
+                            aAnswer = values[0];
+                            aAnswer = values[1];
                             scoreQuestion.question.answer = aAnswer / (bAnswer * bAnswer);
                             scoreQuestion.question.scoreError = '';
                         });
@@ -107,5 +98,9 @@ export class ScoreService {
             }
         }
         return {sum: sum};
+    }
+
+    ucumConvter(value, from, to) {
+        return this.http.get<number>('/ucumConvert?value=' + value + '&from=' + from + '&to=' + to).toPromise();
     }
 }
