@@ -1,9 +1,27 @@
 const removeClassificationByOrgName = require('../Utility/utility').removeClassificationByOrgName;
+const cdediff = require('../../../server/cde/cdediff');
+const wipeUseless = require('../Utility/utility').wipeUseless;
+
+exports.compareCdes = function (newCde, existingCde) {
+    let newCdeObj = _.cloneDeep(newCde);
+    if (newCdeObj.toObject) newCdeObj = newCdeObj.toObject();
+    let existingCdeObj = _.cloneDeep(existingCde);
+    if (existingCdeObj.toObject) existingCdeObj = existingCdeObj.toObject();
+
+
+    [existingCdeObj, newCdeObj].forEach(obj => {
+        obj.ids.sort((a, b) => a.source > b.source);
+        obj.properties.sort((a, b) => a.key > b.key);
+        delete obj.classification;
+        wipeUseless(obj);
+    });
+    return cdediff.diff(existingCde, newCde);
+};
 
 exports.mergeCde = function (newCde, existingCde, orgName) {
     return new Promise(async (resolve, reject) => {
         existingCde.designations = newCde.designations;
-        existingCde.definitios = newCde.definitios;
+        existingCde.definitios = newCde.designations;
         existingCde.sources = newCde.sources;
         existingCde.version = newCde.version;
         existingCde.changeNote = "Bulk update from source";

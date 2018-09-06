@@ -1,8 +1,8 @@
-const DataElement = require('../../../server/cde/mongo-cde').DataElement;
+const Form = require('../../../server/form/mongo-form').Form;
 
 const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
-const CreateCDE = require('../CDE/CreateCDE');
-const MergeCDE = require('../CDE/MergeCDE');
+const CreateForm = require('../Form/CreateForm');
+const MergeForm = require('../Form/MergeForm');
 const orgName = 'External Forms';
 
 let created = 0;
@@ -12,23 +12,23 @@ let same = 0;
 let today = new Date().toJSON();
 
 async function run() {
-    let cdeCond = {compoundForm: null, orgName: orgName};
-    let loincCdes = await MigrationLoincModel.find(cdeCond).catch(e => {
+    let cdeCond = {orgName: orgName, isForm: true, dependentSection: false};
+    let loincForms = await MigrationLoincModel.find(cdeCond).catch(e => {
         throw e;
     });
 
-    for (let loincCde of loincCdes) {
-        let loincId = loincCde.get('loincId');
+    for (let loincForm of loincForms) {
+        let loincId = loincForm.get('loincId');
         console.log("starting " + loincId);
-        let newCde = await CreateCDE.createCde(loincCde.toObject(), orgName);
+        let newForm = await CreateForm.createForm(loincForm.toObject(), orgName);
 
-        let cdeCond = {
+        let formCond = {
             archived: false,
             source: 'LOINC',
             "registrationState.registrationStatus": {$not: /Retired/},
             imported: {$ne: today}
         };
-        let existingCde = await DataElement.findOne(cdeCond)
+        let existingForm = await Form.findOne(formCond)
             .where("ids")
             .elemMatch(function (elem) {
                 elem.where("source").equals('LOINC');
@@ -36,19 +36,19 @@ async function run() {
             }).exec().catch(e => {
                 throw e;
             });
-        if (!existingCde) {
-            newCde.imported = today;
-            newCde.updated = today;
-            newCde.created = today;
-            await new DataElement(newCde).save().catch(e => {
+        if (!existingForm) {
+            newForm.imported = today;
+            newForm.updated = today;
+            newForm.created = today;
+            await new Form(newForm).save().catch(e => {
                 throw e;
             });
             console.log('created: ' + created++);
         } else {
-            let diff = MergeCDE.compareCdes(newCde, existingCde);
+            let diff = MergeForm.compareForms(newForm, existingForm);
             if (_.isEmpty(diff)) console.log('same: ' + same++);
             else {
-                await MergeCDE.mergeCde(newCde, existingCde, orgName);
+                await MergeForm.mergeForm(newForm, existingForm, orgName);
                 console.log('merged: ' + merged++);
             }
         }
