@@ -88,6 +88,7 @@ public class EltIdMaps {
         eltMap.put("AED Resistance Log", "7yxcZJrrte");
         eltMap.put("ALS Depression Inventory (ADI-12)", "QJW5Z1BrYl");
         eltMap.put("Antithrombotics and Risk Factor Controlling Medications", "XJfnZyHrYg");
+        eltMap.put("Body Mass Index", "XyZ43DXGU");
         eltMap.put("Brain Motor Control Assessment", "XJJzyBSKe");
         eltMap.put("DNA Elements - Information from the Laboratory", "X1x4z1BrYx");
         eltMap.put("Copy Section Form Test", "Xy7W4MKNV");

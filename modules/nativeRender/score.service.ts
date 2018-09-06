@@ -1,11 +1,18 @@
 import { Injectable } from '@angular/core';
 import { findQuestionByTinyId, getFormScoreQuestion } from '../../shared/form/fe';
 import { FormQuestion } from '../../shared/form/form.model';
+import async_series from 'async/series';
+import { HttpClient } from '@angular/common/http';
+import { AlertService } from '_app/alert.service';
 
 @Injectable()
 export class ScoreService {
     INPUT_SCORE_MAP = new Map<string, [Object]>();
     elt;
+
+    constructor(private http: HttpClient,
+                private alert: AlertService) {
+    }
 
     register(elt) {
         // register all scores used by one question tinyId
@@ -48,20 +55,37 @@ export class ScoreService {
                     scoreQuestion.question.scoreError = result.error;
                 }
                 if (derRule.formula === 'bmi') {
-                    let sum = null;
                     let aQuestion = findQuestionByTinyId(derRule.inputs[0], this.elt);
                     if (!aQuestion) scoreQuestion.question.scoreError = 'Cannot find ' + derRule.inputs[0] + ' in form ' + this.elt.tinyId;
                     let aAnswer = parseFloat(aQuestion.question.answer);
                     if (isNaN(aAnswer)) scoreQuestion.question.scoreError = "Incomplete answers";
-
+                    if (!aQuestion.question.answerUom) return scoreQuestion.question.scoreError = 'Select unit of measurement for weight';
+                    else scoreQuestion.question.scoreError = '';
                     let bQuestion = findQuestionByTinyId(derRule.inputs[1], this.elt);
                     if (!bQuestion) scoreQuestion.question.scoreError = 'Cannot find ' + derRule.inputs[1] + ' in form ' + this.elt.tinyId;
-                    let bAnswer = parseFloat(aQuestion.question.answer);
+                    let bAnswer = parseFloat(bQuestion.question.answer);
                     if (isNaN(bAnswer)) scoreQuestion.question.scoreError = "Incomplete answers";
+                    if (!bQuestion.question.answerUom) return scoreQuestion.question.scoreError = 'Select unit of measurement for height';
+                    else scoreQuestion.question.scoreError = '';
 
                     if (aAnswer && bAnswer) {
-                        scoreQuestion.question.answer = aAnswer / bAnswer * bAnswer;
-                        scoreQuestion.question.scoreError = '';
+                        async_series([
+                            cb => {
+                                this.http.get('/ucumConvert?value=' + aAnswer + '&from=' + aQuestion.question.answerUom.code + '&to=kg').subscribe(res => {
+                                    aAnswer = <number>res;
+                                    cb();
+                                }, err => this.alert.addAlert('danger', err));
+                            },
+                            cb => {
+                                this.http.get('/ucumConvert?value=' + bAnswer + '&from=' + bQuestion.question.answerUom.code + '&to=m').subscribe(res => {
+                                    bAnswer = <number>res;
+                                    cb();
+                                }, err => this.alert.addAlert('danger', err));
+                            }
+                        ], () => {
+                            scoreQuestion.question.answer = aAnswer / (bAnswer * bAnswer);
+                            scoreQuestion.question.scoreError = '';
+                        });
                     }
                 }
             }
