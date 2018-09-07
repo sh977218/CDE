@@ -19,13 +19,13 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         goToPermissibleValues();
         changeDatatype(datatype);
 
-        clickElement(By.xpath("//*[@id='datatypeTextMin']//i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextMin']//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id='datatypeTextMin']//input")).sendKeys("789");
-        clickElement(By.xpath("//*[@id='datatypeTextMin']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextMin']//button/mat-icon[. = 'check']"));
 
-        clickElement(By.xpath("//*[@id='datatypeTextMax']//i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextMax']//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id='datatypeTextMax']//input")).sendKeys("987");
-        clickElement(By.xpath("//*[@id='datatypeTextMax']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextMax']//button/mat-icon[. = 'check']"));
         newCdeVersion();
 
         // check update cde has fixed datatype;
@@ -40,21 +40,21 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToPermissibleValues();
-        clickElement(By.xpath("//*[@id='datatypeTextRegex']//i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextRegex']//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id='datatypeTextRegex']//input")).sendKeys("newRegex");
-        clickElement(By.xpath("//*[@id='datatypeTextRegex']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextRegex']//button/mat-icon[. = 'check']"));
 
-        clickElement(By.xpath("//*[@id='datatypeTextRule']//i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextRule']//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id='datatypeTextRule']//input")).sendKeys("newRule");
-        clickElement(By.xpath("//*[@id='datatypeTextRule']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextRule']//button/mat-icon[. = 'check']"));
 
-        clickElement(By.xpath("//*[@id='datatypeTextMin']//i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextMin']//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id='datatypeTextMin']//input")).sendKeys("123");
-        clickElement(By.xpath("//*[@id='datatypeTextMin']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextMin']//button/mat-icon[. = 'check']"));
 
-        clickElement(By.xpath("//*[@id='datatypeTextMax']//i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextMax']//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id='datatypeTextMax']//input")).sendKeys("321");
-        clickElement(By.xpath("//*[@id='datatypeTextMax']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextMax']//button/mat-icon[. = 'check']"));
         newCdeVersion();
 
         goToCdeByName(cdeName);

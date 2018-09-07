@@ -21,6 +21,12 @@ import _cloneDeep from 'lodash/cloneDeep';
             line-height: 1.5;
             border-radius: 3px;
         }
+        mat-icon {
+            font-size: 16px;
+            height: 16px;
+            width: 16px;
+            vertical-align: middle;
+        }
     `]
 })
 export class InlineSelectEditComponent {

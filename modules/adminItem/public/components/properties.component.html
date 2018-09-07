@@ -60,7 +60,7 @@
             </div>
         </div>
         <div class="modal-footer" id="newPropertyModalFooter">
-            <button (click)="c('Close click')" id="cancelNewPropertyBtn" mat-raised-button>Cancel</button>
+            <button (click)="c('Close click')" id="cancelNewPropertyBtn" mat-raised-button type="button">Cancel</button>
             <button [disabled]="!newPropertyForm.form.valid" id="createNewPropertyBtn" mat-raised-button color="primary"
                     type="submit">Save</button>
         </div>

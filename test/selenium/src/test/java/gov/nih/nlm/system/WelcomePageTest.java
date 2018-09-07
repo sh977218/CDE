@@ -14,7 +14,7 @@ public class WelcomePageTest extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("Organizations"));
-        clickElement(By.xpath("//*[@id='orgHtmlOverview-caBIG']//i"));
+        clickElement(By.xpath("//*[@id='orgHtmlOverview-caBIG']//mat-icon"));
         findElement(By.xpath("//*[@id='orgHtmlOverview-caBIG']//textarea")).sendKeys(htmlString);
         clickElement(By.xpath("//*[@id='orgHtmlOverview-caBIG']//button[contains(text(),'Confirm')]"));
         checkAlert("Saved");
