@@ -1,9 +1,8 @@
 const DataElement = require('../../../server/cde/mongo-cde').DataElement;
+const Form = require('../../../server/form/mongo-form').Form;
 const REQUIRED_MAP = require('../Mapping/LOINC_REQUIRED_MAP').map;
 const MULTISELECT_MAP = require('../Mapping/LOINC_MULTISELECT_MAP').map;
 const CARDINALITY_MAP = require('../Mapping/LOINC_CARDINALITY_MAP').map;
-
-const CreateForm = require('./CreateForm');
 
 exports.parseFormElements = function (loinc) {
     return new Promise(async (resolve, reject) => {
@@ -24,7 +23,7 @@ exports.parseFormElements = function (loinc) {
             let f = loadCde;
             if (isElementForm) f = loadForm;
             let formElement = await f(element).catch(e => {
-                throw e;
+                reject(e);
             });
             formElements.push(formElement);
         }
@@ -41,19 +40,18 @@ loadCde = function (element) {
         };
         let loincId = element['LOINC#'];
         let existingCde = await DataElement.findOne(cdeCond)
-            .where("ids")
-            .elemMatch(function (elem) {
-                elem.where("source").equals('LOINC');
-                elem.where("id").equals(loincId);
-            }).exec().catch(e => {
+            .elemMatch('ids', {source: 'LOINC', id: loincId}).exec().catch(e => {
                 throw e;
             });
-        if (!existingCde) reject(loincId + ' not found.');
+        if (!existingCde) reject('cde ' + loincId + ' not found.');
+        existingCde = existingCde.toObject();
         let question = {
             instructions: {value: ''},
             cde: {
                 tinyId: existingCde.tinyId,
-                name: existingCde.naming[0].designation,
+                name: existingCde.designations[0].designation,
+                designations: existingCde.designations,
+                definitions: existingCde.definitions,
                 version: existingCde.version,
                 permissibleValues: existingCde.valueDomain.permissibleValues,
                 ids: existingCde.ids
@@ -92,19 +90,17 @@ loadForm = function (element) {
         };
 
         let loincId = element['LOINC#'];
-        let existingForm = await DataElement.findOne(formCond)
-            .where("ids").elemMatch(function (elem) {
-                elem.where("source").equals('LOINC');
-                elem.where("id").equals(loincId);
-            }).exec().catch(e => {
+        let existingForm = await Form.findOne(formCond)
+            .elemMatch('ids', {source: 'LOINC', id: loincId}).exec().catch(e => {
                 throw e;
             });
-        if (!existingForm) reject(loincId + ' not found.');
+        if (!existingForm) reject('form ' + loincId + ' not found.');
+        existingForm = existingForm.toObject();
         let inForm = {
             form: {
                 tinyId: existingForm.tinyId,
                 version: existingForm.version,
-                name: existingForm.naming[0].designation
+                name: existingForm.designations[0].designation
             }
         };
         let formElement = {
