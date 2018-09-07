@@ -30,6 +30,8 @@ declare function areDerivationRulesSatisfied(elt: FormElementsContainer): string
 declare function findQuestionByTinyId(tinyId: string, elt: FormElementsContainer): FormQuestion;
 declare function flattenFormElement(fe: FormElementsContainer): FormElement[];
 declare function getFormQuestions(form: FormElementsContainer): FormQuestion[];
+declare function getFormScoreQuestion(form: FormElementsContainer): FormQuestion[];
+declare function getFormSkipLogicQuestion(form: FormElementsContainer): FormQuestion[];
 declare function getFormQuestionsAsQuestion(form: FormElementsContainer): Question[];
 declare function getFormQuestionsAsQuestionCde(form: FormElementsContainer): QuestionCde[];
 declare function getLabel(fe: FormElement): string;

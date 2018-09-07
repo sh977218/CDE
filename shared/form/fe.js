@@ -49,7 +49,7 @@ export function areDerivationRulesSatisfied(elt) {
 
 export function findQuestionByTinyId(tinyId, elt) {
     let result = null;
-    let doFormElement = function (formElt) {
+    let doFormElement = formElt => {
         if (formElt.elementType === 'question') {
             if (formElt.question.cde.tinyId === tinyId) {
                 result = formElt;
@@ -87,6 +87,34 @@ export function getFormQuestions(form) {
             });
         }
         return qs;
+    };
+    return getQuestions(form);
+}
+
+export function getFormScoreQuestion(form) {
+    let getQuestions = function (fe) {
+        let scoreQuestions = [];
+        if (fe.formElements) {
+            fe.formElements.forEach(function (e) {
+                if (e.elementType === 'question' && e.question.isScore) scoreQuestions.push(e);
+                else scoreQuestions = scoreQuestions.concat(getQuestions(e));
+            });
+        }
+        return scoreQuestions;
+    };
+    return getQuestions(form);
+}
+
+export function getFormSkipLogicQuestion(form) {
+    let getQuestions = function (fe) {
+        let skipLogicQuestions = [];
+        if (fe.formElements) {
+            fe.formElements.forEach(function (e) {
+                if (e.elementType === 'question' && e.skipLogic.condition.length > 0) skipLogicQuestions.push(e);
+                else skipLogicQuestions = skipLogicQuestions.concat(getQuestions(e));
+            });
+        }
+        return skipLogicQuestions;
     };
     return getQuestions(form);
 }

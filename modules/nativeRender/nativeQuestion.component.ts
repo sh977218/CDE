@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-// import * as moment from 'moment/min/moment.min';
 
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CodeAndSystem } from 'shared/models.model';
 import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
-import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { ScoreService } from 'nativeRender/score.service';
 
 @Component({
     selector: 'cde-native-question',
@@ -21,15 +20,15 @@ export class NativeQuestionComponent implements OnInit {
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
     metadataTagsNew: string;
     previousUom: CodeAndSystem;
+
     questionMulti = questionMulti;
-    // static readonly reHasTime = /[hHmsSkaAZ]/;
 
     ngOnInit() {
         this.previousUom = this.formElement.question.answerUom;
     }
 
     constructor(private http: HttpClient,
-                public sls: SkipLogicService,
+                public scoreSvc: ScoreService,
                 public nrs: NativeRenderService) {
     }
 
@@ -107,20 +106,4 @@ export class NativeQuestionComponent implements OnInit {
             && q.elementType === 'question' && q.question.datatype !== 'Value List';
     }
 
-    // updateDateTime() {
-    //     let d = this.formElement.question.answerDate;
-    //     let t = this.formElement.question.answerTime;
-    //     if (!d) return this.formElement.question.answer = '';
-    //     if (!t) t = {hour: 0, minute: 0, second: 0};
-    //
-    //     let m = moment([d.year, d.month - 1, d.day, t.hour, t.minute, t.second]);
-    //     if (m.isValid()) {
-    //         if (this.formElement.question.datatypeDate && this.formElement.question.datatypeDate.format) {
-    //             this.formElement.question.answer = m.format(this.formElement.question.datatypeDate.format);
-    //         }
-    //         else this.formElement.question.answer = m.format('YYYY-MM-DDTHH:mm:ssZ');
-    //     } else {
-    //         this.formElement.question.answer = '';
-    //     }
-    // }
 }
