@@ -192,9 +192,9 @@
                 <button mat-raised-button id="removeAllPermissibleValueBtn" (click)="removeAllPermissibleValues()">
                     <mat-icon>delete_outline</mat-icon> Remove All Values
                 </button>
-                <button class="btn btn-outline-dark" role="button" id="openImportPVModalBtn"
+                <button mat-raised-button id="openImportPVModalBtn"
                         title="Import All Values" (click)="openImportPermissibleValueModal()">
-                    <i class="fa fa-download"></i> Import PVs From CDE
+                    <mat-icon>play_for_work</mat-icon> Import PVs From CDE
                 </button>
             </ng-container>
         </div>
@@ -224,8 +224,8 @@
             <div *ngIf="editMode">
                 <input name="vsacId" type="text" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id"
                        placeholder="VSAC O.I.D"/>
-                <i id="vsacIdCheck" class="fa fa-check" (click)="checkVsacId(elt)"></i>
-                <i class="fa fa-times" (click)="editMode = false"></i>
+                <mat-icon id="vsacIdCheck" (click)="checkVsacId(elt)">check</mat-icon>
+                <mat-icon (click)="editMode = false">cancel</mat-icon>
             </div>
         </div>
         <hr/>
@@ -243,19 +243,17 @@
                 <td>{{con.code}}</td>
                 <td>{{con.codeSystemName}}</td>
                 <td>
-                    <i *ngIf="con.isValid" class="fa fa-check text-success" id="vset-{{i}}-valid"></i>
-                    <i *ngIf="!con.isValid" class="fa fa-exclamation text-warning" id="vset-{{i}}-warning"></i>
+                    <mat-icon *ngIf="con.isValid" class="text-success" id="vset-{{i}}-valid">check</mat-icon>
+                    <mat-icon *ngIf="!con.isValid" class="text-warning" id="vset-{{i}}-warning">warning</mat-icon>
                 </td>
                 <td>
-                    <i *ngIf="!isVsInPv(con)" class="fa fa fa-plus" id="addVsacValue_{{i}}"
-                       (click)="addVsacValue(con)"></i>
+                    <mat-icon *ngIf="!isVsInPv(con)" id="addVsacValue_{{i}}" (click)="addVsacValue(con)">add</mat-icon>
                 </td>
             </tr>
         </table>
         <div *ngIf="vsacMappingExists() && !userService.loggedIn()">Please log in to see VSAC mapping.</div>
-        <a *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()"
-           class="btn btn-outline-dark mt20"
-           (click)="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
+        <button mat-raised-button *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()" class="mt20"
+           (click)="addAllVsac()"><mat-icon id="addAllVsac">add</mat-icon> Import Missing Values</button>
     </ng-container>
 </div>
 
