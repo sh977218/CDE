@@ -1,22 +1,31 @@
+const async = require('async');
 const By = require('selenium-webdriver').By;
 
-let catcher = e => {
-    console.log('Error parse3rdPartyCopyrightTable');
-    throw e;
-};
-exports.parse3rdPartyCopyrightTable = async function (obj, task, element, cb) {
+exports.parse3rdPartyCopyrightTable = function (obj, task, element, cb) {
     let sectionName = task.sectionName;
     obj[sectionName] = {};
-    let trs = await element.findElements(By.xpath('tbody/tr')).catch(catcher);
-
-    trs.shift();
-    trs.pop();
-
-    if (trs.length % 2 !== 0) {
-        consolog(obj.loincId + ' has odd 3rd party copyright');
-        process.exit(1);
-    }
-    obj[sectionName].codeSystem = await trs[0].getText().catch(catcher);
-    obj[sectionName].text = await trs[1].getText().catch(catcher);
-    cb();
+    element.findElements(By.xpath('tbody/tr')).then(function (trs) {
+        trs.shift();
+        trs.pop();
+        if (trs.length % 2 !== 0) {
+            consolog(obj.loincId + ' has odd 3rd party copyright');
+            process.exit(1);
+        }
+        async.forEachSeries([
+            function (doneOne) {
+                trs[0].getText().then(function (text) {
+                    obj[sectionName].codeSystem = text;
+                    doneOne();
+                })
+            },
+            function (doneOne) {
+                trs[1].getText().then(function (text) {
+                    obj[sectionName].text = text;
+                    doneOne();
+                })
+            }
+        ], function () {
+            cb();
+        })
+    });
 };
