@@ -73,7 +73,7 @@ export class ScoreService {
                         let bPromise = this.ucumConvter(bAnswer, bQuestion.question.answerUom.code, 'm');
                         Promise.all([aPromise, bPromise]).then(values => {
                             aAnswer = values[0];
-                            aAnswer = values[1];
+                            bAnswer = values[1];
                             scoreQuestion.question.answer = aAnswer / (bAnswer * bAnswer);
                             scoreQuestion.question.scoreError = '';
                         });
