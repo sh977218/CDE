@@ -1693,7 +1693,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String xpath = getCommentIconXpath(message, "comment", "reopen");
         clickElement(By.xpath(xpath));
         isCommentOrReplyExists(message, true);
-        assertClass(By.xpath("//div[normalize-space()='" + message + "']/span"), "strike", false);
+        wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
+                By.xpath("//div[normalize-space()='" + message + "']/span"),
+                "class", "strike")));
     }
 
     private Map<String, String> COMMENT_Title_Case_MAP = new HashMap<String, String>() {
