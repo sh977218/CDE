@@ -26,7 +26,7 @@ const ParseCopyrightText = require('./ParseCopyrightText');
 const ParseCopyrightNotice = require('./ParseCopyrightNotice');
 const ParsingVersion = require('./ParseVersion');
 const ParseQuestion = require('./ParseQuestion');
-const checkLformViewer = require('./checkLformViewer');
+const CheckLformViewer = require('./CheckLformViewer');
 
 let loincCount = 0;
 
@@ -50,11 +50,13 @@ const tasks = [
         function: ParseNameTable.parseNameTable,
         xpath: 'html/body/div/table[.//th[text()="NAME"]]'
     },
+/*
     {
         sectionName: 'COPYRIGHT NOTICE',
         function: ParseCopyrightNotice.parseCopyrightNotice,
         xpath: 'html/body/div/table[.//tr[contains(.,"NOTICE") and contains(.,"COPYRIGHT")]]'
     },
+*/
     {
         sectionName: 'PART DEFINITION/DESCRIPTION(S)',
         function: ParseDefinitionDescriptionsTable.parseDefinitionDescriptionsTable,
@@ -109,11 +111,14 @@ const tasks = [
         function: ParseExampleUnitsTable.parseExampleUnitsTable,
         xpath: 'html/body/div/table[.//th[text()="EXAMPLE UNITS"]]'
     },
+/*
     {
         sectionName: '3rd PARTY COPYRIGHT',
         function: Parse3rdPartyCopyrightTable.parse3rdPartyCopyrightTable,
         xpath: '/html/body/div/table[.//th[text()="3rd PARTY COPYRIGHT"]]'
-    }, {
+    },
+*/
+    {
         sectionName: 'COPYRIGHT',
         function: ParseCopyrightTable.parseCopyrightTable,
         xpath: '/html/body/div/table[.//th[text()="COPYRIGHT"]]'
@@ -164,7 +169,7 @@ const specialTasks = [
         function: ParseQuestion.parseQuestion
     },
     {
-        function: checkLformViewer.checkLformViewer
+        function: CheckLformViewer.checkLformViewer
     }
 ];
 let currentVersion = '2.58';
