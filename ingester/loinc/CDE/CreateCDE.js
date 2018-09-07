@@ -10,7 +10,7 @@ const ParseReferenceDocuments = require('../Shared/ParseReferenceDocuments');
 const ParseStewardOrg = require('../Shared/ParseStewardOrg');
 const ParseSources = require('../Shared/ParseSources');
 
-const ParseValueDomain = require('../Form/ParseValueDomain');
+const ParseValueDomain = require('./ParseValueDomain');
 const ParseConcept = require('./ParseConcept');
 
 const orgMapping = require('../Mapping/ORG_INFO_MAP').map;

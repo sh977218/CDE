@@ -26,14 +26,12 @@ exports.mergeForm = function (newForm, existingForm, orgName) {
         existingForm.version = newForm.version;
         existingForm.changeNote = "Bulk update from source";
         existingForm.imported = new Date().toJSON();
-        existingForm.dataElementConcept = newForm.dataElementConcept;
-        existingForm.objectClass = newForm.objectClass;
-        existingForm.property = newForm.property;
         existingForm.valueDomain = newForm.valueDomain;
         existingForm.mappingSpecifications = newForm.mappingSpecifications;
         existingForm.referenceDocuments = newForm.referenceDocuments;
         existingForm.ids = newForm.ids;
         existingForm.properties = newForm.properties;
+        existingForm.formElements = newForm.formElements;
 
         removeClassificationByOrgName(existingForm, orgName);
         existingForm.classification.push(newForm.classification[0]);
