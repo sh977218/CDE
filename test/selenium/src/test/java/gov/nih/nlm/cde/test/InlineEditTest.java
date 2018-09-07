@@ -38,9 +38,9 @@ public class InlineEditTest extends BaseAttachmentTest {
         goToAttachments();
         String url = findElement(By.id("attachment_file_url_0")).getAttribute("href");
         goToProperties();
-        clickElement(By.xpath("//*[@id='value_0']//i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='value_0']//mat-icon[. = 'edit']"));
         textPresent("Rich Text");
-        clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Rich Text')]"));
+        clickElement(By.xpath("//*[@id='value_0']//button[. = 'Rich Text']"));
 
         hangon(2);
 
@@ -53,11 +53,11 @@ public class InlineEditTest extends BaseAttachmentTest {
         Alert errorAlert = driver.switchTo().alert();
         Assert.assertTrue(errorAlert.getText().contains("Error. Img src may only be a relative url starting with /data"));
         errorAlert.accept();
-        clickElement(By.cssSelector("button.fa-times"));
+        clickElement(By.xpath("//button/mat-icon[. = 'cancel']"));
 
-        clickElement(By.xpath("//*[@id='value_0']//i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='value_0']//mat-icon[. = 'edit']"));
         textPresent("Rich Text");
-        clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Rich Text')]"));
+        clickElement(By.xpath("//*[@id='value_0']//button[. = 'Rich Text']"));
         clickElement(By.cssSelector(".cke_button__source"));
         findElement(By.cssSelector("textarea.cke_source")).sendKeys("validate image url");
         clickElement(By.cssSelector(".cke_button__source"));
@@ -65,7 +65,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         findElement(By.xpath("//div[label[. = 'URL']]//input")).sendKeys(url);
         clickElement(By.linkText("OK"));
 
-        clickElement(By.cssSelector("button.fa-check"));
+        clickElement(By.xpath("//button//mat-icon[. = 'check']"));
         textPresent("validate image url");
         Assert.assertTrue(findElement(By.xpath("//*[@id='value_0']//img")).getAttribute("src").contains("cde"));
     }

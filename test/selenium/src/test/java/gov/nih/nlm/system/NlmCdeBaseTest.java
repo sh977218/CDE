@@ -214,10 +214,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
                 findElement(By.xpath("//*[@id='" + id + "' and contains(@class, 'treeChild')]"));
         } else {
             if (state)
-                findElement(By.xpath("//*[@id='" + id + "']/*[contains(@class,'treeItemIconSelected')]"));
+                findElement(By.xpath("//*[@id='" + id + "']/*[. = 'check_box']"));
             else
-                Assert.assertTrue(driver.findElements(By.xpath(
-                        "//*[@id='" + id + "']/*[contains(@class,'treeItemIconSelected')]")).size() == 0);
+                Assert.assertTrue(driver.findElements(By.xpath("//*[@id='" + id + "']/*[. = 'treeItemIconSelected']")).size() == 0);
         }
     }
 
@@ -281,13 +280,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         }
     }
 
-    protected void deleteWithConfirm(By by) {
-        WebElement element = findElement(by);
-
-        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.cssSelector(".fa-trash-o"))));
-        element.findElement(By.cssSelector(".fa-trash-o")).click();
-        wait.until(ExpectedConditions.visibilityOf(element.findElement(By.cssSelector(".badge > .fa-check"))));
-        element.findElement(By.cssSelector(".badge > .fa-check")).click();
+    protected void deleteWithConfirm(String xpath) {
+        clickElement(By.xpath(xpath + "//mat-icon[. = 'delete_outline']"));
+        clickElement(By.xpath(xpath + "//mat-icon[. = 'check']"));
     }
 
     protected void gotoClassificationMgt() {
@@ -949,9 +944,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void editDesignationByIndex(int index, String newDesignation, String[] tags) {
-        String designationEditIconXpath = "//*[@id='designation_" + index + "']//*[contains(@class,'fa-edit')]";
+        String designationEditIconXpath = "//*[@id='designation_" + index + "']//mat-icon[. = 'edit']";
         String designationInputXpath = "//*[@id='designation_" + index + "']//input";
-        String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//*[contains(@class,'fa-check')]";
+        String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//mat-icon[. = 'check']";
         if (newDesignation != null) {
             clickElement(By.xpath(designationEditIconXpath));
             findElement(By.xpath(designationInputXpath)).sendKeys(newDesignation);
@@ -970,10 +965,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void editDefinitionByIndex(int index, String newDefinition, boolean html) {
-        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]";
-        String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]";
+        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//mat-icon[. = 'edit']";
+        String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[. = 'Rich Text']";
         String definitionTextareaXpath = "//*[@id='definition_" + index + "']//textarea";
-        String definitionConfirmBtnXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-check')]";
+        String definitionConfirmBtnXpath = "//*[@id='definition_" + index + "']//mat-icon[. = 'check']";
         clickElement(By.xpath(definitionEditIconXpath));
         if (html) {
             clickElement(By.xpath(richTextBtnXpath));
@@ -984,28 +979,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textNotPresent("Confirm");
     }
 
-    protected void changeDefinitionFormat(int index, boolean isHtml) {
-        clickElement(By.xpath("//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]"));
-        if (isHtml) clickElement(By.xpath("//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]"));
-        else clickElement(By.xpath("//*[@id='definition_" + index + "']//button[contains(text(),'Plain Text')]"));
-        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-check')]"));
-        textNotPresent("Confirm");
-    }
-
-    protected void editTagByIndex(int index, String[] tags) {
-        String tagsInputXpath = "//*[@id='tags_" + index + "']//input";
-        for (String tag : tags) {
-            clickElement(By.xpath(tagsInputXpath));
-            selectNgSelectDropdownByText(tag);
-            textPresent(tag);
-        }
-    }
-
     protected void editPropertyValueByIndex(int index, String newValue, boolean html) {
-        String valueEditIconXpath = "//*[@id='value_" + index + "']//i[contains(@class,'fa fa-edit')]";
-        String richTextBtnXpath = "//*[@id='value_" + index + "']//button[contains(text(),'Rich Text')]";
+        String valueEditIconXpath = "//*[@id='value_" + index + "']//mat-icon[. = 'edit']";
+        String richTextBtnXpath = "//*[@id='value_" + index + "']//button[. = 'Rich Text']";
         String valueTextareaXpath = "//*[@id='value_" + index + "']//textarea";
-        String valueConfirmBtnXpath = "//*[@id='value_" + index + "']//*[contains(@class,'fa-check')]";
+        String valueConfirmBtnXpath = "//*[@id='value_" + index + "']//mat-icon[. = 'check']";
         clickElement(By.xpath(valueEditIconXpath));
         if (html) {
             clickElement(By.xpath(richTextBtnXpath));
@@ -1352,14 +1330,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
      */
     protected void editSection(String sectionId, String newSectionName, String newSectionInstruction, boolean isInstructionHtml, String newSectionCardinalityType, String newSectionCardinality) {
         startEditSectionById(sectionId);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//i[contains(@class,'fa-edit')]"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input")).clear();
         findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input")).sendKeys(newSectionName);
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
         textPresent(newSectionName, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]"));
 
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//i[contains(@class,'fa-edit')]"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//mat-icon[. = 'edit']"));
         textPresent("Plain Text");
         textPresent("Rich Text");
         textPresent("Confirm");
@@ -1400,8 +1378,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     public String getOrgClassificationIconXpath(String type, String[] categories) {
         String id = String.join(",", categories);
-        String fa = PREDEFINED_ORG_CLASSIFICATION_ICON.get(type.toLowerCase());
-        return "//*[@id='" + id + "']/following-sibling::a/i[contains(@class, '" + fa + "')]";
+        String icon = PREDEFINED_ORG_CLASSIFICATION_ICON.get(type.toLowerCase());
+        return "//*[@id='" + id + "']/following-sibling::a/mat-icon[. = '" + icon + "']";
     }
 
     protected void searchNestedClassifiedCdes() {
@@ -1443,14 +1421,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void editStewardOrgAndCancel(String newStewardOrg) {
-        clickElement(By.xpath("//*[@id='dd_general_steward']//i"));
+        clickElement(By.xpath("//*[@id='dd_general_steward']//mat-icon"));
         new Select(findElement(By.xpath("//*[@id='dd_general_steward']//select"))).selectByVisibleText(newStewardOrg);
         clickElement(By.xpath("//*[@id='dd_general_steward']//button[contains(text(),'Discard')]"));
         textNotPresent(newStewardOrg);
     }
 
     protected void editStewardOrgAndSave(String newStewardOrg) {
-        clickElement(By.xpath("//*[@id='dd_general_steward']//i"));
+        clickElement(By.xpath("//*[@id='dd_general_steward']//mat-icon"));
         new Select(findElement(By.xpath("//*[@id='dd_general_steward']//select"))).selectByVisibleText(newStewardOrg);
         clickElement(By.xpath("//*[@id='dd_general_steward']//button[contains(text(),'Confirm')]"));
         textPresent(newStewardOrg);
@@ -1570,7 +1548,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void editOrigin(String origin, boolean append) {
-        clickElement(By.xpath("//*[@id='origin']//i[contains(@class,'fa-edit')]"));
+        clickElement(By.xpath("//*[@id='origin']//mat-icon[. = 'edit']"));
         if (!append) {
             findElement(By.xpath("//*[@id='origin']//input")).clear();
             hangon(2);
@@ -1742,13 +1720,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void selectQuestionLabelByIndex(String questionId, int index) {
-        clickElement(By.xpath("//*[@id='" + questionId + "']//i[contains(@class,'changeQuestionLabelIcon')]"));
+        clickElement(By.xpath("//*[@id='" + questionId + "']//mat-icon[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("Select a question label from a CDE Name");
         clickElement(By.xpath("//*[@id='q_select_name_" + index + "']/div/button"));
     }
 
     protected void selectQuestionNoLabel(String questionId) {
-        clickElement(By.xpath("//*[@id='" + questionId + "']//i[contains(@class,'changeQuestionLabelIcon')]"));
+        clickElement(By.xpath("//*[@id='" + questionId + "']//mat-icon[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("Select a question label from a CDE Name");
         clickElement(By.id("selectQuestionNoLabel"));
     }

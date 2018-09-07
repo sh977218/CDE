@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class FormFiveUnapprovedMessagesPerUserComment extends NlmCdeBaseTest {
 
     @Test
-    public void formFiveUnapprovedMessagesPerUserCommentTest() {
+    public void formFiveUnapprovedMessagesPerUserComment() {
         String formName = "PROMIS Parent Proxy SF v1.0 - Peer Relations 7a";
         String comment = "This comment will never be seen.";
         mustBeLoggedInAs(unapprovedMessage_username, password);

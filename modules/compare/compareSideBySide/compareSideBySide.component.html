@@ -1,13 +1,13 @@
 <button *ngIf="elements.length > 1" id="qb_compare" mat-raised-button
         (click)="openCompareSideBySideContent();">
-    <i class="fa fa-search"></i> Side by Side View
+    <mat-icon>search</mat-icon> Side by Side View
 </button>
 
 <ng-template #compareSideBySideContent id="compareSideBySideModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="compareSideBySideModalHeader">
         <div class="col-6 leftObj">
             <a id="sourceElement" class='btn   btn-outline-dark' target="_blank" [href]=leftUrl>
-                <i class="fa fa-eye"></i> View Full Detail</a>
+                <mat-icon>visibility</mat-icon> View Full Detail</a>
             <ng-container *ngIf="canMergeDataElement">
                 <cde-merge-data-element [source]="left" [destination]="right"
                                         (doneMerge)="doneMerge($event)"></cde-merge-data-element>
@@ -19,7 +19,7 @@
         </div>
         <div class="col-6 rightObj">
             <a id="destinationElement" class='btn   btn-outline-dark' target="_blank" [href]=rightUrl>
-                <i class="fa fa-eye"></i> View Full Detail</a>
+                <mat-icon>visibility</mat-icon> View Full Detail</a>
             <ng-container *ngIf="canMergeDataElement">
                 <cde-merge-data-element [source]="left" [destination]="right"
                                         (doneMerge)="doneMerge($event)"></cde-merge-data-element>
@@ -59,8 +59,7 @@
                                 <div *ngFor="let d of option.displayAs.data">
                                     <strong>{{d.label?d.label+":":d.label}}</strong>
                                     <span [innerHTML]=getValue(partialMatch.left,d)></span>
-                                    <i *ngIf="partialMatch.diff.indexOf(d.property)>-1"
-                                       class="fa fa-exclamation-triangle"></i>
+                                    <mat-icon *ngIf="partialMatch.diff.indexOf(d.property)>-1">warning</mat-icon>
                                 </div>
                             </div>
                         </div>
@@ -69,8 +68,7 @@
                                 <div *ngFor="let d of option.displayAs.data">
                                     <strong>{{d.label?d.label+":":d.label}}</strong>
                                     <span [innerHTML]=getValue(partialMatch.right,d)></span>
-                                    <i *ngIf="partialMatch.diff.indexOf(d.property)>-1"
-                                       class="fa fa-exclamation-triangle"></i>
+                                    <mat-icon *ngIf="partialMatch.diff.indexOf(d.property)>-1">warning</mat-icon>
                                 </div>
                             </div>
                         </div>

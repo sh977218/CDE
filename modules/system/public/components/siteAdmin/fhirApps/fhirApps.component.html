@@ -6,7 +6,7 @@
     <table class="table-striped" style="width: -webkit-fill-available">
         <ng-container *ngFor="let app of fhirApps">
             <tr>
-                <td rowspan="2"><i class="fa fa-trash-o" (click)="deleteApp(app)"></i></td>
+                <td rowspan="2"><mat-icon (click)="deleteApp(app)">delete_outline</mat-icon></td>
                 <td rowspan="2">{{app._id}}</td>
                 <td>
                     <mat-form-field>
@@ -67,4 +67,4 @@
     </table>
 </div>
 
-<button class="btn btn-primary" (click)="newApp()"><i class="fa fa-plus"></i> Add</button>
+<button mat-raised-button (click)="newApp()"><mat-icon>add</mat-icon> Add</button>

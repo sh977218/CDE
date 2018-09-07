@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
@@ -9,6 +9,7 @@ import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscr
 import { ITEM_MAP } from 'shared/item';
 import { CbErr, Comment, User } from 'shared/models.model';
 import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
+import { MatDialog } from '@angular/material';
 
 @Injectable()
 export class UserService {
@@ -26,11 +27,13 @@ export class UserService {
         )));
     user?: User;
     userOrgs: string[] = [];
+    logoutTimeout: number;
 
-    constructor(
-        private http: HttpClient,
-    ) {
+    constructor(private http: HttpClient,
+                private dialog: MatDialog) {
         this.reload();
+        this.resetInactivityTimeout();
+        document.body.addEventListener('click', () => this.resetInactivityTimeout());
     }
 
     catch(cb: CbErr): Promise<any> {
@@ -82,7 +85,35 @@ export class UserService {
         }
     }
 
+    resetInactivityTimeout () {
+        clearTimeout(this.logoutTimeout);
+        if (this.loggedIn()) {
+            // @ts-ignore
+            this.logoutTimeout = setTimeout(() => {
+                if (this.loggedIn()) {
+                    this.reload();
+                    if (!this.loggedIn()) {
+                        this.dialog.open(InactivityLoggedOutComponent);
+                    }
+                }
+            }, (window as any).inactivityTimeout);
+        }
+    }
+
     then(cb: (user: User) => any, errorCb?: CbErr): Promise<any> {
         return this.promise.then(cb, errorCb);
     }
 }
+
+@Component({
+    template: `
+        <h1 mat-dialog-title>Inactivity timeout</h1>
+        <div mat-dialog-content>
+            <p>Your session was automatically timed out. </p>
+        </div>
+        <div mat-dialog-actions>
+            <button mat-raised-button [mat-dialog-close]="" class="float-right">OK</button>
+        </div>
+    `,
+})
+export class InactivityLoggedOutComponent {}
