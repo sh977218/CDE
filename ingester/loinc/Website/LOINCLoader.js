@@ -24,7 +24,7 @@ const ParseArticleTable = require('./ParseArticleTable');
 const ParseCopyrightText = require('./ParseCopyrightText');
 const ParsingVersion = require('./ParseVersion');
 const ParseQuestion = require('./ParseQuestion');
-const CheckLformViewer = require('./checkLformViewer');
+const checkLformViewer = require('./checkLformViewer');
 
 let loincCount = 0;
 
@@ -153,7 +153,7 @@ const specialTasks = [
         function: ParseQuestion.parseQuestion
     },
     {
-        function: CheckLformViewer.checkLformViewer
+        function: checkLformViewer.checkLformViewer
     }
 ];
 let currentVersion = '2.58';

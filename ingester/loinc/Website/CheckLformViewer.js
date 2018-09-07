@@ -1,5 +1,4 @@
-var async = require('async');
-var By = require('selenium-webdriver').By;
+const By = require('selenium-webdriver').By;
 
 
 exports.checkLformViewer = function (driver, obj, cb) {
@@ -8,7 +7,7 @@ exports.checkLformViewer = function (driver, obj, cb) {
             obj.dependentSection = true;
             cb();
         } else if (links.length === 1) {
-            var link = links[0];
+            const link = links[0];
             link.getText().then(function (text) {
                 if (text.trim() === 'view this panel in the LForms viewer') {
                     obj.dependentSection = false;

@@ -3,9 +3,10 @@ const REQUIRED_MAP = require('../Mapping/LOINC_REQUIRED_MAP').map;
 const MULTISELECT_MAP = require('../Mapping/LOINC_MULTISELECT_MAP').map;
 const CARDINALITY_MAP = require('../Mapping/LOINC_CARDINALITY_MAP').map;
 
+const CreateForm = require('./CreateForm');
+
 exports.parseFormElements = function (loinc) {
     return new Promise(async (resolve, reject) => {
-
         let formElements = [];
         let elements = loinc['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'];
         console.log('Form ' + loinc['loincId'] + ' has ' + elements.length + ' elements to process.');
@@ -19,19 +20,15 @@ exports.parseFormElements = function (loinc) {
             formElements: []
         });
         for (let element of elements) {
-            if (element.elements.length === 0) {
-                let formElement = await loadCde().catch(e => {
-                    throw e;
-                });
-                formElements.push(formElement);
-            }
-            else {
-                let formElement = await loadForm().catch(e => {
-                    throw e;
-                });
-                formElements.push(formElement);
-            }
+            let isElementForm = element.elements.length > 0;
+            let f = loadCde;
+            if (isElementForm) f = loadForm;
+            let formElement = await f(element).catch(e => {
+                throw e;
+            });
+            formElements.push(formElement);
         }
+        resolve(formElements);
     })
 
 };
@@ -42,16 +39,16 @@ loadCde = function (element) {
             archived: false,
             "registrationState.registrationStatus": {$ne: "Retired"}
         };
+        let loincId = element['LOINC#'];
         let existingCde = await DataElement.findOne(cdeCond)
             .where("ids")
             .elemMatch(function (elem) {
                 elem.where("source").equals('LOINC');
-                elem.where("id").equals(element['LOINC#']);
+                elem.where("id").equals(loincId);
             }).exec().catch(e => {
                 throw e;
             });
-        if (!existingCde) reject(element['LOINC#'] + ' not found.');
-
+        if (!existingCde) reject(loincId + ' not found.');
         let question = {
             instructions: {value: ''},
             cde: {
@@ -87,7 +84,6 @@ loadCde = function (element) {
     })
 };
 
-
 loadForm = function (element) {
     return new Promise(async (resolve, reject) => {
         let formCond = {
@@ -95,128 +91,30 @@ loadForm = function (element) {
             "registrationState.registrationStatus": {$ne: "Retired"}
         };
 
-        let existingform = await DataElement.findOne(formCond)
-            .where("ids")
-            .elemMatch(function (elem) {
+        let loincId = element['LOINC#'];
+        let existingForm = await DataElement.findOne(formCond)
+            .where("ids").elemMatch(function (elem) {
                 elem.where("source").equals('LOINC');
-                elem.where("id").equals(element['LOINC#']);
+                elem.where("id").equals(loincId);
             }).exec().catch(e => {
                 throw e;
             });
-        if (!existingform) {}
-
-        if (existingForms.length === 0) {
-            MigrationLoincModel.find({loincId: element['LOINC#']}).exec(function (findFormError, loincs) {
-                if (findFormError) throw findFormError;
-                if (loincs.length === 1) {
-                    var loinc = loincs[0].toObject();
-                    if (loinc.dependentSection) {
-                        var formElement = {
-                            elementType: 'section',
-                            instructions: {value: '', valueFormat: ''},
-                            cardinality: CARDINALITY_MAP[element['Cardinality']],
-                            label: element['LOINC Name'].replace('[AHRQ]', '').trim(),
-                            section: {},
-                            formElements: []
-                        };
-                        async.forEachSeries(loinc['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'], function (e, doneOneE) {
-                            exports.loadCde(e, formElement.formElements, function () {
-                                doneOneE();
-                            })
-                        }, function doneAllE() {
-                            fe.push(formElement);
-                            next();
-                        });
-                    } else {
-                        exports.createForm(loinc, org, orgInfo, function (newForm, formCount) {
-                            exports.saveObj(newForm, function (o) {
-                                console.log('Finished process form : ' + o.get('ids')[0].id);
-                                console.log('Form count: ' + formCount);
-                                fe.push({
-                                    elementType: 'form',
-                                    instructions: {value: '', valueFormat: ''},
-                                    cardinality: CARDINALITY_MAP[element['Cardinality']],
-                                    label: element['LOINC Name'].replace('[AHRQ]', '').trim(),
-                                    inForm: {
-                                        form: {
-                                            tinyId: newForm.tinyId,
-                                            version: newForm.version,
-                                            name: newForm.naming[0].designation
-                                        }
-                                    }
-                                });
-                                next();
-                            });
-                        })
-                    }
-                } else {
-                    console.log('Find ' + loinc.length + ' loinc with loinc id: ' + element['LOINC#']);
-                    process.exit(1);
-                }
-            })
-        } else if (existingForms.length === 1) {
-            var existingForm = existingForms[0];
-            if (existingForm.dependentSection) {
-                var formElement = {
-                    elementType: 'section',
-                    instructions: {value: '', valueFormat: ''},
-                    cardinality: CARDINALITY_MAP[element['Cardinality']],
-                    label: element['LOINC Name'].replace('[AHRQ]', '').trim(),
-                    section: {},
-                    formElements: []
-                };
-                async.forEachSeries(existingForm['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'], function (e, doneOneE) {
-                    exports.loadCde(e, formElement.formElements, function () {
-                        doneOneE();
-                    })
-                }, function doneAllE() {
-                    fe.push(formElement);
-                    next();
-                });
-            } else {
-                var inForm = {
-                    form: {
-                        tinyId: existingForm.tinyId,
-                        version: existingForm.version,
-                        name: existingForm.naming[0].designation
-                    }
-                };
-                var formElement = {
-                    elementType: 'form',
-                    instructions: {value: '', valueFormat: ''},
-                    cardinality: CARDINALITY_MAP[element['Cardinality']],
-                    label: element['LOINC Name'].replace('[AHRQ]', '').trim(),
-                    inForm: inForm,
-                    formElements: []
-                };
-                fe.push(formElement);
-                next();
+        if (!existingForm) reject(loincId + ' not found.');
+        let inForm = {
+            form: {
+                tinyId: existingForm.tinyId,
+                version: existingForm.version,
+                name: existingForm.naming[0].designation
             }
-        } else {
-            console.log('Found more than one this form with loincId: ' + element['LOINC#']);
-            process.exit(1);
-        }
-    })
-};
-
-exports.saveObj = function (form, next) {
-    var loincId;
-    form.ids.forEach(function (i) {
-        if (i.source === 'LOINC') loincId = i.id;
-    });
-    FormModel.find({'ids.id': loincId}).exec(function (er, existingForms) {
-        if (er) throw er;
-        if (existingForms.length === 0) {
-            var obj = new FormModel(form);
-            obj.save(function (err, o) {
-                formCount++;
-                console.log('Finished process form : ' + o.get('ids')[0].id);
-                console.log('Form count: ' + formCount);
-                if (err) throw err;
-                next(o);
-            })
-        } else {
-            next();
-        }
+        };
+        let formElement = {
+            elementType: 'form',
+            instructions: {value: '', valueFormat: ''},
+            cardinality: CARDINALITY_MAP[element['Cardinality']],
+            label: element['LOINC Name'].replace('[AHRQ]', '').trim(),
+            inForm: inForm,
+            formElements: []
+        };
+        resolve(formElement);
     });
 };
