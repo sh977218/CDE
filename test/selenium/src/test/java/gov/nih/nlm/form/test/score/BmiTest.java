@@ -13,11 +13,11 @@ public class BmiTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
 
-        findElement(By.name("0-0")).sendKeys("180");
         clickElement(By.name("0-0_uom_1"));
+        findElement(By.name("0-0")).sendKeys("180");
 
-        findElement(By.name("0-1")).sendKeys("70");
         clickElement(By.name("0-1_uom_1"));
+        findElement(By.name("0-1")).sendKeys("70" + Keys.TAB);
 
         textPresent("25.827", By.id("BMI_0-2"));
     }

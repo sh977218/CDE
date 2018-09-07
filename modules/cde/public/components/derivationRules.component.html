@@ -30,7 +30,7 @@
     </div>
 
     <button *ngIf="canAddScore()" mat-raised-button id="addNewScore" (click)="openNewScoreModal()">
-        <mat-icon> Add Score</mat-icon>
+        <mat-icon>add</mat-icon> Add Score
     </button>
 
     <div *ngIf="elt.derivationOutputs && elt.derivationOutputs.length > 0">
@@ -66,8 +66,8 @@
             <div class="form-group">
                 <label for="newDerivationRule.inputs">Inputs: </label>
                 <div id="newDerivationRule.inputs">
-                    <span *ngIf="!invalidCdeMessage">All {{quickBoardService.number_dataElements}} CDEs in your quickboard.</span>
-                    <span *ngIf="invalidCdeMessage" class="error-block">{{invalidCdeMessage}}</span>
+                    <span *ngIf="!invalidCdeMessage.length">All {{quickBoardService.number_dataElements}} CDEs in your quickboard.</span>
+                    <span *ngIf="invalidCdeMessage.length" class="error-block">{{invalidCdeMessage}}</span>
                 </div>
             </div>
             <div class="form-group">
@@ -89,7 +89,7 @@
                 Cancel
             </button>
             <button type="submit" mat-raised-button color="primary"
-                    [disabled]="someCdesInvalid() || !newScoreForm.form.valid" id="createDerivationRule">Save
+                    [disabled]="invalidCdeMessage.length || !newScoreForm.form.valid" id="createDerivationRule">Save
             </button>
         </div>
     </form>

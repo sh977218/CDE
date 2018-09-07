@@ -8,7 +8,7 @@ public class BoardFiveUnapprovedMessagesPerUserReply extends NlmCdeBaseTest {
 
 
     @Test
-    public void boardFiveUnapprovedMessagesPerUserReplyTest() {
+    public void boardFiveUnapprovedMessagesPerUserReply() {
         String boardName = "Depression";
         String reply = "This reply will never be seen.";
         mustBeLoggedInAs(unapprovedMessage_username, password);

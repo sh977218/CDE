@@ -15,7 +15,7 @@ public class LogoutCannotEditFormNamingTest extends NlmCdeBaseTest {
         mustBeLoggedOut();
         goToFormByName(formName);
         goToNaming();
-        for (WebElement elt : driver.findElements(By.cssSelector(".fa-trash-o"))) {
+        for (WebElement elt : driver.findElements(By.xpath("//mat-icon[. = 'delete_outline']"))) {
             Assert.assertFalse(elt.isDisplayed());
         }
     }

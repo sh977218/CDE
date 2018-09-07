@@ -32,7 +32,7 @@ public class PublishForm extends BaseFormTest {
         goHome();
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
-        clickElement(By.xpath("//*[a[normalize-space(.) ='My Published Form']]/i[@title= 'Remove']"));
+        clickElement(By.xpath("//*[a[normalize-space(.) ='My Published Form']]/mat-icon[. = 'delete_outline']"));
         checkAlert("Saved");
         textNotPresent("My Published Form");
     }

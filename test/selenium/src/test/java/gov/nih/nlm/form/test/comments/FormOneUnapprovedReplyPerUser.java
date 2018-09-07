@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class FormOneUnapprovedReplyPerUser extends NlmCdeBaseTest {
 
     @Test
-    public void formOneUnapprovedReplyPerUserTest() {
+    public void formOneUnapprovedReplyPerUser() {
         String formName = "PROMIS SF v2.0 - Instrumental Support 4a";
         String reply = "This reply will never be seen.";
         mustBeLoggedInAs(oneUnapprovedReply_username, password);
