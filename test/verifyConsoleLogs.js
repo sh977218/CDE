@@ -21,7 +21,6 @@ let expectedContent = {
     "noDoublePin": "Failed to load resource: the server responded with a status of 409 (Conflict)",
     "pageNotFound": "de/abc - Failed to load resource: the server responded with a status of 404 (Not Found)",
     "publicVsPrivateBoards": "board/5750474d89949d54384ee640/0 - Failed to load resource: the server responded with a status of",
-    "removeVsacId": "*",
     "report": "cde/search 0:0 Uncaught SyntaxError: Unexpected token <",
     "searchPageSize": "the server responded with a status of 400 (Bad Request)",
     "tooManyBoards": "board - Failed to load resource: the server responded with a status of 403 (Forbidden)",
