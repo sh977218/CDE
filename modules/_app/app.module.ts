@@ -4,7 +4,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 import { LocalStorageModule } from 'angular-2-local-storage';
-import { MatBadgeModule, MatIconModule, MatMenuModule, MatSnackBarModule } from '@angular/material';
+import {
+    MatBadgeModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatMenuModule,
+    MatSnackBarModule
+} from '@angular/material';
 
 import { AlertService } from '_app/alert.service';
 import { BackForwardService } from '_app/backForward.service';
@@ -15,7 +22,7 @@ import { LoginService } from '_app/login.service';
 import { NotificationsComponent } from '_app/notifications/notifications.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
-import { UserService } from '_app/user.service';
+import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
 import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
 import { CommonAppModule } from '_commonApp/commonApp.module';
@@ -31,6 +38,8 @@ import { OrgHelperService } from 'core/orgHelper.service';
             storageType: 'localStorage'
         }),
         MatBadgeModule,
+        MatButtonModule,
+        MatDialogModule,
         MatIconModule,
         MatMenuModule,
         MatSnackBarModule,
@@ -40,10 +49,14 @@ import { OrgHelperService } from 'core/orgHelper.service';
     ],
     declarations: [
         CdeAppComponent,
+        InactivityLoggedOutComponent,
         NavigationComponent,
         NotificationsComponent,
         PageNotFoundComponent,
         TruncateLongNamePipe,
+    ],
+    entryComponents: [
+        InactivityLoggedOutComponent,
     ],
     providers: [
         {
@@ -65,5 +78,6 @@ import { OrgHelperService } from 'core/orgHelper.service';
     ],
     bootstrap: [CdeAppComponent]
 })
+
 export class CdeAppModule {
 }
