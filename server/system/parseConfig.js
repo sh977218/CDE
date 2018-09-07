@@ -3,6 +3,7 @@ const fs = require('fs');
 
 let databaseNames = ['log', 'appData', 'migration'];
 
+
 databaseNames.forEach(databaseName => {
     let database = config.database[databaseName];
     let hosts = config.database.servers.map(srv => srv.host + ":" + srv.port).join(",");
