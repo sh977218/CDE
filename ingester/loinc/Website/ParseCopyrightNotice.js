@@ -1,25 +1,18 @@
-const async = require('async');
 const By = require('selenium-webdriver').By;
 
-exports.parseCopyrightNotice = function (obj, task, element, cb) {
+let catcher = e => {
+    console.log('Error parseCopyrightNotice');
+    throw e;
+};
+exports.parseCopyrightNotice = async function (obj, task, element, cb) {
     let sectionName = task.sectionName;
     obj[sectionName] = {};
-    element.findElements(By.xpath('(tbody/tr)[2]/td')).then(function (tds) {
-        let td = tds[0];
-        td.findElement(By.xpath('a')).then(function (a) {
-            async.forEach([function (done) {
-                a.getText().then(function (text) {
-                    obj[sectionName].text = text.trim();
-                    done();
-                });
-            }, function (done) {
-                a.getTagName('href').then(function (href) {
-                    obj[sectionName].href = href;
-                    done();
-                })
-            }], function () {
-                cb();
-            })
-        })
-    });
+    let tds = await element.findElements(By.xpath('(tbody/tr)[2]/td')).catch(catcher);
+    let td = tds[0];
+    let a = await td.findElement(By.xpath('a')).catch(catcher);
+    let text = await a.getText().catch(catcher);
+    obj[sectionName].text = text.trim();
+    let href = await a.getAttribute('href').catch(catcher);
+    obj[sectionName].href = href;
+    cb();
 };

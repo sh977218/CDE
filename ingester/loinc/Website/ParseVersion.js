@@ -1,14 +1,15 @@
-var async = require('async');
-var By = require('selenium-webdriver').By;
+let catcher = e => {
+    console.log('Error parseVersion');
+    throw e;
+};
 
-exports.parseVersion = function (obj, task, element, cb) {
-    var sectionName = task.sectionName;
-    element.getText().then(function (text) {
-        var versionText = text.trim();
-        obj[sectionName][sectionName] = versionText;
-        var versionNumStr = versionText.replace('Generated from LOINC version', '').trim();
-        var versionNum = versionNumStr.substring(0, versionNumStr.length - 1);
-        obj.version = versionNum;
-        cb();
-    })
+exports.parseVersion = async function (obj, task, element, cb) {
+    let sectionName = task.sectionName;
+    let text = await element.getText().catch(catcher);
+    let versionText = text.trim();
+    obj[sectionName][sectionName] = versionText;
+    let versionNumStr = versionText.replace('Generated from LOINC version', '').trim();
+    let versionNum = versionNumStr.substring(0, versionNumStr.length - 1);
+    obj.version = versionNum;
+    cb();
 };
