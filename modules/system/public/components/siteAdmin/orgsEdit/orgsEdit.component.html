@@ -13,7 +13,7 @@
             <option *ngFor="let o of orgs">{{o.name}}</option>
         </select>
     </div>
-    <button type="submit" class="btn btn-success ml-1" id="addOrg" (click)="addOrg()"
+    <button type="submit" id="addOrg" (click)="addOrg()" mat-raised-button color="primary"
             [disabled]="!newOrgForm.form.valid">Add Organization
     </button>
 </form>
@@ -61,13 +61,13 @@
                 <option></option>
                 <option *ngFor="let o of orgs">{{o.name}}</option>
             </select>
-            <i id="wgEditok" class="fa fa-check"
-               (click)="c.workingGroupOf = editWG[c.name].tempWG; updateOrg(c); editWG[c.name] = null"></i>&nbsp;&nbsp;
-            <i id="egEditCancel" class="fa fa-times" (click)="editWG[c.name] = null"></i>
+            <mat-icon id="wgEditok"
+               (click)="c.workingGroupOf = editWG[c.name].tempWG; updateOrg(c); editWG[c.name] = null">check</mat-icon>&nbsp;&nbsp;
+            <mat-icon id="egEditCancel" (click)="editWG[c.name] = null">cancel</mat-icon>
         </span>
             <span *ngIf="!editWG[c.name]">
-            <i title="Edit WG" role="link" class="fa fa-edit"
-               (click)="editWG[c.name] = {tempWG: c.workingGroupOf}"></i> {{c.workingGroupOf}}
+            <mat-icon title="Edit WG" role="link"
+               (click)="editWG[c.name] = {tempWG: c.workingGroupOf}">edit</mat-icon> {{c.workingGroupOf}}
         </span>
         </td>
         <td>

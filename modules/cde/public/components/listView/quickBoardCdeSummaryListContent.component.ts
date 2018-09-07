@@ -5,7 +5,6 @@ import { Attachment } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({
-    selector: 'cde-quick-board-cde-summary-list-content',
     templateUrl: './quickBoardCdeSummaryListContent.component.html'
 })
 export class QuickBoardCdeSummaryListContentComponent {

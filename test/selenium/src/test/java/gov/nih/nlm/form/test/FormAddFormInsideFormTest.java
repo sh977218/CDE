@@ -18,7 +18,7 @@ public class FormAddFormInsideFormTest extends QuestionTest {
         textPresent("Study ID number");
         String newFormLabel = "new inner form label";
         startEditSectionById("form_0-0");
-        clickElement(By.xpath("//*[@id='form_0-0']//*[@class='section_label']//i"));
+        clickElement(By.xpath("//*[@id='form_0-0']//*[@class='section_label']//mat-icon"));
         findElement(By.xpath("//*[@id='form_0-0']//*[@class='section_label']//input")).clear();
         findElement(By.xpath("//*[@id='form_0-0']//*[@class='section_label']//input")).sendKeys(newFormLabel);
         clickElement(By.xpath("//*[@id='form_0-0']//*[@class='section_label']//button[contains(text(),'Confirm')]"));

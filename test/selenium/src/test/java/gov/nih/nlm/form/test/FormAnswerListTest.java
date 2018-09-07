@@ -28,7 +28,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         Assert.assertEquals(lis.get(2).getText(), "×Unknown");
 
 
-        clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'answerListLabel')]//i"));
+        clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'answerListLabel')]//mat-icon"));
         clickElement(By.id("moveUp-1"));
         clickElement(By.id("saveEditAnswerBtn"));
         lis = driver.findElements(By.xpath(question_zero_answer_list_xpath));

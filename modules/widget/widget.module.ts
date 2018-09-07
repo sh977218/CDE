@@ -12,6 +12,7 @@ import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.co
 import { PlaceHoldEmptyPipe } from 'widget/pipes/placeHoldEmpty.pipe';
 import { SortableArrayComponent } from 'widget/sortableArray/sortableArray.component';
 import { TextTruncateComponent } from 'widget/text/textTruncate.component';
+import { MatIconModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -19,8 +20,8 @@ import { TextTruncateComponent } from 'widget/text/textTruncate.component';
         CommonModule,
         FormsModule,
         NgbModule.forRoot(),
-        CoreModule
-        // internal
+        CoreModule,
+        MatIconModule,
     ],
     declarations: [
         DeleteWithConfirmComponent,
