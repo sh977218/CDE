@@ -8,10 +8,10 @@ import { CdeModule } from 'cde/public/cde.module';
 import { CreateDataElementComponent } from 'cde/public/components/createDataElement.component';
 import { WidgetModule } from 'widget/widget.module';
 import { MatButtonModule, MatIconModule } from '@angular/material';
-
+import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
 
 const appRoutes: Routes = [
-    {path: '', component: CreateDataElementComponent},
+    {path: '', component: CreateDataElementComponent, canLoad: [LoggedInGuard]},
 ];
 
 @NgModule({
