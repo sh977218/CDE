@@ -6,6 +6,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 
 import { SearchPreferencesComponent } from "./components/searchPreferences/searchPreferences.component";
 import { WidgetModule } from 'widget/widget.module';
+import { MatButtonModule, MatIconModule } from '@angular/material';
 
 const appRoutes: Routes = [
     {path: '', component: SearchPreferencesComponent},
@@ -17,9 +18,9 @@ const appRoutes: Routes = [
         FormsModule,
         NgSelectModule,
         RouterModule.forChild(appRoutes),
-        // core
         WidgetModule,
-        // internal
+        MatButtonModule,
+        MatIconModule,
     ],
     declarations: [
         SearchPreferencesComponent,

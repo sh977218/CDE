@@ -13,7 +13,7 @@ public class TwoLabelsNoVersionTest extends NlmCdeBaseTest {
         goToFormByName(formName);
         goToFormDescription();
         startEditQuestionById("question_0-0");
-        clickElement(By.xpath("//*[@id='question_0-0']//i[contains(@class,'changeQuestionLabelIcon')]"));
+        clickElement(By.xpath("//*[@id='question_0-0']//mat-icon[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("No Label");
         clickElement(By.cssSelector("#q_select_name_1 button"));
         modalGone();

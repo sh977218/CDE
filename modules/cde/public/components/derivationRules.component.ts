@@ -37,6 +37,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         this.previousCdeId = this.elt._id;
         this.updateRules();
         this.findDerivationOutputs();
+        this.someCdesInvalid();
     }
 
     constructor(
@@ -117,7 +118,6 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         this.invalidCdeMessage = '';
         if (this.quickBoardService.dataElements.length === 0) {
             this.invalidCdeMessage = 'There are no CDEs in your Quick Board. Add some before you can create a rule.';
-            return true;
         }
         this.quickBoardService.dataElements.forEach((qbElt: any) => {
             if (qbElt.tinyId === this.elt.tinyId) {
@@ -138,6 +138,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
                     " has a datatype other than 'Number' and may not be added to a score";
             }
         });
+        return !!this.invalidCdeMessage.length;
     }
 
     updateRules() {

@@ -21,9 +21,9 @@ public class CdeEditTest extends NlmCdeBaseTest {
         editDefinitionByIndex(0, cdeDefinitionChange, false);
 
         goToPermissibleValues();
-        clickElement(By.xpath("//*[@id = 'uom']//i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id = 'uom']//mat-icon[. = 'edit']"));
         findElement(By.xpath("//*[@id = 'uom']//input")).sendKeys("myUom");
-        clickElement(By.xpath("//*[@id = 'uom']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id = 'uom']//button/mat-icon[. = 'check']"));
         textPresent("myUom", By.id("uom"));
 
         newCdeVersion("Change note for change number 1");

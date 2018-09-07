@@ -47,6 +47,7 @@ public class EltIdMaps {
         eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");
         eltMap.put("Neoadjuvant Therapy", "7yN4tn_EW");
         eltMap.put("Number of Pregnancies", "oW10-UFbA2c");
+        eltMap.put("Oosterhuis score", "WEoSbBfqEDx");
         eltMap.put("Other Group Patient Identifier Number", "hvsUN03ToUz");
         eltMap.put("Patient Eligibility Ind-2", "obP4FhjUQTY");
         eltMap.put("Patient Gender Code", "bzGjaFPtQCs");
@@ -74,6 +75,7 @@ public class EltIdMaps {
         eltMap.put("Target Lesion Sum Short Longest Dimension Measurement", "_6G-NPfQK0G");
         eltMap.put("Tissue Donor Genetic Testing Other Disease or Disorder Specify", "nsMXB5NdFBA");
         eltMap.put("Temperature mean daily measurement", "rErbwwAasvz");
+        eltMap.put("Temperature peak measurement value", "zXfSfKPe5Uv");
         eltMap.put("Temperature measurement", "2V9Th1t2guY");
         eltMap.put("Temperature maximum daily measurement", "hO8j7EqG61K");
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");

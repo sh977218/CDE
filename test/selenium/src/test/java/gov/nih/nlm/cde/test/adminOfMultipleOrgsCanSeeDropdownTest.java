@@ -10,7 +10,7 @@ public class adminOfMultipleOrgsCanSeeDropdownTest extends BaseClassificationTes
     public void adminOfMultipleOrgsCanSeeDropdown() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         gotoClassificationMgt();
-        clickElement(By.cssSelector(".fa-retweet"));
+        clickElement(By.xpath("//mat-icon[. = 'transform']"));
         new Select(driver.findElement(By.id("selectClassificationOrg"))).selectByVisibleText("caBIG");
         textPresent("caNanoLab");
         clickElement(By.id("cancelNewClassifyItemBtn"));
