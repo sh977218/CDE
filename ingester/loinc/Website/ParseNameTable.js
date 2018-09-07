@@ -1,8 +1,8 @@
-var async = require('async');
-var By = require('selenium-webdriver').By;
+const async = require('async');
+const By = require('selenium-webdriver').By;
 
 exports.parseNameTable = function (obj, task, element, cb) {
-    var sectionName = task.sectionName;
+    let sectionName = task.sectionName;
     obj[sectionName][sectionName] = {};
     element.findElements(By.xpath('tbody/tr')).then(function (trs) {
         async.parallel([
