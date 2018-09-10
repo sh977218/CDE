@@ -7,6 +7,7 @@ const pushNotification = require('../system/pushNotification');
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
+
     router.post('/httpLogs', roleConfig.superLog, (req, res) => {
         dbLogger.httpLogs(req.body, handleError({req, res}, result => res.send(result)));
     });
@@ -34,7 +35,6 @@ exports.module = function (roleConfig) {
         }));
     });
 
-
     router.post('/feedbackIssues', roleConfig.feedbackLog, (req, res) => {
         dbLogger.getFeedbackIssues(req.body, handleError({req, res}, result => res.send(result)));
     });
@@ -48,7 +48,25 @@ exports.module = function (roleConfig) {
         trigger.error(); // jshint ignore:line
     });
 
+    const feedbackIpTrack = {};
+    let canSubmitFeedback = function (ip) {
+        if (!feedbackIpTrack[ip]) {
+            feedbackIpTrack[ip] = Date.now();
+            return true;
+        } else {
+            let v = feedbackIpTrack[ip];
+            // wipe old date
+            Object.keys(feedbackIpTrack).forEach(k => {
+                if ((Date.now() - feedbackIpTrack[k]) > (1000 * 60)) {
+                    feedbackIpTrack[k] = undefined;
+                }
+            });
+            console.log((Date.now() - v));return (Date.now() - v) > (1000 * 60);
+        }
+    };
+
     router.post('/feedback/report', (req, res) => {
+        if (!canSubmitFeedback(req.ip)) return res.status(509).send();
         dbLogger.saveFeedback(req, () => {
             let msg = {
                 title: 'New Feedback Message\'',
@@ -78,5 +96,6 @@ exports.module = function (roleConfig) {
             res.send({});
         });
     });
+
     return router;
 };
