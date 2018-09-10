@@ -1,11 +1,11 @@
 exports.parseProperties = function (loinc) {
-    var properties = [];
+    let properties = [];
     if (loinc['RELATED NAMES']) {
-        var table = '<table class="table table-striped">';
-        var tr = '';
+        let table = '<table class="table table-striped">';
+        let tr = '';
         loinc['RELATED NAMES']['RELATED NAMES'].forEach(function (n, i) {
-            var j = i % 3;
-            var td = '<td>' + n + '</td>';
+            let j = i % 3;
+            let td = '<td>' + n + '</td>';
             if (j === 0) {
                 tr = '<tr>' + td;
             } else if (j === 1) {
@@ -19,68 +19,83 @@ exports.parseProperties = function (loinc) {
         properties.push({key: 'RELATED NAMES', value: table, source: 'LOINC', valueFormat: 'html'});
     }
     if (loinc['NAME']['NAME']['Fully-Specified Name']) {
-        var ths = '';
-        var tds = '';
+        let ths = '';
+        let tds = '';
         Object.keys(loinc['NAME']['NAME']['Fully-Specified Name']).forEach(function (key) {
-            var th = '<th>' + key + '</th>';
+            let th = '<th>' + key + '</th>';
             ths = ths + th;
-            var value = loinc['NAME']['NAME']['Fully-Specified Name'][key];
-            var td = '<td>' + value + '</td>';
+            let value = loinc['NAME']['NAME']['Fully-Specified Name'][key];
+            let td = '<td>' + value + '</td>';
             tds = tds + td;
         });
-        var table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
+        let table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
         properties.push({key: 'Fully-Specified Name', value: table, source: 'LOINC', valueFormat: 'html'});
     }
     if (loinc['BASIC ATTRIBUTES']) {
-        var ths = '';
-        var tds = '';
+        let ths = '';
+        let tds = '';
         Object.keys(loinc['BASIC ATTRIBUTES']['BASIC ATTRIBUTES']).forEach(function (key) {
-            var th = '<th>' + key + '</th>';
+            let th = '<th>' + key + '</th>';
             ths = ths + th;
-            var value = loinc['BASIC ATTRIBUTES']['BASIC ATTRIBUTES'][key];
-            var td = '<td>' + value + '</td>';
+            let value = loinc['BASIC ATTRIBUTES']['BASIC ATTRIBUTES'][key];
+            let td = '<td>' + value + '</td>';
             tds = tds + td;
         });
-        var table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
+        let table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
         properties.push({key: 'BASIC ATTRIBUTES', value: table, source: 'LOINC', valueFormat: 'html'});
-    }if (loinc['HL7 ATTRIBUTES']) {
-        var ths = '';
-        var tds = '';
+    }
+    if (loinc['HL7 ATTRIBUTES']) {
+        let ths = '';
+        let tds = '';
         Object.keys(loinc['HL7 ATTRIBUTES']['HL7 ATTRIBUTES']).forEach(function (key) {
-            var th = '<th>' + key + '</th>';
+            let th = '<th>' + key + '</th>';
             ths = ths + th;
-            var value = loinc['HL7 ATTRIBUTES']['HL7 ATTRIBUTES'][key];
-            var td = '<td>' + value + '</td>';
+            let value = loinc['HL7 ATTRIBUTES']['HL7 ATTRIBUTES'][key];
+            let td = '<td>' + value + '</td>';
             tds = tds + td;
         });
-        var table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
+        let table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
         properties.push({key: 'HL7 ATTRIBUTES', value: table, source: 'LOINC', valueFormat: 'html'});
     }
     if (loinc['EXAMPLE UNITS']) {
-        var trs = '<tr><th>Source Type</th><th>Unit</th></tr>';
+        let trs = '<tr><th>Source Type</th><th>Unit</th></tr>';
         loinc['EXAMPLE UNITS']['EXAMPLE UNITS'].forEach(function (eu) {
             trs = trs + '<tr><td>' + eu['Source Type'] + '</td><td>' + eu['Unit'] + '</td></tr>';
         });
-        var table = '<table class="table table-striped">' + trs + '</table>';
+        let table = '<table class="table table-striped">' + trs + '</table>';
         properties.push({key: 'EXAMPLE UNITS', value: table, source: 'LOINC', valueFormat: 'html'});
     }
     if (loinc['COPYRIGHT']) {
-        var ths = '';
-        var tds = '';
+        let ths = '';
+        let tds = '';
         Object.keys(loinc['COPYRIGHT']['COPYRIGHT']).forEach(function (key) {
-            var th = '<th>' + key + '</th>';
+            let th = '<th>' + key + '</th>';
             ths = ths + th;
-            var value = loinc['COPYRIGHT']['COPYRIGHT'][key];
-            var td = '<td>' + value + '</td>';
+            let value = loinc['COPYRIGHT']['COPYRIGHT'][key];
+            let td = '<td>' + value + '</td>';
             tds = tds + td;
         });
-        var table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
+        let table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
         properties.push({key: 'BASIC ATTRIBUTES', value: table, source: 'LOINC', valueFormat: 'html'});
     }
     if (loinc['COPYRIGHT TEXT']) {
         properties.push({
             key: 'LOINC_Copyright',
             value: loinc['COPYRIGHT TEXT']['COPYRIGHT TEXT'],
+            source: 'LOINC'
+        })
+    }
+    if (loinc['COPYRIGHT NOTICE']) {
+        properties.push({
+            key: 'LOINC_Copyright_Notice',
+            value: loinc['COPYRIGHT NOTICE'],
+            source: 'LOINC'
+        })
+    }
+    if (loinc['3rd PARTY COPYRIGHT']) {
+        properties.push({
+            key: 'LOINC_3rd_Party_Copyright',
+            value: loinc['3rd PARTY COPYRIGHT'],
             source: 'LOINC'
         })
     }

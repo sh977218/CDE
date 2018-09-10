@@ -10,14 +10,20 @@ exports.parseFormElements = function (loinc) {
         let elements = loinc['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'];
         console.log('Form ' + loinc['loincId'] + ' has ' + elements.length + ' elements to process.');
         if (!elements || elements.length === 0) resolve();
-        formElements.push({
-            elementType: 'section',
-            label: '',
-            instructions: {
-                value: ""
-            },
-            formElements: []
-        });
+        let tempFormElements = formElements;
+        let needOuterSection = elements.filter(element => element.elements.length > 0).length === 0;
+        if (needOuterSection) {
+            formElements.push({
+                elementType: 'section',
+                label: '',
+                instructions: {
+                    value: ""
+                },
+                formElements: []
+            });
+            tempFormElements = formElements[0].formElements;
+        }
+
         for (let element of elements) {
             let isElementForm = element.elements.length > 0;
             let f = loadCde;
@@ -25,7 +31,7 @@ exports.parseFormElements = function (loinc) {
             let formElement = await f(element).catch(e => {
                 reject(e);
             });
-            formElements.push(formElement);
+            tempFormElements.push(formElement);
         }
         resolve(formElements);
     })

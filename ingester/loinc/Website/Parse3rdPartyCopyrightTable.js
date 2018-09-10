@@ -3,7 +3,7 @@ const By = require('selenium-webdriver').By;
 
 exports.parse3rdPartyCopyrightTable = function (obj, task, element, cb) {
     let sectionName = task.sectionName;
-    obj[sectionName] = {};
+    let thirdPartyCopyrightNotice = '';
     element.findElements(By.xpath('tbody/tr')).then(function (trs) {
         trs.shift();
         trs.pop();
@@ -11,20 +11,21 @@ exports.parse3rdPartyCopyrightTable = function (obj, task, element, cb) {
             consolog(obj.loincId + ' has odd 3rd party copyright');
             process.exit(1);
         }
-        async.forEachSeries([
+        async.series([
             function (doneOne) {
                 trs[0].getText().then(function (text) {
-                    obj[sectionName].codeSystem = text;
+                    thirdPartyCopyrightNotice = thirdPartyCopyrightNotice + text;
                     doneOne();
                 })
             },
             function (doneOne) {
                 trs[1].getText().then(function (text) {
-                    obj[sectionName].text = text;
+                    thirdPartyCopyrightNotice = thirdPartyCopyrightNotice + text;
                     doneOne();
                 })
             }
         ], function () {
+            obj[sectionName] = thirdPartyCopyrightNotice;
             cb();
         })
     });

@@ -50,13 +50,11 @@ const tasks = [
         function: ParseNameTable.parseNameTable,
         xpath: 'html/body/div/table[.//th[text()="NAME"]]'
     },
-/*
     {
         sectionName: 'COPYRIGHT NOTICE',
         function: ParseCopyrightNotice.parseCopyrightNotice,
         xpath: 'html/body/div/table[.//tr[contains(.,"NOTICE") and contains(.,"COPYRIGHT")]]'
     },
-*/
     {
         sectionName: 'PART DEFINITION/DESCRIPTION(S)',
         function: ParseDefinitionDescriptionsTable.parseDefinitionDescriptionsTable,
@@ -111,13 +109,11 @@ const tasks = [
         function: ParseExampleUnitsTable.parseExampleUnitsTable,
         xpath: 'html/body/div/table[.//th[text()="EXAMPLE UNITS"]]'
     },
-/*
     {
         sectionName: '3rd PARTY COPYRIGHT',
         function: Parse3rdPartyCopyrightTable.parse3rdPartyCopyrightTable,
         xpath: '/html/body/div/table[.//th[text()="3rd PARTY COPYRIGHT"]]'
     },
-*/
     {
         sectionName: 'COPYRIGHT',
         function: ParseCopyrightTable.parseCopyrightTable,
