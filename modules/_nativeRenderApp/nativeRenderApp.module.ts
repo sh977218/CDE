@@ -6,8 +6,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { NativeRenderAppComponent } from '_nativeRenderApp/nativeRenderApp.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-import { ScoreService } from 'nativeRender/score.service';
-
 
 @NgModule({
     imports: [
@@ -27,9 +25,7 @@ import { ScoreService } from 'nativeRender/score.service';
         NativeRenderAppComponent,
     ],
     exports: [],
-    providers: [
-        ScoreService
-    ],
+    providers: [],
     bootstrap: [NativeRenderAppComponent]
 })
 export class NativeRenderAppModule {

@@ -1,17 +1,14 @@
 import { Injectable } from '@angular/core';
-import { findQuestionByTinyId, getFormScoreQuestion } from '../../shared/form/fe';
-import { FormQuestion } from '../../shared/form/form.model';
-import async_series from 'async/series';
+import { findQuestionByTinyId, getFormScoreQuestion } from 'shared/form/fe';
+import { FormQuestion } from 'shared/form/form.model';
 import { HttpClient } from '@angular/common/http';
-import { AlertService } from '_app/alert.service';
 
 @Injectable()
 export class ScoreService {
     INPUT_SCORE_MAP = new Map<string, [Object]>();
     elt;
 
-    constructor(private http: HttpClient,
-                private alert: AlertService) {
+    constructor(private http: HttpClient) {
     }
 
     register(elt) {
