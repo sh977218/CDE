@@ -57,7 +57,7 @@ public class AddReviewerToBoardTest extends BoardTest {
         logout();
         mustBeLoggedInAs(boardUser, password);
         goToBoard(boardName);
-        Assert.assertEquals(findElement(By.id("reviewer_nlm_status")).getAttribute("class").contains("green-icon"), true);
-        Assert.assertEquals(findElement(By.id("reviewer_ninds_status")).getAttribute("class").contains("red-icon"), true);
+        Assert.assertEquals(findElement(By.id("reviewer_nlm_status")).getAttribute("class").contains("text-success"), true);
+        Assert.assertEquals(findElement(By.id("reviewer_ninds_status")).getAttribute("class").contains("text-danger"), true);
     }
 }
