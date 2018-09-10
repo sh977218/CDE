@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const config = require('../system/parseConfig');
+const config = require('config');
 
 let schemas = {};
 
