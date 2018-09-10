@@ -8,6 +8,7 @@ import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
 import { OrgCuratorGuard } from '_app/routerGuard/orgCuratorGuard';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { IdentifierSourcesResolve } from 'system/public/components/searchPreferences/identifier-source.resolve.service';
+import { IEGuard } from '_app/routerGuard/ieGuard';
 
 const appRoutes: Routes = [
     {path: 'api', loadChildren: 'system/public/documentApi.module#DocumentApiModule'},
@@ -25,7 +26,7 @@ const appRoutes: Routes = [
     {path: 'formView', loadChildren: 'form/public/formView.module#FormViewModule'},
     {path: 'form', redirectTo: '/form/search', pathMatch: 'full'},
     {path: 'inbox', loadChildren: 'system/public/inbox.module#InboxModule', canLoad: [LoggedInGuard]},
-    {path: 'login', loadChildren: 'system/public/login.module#LoginModule'},
+    {path: 'login', loadChildren: 'system/public/login.module#LoginModule', canLoad: [IEGuard]},
     {path: 'myboards', loadChildren: 'board/public/myBoards.module#MyBoardsModule'},
     {path: 'orgaccountmanagement', loadChildren: 'system/public/orgManagement.module#OrgManagementModule', canLoad: [OrgAdminGuard]},
     {path: 'orgAuthority', loadChildren: 'system/public/orgAuthority.module#OrgAuthorityModule', canLoad: [OrgAuthorityGuard]},
@@ -57,6 +58,7 @@ const appRoutes: Routes = [
     ],
     providers: [
         IdentifierSourcesResolve,
+        IEGuard,
         LoggedInGuard,
         OrgAdminGuard,
         OrgAuthorityGuard,
