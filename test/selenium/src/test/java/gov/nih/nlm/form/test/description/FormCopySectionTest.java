@@ -15,7 +15,7 @@ public class FormCopySectionTest extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_username);
         goToFormByName(form1);
         goToFormDescription();
-        clickElement(By.xpath("//*[@id='section_1']//mat-icon[. = 'content_copy]"));
+        clickElement(By.xpath("//*[@id='section_1']//mat-icon[. = 'content_copy']"));
         ((JavascriptExecutor) driver).executeScript("window.open()");
         hangon(5);
         switchTabAndClose(1);
