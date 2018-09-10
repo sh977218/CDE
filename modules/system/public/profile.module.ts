@@ -11,6 +11,7 @@ import { WidgetModule } from 'widget/widget.module';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { BoardModule } from 'board/public/board.module';
 import { DraftsListMyComponent } from "./components/draftsList/draftsListMy.component";
+import { MatButtonModule, MatIconModule } from '@angular/material';
 
 const appRoutes: Routes = [
     {path: '', component: ProfileComponent},
@@ -27,7 +28,9 @@ const appRoutes: Routes = [
         CdeSearchModule,
         FormSearchModule,
         SearchModule,
-        BoardModule
+        BoardModule,
+        MatIconModule,
+        MatButtonModule,
     ],
     declarations: [
         ProfileComponent,

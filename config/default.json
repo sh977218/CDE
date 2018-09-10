@@ -89,11 +89,6 @@
         "ssl": false
       },
       "cappedCollectionSizeMB": 262144000
-    },
-    "migration": {
-      "db": "migration",
-      "username": "miguser",
-      "password": "password"
     }
   },
   "node": {
@@ -133,32 +128,21 @@
     }
   },
   "account": "CDE Account <cdeuser@nlm.nih.gov>",
+  "inactivityTimeout": 3600000,
   "maxLogsPerMinute": 1000,
   "maxPin": 500,
   "userAlertTime": 5000,
   "expressToStdout": false,
   "logBufferSize": 1000,
   "viewsIncrementThreshold": 3,
-  "versionCheckIntervalInSeconds": 60,
-  "webtrends": false,
   "antivirus": {
     "ip": "127.0.0.1",
     "port": 3310
-  },
-  "pm": {
-    "port": 3081,
-    "tempDir": "/tmp/",
-    "extractDir": ".."
   },
   "pmRunOnStartup": [],
   "multer": {
     "inMemory": true
   },
-  "prodDump": {
-    "enabled": true,
-    "url": "https://local-cde-1.nlm.nih.gov/cde/public/assets/dailyDump.tz"
-  },
-  "pmNodeProcess": "node",
   "captchaCode": "Override actual here.",
   "siteKey": "6LdAmh4TAAAAABf_PCxKsd4ikR-S5pSSa25PGqUV",
   "useCaptcha": true,

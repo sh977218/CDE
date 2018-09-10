@@ -40,7 +40,7 @@
                     <ng-template ngbTabContent>
                         <div *ngIf="orgs?.length === 0">
                             <h1 class="pl130">
-                                <i class="fa fa-spinner fa-pulse"></i> Searching...
+                                <mat-icon class="spin">auto_renew</mat-icon> Searching...
                             </h1>
                         </div>
                         <div class="row">
@@ -59,8 +59,8 @@
                                     <div *ngIf="org.uri"><a href="{{org.uri}}" target="_blank" rel="noopener">Source</a>
                                     </div>
                                 </fieldset>
-                                <i class="fa fa-info welcomeDetailIcon hand-cursor" *ngIf="org.htmlOverview"
-                                   id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org)"></i>
+                                <mat-icon class="welcomeDetailIcon hand-cursor" *ngIf="org.htmlOverview"
+                                   id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org)">help_outline</mat-icon>
                             </div>
                         </div>
                     </ng-template>
@@ -120,7 +120,7 @@
              id="searchBarContent" role="group" aria-label="Basic example">
             <button mat-raised-button *ngIf="embedded" id="resetSearch" class="mr-1" name="resetSearch"
                     type="button" (click)="reset()">
-                <i class="fa fa-trash-o"></i> Reset
+                <mat-icon>delete_outline</mat-icon> Reset
             </button>
             <button id="pinAll" (click)="openPinModal()" class="mx-1" mat-raised-button
                     [hidden]="totalItems <= 0 || module === 'form'" *ngIf="!embedded">
@@ -160,50 +160,49 @@
         <span id="term_crumb">
             <span *ngIf="!searchedTerm" class="badge badge-secondary mx-1">All Terms</span>
             <span *ngIf="searchedTerm" class="badge badge-success mx-1">{{searchedTerm}}
-                <i id="removeTerm" class="fa fa-times hand-cursor dark-icon pl-1"
+                <mat-icon id="removeTerm" class="remove-filter hand-cursor dark-icon pl-1"
                    ngbTooltip="Remove this search term filter" placement="right" container="body"
-                   (click)="searchSettings.q = ''; doSearch()"></i>
+                   (click)="searchSettings.q = ''; doSearch()">cancel</mat-icon>
             </span>
         </span>
         <span id="classif_filter">
             <span *ngIf="!hasSelectedClassifications()" class="badge badge-secondary mx-1">
                 All Classifications</span>
             <span *ngIf="hasSelectedClassifications()" class="badge badge-success mx-1">{{getSelectedClassifications()}}
-                <i id="removeClassifications" class="fa fa-times hand-cursor dark-icon pl-1"
+                <mat-icon id="removeClassifications" class="remove-filter hand-cursor dark-icon pl-1"
                    ngbTooltip="Remove this classification filter" placement="right" container="body"
-                   (click)="clearSelectedClassifications()"></i>
+                   (click)="clearSelectedClassifications()">cancel</mat-icon>
             </span>
         </span>
         <span *ngIf="altClassificationFilterMode" id="classifAlt_filter">and
             <span class="badge badge-success">{{getSelectedClassificationsAlt()}}
-                <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl-1"
+                <mat-icon id="removeAltClassificationFilterMode" class="remove-filter hand-cursor dark-icon pl-1"
                    (click)="clearSelectedClassificationsAlt()"
-                   ngbTooltip="Remove this classifications filter" placement="right" container="body">
-                </i>
+                   ngbTooltip="Remove this classifications filter" placement="right" container="body">cancel</mat-icon>
             </span>
         </span>
         <span id="topic_crumb">
             <span *ngIf="!hasSelectedTopics()" class="badge badge-secondary mx-1">All Topics</span>
             <span *ngIf="hasSelectedTopics()" class="badge badge-success mx-1">{{getSelectedTopics()}}
-                <i id="removeTopics" class="fa fa-times hand-cursor dark-icon pl-1"
+                <mat-icon id="removeTopics" class="remove-filter hand-cursor dark-icon pl-1"
                    ngbTooltip="Remove this topics filter" placement="right" container="body"
-                   (click)="clearSelectedTopics()"></i>
+                   (click)="clearSelectedTopics()"></mat-icon>
             </span>
         </span>
         <span id="status_crumb">
             <span *ngIf="!hasSelectedStatuses()" class="badge badge-secondary mx-1">All Statuses</span>
             <span *ngIf="hasSelectedStatuses()" class="badge badge-success mx-1">{{getSelectedStatuses()}}
-                <i id="removeStatuses" class="fa fa-times hand-cursor dark-icon pl-1"
+                <mat-icon id="removeStatuses" class="remove-filter hand-cursor dark-icon pl-1"
                    ngbTooltip="Remove this registration statuses filter" placement="right" container="body"
-                   (click)="clearSelectedStatuses()"></i>
+                   (click)="clearSelectedStatuses()">cancel</mat-icon>
             </span>
         </span>
         <span *ngIf="module === 'cde'" id="datatype_crumb">|
             <span *ngIf="!hasSelectedDatatypes()" class="badge badge-secondary mx-1">All Datatypes</span>
             <span *ngIf="hasSelectedDatatypes()" class="badge badge-success mx-1">{{getSelectedDatatypes()}}
-                <i id="removeDatatypes" class="fa fa-times hand-cursor dark-icon pl-1"
+                <mat-icon id="removeDatatypes" class="remove-filter hand-cursor dark-icon pl-1"
                    (click)="clearSelectedDatatypes()"
-                   ngbTooltip="Remove this datatypes filter" placement="right" container="body"></i>
+                   ngbTooltip="Remove this datatypes filter" placement="right" container="body">cancel</mat-icon>
             </span>
         </span>
         <small> ({{took / 1000}} secs)</small>
@@ -231,7 +230,7 @@
                                      id="classif-{{t.key}}" class="treeParent hand-cursor"
                                      (click)="alterOrgFilter(t.key)" role="link"
                                      [ngbTooltip]="t.longName" placement="right" container="body">
-                                    <i class="treeItemIcon fa fa-angle-left"></i>
+                                    <mat-icon class="treeItemIcon">keyboard_arrow_left</mat-icon>
                                     <a class="treeItemText"> {{t.key}}</a>
                                 </div>
                                 <ng-template #classifSelf>
@@ -244,7 +243,7 @@
                         <ng-template #classifOrg>
                             <div id="classif-{{t.key}}" class="treeChild hand-cursor" (click)="alterOrgFilter(t.key)"
                                  role="link" [ngbTooltip]="t.longName" placement="right" container="body">
-                                <i class="treeItemIcon fa fa-angle-right"></i>
+                                <mat-icon class="treeItemIcon">keyboard_arrow_right</mat-icon>
                                 <a class="treeItemText">{{t.key}} (<span
                                         id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)</a>
                             </div>
@@ -253,7 +252,7 @@
                     <ng-container *ngFor="let e of getCurrentSelectedClassification(); index as i; last as isLast">
                         <div *ngIf="!isLast; else classifSelf2" id="classif-{{e}}" class="treeParent hand-cursor"
                              (click)="selectElement(e)" role="link">
-                            <i class="fa fa-angle-left treeItemIcon"></i>
+                            <mat-icon class="treeItemIcon">keyboard_arrow_left</mat-icon>
                             <a class="treeItemText"> {{e}}</a>
                         </div>
                         <ng-template #classifSelf2>
@@ -266,7 +265,7 @@
                          id="classif-{{b.name}}" class="treeChild hand-cursor"
                          [class.treeItem]="getCurrentSelectedClassification().length"
                          (click)="selectElement(b.name)" role="link">
-                        <i class="treeItemIcon fa fa-angle-right"></i>
+                        <mat-icon class="treeItemIcon">keyboard_arrow_right</mat-icon>
                         <a class="treeItemText">{{b.name}} (<span
                                 id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)</a>
                     </div>
@@ -291,7 +290,7 @@
                          id="topic-{{b.name}}" class="treeChild hand-cursor"
                          [class.treeItem]="getCurrentSelectedTopic().length > 1"
                          (click)="selectTopic(b.name)" role="link">
-                        <i class="treeItemIcon fa fa-angle-right"></i>
+                        <mat-icon class="treeItemIcon">keyboard_arrow_right</mat-icon>
                         <a class="treeItemText">{{b.name}} (<span
                                 id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)</a>
                     </div>
@@ -305,28 +304,28 @@
                              [ngbTooltip]="getRegStatusHelp(t.key)" placement="right" container="body">
                             <ng-container
                                     *ngIf="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1; else else06">
-                                <i class="treeItemIcon treeItemIconSelected fa fa-check-square-o"></i>
+                                <mat-icon class="filter-cb">check_box</mat-icon>
                             </ng-container>
                             <ng-template #else06>
-                                <i class="treeItemIcon fa fa-square-o"></i>
+                                <mat-icon class="filter-cb">check_box_outline_blank</mat-icon>
                             </ng-template>
                             <a class="treeItemText">{{t.key}} ({{t.doc_count}})</a>
                         </div>
                     </ng-container>
                 </div>
                 <!--DATA TYPE AGGREGATION-->
-                <div *ngIf="module === 'cde' && aggregations.datatype.datatype.buckets.length" id="datatypeListHolder"
-                     class="my-3">
+                <div *ngIf="module === 'cde' && aggregations.datatype.datatype.buckets.length"
+                     id="datatypeListHolder" class="my-3">
                     <span class="treeTitle">Data Types</span>
                     <ng-container *ngFor="let t of aggregations.datatype.datatype.buckets">
                         <div *ngIf="t.doc_count > 0" id="datatype-{{t.key}}" class="treeItem hand-cursor"
                              (click)="addDatatypeFilter(t.key)" role="link">
                             <ng-container
                                     *ngIf="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1; else else07">
-                                <i class="treeItemIcon treeItemIconSelected fa fa-check-square-o"></i>
+                                <mat-icon class="filter-cb">check_box</mat-icon>
                             </ng-container>
                             <ng-template #else07>
-                                <i class="treeItemIcon fa fa-square-o"></i>
+                                <mat-icon class="filter-cb">check_box_outline_blank</mat-icon>
                             </ng-template>
                             <a class="treeItemText">{{t.key}} ({{t.doc_count}})</a>
                         </div>
@@ -337,8 +336,8 @@
             <div id="resultList" [ngClass]="filterMode?'col-12 col-sm-10':'col-12'" class="px-1">
                 <div id="resultListTour"></div>
                 <span [hidden]="elts.length >= 0" class="h1 pl130">
-                    <i class="fa fa-spinner fa-pulse"></i>Searching...</span>
-                <span [hidden]="elts.length !== 0" class="h4"><i class="fa fa-frown-o"></i>
+                    <mat-icon class="spin">auto_renew</mat-icon>Searching...</span>
+                <span [hidden]="elts.length !== 0" class="h4"><mat-icon>sentiment_very_dissatisfied</mat-icon>
                     No results were found. Try other criterias or selecting more statuses</span>
                 <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
                                (add)="add.emit($event)"></cde-list-view>

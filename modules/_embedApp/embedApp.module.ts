@@ -8,13 +8,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LocalStorageModule } from 'angular-2-local-storage';
 
 import { ElasticService } from '_app/elastic.service';
-import { UserService } from '_app/user.service';
+import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
 import { CommonAppModule } from '_commonApp/commonApp.module';
 import { EmbedAppComponent } from '_embedApp/embedApp.component';
 import { EmbeddedCdeSearchResultComponent } from '_embedApp/searchResults/embeddedCdeSearchResult.component';
 import { EmbeddedFormSearchResultComponent } from '_embedApp/searchResults/embeddedFormSearchResult.component';
 import { CoreModule } from 'core/core.module';
 import { OrgHelperService } from 'core/orgHelper.service';
+import { MatButtonModule, MatDialogModule } from '@angular/material';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { OrgHelperService } from 'core/orgHelper.service';
         EmbedAppComponent,
         EmbeddedCdeSearchResultComponent,
         EmbeddedFormSearchResultComponent,
+        InactivityLoggedOutComponent,
     ],
     providers: [
         ElasticService,
@@ -41,6 +43,11 @@ import { OrgHelperService } from 'core/orgHelper.service';
         BrowserAnimationsModule,
         NgbModule.forRoot(),
         CommonAppModule,
+        MatButtonModule,
+        MatDialogModule,
+    ],
+    entryComponents: [
+        InactivityLoggedOutComponent
     ],
     exports: [
     ],

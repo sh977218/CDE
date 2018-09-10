@@ -1,6 +1,6 @@
 <div>
     <div *ngIf="!editMode">
-        <i *ngIf="isAllowed" title="Edit" role="link" class="fa fa-edit" (click)="edit();"></i>
+        <mat-icon *ngIf="isAllowed" title="Edit" (click)="edit()">edit</mat-icon>
         <span>{{value}}</span>
     </div>
     <div *ngIf="editMode">
@@ -9,7 +9,7 @@
                 {{selectOption}}
             </option>
         </select>
-        <button type="button" class="fa fa-check" (click)="confirmSave()">Confirm</button>
-        <button type="button" class="fa fa-times" (click)="discard()"> Discard</button>
+        <button (click)="confirmSave()" type="button"><mat-icon>check</mat-icon>Confirm</button>
+        <button (click)="discard()" type="button"><mat-icon>cancel</mat-icon>Discard</button>
     </div>
 </div>

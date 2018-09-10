@@ -10,7 +10,7 @@
     <div class="boxed-div overflowHidden">
         <h4 id="org-{{selectedOrg.name}}">{{selectedOrg.name}}
             <a title="Add Child Classification" (click)="openAddChildClassificationModal(null);">
-                <i *ngIf="isOrgAdmin()" id="addClassification" class="fa fa-share fa-rotate-180"></i>
+                <mat-icon *ngIf="isOrgAdmin()" id="addClassification">subdirectory_arrow_left</mat-icon>
             </a>
         </h4>
         <ng-container *ngFor="let selectedOrgIter of [selectedOrg]">
@@ -20,15 +20,15 @@
                        target="_blank">{{ node.data.name }}</a>
                     <ng-container *ngIf="isOrgAdmin()">
                         <a title="Edit" (click)="openRenameClassificationModal(node);">
-                            <i class="fa fa-pencil"></i></a>
+                            <mat-icon>edit</mat-icon></a>
                         <a title="Remove" (click)="openDeleteClassificationModal(node);">
-                            <i class="fa fa-trash-o"></i></a>
+                            <mat-icon>delete_outline</mat-icon></a>
                         <a title="Reclassify" (click)="openReclassificationModal(node);">
-                            <i class="fa fa-retweet"></i></a>
+                            <mat-icon>transform</mat-icon></a>
                         <a title="Add Child Classification" (click)="openAddChildClassificationModal(node);">
-                            <i class="fa fa-share fa-rotate-180"></i></a>
+                            <mat-icon>subdirectory_arrow_left</mat-icon></a>
                         <a title="Mesh Mapping" (click)="openMapClassificationMeshModal(node);">
-                            <i class="fa fa-link"></i></a>
+                            <mat-icon>link</mat-icon></a>
                     </ng-container>
                 </ng-template>
                 <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
@@ -145,7 +145,7 @@
             </div>
 
             <div *ngFor="let desc of mapping.meshDescriptors;let i=index;">
-                <a (click)="removeDescriptor(i)" class="fa fa-trash" title="remove"></a>
+                <mat-icon (click)="removeDescriptor(i)" class="fake-link" title="remove">delete_outline</mat-icon>
                 {{desc}} -{{descToName[desc]}}
             </div>
 
