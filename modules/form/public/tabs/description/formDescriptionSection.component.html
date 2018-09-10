@@ -33,8 +33,8 @@
                [queryParams]="{tinyId: section.inForm.form.tinyId, version: section.inForm.form.version}">
                 <mat-icon>visibility</mat-icon> View Form
             </a>
-            <mat-icon *ngIf="section.elementType === 'section'" class="copySection" title="Copy section"
-               (click)="copySection(section)">file_copy</mat-icon>
+            <mat-icon *ngIf="section.elementType === 'section'" title="Copy section"
+               (click)="copySection(section)">content_copy</mat-icon>
             <cde-delete-with-confirm (deleted)="removeNode(node)"></cde-delete-with-confirm>
         </div>
     </div>

@@ -15,6 +15,7 @@
                          id="rule_{{statusName}}_{{i}}">
                         <mat-icon *ngIf="cdePassingRule(elt, rule)" class="text-success">check</mat-icon>
                         <mat-icon *ngIf="!cdePassingRule(elt, rule)" class="text-success">cancel</mat-icon>
+                        {{rule.ruleName}}
                     </div>
                 </div>
                 <hr>

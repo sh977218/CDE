@@ -304,6 +304,14 @@ nih-cde:empty + .loading {
     max-height: 200px;
 }
 
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
+}
+
 @-webkit-keyframes wrench {
     0% {
         -webkit-transform: rotate(-12deg);
