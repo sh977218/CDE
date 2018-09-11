@@ -1,7 +1,7 @@
 const config = require('config');
 const fs = require('fs');
 
-let databaseNames = ['log', 'appData', 'migration'];
+let databaseNames = ['log', 'appData'];
 
 databaseNames.forEach(databaseName => {
     let database = config.database[databaseName];
