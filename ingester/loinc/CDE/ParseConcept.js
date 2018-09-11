@@ -1,6 +1,7 @@
-var CONCEPT_TYPE_MAP = require('../Mapping/LOINC_CONCEPT_TYPE_MAP').map;
+const CONCEPT_TYPE_MAP = require('../Mapping/LOINC_CONCEPT_TYPE_MAP').map;
+
 exports.parseConcepts = function (loinc) {
-    var concepts = {objectClass: [], property: [], dataElementConcept: []};
+    let concepts = {objectClass: [], property: [], dataElementConcept: []};
     if (loinc['PARTS']) {
         loinc['PARTS']['PARTS'].forEach(function (p) {
             concepts[CONCEPT_TYPE_MAP[p['Part Type'].trim()]].push({

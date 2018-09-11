@@ -6,8 +6,7 @@ let cde_schemas = require('../server/cde/schemas');
 let form_schemas = require('../server/form/schemas');
 let sharedSchemas = require('../server/system/schemas.js');
 
-let mongoMigrationUri = config.mongoMigrationUri;
-let migrationConn = mongoose.createConnection(mongoMigrationUri);
+let migrationConn = mongoose.createConnection(config.database.migration.uri);
 migrationConn.once('open', function callback() {
     console.log('mongodb ' + config.database.migration.db + ' connection open');
 });
@@ -15,89 +14,108 @@ migrationConn.once('open', function callback() {
 // LOINC
 exports.MigrationLoincModel = migrationConn.model('MigrationLoinc', new Schema({}, {
     strict: false,
-    collection: 'loinc'
+    collection: 'loinc',
+    usePushEach: true
 }));
 exports.MigrationLoincClassificationMappingModel = migrationConn.model('MigrationLoincClassificationMapping', new Schema({}, {
     strict: false,
-    collection: 'LoincClassificationMapping'
+    collection: 'LoincClassificationMapping',
+    usePushEach: true
 }));
 exports.MigrationLoincScaleMappingModel = migrationConn.model('MigrationLoincScaleMapping', new Schema({}, {
     strict: false,
-    collection: 'LoincScaleMapping'
+    collection: 'LoincScaleMapping',
+    usePushEach: true
 }));
 
 
 // NINDS
 exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new Schema({}, {
     strict: false,
-    collection: 'ninds'
+    collection: 'ninds',
+    usePushEach: true
 }));
 
 // NCI
 exports.MigrationNCIFormXmlModel = migrationConn.model('MigrationNCIFormXml', new Schema({}, {
     strict: false,
-    collection: 'nciFormXml'
+    collection: 'nciFormXml',
+    usePushEach: true
 }));
 exports.MigrationNCICdeXmlModel = migrationConn.model('MigrationNCICdeXml', new Schema({}, {
     strict: false,
-    collection: 'nciCdeXml'
+    collection: 'nciCdeXml',
+    usePushEach: true
 }));
 
 // EYE GENE
 exports.MigrationEyeGENELoincModel = migrationConn.model('EyeGENE_LOINC', new Schema({}, {
     strict: false,
-    collection: 'EyeGENE_LOINC'
+    collection: 'EyeGENE_LOINC',
+    usePushEach: true
 }));
 exports.MigrationEyeGENEAnswerListModel = migrationConn.model('EyeGENE_AnswerList', new Schema({}, {
     strict: false,
-    collection: 'EyeGENE_AnswerList'
+    collection: 'EyeGENE_AnswerList',
+    usePushEach: true
 }));
 
 //NEW BORN SCREENING
 exports.MigrationNewbornScreeningCDEModel = migrationConn.model('NewbornScreening_CDE', new Schema({}, {
     strict: false,
-    collection: 'NewbornScreening_CDE'
+    collection: 'NewbornScreening_CDE',
+    usePushEach: true
 }));
 exports.MigrationNewBornScreeningFormModel = migrationConn.model('NewbornScreening_Form', new Schema({}, {
     strict: false,
-    collection: 'NewbornScreening_Form'
+    collection: 'NewbornScreening_Form',
+    usePushEach: true
 }));
 exports.MigrationNewBornScreeningAnswerListModel = migrationConn.model('NewbornScreening_AnswerList', new Schema({}, {
     strict: false,
-    collection: 'NewbornScreening_AnswerList'
+    collection: 'NewbornScreening_AnswerList',
+    usePushEach: true
 }));
 
 // MIGRATION
 exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', new Schema(cde_schemas.deJson, {
-    collection: 'dataelements'
+    collection: 'dataelements',
+    usePushEach: true
 }));
 exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(form_schemas.formJson, {
-    collection: 'forms'
+    collection: 'forms',
+    usePushEach: true
 }));
 exports.MigrationOrgModel = migrationConn.model('MigrationOrg', new Schema(sharedSchemas.orgJson, {
-    collection: 'orgs'
+    collection: 'orgs',
+    usePushEach: true
 }));
 
 // PHENX
 exports.MigrationMeasureModel = migrationConn.model('MigrationMeasure', new Schema({}, {
     strict: false,
-    collection: 'Measure'
+    collection: 'Measure',
+    usePushEach: true
 }));
 exports.MigrationProtocolModel = migrationConn.model('MigrationProtocol', new Schema({}, {
     strict: false,
-    collection: 'Protocol'
+    collection: 'Protocol',
+    usePushEach: true
 }));
 exports.MigrationCacheModel = migrationConn.model('MigrationCache', new Schema({}, {
     strict: false,
-    collection: 'Cache'
+    collection: 'Cache',
+    usePushEach: true
 }));
 exports.MigrationPhenxRedcapModel = migrationConn.model('MigrationPhenxRedcapModel', new Schema({}, {
     strict: false,
-    collection: 'PhenxRedcap'
+    collection: 'PhenxRedcap',
+    usePushEach: true
 }));
 exports.MigrationRedcapModel = migrationConn.model('MigrationRedcapModel', new Schema({}, {
     strict: false,
-    collection: 'Redcap'
+    collection: 'Redcap',
+    usePushEach: true
 }));
 exports.PhenxURL = "https://www.phenxtoolkit.org/index.php?pageLink=browse.measures&tree=off";
 exports.PHENX_ZIP_BASE_FOLDER = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/all';
@@ -106,9 +124,11 @@ exports.PHENX_ZIP_BASE_FOLDER = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_c
 // MIGRATION REFERENCE COLLECTION
 exports.MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new Schema({}, {
     strict: false,
-    collection: 'PhenxToLoincMapping'
+    collection: 'PhenxToLoincMapping',
+    usePushEach: true
 }));
 exports.MigrationVariableCrossReferenceModel = migrationConn.model('MigrationVariableCrossReference', new Schema({}, {
     strict: false,
-    collection: 'VariableCrossReference'
+    collection: 'VariableCrossReference',
+    usePushEach: true
 }));
