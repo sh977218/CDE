@@ -30,11 +30,6 @@ export class UcumService {
     constructor(private http: HttpClient) {
     }
 
-    // cb(error, number)
-    convertUnits(value: number, fromUnit: string, toUnit: string, cb) {
-        this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit) + '&to='
-            + encodeURIComponent(toUnit)).subscribe(v => cb(undefined, v), e => cb(e));
-    }
 
     // cb(names)
     getUnitNames(uom: string, cb) {
