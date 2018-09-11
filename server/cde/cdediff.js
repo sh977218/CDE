@@ -1,10 +1,9 @@
-var deepDiff = require('deep-diff')
-;
+const deepDiff = require('deep-diff');
 
 exports.diff = function (newCde, oldCde) {
-    var newCdeObj = newCde.toObject ? newCde.toObject() : newCde;
-    var oldCdeObj = oldCde.toObject ? oldCde.toObject() : oldCde;
-    [newCdeObj, oldCdeObj].forEach(function (cde) {
+    let newCdeObj = newCde.toObject ? newCde.toObject() : newCde;
+    let oldCdeObj = oldCde.toObject ? oldCde.toObject() : oldCde;
+    [newCdeObj, oldCdeObj].forEach(cde => {
         delete cde._id;
         delete cde.updated;
         delete cde.updatedBy;

@@ -1,9 +1,9 @@
-var async = require('async');
-var By = require('selenium-webdriver').By;
-var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
-var LoadFromLoincSite = require('./LOINCLoader');
+const async = require('async');
+const By = require('selenium-webdriver').By;
+const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
+const LoadFromLoincSite = require('./LOINCLoader');
 
-var orgName = '';
+let orgName = '';
 exports.setOrgName = function (o) {
     orgName = o;
 };
@@ -11,23 +11,23 @@ exports.setOrgName = function (o) {
 exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
     obj.isForm = true;
     obj.compoundForm = false;
-    var sectionName = task.sectionName;
+    let sectionName = task.sectionName;
     element.findElements(By.xpath('tbody/tr')).then(function (trs) {
         trs.shift();
         trs.pop();
-        var currentLevels = [];
-        var currentDepth;
+        let currentLevels = [];
+        let currentDepth;
         async.forEachSeries(trs, function (tr, doneOneTr) {
-            var row = {elements: []};
-            var depth;
+            let row = {elements: []};
+            let depth;
             tr.findElements(By.xpath('td')).then(function (tds) {
                 async.series([
-                    function getDepth (done) {
+                    function getDepth(done) {
                         tds[1].findElement(By.xpath('span')).then(function (span) {
                             span.getText().then(function (spanText) {
                                 span.findElement(By.xpath('a')).then(function (a) {
                                     a.getText().then(function (aText) {
-                                        var spaces = spanText.replace(aText, '');
+                                        let spaces = spanText.replace(aText, '');
                                         depth = spaces.length / 5;
                                         done();
                                     });
@@ -35,12 +35,12 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                             });
                         });
                     },
-                    function getLoincID (done) {
+                    function getLoincID(done) {
                         tds[1].getText().then(function (text) {
                             row['LOINC#'] = text.trim();
                             if (obj.loincId !== text.trim()) {
-                                var id = text.trim();
-                                var idArray = [id];
+                                let id = text.trim();
+                                let idArray = [id];
                                 MigrationLoincModel.find({loincId: id}).exec(function (e, existingLoincs) {
                                     if (e) throw e;
                                     if (existingLoincs.length === 0) {
@@ -59,7 +59,7 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                             } else done();
                         });
                     },
-                    function getLoincLink (done) {
+                    function getLoincLink(done) {
                         tds[1].findElement(By.css('a')).then(function (a) {
                             a.getAttribute('href').then(function (url) {
                                 row['link'] = url.trim();
@@ -102,7 +102,7 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                     } else if (depth === currentDepth) {
                         currentLevels[depth - 1].elements.push(row);
                         currentLevels[depth] = row;
-                    } else if(depth < currentDepth) {
+                    } else if (depth < currentDepth) {
                         currentLevels[currentDepth] = null;
                         currentLevels[depth] = row;
                         currentLevels[depth - 1].elements.push(row);
