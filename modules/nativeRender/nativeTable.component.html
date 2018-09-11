@@ -98,8 +98,8 @@
                        [ngClass]="{'nativeRequiredBox': q.question.required}"
                        style="padding-left: 10px;display: block">
                     <input type="radio"
-                           [name]="ni + q.name + '_uom'"
-                           [attr.name]="ni + q.name + '_uom'"
+                           [name]="ni + q.name + '_uom_' + i"
+                           [attr.name]="ni + q.name + '_uom_' + i"
                            [(ngModel)]="nrs.elt.formInput[ni + q.name + '_uom']"
                            [value]="q.question.unitsOfMeasure[i]"
                            [attr.value]="q.question.unitsOfMeasure[i]"
@@ -120,8 +120,8 @@
                        [ngClass]="{'nativeRequiredBox': q.question.required}"
                        style="padding-left: 10px;display: block">
                     <input type="radio"
-                           [name]="ni + q.name + '_uom'"
-                           [attr.name]="ni + q.name + '_uom'"
+                           [name]="ni + q.name + '_uom_' + i"
+                           [attr.name]="ni + q.name + '_uom_' + i"
                            [(ngModel)]="nrs.elt.formInput[ni + q.name + '_uom']"
                            [value]="q.question.unitsOfMeasure[i]"
                            [attr.value]="q.question.unitsOfMeasure[i]"

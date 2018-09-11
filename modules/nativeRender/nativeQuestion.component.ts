@@ -71,6 +71,7 @@ export class NativeQuestionComponent implements OnInit {
                 this.convertUnits(value, this.previousUom, this.formElement.question.answerUom, (error, result) => {
                     if (!error && result !== undefined && !isNaN(result) && unit === this.formElement.question.answerUom) {
                         this.formElement.question.answer = result;
+                        this.scoreSvc.triggerCalculateScore(this.formElement);
                     }
                 });
             }

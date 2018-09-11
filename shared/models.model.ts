@@ -297,8 +297,8 @@ export class DerivationRule {
     ruleType?: DerivationRuleType;
 }
 
-type DerivationRuleFormula = 'sumAll'|'mean';
-type DerivationRuleType = 'score'|'panel';
+type DerivationRuleFormula = 'sumAll' | 'mean' | 'bmi';
+type DerivationRuleType = 'score' | 'panel';
 
 export class Notification {
     _id?: {
