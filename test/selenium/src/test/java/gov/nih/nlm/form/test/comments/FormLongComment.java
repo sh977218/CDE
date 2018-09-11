@@ -15,16 +15,8 @@ public class FormLongComment extends NlmCdeBaseTest {
         clickElement(By.id("discussBtn"));
         clickElement(By.id("showAllRepliesButton_0"));
         textNotPresent("Show all 10 replies");
-        try {
-            for (int k = 1; k <= 10; k++) {
-                textPresent("Reply to very long comment " + k);
-            }
-        } catch (TimeoutException e) {
-            clickElement(By.id("showAllRepliesButton_0"));
-            for (int k = 1; k <= 10; k++) {
-                textPresent("Reply to very long comment " + k);
-            }
+        for (int k = 1; k <= 10; k++) {
+            textPresent("Reply to very long comment " + k);
         }
-
     }
 }
