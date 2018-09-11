@@ -4,7 +4,6 @@ var MigrationDataElementModel = require('./../createMigrationConnection').Migrat
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
 var orgMapping = require('../loinc/Mapping/ORG_INFO_MAP').map;
 
-var LoadLoincCdeIntoMigration = require('../loinc/CDE/LoadLoincCdeIntoMigration');
 
 var classificationOrgName = 'eyeGENE';
 var org;
