@@ -29,13 +29,12 @@ exports.module = function (roleConfig) {
         }));
     });
 
-    router.get('/siteAdmins', (req, res) => userDb.siteAdmins(handleError({req, res}, users => res.send(users))));
+    router.get('/siteAdmins', (req, res) => userDb.siteAdmins(handleError({req, res},
+        users => res.send(users))));
 
-    router.get('/orgAuthorities', (req, res) => mongo_data.orgAuthorities((err, users) => res.send(users)));
+    router.get('/orgAuthorities', (req, res) => userDb.orgAuthorities(handleError({req, res},
+        users => res.send(users))));
 
-    router.get('/siteaccountmanagement', nocacheMiddleware, (req, res) => {
-        res.render('siteaccountmanagement', "system");
-    });
     router.get('/serverStatuses', (req, res) => {
         app_status.getStatus(() => {
             clusterStatusDb.getClusterHostStatuses((err, statuses) => {

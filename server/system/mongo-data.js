@@ -197,9 +197,6 @@ exports.addUser = (user, callback) => {
     user.username = user.username.toLowerCase();
     new User(user).save(callback);
 };
-exports.orgAuthorities = callback => {
-    User.find({'roles': 'OrgAuthority'}, 'username', callback);
-};
 
 exports.orgAdmins = callback => {
     User.find({orgAdmin: {$not: {$size: 0}}}, callback);

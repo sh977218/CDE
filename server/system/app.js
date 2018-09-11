@@ -488,11 +488,6 @@ exports.init = function (app) {
         }));
     });
 
-
-    app.get('/orgaccountmanagement', exportShared.nocacheMiddleware, (req, res) => {
-        res.render('orgAccountManagement', "system");
-    });
-
     app.get('/data/:imgtag', (req, res) => {
         mongo_data.getFile(req.user, req.params.imgtag, res);
     });

@@ -113,4 +113,9 @@ exports.siteAdmins = callback => {
     User.find({'siteAdmin': true}, 'username email', callback);
 };
 
+exports.orgAuthorities = callback => {
+    User.find({'roles': 'OrgAuthority'}, 'username', callback);
+};
+
+
 

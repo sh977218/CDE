@@ -34,7 +34,7 @@ export class DailyUsageComponent {
     }
 
     lookupUsername(ip: string) {
-        this.http.get<any>('/usernamesByIp/' + ip).subscribe(usernames => {
+        this.http.get<any>('/server/siteAdmin/usernamesByIp/' + ip).subscribe(usernames => {
             if (usernames.length === 0) usernames = [{username: 'Anonymous'}];
             this.dailyUsage!.forEach(d => {
                 if (d._id.ip === ip) d.usernames = usernames;
