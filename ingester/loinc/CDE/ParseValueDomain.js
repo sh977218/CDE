@@ -1,19 +1,19 @@
-var uom_datatype_map = require('../Mapping/LOINC_UOM_DATATYPE_MAP').map;
-var loinc_num_datatype_map = {
+const uom_datatype_map = require('../Mapping/LOINC_UOM_DATATYPE_MAP').map;
+const loinc_num_datatype_map = {
     '62317-3': 'Date',
     '62328-0': 'Number'
 };
 
 exports.parseValueDomain = function (loinc) {
-    var valueDomain = {
+    let valueDomain = {
         datatype: 'Text',
         uom: ''
     };
-    var versionStr = loinc['VERSION']['VERSION'].replace('Generated from LOINC version', '').trim();
-    var version = versionStr.substring(0, versionStr.length - 1);
+    let versionStr = loinc['VERSION']['VERSION'].replace('Generated from LOINC version', '').trim();
+    let version = versionStr.substring(0, versionStr.length - 1);
     if (loinc['NORMATIVE ANSWER LIST'] || loinc['PREFERRED ANSWER LIST'] || loinc['EXAMPLE ANSWER LIST']) {
         valueDomain.datatype = 'Value List';
-        var type;
+        let type;
         if (loinc['NORMATIVE ANSWER LIST']) type = 'NORMATIVE ANSWER LIST';
         if (loinc['PREFERRED ANSWER LIST']) type = 'PREFERRED ANSWER LIST';
         if (loinc['EXAMPLE ANSWER LIST']) type = 'EXAMPLE ANSWER LIST';
@@ -22,20 +22,20 @@ exports.parseValueDomain = function (loinc) {
             source: 'LOINC',
             version: version
         }];
-        var sortedAnswerList = loinc[type][type].answerList.sort(function (a, b) {
+        let sortedAnswerList = loinc[type][type].answerList.sort(function (a, b) {
             return a['SEQ#'] - b['SEQ#'];
         });
         valueDomain.permissibleValues = sortedAnswerList.map(function (a) {
-            var description = '';
-            var name = '';
-            var descriptionIndex = a['Answer'].indexOf('Description:');
+            let description = '';
+            let name = '';
+            let descriptionIndex = a['Answer'].indexOf('Description:');
             if (descriptionIndex !== -1) {
                 name = a['Answer'].substring(0, descriptionIndex).trim();
                 description = a['Answer'].substring(descriptionIndex + 12).trim();
             } else {
                 name = a['Answer'];
             }
-            var pv = {
+            let pv = {
                 permissibleValue: a['Code'] ? a['Code'] : name,
                 valueMeaningName: name,
                 valueMeaningDefinition: description,
@@ -46,7 +46,7 @@ exports.parseValueDomain = function (loinc) {
         });
     } else {
         if (loinc['EXAMPLE UNITS'] && loinc['EXAMPLE UNITS']['EXAMPLE UNITS']) {
-            var unit = loinc['EXAMPLE UNITS']['EXAMPLE UNITS'][0].Unit;
+            let unit = loinc['EXAMPLE UNITS']['EXAMPLE UNITS'][0].Unit;
             valueDomain.datatype = uom_datatype_map[unit];
             if (valueDomain.datatype === 'Date') {
                 valueDomain.datatypeDate = {format: unit};
@@ -57,5 +57,4 @@ exports.parseValueDomain = function (loinc) {
         valueDomain.datatype = loinc_num_datatype_map[loinc.loincId];
     }
     return valueDomain;
-}
-;
+};

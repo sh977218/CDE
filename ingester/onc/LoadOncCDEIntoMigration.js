@@ -3,7 +3,6 @@ var MigrationLoincModel = require('./../createMigrationConnection').MigrationLoi
 var MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel;
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
 var orgMapping = require('../loinc/Mapping/ORG_INFO_MAP').map;
-var LoadLoincCdeIntoMigration = require('../loinc/CDE/LoadLoincCdeIntoMigration');
 
 var orgName = 'ONC';
 var cdeCount = 0;
