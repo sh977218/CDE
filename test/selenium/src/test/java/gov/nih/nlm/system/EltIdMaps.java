@@ -147,6 +147,9 @@ public class EltIdMaps {
         eltMap.put("Remove SkipLogic Form", "X1s87bif7");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Section Test Form", "XJFylVmN_");
+        eltMap.put("Section Test Form2", "mycc3Hcf8");
+        eltMap.put("Section Test Form3", "mkmn3Bcz8");
+        eltMap.put("Section Test Form4", "71WanHqGU");
         eltMap.put("Socioeconomic Status", "XyMzLyBHYl");
         eltMap.put("Stroke Symptoms/Comorbid Events", "7kqGIJBBKg");
         eltMap.put("Stroke Types and Subtypes", "QkX81HrFx");
