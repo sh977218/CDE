@@ -315,7 +315,7 @@ export class PermissibleValueComponent {
     }
 
     removeVSMapping() {
-        delete this.elt.dataElementConcept.conceptualDomain.vsac;
+        this.elt.dataElementConcept.conceptualDomain.vsac = {};
         this.runManualValidation();
         this.initSrcOptions();
         this.onEltChange.emit();
@@ -344,9 +344,7 @@ export class PermissibleValueComponent {
     }
 
     validateVsacWithPv() {
-        this.vsacValueSet.forEach(vsItem => {
-            vsItem.isValid = this.isVsInPv(vsItem);
-        });
+        this.vsacValueSet.forEach(vsItem => vsItem.isValid = this.isVsInPv(vsItem));
     }
 
     vsacMappingExists() {

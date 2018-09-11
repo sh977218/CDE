@@ -7,7 +7,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NativeRenderAppComponent } from '_nativeRenderApp/nativeRenderApp.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 
-
 @NgModule({
     imports: [
         BrowserModule,
@@ -25,10 +24,8 @@ import { NativeRenderModule } from 'nativeRender/nativeRender.module';
     entryComponents: [
         NativeRenderAppComponent,
     ],
-    exports: [
-    ],
-    providers: [
-    ],
+    exports: [],
+    providers: [],
     bootstrap: [NativeRenderAppComponent]
 })
 export class NativeRenderAppModule {

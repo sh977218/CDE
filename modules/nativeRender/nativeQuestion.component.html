@@ -140,8 +140,8 @@
                                        class="input-group-text"
                                        [ngClass]="{'nativeRequiredBox': formElement.question.required}">
                                     <input type="radio"
-                                           [name]="formElement.feId + '_uom'"
-                                           [attr.name]="formElement.feId + '_uom'"
+                                           [name]="formElement.feId + '_uom_' + i"
+                                           [attr.name]="formElement.feId + '_uom_' + i"
                                            class="mr-1"
                                            [(ngModel)]="formElement.question.answerUom"
                                            (change)="convert();scoreSvc.triggerCalculateScore(formElement);"
@@ -168,8 +168,8 @@
                                        class="input-group-text"
                                        [ngClass]="{'nativeRequiredBox': formElement.question.required}">
                                     <input type="radio" class="mr-1"
-                                           [name]="formElement.feId + '_uom'"
-                                           [attr.name]="formElement.feId + '_uom'"
+                                           [name]="formElement.feId + '_uom_' + i"
+                                           [attr.name]="formElement.feId + '_uom_' + i"
                                            [(ngModel)]="formElement.question.answerUom"
                                            (change)="convert();scoreSvc.triggerCalculateScore(formElement);"
                                            [value]="formElement.question.unitsOfMeasure[i]"
