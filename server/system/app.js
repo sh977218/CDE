@@ -531,6 +531,23 @@ exports.init = function (app) {
         } else res.status(401).send("Not Authorized");
     });
 
+    app.post('/addUserRole', (req, res) => {
+        if (authorizationShared.hasRole(req.user, "CommentReviewer")) {
+            mongo_data.addUserRole(req.body, err => {
+                if (err) {
+                    dbLogger.logError({
+                        message: 'Error adding user role',
+                        origin: '/addUserRole',
+                        stack: err,
+                        details: ''
+                    });
+                    return res.status(500).send('Error adding user role');
+                }
+                res.send("Role added.");
+            });
+        }
+    });
+
     // @TODO this should be POST
     app.get('/attachment/approve/:id', (req, res) => {
         if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
@@ -672,24 +689,5 @@ exports.init = function (app) {
             });
         } else res.status(401).send();
     });
-
-
-    app.post('/addUserRole', (req, res) => {
-        if (authorizationShared.hasRole(req.user, "CommentReviewer")) {
-            mongo_data.addUserRole(req.body, err => {
-                if (err) {
-                    dbLogger.logError({
-                        message: 'Error adding user role',
-                        origin: '/addUserRole',
-                        stack: err,
-                        details: ''
-                    });
-                    return res.status(500).send('Error adding user role');
-                }
-                res.send("Role added.");
-            });
-        }
-    });
-
 
 };
