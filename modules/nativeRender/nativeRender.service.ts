@@ -31,7 +31,7 @@ export class NativeRenderService {
     submitForm?: boolean;
     vm: any;
 
-    constructor(private scoreSvc: ScoreService,
+    constructor(public scoreSvc: ScoreService,
                 public skipLogicService: SkipLogicService) {
     }
 
