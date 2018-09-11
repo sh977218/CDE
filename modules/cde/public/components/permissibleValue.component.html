@@ -204,11 +204,11 @@
         <div *ngIf="vsacMappingExists()">
             <dl class="dl-horizontal">
                 <dt>Value Set Name:</dt>
-                <dd>{{elt.dataElementConcept.conceptualDomain.vsac.name}}</dd>
+                <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.name}}</dd>
                 <dt>Value Set ID:</dt>
-                <dd>{{elt.dataElementConcept.conceptualDomain.vsac.id}}</dd>
+                <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.id}}</dd>
                 <dt>Value Set Version:</dt>
-                <dd>{{elt.dataElementConcept.conceptualDomain.vsac.version}}</dd>
+                <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.version}}</dd>
             </dl>
         </div>
 
