@@ -58,6 +58,6 @@ public class AddReviewerToBoardTest extends BoardTest {
         mustBeLoggedInAs(boardUser, password);
         goToBoard(boardName);
         Assert.assertEquals(findElement(By.xpath("//*[@id='reviewer_nlm_status']/mat-icon")).getAttribute("class").contains("text-success"), true);
-        Assert.assertEquals(findElement(By.xpath("//*[@id='reviewer_nlm_status']/mat-icon")).getAttribute("class").contains("text-warning"), true);
+        Assert.assertEquals(findElement(By.xpath("//*[@id='reviewer_ninds_status']/mat-icon")).getAttribute("class").contains("text-warning"), true);
     }
 }
