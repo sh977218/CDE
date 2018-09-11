@@ -20,9 +20,6 @@ export class SiteAuditComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (this.route.snapshot.queryParams['triggerClientError']) {
-            throw new Error("An exception has been thrown");
-        }
         setTimeout(() => {
             if (this.route.snapshot.queryParams['tab']) {
                 let tab = this.route.snapshot.queryParams['tab'];

@@ -27,6 +27,7 @@ const appRoutes: Routes = [
     {path: 'form', redirectTo: '/form/search', pathMatch: 'full'},
     {path: 'inbox', loadChildren: 'system/public/inbox.module#InboxModule', canLoad: [LoggedInGuard]},
     {path: 'login', loadChildren: 'system/public/login.module#LoginModule', canLoad: [IEGuard]},
+    {path: 'ieDiscontinued', loadChildren: 'system/public/ieDiscontinued.module#IeDiscontinuedModule'},
     {path: 'myboards', loadChildren: 'board/public/myBoards.module#MyBoardsModule'},
     {path: 'orgaccountmanagement', loadChildren: 'system/public/orgManagement.module#OrgManagementModule', canLoad: [OrgAdminGuard]},
     {path: 'orgAuthority', loadChildren: 'system/public/orgAuthority.module#OrgAuthorityModule', canLoad: [OrgAuthorityGuard]},

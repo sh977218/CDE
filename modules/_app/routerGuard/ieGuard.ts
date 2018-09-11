@@ -34,7 +34,7 @@ export class IEGuard implements CanActivate, CanActivateChild, CanLoad {
         let isIe = false || !!(document as any).documentMode;
         if (isIe) {
             this.alert.addAlert("danger", "Login is disabled on Internet Explorer.");
-            this.router.navigate(['/home']);
+            this.router.navigate(['/ieDiscontinued']);
             return false;
         }
         else return true;
