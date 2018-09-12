@@ -4,11 +4,11 @@ import { FormsModule } from "@angular/forms";
 import { RecaptchaModule } from 'ng-recaptcha';
 import { WidgetModule } from 'widget/widget.module';
 
-import { LoginComponent } from "./components/login/login.component";
 import { RouterModule, Routes } from "@angular/router";
+import { IeDiscontinuedComponent } from 'system/public/components/ieDiscontinued.component';
 
 const appRoutes: Routes = [
-    {path: '', component: LoginComponent},
+    {path: '', component: IeDiscontinuedComponent},
 ];
 
 @NgModule({
@@ -22,7 +22,7 @@ const appRoutes: Routes = [
         // internal
     ],
     declarations: [
-        LoginComponent,
+        IeDiscontinuedComponent,
     ],
     entryComponents: [
     ],
@@ -32,5 +32,5 @@ const appRoutes: Routes = [
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class LoginModule {
+export class IeDiscontinuedModule {
 }
