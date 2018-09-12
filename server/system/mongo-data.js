@@ -23,6 +23,7 @@ const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 const Message = conn.model('Message', schemas.message);
 const Org = conn.model('Org', schemas.orgSchema);
 const PushRegistration = conn.model('PushRegistration', schemas.pushRegistration);
+const userDb = require('../user/userDb');
 const User = require('../user/userDb').User;
 const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema);
 
@@ -174,7 +175,7 @@ exports.pushEndpointUpdate = (endpoint, commandObj, callback) => {
 };
 
 exports.pushGetAdministratorRegistrations = callback => {
-    exports.siteAdmins(handleError({}, users => {
+    userDb.siteAdmins(handleError({}, users => {
         let userIds = users.map(u => u._id.toString());
         PushRegistration.find({}).exec(handleError({}, registrations => {
             callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
