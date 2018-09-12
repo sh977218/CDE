@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 
 public class CreateForm extends BaseClassificationTest {
 
+    @Test
     @Parameters("Create Form Test Name")
     public void createForm(String formName, boolean checkEs) {
         mustBeLoggedInAs(nlm_username, nlm_password);

@@ -1,18 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { AlertService } from '_app/alert.service';
 import { ElasticService } from '_app/elastic.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'cde-search-preferences',
     templateUrl: 'searchPreferences.component.html'
 })
-export class SearchPreferencesComponent {
+export class SearchPreferencesComponent implements OnInit {
     searchSettings: any;
 
     constructor(private alert: AlertService,
-                public esService: ElasticService) {
+                public esService: ElasticService,
+                private route: ActivatedRoute) {
         this.searchSettings = this.esService.searchSettings;
+    }
+
+    ngOnInit() {
+        if (this.route.snapshot.queryParams['triggerClientError']) {
+            throw new Error("An exception has been thrown");
+        }
     }
 
     cancelSettings() {
