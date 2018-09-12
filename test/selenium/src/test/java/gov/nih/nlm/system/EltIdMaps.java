@@ -97,6 +97,7 @@ public class EltIdMaps {
         eltMap.put("DNA Elements - Participant/Subject Information", "m1fVM1SSFx");
         eltMap.put("DateTypeTest", "7y_PFN4Zr");
         eltMap.put("Draft Form Test", "QyT6ElYKLl");
+        eltMap.put("Drag Question Test", "7kL4X8sMU");
         eltMap.put("Empty Logic", "7kAx6i5af");
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
