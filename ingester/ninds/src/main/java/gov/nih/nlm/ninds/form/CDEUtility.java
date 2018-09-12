@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CDEUtility {
     public CDEUtility() {
@@ -50,6 +51,10 @@ public class CDEUtility {
         if (distinctDiseaseNameList.size() > Constants.DISEASE_NUM) {
             System.out.println("distinct diseaseName is not good. size: ");
             System.out.println(Arrays.toString(distinctDiseaseNameList.toArray()));
+            List distinctDiseaseNameListCopy = distinctDiseaseNameList;
+
+            distinctDiseaseNameListCopy.removeAll(Constants.DISEASE_MAP.keySet());
+            System.out.println("difference:" + Arrays.toString(distinctDiseaseNameListCopy.toArray()));
             System.exit(1);
         }
         Query searchNoDiseaseExistFormQuery = new Query(Criteria.where("diseaseName").exists(false));
