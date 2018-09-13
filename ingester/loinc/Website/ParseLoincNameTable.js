@@ -1,9 +1,9 @@
-var async = require('async');
-var By = require('selenium-webdriver').By;
+const async = require('async');
+const By = require('selenium-webdriver').By;
 
 exports.parseLoincNameTable = function (obj, task, element, cb) {
-    var sectionName = task.sectionName;
-    var loincName = {};
+    let sectionName = task.sectionName;
+    let loincName = {};
     element.findElements(By.xpath('tbody/tr')).then(function (trs) {
         async.forEach(trs, function (tr, doneOneTr) {
             tr.findElements(By.xpath('td')).then(function (tds) {

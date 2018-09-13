@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const DataElement = require('../../../server/cde/mongo-cde').DataElement;
 
 const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;

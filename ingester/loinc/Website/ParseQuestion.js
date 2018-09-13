@@ -1,16 +1,16 @@
-var async = require('async');
-var webdriver = require('selenium-webdriver');
-var By = webdriver.By;
+const async = require('async');
+const webdriver = require('selenium-webdriver');
+const By = webdriver.By;
 
-var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
+const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 
 function loadQuestionInformation(panelHierarchy, array, cb) {
-    var j = 0;
-    var loopQuestionInformation = function (panelHierarchy, array, next) {
+    let j = 0;
+    let loopQuestionInformation = function (panelHierarchy, array, next) {
         async.forEachSeries(panelHierarchy.elements, function (element, doneOneElement) {
             console.log(element['LOINC#']);
             if (element.elements.length === 0) {
-                var sections = array[j];
+                let sections = array[j];
                 sections[0].findElement(By.xpath('table/tbody/tr/td[1]')).getText().then(function (loincText) {
                     sections[0].findElement(By.xpath('table/tbody/tr/td[2]')).getText().then(function (labelText) {
                         element.label = labelText.trim();
@@ -20,7 +20,7 @@ function loadQuestionInformation(panelHierarchy, array, cb) {
                                 section.findElements(By.xpath('table/tbody/tr[1]/th')).then(function (sectionHeaderTable) {
                                     if (sectionHeaderTable.length > 0) {
                                         sectionHeaderTable[0].getText().then(function (sectionHeaderText) {
-                                            var sectionHeader = sectionHeaderText.trim();
+                                            let sectionHeader = sectionHeaderText.trim();
                                             if (sectionHeader === 'OBSERVATION ID IN FORM') {
                                                 section.findElement(By.xpath('table/tbody/tr[2]')).getText().then(function (text) {
                                                     element['OBSERVATION ID IN FORM'] = text.trim();
@@ -30,7 +30,7 @@ function loadQuestionInformation(panelHierarchy, array, cb) {
                                                             console.log('No loinc id: ' + element['LOINC#'] + ' found');
                                                             process.exit(1);
                                                         } else if (existingLoincs.length === 1) {
-                                                            var existingLoinc = existingLoincs[0];
+                                                            let existingLoinc = existingLoincs[0];
                                                             existingLoinc.set('deId', text.trim());
                                                             existingLoinc.markModified('deId');
                                                             existingLoinc.save(function (err) {
@@ -54,7 +54,7 @@ function loadQuestionInformation(panelHierarchy, array, cb) {
                                                     doneOneSection();
                                                 })
                                             } else {
-                                            doneOneSection();
+                                                doneOneSection();
                                             }
                                         })
                                     } else {
@@ -64,7 +64,7 @@ function loadQuestionInformation(panelHierarchy, array, cb) {
                             }, function doneAllSections() {
                                 j++;
                                 doneOneElement();
-                        })
+                            })
                         } else {
                             console.log('loinc # does not match. Question');
                             console.log('element["LOINC#"]: ' + element['LOINC#']);
@@ -74,7 +74,7 @@ function loadQuestionInformation(panelHierarchy, array, cb) {
                     });
                 })
             } else {
-                var sections = array[j];
+                let sections = array[j];
                 sections[0].findElement(By.xpath('table/tbody/tr/td[1]')).getText().then(function (loincText) {
                     if (loincText.trim() === element['LOINC#']) {
                         sections.shift();
@@ -82,7 +82,7 @@ function loadQuestionInformation(panelHierarchy, array, cb) {
                             section.findElements(By.xpath('table/tbody/tr[1]/th')).then(function (sectionHeaderTable) {
                                 if (sectionHeaderTable.length > 0) {
                                     sectionHeaderTable[0].getText().then(function (sectionHeaderText) {
-                                        var sectionHeader = sectionHeaderText.trim();
+                                        let sectionHeader = sectionHeaderText.trim();
                                         if (sectionHeader === 'FORM CODING INSTRUCTIONS') {
                                             section.findElement(By.xpath('table/tbody/tr[2]')).getText().then(function (text) {
                                                 element['FORM CODING INSTRUCTIONS'] = text.trim();
@@ -117,11 +117,11 @@ function loadQuestionInformation(panelHierarchy, array, cb) {
 }
 
 exports.parseQuestion = function (driver, obj, cb) {
-    var xpath = 'html/body/div[@class="Section2"]/*';
+    let xpath = 'html/body/div[@class="Section2"]/*';
     driver.findElements(By.xpath(xpath)).then(function (elements) {
-        var array = [];
-        var item = [];
-        var i = 0;
+        let array = [];
+        let item = [];
+        let i = 0;
         async.forEachSeries(elements, function (element, doneOneDiv) {
             element.getAttribute('class').then(function (classes) {
                 if (classes.indexOf('half_space') === -1) {
@@ -143,7 +143,7 @@ exports.parseQuestion = function (driver, obj, cb) {
             })
         }, function doneAllDivs() {
             array.push(item);
-            var newArray = array.filter(function (item) {
+            let newArray = array.filter(function (item) {
                 return item.length > 2;
             });
             loadQuestionInformation(obj['PANEL HIERARCHY']['PANEL HIERARCHY'], newArray, cb);

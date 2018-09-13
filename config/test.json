@@ -29,7 +29,15 @@
         "host": "localhost",
         "port": 27017
       }
-    ]
+    ],
+    "migration": {
+      "db": "migration",
+      "username": "miguser",
+      "password": "password",
+      "options": {
+        "ssl": false
+      }
+    }
   }
 }
 

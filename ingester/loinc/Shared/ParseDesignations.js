@@ -33,7 +33,7 @@ exports.parseDesignations = function (loinc) {
                 designation: NAME['Shortname'],
                 tags: ["Shortname"]
             };
-            let existingDesignation = isDesignationsExisted(naming, shortNameObj);
+            let existingDesignation = isDesignationsExisted(designations, shortNameObj);
             if (existingDesignation) {
                 existingDesignation.tags.push('Shortname');
             } else {

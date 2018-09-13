@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const Form = require('../../../server/form/mongo-form').Form;
 
 const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;

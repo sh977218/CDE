@@ -6,13 +6,13 @@ const MigrationLoincModel = require('../../createMigrationConnection').Migration
 
 const ParseLoincNameTable = require('./ParseLoincNameTable');
 const ParsePanelHierarchyTable = require('./ParsePanelHierarchyTable');
-const ParseNameTable = require('./ParseNameTable');
-const ParseDefinitionDescriptionsTable = require('./ParseDefinitionDescriptionsTable');
+const ParseNameTable = require('./NameTable/ParseNameTable');
+const ParseTermDefinitionDescriptionsTable = require('./ParseTermDefinitionDescriptionsTable');
+const ParsePartDefinitionDescriptionsTable = require('./ParsePartDefinitionDescriptionsTable');
 const ParsePartTable = require('./ParsePartTable');
 const ParseBasicAttributesTable = require('./ParseBasicAttributesTable');
 const ParseHL7AttributesTable = require('./ParseHL7AttributesTable');
 const ParseSubmittersInformationTable = require('./ParseSubmittersInformationTable');
-const ParseMemberOfThesePanelsTable = require('./ParseMemberOfThesePanelsTable');
 const ParsingAnswerListTable = require('./ParseAnswerListTable');
 const ParseSurveyQuestionTable = require('./ParseSurveyQuestionTable');
 const ParseLanguageVariantsTable = require('./ParseLanguageVariantsTable');
@@ -28,18 +28,18 @@ const ParsingVersion = require('./ParseVersion');
 const ParseQuestion = require('./ParseQuestion');
 const CheckLformViewer = require('./CheckLformViewer');
 
-let loincCount = 0;
-
 const url_prefix = 'http://r.details.loinc.org/LOINC/';
 const url_postfix = '.html';
 const url_postfix_para = '?sections=Comprehensive';
 
 const tasks = [
-    {
-        sectionName: 'PANEL HIERARCHY',
-        function: ParsePanelHierarchyTable.parsePanelHierarchyTable,
-        xpath: 'html/body/div[@class="Section1"]/table[.//th[contains(text(),"PANEL HIERARCHY")]]/following-sibling::table[1]'
-    },
+    /*
+        {
+            sectionName: 'PANEL HIERARCHY',
+            function: ParsePanelHierarchyTable.parsePanelHierarchyTable,
+            xpath: 'html/body/div[@class="Section1"]/table[.//th[contains(text(),"PANEL HIERARCHY")]]/following-sibling::table[1]'
+        },
+    */
     {
         sectionName: 'LOINC NAME',
         function: ParseLoincNameTable.parseLoincNameTable,
@@ -50,6 +50,7 @@ const tasks = [
         function: ParseNameTable.parseNameTable,
         xpath: 'html/body/div/table[.//th[text()="NAME"]]'
     },
+
     {
         sectionName: 'COPYRIGHT NOTICE',
         function: ParseCopyrightNotice.parseCopyrightNotice,
@@ -57,19 +58,21 @@ const tasks = [
     },
     {
         sectionName: 'PART DEFINITION/DESCRIPTION(S)',
-        function: ParseDefinitionDescriptionsTable.parseDefinitionDescriptionsTable,
-        xpath: 'html/body/div[@class="Section0"]/table[.//th[text()="PART DEFINITION/DESCRIPTION(S)"]]'
+        function: ParsePartDefinitionDescriptionsTable.parsePartDefinitionDescriptionsTable,
+        xpath: 'html/body/div[@class="Section0"]/table[.//th[text()="PART DEFINITION/DESCRIPTION(S)"]]',
+        disabled: true
     },
     {
         sectionName: 'TERM DEFINITION/DESCRIPTION(S)',
-        function: ParseDefinitionDescriptionsTable.parseDefinitionDescriptionsTable,
+        function: ParseTermDefinitionDescriptionsTable.parseTermDefinitionDescriptionsTable,
         xpath: 'html/body/div[@class="Section0"]/table[.//th[text()="TERM DEFINITION/DESCRIPTION(S)"]]'
     },
     {
         sectionName: 'PARTS',
         function: ParsePartTable.parsePartTable,
-        xpath: '//*[@class="Section7000"]/div/table'
-    }, {
+        xpath: '//!*[@class="Section7000"]/div/table'
+    },
+    {
         sectionName: 'FORM CODING INSTRUCTIONS',
         function: ParseDefinitionDescriptionsTable.parseDefinitionDescriptionsTable,
         xpath: 'html/body/div/table[.//th[contains(node(),"FORM CODING INSTRUCTIONS")]]'
@@ -89,11 +92,7 @@ const tasks = [
         function: ParseSubmittersInformationTable.parseSubmittersInformationTable,
         xpath: 'html/body/div/table[.//th[text()="SUBMITTER\'S INFORMATION"]]'
     },
-    {
-        sectionName: 'MEMBER OF THESE PANELS',
-        function: ParseMemberOfThesePanelsTable.parseMemberOfThesePanelsTable,
-        xpath: 'html/body/div/table[.//th[text()="MEMBER OF THESE PANELS"]]'
-    },
+
     {
         sectionName: 'LANGUAGE VARIANTS',
         function: ParseLanguageVariantsTable.parseLanguageVariantsTable,
@@ -104,11 +103,13 @@ const tasks = [
         function: ParseRelatedNamesTable.parseRelatedNamesTable,
         xpath: 'html/body/div/table[.//th[text()="RELATED NAMES"]]'
     },
+
     {
         sectionName: 'EXAMPLE UNITS',
         function: ParseExampleUnitsTable.parseExampleUnitsTable,
         xpath: 'html/body/div/table[.//th[text()="EXAMPLE UNITS"]]'
     },
+
     {
         sectionName: '3rd PARTY COPYRIGHT',
         function: Parse3rdPartyCopyrightTable.parse3rdPartyCopyrightTable,
@@ -137,17 +138,20 @@ const tasks = [
     {
         sectionName: 'SURVEY QUESTION',
         function: ParseSurveyQuestionTable.parseSurveyQuestionTable,
-        xpath: 'html/body/div/table[.//th[contains(node(),"SURVEY")]]'
+        xpath: 'html/body/div/table[.//th[contains(node(),"SURVEY")]]',
+        disabled: true
     },
     {
         sectionName: 'WEB CONTENT',
         function: ParseWebContentTable.parseWebContentTable,
-        xpath: 'html/body/div/table[.//th[text()="WEB CONTENT"]]'
+        xpath: 'html/body/div/table[.//th[text()="WEB CONTENT"]]',
+        disabled: true
     },
     {
         sectionName: 'ARTICLE',
         function: ParseArticleTable.parseArticleTable,
-        xpath: 'html/body/div/table[.//th[text()="ARTICLE"]]'
+        xpath: 'html/body/div/table[.//th[text()="ARTICLE"]]',
+        disabled: true
     },
     {
         sectionName: 'COPYRIGHT TEXT',
@@ -178,75 +182,40 @@ function logMessage(obj, messange) {
     obj['info'] = obj['info'] + messange + '\n';
 }
 
-function doTask(driver, task, obj, cb) {
-    driver.findElements(By.xpath(task.xpath)).then(function (elements) {
-        if (elements && elements.length === 0) {
-            let message = 'Cannot find ' + task.sectionName + ' for loinc: ' + obj.loincId;
-            logMessage(obj, message);
-            cb();
-        } else if (elements && elements.length > 1) {
-            let message = 'find ' + elements.length + ' ' + task.sectionName + ' for loinc: ' + obj.loincId;
-            logMessage(obj, message);
-            cb();
-        } else if (elements && elements.length === 1) {
-            elements[0].getAttribute('outerHTML').then(function (html) {
-                obj[task.sectionName] = {
-                    HTML: html
-                };
-                task.function(obj, task, elements[0], cb);
+function doTask(driver, task, obj) {
+    return new Promise(async (resolve, reject) => {
+        let elements = await driver.findElements(By.xpath(task.xpath));
+        if (elements && elements.length === 0) reject('Cannot find ' + task.sectionName + ' for loinc: ' + obj.loincId);
+        else if (elements && elements.length > 1) reject('find ' + elements.length + ' ' + task.sectionName + ' for loinc: ' + obj.loincId);
+        else if (elements && elements.length === 1) {
+            task.function(elements[0], () => {
+                resolve(obj);
             });
-        } else {
-            logMessage(obj, 'Unknown error.');
-            cb();
-        }
-    });
+        } else reject(obj, 'Unknown error.');
+    })
 }
 
-exports.runArray = function (array, orgName, doneItem, doneArray) {
-    ParsePanelHierarchyTable.setOrgName(orgName);
-    let results = [];
-    async.series([
-        function () {
-            let driver = new webdriver.Builder().forBrowser('chrome').build();
-            async.forEachSeries(array, function (loincId, doneOneLoinc) {
-                MigrationLoincModel.find({
-                    loincId: loincId,
-                    version: currentVersion
-                }).exec(function (error, existingLoincs) {
-                    if (error) throw error;
-                    if (existingLoincs.length === 0) {
-                        let url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
-                        driver.get(url).then(function () {
-                            let obj = {URL: url, orgName: orgName, loincId: loincId, info: ''};
-                            async.forEach(tasks, function (task, doneOneTask) {
-                                doTask(driver, task, obj, doneOneTask);
-                            }, function doneAllTasks() {
-                                async.forEachSeries(specialTasks, function (specialTask, doneOneSpecialTask) {
-                                    if (obj['PANEL HIERARCHY']) {
-                                        specialTask.function(driver, obj, doneOneSpecialTask);
-                                    }
-                                    else {
-                                        doneOneSpecialTask();
-                                    }
-                                }, function doneAllSpecialTasks() {
-                                    loincCount++;
-                                    console.log('loincCount: ' + loincCount);
-                                    results.push(obj);
-                                    doneItem(obj, doneOneLoinc);
-                                });
-                            });
-                        });
-                    } else {
-                        console.log('loinc id: ' + loincId + ' exists');
-                        doneOneLoinc();
-                    }
-                });
-            }, function doneAllLoinc() {
-                console.log('Finished all. loincCount: ' + loincCount);
-                driver.close();
-                if (doneArray) doneArray(results);
-                else process.exit(1);
-            });
+exports.runOne = loincId => {
+    return new Promise(async (resolve, reject) => {
+        await MigrationLoincModel.remove({});
+        console.log('Migration loinc collection removed.');
+        let driver = new webdriver.Builder().forBrowser('chrome').build();
+        let url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
+        await driver.get(url);
+        let loinc = {URL: url, loincId: loincId, info: ''};
+        for (let task of tasks) {
+            if (!task.disabled)
+                await doTask(driver, task, loinc).then(() => {
+                    console.log('finished task: ' + task.sectionName);
+                }, err => console.log(err));
         }
-    ]);
+        resolve(loinc);
+        /* async.forEachSeries(specialTasks, (specialTask, doneOneSpecialTask) => {
+             if (loinc['PANEL HIERARCHY']) {
+                 specialTask.function(driver, loinc, doneOneSpecialTask);
+             }
+             else doneOneSpecialTask();
+         }, () => {
+         });*/
+    })
 };

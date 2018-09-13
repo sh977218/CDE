@@ -1,56 +1,22 @@
-var async = require('async');
-var By = require('selenium-webdriver').By;
+const By = require('selenium-webdriver').By;
 
-exports.parsePartTable = function (obj, task, element, cb) {
-    var sectionName = task.sectionName;
-    obj[sectionName][sectionName] = [];
-    element.findElements(By.xpath('tbody/tr')).then(function (trs) {
-        trs.shift();
-        async.forEachSeries(trs, function (tr, doneOneTr) {
-            var part = {};
-            tr.findElements(By.xpath('td')).then(function (tds) {
-                async.parallel([
-                        function (doneOneTd) {
-                            tds[0].getAttribute('innerHTML').then(function (text) {
-                                part['Part Type'] = text.replace(/&nbsp;/g, '').trim();
-                                doneOneTd();
-                            })
-                        },
-                        function (doneTwoTd) {
-                            tds[2].findElement(By.css('a')).then(function (a) {
-                                async.parallel([
-                                    function (doneID) {
-                                        a.getAttribute('innerHTML').then(function (text) {
-                                            part['Part No'] = text.trim();
-                                            doneID();
-                                        })
-                                    },
-                                    function (doneLink) {
-                                        a.getAttribute('href').then(function (urlText) {
-                                            part['Part No Link'] = urlText.trim();
-                                            doneLink();
-                                        });
-                                    }
-                                ], function () {
-                                    doneTwoTd();
-                                });
-                            });
-
-                        },
-                        function (doneThreeTd) {
-                            tds[3].getAttribute('innerHTML').then(function (text) {
-                                part['Part Name'] = text.replace(/&nbsp;/g, '').trim();
-                                doneThreeTd();
-                            })
-                        }
-                    ],
-                    function () {
-                        obj[sectionName][sectionName].push(part);
-                        doneOneTr();
-                    })
-            })
-        }, function doneAllTrs() {
-            cb();
-        })
-    })
+exports.parsePartTable = async function (element, cb) {
+    let parts = [];
+    let trs = await element.findElements(By.xpath('tbody/tr'));
+    trs.shift();
+    for (let tr of trs) {
+        let part = {};
+        let tds = await tr.findElements(By.xpath('td'));
+        let text0 = await tds[0].getAttribute('innerHTML');
+        part['Part Type'] = text0.replace(/&nbsp;/g, '').trim();
+        let a = await tds[2].findElement(By.css('a'));
+        let aText = await a.getAttribute('innerHTML');
+        part['Part No'] = aText.trim();
+        let urlText = await a.getAttribute('href');
+        part['Part No Link'] = urlText.trim();
+        let text3 = await tds[3].getAttribute('innerHTML');
+        part['Part Name'] = text3.replace(/&nbsp;/g, '').trim();
+        parts.push(part);
+    }
+    cb(parts);
 };
