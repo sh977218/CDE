@@ -28,13 +28,13 @@
                            autocomplete="off">
                     <span class="input-group-btn">
                         <button id="search.submit" (click)="searchStarted = true;  search()" type="submit"
-                                class="btn btn-danger">
-                            <i class="fa fa-search"></i> Search
+                                mat-raised-button>
+                            <mat-icon>search</mat-icon> Search
                         </button>
                     </span>
                     <span class="input-group-btn">
                         <button id="search.reset" (click)="reset()" class="btn">
-                            <i class="fa fa-search"></i> Reset
+                            <mat-icon>search</mat-icon> Reset
                         </button>
                     </span>
                 </div>

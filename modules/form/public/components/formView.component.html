@@ -1,36 +1,30 @@
 <div *ngIf="!elt">
-    <h1 class="pt60 pb40 text-center">
-        <i class="fa fa-spinner fa-pulse"></i>Loading...
-    </h1>
+    <mat-spinner style="margin: 0 auto"></mat-spinner>
 </div>
 <div *ngIf="elt?.tinyId" class="container-fluid" itemscope="http://schema.org/MedicalCode">
     <div id="warning">
         <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>Warning:</strong> this form is archived. You can
+            <mat-icon>warning</mat-icon><strong>Warning:</strong> this form is archived. You can
             <a id="viewCurrentEltLink" routerLink="/formView" [queryParams]="{tinyId: elt.tinyId}">view the current
                 version here</a>.
         </div>
         <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>Warning:</strong> this form is retired.
+            <mat-icon>warning</mat-icon><strong>Warning:</strong> this form is retired.
             <a *ngIf="elt.registrationState.replacedBy"
                routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
         </div>
         <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
              role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>Warning:</strong> this form is about to be retired.
+            <mat-icon>warning</mat-icon><strong>Warning:</strong> this form is about to be retired.
             <a *ngIf="elt.registrationState.replacedBy?.tinyId"
                routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible
                 Replacement</a>
         </div>
         <div *ngIf="elt.outdated" class="alert alert-info mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>Note: </strong>Some referenced items in this form have newer versions.
+            <mat-icon>warning</mat-icon><strong>Note: </strong>Some referenced items in this form have newer versions.
         </div>
         <div *ngIf="missingCdes.length > 0" class="alert alert-warning mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
+            <mat-icon>warning</mat-icon>
             The following CDEs are part of a score but are missing from this form:
             <ul class="list-inline">
                 <li *ngFor="let missCde of missingCdes;let i = index;">
@@ -39,7 +33,7 @@
             </ul>
         </div>
         <div *ngIf="validationErrors.length > 0" class="alert alert-warning mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
+            <mat-icon>warning</mat-icon>
             The following errors need to be corrected in order to Publish:
             <ul class="list-inline">
                 <li *ngFor="let error of validationErrors;let i = index;">
@@ -65,19 +59,19 @@
                 <span mat-menu-item>
                     <a id='nihJson' href="formById/{{elt._id}}" target="_blank">
                         JSON File, NIH/CDE Schema</a>
-                    <a href="/schema/form" target="_blank" title="Schema"><i class="fa fa-info-circle"></i></a>
+                    <a href="/schema/form" target="_blank" title="Schema"><mat-icon>help_outline</mat-icon></a>
                 </span>
                 <span mat-menu-item>
                     <a id='odmExport' href="formById/{{elt._id}}?type=xml&subtype=odm" target="_blank">
                         XML File, CDISC / ODM</a>
                     <a href="https://www.cdisc.org/standards/transport/odm" target="_blank" title="Information">
-                        <i class="fa fa-info-circle"></i></a>
+                        <mat-icon>help_outline</mat-icon></a>
                 </span>
                 <span mat-menu-item>
                     <a id='sdcExport' href="formById/{{elt._id}}?type=xml&subtype=sdc" target="_blank">
                         XML File, SDC Schema</a>
                     <a href="https://github.com/esacinc/sdc-schema-package" target="_blank" title="Information">
-                        <i class="fa fa-info-circle"></i></a>
+                        <mat-icon>help_outline</mat-icon></a>
                 </span>
                 <a *ngIf="!isIe()" id='sdcHtmlExport' mat-menu-item
                    href="formById/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
@@ -88,8 +82,7 @@
                    target="_blank">Published Form</a>
                 <span mat-menu-item>
                     <a id='nihRedCap' href="formById/{{elt._id}}?type=REDCap" target="_blank">REDCap</a>
-                    <a href="https://projectredcap.org/" target="_blank" title="Information"><i
-                            class="fa fa-info-circle"></i></a>
+                    <a href="https://projectredcap.org/" target="_blank" title="Information"><mat-icon>help_outline</mat-icon></a>
                 </span>
                 <span id='formCdesExport' (click)="exportService.formCdeExport(elt)"
                       mat-menu-item>CDE Dictionary (CSV)</span>
@@ -97,10 +90,10 @@
                     <a id="asQuestionnaire" href="formById/{{elt._id}}?subtype=fhirQuestionnaire"
                        target="_blank">FHIR Questionnaire</a>
                     <a href="https://www.hl7.org/fhir/questionnaire.html" target="_blank" title="Schema">
-                        <i class="fa fa-info-circle"></i></a>
+                        <mat-icon>help_outline</mat-icon></a>
                     <a href="formById/{{elt._id}}?subtype=fhirQuestionnaire&validate" target="_blank"
                        title="Validate">
-                        <i class="fa fa-check" style="color: green"></i></a>
+                        <mat-icon style="color: green">check</mat-icon></a>
                 </span>
             </ng-container>
             <a class="dropdown-item" *ngIf="!userService.loggedIn()" href="login" mat-menu-item>
@@ -121,7 +114,7 @@
         </button>
         <button *ngIf="isAllowedModel.isOrgCurator()" id="copyFormBtn" mat-raised-button
                 (click)="openCopyElementModal()">
-            <mat-icon>file_copy</mat-icon>
+            <mat-icon>content_copy</mat-icon>
             <span class="d-none d-sm-inline ml-1">Copy</span>
         </button>
         <button id="discussBtn" mat-raised-button (click)="commentMode = !commentMode">
@@ -145,7 +138,7 @@
                 <mat-icon>delete</mat-icon><span class="d-none d-sm-inline-block ml-1">Delete Draft</span>
             </button>
             <button id="openSave" mat-raised-button color="primary" title="Publish" (click)="publish()">
-                <i class="fa fa-globe fa-lg"></i><span class="d-none d-sm-inline-block ml-1">Publish</span>
+                <mat-icon>publish</mat-icon><span class="d-none d-sm-inline-block ml-1">Publish</span>
             </button>
         </ng-container>
     </div>
@@ -166,67 +159,57 @@
                             <a id="preview_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='preview_tab'}"
                                (click)="currentTab ='preview_tab'">Preview
-                                <i *ngIf="tabsCommented.indexOf('preview_tab') > -1"
-                                   class="fa fa-comments pull-right"
-                                   aria-hidden="true"></i></a>
+                                <mat-icon *ngIf="tabsCommented.indexOf('preview_tab') > -1"
+                                   class="pull-right" aria-hidden="true">forum</mat-icon></a>
                             <a id="general_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='general_tab'}"
                                (click)="currentTab ='general_tab'">General Detail
-                                <i *ngIf="tabsCommented.indexOf('general_tab') > -1"
-                                   class="fa fa-comments pull-right"
-                                   aria-hidden="true"></i></a>
+                                <mat-icon *ngIf="tabsCommented.indexOf('general_tab') > -1"
+                                   class="pull-right" aria-hidden="true">forum</mat-icon></a>
                             <a id="description_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='description_tab'}"
                                (click)="currentTab ='description_tab'">Form Description
-                                <i *ngIf="tabsCommented.indexOf('description_tab') > -1"
-                                   class="fa fa-comments pull-right"
-                                   aria-hidden="true"></i></a>
+                                <mat-icon *ngIf="tabsCommented.indexOf('description_tab') > -1"
+                                   class="pull-right" aria-hidden="true">forum</mat-icon></a>
                             <a id="naming_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='naming_tab'}"
                                (click)="currentTab ='naming_tab'">Naming
-                                <i *ngIf="tabsCommented.indexOf('naming_tab') > -1"
-                                   class="fa fa-comments pull-right"
-                                   aria-hidden="true"></i></a>
+                                <mat-icon *ngIf="tabsCommented.indexOf('naming_tab') > -1"
+                                   class="pull-right" aria-hidden="true">forum</mat-icon></a>
                             <a id="classification_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='classification_tab'}"
                                (click)="currentTab = 'classification_tab'">Classification
-                                <i *ngIf="tabsCommented.indexOf('classification_tab') > -1"
-                                   class="fa fa-comments pull-right"
-                                   aria-hidden="true"></i></a>
+                                <mat-icon *ngIf="tabsCommented.indexOf('classification_tab') > -1"
+                                   class="pull-right" aria-hidden="true">forum</mat-icon></a>
                             <a id="referenceDocuments_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='referenceDocuments_tab'}"
                                (click)="currentTab = 'referenceDocuments_tab'">Reference Documents
-                                <i *ngIf="tabsCommented.indexOf('referenceDocuments_tab') > -1"
-                                   class="fa fa-comments pull-right"
-                                   aria-hidden="true"></i></a>
+                                <mat-icon *ngIf="tabsCommented.indexOf('referenceDocuments_tab') > -1"
+                                   class="pull-right" aria-hidden="true">forum</mat-icon></a>
                             <a id="displayProfiles_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='displayProfiles_tab'}"
                                (click)="currentTab = 'displayProfiles_tab'">Display Profiles
-                                <i *ngIf="tabsCommented.indexOf('displayProfiles_tab') > -1"
-                                   class="fa fa-comments pull-right"
-                                   aria-hidden="true"></i></a>
+                                <mat-icon *ngIf="tabsCommented.indexOf('displayProfiles_tab') > -1"
+                                   class="pull-right" aria-hidden="true">forum</mat-icon></a>
                             <a id="properties_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='properties_tab'}"
                                (click)="currentTab = 'properties_tab'">Properties
-                                <i *ngIf="tabsCommented.indexOf('properties_tab') > -1"
-                                   class="fa fa-comments pull-right"
-                                   aria-hidden="true"></i></a>
+                                <mat-icon *ngIf="tabsCommented.indexOf('properties_tab') > -1"
+                                   class="pull-right" aria-hidden="true">forum</mat-icon></a>
                             <a id="ids_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='ids_tab'}"
                                (click)="currentTab = 'ids_tab'">Identifiers
-                                <i *ngIf="tabsCommented.indexOf('ids_tab') > -1" class="fa fa-comments pull-right"
-                                   aria-hidden="true"></i></a>
+                                <mat-icon *ngIf="tabsCommented.indexOf('ids_tab') > -1"
+                                   class="pull-right" aria-hidden="true">forum</mat-icon></a>
                             <a id="attachments_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='attachments_tab'}"
                                (click)="currentTab = 'attachments_tab'">Attachments
-                                <i *ngIf="tabsCommented.indexOf('attachments_tab') > -1"
-                                   class="fa fa-comments pull-right"
-                                   aria-hidden="true"></i></a>
+                                <mat-icon *ngIf="tabsCommented.indexOf('attachments_tab') > -1"
+                                   class="pull-right" aria-hidden="true">forum</mat-icon></a>
                             <a id="history_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='history_tab'}"
                                (click)="currentTab = 'history_tab'">History
-                                <i *ngIf="tabsCommented.indexOf('history_tab') > -1"
-                                   class="fa fa-comments pull-right"
-                                   aria-hidden="true"></i></a>
+                                <mat-icon *ngIf="tabsCommented.indexOf('history_tab') > -1"
+                                   class="pull-right" aria-hidden="true">forum</mat-icon></a>
                         </ul>
                     </div>
                 </div>

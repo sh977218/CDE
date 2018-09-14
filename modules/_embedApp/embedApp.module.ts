@@ -15,7 +15,7 @@ import { EmbeddedCdeSearchResultComponent } from '_embedApp/searchResults/embedd
 import { EmbeddedFormSearchResultComponent } from '_embedApp/searchResults/embeddedFormSearchResult.component';
 import { CoreModule } from 'core/core.module';
 import { OrgHelperService } from 'core/orgHelper.service';
-import { MatButtonModule, MatDialogModule } from '@angular/material';
+import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/material';
 
 
 @NgModule({
@@ -45,6 +45,7 @@ import { MatButtonModule, MatDialogModule } from '@angular/material';
         CommonAppModule,
         MatButtonModule,
         MatDialogModule,
+        MatIconModule,
     ],
     entryComponents: [
         InactivityLoggedOutComponent

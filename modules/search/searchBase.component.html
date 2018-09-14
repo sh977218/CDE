@@ -277,7 +277,7 @@
                     <div *ngFor="let e of getCurrentSelectedTopic(); index as i; last as isLast"
                          id="topic-{{e}}" class="hand-cursor" (click)="selectTopic(e)" role="link">
                         <div *ngIf="!isLast; else topicSelf" class="treeParent">
-                            <i class="treeItemIcon treeItemIconSelected fa fa-angle-left"></i>
+                            <mat-icon class="treeItemIcon">keyboard_arrow_left</mat-icon>
                             <a class="treeItemText">{{e}}</a>
                         </div>
                         <ng-template #topicSelf>

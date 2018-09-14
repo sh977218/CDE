@@ -25,7 +25,7 @@
                   class="btn btn-light formDescriptionTool"
                   (dragstart)="dragActive = true" (dragend)="dragActive = false"
                   [treeDrag]="{ref: 'pasteSection'}" [treeDragEnabled]="true" style="width: 68px;">
-                <mat-icon class="toolbar-icon" [ngClass]="{'pasteSectionWrench':elt.isCopied}">file_copy</mat-icon>
+                <mat-icon class="toolbar-icon" [ngClass]="{'pasteSectionWrench':elt.isCopied}">content_copy</mat-icon>
                 <span class="toolCopySection"></span>
             </span>
         </div>
