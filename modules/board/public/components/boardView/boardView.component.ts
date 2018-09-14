@@ -97,7 +97,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     boardApproval(approval) {
-        this.http.post('/server/board/approval', {boardId: this.boardId, approval: approval}).subscribe(() => {
+        this.http.post('/server/board/approval', {boardId: this.boardId, approval: approval}, {responseType: 'text'}).subscribe(() => {
             this.boardStatus = approval;
             this.reload();
         });

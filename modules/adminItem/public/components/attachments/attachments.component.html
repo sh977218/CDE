@@ -13,7 +13,7 @@
                            href="/data/{{attachment.fileid}}"
                            target="_blank">{{attachment.filename}}</a>
                         <button (click)="copyUrl(attachment)" mat-raised-button>
-                            <mat-icon id="copyUrl_{{i}}">file_copy</mat-icon> Copy URL
+                            <mat-icon id="copyUrl_{{i}}">content_copy</mat-icon> Copy URL
                         </button>
                     </div>
                     <div *ngIf="attachment.pendingApproval">{{attachment.filename}} - This attachment cannot be

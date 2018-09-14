@@ -7,7 +7,7 @@
 
 Excluding: {{excludeFilters}}
 
-<table class="table">
+<table class="table table-responsive">
     <thead>
     <tr>
         <th>Date</th>
@@ -19,7 +19,7 @@ Excluding: {{excludeFilters}}
     <tbody>
     <tr *ngFor="let err of records">
         <td>{{err.date | date:'MM/dd/yyyy @ h:mma'}}</td>
-        <td>
+        <td class="error_cell">
             <span *ngIf="err.request?.username"><b>User:</b> {{err.request.username}}<br></span>
             <span *ngIf="err.request?.url"><b>URL:</b>&nbsp;{{err.request.url}}<br></span>
             <span *ngIf="err.request?.method"><b>Method:</b> {{err.request.method}}<br></span>
@@ -28,8 +28,8 @@ Excluding: {{excludeFilters}}
             <span *ngIf="err.request?.userAgent"><b>Browser:</b> {{err.request.userAgent}}<br></span>
             <span *ngIf="err.request?.ip"><b>IP:</b> {{err.request.ip}}<br></span>
         </td>
-        <td>{{err.stack | slice:0:500 }}</td>
-        <td>
+        <td class="error_cell">{{err.stack | slice:0:500 }}</td>
+        <td class="error_cell">
             <span *ngIf="err.details"><b>Details: </b>{{err.details | slice:0:500}}</span>
         </td>
     </tr>
