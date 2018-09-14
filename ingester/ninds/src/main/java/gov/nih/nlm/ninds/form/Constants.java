@@ -15,7 +15,7 @@ public final class Constants {
     public static final int TOTAL_RECORD = 3966;
     public static final String URL = "https://commondataelements.ninds.nih.gov/CRF.aspx";
 
-    public static String MONGO_URL = "mongodb://cdeuser:password@localhost:27017/test";
+    public static String MONGO_URL = "mongodb://localhost:27017/test";
 
     static {
         Map<String, String> aMap = new HashMap<String, String>();
@@ -42,7 +42,8 @@ public final class Constants {
         aMap.put("Stroke", "Stroke.aspx");
         aMap.put("Unruptured Cerebral Aneurysms and Subarachnoid Hemorrhage", "SAH.aspx");
         aMap.put("Traumatic Brain Injury", "TBI.aspx");
-        aMap.put("Sports-Related Concussion", "SRC.aspx");
+        aMap.put("Sport-Related Concussion", "SRC.aspx");
+        aMap.put("Sport Related Concussion", "SRC.aspx");
         DISEASE_MAP = Collections.unmodifiableMap(aMap);
         DISEASE_NUM = DISEASE_MAP.size();
     }

@@ -25,6 +25,13 @@ public class FindMissingForms implements Runnable {
     String diseaseName;
     ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
 
+
+    public void logMessage(String text) {
+        MyLog log = new MyLog();
+        log.info = text;
+        mongoOperation.save(log);
+    }
+
     FindMissingForms(String url) {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         this.url = url;
@@ -35,15 +42,9 @@ public class FindMissingForms implements Runnable {
         System.out.println("start url: " + url);
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, 120);
-        long startTime = System.currentTimeMillis();
         goToSite(url);
         cdeUtility.checkDataQuality(mongoOperation);
         driver.close();
-        long endTime = System.currentTimeMillis();
-        long totalTimeInMillis = endTime - startTime;
-        long totalTimeInSeconds = totalTimeInMillis / 1000;
-        long totalTimeInMinutes = totalTimeInSeconds / 60;
-        log.setRunTime(totalTimeInMinutes);
         mongoOperation.save(log);
     }
 
@@ -106,7 +107,7 @@ public class FindMissingForms implements Runnable {
                 if (domainList1.size() > 0) {
                     domainName = domainList1.get(0).getText().trim();
                 } else
-                    log.info.add("cannot find domainName, " + " url:" + url + " row:" + i + " formName:" + formName + " with xpath:" + domianSelector1);
+                    logMessage("cannot find domainName, " + " url:" + url + " row:" + i + " formName:" + formName + " with xpath:" + domianSelector1);
             }
             form.setFormId(formId);
             form.setCrfModuleGuideline(formName);
@@ -123,13 +124,12 @@ public class FindMissingForms implements Runnable {
                     getCdes(form, cdeLinks.get(0));
                 }
                 form.setCreateDate(new Date());
-                log.info.add("found form on web:" + form);
-                log.info.add(formId);
+                logMessage("found form " + formId + " on web:" + form);
                 mongoOperation.save(form);
             }
             i++;
         }
-        log.info.add("total form on the web: " + i);
+        logMessage("total form on the web: " + i);
     }
 
 

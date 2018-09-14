@@ -23,6 +23,7 @@ public class MyForm {
         diseaseNameSet.add("Huntington’s Disease");
         diseaseNameSet.add("Mitochondrial Disease");
         diseaseNameSet.add("Multiple Sclerosis");
+        diseaseNameSet.add("Myalgic Encephalomyelitis/Chronic Fatigue Syndrome");
         diseaseNameSet.add("Myasthenia Gravis");
         diseaseNameSet.add("Myotonic Dystrophy");
         diseaseNameSet.add("Neuromuscular Diseases");
@@ -33,6 +34,8 @@ public class MyForm {
         diseaseNameSet.add("Unruptured Cerebral Aneurysms and Subarachnoid Hemorrhage");
         diseaseNameSet.add("Traumatic Brain Injury");
         diseaseNameSet.add("Chiari I Malformation");
+        diseaseNameSet.add("Sport Related Concussion");
+        diseaseNameSet.add("Sport-Related Concussion");
 
         diseaseNameMap.put("Amyotrophic Lateral Sclerosis", "Amyotrophic Lateral Sclerosis");
         diseaseNameMap.put("Congenital Muscular Dystrophy", "Congenital Muscular Dystrophy");
@@ -45,6 +48,7 @@ public class MyForm {
         diseaseNameMap.put("Huntington's Disease", "Huntington’s Disease");
         diseaseNameMap.put("Mitochondrial Disease", "Mitochondrial Disease");
         diseaseNameMap.put("Multiple Sclerosis", "Multiple Sclerosis");
+        diseaseNameMap.put("Myalgic Encephalomyelitis/Chronic Fatigue Syndrome", "Myalgic Encephalomyelitis/Chronic Fatigue Syndrome");
         diseaseNameMap.put("Myasthenia Gravis", "Myasthenia Gravis");
         diseaseNameMap.put("Myotonic Muscular Dystrophy", "Myotonic Dystrophy");
         diseaseNameMap.put("Neuromuscular Diseases", "Neuromuscular Diseases");
@@ -55,6 +59,8 @@ public class MyForm {
         diseaseNameMap.put("Unruptured Cerebral Aneurysms and Subarachnoid Hemorrhage", "Unruptured Cerebral Aneurysms and Subarachnoid Hemorrhage");
         diseaseNameMap.put("Traumatic Brain Injury", "Traumatic Brain Injury");
         diseaseNameMap.put("Chiari I Malformation", "Chiari I Malformation");
+        diseaseNameMap.put("Sport Related Concussion", "Sport Related Concussion");
+        diseaseNameMap.put("Sport-Related Concussion", "Sport Related Concussion");
     }
 
     @Id

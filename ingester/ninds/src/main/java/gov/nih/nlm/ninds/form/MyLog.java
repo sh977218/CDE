@@ -4,16 +4,17 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Document(collection = "log")
 public class MyLog {
-    public List<String> info = new ArrayList<String>();
+    public String info = new String();
     @Id
     private String id;
     private int pageStart = 0;
     private int pageEnd = 0;
-    private long runTime = 0;
+    private Date date = new Date();
 
     public String getId() {
         return id;
@@ -39,12 +40,12 @@ public class MyLog {
         this.pageEnd = pageEnd;
     }
 
-    public long getRunTime() {
-        return runTime;
+    public Date getDate() {
+        return date;
     }
 
-    public void setRunTime(long runTime) {
-        this.runTime = runTime;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class MyLog {
                 "id='" + id + '\'' +
                 ", pageStart=" + pageStart +
                 ", pageEnd=" + pageEnd +
-                ", runTime=" + runTime +
+                ", date=" + date +
                 ", info=" + info +
                 '}';
     }

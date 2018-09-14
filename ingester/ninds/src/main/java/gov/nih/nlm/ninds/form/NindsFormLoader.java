@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 public class NindsFormLoader implements Runnable {
-    MyLog log;
     ApplicationContext ctx;
     private MongoOperations mongoOperation;
     private WebDriver driver;
@@ -32,13 +31,18 @@ public class NindsFormLoader implements Runnable {
     private CDEUtility cdeUtility;
     private Map<String, Integer> formTableHeader = new HashMap<String, Integer>();
 
+    public void logMessage(String text) {
+        MyLog log = new MyLog();
+        log.setPageStart(this.page);
+        log.info = text;
+        mongoOperation.save(log);
+    }
+
     public NindsFormLoader(int p) throws IOException, AWTException {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         this.page = p;
         ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
         this.mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
-        log = new MyLog();
-        this.log.setPageStart(this.page);
         cdeUtility = new CDEUtility();
     }
 
@@ -50,17 +54,11 @@ public class NindsFormLoader implements Runnable {
         this.driver = new ChromeDriver(options);
         this.classificationDriver = new ChromeDriver(options);
         this.wait = new WebDriverWait(driver, 120);
-        long startTime = System.currentTimeMillis();
+        logMessage("Starting " + this.page);
         goToNindsSiteAndGoToPageOf(page);
         findAndSaveToForms(page);
         cdeUtility.checkDataQuality(mongoOperation);
-        long endTime = System.currentTimeMillis();
-        long totalTimeInMillis = endTime - startTime;
-        long totalTimeInSeconds = totalTimeInMillis / 1000;
-        long totalTimeInMinutes = totalTimeInSeconds / 60;
-        this.log.setRunTime(totalTimeInMinutes);
-        this.log.info.add("finished " + page);
-        mongoOperation.save(this.log);
+        logMessage("Finishing " + this.page);
         this.driver.close();
         this.classificationDriver.close();
     }
@@ -128,7 +126,7 @@ public class NindsFormLoader implements Runnable {
         if (subDomains.size() > 0)
             form.setSubDomainName(cdeUtility.cleanSubDomain(subDomains.get(0).getText().trim()));
         else {
-            this.log.info.add("cannot find subDomainName of form: " + form + " of xpath: " + subDomianSelector);
+            logMessage("cannot find subDomainName of form: " + form + " of xpath: " + subDomianSelector);
         }
         List<WebElement> domains = classificationDriver.findElements(By.xpath(domianSelector));
         if (domains.size() > 0) {
@@ -138,7 +136,7 @@ public class NindsFormLoader implements Runnable {
             if (domains1.size() > 0) {
                 form.setDomainName(domains1.get(0).getText().trim());
             } else {
-                this.log.info.add("cannot find domainName of form: " + form + " of xpath: " + domianSelector1);
+                logMessage("cannot find domainName of form: " + form + " of xpath: " + domianSelector1);
             }
         }
     }
