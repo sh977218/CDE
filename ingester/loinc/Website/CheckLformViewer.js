@@ -1,5 +1,4 @@
-var async = require('async');
-var By = require('selenium-webdriver').By;
+const By = require('selenium-webdriver').By;
 
 
 exports.checkLformViewer = function (driver, obj, cb) {

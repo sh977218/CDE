@@ -1,10 +1,10 @@
-const async = require('async');
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
 
 const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 
 const ParseLoincNameTable = require('./ParseLoincNameTable');
+const ParseLoincIdTable = require('./ParseLoincIdTable');
 const ParsePanelHierarchyTable = require('./ParsePanelHierarchyTable');
 const ParseNameTable = require('./NameTable/ParseNameTable');
 const ParseTermDefinitionDescriptionsTable = require('./ParseTermDefinitionDescriptionsTable');
@@ -33,13 +33,16 @@ const url_postfix = '.html';
 const url_postfix_para = '?sections=Comprehensive';
 
 const tasks = [
-    /*
-        {
-            sectionName: 'PANEL HIERARCHY',
-            function: ParsePanelHierarchyTable.parsePanelHierarchyTable,
-            xpath: 'html/body/div[@class="Section1"]/table[.//th[contains(text(),"PANEL HIERARCHY")]]/following-sibling::table[1]'
-        },
-    */
+    {
+        sectionName: 'PANEL HIERARCHY',
+        function: ParsePanelHierarchyTable.parsePanelHierarchyTable,
+        xpath: 'html/body/div[@class="Section1"]/table[.//th[contains(text(),"PANEL HIERARCHY")]]/following-sibling::table[1]'
+    },
+    {
+        sectionName: 'LOINC Id',
+        function: ParseLoincIdTable.parseLoincIdTable,
+        xpath: '((//table)[1])'
+    },
     {
         sectionName: 'LOINC NAME',
         function: ParseLoincNameTable.parseLoincNameTable,
@@ -59,8 +62,7 @@ const tasks = [
     {
         sectionName: 'PART DEFINITION/DESCRIPTION(S)',
         function: ParsePartDefinitionDescriptionsTable.parsePartDefinitionDescriptionsTable,
-        xpath: 'html/body/div[@class="Section0"]/table[.//th[text()="PART DEFINITION/DESCRIPTION(S)"]]',
-        disabled: true
+        xpath: 'html/body/div[@class="Section0"]/table[.//th[text()="PART DEFINITION/DESCRIPTION(S)"]]'
     },
     {
         sectionName: 'TERM DEFINITION/DESCRIPTION(S)',
@@ -70,11 +72,11 @@ const tasks = [
     {
         sectionName: 'PARTS',
         function: ParsePartTable.parsePartTable,
-        xpath: '//!*[@class="Section7000"]/div/table'
+        xpath: '(//*[@class="Section7000"]/div/table)[1]'
     },
     {
         sectionName: 'FORM CODING INSTRUCTIONS',
-        function: ParseDefinitionDescriptionsTable.parseDefinitionDescriptionsTable,
+        function: ParseTermDefinitionDescriptionsTable.parseTermDefinitionDescriptionsTable,
         xpath: 'html/body/div/table[.//th[contains(node(),"FORM CODING INSTRUCTIONS")]]'
     },
     {
@@ -138,20 +140,17 @@ const tasks = [
     {
         sectionName: 'SURVEY QUESTION',
         function: ParseSurveyQuestionTable.parseSurveyQuestionTable,
-        xpath: 'html/body/div/table[.//th[contains(node(),"SURVEY")]]',
-        disabled: true
+        xpath: 'html/body/div/table[.//th[contains(node(),"SURVEY")]]'
     },
     {
         sectionName: 'WEB CONTENT',
         function: ParseWebContentTable.parseWebContentTable,
-        xpath: 'html/body/div/table[.//th[text()="WEB CONTENT"]]',
-        disabled: true
+        xpath: 'html/body/div/table[.//th[text()="WEB CONTENT"]]'
     },
     {
         sectionName: 'ARTICLE',
         function: ParseArticleTable.parseArticleTable,
-        xpath: 'html/body/div/table[.//th[text()="ARTICLE"]]',
-        disabled: true
+        xpath: 'html/body/div/table[.//th[text()="ARTICLE"]]'
     },
     {
         sectionName: 'COPYRIGHT TEXT',
@@ -182,19 +181,6 @@ function logMessage(obj, messange) {
     obj['info'] = obj['info'] + messange + '\n';
 }
 
-function doTask(driver, task, obj) {
-    return new Promise(async (resolve, reject) => {
-        let elements = await driver.findElements(By.xpath(task.xpath));
-        if (elements && elements.length === 0) reject('Cannot find ' + task.sectionName + ' for loinc: ' + obj.loincId);
-        else if (elements && elements.length > 1) reject('find ' + elements.length + ' ' + task.sectionName + ' for loinc: ' + obj.loincId);
-        else if (elements && elements.length === 1) {
-            task.function(elements[0], () => {
-                resolve(obj);
-            });
-        } else reject(obj, 'Unknown error.');
-    })
-}
-
 exports.runOne = loincId => {
     return new Promise(async (resolve, reject) => {
         await MigrationLoincModel.remove({});
@@ -202,12 +188,16 @@ exports.runOne = loincId => {
         let driver = new webdriver.Builder().forBrowser('chrome').build();
         let url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
         await driver.get(url);
-        let loinc = {URL: url, loincId: loincId, info: ''};
+        let loinc = {URL: url, loincId: loincId};
         for (let task of tasks) {
-            if (!task.disabled)
-                await doTask(driver, task, loinc).then(() => {
-                    console.log('finished task: ' + task.sectionName);
-                }, err => console.log(err));
+            let sectionName = task.sectionName;
+            let elements = await driver.findElements(By.xpath(task.xpath));
+            if (elements && elements.length === 1) {
+                await task.function(elements[0], result => {
+                    loinc[sectionName] = result;
+                    console.log('finished section: ' + sectionName);
+                });
+            }
         }
         resolve(loinc);
         /* async.forEachSeries(specialTasks, (specialTask, doneOneSpecialTask) => {

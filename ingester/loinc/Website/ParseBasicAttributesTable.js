@@ -1,8 +1,8 @@
 const By = require('selenium-webdriver').By;
 const utility = require('../Utility/utility');
 
-exports.parseBasicAttributesTable = async function (element, cb) {
-    let basicAttributes = {};
+exports.parseBasicAttributesTable = async (element, cb) => {
+    let result = {};
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
     for (let tr of trs) {
@@ -13,10 +13,12 @@ exports.parseBasicAttributesTable = async function (element, cb) {
         if (spaceClass.trim().indexOf('spacer') === -1) throw new Error('Parse basic attributes error.');
 
         let keyTd = tds[1];
-        let key = await keyTd.getText();
+        let keyText = await keyTd.getText();
+        let key = utility.sanitizeText(keyText.trim());
         let valueTd = tds[2];
-        let value = await valueTd.getText();
-        basicAttributes[utility.sanitizeText(key.trim())] = utility.sanitizeText(value.trim());
+        let valueText = await valueTd.getText();
+        let value = utility.sanitizeText(valueText.trim());
+        result[key] = value;
     }
-    cb(basicAttributes);
+    cb(result);
 };

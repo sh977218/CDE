@@ -3,7 +3,7 @@ const LoadFromLoincSite = require('./../Website/LOINCLoader');
 
 const newArray = ['89070-7'];
 //const loincId = '89070-7';
-const loincId = '89079-8';
+const loincId = '89070-7';
 
 const orgName = 'External Forms';
 LoadFromLoincSite.runOne(loincId).then(loinc => {
