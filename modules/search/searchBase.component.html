@@ -363,23 +363,24 @@
 </ng-template>
 
 <ng-template #validRulesModal let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h3>Export CDEs not passing validation rules</h3>
+    <h3 mat-dialog-title>
+        Export CDEs not passing validation rules
+    </h3>
+    <div mat-dialog-content>
+        <p>The export will list the CDE(s) that fail registration status rules for the selected status.</p>
+        <mat-form-field>
+            <mat-select id="selectStatus" placeholder="Registration Status" [(ngModel)]="validRulesStatus">
+                <mat-option>Incomplete</mat-option>
+                <mat-option>Candidate</mat-option>
+                <mat-option id="recorded">Recorded</mat-option>
+                <mat-option>Qualified</mat-option>
+                <mat-option>Standard</mat-option>
+                <mat-option>Preferred Standard</mat-option>
+            </mat-select>
+        </mat-form-field>
     </div>
-    <div class="modal-body">
-        <label for="selectStatus">Registration Status</label>
-        <select id="selectStatus" [(ngModel)]="validRulesStatus" class="form-control">
-            <option>Incomplete</option>
-            <option>Candidate</option>
-            <option id="recorded">Recorded</option>
-            <option>Qualified</option>
-            <option>Standard</option>
-            <option>Preferred Standard</option>
-        </select>
-        The export will list the CDE(s) that fail registration status rules for the selected status.
-    </div>
-    <div class="modal-footer">
-        <button class="btn  btn-warning" (click)="d()" id="cancelCopy">Cancel</button>
-        <button class="btn  btn-success" (click)="c({status: validRulesStatus})" id="exportVR">Export</button>
+    <div mat-dialog-actions>
+        <button mat-raised-button color="accent" (click)="d()" id="cancelCopy">Cancel</button>
+        <button mat-raised-button color="primary" (click)="c({status: validRulesStatus})" id="exportVR">Export</button>
     </div>
 </ng-template>
