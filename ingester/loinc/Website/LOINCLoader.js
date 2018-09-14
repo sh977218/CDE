@@ -1,8 +1,6 @@
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
 
-const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
-
 const ParseLoincNameTable = require('./ParseLoincNameTable');
 const ParseLoincIdTable = require('./ParseLoincIdTable');
 const ParsePanelHierarchyTable = require('./ParsePanelHierarchyTable');
@@ -25,8 +23,6 @@ const ParseArticleTable = require('./ParseArticleTable');
 const ParseCopyrightText = require('./ParseCopyrightText');
 const ParseCopyrightNotice = require('./ParseCopyrightNotice');
 const ParsingVersion = require('./ParseVersion');
-const ParseQuestion = require('./ParseQuestion');
-const CheckLformViewer = require('./CheckLformViewer');
 
 const url_prefix = 'http://r.details.loinc.org/LOINC/';
 const url_postfix = '.html';
@@ -163,28 +159,9 @@ const tasks = [
         xpath: '//p[contains(text(),"Generated from LOINC version")]'
     }
 ];
-const specialTasks = [
-    {
-        function: ParseQuestion.parseQuestion
-    },
-    {
-        function: CheckLformViewer.checkLformViewer
-    }
-];
-let currentVersion = '2.58';
-
-exports.setCurrentVersion = function (v) {
-    currentVersion = v;
-};
-
-function logMessage(obj, messange) {
-    obj['info'] = obj['info'] + messange + '\n';
-}
 
 exports.runOne = loincId => {
     return new Promise(async (resolve, reject) => {
-        await MigrationLoincModel.remove({});
-        console.log('Migration loinc collection removed.');
         let driver = new webdriver.Builder().forBrowser('chrome').build();
         let url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
         await driver.get(url);
@@ -195,17 +172,10 @@ exports.runOne = loincId => {
             if (elements && elements.length === 1) {
                 await task.function(elements[0], result => {
                     loinc[sectionName] = result;
-                    console.log('finished section: ' + sectionName);
-                });
+                }, driver, loincId);
             }
         }
+        driver.close();
         resolve(loinc);
-        /* async.forEachSeries(specialTasks, (specialTask, doneOneSpecialTask) => {
-             if (loinc['PANEL HIERARCHY']) {
-                 specialTask.function(driver, loinc, doneOneSpecialTask);
-             }
-             else doneOneSpecialTask();
-         }, () => {
-         });*/
     })
 };

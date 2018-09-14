@@ -1,7 +1,6 @@
 var MigrationEyeGeneLoincModel = require('./../createMigrationConnection').MigrationEyeGENELoincModel;
 var MigrationLoincModel = require('.././createMigrationConnection').MigrationLoincModel;
 
-var LoadFromLoincSite = require('../loinc/Website/LOINCLoader');
 var orgName = 'eyeGENE';
 MigrationEyeGeneLoincModel.find({}).exec(function (err, dataArray) {
     if (err) throw err;
