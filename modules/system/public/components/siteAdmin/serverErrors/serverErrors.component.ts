@@ -6,7 +6,15 @@ type ServerErrorRecord = any;
 
 @Component({
     selector: 'cde-server-errors',
-    templateUrl: './serverErrors.component.html'
+    templateUrl: './serverErrors.component.html',
+    styles: [
+        `
+        .error_cell {
+            max-width: 440px;
+            word-wrap: break-word;
+        }
+        `
+    ]
 })
 export class ServerErrorsComponent implements OnInit {
     currentPage: number = 1;

@@ -4,14 +4,12 @@ if (!PRODUCTION) require('../../node_modules/zone.js/dist/long-stack-trace-zone.
 import 'reflect-metadata';
 
 // path to node_modules required to override module/components/bootstrap
-import '../../node_modules/font-awesome/css/font-awesome.css';
-import '../../node_modules/font-awesome-animation/dist/font-awesome-animation.css';
 
 import '../../node_modules/bootstrap/dist/css/bootstrap.css';
 import '../../node_modules/bootstrap/dist/js/bootstrap.js';
 require('expose-loader?bootstrap!bootstrap');
 
-import '../../node_modules/material-design-icons/iconfont/material-icons.css';
+// import '../../node_modules/material-design-icons/iconfont/material-icons.css';
 import '../../node_modules/@ng-select/ng-select/themes/default.theme.css';
 import '../../node_modules/deeppurple-amber.css';
 

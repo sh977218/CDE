@@ -12,6 +12,7 @@ import { NativeQuestionComponent } from 'nativeRender/nativeQuestion.component';
 import { NativeTableComponent } from 'nativeRender/nativeTable.component';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { ScoreService } from 'nativeRender/score.service';
+import { MatIconModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -21,6 +22,7 @@ import { ScoreService } from 'nativeRender/score.service';
         // no WidgetModule,
         // internal
         CommonAppModule,
+        MatIconModule,
     ],
     declarations: [
         NativeMetadataComponent,
