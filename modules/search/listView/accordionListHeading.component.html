@@ -2,7 +2,7 @@
     <mat-icon class="question-move-handle">drag_handle</mat-icon>
 </a>
 <button *ngIf="addMode === 0" class="btn btn-outline-dark btn-xs ml-0" (click)="clickAdd($event)">
-    <i class="fa fa-plus"></i> Add
+    <mat-icon>add</mat-icon> Add
 </button>
 
 <ng-content select=".accordion-list-before"></ng-content>
@@ -11,6 +11,6 @@
     <span role="link" [innerHtml]="Elt.getLabel(elt)"
           id="acc_link_{{eltIndex}}" class="hand-cursor"></span></a>
 <a *ngIf="!openInNewTab" [href]="Elt.getEltUrl(elt)" class="nonLinkAnchor" (click)="clickView($event)">
-    <i id="eyeLink_{{eltIndex}}" class="fa fa-eye hand-cursor" title="View Full Detail" role="link"></i>
+    <mat-icon id="eyeLink_{{eltIndex}}" class="hand-cursor" title="View Full Detail" role="link">visibility</mat-icon>
 </a>
 <ng-content select=".accordion-list-after"></ng-content>

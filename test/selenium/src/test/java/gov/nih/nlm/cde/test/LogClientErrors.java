@@ -14,7 +14,6 @@ public class LogClientErrors extends NlmCdeBaseTest {
         textPresent("By default, I want to see results as");
     }
 
-
     @Test(dependsOnMethods = {"createIEError"})
     public void logClientErrors() {
         mustBeLoggedInAs(nlm_username, nlm_password);

@@ -38,7 +38,7 @@ exports.module = function (roleConfig) {
                 comment.created = new Date().toJSON();
                 if (!authorizationShared.canComment(req.user)) comment.pendingApproval = true;
                 discussDb.save(comment, handleError({req, res}, savedComment => {
-                    ioServerCommentUpdated(req.user.username);
+                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
                     if (savedComment.pendingApproval) {
                         let details = {
                             element: {
@@ -78,7 +78,7 @@ exports.module = function (roleConfig) {
             }
             comment.replies.push(reply);
             discussDb.save(comment, handleError({req, res}, savedComment => {
-                ioServerCommentUpdated(req.user.username);
+                ioServerCommentUpdated(req.user.username, comment.element.eltId);
                 res.send({});
                 if (reply.pendingApproval) {
                     let details = {
@@ -133,7 +133,7 @@ exports.module = function (roleConfig) {
                             return res.status(401).send("You can only remove " + element.type + " you own.");
                         }
                         comment.remove(handleError({req, res}, () => {
-                                ioServerCommentUpdated(req.user.username);
+                                ioServerCommentUpdated(req.user.username, comment.element.eltId);
                                 res.send({});
                             })
                         );
@@ -157,7 +157,7 @@ exports.module = function (roleConfig) {
                         }
                         comment.replies = comment.replies.filter(r => r._id.toString() !== replyId);
                         comment.save(handleError({req, res}, () => {
-                                ioServerCommentUpdated(req.user.username);
+                                ioServerCommentUpdated(req.user.username, comment.element.eltId);
                                 res.send({});
                             })
                         );
@@ -234,7 +234,7 @@ exports.module = function (roleConfig) {
                 if (!comment) return res.status(404).send();
                 comment.status = 'resolved';
                 comment.save(handleError({req, res}, () => {
-                    ioServerCommentUpdated(req.user.username);
+                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
                     res.send({});
                 }));
             })
@@ -245,7 +245,7 @@ exports.module = function (roleConfig) {
                 if (!comment) return res.status(404).send();
                 comment.status = 'active';
                 comment.save(handleError({req, res}, () => {
-                    ioServerCommentUpdated(req.user.username);
+                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
                     res.send({});
                 }));
             })
@@ -260,7 +260,7 @@ exports.module = function (roleConfig) {
                     if (r._id.toString() === replyId) r.status = 'resolved';
                 });
                 comment.save(handleError({req, res}, () => {
-                    ioServerCommentUpdated(req.user.username);
+                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
                     res.send({});
                 }));
             })
@@ -274,7 +274,7 @@ exports.module = function (roleConfig) {
                     if (r._id.toString() === replyId) r.status = 'active';
                 });
                 comment.save(handleError({req, res}, () => {
-                    ioServerCommentUpdated(req.user.username);
+                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
                     res.send({});
                 }));
             })
@@ -285,5 +285,4 @@ exports.module = function (roleConfig) {
 
 };
 
-// @TODO emit should have room Id.
-let ioServerCommentUpdated = username => ioServer.ioServer.of("/comment").emit('commentUpdated', {username: username});
+let ioServerCommentUpdated = (username, roomId) => ioServer.ioServer.of("/comment").to(roomId).emit('commentUpdated', {username: username});

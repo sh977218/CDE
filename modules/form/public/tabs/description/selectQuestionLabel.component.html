@@ -8,7 +8,7 @@
          id="q_select_name_{{i}}">
         <div class="col-3">
             <button mat-raised-button (click)="onSelect.emit(designation)">
-                <i class="fa fa-check mr-1"></i>Select
+                <mat-icon>check</mat-icon>Select
             </button>
         </div>
         <div class="col-9">
@@ -25,8 +25,8 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <button class="btn btn-outline-dark" (click)="onSelect.emit()" id="selectQuestionNoLabel">
-                <i class="fa fa-stop"></i> No Label
+            <button mat-raised-button (click)="onSelect.emit()" id="selectQuestionNoLabel">
+                <mat-icon>indeterminate_check_box</mat-icon> No Label
             </button>
         </div>
     </div>

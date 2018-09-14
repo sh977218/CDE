@@ -66,7 +66,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         Assert.assertTrue(findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//" + byValueListValueXPath("Never"))).getLocation().y + 8 <
                 findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//" + byValueListValueXPath("Rarely"))).getLocation().y
         );
-        clickElement(By.cssSelector(".fa.fa-plus.iconButton"));
+        clickElement(By.cssSelector("mat-icon.iconButton"));
         clickElement(By.xpath("//a[text()='Add Device by UDI']"));
         findElement(By.xpath("//input[@id='deviceSearchInput']")).clear();
         findElement(By.xpath("//input[@id='deviceSearchInput']")).sendKeys("=/08717648200274=,000025=A99971312345600=>014032=}013032&,1000000000000XYZ123");
