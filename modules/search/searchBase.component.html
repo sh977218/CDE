@@ -30,14 +30,9 @@
                 </form>
             </div>
         </div>
-        <cde-search-export-button id="exportEverything" class="pull-right btn-group mt-3 mb-2" *ngIf="!embedded"
-                                  (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})"
-                                  [module]="module">
-        </cde-search-export-button>
         <div class="mt-3" id="tabs">
-            <ngb-tabset #tbset="ngbTabset" (tabChange)="browseByTopic($event)">
-                <ngb-tab id="browseByClassification" title="Browse by Classification">
-                    <ng-template ngbTabContent>
+            <mat-tab-group>
+                <mat-tab id="browseByClassification" label="Browse by Classification" style="overflow: hidden">
                         <div *ngIf="orgs?.length === 0">
                             <h1 class="pl130">
                                 <mat-icon class="spin">auto_renew</mat-icon> Searching...
@@ -63,10 +58,8 @@
                                    id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org)">help_outline</mat-icon>
                             </div>
                         </div>
-                    </ng-template>
-                </ngb-tab>
-                <ngb-tab *ngIf="topics?.Diseases" title="Browse by Topic" id="browseByTopic">
-                    <ng-template ngbTabContent>
+                </mat-tab>
+                <mat-tab *ngIf="topics?.Diseases" label="Browse by Topic" id="browseByTopic">
                         <div class="row">
                             <div class="col-4" *ngFor="let key of topicsKeys; let i = index;">
                                 <hr *ngIf="i > 2">
@@ -79,9 +72,16 @@
                                 </ul>
                             </div>
                         </div>
+                </mat-tab>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <cde-search-export-button id="exportEverything" *ngIf="!embedded"
+                              (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})"
+                              [module]="module">
+                        </cde-search-export-button>
                     </ng-template>
-                </ngb-tab>
-            </ngb-tabset>
+                </mat-tab>
+            </mat-tab-group>
         </div>
         <div class="mt-3">
             <span id="totalItems">{{totalItems}}</span><span> elements across all classifications</span>

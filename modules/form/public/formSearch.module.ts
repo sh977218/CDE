@@ -13,7 +13,7 @@ import { FormSummaryListContentComponent } from "./components/listView/formSumma
 import { SearchModule } from "search/search.module";
 import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
 import { WidgetModule } from "widget/widget.module";
-import { FormTableViewPreferencesComponent } from "../../search/tableViewPreferences/formTableViewPreferencesComponent";
+import { FormTableViewPreferencesComponent } from "search/tableViewPreferences/formTableViewPreferencesComponent";
 import {
     MatButtonModule,
     MatInputModule,
@@ -25,7 +25,7 @@ import {
     MatIconModule,
     MatListModule,
     MatSelectModule,
-    MatAutocompleteModule
+    MatAutocompleteModule, MatTabsModule
 } from "@angular/material";
 
 @NgModule({
@@ -51,6 +51,7 @@ import {
         MatListModule,
         MatDialogModule,
         MatSelectModule,
+        MatTabsModule,
     ],
     declarations: [
         BoardFormSummaryListComponent,

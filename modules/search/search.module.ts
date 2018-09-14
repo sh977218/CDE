@@ -13,7 +13,7 @@ import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/listView/summaryListItem.component';
 import { TableListComponent } from 'search/listView/tableList.component';
 import { WidgetModule } from 'widget/widget.module';
-import { MatButtonModule, MatIconModule, MatMenuModule } from "@angular/material";
+import { MatButtonModule, MatIconModule, MatMenuModule, MatTabsModule } from "@angular/material";
 import { TableViewPreferencesComponent } from 'search/tableViewPreferences/tableViewPreferences.component';
 
 @NgModule({
@@ -27,7 +27,8 @@ import { TableViewPreferencesComponent } from 'search/tableViewPreferences/table
         MatIconModule,
         MatButtonModule,
         MatIconModule,
-        MatMenuModule
+        MatMenuModule,
+        MatTabsModule,
     ],
     declarations: [
         AccordionListHeadingComponent,

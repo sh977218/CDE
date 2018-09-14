@@ -12,7 +12,7 @@ import {
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger, MatDialog, MatPaginator } from '@angular/material';
 import { NavigationStart } from '@angular/router';
-import { NgbTabChangeEvent, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, map } from 'rxjs/operators';
@@ -134,7 +134,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
     @ViewChild('orgDetailsModal') orgDetailsModal!: TemplateRef<any>;
     @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer!: ViewContainerRef;
-    @ViewChild('tbset') public tabset!: NgbTabset;
     @ViewChild('validRulesModal') validRulesModal!: TemplateRef<any>;
     @ViewChild('autoCompleteInput', {read: MatAutocompleteTrigger}) autoCompleteInput!: MatAutocompleteTrigger;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -286,11 +285,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (!this.embedded) scrollTo('top');
     }
 
-    browseByTopic(event: NgbTabChangeEvent) {
-        this.byTopic = event.nextId !== 'browseByClassification';
-        this.doSearch();
-    }
-
     clearSelectedClassifications() {
         this.searchSettings.selectedOrg = undefined;
         this.searchSettings.classification.length = 0;
@@ -415,7 +409,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (pageNumber > 1) searchTerms.page = pageNumber;
         else if (this.searchSettings.page && this.searchSettings.page > 1) searchTerms.page = this.searchSettings.page;
         if (this.searchSettings.meshTree) searchTerms.topic = this.searchSettings.meshTree;
-        if (this.byTopic && !this.isSearched()) searchTerms.byTopic = 1;
         return searchTerms;
     }
 
@@ -765,7 +758,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.searchSettings.regStatuses = params['regStatuses'] ? params['regStatuses'].split(';') as CurationStatus[] : [];
         this.searchSettings.datatypes = params['datatypes'] ? params['datatypes'].split(';') as DataType[] : [];
         this.searchSettings.meshTree = params['topic'];
-        this.byTopic = params.hasOwnProperty('byTopic');
         this.reload();
     }
 
@@ -816,12 +808,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (this.view === view || view !== 'welcome' && view !== 'results') return;
 
         this.view = view;
-        if (this.view === 'welcome') {
-            // ngAfterViewChecked
-            setTimeout(() => {
-                if (this.byTopic) this.tabset.select('browseByTopic');
-            }, 100);
-        }
         if (this.view === 'results') {
             // ngAfterViewInit
             setTimeout(() => {
