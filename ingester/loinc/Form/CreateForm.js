@@ -12,13 +12,11 @@ const ParseSources = require('../Shared/ParseSources');
 
 const ParseFormElements = require('./ParseFormElements');
 
-const orgMapping = require('../Mapping/ORG_INFO_MAP').map;
 
 const today = new Date().toJSON();
 const ParseClassification = require('../Shared/ParseClassification');
 
-exports.createForm = function (loinc, orgName) {
-    let orgInfo = orgMapping[orgName];
+exports.createForm = function (loinc, orgInfo) {
     return new Promise(async (resolve, reject) => {
         let designations = ParseDesignations.parseDesignations(loinc);
         let definitions = ParseDefinitions.parseDefinitions(loinc);
@@ -29,7 +27,7 @@ exports.createForm = function (loinc, orgName) {
         let sources = ParseSources.parseSources(loinc);
         let classification = await ParseClassification.parseClassification(loinc, orgInfo);
 
-        let formElements = await ParseFormElements.parseFormElements(loinc, orgName);
+        let formElements = await ParseFormElements.parseFormElements(loinc, orgInfo);
         let newForm = {
             tinyId: generateTinyId(),
             createdBy: {username: 'batchloader'},

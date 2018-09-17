@@ -13,17 +13,12 @@ const ParseSources = require('../Shared/ParseSources');
 const ParseValueDomain = require('./ParseValueDomain');
 const ParseConcept = require('./ParseConcept');
 
-const orgMapping = require('../Mapping/ORG_INFO_MAP').map;
-
 const today = new Date().toJSON();
 const ParseClassification = require('../Shared/ParseClassification');
 
-exports.createCde = function (element, orgName) {
+exports.createCde = function (element, orgInfo) {
     let loinc = element.loinc;
-    this.stewardOrgName = orgName;
-    let orgInfo = orgMapping[orgName];
     return new Promise(async (resolve, reject) => {
-
         let designations = ParseDesignations.parseDesignations(loinc, element);
         let definitions = ParseDefinitions.parseDefinitions(loinc);
         let ids = ParseIds.parseIds(loinc);

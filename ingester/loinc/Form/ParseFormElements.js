@@ -11,7 +11,7 @@ const CreateForm = require('./CreateForm');
 const MergeForm = require('./MergeForm');
 
 
-exports.parseFormElements = function (loinc, orgName) {
+exports.parseFormElements = function (loinc, orgInfo) {
     return new Promise(async (resolve, reject) => {
         let formElements = [];
         let elements = loinc['PANEL HIERARCHY']['elements'];
@@ -35,9 +35,7 @@ exports.parseFormElements = function (loinc, orgName) {
             let isElementForm = element.elements.length > 0;
             let f = loadCde;
             if (isElementForm) f = loadForm;
-            if (!element)
-                console.log('a');
-            let formElement = await f(element, orgName);
+            let formElement = await f(element, orgInfo);
             tempFormElements.push(formElement);
         }
         resolve(formElements);
@@ -45,10 +43,8 @@ exports.parseFormElements = function (loinc, orgName) {
 
 };
 
-loadCde = function (element, orgName) {
+loadCde = function (element, orgInfo) {
     return new Promise(async (resolve, reject) => {
-        if (!element)
-            console.log('a');
         let loincId = element.loincId;
         let cdeCond = {
             archived: false,
@@ -56,11 +52,11 @@ loadCde = function (element, orgName) {
             'ids.id': loincId
         };
         let existingCde = await DataElement.findOne(cdeCond);
-        let newCDE = await CreateCDE.createCde(element, orgName);
+        let newCDE = await CreateCDE.createCde(element, orgInfo);
         if (!existingCde) {
             existingCde = await new DataElement(newCDE).save();
         } else {
-            await MergeCDE.mergeCde(newCDE, existingCde, orgName);
+            await MergeCDE.mergeCde(newCDE, existingCde, orgInfo);
         }
         existingCde = existingCde.toObject();
         let question = {
@@ -92,7 +88,7 @@ loadCde = function (element, orgName) {
             elementType: 'question',
             instructions: {},
             cardinality: CARDINALITY_MAP[element.cardinality],
-            label: element.overrideDisplayNameText.trim(),
+            label: element.loincName.trim(),
             question: question,
             formElements: []
         };
@@ -100,7 +96,7 @@ loadCde = function (element, orgName) {
     })
 };
 
-loadForm = function (element, orgName) {
+loadForm = function (element, orgInfo) {
     return new Promise(async (resolve, reject) => {
         let loincId = element.loincId;
         let formCond = {
@@ -110,11 +106,11 @@ loadForm = function (element, orgName) {
         };
 
         let existingForm = await Form.findOne(formCond);
-        let newForm = await CreateForm.createForm(element.loinc, orgName);
+        let newForm = await CreateForm.createForm(element.loinc, orgInfo);
         if (!existingForm) {
             existingForm = await new Form(newForm).save();
         } else {
-            MergeForm.mergeForm(newForm, existingForm, orgName);
+            MergeForm.mergeForm(newForm, existingForm, orgInfo);
         }
         let inForm = {
             form: {
@@ -127,7 +123,7 @@ loadForm = function (element, orgName) {
             elementType: 'form',
             instructions: {value: '', valueFormat: ''},
             cardinality: CARDINALITY_MAP[element.cardinality],
-            label: element.overrideDisplayNameText.trim(),
+            label: element.loincName.trim(),
             inForm: inForm,
             formElements: []
         };

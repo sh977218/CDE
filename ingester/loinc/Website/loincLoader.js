@@ -186,7 +186,7 @@ exports.runOneLoinc = loincId => {
     })
 };
 
-exports.runOneForm = (loinc, orgName) => {
+exports.runOneForm = (loinc, orgInfo) => {
     return new Promise(async (resolve, reject) => {
         let formCond = {
             archived: false,
@@ -195,11 +195,11 @@ exports.runOneForm = (loinc, orgName) => {
             'ids.id': loinc.loincId
         };
         let existingForm = await Form.findOne(formCond);
-        let newForm = await CreateForm.createForm(loinc, orgName);
+        let newForm = await CreateForm.createForm(loinc, orgInfo);
         if (!existingForm) {
             existingForm = await new Form(newForm).save();
         } else {
-            await MergeForm.mergeForm(newForm, existingForm, orgName);
+            await MergeForm.mergeForm(newForm, existingForm, orgInfo.stewardOrgName);
         }
         resolve(existingForm);
     })

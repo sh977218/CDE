@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const CLASSIFICATION_TYPE_MAP = require('../Mapping/LOINC_CLASSIFICATION_TYPE_MAP').map;
 const MigrationLoincClassificationMappingModel = require('../../createMigrationConnection').MigrationLoincClassificationMappingModel;
 
@@ -28,11 +29,22 @@ exports.parseClassification = function (loinc, orgInfo) {
             console.log('type: ' + type + ' Abbreviation: ' + classification + ' in classificationMap is null');
         let classificationArray = [{
             stewardOrg: {name: orgInfo.classificationOrgName},
-            elements: [{
-                name: classificationMap.get('Value'),
-                elements: []
-            }]
+            elements: []
         }];
+        let iterator = classificationArray[0].elements;
+        if (!_.isEmpty(orgInfo.classification)) {
+            orgInfo.classification.forEach(c => {
+                iterator.push({
+                    name: c,
+                    elements: []
+                });
+                iterator = iterator[0].elements;
+            })
+        }
+        iterator.push({
+            name: classificationMap.get('Value'),
+            elements: []
+        });
         resolve(classificationArray);
     })
 };

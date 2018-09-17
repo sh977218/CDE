@@ -1,5 +1,11 @@
 const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
+const orgMapping = require('../Mapping/ORG_INFO_MAP').map;
 const loincLoader = require('./../Website/loincLoader');
+
+let classifi = {
+    '70837-0': ['FACIT'],
+    '89070-7': ['ADAPTABLE']
+};
 
 async function run() {
     if (process.argv.length !== 4) {
@@ -7,12 +13,15 @@ async function run() {
         process.exit(1);
     }
     let loincId = process.argv[2];
-    console.log('***********Start loading loinc Id ' + loincId);
+    console.log('***********Starting loading loinc Id ' + loincId);
     let orgName = process.argv[3];
     console.log('***********Into org ' + orgName);
+    let orgInfo = orgMapping[orgName];
+    orgInfo.classification = classifi[loincId];
     let loinc = await MigrationLoincModel.findOne({loincId: loincId});
-    let newForm = await loincLoader.runOneForm(loinc.toObject(), orgName);
-    console.log('existingForm: ' + newForm);
+    await loincLoader.runOneForm(loinc.toObject(), orgInfo);
+    console.log('***********Finished loading loinc Id ' + loincId);
+    process.exit(1);
 }
 
 run();
