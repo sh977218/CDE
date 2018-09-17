@@ -37,6 +37,7 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/materi
         SearchModule,
         MatIconModule,
         MatButtonModule,
+        MatDialogModule,
     ],
     declarations: [
         CdeAccordionListComponent,

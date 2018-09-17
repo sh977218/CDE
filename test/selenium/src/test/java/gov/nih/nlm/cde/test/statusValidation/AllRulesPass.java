@@ -15,7 +15,7 @@ public class AllRulesPass extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         findElement(By.id("exportValidRule")).click();
         findElement(By.id("selectStatus")).click();
-        findElement(By.xpath("//span[. = Recorded]")).click();
+        findElement(By.xpath("//span[. = 'Recorded']")).click();
         findElement(By.id("exportVR")).click();
         textPresent("All CDEs pass validation rules.");
     }

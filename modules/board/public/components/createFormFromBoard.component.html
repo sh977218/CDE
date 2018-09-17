@@ -3,10 +3,8 @@
 </button>
 
 <ng-template #createFormContent id="createFormModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="createFormModalHeader">
-        <h3>Create form from board</h3>
-    </div>
-    <div class="modal-body" id="createFormModalBody">
-        <cde-create-form [(elt)]="elt" (cancel)="c()" [extModalRef]="modalRef"></cde-create-form>
+    <h3 mat-dialog-title>Create form from board</h3>
+    <div mat-dialog-content>
+        <cde-create-form [(elt)]="elt" (cancel)="c()" (done)="this.modalRef.close()"></cde-create-form>
     </div>
 </ng-template>

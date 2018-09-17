@@ -18,6 +18,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity } from 'shared/de/deValidator';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
+import { MatDialog } from '@angular/material';
 
 
 @Component({
@@ -66,6 +67,7 @@ export class DataElementViewComponent implements OnInit {
                 private router: Router,
                 private ref: ChangeDetectorRef,
                 public modalService: NgbModal,
+                private dialog: MatDialog,
                 public isAllowedModel: IsAllowedService,
                 private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
@@ -273,12 +275,8 @@ export class DataElementViewComponent implements OnInit {
         let publishedEltObs = this.http.get<DataElement>('/de/' + tinyId);
         forkJoin([draftEltObs, publishedEltObs]).subscribe(res => {
             if (res.length = 2) {
-                let newer = res[0];
-                let older = res[1];
-                const modalRef = this.modalService.open(CompareHistoryContentComponent, {size: 'lg'});
-                modalRef.componentInstance.newer = newer;
-                modalRef.componentInstance.older = older;
-
+                let data = {newer:  res[0], older: res[1]};
+                this.dialog.open(CompareHistoryContentComponent, {width: '1000px', data: data});
             } else this.alert.addAlert('danger', 'Error loading view changes. ');
         }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err));
     }
