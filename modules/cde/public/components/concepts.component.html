@@ -33,12 +33,10 @@
         </button>
 </div>
 
-<ng-template #newConceptContent id="newConceptModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="newConceptModalHeader">
-        <h4 class="modal-title">Add Concept</h4>
-    </div>
+<ng-template #newConceptContent>
+    <h4 mat-dialog-title>Add Concept</h4>
     <form role="form" #newConceptForm="ngForm" (ngSubmit)="addNewConcept()">
-        <div class="modal-body" id="newConceptModalBody">
+        <div mat-dialog-content>
             <div class="form-group">
                 <label for="name">Code Name</label>
                 <input class="form-control" id="name" name="name" Placeholder="Concept Code Name"
@@ -64,10 +62,8 @@
                 </select>
             </div>
         </div>
-        <div class="modal-footer" id="newConceptModalFooter">
-            <button mat-raised-button color="accent" (click)="c('Close click')" id="cancelNewConceptBtn" type="button">
-                Cancel
-            </button>
+        <div mat-dialog-actions>
+            <button mat-raised-button color="accent" [mat-dialog-close] type="button">Cancel</button>
             <button mat-raised-button color="primary" [disabled]="!newConceptForm.form.valid" id="createNewConceptBtn"
                     type="submit">Save
             </button>

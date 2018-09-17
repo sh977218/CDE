@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
 import { Subscription } from 'rxjs/Subscription';
@@ -18,7 +18,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity } from 'shared/de/deValidator';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 
 @Component({
@@ -35,7 +35,7 @@ import { MatDialog } from '@angular/material';
 })
 export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent') commentAreaComponent: DiscussAreaComponent;
-    @ViewChild('copyDataElementContent') copyDataElementContent: NgbModalModule;
+    @ViewChild('copyDataElementContent') copyDataElementContent: TemplateRef<any>;
     @ViewChild('tabSet') tabSet: NgbTabset;
 
     commentMode;
@@ -48,7 +48,7 @@ export class DataElementViewComponent implements OnInit {
     eltCopy = {};
     hasComments;
     highlightedTabs = [];
-    modalRef: NgbModalRef;
+    modalRef: MatDialogRef<TemplateRef<any>>;
     tabsCommented = [];
     savingText: String;
     tinyId;
@@ -66,7 +66,6 @@ export class DataElementViewComponent implements OnInit {
                 private route: ActivatedRoute,
                 private router: Router,
                 private ref: ChangeDetectorRef,
-                public modalService: NgbModal,
                 private dialog: MatDialog,
                 public isAllowedModel: IsAllowedService,
                 private orgHelperService: OrgHelperService,
@@ -171,7 +170,7 @@ export class DataElementViewComponent implements OnInit {
             registrationStatus: 'Incomplete',
             administrativeNote: 'Copy of: ' + this.elt.tinyId
         };
-        this.modalRef = this.modalService.open(this.copyDataElementContent, {size: 'lg'});
+        this.modalRef = this.dialog.open(this.copyDataElementContent, {width: '1200px'});
     }
 
     loadHighlightedTabs($event) {

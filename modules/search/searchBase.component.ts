@@ -517,6 +517,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     openValidRulesModal() {
         this.validRulesStatus = 'Incomplete';
         this.dialog.open(this.validRulesModal).afterClosed().subscribe(report => {
+            if (!report) return;
             report.searchSettings = this.searchSettings;
             delete report.searchSettings.resultPerPage;
             this.router.navigate(['/cdeStatusReport'], {

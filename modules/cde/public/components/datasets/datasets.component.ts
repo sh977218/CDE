@@ -1,22 +1,17 @@
-import { Component, Input, ViewChild } from "@angular/core";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { Component, Input, TemplateRef, ViewChild } from "@angular/core";
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: "cde-datasets",
-    providers: [NgbActiveModal],
     templateUrl: "./datasets.component.html"
 })
 
 export class DatasetsComponent {
-    @ViewChild("datasetsContent") public datasetsContent: NgbModalModule;
+    @ViewChild("datasetsContent") public datasetsContent: TemplateRef<any>;
     @Input() public elt: any;
-    public modalRef: NgbModalRef;
-    constructor(public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
-
-    }
+    constructor(public dialog: MatDialog) {}
 
     openDatasetsModal() {
-        this.modalRef = this.modalService.open(this.datasetsContent, {size: "lg"});
+        this.dialog.open(this.datasetsContent, {width: "800px"});
     }
 }
