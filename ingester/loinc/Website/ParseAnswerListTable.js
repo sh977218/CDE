@@ -50,8 +50,14 @@ exports.parseAnswerListTable = async (driver, loincId, table, cb) => {
         let tds = await tr.findElements(By.xpath('td'));
         for (let key in thMapping) {
             let index = thMapping[key];
-            let text = await tds[index].getText();
-            answerListItem[key] = text.trim();
+            let fullText = await tds[index].getText();
+            let brs = await tds[index].findElements(By.xpath('br'));
+            if (brs.length > 0) {
+                let index = fullText.indexOf('\n');
+                answerListItem[key] = fullText.substring(0, index).trim();
+            }
+            else answerListItem[key] = fullText.trim();
+
         }
         answerListArray.push(answerListItem);
     }
