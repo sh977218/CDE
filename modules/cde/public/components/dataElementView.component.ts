@@ -1,11 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _cloneDeep from 'lodash/cloneDeep';
-import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
-import _uniqWith from 'lodash/uniqWith';
 import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
@@ -110,7 +108,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     loadDataElement(cb = _noop) {
-        this.userService.then(user => {
+        this.userService.then(() => {
             this.http.get<DataElement>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
                 res => {
                     if (res && this.isAllowedModel.isAllowed(res)) {

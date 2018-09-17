@@ -24,7 +24,13 @@ import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { WidgetModule } from 'widget/widget.module';
 import { CompareModule } from 'compare/compare.module';
-import { MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule } from "@angular/material";
+import {
+    MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatMenuModule,
+    MatProgressSpinnerModule
+} from "@angular/material";
 
 
 const appRoutes: Routes = [
@@ -50,6 +56,7 @@ const appRoutes: Routes = [
         DiscussModule,
         FormSearchModule,
         MatButtonModule,
+        MatDialogModule,
         MatIconModule,
         MatMenuModule,
         MatProgressSpinnerModule,

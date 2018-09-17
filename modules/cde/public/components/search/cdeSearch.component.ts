@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ComponentFactoryResolver, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AlertService } from '_app/alert.service';
 import { BackForwardService } from '_app/backForward.service';
@@ -31,7 +30,6 @@ export class CdeSearchComponent extends SearchBaseComponent {
         protected backForwardService: BackForwardService,
         protected exportService: ExportService,
         protected http: HttpClient,
-        protected modalService: NgbModal,
         protected elasticService: ElasticService,
         protected orgHelperService: OrgHelperService,
         protected route: ActivatedRoute,
@@ -39,7 +37,7 @@ export class CdeSearchComponent extends SearchBaseComponent {
         protected userService: UserService,
         protected dialog: MatDialog
     ) {
-        super(_componentFactoryResolver, alert, backForwardService, elasticService, exportService, http, modalService,
+        super(_componentFactoryResolver, alert, backForwardService, elasticService, exportService, http,
             orgHelperService, route, router, userService, dialog);
 
         this.exporters.csv = {id: 'csvExport', display: 'CSV Export'};

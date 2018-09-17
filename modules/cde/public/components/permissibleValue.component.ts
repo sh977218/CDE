@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
@@ -10,10 +9,10 @@ import { AlertService } from '_app/alert.service';
 import { DataTypeService } from 'core/dataType.service';
 import { SearchSettings } from 'search/search.model';
 import { checkPvUnicity, fixDatatype } from 'shared/de/deValidator';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-permissible-value',
-    providers: [NgbActiveModal],
     templateUrl: 'permissibleValue.component.html'
 })
 export class PermissibleValueComponent {
@@ -49,15 +48,15 @@ export class PermissibleValueComponent {
         return this._elt;
     }
     @Output() onEltChange = new EventEmitter();
-    @ViewChild('newPermissibleValueContent') public newPermissibleValueContent: NgbModalModule;
-    @ViewChild('importPermissibleValueContent') public importPermissibleValueContent: NgbModalModule;
+    @ViewChild('newPermissibleValueContent') public newPermissibleValueContent: TemplateRef<any>;
+    @ViewChild('importPermissibleValueContent') public importPermissibleValueContent: TemplateRef<any>;
     canLinkPv = false;
     containsKnownSystem: boolean = false;
     dataTypeList = [];
     editMode;
     keys = Object.keys;
-    modalRef: NgbModalRef;
     newPermissibleValue: any = {};
+    modalRef: MatDialogRef<TemplateRef<any>>;
     pVTypeheadVsacNameList;
     searchSettings: SearchSettings = {
         classification: [],
@@ -78,7 +77,7 @@ export class PermissibleValueComponent {
     };
 
     constructor(public http: HttpClient,
-                public modalService: NgbModal,
+                private dialog: MatDialog,
                 public userService: UserService,
                 private Alert: AlertService) {
         this.dataTypeList = DataTypeService.getDataTypeItemList();
@@ -289,13 +288,12 @@ export class PermissibleValueComponent {
     }
 
     openImportPermissibleValueModal() {
-        this.modalRef = this.modalService.open(this.importPermissibleValueContent, {size: 'lg'});
+        this.modalRef = this.dialog.open(this.importPermissibleValueContent, {width: '1000px'});
     }
 
     openNewPermissibleValueModal() {
-        this.modalRef = this.modalService.open(this.newPermissibleValueContent, {size: 'lg'});
-        this.modalRef.result.then(() => this.newPermissibleValue = {}, () => {
-        });
+        this.modalRef = this.dialog.open(this.newPermissibleValueContent, {width: '800px'});
+        this.modalRef.afterClosed().subscribe(() => this.newPermissibleValue = {}, () => {});
     }
 
     removeAllPermissibleValues() {

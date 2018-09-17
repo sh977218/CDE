@@ -26,7 +26,7 @@ public class SetValidRules extends BaseClassificationTest {
         clickElement(By.id("export"));
         clickElement(By.id("exportValidRule"));
         clickElement(By.id("selectStatus"));
-        clickElement(By.id("recorded"));
+        findElement(By.xpath("//span[. = Recorded]")).click();
         clickElement(By.id("exportVR"));
         textPresent("Test Rule #1");
     }

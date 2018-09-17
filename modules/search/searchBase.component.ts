@@ -12,7 +12,6 @@ import {
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger, MatDialog, MatPaginator } from '@angular/material';
 import { NavigationStart } from '@angular/router';
-import { NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, map } from 'rxjs/operators';
@@ -142,7 +141,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     aggregations: any;
     altClassificationFilterMode?: boolean;
     autocompleteSuggestions?: string[];
-    byTopic?: boolean;
     cutoffIndex: any;
     elts?: Elt[];
     embedded = false;
@@ -182,7 +180,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 protected elasticService: ElasticService,
                 protected exportService: ExportService,
                 protected http: HttpClient,
-                protected modalService: any,
                 protected orgHelperService: OrgHelperService,
                 protected route: any,
                 protected router: any,

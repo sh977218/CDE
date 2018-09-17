@@ -39,12 +39,12 @@ const navigationSteps: Array<any> = [
 const searchResultSteps: Array<any> = [
     {
         title: "Browse by Classification",
-        element: "#browseByClassification",
+        element: ".mat-tab-label:first-child",
         content: "CDEs or Forms can be browsed by Classifications. Classifications are ways for content owners to organize their CDEs."
     },
     {
         title: "Browse by Topic",
-        element: "#browseByTopic",
+        element: ".mat-tab-label:nth-child(2)",
         content: "Or by topic. Topics are MeSH terms."
     },
     {
