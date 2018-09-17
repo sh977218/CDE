@@ -1,13 +1,20 @@
 const DataElement = require('../../../server/cde/mongo-cde').DataElement;
 const Form = require('../../../server/form/mongo-form').Form;
+
 const REQUIRED_MAP = require('../Mapping/LOINC_REQUIRED_MAP').map;
 const MULTISELECT_MAP = require('../Mapping/LOINC_MULTISELECT_MAP').map;
 const CARDINALITY_MAP = require('../Mapping/LOINC_CARDINALITY_MAP').map;
 
-exports.parseFormElements = function (loinc) {
+const CreateCDE = require('../CDE/CreateCDE');
+const MergeCDE = require('../CDE/MergeCDE');
+const CreateForm = require('./CreateForm');
+const MergeForm = require('./MergeForm');
+
+
+exports.parseFormElements = function (loinc, orgName) {
     return new Promise(async (resolve, reject) => {
         let formElements = [];
-        let elements = loinc['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'];
+        let elements = loinc['PANEL HIERARCHY']['elements'];
         console.log('Form ' + loinc['loincId'] + ' has ' + elements.length + ' elements to process.');
         if (!elements || elements.length === 0) resolve();
         let tempFormElements = formElements;
@@ -28,9 +35,9 @@ exports.parseFormElements = function (loinc) {
             let isElementForm = element.elements.length > 0;
             let f = loadCde;
             if (isElementForm) f = loadForm;
-            let formElement = await f(element).catch(e => {
-                reject(e);
-            });
+            if (!element)
+                console.log('a');
+            let formElement = await f(element, orgName);
             tempFormElements.push(formElement);
         }
         resolve(formElements);
@@ -38,18 +45,23 @@ exports.parseFormElements = function (loinc) {
 
 };
 
-loadCde = function (element) {
+loadCde = function (element, orgName) {
     return new Promise(async (resolve, reject) => {
+        if (!element)
+            console.log('a');
+        let loincId = element.loincId;
         let cdeCond = {
             archived: false,
-            "registrationState.registrationStatus": {$ne: "Retired"}
+            "registrationState.registrationStatus": {$ne: "Retired"},
+            'ids.id': loincId
         };
-        let loincId = element['LOINC#'];
-        let existingCde = await DataElement.findOne(cdeCond)
-            .elemMatch('ids', {source: 'LOINC', id: loincId}).exec().catch(e => {
-                throw e;
-            });
-        if (!existingCde) reject('cde ' + loincId + ' not found.');
+        let existingCde = await DataElement.findOne(cdeCond);
+        let newCDE = await CreateCDE.createCde(element, orgName);
+        if (!existingCde) {
+            existingCde = await new DataElement(newCDE).save();
+        } else {
+            await MergeCDE.mergeCde(newCDE, existingCde, orgName);
+        }
         existingCde = existingCde.toObject();
         let question = {
             instructions: {value: ''},
@@ -62,7 +74,7 @@ loadCde = function (element) {
                 permissibleValues: existingCde.valueDomain.permissibleValues,
                 ids: existingCde.ids
             },
-            required: REQUIRED_MAP[element['ANSWER CARDINALITY']],
+            required: REQUIRED_MAP[element['cardinality']],
             multiselect: MULTISELECT_MAP[element['ANSWER CARDINALITY']],
             datatype: existingCde.valueDomain.datatype,
             datatypeNumber: existingCde.valueDomain.datatypeNumber,
@@ -73,14 +85,14 @@ loadCde = function (element) {
         if (question.datatype === 'Text') {
             question.multiselect = false;
         }
-        if (element['Ex UCUM Units']) {
-            question.unitsOfMeasure.push({system: '', code: element['Ex UCUM Units']});
+        if (element['exUcumUnitsText']) {
+            question.unitsOfMeasure.push({system: '', code: element['exUcumUnitsText']});
         }
         let formElement = {
             elementType: 'question',
             instructions: {},
-            cardinality: CARDINALITY_MAP[element['Cardinality']],
-            label: element['LOINC Name'],
+            cardinality: CARDINALITY_MAP[element.cardinality],
+            label: element.overrideDisplayNameText.trim(),
             question: question,
             formElements: []
         };
@@ -88,20 +100,22 @@ loadCde = function (element) {
     })
 };
 
-loadForm = function (element) {
+loadForm = function (element, orgName) {
     return new Promise(async (resolve, reject) => {
+        let loincId = element.loincId;
         let formCond = {
             archived: false,
-            "registrationState.registrationStatus": {$ne: "Retired"}
+            "registrationState.registrationStatus": {$ne: "Retired"},
+            'ids.id': loincId
         };
 
-        let loincId = element['LOINC#'];
-        let existingForm = await Form.findOne(formCond)
-            .elemMatch('ids', {source: 'LOINC', id: loincId}).exec().catch(e => {
-                throw e;
-            });
-        if (!existingForm) reject('form ' + loincId + ' not found.');
-        existingForm = existingForm.toObject();
+        let existingForm = await Form.findOne(formCond);
+        let newForm = await CreateForm.createForm(element.loinc, orgName);
+        if (!existingForm) {
+            existingForm = await new Form(newForm).save();
+        } else {
+            MergeForm.mergeForm(newForm, existingForm, orgName);
+        }
         let inForm = {
             form: {
                 tinyId: existingForm.tinyId,
@@ -112,8 +126,8 @@ loadForm = function (element) {
         let formElement = {
             elementType: 'form',
             instructions: {value: '', valueFormat: ''},
-            cardinality: CARDINALITY_MAP[element['Cardinality']],
-            label: element['LOINC Name'].replace('[AHRQ]', '').trim(),
+            cardinality: CARDINALITY_MAP[element.cardinality],
+            label: element.overrideDisplayNameText.trim(),
             inForm: inForm,
             formElements: []
         };

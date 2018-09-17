@@ -1,10 +1,11 @@
 const By = require('selenium-webdriver').By;
 
-exports.parseLanguageVariantsTable = async function (table, cb) {
+exports.parseLanguageVariantsTable = async function (driver, loincId, table, cb) {
     let languageVariants = [];
     let trs = await table.findElements(By.xpath('tbody/tr'));
     trs.shift();
-    if (trs.length % 2 !== 0) throw new Error('Parse language variants error');
+    if (trs.length % 2 !== 0)
+        throw new Error('Parse language variants error ' + loincId);
     let num_language_variants = trs.length / 2;
     for (let i = 0; i < num_language_variants; i++) {
         let titleTr = trs[i];

@@ -7,7 +7,7 @@ exports.parseClassification = function (loinc, orgInfo) {
         let classificationType = '';
         let basicAttributes = loinc['BASIC ATTRIBUTES'];
         if (!basicAttributes) reject("No BASIC ATTRIBUTES found in " + loinc.loincId);
-        let classTypeString = basicAttributes['BASIC ATTRIBUTES']['Class/Type'];
+        let classTypeString = basicAttributes['Class/Type'];
         let classTypeArray = classTypeString.split('/');
         if (classTypeArray.length === 0) reject('No Class/Type found in loinc id: ' + loinc.loincId);
         else if (classTypeArray.length === 2) {
@@ -23,8 +23,6 @@ exports.parseClassification = function (loinc, orgInfo) {
         let classificationMap = await MigrationLoincClassificationMappingModel.findOne({
             Type: type,
             Abbreviation: classification
-        }).catch(e => {
-            throw e
         });
         if (!classificationMap)
             console.log('type: ' + type + ' Abbreviation: ' + classification + ' in classificationMap is null');

@@ -21,6 +21,8 @@ exports.compareForms = function (newForm, existingForm) {
 };
 exports.mergeForm = function (newForm, existingForm, orgName) {
     return new Promise(async (resolve, reject) => {
+        let diff = compareForms(newForm, existingForm);
+        if (_.isEmpty(diff))resolve();
         existingForm.designations = newForm.designations;
         existingForm.definitios = newForm.definitios;
         existingForm.sources = newForm.sources;

@@ -4,7 +4,7 @@ const ParseFullySpecifiedName = require('./ParseFullySpecifiedName');
 const ParseLongCommonName = require('./ParseLongCommonName');
 const ParseShortname = require('./ParseShortname');
 
-exports.parseNameTable = async function (table, cb) {
+exports.parseNameTable = async function (driver, loincId, table, cb) {
     let result = {};
     let trs = await table.findElements(By.xpath('tbody/tr'));
     trs.shift();

@@ -1,4 +1,4 @@
-exports.parseVersion = async function (element, cb) {
+exports.parseVersion = async function (driver, loincId, element, cb) {
     let text = await element.getText();
     let versionText = text.trim();
     let versionNumStr = versionText.replace('Generated from LOINC version', '').trim();

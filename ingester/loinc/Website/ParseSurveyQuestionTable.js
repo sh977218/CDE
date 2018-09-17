@@ -1,7 +1,7 @@
 const By = require('selenium-webdriver').By;
 const utility = require('../Utility/utility');
 
-exports.parseSurveyQuestionTable = async (table, cb) => {
+exports.parseSurveyQuestionTable = async (driver, loincId, table, cb) => {
     let surveyQuestion = {};
     let trs = await table.findElements(By.xpath('tbody/tr'));
     trs.shift();

@@ -1,6 +1,6 @@
 const By = require('selenium-webdriver').By;
 
-exports.parseExampleUnitsTable = async function (element, cb) {
+exports.parseExampleUnitsTable = async function (driver, loincId, element, cb) {
     let exampleUnits = [];
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();

@@ -2,7 +2,7 @@ const By = require('selenium-webdriver').By;
 
 const utility = require('../Utility/utility');
 
-exports.parseCopyrightTable = async function (element, cb) {
+exports.parseCopyrightTable = async function (driver, loincId, element, cb) {
     let result = {};
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();

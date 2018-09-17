@@ -1,6 +1,6 @@
 const By = require('selenium-webdriver').By;
 
-exports.parseArticleTable = async (element, cb) => {
+exports.parseArticleTable = async (driver, loincId, element, cb) => {
     let trs = await element.findElements(By.xpath('tbody/tr'));
 
     trs.shift();
@@ -17,7 +17,8 @@ exports.parseArticleTable = async (element, cb) => {
                 d.Description = descriptionText.trim();
 
                 let descriptionLink = await oneArticle[0].findElements(By.css('a'));
-                if (descriptionLink.length !== 1) throw new Error('Parse article error');
+                if (descriptionLink.length !== 1)
+                    throw new Error('Parse article error ' + loincId);
                 let descriptionLinkHref = descriptionLink[0].getAttribute('href');
                 d.DescriptionLink = descriptionLinkHref.trim();
 
@@ -25,7 +26,8 @@ exports.parseArticleTable = async (element, cb) => {
                 d.Source = sourceText.trim();
 
                 let sourceLink = oneArticle[1].findElements(By.css('a'));
-                if (sourceLink.length !== 1) throw new Error('Parse article error');
+                if (sourceLink.length !== 1)
+                    throw new Error('Parse article error ' + loincId);
 
                 let sourceLinkHref = await sourceLink[0].getAttribute('href');
                 d.SourceLink = sourceLinkHref.trim();

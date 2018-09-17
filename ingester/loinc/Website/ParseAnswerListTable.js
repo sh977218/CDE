@@ -1,6 +1,6 @@
 const By = require('selenium-webdriver').By;
 
-exports.parseAnswerListTable = async (table, cb) => {
+exports.parseAnswerListTable = async (driver, loincId, table, cb) => {
     let answerListObj = {
         answerListId: {},
         answerList: []

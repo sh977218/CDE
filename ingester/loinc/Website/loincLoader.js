@@ -1,11 +1,17 @@
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
+const _ = require('lodash');
+
+const Form = require('../../../server/form/mongo-form').Form;
+const CreateForm = require('../Form/CreateForm');
+const MergeForm = require('../Form/MergeForm');
 
 const ParseLoincNameTable = require('./ParseLoincNameTable');
 const ParseLoincIdTable = require('./ParseLoincIdTable');
 const ParsePanelHierarchyTable = require('./ParsePanelHierarchyTable');
 const ParseNameTable = require('./NameTable/ParseNameTable');
 const ParseTermDefinitionDescriptionsTable = require('./ParseTermDefinitionDescriptionsTable');
+const ParseFormCodingInstructionsTable = require('./ParseFormCodingInstructionsTable');
 const ParsePartDefinitionDescriptionsTable = require('./ParsePartDefinitionDescriptionsTable');
 const ParsePartTable = require('./ParsePartTable');
 const ParseBasicAttributesTable = require('./ParseBasicAttributesTable');
@@ -72,7 +78,7 @@ const tasks = [
     },
     {
         sectionName: 'FORM CODING INSTRUCTIONS',
-        function: ParseTermDefinitionDescriptionsTable.parseTermDefinitionDescriptionsTable,
+        function: ParseFormCodingInstructionsTable.parseFormCodingInstructionsTable,
         xpath: 'html/body/div/table[.//th[contains(node(),"FORM CODING INSTRUCTIONS")]]'
     },
     {
@@ -160,7 +166,7 @@ const tasks = [
     }
 ];
 
-exports.runOne = loincId => {
+exports.runOneLoinc = loincId => {
     return new Promise(async (resolve, reject) => {
         let driver = new webdriver.Builder().forBrowser('chrome').build();
         let url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
@@ -170,12 +176,31 @@ exports.runOne = loincId => {
             let sectionName = task.sectionName;
             let elements = await driver.findElements(By.xpath(task.xpath));
             if (elements && elements.length === 1) {
-                await task.function(elements[0], result => {
+                await task.function(driver, loincId, elements[0], result => {
                     loinc[sectionName] = result;
-                }, driver, loincId);
+                });
             }
         }
         driver.close();
         resolve(loinc);
+    })
+};
+
+exports.runOneForm = (loinc, orgName) => {
+    return new Promise(async (resolve, reject) => {
+        let formCond = {
+            archived: false,
+            source: 'LOINC',
+            "registrationState.registrationStatus": {$not: /Retired/},
+            'ids.id': loinc.loincId
+        };
+        let existingForm = await Form.findOne(formCond);
+        let newForm = await CreateForm.createForm(loinc, orgName);
+        if (!existingForm) {
+            existingForm = await new Form(newForm).save();
+        } else {
+            await MergeForm.mergeForm(newForm, existingForm, orgName);
+        }
+        resolve(existingForm);
     })
 };

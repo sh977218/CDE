@@ -1,6 +1,6 @@
 const By = require('selenium-webdriver').By;
 
-exports.parseRelatedNamesTable = async function (element, cb) {
+exports.parseRelatedNamesTable = async function (driver, loincId, element, cb) {
     let relatedNames = [];
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();

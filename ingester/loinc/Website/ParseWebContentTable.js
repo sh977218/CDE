@@ -1,6 +1,6 @@
 const By = require('selenium-webdriver').By;
 
-exports.parseWebContentTable = async (element, cb) => {
+exports.parseWebContentTable = async (driver, loincId, element, cb) => {
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
     let webContents = [];
@@ -16,7 +16,8 @@ exports.parseWebContentTable = async (element, cb) => {
                 d.Copyright = copyrightText.trim();
 
                 let copyrightLink = await oneWebContent[0].findElements(By.css('a'));
-                if (copyrightLink.length !== 1) throw new Error('Parse web content error');
+                if (copyrightLink.length !== 1)
+                    throw new Error('Parse web content error ' + loincId);
                 let copyrightLinkHref = await copyrightLink[0].getAttribute('href');
                 d.CopyrightLink = copyrightLinkHref.trim();
 
@@ -24,7 +25,8 @@ exports.parseWebContentTable = async (element, cb) => {
                 d.Source = sourceText.trim();
 
                 let sourceLink = await oneWebContent[1].findElements(By.css('a'));
-                if (sourceLink.length !== 1) throw new Error('Parse web content error');
+                if (sourceLink.length !== 1)
+                    throw new Error('Parse web content error ' + loincId);
 
                 let sourceLinkHref = await sourceLink[0].getAttribute('href');
                 d.SourceLink = sourceLinkHref.trim();

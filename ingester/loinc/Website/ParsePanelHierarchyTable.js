@@ -1,8 +1,8 @@
 const By = require('selenium-webdriver').By;
-const LOINCLoader = require('./LOINCLoader');
+const loincLoader = require('./loincLoader');
 
 
-exports.parsePanelHierarchyTable = async (element, cb, driver, id) => {
+exports.parsePanelHierarchyTable = async (driver, loincId,element, cb) => {
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
     trs.pop();
@@ -24,6 +24,7 @@ exports.parsePanelHierarchyTable = async (element, cb, driver, id) => {
         let aText = await a.getText();
         let spaces = spanText.replace(aText, '');
         let depth = spaces.length / 5;
+        if (depth > 0) row.loinc = await loincLoader.runOneLoinc(row.loincId);
         if (depth === 0) {
             currentLevels[0] = row;
             currentDepth = 0;
