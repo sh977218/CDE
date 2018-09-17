@@ -14,7 +14,6 @@ import { SearchBaseComponent, searchStyles } from 'search/searchBase.component';
 import { CdeForm } from 'shared/form/form.model';
 import { MatDialog } from '@angular/material';
 
-
 @Component({
     selector: 'cde-form-search',
     styles: [searchStyles],

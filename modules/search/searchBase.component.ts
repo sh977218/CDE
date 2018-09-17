@@ -511,7 +511,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     openOrgDetails(org: Organization) {
         this.orgHtmlOverview = org.htmlOverview;
         this.dialog.open(this.orgDetailsModal, {width: '600px'});
-        // this.modalService.open(this.orgDetailsModal, {size: 'lg'});
     }
 
     openPinModal() {

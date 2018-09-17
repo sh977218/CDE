@@ -7,6 +7,7 @@ import { ITEM_MAP } from 'shared/item';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
+import { MatDialog } from '@angular/material';
 
 class HistoryDe extends DataElement {
     promise?: Promise<History>;
@@ -39,7 +40,7 @@ export class HistoryComponent implements OnInit {
     priorElements: History[];
     numberSelected: number = 0;
 
-    constructor(public modalService: NgbModal,
+    constructor(private dialog: MatDialog,
                 private alert: AlertService,
                 private http: HttpClient) {
     }
@@ -84,11 +85,11 @@ export class HistoryComponent implements OnInit {
                 this.priorElements[this.priorElements.indexOf(priorElt)] = res;
             });
         })).then(() => {
-            let newer = this.priorElements.filter(p => p.selected)[0];
-            let older = this.priorElements.filter(p => p.selected)[1];
-            const modalRef = this.modalService.open(CompareHistoryContentComponent, {size: 'lg'});
-            modalRef.componentInstance.newer = newer;
-            modalRef.componentInstance.older = older;
+            let data = {
+                newer: this.priorElements.filter(p => p.selected)[0],
+                older: this.priorElements.filter(p => p.selected)[1]
+            };
+            this.dialog.open(CompareHistoryContentComponent, {width: '800px', data: data});
         }, err => this.alert.addAlert('danger', 'Error open history compare modal.' + err));
     }
 

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
 import './fhirMapping.scss';
-import { CdeForm, FhirProcedureMapping, FormQuestion } from 'shared/form/form.model';
+import { FhirProcedureMapping, FormQuestion } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-fhir-procedure-mappin',

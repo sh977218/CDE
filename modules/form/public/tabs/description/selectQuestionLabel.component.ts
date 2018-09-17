@@ -2,7 +2,7 @@ import { Component, Inject, EventEmitter, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MAT_DIALOG_DATA } from "@angular/material";
 import { AlertService } from '_app/alert.service';
-import { QuestionCde } from '../../../../../shared/form/form.model';
+import { QuestionCde } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-select-question-label',
