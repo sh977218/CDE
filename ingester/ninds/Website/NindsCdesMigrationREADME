@@ -51,8 +51,8 @@ db.dataelements.update({
 6. remove suggested question text from properties
 use nlmcde
 db.dataelements.update(
-{source: "NINDS", archived: false}
-, {$pull: {properties:
+{source: "NINDS", archived: false},
+{$pull: {properties:
 {key: "NINDS Suggested Question"}
 }},
 {multi: true}

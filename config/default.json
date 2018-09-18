@@ -89,6 +89,14 @@
         "ssl": false
       },
       "cappedCollectionSizeMB": 262144000
+    },
+    "migration": {
+      "db": "migration",
+      "username": "miguser",
+      "password": "password",
+      "options": {
+        "ssl": false
+      }
     }
   },
   "node": {
