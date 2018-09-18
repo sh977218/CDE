@@ -10,11 +10,11 @@ function isQuestionTextExist(designations) {
     return temp.length > 0;
 }
 
-exports.parseDesignations = function (loinc) {
+exports.parseDesignations = function (loinc, element) {
     let designations = [];
     let longCommonNameObj = {};
     let shortNameObj = {};
-    let NAME = loinc['NAME']['NAME'];
+    let NAME = loinc['NAME'];
     if (NAME) {
         if (NAME['Long Common Name']) {
             longCommonNameObj = {
@@ -33,7 +33,7 @@ exports.parseDesignations = function (loinc) {
                 designation: NAME['Shortname'],
                 tags: ["Shortname"]
             };
-            let existingDesignation = isDesignationsExisted(naming, shortNameObj);
+            let existingDesignation = isDesignationsExisted(designations, shortNameObj);
             if (existingDesignation) {
                 existingDesignation.tags.push('Shortname');
             } else {
@@ -44,9 +44,9 @@ exports.parseDesignations = function (loinc) {
     }
     let questionTextDesignationObj = {};
     if (loinc['SURVEY QUESTION']) {
-        if (loinc['SURVEY QUESTION']['SURVEY QUESTION'].Text && loinc['SURVEY QUESTION']['SURVEY QUESTION'].Text.length > 0) {
+        if (loinc['SURVEY QUESTION'].Text) {
             questionTextDesignationObj = {
-                designation: loinc['SURVEY QUESTION']['SURVEY QUESTION'].Text,
+                designation: loinc['SURVEY QUESTION'].Text,
                 tags: ['Question Text']
             };
             let existingDesignation = isDesignationsExisted(designations, questionTextDesignationObj);
@@ -57,8 +57,21 @@ exports.parseDesignations = function (loinc) {
             }
         }
     }
-    let LOINCNAME = loinc['LOINC NAME']['LOINC NAME']['LOINC NAME'];
+    let LOINCNAME = loinc['LOINC NAME'];
     let loincNameObj = {};
+    if (element && element.overrideDisplayNameText) {
+        loincNameObj = {
+            designation: element.overrideDisplayNameText,
+            tags: ['Question Text']
+        };
+        let existingDesignation = isDesignationsExisted(designations, loincNameObj);
+        if (existingDesignation) {
+            if (isQuestionTextExist(designations))
+                existingDesignation.tags.push('Question Text');
+        } else {
+            designations.push(loincNameObj);
+        }
+    }
     if (LOINCNAME) {
         loincNameObj = {
             designation: LOINCNAME,

@@ -1,38 +1,22 @@
-var async = require('async');
-var By = require('selenium-webdriver').By;
+const By = require('selenium-webdriver').By;
+const utility = require('../Utility/utility');
 
-var utility = require('../Utility/utility');
-
-exports.parseHL7AttributesTable = function (obj, task, element, cb) {
-    var sectionName = task.sectionName;
-    var basicAttributesObj = {};
-    element.findElements(By.xpath('tbody/tr')).then(function (trs) {
-        trs.shift();
-        async.forEach(trs, function (tr, doneOneTr) {
-            tr.findElements(By.xpath('td')).then(function (tds) {
-                var key = '';
-                var value = '';
-                async.series([
-                    function (doneKey) {
-                        tds[1].getText().then(function (keyText) {
-                            key = utility.sanitizeText(keyText);
-                            doneKey();
-                        });
-                    },
-                    function (doneValue) {
-                        tds[2].getText().then(function (valueText) {
-                            value = valueText.trim();
-                            doneValue();
-                        });
-                    }
-                ], function () {
-                    basicAttributesObj[key] = value;
-                    doneOneTr();
-                });
-            });
-        }, function doneAllTrs() {
-            obj[sectionName][sectionName] = basicAttributesObj;
-            cb();
-        });
-    });
+exports.parseHL7AttributesTable = async function (driver, loincId, element, cb) {
+    let basicAttributes = {};
+    let trs = await element.findElements(By.xpath('tbody/tr'));
+    trs.shift();
+    for (let tr of trs) {
+        let tds = await tr.findElements(By.xpath('td'));
+        if (tds.length !== 3)
+            throw new Error('Parse HL7 attributes error ' + loincId);
+        let spaceTd = tds[0];
+        let spaceClass = await spaceTd.getAttribute('class');
+        if (spaceClass.trim().indexOf('spacer') === -1) throw new Error('Parse HL7 attributes error ' + loincId);
+        let keyTd = tds[1];
+        let key = await keyTd.getText();
+        let valueTd = tds[2];
+        let value = await valueTd.getText();
+        basicAttributes[utility.sanitizeText(key.trim())] = utility.sanitizeText(value.trim());
+    }
+    cb(basicAttributes);
 };
