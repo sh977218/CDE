@@ -24,15 +24,13 @@
     </div>
 </div>
 
-<ng-template #confirmReindex id="confirmReindex" let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h3 class="modal-title">Are you sure you want to re-index?</h3>
-    </div>
-    <div class="modal-body">
+<ng-template #confirmReindex >
+    <h3 mat-dialog-title>Are you sure you want to re-index?</h3>
+    <div mat-dialog-content>
         <h4>Re-indexing: {{esIndices[indexToReindex].indexName}}</h4>
     </div>
-    <div class="modal-footer">
-        <button mat-raised-button color="warn" type="button" (click)="d()">Cancel</button>
-        <button mat-raised-button color="primary" (click)="okReIndex(); c()">OK</button>
+    <div mat-dialog-actions>
+        <button mat-raised-button color="warn" type="button" [mat-dialog-close]>Cancel</button>
+        <button mat-raised-button color="primary" (click)="okReIndex()" [mat-dialog-close]>OK</button>
     </div>
 </ng-template>

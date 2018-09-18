@@ -44,12 +44,10 @@
     </button>
 </div>
 
-<ng-template #newIdentifierContent id="newIdentifierModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="newIdentifierModalHeader">
-        <h4 class="modal-title">Add Identifier</h4>
-    </div>
+<ng-template #newIdentifierContent>
+    <h4 mat-dialog-title>Add Identifier</h4>
     <form role="form" #newIdentifierForm="ngForm" (ngSubmit)="addNewIdentifier()">
-        <div class="modal-body" id="newIdentifierModalBody">
+        <div mat-dialog-content>
             <div class="form-group">
                 <label for="newSource">Source</label>
                 <input class="form-control" name="source"
@@ -66,9 +64,9 @@
                        Placeholder="Version" id="newVersion" [(ngModel)]="newIdentifier.version"/>
             </div>
         </div>
-        <div class="modal-footer" id="newIdModalFooter">
-            <button (click)="c('Close click')" id="cancelNewIdentifierBtn" mat-raised-button>Cancel</button>
-            <button mat-raised-button color="primary" [disabled]="!newIdentifierForm.form.valid"
+        <div mat-dialog-actions>
+            <button [mat-dialog-close] id="cancelNewIdentifierBtn" mat-raised-button>Cancel</button>
+            <button [mat-dialog-close] mat-raised-button color="primary" [disabled]="!newIdentifierForm.form.valid"
                     id="createNewIdentifierBtn" type="submit">Save</button>
         </div>
     </form>

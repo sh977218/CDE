@@ -32,7 +32,7 @@ const navigationSteps: Array<any> = [
         title: "Help",
         element: "#helpLink",
         content: "You can find more help about the site here, or information on our APIs. The tour will now take you to the CDE search page.",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_cdes_link", "mat-tab-content-0-0", resolve))
+        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_cdes_link", "totalItems", resolve))
     }
 ];
 
@@ -228,7 +228,7 @@ const cdeSteps: Array<any> = [
         title: "Forms",
         orphan: true,
         content: "We will now continue the tour and show Form features.",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_forms_link", "mat-tab-content-0-0", resolve))
+        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_forms_link", "totalItems", resolve))
     }
 ];
 

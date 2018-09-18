@@ -31,12 +31,11 @@
         <mat-icon>add</mat-icon> Add Reference Document
     </button>
 </div>
-<ng-template #newReferenceDocumentContent id="newReferenceDocumentModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="newReferenceDocumentModalHeader">
-        <h4 class="modal-title">Add ReferenceDocument</h4>
-    </div>
+
+<ng-template #newReferenceDocumentContent>
+    <h4 mat-dialog-title>Add ReferenceDocument</h4>
     <form #newReferenceDocumentForm="ngForm" (ngSubmit)="addNewReferenceDocument()">
-        <div class="modal-body" id="newReferenceDocumentModalBody">
+        <div mat-dialog-content>
             <div class="form-group">
                 <label for="newId">ID:</label>
                 <input class="form-control" [(ngModel)]="newReferenceDocument.referenceDocumentId"
@@ -73,14 +72,11 @@
                        [(ngModel)]="newReferenceDocument.document" Placeholder="Document"/>
             </div>
         </div>
-        <div class="modal-footer" id="newReferenceDocumentModalFooter">
-            <button id="cancelNewReferenceDocumentBtn" type="button" (click)="c('Close click')"
-                    mat-raised-button color="warn">
+        <div mat-dialog-actions>
+            <button id="cancelNewReferenceDocumentBtn" type="button" [mat-dialog-close] mat-raised-button color="warn">
                 Cancel
             </button>
-            <button id="createNewReferenceDocumentBtn" mat-raised-button color="primary">
-                Save
-            </button>
+            <button id="createNewReferenceDocumentBtn" mat-raised-button color="primary">Save</button>
         </div>
     </form>
 </ng-template>

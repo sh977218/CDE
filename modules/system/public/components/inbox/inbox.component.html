@@ -18,17 +18,15 @@
     </div>
 </div>
 
-<ng-template #approveUserModal let-d="dismiss">
-    <div class="modal-header">
-        <h3 class="modal-title">Please confirm</h3>
-    </div>
-    <div class="modal-body">
+<ng-template #approveUserModal>
+    <h3 mat-dialog-title>Please confirm</h3>
+    <div mat-dialog-content>
         The user will be able to post comments without an approval.<br>
         Do you want to proceed?
     </div>
-    <div class="modal-footer">
-        <button id="authorizeUserOK" class="btn btn-outline-dark" (click)="authorizeUser(currentMessage)">Yes</button>
-        <button class="btn  btn-warning" (click)="d()">No</button>
+    <div mat-dialog-actions>
+        <button mat-raised-button color="accent" [mat-dialog-close]>No</button>
+        <button id="authorizeUserOK" mat-raised-button [mat-dialog-close] (click)="authorizeUser(currentMessage)">Yes</button>
     </div>
 </ng-template>
 

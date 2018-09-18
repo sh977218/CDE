@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AlertService } from '_app/alert.service';
 import { ITEM_MAP } from 'shared/item';

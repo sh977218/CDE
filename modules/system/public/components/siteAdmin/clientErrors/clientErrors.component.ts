@@ -1,17 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { AlertService } from '_app/alert.service';
+import { MatDialog } from '@angular/material';
 
 type ClientErrorRecord = any;
-
 
 @Component({
     selector: 'cde-client-errors',
     templateUrl: './clientErrors.component.html'
 })
 export class ClientErrorsComponent implements OnInit {
-    @ViewChild('errorDetailModal') errorDetailModal!: NgbModalModule;
+    @ViewChild('errorDetailModal') errorDetailModal!: TemplateRef<any>;
     currentPage: number = 1;
     records: ClientErrorRecord[] = [];
     filteredRecords: ClientErrorRecord[] = [];
@@ -28,7 +27,7 @@ export class ClientErrorsComponent implements OnInit {
     }
 
     constructor(private http: HttpClient,
-                public modalService: NgbModal,
+                public dialog: MatDialog,
                 private alert: AlertService) {
     }
 
@@ -53,7 +52,7 @@ export class ClientErrorsComponent implements OnInit {
 
     openErrorDetail(error: ClientErrorRecord) {
         this.error = error;
-        this.modalService.open(this.errorDetailModal, {size: 'lg'});
+        this.dialog.open(this.errorDetailModal, {width: '800px'});
     }
 
     filter() {
