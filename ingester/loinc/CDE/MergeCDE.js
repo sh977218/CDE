@@ -21,7 +21,7 @@ exports.compareCdes = function (newCde, existingCde) {
 };
 
 exports.mergeCde = function (newCde, existingCde, orgName) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         existingCde.designations = newCde.designations;
         existingCde.definitios = newCde.designations;
         existingCde.sources = newCde.sources;

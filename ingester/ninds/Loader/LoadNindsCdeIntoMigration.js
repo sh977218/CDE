@@ -13,9 +13,6 @@ async function run() {
     let nindsOrg = await MigrationOrgModel.findOne({name: 'NINDS'});
     if (!nindsOrg)
         nindsOrg = await new MigrationOrgModel({name: "NINDS", classification: []}).save();
-    console.log("Migration Data Element removed.");
-
-
     let cursor = MigrationNindsModel.find({}).cursor();
     cursor.eachAsync(ninds => {
         if (ninds.toObject) ninds = ninds.toObject();
@@ -33,7 +30,7 @@ async function run() {
                     console.log('cdeCounter: ' + cdeCounter);
                 } else {
                     let existingCde = existingCdes[0];
-                    MergeCDE.mergeCde(existingCde, newCde, ninds);
+                    await MergeCDE.mergeCde(newCde, existingCde, ninds);
                     await existingCde.save();
                 }
             }

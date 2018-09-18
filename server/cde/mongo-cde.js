@@ -249,8 +249,9 @@ exports.newObject = function (obj) {
 };
 
 exports.update = function (elt, user, callback, special) {
+    let id = elt._id;
     if (elt.toObject) elt = elt.toObject();
-    return DataElement.findById(elt._id, function (err, dataElement) {
+    return DataElement.findById(id, function (err, dataElement) {
         delete elt._id;
         if (!elt.history) elt.history = [];
         elt.history.push(dataElement._id);
