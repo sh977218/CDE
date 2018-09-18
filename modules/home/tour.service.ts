@@ -228,14 +228,14 @@ const cdeSteps: Array<any> = [
         title: "Forms",
         orphan: true,
         content: "We will now continue the tour and show Form features.",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_forms_link", "browseByClassification", resolve))
+        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_forms_link", "mat-tab-content-0-0", resolve))
     }
 ];
 
 const formSteps = [
     {
         title: "Browse by Classification",
-        element: "#browseByClassification",
+        element: ".mat-tab-label:first-child",
         content: "Forms are also browsed by Classification",
         onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#browseOrg-NLM", "resultList", resolve))
     },
