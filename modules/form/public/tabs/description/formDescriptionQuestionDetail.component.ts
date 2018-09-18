@@ -60,7 +60,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl: TemplateRef<any>;
     @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl: TemplateRef<any>;
-    @ViewChild('editAnswerModal') editAnswerModal: NgbModalModule;
     @ViewChild('slInput') slInput: ElementRef;
     answerListItems = [];
     dataTypeList = [];
@@ -77,13 +76,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     tag = [];
     readonly separatorKeysCodes: number[] = [ENTER];
 
-    ngOnInit() {
-        this.syncAnswerListItems();
-        this.syncDefaultAnswerListItems();
-        let stewardOrgName = this.elt.stewardOrg.name;
-        this.tag = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
-    }
-
     constructor(private alert: AlertService,
                 private http: HttpClient,
                 public modalService: NgbModal,
@@ -92,6 +84,13 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 public skipLogicValidateService: SkipLogicValidateService,
                 private ucumService: UcumService) {
         this.dataTypeList = DataTypeService.dataElementDataType;
+    }
+
+    ngOnInit() {
+        this.syncAnswerListItems();
+        this.syncDefaultAnswerListItems();
+        let stewardOrgName = this.elt.stewardOrg.name;
+        this.tag = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
     }
 
     getRepeatLabel(fe) {
