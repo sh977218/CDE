@@ -1,13 +1,12 @@
-const authorization = require('../system/authorization');
-const nocacheMiddleware = authorization.nocacheMiddleware;
 const app_status = require("./status.js");
 
 const handleError = require('../log/dbLogger').handleError;
 
 const userDb = require('../user/userDb');
 const clusterStatusDb = require('./clusterStatusDb');
+const esInit = require('../system/elasticSearchInit');
 
-exports.module = function (roleConfig) {
+exports.module = function () {
     const router = require('express').Router();
 
     router.post('/addSiteAdmin', (req, res) => {
