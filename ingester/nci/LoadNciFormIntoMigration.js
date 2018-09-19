@@ -219,7 +219,7 @@ function createForm(nciForm, cb) {
         var newForm = {
             tinyId: mongo_data.generateTinyId(),
             stewardOrg: {name: "NCI"},
-            createdBy: {username: 'batchLoader'},
+            createdBy: {username: 'batchloader'},
             created: today,
             imported: today,
             registrationState: {

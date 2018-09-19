@@ -13,8 +13,7 @@ async function run() {
     let nindsOrg = await MigrationOrgModel.findOne({name: 'NINDS'});
     if (!nindsOrg)
         nindsOrg = await new MigrationOrgModel({name: "NINDS", classification: []}).save();
-    let cursor = MigrationNindsModel.find({}).cursor();
-    cursor.eachAsync(ninds => {
+    MigrationNindsModel.find({}).cursor().eachAsync(ninds => {
         if (ninds.toObject) ninds = ninds.toObject();
         return new Promise(async (resolve, reject) => {
             let cdes = ninds.cdes;
@@ -30,7 +29,7 @@ async function run() {
                     console.log('cdeCounter: ' + cdeCounter);
                 } else {
                     let existingCde = existingCdes[0];
-                    await MergeCDE.mergeCde(newCde, existingCde, ninds);
+                    MergeCDE.mergeCde(newCde, existingCde, ninds);
                     await existingCde.save();
                 }
             }

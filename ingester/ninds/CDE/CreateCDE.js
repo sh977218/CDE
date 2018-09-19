@@ -170,9 +170,9 @@ parseClassification = (cde, ninds, newCde, nindsOrg) => {
     ];
 
     if (ninds.diseaseName === 'Traumatic Brain Injury') {
-        diseaseToAdd.push(ninds.get('subDiseaseName'));
-        classificationToAdd.push(ninds.get('subDiseaseName'));
-        subDomainToAdd.push(ninds.get('subDiseaseName'));
+        diseaseToAdd.push(ninds.subDiseaseName);
+        classificationToAdd.push(ninds.subDiseaseName);
+        subDomainToAdd.push(ninds.subDiseaseName);
     }
 
     classificationToAdd.push('Classification');
@@ -218,7 +218,7 @@ exports.createCde = function (cde, ninds, nindsOrg) {
     let newCde = {
         tinyId: generateTinyId(),
         stewardOrg: {name: "NINDS"},
-        createdBy: {username: 'batchLoader'},
+        createdBy: {username: 'batchloader'},
         created: today,
         imported: today,
         registrationState: {registrationStatus: "Qualified"},

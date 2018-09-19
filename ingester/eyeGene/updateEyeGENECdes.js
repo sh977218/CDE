@@ -144,7 +144,7 @@ function processCde(migrationCde, existingCde, processCdeCb) {
 */
         newDe._id = existingCde._id;
         try {
-            mongo_cde.update(newDe, {username: "BatchLoader"}, function (err) {
+            mongo_cde.update(newDe, {username: "batchloader"}, function (err) {
                 if (err) {
                     console.log("Cannot save CDE.");
                     console.log(newDe);
