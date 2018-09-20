@@ -12,7 +12,7 @@ import { OrgsEditComponent } from 'system/public/components/siteAdmin/orgsEdit/o
 import { DiscussModule } from 'discuss/discuss.module';
 import { SystemModule } from 'system/public/system.module';
 import { WidgetModule } from 'widget/widget.module';
-import { MatButtonModule, MatIconModule } from '@angular/material';
+import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/material';
 
 const appRoutes: Routes = [
     {path: '', component: OrgAuthorityComponent},
@@ -31,6 +31,7 @@ const appRoutes: Routes = [
         DiscussModule,
         SystemModule,
         MatButtonModule,
+        MatDialogModule,
         MatIconModule,
     ],
     declarations: [

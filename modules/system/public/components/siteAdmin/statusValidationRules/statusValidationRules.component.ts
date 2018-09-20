@@ -54,6 +54,12 @@ export class StatusValidationRulesComponent implements OnInit {
     userOrgs: {[org: string]: StatusValidationRules[]} = {};
     userOrgsArray: string[] = [];
 
+    constructor(
+        private http: HttpClient,
+        public dialog: MatDialog,
+        private orgHelperService: OrgHelperService,
+    ) {}
+
     ngOnInit() {
         this.orgHelperService.then(orgsDetailedInfo => {
             this.orgNames = Object.keys(orgsDetailedInfo);
@@ -63,12 +69,6 @@ export class StatusValidationRulesComponent implements OnInit {
             this.userOrgsArray = Object.keys(this.userOrgs).sort();
         }, _noop);
     }
-
-    constructor(
-        private http: HttpClient,
-        public dialog: MatDialog,
-        private orgHelperService: OrgHelperService,
-    ) {}
 
     disableRule(orgName: string, rule: StatusValidationRules) {
         // @TODO does not refresh page
