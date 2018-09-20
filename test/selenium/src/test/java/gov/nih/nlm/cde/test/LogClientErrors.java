@@ -18,7 +18,7 @@ public class LogClientErrors extends NlmCdeBaseTest {
     public void logClientErrors() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         driver.get(baseUrl + "/searchPreferences?triggerClientError=1&fullPath=true");
-        textPresent("Reported Issues");
+        textPresent("By default, I want to see results as");
 
         logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
