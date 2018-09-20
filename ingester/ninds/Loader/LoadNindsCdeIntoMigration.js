@@ -53,9 +53,11 @@ function run() {
 }
 
 run().then(() => {
-    console.log('same: ' + merged);
-    console.log('created: ' + created);
-    console.log('merged: ' + merged);
+    console.log('same: ' + merged + ' created: ' + created + ' merged: ' + merged);
     console.log('totalCDE: ' + totalCDE);
     process.exit(1);
 });
+
+setInterval(function () {
+    console.log('same: ' + merged + ' created: ' + created + ' merged: ' + merged);
+}, 5000);
