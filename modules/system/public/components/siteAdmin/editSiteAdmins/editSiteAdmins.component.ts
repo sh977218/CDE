@@ -25,7 +25,7 @@ export class EditSiteAdminsComponent implements OnInit {
     }
 
     addSiteAdmin() {
-        this.http.post('/addSiteAdmin', {username: this.newAdmin.username}, {responseType: 'text'}).subscribe(() => {
+        this.http.post('/server/siteAdmin/addSiteAdmin', {username: this.newAdmin.username}, {responseType: 'text'}).subscribe(() => {
                 this.Alert.addAlert('success', 'Saved');
                 this.getSiteAdmins();
             }, () => this.Alert.addAlert('danger', 'There was an issue adding this administrator.')
@@ -34,15 +34,15 @@ export class EditSiteAdminsComponent implements OnInit {
     }
 
     getSiteAdmins() {
-        this.http.get('/siteAdmins').subscribe(response => this.siteAdmins = response);
+        this.http.get('/server/siteAdmin/siteAdmins').subscribe(response => this.siteAdmins = response);
     }
 
     getOrgAuthorities() {
-        this.http.get('/orgAuthorities').subscribe(response => this.orgAuthorities = response);
+        this.http.get('/server/siteAdmin/orgAuthorities').subscribe(response => this.orgAuthorities = response);
     }
 
     removeSiteAdmin(byId: string) {
-        this.http.post('/removeSiteAdmin', {id: byId}).subscribe(() => {
+        this.http.post('/server/siteAdmin/removeSiteAdmin', {id: byId}).subscribe(() => {
                 this.Alert.addAlert('success', 'Removed');
                 this.getSiteAdmins();
             }, () => {
