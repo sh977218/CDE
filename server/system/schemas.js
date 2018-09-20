@@ -314,23 +314,6 @@ exports.message = new Schema({
 
 exports.message.set('collection', 'messages');
 
-exports.clusterStatus = Schema({
-    hostname: stringType,
-    port: Number,
-    pmPort: Number,
-    nodeStatus: Object.assign({enum: ["Running", "Stopped"]}, stringType),
-    lastUpdate: Date,
-    startupDate: Date,
-    elastic: {
-        up: Boolean,
-        message: stringType,
-        indices: [{
-            name: stringType,
-            up: Boolean,
-            message: stringType
-        }]
-    }
-});
 exports.jobQueue = Schema({
     type: stringType,
     status: Object.assign({enum: ["Running"]}, stringType),

@@ -42,7 +42,7 @@ export class ServerStatusComponent {
     }
 
     refreshStatus() {
-        this.http.get<any>('/serverStatuses').subscribe(result => {
+        this.http.get<any>('/server/siteAdmin/serverStatuses').subscribe(result => {
             this.statuses = result.statuses;
             this.esIndices = result.esIndices;
             this.statuses.forEach(s => {
