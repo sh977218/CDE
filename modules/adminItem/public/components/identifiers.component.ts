@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
-
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-identifiers',
@@ -12,19 +11,21 @@ export class IdentifiersComponent {
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newIdentifierContent') newIdentifierContent: TemplateRef<any>;
     newIdentifier: any = {};
+    dialogRef: MatDialogRef<TemplateRef<any>>;
 
     constructor(public dialog: MatDialog) {}
 
+    addNewIdentifier() {
+        this.elt.ids.push(this.newIdentifier);
+        this.onEltChange.emit();
+    }
+
     openNewIdentifierModal() {
-        this.dialog.open(this.newIdentifierContent, {width: '800px'}).afterClosed().subscribe(
-            res => {
-                if (res) {
-                    this.elt.ids.push(this.newIdentifier);
-                    this.onEltChange.emit();
-                }
+        this.dialog.open(this.newIdentifierContent, {width: '800px'}).afterClosed().subscribe(() => {
                 this.newIdentifier = {};
+                this.dialogRef.close();
             }, () => {}
-            );
+        );
     }
 
     removeIdentifierByIndex(index) {

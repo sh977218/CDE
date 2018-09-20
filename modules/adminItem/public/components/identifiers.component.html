@@ -66,7 +66,7 @@
         </div>
         <div mat-dialog-actions>
             <button [mat-dialog-close] color="accent" id="cancelNewIdentifierBtn" mat-raised-button>Cancel</button>
-            <button [mat-dialog-close]="true" mat-raised-button color="primary" [disabled]="!newIdentifierForm.form.valid"
+            <button (click)="addNewIdentifier()" mat-raised-button color="primary" [disabled]="!newIdentifierForm.form.valid"
                     id="createNewIdentifierBtn" type="button">Save</button>
         </div>
     </form>
