@@ -9,13 +9,10 @@ public class FormDragQuestionDropTest extends QuestionTest {
     @Test
     public void dragQuestionDropTest() {
 
-        mustBeLoggedInAs(ninds_username, password);
-        String formName = "JFK Coma Recovery Scale- Revised";
+        mustBeLoggedInAs(testAdmin_username, password);
+        String formName = "Drag Question Test";
         goToFormByName(formName);
         goToFormDescription();
-        addSectionTop("Third Section Name", null);
-        addSectionTop("Second Section Name", null);
-        addSectionTop("First Section Name", null);
 
         String cdeName = "Frontal Systems Behavior Scale (FrSBE) - Disinhibition subscale T score";
         addQuestionToSection(cdeName, 0);

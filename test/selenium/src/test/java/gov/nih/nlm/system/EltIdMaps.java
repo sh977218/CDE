@@ -97,6 +97,7 @@ public class EltIdMaps {
         eltMap.put("DNA Elements - Participant/Subject Information", "m1fVM1SSFx");
         eltMap.put("DateTypeTest", "7y_PFN4Zr");
         eltMap.put("Draft Form Test", "QyT6ElYKLl");
+        eltMap.put("Drag Question Test", "7kL4X8sMU");
         eltMap.put("Empty Logic", "7kAx6i5af");
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
@@ -147,6 +148,9 @@ public class EltIdMaps {
         eltMap.put("Remove SkipLogic Form", "X1s87bif7");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Section Test Form", "XJFylVmN_");
+        eltMap.put("Section Test Form2", "mycc3Hcf8");
+        eltMap.put("Section Test Form3", "mkmn3Bcz8");
+        eltMap.put("Section Test Form4", "71WanHqGU");
         eltMap.put("Socioeconomic Status", "XyMzLyBHYl");
         eltMap.put("Stroke Symptoms/Comorbid Events", "7kqGIJBBKg");
         eltMap.put("Stroke Types and Subtypes", "QkX81HrFx");
