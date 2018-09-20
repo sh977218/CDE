@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test.comments;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.Test;
 
 public class FormLongComment extends NlmCdeBaseTest {
@@ -14,8 +15,15 @@ public class FormLongComment extends NlmCdeBaseTest {
         clickElement(By.id("discussBtn"));
         clickElement(By.id("showAllRepliesButton_0"));
         textNotPresent("Show all 10 replies");
-        for (int k = 1; k <= 10; k++) {
-            textPresent("Reply to very long comment " + k);
+        try {
+            for (int k = 1; k <= 10; k++) {
+                textPresent("Reply to very long comment " + k);
+            }
+        } catch (TimeoutException e) {
+            clickElement(By.id("showAllRepliesButton_0"));
+            for (int k = 1; k <= 10; k++) {
+                textPresent("Reply to very long comment " + k);
+            }
         }
     }
 }
