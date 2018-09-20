@@ -32,15 +32,15 @@ function run() {
                     let newCde = CreateCDE.createCde(cde, ninds, nindsOrg);
                     if (existingCdes.length === 0) {
                         await new MigrationDataElementModel(newCde).save();
-                        console.log('created: ' + ++created);
+                        created++;
                     } else {
                         let existingCde = existingCdes[0];
                         let diff = MergeCDE.compareCdes(newCde, existingCde);
                         if (!_.isEmpty(diff)) {
                             MergeCDE.mergeCde(newCde, existingCde);
                             await existingCde.save();
-                            console.log('merged: ' + ++merged);
-                        } else console.log('same: ' + ++same);
+                            merged++;
+                        } else same++;
                     }
                 }
                 resolve();
