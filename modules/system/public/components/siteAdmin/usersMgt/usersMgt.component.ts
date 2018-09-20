@@ -24,15 +24,15 @@ export class UsersMgtComponent {
                 public userService: UserService) {
     }
 
-    addNewUser() {
-        this.http.post('/server/user/addUser', {username: this.newUsername}, {responseType: 'text'}).subscribe(
-            () => this.Alert.addAlert('success', 'User created'),
-            () => this.Alert.addAlert('danger', 'Cannot create user. Does it already exist?')
-        );
-    }
-
     openNewUserModal() {
-        this.dialog.open(this.newUserContent, {width: '800px'});
+        this.dialog.open(this.newUserContent, {width: '800px'}).afterClosed().subscribe(res => {
+            if (res) {
+                this.http.post('/server/user/addUser', {username: this.newUsername}, {responseType: 'text'}).subscribe(
+                    () => this.Alert.addAlert('success', 'User created'),
+                    () => this.Alert.addAlert('danger', 'Cannot create user. Does it already exist?')
+                );
+            }
+        });
     }
 
     searchUsers() {

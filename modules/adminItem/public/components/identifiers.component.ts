@@ -15,14 +15,16 @@ export class IdentifiersComponent {
 
     constructor(public dialog: MatDialog) {}
 
-    addNewIdentifier() {
-        this.elt.ids.push(this.newIdentifier);
-        this.onEltChange.emit();
-    }
-
     openNewIdentifierModal() {
         this.dialog.open(this.newIdentifierContent, {width: '800px'}).afterClosed().subscribe(
-            () => this.newIdentifier = {}, () => {});
+            res => {
+                if (res) {
+                    this.elt.ids.push(this.newIdentifier);
+                    this.onEltChange.emit();
+                }
+                this.newIdentifier = {};
+            }, () => {}
+            );
     }
 
     removeIdentifierByIndex(index) {
