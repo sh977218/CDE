@@ -1,11 +1,9 @@
 <button mat-raised-button id="openLinkedFormsModalBtn" (click)="openLinkedFormsModal()">Linked Forms</button>
 
-<ng-template #linkedFormsContent id="linkedFormsModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="linkedFormsModalHeader">
-        <h4 class="modal-title">Linked Forms</h4>
-    </div>
+<ng-template #linkedFormsContent>
+    <h4 mat-dialog-title>Linked Forms</h4>
     <form #linkedFormsForm="ngForm">
-        <div class="modal-body" id="linkedFormsModalBody">
+        <div mat-dialog-content>
             <p>{{getFormText()}}</p>
 
             <button mat-raised-button *ngIf="forms && forms.length > 0" id="seeAllLinkedFormsButton"
@@ -19,8 +17,8 @@
                                   [elts]="forms" (select)="d()"></cde-summary-list>
             </div>
         </div>
-        <div class="modal-footer" id="linkedFormsModalFooter">
-            <button (click)="c('Close click')" id="closeLinkedFormsModalBtn" mat-raised-button type="button">Close</button>
+        <div mat-dialog-actions>
+            <button [mat-dialog-close] id="closeLinkedFormsModalBtn" mat-raised-button type="button">Close</button>
         </div>
     </form>
 </ng-template>

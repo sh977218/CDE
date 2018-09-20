@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
@@ -9,6 +8,7 @@ import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { ElasticQueryResponse } from 'shared/models.model';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-form-term-mapping',
@@ -16,13 +16,20 @@ import { ElasticQueryResponse } from 'shared/models.model';
 })
 export class FormTermMappingComponent implements OnInit {
     @Input() elt: any;
-    @ViewChild('newTermMap') public newTermMap: NgbModalModule;
+    @ViewChild('newTermMap') public newTermMap: TemplateRef<any>;
     descriptor: { name: string, id: string };
     descToName: any = {};
     flatMeshSimpleTrees: any[] = [];
     mapping: any = {meshDescriptors: []};
     meshTerm: string;
     private searchTerms = new Subject<string>();
+
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public isAllowedModel: IsAllowedService,
+                public dialog: MatDialog,
+                public userService: UserService) {
+    }
 
     ngOnInit() {
         this.searchTerms.pipe(
@@ -45,13 +52,6 @@ export class FormTermMappingComponent implements OnInit {
         this.reloadMeshTerms();
     }
 
-    constructor(private alert: AlertService,
-                private http: HttpClient,
-                public isAllowedModel: IsAllowedService,
-                public modalService: NgbModal,
-                public userService: UserService) {
-    }
-
     addMeshDescriptor() {
         this.mapping.meshDescriptors.push(this.descriptor.id);
 
@@ -71,9 +71,7 @@ export class FormTermMappingComponent implements OnInit {
     openAddTermMap() {
         this.meshTerm = '';
         this.descriptor = null;
-        this.modalService.open(this.newTermMap, {size: 'lg'}).result.then(() => {
-        }, () => {
-        });
+        this.dialog.open(this.newTermMap, {width: '800px'});
     }
 
     reloadMeshTerms() {

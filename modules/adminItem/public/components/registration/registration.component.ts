@@ -1,43 +1,35 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, Output, ViewChild, OnInit } from '@angular/core';
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Component, EventEmitter, Input, Output, ViewChild, OnInit, TemplateRef } from '@angular/core';
 import _noop from 'lodash/noop';
 
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
 import { Comment, RegistrationState } from 'shared/models.model';
 import { statusList } from 'shared/system/regStatusShared';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-registration',
     templateUrl: './registration.component.html',
-    providers: [NgbActiveModal]
 })
 export class RegistrationComponent implements OnInit {
     @Input() canEdit: boolean = false;
     @Input() elt: any;
     @Output() onEltChange = new EventEmitter();
-    @ViewChild('regStatusEdit') regStatusEditModal: NgbModalModule;
+    @ViewChild('regStatusEdit') regStatusEditModal: TemplateRef<any>;
     helpMessage: string;
     newState: RegistrationState;
-    modalRef: NgbModalRef;
     validRegStatuses: string[] = ['Retired', 'Incomplete', 'Candidate'];
-
-    ngOnInit() {
-        this.newState = {registrationStatus: this.elt.registrationState.registrationStatus};
-    }
 
     constructor (
         private alert: AlertService,
         private http: HttpClient,
-        public modalService: NgbModal,
+        public dialog: MatDialog,
         private userService: UserService,
     ) {}
 
-    ok() {
-        this.elt.registrationState = this.newState;
-        this.onEltChange.emit();
-        this.modalRef.close();
+    ngOnInit() {
+        this.newState = {registrationStatus: this.elt.registrationState.registrationStatus};
     }
 
     openRegStatusUpdate() {
@@ -62,7 +54,12 @@ export class RegistrationComponent implements OnInit {
                 });
             });
 
-            this.modalRef = this.modalService.open(this.regStatusEditModal, {size: 'lg'});
+            this.dialog.open(this.regStatusEditModal, {width: '1000px'}).afterClosed().subscribe(res => {
+                if (res) {
+                    this.elt.registrationState = this.newState;
+                    this.onEltChange.emit();
+                }
+            });
         });
     }
 

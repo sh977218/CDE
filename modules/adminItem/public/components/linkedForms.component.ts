@@ -1,25 +1,23 @@
-import { Component, Inject, Input, ViewChild } from '@angular/core';
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { CdeForm } from 'shared/form/form.model';
 import { ElasticService } from '_app/elastic.service';
 import { FormSummaryListContentComponent } from 'form/public/components/listView/formSummaryListContent.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-linked-forms',
-    providers: [NgbActiveModal],
     templateUrl: './linkedForms.component.html'
 })
 
 export class LinkedFormsComponent {
     @Input() public elt: any;
-    @ViewChild("linkedFormsContent") public linkedFormsContent: NgbModalModule;
+    @ViewChild("linkedFormsContent") public linkedFormsContent: TemplateRef<any>;
 
     forms: CdeForm[];
     formSummaryContentComponent = FormSummaryListContentComponent;
-    modalRef: NgbModalRef;
 
     constructor(private elasticService: ElasticService,
-                public modalService: NgbModal) {}
+                public dialog: MatDialog) {}
 
     getFormText () {
         if (!this.forms || this.forms.length === 0) {
@@ -45,7 +43,7 @@ export class LinkedFormsComponent {
                  return f.tinyId !== this.elt.tinyId;
             });
             setTimeout(() => {
-                this.modalRef = this.modalService.open(this.linkedFormsContent, {size: "lg"});
+                this.dialog.open(this.linkedFormsContent);
             }, 0);
         });
     }

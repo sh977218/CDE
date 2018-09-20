@@ -13,11 +13,9 @@
 
 </fieldset>
 
-<ng-template #newTermMap id="newTermMapModal" let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h3>Mesh Mappings</h3>
-    </div>
-    <div class="modal-body" id="addClassificationModalBody">
+<ng-template #newTermMap>
+    <h3 mat-dialog-title>Mesh Mappings</h3>
+    <div mat-dialog-content>
         <form #newMeshDescForm="ngForm" class="form-inline pt20">
             <div class="form-group">
                 <label for="mesh.search">MeSH Descriptor: </label>
@@ -34,7 +32,7 @@
             </div>
         </form>
     </div>
-    <div class="modal-footer">
-        <button class="btn btn-outline-dark done" (click)="d()" id="closeModal">Close</button>
+    <div mat-dialog-actions>
+        <button mat-raised-button [mat-dialog-close] id="closeModal">Close</button>
     </div>
 </ng-template>
