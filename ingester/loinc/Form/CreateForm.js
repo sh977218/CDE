@@ -12,17 +12,12 @@ const ParseSources = require('../Shared/ParseSources');
 
 const ParseFormElements = require('./ParseFormElements');
 
-const orgMapping = require('../Mapping/ORG_INFO_MAP').map;
 
 const today = new Date().toJSON();
-const stewardOrgName = 'NLM';
 const ParseClassification = require('../Shared/ParseClassification');
 
-exports.createForm = function (loinc, orgName) {
-    let orgInfo = orgMapping[orgName];
+exports.createForm = function (loinc, orgInfo) {
     return new Promise(async (resolve, reject) => {
-        if (_.isEmpty(stewardOrgName)) reject('StewardOrgName is empty. Please set it first.');
-
         let designations = ParseDesignations.parseDesignations(loinc);
         let definitions = ParseDefinitions.parseDefinitions(loinc);
         let ids = ParseIds.parseIds(loinc);
@@ -32,12 +27,13 @@ exports.createForm = function (loinc, orgName) {
         let sources = ParseSources.parseSources(loinc);
         let classification = await ParseClassification.parseClassification(loinc, orgInfo);
 
-        let formElements = await ParseFormElements.parseFormElements(loinc);
+        let formElements = await ParseFormElements.parseFormElements(loinc, orgInfo);
         let newForm = {
             tinyId: generateTinyId(),
-            createdBy: {username: 'batchLoader'},
+            createdBy: {username: 'batchloader'},
             created: today,
             imported: today,
+            updated: today,
             registrationState: {registrationStatus: "Qualified"},
             sources: sources,
             designations: designations,

@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const CLASSIFICATION_TYPE_MAP = require('../Mapping/LOINC_CLASSIFICATION_TYPE_MAP').map;
 const MigrationLoincClassificationMappingModel = require('../../createMigrationConnection').MigrationLoincClassificationMappingModel;
 
@@ -7,7 +8,7 @@ exports.parseClassification = function (loinc, orgInfo) {
         let classificationType = '';
         let basicAttributes = loinc['BASIC ATTRIBUTES'];
         if (!basicAttributes) reject("No BASIC ATTRIBUTES found in " + loinc.loincId);
-        let classTypeString = basicAttributes['BASIC ATTRIBUTES']['Class/Type'];
+        let classTypeString = basicAttributes['Class/Type'];
         let classTypeArray = classTypeString.split('/');
         if (classTypeArray.length === 0) reject('No Class/Type found in loinc id: ' + loinc.loincId);
         else if (classTypeArray.length === 2) {
@@ -23,16 +24,27 @@ exports.parseClassification = function (loinc, orgInfo) {
         let classificationMap = await MigrationLoincClassificationMappingModel.findOne({
             Type: type,
             Abbreviation: classification
-        }).catch(e => {
-            throw e
         });
+        if (!classificationMap)
+            console.log('type: ' + type + ' Abbreviation: ' + classification + ' in classificationMap is null');
         let classificationArray = [{
             stewardOrg: {name: orgInfo.classificationOrgName},
-            elements: [{
-                name: classificationMap.get('Value'),
-                elements: []
-            }]
+            elements: []
         }];
+        let iterator = classificationArray[0].elements;
+        if (!_.isEmpty(orgInfo.classification)) {
+            orgInfo.classification.forEach(c => {
+                iterator.push({
+                    name: c,
+                    elements: []
+                });
+                iterator = iterator[0].elements;
+            })
+        }
+        iterator.push({
+            name: classificationMap.get('Value'),
+            elements: []
+        });
         resolve(classificationArray);
     })
 };
