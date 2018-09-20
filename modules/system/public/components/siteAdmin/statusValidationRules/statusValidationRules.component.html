@@ -26,24 +26,20 @@
     </div>
 </div>
 
-<ng-template #removeRuleModal id="removeRuleModal" let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h3>Remove Rule</h3>
-    </div>
-    <div class="modal-body">
+<ng-template #removeRuleModal>
+    <h3 mat-dialog-title>Remove Rule</h3>
+    <div mat-dialog-content>
         Do you want to remove this rule?
     </div>
-    <div class="modal-footer">
-        <button class="btn  btn-danger" (click)="c()" id="removeRule">Remove</button>
-        <button class="btn" (click)="d()" id="cancel">Cancel</button>
+    <div mat-dialog-actions>
+        <button mat-raised-button color="accent" [mat-dialog-close] id="cancel">Cancel</button>
+        <button mat-raised-button color="warn" [mat-dialog-close]="true" id="removeRule">Remove</button>
     </div>
 </ng-template>
 
-<ng-template #addNewRuleModal id="addNewRuleModal" let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h3>Add New Rule</h3>
-    </div>
-    <div class="modal-body">
+<ng-template #addNewRuleModal>
+    <h3 mat-dialog-title>Add New Rule</h3>
+    <div mat-dialog-content>
         <form id="addRuleForm" #newRuleForm="ngForm">
             <div class="form-group">
                 <label for="org">Organization</label>
@@ -89,10 +85,10 @@
             </div>
         </form>
     </div>
-    <div class="modal-footer">
-        <button class="btn  btn-warning" (click)="d()" id="cancelNew">Cancel</button>
-        <button [disabled]="!newRuleForm.form.valid"  class="btn  btn-success"
-                (click)="c(newRule)" id="saveRule">Save</button>
+    <div mat-dialog-actions>
+        <button [mat-dialog-close] mat-raised-button color="accent" id="cancelNew">Cancel</button>
+        <button [disabled]="!newRuleForm.form.valid" mat-raised-button color="primary"
+                [mat-dialog-close]="true" id="saveRule">Save</button>
     </div>
 
 </ng-template>
