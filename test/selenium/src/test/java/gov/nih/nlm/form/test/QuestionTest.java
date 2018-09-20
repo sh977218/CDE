@@ -33,17 +33,6 @@ public class QuestionTest extends BaseFormTest {
         addCde(cdeName, "//*[@id='" + id + "']//tree-node-drop-slot[1]", isSuggested);
     }
 
-    public void addCdesByNames(String[] cdeNames) {
-        for (String cdeName : cdeNames) {
-            new Actions(driver).sendKeys("q").build().perform();
-            textPresent("Create Data Element");
-            // wait for modal animation
-            hangon(2);
-            new Actions(driver).sendKeys(cdeName).build().perform();
-            clickElement(By.id("createNewDataElement"));
-        }
-    }
-
     private void addCde(String cdeName, String dropXpath, boolean isSuggested) {
         WebElement sourceElt = findElement(By.xpath("//*[@id='startAddingQuestions']"));
         WebElement targetElt = findElement(By.xpath(dropXpath));
