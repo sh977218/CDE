@@ -278,6 +278,9 @@ try {
     });
     app.use('/server/user', userModule);
 
+    let siteAdminModule = require("./server/siteAdmin/siteAdminRoutes").module({});
+    app.use('/server/siteAdmin', authorization.isSiteAdminMiddleware, siteAdminModule);
+
     let notificationModule = require("./server/notification/notificationRoutes").module({});
     app.use('/server/notification', authorization.loggedInMiddleware, notificationModule);
 

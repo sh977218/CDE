@@ -28,7 +28,6 @@ const fhirApps = require('./fhir').fhirApps;
 const fhirObservationInfo = require('./fhir').fhirObservationInfo;
 const cdeElastic = require('../cde/elastic.js');
 const formElastic = require('../form/elastic.js');
-const app_status = require("./status.js");
 const traffic = require('./traffic');
 
 exports.init = function (app) {
@@ -346,13 +345,7 @@ exports.init = function (app) {
         res.status(401).send();
     });
 
-    app.get('/serverStatuses', authorization.isSiteAdminMiddleware, (req, res) => {
-        app_status.getStatus(() => {
-            mongo_data.getClusterHostStatuses((err, statuses) => {
-                return res.send({esIndices: esInit.indices, statuses: statuses});
-            });
-        });
-    });
+
 
     app.get("/supportedBrowsers", (req, res) => res.render('supportedBrowsers', 'system'));
 
@@ -458,13 +451,6 @@ exports.init = function (app) {
         return mongo_data.orgByName(req.params.name, (err, result) => res.send(result));
     });
 
-    app.get('/usernamesByIp/:ip', authorization.isSiteAdminMiddleware, (req, res) => {
-        mongo_data.usernamesByIp(req.params.ip, handleError({req, res}, result => res.send(result)));
-    });
-
-    app.get('/siteAdmins', [authorization.isSiteAdminMiddleware], (req, res) => mongo_data.siteAdmins((err, users) => res.send(users)));
-
-    app.get('/orgAuthorities', [authorization.isSiteAdminMiddleware], (req, res) => mongo_data.orgAuthorities((err, users) => res.send(users)));
 
     app.get('/managedOrgs', orgsvc.managedOrgs);
     app.post('/addOrg', [authorization.isOrgAuthorityMiddleware], orgsvc.addOrg);
@@ -479,9 +465,6 @@ exports.init = function (app) {
             mongo_data.usersByName(req.params.search, handleError({req, res}, users => res.send(users)));
         }
     });
-
-    app.post('/addSiteAdmin', [authorization.isSiteAdminMiddleware], usersrvc.addSiteAdmin);
-    app.post('/removeSiteAdmin', [authorization.isSiteAdminMiddleware], usersrvc.removeSiteAdmin);
 
     app.get('/myOrgsAdmins', [exportShared.nocacheMiddleware, authorization.loggedInMiddleware], usersrvc.myOrgsAdmins);
 
@@ -503,14 +486,6 @@ exports.init = function (app) {
         usersrvc.updateUserAvatar(req.body, handleError({req, res}, () => {
             res.status(200).end();
         }));
-    });
-
-    app.get('/siteaccountmanagement', [exportShared.nocacheMiddleware, authorization.isSiteAdminMiddleware], (req, res) => {
-        res.render('siteaccountmanagement', "system");
-    });
-
-    app.get('/orgaccountmanagement', exportShared.nocacheMiddleware, (req, res) => {
-        res.render('orgAccountManagement', "system");
     });
 
     app.get('/data/:imgtag', (req, res) => {
