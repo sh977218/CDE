@@ -1,12 +1,12 @@
 exports.parseSources = function (loinc) {
-    var sources = [];
-    var source = {sourceName: 'LOINC'};
+    let sources = [];
+    let source = {sourceName: 'LOINC'};
     if (loinc['BASIC ATTRIBUTES']) {
-        source.created = loinc['BASIC ATTRIBUTES']['BASIC ATTRIBUTES']['Created On'];
-        source.registrationStatus = loinc['BASIC ATTRIBUTES']['BASIC ATTRIBUTES']['Status'];
+        source.created = loinc['BASIC ATTRIBUTES']['Created On'];
+        source.registrationStatus = loinc['BASIC ATTRIBUTES']['Status'];
     }
     if (loinc['EXAMPLE UNITS']) {
-        source.datatype = loinc['EXAMPLE UNITS']['EXAMPLE UNITS'][0].Unit;
+        source.datatype = loinc['EXAMPLE UNITS'][0].Unit;
     }
     sources.push(source);
     return sources;
