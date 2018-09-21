@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
 public class EditConceptsTest extends NlmCdeBaseTest {
@@ -23,9 +24,9 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
 
         goToConcepts();
-        addNewConcept(newDataElementConceptName, newDataElementConceptId, null, null);
-        addNewConcept(newObjectClassConceptName, newObjectClassConceptId, null, "Class");
-        addNewConcept(newPropertyConceptName, newPropertyConceptId, null, "Property");
+        addNewConcept(newDataElementConceptName, newDataElementConceptId, null);
+        addNewConcept(newObjectClassConceptName, newObjectClassConceptId, "Class");
+        addNewConcept(newPropertyConceptName, newPropertyConceptId, "Property");
 
         newCdeVersion();
 
@@ -69,4 +70,14 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         textPresent(newObjectClassConceptId);
         textPresent(newPropertyConceptId);
     }
+
+    private void addNewConcept(String cName, String cId, String cType) {
+        clickElement(By.id("openNewConceptModalBtn"));
+        findElement(By.name("name")).sendKeys(cName);
+        findElement(By.name("codeId")).sendKeys(cId);
+        if (cType != null)
+            new Select(driver.findElement(By.id("conceptType"))).selectByVisibleText(cType);
+        clickElement(By.id("createNewConceptBtn"));
+    }
+
 }

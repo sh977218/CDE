@@ -22,7 +22,8 @@ export class IdentifiersComponent {
     }
 
     openNewIdentifierModal() {
-        this.dialog.open(this.newIdentifierContent, {width: '800px'}).afterClosed().subscribe(() => {
+        this.dialogRef = this.dialog.open(this.newIdentifierContent, {width: '800px'});
+        this.dialogRef.afterClosed().subscribe(() => {
                 this.newIdentifier = {};
             }, () => {}
         );
