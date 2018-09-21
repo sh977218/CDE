@@ -18,12 +18,12 @@ export class IdentifiersComponent {
     addNewIdentifier() {
         this.elt.ids.push(this.newIdentifier);
         this.onEltChange.emit();
+        this.dialogRef.close();
     }
 
     openNewIdentifierModal() {
         this.dialog.open(this.newIdentifierContent, {width: '800px'}).afterClosed().subscribe(() => {
                 this.newIdentifier = {};
-                this.dialogRef.close();
             }, () => {}
         );
     }
