@@ -1,13 +1,13 @@
 const async = require('async');
 
-const config = require('./parseConfig');
+const config = require('../system/parseConfig');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const boardDb = require('../board/boardDb');
-const mongo_data = require('./mongo-data');
-const elastic = require('./elastic');
-const esInit = require('./elasticSearchInit');
-const pushNotification = require('./pushNotification');
+const mongo_data = require('../system/mongo-data');
+const elastic = require('../system/elastic');
+const esInit = require('../system/elasticSearchInit');
+const pushNotification = require('../system/pushNotification');
 const dbLogger = require('../log/dbLogger');
 
 let app_status = this;
@@ -72,7 +72,7 @@ app_status.isElasticUp = function (cb) {
     });
 };
 
-app_status.getStatus = getStatusDone => {
+exports.getStatus = getStatusDone => {
     app_status.isElasticUp(() => {
         if (app_status.statusReport.elastic.up) {
             app_status.statusReport.elastic.indices = [];

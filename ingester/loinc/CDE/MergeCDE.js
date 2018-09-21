@@ -1,3 +1,5 @@
+const _ = require('lodash');
+const mongo_cde = require('../../../server/cde/mongo-cde');
 const removeClassificationByOrgName = require('../Utility/utility').removeClassificationByOrgName;
 const cdediff = require('../../../server/cde/cdediff');
 const wipeUseless = require('../Utility/utility').wipeUseless;

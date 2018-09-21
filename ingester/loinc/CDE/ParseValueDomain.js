@@ -9,8 +9,7 @@ exports.parseValueDomain = function (loinc) {
         datatype: 'Text',
         uom: ''
     };
-    let versionStr = loinc['VERSION']['VERSION'].replace('Generated from LOINC version', '').trim();
-    let version = versionStr.substring(0, versionStr.length - 1);
+    let version = loinc.VERSION.trim();
     if (loinc['NORMATIVE ANSWER LIST'] || loinc['PREFERRED ANSWER LIST'] || loinc['EXAMPLE ANSWER LIST']) {
         valueDomain.datatype = 'Value List';
         let type;
@@ -18,14 +17,12 @@ exports.parseValueDomain = function (loinc) {
         if (loinc['PREFERRED ANSWER LIST']) type = 'PREFERRED ANSWER LIST';
         if (loinc['EXAMPLE ANSWER LIST']) type = 'EXAMPLE ANSWER LIST';
         valueDomain.ids = [{
-            id: loinc[type][type].answerListId.ID,
+            id: loinc[type].answerListId.ID,
             source: 'LOINC',
             version: version
         }];
-        let sortedAnswerList = loinc[type][type].answerList.sort(function (a, b) {
-            return a['SEQ#'] - b['SEQ#'];
-        });
-        valueDomain.permissibleValues = sortedAnswerList.map(function (a) {
+        let sortedAnswerList = loinc[type].answerList.sort((a, b) => a['SEQ#'] - b['SEQ#']);
+        valueDomain.permissibleValues = sortedAnswerList.map(a => {
             let description = '';
             let name = '';
             let descriptionIndex = a['Answer'].indexOf('Description:');
@@ -45,8 +42,8 @@ exports.parseValueDomain = function (loinc) {
             return pv;
         });
     } else {
-        if (loinc['EXAMPLE UNITS'] && loinc['EXAMPLE UNITS']['EXAMPLE UNITS']) {
-            let unit = loinc['EXAMPLE UNITS']['EXAMPLE UNITS'][0].Unit;
+        if (loinc['EXAMPLE UNITS']) {
+            let unit = loinc['EXAMPLE UNITS'][0].Unit;
             valueDomain.datatype = uom_datatype_map[unit];
             if (valueDomain.datatype === 'Date') {
                 valueDomain.datatypeDate = {format: unit};

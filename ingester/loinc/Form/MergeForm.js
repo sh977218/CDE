@@ -1,8 +1,9 @@
+const _ = require('lodash');
 const removeClassificationByOrgName = require('../Utility/utility').removeClassificationByOrgName;
 const cdediff = require('../../../server/cde/cdediff');
 const wipeUseless = require('../Utility/utility').wipeUseless;
 
-exports.compareForms = function (newForm, existingForm) {
+compareForms = function (newForm, existingForm) {
     let newFormObj = _.cloneDeep(newForm);
     if (newFormObj.toObject) newFormObj = newFormObj.toObject();
     let existingFormObj = _.cloneDeep(existingForm);
@@ -18,8 +19,10 @@ exports.compareForms = function (newForm, existingForm) {
     });
     return cdediff.diff(existingForm, newForm);
 };
-exports.mergeForm = function (newForm, existingForm, orgName) {
+exports.mergeForm = function (newForm, existingForm, orgInfo) {
     return new Promise(async (resolve, reject) => {
+        let diff = compareForms(newForm, existingForm);
+        if (_.isEmpty(diff)) resolve();
         existingForm.designations = newForm.designations;
         existingForm.definitios = newForm.definitios;
         existingForm.sources = newForm.sources;
@@ -33,7 +36,7 @@ exports.mergeForm = function (newForm, existingForm, orgName) {
         existingForm.properties = newForm.properties;
         existingForm.formElements = newForm.formElements;
 
-        removeClassificationByOrgName(existingForm, orgName);
+        removeClassificationByOrgName(existingForm, orgInfo);
         existingForm.classification.push(newForm.classification[0]);
 
         mongo_form.update(existingForm, {username: "batchloader"}, err => {

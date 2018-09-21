@@ -1,7 +1,7 @@
 exports.parseReferenceDocuments = function (loinc) {
-    var referenceDocuments = [];
+    let referenceDocuments = [];
     if (loinc['ARTICLE']) {
-        loinc['ARTICLE']['ARTICLE'].forEach(function (article) {
+        loinc['ARTICLE'].forEach(article => {
             referenceDocuments.push({
                 uri: article.SourceLink,
                 providerOrg: article.Source,
@@ -10,14 +10,13 @@ exports.parseReferenceDocuments = function (loinc) {
             });
         })
     }
-    if (loinc['WEB CONTENT'] && loinc['WEB CONTENT']['WEB CONTENT']) {
-        loinc['WEB CONTENT']['WEB CONTENT'].forEach(function (webContent) {
-            var referenceDoc = {
+    if (loinc['WEB CONTENT']) {
+        loinc['WEB CONTENT'].forEach(webContent => {
+            referenceDocuments.push({
                 uri: webContent.SourceLink,
                 providerOrg: webContent.Source,
                 title: webContent.Copyright
-            };
-            referenceDocuments.push(referenceDoc);
+            });
         })
     }
     return referenceDocuments;

@@ -1,126 +1,66 @@
-var async = require('async');
-var By = require('selenium-webdriver').By;
+const By = require('selenium-webdriver').By;
 
-exports.parseAnswerListTable = function (obj, task, table, cb) {
-    var sectionName = task.sectionName;
-    var answerListObj = {
+exports.parseAnswerListTable = async (driver, loincId, table, cb) => {
+    let answerListObj = {
         answerListId: {},
         answerList: []
     };
-    var answerListIdObj = answerListObj.answerListId;
-    var answerListArray = answerListObj.answerList;
-    var externalDefinedExist = false;
-    async.series([
-        function (next) {
-            table.findElements(By.css('table')).then(function (innerTable) {
-                if (innerTable.length > 0) {
-                    externalDefinedExist = true;
-                    innerTable[0].findElements(By.xpath('tbody/tr')).then(function (innerTrs) {
-                        async.forEach(innerTrs, function (innerTr, doneOneInnerTr) {
-                            innerTr.findElements(By.xpath('td')).then(function (tds) {
-                                var key = '';
-                                var value = '';
-                                async.series([
-                                    function (doneKey) {
-                                        tds[0].getText().then(function (keyText) {
-                                            key = keyText.replace(/:/g, '').trim();
-                                            doneKey();
-                                        });
-                                    },
-                                    function (doneValue) {
-                                        tds[1].getText().then(function (valueText) {
-                                            value = valueText.trim();
-                                            doneValue();
-                                        });
-                                    }
-                                ], function () {
-                                    answerListObj[key] = value;
-                                    doneOneInnerTr();
-                                });
-                            });
-                        }, function doneAllInnerTrs() {
-                            next();
-                        });
-                    });
-                } else {
-                    next();
-                }
-            });
-        },
-        function (next) {
-            table.findElements(By.xpath('tbody/tr')).then(function (trs) {
-                async.series([
-                    function (done) {
-                        trs[0].findElement(By.css('a')).then(function (a) {
-                            async.parallel([
-                                    function (doneHref) {
-                                        a.getAttribute('href').then(function (urlText) {
-                                            answerListIdObj.URL = urlText.trim();
-                                            doneHref();
-                                        });
-                                    },
-                                    function (doneId) {
-                                        a.getText().then(function (text) {
-                                            answerListIdObj.ID = text.trim();
-                                            doneId();
-                                        });
-                                    }
-                                ],
-                                function () {
-                                    done();
-                                });
-                        });
-                    },
-                    function (done) {
-                        trs.shift();
-                        if (externalDefinedExist) {
-                            trs.shift();
-                            done();
-                        } else {
-                            done();
-                        }
-                    },
-                    function (done) {
-                        var thMapping = {};
-                        trs[0].findElements(By.css('th')).then(function (ths) {
-                            var thIndex = 0;
-                            async.forEachSeries(ths, function (th, doneOneTh) {
-                                th.getText().then(function (text) {
-                                    if (text.trim().length > 0) {
-                                        thMapping[text.trim().replace('\n', ' ')] = thIndex;
-                                    }
-                                    thIndex++;
-                                    doneOneTh();
-                                })
-                            }, function doneAllThs() {
-                                trs.shift();
-                                async.forEach(trs, function (tr, doneOneTr) {
-                                    var answerListItem = {};
-                                    tr.findElements(By.xpath('td')).then(function (tds) {
-                                        async.forEach(Object.keys(thMapping), function (key, doneOneKey) {
-                                            var index = thMapping[key];
-                                            tds[index].getText().then(function (text) {
-                                                answerListItem[key] = text.trim();
-                                                doneOneKey();
-                                            });
-                                        }, function doneAllKeys() {
-                                            answerListArray.push(answerListItem);
-                                            doneOneTr();
-                                        });
-                                    });
-                                }, function doneAllTrs() {
-                                    done();
-                                });
-                            })
-                        });
-                    }
-                ], function () {
-                    next();
-                });
-            });
+    let answerListIdObj = answerListObj.answerListId;
+    let answerListArray = answerListObj.answerList;
+    let externalDefinedExist = false;
+
+    let innerTable = await table.findElements(By.css('table'));
+    if (innerTable.length > 0) {
+        externalDefinedExist = true;
+        let innerTrs = await innerTable[0].findElements(By.xpath('tbody/tr'));
+        for (let innerTr of innerTrs) {
+            let tds = await innerTr.findElements(By.xpath('td'));
+            let keyText = await tds[0].getText();
+            let key = keyText.replace(/:/g, '').trim();
+            let valueText = await tds[1].getText();
+            let value = valueText.trim();
+            answerListObj[key] = value;
         }
-    ], function () {
-        obj[sectionName][sectionName] = answerListObj;
-        cb();
-    });
+    }
+
+    let trs = await table.findElements(By.xpath('tbody/tr'));
+    let a = await trs[0].findElement(By.css('a'));
+    let urlText = await a.getAttribute('href');
+    answerListIdObj.URL = urlText.trim();
+    let idText = await a.getText();
+    answerListIdObj.ID = idText.trim();
+
+    trs.shift();
+    if (externalDefinedExist) trs.shift();
+
+    let thMapping = {};
+    let ths = await trs[0].findElements(By.css('th'));
+
+    let thIndex = 0;
+    for (let th of ths) {
+        let text = await th.getText();
+        if (text.trim().length > 0) {
+            thMapping[text.trim().replace('\n', ' ')] = thIndex;
+        }
+        thIndex++;
+    }
+    trs.shift();
+    for (let tr of trs) {
+        let answerListItem = {};
+        let tds = await tr.findElements(By.xpath('td'));
+        for (let key in thMapping) {
+            let index = thMapping[key];
+            let fullText = await tds[index].getText();
+            let brs = await tds[index].findElements(By.xpath('br'));
+            if (brs.length > 0) {
+                let index = fullText.indexOf('\n');
+                answerListItem[key] = fullText.substring(0, index).trim();
+            }
+            else answerListItem[key] = fullText.trim();
+
+        }
+        answerListArray.push(answerListItem);
+    }
+
+    cb(answerListObj);
 };
