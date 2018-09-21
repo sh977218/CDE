@@ -4,7 +4,8 @@ const MigrationDataElementModel = require('../../createMigrationConnection').Mig
 const MigrationOrgModel = require('../../createMigrationConnection').MigrationOrgModel;
 
 const CreateCDE = require('../CDE/CreateCDE');
-const MergeCDE = require('../../loinc/CDE/MergeCDE');
+const MergeCDE = require('../CDE/MergeCDE');
+const CompareCDE = require('../CDE/CompareCDE');
 
 let merged = 0;
 let created = 0;
@@ -35,7 +36,7 @@ function run() {
                         created++;
                     } else {
                         let existingCde = existingCdes[0];
-                        let diff = MergeCDE.compareCdes(newCde, existingCde);
+                        let diff = CompareCDE.compareCde(newCde, existingCde);
                         if (!_.isEmpty(diff)) {
                             MergeCDE.mergeCde(newCde, existingCde);
                             await existingCde.save();
@@ -59,5 +60,5 @@ run().then(() => {
 });
 
 setInterval(function () {
-    console.log('same: ' + merged + ' created: ' + created + ' merged: ' + merged);
+    console.log('same: ' + same + ' created: ' + created + ' merged: ' + merged);
 }, 5000);

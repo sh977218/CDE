@@ -304,9 +304,9 @@ exports.update = function (elt, user, callback, special) {
 };
 
 exports.updatePromise = function (elt, user) {
-    let id = elt._id;
-    if (elt.toObject) elt = elt.toObject();
     return new Promise(async (resolve, reject) => {
+        let id = elt._id;
+        if (elt.toObject) elt = elt.toObject();
         let dataElement = await DataElement.findById(id);
         delete elt._id;
         if (!elt.history) elt.history = [];
@@ -326,6 +326,7 @@ exports.updatePromise = function (elt, user) {
         await newDe.save();
         dataElement.archived = true;
         await dataElement.save();
+        resolve();
     })
 };
 

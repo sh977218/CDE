@@ -11,10 +11,16 @@ parseDesignations = cde => {
         designation: cde.cdeName,
         tags: []
     }];
-    if (cde.questionText) _.trim(cde.questionText);
-    if (cde.questionText && cde.questionText !== 'N/A')
+    let questionText = cde.questionText;
+    if (questionText) {
+        let index = questionText.indexOf(':');
+        if (index === questionText.length - 1)
+            questionText = questionText.substr(0, index);
+        questionText = _.trim(questionText);
+    }
+    if (questionText !== 'N/A')
         designations.push({
-            designation: cde.questionText,
+            designation: questionText,
             tags: ['Question Text']
         });
     return designations;

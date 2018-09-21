@@ -36,7 +36,7 @@ doDAO = DAO => {
                         elt.createdBy.username = batchloader;
                     }
                     await elt.save();
-                    DAO.count++;
+                    console.log(DAO.name + ' ' + ++DAO.count);
                     resolveDAO();
                 });
             }).then(() => resolve());
