@@ -4,7 +4,7 @@ var DataElementModel = require('../../server/cde/mongo-cde').DataElement;
 var today = new Date();
 var beforeNow = new Date();
 beforeNow.setHours(beforeNow.getHours() - 8);
-var user = {username: 'BatchLoader'};
+var user = {username: 'batchloader'};
 var deCounter = 0;
 
 var query = {

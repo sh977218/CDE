@@ -32,7 +32,7 @@ exports.createCde = function (element, orgInfo) {
 
         let newCde = {
             tinyId: generateTinyId(),
-            createdBy: {username: 'batchLoader'},
+            createdBy: {username: 'batchloader'},
             created: today,
             imported: today,
             registrationState: {registrationStatus: "Qualified"},
