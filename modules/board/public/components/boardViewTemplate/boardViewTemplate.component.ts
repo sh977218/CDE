@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import { NgbModalModule, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-board-view-template',
     templateUrl: './boardViewTemplate.component.html'
 })
 export class BoardViewTemplateComponent {
-    @ViewChild('editBoardContent') editBoardContent: NgbModalModule;
-    @ViewChild('deleteBoardContent') deleteBoardContent: NgbModalModule;
+    @ViewChild('editBoardContent') editBoardContent: TemplateRef<any>;
+    @ViewChild('deleteBoardContent') deleteBoardContent: TemplateRef<any>;
     @Input() board: any;
     @Input() canEdit: boolean;
     @Input() headerLink: boolean = true;
@@ -15,26 +15,26 @@ export class BoardViewTemplateComponent {
     @Output() onSave = new EventEmitter();
     @Output() onDelete = new EventEmitter();
     @Output() onHeaderClick = new EventEmitter();
-    modalRef: NgbModalRef;
+    dialogRef: MatDialogRef<TemplateRef<any>>;
 
-    constructor(public modalService: NgbModal) {
+    constructor(public dialog: MatDialog) {
     }
 
     openEditBoardModal() {
-        this.modalRef = this.modalService.open(this.editBoardContent, {size: 'lg'});
+        this.dialogRef = this.dialog.open(this.editBoardContent);
     }
 
     openDeleteBoardModal() {
-        this.modalRef = this.modalService.open(this.deleteBoardContent, {size: 'sm'});
+        this.dialogRef = this.dialog.open(this.deleteBoardContent);
     }
 
     save(board) {
-        this.modalRef.close();
+        this.dialogRef.close();
         this.onSave.emit(board);
     }
 
     delete(board) {
-        this.modalRef.close();
+        this.dialogRef.close();
         this.onDelete.emit(board);
     }
 

@@ -7,10 +7,9 @@ import {
     ViewChild,
     QueryList,
     ViewChildren,
-    EventEmitter
+    EventEmitter, TemplateRef
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LocalStorageService } from 'angular-2-local-storage/dist';
 import { TreeComponent } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
@@ -22,11 +21,10 @@ import { IsAllowedService } from 'core/isAllowed.service';
 import { Definition, Designation } from 'shared/models.model';
 import { CdeForm } from 'shared/form/form.model';
 import { classifyItem, findSteward, removeCategory } from 'shared/system/classificationShared';
-
+import { MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-create-form',
-    providers: [NgbActiveModal],
     templateUrl: './createForm.component.html',
     styles: [`
         label {
@@ -40,7 +38,7 @@ export class CreateFormComponent implements OnInit {
     @Output() eltChange = new EventEmitter();
     @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
     @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
-    modalRef: NgbModalRef;
+    dialogRef: MatDialogRef<TemplateRef<any>>;
 
     ngOnInit() {
         if (!this.elt) {
@@ -65,7 +63,7 @@ export class CreateFormComponent implements OnInit {
         };
         classifyItem(this.elt, event.selectedOrg, event.classificationArray);
         this.updateClassificationLocalStorage(postBody);
-        this.modalRef.close();
+        this.dialogRef.close();
     }
 
     cancelCreateForm() {
@@ -94,7 +92,7 @@ export class CreateFormComponent implements OnInit {
     }
 
     openClassifyItemModal() {
-        this.modalRef = this.classifyItemComponent.openModal();
+        this.dialogRef = this.classifyItemComponent.openModal();
     }
 
     updateClassificationLocalStorage(item) {

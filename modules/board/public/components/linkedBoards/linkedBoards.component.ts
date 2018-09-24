@@ -1,13 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, ViewChild } from '@angular/core';
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
-
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { AlertService } from '_app/alert.service';
-
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-linked-boards',
-    providers: [NgbActiveModal],
     templateUrl: 'linkedBoards.component.html',
     styles: [`
         .linkedBoardDiv .card {
@@ -17,13 +14,12 @@ import { AlertService } from '_app/alert.service';
 })
 export class LinkedBoardsComponent {
     @Input() elt: any;
-    @ViewChild('linkedBoardsContent') linkedBoardsContent: NgbModalModule;
+    @ViewChild('linkedBoardsContent') linkedBoardsContent: TemplateRef<any>;
     boards: any[];
-    modalRef: NgbModalRef;
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
-                public modalService: NgbModal) {
+                public dialog: MatDialog) {
     }
 
     openLinkedBoardsModal() {
@@ -33,7 +29,7 @@ export class LinkedBoardsComponent {
                 this.alert.addAlert('danger', 'Error retrieving boards.');
             } else {
                 this.boards = response;
-                this.modalRef = this.modalService.open(this.linkedBoardsContent, {size: 'lg'});
+                this.dialog.open(this.linkedBoardsContent, {width: '800px'});
             }
         });
     }

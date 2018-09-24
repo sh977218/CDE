@@ -87,7 +87,7 @@
     </div>
     <div mat-dialog-actions>
         <button [mat-dialog-close] mat-raised-button color="accent" id="cancelNew">Cancel</button>
-        <button [disabled]="!newRuleForm.form.valid" mat-raised-button color="primary"
+        <button [disabled]="!newRuleForm.form.valid" mat-raised-button color="primary" (click)="saveRule()"
                 id="saveRule">Save</button>
     </div>
 

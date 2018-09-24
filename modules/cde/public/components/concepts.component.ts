@@ -34,6 +34,8 @@ export class ConceptsComponent {
         }];
 
     addNewConcept() {
+        console.log(this.newConcept);
+
         if (!this.elt.dataElementConcept) this.elt.dataElementConcept = {};
         if (this.newConcept.type === "dec") {
             if (!this.elt.dataElementConcept.concepts) this.elt.dataElementConcept.concepts = [];
@@ -50,8 +52,8 @@ export class ConceptsComponent {
     }
 
     openNewConceptModal() {
-        this.modalRef = this.dialog.open(this.newConceptContent, {width: "800px"});
         this.newConcept = {origin: "LOINC", type: "dec"};
+        this.modalRef = this.dialog.open(this.newConceptContent);
     }
 
     dataElementConceptRemoveConcept(index) {

@@ -1,15 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, ViewChild } from '@angular/core';
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { AlertService } from '_app/alert.service';
 import { MyBoardsService } from 'board/public/myBoards.service';
-
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-create-board',
     templateUrl: './createBoard.component.html',
-    providers: [NgbActiveModal]
 })
 export class CreateBoardComponent {
     @Input() set module(module) {
@@ -17,14 +14,14 @@ export class CreateBoardComponent {
         if (this.newBoard) this.newBoard.type = module;
     }
 
-    @ViewChild('createBoardModal') createBoardModal: NgbModalModule;
+    @ViewChild('createBoardModal') createBoardModal: TemplateRef<any>;
     _module = undefined;
-    modalRef: NgbModalRef;
+    dialogRef: MatDialogRef<TemplateRef<any>>;
     newBoard: any;
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
-                public modalService: NgbModal,
+                public dialog: MatDialog,
                 private myBoardsSvc: MyBoardsService) {
     }
 
@@ -32,7 +29,7 @@ export class CreateBoardComponent {
         this.newBoard.shareStatus = 'Private';
         this.http.post('/server/board', this.newBoard, {responseType: 'text'}).subscribe(() => {
             this.myBoardsSvc.waitAndReload();
-            this.modalRef.close();
+            this.dialogRef.close();
             this.alert.addAlert('success', 'Board created.');
         }, err => this.alert.httpErrorMessageAlert(err));
     }
@@ -41,6 +38,6 @@ export class CreateBoardComponent {
         this.newBoard = {
             type: this._module || 'cde'
         };
-        this.modalRef = this.modalService.open(this.createBoardModal, {size: 'lg'});
+        this.dialogRef = this.dialog.open(this.createBoardModal, {width: '800px'});
     }
 }

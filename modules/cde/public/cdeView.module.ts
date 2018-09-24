@@ -27,9 +27,9 @@ import { CompareModule } from 'compare/compare.module';
 import {
     MatButtonModule,
     MatDialogModule,
-    MatIconModule,
+    MatIconModule, MatInputModule,
     MatMenuModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule, MatSelectModule
 } from "@angular/material";
 
 
@@ -58,7 +58,9 @@ const appRoutes: Routes = [
         MatButtonModule,
         MatDialogModule,
         MatIconModule,
+        MatInputModule,
         MatMenuModule,
+        MatSelectModule,
         MatProgressSpinnerModule,
     ],
     declarations: [

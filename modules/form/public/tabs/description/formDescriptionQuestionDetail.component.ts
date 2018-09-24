@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatChipInputEvent, MatDialog } from '@angular/material';
-import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from 'angular-tree-component';
 import _clone from 'lodash/clone';
 import { Observable } from 'rxjs/Observable';

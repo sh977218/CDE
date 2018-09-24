@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, ViewChild, Output, EventEmitter } from '@angular/core';
-import { NgbModalModule, NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, ViewChild, Output, EventEmitter, TemplateRef } from '@angular/core';
 import { NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap/tabset/tabset';
 import { LocalStorageService } from 'angular-2-local-storage/dist';
 import { TreeNode } from 'angular-tree-component/dist/models/tree-node.model';
@@ -10,24 +9,22 @@ import _noop from 'lodash/noop';
 import { UserService } from '_app/user.service';
 import { ClassificationService } from 'core/classification.service';
 import { ClassificationClassified, ClassificationHistory } from 'shared/models.model';
+import { MatDialog } from '@angular/material';
 
 const actionMapping: IActionMapping = {
     mouse: {
-        click: () => {
-        }
+        click: () => {}
     }
 };
-
 
 @Component({
     selector: 'cde-classify-item-modal',
     templateUrl: 'classifyItemModal.component.html',
-    providers: [NgbActiveModal]
 })
 export class ClassifyItemModalComponent {
     @Input() modalTitle: string = 'Classify this CDE';
     @Output() onEltSelected = new EventEmitter<ClassificationClassified>();
-    @ViewChild('classifyItemContent') classifyItemContent!: NgbModalModule;
+    @ViewChild('classifyItemContent') classifyItemContent!: TemplateRef<any>;
     orgClassificationsTreeView: any;
     orgClassificationsRecentlyAddView?: ClassificationHistory[];
     options = {
@@ -43,7 +40,7 @@ export class ClassifyItemModalComponent {
     constructor(private classificationSvc: ClassificationService,
                 private http: HttpClient,
                 private localStorageService: LocalStorageService,
-                public modalService: NgbModal,
+                public dialog: MatDialog,
                 public userService: UserService) {
     }
 
@@ -110,6 +107,6 @@ export class ClassifyItemModalComponent {
                 if (this.userService.userOrgs.length === 1) this.onChangeOrg(this.userService.userOrgs[0]);
             }, _noop);
         }
-        return this.modalService.open(this.classifyItemContent);
+        return this.dialog.open(this.classifyItemContent);
     }
 }

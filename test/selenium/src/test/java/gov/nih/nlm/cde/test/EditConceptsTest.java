@@ -73,11 +73,15 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
     private void addNewConcept(String cName, String cId, String cType) {
         clickElement(By.id("openNewConceptModalBtn"));
-        findElement(By.name("name")).sendKeys(cName);
-        findElement(By.name("codeId")).sendKeys(cId);
-        if (cType != null)
-            new Select(driver.findElement(By.id("conceptType"))).selectByVisibleText(cType);
+        hangon(1);
+        findElement(By.id("name")).sendKeys(cName);
+        findElement(By.id("codeId")).sendKeys(cId);
+        if (cType != null) {
+            clickElement(By.id("conceptType"));
+            clickElement(By.xpath("//mat-option[. = '" + cType + "']"));
+        }
         clickElement(By.id("createNewConceptBtn"));
+        modalGone();
     }
 
 }

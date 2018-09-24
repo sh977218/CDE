@@ -25,14 +25,14 @@
     </div>
 </div>
 
-<ng-template #editBoardContent id="editBoardModal" let-c="close" let-d="dismiss">
+<ng-template #editBoardContent>
     <form role="form" #editBoardForm="ngForm" (ngSubmit)="save(board);">
-        <div class="modal-header" id="editBoardModalHeader">
+        <div mat-dialog-title>
             <mat-form-field class="w-100">
                 <input name="boardName" id="boardName" matInput placeholder="Board Name" [(ngModel)]="board.name">
             </mat-form-field>
         </div>
-        <div class="modal-body" id="editBoardModalBody">
+        <div mat-dialog-content>
             <mat-form-field class="w-100">
                 <textarea name="boardDescription" id="boardDescription" matInput placeholder="Board Description"
                           [(ngModel)]="board.description"></textarea>
@@ -50,25 +50,22 @@
             <ng-select id="boardTag" name="boardTag" [ngModel]="board.tags" [items]="board.tags" [addTag]="true"
                        multiple="true"></ng-select>
         </div>
-        <div class="modal-footer" id="editBoardModalFooter">
-            <button mat-raised-button (click)="c('Close click')" id="cancelEditBoardBtn" color="warn"
-                    name="cancelNewNamingBtn">Cancel
-            </button>
+        <div mat-dialog-actions>
+            <button mat-raised-button [mat-dialog-close] id="cancelEditBoardBtn" color="warn">Cancel</button>
             <button mat-raised-button color="primary" [disabled]="!editBoardForm.form.valid" id="saveEditBoardBtn"
                     name="saveEditBoardBtn" type="submit">Save
             </button>
         </div>
     </form>
 </ng-template>
-<ng-template #deleteBoardContent id="editBoardModal" let-c="close" let-d="dismiss">
+
+<ng-template #deleteBoardContent>
+    <div mat-dialog-title>
+        Delete {{board.name}}?
+    </div>
     <form role="form" #deleteBoardForm="ngForm" (ngSubmit)="delete(board);">
-        <div class="modal-header" id="deleteBoardModalHeader">
-            Delete {{board.name}}?
-        </div>
-        <div class="modal-body" id="deleteBoardModalBody">
-        </div>
-        <div class="modal-footer" id="deleteBoardModalFooter">
-            <button mat-raised-button color="warn" (click)="c('Close click')" id="cancelDeleteBoardBtn">Cancel</button>
+        <div mat-dialog-actions>
+            <button mat-raised-button color="warn" [mat-dialog-close] id="cancelDeleteBoardBtn">Cancel</button>
             <button mat-raised-button color="primary" id="saveDeleteBoardBtn" type="submit">Save</button>
         </div>
     </form>
