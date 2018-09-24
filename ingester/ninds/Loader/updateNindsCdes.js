@@ -47,7 +47,7 @@ doOne = migrationCde => {
                     await existingCde.save();
                     skip++;
                 } else {
-                    MergeCDE.mergeCde(migrationCde, existingCde);
+                    MergeCDE.mergeCde(existingCde, migrationCde);
                     await mongo_cde.updatePromise(existingCde, user);
                     console.log('changed: ' + ++changed);
                 }

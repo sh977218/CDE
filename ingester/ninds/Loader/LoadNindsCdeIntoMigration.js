@@ -54,8 +54,8 @@ function run() {
 }
 
 run().then(() => {
-    console.log('same: ' + merged + ' created: ' + created + ' merged: ' + merged);
     console.log('totalCDE: ' + totalCDE);
+    console.log('same: ' + merged + ' created: ' + created + ' merged: ' + merged);
     process.exit(1);
 });
 

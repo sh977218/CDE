@@ -71,7 +71,7 @@ parseReferenceDocuments = cde => {
     if (cde.reference) _.trim(cde.reference);
     if (cde.reference && cde.reference !== 'No references available') {
         let uri = '';
-        let found = cde.reference.indexOf('http://www.') !== -1 || cde.reference.indexOf('https://www.') !== -1;
+        let found = cde.reference.indexOf('http://www.') === 0 || cde.reference.indexOf('https://www.') === 0;
         if (found) uri = cde.reference;
         referenceDocuments.push({
             title: cde.reference,
