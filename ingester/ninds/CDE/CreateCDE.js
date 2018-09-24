@@ -70,14 +70,17 @@ parseReferenceDocuments = cde => {
 
     if (cde.reference) _.trim(cde.reference);
     if (cde.reference && cde.reference !== 'No references available') {
-        let uri = '';
-        let found = cde.reference.indexOf('http://www.') === 0 || cde.reference.indexOf('https://www.') === 0;
-        if (found) uri = cde.reference;
-        referenceDocuments.push({
-            title: cde.reference,
-            uri: uri,
-            source: 'NINDS'
-        });
+        if (cde.reference) {
+            let refWords = _.words(cde.reference, /[^\s]+/g);
+            let reference = refWords.join(" ");
+            let uriIndex = refWords.indexOf('http://www.');
+            if (!uriIndex) uriIndex = refWords.indexOf('https://www.');
+            referenceDocuments.push({
+                title: reference,
+                uri: uriIndex === -1 ? '' : refWords[uriIndex],
+                source: 'NINDS'
+            });
+        }
     }
     return referenceDocuments;
 };

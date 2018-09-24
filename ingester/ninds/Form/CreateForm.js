@@ -3,14 +3,14 @@ const today = new Date().toJSON();
 
 parseDesignations = ninds => {
     let designations = [{
-        designation: ninds.get('crfModuleGuideline').trim(),
+        designation: ninds.crfModuleGuideline.trim(),
         tags: []
     }];
     return designations;
 };
 parseDefinitions = ninds => {
     let definitions = [{
-        definition: ninds.get('description').trim(),
+        definition: ninds.description.trim(),
         tags: [],
     }];
     return definitions;
@@ -18,7 +18,7 @@ parseDefinitions = ninds => {
 parseSources = ninds => {
     let sources = [{
         sourceName: 'NINDS',
-        updated: ninds.get('versionDate')
+        updated: ninds.versionDate
     }];
     return sources;
 };
@@ -33,8 +33,7 @@ parseIds = ninds => {
         id: formId,
         version: version
     };
-    if (formId && formId.length > 0)
-        ids.push(crfId);
+    if (formId && formId.length > 0) ids.push(crfId);
     return ids;
 };
 parseProperties = ninds => {
@@ -43,29 +42,32 @@ parseProperties = ninds => {
 };
 parseReferenceDocuments = ninds => {
     let referenceDocuments = [];
-    let uri = '';
-    if (ninds.downloadLink.indexOf('http://') !== -1 || ninds.downloadLink.indexOf('https://') !== -1)
-        uri = ninds.downloadLink;
-    let referenceDocument = {
-        uri: uri,
-        source: 'NINDS'
-    };
-    if (referenceDocument.uri.length > 0)
-        referenceDocuments.push(referenceDocument);
+    if (ninds.downloadLink) _.trim(ninds.downloadLink);
+    if (ninds.downloadLink !== 'No references available') {
+        let refWords = _.words(ninds.downloadLink, /[^\s]+/g);
+        let reference = refWords.join(" ");
+        let uriIndex = refWords.indexOf('http://www.');
+        if (!uriIndex) uriIndex = refWords.indexOf('https://www.');
+        referenceDocuments.push({
+            title: reference,
+            uri: uriIndex === -1 ? '' : refWords[uriIndex],
+            source: 'NINDS'
+        });
+    }
     return referenceDocuments;
 };
 parseClassification = ninds => {
     let domainSubDomain = {
-        "name": "Domain",
+        name: "Domain",
         elements: [{
-            "name": ninds.get('domainName'),
-            "elements": []
+            name: ninds.domainName,
+            elements: []
         }]
     };
     if (ninds.domainName !== ninds.subDomainName) {
         domainSubDomain.elements[0].elements.push({
-            "name": ninds.get('subDomainName'),
-            "elements": []
+            name: ninds.subDomainName,
+            elements: []
         });
     }
 
@@ -75,12 +77,12 @@ parseClassification = ninds => {
         diseaseElement = {
             name: 'Disease',
             elements: [{
-                "name": ninds.diseaseName,
-                "elements": [{
-                    "name": ninds.subDiseaseName,
-                    "elements": [{
-                        "name": 'Domain',
-                        "elements": [domainSubDomain]
+                name: ninds.diseaseName,
+                elements: [{
+                    name: ninds.subDiseaseName,
+                    elements: [{
+                        name: 'Domain',
+                        elements: [domainSubDomain]
                     }]
                 }]
             }]
@@ -89,8 +91,8 @@ parseClassification = ninds => {
         diseaseElement = {
             name: 'Disease',
             elements: [{
-                "name": ninds.get('diseaseName'),
-                "elements": [domainSubDomain]
+                name: ninds.diseaseName,
+                elements: [domainSubDomain]
             }]
         };
     }
@@ -99,9 +101,9 @@ parseClassification = ninds => {
     let classification = [{stewardOrg: {name: 'NINDS'}, elements: elements}];
 
     return classification;
-}
-exports.createForm = function (ninds) {
-    let formId = ninds.get('formId');
+};
+
+exports.createForm = function (ninds, org) {
     let designations = parseDesignations(ninds);
     let definitions = parseDefinitions(ninds);
     let sources = parseSources(ninds);
