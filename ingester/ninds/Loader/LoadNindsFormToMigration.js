@@ -23,7 +23,7 @@ function run() {
             return new Promise(async (resolve, reject) => {
                 let form = ninds.toObject();
                 totalForm++;
-                let existingForms = await MigrationForm.find({'ids.id': form.formId});
+                let existingForms = await MigrationFormModel.find({'ids.id': form.formId});
                 if (existingForms.length > 1)
                     throw new Error(existingForms.length + ' forms found, ids.id:' + form.formId);
                 let newForm = CreateForm.createForm(form, nindsOrg);

@@ -45,11 +45,7 @@ exports.compareForm = function (newForm, existingForm) {
             if (a.source === 'NINDS') a.version = Number.parseFloat(a.version);
         });
         obj.version = Number.parseFloat(obj.version);
-
-
-
-
-
+        obj.formElements = obj.formElements.map(o => o.question.cde.tinyId);
     });
     return deepDiff(existingFormObj, newFormObj);
 };

@@ -1,4 +1,6 @@
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
+const DataElement = require('../../../server/cde/mongo-cde').DataElement;
+
 const today = new Date().toJSON();
 
 parseDesignations = ninds => {
@@ -102,15 +104,35 @@ parseClassification = ninds => {
 
     return classification;
 };
+parseFormElements = async ninds => {
+    if (ninds.cdes.length === 0) return [];
+    let formElements = [{
+        elementType: 'section',
+        instructions: {value: ''},
+        label: '',
+        formElements: []
+    }];
+    for (let cde of ninds.cdes) {
+        let existingCde = await DataElement.findOne({
+            archived: false,
+            "registrationState.registrationStatus": {$ne: "Retired"},
+            'ids.id': cde.cdeId
+        });
 
+    }
+    formElements.push();
+
+    return formElements;
+};
 exports.createForm = function (ninds, org) {
     let designations = parseDesignations(ninds);
     let definitions = parseDefinitions(ninds);
     let sources = parseSources(ninds);
-    let ids = parseids(ninds);
-    let referenceDocuments = parseReferenceDocuments(ninds);
-    let classification = parseClassification(ninds);
+    let ids = parseIds(ninds);
     let properties = parseProperties(ninds);
+    let referenceDocuments = parseReferenceDocuments(ninds);
+    let formElements = parseFormElements(ninds);
+
     let newForm = {
         tinyId: generateTinyId(),
         createdBy: {username: 'batchloader'},

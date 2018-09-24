@@ -7,16 +7,6 @@ mergeSources = (o1, o2) => {
     return result;
 };
 
-mergePermissibleValues = (o1, o2) => {
-    let fullList = _.concat(o1.valueDomain.permissibleValues, o2.valueDomain.permissibleValues);
-    let uniqueList = _.uniqWith(fullList,
-        (a, b) => a.permissibleValue === b.permissibleValue
-            && a.valueMeaningDefinition === b.valueMeaningDefinition
-            && a.valueMeaningName === b.valueMeaningName
-            && a.codeSystemName === b.codeSystemName);
-    return uniqueList;
-};
-
 exports.mergeCde = (existingCde, newCde) => {
     existingCde.designations = newCde.designations;
     existingCde.definitions = newCde.definitions;
