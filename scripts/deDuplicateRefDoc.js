@@ -21,8 +21,9 @@ let DAOs = [
 ];
 
 doDAO = DAO => {
+    let cond = {'referenceDocuments.0': {$exists: true}};
     return new Promise(async (resolve, reject) => {
-        DAO.dao.find({'referenceDocuments.0': {$exists: true}})
+        DAO.dao.find(cond)
             .cursor({batchSize: 1000, useMongooseAggCursor: true})
             .eachAsync(elt => {
                 let list = elt.toObject().referenceDocuments;
@@ -34,9 +35,11 @@ doDAO = DAO => {
                             [aCopy, bCopy].forEach(obj => {
                                 for (let p in obj) {
                                     if (_.isEmpty(obj[p])) delete obj[p];
+                                    else obj[p] = _.words(obj[p], /[^\s]+/g).join(" ");
                                 }
                             });
-                            return _.isEmpty(aCopy, bCopy);
+                            let result = _.isEqual(aCopy, bCopy);
+                            return result;
                         });
                         elt.referenceDocuments = uniqueList;
                         await elt.save();
