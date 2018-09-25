@@ -32,12 +32,14 @@ export class PinBoardModalComponent {
                 boardId: board._id,
                 tinyIdList: elts.map(e => e.tinyId),
                 type: this.module
-            }, {observe: 'response', responseType: 'text'}).subscribe(r => {
+            }, {observe: 'response', responseType: 'text'}).subscribe(() => {
                 if (elts.length === 1) this.alert.addAlert('success', 'Added to Board');
                 else this.alert.addAlert('success', 'All elements pinned.');
                 this.dialogRef.close();
             }, err => this.alert.httpErrorMessageAlert(err));
-        }, err => this.alert.httpErrorMessageAlert(err));
+        }, err => {
+            if (err) this.alert.httpErrorMessageAlert(err);
+        });
     }
 
     open() {

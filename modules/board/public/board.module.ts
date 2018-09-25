@@ -32,6 +32,7 @@ import { WidgetModule } from "widget/widget.module";
         NgbModule,
         NgSelectModule,
         RouterModule,
+        MatButtonModule,
         MatButtonToggleModule,
         MatDialogModule,
         MatIconModule,
@@ -41,7 +42,6 @@ import { WidgetModule } from "widget/widget.module";
         WidgetModule,
         // internal
         AdminItemModule,
-        MatButtonModule
     ],
     declarations: [
         BoardViewTemplateComponent,

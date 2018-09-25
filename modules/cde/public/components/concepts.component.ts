@@ -34,8 +34,6 @@ export class ConceptsComponent {
         }];
 
     addNewConcept() {
-        console.log(this.newConcept);
-
         if (!this.elt.dataElementConcept) this.elt.dataElementConcept = {};
         if (this.newConcept.type === "dec") {
             if (!this.elt.dataElementConcept.concepts) this.elt.dataElementConcept.concepts = [];
