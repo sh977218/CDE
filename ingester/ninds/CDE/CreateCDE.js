@@ -116,7 +116,7 @@ exports.parsePermissibleValues = cde => {
 parseValueDomain = cde => {
     let valueDomain = {uom: cde.measurementType};
 
-    let permissibleValues = exports.parsePermissibleValue(cde);
+    let permissibleValues = exports.parsePermissibleValues(cde);
 
     if (cde.inputRestrictions === 'Free-Form Entry') {
         if (cde.dataType === 'Alphanumeric') {
