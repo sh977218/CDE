@@ -72,29 +72,27 @@ parseReferenceDocuments = cde => {
     if (cde.reference && cde.reference !== 'No references available') {
         if (cde.reference) {
             let refWords = _.words(cde.reference, /[^\s]+/g);
-            let reference = refWords.join(" ");
             let uriIndex = refWords.indexOf('http://www.');
-            if (!uriIndex) uriIndex = refWords.indexOf('https://www.');
-            referenceDocuments.push({
-                title: reference,
-                uri: uriIndex === -1 ? '' : refWords[uriIndex],
+            if (uriIndex === -1) uriIndex = refWords.indexOf('https://www.');
+            let referenceDocument = {
+                title: refWords.join(" "),
                 source: 'NINDS'
-            });
+            };
+            if (uriIndex !== -1) referenceDocument.uri = refWords[uriIndex];
+            referenceDocuments.push(referenceDocument);
         }
     }
     return referenceDocuments;
 };
-parseValueDomain = cde => {
-    let valueDomain = {uom: cde.measurementType};
 
+exports.parsePermissibleValues = cde => {
     let permissibleValues = [];
     let pvsArray = cde.permissibleValue.split(';');
     let isPvValueNumber = /^\d+$/.test(pvsArray[0]);
     let pdsArray = cde.permissibleDescription.split(';');
     if (pvsArray.length !== pdsArray.length) {
-        console.log('*******************permissibleValue and permissibleDescription do not match.');
-        console.log('*******************ninds:\n' + ninds);
-        console.log('*******************cde:\n' + cde);
+        console.log('***permissibleValue and permissibleDescription do not match.');
+        console.log('***cde:' + cde.cdeId);
         process.exit(1);
     }
     for (let i = 0; i < pvsArray.length; i++) {
@@ -111,6 +109,15 @@ parseValueDomain = cde => {
             permissibleValues.push(pv);
         }
     }
+
+    return permissibleValues;
+};
+
+parseValueDomain = cde => {
+    let valueDomain = {uom: cde.measurementType};
+
+    let permissibleValues = exports.parsePermissibleValue(cde);
+
     if (cde.inputRestrictions === 'Free-Form Entry') {
         if (cde.dataType === 'Alphanumeric') {
             valueDomain.datatype = 'Text';
@@ -216,7 +223,7 @@ parseClassification = (cde, ninds, newCde, nindsOrg) => {
     classificationShared.classifyItem(newCde, "NINDS", domainToAdd);
     classificationShared.addCategory({elements: nindsOrg.classifications}, domainToAdd);
 };
-exports.createCde = function (cde, ninds, nindsOrg) {
+exports.createCde = (cde, ninds, nindsOrg) => {
     let designations = parseDesignations(cde);
     let definitions = parseDefinitions(cde);
     let sources = parseSources(cde);

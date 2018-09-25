@@ -1,6 +1,9 @@
+const _ = require('lodash');
+
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
 const DataElement = require('../../../server/cde/mongo-cde').DataElement;
 
+const CreateCDE = require('../CDE/CreateCDE');
 const today = new Date().toJSON();
 
 parseDesignations = ninds => {
@@ -104,52 +107,91 @@ parseClassification = ninds => {
 
     return classification;
 };
-parseFormElements = async ninds => {
-    if (ninds.cdes.length === 0) return [];
-    let formElements = [{
-        elementType: 'section',
-        instructions: {value: ''},
-        label: '',
-        formElements: []
-    }];
-    for (let cde of ninds.cdes) {
-        let existingCde = await DataElement.findOne({
-            archived: false,
-            "registrationState.registrationStatus": {$ne: "Retired"},
-            'ids.id': cde.cdeId
-        });
+parseFormElements = ninds => {
+    return new Promise(async (resolve, reject) => {
+        if (ninds.cdes.length === 0) resolve([]);
+        let formElements = [{
+            elementType: 'section',
+            instructions: {value: ''},
+            label: '',
+            formElements: []
+        }];
+        for (let cde of ninds.cdes) {
+            let existingCde = await DataElement.findOne({
+                archived: false,
+                "registrationState.registrationStatus": {$ne: "Retired"},
+                'ids.id': cde.cdeId
+            });
+            if (!existingCde) {
+                console.log('cde: ' + cde.cdeId + ' not found.');
+                throw new Error('cde: ' + cde.cdeId + ' not found.');
+            }
+            let question = {
+                cde: {
+                    tinyId: existingCde.tinyId,
+                    name: existingCde.designations[0].designation,
+                    designations: existingCde.designations,
+                    version: existingCde.version,
+                    ids: existingCde.ids
+                },
+                datatype: existingCde.valueDomain.datatype,
+                uom: existingCde.valueDomain.uom
+            };
+            if (question.datatype === 'Value List') {
+                question.answers = CreateCDE.parsePermissibleValues(cde);
+                question.cde.permissibleValues = CreateCDE.parsePermissibleValues(cde);
+                question.multiselect = cde.inputRestrictions === 'Multiple Pre-Defined Values Selected';
+            } else if (question.datatype === 'Text') {
+                question.datatypeText = existingCde.valueDomain.datatypeText;
+            } else if (question.datatype === 'Number') {
+                question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
+            } else if (question.datatype === 'Date') {
+                question.datatypeDate = existingCde.valueDomain.datatypeDate;
+            } else if (question.datatype === 'File') {
+                question.datatypeDate = existingCde.valueDomain.datatypeDate;
+            } else {
+                throw 'Unknown question.datatype: ' + question.datatype + ' cde id: ' + existingCde.ids[0].id;
+            }
 
-    }
-    formElements.push();
-
-    return formElements;
+            formElements[0].formElements.push({
+                elementType: 'question',
+                instructions: {value: cde.instruction},
+                question: question,
+                formElements: []
+            });
+        }
+        resolve(formElements);
+    })
 };
-exports.createForm = function (ninds, org) {
-    let designations = parseDesignations(ninds);
-    let definitions = parseDefinitions(ninds);
-    let sources = parseSources(ninds);
-    let ids = parseIds(ninds);
-    let properties = parseProperties(ninds);
-    let referenceDocuments = parseReferenceDocuments(ninds);
-    let formElements = parseFormElements(ninds);
+exports.createForm = (ninds, org) => {
+    return new Promise(async (resolve, reject) => {
+        let designations = parseDesignations(ninds);
+        let definitions = parseDefinitions(ninds);
+        let sources = parseSources(ninds);
+        let ids = parseIds(ninds);
+        let properties = parseProperties(ninds);
+        let referenceDocuments = parseReferenceDocuments(ninds);
+        let classification = parseClassification(ninds);
+        let formElements = await parseFormElements(ninds);
 
-    let newForm = {
-        tinyId: generateTinyId(),
-        createdBy: {username: 'batchloader'},
-        sources: sources,
-        created: today,
-        imported: today,
-        isCopyrighted: ninds.get('copyright'),
-        noRenderAllowed: ninds.get('copyright'),
-        stewardOrg: {name: 'NINDS'},
-        registrationState: {registrationStatus: "Qualified"},
-        designations: designations,
-        definitions: definitions,
-        referenceDocuments: referenceDocuments,
-        ids: ids,
-        classification: classification,
-        properties: properties,
-        formElements: []
-    };
-    return newForm;
+        let newForm = {
+            tinyId: generateTinyId(),
+            createdBy: {username: 'batchloader'},
+            sources: sources,
+            created: today,
+            imported: today,
+            isCopyrighted: ninds.copyright,
+            noRenderAllowed: ninds.copyright,
+            stewardOrg: {name: 'NINDS'},
+            registrationState: {registrationStatus: "Qualified"},
+            designations: designations,
+            definitions: definitions,
+            referenceDocuments: referenceDocuments,
+            ids: ids,
+            classification: classification,
+            properties: properties,
+            formElements: formElements
+        };
+        resolve(newForm);
+    })
 };

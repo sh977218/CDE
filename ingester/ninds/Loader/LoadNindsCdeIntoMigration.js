@@ -22,9 +22,9 @@ function run() {
             nindsOrg = await new MigrationOrgModel({name: "NINDS", classification: []}).save();
         MigrationNindsModel.find({}).cursor().eachAsync(ninds => {
             if (ninds.toObject) ninds = ninds.toObject();
-            return new Promise(async (resolve, reject) => {
+            return new Promise(async (resolveNinds, reject) => {
                 let cdes = ninds.cdes;
-                if (cdes.length === 0) resolve();
+                if (cdes.length === 0) resolveNinds();
                 for (let cde of cdes) {
                     totalCDE++;
                     let existingCdes = await MigrationDataElementModel.find({'ids.id': cde.cdeId});
@@ -44,7 +44,7 @@ function run() {
                         } else same++;
                     }
                 }
-                resolve();
+                resolveNinds();
             })
         }).then(async () => {
             await nindsOrg.save();

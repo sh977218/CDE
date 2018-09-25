@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const MigrationNindsModel = require('../../createMigrationConnection').MigrationNindsModel;
 const MigrationFormModel = require('../../createMigrationConnection').MigrationFormModel;
+const MigrationOrgModel = require('../../createMigrationConnection').MigrationOrgModel;
 
 const CreateForm = require('../Form/CreateForm');
 const MergeForm = require('../Form/MergeForm');
@@ -19,16 +20,17 @@ function run() {
         let nindsOrg = await MigrationOrgModel.findOne({name: 'NINDS'});
         if (!nindsOrg) nindsOrg = await new MigrationOrgModel({name: "NINDS", classification: []}).save();
         MigrationNindsModel.find({}).cursor().eachAsync(ninds => {
-            if (ninds.toObject) ninds = ninds.toObject();
-            return new Promise(async (resolve, reject) => {
+            return new Promise(async (resolveNinds, reject) => {
                 let form = ninds.toObject();
+                if (created === 104)
+                    console.log('a');
                 totalForm++;
                 let existingForms = await MigrationFormModel.find({'ids.id': form.formId});
                 if (existingForms.length > 1)
                     throw new Error(existingForms.length + ' forms found, ids.id:' + form.formId);
-                let newForm = CreateForm.createForm(form, nindsOrg);
+                let newForm = await CreateForm.createForm(form, nindsOrg);
                 if (existingForms.length === 0) {
-                    await new MigrationFormModel(existingForms).save();
+                    await new MigrationFormModel(newForm).save();
                     created++;
                 } else {
                     let existingForm = existingForms[0];
@@ -39,7 +41,7 @@ function run() {
                         merged++;
                     } else same++;
                 }
-                resolve();
+                resolveNinds();
             })
         }).then(async () => {
             await nindsOrg.save();
@@ -50,7 +52,7 @@ function run() {
 
 run().then(() => {
     console.log('totalForm: ' + totalForm);
-    console.log('same: ' + merged + ' created: ' + created + ' merged: ' + merged);
+    console.log('same: ' + same + ' created: ' + created + ' merged: ' + merged);
     process.exit(1);
 });
 
