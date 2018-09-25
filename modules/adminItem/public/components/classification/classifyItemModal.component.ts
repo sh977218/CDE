@@ -107,6 +107,6 @@ export class ClassifyItemModalComponent {
                 if (this.userService.userOrgs.length === 1) this.onChangeOrg(this.userService.userOrgs[0]);
             }, _noop);
         }
-        return this.dialog.open(this.classifyItemContent);
+        return this.dialog.open(this.classifyItemContent, {width: '800px'});
     }
 }

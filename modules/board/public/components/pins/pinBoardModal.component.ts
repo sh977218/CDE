@@ -57,5 +57,6 @@ export class PinBoardModalComponent {
 
     selectBoard(board) {
         this.resolve(board);
+        this.dialogRef.close();
     }
 }

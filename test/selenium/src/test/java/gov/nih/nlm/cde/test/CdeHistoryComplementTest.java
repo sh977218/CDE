@@ -25,8 +25,8 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         goToConcepts();
         clickElement(By.id("openNewConceptModalBtn"));
-        findElement(By.xpath("//label[text()='Code Name']/following-sibling::input")).sendKeys("Code Name 1");
-        findElement(By.xpath("//label[text()='Code ID']/following-sibling::input")).sendKeys("Code ID 1");
+        findElement(By.cssSelector("input#name")).sendKeys("Code Name 1");
+        findElement(By.cssSelector("input#codeId")).sendKeys("Code ID 1");
         clickElement(By.id("createNewConceptBtn"));
         modalGone();
         newCdeVersion();
