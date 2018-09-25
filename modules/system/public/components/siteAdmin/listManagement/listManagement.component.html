@@ -1,4 +1,4 @@
-<table class="table table-border table-responsive" *ngIf="allTags.length">
+<table class="table table-border" *ngIf="allTags.length">
     <tr>
         <th>Organization Name:</th>
         <th>Properties:</th>
@@ -15,26 +15,40 @@
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip>
                     <input placeholder="Property Keys"
+                           [formControl]="pkControl"
                            [matChipInputFor]="propertyKeyChipList"
                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                            [matChipInputAddOnBlur]="addOnBlur"
                            (matChipInputTokenEnd)="addPropertyKey(o, $event)"
                            [matAutocomplete]="pkAuto">
-                    <mat-autocomplete #pkAuto>
-                        <mat-option *ngFor="let pkOption of allPropertyKeys">{{pkOption}}</mat-option>
+                    <mat-autocomplete #pkAuto="matAutocomplete" (optionSelected)="autoSelectedPk(o, $event)">
+                        <mat-option *ngFor="let pkOption of filteredPropertyKeys | async" [value]="pkOption">
+                            {{pkOption}}
+                        </mat-option>
                     </mat-autocomplete>
                 </mat-chip-list>
             </mat-form-field>
-
-            <ng-select [(ngModel)]="o.propertyKeys" [items]="allPropertyKeys" [multiple]="true"
-                       [appendTo]="'body'" [hideSelected]="true" (change)="saveOrg(o)">
-            </ng-select>
         </td>
         <td>
-            <ng-select [(ngModel)]="o.nameTags" [items]="allTags" [multiple]="true" [appendTo]="'body'"
-                       [hideSelected]="true" (change)="saveOrg(o)">
-            </ng-select>
+            <mat-form-field class="w-100">
+                <mat-chip-list #tagsChipList>
+                    <mat-chip *ngFor="let pk of o.nameTags"
+                              [selectable]="true" [removable]="true" (removed)="removeTag(o, pk)">
+                        {{pk}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="Name Tags"
+                           [formControl]="tagControl"
+                           [matChipInputFor]="tagsChipList"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           [matChipInputAddOnBlur]="addOnBlur"
+                           (matChipInputTokenEnd)="addTag(o, $event)"
+                           [matAutocomplete]="tagAuto">
+                    <mat-autocomplete #tagAuto="matAutocomplete">
+                        <mat-option *ngFor="let tagOption of filteredTags | async">{{tagOption}}</mat-option>
+                    </mat-autocomplete>
+                </mat-chip-list>
+            </mat-form-field>
         </td>
-
     </tr>
 </table>

@@ -5,7 +5,11 @@ import { AlertService } from '_app/alert.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { Organization } from 'shared/models.model';
 import { ENTER } from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material';
+import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+
 
 @Component({
     selector: 'cde-list-management',
@@ -13,17 +17,39 @@ import { MatChipInputEvent } from '@angular/material';
 })
 export class ListManagementComponent implements OnInit {
     orgs?: any[];
-    allPropertyKeys: String[] = [];
-    allTags: String[] = [];
+    allPropertyKeys: string[] = [];
+    allTags: string[] = [];
     readonly separatorKeysCodes: number[] = [ENTER];
-
-    ngOnInit() {
-        this.getOrgs();
-    }
+    pkControl = new FormControl();
+    tagControl = new FormControl();
+    filteredPropertyKeys: Observable<string[]>;
+    filteredTags: Observable<string[]>;
+    @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement>;
 
     constructor(private http: HttpClient,
                 private Alert: AlertService,
                 private orgHelperService: OrgHelperService) {
+    }
+
+    ngOnInit() {
+        this.getOrgs();
+
+        this.filteredPropertyKeys = this.pkControl.valueChanges
+            .pipe(
+                startWith(''),
+                map(value => this._filter(this.allPropertyKeys, value))
+            );
+
+        this.filteredTags = this.tagControl.valueChanges
+            .pipe(
+                startWith(''),
+                map(value => this._filter(this.allTags, value))
+            );
+    }
+
+    _filter (options: string[], value: string): string[] {
+        if (!value) return [];
+        return options.filter(option => option.toLowerCase().includes(value.toLowerCase()));
     }
 
     getOrgs() {
@@ -48,6 +74,11 @@ export class ListManagementComponent implements OnInit {
         this.saveOrg(org);
     }
 
+    removeTag (org: Organization, key: string) {
+        org.nameTags.splice(org.nameTags.indexOf(key), 1);
+        this.saveOrg(org);
+    }
+
     saveOrg(org: Organization) {
         this.http.post('/updateOrg', org)
             .subscribe(() => this.orgHelperService.reload().then(() => this.Alert.addAlert('success', 'Org Updated')),
@@ -60,10 +91,16 @@ export class ListManagementComponent implements OnInit {
         this.saveOrg(org);
     }
 
-    _filterStates(value: string): State[] {
-        const filterValue = value.toLowerCase();
+    autoSelectedPk(org: Organization, key: MatAutocompleteSelectedEvent) {
+        org.propertyKeys.push(key.option.viewValue);
+        this.pkControl.setValue(null);
+        this.saveOrg(org);
+    }
 
-        return this.states.filter(state => state.name.toLowerCase().indexOf(filterValue) === 0);
+    addTag(org: Organization, key: MatChipInputEvent) {
+        org.nameTags.push(key.value);
+        if (key.input) key.input.value = '';
+        this.saveOrg(org);
     }
 
 }

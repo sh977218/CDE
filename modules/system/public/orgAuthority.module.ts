@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgSelectModule } from '@ng-select/ng-select';
 
 import { ListManagementComponent } from 'system/public/components/siteAdmin/listManagement/listManagement.component';
 import { StatusValidationRulesComponent } from 'system/public/components/siteAdmin/statusValidationRules/statusValidationRules.component';
@@ -30,7 +29,6 @@ const appRoutes: Routes = [
         FormsModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
-        NgSelectModule,
         // core
         WidgetModule,
         // internal
@@ -41,6 +39,7 @@ const appRoutes: Routes = [
         MatChipsModule,
         MatIconModule,
         MatInputModule,
+        ReactiveFormsModule,
     ],
     declarations: [
         ListManagementComponent,
