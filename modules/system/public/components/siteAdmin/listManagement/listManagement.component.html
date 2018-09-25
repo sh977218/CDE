@@ -7,13 +7,32 @@
     <tr *ngFor="let o of orgs" id="orgListName-{{o.name}}">
         <td>{{o.name}}</td>
         <td>
+            <mat-form-field class="w-100">
+                <mat-chip-list #propertyKeyChipList>
+                    <mat-chip *ngFor="let pk of o.propertyKeys"
+                              [selectable]="true" [removable]="true" (removed)="removePropertyKey(o, pk)">
+                        {{pk}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="Property Keys"
+                           [matChipInputFor]="propertyKeyChipList"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           [matChipInputAddOnBlur]="addOnBlur"
+                           (matChipInputTokenEnd)="addPropertyKey(o, $event)"
+                           [matAutocomplete]="pkAuto">
+                    <mat-autocomplete #pkAuto>
+                        <mat-option *ngFor="let pkOption of allPropertyKeys">{{pkOption}}</mat-option>
+                    </mat-autocomplete>
+                </mat-chip-list>
+            </mat-form-field>
+
             <ng-select [(ngModel)]="o.propertyKeys" [items]="allPropertyKeys" [multiple]="true"
-                       [appendTo]="'body'" [hideSelected]="true" (change)="saveOrg(o);">
+                       [appendTo]="'body'" [hideSelected]="true" (change)="saveOrg(o)">
             </ng-select>
         </td>
         <td>
             <ng-select [(ngModel)]="o.nameTags" [items]="allTags" [multiple]="true" [appendTo]="'body'"
-                       [hideSelected]="true" (change)="saveOrg(o);">
+                       [hideSelected]="true" (change)="saveOrg(o)">
             </ng-select>
         </td>
 

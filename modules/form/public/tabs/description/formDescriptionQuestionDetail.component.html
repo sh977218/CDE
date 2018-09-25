@@ -239,7 +239,7 @@
             <mat-card-title>Create New CDE</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <mat-form-field class="w-50 newCdeDesignations">
+            <mat-form-field class="w-50">
                 <mat-chip-list #designationChipList>
                     <mat-chip *ngFor="let designation of question.question.cde.designations;let i =index;"
                               [selectable]="true" [removable]="true" (removed)="removeCdeDesignation(i)">
