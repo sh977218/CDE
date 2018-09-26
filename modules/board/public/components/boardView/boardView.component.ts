@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
 import { saveAs } from 'file-saver';
-
 import { AlertService } from '_app/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
@@ -12,14 +11,14 @@ import { ClassifyItemModalComponent } from 'adminItem/public/components/classifi
 import { OrgHelperService } from 'core/orgHelper.service';
 import { Comment } from 'shared/models.model';
 import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'shared/system/exportShared';
-
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-board-view',
     templateUrl: './boardView.component.html',
 })
 export class BoardViewComponent implements OnInit {
-    @ViewChild('shareBoardModal') public shareBoardModal: NgbModalModule;
+    @ViewChild('shareBoardModal') public shareBoardModal: TemplateRef<any>;
     @ViewChild('classifyCdesModal') public classifyCdesModal: ClassifyItemModalComponent;
     allRoles = [{
         label: 'can review',
@@ -34,7 +33,7 @@ export class BoardViewComponent implements OnInit {
     boardId: string;
     boardStatus: any;
     canReview: boolean;
-    classifyCdesRefModal: NgbModalRef;
+    classifyCdesRefModal: MatDialogRef<TemplateRef<any>>;
     commentMode: boolean;
     currentPage: number = 1;
     elts: any[] = [];
@@ -45,7 +44,7 @@ export class BoardViewComponent implements OnInit {
     modalTitle: string;
     newUser: any = {username: '', role: 'viewer'};
     reviewers: any[];
-    shareModalRef: NgbModalRef;
+    shareDialogRef: MatDialogRef<TemplateRef<any>>;
     totalItems: number;
     url: string;
     users: any[] = [];
@@ -63,6 +62,7 @@ export class BoardViewComponent implements OnInit {
                 private modalService: NgbModal,
                 private orgHelperService: OrgHelperService,
                 private route: ActivatedRoute,
+                private dialog: MatDialog,
                 protected userService: UserService) {
     }
 
@@ -163,7 +163,7 @@ export class BoardViewComponent implements OnInit {
             boardId: this.boardId,
             users: this.users
         }, {responseType: 'text'}).subscribe(() => {
-            this.shareModalRef.close();
+            this.shareDialogRef.close();
             this.board.users = this.users;
             this.reload();
         });
@@ -219,7 +219,7 @@ export class BoardViewComponent implements OnInit {
     shareBoard() {
         this.users = [];
         this.board.users.forEach(u => this.users.push(u));
-        this.shareModalRef = this.modalService.open(this.shareBoardModal, {size: 'lg'});
+        this.shareDialogRef = this.dialog.open(this.shareBoardModal, {width: '800px'});
     }
 
     startReview() {

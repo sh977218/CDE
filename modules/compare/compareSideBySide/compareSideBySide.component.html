@@ -3,8 +3,8 @@
     <mat-icon>search</mat-icon> Side by Side View
 </button>
 
-<ng-template #compareSideBySideContent id="compareSideBySideModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="compareSideBySideModalHeader">
+<ng-template #compareSideBySideContent>
+    <div mat-dialog-title>
         <div class="col-6 leftObj">
             <a id="sourceElement" class='btn   btn-outline-dark' target="_blank" [href]=leftUrl>
                 <mat-icon>visibility</mat-icon> View Full Detail</a>
@@ -30,7 +30,7 @@
             </ng-container>
         </div>
     </div>
-    <div class="modal-body col-12" id="compareSideBySideModalBody">
+    <div mat-dialog-content>
         <ng-container *ngFor="let option of options">
             <div *ngIf="option.displayAs.display" id="{{option.displayAs.label}}">
                 <div class="overflowHidden">
@@ -95,7 +95,7 @@
             </div>
         </ng-container>
     </div>
-    <div class="modal-footer" id="compareSideBySideModalFooter">
-        <button mat-raised-button id="closeCompareSideBySideBtn" (click)="c()">Close</button>
+    <div mat-dialog-actions>
+        <button mat-raised-button id="closeCompareSideBySideBtn" [mat-dialog-close]>Close</button>
     </div>
 </ng-template>

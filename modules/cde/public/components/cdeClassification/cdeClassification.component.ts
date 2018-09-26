@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, ViewChild } from '@angular/core';
-import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { ClassificationService } from 'core/classification.service';
 import { IsAllowedService } from 'core/isAllowed.service';
+import { MatDialogRef } from '@angular/material';
 
 
 @Component({
@@ -16,7 +16,7 @@ import { IsAllowedService } from 'core/isAllowed.service';
 export class CdeClassificationComponent {
     @Input() elt: any;
     @ViewChild('classifyItemComponent') classifyItemComponent: ClassifyItemModalComponent;
-    classifyItemModalRef: NgbModalRef;
+    classifyItemModalRef: MatDialogRef<TemplateRef<any>>;
 
     constructor(
         private alert: AlertService,

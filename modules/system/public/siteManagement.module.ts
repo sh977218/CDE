@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule, MatIconModule, MatInputModule } from '@angular/material';
+import { MatButtonModule, MatDialogModule, MatIconModule, MatInputModule } from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CKEditorModule } from 'ng2-ckeditor';
@@ -30,6 +30,7 @@ const appRoutes: Routes = [
         MatIconModule,
         MatInputModule,
         MatButtonModule,
+        MatDialogModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core

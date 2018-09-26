@@ -27,6 +27,7 @@ import {
     MatListModule,
     MatAutocompleteModule,
     MatSelectModule,
+    MatTabsModule,
 } from "@angular/material";
 
 @NgModule({
@@ -53,7 +54,8 @@ import {
         MatListModule,
         MatDialogModule,
         MatIconModule,
-        MatSelectModule
+        MatSelectModule,
+        MatTabsModule,
     ],
     declarations: [
         BoardCdeSummaryListComponent,

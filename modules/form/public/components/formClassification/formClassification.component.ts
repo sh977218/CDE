@@ -1,13 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, ViewChild } from '@angular/core';
-import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { ClassificationService } from 'core/classification.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { CdeForm } from 'shared/form/form.model';
+import { MatDialogRef } from '@angular/material';
 
 
 @Component({
@@ -18,8 +17,8 @@ export class FormClassificationComponent {
     @Input() elt: CdeForm;
     @ViewChild('classifyCdesComponent') public classifyCdesComponent: ClassifyItemModalComponent;
     @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
-    classifyCdesModalRef: NgbModalRef;
-    classifyItemModalRef: NgbModalRef;
+    classifyCdesModalRef: MatDialogRef<TemplateRef<any>>;
+    classifyItemModalRef: MatDialogRef<TemplateRef<any>>;
     numberProcessed: number;
     numberTotal: number;
     showProgressBar: boolean = false;

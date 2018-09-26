@@ -15,7 +15,7 @@ public class CdeAddIdentifierTest extends NlmCdeBaseTest {
         addNewIdentifier("MyOrigin2", "MyId2", null);
 
         goToCdeByName(cdeName);
-         goToIdentifiers();
+        goToIdentifiers();
         textPresent("MyOrigin1");
         textPresent("MyId1");
         textPresent("MyVersion1");

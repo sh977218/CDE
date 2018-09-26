@@ -1,11 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _cloneDeep from 'lodash/cloneDeep';
-import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
-import _uniqWith from 'lodash/uniqWith';
 import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
@@ -20,6 +18,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity } from 'shared/de/deValidator';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 
 @Component({
@@ -36,7 +35,7 @@ import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHi
 })
 export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent') commentAreaComponent: DiscussAreaComponent;
-    @ViewChild('copyDataElementContent') copyDataElementContent: NgbModalModule;
+    @ViewChild('copyDataElementContent') copyDataElementContent: TemplateRef<any>;
     @ViewChild('tabSet') tabSet: NgbTabset;
 
     commentMode;
@@ -49,7 +48,7 @@ export class DataElementViewComponent implements OnInit {
     eltCopy = {};
     hasComments;
     highlightedTabs = [];
-    modalRef: NgbModalRef;
+    modalRef: MatDialogRef<TemplateRef<any>>;
     tabsCommented = [];
     savingText: String;
     tinyId;
@@ -67,7 +66,7 @@ export class DataElementViewComponent implements OnInit {
                 private route: ActivatedRoute,
                 private router: Router,
                 private ref: ChangeDetectorRef,
-                public modalService: NgbModal,
+                private dialog: MatDialog,
                 public isAllowedModel: IsAllowedService,
                 private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
@@ -110,7 +109,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     loadDataElement(cb = _noop) {
-        this.userService.then(user => {
+        this.userService.then(() => {
             this.http.get<DataElement>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
                 res => {
                     if (res && this.isAllowedModel.isAllowed(res)) {
@@ -171,7 +170,7 @@ export class DataElementViewComponent implements OnInit {
             registrationStatus: 'Incomplete',
             administrativeNote: 'Copy of: ' + this.elt.tinyId
         };
-        this.modalRef = this.modalService.open(this.copyDataElementContent, {size: 'lg'});
+        this.modalRef = this.dialog.open(this.copyDataElementContent, {width: '1200px'});
     }
 
     loadHighlightedTabs($event) {
@@ -275,12 +274,8 @@ export class DataElementViewComponent implements OnInit {
         let publishedEltObs = this.http.get<DataElement>('/de/' + tinyId);
         forkJoin([draftEltObs, publishedEltObs]).subscribe(res => {
             if (res.length = 2) {
-                let newer = res[0];
-                let older = res[1];
-                const modalRef = this.modalService.open(CompareHistoryContentComponent, {size: 'lg'});
-                modalRef.componentInstance.newer = newer;
-                modalRef.componentInstance.older = older;
-
+                let data = {newer:  res[0], older: res[1]};
+                this.dialog.open(CompareHistoryContentComponent, {width: '1000px', data: data});
             } else this.alert.addAlert('danger', 'Error loading view changes. ');
         }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err));
     }

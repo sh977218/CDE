@@ -30,58 +30,58 @@
                 </form>
             </div>
         </div>
-        <cde-search-export-button id="exportEverything" class="pull-right btn-group mt-3 mb-2" *ngIf="!embedded"
-                                  (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})"
-                                  [module]="module">
-        </cde-search-export-button>
         <div class="mt-3" id="tabs">
-            <ngb-tabset #tbset="ngbTabset" (tabChange)="browseByTopic($event)">
-                <ngb-tab id="browseByClassification" title="Browse by Classification">
-                    <ng-template ngbTabContent>
-                        <div *ngIf="orgs?.length === 0">
-                            <h1 class="pl130">
-                                <mat-icon class="spin">auto_renew</mat-icon> Searching...
-                            </h1>
+            <mat-tab-group>
+                <mat-tab id="browseByClassification" label="Browse by Classification" style="overflow: hidden">
+                    <div *ngIf="orgs?.length === 0">
+                        <h1 class="pl130">
+                            <mat-icon class="spin">auto_renew</mat-icon> Searching...
+                        </h1>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-4 col-sm-6 col-12" *ngFor="let org of orgs"
+                             id="search_by_classification_{{org.name}}">
+                            <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor"
+                                      (click)="browseOrg(org.name)">
+                                <legend>
+                                    <span id="browseOrg-{{org.name}}" class="browseLink">{{org.name}}</span>
+                                </legend>
+                                <div *ngIf="org.longName">{{org.longName}}</div>
+                                <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span>
+                                    elements
+                                </div>
+                                <div *ngIf="org.extraInfo">{{org.extraInfo}}</div>
+                                <div *ngIf="org.uri"><a href="{{org.uri}}" target="_blank" rel="noopener">Source</a>
+                                </div>
+                            </fieldset>
+                            <mat-icon class="welcomeDetailIcon hand-cursor" *ngIf="org.htmlOverview"
+                               id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org)">help_outline</mat-icon>
                         </div>
-                        <div class="row">
-                            <div class="col-xl-3 col-lg-4 col-sm-6 col-12" *ngFor="let org of orgs"
-                                 id="search_by_classification_{{org.name}}">
-                                <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor"
-                                          (click)="browseOrg(org.name)">
-                                    <legend>
-                                        <span id="browseOrg-{{org.name}}" class="browseLink">{{org.name}}</span>
-                                    </legend>
-                                    <div *ngIf="org.longName">{{org.longName}}</div>
-                                    <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span>
-                                        elements
-                                    </div>
-                                    <div *ngIf="org.extraInfo">{{org.extraInfo}}</div>
-                                    <div *ngIf="org.uri"><a href="{{org.uri}}" target="_blank" rel="noopener">Source</a>
-                                    </div>
-                                </fieldset>
-                                <mat-icon class="welcomeDetailIcon hand-cursor" *ngIf="org.htmlOverview"
-                                   id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org)">help_outline</mat-icon>
-                            </div>
+                    </div>
+                </mat-tab>
+                <mat-tab *ngIf="topics?.Diseases" label="Browse by Topic" id="browseByTopic">
+                    <div class="row">
+                        <div class="col-4" *ngFor="let key of topicsKeys; let i = index;">
+                            <hr *ngIf="i > 2">
+                            <h4>{{key}}</h4>
+                            <ul style="list-style-type: none">
+                                <li *ngFor="let t of topics[key]">
+                                    <span class="fake-link" (click)="browseTopic(key + ';' + t.name)">
+                                        {{t.name}} ({{t.count}})</span>
+                                </li>
+                            </ul>
                         </div>
+                    </div>
+                </mat-tab>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <cde-search-export-button id="exportEverything" *ngIf="!embedded"
+                              (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})"
+                              [module]="module">
+                        </cde-search-export-button>
                     </ng-template>
-                </ngb-tab>
-                <ngb-tab *ngIf="topics?.Diseases" title="Browse by Topic" id="browseByTopic">
-                    <ng-template ngbTabContent>
-                        <div class="row">
-                            <div class="col-4" *ngFor="let key of topicsKeys; let i = index;">
-                                <hr *ngIf="i > 2">
-                                <h4>{{key}}</h4>
-                                <ul style="list-style-type: none">
-                                    <li *ngFor="let t of topics[key]">
-                                        <span class="fake-link" (click)="browseTopic(key + ';' + t.name)">
-                                            {{t.name}} ({{t.count}})</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </ng-template>
-                </ngb-tab>
-            </ngb-tabset>
+                </mat-tab>
+            </mat-tab-group>
         </div>
         <div class="mt-3">
             <span id="totalItems">{{totalItems}}</span><span> elements across all classifications</span>
@@ -363,23 +363,24 @@
 </ng-template>
 
 <ng-template #validRulesModal let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h3>Export CDEs not passing validation rules</h3>
+    <h3 mat-dialog-title>
+        Export CDEs not passing validation rules
+    </h3>
+    <div mat-dialog-content>
+        <p>The export will list the CDE(s) that fail registration status rules for the selected status.</p>
+        <mat-form-field>
+            <mat-select id="selectStatus" placeholder="Registration Status" [(ngModel)]="validRulesStatus">
+                <mat-option>Incomplete</mat-option>
+                <mat-option>Candidate</mat-option>
+                <mat-option id="recorded">Recorded</mat-option>
+                <mat-option>Qualified</mat-option>
+                <mat-option>Standard</mat-option>
+                <mat-option>Preferred Standard</mat-option>
+            </mat-select>
+        </mat-form-field>
     </div>
-    <div class="modal-body">
-        <label for="selectStatus">Registration Status</label>
-        <select id="selectStatus" [(ngModel)]="validRulesStatus" class="form-control">
-            <option>Incomplete</option>
-            <option>Candidate</option>
-            <option id="recorded">Recorded</option>
-            <option>Qualified</option>
-            <option>Standard</option>
-            <option>Preferred Standard</option>
-        </select>
-        The export will list the CDE(s) that fail registration status rules for the selected status.
-    </div>
-    <div class="modal-footer">
-        <button class="btn  btn-warning" (click)="d()" id="cancelCopy">Cancel</button>
-        <button class="btn  btn-success" (click)="c({status: validRulesStatus})" id="exportVR">Export</button>
+    <div mat-dialog-actions>
+        <button mat-raised-button color="accent" [mat-dialog-close] id="cancelCopy">Cancel</button>
+        <button mat-raised-button color="primary" [mat-dialog-close]="{status: validRulesStatus}" id="exportVR">Export</button>
     </div>
 </ng-template>

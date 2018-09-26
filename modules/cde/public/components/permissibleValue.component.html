@@ -257,12 +257,10 @@
     </ng-container>
 </div>
 
-<ng-template #newPermissibleValueContent id="newPermissibleValueModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="newPermissibleValueModalHeader">
-        <h4 class="modal-title">Add A New Permissible Value</h4>
-    </div>
+<ng-template #newPermissibleValueContent>
+    <h4 mat-dialog-title>Add A New Permissible Value</h4>
     <form #newPermissibleValueForm="ngForm" (ngSubmit)="addNewPermissibleValue()">
-        <div class="modal-body" id="newPermissibleValueModalBody">
+        <div mat-dialog-content>
             <div class="form-group">
                 <label for="permissibleValueInput">Value</label>
                 <input class="form-control" [(ngModel)]="newPermissibleValue.permissibleValue"
@@ -298,31 +296,24 @@
                 </div>
             </div>
         </div>
-        <div class="modal-footer" id="newPermissibleValueModalFooter">
-            <button class="btn btn-outline-dark" (click)="c('Close click')" id="cancelNewPermissibleValueBtn"
-                    name="cancelNewPermissibleValueBtn"
-                    type="button">Cancel
-            </button>
-            <button class="btn btn-warning" [disabled]="!newPermissibleValueForm.form.valid"
+        <div mat-dialog-actions>
+            <button mat-raised-button color="accent" [mat-dialog-close] type="button">Cancel</button>
+            <button mat-raised-button color="primary" [disabled]="!newPermissibleValueForm.form.valid"
                     id="createNewPermissibleValueBtn" name="createNewPermissibleValueBtn" type="submit">Save
             </button>
         </div>
     </form>
 </ng-template>
 
-<ng-template #importPermissibleValueContent id="importPermissibleValueModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="importPermissibleValueModalHeader">
-        <h4 class="modal-title">Import Permissible Values from CDE</h4>
-    </div>
-    <div class="modal-body" id="importPermissibleValueModalBody">
+<ng-template #importPermissibleValueContent>
+    <h4 mat-dialog-title>Import Permissible Values from CDE</h4>
+    <div mat-dialog-content>
         <cde-cde-search addMode="true" [embedded]="true" (add)="importPv($event);"
                         [searchSettingsInput]="searchSettings">
         </cde-cde-search>
     </div>
-    <div class="modal-footer" id="importPermissibleValueModalFooter">
-        <button class="btn btn-outline-dark" (click)="c('Close click')"
-                id="closeImportPermissibleValueBtn" name="closeImportPermissibleValueBtn"
-                type="button">Close
+    <div mat-dialog-actions>
+        <button mat-raised-button [mat-dialog-close] id="closeImportPermissibleValueBtn" type="button">Close
         </button>
     </div>
 </ng-template>

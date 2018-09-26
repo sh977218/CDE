@@ -38,11 +38,9 @@
     </div>
 </div>
 
-<ng-template #updateCdeVersionTmpl let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h3>Confirm Changes:</h3>
-    </div>
-    <div class="modal-body">
+<ng-template #updateCdeVersionTmpl>
+    <h3 mat-dialog-title>Confirm Changes:</h3>
+    <div mat-dialog-content>
         <mat-icon *ngIf="reloading" class="spin">auto_renew</mat-icon>
         <div>
             <div class="row">
@@ -186,8 +184,8 @@
             </div>
         </div>
     </div>
-    <div class="modal-footer">
-        <button class="btn  btn-warning" (click)="c()" id="okSelect">OK</button>
-        <button class="btn  btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
+    <div mat-dialog-actions>
+        <button mat-raised-button color="warn" [mat-dialog-close]="false" id="cancelSelect">Cancel</button>
+        <button mat-raised-button color="primary" [mat-dialog-close]="true" id="okSelect">OK</button>
     </div>
 </ng-template>

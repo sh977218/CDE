@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import _noop from 'lodash/noop';
 
 import { OrgHelperService } from 'core/orgHelper.service';
 import { Organization, StatusValidationRules } from 'shared/models.model';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 
 @Component({
@@ -12,8 +12,8 @@ import { Organization, StatusValidationRules } from 'shared/models.model';
     templateUrl: './statusValidationRules.component.html'
 })
 export class StatusValidationRulesComponent implements OnInit {
-    @ViewChild('removeRuleModal') removeRuleModal!: NgbModalModule;
-    @ViewChild('addNewRuleModal') addNewRuleModal!: NgbModalModule;
+    @ViewChild('removeRuleModal') removeRuleModal!: TemplateRef<any>;
+    @ViewChild('addNewRuleModal') addNewRuleModal!: TemplateRef<any>;
     fields: string[] = [
         'stewardOrg.name'
         , 'properties.key'
@@ -53,6 +53,13 @@ export class StatusValidationRulesComponent implements OnInit {
     newRuleOrg = '';
     userOrgs: {[org: string]: StatusValidationRules[]} = {};
     userOrgsArray: string[] = [];
+    dialogRef: MatDialogRef<TemplateRef<any>>;
+
+    constructor(
+        private http: HttpClient,
+        public dialog: MatDialog,
+        private orgHelperService: OrgHelperService,
+    ) {}
 
     ngOnInit() {
         this.orgHelperService.then(orgsDetailedInfo => {
@@ -64,29 +71,28 @@ export class StatusValidationRulesComponent implements OnInit {
         }, _noop);
     }
 
-    constructor(
-        private http: HttpClient,
-        public modalService: NgbModal,
-        private orgHelperService: OrgHelperService,
-    ) {}
-
     disableRule(orgName: string, rule: StatusValidationRules) {
         // @TODO does not refresh page
-       this.modalService.open(this.removeRuleModal, {size: 'lg'}).result.then(() => {
-           this.http.post<Organization>('/disableRule', {orgName: orgName, rule: rule}).subscribe(response => {
-               this.userOrgs[orgName] = response.cdeStatusValidationRules || [];
-           });
+       this.dialog.open(this.removeRuleModal).afterClosed().subscribe(res => {
+           if (res) {
+               this.http.post<Organization>('/disableRule', {orgName: orgName, rule: rule}).subscribe(response => {
+                   this.userOrgs[orgName] = response.cdeStatusValidationRules || [];
+               });
+           }
        }, () => {});
     }
 
+    saveRule () {
+        this.http.post<Organization>('/enableRule', {
+            orgName: this.newRuleOrg,
+            rule: this.newRule
+        }).subscribe(response => {
+            this.userOrgs[this.newRuleOrg] = response.cdeStatusValidationRules || [];
+        }, () => {});
+        this.dialogRef.close();
+    }
+
     openAddRuleModal() {
-        this.modalService.open(this.addNewRuleModal, {size: 'lg'}).result.then(() => {
-            this.http.post<Organization>('/enableRule', {
-                orgName: this.newRuleOrg,
-                rule: this.newRule
-            }).subscribe(response => {
-                this.userOrgs[this.newRuleOrg] = response.cdeStatusValidationRules || [];
-            }, () => {});
-        });
+        this.dialogRef = this.dialog.open(this.addNewRuleModal, {width: '800px'});
     }
 }
