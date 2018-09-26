@@ -8,8 +8,9 @@ import org.testng.annotations.Test;
 
 public class PvValidatorTest extends NlmCdeBaseTest {
 
-    public void addPv(String pv, String name, String code, String codeSystem) {
+    private void addPv(String pv, String name, String code, String codeSystem) {
         clickElement(By.id("openAddPermissibleValueModelBtn"));
+        hangon(1);
         findElement(By.id("permissibleValueInput")).sendKeys(pv);
 
         if (name != null) {
@@ -27,7 +28,7 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         clickElement(By.id("createNewPermissibleValueBtn"));
     }
 
-    public void changeField(int index, String to) {
+    private void changeField(int index, String to) {
         clickElement(By.xpath("//*[@id='pvValue_" + index + "']//mat-icon"));
         findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).clear();
         findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).sendKeys(to);
