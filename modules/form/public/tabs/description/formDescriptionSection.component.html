@@ -26,16 +26,18 @@
                     (click)="openUpdateFormVersion(section);" [disabled]="!canEdit">Update
             </button>
         </ng-container>
-        <div *ngIf="!isSubForm && canEdit" class="float-right">
+        <div class="float-right">
             <a *ngIf="section.elementType === 'form' && section.inForm.form.tinyId" target="_blank"
                title="{{section.inForm.form.name}}"
                [routerLink]="'/formView'"
                [queryParams]="{tinyId: section.inForm.form.tinyId, version: section.inForm.form.version}">
                 <mat-icon>visibility</mat-icon> View Form
             </a>
-            <mat-icon *ngIf="section.elementType === 'section'" title="Copy section"
-               (click)="copySection(section)">content_copy</mat-icon>
-            <cde-delete-with-confirm (deleted)="removeNode(node)"></cde-delete-with-confirm>
+            <ng-container *ngIf="!isSubForm && canEdit">
+                <mat-icon *ngIf="section.elementType === 'section'" title="Copy section"
+                          (click)="copySection(section)">content_copy</mat-icon>
+                <cde-delete-with-confirm (deleted)="removeNode(node)"></cde-delete-with-confirm>
+            </ng-container>
         </div>
     </div>
 </div>

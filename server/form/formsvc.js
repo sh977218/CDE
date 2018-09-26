@@ -71,7 +71,7 @@ function fetchWholeFormOutdated(form, callback) {
                     f.inForm.form.outdated = true;
                     wholeForm.outdated = true;
                 }
-                cb(err);
+                cb(err, {skip: true});
             });
         }, undefined, (q, cb) => {
             mongo_cde.DataElement.findOne({tinyId: q.question.cde.tinyId, archived: false}, {version: 1}, (err, elt) => {
