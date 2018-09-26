@@ -18,6 +18,7 @@ import {
     MatIconModule,
     MatInputModule
 } from '@angular/material';
+import { OneListMgtComponent } from 'system/public/components/siteAdmin/listManagement/oneListMgt.component';
 
 const appRoutes: Routes = [
     {path: '', component: OrgAuthorityComponent},
@@ -43,6 +44,7 @@ const appRoutes: Routes = [
     ],
     declarations: [
         ListManagementComponent,
+        OneListMgtComponent,
         OrgAuthorityComponent,
         OrgsEditComponent,
         StatusValidationRulesComponent,

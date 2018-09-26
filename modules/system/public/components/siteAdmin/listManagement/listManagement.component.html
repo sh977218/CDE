@@ -7,48 +7,10 @@
     <tr *ngFor="let o of orgs" id="orgListName-{{o.name}}">
         <td>{{o.name}}</td>
         <td>
-            <mat-form-field class="w-100">
-                <mat-chip-list #propertyKeyChipList>
-                    <mat-chip *ngFor="let pk of o.propertyKeys"
-                              [selectable]="true" [removable]="true" (removed)="removePropertyKey(o, pk)">
-                        {{pk}}
-                        <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip>
-                    <input placeholder="Property Keys"
-                           [formControl]="pkControl"
-                           [matChipInputFor]="propertyKeyChipList"
-                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                           [matChipInputAddOnBlur]="addOnBlur"
-                           (matChipInputTokenEnd)="addPropertyKey(o, $event)"
-                           [matAutocomplete]="pkAuto">
-                    <mat-autocomplete #pkAuto="matAutocomplete" (optionSelected)="autoSelectedPk(o, $event)">
-                        <mat-option *ngFor="let pkOption of filteredPropertyKeys | async" [value]="pkOption">
-                            {{pkOption}}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-chip-list>
-            </mat-form-field>
+            <cde-one-list-management [allKeys]="allPropertyKeys" [keys]="o.propertyKeys" (save)="saveOrg(o)"></cde-one-list-management>
         </td>
         <td>
-            <mat-form-field class="w-100">
-                <mat-chip-list #tagsChipList>
-                    <mat-chip *ngFor="let pk of o.nameTags"
-                              [selectable]="true" [removable]="true" (removed)="removeTag(o, pk)">
-                        {{pk}}
-                        <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip>
-                    <input placeholder="Name Tags"
-                           [formControl]="tagControl"
-                           [matChipInputFor]="tagsChipList"
-                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                           [matChipInputAddOnBlur]="addOnBlur"
-                           (matChipInputTokenEnd)="addTag(o, $event)"
-                           [matAutocomplete]="tagAuto">
-                    <mat-autocomplete #tagAuto="matAutocomplete">
-                        <mat-option *ngFor="let tagOption of filteredTags | async">{{tagOption}}</mat-option>
-                    </mat-autocomplete>
-                </mat-chip-list>
-            </mat-form-field>
+            <cde-one-list-management [allKeys]="allTags" [keys]="o.Tags" (save)="saveOrg(o)"></cde-one-list-management>
         </td>
     </tr>
 </table>
