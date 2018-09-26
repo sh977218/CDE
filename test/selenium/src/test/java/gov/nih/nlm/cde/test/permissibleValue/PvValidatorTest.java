@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 public class PvValidatorTest extends NlmCdeBaseTest {
 
-    private void addPv(String pv, String name, String code, String codeSystem) {
+    public void addPv(String pv, String name, String code, String codeSystem) {
         clickElement(By.id("openAddPermissibleValueModelBtn"));
         hangon(1);
         findElement(By.id("permissibleValueInput")).sendKeys(pv);
