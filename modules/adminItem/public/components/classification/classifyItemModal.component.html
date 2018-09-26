@@ -1,10 +1,8 @@
-<ng-template #classifyItemContent id="newClassifyItemModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="newClassifyItemModalHeader">
-        <h4 class="modal-title">
-            <p [innerHtml]="modalTitle"></p>
-        </h4>
-    </div>
-    <div class="modal-body" id="newClassifyItemModalBody">
+<ng-template #classifyItemContent>
+    <h4 mat-dialog-title>
+        <p [innerHtml]="modalTitle"></p>
+    </h4>
+    <div mat-dialog-content>
         <ngb-tabset (tabChange)="onChangeClassifyView($event)">
             <ngb-tab id="treeViewTab" title="By Classification tree">
                 <ng-template ngbTabContent>
@@ -65,7 +63,7 @@
             </ngb-tab>
         </ngb-tabset>
     </div>
-    <div class="modal-footer" id="newClassifyItemModalFooter">
-        <button (click)="c('Close click')" id="cancelNewClassifyItemBtn" mat-raised-button>Close</button>
+    <div mat-dialog-actions>
+        <button [mat-dialog-close] id="cancelNewClassifyItemBtn" mat-raised-button>Close</button>
     </div>
 </ng-template>

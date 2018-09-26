@@ -1,20 +1,19 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 
 import { AlertService } from '_app/alert.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { MergeFormService } from 'core/mergeForm.service';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-merge-form',
-    providers: [NgbActiveModal],
     templateUrl: './mergeForm.component.html'
 })
 export class MergeFormComponent {
     @Input() public left: any;
     @Input() public right: any;
     @Output() doneMerging = new EventEmitter();
-    @ViewChild('mergeFormContent') public mergeFormContent: NgbModalModule;
+    @ViewChild('mergeFormContent') public mergeFormContent: TemplateRef<any>;
     doneMerge: boolean = false;
     maxNumberQuestions: any;
     mergeFields: any = {
@@ -39,14 +38,13 @@ export class MergeFormComponent {
             retireCde: false
         }
     };
-    modalRef: NgbModalRef;
     numMergedQuestions: any;
     showProgressBar: boolean = false;
 
     constructor(private alert: AlertService,
                 public isAllowedModel: IsAllowedService,
                 public mergeFormService: MergeFormService,
-                public modalService: NgbModal) {
+                public dialog: MatDialog) {
     }
 
     deselectAllCdeMergerFields() {
@@ -78,17 +76,17 @@ export class MergeFormComponent {
         this.mergeFormService.doMerge(this.left, this.right, this.mergeFields, (index, next) => {
             this.numMergedQuestions = index;
             next();
-        }, (err) => {
+        }, err => {
             if (err) return this.alert.addAlert('danger', err);
             else {
                 if (this.mergeFormService.error.ownSourceForm) {
                     this.left.changeNote = 'Merge to tinyId ' + this.right.tinyId;
                     if (this.isAllowedModel.isAllowed(this.left)) this.left.registrationState.registrationStatus = 'Retired';
-                    this.mergeFormService.saveForm(this.left, (err) => {
+                    this.mergeFormService.saveForm(this.left, err => {
                         if (err) this.alert.addAlert('danger', 'Can not save source form.');
                         else {
                             this.right.changeNote = 'Merge from tinyId ' + this.left.tinyId;
-                            this.mergeFormService.saveForm(this.right, (err) => {
+                            this.mergeFormService.saveForm(this.right, err => {
                                 if (err) this.alert.addAlert('danger', 'Can not save target form.');
                                 else {
                                     this.doneMerge = true;
@@ -103,8 +101,8 @@ export class MergeFormComponent {
                     });
                 } else {
                     this.right.changeNote = 'Merge from tinyId ' + this.left.tinyId;
-                    this.mergeFormService.saveForm(this.right, (err) => {
-                        if (err) this.alert.addAlert('danger', 'Can not save target form.');
+                    this.mergeFormService.saveForm(this.right, err => {
+                        if (err) this.alert.addAlert('danger', 'Cannot save target form.');
                         else {
                             this.doneMerge = true;
                             this.alert.addAlert('success', 'Form merged');
@@ -122,7 +120,7 @@ export class MergeFormComponent {
 
     openMergeFormModal() {
         this.mergeFormService.validateQuestions(this.left, this.right, this.mergeFields);
-        this.modalRef = this.modalService.open(this.mergeFormContent, {size: 'lg'});
+        this.dialog.open(this.mergeFormContent, {width: '1000px'});
     }
 
     selectAllCdeMergerFields() {

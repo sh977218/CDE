@@ -1,9 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { AlertService } from '_app/alert.service';
-import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
+import { MatDialog } from '@angular/material';
 
 type InboxMessage = any;
 
@@ -11,20 +9,15 @@ type InboxMessage = any;
     selector: 'cde-inbox',
     templateUrl: 'inbox.component.html'
 })
-export class InboxComponent implements OnInit {
-    @ViewChild('saveModal') saveModal!: SaveModalComponent;
-    @ViewChild('approveUserModal') approveUserModal!: SaveModalComponent;
-    approveUserModalRef?: NgbModalRef;
+export class InboxComponent {
+    @ViewChild('approveUserModal') approveUserModal!: TemplateRef<any>;
     currentMessage: any;
     mail: any = {received: [], sent: [], archived: []};
 
-    ngOnInit() {
-        this.getAllMail();
-    }
-
     constructor(private alert: AlertService,
                 private http: HttpClient,
-                public modalService: NgbModal) {
+                public dialog: MatDialog) {
+        this.getAllMail();
     }
 
     approveComment(msg: InboxMessage) {
@@ -48,7 +41,6 @@ export class InboxComponent implements OnInit {
         this.http.post('/addUserRole', request, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
         }, err => this.alert.httpErrorMessageAlert(err));
-        this.approveUserModalRef!.close();
     }
 
     closeMessage(message: InboxMessage) {
@@ -105,6 +97,6 @@ export class InboxComponent implements OnInit {
 
     openAuthorizeUserModal(message: InboxMessage) {
         this.currentMessage = message;
-        this.approveUserModalRef = this.modalService.open(this.approveUserModal);
+        this.dialog.open(this.approveUserModal);
     }
 }

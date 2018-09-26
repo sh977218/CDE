@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatChipInputEvent, MatDialog } from '@angular/material';
-import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from 'angular-tree-component';
 import _clone from 'lodash/clone';
 import { Observable } from 'rxjs/Observable';
@@ -60,7 +60,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl: TemplateRef<any>;
     @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl: TemplateRef<any>;
-    @ViewChild('editAnswerModal') editAnswerModal: NgbModalModule;
     @ViewChild('slInput') slInput: ElementRef;
     answerListItems = [];
     dataTypeList = [];
@@ -77,13 +76,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     tag = [];
     readonly separatorKeysCodes: number[] = [ENTER];
 
-    ngOnInit() {
-        this.syncAnswerListItems();
-        this.syncDefaultAnswerListItems();
-        let stewardOrgName = this.elt.stewardOrg.name;
-        this.tag = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
-    }
-
     constructor(private alert: AlertService,
                 private http: HttpClient,
                 public modalService: NgbModal,
@@ -92,6 +84,13 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 public skipLogicValidateService: SkipLogicValidateService,
                 private ucumService: UcumService) {
         this.dataTypeList = DataTypeService.dataElementDataType;
+    }
+
+    ngOnInit() {
+        this.syncAnswerListItems();
+        this.syncDefaultAnswerListItems();
+        let stewardOrgName = this.elt.stewardOrg.name;
+        this.tag = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
     }
 
     getRepeatLabel(fe) {

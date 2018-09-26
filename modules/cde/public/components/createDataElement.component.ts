@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LocalStorageService } from 'angular-2-local-storage/dist';
@@ -14,6 +14,7 @@ import { IsAllowedService } from 'core/isAllowed.service';
 import { Definition, Designation } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { classifyItem, findSteward, removeCategory } from 'shared/system/classificationShared';
+import { MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-create-data-element',
@@ -30,7 +31,7 @@ export class CreateDataElementComponent implements OnInit {
     @Output() close = new EventEmitter<void>();
     @Output() dismiss = new EventEmitter<void>();
     @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
-    modalRef: NgbModalRef;
+    dialogRef: MatDialogRef<TemplateRef<any>>;
     validationMessage;
 
     ngOnInit() {
@@ -59,7 +60,7 @@ export class CreateDataElementComponent implements OnInit {
         };
         classifyItem(this.elt, event.selectedOrg, event.classificationArray);
         this.updateClassificationLocalStorage(postBody);
-        this.modalRef.close();
+        this.dialogRef.close();
     }
 
     cancelCreateDataElement() {
@@ -93,7 +94,7 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     openClassifyItemModal() {
-        this.modalRef = this.classifyItemComponent.openModal();
+        this.dialogRef = this.classifyItemComponent.openModal();
     }
 
     updateClassificationLocalStorage(item) {

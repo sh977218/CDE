@@ -12,11 +12,9 @@ import { DiscussModule } from 'discuss/discuss.module';
 import { SystemModule } from 'system/public/system.module';
 import { WidgetModule } from 'widget/widget.module';
 import {
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatChipsModule,
-    MatIconModule,
-    MatInputModule
+    MatAutocompleteModule, MatButtonModule,
+    MatChipsModule, MatDialogModule,
+    MatIconModule, MatInputModule
 } from '@angular/material';
 import { OneListMgtComponent } from 'system/public/components/siteAdmin/listManagement/oneListMgt.component';
 
@@ -38,6 +36,7 @@ const appRoutes: Routes = [
         MatAutocompleteModule,
         MatButtonModule,
         MatChipsModule,
+        MatDialogModule,
         MatIconModule,
         MatInputModule,
         ReactiveFormsModule,

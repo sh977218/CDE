@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, ViewChild } from '@angular/core';
-import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 
 import { AlertService } from '_app/alert.service';
 import { FormService } from 'nativeRender/form.service';
 import { Definition, Designation } from 'shared/models.model';
 import { CdeForm, FormSection } from 'shared/form/form.model';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-create-form-from-board',
@@ -13,15 +13,14 @@ import { CdeForm, FormSection } from 'shared/form/form.model';
 })
 export class CreateFormFromBoardComponent {
     @Input() board: any;
-    @ViewChild('createFormContent') public createFormContent: NgbModalModule;
+    @ViewChild('createFormContent') public createFormContent: TemplateRef<any>;
     elt: CdeForm;
-    modalRef: NgbModalRef;
+    modalRef: MatDialogRef<TemplateRef<any>>;
 
     constructor(private alert: AlertService,
                 private formService: FormService,
                 private http: HttpClient,
-                public modalService: NgbModal) {
-    }
+                public dialog: MatDialog) {}
 
     openCreateFormModal() {
         this.http.get<any>('/server/board/' + this.board.id + '/0/500').subscribe(
@@ -36,9 +35,10 @@ export class CreateFormFromBoardComponent {
                             this.elt.formElements[0].formElements.push(q);
                         });
                     });
-                    this.modalRef = this.modalService.open(this.createFormContent, {size: 'lg'});
+                    this.modalRef = this.dialog.open(this.createFormContent, {width: '1200px'});
                 } else this.alert.addAlert('danger', 'No elements in board.');
             }, err => this.alert.addAlert('danger', 'Error on load elements in board ' + err)
         );
     }
+
 }

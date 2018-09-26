@@ -1,13 +1,12 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
 
 import { DataElement } from 'shared/de/dataElement.model';
 import { ReferenceDocument } from 'shared/models.model';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 
 @Component({
     selector: "cde-reference-document",
-    providers: [NgbActiveModal],
     templateUrl: "./referenceDocument.component.html",
     styles: [`
         dd {
@@ -18,14 +17,13 @@ export class ReferenceDocumentComponent {
     @Input() canEdit: boolean = false;
     @Input() elt: DataElement;
     @Output() onEltChange = new EventEmitter();
-    @ViewChild("newReferenceDocumentContent") public newReferenceDocumentContent: NgbModalModule;
+    @ViewChild("newReferenceDocumentContent") public newReferenceDocumentContent: TemplateRef<any>;
     newReferenceDocument: ReferenceDocument = new ReferenceDocument();
-    modalRef: NgbModalRef;
+    modalRef: MatDialogRef<TemplateRef<any>>;
 
     constructor(
-        private modalService: NgbModal
-    ) {
-    }
+        private dialog: MatDialog
+    ) {}
 
     addNewReferenceDocument() {
         this.elt.referenceDocuments.push(this.newReferenceDocument);
@@ -34,8 +32,8 @@ export class ReferenceDocumentComponent {
     }
 
     openNewReferenceDocumentModal() {
-        this.modalRef = this.modalService.open(this.newReferenceDocumentContent, {size: "lg"});
-        this.modalRef.result.then(() => {
+        this.modalRef = this.dialog.open(this.newReferenceDocumentContent, {width: "800px"});
+        this.modalRef.afterClosed().subscribe(() => {
             this.newReferenceDocument = new ReferenceDocument();
         }, () => {
         });

@@ -1,9 +1,7 @@
-<ng-template #updateElementContent id="updateElementModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="updateElementModalHeader">
-        <h4 class="modal-title">Save</h4>
-    </div>
+<ng-template #updateElementContent>
+    <h4 mat-dialog-title>Save</h4>
     <form #updateElementForm="ngForm">
-        <div class="modal-body" id="updateElementModalBody">
+        <div mat-dialog-content>
             <div *ngIf="newCdes.length > 0" class="form-group">
                 <div class="text-truncate m-2">
                     <span class="font-weight-bold">There are new CDEs</span>
@@ -84,11 +82,11 @@
                 </div>
             </div>
         </div>
-        <div class="modal-footer">
-            <button (click)="c('cancel')" id="cancelSaveBtn" type="button"
-                mat-raised-button color="warn">Cancel</button>
-            <button id="confirmSaveBtn" (click)="confirmSave();" type="button"
-                    mat-raised-button color="primary"
+        <div mat-dialog-actions>
+            <button [mat-dialog-close] id="cancelSaveBtn" type="button"
+                mat-raised-button color="accent">Cancel</button>
+            <button id="confirmSaveBtn" (click)="save.emit()" type="button"
+                    mat-raised-button color="primary" [mat-dialog-close]
                     [disabled]="!updateElementForm.form.valid || (!overrideVersion && duplicatedVersion)">Save
             </button>
         </div>

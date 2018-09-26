@@ -1,28 +1,26 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, ViewChild } from '@angular/core';
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
 import { MyBoardsService } from 'board/public/myBoards.service';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 
 @Component({
     selector: 'cde-pin-board-modal',
     templateUrl: './pinBoardModal.component.html',
-    providers: [NgbActiveModal]
 })
 export class PinBoardModalComponent {
     @Input() module = null;
-    @ViewChild('pinModal') pinModal: NgbModalModule;
-    @ViewChild('ifYouLoginModal') ifYouLoginModal: NgbModalModule;
-    modalRef: NgbModalRef;
+    @ViewChild('pinModal') pinModal: TemplateRef<any>;
+    @ViewChild('ifYouLoginModal') ifYouLoginModal: TemplateRef<any>;
+    dialogRef: MatDialogRef<TemplateRef<any>>;
     private resolve;
     private reject;
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
-                public modalService: NgbModal,
+                public dialog: MatDialog,
                 public myBoardsSvc: MyBoardsService,
                 private userService: UserService) {
     }
@@ -34,12 +32,14 @@ export class PinBoardModalComponent {
                 boardId: board._id,
                 tinyIdList: elts.map(e => e.tinyId),
                 type: this.module
-            }, {observe: 'response', responseType: 'text'}).subscribe(r => {
+            }, {observe: 'response', responseType: 'text'}).subscribe(() => {
                 if (elts.length === 1) this.alert.addAlert('success', 'Added to Board');
                 else this.alert.addAlert('success', 'All elements pinned.');
-                this.modalRef.close();
+                this.dialogRef.close();
             }, err => this.alert.httpErrorMessageAlert(err));
-        }, err => this.alert.httpErrorMessageAlert(err));
+        }, err => {
+            if (err) this.alert.httpErrorMessageAlert(err);
+        });
     }
 
     open() {
@@ -49,9 +49,9 @@ export class PinBoardModalComponent {
 
             if (this.userService.user) {
                 this.myBoardsSvc.loadMyBoards(this.module);
-                this.modalRef = this.modalService.open(this.pinModal, {size: 'lg'});
+                this.dialogRef = this.dialog.open(this.pinModal, {width: '800px'});
             } else {
-                this.modalService.open(this.ifYouLoginModal);
+                this.dialog.open(this.ifYouLoginModal);
                 this.reject();
             }
         });
@@ -59,5 +59,6 @@ export class PinBoardModalComponent {
 
     selectBoard(board) {
         this.resolve(board);
+        this.dialogRef.close();
     }
 }

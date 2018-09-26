@@ -1,42 +1,38 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ViewChild } from '@angular/core';
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
 import { User } from 'shared/models.model';
 import { rolesEnum } from 'shared/system/authorizationShared';
-
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-users-mgt',
-    providers: [NgbActiveModal],
     templateUrl: './usersMgt.component.html'
 })
 export class UsersMgtComponent {
-    @ViewChild('newUserContent') newUserContent!: NgbModalModule;
+    @ViewChild('newUserContent') newUserContent!: TemplateRef<any>;
     foundUsers: any[] = [];
-    modalRef?: NgbModalRef;
     newUsername = '';
     search: any = {username: ''};
     rolesEnum = rolesEnum;
 
     constructor(private Alert: AlertService,
                 private http: HttpClient,
-                public modalService: NgbModal,
+                public dialog: MatDialog,
                 public userService: UserService) {
     }
 
-    addNewUser() {
-        this.http.post('/server/user/addUser', {username: this.newUsername}, {responseType: 'text'}).subscribe(
-            () => this.Alert.addAlert('success', 'User created'),
-            () => this.Alert.addAlert('danger', 'Cannot create user. Does it already exist?')
-        );
-        this.modalRef!.close();
-    }
-
     openNewUserModal() {
-        this.modalRef = this.modalService.open(this.newUserContent, {size: 'lg'});
+        this.dialog.open(this.newUserContent, {width: '800px'}).afterClosed().subscribe(res => {
+            if (res) {
+                this.http.post('/server/user/addUser', {username: this.newUsername}, {responseType: 'text'}).subscribe(
+                    () => this.Alert.addAlert('success', 'User created'),
+                    () => this.Alert.addAlert('danger', 'Cannot create user. Does it already exist?')
+                );
+            }
+        });
     }
 
     searchUsers() {

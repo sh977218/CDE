@@ -43,11 +43,9 @@
 <ngb-pagination [collectionSize]="1000" [(page)]="currentPage" (pageChange)="gotoPage()" [maxSize]="10">
 </ngb-pagination>
 
-<ng-template #errorDetailModal id="errorDetailModal">
-    <div class="modal-header">
-        <h4 class="modal-title">Error Details</h4>
-    </div>
-    <div class="modal-body">
+<ng-template #errorDetailModal>
+    <h4 mat-dialog-title="">Error Details</h4>
+    <div mat-dialog-content>
         <div class="row">
             <strong class="col-2 col-md-1">Date: </strong>
             <div class="col-10 col-md-11">{{error.date | date:'MM/dd/yyyy @h:mma'}}</div>

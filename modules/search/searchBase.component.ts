@@ -4,15 +4,14 @@ import {
     HostListener,
     Input,
     OnDestroy,
-    OnInit,
+    OnInit, TemplateRef,
     Type,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatAutocompleteTrigger, MatPaginator } from '@angular/material';
+import { MatAutocompleteTrigger, MatDialog, MatPaginator } from '@angular/material';
 import { NavigationStart } from '@angular/router';
-import { NgbModal, NgbTabChangeEvent, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, map } from 'rxjs/operators';
@@ -95,12 +94,12 @@ export const searchStyles: string = `
     .welcomeDetailIcon {
         position: absolute !important;
         right: 21px;
-        top: 30px;
+        top: 25px;
         color: lightslategrey;
         font-size: 1.5em !important;
-        border: 1px solid rgba(128, 128, 128, 0.35);
         border-radius: 28px;
-        width: 25px;
+        width: 23px;
+        height: 21px;
         display: block;
         text-align: center;
     }
@@ -132,10 +131,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
         }
     }
-    @ViewChild('orgDetailsModal') orgDetailsModal!: NgbModal;
+    @ViewChild('orgDetailsModal') orgDetailsModal!: TemplateRef<any>;
     @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer!: ViewContainerRef;
-    @ViewChild('tbset') public tabset!: NgbTabset;
-    @ViewChild('validRulesModal') validRulesModal!: NgbModal;
+    @ViewChild('validRulesModal') validRulesModal!: TemplateRef<any>;
     @ViewChild('autoCompleteInput', {read: MatAutocompleteTrigger}) autoCompleteInput!: MatAutocompleteTrigger;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     add = new EventEmitter<any>();
@@ -143,7 +141,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     aggregations: any;
     altClassificationFilterMode?: boolean;
     autocompleteSuggestions?: string[];
-    byTopic?: boolean;
     cutoffIndex: any;
     elts?: Elt[];
     embedded = false;
@@ -183,11 +180,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 protected elasticService: ElasticService,
                 protected exportService: ExportService,
                 protected http: HttpClient,
-                protected modalService: any,
                 protected orgHelperService: OrgHelperService,
                 protected route: any,
                 protected router: any,
-                protected userService: UserService) {
+                protected userService: UserService,
+                protected dialog: MatDialog) {
         this.searchSettings.page = 1;
 
         this.routerSubscription = this.router.events.subscribe(e => {
@@ -283,11 +280,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
         this.doSearch();
         if (!this.embedded) scrollTo('top');
-    }
-
-    browseByTopic(event: NgbTabChangeEvent) {
-        this.byTopic = event.nextId !== 'browseByClassification';
-        this.doSearch();
     }
 
     clearSelectedClassifications() {
@@ -414,7 +406,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (pageNumber > 1) searchTerms.page = pageNumber;
         else if (this.searchSettings.page && this.searchSettings.page > 1) searchTerms.page = this.searchSettings.page;
         if (this.searchSettings.meshTree) searchTerms.topic = this.searchSettings.meshTree;
-        if (this.byTopic && !this.isSearched()) searchTerms.byTopic = 1;
         return searchTerms;
     }
 
@@ -516,7 +507,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     openOrgDetails(org: Organization) {
         this.orgHtmlOverview = org.htmlOverview;
-        this.modalService.open(this.orgDetailsModal, {size: 'lg'});
+        this.dialog.open(this.orgDetailsModal, {width: '600px'});
     }
 
     openPinModal() {
@@ -525,21 +516,17 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     openValidRulesModal() {
         this.validRulesStatus = 'Incomplete';
-        this.modalService.open(this.validRulesModal).result.then((report) => {
+        this.dialog.open(this.validRulesModal).afterClosed().subscribe(report => {
+            if (!report) return;
             report.searchSettings = this.searchSettings;
             delete report.searchSettings.resultPerPage;
-            // let params = new URLSearchParams;
-            // params.set('searchSettings', JSON.stringify(report.searchSettings));
-            // params.set('status', report.status);
-            // let uri = params.toString();
             this.router.navigate(['/cdeStatusReport'], {
                 queryParams: {
                     searchSettings: JSON.stringify(report.searchSettings),
                     status: report.status
                 }
             });
-        }, () => {
-        });
+        }, () => {});
     }
 
     goToPage = 1;
@@ -768,7 +755,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.searchSettings.regStatuses = params['regStatuses'] ? params['regStatuses'].split(';') as CurationStatus[] : [];
         this.searchSettings.datatypes = params['datatypes'] ? params['datatypes'].split(';') as DataType[] : [];
         this.searchSettings.meshTree = params['topic'];
-        this.byTopic = params.hasOwnProperty('byTopic');
         this.reload();
     }
 
@@ -819,12 +805,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (this.view === view || view !== 'welcome' && view !== 'results') return;
 
         this.view = view;
-        if (this.view === 'welcome') {
-            // ngAfterViewChecked
-            setTimeout(() => {
-                if (this.byTopic) this.tabset.select('browseByTopic');
-            }, 100);
-        }
         if (this.view === 'results') {
             // ngAfterViewInit
             setTimeout(() => {

@@ -26,14 +26,14 @@
 <ngb-pagination [collectionSize]="1000" [(page)]="currentPage" (pageChange)="gotoPage()" [maxSize]="10">
 </ngb-pagination>
 
-<ng-template #screenshotModal id="screenshotModal">
-    <div class="modal-body">
+<ng-template #screenshotModal>
+    <div mat-dialog-content>
         <a target="_blank" href='{{screenshot}}'><img src="{{screenshot}}" style="max-width: 780px;"></a>
     </div>
 </ng-template>
 
-<ng-template #rawHtmlModal id="rawHtmlModal">
-    <div class="modal-body">
-        <span>{{rawHtml}}</span>
+<ng-template #rawHtmlModal>
+    <div mat-dialog-content>
+        {{rawHtml}}
     </div>
 </ng-template>

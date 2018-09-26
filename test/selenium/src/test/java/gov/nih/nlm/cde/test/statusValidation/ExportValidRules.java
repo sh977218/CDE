@@ -13,7 +13,7 @@ public class ExportValidRules extends BaseClassificationTest {
         findElement(By.id("export")).click();
         findElement(By.id("exportValidRule")).click();
         findElement(By.id("selectStatus")).click();
-        findElement(By.id("recorded")).click();
+        findElement(By.xpath("//span[. = 'Recorded']")).click();
         findElement(By.id("exportVR")).click();
     }
 
