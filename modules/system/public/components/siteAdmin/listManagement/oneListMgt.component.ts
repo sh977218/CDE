@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 import { AlertService } from '_app/alert.service';
 import { OrgHelperService } from 'core/orgHelper.service';
@@ -20,6 +20,8 @@ export class OneListMgtComponent implements OnInit {
     @Input() keys: string[];
     @Input() allKeys: string[];
     @Output() save: EventEmitter<any> = new EventEmitter();
+
+    @ViewChild('keyInput') keyInput: ElementRef<HTMLInputElement>;
 
     keyControl = new FormControl();
     filteredKeys: Observable<string[]>;
@@ -46,14 +48,27 @@ export class OneListMgtComponent implements OnInit {
         this.save.emit();
     }
 
-    addPropertyKey(key: MatChipInputEvent) {
-        this.keys.push(key.value);
-        if (key.input) key.input.value = '';
+    addKey(key: MatChipInputEvent) {
+        const input = key.input;
+        const value = key.value;
+
+        if ((value || '').trim()) {
+            this.keys.push(value.trim());
+        }
+
+        // Reset the input value
+        if (input) {
+            input.value = '';
+        }
+
+        this.keyControl.setValue(null);
         this.save.emit();
+
     }
 
     autoSelectedKey(key: MatAutocompleteSelectedEvent) {
         this.keys.push(key.option.viewValue);
+        this.keyInput.nativeElement.value = '';
         this.keyControl.setValue(null);
         this.save.emit();
     }

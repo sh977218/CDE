@@ -2,10 +2,11 @@
     <mat-chip-list #chipList>
         <mat-chip *ngFor="let key of keys"
                   [selectable]="true" [removable]="true" (removed)="removeKey(key)">
-            {{pk}}
+            {{key}}
             <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
         <input placeholder="Property Keys"
+               #keyInput
                [formControl]="keyControl"
                [matChipInputFor]="chipList"
                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
