@@ -1,5 +1,8 @@
-const Schema = require('mongoose').Schema;
-const stringType = require('../system/schemas').stringType;
+const mongoose = require('mongoose');
+require('../system/mongoose-stringtype')(mongoose);
+const Schema = mongoose.Schema;
+const StringType = Schema.Types.StringType;
+
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
@@ -11,33 +14,34 @@ const dbLogger = require('../log/dbLogger.js');
 exports.type = 'board';
 
 let pinSchema = new Schema({
-    tinyId: stringType,
-    type: Object.assign({default: 'cde', enum: ['cde', 'form']}, stringType),
+    tinyId: StringType,
+    type: {type: StringType, default: 'cde', enum: ['cde', 'form']},
     pinnedDate: Date,
 }, {_id: false});
 
 let pinningBoardSchema = new Schema({
-    name: stringType,
-    description: stringType,
-    type: Object.assign({default: 'cde', enum: ['cde', 'form']}, stringType),
-    tags: [stringType],
-    shareStatus: stringType,
+    name: StringType,
+    description: StringType,
+    type: {type: StringType, default: 'cde', enum: ['cde', 'form']},
+    tags: [StringType],
+    shareStatus: StringType,
     createdDate: Date,
     updatedDate: Date,
     owner: {
         userId: Schema.Types.ObjectId,
-        username: stringType
+        username: StringType
     },
     pins: [pinSchema],
     users: [{
-        username: stringType,
-        role: Object.assign({default: 'viewer', enum: ['viewer', 'reviewer']}, stringType),
+        username: StringType,
+        role: {type: StringType, default: 'viewer', enum: ['viewer', 'reviewer']},
         lastViewed: Date,
         status: {
-            approval: Object.assign({
+            approval: {
+                type: StringType,
                 default: 'invited',
-                enum: ['invited', 'approved', 'disapproved']
-            }, stringType),
+                enum: ['invited', 'approved', 'disapproved'],
+            },
             reviewedDate: Date
         }
     }],

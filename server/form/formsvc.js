@@ -14,9 +14,10 @@ const odm = require("./odmForm");
 const redCap = require("./redCapForm");
 const publishForm = require("./publishForm");
 const toQuestionnaire = require('@std/esm')(module)('../../shared/mapping/fhir/to/toQuestionnaire');
-const handle404 = require('../log/dbLogger').handle404;
-const handleError = require('../log/dbLogger').handleError;
-const respondError = require('../log/dbLogger').respondError;
+const dbLogger = require('../log/dbLogger');
+const handle404 = dbLogger.handle404;
+const handleError = dbLogger.handleError;
+const respondError = dbLogger.respondError;
 
 const ajv = new Ajv({schemaId: 'auto'}); // current FHIR schema uses legacy JSON Schema version 4
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
