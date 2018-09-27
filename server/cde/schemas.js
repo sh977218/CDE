@@ -73,7 +73,9 @@ var deJson = {
             description: sharedSchemas.stringType,
             descriptionFormat: sharedSchemas.stringType, // if 'html', then parse with HTML
         },
-        datatypeValueList: {},
+        datatypeValueList: {
+            datatype: sharedSchemas.stringType
+        },
         permissibleValues: [sharedSchemas.permissibleValueSchema]
     },
     history: [Schema.Types.ObjectId],

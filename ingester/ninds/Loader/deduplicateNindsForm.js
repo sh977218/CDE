@@ -6,7 +6,6 @@ let totalForm = 0;
 
 function validate(form) {
     let requireArray = [
-        'crfModuleGuideline',
         'description',
         'copyright',
         'downloadLink',
@@ -40,8 +39,7 @@ function doOneFormId(formId) {
             cdes: [],
             versionNum: [],
             versionDate: [],
-            disease: [],
-            domain: [],
+            classification: [],
             createDate: []
         };
         let keys = [
@@ -55,13 +53,14 @@ function doOneFormId(formId) {
             'createDate'
         ];
         for (let nindsForm of nindsForms) {
-            let disease = [nindsForm.diseaseName, nindsForm.subDiseaseName];
-            let diseaseIndex = _.findIndex(form.disease, o => _.isEqual(o, disease));
-            if (diseaseIndex === -1) form.disease.push(disease);
-
-            let domain = [nindsForm.domainName, nindsForm.subDomainName];
-            let domainIndex = _.findIndex(form.domain, o => _.isEqual(o, domain));
-            if (domainIndex === -1) form.domain.push(domain);
+            let classification = {
+                disease: nindsForm.diseaseName,
+                subDisease: nindsForm.subDiseaseName,
+                domain: nindsForm.domainName,
+                subDomain: nindsForm.subDomainName
+            };
+            let classificationIndex = _.findIndex(form.classification, o => _.isEqual(o, classification));
+            if (classificationIndex === -1) form.classification.push(classification);
 
             for (let key of keys) {
                 let value = nindsForm[key];
@@ -75,10 +74,6 @@ function doOneFormId(formId) {
                     console.log(formId + ' cdes length not match');
                     process.exit(1);
                 }
-                /* else if (!_.isEqual(form.cdes, nindsForm.cdes)) {
-                    console.log(formId + ' cdes not match');
-                    process.exit(1);
-                }*/
             }
         }
         validate(form);
@@ -102,10 +97,10 @@ function run() {
 }
 
 run().then(() => {
-    console.log('totalCDE: ' + totalForm);
+    console.log(totalForm + ' forms finished');
     process.exit(1);
 });
 
 setInterval(function () {
-    console.log('totalCDE: ' + totalForm);
+    console.log('totalForm: ' + totalForm);
 }, 5000);

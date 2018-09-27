@@ -18,6 +18,9 @@ function validate(cde) {
         'versionNum',
         'versionDate'
     ];
+    let sizeOneOrZeroArray = [
+        'measurementType'
+    ];
     let optionalArray = [
         'aliasesForVariableName',
         'copyright',
@@ -25,7 +28,6 @@ function validate(cde) {
         'size',
         'minValue',
         'maxValue',
-        'measurementType',
         'loincId',
         'snomed',
         'cadsrId',
@@ -41,6 +43,11 @@ function validate(cde) {
                 console.log(cde.cdeId + ' ' + p + ' length is not 1');
                 process.exit(1);
             }
+            if (sizeOneOrZeroArray.indexOf(p) > -1 && value.length > 1) {
+                console.log(cde.cdeId + ' ' + p + ' length is greater 1');
+                process.exit(1);
+            }
+
         } else {
             console.log(cde.cdeId + ' ' + p + ' is not array');
             process.exit(1);
@@ -82,9 +89,7 @@ function doOneCdeId(cdeId) {
             loincId: [],
             snomed: [],
             cadsrId: [],
-            cdiscId: [],
-            disease: [],
-            domain: [],
+            cdiscId: []
         };
         let keys = [
             'cdeId',
@@ -94,7 +99,6 @@ function doOneCdeId(cdeId) {
             'questionText',
             'dataType',
             'reference',
-            'classification',
             'versionNum',
             'versionDate',
             'aliasesForVariableName',
@@ -111,13 +115,15 @@ function doOneCdeId(cdeId) {
             'cadsrId',
             'cdiscId'];
         for (let nindsCde of nindsCdes) {
-            let disease = [nindsCde.diseaseName, nindsCde.subDiseaseName];
-            let diseaseIndex = _.findIndex(cde.disease, o => _.isEqual(o, disease));
-            if (diseaseIndex === -1) cde.disease.push(disease);
-
-            let domain = [nindsCde.cdes[0].domain, nindsCde.cdes[0].subDomain];
-            let domainIndex = _.findIndex(cde.domain, o => _.isEqual(o, domain));
-            if (domainIndex === -1) cde.domain.push(domain);
+            let classification = {
+                disease: nindsCde.diseaseName,
+                subDisease: nindsCde.subDiseaseName,
+                classification: nindsCde.classisification,
+                domain: nindsCde.cdes[0].domain,
+                subDomain: nindsCde.cdes[0].subDomain
+            };
+            let classificationIndex = _.findIndex(cde.classification, o => _.isEqual(o, classification));
+            if (classificationIndex === -1) cde.classification.push(classification);
 
             let instruction = nindsCde.formId + newLine + nindsCde.cdes[0].instruction + newLine;
             let instructionIndex = _.findIndex(cde.instruction, o => _.isEqual(o, instruction));

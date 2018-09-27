@@ -7,38 +7,41 @@ const CreateCDE = require('../CDE/CreateCDE');
 const today = new Date().toJSON();
 
 parseDesignations = ninds => {
-    let designations = [{
-        designation: ninds.crfModuleGuideline.trim(),
-        tags: []
-    }];
+    let designations = [];
+    ninds.crfModuleGuideline.forEach(c => {
+        designations.push({
+            designation: c.trim(),
+            tags: []
+        })
+    });
     return designations;
 };
 parseDefinitions = ninds => {
-    let definitions = [{
-        definition: ninds.description.trim(),
-        tags: [],
-    }];
+    let definitions = [];
+    ninds.description.forEach(c => {
+        definitions.push({
+            definition: c.trim(),
+            tags: [],
+        })
+    });
     return definitions;
 };
 parseSources = ninds => {
-    let sources = [{
-        sourceName: 'NINDS',
-        updated: ninds.versionDate
-    }];
+    let sources = [];
+    ninds.versionDate.forEach(v => {
+        sources.push({
+            sourceName: 'NINDS',
+            updated: v
+        })
+    });
     return sources;
 };
 parseIds = ninds => {
-    let formId = ninds.formId;
-    let ids = [];
-    let version = '';
-    if (ninds.versionNum.length > 0)
-        version = ninds.versionNum;
-    let crfId = {
+    let ids = [{
         source: 'NINDS',
-        id: formId,
-        version: version
-    };
-    if (formId && formId.length > 0) ids.push(crfId);
+        id: ninds.formId[0],
+        version: ninds.versionNum[0]
+    }];
     return ids;
 };
 parseProperties = ninds => {
@@ -176,7 +179,7 @@ exports.createForm = (ninds, org) => {
         let ids = parseIds(ninds);
         let properties = parseProperties(ninds);
         let referenceDocuments = parseReferenceDocuments(ninds);
-        let classification = parseClassification(ninds);
+        //let classification = parseClassification(ninds);
         let formElements = await parseFormElements(ninds);
 
         let newForm = {
@@ -193,7 +196,7 @@ exports.createForm = (ninds, org) => {
             definitions: definitions,
             referenceDocuments: referenceDocuments,
             ids: ids,
-            classification: classification,
+            classification: [],
             properties: properties,
             formElements: formElements
         };

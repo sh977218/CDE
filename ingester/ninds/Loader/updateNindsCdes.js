@@ -3,9 +3,10 @@ const _ = require('lodash');
 const mongo_cde = require('../../../server/cde/mongo-cde');
 const mongo_data = require('../../../server/system/mongo-data');
 const DataElement = mongo_cde.DataElement;
+const CreateCDE = require('../CDE/CreateCDE');
 const MergeCDE = require('../CDE/MergeCDE');
 const CompareCDE = require('../CDE/CompareCDE');
-const MigrationDataElement = require('../../createMigrationConnection').MigrationDataElementModel;
+const NindsCdeModel = require('../../createMigrationConnection').NindsCdeModel;
 
 const user = {username: 'batchloader'};
 
@@ -53,13 +54,13 @@ doOne = migrationCde => {
                 }
             }
         }
-        await migrationCde.remove();
         resolve();
     });
 };
 
 function run() {
-    MigrationDataElement.find({}).cursor().eachAsync(async migrationCde => {
+    NindsCdeModel.find({}).lean().cursor().eachAsync(async ninds => {
+        let migrationCde = CreateCDE.createCde(ninds);
         await doOne(migrationCde);
     }).then(() => {
         console.log('changed: ' + changed + ' created: ' + created + ' same: ' + same);

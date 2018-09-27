@@ -170,7 +170,11 @@ exports.update = function (elt, user, callback, special) {
         });
     });
 };
+exports.updatePromise = function (elt, user) {
+    return new Promise(async (resolve, reject) => {
 
+    })
+}
 exports.create = function (form, user, callback) {
     let newForm = new Form(form);
     if (!form.registrationState) {
