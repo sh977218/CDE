@@ -36,6 +36,28 @@ exports.compareForm = function (newForm, existingForm) {
         delete obj.history;
         delete obj.comments;
 
+        if (obj.formElements.length > 0) {
+            let fes = [];
+            obj.formElements[0].formElements.forEach(fe => {
+                if (!fe.question) {
+                    console.log(fe.question + 'question bad');
+                    throw new Error(fe.question + 'question bad');
+                } else if (!fe.question.cde) {
+                    console.log(fe.question.cde + 'cde bad');
+                    throw new Error(fe.question.cde + 'cde bad');
+                } else if (!fe.question.cde.tinyId) {
+                    console.log(fe.question.cde.tinyId + 'tinyId bad');
+                    throw new Error(fe.question.cde.tinyId + 'tinyId bad');
+                } else {
+                    fes.push({
+                        tinyId: fe.question.cde.tinyId,
+                        version: fe.question.cde.version
+                    })
+                }
+            });
+            obj.formElements = fes;
+        }
+
         obj.referenceDocuments.forEach(a => {
             for (let p in a) {
                 if (_.isEmpty(a[p])) delete a[p];
@@ -44,7 +66,6 @@ exports.compareForm = function (newForm, existingForm) {
         obj.ids.forEach(a => {
             if (a.source === 'NINDS') a.version = Number.parseFloat(a.version);
         });
-        obj.version = Number.parseFloat(obj.version);
     });
     return deepDiff(existingFormObj, newFormObj);
 };

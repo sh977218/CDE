@@ -126,6 +126,11 @@ parseFormElements = ninds => {
                 console.log('cde: ' + cde.cdeId + ' not found.');
                 throw new Error('cde: ' + cde.cdeId + ' not found.');
             }
+            let existingV = (existingCde.ids.filter(o => o.source === 'NINDS'))[0].version;
+            if (Number.parseFloat(existingV) !== Number.parseFloat(cde.versionNum)) {
+                console.log('existing cde ' + existingV + 'not match cde: ' + cde.versionNum);
+                throw new Error('version not match');
+            }
             let question = {
                 cde: {
                     tinyId: existingCde.tinyId,

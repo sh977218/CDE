@@ -3,7 +3,6 @@ const generateTinyId = require('../../../server/system/mongo-data').generateTiny
 
 const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
 
-const newLine = '<br>';
 const today = new Date().toJSON();
 
 parseDesignations = cde => {
@@ -46,14 +45,14 @@ parseIds = cde => {
     if (cde.variableName) ids.push({source: 'NINDS Variable Name', id: cde.variableName});
     return ids;
 };
-parseProperties = (cde, ninds) => {
+parseProperties = cde => {
     let properties = [];
     if (cde.previousTitle)
         properties.push({key: 'NINDS Previous Title', value: cde.previousTitle, source: 'NINDS'});
     if (cde.instruction)
         properties.push({
             key: 'NINDS Guidelines',
-            value: ninds.formId + newLine + cde.instruction + newLine,
+            value: cde.instruction,
             valueFormat: 'html',
             source: 'NINDS'
         });
@@ -223,12 +222,12 @@ parseClassification = (cde, ninds, newCde, nindsOrg) => {
     classificationShared.classifyItem(newCde, "NINDS", domainToAdd);
     classificationShared.addCategory({elements: nindsOrg.classifications}, domainToAdd);
 };
-exports.createCde = (cde, ninds, nindsOrg) => {
+exports.createCde = cde => {
     let designations = parseDesignations(cde);
     let definitions = parseDefinitions(cde);
     let sources = parseSources(cde);
     let ids = parseIds(cde);
-    let properties = parseProperties(cde, ninds);
+    let properties = parseProperties(cde);
     let referenceDocuments = parseReferenceDocuments(cde);
     let valueDomain = parseValueDomain(cde);
     let newCde = {
@@ -248,7 +247,7 @@ exports.createCde = (cde, ninds, nindsOrg) => {
         valueDomain: valueDomain,
         classification: []
     };
-    parseClassification(cde, ninds, newCde, nindsOrg);
+//    parseClassification(cde, ninds, newCde, nindsOrg);
 
     return newCde;
 };
