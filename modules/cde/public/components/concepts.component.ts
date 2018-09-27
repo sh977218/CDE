@@ -1,23 +1,21 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Router } from '@angular/router';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
     selector: "cde-concepts",
-    providers: [NgbActiveModal],
     templateUrl: "./concepts.component.html"
 })
 export class ConceptsComponent {
 
-    @ViewChild("newConceptContent") public newConceptContent: NgbModalModule;
-    public modalRef: NgbModalRef;
+    @ViewChild("newConceptContent") public newConceptContent: TemplateRef<any>;
+    public modalRef: MatDialogRef<TemplateRef<any>>;
     @Input() public elt: any;
     @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
 
-    constructor(public modalService: NgbModal,
-                private router: Router) {
-    }
+    constructor(public dialog: MatDialog,
+                private router: Router) {}
 
     newConcept: { name?: string, originId?: string, origin: string, type: string } = {origin: "LOINC", type: "dec"};
 
@@ -52,8 +50,8 @@ export class ConceptsComponent {
     }
 
     openNewConceptModal() {
-        this.modalRef = this.modalService.open(this.newConceptContent, {size: "lg"});
         this.newConcept = {origin: "LOINC", type: "dec"};
+        this.modalRef = this.dialog.open(this.newConceptContent);
     }
 
     dataElementConceptRemoveConcept(index) {

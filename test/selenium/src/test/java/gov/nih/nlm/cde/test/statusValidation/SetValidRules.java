@@ -13,6 +13,7 @@ public class SetValidRules extends BaseClassificationTest {
         clickElement(By.id("user_org_authority"));
         clickElement(By.linkText("Status Validation Rules"));
         clickElement(By.id("addRule"));
+        hangon(1);
         new Select(findElement(By.id("org"))).selectByVisibleText("TEST");
         findElement(By.id("ruleName")).sendKeys("Test Rule #1");
         new Select(findElement(By.id("field"))).selectByVisibleText("properties.key");
@@ -26,7 +27,7 @@ public class SetValidRules extends BaseClassificationTest {
         clickElement(By.id("export"));
         clickElement(By.id("exportValidRule"));
         clickElement(By.id("selectStatus"));
-        clickElement(By.id("recorded"));
+        findElement(By.xpath("//span[. = 'Recorded']")).click();
         clickElement(By.id("exportVR"));
         textPresent("Test Rule #1");
     }

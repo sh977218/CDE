@@ -1,10 +1,8 @@
-<ng-template #pinModal id="pinModal" let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h3>Choose a Board to pin this {{module | uppercase}} to
-            <cde-create-board [module]="module"></cde-create-board>
-        </h3>
-    </div>
-    <div class="modal-body">
+<ng-template #pinModal>
+    <h3 mat-dialog-title>Choose a Board to pin this {{module | uppercase}} to
+        <cde-create-board [module]="module"></cde-create-board>
+    </h3>
+    <div mat-dialog-content>
         <mat-icon *ngIf="myBoardsSvc.reloading || !myBoardsSvc.boards" class="spin">autorenew</mat-icon>
         <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0" class="ml-10"> You don't have any boards
         </div>
@@ -30,22 +28,20 @@
             <div class="row">
                 <div *ngFor="let board of myBoardsSvc.boards; let $index = index" class="col-lg-4 col-md-3">
                     <cde-board-view-template [board]="board" [headerLink]="false"
-                                             (onHeaderClick)="selectBoard(board);c()">
+                                             (onHeaderClick)="selectBoard(board); ">
                     </cde-board-view-template>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal-footer">
-        <button mat-raised-button color="warn" (click)="d()" id="cancelSelect">Cancel</button>
+    <div mat-dialog-actions>
+        <button mat-raised-button color="warn" [mat-dialog-close] id="cancelSelect">Cancel</button>
     </div>
 </ng-template>
 
-<ng-template #ifYouLoginModal id="ifYouLoginModal" let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h3>Sign up for an account</h3>
-    </div>
-    <div class="modal-body">
+<ng-template #ifYouLoginModal>
+    <h3 mat-dialog-title>Sign up for an account</h3>
+    <div mat-dialog-content>
         With an account, you will be able to:
         <ul>
             <li>Create Boards and attach CDEs to them</li>
@@ -55,10 +51,10 @@
         </ul>
         <br>
         <div style="text-align: center">
-            <a id="signUpLink" routerLink="/login" class="btn    btn-outline-dark" (click)="c()">Sign up or Log In</a>
+            <a id="signUpLink" routerLink="/login"><button [mat-dialog-close] mat-raised-button>Sign up or Log In</button></a>
         </div>
     </div>
-    <div class="modal-footer">
-        <button mat-raised-button color="warn" (click)="c()" id="cancelSelect">Cancel</button>
+    <div mat-dialog-actions>
+        <button mat-raised-button color="warn" [mat-dialog-close] id="cancelSelect">Cancel</button>
     </div>
 </ng-template>

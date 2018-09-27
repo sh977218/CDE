@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ViewChild } from '@angular/core';
-import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { AlertService } from '_app/alert.service';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-server-status',
     templateUrl: './serverStatus.component.html'
 })
 export class ServerStatusComponent {
-    @ViewChild('confirmReindex') confirmReindex!: NgbModalModule;
+    @ViewChild('confirmReindex') confirmReindex!: TemplateRef<any>;
     esIndices: any;
     indexToReindex?: number;
     isDone: boolean = false;
@@ -18,7 +18,7 @@ export class ServerStatusComponent {
     constructor(
         private Alert: AlertService,
         private http: HttpClient,
-        public modalService: NgbModal,
+        public dialog: MatDialog,
     ) {
         this.refreshStatus();
     }
@@ -55,7 +55,7 @@ export class ServerStatusComponent {
         this.esIndices[i].count = 0;
 
         this.indexToReindex = i;
-        this.modalService.open(this.confirmReindex);
+        this.dialog.open(this.confirmReindex);
     }
 
     syncMesh() {

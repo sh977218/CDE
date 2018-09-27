@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, Output, ViewChild, EventEmitter } from '@angular/core';
-import { NgbModalRef, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, Output, ViewChild, EventEmitter, TemplateRef } from '@angular/core';
 import _isEqual from 'lodash/isEqual';
 
 import { AlertService } from '_app/alert.service';
 import { iterateFormElements } from 'shared/form/fe';
+import { MatDialog } from '@angular/material';
 
 
 @Component({
@@ -15,20 +15,14 @@ export class SaveModalComponent {
     @Input() elt: any;
     @Output() save = new EventEmitter();
     @Output() onEltChange = new EventEmitter();
-    @ViewChild('updateElementContent') updateElementContent: NgbModalModule;
+    @ViewChild('updateElementContent') updateElementContent: TemplateRef<any>;
     duplicatedVersion = false;
-    modalRef: NgbModalRef;
     protected newCdes = [];
     overrideVersion: false;
 
     constructor(private alert: AlertService,
                 public http: HttpClient,
-                public modalService: NgbModal) {}
-
-    confirmSave() {
-        this.modalRef.close();
-        this.save.emit();
-    }
+                public dialog: MatDialog) {}
 
     newVersionVersionUnicity(newVersion = null) {
         if (newVersion === null) newVersion = this.elt.version;
@@ -67,9 +61,9 @@ export class SaveModalComponent {
                     } else if (cb) cb();
                 }
             }, () => {
-                this.modalRef = this.modalService.open(this.updateElementContent, {container: 'body', size: 'lg'});
+                this.dialog.open(this.updateElementContent);
             });
         }
-        else this.modalRef = this.modalService.open(this.updateElementContent, {container: 'body', size: 'lg'});
+        else this.dialog.open(this.updateElementContent);
     }
 }

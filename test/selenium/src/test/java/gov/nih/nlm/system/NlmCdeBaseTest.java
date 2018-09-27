@@ -1063,19 +1063,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         modalGone();
     }
 
-    protected void addNewConcept(String cName, String cId, String cSystem, String cType) {
-        clickElement(By.id("openNewConceptModalBtn"));
-        findElement(By.name("name")).sendKeys(cName);
-        findElement(By.name("codeId")).sendKeys(cId);
-        if (cSystem != null)
-            new Select(driver.findElement(By.id("codeSystem"))).selectByVisibleText(cSystem);
-        if (cType != null)
-            new Select(driver.findElement(By.id("conceptType"))).selectByVisibleText(cType);
-        clickElement(By.id("createNewConceptBtn"));
-    }
-
     protected void addNewIdentifier(String source, String id, String version) {
         clickElement(By.id("openNewIdentifierModalBtn"));
+        hangon(1);
         findElement(By.id("newSource")).sendKeys(source);
         findElement(By.id("newId")).sendKeys(id);
         if (version != null)

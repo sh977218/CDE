@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Host, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { Component, EventEmitter, Host, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { TreeNode } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
@@ -11,6 +10,7 @@ import { FormDescriptionComponent } from 'form/public/tabs/description/formDescr
 import { FormService } from 'nativeRender/form.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { FormElement, FormQuestion } from 'shared/form/form.model';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-form-description-question',
@@ -28,7 +28,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
     @Input() index;
     @Input() node: TreeNode;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
-    @ViewChild('updateCdeVersionTmpl') updateCdeVersionTmpl: NgbModalModule;
+    @ViewChild('updateCdeVersionTmpl') updateCdeVersionTmpl: TemplateRef<any>;
     isSubForm = false;
     parent: FormElement;
     question: FormQuestion;
@@ -44,8 +44,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         private dataElementService: DataElementService,
         @Host() public formDescriptionComponent: FormDescriptionComponent,
         public formService: FormService,
-        private http: HttpClient,
-        public modalService: NgbModal
+        public dialog: MatDialog
     ) {
     }
 
@@ -151,10 +150,12 @@ export class FormDescriptionQuestionComponent implements OnInit {
         }
 
         this.updateCdeVersion =  modal;
-        this.modalService.open(this.updateCdeVersionTmpl, {size: 'lg'}).result.then(() => {
-            currentQuestion.question = newQuestion.question;
-            currentQuestion.label = newQuestion.label;
-            this.stageElt.emit();
+        this.dialog.open(this.updateCdeVersionTmpl, {width: '1000px'}).afterClosed().subscribe((res) => {
+            if (res) {
+                currentQuestion.question = newQuestion.question;
+                currentQuestion.label = newQuestion.label;
+                this.stageElt.emit();
+            }
         }, _noop);
     }
 

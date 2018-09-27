@@ -10,7 +10,7 @@ public class FormAddRemoveIdentifierTest extends NlmCdeBaseTest {
         String formName = "Vision Deficit Report";
         mustBeLoggedInAs(ctepCurator_username, password);
         goToFormByName(formName);
-         goToIdentifiers();
+        goToIdentifiers();
 
         addNewIdentifier("MyOrigin1", "MyId1", "MyVersion1");
         addNewIdentifier("MyOrigin2", "MyId2", null);

@@ -15,15 +15,15 @@ public class NavigateThroughClassificationTreeTest extends NlmCdeBaseTest {
         goToClassification();
         clickElement(By.id("openClassificationModalBtn"));
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("NINDS");
-        textPresent("Domain", By.id("newClassifyItemModalBody"));
-        textPresent("Population", By.id("newClassifyItemModalBody"));
-        textNotPresent("Amyotrophic Lateral Sclerosis", By.id("newClassifyItemModalBody"));
+        textPresent("Domain", By.cssSelector(".mat-dialog-content"));
+        textPresent("Population", By.cssSelector(".mat-dialog-content"));
+        textNotPresent("Amyotrophic Lateral Sclerosis", By.cssSelector(".mat-dialog-content"));
         clickElement(By.id("Disease-expander"));
-        textPresent("Amyotrophic Lateral Sclerosis", By.id("newClassifyItemModalBody"));
-        textPresent("Domain", By.id("newClassifyItemModalBody"));
-        textPresent("Population", By.id("newClassifyItemModalBody"));
+        textPresent("Amyotrophic Lateral Sclerosis", By.cssSelector(".mat-dialog-content"));
+        textPresent("Domain", By.cssSelector(".mat-dialog-content"));
+        textPresent("Population", By.cssSelector(".mat-dialog-content"));
         clickElement(By.id("Disease-expander"));
-        textNotPresent("Amyotrophic Lateral Sclerosis", By.id("newClassifyItemModalBody"));
+        textNotPresent("Amyotrophic Lateral Sclerosis", By.cssSelector(".mat-dialog-content"));
         clickElement(By.id("cancelNewClassifyItemBtn"));
         modalGone();
     }

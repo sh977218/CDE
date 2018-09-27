@@ -1,4 +1,4 @@
-<div class="modal-header">
+<div mat-dialog-title>
     <div class="col-3">
         <span class="d-inline-block color-box" id="reorderIcon"></span>
         <strong class="d-inline-block">&nbsp;Reorder&nbsp;</strong>
@@ -20,12 +20,13 @@
         <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.edited.select">
     </div>
 </div>
-<div class="modal-body" *ngIf="newer && older">
+<div mat-dialog-content *ngIf="newer && older">
     <cde-compare-object [newer]="newer" [older]="older"></cde-compare-object>
     <cde-compare-array [newer]="newer" [older]="older"
                        [(filter)]="filter"></cde-compare-array>
 </div>
-<div class="modal-footer">
-    <button mat-raised-button id="closeHistoryCompareModal" (click)="activeModal.close('Close click');">Close
+
+<div mat-dialog-actions>
+    <button mat-raised-button id="closeHistoryCompareModal" [mat-dialog-close]>Close
     </button>
 </div>

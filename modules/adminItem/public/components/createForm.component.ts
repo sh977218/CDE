@@ -7,13 +7,11 @@ import {
     ViewChild,
     QueryList,
     ViewChildren,
-    EventEmitter
+    EventEmitter, TemplateRef
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LocalStorageService } from 'angular-2-local-storage/dist';
 import { TreeComponent } from 'angular-tree-component';
-import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
 
 import { AlertService } from '_app/alert.service';
@@ -23,11 +21,10 @@ import { IsAllowedService } from 'core/isAllowed.service';
 import { Definition, Designation } from 'shared/models.model';
 import { CdeForm } from 'shared/form/form.model';
 import { classifyItem, findSteward, removeCategory } from 'shared/system/classificationShared';
-
+import { MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-create-form',
-    providers: [NgbActiveModal],
     templateUrl: './createForm.component.html',
     styles: [`
         label {
@@ -37,11 +34,11 @@ import { classifyItem, findSteward, removeCategory } from 'shared/system/classif
 })
 export class CreateFormComponent implements OnInit {
     @Input() elt: CdeForm;
-    @Input() extModalRef: NgbModalRef;
+    @Output() done = new EventEmitter();
     @Output() eltChange = new EventEmitter();
     @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
     @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
-    modalRef: NgbModalRef;
+    dialogRef: MatDialogRef<TemplateRef<any>>;
 
     ngOnInit() {
         if (!this.elt) {
@@ -66,12 +63,12 @@ export class CreateFormComponent implements OnInit {
         };
         classifyItem(this.elt, event.selectedOrg, event.classificationArray);
         this.updateClassificationLocalStorage(postBody);
-        this.modalRef.close();
+        this.dialogRef.close();
     }
 
     cancelCreateForm() {
-        if (this.extModalRef) {
-            this.extModalRef.close();
+        if (this.done) {
+            this.done.emit();
         } else {
             this.router.navigate(['/']);
         }
@@ -81,7 +78,7 @@ export class CreateFormComponent implements OnInit {
         this.http.post<CdeForm>('/form', this.elt)
             .subscribe(res => {
                     this.router.navigate(['/formView'], {queryParams: {tinyId: res.tinyId}});
-                    if (this.extModalRef) this.extModalRef.close();
+                    if (this.done) this.done.emit();
                 },
                 err => this.alert.httpErrorMessageAlert(err));
     }
@@ -95,7 +92,7 @@ export class CreateFormComponent implements OnInit {
     }
 
     openClassifyItemModal() {
-        this.modalRef = this.classifyItemComponent.openModal();
+        this.dialogRef = this.classifyItemComponent.openModal();
     }
 
     updateClassificationLocalStorage(item) {

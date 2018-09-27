@@ -1,10 +1,10 @@
-import { Component, Input, ViewChild, OnInit, Output, EventEmitter } from '@angular/core';
-import { NgbModalModule, NgbModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, ViewChild, OnInit, Output, EventEmitter, TemplateRef } from '@angular/core';
 
 import { AlertService } from '_app/alert.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { Property } from 'shared/models.model';
 import { OrgHelperService } from 'core/orgHelper.service';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-properties',
@@ -14,15 +14,14 @@ export class PropertiesComponent implements OnInit {
     @Input() canEdit: boolean = false;
     @Input() elt: DataElement;
     @Output() onEltChange = new EventEmitter();
-    @ViewChild('newPropertyContent') newPropertyContent: NgbModalModule;
-    modalRef: NgbModalRef;
+    @ViewChild('newPropertyContent') newPropertyContent: TemplateRef<any>;
     newProperty: Property = new Property();
     onInitDone: boolean = false;
     orgPropertyKeys: string[] = [];
 
     constructor(
         private alert: AlertService,
-        public modalService: NgbModal,
+        public dialog: MatDialog,
         private orgHelperService: OrgHelperService,
     ) {}
 
@@ -33,20 +32,16 @@ export class PropertiesComponent implements OnInit {
         });
     }
 
-    addNewProperty() {
-        this.elt.properties.push(this.newProperty);
-        this.onEltChange.emit();
-        this.modalRef.close();
-    }
-
     openNewPropertyModal() {
         if (this.orgPropertyKeys.length === 0) {
             this.alert.addAlert('danger', 'No valid property keys present, have an Org Admin go to Org Management > List Management to add one');
         } else {
-            this.modalRef = this.modalService.open(this.newPropertyContent, {size: 'lg'});
-            this.modalRef.result.then(() => {
+            this.dialog.open(this.newPropertyContent).afterClosed().subscribe(res => {
+                if (res) {
+                    this.elt.properties.push(this.newProperty);
+                    this.onEltChange.emit();
+                }
                 this.newProperty = new Property();
-            }, () => {
             });
         }
     }

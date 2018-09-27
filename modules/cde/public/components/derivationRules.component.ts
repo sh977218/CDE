@@ -1,29 +1,34 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, DoCheck, Input, ViewChild, OnChanges, Output, EventEmitter, } from '@angular/core';
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
+import { Component, DoCheck, Input, ViewChild, OnChanges, Output, EventEmitter, TemplateRef, } from '@angular/core';
 
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { DerivationRule } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-derivation-rules',
-    providers: [NgbActiveModal],
     templateUrl: './derivationRules.component.html'
 })
 export class DerivationRulesComponent implements DoCheck, OnChanges {
     @Input() canEdit!: boolean;
     @Input() elt: any;
     @Output() onEltChange = new EventEmitter();
-    @ViewChild('newScoreContent') newScoreContent!: NgbModalModule;
+    @ViewChild('newScoreContent') newScoreContent!: TemplateRef<any>;
     invalidCdeMessage: string = '';
-    modalRef?: NgbModalRef;
+    modalRef?: MatDialogRef<TemplateRef<any>>;
     newDerivationRule: DerivationRule = {
         ruleType: 'score',
         formula: 'sumAll',
         inputs: []
     };
     previousCdeId: string;
+
+    constructor(
+        private http: HttpClient,
+        public dialog: MatDialog,
+        public quickBoardService: QuickBoardListService,
+    ) {}
 
     ngDoCheck() {
         if (this.elt._id !== this.previousCdeId) {
@@ -38,13 +43,6 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         this.updateRules();
         this.findDerivationOutputs();
         this.someCdesInvalid();
-    }
-
-    constructor(
-        private http: HttpClient,
-        public modalService: NgbModal,
-        public quickBoardService: QuickBoardListService,
-    ) {
     }
 
     addNewScore() {
@@ -96,8 +94,8 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
             formula: 'sumAll',
             inputs: []
         };
-        this.modalRef = this.modalService.open(this.newScoreContent, {size: 'lg'});
-        this.modalRef.result.then(() => {
+        this.modalRef = this.dialog.open(this.newScoreContent, {width: '800px'});
+        this.modalRef.afterClosed().subscribe(() => {
             this.newDerivationRule = {
                 name: '',
                 ruleType: 'score',
