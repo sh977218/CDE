@@ -359,7 +359,8 @@ exports.init = function (app) {
     app.get('/listOrgsDetailedInfo', exportShared.nocacheMiddleware, (req, res) => {
         mongo_data.listOrgsDetailedInfo(function (err, orgs) {
             if (err) {
-                logging.errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}));
+                logging.errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}),
+                    {stack: new Error().stack});
                 return res.status(403).send('Failed to get list of orgs detailed info.');
             }
             res.send(orgs);

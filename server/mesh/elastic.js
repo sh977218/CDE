@@ -116,7 +116,8 @@ function doSyncWithMesh(allMappings) {
                 lock = false;
                 logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
                     {
-                        origin: "system.elastic.syncWithMesh", stack: new Error().stack,
+                        origin: "system.elastic.syncWithMesh",
+                        stack: new Error().stack,
                         details: ""
                     });
             } else {

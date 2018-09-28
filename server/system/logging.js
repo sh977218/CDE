@@ -35,11 +35,13 @@ MongoLogger.prototype.log = function (level, msg, meta, callback) {
 exports.MongoLogger = MongoLogger;
 
 MongoErrorLogger.prototype.log = function (level, msg, meta) {
-    var processDetails = function(details){
+    if (!meta) meta = {};
+    let processDetails = function(details){
+        if (!details) return "No details provided.";
         if (typeof details === "string") return details;
         if (typeof details !== "object") return "No details provided.";
-        Object.keys(details).map(function(name){
-            var value = details[name];
+        Object.keys(details).map(name => {
+            let value = details[name];
             if (typeof value === "string") return name + "=" + value;
             else if (typeof value === "object" && typeof value.toString === "function") return name + "=" + value.toString();
             else if (typeof value === "object" && typeof value.name !== "undefined") return name + "=" + value.name;
@@ -55,15 +57,15 @@ MongoErrorLogger.prototype.log = function (level, msg, meta) {
         
     };
     try {
-        var message = {
+        let message = {
             message: msg
             , origin: meta.origin
             , stack: meta.stack || new Error().stack  
             , details: processDetails(meta.details)
         };
         if (meta.request) message.request = exports.generateErrorLogRequest(meta.request);
-        dbLogger.logError(message, function (err) {
-            if (err) {noDbLogger.noDbLogger.error("Cannot log to DB: " + msg);}
+        dbLogger.logError(message, err => {
+            if (err) noDbLogger.noDbLogger.error("Cannot log to DB: " + msg)
         });
     } catch (e) {
         noDbLogger.noDbLogger.error("Cannot log to DB: " + e);
