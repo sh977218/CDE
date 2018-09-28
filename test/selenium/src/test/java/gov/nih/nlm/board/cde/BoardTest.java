@@ -96,6 +96,7 @@ public class BoardTest extends NlmCdeBaseTest {
 
     void editBoardByName(String boardName, String boardNameChange, String boardDescriptionChange, boolean isPublic, String[] boardTags) {
         clickElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'editBoard')]"));
+        hangon(1);
         if (boardNameChange != null) findElement(By.id("boardName")).sendKeys(boardNameChange);
         if (boardDescriptionChange != null) findElement(By.id("boardDescription")).sendKeys(boardDescriptionChange);
         if (isPublic) clickElement(By.id("makePublicBtn"));
