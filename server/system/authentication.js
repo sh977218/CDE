@@ -71,8 +71,8 @@ exports.ticketValidate = function (tkt, cb) {
         });
     });
 
-    req.on('error', function (e) {
-        logging.errorLogger.error('getTgt: ERROR with request: ' + e);
+    req.on('error', e => {
+        logging.errorLogger.error('getTgt: ERROR with request: ' + e, {stack: new Error().stack});
         return cb(e);
     });
 

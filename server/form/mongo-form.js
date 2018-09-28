@@ -17,7 +17,7 @@ schemas.formSchema.pre('save', function (next) {
     try {
         elastic.updateOrInsert(self);
     } catch (exception) {
-        logging.errorLogger.error(exception);
+        logging.errorLogger.error("Error Indexing Form", {details: exception, stack: new Error().stack});
     }
     next();
 });
