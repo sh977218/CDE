@@ -593,7 +593,8 @@ exports.elasticsearch = function (type, query, settings, cb) {
                 if (response.error.type !== 'search_phase_execution_exception') {
                     logging.errorLogger.error("Error: ElasticSearch Error",
                         {
-                            origin: "system.elastic.elasticsearch", stack: error.stack,
+                            origin: "system.elastic.elasticsearch",
+                            stack: error.stack,
                             details: JSON.stringify(query)
                         });
                 }
@@ -606,7 +607,8 @@ exports.elasticsearch = function (type, query, settings, cb) {
                 }
                 logging.errorLogger.error("Error: ElasticSearch Error",
                     {
-                        origin: "system.elastic.elasticsearch", stack: error.stack,
+                        origin: "system.elastic.elasticsearch",
+                        stack: error.stack,
                         details: "query " + querystr
                     });
                 cb("Server Error");
@@ -660,7 +662,8 @@ exports.elasticSearchExport = function (dataCb, query, type) {
                     lock = false;
                     logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
                         {
-                            origin: "system.elastic.elasticsearch", stack: new Error().stack
+                            origin: "system.elastic.elasticsearch",
+                            stack: new Error().stack
                         });
                     dataCb("ES Error");
                 } else {
@@ -689,7 +692,8 @@ exports.elasticSearchExport = function (dataCb, query, type) {
             lock = false;
             logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
                 {
-                    origin: "system.elastic.elasticsearch", stack: new Error().stack,
+                    origin: "system.elastic.elasticsearch",
+                    stack: new Error().stack,
                     details: ", query: " + query
                 });
             dataCb("ES Error");
