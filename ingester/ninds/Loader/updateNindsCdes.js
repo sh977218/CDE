@@ -29,21 +29,22 @@ doOne = migrationCde => {
                 elem.where("source").equals('NINDS');
                 elem.where("id").equals(migrationId);
             }).exec();
-        if (existingCdes.length > 1) throw new Error('found more than 1 ' + migrationId);
-        else if (existingCdes.length === 0) {
-            await new DataElement(migrationCde.toObject()).save();
+        if (existingCdes.length > 1) {
+            console.log('found more than 1 ' + migrationId);
+            process.exit(1);
+        } else if (existingCdes.length === 0) {
+            await new DataElement(migrationCde).save();
             console.log('created: ' + ++created);
         } else {
             let existingCde = existingCdes[0];
             let diff = CompareCDE.compareCde(migrationCde, existingCde);
             if (_.isEmpty(diff)) {
-                existingCde.version = migrationCde.version;
                 existingCde.ids = migrationCde.ids;
                 await existingCde.save();
                 same++;
             }
             else {
-                if (existingCde.updatedBy.username !== user.username) {
+                if (existingCde.updatedBy.username && existingCde.updatedBy.username !== user.username) {
                     existingCde.registrationState.administrativeNote = "Because this CDE was previously manually modified, no batch modification was applied. More information in attachments.";
                     await existingCde.save();
                     skip++;
@@ -58,12 +59,39 @@ doOne = migrationCde => {
     });
 };
 
+retireCde = () => {
+    return new Promise(async (resolve, reject) => {
+        let cond = {
+            "archived": false,
+            "updatedBy.username": 'batchloader',
+            "registrationState.registrationStatus": {$ne: "Retired"},
+            "updated": {$lt: new Date().setHours(new Date().getHours() - 8)},
+            "stewardOrg.name": "NINDS",
+            "classification": {$size: 1},
+            "classification.stewardOrg.name": 'NINDS'
+        };
+        let update = {
+            'registrationState.registrationStatus': 'Retired',
+            'registrationState.administrativeNote': 'Not present in import at ' + new Date().toJSON()
+        };
+        let retires = await DataElement.update(cond, update, {multi: true});
+        console.log(retires.nModified + ' cdes retired');
+        resolve();
+    })
+};
+
 function run() {
-    NindsCdeModel.find({}).lean().cursor().eachAsync(async ninds => {
-        let migrationCde = CreateCDE.createCde(ninds);
-        await doOne(migrationCde);
-    }).then(() => {
-        console.log('changed: ' + changed + ' created: ' + created + ' same: ' + same);
+    NindsCdeModel.find({}).cursor().eachAsync(ninds => {
+        let nindsObj = ninds.toObject();
+        return new Promise(async (resolve, reject) => {
+            let migrationCde = CreateCDE.createCde(nindsObj);
+            await doOne(migrationCde);
+            ninds.remove();
+            resolve();
+        })
+    }).then(async () => {
+        await retireCde();
+        console.log('changed: ' + changed + ' created: ' + created + ' same: ' + same + ' skip: ' + skip);
         process.exit(1);
     }, err => {
         throw err;

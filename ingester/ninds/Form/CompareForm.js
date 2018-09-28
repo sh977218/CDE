@@ -1,6 +1,22 @@
 const _ = require('lodash');
 const deepDiff = require('deep-diff');
 
+getChildren = (formElements, ids) => {
+    if (formElements) {
+        formElements.forEach(formElement => {
+            if (formElement.elementType === 'section' || formElement.elementType === 'form') {
+                this.getChildren(formElement.formElements, ids);
+            } else if (formElement.elementType === 'question') {
+                ids.push({
+                    id: formElement.question.cde.tinyId,
+                    version: formElement.question.cde.version
+                });
+            }
+        });
+    }
+};
+
+
 exports.compareForm = function (newForm, existingForm) {
     let newFormObj = _.cloneDeep(newForm);
     if (newFormObj.toObject) newFormObj = newFormObj.toObject();
@@ -36,27 +52,9 @@ exports.compareForm = function (newForm, existingForm) {
         delete obj.history;
         delete obj.comments;
 
-        if (obj.formElements.length > 0) {
-            let fes = [];
-            obj.formElements[0].formElements.forEach(fe => {
-                if (!fe.question) {
-                    console.log(fe.question + 'question bad');
-                    throw new Error(fe.question + 'question bad');
-                } else if (!fe.question.cde) {
-                    console.log(fe.question.cde + 'cde bad');
-                    throw new Error(fe.question.cde + 'cde bad');
-                } else if (!fe.question.cde.tinyId) {
-                    console.log(fe.question.cde.tinyId + 'tinyId bad');
-                    throw new Error(fe.question.cde.tinyId + 'tinyId bad');
-                } else {
-                    fes.push({
-                        tinyId: fe.question.cde.tinyId,
-                        version: fe.question.cde.version
-                    })
-                }
-            });
-            obj.formElements = fes;
-        }
+        obj.cdeIds = getChildren(obj.formElements);
+
+        delete obj.formElements;
 
         obj.referenceDocuments.forEach(a => {
             for (let p in a) {

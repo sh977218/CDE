@@ -32,11 +32,11 @@ parseDefinitions = ninds => {
     });
     return definitions;
 };
-parseSources = cde => {
+parseSources = ninds => {
     let sources = [{
         sourceName: 'NINDS',
-        updated: cde.versionDate,
-        datatype: cde.dataType
+        updated: ninds.versionDate,
+        datatype: ninds.dataType
     }];
     return sources;
 };
@@ -50,7 +50,7 @@ parseIds = ninds => {
     });
     return ids;
 };
-parseProperties = cde => {
+parseProperties = ninds => {
     let properties = [];
     ninds.previousTitle.forEach(p => {
         properties.push({key: 'NINDS Previous Title', value: p, source: 'NINDS'});
@@ -126,7 +126,7 @@ parseValueDomain = ninds => {
     if (ninds.inputRestrictions[0] === 'Free-Form Entry') {
         valueDomain.datatype = DATA_TYPE_MAP[ninds.dataType[0]];
         if (!valueDomain.datatype) {
-            console.log(ninds.cdeId + ' unknown dataType found:' + cde.dataType);
+            console.log(ninds.cdeId + ' unknown dataType found:' + ninds.dataType);
             process.exit(1);
         }
         if (valueDomain.dataType === 'Text') {
@@ -145,7 +145,7 @@ parseValueDomain = ninds => {
             console.log(ninds.cdeId + ' unknown dataType found:' + ninds.dataType);
             process.exit(1);
         }
-        valueDomain.permissibleValues = ninds.parsePermissibleValues;
+        valueDomain.permissibleValues = ninds.permissibleValues;
     } else {
         console.log(ninds.cdeId + ' unknown inputRestrictions found:' + ninds.inputRestrictions);
         process.exit(1);
@@ -166,11 +166,13 @@ exports.createCde = ninds => {
         tinyId: generateTinyId(),
         stewardOrg: {name: "NINDS"},
         createdBy: {username: 'batchloader'},
+        updatedBy: {username: 'batchloader'},
+        updated: today,
         created: today,
         imported: today,
         registrationState: {registrationStatus: "Qualified"},
         sources: sources,
-        version: cde.versionNum,
+        version: ninds.versionNum[0],
         designations: designations,
         definitions: definitions,
         referenceDocuments: referenceDocuments,

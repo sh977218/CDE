@@ -3,6 +3,8 @@ const _ = require('lodash');
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
 const DataElement = require('../../../server/cde/mongo-cde').DataElement;
 
+const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
+
 const CreateCDE = require('../CDE/CreateCDE');
 const today = new Date().toJSON();
 
@@ -64,52 +66,6 @@ parseReferenceDocuments = ninds => {
     }
     return referenceDocuments;
 };
-parseClassification = ninds => {
-    let domainSubDomain = {
-        name: "Domain",
-        elements: [{
-            name: ninds.domainName,
-            elements: []
-        }]
-    };
-    if (ninds.domainName !== ninds.subDomainName) {
-        domainSubDomain.elements[0].elements.push({
-            name: ninds.subDomainName,
-            elements: []
-        });
-    }
-
-    let elements = [];
-    let diseaseElement;
-    if (ninds.diseaseName === 'Traumatic Brain Injury') {
-        diseaseElement = {
-            name: 'Disease',
-            elements: [{
-                name: ninds.diseaseName,
-                elements: [{
-                    name: ninds.subDiseaseName,
-                    elements: [{
-                        name: 'Domain',
-                        elements: [domainSubDomain]
-                    }]
-                }]
-            }]
-        };
-    } else {
-        diseaseElement = {
-            name: 'Disease',
-            elements: [{
-                name: ninds.diseaseName,
-                elements: [domainSubDomain]
-            }]
-        };
-    }
-    elements.push(domainSubDomain);
-    elements.push(diseaseElement);
-    let classification = [{stewardOrg: {name: 'NINDS'}, elements: elements}];
-
-    return classification;
-};
 parseFormElements = ninds => {
     return new Promise(async (resolve, reject) => {
         if (ninds.cdes.length === 0) resolve([]);
@@ -131,7 +87,7 @@ parseFormElements = ninds => {
             }
             let existingV = (existingCde.ids.filter(o => o.source === 'NINDS'))[0].version;
             if (Number.parseFloat(existingV) !== Number.parseFloat(cde.versionNum)) {
-                console.log('existing cde ' + existingV + 'not match cde: ' + cde.versionNum);
+                console.log(cde.cdeId + ' existing cde ' + existingV + ' not match cde: ' + cde.versionNum);
                 throw new Error('version not match');
             }
             let question = {
@@ -179,17 +135,18 @@ exports.createForm = (ninds, org) => {
         let ids = parseIds(ninds);
         let properties = parseProperties(ninds);
         let referenceDocuments = parseReferenceDocuments(ninds);
-        //let classification = parseClassification(ninds);
         let formElements = await parseFormElements(ninds);
 
         let newForm = {
             tinyId: generateTinyId(),
             createdBy: {username: 'batchloader'},
+            updatedBy: {username: 'batchloader'},
+            updated: today,
             sources: sources,
             created: today,
             imported: today,
-            isCopyrighted: ninds.copyright,
-            noRenderAllowed: ninds.copyright,
+            isCopyrighted: false,
+            noRenderAllowed: false,
             stewardOrg: {name: 'NINDS'},
             registrationState: {registrationStatus: "Qualified"},
             designations: designations,
@@ -200,6 +157,36 @@ exports.createForm = (ninds, org) => {
             properties: properties,
             formElements: formElements
         };
+        if (ninds.copyright[0]) {
+            newForm.noRenderAllowed = true;
+            newForm.isCopyrighted = true;
+        }
+
+        ninds.classification.forEach(c => {
+            let diseaseToAdd = ['Disease', c.disease];
+            let subDomainToAdd = ['Disease', c.disease];
+            let classificationToAdd = ['Disease', c.disease];
+
+            if (c.disease === 'Traumatic Brain Injury') {
+                diseaseToAdd.push(c.subDisease);
+                classificationToAdd.push(c.subDisease);
+                subDomainToAdd.push(c.subDisease);
+            }
+
+            diseaseToAdd.push('Domain');
+            subDomainToAdd.push('Domain');
+
+            diseaseToAdd.concat([c.domain, c.subDomain]);
+            subDomainToAdd.concat([c.domain, c.subDomain]);
+
+            classificationShared.classifyItem(newForm, "NINDS", diseaseToAdd);
+            classificationShared.classifyItem(newForm, "NINDS", subDomainToAdd);
+            classificationShared.classifyItem(newForm, "NINDS", classificationToAdd);
+            let domainToAdd = ['Domain', c.domain, c.subDomain];
+            classificationShared.classifyItem(newForm, "NINDS", domainToAdd);
+        });
+
+
         resolve(newForm);
     })
 };
