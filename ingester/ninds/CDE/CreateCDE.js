@@ -10,7 +10,7 @@ parseDesignations = ninds => {
     ninds.cdeName.forEach(n => {
         designations.push({
             designation: n,
-            tags: []
+            tags: ['Health']
         })
     });
     ninds.questionText.forEach(n => {
@@ -27,7 +27,7 @@ parseDefinitions = ninds => {
     ninds.definitionDescription.forEach(d => {
         definitions.push({
             definition: d,
-            tags: []
+            tags: ['Health']
         })
     });
     return definitions;
@@ -76,10 +76,10 @@ parseProperties = ninds => {
 parseReferenceDocuments = ninds => {
     let referenceDocuments = [];
     ninds.reference.forEach(r => {
-        if (r !== 'No references available') {
+        if (!_.isEmpty(r) && r !== 'No references available') {
+            let uriIndex = r.indexOf('http://www.');
+            if (uriIndex === -1) uriIndex = r.indexOf('https://www.');
             let refWords = _.words(r, /[^\s]+/g);
-            let uriIndex = refWords.indexOf('http://www.');
-            if (uriIndex === -1) uriIndex = refWords.indexOf('https://www.');
             let referenceDocument = {
                 title: refWords.join(" "),
                 source: 'NINDS'
@@ -118,7 +118,7 @@ exports.parsePermissibleValues = ninds => {
     return permissibleValues;
 };
 parseValueDomain = ninds => {
-    let valueDomain = {uom: ''};
+    let valueDomain = {};
     ninds.measurementType.forEach(m => {
         valueDomain.uom = m;
     });
@@ -126,28 +126,30 @@ parseValueDomain = ninds => {
     if (ninds.inputRestrictions[0] === 'Free-Form Entry') {
         valueDomain.datatype = DATA_TYPE_MAP[ninds.dataType[0]];
         if (!valueDomain.datatype) {
-            console.log(ninds.cdeId + ' unknown dataType found:' + ninds.dataType);
+            console.log(ninds.cdeId[0] + ' unknown dataType found:' + ninds.dataType[0]);
             process.exit(1);
         }
-        if (valueDomain.dataType === 'Text') {
-            valueDomain.datatypeText = {maxLength: Number(ninds.size)};
+        if (valueDomain.datatype === 'Text') {
+            if (ninds.size[0])
+                valueDomain.datatypeText = {maxLength: Number(ninds.size[0])};
         }
         if (valueDomain.datatype === 'Number') {
-            valueDomain.datatypeNumber = {
-                minValue: Number(ninds.minValue),
-                maxValue: Number(ninds.maxValue)
-            };
+            valueDomain.datatypeNumber = {};
+            if (ninds.minValue[0])
+                valueDomain.datatypeNumber.minValue = Number(ninds.minValue[0]);
+            if (ninds.maxValue[0])
+                valueDomain.datatypeNumber.maxValue = Number(ninds.maxValue[0]);
         }
     } else if (ninds.inputRestrictions[0] === 'Single Pre-Defined Value Selected' || ninds.inputRestrictions[0] === 'Multiple Pre-Defined Values Selected') {
         valueDomain.datatype = 'Value List';
         valueDomain.datatypeValueList = {datatype: DATA_TYPE_MAP[ninds.dataType[0]]};
         if (!valueDomain.datatypeValueList.datatype) {
-            console.log(ninds.cdeId + ' unknown dataType found:' + ninds.dataType);
+            console.log(ninds.cdeId[0] + ' unknown dataType found:' + ninds.dataType[0]);
             process.exit(1);
         }
         valueDomain.permissibleValues = ninds.permissibleValues;
     } else {
-        console.log(ninds.cdeId + ' unknown inputRestrictions found:' + ninds.inputRestrictions);
+        console.log(ninds.cdeId + ' unknown inputRestrictions found:' + ninds.inputRestrictions[0]);
         process.exit(1);
     }
 
@@ -183,7 +185,7 @@ exports.createCde = ninds => {
     };
 
     ninds.population.forEach(p => {
-        if (p.length > 0) {
+        if (p) {
             classificationShared.classifyItem(newCde, "NINDS", ['Population', p]);
         }
     });
@@ -199,8 +201,10 @@ exports.createCde = ninds => {
             subDomainToAdd.push(c.subDisease);
         }
 
-        classificationToAdd.push('Classification');
-        classificationToAdd.push(c.classification);
+        if (c.classification) {
+            classificationToAdd.push('Classification');
+            classificationToAdd.push(c.classification);
+        }
 
         diseaseToAdd.push('Domain');
         subDomainToAdd.push('Domain');

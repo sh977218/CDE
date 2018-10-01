@@ -7,107 +7,84 @@ let driver = new webdriver.Builder().forBrowser('chrome').build();
 
 let MigrationProtocolModel = require('../../createMigrationConnection').MigrationProtocolModel;
 
-function parsingIntroduction(driver, measure, done) {
+function parsingIntroduction(driver, measure) {
     let instructionXpath = '/html/body/center/table/tbody/tr[3]/td/div/div[5]/div[1]';
-    driver.findElement(By.xpath(instructionXpath)).getText().then(function (text) {
+    return new Promise(async (resolve, reject) => {
+        let text = await driver.findElement(By.xpath(instructionXpath)).getText();
         measure.introduction = text.trim();
-        done();
-    });
+        resolve();
+    })
 }
-function parsingKeywords(driver, measure, done) {
+
+function parsingKeywords(driver, measure) {
     let keywordsXpath1 = "//p[./b[normalize-space(text())='Keywords']]";
-    driver.findElement(By.xpath(keywordsXpath1)).getText().then(function (keywoardsText1) {
-        let keyWords1 = keywoardsText1.replace(/keywords:/ig, "").trim();
+    return new Promise(async (resolve, reject) => {
+        let keywordsText1 = await driver.findElement(By.xpath(keywordsXpath1)).getText();
+        let keyWords1 = keywordsText1.replace(/keywords:/ig, "").trim();
         if (_.isEmpty(keyWords1)) {
             let keywordsXpath2 = "//p[./b[normalize-space(text())='Keywords']]/following-sibling::p[1]";
-            driver.findElement(By.xpath(keywordsXpath2)).getText().then(function (keywoardsText2) {
-                let keyWords2 = keywoardsText2.trim();
-                if (_.isEmpty(keyWords2)) {
-                    measure.keywords = [];
-                    done();
-                } else {
-                    measure.keywords = keyWords2.split(",");
-                    measure.keywords.forEach(k => k.trim());
-                    done();
-                }
-            });
+            let keywordsText2 = await driver.findElement(By.xpath(keywordsXpath2)).getText();
+            let keyWords2 = keywordsText2.trim();
+            if (_.isEmpty(keyWords2)) {
+                measure.keywords = [];
+            } else {
+                measure.keywords = keyWords2.split(",");
+                measure.keywords.forEach(k => k.trim());
+            }
         } else {
             measure.keywords = keyWords1.split(",");
             measure.keywords.forEach(k => k.trim());
-            done();
         }
-    });
+        resolve();
+    })
 }
 
-function parsingClassification(driver, measure, done) {
+function parsingClassification(driver, measure) {
     let classificationXpath = "//p[@class='back'][1]/a";
-    driver.findElements(By.xpath(classificationXpath)).then(function (classificationArr) {
+    return new Promise(async (resolve, reject) => {
+        let classificationArr = await driver.findElements(By.xpath(classificationXpath));
         measure.classification = [];
-        async.eachSeries(classificationArr, function (c, doneOneClassification) {
-            c.getText().then(function (text) {
-                measure.classification.push(text.trim());
-                doneOneClassification();
-            });
-        }, function doneAllClassification() {
-            measure.measureName = _.last(measure.classification);
-            done();
-        });
-    });
-}
-
-function parsingProtocolLinks(driver, measure, done, loadLoinc) {
-    let protocolLinksXpath = "//*[@id='browse_measure_protocol_list']/table/tbody/tr/td/div/div[@class='search']/a[2]";
-    driver.findElements(By.xpath(protocolLinksXpath)).then(function (protocolLinks) {
-        let protocols = [];
-        async.eachSeries(protocolLinks, function (protocolLink, doneOneProtocolLink) {
-            let protocol = {classification: []};
-            async.series([
-                function (cb) {
-                    protocolLink.findElement(webdriver.By.css('span')).getText().then(function (browserIdText) {
-                        let protocolId = browserIdText.replace('#', '').trim();
-                        protocol.protocolId = protocolId;
-                        protocols.push({protocolId: protocolId});
-                        cb();
-                    });
-                },
-                function (cb) {
-                    protocolLink.getAttribute('href').then(function (linkText) {
-                        ParseOneProtocol.parseProtocol(protocol, linkText.trim(), function () {
-                            cb();
-                        }, loadLoinc);
-                    });
-                }
-            ], function () {
-                protocol.Keywords = measure.keywords;
-                new MigrationProtocolModel(protocol).save((e) => {
-                    if (e) throw e;
-                    else doneOneProtocolLink();
-
-                });
-            });
-        }, function doneAllProtocolLinks() {
-            measure.protocols = protocols;
-            done();
-        });
-    });
-}
-
-exports.parseOneMeasure = function (measure, cb, loadLoinc) {
-    driver.get(measure.href);
-    async.series([
-        function (doneIntroduction) {
-            parsingIntroduction(driver, measure, doneIntroduction);
-        },
-        function (doneKeywords) {
-            parsingKeywords(driver, measure, doneKeywords);
-        },
-        function (doneClassification) {
-            parsingClassification(driver, measure, doneClassification);
-        },
-        function (doneProtocol) {
-            parsingProtocolLinks(driver, measure, doneProtocol, loadLoinc);
+        for (let c of classificationArr) {
+            let text = await c.getText();
+            measure.classification.push(text.trim());
         }
-    ], function doneOneMeasure() {
-        cb();
-    });
+        measure.measureName = _.last(measure.classification);
+        resolve();
+    })
+}
+
+function parsingProtocolLinks(driver, measure, loadLoinc) {
+    let protocolLinksXpath = "//*[@id='browse_measure_protocol_list']/table/tbody/tr/td/div/div[@class='search']/a[2]";
+    return new Promise(async (resolve, reject) => {
+        let protocolLinks = await driver.findElements(By.xpath(protocolLinksXpath));
+        let protocols = [];
+        for (let protocolLink of protocolLinks) {
+            let protocol = {classification: []};
+            let browserIdText = await protocolLink.findElement(webdriver.By.css('span')).getText();
+            let protocolId = browserIdText.replace('#', '').trim();
+            protocol.protocolId = protocolId;
+            protocols.push({protocolId: protocolId});
+
+            let linkText = await protocolLink.getAttribute('href');
+            ParseOneProtocol.parseProtocol(protocol, linkText.trim(), function () {
+                cb();
+            }, loadLoinc);
+
+            protocol.Keywords = measure.keywords;
+            await new MigrationProtocolModel(protocol).save();
+        }
+        measure.protocols = protocols;
+        resolve();
+    })
+}
+
+exports.parseOneMeasure = function (measure, loadLoinc) {
+    return new Promise(async (resolve, reject) => {
+        driver.get(measure.href);
+        await parsingIntroduction(driver, measure);
+        await parsingKeywords(driver, measure);
+        await parsingClassification(driver, measure);
+        await parsingProtocolLinks(driver, measure, loadLoinc);
+        resolve();
+    })
 };

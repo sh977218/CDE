@@ -15,6 +15,7 @@ exports.compareCde = function (newCde, existingCde) {
         obj.properties.sort((a, b) => a.key >= b.key);
         delete obj._id;
         delete obj.__v;
+        delete obj.version;
         delete obj.tinyId;
         delete obj.imported;
         delete obj.created;
@@ -25,6 +26,7 @@ exports.compareCde = function (newCde, existingCde) {
         delete obj.source;
         delete obj.archived;
         delete obj.views;
+        delete obj.sources;
 
         delete obj.naming;
         delete obj.classification;

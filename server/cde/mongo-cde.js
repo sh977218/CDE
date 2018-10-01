@@ -24,7 +24,10 @@ schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
     if (cdeError && cdeError.pvNotValidMsg) {
-        logging.errorLogger.error(cdeError, {stack: new Error().stack});
+        logging.errorLogger.error(cdeError, {
+            stack: new Error().stack,
+            detail: JSON.stringify(cdeError)
+        });
         next(cdeError);
     } else {
         try {

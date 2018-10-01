@@ -173,11 +173,22 @@ exports.createForm = (ninds, org) => {
                 subDomainToAdd.push(c.subDisease);
             }
 
-            diseaseToAdd.push('Domain');
-            subDomainToAdd.push('Domain');
 
-            diseaseToAdd.concat([c.domain, c.subDomain]);
-            subDomainToAdd.concat([c.domain, c.subDomain]);
+            if (c.classification) {
+                classificationToAdd.push('Classification');
+                classificationToAdd.push(c.classification);
+            }
+
+            if (c.domain) {
+                diseaseToAdd.push('Domain');
+                subDomainToAdd.push('Domain');
+                diseaseToAdd.push([c.domain, c.subDomain]);
+                subDomainToAdd.push([c.domain, c.subDomain]);
+                if (c.subDomain) {
+                    diseaseToAdd.push(c.subDomain);
+                    subDomainToAdd.push(c.subDomain);
+                }
+            }
 
             classificationShared.classifyItem(newForm, "NINDS", diseaseToAdd);
             classificationShared.classifyItem(newForm, "NINDS", subDomainToAdd);
