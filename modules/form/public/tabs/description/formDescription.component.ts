@@ -12,7 +12,6 @@ import {
     ViewChild
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from "@angular/material";
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TREE_ACTIONS, TreeComponent, TreeNode } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { Hotkey, HotkeysService } from "angular2-hotkeys";
@@ -28,7 +27,7 @@ import { CdeForm, FormElement, FormElementsContainer, FormInForm, FormSection } 
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { scrollTo, waitRendered } from 'widget/browser';
 
-const TOOL_BAR_OFF_SET = 64;
+const TOOL_BAR_OFF_SET = 56;
 
 @Component({
     selector: 'cde-form-description',
@@ -146,7 +145,7 @@ const TOOL_BAR_OFF_SET = 64;
         .toolCopySection:before {
             content: ' Paste';
         }
-        
+
         .toolbar-icon {
             font-size: 20px;
             height: 20px;
@@ -241,7 +240,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         private _hotkeysService: HotkeysService,
         private http: HttpClient,
         private localStorageService: LocalStorageService,
-        public modalService: NgbModal,
         public matDialog: MatDialog,
     ) {
     }

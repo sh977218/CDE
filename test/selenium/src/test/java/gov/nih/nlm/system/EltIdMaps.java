@@ -33,6 +33,7 @@ public class EltIdMaps {
         eltMap.put("Hospital Confidential Institution Referred From Facility Number Code", "Hemf6zdy6o4");
         eltMap.put("History data reliability type", "K8v6jJWkmmC");
         eltMap.put("Identifier Primary Flag java.lang.Boolean", "JwrG4XOq2jZ");
+        eltMap.put("Illicit/non-prescription drug use indicator", "6jfk971GhEu");
         eltMap.put("Immunology Gonorrhea Assay Laboratory Finding Result", "hYUh3yYR0mH");
         eltMap.put("Investigator Identifier java.lang.Integer", "wT3DsGm-bea");
         eltMap.put("Left Lymph Node Positive Total Count", "xNugcDxoqKW");
