@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-
+import { Component } from '@angular/core';
 import { AlertService } from '_app/alert.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { Organization } from 'shared/models.model';
@@ -9,18 +8,16 @@ import { Organization } from 'shared/models.model';
     selector: 'cde-list-management',
     templateUrl: './listManagement.component.html'
 })
-export class ListManagementComponent implements OnInit {
+export class ListManagementComponent {
     orgs?: any[];
-    allPropertyKeys: String[] = [];
-    allTags: String[] = [];
-
-    ngOnInit() {
-        this.getOrgs();
-    }
+    allPropertyKeys: string[] = [];
+    allTags: string[] = [];
 
     constructor(private http: HttpClient,
                 private Alert: AlertService,
                 private orgHelperService: OrgHelperService) {
+        this.getOrgs();
+
     }
 
     getOrgs() {
@@ -45,4 +42,5 @@ export class ListManagementComponent implements OnInit {
             .subscribe(() => this.orgHelperService.reload().then(() => this.Alert.addAlert('success', 'Org Updated')),
                 () => this.Alert.addAlert('danger', 'Error. Unable to save.'));
     }
+
 }
