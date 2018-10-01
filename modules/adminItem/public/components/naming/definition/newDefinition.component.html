@@ -1,8 +1,7 @@
-<div class="modal-header" id="newDefinitionModalHeader">
-    <h4 class="modal-title">Add a Designation</h4>
-</div>
-<form role="form" #newDefinitionForm="ngForm" (ngSubmit)="onSave.emit(newDefinition)">
-    <div class="modal-body" id="newDefinitionModalBody">
+<h4 mat-dialog-title>Add a Definition</h4>
+
+<form role="form" #newDefinitionForm="ngForm">
+    <div mat-dialog-content>
         <div class="form-group">
             <div id="newDefinition">
                 <button type="button" (click)="newDefinition.definitionFormat = undefined" mat-raised-button>
@@ -32,10 +31,10 @@
             Tags are managed in Org Management > List Management
         </div>
     </div>
-    <div class="modal-footer" id="newDefinitionModalFooter">
-        <button (click)="activeModal.close('Close click')" id="cancelNewDefinitionBtn" type="button"
+    <div mat-dialog-actions>
+        <button [mat-dialog-close] id="cancelNewDefinitionBtn" type="button"
             mat-raised-button color="warn">Cancel</button>
         <button mat-raised-button color="primary" [disabled]="!newDefinitionForm.form.valid"
-                id="createNewDefinitionBtn" type="submit">Save</button>
+                id="createNewDefinitionBtn" type="button" [mat-dialog-close]="newDefinition">Save</button>
     </div>
 </form>
