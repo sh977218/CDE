@@ -28,7 +28,7 @@ import { CdeForm, FormElement, FormElementsContainer, FormInForm, FormSection } 
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { scrollTo, waitRendered } from 'widget/browser';
 
-const TOOL_BAR_OFF_SET = 64;
+const TOOL_BAR_OFF_SET = 56;
 
 @Component({
     selector: 'cde-form-description',
@@ -146,7 +146,7 @@ const TOOL_BAR_OFF_SET = 64;
         .toolCopySection:before {
             content: ' Paste';
         }
-        
+
         .toolbar-icon {
             font-size: 20px;
             height: 20px;
