@@ -28,7 +28,10 @@ var deJson = {
     },
     origin: {type: StringType, description: 'Name of system where CDE is derived'},
     stewardOrg: {
-        name: {type: StringType, description: 'Name of organization or entity responsible for supervising content and administration of CDE'},
+        name: {
+            type: StringType,
+            description: 'Name of organization or entity responsible for supervising content and administration of CDE'
+        },
     },
     created: Date,
     updated: {type: Date, index: true},
@@ -66,14 +69,20 @@ var deJson = {
         datatypeText: {
             minLength: {type: Number, description: 'To indicate limits on length'},
             maxLength: {type: Number, description: 'To indicate limits on length'},
-            regex: {type: StringType, description: 'To indicate a regular expression that someone may want to match on'},
+            regex: {
+                type: StringType,
+                description: 'To indicate a regular expression that someone may want to match on'
+            },
             rule: {type: StringType, description: 'Any rule may go here'},
             showAsTextArea: {type: Boolean, default: false, description: 'multi-line'},
         },
         datatypeNumber: {
             minValue: Number,
             maxValue: Number,
-            precision: {type: Number, description: 'Any precision for this number. Typically an integer for a float. Limit to 10^precision'},
+            precision: {
+                type: Number,
+                description: 'Any precision for this number. Typically an integer for a float. Limit to 10^precision'
+            },
         },
         datatypeDate: {},
         datatypeTime: { // time only, periodic?
@@ -85,7 +94,7 @@ var deJson = {
             descriptionFormat: {type: StringType, description: "if 'html', then parse with HTML"},
         },
         datatypeValueList: {
-            datatype: sharedSchemas.stringType
+            datatype: {type: StringType, description: "Value list format"}
         },
         permissibleValues: [sharedSchemas.permissibleValueSchema]
     },
