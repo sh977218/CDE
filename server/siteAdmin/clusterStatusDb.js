@@ -1,23 +1,26 @@
-const Schema = require('mongoose').Schema;
-const stringType = require('../system/schemas').stringType;
+const mongoose = require('mongoose');
+require('../system/mongoose-stringtype')(mongoose);
+const Schema = mongoose.Schema;
+const StringType = Schema.Types.StringType;
+
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
 
 let clusterStatus = new Schema({
-    hostname: stringType,
+    hostname: StringType,
     port: Number,
     pmPort: Number,
-    nodeStatus: Object.assign({enum: ["Running", "Stopped"]}, stringType),
+    nodeStatus: {type: StringType, enum: ["Running", "Stopped"]},
     lastUpdate: Date,
     startupDate: Date,
     elastic: {
         up: Boolean,
-        message: stringType,
+        message: StringType,
         indices: [{
-            name: stringType,
+            name: StringType,
             up: Boolean,
-            message: stringType
+            message: StringType
         }]
     }
 });
