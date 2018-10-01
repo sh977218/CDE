@@ -96,7 +96,8 @@ const TOOL_BAR_OFF_SET = 56;
             background-color: lightblue;
         }
 
-        .panel-body-form {
+        .panel-body-form,
+        .panel-body-form ::ng-deep .card-body {
             background-color: rgba(0, 0, 0, 0.03);
         }
 
