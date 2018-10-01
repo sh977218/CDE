@@ -1,32 +1,35 @@
-const Schema = require('mongoose').Schema;
-const stringType = require('../system/schemas').stringType;
+const mongoose = require('mongoose');
+require('../system/mongoose-stringtype')(mongoose);
+const Schema = mongoose.Schema;
+const StringType = Schema.Types.StringType;
+
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
 
 let userSchema = new Schema({
-    username: Object.assign({unique: true}, stringType),
-    email: stringType,
-    password: stringType,
+    username: {type: StringType, unique: true},
+    email: StringType,
+    password: StringType,
     lastLogin: Date,
     notificationDate: {
         serverLogDate: Date,
         clientLogDate: Date
     },
     lockCounter: Number,
-    orgAdmin: [stringType],
-    orgCurator: [stringType],
+    orgAdmin: [StringType],
+    orgCurator: [StringType],
     siteAdmin: Boolean,
     quota: Number,
-    viewHistory: [stringType],
-    formViewHistory: [stringType],
-    knownIPs: [stringType],
-    roles: [Object.assign({enum: authorizationShared.rolesEnum}, stringType)],
+    viewHistory: [StringType],
+    formViewHistory: [StringType],
+    knownIPs: [StringType],
+    roles: [{type: StringType, enum: authorizationShared.rolesEnum}],
     searchSettings: {
         version: Number,
-        defaultSearchView: Object.assign({enum: ["accordion", "table", "summary"]}, stringType),
-        lowestRegistrationStatus: stringType,
+        defaultSearchView: {type: StringType, enum: ["accordion", "table", "summary"]},
+        lowestRegistrationStatus: StringType,
         tableViewFields: {
             name: {type: Boolean, default: true},
             naming: Boolean,
@@ -40,7 +43,7 @@ let userSchema = new Schema({
             registrationStatus: Boolean,
             administrativeStatus: Boolean,
             ids: Boolean,
-            identifiers: [stringType],
+            identifiers: [StringType],
             source: Boolean,
             updated: Boolean,
             numQuestions: Boolean,
@@ -48,11 +51,11 @@ let userSchema = new Schema({
             linkedForms: Boolean
         }
     },
-    accessToken: stringType,
-    refreshToken: stringType,
-    avatarUrl: stringType,
+    accessToken: StringType,
+    refreshToken: StringType,
+    avatarUrl: StringType,
     publishedForms: [{
-        name: stringType,
+        name: StringType,
         id: Schema.Types.ObjectId
     }]
 }, {usePushEach: true});

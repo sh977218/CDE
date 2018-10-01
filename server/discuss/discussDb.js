@@ -1,35 +1,35 @@
 const mongoose = require('mongoose');
+require('../system/mongoose-stringtype')(mongoose);
 const Schema = mongoose.Schema;
+const StringType = Schema.Types.StringType;
 
-const stringType = require('../system/schemas').stringType;
-const stringIndexType = require('../system/schemas').stringIndexType;
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
 
 exports.commentSchema = new Schema({
-    text: stringType,
+    text: StringType,
     user: {
         userId: Schema.Types.ObjectId,
-        username: stringIndexType
+        username: {type: StringType, index: true}
     },
     created: Date,
     pendingApproval: {type: Boolean, index: true},
-    linkedTab: stringType,
-    status: Object.assign({enum: ["active", "resolved", "deleted"], default: "active"}, stringType),
+    linkedTab: StringType,
+    status: {type: StringType, enum: ["active", "resolved", "deleted"], default: "active"},
     replies: [{
-        text: stringType,
+        text: StringType,
         user: {
             userId: Schema.Types.ObjectId,
-            username: stringIndexType
+            username: {type: StringType, index: true}
         },
         created: Date,
         pendingApproval: {type: Boolean, index: true},
-        status: Object.assign({enum: ["active", "resolved", "deleted"], default: "active"}, stringType)
+        status: {type: StringType, enum: ["active", "resolved", "deleted"], default: "active"},
     }],
     element: {
-        eltType: Object.assign({enum: ["cde", "form", "board"]}, stringType),
-        eltId: stringType
+        eltType: {type: StringType, enum: ["cde", "form", "board"]},
+        eltId: StringType
     }
 }, {usePushEach: true,});
 
