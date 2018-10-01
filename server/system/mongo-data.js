@@ -8,8 +8,9 @@ const MongoStore = require('connect-mongo')(session);
 
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const connHelper = require('./connections');
-const consoleLog = require('../log/dbLogger').consoleLog;
-const handleError = require('../log/dbLogger').handleError;
+const dbLogger = require('../log/dbLogger');
+const consoleLog = dbLogger.consoleLog;
+const handleError = dbLogger.handleError;
 const logging = require('./logging.js');
 const daoManager = require('./moduleDaoManager');
 const config = require('./parseConfig');
