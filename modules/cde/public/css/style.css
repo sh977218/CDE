@@ -1,3 +1,12 @@
+/* RUN GULP TO DEPLOY */
+/* Material Global Overrides */
+.mdl-layout__header { /* fix navbar height so form description toolbar can float consistently */
+    min-height: 56px;
+}
+.mdl-layout__header-row, .mdl-layout__header-row .mdl-navigation { /* fix navbar height so form description toolbar can float consistently */
+    height: 56px;
+}
+/* end of Material Global Overrides */
 /* over write a link to pass chrome audit low contrast ratio */
 a {
     color: #337ab7;

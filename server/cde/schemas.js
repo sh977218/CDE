@@ -1,77 +1,88 @@
 const mongoose = require('mongoose');
+require('../system/mongoose-stringtype')(mongoose);
 const Schema = mongoose.Schema;
-const _ = require('lodash');
+const StringType = Schema.Types.StringType;
+
 const sharedSchemas = require('../system/schemas.js');
 
 var conceptSchema = new Schema({
-    name: sharedSchemas.stringType,
-    origin: sharedSchemas.stringType, // Source of concept
-    originId: sharedSchemas.stringType // Identifier of concept from source
+    name: StringType,
+    origin: {type: StringType, description: 'Source of concept'},
+    originId: {type: StringType, description: 'Identifier of concept from source'},
 }, {_id: false});
 
 var deJson = {
-    elementType: Object.assign({default: 'cde', enum: ['cde']}, sharedSchemas.stringType),
-    designations: [sharedSchemas.designationSchema],
-    definitions: [sharedSchemas.definitionSchema],
-    source: sharedSchemas.stringType, // This field is replaced with sources
-    sources: [sharedSchemas.sourceSchema], // Name of system from which CDE was imported or obtained from
-    origin: sharedSchemas.stringType, // Name of system where CDE is derived
+    elementType: {type: StringType, default: 'cde', enum: ['cde']},
+    designations: {
+        type: [sharedSchemas.designationSchema],
+        description: 'Any string used by which CDE is known, addressed or referred to',
+    },
+    definitions: {
+        type: [sharedSchemas.definitionSchema],
+        description: 'Description of the CDE',
+    },
+    source: {type: StringType, description: 'This field is replaced with sources'},
+    sources: {
+        type: [sharedSchemas.sourceSchema],
+        description: 'Name of system from which CDE was imported or obtained from',
+    },
+    origin: {type: StringType, description: 'Name of system where CDE is derived'},
     stewardOrg: {
-        name: sharedSchemas.stringType, // Name of organization or entity responsible for supervising content and administration of CDE
+        name: {type: StringType, description: 'Name of organization or entity responsible for supervising content and administration of CDE'},
     },
     created: Date,
     updated: {type: Date, index: true},
-    imported: Date, // Date last imported from source
+    imported: {type: Date, description: 'Date last imported from source'},
     createdBy: {
         userId: Schema.Types.ObjectId,
-        username: sharedSchemas.stringType
+        username: StringType
     },
     updatedBy: {
         userId: Schema.Types.ObjectId,
-        username: sharedSchemas.stringType
+        username: StringType
     },
-    tinyId: sharedSchemas.stringIndexType, // Internal CDE identifier
-    version: sharedSchemas.stringType,
+    tinyId: {type: StringType, index: true, description: 'Internal CDE identifier'},
+    version: StringType,
     dataElementConcept: {
         concepts: [conceptSchema],
         conceptualDomain: {
             vsac: {
-                id: sharedSchemas.stringType,
-                name: sharedSchemas.stringType,
-                version: sharedSchemas.stringType
+                id: StringType,
+                name: StringType,
+                version: StringType
             }
         }
     },
     objectClass: {concepts: [conceptSchema]},
     property: {concepts: [conceptSchema]},
     valueDomain: {
-        name: sharedSchemas.stringType,
+        name: StringType,
         identifiers: [sharedSchemas.idSchema],
         ids: [sharedSchemas.idSchema],
-        definition: sharedSchemas.stringType,
-        uom: sharedSchemas.stringType, // Unit of Measure
-        vsacOid: sharedSchemas.stringType,
-        datatype: sharedSchemas.stringType, // Expected type of data
+        definition: StringType,
+        uom: {type: StringType, description: 'Unit of Measure'},
+        vsacOid: StringType,
+        datatype: {type: StringType, description: 'Expected type of data'},
         datatypeText: {
-            minLength: Number, // To indicate limits on length
-            maxLength: Number, // To indicate limits on length
-            regex: sharedSchemas.stringType, // To indicate a regular expression that someone may want to match on
-            rule: sharedSchemas.stringType, // Any rule may go here
-            showAsTextArea: {type: Boolean, default: false} // multi-line
+            minLength: {type: Number, description: 'To indicate limits on length'},
+            maxLength: {type: Number, description: 'To indicate limits on length'},
+            regex: {type: StringType, description: 'To indicate a regular expression that someone may want to match on'},
+            rule: {type: StringType, description: 'Any rule may go here'},
+            showAsTextArea: {type: Boolean, default: false, description: 'multi-line'},
         },
         datatypeNumber: {
             minValue: Number,
             maxValue: Number,
-            precision: Number, // Any precision for this number. Typically an integer for a float. Limit to 10^precision
+            precision: {type: Number, description: 'Any precision for this number. Typically an integer for a float. Limit to 10^precision'},
         },
         datatypeDate: {},
         datatypeTime: { // time only, periodic?
-            format: sharedSchemas.stringType, // Any format that someone may want to enforce
+            format: {type: StringType, description: 'Any format that someone may want to enforce'},
         },
         datatypeExternallyDefined: {
-            link: sharedSchemas.stringType, // a link to an external source. Typically a URL
-            description: sharedSchemas.stringType,
-            descriptionFormat: sharedSchemas.stringType, // if 'html', then parse with HTML
+            link: {type: StringType, description: 'a link to an external source. Typically a URL'},
+            description: StringType,
+            descriptionFormat: {type: StringType, description: "if 'html', then parse with HTML"},
         },
         datatypeValueList: {
             datatype: sharedSchemas.stringType
@@ -79,18 +90,38 @@ var deJson = {
         permissibleValues: [sharedSchemas.permissibleValueSchema]
     },
     history: [Schema.Types.ObjectId],
-    changeNote: sharedSchemas.stringType, // Description of last modification
-    lastMigrationScript: sharedSchemas.stringType, // Internal use only
+    changeNote: {type: StringType, description: 'Description of last modification'},
+    lastMigrationScript: {type: StringType, description: 'Internal use only'},
     registrationState: sharedSchemas.registrationStateSchema,
-    classification: [sharedSchemas.classificationSchema], // Organization or categorization by Steward Organization
-    properties: [sharedSchemas.propertySchema], // Attribute not otherwise documented by structured CDE record
-    ids: [sharedSchemas.idSchema], // Identifier used to establish or indicate what CDE is within a specific context
-    dataSets: [sharedSchemas.dataSetSchema], // A list of datasets that use this CDE
-    archived: {type: Boolean, default: false, index: true}, // Indication of historical record. True for previous versions.
-    forkOf: sharedSchemas.stringType, // May point to a tinyID if the CDE is a fork
+    classification: {
+        type: [sharedSchemas.classificationSchema],
+        description: 'Organization or categorization by Steward Organization',
+    },
+    properties: {
+        type: [sharedSchemas.propertySchema],
+        description: 'Attribute not otherwise documented by structured CDE record',
+    },
+    ids: {
+        type: [sharedSchemas.idSchema],
+        description: 'Identifier used to establish or indicate what CDE is within a specific context',
+    },
+    dataSets: {
+        type: [sharedSchemas.dataSetSchema],
+        description: 'A list of datasets that use this CDE',
+    },
+    archived: {
+        type: Boolean,
+        default: false,
+        index: true,
+        description: 'Indication of historical record. True for previous versions.',
+    },
+    forkOf: {type: StringType, description: 'May point to a tinyID if the CDE is a fork'},
     attachments: [sharedSchemas.attachmentSchema],
     views: {type: Number, default: 0},
-    referenceDocuments: [sharedSchemas.referenceDocumentSchema], // Any written, printed or electronic matter used as a source of information. Used to provide information or evidence of authoritative or official record.
+    referenceDocuments: {
+        type: [sharedSchemas.referenceDocumentSchema],
+        description: 'Any written, printed or electronic matter used as a source of information. Used to provide information or evidence of authoritative or official record.',
+    },
     derivationRules: [sharedSchemas.derivationRuleSchema]
 };
 
@@ -114,19 +145,19 @@ exports.dataElementSchema.set('collection', 'dataelements');
 exports.cdeAuditSchema = new Schema({
     date: {type: Date, default: Date.now, index: true},
     user: {
-        username: sharedSchemas.stringType
+        username: StringType
     },
     adminItem: {
-        tinyId: sharedSchemas.stringType,
-        version: sharedSchemas.stringType,
+        tinyId: StringType,
+        version: StringType,
         _id: Schema.Types.ObjectId,
-        name: sharedSchemas.stringType
+        name: StringType
     },
     previousItem: {
-        tinyId: sharedSchemas.stringType,
-        version: sharedSchemas.stringType,
+        tinyId: StringType,
+        version: StringType,
         _id: Schema.Types.ObjectId,
-        name: sharedSchemas.stringType
+        name: StringType
     },
     diff: Object
 }, {strict: false});

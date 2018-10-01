@@ -17,5 +17,12 @@ public class CdeExportJsonTest extends NlmCdeBaseTest {
         Assert.assertTrue(response.contains("\"designations\":[{\"designation\":\"Spinal column injury number\""));
         Assert.assertTrue(response.contains("\"definitions\":[{\"definition\":\"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.\""));
         switchTabAndClose(0);
+
+        clickElement(By.id("export"));
+        clickElement(By.cssSelector("#jsonExport + a"));
+        switchTab(1);
+        response = findElement(By.cssSelector("HTML")).getAttribute("innerHTML");
+        Assert.assertTrue(response.contains("\"source\":{\"type\":\"string\",\"description\":\"This field is replaced with sources\"},"));
+        switchTabAndClose(0);
     }
 }
