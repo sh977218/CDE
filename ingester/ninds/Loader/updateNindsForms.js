@@ -29,8 +29,12 @@ doOne = migrationForm => {
             .where("ids").elemMatch(elem => {
                 elem.where("source").equals('NINDS');
                 elem.where("id").equals(migrationId);
-                elem.where("version").equals(Number.parseFloat(migrationVersion).toString());
+                //  elem.where("version").equals(Number.parseFloat(migrationVersion).toString());
             }).exec();
+        existingForms = existingForms.filter(e => {
+            let v = e.version;
+            return Number.parseFloat(v).toString() === Number.parseFloat(migrationVersion).toString();
+        });
         if (existingForms.length > 1) throw new Error('found more than 1 ' + migrationId);
         else if (existingForms.length === 0) {
             await migrationForm.save();

@@ -43,7 +43,12 @@ doOne = migrationCde => {
         } else {
             let existingCde = existingCdes[0];
             let diff = CompareCDE.compareCde(migrationCde, existingCde);
-            if (_.isEmpty(diff)) same++;
+            if (_.isEmpty(diff)) {
+                existingCde.updated = new Date().toJSON();
+                existingCde.updatedBy = user;
+                await existingCde.save();
+                same++;
+            }
             else {
                 MergeCDE.mergeCde(existingCde, migrationCde);
                 await mongo_cde.updatePromise(existingCde, user);

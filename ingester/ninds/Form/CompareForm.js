@@ -5,7 +5,7 @@ getChildren = (formElements, ids) => {
     if (formElements) {
         formElements.forEach(formElement => {
             if (formElement.elementType === 'section' || formElement.elementType === 'form') {
-                this.getChildren(formElement.formElements, ids);
+                getChildren(formElement.formElements, ids);
             } else if (formElement.elementType === 'question') {
                 ids.push({
                     id: formElement.question.cde.tinyId,
@@ -51,8 +51,8 @@ exports.compareForm = function (newForm, existingForm) {
         delete obj.registrationState;
         delete obj.history;
         delete obj.comments;
-
-        obj.cdeIds = getChildren(obj.formElements);
+        obj.cdeIds = [];
+        getChildren(obj.formElements, obj.cdeIds);
 
         delete obj.formElements;
 

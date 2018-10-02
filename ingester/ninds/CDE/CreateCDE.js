@@ -206,11 +206,17 @@ exports.createCde = ninds => {
             classificationToAdd.push(c.classification);
         }
 
-        diseaseToAdd.push('Domain');
-        subDomainToAdd.push('Domain');
+        if (c.domain) {
+            diseaseToAdd.push('Domain');
+            subDomainToAdd.push('Domain');
+            diseaseToAdd.concat([c.domain]);
+            subDomainToAdd.concat([c.domain]);
 
-        diseaseToAdd.concat([c.domain, c.subDomain]);
-        subDomainToAdd.concat([c.domain, c.subDomain]);
+            if (c.subDomain) {
+                diseaseToAdd.concat([c.subDomain]);
+                subDomainToAdd.concat([c.subDomain]);
+            }
+        }
 
         classificationShared.classifyItem(newCde, "NINDS", diseaseToAdd);
         classificationShared.classifyItem(newCde, "NINDS", subDomainToAdd);

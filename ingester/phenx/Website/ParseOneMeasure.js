@@ -1,5 +1,4 @@
 let _ = require('lodash');
-let async = require('async');
 let webdriver = require('selenium-webdriver');
 let By = webdriver.By;
 let ParseOneProtocol = require('./ParseOneProtocol');
@@ -66,10 +65,7 @@ function parsingProtocolLinks(driver, measure, loadLoinc) {
             protocols.push({protocolId: protocolId});
 
             let linkText = await protocolLink.getAttribute('href');
-            ParseOneProtocol.parseProtocol(protocol, linkText.trim(), function () {
-                cb();
-            }, loadLoinc);
-
+            await ParseOneProtocol.parseProtocol(protocol, linkText.trim(), loadLoinc);
             protocol.Keywords = measure.keywords;
             await new MigrationProtocolModel(protocol).save();
         }

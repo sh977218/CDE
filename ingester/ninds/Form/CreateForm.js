@@ -119,6 +119,7 @@ parseFormElements = ninds => {
 
             formElements[0].formElements.push({
                 elementType: 'question',
+                label: cde.questionText,
                 instructions: {value: cde.instruction},
                 question: question,
                 formElements: []
