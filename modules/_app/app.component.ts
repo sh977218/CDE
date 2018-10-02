@@ -95,8 +95,9 @@ export class CdeAppComponent implements OnInit {
         if (!!(<any>window).ga) {
             this.router.events.subscribe(event => {
                 if (event instanceof NavigationEnd) {
-                    (<any>window).ga('set', 'page', event.urlAfterRedirects);
-                    (<any>window).ga('send', 'pageview');
+                    (<any>window).ga.getAll().forEach(tracker =>
+                        (<any>window).gtag('config', tracker.get('trackingId'), {page_path: event.urlAfterRedirects})
+                    );
                 }
             });
         }

@@ -282,7 +282,7 @@ export class CdeFhirService {
         this.renderedPatientForm = patientForm;
         this.renderedResourceTree = addEmptyNode(deepCopy(patientForm.form), _noop, undefined);
         this.read(this.renderedResourceTree)
-            .then(() => this.updateProgress(this.renderedPatientForm!, this.renderedResourceTree!.crossReference))
+            .then(() => this.updateProgress(this.renderedPatientForm!, this.renderedResourceTree))
             .then(cb);
     }
 
@@ -480,7 +480,7 @@ export class CdeFhirService {
                         (id: CdeId, done: CbErr<boolean>) => {
                             return this.fhirData.search<FhirObservation | FhirQuestionnaireResponse>(self.resourceType,
                                 {code: (id.source ? codeSystemOut(id.source) + '|' : '') + id.id})
-                                .then(r => this.selectOne('edit', r, 'Last Edit', r => r.meta && new Date(r.meta.lastUpdated) || ''))
+                                .then(r => r.length > 0 ? this.selectOne('edit', r, 'Last Edit', r => r.meta && new Date(r.meta.lastUpdated) || '') : r[0])
                                 .then(r => {
                                     if (r) {
                                         resource = r;
@@ -511,7 +511,7 @@ export class CdeFhirService {
                         if (procedureMapping.procedureCode) {
                             return this.fhirData.search<FhirProcedure>('Procedure',
                                 {code: (procedureMapping.procedureCodeSystem || 'SNOMED') + '|' + procedureMapping.procedureCode})
-                                .then(r => this.selectOne('edit', r, 'Text', r => r.text ? r.text.div : ''))
+                                .then(r => r.length > 0 ? this.selectOne('edit', r, 'Text', r => r.text ? r.text.div : '') : r[0])
                                 .then(r => {
                                     if (r) ResourceTreeUtil.setResource(self, r);
                                     return self;
@@ -533,7 +533,7 @@ export class CdeFhirService {
                                             return;
                                         });
                                 }))
-                                    .then(() => this.selectOne('edit', procedures, 'Text', r => r.text ? r.text.div : ''))
+                                    .then(() => procedures.length > 0 ? this.selectOne('edit', procedures, 'Text', r => r.text ? r.text.div : '') : procedures[0])
                                     .then(r => {
                                         if (r) ResourceTreeUtil.setResource(self, r);
                                         return self;
@@ -590,7 +590,7 @@ export class CdeFhirService {
                         self.lookupResource = questionnaire;
                         return this.fhirData.search<FhirQuestionnaireResponse>(self.resourceType,
                             {questionnaire: asRefString(self.lookupResource)})
-                            .then(r => this.selectOne('edit', r, 'Last Edit', r => r.meta && new Date(r.meta.lastUpdated) || ''))
+                            .then(r => r.length > 0 ? this.selectOne('edit', r, 'Last Edit', r => r.meta && new Date(r.meta.lastUpdated) || '') : r[0])
                             .then(r => {
                                 if (r) {
                                     ResourceTreeUtil.setResource(self, r);
@@ -753,7 +753,7 @@ export class CdeFhirService {
                     return;
                 }
                 this.readAgain(this.renderedResourceTree!)
-                    .then(() => this.updateProgress(this.renderedPatientForm!, this.renderedResourceTree!.crossReference))
+                    .then(() => this.updateProgress(this.renderedPatientForm!, this.renderedResourceTree))
                     .then(() => cb());
             });
         });
@@ -843,16 +843,20 @@ export class CdeFhirService {
         }
     }
 
-    updateProgress(f: PatientForm, form: CdeForm) {
+    updateProgress(f: PatientForm, tree: ResourceTreeRoot|ResourceTreeResource) {
         f.observed = 0;
         f.total = 0;
         f.percent = 0;
-        iterateFeSync(form, undefined, undefined, q => {
-            f.total++;
-            if (questionAnswered(q)) {
-                f.observed++;
+        (function traverseTree(node: ResourceTreeRoot|ResourceTree) {
+            if (ResourceTreeUtil.isRoot(node)) {
+                node.children.forEach(n => traverseTree(n));
+            } else if (ResourceTreeUtil.isResource(node)) {
+                f.total++;
+                if (node.resourceRemote) {
+                    f.observed++;
+                }
             }
-        });
+        })(tree);
         f.percent = 100 * f.observed / f.total;
     }
 }
