@@ -16,10 +16,13 @@ public class FormDescriptionRenderTest extends NlmCdeBaseTest {
         textPresent("Embedded Form: Inside section form: PROMIS SF v1.0 - Phys. Function 10a");
 
         textNotPresent("Does your health now limit you in doing vigorous activities, such as running, lifting heavy objects, participating in strenuous sports?");
+        textPresent("Expand", By.cssSelector("#form_0 .expand-form"));
         clickElement(By.cssSelector("#form_0 .expand-form"));
         textPresent("Does your health now limit you in doing vigorous activities, such as running, lifting heavy objects, participating in strenuous sports?");
-        textNotPresent("Expand", By.id("form_0"));
-        findElement(By.cssSelector(".expand-form"));
+        textNotPresent("Expand", By.cssSelector("#form_0 .expand-form"));
+        textPresent("Collapse", By.cssSelector("#form_0 .expand-form"));
+        clickElement(By.cssSelector("#form_0 .expand-form"));
+        textNotPresent("Does your health now limit you in doing vigorous activities, such as running, lifting heavy objects, participating in strenuous sports?");
+        textPresent("Expand", By.cssSelector("#form_0 .expand-form"));
     }
-
 }
