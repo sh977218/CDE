@@ -81,17 +81,22 @@
                                 </div>
                             </div>
                             <div class="card-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
-                                <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 <div *ngIf="node.data.elementType === 'form' && !node.data.expanded"
                                      (click)="node.data.expanded = true; node.expand()"
                                      class="btn btn-outline-dark expand-form">
                                     <mat-icon>keyboard_arrow_right</mat-icon> Expand
+                                </div>
+                                <div *ngIf="node.data.elementType === 'form' && node.data.expanded"
+                                     (click)="node.data.expanded = false; node.collapse()"
+                                     class="btn btn-outline-dark expand-form">
+                                    <mat-icon>keyboard_arrow_down</mat-icon> Collapse
                                 </div>
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
                                                                       [elt]="elt" [node]="node"
                                                                       [canEdit]="canEdit"
                                                                       (onEltChange)="onEltChange.emit();">
                                 </cde-form-description-question-detail>
+                                <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                             </div>
                         </div>
                         <tree-node-drop-slot [dropIndex]="node.index + 1" [node]="node.parent"></tree-node-drop-slot>
