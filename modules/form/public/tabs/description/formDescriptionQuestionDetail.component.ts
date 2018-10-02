@@ -124,10 +124,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         if (q.question.answers.length > 0) {
             const modalRef = this.dialog.open(QuestionAnswerEditContentComponent, {data: {answers: q.question.answers}})
                 .afterClosed().subscribe(response => {
-                    if (response = "clear") {
-                        q.question.answers.length = 0;
+                    if (response === "clear") {
+                        q.question.answers = [];
                         this.onAnswerListRemove(this.question.question.defaultAnswer || undefined);
-                        this.onEltChange.emit();
                     } else if (response) {
                         q.question.answers = _clone(response);
                         this.onEltChange.emit();
