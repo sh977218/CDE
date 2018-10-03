@@ -4,7 +4,6 @@ import { SummaryComponent } from 'search/listView/summaryListItem.component';
 import { Attachment } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 
-
 @Component({
     selector: 'cde-cde-summary-list-content',
     templateUrl: './cdeSummaryListContent.component.html',
@@ -22,10 +21,7 @@ export class CdeSummaryListContentComponent implements SummaryComponent {
     defaultAttachmentsFilter = Attachment.isDefault;
     module = 'cde';
 
-    constructor() {
-    }
-
     getStewards() {
-        return this.elt.classification.map(cl => cl.stewardOrg.name).join(' ');
+        return this.elt.classification.map(cl => cl.stewardOrg.name);
     }
 }

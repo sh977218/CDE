@@ -27,7 +27,7 @@ import {
     MatListModule,
     MatAutocompleteModule,
     MatSelectModule,
-    MatTabsModule,
+    MatTabsModule, MatChipsModule,
 } from "@angular/material";
 
 @NgModule({
@@ -54,6 +54,7 @@ import {
         MatListModule,
         MatDialogModule,
         MatIconModule,
+        MatChipsModule,
         MatSelectModule,
         MatTabsModule,
     ],

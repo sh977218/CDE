@@ -614,6 +614,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         findElement(By.id("changeNote")).sendKeys(changeNote);
         findElement(By.name("newVersion")).sendKeys(".1");
         textNotPresent("has already been used");
+        hangon(1);
         clickElement(By.id("confirmSaveBtn"));
     }
 
@@ -1674,7 +1675,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String xpath = getCommentIconXpath(message, "comment", "resolve");
         clickElement(By.xpath(xpath));
         isCommentOrReplyExists(message, true);
-        assertClass(By.xpath("//div[normalize-space()='" + message + "']/span"), "strike", true);
+        findElement(By.xpath("//div[normalize-space()='" + message + "']/span[contains(@class, 'strike')]"));
     }
 
     protected void reopenComment(String message) {
