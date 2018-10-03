@@ -38,6 +38,8 @@ exports.compareCde = function (newCde, existingCde) {
         delete obj.history;
         delete obj.comments;
 
+        if (!obj.valueDomain.uom) delete obj.valueDomain.uom;
+
         obj.referenceDocuments.forEach(a => {
             for (let p in a) {
                 if (_.isEmpty(a[p])) delete a[p];

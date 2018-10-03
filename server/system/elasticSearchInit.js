@@ -208,6 +208,7 @@ exports.riverFunction = function (_elt, cb) {
 
     getElt(_elt, function (err, elt) {
         function escapeHTML(s) {
+            if (!s) return '';
             return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 

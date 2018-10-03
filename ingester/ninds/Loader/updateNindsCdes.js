@@ -9,48 +9,39 @@ const NindsCdeModel = require('../../createMigrationConnection').NindsCdeModel;
 
 const user = {username: 'batchloader'};
 
+let batchloaderCDE = [];
 let changed = 0;
 let created = 0;
 let same = 0;
+let skip = 0;
 let totalNinds = 0;
 
 doOne = migrationCde => {
     return new Promise(async (resolve, reject) => {
         let idObj = _.find(migrationCde.ids, o => o.source === 'NINDS');
         let migrationId = idObj.id;
-        let migrationVersion = idObj.version;
-        let cond = {
-            "stewardOrg.name": "NINDS",
-            "archived": false,
-            "registrationState.registrationStatus": {$ne: "Retired"}
-        };
-        let existingCdes = await DataElement.find(cond)
+        let existingCde = await DataElement.findOne({"archived": false})
             .where("ids").elemMatch(elem => {
                 elem.where("source").equals('NINDS');
                 elem.where("id").equals(migrationId);
-//                elem.where("version").equals(migrationVersion);
             }).exec();
-        existingCdes = existingCdes.filter(e => {
-            let v = e.version;
-            return Number.parseFloat(v).toString() === Number.parseFloat(migrationVersion).toString();
-        });
-        if (existingCdes.length > 1) {
-            console.log('found more than 1 ' + migrationId);
-            process.exit(1);
-        } else if (existingCdes.length === 0) {
+        if (!existingCde) {
             await migrationCde.save();
             created++;
         } else {
-            let existingCde = existingCdes[0];
             let diff = CompareCDE.compareCde(migrationCde, existingCde);
             if (_.isEmpty(diff)) {
-                existingCde.updated = new Date().toJSON();
-                existingCde.updatedBy = user;
+                existingCde.imported = new Date().toJSON();
                 await existingCde.save();
                 same++;
-            }
-            else {
+            } else if (existingCde.updatedBy && existingCde.updatedBy.username !== 'batchloader') {
+                existingCde.registrationState.administrativeNote = "Because this CDE was previously manually modified, no batch modification was applied. More information in attachments.";
+                await existingCde.save();
+                skip++;
+                batchloaderCDE.push(existingCde.tinyId);
+            } else {
                 MergeCDE.mergeCde(existingCde, migrationCde);
+                existingCde.imported = new Date().toJSON();
                 await mongo_cde.updatePromise(existingCde, user);
                 changed++;
             }
@@ -64,10 +55,8 @@ retireCde = () => {
         let cond = {
             "archived": false,
             "registrationState.registrationStatus": {$ne: "Retired"},
-            "updated": {$lt: new Date().setHours(new Date().getHours() - 8)},
-            "stewardOrg.name": "NINDS",
-            "classification": {$size: 1},
-            "classification.stewardOrg.name": 'NINDS'
+            "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
+            $and: [{"updatedBy.username": {$exists: true}}, {"updatedBy.username": "NINDS"}]
         };
         let update = {
             'registrationState.registrationStatus': 'Retired',
@@ -93,6 +82,8 @@ async function run() {
     }).then(async () => {
         await retireCde();
         console.log('changed: ' + changed + ' created: ' + created + ' same: ' + same);
+        console.log(batchloaderCDE);
+
         process.exit(1);
     }, err => {
         console.log(err);

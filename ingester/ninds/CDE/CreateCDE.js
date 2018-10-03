@@ -53,7 +53,11 @@ parseIds = ninds => {
 parseProperties = ninds => {
     let properties = [];
     ninds.previousTitle.forEach(p => {
-        properties.push({key: 'NINDS Previous Title', value: p, source: 'NINDS'});
+        properties.push({
+            key: 'NINDS Previous Title',
+            value: p,
+            source: 'NINDS'
+        });
     });
     ninds.instruction.forEach(i => {
         properties.push({
@@ -77,14 +81,11 @@ parseReferenceDocuments = ninds => {
     let referenceDocuments = [];
     ninds.reference.forEach(r => {
         if (!_.isEmpty(r) && r !== 'No references available') {
-            let uriIndex = r.indexOf('http://www.');
-            if (uriIndex === -1) uriIndex = r.indexOf('https://www.');
             let refWords = _.words(r, /[^\s]+/g);
             let referenceDocument = {
-                title: refWords.join(" "),
+                document: refWords.join(" "),
                 source: 'NINDS'
             };
-            if (uriIndex !== -1) referenceDocument.uri = refWords[uriIndex];
             referenceDocuments.push(referenceDocument);
         }
     });
@@ -118,7 +119,7 @@ exports.parsePermissibleValues = ninds => {
     return permissibleValues;
 };
 parseValueDomain = ninds => {
-    let valueDomain = {};
+    let valueDomain = {uom: ''};
     ninds.measurementType.forEach(m => {
         valueDomain.uom = m;
     });
@@ -168,8 +169,6 @@ exports.createCde = ninds => {
         tinyId: generateTinyId(),
         stewardOrg: {name: "NINDS"},
         createdBy: {username: 'batchloader'},
-        updatedBy: {username: 'batchloader'},
-        updated: today,
         created: today,
         imported: today,
         registrationState: {registrationStatus: "Qualified"},
@@ -209,12 +208,12 @@ exports.createCde = ninds => {
         if (c.domain) {
             diseaseToAdd.push('Domain');
             subDomainToAdd.push('Domain');
-            diseaseToAdd.concat([c.domain]);
-            subDomainToAdd.concat([c.domain]);
+            diseaseToAdd.push(c.domain);
+            subDomainToAdd.push(c.domain);
 
             if (c.subDomain) {
-                diseaseToAdd.concat([c.subDomain]);
-                subDomainToAdd.concat([c.subDomain]);
+                diseaseToAdd.push(c.subDomain);
+                subDomainToAdd.push(c.subDomain);
             }
         }
 

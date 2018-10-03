@@ -47,20 +47,25 @@ function doOneFormId(formId) {
             'description',
             'copyright',
             'downloadLink',
-            'formId',
             'versionNum',
             'versionDate',
             'createDate'
         ];
         for (let nindsForm of nindsForms) {
             let classification = {
-                disease: nindsForm.diseaseName,
+                disease: nindsForm.diseaseName.replace('Sport-Related Concussion', 'Sport Related Concussion'),
                 subDisease: nindsForm.subDiseaseName,
                 domain: nindsForm.domainName,
                 subDomain: nindsForm.subDomainName
             };
             let classificationIndex = _.findIndex(form.classification, o => _.isEqual(o, classification));
             if (classificationIndex === -1) form.classification.push(classification);
+
+            let formId = nindsForm.formId.replace('CRF-', '');
+
+            let formIdIndex = _.findIndex(form.formId, o => _.isEqual(o, formId));
+            if (formIdIndex === -1) form.formId.push(formId);
+
 
             for (let key of keys) {
                 let value = nindsForm[key];

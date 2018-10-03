@@ -116,7 +116,7 @@ function doOneCdeId(cdeId) {
             'cdiscId'];
         for (let nindsCde of nindsCdes) {
             let classification = {
-                disease: nindsCde.diseaseName,
+                disease: nindsCde.diseaseName.replace('Sport-Related Concussion','Sport Related Concussion'),
                 subDisease: nindsCde.subDiseaseName,
                 classification: nindsCde.classisification,
                 domain: nindsCde.cdes[0].domain,
@@ -125,7 +125,8 @@ function doOneCdeId(cdeId) {
             let classificationIndex = _.findIndex(cde.classification, o => _.isEqual(o, classification));
             if (classificationIndex === -1) cde.classification.push(classification);
 
-            let instruction = nindsCde.formId + newLine + nindsCde.cdes[0].instruction + newLine;
+            let formIdText = nindsCde.formId.replace('CRF-', '').trim();
+            let instruction = formIdText + newLine + nindsCde.cdes[0].instruction + newLine;
             let instructionIndex = _.findIndex(cde.instruction, o => _.isEqual(o, instruction));
             if (instructionIndex === -1) cde.instruction.push(instruction);
 

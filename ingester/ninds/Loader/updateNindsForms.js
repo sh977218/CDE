@@ -29,7 +29,6 @@ doOne = migrationForm => {
             .where("ids").elemMatch(elem => {
                 elem.where("source").equals('NINDS');
                 elem.where("id").equals(migrationId);
-                //  elem.where("version").equals(Number.parseFloat(migrationVersion).toString());
             }).exec();
         existingForms = existingForms.filter(e => {
             let v = e.version;
