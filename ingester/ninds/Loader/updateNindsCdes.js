@@ -9,7 +9,7 @@ const NindsCdeModel = require('../../createMigrationConnection').NindsCdeModel;
 
 const user = {username: 'batchloader'};
 
-let batchloaderCDE = [];
+let skipCDE = [];
 let changed = 0;
 let created = 0;
 let same = 0;
@@ -20,11 +20,13 @@ doOne = migrationCde => {
     return new Promise(async (resolve, reject) => {
         let idObj = _.find(migrationCde.ids, o => o.source === 'NINDS');
         let migrationId = idObj.id;
-        let existingCde = await DataElement.findOne({"archived": false})
-            .where("ids").elemMatch(elem => {
-                elem.where("source").equals('NINDS');
-                elem.where("id").equals(migrationId);
-            }).exec();
+        let existingCde = await DataElement.findOne({
+            "archived": false,
+            "registrationState.registrationStatus": {$ne: "Retired"}
+        }).where("ids").elemMatch(elem => {
+            elem.where("source").equals('NINDS');
+            elem.where("id").equals(migrationId);
+        }).exec();
         if (!existingCde) {
             await migrationCde.save();
             created++;
@@ -38,7 +40,7 @@ doOne = migrationCde => {
                 existingCde.registrationState.administrativeNote = "Because this CDE was previously manually modified, no batch modification was applied. More information in attachments.";
                 await existingCde.save();
                 skip++;
-                batchloaderCDE.push(existingCde.tinyId);
+                skipCDE.push(existingCde.tinyId);
             } else {
                 MergeCDE.mergeCde(existingCde, migrationCde);
                 existingCde.imported = new Date().toJSON();
@@ -82,8 +84,7 @@ async function run() {
     }).then(async () => {
         await retireCde();
         console.log('changed: ' + changed + ' created: ' + created + ' same: ' + same);
-        console.log(batchloaderCDE);
-
+        console.log(skipCDE);
         process.exit(1);
     }, err => {
         console.log(err);

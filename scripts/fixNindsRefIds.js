@@ -1,5 +1,5 @@
+const _ = require('lodash');
 const DataElement = require('../server/cde/mongo-cde').DataElement;
-const Form = require('../server/form/mongo-form').Form;
 
 let DAOs = [
     {
@@ -19,6 +19,15 @@ doDAO = DAO => {
         DAO.dao.find(cond).cursor({batchSize: 1000, useMongooseAggCursor: true})
             .eachAsync(elt => {
                 return new Promise(async (resolveDAO, reject) => {
+                    _.dropWhile(elt.designations, d => !d.designation || _.isEmpty(d.designation));
+                    elt.designations.forEach(d => {
+                        _.dropWhile(d.tags, t => t === 'Health');
+                    });
+
+                    _.dropWhile(elt.definitions, d => !d.definition || _.isEmpty(d.definition));
+                    elt.definitions.forEach(d => {
+                        _.dropWhile(d.tags, t => t === 'Health');
+                    });
                     elt.ids.forEach(i => {
                         if (i.source === 'NINDS') {
                             if (i.version === '1') i.version = '1.0';
@@ -36,6 +45,8 @@ doDAO = DAO => {
                             elt.referenceDocuments[i] = ref;
                         }
                     });
+                    elt.markModified('designations');
+                    elt.markModified('definitions');
                     elt.markModified('ids');
                     elt.markModified('referenceDocuments');
                     await elt.save();
