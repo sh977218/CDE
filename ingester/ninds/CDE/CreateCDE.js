@@ -10,7 +10,7 @@ parseDesignations = ninds => {
     ninds.cdeName.forEach(n => {
         designations.push({
             designation: n,
-            tags: ['Health']
+            tags: []
         })
     });
     ninds.questionText.forEach(n => {
@@ -27,7 +27,7 @@ parseDefinitions = ninds => {
     ninds.definitionDescription.forEach(d => {
         definitions.push({
             definition: d,
-            tags: ['Health']
+            tags: []
         })
     });
     return definitions;

@@ -14,21 +14,26 @@ doDAO = DAO => {
     return new Promise(async (resolve, reject) => {
         let cond = {
             "ids.source": "NINDS",
+            'ids.id': 'C08521',
             "archived": false
         };
         DAO.dao.find(cond).cursor({batchSize: 1000, useMongooseAggCursor: true})
             .eachAsync(elt => {
                 return new Promise(async (resolveDAO, reject) => {
-                    _.dropWhile(elt.designations, d => !d.designation || _.isEmpty(d.designation));
+                    let eltObj = elt.toObject();
+                    elt.designations = _.dropWhile(eltObj.designations, d => {
+                        return !d.designation || _.isEmpty(d.designation)
+                    });
                     elt.designations.forEach(d => {
-                        _.dropWhile(d.tags, t => t === 'Health');
+                        d.tags = _.dropWhile(d.tags, t => t === 'Health');
                     });
 
-                    _.dropWhile(elt.definitions, d => !d.definition || _.isEmpty(d.definition));
+                    elt.definitions = _.dropWhile(eltObj.definitions, d => !d.definition || _.isEmpty(d.definition));
                     elt.definitions.forEach(d => {
-                        _.dropWhile(d.tags, t => t === 'Health');
+                        d.tags = _.dropWhile(d.tags, t => t === 'Health');
                     });
-                    elt.ids.forEach(i => {
+
+                    eltObj.ids.forEach(i => {
                         if (i.source === 'NINDS') {
                             if (i.version === '1') i.version = '1.0';
                             if (i.version === '2') i.version = '3.0';
@@ -38,17 +43,16 @@ doDAO = DAO => {
                             if (i.version === '6') i.version = '6.0';
                         }
                     });
-                    elt.referenceDocuments.forEach((r, i) => {
+                    elt.ids = eltObj.ids;
+
+                    eltObj.referenceDocuments.forEach((r, i) => {
                         let ref = {};
                         if (r.title) {
                             ref.document = r.title;
                             elt.referenceDocuments[i] = ref;
                         }
                     });
-                    elt.markModified('designations');
-                    elt.markModified('definitions');
-                    elt.markModified('ids');
-                    elt.markModified('referenceDocuments');
+                    elt.referenceDocuments = eltObj.referenceDocuments
                     await elt.save();
                     DAO.count++;
                     resolveDAO();

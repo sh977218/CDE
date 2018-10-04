@@ -116,9 +116,9 @@ function doOneCdeId(cdeId) {
             'cdiscId'];
         for (let nindsCde of nindsCdes) {
             let classification = {
-                disease: nindsCde.diseaseName.replace('Sport-Related Concussion','Sport Related Concussion'),
+                disease: nindsCde.diseaseName.replace('Sport-Related Concussion', 'Sport Related Concussion'),
                 subDisease: nindsCde.subDiseaseName,
-                classification: nindsCde.classisification,
+                classification: nindsCde.classification,
                 domain: nindsCde.cdes[0].domain,
                 subDomain: nindsCde.cdes[0].subDomain
             };
