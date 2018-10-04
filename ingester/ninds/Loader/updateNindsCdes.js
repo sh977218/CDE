@@ -37,7 +37,7 @@ doOne = migrationCde => {
                 await existingCde.save();
                 same++;
             } else if (existingCde.updatedBy && existingCde.updatedBy.username !== 'batchloader') {
-                existingCde.registrationState.administrativeNote = "Because this CDE was previously manually modified, no batch modification was applied. More information in attachments.";
+                existingCde.registrationState.administrativeNote = "Because this CDE was previously manually modified, no batch modification was applied.";
                 await existingCde.save();
                 skip++;
                 skipCDE.push(existingCde.tinyId);
@@ -58,7 +58,8 @@ retireCde = () => {
             "archived": false,
             "registrationState.registrationStatus": {$ne: "Retired"},
             "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
-            $and: [{"updatedBy.username": {$exists: true}}, {"updatedBy.username": "NINDS"}]
+            $and: [{"updatedBy.username": {$exists: true}},
+                {"updatedBy.username": "batchloader"}]
         };
         let update = {
             'registrationState.registrationStatus': 'Retired',
@@ -95,5 +96,5 @@ async function run() {
 run().then();
 
 setInterval(function () {
-    console.log('same: ' + same + ' changed: ' + changed + ' created: ' + created + ' totalNinds: ' + totalNinds);
+    console.log('same: ' + same + ' changed: ' + changed + ' created: ' + created + ' skip: ' + skip + ' totalNinds: ' + totalNinds);
 }, 5000);
