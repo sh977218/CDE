@@ -14,7 +14,6 @@ doDAO = DAO => {
     return new Promise(async (resolve, reject) => {
         let cond = {
             "ids.source": "NINDS",
-            'ids.id': 'C08521',
             "archived": false
         };
         DAO.dao.find(cond).cursor({batchSize: 1000, useMongooseAggCursor: true})
@@ -49,10 +48,10 @@ doDAO = DAO => {
                         let ref = {};
                         if (r.title) {
                             ref.document = r.title;
-                            elt.referenceDocuments[i] = ref;
+                            eltObj.referenceDocuments[i] = ref;
                         }
                     });
-                    elt.referenceDocuments = eltObj.referenceDocuments
+                    elt.referenceDocuments = eltObj.referenceDocuments;
                     await elt.save();
                     DAO.count++;
                     resolveDAO();
