@@ -122,6 +122,9 @@
                                [required]="formElement.question.required"
                                [disabled]="!formElement.question.editable"/>
                     </ng-container>
+                    <ng-container *ngSwitchCase="'GEO Location'">
+                        <mat-icon (click)="getCurrentGeoLocation();">location_searching</mat-icon>
+                    </ng-container>
                     <ng-container *ngSwitchCase="'Number'">
                         <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
                             <input type="number" class="form-control"
