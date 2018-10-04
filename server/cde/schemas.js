@@ -79,11 +79,6 @@ var deJson = {
         datatypeTime: { // time only, periodic?
             format: {type: StringType, description: 'Any format that someone may want to enforce'},
         },
-        datatypeGeoLocation:{
-            x: {type: StringType},
-            y: {type: StringType},
-            z: {type: StringType},
-        },
         datatypeExternallyDefined: {
             link: {type: StringType, description: 'a link to an external source. Typically a URL'},
             description: StringType,

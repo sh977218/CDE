@@ -123,7 +123,20 @@
                                [disabled]="!formElement.question.editable"/>
                     </ng-container>
                     <ng-container *ngSwitchCase="'GEO Location'">
-                        <mat-icon (click)="getCurrentGeoLocation();">location_searching</mat-icon>
+                        <div class="input-group">
+                            Latitude: <input type="text" class="form-control"
+                                             [(ngModel)]="formElement.question.answer">
+                            Longitude:<input type="text" class="form-control"
+                                             [(ngModel)]="formElement.question.answer">
+                            <div class="input-group-append" id="button-addon4">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <mat-icon (click)="getCurrentGeoLocation(formElement.question.answer);">
+                                        location_searching
+                                    </mat-icon>
+                                </button>
+                                <button class="btn btn-outline-secondary" type="button">Search</button>
+                            </div>
+                        </div>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Number'">
                         <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
