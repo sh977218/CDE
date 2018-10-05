@@ -19,7 +19,7 @@ let DAOs = [
 ];
 
 doDAO = DAO => {
-    let cond = {'referenceDocuments.0': {$exists: true}, 'ids.source': 'NINDS'};
+    let cond = {archived: false, 'referenceDocuments.0': {$exists: true}, 'ids.source': 'NINDS'};
     return new Promise(async (resolve, reject) => {
         DAO.dao.find(cond).cursor({batchSize: 1000, useMongooseAggCursor: true})
             .eachAsync(elt => {
