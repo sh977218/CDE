@@ -146,7 +146,6 @@ function doOneCdeId(cdeId) {
         }
 
         validate(cde);
-        cde.permissibleValues.sort((a, b) => a.permissibleValue - b.permissibleValue);
         resolve(cde);
     })
 }

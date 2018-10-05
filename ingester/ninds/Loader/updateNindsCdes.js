@@ -16,6 +16,16 @@ let same = 0;
 let skip = 0;
 let totalNinds = 0;
 
+replaceClassification = (existingCde, migrationCde) => {
+    let classification = existingCde.toObject().classification;
+    classification.forEach((c, i) => {
+        if (c.stewardOrg.name === 'NINDS') {
+            classification[i] = migrationCde.classification[0];
+        }
+    });
+    existingCde.classification = classification;
+};
+
 doOne = migrationCde => {
     return new Promise(async (resolve, reject) => {
         let idObj = _.find(migrationCde.ids, o => o.source === 'NINDS');
@@ -34,10 +44,12 @@ doOne = migrationCde => {
             let diff = CompareCDE.compareCde(migrationCde, existingCde);
             if (_.isEmpty(diff)) {
                 existingCde.imported = new Date().toJSON();
+                replaceClassification(existingCde, migrationCde);
                 await existingCde.save();
                 same++;
             } else if (existingCde.updatedBy && existingCde.updatedBy.username !== 'batchloader') {
                 existingCde.registrationState.administrativeNote = "Because this CDE was previously manually modified, no batch modification was applied.";
+                replaceClassification(existingCde, migrationCde);
                 await existingCde.save();
                 skip++;
                 skipCDE.push(existingCde.tinyId);
