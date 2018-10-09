@@ -37,6 +37,7 @@ const URL_MAP = {
             background-color: rgba(242, 217, 217, .5);
             margin: 2px 0;
         }
+
         :host >>> ins {
             color: black;
             background: #bbffbb;
@@ -272,17 +273,17 @@ export class CompareSideBySideComponent {
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     let diff = [];
-                    if (!_isEqual(a, b) && _isEqual(a.title, b.title)) {
+                    if (!_isEqual(a, b) && _isEqual(a.document, b.document)) {
+                        if (!_isEqual(a.title, b.title)) diff.push('title');
                         if (!_isEqual(a.uri, b.uri)) diff.push('uri');
                         if (!_isEqual(a.providerOrg, b.providerOrg)) diff.push('providerOrg');
                         if (!_isEqual(a.languageCode, b.languageCode)) diff.push('languageCode');
-                        if (!_isEqual(a.document, b.document)) diff.push('document');
                     }
                     return diff;
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _isEqual(a.title, b.title);
+                    return _isEqual(a.document, b.document);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []

@@ -12,8 +12,14 @@ let compareArrayOption = [
         isEqual: function (a, b) {
             if (_isEmpty(a.diff)) a.diff = [];
             if (_isEmpty(b.diff)) b.diff = [];
-            let result = _isEqual(a.title, b.title);
+            let result = _isEqual(a.document, b.document);
             if (result) {
+                if (!_isEqual(a.title, b.title)) {
+                    a.diff.push("title");
+                    b.diff.push("title");
+                    a.display = true;
+                    b.display = true;
+                }
                 if (!_isEqual(a.uri, b.uri)) {
                     a.diff.push("uri");
                     b.diff.push("uri");
@@ -29,12 +35,6 @@ let compareArrayOption = [
                 if (!_isEqual(a.languageCode, b.languageCode)) {
                     a.diff.push("languageCode");
                     b.diff.push("languageCode");
-                    a.display = true;
-                    b.display = true;
-                }
-                if (!_isEqual(a.document, b.document)) {
-                    a.diff.push("document");
-                    b.diff.push("document");
                     a.display = true;
                     b.display = true;
                 }
@@ -319,22 +319,28 @@ let formCompareArrayOption = [
             padding: 9.5px;
             margin: 0 0 10px;
         }
+
         :host .arrayObjRemove {
             border-left: 5px solid #a94442
         }
+
         :host .arrayObjAdd {
             border-left: 5px solid #008000
         }
+
         :host .arrayObjEdit {
             border-left: 5px solid #0000ff
         }
+
         :host .arrayObjReorder {
             border-left: 5px solid #fad000
         }
+
         :host >>> ins {
             color: black;
             background: #bbffbb;
         }
+
         :host >>> del {
             color: black;
             background: #ffbbbb;
@@ -347,7 +353,8 @@ export class CompareArrayComponent implements OnInit {
     @Input() filter;
     public compareArrayOption = [];
 
-    constructor(public compareService: CompareService) {}
+    constructor(public compareService: CompareService) {
+    }
 
     ngOnInit(): void {
         if (this.newer.elementType === "cde" && this.older.elementType === "cde") {

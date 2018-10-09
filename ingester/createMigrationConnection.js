@@ -35,6 +35,16 @@ exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new Schema({
     collection: 'ninds',
     usePushEach: true
 }));
+exports.NindsCdeModel = migrationConn.model('nindsCde', new Schema({}, {
+    strict: false,
+    collection: 'nindsCdes',
+    usePushEach: true
+}));
+exports.NindsFormModel = migrationConn.model('nindsForm', new Schema({}, {
+    strict: false,
+    collection: 'nindsForms',
+    usePushEach: true
+}));
 
 // NCI
 exports.MigrationNCIFormXmlModel = migrationConn.model('MigrationNCIFormXml', new Schema({}, {
