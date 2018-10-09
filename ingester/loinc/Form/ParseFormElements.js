@@ -35,8 +35,6 @@ exports.parseFormElements = function (loinc, orgInfo) {
             let isElementForm = element.elements.length > 0;
             let f = loadCde;
             if (isElementForm) f = loadForm;
-            if (element.loincId === '86641-8')
-                debugger;
             let formElement = await f(element, orgInfo);
             tempFormElements.push(formElement);
         }
@@ -60,6 +58,7 @@ loadCde = function (element, orgInfo) {
         } else {
             await MergeCDE.mergeCde(newCDE, existingCde, orgInfo);
             existingCde.updated = new Date().toJSON();
+            await existingCde.save();
         }
         existingCde = existingCde.toObject();
         let question = {

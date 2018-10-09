@@ -1,8 +1,4 @@
 const uom_datatype_map = require('../Mapping/LOINC_UOM_DATATYPE_MAP').map;
-const loinc_num_datatype_map = {
-    '62317-3': 'Date',
-    '62328-0': 'Number'
-};
 
 exports.parseValueDomain = function (loinc) {
     let valueDomain = {
@@ -58,15 +54,16 @@ exports.parseValueDomain = function (loinc) {
         }
     } else {
         if (loinc['EXAMPLE UNITS']) {
-            let unit = loinc['EXAMPLE UNITS'][0].Unit;
-            valueDomain.datatype = uom_datatype_map[unit];
+            loinc['EXAMPLE UNITS'].forEach(unit => {
+                if (unit['Source Type'] === 'EXAMPLE UCUM UNITS') {
+                    valueDomain.datatype = uom_datatype_map[unit];
+                }
+            });
             if (valueDomain.datatype === 'Date') {
                 valueDomain.datatypeDate = {format: unit};
             }
         }
     }
-    if (loinc_num_datatype_map[loinc.loincId]) {
-        valueDomain.datatype = loinc_num_datatype_map[loinc.loincId];
-    }
+
     return valueDomain;
 };

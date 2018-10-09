@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
 
 const ParseDesignations = require('../Shared/ParseDesignations');

@@ -56,5 +56,10 @@ exports.map = {
     "{#}/wk": "Number",
     "{#}": "Number",
     "/wk": "Number",
-    "/a": "Number"
+    "/a": "Number",
+    "[in_i]": "Number",
+    "kg": "Number",
+    "mm Hg": "Number",
+    "INCH(S)": "Number"
+
 };
