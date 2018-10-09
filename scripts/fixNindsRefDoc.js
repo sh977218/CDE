@@ -1,8 +1,8 @@
+const _ = require('lodash');
+
 const DataElement = require('../server/cde/mongo-cde').DataElement;
 const Form = require('../server/form/mongo-form').Form;
 
-let batchloader = 'batchloader';
-let badUsername = ['BatchLoader', 'batchLoader', 'batch'];
 let DAOs = [
     {
         name: 'de',
@@ -19,24 +19,18 @@ let DAOs = [
 ];
 
 doDAO = DAO => {
+    let cond = {archived: false, 'referenceDocuments.0': {$exists: true}, 'ids.source': 'NINDS'};
     return new Promise(async (resolve, reject) => {
-        let cond = {
-            $or: [
-                {'createdBy.username': {$in: badUsername}},
-                {'updatedBy.username': {$in: badUsername}}
-            ]
-        };
         DAO.dao.find(cond).cursor({batchSize: 1000, useMongooseAggCursor: true})
             .eachAsync(elt => {
+                let list = elt.toObject().referenceDocuments;
                 return new Promise(async (resolveDAO, reject) => {
-                    if (badUsername.indexOf(elt.updatedBy.username) > -1) {
-                        elt.updatedBy.username = batchloader;
+                    if (list.length > 0) {
+                        list.forEach(r => r.source = 'NINDS');
+                        elt.referenceDocuments = list;
+                        await elt.save();
+                        console.log(DAO.name + ': ' + ++DAO.count);
                     }
-                    if (badUsername.indexOf(elt.createdBy.username) > -1) {
-                        elt.createdBy.username = batchloader;
-                    }
-                    await elt.save();
-                    DAO.count++;
                     resolveDAO();
                 });
             }).then(() => resolve());

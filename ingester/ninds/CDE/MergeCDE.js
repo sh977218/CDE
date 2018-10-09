@@ -1,28 +1,19 @@
+const _ = require('lodash');
 
-function mergeCde(existingCde, newCde) {
-    updateShare.mergeNaming(newCde, existingCde);
-    updateShare.mergeSources(newCde, existingCde);
-    updateShare.mergeIds(newCde, existingCde);
-    updateShare.mergeProperties(newCde, existingCde);
-    updateShare.mergeReferenceDocument(newCde, existingCde);
+const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
 
-    // PermissibleValues
-    if (newCde.valueDomain.datatype === 'Value List' && existingCde.valueDomain.datatype === 'Value List') {
-        let fullList = _.concat(existingCde.valueDomain.permissibleValues, newCde.valueDomain.permissibleValues);
-        let uniqueList = _.uniqWith(fullList,
-            (a, b) => a.permissibleValue === b.permissibleValue
-                && a.valueMeaningDefinition === b.valueMeaningDefinition
-                && a.valueMeaningName === b.valueMeaningName
-                && a.codeSystemName === b.codeSystemName);
-        existingCde.valueDomain.permissibleValues = uniqueList;
-        existingCde.markModified("valueDomain");
-    } else if (newCde.valueDomain.datatype !== 'Value List' && existingCde.valueDomain.datatype !== 'Value List') {
-        // do NOT remove this condition. it has its special purpose.
-    } else {
-        console.log("newCde datatype: " + newCde.valueDomain.datatype);
-        console.log("existingCde datatype: " + existingCde.valueDomain.datatype);
-        process.exit(1);
-    }
-    existingCde.created = today;
+mergeSources = (o1, o2) => {
+    let result = _.uniqBy(o1.concat(o2), 'sourceName');
+    return result;
+};
+
+exports.mergeCde = (existingCde, newCde) => {
+    existingCde.designations = newCde.designations;
+    existingCde.definitions = newCde.definitions;
+    existingCde.ids = newCde.ids;
+    existingCde.properties = newCde.properties;
+    existingCde.referenceDocuments = newCde.referenceDocuments;
+    existingCde.sources = mergeSources(newCde.sources, existingCde.sources);
+    existingCde.valueDomain = newCde.valueDomain;
     classificationShared.transferClassifications(newCde, existingCde);
-}
+};

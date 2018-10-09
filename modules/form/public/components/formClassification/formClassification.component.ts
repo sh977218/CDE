@@ -23,13 +23,11 @@ export class FormClassificationComponent {
     numberTotal: number;
     showProgressBar: boolean = false;
 
-    constructor(
-        private alert: AlertService,
-        private classificationSvc: ClassificationService,
-        public http: HttpClient,
-        public isAllowedModel: IsAllowedService,
-        public userService: UserService,
-    ) {
+    constructor(private alert: AlertService,
+                private classificationSvc: ClassificationService,
+                public http: HttpClient,
+                public isAllowedModel: IsAllowedService,
+                public userService: UserService) {
     }
 
     classifyAllCdesInForm(event) {
@@ -112,7 +110,7 @@ export class FormClassificationComponent {
         this.classifyCdesModalRef = this.classifyCdesComponent.openModal();
     }
 
-    reloadElt (cb) {
+    reloadElt(cb) {
         this.http.get<CdeForm>('form/' + this.elt.tinyId).subscribe(res => {
             this.elt = res;
             if (cb) cb();
@@ -122,7 +120,7 @@ export class FormClassificationComponent {
         });
     }
 
-    removeClassif (event) {
+    removeClassif(event) {
         this.classificationSvc.removeClassification(this.elt, event.deleteOrgName,
             event.deleteClassificationArray, '/server/classification/removeFormClassification/', err => {
                 if (err) {
