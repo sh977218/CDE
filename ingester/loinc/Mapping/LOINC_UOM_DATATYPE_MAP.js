@@ -54,6 +54,7 @@ exports.map = {
     "min/d": "Number",
     "{#}/d": "Number",
     "{#}/wk": "Number",
+    "{#}": "Number",
     "/wk": "Number",
     "/a": "Number"
 };

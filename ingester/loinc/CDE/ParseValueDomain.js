@@ -7,7 +7,8 @@ const loinc_num_datatype_map = {
 exports.parseValueDomain = function (loinc) {
     let valueDomain = {
         datatype: 'Text',
-        uom: ''
+        uom: '',
+        permissibleValues: []
     };
     let version = loinc.VERSION.trim();
 
@@ -27,15 +28,13 @@ exports.parseValueDomain = function (loinc) {
             }
         } else {
             valueDomain.datatype = 'Value List';
-            if (!loinc[type].answerListId)
-                console.log('a');
             valueDomain.ids = [{
                 id: loinc[type].answerListId.ID,
                 source: 'LOINC',
                 version: version
             }];
             let sortedAnswerList = loinc[type].answerList.sort((a, b) => a['SEQ#'] - b['SEQ#']);
-            if(!valueDomain)
+            if (!valueDomain)
                 debugger;
             valueDomain.permissibleValues = sortedAnswerList.map(a => {
                 let description = '';

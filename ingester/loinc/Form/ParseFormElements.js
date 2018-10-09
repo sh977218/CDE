@@ -33,10 +33,10 @@ exports.parseFormElements = function (loinc, orgInfo) {
 
         for (let element of elements) {
             let isElementForm = element.elements.length > 0;
-            if (element.loincId === '86639-2')
-                debugger;
             let f = loadCde;
             if (isElementForm) f = loadForm;
+            if (element.loincId === '86641-8')
+                debugger;
             let formElement = await f(element, orgInfo);
             tempFormElements.push(formElement);
         }
@@ -53,12 +53,13 @@ loadCde = function (element, orgInfo) {
             "registrationState.registrationStatus": {$ne: "Retired"},
             'ids.id': loincId
         };
-        let existingCde = await DataElement.findOne(cdeCond);
+        let existingCde = await DataElement.findOne(cdeCond).exec();
         let newCDE = await CreateCDE.createCde(element, orgInfo);
         if (!existingCde) {
             existingCde = await new DataElement(newCDE).save();
         } else {
             await MergeCDE.mergeCde(newCDE, existingCde, orgInfo);
+            existingCde.updated = new Date().toJSON();
         }
         existingCde = existingCde.toObject();
         let question = {
@@ -106,8 +107,12 @@ loadForm = function (element, orgInfo) {
             "registrationState.registrationStatus": {$ne: "Retired"},
             'ids.id': loincId
         };
-
-        let existingForm = await Form.findOne(formCond);
+        let existingForm;
+        try {
+            existingForm = await Form.findOne(formCond).exec();
+        } catch (err) {
+            console.log(err);
+        }
         let newForm = await CreateForm.createForm(element.loinc, orgInfo);
         if (!existingForm) {
             existingForm = await new Form(newForm).save();
