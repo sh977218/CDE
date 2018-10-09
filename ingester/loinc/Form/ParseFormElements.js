@@ -33,6 +33,8 @@ exports.parseFormElements = function (loinc, orgInfo) {
 
         for (let element of elements) {
             let isElementForm = element.elements.length > 0;
+            if (element.loincId === '86639-2')
+                debugger;
             let f = loadCde;
             if (isElementForm) f = loadForm;
             let formElement = await f(element, orgInfo);
