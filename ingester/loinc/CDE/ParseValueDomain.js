@@ -54,14 +54,16 @@ exports.parseValueDomain = function (loinc) {
         }
     } else {
         if (loinc['EXAMPLE UNITS']) {
-            loinc['EXAMPLE UNITS'].forEach(unit => {
-                if (unit['Source Type'] === 'EXAMPLE UCUM UNITS') {
-                    valueDomain.datatype = uom_datatype_map[unit];
+            loinc['EXAMPLE UNITS'].forEach(exampleUnit => {
+                if (exampleUnit['Source Type'] === 'EXAMPLE UCUM UNITS') {
+                    let unit = exampleUnit['Unit'];
+                    let temp = uom_datatype_map[unit];
+                    valueDomain.datatype = temp;
+                    if (valueDomain.datatype === 'Date') {
+                        valueDomain.datatypeDate = {format: unit};
+                    }
                 }
             });
-            if (valueDomain.datatype === 'Date') {
-                valueDomain.datatypeDate = {format: unit};
-            }
         }
     }
 
