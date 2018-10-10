@@ -98,7 +98,6 @@ function doOneCdeId(cdeId) {
             'definitionDescription',
             'questionText',
             'dataType',
-            'reference',
             'versionNum',
             'versionDate',
             'aliasesForVariableName',
@@ -137,6 +136,9 @@ function doOneCdeId(cdeId) {
                 let populationIndex = _.findIndex(cde.population, o => _.isEqual(o, population));
                 if (populationIndex === -1) cde.population.push(population);
             });
+            let reference = nindsCde.cdes[0].reference.trim();
+            let referenceIndex = _.findIndex(cde.reference, o => _.isEqual(o, reference));
+            if (referenceIndex === -1) cde.reference.push(reference);
 
             for (let key of keys) {
                 let value = nindsCde.cdes[0][key];
