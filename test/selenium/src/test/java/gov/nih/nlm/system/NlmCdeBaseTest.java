@@ -1015,6 +1015,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void addNewDefinition(String definition, boolean isHtml, String[] tags) {
         clickElement(By.id("openNewDefinitionModalBtn"));
+        hangon(1);
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.xpath("//*[@id='newDefinition']//textarea")).sendKeys(definition);
         if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button/span[contains(text(),'Rich Text')]"));
