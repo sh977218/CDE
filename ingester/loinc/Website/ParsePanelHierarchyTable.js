@@ -2,7 +2,7 @@ const By = require('selenium-webdriver').By;
 const loincLoader = require('./loincLoader');
 
 
-exports.parsePanelHierarchyTable = async (driver, loincId,element, cb) => {
+exports.parsePanelHierarchyTable = async (driver, loincId, element, cb) => {
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
     trs.pop();
@@ -50,10 +50,12 @@ parseOverrideDisplayName = (driver, index) => {
     return new Promise(async (resolve, reject) => {
         let xpath = '(//*[@class="Section1000000F00"])[' + (index + 1) + ']/table';
         let tables = await driver.findElements(By.xpath(xpath));
-        let trs = await tables[0].findElements(By.xpath('tbody/tr'));
-        let tds = await trs[2].findElements(By.xpath('td'));
-        let overrideDisplayNameText = await tds[2].getText();
-        resolve(overrideDisplayNameText.trim());
+        if (tables && tables[0]) {
+            let trs = await tables[0].findElements(By.xpath('tbody/tr'));
+            let tds = await trs[2].findElements(By.xpath('td'));
+            let overrideDisplayNameText = await tds[2].getText();
+            resolve(overrideDisplayNameText.trim());
+        } else resolve();
     })
 };
 

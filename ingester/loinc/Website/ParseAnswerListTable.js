@@ -7,12 +7,18 @@ exports.parseAnswerListTable = async (driver, loincId, table, cb) => {
     };
     let answerListIdObj = answerListObj.answerListId;
     let answerListArray = answerListObj.answerList;
-    let externalDefinedExist = false;
 
-    let innerTable = await table.findElements(By.css('table'));
-    if (innerTable.length > 0) {
-        externalDefinedExist = true;
-        let innerTrs = await innerTable[0].findElements(By.xpath('tbody/tr'));
+    let trs = await table.findElements(By.xpath('tbody/tr'));
+    let a = await trs[0].findElement(By.css('a'));
+    let urlText = await a.getAttribute('href');
+    answerListIdObj.URL = urlText.trim();
+    let idText = await a.getText();
+    answerListIdObj.ID = idText.trim();
+    trs.shift();
+
+    let externalDefinedTables = await trs[0].findElements(By.css('table'));
+    if (externalDefinedTables && externalDefinedTables.length > 0) {
+        let innerTrs = await externalDefinedTables[0].findElements(By.xpath('tbody/tr'));
         for (let innerTr of innerTrs) {
             let tds = await innerTr.findElements(By.xpath('td'));
             let keyText = await tds[0].getText();
@@ -21,46 +27,37 @@ exports.parseAnswerListTable = async (driver, loincId, table, cb) => {
             let value = valueText.trim();
             answerListObj[key] = value;
         }
+        trs.shift();
     }
 
-    let trs = await table.findElements(By.xpath('tbody/tr'));
-    let a = await trs[0].findElement(By.css('a'));
-    let urlText = await a.getAttribute('href');
-    answerListIdObj.URL = urlText.trim();
-    let idText = await a.getText();
-    answerListIdObj.ID = idText.trim();
-
-    trs.shift();
-    if (externalDefinedExist) trs.shift();
-
-    let thMapping = {};
-    let ths = await trs[0].findElements(By.css('th'));
-
-    let thIndex = 0;
-    for (let th of ths) {
-        let text = await th.getText();
-        if (text.trim().length > 0) {
-            thMapping[text.trim().replace('\n', ' ')] = thIndex;
-        }
-        thIndex++;
-    }
-    trs.shift();
-    for (let tr of trs) {
-        let answerListItem = {};
-        let tds = await tr.findElements(By.xpath('td'));
-        for (let key in thMapping) {
-            let index = thMapping[key];
-            let fullText = await tds[index].getText();
-            let brs = await tds[index].findElements(By.xpath('br'));
-            if (brs.length > 0) {
-                let index = fullText.indexOf('\n');
-                answerListItem[key] = fullText.substring(0, index).trim();
+    if (trs.length > 0) {
+        let thMapping = {};
+        let ths = await trs[0].findElements(By.css('th'));
+        let thIndex = 0;
+        for (let th of ths) {
+            let text = await th.getText();
+            if (text.trim().length > 0) {
+                thMapping[text.trim().replace('\n', ' ')] = thIndex;
             }
-            else answerListItem[key] = fullText.trim();
-
+            thIndex++;
         }
-        answerListArray.push(answerListItem);
-    }
+        trs.shift();
+        for (let tr of trs) {
+            let answerListItem = {};
+            let tds = await tr.findElements(By.xpath('td'));
+            for (let key in thMapping) {
+                let index = thMapping[key];
+                let fullText = await tds[index].getText();
+                let brs = await tds[index].findElements(By.xpath('br'));
+                if (brs.length > 0) {
+                    let index = fullText.indexOf('\n');
+                    answerListItem[key] = fullText.substring(0, index).trim();
+                }
+                else answerListItem[key] = fullText.trim();
 
+            }
+            answerListArray.push(answerListItem);
+        }
+    }
     cb(answerListObj);
 };

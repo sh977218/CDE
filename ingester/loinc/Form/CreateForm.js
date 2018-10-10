@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
 
 const ParseDesignations = require('../Shared/ParseDesignations');
@@ -33,7 +31,6 @@ exports.createForm = function (loinc, orgInfo) {
             createdBy: {username: 'batchloader'},
             created: today,
             imported: today,
-            updated: today,
             registrationState: {registrationStatus: "Qualified"},
             sources: sources,
             designations: designations,
