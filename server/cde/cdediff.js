@@ -13,6 +13,7 @@ exports.diff = function (newCde, oldCde) {
         delete cde.__v;
         delete cde.views;
         delete cde.comments;
+        delete cde.naming;
     });
     return deepDiff(oldCdeObj, newCdeObj);
 };
