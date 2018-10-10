@@ -127,7 +127,7 @@ exports.MigrationRedcapModel = migrationConn.model('MigrationRedcapModel', new S
     collection: 'Redcap',
     usePushEach: true
 }));
-exports.PhenxURL = "https://www.phenxtoolkit.org/index.php?pageLink=browse.measures&tree=off";
+exports.PhenxURL = "https://original-phenxtoolkit.rti.org/index.php?pageLink=browse.measures&tree=off";
 exports.PHENX_ZIP_BASE_FOLDER = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/all';
 
 

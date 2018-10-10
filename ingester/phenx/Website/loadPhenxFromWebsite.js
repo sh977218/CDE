@@ -1,41 +1,43 @@
-const async = require('async');
 const webdriver = require('selenium-webdriver');
 
 let baseUrl = require('../../createMigrationConnection').PhenxURL;
 let MigrationMeasureModel = require('../../createMigrationConnection').MigrationMeasureModel;
 let MigrationProtocolModel = require('../../createMigrationConnection').MigrationProtocolModel;
-let ParseOneMeasure = require('./ParseOneMeasure');
+let ParseMeasure = require('./ParseMeasure');
 
 let measureCount = 0;
 
-function doLoadPhenxMeasure(done, loadLoinc) {
+function doLoadPhenxMeasure() {
     return new Promise(async (resolve, reject) => {
         let driver = new webdriver.Builder().forBrowser('chrome').build();
-        driver.get(baseUrl);
+        await driver.get(baseUrl);
         let measureXpath = "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td/div/div/a[2]";
         let measureLinks = await driver.findElements(webdriver.By.xpath(measureXpath));
         for (let measureLink of measureLinks) {
-            let measure = {protocols: []};
             let browserIdText = await measureLink.findElement(webdriver.By.css('span')).getText();
-            measure['browserId'] = browserIdText.replace('#', '').trim();
             let hrefText = await measureLink.getAttribute('href');
+            let measure = await ParseMeasure.parseMeasure(hrefText.trim());
             measure['href'] = hrefText.trim();
-            await ParseOneMeasure.parseOneMeasure(measure, loadLoinc);
+            measure['browserId'] = browserIdText.replace('#', '').trim();
             await new MigrationMeasureModel(measure).save();
             measureCount++;
-            console.log('measureCount: ' + measureCount);
         }
+        resolve();
     })
 }
 
-async function run(loadLoinc, cb) {
+async function run() {
     await MigrationMeasureModel.remove({});
     console.log('Removed all doc in migration measure collection');
     await MigrationProtocolModel.remove({});
     console.log('Removed all doc in migration protocol collection');
-    await doLoadPhenxMeasure(loadLoinc);
+    await doLoadPhenxMeasure();
     console.log('Finished grab all measures from PhenX website');
     process.exit(1);
-};
+}
 
-run(false).then();
+run().then();
+
+setInterval(() => {
+    console.log("measureCount: " + measureCount);
+}, 5000);
