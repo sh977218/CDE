@@ -1,6 +1,5 @@
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
-const _ = require('lodash');
 
 const Form = require('../../../server/form/mongo-form').Form;
 const CreateForm = require('../Form/CreateForm');

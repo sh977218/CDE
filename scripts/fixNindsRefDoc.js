@@ -26,8 +26,9 @@ doDAO = DAO => {
                 let list = elt.toObject().referenceDocuments;
                 return new Promise(async (resolveDAO, reject) => {
                     if (list.length > 0) {
-                        list.forEach(r => r.source = 'NINDS');
-                        elt.referenceDocuments = list;
+                        let filterList = list.filter(r => r.key !== 'NINDS Guidelines');
+                        filterList.forEach(r => r.source = 'NINDS');
+                        elt.referenceDocuments = filterList;
                         await elt.save();
                         console.log(DAO.name + ': ' + ++DAO.count);
                     }

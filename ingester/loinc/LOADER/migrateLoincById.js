@@ -20,7 +20,6 @@ async function run() {
     let loinc = await MigrationLoincModel.findOne({loincId: loincId});
     await loincLoader.runOneForm(loinc.toObject(), orgInfo);
     console.log('***********Finished loading loinc Id ' + loincId);
-    process.exit(1);
 }
 
 run();
