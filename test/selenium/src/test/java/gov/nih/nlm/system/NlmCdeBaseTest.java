@@ -950,6 +950,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//mat-icon[. = 'check']";
         if (newDesignation != null) {
             clickElement(By.xpath(designationEditIconXpath));
+            hangon(1);
             findElement(By.xpath(designationInputXpath)).sendKeys(newDesignation);
             hangon(2);
             clickElement(By.xpath(designationConfirmBtnXpath));
