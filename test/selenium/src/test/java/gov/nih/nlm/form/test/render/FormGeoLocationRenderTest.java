@@ -1,15 +1,20 @@
 package gov.nih.nlm.form.test.render;
 
-import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.form.test.QuestionTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class FormGeoLocationRenderTest extends NlmCdeBaseTest {
-    
+public class FormGeoLocationRenderTest extends QuestionTest {
+
     @Test
     public void formGeoLocationRender() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
         String formName = "Geo Location Test";
         goToFormByName(formName);
+        addSection("", "F", 0);
+        startEditQuestionById("question_0_0");
+        addQuestionToSection("Geo Location CDE", 0);
+
         clickElement(By.id("0-0_location"));
         textPresent("38", By.id("0-0_latitude"));
         textPresent("-77", By.id("0-0_longitude"));
