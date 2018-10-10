@@ -3,8 +3,7 @@ const orgMapping = require('../Mapping/ORG_INFO_MAP').map;
 const loincLoader = require('./../Website/loincLoader');
 
 let classifi = {
-    '70837-0': ['FACIT'],
-    '89070-7': ['ADAPTABLE']
+    '86636-8': ['FPAR']
 };
 
 async function run() {

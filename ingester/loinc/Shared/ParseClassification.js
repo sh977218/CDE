@@ -25,8 +25,10 @@ exports.parseClassification = function (loinc, orgInfo) {
             Type: type,
             Abbreviation: classification
         });
-        if (!classificationMap)
+        if (!classificationMap) {
             console.log('type: ' + type + ' Abbreviation: ' + classification + ' in classificationMap is null');
+            process.exit(1);
+        }
         let classificationArray = [{
             stewardOrg: {name: orgInfo.classificationOrgName},
             elements: []
