@@ -1684,9 +1684,15 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String xpath = getCommentIconXpath(message, "comment", "reopen");
         clickElement(By.xpath(xpath));
         isCommentOrReplyExists(message, true);
-        wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
-                By.xpath("//div[normalize-space()='" + message + "']/span"),
-                "class", "strike")));
+        try {
+            wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
+                    By.xpath("//div[normalize-space()='" + message + "']/span"),
+                    "class", "strike")));
+        } catch (StaleElementReferenceException e) {
+            wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
+                    By.xpath("//div[normalize-space()='" + message + "']/span"),
+                    "class", "strike")));
+        }
     }
 
     private Map<String, String> COMMENT_Title_Case_MAP = new HashMap<String, String>() {
