@@ -51,12 +51,14 @@ loadCde = function (element, orgInfo) {
             "registrationState.registrationStatus": {$ne: "Retired"},
             'ids.id': loincId
         };
-        let existingCde = await DataElement.findOne(cdeCond);
+        let existingCde = await DataElement.findOne(cdeCond).exec();
         let newCDE = await CreateCDE.createCde(element, orgInfo);
         if (!existingCde) {
             existingCde = await new DataElement(newCDE).save();
         } else {
             await MergeCDE.mergeCde(newCDE, existingCde, orgInfo);
+            existingCde.updated = new Date().toJSON();
+            await existingCde.save();
         }
         existingCde = existingCde.toObject();
         let question = {
@@ -104,8 +106,12 @@ loadForm = function (element, orgInfo) {
             "registrationState.registrationStatus": {$ne: "Retired"},
             'ids.id': loincId
         };
-
-        let existingForm = await Form.findOne(formCond);
+        let existingForm;
+        try {
+            existingForm = await Form.findOne(formCond).exec();
+        } catch (err) {
+            console.log(err);
+        }
         let newForm = await CreateForm.createForm(element.loinc, orgInfo);
         if (!existingForm) {
             existingForm = await new Form(newForm).save();
