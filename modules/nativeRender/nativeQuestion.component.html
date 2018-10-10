@@ -124,19 +124,19 @@
                     </ng-container>
                     <ng-container *ngSwitchCase="'GEO Location'">
                         <div class="input-group">
-                            <label class="col-form-label">Latitude: </label>
-                            <input type="text" class="form-control" readonly
+                            <label class="col-2 text-center col-form-label">Latitude: </label>
+                            <input type="text" class="form-control" readonly [id]="formElement.feId+'_latitude'"
                                    value="{{formElement.question.answer?.latitude}}">
-                            <label class="col-form-label">Longitude: </label>
-                            <input type="text" class="form-control" readonly
+                            <label class="col-2 text-center col-form-label">Longitude: </label>
+                            <input type="text" class="form-control" readonly [id]="formElement.feId+'_longitude'"
                                    value="{{formElement.question.answer?.longitude}}">
                             <div class="input-group-append" id="button-addon4">
-                                <button class="btn btn-outline-secondary" type="button">
+                                <button class="btn btn-outline-secondary" type="button"
+                                        [id]="formElement.feId+'_location'">
                                     <mat-icon (click)="getCurrentGeoLocation(formElement);">
                                         location_searching
                                     </mat-icon>
                                 </button>
-                                <button class="btn btn-outline-secondary" type="button">Search</button>
                             </div>
                         </div>
                     </ng-container>
