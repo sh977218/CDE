@@ -200,6 +200,7 @@ exports.runOneForm = (loinc, orgInfo) => {
             existingForm = await new Form(newForm).save();
         } else {
             await MergeForm.mergeForm(newForm, existingForm, orgInfo.stewardOrgName);
+            existingForm.updated = new Date().toJSON();
         }
         resolve(existingForm);
     })
