@@ -191,7 +191,7 @@ exports.respondError = function (err, options) {
             body: JSON.stringify(options.req.body),
             username: options.req.username,
             ip: options.req.ip
-        }
+        };
     }
     exports.logError(log);
 };

@@ -1,31 +1,37 @@
-var mongo_data = require('./mongo-data')
-    , authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared')
-    ;
+const mongo_data = require('./mongo-data');
+const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
+const dbLogger = require('../log/dbLogger');
+const handle404 = dbLogger.handle404;
+const handleError = dbLogger.handleError;
 
 exports.myOrgs = function(user) {
     if (!user) return [];
     return user.orgAdmin.concat(user.orgCurator);
 };
 
-exports.updateUserRoles = function(user, cb) {
-    mongo_data.userByName(user.username, function(err, found) {
-        if (err) return cb(err);
+exports.updateUserRoles = function(req, res) {
+    let user = req.body;
+    mongo_data.userByName(user.username, handle404({req, res}, found => {
         found.roles = user.roles;
-        found.save(cb);
-    });
+        found.save(handleError({req, res}, () => {
+            res.send();
+        }));
+    }));
 };
 
-exports.updateUserAvatar = function(user, cb) {
-    mongo_data.userByName(user.username, function(err, found) {
-        if (err) return cb(err);
+exports.updateUserAvatar = function(req, res) {
+    let user = req.body;
+    mongo_data.userByName(user.username, handle404({req, res}, found => {
         found.avatarUrl = user.avatarUrl;
-        found.save(cb);
-    });
+        found.save(handleError({req, res}, () => {
+            res.send();
+        }));
+    }));
 };
 
 exports.myOrgsAdmins = function (req, res) {
-    mongo_data.userById(req.user._id, function (err, foundUser) {
-        mongo_data.orgAdmins(function (err, users) {
+    mongo_data.userById(req.user._id, handle404({req, res}, foundUser => {
+        mongo_data.orgAdmins(handle404({req, res}, users => {
             res.send(foundUser.orgAdmin
                 .map(org => ({
                     name: org,
@@ -37,12 +43,12 @@ exports.myOrgsAdmins = function (req, res) {
                         })),
                 }))
                 .filter(r => r.users.length > 0));
-        });
-    });
+        }));
+    }));
 };
 
 exports.orgCurators = function (req, res) {
-    mongo_data.orgCurators(req.user.orgAdmin, function (err, users) {
+    mongo_data.orgCurators(req.user.orgAdmin, handle404({req, res}, users => {
         res.send(req.user.orgAdmin
             .map(org => ({
                 name: org,
@@ -55,12 +61,12 @@ exports.orgCurators = function (req, res) {
             }))
             .filter(org => org.users.length > 0)
         );
-    });
+    }));
 };
 
 exports.orgAdmins = function (req, res) {
-    mongo_data.managedOrgs((err, managedOrgs) => {
-        mongo_data.orgAdmins((err, users) => {
+    mongo_data.managedOrgs(handle404({req, res}, managedOrgs => {
+        mongo_data.orgAdmins(handle404({req, res}, users => {
             res.send(managedOrgs
                 .map(mo => ({
                     name: mo.name,
@@ -72,87 +78,78 @@ exports.orgAdmins = function (req, res) {
                         })),
                 }))
             );
-        });
-    });
+        }));
+    }));
 };
 
 exports.addOrgAdmin = function(req, res) {
-    mongo_data.userByName(req.body.username, function(err, user) {
-        if (!user) {
-            res.send("Unknown Username");
-        } else {
-            if (user.orgAdmin.indexOf(req.body.org) > -1) {
-                res.send("User is already an Administrator for this Organization");
-            } else {
-                if (authorizationShared.hasRole(user, "CommentReviewer")) user.roles.push("CommentReviewer");
-                user.orgAdmin.push(req.body.org);
-                user.save(function () {
-                    res.send("Organization Administrator Added");
-                });
-            }
+    mongo_data.userByName(req.body.username, handle404({req, res}, user => {
+        let changed = false;
+        if (user.orgAdmin.indexOf(req.body.org) === -1) {
+            user.orgAdmin.push(req.body.org);
+            changed = true;
         }
-    });  
+        if (!authorizationShared.hasRole(user, "CommentReviewer")) {
+            user.roles.push("CommentReviewer");
+            changed = true;
+        }
+
+        if (!changed) {
+            return res.send();
+        }
+        user.save(handleError({req, res}, () => {
+            res.send();
+        }));
+    }));
 };
 
 exports.removeOrgAdmin = function(req, res) {
-    mongo_data.userById(req.body.userId, function(err, found) {
-        if (!found) {
-            res.send("Unknown User");
-        } else {
-            var orgInd = found.orgAdmin.indexOf(req.body.org);
-            if (orgInd < 0) {
-                res.send("User is not an Administrator for this Organization");
-            } else {
-                found.orgAdmin.splice(orgInd, 1);
-                found.save(function () {
-                    res.send("Organization Administrator Removed");
-                });
-            }
+    mongo_data.userById(req.body.userId, handle404({req, res}, found => {
+        let orgInd = found.orgAdmin.indexOf(req.body.org);
+        if (orgInd < 0) {
+            return res.send();
         }
-    });  
+        found.orgAdmin.splice(orgInd, 1);
+        found.save(handleError({req, res}, () => {
+            res.send();
+        }));
+    }));
 };
 
 exports.addOrgCurator = function(req, res) {
-    mongo_data.userByName(req.body.username, function(err, user) {
-        if (!user) {
-            res.send("Unknown Username");
-        } else {
-            if (user.orgCurator.indexOf(req.body.org) > -1) {
-                res.send("User is already a Curator for this Organization");
-            } else {
-                user.orgCurator.push(req.body.org);
-                if (authorizationShared.hasRole(user, "CommentReviewer")) user.roles.push("CommentReviewer");
-                user.save(function () {
-                    res.send("Organization Curator Added");
-                });
-            }
+    mongo_data.userByName(req.body.username, handle404({req, res}, user => {
+        let changed = false;
+        if (user.orgCurator.indexOf(req.body.org) === -1) {
+            user.orgCurator.push(req.body.org);
+            changed = true;
         }
-    });  
+        if (!authorizationShared.hasRole(user, "CommentReviewer")) {
+            user.roles.push("CommentReviewer");
+            changed = true;
+        }
+
+        if (!changed) {
+            return res.send();
+        }
+        user.save(handleError({req, res}, () => {
+            res.send();
+        }));
+    }));
 };
 
 exports.removeOrgCurator = function(req, res) {
-    mongo_data.userById(req.body.userId, function(err, found) {
-        if (!found) {
-            res.send("Unknown User");
-        } else {
-            var orgInd = found.orgCurator.indexOf(req.body.org);
-            if (orgInd < 0) {
-                res.send("User is not a Curator for this Organization");
-            } else {
-                found.orgCurator.splice(orgInd, 1);
-                found.save(function () {
-                    res.send("Organization Curator Removed");
-                });
-            }
+    mongo_data.userById(req.body.userId, handle404({req, res}, found => {
+        let orgInd = found.orgCurator.indexOf(req.body.org);
+        if (orgInd < 0) {
+            return res.send();
         }
-    });  
+        found.orgCurator.splice(orgInd, 1);
+        found.save(handleError({req, res}, () => {
+            res.send();
+        }));
+    }));
 };
 
 exports.getAllUsernames = function(req, res) {
-    mongo_data.getAllUsernames(function(err, usernames) {
-        if(err) res.status(500).end(err);
-        else {
-            res.send(usernames);
-        }
-    });
+    mongo_data.getAllUsernames(handleError({req, res}, usernames => res.send(usernames)));
 };

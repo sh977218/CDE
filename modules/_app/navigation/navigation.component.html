@@ -9,8 +9,7 @@
         </a>
 
         <a id="username_link" class="mdl-navigation__link mdl-typography--text-uppercase"
-           [matMenuTriggerFor]="loginMenu">
-            <span [textContent]="userService.user.username | cdeTruncateLongName"></span>&nbsp;▼</a>
+           [matMenuTriggerFor]="loginMenu">{{userService.user.username | cdeTruncateLongName}}&nbsp;▼</a>
         <mat-menu #loginMenu="matMenu">
             <a routerLink="/profile" id="user_profile" mat-menu-item>Profile</a>
             <a routerLink="/inbox" id="user_inbox" mat-menu-item>Inbox</a>

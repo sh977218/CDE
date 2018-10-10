@@ -15,17 +15,20 @@ exports.nocacheMiddleware = function (req, res, next) {
 };
 
 exports.canEditMiddleware = function (req, res, next) {
-    if (!authorizationShared.canEditCuratedItem(req.user, req.body)) {
-        // TODO: consider ban
-        res.status(403).send();
-        return;
-    }
-    next();
+    this.loggedInMiddleware(req, res, () => {
+        if (!authorizationShared.canEditCuratedItem(req.user, req.body)) {
+            // TODO: consider ban
+            res.status(403).send();
+            return;
+        }
+        next();
+    });
 };
 
 exports.canCommentMiddleware = function (req, res, next) {
+    // TODO: not logged in should return 401, call loggedInMiddleware
     if (!authorizationShared.canComment(req.user)) {
-        res.status(401).send();
+        res.status(403).send();
         return;
     }
     next();
@@ -33,7 +36,7 @@ exports.canCommentMiddleware = function (req, res, next) {
 
 exports.canApproveCommentMiddleware = function (req, res, next) {
     if (!authorizationShared.hasRole(req.user, "CommentReviewer")) {
-        res.send(401).send();
+        res.send(403).send();
         return;
     }
     next();
@@ -65,7 +68,7 @@ exports.isSiteAdminMiddleware = (req, res, next) => {
 
 exports.isOrgAuthorityMiddleware = (req, res, next) => {
     if (!authorizationShared.isOrgAuthority(req.user)) {
-        res.status(401).send();
+        res.status(403).send();
         return;
     }
     next();

@@ -323,35 +323,29 @@ exports.init = function (app) {
 
     /* ---------- PUT NEW REST API above ---------- */
 
-    app.get('/indexCurrentNumDoc/:indexPosition', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            let index = esInit.indices[req.params.indexPosition];
-            return res.status(200).send({count: index.count, totalCount: index.totalCount});
-        }
-        res.status(401).send();
+    app.get('/indexCurrentNumDoc/:indexPosition', [authorization.isSiteAdminMiddleware], (req, res) => {
+        let index = esInit.indices[req.params.indexPosition];
+        return res.send({count: index.count, totalCount: index.totalCount});
     });
 
-    app.post('/reindex/:indexPosition', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            let index = esInit.indices[req.params.indexPosition];
-            elastic.reIndex(index, () => {
-                setTimeout(() => {
-                    index.count = 0;
-                    index.totalCount = 0;
-                }, 5000);
-            });
-            return res.send("Re-index request sent.");
-        }
-        res.status(401).send();
+    app.post('/reindex/:indexPosition', [authorization.isSiteAdminMiddleware], (req, res) => {
+        let index = esInit.indices[req.params.indexPosition];
+        elastic.reIndex(index, () => {
+            setTimeout(() => {
+                index.count = 0;
+                index.totalCount = 0;
+            }, 5000);
+        });
+        return res.send('Re-index request sent.');
     });
 
 
 
-    app.get("/supportedBrowsers", (req, res) => res.render('supportedBrowsers', 'system'));
+    app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
 
     app.get('/listOrgs', exportShared.nocacheMiddleware, (req, res) => {
         mongo_data.listOrgs(function (err, orgs) {
-            if (err) return res.status(500).send("ERROR - unable to list orgs");
+            if (err) return res.status(500).send('ERROR - unable to list orgs');
             res.send(orgs);
         });
     });
@@ -477,17 +471,8 @@ exports.init = function (app) {
     app.post('/addOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.addOrgCurator);
     app.post('/removeOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.removeOrgCurator);
 
-    app.post('/updateUserRoles', [authorization.isOrgAuthorityMiddleware], (req, res) => {
-        usersrvc.updateUserRoles(req.body, handleError({req, res}, () => {
-            res.status(200).end();
-        }));
-    });
-
-    app.post('/updateUserAvatar', [authorization.isOrgAuthorityMiddleware], (req, res) => {
-        usersrvc.updateUserAvatar(req.body, handleError({req, res}, () => {
-            res.status(200).end();
-        }));
-    });
+    app.post('/updateUserRoles', [authorization.isOrgAuthorityMiddleware], usersrvc.updateUserRoles);
+    app.post('/updateUserAvatar', [authorization.isOrgAuthorityMiddleware], usersrvc.updateUserAvatar);
 
     app.get('/data/:imgtag', (req, res) => {
         mongo_data.getFile(req.user, req.params.imgtag, res);

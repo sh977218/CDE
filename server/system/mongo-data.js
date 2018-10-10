@@ -528,9 +528,9 @@ exports.addUserRole = function (request, cb) {
     });
 };
 
-exports.usersByRole = function (role, callback) {
-    User.find({roles: role}, callback);
-};
+// exports.usersByRole = function (role, callback) {
+//     User.find({roles: role}, callback);
+// };
 
 exports.mailStatus = function (user, callback) {
     exports.getMessages({user: user, params: {type: "received"}}, callback);

@@ -262,24 +262,22 @@ let requestSchema = {
     }
 };
 
+let elementRefSchema = {
+    eltId: StringType,
+    eltType: {type: StringType, enum: ['board', 'cde', 'form']},
+    name: StringType,
+};
+
 let commentApprovalSchema = {
-    element: {
-        eltId: StringType,
-        name: StringType,
-        eltType: {type: StringType, enum: ["cde", "form", "board"]},
-    },
     comment: {
         commentId: StringType,
         replyIndex: Number,
         text: StringType
-    }
+    },
+    element: elementRefSchema,
 };
 let boardApprovalSchema = {
-    element: {
-        eltId: StringType,
-        name: StringType,
-        eltType: {type: StringType, enum: ["cde", "form", "board"]},
-    }
+    element: elementRefSchema,
 };
 
 exports.message = new Schema({
