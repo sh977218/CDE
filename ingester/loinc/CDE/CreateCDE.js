@@ -15,7 +15,8 @@ const today = new Date().toJSON();
 const ParseClassification = require('../Shared/ParseClassification');
 
 exports.createCde = function (element, orgInfo) {
-    let loinc = element.loinc;
+    let loinc = element;
+    if (element.loinc) loinc = element.loinc;
     return new Promise(async (resolve, reject) => {
         let designations = ParseDesignations.parseDesignations(loinc, element);
         let definitions = ParseDefinitions.parseDefinitions(loinc);

@@ -1,7 +1,7 @@
 const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 const loincLoader = require('./../Website/loincLoader');
 
-const loincId = '86636-8';
+const loincId = '76468-8';
 
 async function run() {
     await MigrationLoincModel.remove({loincId: loincId});
@@ -11,4 +11,4 @@ async function run() {
     }, err => console.log(err));
 }
 
-run();
+run().then();

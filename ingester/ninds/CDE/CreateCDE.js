@@ -59,6 +59,7 @@ parseProperties = ninds => {
             source: 'NINDS'
         });
     });
+/*
     ninds.instruction.forEach(i => {
         properties.push({
             key: 'NINDS Guidelines',
@@ -67,6 +68,7 @@ parseProperties = ninds => {
             source: 'NINDS'
         });
     });
+*/
     ninds.aliasesForVariableName.forEach(a => {
         if (a !== 'Aliases for variable name not defined')
             properties.push({
