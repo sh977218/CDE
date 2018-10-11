@@ -22,4 +22,4 @@ async function run() {
     console.log('***********Finished loading loinc Id ' + loincId);
 }
 
-run();
+run().then();
