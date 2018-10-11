@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatChipInputEvent, MatDialog } from '@angular/material';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from 'angular-tree-component';
 import _clone from 'lodash/clone';
 import { Observable } from 'rxjs/Observable';
@@ -78,7 +77,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
-                public modalService: NgbModal,
                 public dialog: MatDialog,
                 private orgHelperService: OrgHelperService,
                 public skipLogicValidateService: SkipLogicValidateService,
@@ -124,16 +122,16 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     openEditAnswerModal(q) {
         if (q.question.answers.length > 0) {
-            const modalRef = this.modalService.open(QuestionAnswerEditContentComponent, {size: 'lg'});
-            modalRef.componentInstance.answers = q.question.answers;
-            modalRef.componentInstance.onCleared.subscribe(() => {
-                this.onAnswerListRemove(this.question.question.defaultAnswer || undefined);
-            });
-            modalRef.componentInstance.onSaved.subscribe((answers) => {
-                q.question.answers = _clone(answers);
-                this.onEltChange.emit();
-                modalRef.close();
-            });
+            const modalRef = this.dialog.open(QuestionAnswerEditContentComponent, {data: {answers: q.question.answers}})
+                .afterClosed().subscribe(response => {
+                    if (response === "clear") {
+                        q.question.answers = [];
+                        this.onAnswerListRemove(this.question.question.defaultAnswer || undefined);
+                    } else if (response) {
+                        q.question.answers = _clone(response);
+                        this.onEltChange.emit();
+                    }
+                });
         }
     }
 

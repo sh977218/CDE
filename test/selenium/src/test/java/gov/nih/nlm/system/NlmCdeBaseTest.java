@@ -950,6 +950,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//mat-icon[. = 'check']";
         if (newDesignation != null) {
             clickElement(By.xpath(designationEditIconXpath));
+            hangon(1);
             findElement(By.xpath(designationInputXpath)).sendKeys(newDesignation);
             hangon(2);
             clickElement(By.xpath(designationConfirmBtnXpath));
@@ -1014,6 +1015,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void addNewDefinition(String definition, boolean isHtml, String[] tags) {
         clickElement(By.id("openNewDefinitionModalBtn"));
+        hangon(1);
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.xpath("//*[@id='newDefinition']//textarea")).sendKeys(definition);
         if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button/span[contains(text(),'Rich Text')]"));
@@ -1684,9 +1686,15 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String xpath = getCommentIconXpath(message, "comment", "reopen");
         clickElement(By.xpath(xpath));
         isCommentOrReplyExists(message, true);
-        wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
-                By.xpath("//div[normalize-space()='" + message + "']/span"),
-                "class", "strike")));
+        try {
+            wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
+                    By.xpath("//div[normalize-space()='" + message + "']/span"),
+                    "class", "strike")));
+        } catch (StaleElementReferenceException e) {
+            wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
+                    By.xpath("//div[normalize-space()='" + message + "']/span"),
+                    "class", "strike")));
+        }
     }
 
     private Map<String, String> COMMENT_Title_Case_MAP = new HashMap<String, String>() {

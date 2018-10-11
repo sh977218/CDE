@@ -1,5 +1,5 @@
-import { Component, Output, EventEmitter } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Output, EventEmitter, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
     selector: "cde-question-answer-edit",
@@ -11,6 +11,8 @@ export class QuestionAnswerEditContentComponent {
     @Output() onSaved: EventEmitter<void> = new EventEmitter<void>();
     answers;
 
-    constructor(public activeModal: NgbActiveModal) {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+        this.answers = data.answers;
     }
+
 }

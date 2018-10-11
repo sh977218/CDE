@@ -28,10 +28,7 @@
     </table>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-danger" style="margin-right: auto"
-            (click)="answers.length = 0; onCleared.emit(); onSaved.emit(answers);">Clear All</button>
-    <button class="btn btn-outline-dark" (click)="activeModal.close('Close click');" id="cancelEditAnswerBtn">
-        Cancel
-    </button>
-    <button class="btn btn-warning" (click)="onSaved.emit(answers);" id="saveEditAnswerBtn">Save</button>
+    <button mat-raised-button [mat-dialog-close]="'clear'">Clear All</button>
+    <button mat-raised-button [mat-dialog-close] id="cancelEditAnswerBtn">Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="answers" id="saveEditAnswerBtn">Save</button>
 </div>

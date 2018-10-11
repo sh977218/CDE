@@ -1,18 +1,17 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { IActionMapping, TreeComponent, TreeNode } from 'angular-tree-component';
 import _noop from 'lodash/noop';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
-
 import { AlertService } from '_app/alert.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { ClassificationService } from 'core/classification.service';
 import { Cb, ClassificationClassified, ElasticQueryResponse, Organization } from 'shared/models.model';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 
 const actionMapping: IActionMapping = {
@@ -29,11 +28,11 @@ const actionMapping: IActionMapping = {
     templateUrl: './orgClassificationManagement.component.html'
 })
 export class OrgClassificationManagementComponent implements OnInit {
-    @ViewChild('renameClassificationContent') renameClassificationContent!: NgbModalModule;
-    @ViewChild('deleteClassificationContent') deleteClassificationContent!: NgbModalModule;
+    @ViewChild('renameClassificationContent') renameClassificationContent!: TemplateRef<any>;
+    @ViewChild('deleteClassificationContent') deleteClassificationContent!: TemplateRef<any>;
     @ViewChild('reclassifyComponent') reclassifyComponent!: ClassifyItemModalComponent;
-    @ViewChild('addChildClassificationContent') addChildClassificationContent!: NgbModalModule;
-    @ViewChild('mapClassificationMeshContent') mapClassificationMeshContent!: NgbModalModule;
+    @ViewChild('addChildClassificationContent') addChildClassificationContent!: TemplateRef<any>;
+    @ViewChild('mapClassificationMeshContent') mapClassificationMeshContent!: TemplateRef<any>;
     @ViewChild(TreeComponent) private tree!: TreeComponent;
     childClassificationNode?: TreeNode;
     descriptorID?: string;
@@ -44,7 +43,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         meshDescriptors: string[],
     };
     meshSearchTerm = '';
-    modalRef?: NgbModalRef;
+    dialogRef?: MatDialogRef<TemplateRef<any>>;
     newClassificationName?: string;
     oldReclassificationArray?: string[];
     onInitDone: boolean = false;
@@ -107,7 +106,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         private alert: AlertService,
         private classificationSvc: ClassificationService,
         private http: HttpClient,
-        public modalService: NgbModal,
+        public dialog: MatDialog,
         private userService: UserService,
     ) {
     }
@@ -137,7 +136,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.classificationSvc.addChildClassification(newClassification, (message: string) => {
             this.onChangeOrg(this.selectedOrg!.name, () => {
                 this.alert.addAlert('success', message);
-                this.modalRef!.close();
+                this.dialogRef!.close();
             });
         });
     }
@@ -191,7 +190,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.childClassificationNode = node;
         this.selectedClassificationArray = '';
         this.newClassificationName = '';
-        this.modalRef = this.modalService.open(this.addChildClassificationContent);
+        this.dialogRef = this.dialog.open(this.addChildClassificationContent);
     }
 
     openDeleteClassificationModal(node: TreeNode) {
@@ -210,8 +209,8 @@ export class OrgClassificationManagementComponent implements OnInit {
             }
             else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
         });
-        this.modalService.open(this.deleteClassificationContent).result.then(result => {
-            if (result === 'confirm') {
+        this.dialog.open(this.deleteClassificationContent).afterClosed().subscribe(result => {
+            if (result) {
                 let deleteClassification = {
                     orgName: this.selectedOrg!.name,
                     categories: classificationArray
@@ -244,9 +243,8 @@ export class OrgClassificationManagementComponent implements OnInit {
             }
             else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
         });
-        this.modalService.open(this.mapClassificationMeshContent)
-            .result.then(result => {
-            if (result === 'confirm') {
+        this.dialog.open(this.mapClassificationMeshContent).afterClosed().subscribe(result => {
+            if (result) {
                 classificationArray.push(this.newClassificationName);
                 let newClassification = {
                     orgName: this.selectedOrg!.name,
@@ -257,8 +255,7 @@ export class OrgClassificationManagementComponent implements OnInit {
                     this.alert.addAlert('success', 'Classification Added');
                 });
             }
-        }, () => {
-        });
+        }, () => {});
     }
 
     openReclassificationModal(node: TreeNode) {
@@ -286,7 +283,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.newClassificationName = node.data.name;
         this.userTyped = '';
         this.selectedClassificationArray = '';
-        this.modalRef = this.modalService.open(this.renameClassificationContent);
+        this.dialogRef = this.dialog.open(this.renameClassificationContent);
     }
 
     reclassify(event: ClassificationClassified) {
@@ -326,7 +323,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.classificationSvc.renameOrgClassification(newClassification, (message: string) => this.alert.addAlert('info', message));
         this.checkJob('renameClassification', () => {
             this.alert.addAlert('success', 'Classification Renamed.');
-            this.modalRef!.close();
+            this.dialogRef!.close();
         });
     }
 
