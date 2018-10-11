@@ -9,12 +9,6 @@ let DAOs = [
         count: 0,
         dao: DataElement,
         incorrectMap: {}
-    },
-    {
-        name: 'form',
-        count: 0,
-        dao: Form,
-        incorrectMap: {}
     }
 ];
 
@@ -24,14 +18,18 @@ doDAO = DAO => {
         DAO.dao.find(cond).cursor({batchSize: 1000, useMongooseAggCursor: true})
             .eachAsync(elt => {
                 let list = elt.toObject().referenceDocuments;
+                let list1 = elt.toObject().properties;
                 return new Promise(async (resolveDAO, reject) => {
                     if (list.length > 0) {
-                        let filterList = list.filter(r => r.key !== 'NINDS Guidelines');
-                        filterList.forEach(r => r.source = 'NINDS');
-                        elt.referenceDocuments = filterList;
-                        await elt.save();
-                        console.log(DAO.name + ': ' + ++DAO.count);
+                        list.forEach(r => r.source = 'NINDS');
+                        elt.referenceDocuments = list;
                     }
+                    if(list1.length > 0 ){
+                        let filterList = list1.filter(r => r.key !== 'NINDS Guidelines');
+                        elt.properties = filterList;
+                    }
+                    await elt.save();
+                    console.log(DAO.name + ': ' + ++DAO.count);
                     resolveDAO();
                 });
             }).then(() => resolve());
