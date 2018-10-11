@@ -137,6 +137,7 @@ function doOneCdeId(cdeId) {
                 if (populationIndex === -1) cde.population.push(population);
             });
             let reference = nindsCde.cdes[0].reference.trim();
+            let refWords = _.words(reference, /[^\s]+/g);
             let referenceIndex = _.findIndex(cde.reference, o => _.isEqual(o, reference));
             if (referenceIndex === -1) cde.reference.push(reference);
 
