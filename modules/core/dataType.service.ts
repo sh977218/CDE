@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class DataTypeService {
-    static dataElementDataType = ['Text', 'Number', 'Date', 'Time', 'Value List', 'File', 'GEO Location', 'Externally Defined'];
+    static dataElementDataType = ['Text', 'Number', 'Date', 'Time', 'Value List', 'File', 'Geo Location', 'Externally Defined'];
 
     public static getDataType() {
         return this.dataElementDataType;
