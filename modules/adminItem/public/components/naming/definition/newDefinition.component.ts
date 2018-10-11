@@ -1,7 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Inject, Input } from '@angular/core';
 
 import { Definition } from 'shared/models.model';
+import { MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
     selector: 'cde-new-definition',
@@ -10,10 +10,10 @@ import { Definition } from 'shared/models.model';
 export class NewDefinitionComponent {
     noTagFoundMessage = 'No Tags found, Tags are managed in Org Management > List Management';
     @Input() tags = [];
-    @Output() onSave = new EventEmitter();
     newDefinition: Definition = new Definition;
 
-    constructor(public activeModal: NgbActiveModal) {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+        this.tags = data.tags;
     }
 
 }

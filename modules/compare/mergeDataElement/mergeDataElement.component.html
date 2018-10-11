@@ -1,8 +1,8 @@
-<a class='btn   btn-outline-dark fa fa-clipboard MergeDataElement'
-   id="openMergeDataElementModalBtn" (click)="openMergeDataElementModal()"> Merge Data Element</a>
+<button mat-raised-button id="openMergeDataElementModalBtn"
+        (click)="openMergeDataElementModal()"><mat-icon>content_copy</mat-icon>Merge Data Element</button>
 
-<ng-template #mergeDataElementContent id="mergeDataElementModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="MergeDataElementModalHeader">
+<ng-template #mergeDataElementContent>
+    <div mat-dialog-title>
         <div class="col-10 col-offset-1">
             <a target="_blank" href="/deView?tinyId={{source.tinyId}}">{{source.designations[0].designation}}</a>
             [{{ source.stewardOrg.name }}]
@@ -12,7 +12,7 @@
             [{{ destination.stewardOrg.name }}]
         </div>
     </div>
-    <div class="modal-body" id="MergeDataElementModalBody">
+    <div mat-dialog-content>
         <div class="col-10 col-offset-1">
             Fields to be Imported
             <button id="checkAllMergeFieldsBtn" mat-raised-button (click)="checkAllMergerFields();">
@@ -88,8 +88,8 @@
             </div>
         </div>
     </div>
-    <div class="modal-footer" id="MergeDataElementModalFooter">
-        <button mat-raised-button (click)="c()" color="warn">Cancel</button>
+    <div mat-dialog-actions>
+        <button mat-raised-button [mat-dialog-close] color="warn">Cancel</button>
         <button mat-raised-button color="primary" (click)="doMerge()" [disabled]="!allow" id="doMergeBtn">
             Retire & Merge
         </button>
