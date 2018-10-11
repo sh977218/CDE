@@ -11,6 +11,7 @@ public class FormGeoLocationRenderTest extends QuestionTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String formName = "Geo Location Test";
         goToFormByName(formName);
+        goToFormDescription();
         addSection("", "F", 0);
         startEditQuestionById("question_0_0");
         addQuestionToSection("Geo Location CDE", 0);
