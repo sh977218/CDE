@@ -1,21 +1,18 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
-
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { AlertService } from '_app/alert.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { MergeCdeService } from 'core/mergeCde.service';
-
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-merge-data-element',
-    providers: [NgbActiveModal],
     templateUrl: './mergeDataElement.component.html'
 })
 export class MergeDataElementComponent {
     @Input() public source: any;
     @Input() public destination: any;
     @Output() doneMerge = new EventEmitter();
-    @ViewChild('mergeDataElementContent') public mergeDataElementContent: NgbModalModule;
+    @ViewChild('mergeDataElementContent') public mergeDataElementContent: TemplateRef<any>;
     allow = true;
     mergeFields: any = {
         classifications: true,
@@ -30,12 +27,12 @@ export class MergeDataElementComponent {
         derivationRules: false,
         retireCde: true
     };
-    modalRef: NgbModalRef;
+    dialogRef: MatDialogRef<TemplateRef<any>>;
 
     constructor(private alert: AlertService,
                 public isAllowedModel: IsAllowedService,
                 public mergeCdeService: MergeCdeService,
-                public modalService: NgbModal) {
+                public dialog: MatDialog) {
     }
 
     allowToMerge() {
@@ -78,12 +75,12 @@ export class MergeDataElementComponent {
             else {
                 this.alert.addAlert('success', 'Finished merging');
                 this.doneMerge.emit({left: results[0], right: results[1]});
-                this.modalRef.close();
+                this.dialogRef.close();
             }
         });
     }
 
     openMergeDataElementModal() {
-        this.modalRef = this.modalService.open(this.mergeDataElementContent, {size: 'lg'});
+        this.dialogRef = this.dialog.open(this.mergeDataElementContent, {width: '1000px'});
     }
 }

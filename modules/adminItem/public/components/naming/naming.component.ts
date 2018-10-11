@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import _uniq from 'lodash/uniq';
 
 import { OrgHelperService } from 'core/orgHelper.service';
 import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-naming',
@@ -16,7 +16,7 @@ export class NamingComponent implements OnInit {
     @Output() onEltChange = new EventEmitter();
     tags = [];
 
-    constructor(public modalService: NgbModal,
+    constructor(public dialog: MatDialog,
                 private orgHelperService: OrgHelperService) {
     }
 
@@ -40,22 +40,20 @@ export class NamingComponent implements OnInit {
     }
 
     openNewDesignationModal() {
-        const modalRef = this.modalService.open(NewDesignationComponent, {size: 'lg'});
-        modalRef.componentInstance.tags = this.tags;
-        modalRef.componentInstance.onSave.subscribe(newDesignation => {
-            this.elt.designations.push(newDesignation);
-            modalRef.close();
-            this.onEltChange.emit();
+        this.dialog.open(NewDesignationComponent, {data: {tags: this.tags}}).afterClosed().subscribe(newDesignation => {
+            if (newDesignation) {
+                this.elt.designations.push(newDesignation);
+                this.onEltChange.emit();
+            }
         });
     }
 
     openNewDefinitionModal() {
-        const modalRef = this.modalService.open(NewDefinitionComponent, {size: 'lg'});
-        modalRef.componentInstance.tags = this.tags;
-        modalRef.componentInstance.onSave.subscribe(newDefinition => {
-            this.elt.definitions.push(newDefinition);
-            modalRef.close();
-            this.onEltChange.emit();
+        this.dialog.open(NewDefinitionComponent, {data: {tags: this.tags}}).afterClosed().subscribe(newDefinition => {
+            if (newDefinition) {
+                this.elt.definitions.push(newDefinition);
+                this.onEltChange.emit();
+            }
         });
     }
 }

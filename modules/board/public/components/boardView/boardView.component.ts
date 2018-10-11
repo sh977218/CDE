@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import _noop from 'lodash/noop';
 import { saveAs } from 'file-saver';
 import { AlertService } from '_app/alert.service';
@@ -59,7 +58,6 @@ export class BoardViewComponent implements OnInit {
     constructor(private alert: AlertService,
                 public esService: ElasticService,
                 private http: HttpClient,
-                private modalService: NgbModal,
                 private orgHelperService: OrgHelperService,
                 private route: ActivatedRoute,
                 private dialog: MatDialog,

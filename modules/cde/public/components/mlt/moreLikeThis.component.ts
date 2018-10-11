@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
 import { AlertService } from '_app/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
@@ -23,7 +21,6 @@ export class MoreLikeThisComponent {
         private http: HttpClient,
         private router: Router,
         private alert: AlertService,
-        public modalService: NgbModal,
         private dialog: MatDialog,
         public quickBoardService: QuickBoardListService
     ) {}

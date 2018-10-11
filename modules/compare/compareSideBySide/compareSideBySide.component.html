@@ -4,33 +4,33 @@
 </button>
 
 <ng-template #compareSideBySideContent>
-    <div mat-dialog-title>
-        <div class="col-6 leftObj">
-            <a id="sourceElement" class='btn   btn-outline-dark' target="_blank" [href]=leftUrl>
-                <mat-icon>visibility</mat-icon> View Full Detail</a>
-            <ng-container *ngIf="canMergeDataElement">
-                <cde-merge-data-element [source]="left" [destination]="right"
-                                        (doneMerge)="doneMerge($event)"></cde-merge-data-element>
-            </ng-container>
-            <ng-container *ngIf="canMergeForm">
-                <cde-merge-form [left]="left" [right]="right"
-                                (doneMerge)="doneMerge($event)"></cde-merge-form>
-            </ng-container>
-        </div>
-        <div class="col-6 rightObj">
-            <a id="destinationElement" class='btn   btn-outline-dark' target="_blank" [href]=rightUrl>
-                <mat-icon>visibility</mat-icon> View Full Detail</a>
-            <ng-container *ngIf="canMergeDataElement">
-                <cde-merge-data-element [source]="left" [destination]="right"
-                                        (doneMerge)="doneMerge($event)"></cde-merge-data-element>
-            </ng-container>
-            <ng-container *ngIf="canMergeForm">
-                <cde-merge-form [left]="right" [right]="left"
-                                (doneMerge)="doneMerge($event)"></cde-merge-form>
-            </ng-container>
-        </div>
-    </div>
     <div mat-dialog-content>
+        <div class="row">
+            <div class="col-6 leftObj">
+                <a id="sourceElement" target="_blank" [href]=leftUrl>
+                    <button mat-raised-button><mat-icon>visibility</mat-icon> View Full Detail</button></a>
+                <ng-container *ngIf="canMergeDataElement">
+                    <cde-merge-data-element [source]="left" [destination]="right"
+                                            (doneMerge)="doneMerge($event)"></cde-merge-data-element>
+                </ng-container>
+                <ng-container *ngIf="canMergeForm">
+                    <cde-merge-form [left]="left" [right]="right"
+                                    (doneMerge)="doneMerge($event)"></cde-merge-form>
+                </ng-container>
+            </div>
+            <div class="col-6 rightObj">
+                <a id="destinationElement" target="_blank" [href]=rightUrl>
+                    <button mat-raised-button><mat-icon>visibility</mat-icon> View Full Detail</button></a>
+                <ng-container *ngIf="canMergeDataElement">
+                    <cde-merge-data-element [source]="left" [destination]="right"
+                                            (doneMerge)="doneMerge($event)"></cde-merge-data-element>
+                </ng-container>
+                <ng-container *ngIf="canMergeForm">
+                    <cde-merge-form [left]="right" [right]="left"
+                                    (doneMerge)="doneMerge($event)"></cde-merge-form>
+                </ng-container>
+            </div>
+        </div>
         <ng-container *ngFor="let option of options">
             <div *ngIf="option.displayAs.display" id="{{option.displayAs.label}}">
                 <div class="overflowHidden">
