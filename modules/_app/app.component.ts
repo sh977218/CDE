@@ -16,6 +16,7 @@ import { IEGuard } from '_app/routerGuard/ieGuard';
 @Component({
     selector: 'nih-cde',
     template: `
+        <cde-ie-banner></cde-ie-banner>
         <cde-navigation></cde-navigation>
     `
 })
@@ -92,10 +93,7 @@ export class CdeAppComponent implements OnInit {
                 private router: Router,
                 private userService: UserService,
                 iconReg: MatIconRegistry,
-                sanitizer: DomSanitizer,
-                ieGuard: IEGuard) {
-
-        if (ieGuard.checkIE()) console.log
+                sanitizer: DomSanitizer) {
 
         if (!!(<any>window).ga) {
             this.router.events.subscribe(event => {
