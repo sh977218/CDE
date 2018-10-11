@@ -45,12 +45,10 @@
     </div>
 </div>
 
-<ng-template #renameClassificationContent id="renameClassificationModal" let-c="close" let-d="dismiss">
+<ng-template #renameClassificationContent>
     <form #renameClassificationForm="ngForm" (ngSubmit)="renameClassification(renameClassificationNode)">
-        <div class="modal-header" id="renameClassificationModalHeader">
-            <h4 class="modal-title">Rename Classification</h4>
-        </div>
-        <div class="modal-body" id="renameClassificationModalBody">
+        <h4 mat-dialog-title>Rename Classification</h4>
+        <div mat-dialog-content>
             <input class="form-control" [(ngModel)]="newClassificationName" name="newClassificationName"
                    placeholder="New Classification Name" id="newClassificationName" pattern="^[^;]+$"
                    #newClassificationInput="ngModel" required>
@@ -61,8 +59,8 @@
                 Classification Name cannot contain <strong>;</strong>
             </span>
         </div>
-        <div class="modal-footer" id="renameClassificationModalFooter">
-            <button (click)="c('cancel')" id="cancelRenameClassificationBtn"
+        <div mat-dialog-actions>
+            <button [mat-dialog-close] id="cancelRenameClassificationBtn"
                     mat-raised-button color="warn" type="button">Cancel
             </button>
             <button mat-raised-button color="primary" id="confirmRenameClassificationBtn"
@@ -73,11 +71,9 @@
     </form>
 </ng-template>
 
-<ng-template #deleteClassificationContent id="deleteClassificationModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="deleteClassificationModalHeader">
-        <h4 class="modal-title">Remove Classification</h4>
-    </div>
-    <div class="modal-body" id="deleteClassificationModalBody">
+<ng-template #deleteClassificationContent>
+    <h4 mat-dialog-title>Remove Classification</h4>
+    <div mat-dialog-content>
         You are about to delete the following classification:
         <br>
         <br>
@@ -92,13 +88,10 @@
         <input id="removeClassificationUserTyped" [(ngModel)]="userTyped" class="form-control"
                [placeholder]="selectedClassificationString" title="Please confirm">
     </div>
-    <div class="modal-footer" id="deleteClassificationModalFooter">
-        <button class="btn btn-outline-dark" (click)="c('cancel')" id="cancelDeleteClassificationBtn"
-                name="cancelDeleteClassificationBtn" type="button">Cancel
-        </button>
-        <button class="btn  btn-danger" (click)="c('confirm')" id="confirmDeleteClassificationBtn"
-                [disabled]="userTyped !== selectedClassificationString" name="confirmDeleteClassificationBtn"
-                type="submit">OK
+    <div mat-dialog-actions>
+        <button mat-raised-button [mat-dialog-close] id="cancelDeleteClassificationBtn" type="button">Cancel</button>
+        <button mat-raised-button [mat-dialog-close]="true" id="confirmDeleteClassificationBtn"
+                [disabled]="userTyped !== selectedClassificationString" type="submit">OK
         </button>
     </div>
 </ng-template>
@@ -107,12 +100,10 @@
                          (onEltSelected)="reclassify($event)">
 </cde-classify-item-modal>
 
-<ng-template #addChildClassificationContent id="addChildClassificationModal" let-c="close" let-d="dismiss">
+<ng-template #addChildClassificationContent>
+    <h4 mat-dialog-title> Add Child Classification</h4>
     <form #addChildClassificationForm="ngForm" (ngSubmit)="addChildClassification(childClassificationNode);">
-        <div class="modal-header" id="addChildClassificationModalHeader">
-            <h4 class="modal-title"> Add Child Classification</h4>
-        </div>
-        <div class="modal-body" id="addChildClassificationModalBody">
+        <div mat-dialog-content>
             Add a new classification under path:
             <br>
             <br>
@@ -122,24 +113,21 @@
             <input class="form-control" [(ngModel)]="newClassificationName" name="newClassificationName"
                    placeholder="New Classification Name" id="addChildClassifInput" pattern="^[^;]+$" required>
         </div>
-        <div class="modal-footer" id="addChildClassificationModalFooter">
-            <button class="btn btn-outline-dark" (click)="c('cancel')" id="cancelAddChildClassificationBtn"
+        <div mat-dialog-actions>
+            <button mat-raised-button [mat-dialog-close] id="cancelAddChildClassificationBtn"
                     name="cancelDeleteClassificationBtn">Cancel
             </button>
-            <button class="btn  btn-danger" type="submit" id="confirmAddChildClassificationBtn"
-                    [disabled]="!newClassificationName && !addChildClassificationForm.form.valid"
-                    name="confirmDeleteClassificationBtn">OK
+            <button mat-raised-button type="submit" id="confirmAddChildClassificationBtn"
+                    [disabled]="!newClassificationName && !addChildClassificationForm.form.valid">OK
             </button>
         </div>
     </form>
 </ng-template>
 
-<ng-template #mapClassificationMeshContent id="mapClassificationMeshModal" let-c="close" let-d="dismiss">
+<ng-template #mapClassificationMeshContent>
+    <h4 mat-dialog-title>Mesh Mappings</h4>
     <form #mapClassificationMeshForm="ngForm" (ngSubmit)="addMeshDescriptor()">
-        <div class="modal-header" id="mapClassificationMeshModalHeader">
-            <h4 class="modal-title">Mesh Mappings</h4>
-        </div>
-        <div class="modal-body" id="mapClassificationMeshModalBody">
+        <div mat-dialog-content>
             <div *ngIf="mapping.meshDescriptors.length === 0">
                 No mapping. Add more below.
             </div>
@@ -165,8 +153,8 @@
             </div>
 
         </div>
-        <div class="modal-footer" id="mapClassificationMeshModalFooter">
-            <button mat-raised-button (click)="c('cancel')" id="cancelMapClassificationMeshBtn">Close</button>
+        <div mat-dialog-actions>
+            <button mat-raised-button [mat-dialog-close] id="cancelMapClassificationMeshBtn">Close</button>
         </div>
     </form>
 </ng-template>
