@@ -44,6 +44,7 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
         clickElement(By.id("removeStatuses"));
         clickElement(By.id("removeTopics"));
         clickElement(By.id("removeClassifications"));
+        hangon(1);
         clickElement(By.id("removeClassifications"));
         clickElement(By.id("removeTerm"));
 
