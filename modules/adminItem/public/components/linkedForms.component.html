@@ -10,11 +10,9 @@
                 (click)="viewLinkedForms()">
                 <mat-icon>visibility</mat-icon> See all linked forms</button>
 
-            <hr/>
             <div *ngIf="forms && forms.length > 0">
-                <h4>Preview: </h4>
                 <cde-summary-list id="linkedFormsAccordionList" [contentComponent]="formSummaryContentComponent"
-                                  [elts]="forms" (select)="d()"></cde-summary-list>
+                                  [elts]="forms" (select)="dialogRef.close()"></cde-summary-list>
             </div>
         </div>
         <div mat-dialog-actions>

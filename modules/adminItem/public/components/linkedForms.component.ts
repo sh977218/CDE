@@ -2,7 +2,7 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { CdeForm } from 'shared/form/form.model';
 import { ElasticService } from '_app/elastic.service';
 import { FormSummaryListContentComponent } from 'form/public/components/listView/formSummaryListContent.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-linked-forms',
@@ -15,6 +15,7 @@ export class LinkedFormsComponent {
 
     forms: CdeForm[];
     formSummaryContentComponent = FormSummaryListContentComponent;
+    dialogRef: MatDialogRef<TemplateRef<any>>;
 
     constructor(private elasticService: ElasticService,
                 public dialog: MatDialog) {}
@@ -39,12 +40,8 @@ export class LinkedFormsComponent {
         searchSettings.q = '"' + this.elt.tinyId + '"';
         this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), 'form', (err, result) => {
             if (err) return;
-            this.forms = result.forms.filter(f => {
-                 return f.tinyId !== this.elt.tinyId;
-            });
-            setTimeout(() => {
-                this.dialog.open(this.linkedFormsContent);
-            }, 0);
+            this.forms = result.forms.filter(f => f.tinyId !== this.elt.tinyId);
+            this.dialogRef = this.dialog.open(this.linkedFormsContent);
         });
     }
 
