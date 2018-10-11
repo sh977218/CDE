@@ -31,6 +31,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'answerListLabel')]//mat-icon"));
         clickElement(By.id("moveUp-1"));
         clickElement(By.id("saveEditAnswerBtn"));
+        hangon(1);
         lis = driver.findElements(By.xpath(question_zero_answer_list_xpath));
         Assert.assertEquals(lis.size(), 3);
         Assert.assertEquals(lis.get(0).getText(), "×Male Gender");
