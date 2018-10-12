@@ -13,7 +13,6 @@ public class FormGeoLocationRenderTest extends QuestionTest {
         goToFormByName(formName);
         goToFormDescription();
         addSection("", "F", 0);
-        startEditQuestionById("question_0_0");
         addQuestionToSection("Geo Location CDE", 0);
         textPresent("(Geo Location)", By.id("question_0-1"));
 
