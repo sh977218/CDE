@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 
 @Component({
     selector: 'cde-ie-banner',
-    templateUrl: 'IEBanner.component.html',
+    templateUrl: 'ieBanner.component.html',
     styles: [`
         .ieBanner {
             color: #211e14;
