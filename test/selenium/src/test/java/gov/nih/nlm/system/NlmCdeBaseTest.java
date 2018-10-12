@@ -1011,6 +1011,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             }
         }
         clickElement(By.id("createNewDesignationBtn"));
+        hangon(1);
     }
 
     protected void addNewDefinition(String definition, boolean isHtml, String[] tags) {

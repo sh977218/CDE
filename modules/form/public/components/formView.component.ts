@@ -195,6 +195,8 @@ export class FormViewComponent implements OnInit {
     loadPublished(cb = _noop) {
         let formId = this.route.snapshot.queryParams['formId'];
         let url = '/form/' + this.route.snapshot.queryParams['tinyId'];
+        let version = this.route.snapshot.queryParams['version'];
+        if (version) url = url + "/version/" + version;
         if (formId) url = '/formById/' + formId;
         this.http.get<CdeForm>(url).subscribe(
             res => this.formLoaded(res, cb),
