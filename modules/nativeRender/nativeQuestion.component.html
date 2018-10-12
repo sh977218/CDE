@@ -122,6 +122,37 @@
                                [required]="formElement.question.required"
                                [disabled]="!formElement.question.editable"/>
                     </ng-container>
+                    <ng-container *ngSwitchCase="'Geo Location'">
+                        <div class="input-group">
+                            <div class="col-5">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Latitude:</span>
+                                    </div>
+                                    <input type="text" class="form-control" readonly [id]="formElement.feId+'_latitude'"
+                                           value="{{formElement.question.answer?.latitude}}">
+                                </div>
+                            </div>
+                            <div class="col-5">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Longitude:</span>
+                                    </div>
+                                    <input type="text" class="form-control" readonly
+                                           [id]="formElement.feId+'_longitude'"
+                                           value="{{formElement.question.answer?.longitude}}">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-outline-secondary" type="button"
+                                        [id]="formElement.feId+'_location'">
+                                    <mat-icon (click)="getCurrentGeoLocation(formElement);">
+                                        location_searching
+                                    </mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </ng-container>
                     <ng-container *ngSwitchCase="'Number'">
                         <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
                             <input type="number" class="form-control"

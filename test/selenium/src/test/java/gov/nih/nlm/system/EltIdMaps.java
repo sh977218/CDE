@@ -112,6 +112,7 @@ public class EltIdMaps {
         eltMap.put("formAddSuggestedCdeTest", "7kkY62xR4");
         eltMap.put("Answer List Test", "XyWvhfX4W");
         eltMap.put("Form Table Test", "713d9u1vX");
+        eltMap.put("Geo Location Test", "QkdP0NeH8");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");

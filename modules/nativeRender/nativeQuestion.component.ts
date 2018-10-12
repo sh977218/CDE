@@ -107,4 +107,11 @@ export class NativeQuestionComponent implements OnInit {
             && q.elementType === 'question' && q.question.datatype !== 'Value List';
     }
 
+    getCurrentGeoLocation(formElement) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                formElement.question.answer = position.coords;
+            });
+        }
+    }
 }

@@ -74,6 +74,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
             return '(Number)';
         } else if (datatype === 'Date') {
             return '(Date)';
+        } else if (datatype === 'Geo Location') {
+            return '(Geo Location)';
         } else return '';
     }
 
