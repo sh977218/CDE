@@ -1,5 +1,6 @@
-const handleError = require('../log/dbLogger.js').handleError;
-const respondError = require('../log/dbLogger.js').respondError;
+const dbLogger = require('../log/dbLogger');
+const handleError = dbLogger.handleError;
+const respondError = dbLogger.respondError;
 
 module.exports = function timestamped(model, noPost) {
     return {

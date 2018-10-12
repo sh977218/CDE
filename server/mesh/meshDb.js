@@ -1,14 +1,17 @@
-const Schema = require('mongoose').Schema;
-const stringType = require('../system/schemas').stringType;
+const mongoose = require('mongoose');
+require('../system/mongoose-stringtype')(mongoose);
+const Schema = mongoose.Schema;
+const StringType = Schema.Types.StringType;
+
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
 
 let meshClassificationSchema = new Schema({
-    flatClassification: stringType,
-    eltId: stringType,
-    meshDescriptors: [stringType],
-    flatTrees: [stringType]
+    flatClassification: StringType,
+    eltId: StringType,
+    meshDescriptors: [StringType],
+    flatTrees: [StringType]
 });
 
 const MeshClassification = conn.model('meshClassification', meshClassificationSchema);
@@ -26,7 +29,7 @@ exports.byFlatClassification = (flatClassification, callback) => {
 };
 
 exports.findAll = callback => {
-    MeshClassification.find({}, callback)
+    MeshClassification.find({}, callback);
 };
 
 exports.newMesh = (mesh, callback) => {

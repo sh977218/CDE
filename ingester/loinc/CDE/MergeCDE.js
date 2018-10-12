@@ -1,13 +1,13 @@
-const removeClassificationByOrgName = require('../Utility/utility').removeClassificationByOrgName;
+const _ = require('lodash');
 const cdediff = require('../../../server/cde/cdediff');
 const wipeUseless = require('../Utility/utility').wipeUseless;
+const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
 
 exports.compareCdes = function (newCde, existingCde) {
     let newCdeObj = _.cloneDeep(newCde);
     if (newCdeObj.toObject) newCdeObj = newCdeObj.toObject();
     let existingCdeObj = _.cloneDeep(existingCde);
     if (existingCdeObj.toObject) existingCdeObj = existingCdeObj.toObject();
-
 
     [existingCdeObj, newCdeObj].forEach(obj => {
         obj.ids.sort((a, b) => a.source > b.source);
@@ -17,30 +17,49 @@ exports.compareCdes = function (newCde, existingCde) {
     });
     return cdediff.diff(existingCde, newCde);
 };
-
-exports.mergeCde = function (newCde, existingCde, orgName) {
-    return new Promise(async (resolve, reject) => {
-        existingCde.designations = newCde.designations;
-        existingCde.definitios = newCde.designations;
-        existingCde.sources = newCde.sources;
-        existingCde.version = newCde.version;
-        existingCde.changeNote = "Bulk update from source";
-        existingCde.imported = new Date().toJSON();
-        existingCde.dataElementConcept = newCde.dataElementConcept;
-        existingCde.objectClass = newCde.objectClass;
-        existingCde.property = newCde.property;
-        existingCde.valueDomain = newCde.valueDomain;
-        existingCde.mappingSpecifications = newCde.mappingSpecifications;
-        existingCde.referenceDocuments = newCde.referenceDocuments;
-        existingCde.ids = newCde.ids;
-        existingCde.properties = newCde.properties;
-
-        removeClassificationByOrgName(existingCde, orgName);
-        existingCde.classification.push(newCde.classification[0]);
-
-        mongo_cde.update(existingCde, {username: "batchloader"}, err => {
-            if (err) reject(err);
-            else resolve();
-        });
-    })
+mergeDesignations = (o1, o2) => {
+    let result = _.uniqWith(o1.concat(o2), (a, b) => {
+        if (a.designation === b.designation) {
+            a.tags = _.uniq(a.tags.concat(b.tags));
+            return true;
+        }
+        return false;
+    });
+    return result;
+};
+mergeDefinitions = (o1, o2) => {
+    let result = _.uniqWith(o1.concat(o2), (a, b) => {
+        if (a.definition === b.definition && a.definitionFormat === b.definitionFormat) {
+            a.tags = _.uniq(a.tags.concat(b.tags));
+            return true;
+        }
+        return false;
+    });
+    return result;
+};
+mergeSources = (o1, o2) => {
+    let result = _.uniqBy(o1.concat(o2), 'sourceName');
+    return result;
+};
+mergeWithEqual = (o1, o2) => {
+    let result = _.uniqWith(o1.concat(o2), (a, b) => {
+        let aCopy = a;
+        if (a.toObject) aCopy = a.toObject();
+        let bCopy = b;
+        if (b.toObject) bCopy = b.toObject();
+        return _.isEqual(aCopy, bCopy);
+    });
+    return result;
+};
+exports.mergeCde = function (newCde, existingCde) {
+    existingCde.designations = mergeDesignations(existingCde.designations, newCde.designations);
+    existingCde.definitios = mergeDefinitions(existingCde.definitions, newCde.definitions);
+    existingCde.sources = mergeSources(existingCde.sources, newCde.sources);
+    existingCde.property = newCde.property;
+    existingCde.valueDomain = newCde.valueDomain;
+    existingCde.mappingSpecifications = newCde.mappingSpecifications;
+    existingCde.referenceDocuments = mergeWithEqual(existingCde.referenceDocuments, newCde.referenceDocuments);
+    existingCde.properties = mergeWithEqual(existingCde.properties, newCde.properties);
+    existingCde.ids = mergeWithEqual(existingCde.ids, newCde.ids);
+    classificationShared.transferClassifications(newCde, existingCde);
 };

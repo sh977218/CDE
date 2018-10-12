@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
     selector: "cde-compare-history",
@@ -52,6 +52,8 @@ export class CompareHistoryContentComponent {
         }
     };
 
-    constructor(public activeModal: NgbActiveModal) {
+    constructor(@Inject(MAT_DIALOG_DATA) public data) {
+        this.newer = data.newer;
+        this.older = data.older;
     }
 }

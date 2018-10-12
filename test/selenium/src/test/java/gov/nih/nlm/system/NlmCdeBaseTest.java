@@ -614,6 +614,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         findElement(By.id("changeNote")).sendKeys(changeNote);
         findElement(By.name("newVersion")).sendKeys(".1");
         textNotPresent("has already been used");
+        hangon(1);
         clickElement(By.id("confirmSaveBtn"));
     }
 
@@ -949,6 +950,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//mat-icon[. = 'check']";
         if (newDesignation != null) {
             clickElement(By.xpath(designationEditIconXpath));
+            hangon(1);
             findElement(By.xpath(designationInputXpath)).sendKeys(newDesignation);
             hangon(2);
             clickElement(By.xpath(designationConfirmBtnXpath));
@@ -1009,10 +1011,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             }
         }
         clickElement(By.id("createNewDesignationBtn"));
+        hangon(1);
     }
 
     protected void addNewDefinition(String definition, boolean isHtml, String[] tags) {
         clickElement(By.id("openNewDefinitionModalBtn"));
+        hangon(1);
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.xpath("//*[@id='newDefinition']//textarea")).sendKeys(definition);
         if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button/span[contains(text(),'Rich Text')]"));
@@ -1063,19 +1067,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         modalGone();
     }
 
-    protected void addNewConcept(String cName, String cId, String cSystem, String cType) {
-        clickElement(By.id("openNewConceptModalBtn"));
-        findElement(By.name("name")).sendKeys(cName);
-        findElement(By.name("codeId")).sendKeys(cId);
-        if (cSystem != null)
-            new Select(driver.findElement(By.id("codeSystem"))).selectByVisibleText(cSystem);
-        if (cType != null)
-            new Select(driver.findElement(By.id("conceptType"))).selectByVisibleText(cType);
-        clickElement(By.id("createNewConceptBtn"));
-    }
-
     protected void addNewIdentifier(String source, String id, String version) {
         clickElement(By.id("openNewIdentifierModalBtn"));
+        hangon(1);
         findElement(By.id("newSource")).sendKeys(source);
         findElement(By.id("newId")).sendKeys(id);
         if (version != null)
@@ -1684,7 +1678,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String xpath = getCommentIconXpath(message, "comment", "resolve");
         clickElement(By.xpath(xpath));
         isCommentOrReplyExists(message, true);
-        assertClass(By.xpath("//div[normalize-space()='" + message + "']/span"), "strike", true);
+        findElement(By.xpath("//div[normalize-space()='" + message + "']/span[contains(@class, 'strike')]"));
     }
 
     protected void reopenComment(String message) {
@@ -1693,9 +1687,15 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String xpath = getCommentIconXpath(message, "comment", "reopen");
         clickElement(By.xpath(xpath));
         isCommentOrReplyExists(message, true);
-        wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
-                By.xpath("//div[normalize-space()='" + message + "']/span"),
-                "class", "strike")));
+        try {
+            wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
+                    By.xpath("//div[normalize-space()='" + message + "']/span"),
+                    "class", "strike")));
+        } catch (StaleElementReferenceException e) {
+            wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
+                    By.xpath("//div[normalize-space()='" + message + "']/span"),
+                    "class", "strike")));
+        }
     }
 
     private Map<String, String> COMMENT_Title_Case_MAP = new HashMap<String, String>() {

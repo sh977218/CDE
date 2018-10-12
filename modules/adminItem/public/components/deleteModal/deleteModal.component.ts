@@ -1,5 +1,5 @@
-import { Component, Output, ViewChild, EventEmitter } from '@angular/core';
-import { NgbModalRef, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Output, ViewChild, EventEmitter, TemplateRef } from '@angular/core';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-delete-modal',
@@ -7,18 +7,13 @@ import { NgbModalRef, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstra
 })
 export class DeleteModalComponent {
     @Output() confirm = new EventEmitter();
-    modalRef: NgbModalRef;
-    @ViewChild('deleteElementContent') deleteElementContent: NgbModalModule;
+    @ViewChild('deleteElementContent') deleteElementContent: TemplateRef<any>;
 
-    constructor(public modalService: NgbModal) {
-    }
+    constructor(public dialog: MatDialog) {}
 
     openDeleteModal() {
-        this.modalRef = this.modalService.open(this.deleteElementContent, {container: 'body', size: 'sm'});
-    }
-
-    confirmDelete() {
-        this.modalRef.close();
-        this.confirm.emit();
+        this.dialog.open(this.deleteElementContent).afterClosed().subscribe(res => {
+            if (res) this.confirm.emit();
+        });
     }
 }

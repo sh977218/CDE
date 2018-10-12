@@ -25,18 +25,15 @@
 </div>
 
 
-<ng-template #deleteClassificationContent id="deleteClassificationModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="deleteClassificationModalHeader">
-        <h4 class="modal-title">Remove Classification</h4>
-    </div>
-    <div class="modal-body" id="deleteClassificationModalBody">
+<ng-template #deleteClassificationContent>
+    <h4 mat-dialog-title>Remove Classification</h4>
+    <div mat-dialog-content>
         You are about to delete <b>{{deleteClassificationString}}</b> classification. Are you sure?
     </div>
-    <div class="modal-footer" id="deleteClassificationModalFooter">
-        <button (click)="c('cancel')" id="cancelDeleteClassificationBtn" type="button"
+    <div mat-dialog-actions>
+        <button [mat-dialog-close] id="cancelDeleteClassificationBtn" type="button"
                 mat-raised-button color="warn">Cancel</button>
-        <button (click)="c('confirm')" id="confirmDeleteClassificationBtn"
-                type="button" mat-raised-button color="primary">OK
-        </button>
+        <button [mat-dialog-close]="'confirm'" id="confirmDeleteClassificationBtn"
+                type="button" mat-raised-button color="primary">OK</button>
     </div>
 </ng-template>

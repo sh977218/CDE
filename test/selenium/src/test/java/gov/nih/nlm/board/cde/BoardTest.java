@@ -41,6 +41,7 @@ public class BoardTest extends NlmCdeBaseTest {
         gotoMyBoards();
         textPresent("Add Board");
         clickElement(By.id("addBoard"));
+        hangon(1);
         textPresent("Create New Board");
         if (type.equals("cde")) type = "CDEs";
         if (type.equals("form")) type = "Forms";
@@ -96,6 +97,7 @@ public class BoardTest extends NlmCdeBaseTest {
 
     void editBoardByName(String boardName, String boardNameChange, String boardDescriptionChange, boolean isPublic, String[] boardTags) {
         clickElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'editBoard')]"));
+        hangon(1);
         if (boardNameChange != null) findElement(By.id("boardName")).sendKeys(boardNameChange);
         if (boardDescriptionChange != null) findElement(By.id("boardDescription")).sendKeys(boardDescriptionChange);
         if (isPublic) clickElement(By.id("makePublicBtn"));

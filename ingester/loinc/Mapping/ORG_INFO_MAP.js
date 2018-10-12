@@ -5,7 +5,7 @@ exports.map = {
     'ONC': {stewardOrgName: 'NLM', classificationOrgName: 'ONC', classification: []},
     'PHQ9': {stewardOrgName: 'NLM', classificationOrgName: 'NLM', classification: ['PHQ9']},
     'External Forms': {
-        stewardOrgName: 'External Forms',
+        stewardOrgName: 'NLM',
         classificationOrgName: 'External Forms',
         classification: []
     }

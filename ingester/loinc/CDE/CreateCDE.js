@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
 
 const ParseDesignations = require('../Shared/ParseDesignations');
@@ -13,18 +11,13 @@ const ParseSources = require('../Shared/ParseSources');
 const ParseValueDomain = require('./ParseValueDomain');
 const ParseConcept = require('./ParseConcept');
 
-const orgMapping = require('../Mapping/ORG_INFO_MAP').map;
-
 const today = new Date().toJSON();
-const stewardOrgName = 'NLM';
 const ParseClassification = require('../Shared/ParseClassification');
 
-exports.createCde = function (loinc, orgName) {
-    let orgInfo = orgMapping[orgName];
+exports.createCde = function (element, orgInfo) {
+    let loinc = element.loinc;
     return new Promise(async (resolve, reject) => {
-        if (_.isEmpty(stewardOrgName)) reject('StewardOrgName is empty. Please set it first.');
-
-        let designations = ParseDesignations.parseDesignations(loinc);
+        let designations = ParseDesignations.parseDesignations(loinc, element);
         let definitions = ParseDefinitions.parseDefinitions(loinc);
         let ids = ParseIds.parseIds(loinc);
         let properties = ParseProperties.parseProperties(loinc);
@@ -37,7 +30,7 @@ exports.createCde = function (loinc, orgName) {
 
         let newCde = {
             tinyId: generateTinyId(),
-            createdBy: {username: 'batchLoader'},
+            createdBy: {username: 'batchloader'},
             created: today,
             imported: today,
             registrationState: {registrationStatus: "Qualified"},

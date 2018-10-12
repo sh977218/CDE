@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import _cloneDeep from 'lodash/cloneDeep';
 import _differenceWith from 'lodash/differenceWith';
 import _get from 'lodash/get';
@@ -13,6 +12,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 import { AlertService } from '_app/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { IsAllowedService } from 'core/isAllowed.service';
+import { MatDialog } from '@angular/material';
 
 const URL_MAP = {
     'cde': '/de/',
@@ -37,6 +37,7 @@ const URL_MAP = {
             background-color: rgba(242, 217, 217, .5);
             margin: 2px 0;
         }
+
         :host >>> ins {
             color: black;
             background: #bbffbb;
@@ -48,12 +49,9 @@ const URL_MAP = {
         }
     `]
 })
-export class CompareSideBySideComponent implements OnInit {
-    ngOnInit(): void {
-    }
+export class CompareSideBySideComponent {
 
-    @ViewChild('compareSideBySideContent') public compareSideBySideContent: NgbModalModule;
-    public modalRef: NgbModalRef;
+    @ViewChild('compareSideBySideContent') public compareSideBySideContent: TemplateRef<any>;
     @Input() elements: any = [];
     options = [];
     leftUrl;
@@ -66,7 +64,7 @@ export class CompareSideBySideComponent implements OnInit {
     constructor(private alert: AlertService,
                 private http: HttpClient,
                 public isAllowedModel: IsAllowedService,
-                public modalService: NgbModal,
+                public dialog: MatDialog,
                 public quickBoardService: QuickBoardListService) {
     }
 
@@ -275,17 +273,17 @@ export class CompareSideBySideComponent implements OnInit {
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     let diff = [];
-                    if (!_isEqual(a, b) && _isEqual(a.title, b.title)) {
+                    if (!_isEqual(a, b) && _isEqual(a.document, b.document)) {
+                        if (!_isEqual(a.title, b.title)) diff.push('title');
                         if (!_isEqual(a.uri, b.uri)) diff.push('uri');
                         if (!_isEqual(a.providerOrg, b.providerOrg)) diff.push('providerOrg');
                         if (!_isEqual(a.languageCode, b.languageCode)) diff.push('languageCode');
-                        if (!_isEqual(a.document, b.document)) diff.push('document');
                     }
                     return diff;
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
-                    return _isEqual(a.title, b.title);
+                    return _isEqual(a.document, b.document);
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
@@ -705,7 +703,7 @@ export class CompareSideBySideComponent implements OnInit {
             return;
         }
         this.doCompare(selectedDEs[0], selectedDEs[1], () => {
-            this.modalRef = this.modalService.open(this.compareSideBySideContent, {size: 'lg'});
+            this.dialog.open(this.compareSideBySideContent, {width: '1200px'});
         });
     }
 }

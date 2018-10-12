@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbModalRef, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import async_forEach from 'async/forEach';
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
@@ -28,6 +27,7 @@ import {
 } from 'shared/form/fe';
 import { httpErrorMessage } from 'widget/angularHelper';
 import { isIe, scrollTo } from 'widget/browser';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 class LocatableError {
     id: string;
@@ -52,9 +52,9 @@ class LocatableError {
 })
 export class FormViewComponent implements OnInit {
     @ViewChild('commentAreaComponent') commentAreaComponent!: DiscussAreaComponent;
-    @ViewChild('copyFormContent') copyFormContent!: NgbModalModule;
+    @ViewChild('copyFormContent') copyFormContent!: TemplateRef<any>;
     @ViewChild('mltPinModalCde') mltPinModalCde!: PinBoardModalComponent;
-    @ViewChild('exportPublishModal') exportPublishModal!: NgbModalModule;
+    @ViewChild('exportPublishModal') exportPublishModal!: TemplateRef<any>;
     @ViewChild('saveModal') saveModal!: SaveModalComponent;
     commentMode;
     currentTab = 'preview_tab';
@@ -68,7 +68,7 @@ export class FormViewComponent implements OnInit {
     highlightedTabs = [];
     isIe = isIe;
     missingCdes: string[] = [];
-    modalRef?: NgbModalRef;
+    dialogRef: MatDialogRef<any>;
     savingText: string = '';
     tabsCommented: string[] = [];
     validationErrors: { message: string, id: string }[] = [];
@@ -83,7 +83,6 @@ export class FormViewComponent implements OnInit {
 
     constructor(private http: HttpClient,
                 private ref: ChangeDetectorRef,
-                public modalService: NgbModal,
                 public isAllowedModel: IsAllowedService,
                 private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
@@ -93,6 +92,7 @@ export class FormViewComponent implements OnInit {
                 private route: ActivatedRoute,
                 private router: Router,
                 private ucumService: UcumService,
+                private dialog: MatDialog
     ) {
     }
 
@@ -139,10 +139,10 @@ export class FormViewComponent implements OnInit {
             () => {
                 this.userService.reload();
                 this.alert.addAlert('info', 'Done. Go to your profile to see all your published forms');
-                this.modalRef!.close();
+                this.dialogRef!.close();
             }, err => {
                 this.alert.httpErrorMessageAlert(err, 'Error when publishing form.');
-                this.modalRef!.close();
+                this.dialogRef!.close();
             }
         );
     }
@@ -168,7 +168,7 @@ export class FormViewComponent implements OnInit {
     }
 
     loadForm(cb = _noop) {
-        this.userService.then(user => {
+        this.userService.then(() => {
             this.http.get<CdeForm>('/draftForm/' + this.route.snapshot.queryParams['tinyId']).subscribe(
                 res => {
                     if (res && this.isAllowedModel.isAllowed(res)) {
@@ -195,6 +195,8 @@ export class FormViewComponent implements OnInit {
     loadPublished(cb = _noop) {
         let formId = this.route.snapshot.queryParams['formId'];
         let url = '/form/' + this.route.snapshot.queryParams['tinyId'];
+        let version = this.route.snapshot.queryParams['version'];
+        if (version) url = url + "/version/" + version;
         if (formId) url = '/formById/' + formId;
         this.http.get<CdeForm>(url).subscribe(
             res => this.formLoaded(res, cb),
@@ -231,12 +233,12 @@ export class FormViewComponent implements OnInit {
             registrationStatus: 'Incomplete',
             administrativeNote: 'Copy of: ' + this.elt.tinyId
         };
-        this.modalRef = this.modalService.open(this.copyFormContent, {size: 'lg'});
+        this.dialogRef = this.dialog.open(this.copyFormContent, {width: '1200px'});
     }
 
     openExportPublishModal() {
         this.formInput = {};
-        this.modalRef = this.modalService.open(this.exportPublishModal, {size: 'lg'});
+        this.dialogRef = this.dialog.open(this.exportPublishModal, {width: '800px'});
     }
 
     pinAllCdesIntoBoard() {
@@ -426,9 +428,8 @@ export class FormViewComponent implements OnInit {
             if (res.length = 2) {
                 let newer = res[0];
                 let older = res[1];
-                const modalRef = this.modalService.open(CompareHistoryContentComponent, {size: 'lg'});
-                modalRef.componentInstance.newer = newer;
-                modalRef.componentInstance.older = older;
+                this.dialogRef = this.dialog.open(CompareHistoryContentComponent,
+                    {width: '800px', data: {newer: newer, older: older}});
             } else this.alert.addAlert('danger', 'Error loading view changes. ');
         }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err));
     }

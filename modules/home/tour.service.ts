@@ -32,19 +32,19 @@ const navigationSteps: Array<any> = [
         title: "Help",
         element: "#helpLink",
         content: "You can find more help about the site here, or information on our APIs. The tour will now take you to the CDE search page.",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_cdes_link", "browseByClassification", resolve))
+        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_cdes_link", "totalItems", resolve))
     }
 ];
 
 const searchResultSteps: Array<any> = [
     {
         title: "Browse by Classification",
-        element: "#browseByClassification",
+        element: ".mat-tab-label:first-child",
         content: "CDEs or Forms can be browsed by Classifications. Classifications are ways for content owners to organize their CDEs."
     },
     {
         title: "Browse by Topic",
-        element: "#browseByTopic",
+        element: ".mat-tab-label:nth-child(2)",
         content: "Or by topic. Topics are MeSH terms."
     },
     {
@@ -228,14 +228,14 @@ const cdeSteps: Array<any> = [
         title: "Forms",
         orphan: true,
         content: "We will now continue the tour and show Form features.",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_forms_link", "browseByClassification", resolve))
+        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_forms_link", "totalItems", resolve))
     }
 ];
 
 const formSteps = [
     {
         title: "Browse by Classification",
-        element: "#browseByClassification",
+        element: ".mat-tab-label:first-child",
         content: "Forms are also browsed by Classification",
         onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#browseOrg-NLM", "resultList", resolve))
     },

@@ -37,6 +37,7 @@ ingester/src/
 my-*
 config/cluster.json
 config/prod.json
+config/prod-live.json
 config/qa-live.json
 config/qa-mig.json
 config/migration.json

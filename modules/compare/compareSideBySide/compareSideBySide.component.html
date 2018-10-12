@@ -3,34 +3,34 @@
     <mat-icon>search</mat-icon> Side by Side View
 </button>
 
-<ng-template #compareSideBySideContent id="compareSideBySideModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="compareSideBySideModalHeader">
-        <div class="col-6 leftObj">
-            <a id="sourceElement" class='btn   btn-outline-dark' target="_blank" [href]=leftUrl>
-                <mat-icon>visibility</mat-icon> View Full Detail</a>
-            <ng-container *ngIf="canMergeDataElement">
-                <cde-merge-data-element [source]="left" [destination]="right"
-                                        (doneMerge)="doneMerge($event)"></cde-merge-data-element>
-            </ng-container>
-            <ng-container *ngIf="canMergeForm">
-                <cde-merge-form [left]="left" [right]="right"
-                                (doneMerge)="doneMerge($event)"></cde-merge-form>
-            </ng-container>
+<ng-template #compareSideBySideContent>
+    <div mat-dialog-content>
+        <div class="row">
+            <div class="col-6 leftObj">
+                <a id="sourceElement" target="_blank" [href]=leftUrl>
+                    <button mat-raised-button><mat-icon>visibility</mat-icon> View Full Detail</button></a>
+                <ng-container *ngIf="canMergeDataElement">
+                    <cde-merge-data-element [source]="left" [destination]="right"
+                                            (doneMerge)="doneMerge($event)"></cde-merge-data-element>
+                </ng-container>
+                <ng-container *ngIf="canMergeForm">
+                    <cde-merge-form [left]="left" [right]="right"
+                                    (doneMerge)="doneMerge($event)"></cde-merge-form>
+                </ng-container>
+            </div>
+            <div class="col-6 rightObj">
+                <a id="destinationElement" target="_blank" [href]=rightUrl>
+                    <button mat-raised-button><mat-icon>visibility</mat-icon> View Full Detail</button></a>
+                <ng-container *ngIf="canMergeDataElement">
+                    <cde-merge-data-element [source]="left" [destination]="right"
+                                            (doneMerge)="doneMerge($event)"></cde-merge-data-element>
+                </ng-container>
+                <ng-container *ngIf="canMergeForm">
+                    <cde-merge-form [left]="right" [right]="left"
+                                    (doneMerge)="doneMerge($event)"></cde-merge-form>
+                </ng-container>
+            </div>
         </div>
-        <div class="col-6 rightObj">
-            <a id="destinationElement" class='btn   btn-outline-dark' target="_blank" [href]=rightUrl>
-                <mat-icon>visibility</mat-icon> View Full Detail</a>
-            <ng-container *ngIf="canMergeDataElement">
-                <cde-merge-data-element [source]="left" [destination]="right"
-                                        (doneMerge)="doneMerge($event)"></cde-merge-data-element>
-            </ng-container>
-            <ng-container *ngIf="canMergeForm">
-                <cde-merge-form [left]="right" [right]="left"
-                                (doneMerge)="doneMerge($event)"></cde-merge-form>
-            </ng-container>
-        </div>
-    </div>
-    <div class="modal-body col-12" id="compareSideBySideModalBody">
         <ng-container *ngFor="let option of options">
             <div *ngIf="option.displayAs.display" id="{{option.displayAs.label}}">
                 <div class="overflowHidden">
@@ -95,7 +95,7 @@
             </div>
         </ng-container>
     </div>
-    <div class="modal-footer" id="compareSideBySideModalFooter">
-        <button mat-raised-button id="closeCompareSideBySideBtn" (click)="c()">Close</button>
+    <div mat-dialog-actions>
+        <button mat-raised-button id="closeCompareSideBySideBtn" [mat-dialog-close]>Close</button>
     </div>
 </ng-template>

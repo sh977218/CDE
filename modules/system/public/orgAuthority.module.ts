@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgSelectModule } from '@ng-select/ng-select';
 
 import { ListManagementComponent } from 'system/public/components/siteAdmin/listManagement/listManagement.component';
 import { StatusValidationRulesComponent } from 'system/public/components/siteAdmin/statusValidationRules/statusValidationRules.component';
@@ -12,7 +11,12 @@ import { OrgsEditComponent } from 'system/public/components/siteAdmin/orgsEdit/o
 import { DiscussModule } from 'discuss/discuss.module';
 import { SystemModule } from 'system/public/system.module';
 import { WidgetModule } from 'widget/widget.module';
-import { MatButtonModule, MatIconModule } from '@angular/material';
+import {
+    MatAutocompleteModule, MatButtonModule,
+    MatChipsModule, MatDialogModule,
+    MatIconModule, MatInputModule
+} from '@angular/material';
+import { OneListMgtComponent } from 'system/public/components/siteAdmin/listManagement/oneListMgt.component';
 
 const appRoutes: Routes = [
     {path: '', component: OrgAuthorityComponent},
@@ -24,17 +28,22 @@ const appRoutes: Routes = [
         FormsModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
-        NgSelectModule,
         // core
         WidgetModule,
         // internal
         DiscussModule,
         SystemModule,
+        MatAutocompleteModule,
         MatButtonModule,
+        MatChipsModule,
+        MatDialogModule,
         MatIconModule,
+        MatInputModule,
+        ReactiveFormsModule,
     ],
     declarations: [
         ListManagementComponent,
+        OneListMgtComponent,
         OrgAuthorityComponent,
         OrgsEditComponent,
         StatusValidationRulesComponent,

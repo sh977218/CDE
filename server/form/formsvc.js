@@ -14,9 +14,10 @@ const odm = require("./odmForm");
 const redCap = require("./redCapForm");
 const publishForm = require("./publishForm");
 const toQuestionnaire = require('@std/esm')(module)('../../shared/mapping/fhir/to/toQuestionnaire');
-const handle404 = require('../log/dbLogger').handle404;
-const handleError = require('../log/dbLogger').handleError;
-const respondError = require('../log/dbLogger').respondError;
+const dbLogger = require('../log/dbLogger');
+const handle404 = dbLogger.handle404;
+const handleError = dbLogger.handleError;
+const respondError = dbLogger.respondError;
 
 const ajv = new Ajv({schemaId: 'auto'}); // current FHIR schema uses legacy JSON Schema version 4
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
@@ -52,7 +53,8 @@ exports.fetchWholeForm = function (form, callback) {
         },
         undefined,
         undefined,
-        err => callback(err, form),
+        err =>
+            callback(err, form),
         {return: [form.tinyId]}
     );
 };
@@ -71,10 +73,13 @@ function fetchWholeFormOutdated(form, callback) {
                     f.inForm.form.outdated = true;
                     wholeForm.outdated = true;
                 }
-                cb(err);
+                cb(err, {skip: true});
             });
         }, undefined, (q, cb) => {
-            mongo_cde.DataElement.findOne({tinyId: q.question.cde.tinyId, archived: false}, {version: 1}, (err, elt) => {
+            mongo_cde.DataElement.findOne({
+                tinyId: q.question.cde.tinyId,
+                archived: false
+            }, {version: 1}, (err, elt) => {
                 if (elt && (q.question.cde.version || null) !== (elt.version || null)) {
                     q.question.cde.outdated = true;
                     wholeForm.outdated = true;
@@ -108,7 +113,11 @@ exports.byId = (req, res) => {
                             return res.send(xmlForm);
                         }));
                     } else if (req.query.subtype === 'sdc') {
-                        sdc.formToSDC({form: wholeForm, renderer: req.query.renderer, validate: req.query.validate}, (err, sdcForm) => {
+                        sdc.formToSDC({
+                            form: wholeForm,
+                            renderer: req.query.renderer,
+                            validate: req.query.validate
+                        }, (err, sdcForm) => {
                             if (err) return res.send(err);
                             return res.send(sdcForm);
                         });
@@ -123,7 +132,11 @@ exports.byId = (req, res) => {
                         if (req.query.hasOwnProperty('validate')) {
                             let p = path.resolve(__dirname, '../../shared/mapping/fhir/assets/schema/Questionnaire.schema.json');
                             fs.readFile(p, (err, data) => {
-                                if (err || !data) return respondError(err, {res, publicMessage: 'schema missing', origin: 'formsvc'});
+                                if (err || !data) return respondError(err, {
+                                    res,
+                                    publicMessage: 'schema missing',
+                                    origin: 'formsvc'
+                                });
                                 let result = ajv.validate(JSON.parse(data),
                                     toQuestionnaire.formToQuestionnaire(wholeForm, null, config));
                                 res.send({valid: result, errors: ajv.errors});
@@ -169,7 +182,11 @@ exports.byTinyId = (req, res) => {
                             return res.send(xmlForm);
                         }));
                     else if (req.query.subtype === 'sdc')
-                        sdc.formToSDC({form: wholeForm, renderer: req.query.renderer, validate: req.query.validate}, (err, sdcForm) => {
+                        sdc.formToSDC({
+                            form: wholeForm,
+                            renderer: req.query.renderer,
+                            validate: req.query.validate
+                        }, (err, sdcForm) => {
                             if (err) return res.send(err);
                             return res.send(sdcForm);
                         });
@@ -259,7 +276,11 @@ exports.publishForm = (req, res) => {
     if (!req.params.id || req.params.id.length !== 24) return res.status(400).send();
     mongo_form.byId(req.params.id, handleError({req, res}, form => {
         if (!form) return res.status(400).send('form not found');
-        exports.fetchWholeForm(form.toObject(), handleError({req, res, message: 'Fetch whole for publish'}, wholeForm => {
+        exports.fetchWholeForm(form.toObject(), handleError({
+            req,
+            res,
+            message: 'Fetch whole for publish'
+        }, wholeForm => {
             publishForm.getFormForPublishing(wholeForm, req, res);
         }));
     }));
@@ -313,7 +334,7 @@ exports.publishTheForm = (req, res) => {
                 elt.attachments = item.attachments;
                 formShared.trimWholeForm(elt);
                 mongo_form.update(elt, req.user, handleError({req, res}, response => {
-                    mongo_form.deleteDraftForm(elt.tinyId,  handleError({req, res}, () => res.send(response)));
+                    mongo_form.deleteDraftForm(elt.tinyId, handleError({req, res}, () => res.send(response)));
                 }));
             }));
         }));

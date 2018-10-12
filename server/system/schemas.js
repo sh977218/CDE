@@ -1,109 +1,102 @@
-const Schema = require('mongoose').Schema;
+const mongoose = require('mongoose');
+require('./mongoose-stringtype')(mongoose);
+const Schema = mongoose.Schema;
+const StringType = Schema.Types.StringType;
 
 const regStatusShared = require('@std/esm')(module)("../../shared/system/regStatusShared");
 
-function deleteEmpty(v) {
-    if (v === null || v === '') {
-        return;
-    }
-    return v;
-}
-
-const stringType = exports.stringType = {type: String, set: deleteEmpty};
-const stringIndexType = exports.stringIndexType = Object.assign({index: true}, stringType);
-
 let csEltSchema = new Schema({
     elements: [],
-    name: stringIndexType
+    name: {type: StringType, index: true}
 }, {_id: false});
 
 exports.classificationSchema = new Schema({
     stewardOrg: {
-        name: stringIndexType
+        name: {type: StringType, index: true}
     },
     workingGroup: Boolean,
     elements: [csEltSchema]
 }, {_id: false});
 
 exports.codeAndSystemSchema = new Schema({
-    code: stringType,
-    system: stringType,
+    code: StringType,
+    system: StringType,
 }, {_id: false});
 
 exports.permissibleValueSchema = new Schema({
-    permissibleValue: stringType,
-    valueMeaningName: stringType,
-    valueMeaningCode: stringType,
-    valueMeaningDefinition: stringType,
-    codeSystemName: stringType,
-    codeSystemVersion: stringType
+    permissibleValue: StringType,
+    valueMeaningName: StringType,
+    valueMeaningCode: StringType,
+    valueMeaningDefinition: StringType,
+    codeSystemName: StringType,
+    codeSystemVersion: StringType
 }, {_id: false});
 
 
 exports.derivationRuleSchema = new Schema({
-    name: stringType,
-    inputs: {type: [stringType], index: true}, // Information operated on by rule
-    outputs: [stringType], // Information produced by rule
-    ruleType: Object.assign({enum: ['score', 'panel']}, stringType),
-    formula: Object.assign({enum: ['sumAll', 'mean', 'bmi']}, stringType)
+    name: StringType,
+    inputs: {type: [StringType], index: true, description: 'Information operated on by rule'},
+    outputs: {type: [StringType], description: 'Information produced by rule'},
+    ruleType: {type: StringType, enum: ['score', 'panel']},
+    formula: {type: StringType, enum: ['sumAll', 'mean', 'bmi']},
 }, {_id: true});
 
 
 exports.sourceSchema = new Schema({
-    sourceName: stringType,
-    created: Date, // Date created in source
-    updated: Date, // Date updated in source
-    registrationStatus: stringType, // Relative standing of official record status in steward's workflow
-    datatype: stringType, // May contain the source datatype
+    sourceName: StringType,
+    created: {type: Date, description: 'Date created in source'},
+    updated: {type: Date, description: 'Date updated in source'},
+    registrationStatus: {type: StringType, description: "Relative standing of official record status in steward's workflow"},
+    datatype: {type: StringType, description: 'May contain the source datatype'},
     copyright: {
-        value: stringType, // Content of a copyright statement or terms of use
-        valueFormat: stringType // If 'html', interpret as HTML
+        value: {type: StringType, description: 'Content of a copyright statement or terms of use'},
+        valueFormat: {type: StringType, description: "If 'html', interpret as HTML"},
     }
 }, {_id: false});
 
 let commonEmbedSchema = {
-    nameLabel: stringType,
+    nameLabel: StringType,
     pageSize: Number,
     primaryDefinition: {
         show: {type: Boolean, default: false},
-        label: stringType,
-        style: stringType
+        label: StringType,
+        style: StringType
     },
     registrationStatus: {
         show: {type: Boolean, default: false},
-        label: stringType
+        label: StringType
     },
-    lowestRegistrationStatus: Object.assign({enum: regStatusShared.orderedList}, stringType),
+    lowestRegistrationStatus: {type: StringType, enum: regStatusShared.orderedList},
     properties: [
         {
-            label: stringType,
-            key: stringType,
+            label: StringType,
+            key: StringType,
             limit: Number
         }
     ],
     otherNames: [{
-        label: stringType,
-        contextName: stringType
+        label: StringType,
+        contextName: StringType
     }],
     classifications: [{
-        label: stringType,
-        startsWith: stringType,
-        exclude: stringType,
+        label: StringType,
+        startsWith: StringType,
+        exclude: StringType,
         selectedOnly: Boolean
     }],
     ids: [
         {
-            idLabel: stringType,
-            source: stringType,
+            idLabel: StringType,
+            source: StringType,
             version: Boolean,
-            versionLabel: stringType
+            versionLabel: StringType
         }
     ]
 };
 
 let embedJson = {
-    org: stringType,
-    name: stringType,
+    org: StringType,
+    name: StringType,
     height: Number,
     width: Number,
     cde: commonEmbedSchema,
@@ -112,7 +105,7 @@ let embedJson = {
 embedJson.cde.permissibleValues = Boolean;
 embedJson.cde.linkedForms = {
     show: {type: Boolean, default: false},
-    label: stringType
+    label: StringType
 };
 embedJson.form.sdcLink = {type: Boolean, default: false};
 embedJson.form.nbOfQuestions = {type: Boolean, default: false};
@@ -128,10 +121,10 @@ exports.fhirAppSchema = new Schema({
     ],
     mapping: [{
         type: new Schema({
-            cdeSystem: stringType,
-            cdeCode: stringType,
-            fhirSystem: stringType,
-            fhirCode: stringType,
+            cdeSystem: StringType,
+            cdeCode: StringType,
+            fhirSystem: StringType,
+            fhirCode: StringType,
         }, {_id: false}),
         default: []
     }],
@@ -148,27 +141,25 @@ exports.fhirObservationInformationSchema = new Schema({
 }, {collection: 'fhirObservationInfo'});
 
 exports.statusValidationRuleSchema = new Schema({
-    field: stringType,
+    field: StringType,
     id: Number,
-    targetStatus: Object.assign({
-        enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]
-    }, stringType),
-    ruleName: stringType,
+    targetStatus: {type: StringType, enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]},
+    ruleName: StringType,
     rule: {
-        regex: stringType
+        regex: StringType
     },
-    occurence: Object.assign({enum: ["exactlyOne", "atLeastOne", "all"]}, stringType)
+    occurence: {type: StringType, enum: ["exactlyOne", "atLeastOne", "all"]},
 });
 
 let orgJson = {
-    name: stringType,
-    longName: stringType,
-    mailAddress: stringType,
-    emailAddress: stringType,
-    phoneNumber: stringType,
-    uri: stringType,
+    name: StringType,
+    longName: StringType,
+    mailAddress: StringType,
+    emailAddress: StringType,
+    phoneNumber: StringType,
+    uri: StringType,
     classifications: [csEltSchema],
-    workingGroupOf: stringType,
+    workingGroupOf: StringType,
     propertyKeys: {
         type: Array,
         default: []
@@ -181,53 +172,53 @@ let orgJson = {
         type: Array,
         default: []
     },
-    extraInfo: stringType,
+    extraInfo: StringType,
     cdeStatusValidationRules: [exports.statusValidationRuleSchema],
-    htmlOverview: stringType
+    htmlOverview: StringType
 };
 exports.orgJson = orgJson;
 
 exports.orgSchema = new Schema(orgJson, {usePushEach: true});
 
 exports.pushRegistration = new Schema({
-    features: [stringType],
+    features: [StringType],
     loggedIn: Boolean,
     subscription: {
-        endpoint: stringType,
-        expirationTime: stringType,
+        endpoint: StringType,
+        expirationTime: StringType,
         keys: {
-            auth: stringType,
-            p256dh: stringType
+            auth: StringType,
+            p256dh: StringType
         }
     },
-    userId: stringType,
+    userId: StringType,
     vapidKeys: {
-        privateKey: stringType,
-        publicKey: stringType
+        privateKey: StringType,
+        publicKey: StringType
     }
 }, {collection: 'pushRegistration'});
 
 exports.orgSchema.set('collection', 'orgs');
 
 exports.designationSchema = new Schema({
-    designation: stringType,
-    tags: [stringType]
+    designation: StringType,
+    tags: [StringType]
 }, {_id: false});
 
 exports.definitionSchema = new Schema({
-    definition: stringType,
-    definitionFormat: stringType,
-    tags: [stringType]
+    definition: StringType,
+    definitionFormat: StringType,
+    tags: [StringType]
 }, {_id: false});
 
 let attachmentSchema = {
-    fileid: stringIndexType,
-    filename: stringType,
-    filetype: stringType,
+    fileid: {type: StringType, index: true},
+    filename: StringType,
+    filetype: StringType,
     uploadDate: Date,
-    comment: stringType,
+    comment: StringType,
     uploadedBy: {
-        userId: Schema.Types.ObjectId, username: stringIndexType
+        userId: Schema.Types.ObjectId, username: {type: StringType, index: true}
     },
     filesize: Number,
     isDefault: Boolean,
@@ -238,29 +229,29 @@ let attachmentSchema = {
 exports.attachmentSchema = new Schema(attachmentSchema, {_id: false});
 
 exports.registrationStateSchema = {
-    registrationStatus: Object.assign({enum: regStatusShared.orderedList}, stringType),
+    registrationStatus: {type: StringType, enum: regStatusShared.orderedList},
     effectiveDate: Date,
     untilDate: Date,
-    administrativeNote: stringType,
-    unresolvedIssue: stringType,
-    administrativeStatus: stringType, // Relative standing of CDE as it relates to steward's administrative workflow
-    replacedBy: {tinyId: stringType} // tinyId of replacement CDE
+    administrativeNote: StringType,
+    unresolvedIssue: StringType,
+    administrativeStatus: {type: StringType, description: 'Relative standing of CDE as it relates to steward\'s administrative workflow'},
+    replacedBy: {tinyId: {type: StringType, description: 'tinyId of replacement CDE'}},
 };
 
-exports.propertySchema = {key: stringType, value: stringType, source: stringType, valueFormat: stringType, _id: false};
+exports.propertySchema = {key: StringType, value: StringType, source: StringType, valueFormat: StringType, _id: false};
 
-exports.idSchema = {source: stringType, id: stringType, version: stringType, _id: false};
+exports.idSchema = {source: StringType, id: StringType, version: StringType, _id: false};
 
 exports.helpItemSchema = new Schema({
-    permalink: stringType,
-    title: stringType,
-    tags: [stringType]
+    permalink: StringType,
+    title: StringType,
+    tags: [StringType]
 });
 
 
 let requestSchema = {
-    source: {tinyId: stringType, id: stringType},
-    destination: {tinyId: stringType},
+    source: {tinyId: StringType, id: StringType},
+    destination: {tinyId: StringType},
     mergeFields: {
         ids: Boolean,
         designations: Boolean,
@@ -273,118 +264,100 @@ let requestSchema = {
 
 let commentApprovalSchema = {
     element: {
-        eltId: stringType,
-        name: stringType,
-        eltType: Object.assign({enum: ["cde", "form", "board"]}, stringType)
+        eltId: StringType,
+        name: StringType,
+        eltType: {type: StringType, enum: ["cde", "form", "board"]},
     },
     comment: {
-        commentId: stringType,
+        commentId: StringType,
         replyIndex: Number,
-        text: stringType
+        text: StringType
     }
 };
 let boardApprovalSchema = {
     element: {
-        eltId: stringType,
-        name: stringType,
-        eltType: Object.assign({enum: ["cde", "form", "board"]})
+        eltId: StringType,
+        name: StringType,
+        eltType: {type: StringType, enum: ["cde", "form", "board"]},
     }
 };
 
 exports.message = new Schema({
     recipient: {
-        name: stringType,
-        recipientType: Object.assign({enum: ["user", "stewardOrg", "role"]}, stringType),
+        name: StringType,
+        recipientType: {type: StringType, enum: ["user", "stewardOrg", "role"]},
     },
-    author: {authorType: stringType, name: stringType},
+    author: {authorType: StringType, name: StringType},
     date: Date,
-    type: Object.assign({
-        enum: ["CommentApproval", "AttachmentApproval", "CommentReply", "BoardApproval"]
-    }, stringType),
+    type: {type: StringType, enum: ["CommentApproval", "AttachmentApproval", "CommentReply", "BoardApproval"]},
     typeRequest: requestSchema,
     typeCommentApproval: commentApprovalSchema,
     typeAttachmentApproval: attachmentSchema,
     typeCommentReply: commentApprovalSchema,
     typeBoardApproval: boardApprovalSchema,
     states: [{
-        action: Object.assign({enum: ["Approved", "Filed"]}, stringType),
-        date: Date, comment: stringType
+        action: {type: StringType, enum: ["Approved", "Filed"]},
+        comment: StringType,
+        date: Date,
     }]
 });
 
 exports.message.set('collection', 'messages');
 
-exports.clusterStatus = Schema({
-    hostname: stringType,
-    port: Number,
-    pmPort: Number,
-    nodeStatus: Object.assign({enum: ["Running", "Stopped"]}, stringType),
-    lastUpdate: Date,
-    startupDate: Date,
-    elastic: {
-        up: Boolean,
-        message: stringType,
-        indices: [{
-            name: stringType,
-            up: Boolean,
-            message: stringType
-        }]
-    }
-});
 exports.jobQueue = Schema({
-    type: stringType,
-    status: Object.assign({enum: ["Running"]}, stringType),
-    error: stringType
+    type: StringType,
+    status: {type: StringType, enum: ["Running"]},
+    error: StringType
 }, {usePushEach: true});
 
 exports.fs_files = new Schema({
     _id: Schema.Types.ObjectId,
-    filename: stringType,
-    contentType: stringType,
+    filename: StringType,
+    contentType: StringType,
     length: Number,
     chunkSize: Number,
     uploadDate: Date,
-    aliases: stringType,
+    aliases: StringType,
     metadata: {
-        status: stringType
+        status: StringType
     },
-    md5: stringType
+    md5: StringType
 });
 exports.fs_files.set('collection', 'fs.files');
 
 exports.referenceDocumentSchema = {
-    docType: stringType,
-    document: stringType,
-    referenceDocumentId: stringType,
-    text: stringType,
-    uri: stringType,
-    providerOrg: stringType,
-    title: stringType,
-    languageCode: stringType,
-    source: stringType,
+    docType: StringType,
+    document: StringType,
+    referenceDocumentId: StringType,
+    text: StringType,
+    uri: StringType,
+    providerOrg: StringType,
+    title: StringType,
+    languageCode: StringType,
+    source: StringType,
     _id: false
 };
 exports.dataSetSchema = {
-    source: stringType,
-    id: stringType,
-    studyUri: stringType,
-    notes: stringType
+    source: StringType,
+    id: StringType,
+    studyUri: StringType,
+    notes: StringType
 };
 exports.classificationAudit = new Schema({
     date: {type: Date, default: Date.now, index: true}, user: {
-        username: stringType
+        username: StringType
     },
     elements: [{
-        tinyId: stringType,
-        version: stringType,
+        tinyId: StringType,
+        version: StringType,
         _id: Schema.Types.ObjectId,
-        name: stringType,
-        status: Object.assign({enum: regStatusShared.orderedList}, stringType),
-        eltType: Object.assign({enum: ["cde", "form"]}, stringType)
+        name: StringType,
+        status: {type: StringType, enum: regStatusShared.orderedList},
+        eltType: {type: StringType, enum: ["cde", "form"]},
     }],
-    newname: stringType,
-    action: Object.assign({enum: ["add", "delete", "rename", "reclassify"]}, stringType),
-    path: [stringType]
+    newname: StringType,
+    action: {type: StringType, enum: ["add", "delete", "rename", "reclassify"]},
+    path: [StringType]
 });
 exports.classificationAudit.set('collection', 'classificationAudit');
 

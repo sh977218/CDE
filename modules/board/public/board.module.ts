@@ -4,7 +4,13 @@ import { RouterModule } from '@angular/router';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from '@ng-select/ng-select';
-import { MatInputModule, MatIconModule, MatButtonToggleModule, MatButtonModule } from '@angular/material';
+import {
+    MatInputModule,
+    MatIconModule,
+    MatButtonToggleModule,
+    MatButtonModule,
+    MatDialogModule
+} from '@angular/material';
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { BoardViewTemplateComponent } from 'board/public/components/boardViewTemplate/boardViewTemplate.component';
@@ -26,7 +32,9 @@ import { WidgetModule } from "widget/widget.module";
         NgbModule,
         NgSelectModule,
         RouterModule,
+        MatButtonModule,
         MatButtonToggleModule,
+        MatDialogModule,
         MatIconModule,
         MatInputModule,
         RouterModule,
@@ -34,7 +42,6 @@ import { WidgetModule } from "widget/widget.module";
         WidgetModule,
         // internal
         AdminItemModule,
-        MatButtonModule
     ],
     declarations: [
         BoardViewTemplateComponent,

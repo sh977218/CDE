@@ -11,7 +11,7 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
     public void cdeSearchBreadcrumb() {
         mustBeLoggedOut();
         goToCdeSearch();
-        clickElement(By.id("browseByTopic"));
+        clickElement(By.xpath("//div[. = 'Browse by Topic']"));
         clickElement(By.xpath("//span[contains(normalize-space(text()),'Environment and Public Health')]"));
         textPresent("results for", By.id("searchResultInfoBar"));
         int count = 0;
@@ -44,6 +44,7 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
         clickElement(By.id("removeStatuses"));
         clickElement(By.id("removeTopics"));
         clickElement(By.id("removeClassifications"));
+        hangon(1);
         clickElement(By.id("removeClassifications"));
         clickElement(By.id("removeTerm"));
 

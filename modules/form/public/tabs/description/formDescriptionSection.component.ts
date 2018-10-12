@@ -3,7 +3,6 @@ import {
     Component, ElementRef, EventEmitter, Host, Input, OnInit, Output, TemplateRef,
     ViewChild
 } from "@angular/core";
-import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
@@ -20,6 +19,7 @@ import { FormattedValue } from 'shared/models.model';
 import { convertFormToSection } from 'shared/form/form';
 import { CdeForm, FormElement, FormInForm, FormSection, SkipLogic } from 'shared/form/form.model';
 import { isMappedTo } from 'shared/form/formAndFe';
+import { MatDialog } from '@angular/material';
 
 
 @Component({
@@ -42,7 +42,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
     @ViewChild("slInput") slInput: ElementRef;
-    @ViewChild('updateFormVersionTmpl') updateFormVersionTmpl: NgbModalModule;
+    @ViewChild('updateFormVersionTmpl') updateFormVersionTmpl: TemplateRef<any>;
     getSkipLogicOptions = ((text$: Observable<string>) =>
         text$.pipe(
             debounceTime(300),
@@ -60,6 +60,15 @@ export class FormDescriptionSectionComponent implements OnInit {
     ];
     section: FormSection|FormInForm;
     updateFormVersion: any;
+
+    constructor(private alert: AlertService,
+                @Host() public formDescriptionComponent: FormDescriptionComponent,
+                private formService: FormService,
+                private http: HttpClient,
+                private localStorageService: LocalStorageService,
+                public dialog: MatDialog,
+                public skipLogicValidateService: SkipLogicValidateService) {
+    }
 
     ngOnInit() {
         this.section = this.node.data;
@@ -79,14 +88,6 @@ export class FormDescriptionSectionComponent implements OnInit {
         this.checkRepeatOptions();
     }
 
-    constructor(private alert: AlertService,
-                @Host() public formDescriptionComponent: FormDescriptionComponent,
-                private formService: FormService,
-                private http: HttpClient,
-                private localStorageService: LocalStorageService,
-                public modalService: NgbModal,
-                public skipLogicValidateService: SkipLogicValidateService) {
-    }
 
     canEditSection() {
         return this.section.edit && !this.isSubForm && this.canEdit;
@@ -181,12 +182,14 @@ export class FormDescriptionSectionComponent implements OnInit {
         modal.bLabel = !_isEqual(newForm.designations, oldForm.designations);
 
         this.updateFormVersion =  modal;
-        this.modalService.open(this.updateFormVersionTmpl, {size: 'lg'}).result.then(() => {
-            currentSection.inForm = newSection.inForm;
-            currentSection.formElements = newSection.formElements;
-            currentSection.label = newSection.label;
-            this.formDescriptionComponent.updateTree();
-            this.onEltChange.emit();
+        this.dialog.open(this.updateFormVersionTmpl, {width: '1000px'}).afterClosed().subscribe((res) => {
+            if (res) {
+                currentSection.inForm = newSection.inForm;
+                currentSection.formElements = newSection.formElements;
+                currentSection.label = newSection.label;
+                this.formDescriptionComponent.updateTree();
+                this.onEltChange.emit();
+            }
         }, _noop);
     }
 

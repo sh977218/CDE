@@ -8,15 +8,15 @@ const MongoStore = require('connect-mongo')(session);
 
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const connHelper = require('./connections');
-const consoleLog = require('../log/dbLogger').consoleLog;
-const handleError = require('../log/dbLogger').handleError;
+const dbLogger = require('../log/dbLogger');
+const consoleLog = dbLogger.consoleLog;
+const handleError = dbLogger.handleError;
 const logging = require('./logging.js');
 const daoManager = require('./moduleDaoManager');
 const config = require('./parseConfig');
 const schemas = require('./schemas');
 
 const conn = connHelper.establishConnection(config.database.appData);
-const ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus);
 const Embeds = conn.model('Embed', schemas.embedSchema);
 const FhirApps = conn.model('FhirApp', schemas.fhirAppSchema);
 const FhirObservationInfo = conn.model('FhirObservationInfo', schemas.fhirObservationInformationSchema);
@@ -24,6 +24,7 @@ const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 const Message = conn.model('Message', schemas.message);
 const Org = conn.model('Org', schemas.orgSchema);
 const PushRegistration = conn.model('PushRegistration', schemas.pushRegistration);
+const userDb = require('../user/userDb');
 const User = require('../user/userDb').User;
 const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema);
 
@@ -74,19 +75,6 @@ exports.updateJobStatus = (type, status, callback) => {
 };
 exports.removeJobStatus = (type, callback) => {
     JobQueue.remove({type: type}, callback);
-};
-
-exports.getClusterHostStatus = (server, callback) => {
-    ClusterStatus.findOne({hostname: server.hostname, port: server.port}, callback);
-};
-
-exports.getClusterHostStatuses = callback => {
-    ClusterStatus.find({}, callback);
-};
-
-exports.updateClusterHostStatus = (status, callback) => {
-    status.lastUpdate = new Date();
-    ClusterStatus.update({port: status.port, hostname: status.hostname}, status, {upsert: true}, callback);
 };
 
 
@@ -188,7 +176,7 @@ exports.pushEndpointUpdate = (endpoint, commandObj, callback) => {
 };
 
 exports.pushGetAdministratorRegistrations = callback => {
-    exports.siteAdmins(handleError({}, users => {
+    userDb.siteAdmins(handleError({}, users => {
         let userIds = users.map(u => u._id.toString());
         PushRegistration.find({}).exec(handleError({}, registrations => {
             callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
@@ -203,10 +191,6 @@ exports.usersByName = (name, callback) => {
     User.find({'username': new RegExp('^' + name + '$', "i")}, userProject, callback);
 };
 
-exports.usernamesByIp = (ip, callback) => {
-    User.find({"knownIPs": {$in: [ip]}}, {username: 1}, callback);
-};
-
 exports.userById = (id, callback) => {
     User.findOne({'_id': id}, userProject, callback);
 };
@@ -214,13 +198,6 @@ exports.userById = (id, callback) => {
 exports.addUser = (user, callback) => {
     user.username = user.username.toLowerCase();
     new User(user).save(callback);
-};
-
-exports.siteAdmins = callback => {
-    User.find({'siteAdmin': true}, 'username email', callback);
-};
-exports.orgAuthorities = callback => {
-    User.find({'roles': 'OrgAuthority'}, 'username', callback);
 };
 
 exports.orgAdmins = callback => {

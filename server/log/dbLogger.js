@@ -181,7 +181,7 @@ exports.respondError = function (err, options) {
     const log = {
         message: options.message || err.message,
         origin: options.origin,
-        stack: err.stack,
+        stack: err.stack || new Error().stack,
         details: options.details
     };
     if (options.req) {

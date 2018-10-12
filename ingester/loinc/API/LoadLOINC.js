@@ -1,8 +1,8 @@
-var request = require('request');
-var async = require('async');
+const request = require('request');
+const async = require('async');
 exports.runArray = function (loincArray, doneOne, doneAll) {
-    var results = [];
-    var options = {
+    let results = [];
+    let options = {
         method: 'GET',
         url: 'https://forms.loinc.org/panel/def',
         qs: {p_num: ''},
@@ -17,7 +17,7 @@ exports.runArray = function (loincArray, doneOne, doneAll) {
         options.qs.p_num = loinc;
         request(options, function (error, response, body) {
             if (error) throw new Error(error);
-            var lform = JSON.parse(body);
+            let lform = JSON.parse(body);
             results.push(lform);
             doneOne(lform, doneOneLoinc);
         });

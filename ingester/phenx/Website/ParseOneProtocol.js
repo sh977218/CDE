@@ -89,6 +89,7 @@ function parseTextContent(obj, task, element, cb) {
         cb();
     });
 }
+
 function parseGeneralReferences(obj, task, element, cb) {
     var generalReferences = [];
     element.findElements(By.xpath('p')).then(function (pElements) {
@@ -149,58 +150,39 @@ function parseTableContent(obj, task, element, cb) {
 }
 
 function doTask(driver, task, obj, cb) {
-    driver.findElements(By.xpath(task.xpath)).then(function (elements) {
-        let message;
-        if (elements && elements.length === 0) {
-            message = 'Cannot find ' + task.sectionName + ' for loinc: ' + obj.loincId;
-            cb();
-        } else if (elements && elements.length > 1) {
-            message = 'find ' + elements.length + ' ' + task.sectionName + ' for loinc: ' + obj.loincId;
-            cb();
-        } else if (elements && elements.length === 1) {
-            elements[0].getAttribute('outerHTML').then(function (html) {
-                obj[task.sectionName] = {
-                    HTML: html
-                };
-                task.function(obj, task, elements[0], cb);
-            });
-        } else {
-            cb();
+    return new Promise(async (resolve, reject) => {
+        let elements = await driver.findElements(By.xpath(task.xpath));
+        if (elements.length !== 1) resolve();
+        else {
+            let html = await elements[0].getAttribute('outerHTML');
+            obj[task.sectionName] = {
+                HTML: html
+            };
+            task.function(obj, task, elements[0], resolve);
         }
-    });
+    })
 }
 
-exports.parseProtocol = function (protocol, link, cb, loadLoinc) {
+exports.parseProtocol = function (protocol, link, loadLoinc) {
     driver.get(link);
-    driver.findElement(By.id('button_showfull')).click().then(function () {
-        async.forEach(tasks, function (task, doneOneTask) {
-            doTask(driver, task, protocol, doneOneTask);
-        }, function doneAllTask() {
-            async.forEachSeries(protocol['Standards'], function (standard, doneOneStandard) {
-                if (standard.Source === 'LOINC') {
-                    if (loadLoinc) {
-                        LoadFromLoincSite.runArray([standard.ID], 'PhenX', function (loinc, doneOneLoinc) {
-                            standard['LOINC'] = loinc;
-                            doneOneLoinc();
-                        }, function () {
-                            doneOneStandard();
-                        });
-                    } else  doneOneStandard();
-                } else {
-                    doneOneStandard();
+    return new Promise(async (resolve, reject) => {
+        await driver.findElement(By.id('button_showfull')).click();
+        for (let task of tasks) {
+            await doTask(driver, task, protocol);
+        }
+        for (let standard of protocol['Standards']) {
+            if (standard.Source === 'LOINC') {
+                if (loadLoinc) {
+                    let loinc = await LoadFromLoincSite.runOneLoinc(standard.ID);
                 }
-            }, function doneAllStandards() {
-                driver.findElements(By.xpath("//p[@class='back'][1]/a")).then(function (classificationArr) {
-                    async.eachSeries(classificationArr, function (c, doneOneC) {
-                        c.getText().then(function (text) {
-                            protocol.classification.push(text.trim());
-                            doneOneC();
-                        });
-                    }, function () {
-                        cb();
-                    });
-                });
-            });
-        });
-    });
+            }
+        }
+        let classificationArr = await driver.findElements(By.xpath("//p[@class='back'][1]/a"));
+        for (let c of classificationArr) {
+            let text = await c.getText();
+            protocol.classification.push(text.trim());
+        }
+
+        resolve();
+    })
 };

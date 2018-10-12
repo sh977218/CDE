@@ -2,35 +2,34 @@ package gov.nih.nlm.cde.test.admin;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class AdminAddRemoveTags extends NlmCdeBaseTest {
 
     private void addPropertyKeyByOrg(String orgName, String key) {
-        String xpath = "//*[@id='orgListName-" + orgName + "']//td[2]//input";
-        clickElement(By.xpath(xpath));
-        selectNgSelectDropdownByText(key);
+        WebElement elt = findElement(By.xpath("//*[@id='orgListName-" + orgName + "']//td[2]//input"));
+        elt.sendKeys(key);
+        elt.sendKeys(Keys.ENTER);
         checkAlert("Org Updated");
     }
 
     private void removePropertyKeyByOrg(String orgName, String key) {
-        String xpath = "//tr[@id='orgListName-" + orgName + "']//td[2]/ng-select/div/div//div[contains(.,'" + key + "')]/span[1]";
-        clickElement(By.xpath(xpath));
+        clickElement(By.xpath("//tr[@id='orgListName-" + orgName + "']//mat-chip[contains(. , '" + key + "')]//mat-icon"));
         checkAlert("Org Updated");
     }
 
     private void addTagByOrg(String orgName, String key) {
-        String xpath = "//*[@id='orgListName-" + orgName + "']//td[3]//input";
-        clickElement(By.xpath(xpath));
-        selectNgSelectDropdownByText(key);
+        WebElement elt = findElement(By.xpath("//*[@id='orgListName-" + orgName + "']//td[3]//input"));
+        elt.sendKeys(key);
+        elt.sendKeys(Keys.ENTER);
         checkAlert("Org Updated");
     }
 
     private void removeTagByOrg(String orgName, String key) {
-        String xpath = "//tr[@id='orgListName-" + orgName + "']//td[3]/ng-select/div/div//div[contains(.,'" + key + "')]/span[1]";
-        clickElement(By.xpath(xpath));
+        clickElement(By.xpath("//tr[@id='orgListName-" + orgName + "']//mat-chip[contains(. , '" + key + "')]//mat-icon"));
         checkAlert("Org Updated");
     }
 
@@ -44,7 +43,7 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         goToOrgManagement();
         goToListManagement();
         addTagByOrg(orgName, tag);
-        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[3]/ng-select/div/div//div[contains(.,'canYouSeeThis')]/span"));
+        findElement(By.xpath("//tr[@id='orgListName-TEST']//mat-chip[contains(. , 'canYouSeeThis')]"));
 
         goToCdeByName(cdeName);
         goToNaming();
@@ -78,7 +77,7 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
         addPropertyKeyByOrg(orgName, propertyKey);
-        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]/ng-select/div/div//div[contains(.,'doYouSeeThis')]/span"));
+        findElement(By.xpath("//tr[@id='orgListName-TEST']//mat-chip[contains(. , 'doYouSeeThis')]"));
 
         goToCdeByName("Distance from Closest Margin Value");
 

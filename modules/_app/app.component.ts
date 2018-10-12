@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { MatIconRegistry } from '@angular/material';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NavigationEnd, Router } from '@angular/router';
 import 'feedback/stable/2.0/html2canvas.js';
 import 'feedback/stable/2.0/feedback.js';
 import 'feedback/stable/2.0/feedback.min.css';
 import _noop from 'lodash/noop';
 
 import { BackForwardService } from '_app/backForward.service';
-import { UserService } from '_app/user.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
-import { MatIconRegistry } from '@angular/material';
-import { DomSanitizer } from '@angular/platform-browser';
+import { UserService } from '_app/user.service';
+
 
 @Component({
     selector: 'nih-cde',
@@ -86,9 +88,19 @@ export class CdeAppComponent implements OnInit {
     }
 
     constructor(backForwardService: BackForwardService,
+                private router: Router,
                 private userService: UserService,
                 iconReg: MatIconRegistry,
                 sanitizer: DomSanitizer) {
+        if (!!(<any>window).ga) {
+            this.router.events.subscribe(event => {
+                if (event instanceof NavigationEnd) {
+                    (<any>window).ga.getAll().forEach(tracker =>
+                        (<any>window).gtag('config', tracker.get('trackingId'), {page_path: event.urlAfterRedirects})
+                    );
+                }
+            });
+        }
 
         iconReg.addSvgIconLiteral("thumb_tack", sanitizer.bypassSecurityTrustHtml("<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\n" +
             "\t viewBox=\"0 0 96 96\" style='enable-background:new 0 0 96 96; vertical-align: baseline' xml:space=\"preserve\">\n" +
