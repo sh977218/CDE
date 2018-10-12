@@ -129,7 +129,7 @@ function parseTableContent(element) {
 
         let ths = await trs[0].findElements(By.xpath('th'));
         for (let th of ths) {
-            let keyText = th.getText();
+            let keyText = await th.getText();
             keys.push(keyText.trim());
         }
         trs.shift();
@@ -151,29 +151,15 @@ function parseTableContent(element) {
     })
 }
 
-function doTask(driver, task, obj, cb) {
-    return new Promise(async (resolve, reject) => {
-        let elements = await driver.findElements(By.xpath(task.xpath));
-        if (elements.length !== 1) resolve();
-        else {
-            let html = await elements[0].getAttribute('outerHTML');
-            obj[task.sectionName] = {
-                HTML: html
-            };
-            task.function(obj, task, elements[0], resolve);
-        }
-    })
-}
-
 exports.parseProtocol = function (link) {
     return new Promise(async (resolve, reject) => {
         driver.get(link);
-        let protocol = {};
+        let protocol = {classification: []};
         await driver.findElement(By.id('button_showfull')).click();
         for (let task of tasks) {
-            let elements = driver.findElements(By.xpath(task.xpath));
+            let elements = await driver.findElements(By.xpath(task.xpath));
             if (elements && elements[0])
-                protocol[task.sectionName] = await doTask(elements[0]);
+                protocol[task.sectionName] = await task.function(elements[0]);
         }
         for (let standard of protocol['Standards']) {
             if (standard.Source === 'LOINC') {

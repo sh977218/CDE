@@ -16,30 +16,13 @@ exports.parseArticleTable = async (driver, loincId, element, cb) => {
                 let descriptionText = await oneArticle[0].getText();
                 d.Description = descriptionText.trim();
 
-                let descriptionLink = await oneArticle[0].findElements(By.css('a'));
-                if (descriptionLink.length !== 1)
-                    throw new Error('Parse article error ' + loincId);
-                let descriptionLinkHref = descriptionLink[0].getAttribute('href');
-                d.DescriptionLink = descriptionLinkHref.trim();
-
                 let sourceText = await oneArticle[1].getText();
                 d.Source = sourceText.trim();
-
-                let sourceLink = oneArticle[1].findElements(By.css('a'));
-                if (sourceLink.length !== 1)
-                    throw new Error('Parse article error ' + loincId);
-
-                let sourceLinkHref = await sourceLink[0].getAttribute('href');
-                d.SourceLink = sourceLinkHref.trim();
 
                 articles.push(d);
                 oneArticle = [];
                 finishedOneArticle = true;
                 i++;
-                doneOneTr();
-            } else {
-                i++;
-                doneOneTr();
             }
         } else {
             oneArticle.push(tr);
@@ -48,5 +31,4 @@ exports.parseArticleTable = async (driver, loincId, element, cb) => {
         }
     }
     cb(articles);
-
 };
