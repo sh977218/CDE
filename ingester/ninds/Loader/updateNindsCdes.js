@@ -45,12 +45,14 @@ doOne = migrationCde => {
             if (_.isEmpty(diff)) {
                 existingCde.imported = new Date().toJSON();
                 replaceClassification(existingCde, migrationCde);
-                await DataElement.findOneAndUpdate(existingCde._id, existingCde);
+                existingCde.markModified("imported");
+                await existingCde.save();
                 same++;
             } else if (existingCde.updatedBy && existingCde.updatedBy.username !== 'batchloader') {
                 existingCde.registrationState.administrativeNote = "Because this CDE was previously manually modified, no batch modification was applied.";
                 replaceClassification(existingCde, migrationCde);
-                await DataElement.findOneAndUpdate(existingCde._id, existingCde);
+                existingCde.markModified("registrationState");
+                await existingCde.save();
                 skip++;
                 skipCDE.push(existingCde.tinyId);
             } else {
@@ -67,19 +69,11 @@ doOne = migrationCde => {
 retireCde = () => {
     return new Promise(async (resolve, reject) => {
         let cond = {
-            "ids.source": "NINDS",
             "archived": false,
             "registrationState.registrationStatus": {$ne: "Retired"},
             "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
-            $or: [
-                {"updatedBy.username": "batchloader"},
-                {
-                    $and: [
-                        {"updatedBy.username": {$exists: false}},
-                        {"createdBy.username": {$exists: true}}
-                    ]
-                }
-            ]
+            $and: [{"updatedBy.username": {$exists: true}},
+                {"updatedBy.username": "batchloader"}]
         };
         let update = {
             'registrationState.registrationStatus': 'Retired',
