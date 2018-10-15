@@ -36,6 +36,6 @@ export class LoginService {
         this.http.post('/logout', {}, {responseType: 'text'}).subscribe(() => {
             this.userService.reload();
             this.router.navigate(['/login']);
-       });
+       }, () => {});
     }
 }

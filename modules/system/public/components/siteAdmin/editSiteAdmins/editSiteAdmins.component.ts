@@ -34,11 +34,11 @@ export class EditSiteAdminsComponent implements OnInit {
     }
 
     getSiteAdmins() {
-        this.http.get('/server/siteAdmin/siteAdmins').subscribe(response => this.siteAdmins = response);
+        this.http.get('/server/siteAdmin/siteAdmins').subscribe(response => this.siteAdmins = response, () => {});
     }
 
     getOrgAuthorities() {
-        this.http.get('/server/siteAdmin/orgAuthorities').subscribe(response => this.orgAuthorities = response);
+        this.http.get('/server/siteAdmin/orgAuthorities').subscribe(response => this.orgAuthorities = response, () => {});
     }
 
     removeSiteAdmin(byId: string) {

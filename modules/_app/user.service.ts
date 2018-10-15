@@ -69,7 +69,7 @@ export class UserService {
                 if (!this.user.orgCurator) this.user.orgCurator = [];
                 this.setOrganizations();
                 this.http.get<{count: number}>('/server/user/mailStatus').subscribe(response =>
-                    this.user!.hasMail = response.count > 0);
+                    this.user!.hasMail = response.count > 0, () => {});
                 resolve(this.user);
             }, reject);
         });
