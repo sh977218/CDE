@@ -1,6 +1,5 @@
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
-const _ = require('lodash');
 
 const Form = require('../../../server/form/mongo-form').Form;
 const CreateForm = require('../Form/CreateForm');
@@ -175,7 +174,7 @@ exports.runOneLoinc = loincId => {
         for (let task of tasks) {
             let sectionName = task.sectionName;
             let elements = await driver.findElements(By.xpath(task.xpath));
-            if (elements && elements.length === 1) {
+            if (elements && elements.length === 1 && task.function) {
                 await task.function(driver, loincId, elements[0], result => {
                     loinc[sectionName] = result;
                 });

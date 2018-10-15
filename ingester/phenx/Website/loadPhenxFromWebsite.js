@@ -36,7 +36,8 @@ async function run() {
     process.exit(1);
 }
 
-run().then();
+run().then(() => {
+}, err => console.log(err));
 
 setInterval(() => {
     console.log("measureCount: " + measureCount);

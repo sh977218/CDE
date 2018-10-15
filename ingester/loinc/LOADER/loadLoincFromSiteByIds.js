@@ -1,14 +1,14 @@
 const MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 const loincLoader = require('./../Website/loincLoader');
 
-const loincId = '86636-8';
+const loincId = '62280-3';
 
 async function run() {
     await MigrationLoincModel.remove({loincId: loincId});
     console.log('Migration loinc collection removed.');
-    loincLoader.runOneLoinc(loincId).then(loinc => {
-        new MigrationLoincModel(loinc).save();
-    }, err => console.log(err));
+    let loinc = await loincLoader.runOneLoinc(loincId);
+    new MigrationLoincModel(loinc).save();
 }
 
-run();
+run().then(() => {
+}, err => console.log(err));

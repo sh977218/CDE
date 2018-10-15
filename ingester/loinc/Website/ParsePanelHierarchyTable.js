@@ -1,7 +1,6 @@
 const By = require('selenium-webdriver').By;
 const loincLoader = require('./loincLoader');
 
-
 exports.parsePanelHierarchyTable = async (driver, loincId, element, cb) => {
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
