@@ -7,4 +7,4 @@ gradle -b test/selenium/build.gradle -PhubUrl=any -PtestUrl=any -PforkNb=8 -Ptim
 #gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=$NB_OF_FORKS -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=./ test &
 #gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=6 -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=S://data test &
 
-gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -Pbrowser=chrome -PforkNb=2 -Ptimeout=8 -PdownloadFolder=$SEL_DOWNLOAD_FOLDER -PchromeDownloadFolder=$SEL_DOWNLOAD_FOLDER -Dorg.gradle.project.downloadFolder=$SEL_DOWNLOAD_FOLDER -Dorg.gradle.project.chromeDownloadFolder=$SEL_DOWNLOAD_FOLDER test --tests *formGeoLocationRender
+gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -Pbrowser=chrome -PforkNb=2 -Ptimeout=8 -PdownloadFolder=$SEL_DOWNLOAD_FOLDER -PchromeDownloadFolder=$SEL_DOWNLOAD_FOLDER -Dorg.gradle.project.downloadFolder=$SEL_DOWNLOAD_FOLDER -Dorg.gradle.project.chromeDownloadFolder=$SEL_DOWNLOAD_FOLDER test --tests $1
