@@ -27,6 +27,7 @@ import { NavigationComponent } from '_app/navigation/navigation.component';
 import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
 import { CommonAppModule } from '_commonApp/commonApp.module';
 import { OrgHelperService } from 'core/orgHelper.service';
+import { IEBannerComponent } from '_app/ieBanner/ieBanner.component';
 
 @NgModule({
     imports: [
@@ -49,6 +50,7 @@ import { OrgHelperService } from 'core/orgHelper.service';
     ],
     declarations: [
         CdeAppComponent,
+        IEBannerComponent,
         InactivityLoggedOutComponent,
         NavigationComponent,
         NotificationsComponent,

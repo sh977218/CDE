@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.export;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -10,8 +11,13 @@ public class CdeExportJsonTest extends NlmCdeBaseTest {
     public void cdeExportJson() {
         String cdeName = "Spinal column injury number";
         goToCdeByName(cdeName);
-        clickElement(By.id("export"));
-        clickElement(By.id("jsonExport"));
+        try {
+            clickElement(By.id("export"));
+            clickElement(By.id("jsonExport"));
+        } catch (TimeoutException e) {
+            clickElement(By.id("export"));
+            clickElement(By.id("jsonExport"));
+        }
         switchTab(1);
         String response = findElement(By.cssSelector("HTML")).getAttribute("innerHTML");
         Assert.assertTrue(response.contains("\"designations\":[{\"designation\":\"Spinal column injury number\""));
