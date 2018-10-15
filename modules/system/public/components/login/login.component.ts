@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AlertService } from '_app/alert.service';
@@ -52,17 +52,13 @@ import { UserService } from '_app/user.service';
         }
     `]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
     csrf?: string;
     password?: string;
     recaptcha?: string;
     showCaptcha?: boolean;
     siteKey: string = (window as any).siteKey;
     username?: string;
-
-    ngOnInit() {
-        this.getCsrf();
-    }
 
     constructor(
         private http: HttpClient,
@@ -71,6 +67,7 @@ export class LoginComponent implements OnInit {
         private userService: UserService,
         private router: Router
     ) {
+        this.getCsrf();
     }
 
     getCsrf() {
