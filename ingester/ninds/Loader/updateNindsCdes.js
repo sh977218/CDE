@@ -67,11 +67,19 @@ doOne = migrationCde => {
 retireCde = () => {
     return new Promise(async (resolve, reject) => {
         let cond = {
+            "ids.source": "NINDS",
             "archived": false,
             "registrationState.registrationStatus": {$ne: "Retired"},
             "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
-            $and: [{"updatedBy.username": {$exists: true}},
-                {"updatedBy.username": "batchloader"}]
+            $or: [
+                {"updatedBy.username": "batchloader"},
+                {
+                    $and: [
+                        {"updatedBy.username": {$exists: false}},
+                        {"createdBy.username": {$exists: true}}
+                    ]
+                }
+            ]
         };
         let update = {
             'registrationState.registrationStatus': 'Retired',
