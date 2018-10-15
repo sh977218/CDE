@@ -14,6 +14,7 @@ public class FormGeoLocationRenderTest extends QuestionTest {
         goToFormDescription();
         addSection("", "F", 0);
         addQuestionToSection("Geo Location CDE", 0);
+        textPresent("Geo Location CDE", By.id("question_0-0"));
         textPresent("(Geo Location)", By.id("question_0-0"));
 
         goToPreview();
