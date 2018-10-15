@@ -10,11 +10,13 @@ import _noop from 'lodash/noop';
 import { BackForwardService } from '_app/backForward.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { UserService } from '_app/user.service';
+import { IEGuard } from '_app/routerGuard/ieGuard';
 
 
 @Component({
     selector: 'nih-cde',
     template: `
+        <cde-ie-banner></cde-ie-banner>
         <cde-navigation></cde-navigation>
     `
 })
@@ -92,6 +94,7 @@ export class CdeAppComponent implements OnInit {
                 private userService: UserService,
                 iconReg: MatIconRegistry,
                 sanitizer: DomSanitizer) {
+
         if (!!(<any>window).ga) {
             this.router.events.subscribe(event => {
                 if (event instanceof NavigationEnd) {
