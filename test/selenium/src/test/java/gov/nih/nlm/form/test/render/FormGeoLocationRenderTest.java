@@ -16,11 +16,14 @@ public class FormGeoLocationRenderTest extends QuestionTest {
         addQuestionToSection("Geo Location CDE", 0);
         textPresent("Geo Location CDE", By.id("question_0-0"));
         textPresent("(Geo Location)", By.id("question_0-0"));
+        textPresent("This should fail here.");
+/*
 
         goToPreview();
         clickElement(By.id("0-0_location"));
         textPresent("38", By.id("0-0_latitude"));
         textPresent("-77", By.id("0-0_longitude"));
+*/
     }
 
 }
