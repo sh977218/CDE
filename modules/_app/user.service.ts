@@ -1,18 +1,20 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, Injector } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
+import { NotificationService } from '_app/notifications/notification.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { ITEM_MAP } from 'shared/item';
-import { CbErr, Comment, User } from 'shared/models.model';
+import { CbErr, Comment, NotificationSettings, NotificationTypesSettings, User } from 'shared/models.model';
 import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
-import { MatDialog } from '@angular/material';
 
 @Injectable()
 export class UserService {
+    private notificationService: any = {clear: _noop, reload: _noop};
     private promise!: Promise<User>;
     searchTypeahead = ((text$: Observable<string>) =>
         text$.pipe(
@@ -29,8 +31,12 @@ export class UserService {
     userOrgs: string[] = [];
     logoutTimeout: number;
 
-    constructor(private http: HttpClient,
-                private dialog: MatDialog) {
+    constructor(private dialog: MatDialog,
+                private http: HttpClient,
+                private injector: Injector) {
+        if (APPLICATION_NAME === 'CDE Repository') {
+            this.notificationService = <NotificationService>this.injector.get(NotificationService);
+        }
         this.reload();
         this.resetInactivityTimeout();
         document.body.addEventListener('click', () => this.resetInactivityTimeout());
@@ -43,6 +49,7 @@ export class UserService {
     clear() {
         this.user = undefined;
         this.userOrgs.length = 0;
+        this.notificationService.clear();
     }
 
     static getEltLink(c: Comment) {
@@ -65,11 +72,11 @@ export class UserService {
                     return reject();
                 }
                 this.user = response;
-                if (!this.user.orgAdmin) this.user.orgAdmin = [];
-                if (!this.user.orgCurator) this.user.orgCurator = [];
+                UserService.validate(this.user);
                 this.setOrganizations();
                 this.http.get<{count: number}>('/server/user/mailStatus').subscribe(response =>
                     this.user!.hasMail = response.count > 0, () => {});
+                this.notificationService.reload();
                 resolve(this.user);
             }, reject);
         });
@@ -102,6 +109,13 @@ export class UserService {
 
     then(cb: (user: User) => any, errorCb?: CbErr): Promise<any> {
         return this.promise.then(cb, errorCb);
+    }
+
+    static validate(user: User) {
+        if (!user.orgAdmin) user.orgAdmin = [];
+        if (!user.orgCurator) user.orgCurator = [];
+        if (!user.notifications) user.notifications = new NotificationSettings();
+        if (!user.notifications.approvalComment) user.notifications.approvalComment = new NotificationTypesSettings();
     }
 }
 

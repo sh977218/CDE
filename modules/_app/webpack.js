@@ -2,6 +2,7 @@ const _ = require('lodash');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const FileListPlugin = require('file-list-plugin');
@@ -32,6 +33,9 @@ module.exports = {
             {from: 'node_modules/material-design-lite/material.min.js'},
             {from: 'node_modules/material-design-lite/material.min.css'}
         ]),
+        new webpack.DefinePlugin({
+            APPLICATION_NAME: '"CDE Repository"',
+        }),
         new FileListPlugin({
             fileName: 'sw.js',
             itemsFromCompilation: function defaultItemsFromCompilation(compilation){

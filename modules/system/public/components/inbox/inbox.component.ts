@@ -21,12 +21,7 @@ export class InboxComponent {
     }
 
     approveComment(msg: InboxMessage) {
-        this.http.post('/server/discuss/approveComment', {
-            commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
-        }, {responseType: 'text'}).subscribe(response => {
-            this.alert.addAlert('success', response);
-            this.closeMessage(msg);
-        }, err => this.alert.httpErrorMessageAlert(err));
+
     }
 
     approveAttachment(msg: InboxMessage) {
@@ -38,8 +33,8 @@ export class InboxComponent {
 
     authorizeUser(msg: InboxMessage) {
         let request = {username: msg.author.name, role: 'CommentAuthor'};
-        this.http.post('/addUserRole', request, {responseType: 'text'}).subscribe(response => {
-            this.alert.addAlert('success', response);
+        this.http.post('/addUserRole', request).subscribe(() => {
+            this.alert.addAlert('success', 'Role added.');
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
@@ -73,12 +68,7 @@ export class InboxComponent {
     }
 
     declineComment(msg: InboxMessage) {
-        this.http.post('/server/discuss/declineComment', {
-            commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
-        }, {responseType: 'text'}).subscribe(response => {
-            this.alert.addAlert('success', response);
-            this.closeMessage(msg);
-        }, err => this.alert.httpErrorMessageAlert(err));
+
     }
 
     getAllMail() {

@@ -15,7 +15,7 @@ exports.nocacheMiddleware = function (req, res, next) {
 };
 
 exports.canEditMiddleware = function (req, res, next) {
-    this.loggedInMiddleware(req, res, () => {
+    exports.loggedInMiddleware(req, res, () => {
         if (!authorizationShared.canEditCuratedItem(req.user, req.body)) {
             // TODO: consider ban
             res.status(403).send();
@@ -35,7 +35,7 @@ exports.canCommentMiddleware = function (req, res, next) {
 };
 
 exports.canApproveCommentMiddleware = function (req, res, next) {
-    if (!authorizationShared.hasRole(req.user, "CommentReviewer")) {
+    if (!authorizationShared.hasRole(req.user, 'CommentReviewer')) {
         res.send(403).send();
         return;
     }

@@ -287,7 +287,7 @@ exports.message = new Schema({
     },
     author: {authorType: StringType, name: StringType},
     date: Date,
-    type: {type: StringType, enum: ["CommentApproval", "AttachmentApproval", "CommentReply", "BoardApproval"]},
+    type: {type: StringType, enum: ["AttachmentApproval", "CommentReply", "BoardApproval"]},
     typeRequest: requestSchema,
     typeCommentApproval: commentApprovalSchema,
     typeAttachmentApproval: attachmentSchema,
@@ -301,6 +301,19 @@ exports.message = new Schema({
 });
 
 exports.message.set('collection', 'messages');
+
+// let taskActor = {
+//     org: StringType,
+//     type: {type: StringType, enum: ['role']},
+//     typeId: StringType
+// };
+//
+// exports.task = new Schema({
+//     from: [taskActor],
+//     to: taskActor,
+//     type: {type: StringType, enum: ['approve']},
+//     typeInfo: commentApprovalSchema,
+// });
 
 exports.jobQueue = Schema({
     type: StringType,

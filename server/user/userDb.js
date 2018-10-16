@@ -7,6 +7,12 @@ const authorizationShared = require('@std/esm')(module)('../../shared/system/aut
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
+const handleError = require('../log/dbLogger').handleError;
+
+let notificationTypesSchema = {
+    drawer: Boolean,
+    push: Boolean,
+};
 
 let userSchema = new Schema({
     username: {type: StringType, unique: true},
@@ -18,6 +24,9 @@ let userSchema = new Schema({
         clientLogDate: Date
     },
     lockCounter: Number,
+    notifications: {
+        approvalComment: notificationTypesSchema
+    },
     orgAdmin: [StringType],
     orgCurator: [StringType],
     siteAdmin: Boolean,
@@ -80,12 +89,26 @@ exports.byId = (id, callback) => {
     User.findById(id, userProject, callback);
 };
 
-exports.updateUser = (id, fields, callback) => {
+exports.find = (crit, cb) => {
+    User.find(crit, handleError({}, cb));
+};
+
+exports.updateUser = (user, fields, callback) => {
     let update = {};
     if (fields.email) update.email = fields.email;
+    if (fields.notifications) {
+        let approvalComment = true;
+        if (!authorizationShared.canComment(user)) {
+            fields.notifications.approvalComment = undefined;
+            approvalComment = false;
+        }
+        if (approvalComment) {
+            update.notifications = fields.notifications;
+        }
+    }
     if (fields.searchSettings) update.searchSettings = fields.searchSettings;
-    if (fields.publishedForms) update.email = fields.publishedForms;
-    User.update({_id: id}, {$set: update}, callback);
+    if (fields.publishedForms) update.publishedForms = fields.publishedForms;
+    User.update({_id: user.id}, {$set: update}, callback);
 };
 exports.avatarByUsername = (username, callback) => {
     User.findOne({'username': new RegExp('^' + username + '$', "i")}, {avatarUrl: 1}, callback);

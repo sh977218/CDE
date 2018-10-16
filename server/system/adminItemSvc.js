@@ -1,4 +1,4 @@
-const mongo_data_system = require('./mongo-data');
+const mongo_data = require('./mongo-data');
 const async = require('async');
 const auth = require('./authorization');
 const fs = require('fs');
@@ -6,8 +6,10 @@ const md5 = require('md5-file');
 const clamav = require('clamav.js');
 const config = require('./parseConfig');
 const logging = require('./logging');
+const pushNotification = require('../system/pushNotification');
 const handleError = require('../log/dbLogger').handleError;
 const streamifier = require('streamifier');
+const utilShared = require('@std/esm')(module)("../../shared/system/util");
 // const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 
 // exports.save = function (req, res, dao, cb) {
@@ -56,7 +58,7 @@ const streamifier = require('streamifier');
 //                     ) {
 //                         res.status(403).send('Not authorized');
 //                     } else {
-//                         mongo_data_system.orgByName(item.stewardOrg.name, function (err, org) {
+//                         mongo_data.orgByName(item.stewardOrg.name, function (err, org) {
 //                             var allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
 //                             if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
 //                                 res.status(403).send('Not authorized');
@@ -130,7 +132,7 @@ exports.addAttachment = function (req, res, dao) {
                 writeStream.on('finish', function () {
                     md5(file.path, function (err, hash) {
                         file.md5 = hash;
-                        mongo_data_system.addAttachment(file, req.user, 'some comment', elt, (attachment, requiresApproval) => {
+                        mongo_data.addAttachment(file, req.user, 'some comment', elt, (attachment, requiresApproval) => {
                             if (requiresApproval) {
                                 exports.createApprovalMessage(req.user, 'AttachmentReviewer', 'AttachmentApproval', attachment);
                             }
@@ -152,7 +154,7 @@ exports.removeAttachment = function (req, res, dao) {
         elt.save(function (err) {
             if (err) return res.status(500).send('ERROR - cannot save attachment');
             res.send(elt);
-            mongo_data_system.removeAttachmentIfNotUsed(fileid);
+            mongo_data.removeAttachmentIfNotUsed(fileid);
         });
     });
 };
@@ -162,8 +164,7 @@ exports.removeAttachmentLinks = function (id, collection) {
 };
 
 exports.createApprovalMessage = function (user, role, type, details) {
-    // mongo_data_system.usersByRole(role, (err, users) => {
-    mongo_data_system.createMessage({
+    mongo_data.createMessage({
         author: {authorType: 'user', name: user.username},
         date: new Date(),
         recipient: {recipientType: 'role', name: role},
@@ -174,7 +175,40 @@ exports.createApprovalMessage = function (user, role, type, details) {
         }],
         type: type,
         typeAttachmentApproval: type === 'AttachmentApproval' ? details : undefined,
-        typeCommentApproval: type === 'CommentApproval' ? details : undefined,
+    });
+};
+
+exports.createTask = function (user, role, type, details) {
+    // mongo_data.taskCreate({
+    //     from: [{type: 'user', typeId: user.username}],
+    //     to: {type: 'role', typeId: role},
+    //     type: type,
+    //     typeInfo: details,
+    // });
+
+    let msg = JSON.stringify({
+        title: utilShared.capString(type) + ' Request',
+        options: {
+            body: 'Tasks can be completed using the notification bell menu on the navigation bar',
+            icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+            badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
+            tag: 'cde-' + type,
+            actions: [
+                {
+                    action: 'open-app-action',
+                    title: 'View in Notification Bell',
+                    icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
+                },
+                {
+                    action: 'profile-action',
+                    title: 'Edit Subscription',
+                    icon: '/cde/public/assets/img/min/portrait.png'
+                }
+            ]
+        }
+    });
+    mongo_data.pushGetRegistrations(type + role, registrations => {
+        registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
     });
 };
 

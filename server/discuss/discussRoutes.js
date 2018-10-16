@@ -36,11 +36,13 @@ exports.module = function (roleConfig) {
         idRetrievalFunc(comment.element.eltId, handle404({req, res}, elt => {
             comment.user = req.user;
             comment.created = new Date().toJSON();
-            if (!authorizationShared.canComment(req.user)) comment.pendingApproval = true;
+            if (!authorizationShared.canComment(req.user)) {
+                comment.pendingApproval = true;
+            }
             discussDb.save(comment, handleError({req, res}, savedComment => {
                 ioServerCommentUpdated(req.user.username, comment.element.eltId);
                 if (savedComment.pendingApproval) {
-                    let details = {
+                    adminItemService.createTask(req.user, 'CommentReviewer', 'approve', {
                         element: {
                             eltId: savedComment.element.eltId,
                             name: dao.getPrimaryName(elt),
@@ -50,8 +52,7 @@ exports.module = function (roleConfig) {
                             commentId: savedComment._id,
                             text: savedComment.text
                         }
-                    };
-                    adminItemService.createApprovalMessage(req.user, 'CommentReviewer', 'CommentApproval', details);
+                    });
                 }
                 res.send({});
             }));
@@ -79,7 +80,7 @@ exports.module = function (roleConfig) {
                 ioServerCommentUpdated(req.user.username, comment.element.eltId);
                 res.send({});
                 if (reply.pendingApproval) {
-                    let details = {
+                    adminItemService.createTask(req.user, 'CommentReviewer', 'approve', {
                         element: {
                             tinyId: comment.element.eltId,
                             name: req.body.eltName
@@ -89,8 +90,7 @@ exports.module = function (roleConfig) {
                             replyIndex: comment.replies.length,
                             text: req.body.reply
                         }
-                    };
-                    adminItemService.createApprovalMessage(req.user, 'CommentReviewer', 'CommentApproval', details);
+                    });
                 }
                 if (req.user.username !== savedComment.user.username) {
                     let message = {
@@ -188,54 +188,54 @@ exports.module = function (roleConfig) {
     });
 
     router.post('/approveComment', roleConfig.manageComment, (req, res) => {
-        discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
-            comment.pendingApproval = false;
-            comment.save(handleError({req, res}, () => res.send('Approved')));
-        }));
+        if (req.body.replyId) {
+            discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
+                comment.replies.filter(r => r._id.toString() === req.body.replyId).map(r => r.pendingApproval = false);
+                comment.save(handleError({req, res}, () => res.send('Approved')));
+            }));
+        } else {
+            discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
+                comment.pendingApproval = false;
+                comment.save(handleError({req, res}, () => res.send('Approved')));
+            }));
+        }
     });
 
     router.post('/declineComment', roleConfig.manageComment, (req, res) => {
-        discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
-            comment.pendingApproval = false;
-            comment.remove(handleError({req, res}, () => res.send('Declined')));
-        }));
-    });
-
-    router.post('/approveReply', roleConfig.manageComment, (req, res) => {
-        discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
-            comment.replies.filter(r => r._id.toString() === req.body.replyId).map(r => r.pendingApproval = false);
-            comment.save(handleError({req, res}, () => res.send('Approved')));
-        }));
-    });
-
-    router.post('/declineReply', roleConfig.manageComment, (req, res) => {
-        discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
-            comment.replies = comment.replies.filter(r => r._id.toString() !== req.body.replyId);
-            comment.save(handleError({req, res}, () => res.send('Approved')));
-        }));
+        if (req.body.replyId) {
+            discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
+                comment.replies = comment.replies.filter(r => r._id.toString() !== req.body.replyId);
+                comment.save(handleError({req, res}, () => res.send('Declined')));
+            }));
+        } else {
+            discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
+                comment.pendingApproval = false;
+                comment.remove(handleError({req, res}, () => res.send('Declined')));
+            }));
+        }
     });
 
     router.post('/resolveComment', [loggedInMiddleware], (req, res) => {
         discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
-            replyTo(req, res, 'resolved');
+            replyTo(req, res, comment, 'resolved');
         }));
     });
 
     router.post('/reopenComment', [loggedInMiddleware], (req, res) => {
         discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
-            replyTo(req, res, 'active');
+            replyTo(req, res, comment, 'active');
         }));
     });
 
     router.post('/resolveReply', [loggedInMiddleware], (req, res) => {
         discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
-            replyTo(req, res, undefined, 'resolved');
+            replyTo(req, res, comment, undefined, 'resolved');
         }));
     });
 
     router.post('/reopenReply', [loggedInMiddleware], (req, res) => {
         discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
-            replyTo(req, res, undefined, 'active');
+            replyTo(req, res, comment, undefined, 'active');
         }));
     });
 
@@ -244,7 +244,7 @@ exports.module = function (roleConfig) {
 
 let ioServerCommentUpdated = (username, roomId) => ioServer.ioServer.of('/comment').to(roomId).emit('commentUpdated', {username: username});
 
-function replyTo(req, res, status, repliesStatus, send = {}) {
+function replyTo(req, res, comment, status, repliesStatus, send = {}) {
     if (status) {
         comment.status = status;
     }

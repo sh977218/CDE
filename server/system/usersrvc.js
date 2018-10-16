@@ -89,8 +89,8 @@ exports.addOrgAdmin = function(req, res) {
             user.orgAdmin.push(req.body.org);
             changed = true;
         }
-        if (!authorizationShared.hasRole(user, "CommentReviewer")) {
-            user.roles.push("CommentReviewer");
+        if (!authorizationShared.hasRole(user, 'CommentReviewer')) {
+            user.roles.push('CommentReviewer');
             changed = true;
         }
 
@@ -123,8 +123,8 @@ exports.addOrgCurator = function(req, res) {
             user.orgCurator.push(req.body.org);
             changed = true;
         }
-        if (!authorizationShared.hasRole(user, "CommentReviewer")) {
-            user.roles.push("CommentReviewer");
+        if (!authorizationShared.hasRole(user, 'CommentReviewer')) {
+            user.roles.push('CommentReviewer');
             changed = true;
         }
 

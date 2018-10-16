@@ -1,5 +1,5 @@
 <nih-cde ng-version="6.0.3">
-    <cde-navigation _nghost-c0="">
+    <cde-navigation>
         <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
             <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
                 <div class="mdl-layout__header-row">
@@ -39,23 +39,9 @@
                             </ul>
 
                             <a class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
-                                id="login_link" href="/login">Login</a><a
-                                id="notifications">
-                            <cde-notifications _nghost-c0="">
-                                <a aria-haspopup="true">
-                                    <mat-icon
-                                            class="mat-badge mat-icon mat-badge-warn material-icons mat-badge-overlap mat-badge-above mat-badge-after mat-badge-small mat-badge-hidden"
-                                            matbadgecolor="warn" matbadgesize="small" role="img"
-                                            style="font-size: 1.3em; margin-top: 10px" aria-hidden="true">
-                                        notifications<span id="mat-badge-content-0"
-                                                           class="mat-badge-content mat-badge-active">0</span>
-                                    </mat-icon>
-                                </a>
-                            </cde-notifications>
-                        </a><a id="searchSettings"
-                               style="padding-right: 24px" href="/searchPreferences"><i
-                                class="material-icons"
-                                style="font-size: 1.3em; margin-top: 10px">settings</i></a>
+                                id="login_link" href="/login">Login</a>
+                            <a class="mdl-navigation__link mdl-typography--text-uppercase" id="searchSettings" routerlink="/searchPreferences" href="/searchPreferences">
+                                <i class="material-icons">settings</i></a>
                         </nav>
                     </div>
                     <span class="android-mobile-title mdl-layout-title"><img
@@ -81,7 +67,7 @@
                             id="login_link" href="/login">Login</a></nav>
             </div>
             <div class="android-content mdl-layout__content">
-                <cde-home _nghost-c0="" class="ng-star-inserted">
+                <cde-home class="ng-star-inserted">
                     <section class="sectionPage"
                              style="background-color: #eee; padding: 10px; padding-bottom: 40px">
                         <div class="" style="padding: 2rem 1rem; margin-bottom: 0;">

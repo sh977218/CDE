@@ -78,26 +78,26 @@ exports.logError = function (message, callback) { // all server errors, express 
     let description = (message.message || message.publicMessage || '').substr(0, 30);
     new LogErrorModel(message).save(err => {
         if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
-        let msg = {
-            title: 'Server Side Error',
-            options: {
-                body: description,
-                icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
-                badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
-                tag: 'cde-server-side',
-                actions: [
-                    {
-                        action: 'audit-action',
-                        title: 'View',
-                        icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
-                    }
-                ]
-            }
-        };
 
         if (message.origin && message.origin.indexOf("pushGetAdministratorRegistrations") === -1) {
+            let msg = JSON.stringify({
+                title: 'Server Side Error',
+                options: {
+                    body: description,
+                    icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
+                    badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+                    tag: 'cde-server-side',
+                    actions: [
+                        {
+                            action: 'audit-action',
+                            title: 'View',
+                            icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+                        }
+                    ]
+                }
+            });
             mongo_data.pushGetAdministratorRegistrations(registrations => {
-                registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
             });
         }
         if (callback) callback(err);
@@ -116,27 +116,27 @@ exports.logClientError = function (req, callback) {
     if (req.user) exc.username = req.user.username;
     new ClientErrorModel(exc).save(err => {
         if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
-        let msg = {
-            title: 'Client Side Error',
-            options: {
-                body: exc.message.substr(0, 30),
-                icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
-                badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
-                tag: 'cde-client-side',
-                actions: [
-                    {
-                        action: 'audit-action',
-                        title: 'View',
-                        icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
-                    }
-                ]
-            }
-        };
 
         let ua = userAgent.is(req.headers['user-agent']);
         if (ua.chrome || ua.firefox || ua.edge) {
+            let msg = JSON.stringify({
+                title: 'Client Side Error',
+                options: {
+                    body: exc.message.substr(0, 30),
+                    icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
+                    badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+                    tag: 'cde-client-side',
+                    actions: [
+                        {
+                            action: 'audit-action',
+                            title: 'View',
+                            icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+                        }
+                    ]
+                }
+            });
             mongo_data.pushGetAdministratorRegistrations(registrations => {
-                registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
             });
         }
 
