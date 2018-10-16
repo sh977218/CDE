@@ -124,7 +124,7 @@
                     </ng-container>
                     <ng-container *ngSwitchCase="'Geo Location'">
                         <div class="input-group">
-                            <div class="input-group-prepend">
+                            <div class="input-group-prepend d-none d-sm-flex">
                                 <span class="input-group-text">Coordinates:</span>
                             </div>
                             <input type="text" class="form-control" [disabled]="locationDenied"
@@ -142,7 +142,7 @@
                                     location_searching
                                 </mat-icon>
                             </button>
-                            <button *ngIf="locationDenied" class="btn btn-disabled">
+                            <button *ngIf="locationDenied" class="btn btn-disabled" (click)="locationDeniedMessage()">
                                 <mat-icon>location_disabled</mat-icon>
                             </button>
                         </div>
