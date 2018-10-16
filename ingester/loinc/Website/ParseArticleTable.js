@@ -5,29 +5,15 @@ exports.parseArticleTable = async (driver, loincId, element, cb) => {
 
     trs.shift();
     let articles = [];
-    let finishedOneArticle = true;
-    let i = 0;
-    let oneArticle = [];
+    let article = "";
     for (let tr of trs) {
         let classes = await tr.getAttribute('class');
         if (classes.indexOf('half_space') !== -1) {
-            if (oneArticle.length === 2) {
-                let d = {};
-                let descriptionText = await oneArticle[0].getText();
-                d.Description = descriptionText.trim();
-
-                let sourceText = await oneArticle[1].getText();
-                d.Source = sourceText.trim();
-
-                articles.push(d);
-                oneArticle = [];
-                finishedOneArticle = true;
-                i++;
-            }
+            let text = await tr.getText();
+            article = article + text;
         } else {
-            oneArticle.push(tr);
-            finishedOneArticle = false;
-            i++;
+            articles.push(article);
+            article = "";
         }
     }
     cb(articles);
