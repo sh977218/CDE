@@ -30,6 +30,7 @@ export class NativeQuestionComponent implements OnInit {
     constructor(private http: HttpClient,
                 public scoreSvc: ScoreService,
                 public nrs: NativeRenderService) {
+        this.getCurrentGeoLocation(null);
     }
 
     classColumns(pvIndex, index) {
@@ -107,11 +108,15 @@ export class NativeQuestionComponent implements OnInit {
             && q.elementType === 'question' && q.question.datatype !== 'Value List';
     }
 
+    locationDenied = false;
+
     getCurrentGeoLocation(formElement) {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
-                formElement.question.answer = position.coords;
-            });
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    if (formElement) formElement.question.answer = position.coords;
+                },
+                err => this.locationDenied = err.code === err.PERMISSION_DENIED ? true : false);
         }
     }
 }

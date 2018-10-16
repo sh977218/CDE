@@ -12,18 +12,15 @@ public class FormGeoLocationRenderTest extends QuestionTest {
         String formName = "Geo Location Test";
         goToFormByName(formName);
         goToFormDescription();
-        addSection("", "F", 0);
+        addSection("", null, 0);
         addQuestionToSection("Geo Location CDE", 0);
         textPresent("Geo Location CDE", By.id("question_0-0"));
         textPresent("(Geo Location)", By.id("question_0-0"));
-        textPresent("This should fail here.");
-/*
 
         goToPreview();
         clickElement(By.id("0-0_location"));
         textPresent("38", By.id("0-0_latitude"));
         textPresent("-77", By.id("0-0_longitude"));
-*/
     }
 
 }

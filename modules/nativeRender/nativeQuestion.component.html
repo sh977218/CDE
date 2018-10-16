@@ -124,33 +124,27 @@
                     </ng-container>
                     <ng-container *ngSwitchCase="'Geo Location'">
                         <div class="input-group">
-                            <div class="col-5">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Latitude:</span>
-                                    </div>
-                                    <input type="text" class="form-control" readonly [id]="formElement.feId+'_latitude'"
-                                           value="{{formElement.question.answer?.latitude}}">
-                                </div>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Coordinates:</span>
                             </div>
-                            <div class="col-5">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Longitude:</span>
-                                    </div>
-                                    <input type="text" class="form-control" readonly
-                                           [id]="formElement.feId+'_longitude'"
-                                           value="{{formElement.question.answer?.longitude}}">
-                                </div>
+                            <input type="text" class="form-control" [disabled]="locationDenied"
+                                   [id]="formElement.feId+'_latitude'"
+                                   value="{{formElement.question.answer?.latitude}}">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">,</span>
                             </div>
-                            <div class="col-2">
-                                <button class="btn btn-outline-secondary" type="button"
-                                        [id]="formElement.feId+'_location'">
-                                    <mat-icon (click)="getCurrentGeoLocation(formElement);">
-                                        location_searching
-                                    </mat-icon>
-                                </button>
-                            </div>
+                            <input type="text" class="form-control" [disabled]="locationDenied"
+                                   [id]="formElement.feId+'_longitude'"
+                                   value="{{formElement.question.answer?.longitude}}">
+                            <button *ngIf="!locationDenied" class="btn btn-primary"
+                                    [id]="formElement.feId+'_location'">
+                                <mat-icon (click)="getCurrentGeoLocation(formElement);">
+                                    location_searching
+                                </mat-icon>
+                            </button>
+                            <button *ngIf="locationDenied" class="btn btn-disabled">
+                                <mat-icon>location_disabled</mat-icon>
+                            </button>
                         </div>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Number'">
