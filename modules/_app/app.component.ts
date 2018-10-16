@@ -95,14 +95,12 @@ export class CdeAppComponent implements OnInit {
                 iconReg: MatIconRegistry,
                 sanitizer: DomSanitizer) {
 
-        if (!!(<any>window).ga) {
+        if (!!(<any>window).ga && !!(<any>window).ga.getAll) {
             this.router.events.subscribe(event => {
                 if (event instanceof NavigationEnd) {
-                    if ((<any>window).ga.getAll) {
-                        (<any>window).ga.getAll().forEach(tracker =>
-                            (<any>window).gtag('config', tracker.get('trackingId'), {page_path: event.urlAfterRedirects})
-                        );
-                    }
+                    (<any>window).ga.getAll().forEach(tracker =>
+                        (<any>window).gtag('config', tracker.get('trackingId'), {page_path: event.urlAfterRedirects})
+                    );
                 }
             });
         }
