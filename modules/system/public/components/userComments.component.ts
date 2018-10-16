@@ -30,9 +30,10 @@ export class UserCommentsComponent implements OnInit {
         //noinspection TypeScriptValidateTypes
         this.http.get<Comment[]>('/server/discuss/commentsFor/' + this.user.username + '/' + (page - 1) * 30 + '/30')
             .subscribe(comments => {
-            this.comments.latestComments = comments;
-            let len = this.comments.latestComments.length;
-            this.comments.totalItems = (page - 1) * 30 + len + (len === 30 ? 1 : 0);
-        }, () => {});
+                this.comments.latestComments = comments;
+                let len = this.comments.latestComments.length;
+                this.comments.totalItems = (page - 1) * 30 + len + (len === 30 ? 1 : 0);
+            }, () => {
+            });
     }
 }
