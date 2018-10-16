@@ -10,7 +10,7 @@ exports.parsePartDefinitionDescriptionsTable = async (driver, loincId, element, 
         if (trClass.indexOf('half_space') === -1) {
             let tds = await tr.findElements(By.xpath('td'));
             if (tds.length !== 2)
-                throw new Error('Term definition error, source Td ' + loincId + ' td length !== 3');
+                throw new Error('Part definition error, source Td ' + loincId + ' td length !== 3');
             let tdStrongs = await tds[1].findElements(By.xpath('strong'));
             let tdSpans = await tds[1].findElements(By.xpath('span'));
             if (tdStrongs && tdStrongs.length > 0) {
