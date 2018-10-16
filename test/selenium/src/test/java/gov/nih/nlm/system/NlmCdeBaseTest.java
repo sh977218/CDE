@@ -85,7 +85,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             if (u != null) chromeOptions.addArguments("--user-agent=googleBot");
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
-            prefs.put("profile.default_content_settings.geolocation", 2);
+            prefs.put("profile.default_content_settings.geolocation", 1);
             chromeOptions.setExperimentalOption("prefs", prefs);
             chromeOptions.addArguments("disable-shared-workers");
             chromeOptions.addArguments("start-maximized");
