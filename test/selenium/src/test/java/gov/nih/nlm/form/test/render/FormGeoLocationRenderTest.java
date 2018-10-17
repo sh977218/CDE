@@ -18,9 +18,7 @@ public class FormGeoLocationRenderTest extends QuestionTest {
         textPresent("(Geo Location)", By.id("question_0-0"));
 
         goToPreview();
-        clickElement(By.id("0-0_location"));
-        textPresent("38", By.id("0-0_latitude"));
-        textPresent("-77", By.id("0-0_longitude"));
+        findElement(By.id("0-0_location"));
     }
 
 }
