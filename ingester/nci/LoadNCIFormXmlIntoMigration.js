@@ -1,29 +1,28 @@
-var fs = require('fs'),
-    cheerio = require('cheerio'),
-    async = require('async'),
-    $ = cheerio.load(fs.readFileSync('./FormBuilder.html'), {}),
-    LoadFromNciSite = require('./LoadFromNciSite')
-    ;
+const fs = require('fs');
+const cheerio = require('cheerio');
+const async = require('async');
+const $ = cheerio.load(fs.readFileSync('./FormBuilder.html'), {});
+const LoadFromNciSite = require('./LoadFromNciSite');
 
 /*
  set this id before run script.
  1. go to https://formbuilder.nci.nih.gov/FormBuilder/formSearchAction.do
- 2. open development model, check cookie.
+ 2. open development model, Application -> Cookies;
  3. copy JSession id.
  */
-var jSessionId = '6BC9CE4B0157FA5CB9AD4C68581DA5FF';
+let jSessionId = 'PLxTcUPHpdtwsovnSC-Z6oWY.nciws-p786-v';
 
-var counter = 0;
-var hrefArray = [];
+let counter = 0;
+let hrefArray = [];
 $('img[alt="XML Download"]').each(function (i, img) {
-    var href = 'https://formbuilder.nci.nih.gov' + img.parent.attribs.href;
+    let href = 'https://formbuilder.nci.nih.gov' + img.parent.attribs.href;
     hrefArray.push(href);
 });
 // very important!!!
 LoadFromNciSite.setJSessionId(jSessionId);
 
 async.forEach(hrefArray, function (href, doneOne) {
-    LoadFromNciSite.runOne(href, false, function () {
+    LoadFromNciSite.runArray([href], false, function () {
         console.log('counter: ' + counter++);
         doneOne();
     });

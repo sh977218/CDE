@@ -1,7 +1,7 @@
 var entities = require("entities");
 var mongo_data = require('../../../server/system/mongo-data');
 var classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
-var classificationMapping = require('../caDSRClassificationMapping.json');
+var classificationMapping = require('../classificationMapping/caDSRClassificationMapping.json');
 
 var $attribute = 'attribute';
 
