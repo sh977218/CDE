@@ -48,13 +48,6 @@ export class BoardViewComponent implements OnInit {
     url: string;
     users: any[] = [];
 
-    ngOnInit() {
-        this.boardId = this.route.snapshot.params['boardId'];
-        if (this.userService.user) this.http.get('/server/board/viewBoard/' + this.boardId).subscribe();
-        this.reload();
-        this.url = location.href;
-    }
-
     constructor(private alert: AlertService,
                 public esService: ElasticService,
                 private http: HttpClient,
@@ -62,6 +55,12 @@ export class BoardViewComponent implements OnInit {
                 private route: ActivatedRoute,
                 private dialog: MatDialog,
                 protected userService: UserService) {
+    }
+
+    ngOnInit() {
+        this.boardId = this.route.snapshot.params['boardId'];
+        this.reload();
+        this.url = location.href;
     }
 
     addClassification(event) {

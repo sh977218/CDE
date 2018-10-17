@@ -35,7 +35,7 @@ export class NotificationsComponent {
                 private alert: AlertService,
                 private router: Router) {
 
-        this.router.events.subscribe(async (event) => {
+        this.router.events.subscribe(async event => {
             if (event instanceof NavigationEnd) {
                 try {
                     const latestVersion = await this.http.get("/site-version", {responseType: 'text'}).toPromise();
@@ -55,7 +55,7 @@ export class NotificationsComponent {
             this.numberServerError = result.serverErrorCount;
             this.numberClientError = result.clientErrorCount;
             this.numberError = this.numberServerError + this.numberClientError;
-        }, err => this.alert.addAlert('danger', err));
+        }, err => this.alert.addAlert('danger', "Unable to get notifications. Are you logged in?"));
     }
 
 }
