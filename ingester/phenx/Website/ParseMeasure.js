@@ -2,8 +2,6 @@ let _ = require('lodash');
 let webdriver = require('selenium-webdriver');
 let By = webdriver.By;
 
-let LOINCLoader = require('../../loinc/Website/LOINCLoader');
-
 let ParseProtocol = require('./ParseProtocol');
 
 let driver = new webdriver.Builder().forBrowser('chrome').build();
@@ -80,11 +78,6 @@ function parsingProtocolLinks(elements) {
             let protocolId = browserIdText.replace('#', '').trim();
             let linkText = await protocolLink.getAttribute('href');
             let protocol = await ParseProtocol.parseProtocol(linkText.trim());
-            for (let standard of protocol['Standards']) {
-                if (standard.Source === 'LOINC') {
-                    standard.loinc = await LOINCLoader.runOneLoinc(standard.ID);
-                }
-            }
             protocol.protocolId = protocolId;
             protocols.push({protocolId: protocolId});
         }

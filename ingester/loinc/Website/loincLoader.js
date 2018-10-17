@@ -178,7 +178,7 @@ exports.runOneLoinc = loincId => {
         for (let task of tasks) {
             let sectionName = task.sectionName;
             let elements = await driver.findElements(By.xpath(task.xpath));
-            if (elements && elements.length === 1 && task.function) {
+            if (elements && elements.length === 1) {
                 await task.function(driver, loincId, elements[0], result => {
                     loinc[sectionName] = result;
                 });

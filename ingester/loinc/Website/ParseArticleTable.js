@@ -8,7 +8,7 @@ exports.parseArticleTable = async (driver, loincId, element, cb) => {
     let article = "";
     for (let tr of trs) {
         let classes = await tr.getAttribute('class');
-        if (classes.indexOf('half_space') !== -1) {
+        if (classes.indexOf('half_space') === -1) {
             let text = await tr.getText();
             article = article + text;
         } else {

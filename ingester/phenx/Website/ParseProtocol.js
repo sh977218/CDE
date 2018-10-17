@@ -3,6 +3,8 @@ let By = webdriver.By;
 
 let driver = new webdriver.Builder().forBrowser('chrome').build();
 
+let LOINCLoader = require('../../loinc/Website/LOINCLoader');
+
 let tasks = [
     {
         sectionName: 'Protocol Release Date',
@@ -159,6 +161,11 @@ exports.parseProtocol = function (link) {
             let elements = await driver.findElements(By.xpath(task.xpath));
             if (elements && elements[0])
                 protocol[task.sectionName] = await task.function(elements[0]);
+        }
+        for (let standard of protocol['Standards']) {
+            if (standard.Source === 'LOINC') {
+                standard.loinc = await LOINCLoader.runOneLoinc(standard.ID);
+            }
         }
         let classificationArr = await driver.findElements(By.xpath("//p[@class='back'][1]/a"));
         for (let c of classificationArr) {

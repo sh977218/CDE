@@ -14,7 +14,7 @@ function doLoadPhenxMeasure() {
         let measureXpath = "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td/div/div/a[2]";
         let measureLinks = await driver.findElements(webdriver.By.xpath(measureXpath));
         for (let measureLink of measureLinks) {
-            if (measureCount > 71) {
+            if (measureCount > 29) {
                 let browserIdText = await measureLink.findElement(webdriver.By.css('span')).getText();
                 let hrefText = await measureLink.getAttribute('href');
                 let measure = await ParseMeasure.parseMeasure(hrefText.trim());
@@ -22,6 +22,7 @@ function doLoadPhenxMeasure() {
                 measure['browserId'] = browserIdText.replace('#', '').trim();
                 await new MigrationMeasureModel(measure).save();
             }
+            measureCount++;
         }
         resolve();
     })

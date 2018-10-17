@@ -7,10 +7,10 @@ exports.parseTermDefinitionDescriptionsTable = async (driver, loincId, element, 
     let definition = {};
     for (let tr of trs) {
         let classes = await tr.getAttribute('class');
-        if (classes.indexOf('half_space') !== -1) {
+        if (classes.indexOf('half_space') === -1) {
             let tds = await tr.findElements(By.xpath('td'));
             if (tds.length !== 2)
-                throw new Error('Term definition error, Td ' + loincId);
+                throw new Error('Term definition error, Td length ' + tds.length + ' ' + loincId);
             let description = await tds[1].getText();
             definition.description = description.trim();
         } else {
