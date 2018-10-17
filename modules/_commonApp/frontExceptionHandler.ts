@@ -13,7 +13,6 @@ export class FrontExceptionHandler implements ErrorHandler {
     handleError (error) {
         if (this.previousException && error.toString() === this.previousException.toString()) return;
         this.previousException = error;
-        console.error(error);
         try {
             if (!this.lock) {
                 this.lock = true;
