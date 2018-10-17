@@ -90,7 +90,7 @@
     "web-push": "3.3.2",
     "winston": "0.9.0",
     "winston-logrotate": "1.0.1",
-    "xml2js": "0.4.17",
+    "xml2js": "^0.4.19",
     "xmlbuilder": "2.6.2",
     "xsd-schema-validator": "0.6.0"
   },
