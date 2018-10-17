@@ -1,10 +1,13 @@
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
-const _ = require('lodash');
 
 const Form = require('../../../server/form/mongo-form').Form;
 const CreateForm = require('../Form/CreateForm');
 const MergeForm = require('../Form/MergeForm');
+
+const DataElement = require('../../../server/cde/mongo-cde').DataElement;
+const CreateCDE = require('../CDE/CreateCDE');
+const MergeCDE = require('../CDE/MergeCDE');
 
 const ParseLoincNameTable = require('./ParseLoincNameTable');
 const ParseLoincIdTable = require('./ParseLoincIdTable');
@@ -205,3 +208,24 @@ exports.runOneForm = (loinc, orgInfo) => {
         resolve(existingForm);
     })
 };
+
+exports.runOneCde = (loinc, orgInfo) => {
+    return new Promise(async (resolve, reject) => {
+        let loincId = loinc.loincId;
+        let cdeCond = {
+            archived: false,
+            "registrationState.registrationStatus": {$ne: "Retired"},
+            'ids.id': loincId
+        };
+        let existingCde = await DataElement.findOne(cdeCond).exec();
+        let newCDE = await CreateCDE.createCde(loinc, orgInfo);
+        if (!existingCde) {
+            existingCde = await new DataElement(newCDE).save();
+        } else {
+            await MergeCDE.mergeCde(newCDE, existingCde, orgInfo);
+            existingCde.updated = new Date().toJSON();
+            await existingCde.save();
+        }
+        resolve(existingCde);
+    })
+}

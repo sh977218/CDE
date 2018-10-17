@@ -18,9 +18,13 @@ async function run() {
     let orgInfo = orgMapping[orgName];
     orgInfo.classification = classifi[loincId];
     let loinc = await MigrationLoincModel.findOne({loincId: loincId});
-    await loincLoader.runOneForm(loinc.toObject(), orgInfo);
+    let loincObj = loinc.toObject();
+    if (loincObj['PANEL HIERARCHY'])
+        await loincLoader.runOneForm(loincObj, orgInfo);
+    else
+        await loincLoader.runOneCde(loincObj, orgInfo);
+
     console.log('***********Finished loading loinc Id ' + loincId);
-    process.exit(1);
 }
 
-run();
+run().then();
