@@ -13,7 +13,7 @@ import {
     MatSnackBarModule
 } from '@angular/material';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { BackForwardService } from '_app/backForward.service';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
@@ -28,6 +28,7 @@ import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component'
 import { CommonAppModule } from '_commonApp/commonApp.module';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { IEBannerComponent } from '_app/ieBanner/ieBanner.component';
+import { AlertModule } from 'alert/alert.module';
 
 @NgModule({
     imports: [
@@ -47,6 +48,7 @@ import { IEBannerComponent } from '_app/ieBanner/ieBanner.component';
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
+        AlertModule,
     ],
     declarations: [
         CdeAppComponent,

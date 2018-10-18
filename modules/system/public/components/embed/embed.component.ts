@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import _noop from 'lodash/noop';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { ObjectId } from 'shared/models.model';
 

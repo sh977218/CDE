@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, Output, ViewChild, EventEmitter, TemplateRef } from '@angular/core';
 import _isEqual from 'lodash/isEqual';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { iterateFormElements } from 'shared/form/fe';
 import { MatDialog } from '@angular/material';
 

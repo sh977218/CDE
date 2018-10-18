@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, ViewChild, OnInit, TemplateRef } from '@angular/core';
 import _noop from 'lodash/noop';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { Comment, RegistrationState } from 'shared/models.model';
 import { statusList } from 'shared/system/regStatusShared';

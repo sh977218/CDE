@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { Organization } from 'shared/models.model';
 

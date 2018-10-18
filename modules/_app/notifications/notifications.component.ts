@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { isSiteAdmin } from 'shared/system/authorizationShared';
 import { NavigationEnd, Router } from '@angular/router';

@@ -16,6 +16,7 @@ import { EmbeddedFormSearchResultComponent } from '_embedApp/searchResults/embed
 import { CoreModule } from 'core/core.module';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/material';
+import { AlertModule } from 'alert/alert.module';
 
 
 @NgModule({
@@ -46,12 +47,12 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/materi
         MatButtonModule,
         MatDialogModule,
         MatIconModule,
+        AlertModule,
     ],
     entryComponents: [
         InactivityLoggedOutComponent
     ],
-    exports: [
-    ],
+    exports: [],
     bootstrap: [EmbedAppComponent]
 })
 export class EmbedAppModule {

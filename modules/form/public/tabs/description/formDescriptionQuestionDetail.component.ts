@@ -6,7 +6,7 @@ import _clone from 'lodash/clone';
 import { Observable } from 'rxjs/Observable';
 import { debounceTime, map } from 'rxjs/operators';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { DataTypeService } from 'core/dataType.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';

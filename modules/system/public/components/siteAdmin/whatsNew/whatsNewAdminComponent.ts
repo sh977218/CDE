@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Article } from 'shared/article/article.model';
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 
 @Component({
     selector: 'cde-whats-new-admin',

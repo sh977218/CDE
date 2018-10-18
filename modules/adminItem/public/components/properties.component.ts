@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild, OnInit, Output, EventEmitter, TemplateRef } from '@angular/core';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { Property } from 'shared/models.model';
 import { OrgHelperService } from 'core/orgHelper.service';
