@@ -22,14 +22,14 @@ let orgInfo = ORG_INFO_MAP['NCI-CDMH'];
 const user = {username: 'batchloader'};
 let counter = 0;
 
-addAttachments = (nciCde, elt) => {
+addAttachments = (originXml, elt) => {
     return new Promise((resolve, reject) => {
         let readable = new Readable();
-        let xml = builder.buildObject(nciCde).toString();
+        let xml = builder.buildObject(originXml).toString();
         readable.push(xml);
         readable.push(null);
         mongo_data.addAttachment({
-                originalname: nciCde.PUBLICID[0] + "v" + nciCde.VERSION[0] + ".xml",
+                originalname: originXml.DataElement.PUBLICID[0] + "v" + originXml.DataElement.VERSION[0] + ".xml",
                 mimetype: "application/xml",
                 size: xml.length,
                 stream: readable
@@ -55,7 +55,7 @@ fs.readFile(xmlFile, function (err, data) {
             let newCdeObj = await CreateCDE.createCde(nciCde, orgInfo);
             let newCde = new DataElement(newCdeObj);
             let existingCde = await DataElement.findOne({'ids.id': id});
-            await addAttachments(nciCde, newCde);
+            await addAttachments({DataElement: nciCde}, newCde);
             if (!existingCde) {
                 await newCde.save();
                 console.log('newCde tinyId: ' + newCde.tinyId);
