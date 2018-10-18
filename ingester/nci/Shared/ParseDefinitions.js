@@ -1,7 +1,7 @@
 exports.parseDefinitions = nciCde => {
     let definitions = [{
         definition: nciCde.PREFERREDDEFINITION[0],
-        tags: [{tag: "Health"}]
+        tags: []
     }];
     if (nciCde.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM) {
         let designationTags = ["Application Standard Question Text", "Preferred Question Text", "Alternate Question Text"];

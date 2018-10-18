@@ -1,7 +1,7 @@
 exports.parseIds = nciCde => {
     return [{
         source: 'caDSR',
-        id: de.PUBLICID[0],
-        version: de.VERSION[0]
+        id: nciCde.PUBLICID[0],
+        version: nciCde.VERSION[0]
     }];
 };

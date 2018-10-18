@@ -1,52 +1,31 @@
-const _ = require('lodash');
-const CLASSIFICATION_TYPE_MAP = require('../Mapping/LOINC_CLASSIFICATION_TYPE_MAP').map;
-const MigrationLoincClassificationMappingModel = require('../../createMigrationConnection').MigrationLoincClassificationMappingModel;
+const classificationMapping = require('../classificationMapping/caDSRClassificationMapping.json');
 
-exports.parseClassification = function (loinc, orgInfo) {
-    return new Promise(async (resolve, reject) => {
-        let classification = '';
-        let classificationType = '';
-        let basicAttributes = loinc['BASIC ATTRIBUTES'];
-        if (!basicAttributes) reject("No BASIC ATTRIBUTES found in " + loinc.loincId);
-        let classTypeString = basicAttributes['Class/Type'];
-        let classTypeArray = classTypeString.split('/');
-        if (classTypeArray.length === 0) reject('No Class/Type found in loinc id: ' + loinc.loincId);
-        else if (classTypeArray.length === 2) {
-            classification = classTypeArray[0];
-            classificationType = classTypeArray[1];
-        }
-        else if (classTypeArray.length === 3) {
-            classification = classTypeArray[0] + '/' + classTypeArray[1];
-            classificationType = classTypeArray[2];
-        } else reject('Unknown Class/Type found in loinc id: ' + loinc.loincId);
+function getStringVersion(shortVersion) {
+    if (shortVersion.indexOf(".") === -1)
+        return shortVersion + ".0";
+    return shortVersion;
+};
 
-        let type = CLASSIFICATION_TYPE_MAP[classificationType];
-        let classificationMap = await MigrationLoincClassificationMappingModel.findOne({
-            Type: type,
-            Abbreviation: classification
-        });
-        if (!classificationMap) {
-            console.log('type: ' + type + ' Abbreviation: ' + classification + ' in classificationMap is null');
-            process.exit(1);
-        }
-        let classificationArray = [{
-            stewardOrg: {name: orgInfo.classificationOrgName},
-            elements: []
-        }];
-        let iterator = classificationArray[0].elements;
-        if (!_.isEmpty(orgInfo.classification)) {
-            orgInfo.classification.forEach(c => {
-                iterator.push({
-                    name: c,
-                    elements: []
-                });
-                iterator = iterator[0].elements;
+exports.parseClassification = (nciCde, orgInfo) => {
+    let classification = [];
+    if (nciCde.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
+        nciCde.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.forEach(csi => {
+            let contextName = csi.ClassificationScheme[0].ContextName[0];
+            let preferredName = csi.ClassificationScheme[0].PreferredName[0];
+            classification.push({
+                stewardOrg: {
+                    name: orgInfo.classificationOrgName
+                },
+                elements: [{
+                    name: contextName,
+                    elements: [{
+                        name: preferredName,
+                        elements: []
+                    }]
+                }]
             })
-        }
-        iterator.push({
-            name: classificationMap.get('Value'),
-            elements: []
         });
-        resolve(classificationArray);
-    })
+    }
+
+    return classification;
 };

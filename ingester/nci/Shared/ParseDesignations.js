@@ -1,7 +1,7 @@
 exports.parseDesignations = nciCde => {
     let designations = [{
         designation: nciCde.LONGNAME[0],
-        tags: [{tag: "Health"}]
+        tags: []
     }];
 
     if (nciCde.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM) {
