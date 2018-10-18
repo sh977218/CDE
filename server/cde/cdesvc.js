@@ -131,7 +131,9 @@ exports.byTinyIdList = (req, res) => {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) return res.status(400).send();
     tinyIdList = tinyIdList.split(",");
-    mongo_cde.byTinyIdList(tinyIdList, handleError({req, res}, dataElements => {
+    mongo_cde.DataElement.find({'archived': false}).where('tinyId')
+        .in(tinyIdList)
+        .exec(handleError({req, res}, dataElements => {
         let result = dataElements.map(elt => {
             let r = mongo_data.formatElt(elt);
             if (!req.user) hideProprietaryCodes(r);
