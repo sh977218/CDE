@@ -16,8 +16,6 @@ import { EmbeddedFormSearchResultComponent } from '_embedApp/searchResults/embed
 import { CoreModule } from 'core/core.module';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/material';
-import { AlertModule } from 'alert/alert.module';
-
 
 @NgModule({
     declarations: [
@@ -46,8 +44,7 @@ import { AlertModule } from 'alert/alert.module';
         CommonAppModule,
         MatButtonModule,
         MatDialogModule,
-        MatIconModule,
-        AlertModule,
+        MatIconModule
     ],
     entryComponents: [
         InactivityLoggedOutComponent
