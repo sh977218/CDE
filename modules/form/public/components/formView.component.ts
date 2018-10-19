@@ -200,7 +200,7 @@ export class FormViewComponent implements OnInit {
         if (formId) url = '/formById/' + formId;
         this.http.get<CdeForm>(url).subscribe(
             res => this.formLoaded(res, cb),
-            () => this.router.navigate(['/pageNotFound'])
+            () => this.router.navigate(['/pageNotFound'], {skipLocationChange: true})
         );
     }
 
@@ -327,7 +327,7 @@ export class FormViewComponent implements OnInit {
                     if (res) {
                         this.loadForm(() => this.alert.addAlert('success', 'Form saved.'));
                     }
-                }, () => this.router.navigate(['/pageNotFound']));
+                }, () => this.alert.addAlert('danger', 'Error saving form.'));
             });
         });
 

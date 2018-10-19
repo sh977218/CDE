@@ -24,8 +24,9 @@ public class BoardTest extends NlmCdeBaseTest {
         clickElement(By.id("boardsMenu"));
         textPresent("My Boards");
         clickElement(By.id("myBoardsLink"));
-        textPresent("Add Board");
         hangon(2);
+        textPresent("Add Board");
+        textNotPresent("Sign up for an account");
     }
 
     protected void gotoPublicBoards() {

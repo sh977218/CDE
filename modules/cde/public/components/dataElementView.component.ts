@@ -137,7 +137,7 @@ export class DataElementViewComponent implements OnInit {
         if (cdeId) url = '/deById/' + cdeId;
         this.http.get<DataElement>(url).subscribe(
             res => this.eltLoaded(res, cb),
-            () => this.router.navigate(['/pageNotFound'])
+            () => this.router.navigate(['/pageNotFound'], {skipLocationChange: true})
         );
     }
 
