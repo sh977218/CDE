@@ -11,35 +11,33 @@ const CreateForm = require('./CreateForm');
 const MergeForm = require('./MergeForm');
 
 
-exports.parseFormElements = function (loinc, orgInfo) {
-    return new Promise(async (resolve, reject) => {
-        let formElements = [];
-        let elements = loinc['PANEL HIERARCHY']['elements'];
-        console.log('Form ' + loinc['loincId'] + ' has ' + elements.length + ' elements to process.');
-        if (!elements || elements.length === 0) resolve();
-        let tempFormElements = formElements;
-        let needOuterSection = elements.filter(element => element.elements.length > 0).length === 0;
-        if (needOuterSection) {
-            formElements.push({
-                elementType: 'section',
-                label: '',
-                instructions: {
-                    value: ""
-                },
-                formElements: []
-            });
-            tempFormElements = formElements[0].formElements;
-        }
+exports.parseFormElements = async function (loinc, orgInfo) {
+    let formElements = [];
+    let elements = loinc['PANEL HIERARCHY']['elements'];
+    console.log('Form ' + loinc['loincId'] + ' has ' + elements.length + ' elements to process.');
+    if (!elements || elements.length === 0) resolve();
+    let tempFormElements = formElements;
+    let needOuterSection = elements.filter(element => element.elements.length > 0).length === 0;
+    if (needOuterSection) {
+        formElements.push({
+            elementType: 'section',
+            label: '',
+            instructions: {
+                value: ""
+            },
+            formElements: []
+        });
+        tempFormElements = formElements[0].formElements;
+    }
 
-        for (let element of elements) {
-            let isElementForm = element.elements.length > 0;
-            let f = loadCde;
-            if (isElementForm) f = loadForm;
-            let formElement = await f(element, orgInfo);
-            tempFormElements.push(formElement);
-        }
-        resolve(formElements);
-    })
+    for (let element of elements) {
+        let isElementForm = element.elements.length > 0;
+        let f = loadCde;
+        if (isElementForm) f = loadForm;
+        let formElement = await f(element, orgInfo);
+        tempFormElements.push(formElement);
+    }
+    return formElements;
 
 };
 

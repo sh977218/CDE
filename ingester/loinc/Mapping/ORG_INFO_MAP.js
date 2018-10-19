@@ -8,5 +8,8 @@ exports.map = {
         stewardOrgName: 'NLM',
         classificationOrgName: 'External Forms',
         classification: []
+    },
+    'PhenX': {
+        stewardOrgName: 'LOINC', classificationOrgName: '', classification: []
     }
 };

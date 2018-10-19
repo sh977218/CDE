@@ -6,7 +6,6 @@ let async = require('async');
 let MigrationProtocolModel = require('../createMigrationConnection').MigrationProtocolModel;
 let MigrationForm = require('../createMigrationConnection').MigrationFormModel;
 let MigrationOrgModel = require('../createMigrationConnection').MigrationOrgModel;
-let ProtocolToForm = require('./Website/ProtocolToForm');
 
 let count = 0;
 let phenxOrg;

@@ -10,7 +10,6 @@ let mongo_form = require('../../server/form/mongo-form');
 let FormModel = mongo_form.Form;
 
 let MigrationProtocolModel = require('../createMigrationConnection').MigrationProtocolModel;
-let ProtocolToForm = require('./Website/ProtocolToForm');
 let BranchLogicUtility = require('./BranchLogicUtility');
 
 let updateShare = require('../updateShare');

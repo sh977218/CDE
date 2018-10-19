@@ -1,8 +1,8 @@
 const webdriver = require('selenium-webdriver');
 
 let baseUrl = require('../../createMigrationConnection').PhenxURL;
-let MigrationMeasureModel = require('../../createMigrationConnection').MigrationMeasureModel;
-let MigrationProtocolModel = require('../../createMigrationConnection').MigrationProtocolModel;
+let MeasureModel = require('../../createMigrationConnection').MeasureModel;
+let ProtocolModel = require('../../createMigrationConnection').ProtocolModel;
 let ParseMeasure = require('./ParseMeasure');
 
 let measureCount = 0;
@@ -20,7 +20,7 @@ function doLoadPhenxMeasure() {
             let measure = await ParseMeasure.parseMeasure(hrefText.trim());
             measure['href'] = hrefText.trim();
             measure['browserId'] = browserIdText.replace('#', '').trim();
-            await new MigrationMeasureModel(measure).save();
+            await new MeasureModel(measure).save();
             measureCount++;
         }
         resolve();
@@ -28,16 +28,16 @@ function doLoadPhenxMeasure() {
 }
 
 async function run() {
-    await MigrationMeasureModel.remove({});
+    await MeasureModel.remove({});
     console.log('Removed all doc in migration measure collection');
-    await MigrationProtocolModel.remove({});
+    await ProtocolModel.remove({});
     console.log('Removed all doc in migration protocol collection');
     await doLoadPhenxMeasure();
     console.log('Finished grab all measures from PhenX website');
-    process.exit(1);
 }
 
 run().then(() => {
+    process.exit(1);
 }, err => console.log(err));
 
 setInterval(() => {

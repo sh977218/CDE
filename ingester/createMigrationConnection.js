@@ -102,12 +102,12 @@ exports.MigrationOrgModel = migrationConn.model('MigrationOrg', new Schema(share
 }));
 
 // PHENX
-exports.MigrationMeasureModel = migrationConn.model('MigrationMeasure', new Schema({}, {
+exports.MeasureModel = migrationConn.model('Measure', new Schema({}, {
     strict: false,
     collection: 'Measure',
     usePushEach: true
 }));
-exports.MigrationProtocolModel = migrationConn.model('MigrationProtocol', new Schema({}, {
+exports.ProtocolModel = migrationConn.model('Protocol', new Schema({}, {
     strict: false,
     collection: 'Protocol',
     usePushEach: true
