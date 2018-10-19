@@ -70,6 +70,7 @@ retireCde = () => {
     return new Promise(async (resolve, reject) => {
         let cond = {
             "archived": false,
+            "ids.source": 'NINDS',
             "registrationState.registrationStatus": {$ne: "Retired"},
             "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
             $and: [{"updatedBy.username": {$exists: true}},
