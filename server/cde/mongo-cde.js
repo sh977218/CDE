@@ -26,7 +26,7 @@ schemas.dataElementSchema.pre('save', function (next) {
     if (cdeError && cdeError.pvNotValidMsg) {
         logging.errorLogger.error(cdeError, {
             stack: new Error().stack,
-            detail: JSON.stringify(cdeError)
+            details: JSON.stringify(cdeError)
         });
         next(cdeError);
     } else {

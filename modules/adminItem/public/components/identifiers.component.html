@@ -31,6 +31,9 @@
                     <a *ngSwitchCase="'PhenX'"
                        href="https://www.phenxtoolkit.org/protocols/view/{{id.id}}"
                        target="_blank">{{id.id}}</a>
+                    <a *ngSwitchCase="'caDSR'"
+                       href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{id.id}}&version={{id.version}}"
+                       target="_blank">{{id.id}}</a>
                     <span *ngSwitchDefault>{{id.id}}</span>
                 </ng-container>
             </dd>
