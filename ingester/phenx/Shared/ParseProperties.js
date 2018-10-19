@@ -10,7 +10,7 @@ exports.parseProperties = (measure, protocol) => {
         }
     });
 
-    let prop2 = ['Variables', 'Standards', 'Requirements'];
+    let prop2 = ['Variables', 'Requirements'];
     _.forEach(prop2, p => {
         let valueArray = protocol[p];
         if (!_.isEmpty(valueArray)) {
@@ -24,6 +24,8 @@ exports.parseProperties = (measure, protocol) => {
             _.forEach(valueArray, valueObj => {
                 let td = '';
                 _.forOwn(valueObj, value => {
+                    if (!value.trim)
+                        debugger;
                     td = td + '<td>' + value.trim() + '</td>';
                 });
                 tr = tr + '<tr>' + td + '</tr>';
@@ -34,18 +36,35 @@ exports.parseProperties = (measure, protocol) => {
         }
     });
 
-
-    let prop3 = ["Keywords"];
-    _.forEach(prop3, p => {
-        let valueArray = measure[p];
-        if (!_.isEmpty(valueArray)) {
-            valueArray = valueArray.map(v => {
-                return v.trim();
-            });
-            let value = valueArray.join(",");
-            properties.push({key: p, value: value, source: "PhenX"});
+    let standards = protocol['Standards'];
+    if (!_.isEmpty(standards)) {
+        let tbody = '';
+        for (let standard of standards) {
+            let tr = '<tr>'
+                + '<td>' + standard['Source'] + '</td>'
+                + '<td>' + standard['ID'] + '</td>'
+                + '<td>' + standard['Name'] + '</td>'
+                + '<td>' + standard['Standard'] + '</td>'
+                + '</tr>';
+            tbody = tbody + tr;
         }
-    });
+        let value = "<table class='table table-striped'>"
+            + "<tr>"
+            + "<th>Source</th>"
+            + "<th>ID</th>"
+            + "<th>Name</th>"
+            + "<th>Standard</th>"
+            + "</tr>"
+            + tbody + "</table>";
+        properties.push({key: 'Standards', value: value, valueFormat: "html", source: "PhenX"});
+
+    }
+
+    let keywords = measure['Keywords'];
+    if (!_.isEmpty(keywords)) {
+        let value = keywords.map(v => v.trim()).join(",");
+        properties.push({key: 'Keywords', value: value, source: "PhenX"});
+    }
 
     return properties;
 };

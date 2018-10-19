@@ -29,70 +29,60 @@ let tasks = [
     }
 ];
 
-function parsingIntroduction(elements) {
-    return new Promise(async (resolve, reject) => {
-        let introduction = await elements[0].getText();
-        resolve(introduction.trim());
-    })
+async function parsingIntroduction(elements) {
+    let introduction = await elements[0].getText();
+    return introduction.trim();
 }
 
-function parsingKeywords(elements) {
-    return new Promise(async (resolve, reject) => {
-        let keywords = [];
-        let keywordsText1 = await elements[0].getText();
-        let keyWords1 = keywordsText1.replace(/keywords:/ig, "").trim();
-        if (_.isEmpty(keyWords1)) {
-            let keywordsXpath2 = "//p[./b[normalize-space(text())='Keywords']]/following-sibling::p[1]";
-            let keywordsText2 = await driver.findElement(By.xpath(keywordsXpath2)).getText();
-            let keyWords2 = keywordsText2.trim();
-            if (_.isEmpty(keyWords2)) {
-                keywords = [];
-            } else {
-                keywords = keyWords2.split(",");
-                keywords.forEach(k => k.trim());
-            }
+async function parsingKeywords(elements) {
+    let keywords = [];
+    let keywordsText1 = await elements[0].getText();
+    let keyWords1 = keywordsText1.replace(/keywords:/ig, "").trim();
+    if (_.isEmpty(keyWords1)) {
+        let keywordsXpath2 = "//p[./b[normalize-space(text())='Keywords']]/following-sibling::p[1]";
+        let keywordsText2 = await driver.findElement(By.xpath(keywordsXpath2)).getText();
+        let keyWords2 = keywordsText2.trim();
+        if (_.isEmpty(keyWords2)) {
+            keywords = [];
         } else {
-            keywords = keyWords1.split(",");
+            keywords = keyWords2.split(",");
             keywords.forEach(k => k.trim());
         }
-        resolve(keywords);
-    })
+    } else {
+        keywords = keyWords1.split(",");
+        keywords.forEach(k => k.trim());
+    }
+    return keywords;
 }
 
-function parsingClassification(elements) {
-    return new Promise(async (resolve, reject) => {
-        let classification = [];
-        for (let c of elements) {
-            let text = await c.getText();
-            classification.push(text.trim());
-        }
-        resolve(classification);
-    })
+async function parsingClassification(elements) {
+    let classification = [];
+    for (let c of elements) {
+        let text = await c.getText();
+        classification.push(text.trim());
+    }
+    return classification;
 }
 
-function parsingProtocolLinks(elements) {
-    return new Promise(async (resolve, reject) => {
-        let protocols = [];
-        for (let protocolLink of elements) {
-            let browserIdText = await protocolLink.findElement(By.css('span')).getText();
-            let protocolId = browserIdText.replace('#', '').trim();
-            let linkText = await protocolLink.getAttribute('href');
-            let protocol = await ParseProtocol.parseProtocol(linkText.trim());
-            protocols.push({protocolId: protocolId, protocol: protocol});
-        }
-        resolve(protocols);
-    })
+async function parsingProtocolLinks(elements) {
+    let protocols = [];
+    for (let protocolLink of elements) {
+        let browserIdText = await protocolLink.findElement(By.css('span')).getText();
+        let protocolId = browserIdText.replace('#', '').trim();
+        let linkText = await protocolLink.getAttribute('href');
+        let protocol = await ParseProtocol.parseProtocol(linkText.trim());
+        protocols.push({protocolId: protocolId, protocol: protocol});
+    }
+    return protocols;
 }
 
-exports.parseMeasure = function (link) {
-    return new Promise(async (resolve, reject) => {
-        driver.get(link);
-        let measure = {};
-        for (let task of tasks) {
-            let elements = await driver.findElements(By.xpath(task.xpath));
-            if (elements && elements.length > 0)
-                measure[task.sectionName] = await task.function(elements);
-        }
-        resolve(measure);
-    })
+exports.parseMeasure = async function (link) {
+    driver.get(link);
+    let measure = {};
+    for (let task of tasks) {
+        let elements = await driver.findElements(By.xpath(task.xpath));
+        if (elements && elements.length > 0)
+            measure[task.sectionName] = await task.function(elements);
+    }
+    return measure;
 };

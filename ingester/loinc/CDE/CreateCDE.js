@@ -16,6 +16,7 @@ const ParseClassification = require('../Shared/ParseClassification');
 
 exports.createCde = function (element, orgInfo) {
     let loinc = element;
+    if (loinc.loinc) loinc = loinc.loinc;
     return new Promise(async (resolve, reject) => {
         let designations = ParseDesignations.parseDesignations(loinc, element);
         let definitions = ParseDefinitions.parseDefinitions(loinc);

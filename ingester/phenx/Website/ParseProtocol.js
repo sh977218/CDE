@@ -98,8 +98,21 @@ let tasks = [
         sectionName: 'Process and Review',
         function: parseTextContent,
         xpath: "//*[@id='element_PROCESS_REVIEW']"
+    },
+    {
+        sectionName: 'Version',
+        function: parseVersionContent,
+        xpath: "//*[@id='element_PROCESS_REVIEW']/following-sibling::p[1]"
     }
 ];
+
+async function parseVersionContent(element) {
+    let text = await element.getText();
+    let token = text.split(',');
+    let version = token[token.length - 1];
+    return version.replace('Ver', '').trim();
+
+}
 
 async function parseTextContent(element) {
     let text = await element.getText();

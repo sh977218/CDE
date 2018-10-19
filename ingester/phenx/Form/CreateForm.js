@@ -14,7 +14,7 @@ exports.createForm = async (measure, protocol) => {
     let properties = require('../Shared/ParseProperties').parseProperties(measure, protocol);
     let referenceDocuments = require('../Shared/ParseReferenceDocuments').parseReferenceDocuments(protocol);
     let classification = require('../Shared/ParseClassification').parseClassification(measure);
-    let formElements = await require('ParseFormElements').parseFormElements(protocol);
+    let formElements = await require('./ParseFormElements').parseFormElements(protocol);
 
     let newForm = {
         tinyId: generateTinyId(),

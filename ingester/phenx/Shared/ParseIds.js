@@ -5,7 +5,7 @@ exports.parseIds = protocol => {
         ids.push({
             source: 'PhenX',
             id: protocolId,
-            version: "23"
+            version: protocol.Version
         });
     return ids;
 };

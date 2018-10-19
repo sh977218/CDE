@@ -9,7 +9,7 @@ MeasureModel.find({}).cursor().eachAsync(async measure => {
     let measureObj = measure.toObject();
     for (let protocol of measureObj.protocols) {
         protocolCount++;
-        let newForm = await CreateForm.createForm(measureObj, protocol);
+        let newForm = await CreateForm.createForm(measureObj, protocol.protocol);
         console.log('protocolCount: ' + protocolCount);
     }
     console.log('measureCount: ' + measureCount);

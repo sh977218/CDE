@@ -15,7 +15,7 @@ exports.parseFormElements = async function (loinc, orgInfo) {
     let formElements = [];
     let elements = loinc['PANEL HIERARCHY']['elements'];
     console.log('Form ' + loinc['loincId'] + ' has ' + elements.length + ' elements to process.');
-    if (!elements || elements.length === 0) resolve();
+    if (!elements || elements.length === 0) return;
     let tempFormElements = formElements;
     let needOuterSection = elements.filter(element => element.elements.length > 0).length === 0;
     if (needOuterSection) {
