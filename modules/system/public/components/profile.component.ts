@@ -8,7 +8,7 @@ import { UserService } from '_app/user.service';
 import { PublishedForm, User } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
-import { canComment, isSiteAdmin } from 'shared/system/authorizationShared';
+import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-profile',
@@ -29,10 +29,10 @@ import { canComment, isSiteAdmin } from 'shared/system/authorizationShared';
 })
 export class ProfileComponent {
     readonly booleanSettingOptions = ['Disabled', 'Enabled'];
-    canComment = canComment;
     cdes: DataElement[] = [];
     forms: CdeForm[] = [];
     hasQuota: any;
+    hasRole = hasRole;
     isSiteAdmin = isSiteAdmin;
     orgCurators?: string;
     orgAdmins?: string;

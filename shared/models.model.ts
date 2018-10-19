@@ -410,7 +410,7 @@ export class User {
     formViewHistory?: string[];
     hasMail?: boolean;
     lastViewNotification?: Date;
-    notifications: NotificationSettings = new NotificationSettings();
+    notificationSettings: NotificationSettings = new NotificationSettings();
     orgAdmin: string[] = [];
     orgCurator: string[] = [];
     publishedForms?: PublishedForm[];

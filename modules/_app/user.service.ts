@@ -6,15 +6,14 @@ import { Observable } from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
-import { NotificationService } from '_app/notifications/notification.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { ITEM_MAP } from 'shared/item';
-import { CbErr, Comment, NotificationSettings, NotificationTypesSettings, User } from 'shared/models.model';
+import { Cb, CbErr, Comment, NotificationSettings, NotificationTypesSettings, User } from 'shared/models.model';
 import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
 
 @Injectable()
 export class UserService {
-    private notificationService: any = {clear: _noop, reload: _noop};
+    private listeners: Cb[] = [];
     private promise!: Promise<User>;
     searchTypeahead = ((text$: Observable<string>) =>
         text$.pipe(
@@ -34,9 +33,6 @@ export class UserService {
     constructor(private dialog: MatDialog,
                 private http: HttpClient,
                 private injector: Injector) {
-        if (APPLICATION_NAME === 'CDE Repository') {
-            this.notificationService = <NotificationService>this.injector.get(NotificationService);
-        }
         this.reload();
         this.resetInactivityTimeout();
         document.body.addEventListener('click', () => this.resetInactivityTimeout());
@@ -49,7 +45,6 @@ export class UserService {
     clear() {
         this.user = undefined;
         this.userOrgs.length = 0;
-        this.notificationService.clear();
     }
 
     static getEltLink(c: Comment) {
@@ -76,9 +71,12 @@ export class UserService {
                 this.setOrganizations();
                 this.http.get<{count: number}>('/server/user/mailStatus').subscribe(response =>
                     this.user!.hasMail = response.count > 0, () => {});
-                this.notificationService.reload();
                 resolve(this.user);
-            }, reject);
+            }, err => {
+                reject(err);
+            });
+        }).finally(() => {
+            this.listeners.forEach(cb => cb());
         });
         this.promise.then(user => PushNotificationSubscriptionService.subscriptionServerUpdate(user && user._id)).catch(_noop);
     }
@@ -90,6 +88,10 @@ export class UserService {
                 if (this.userOrgs.indexOf(c) < 0) this.userOrgs.push(c);
             });
         }
+    }
+
+    subscribe(cb: Cb) {
+        this.listeners.push(cb);
     }
 
     resetInactivityTimeout () {
@@ -114,8 +116,8 @@ export class UserService {
     static validate(user: User) {
         if (!user.orgAdmin) user.orgAdmin = [];
         if (!user.orgCurator) user.orgCurator = [];
-        if (!user.notifications) user.notifications = new NotificationSettings();
-        if (!user.notifications.approvalComment) user.notifications.approvalComment = new NotificationTypesSettings();
+        if (!user.notificationSettings) user.notificationSettings = new NotificationSettings();
+        if (!user.notificationSettings.approvalComment) user.notificationSettings.approvalComment = new NotificationTypesSettings();
     }
 }
 

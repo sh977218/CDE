@@ -38,7 +38,7 @@
         </dl>
     </div>
 
-    <div *ngIf="canComment(user) || isSiteAdmin(user)">
+    <div *ngIf="hasRole(user, 'CommentReviewer') || isSiteAdmin(user)">
         <h2>Notifications</h2>
         <table class="table">
             <thead>
@@ -52,14 +52,14 @@
                 <th>Push Notification</th>
                 <th>
                     Email
-                    <mat-icon ngbTooltip="At this time emails are not supported by NLM AWS. If you would like to receive email, please place a ticket with Cloud Services https://jira.nlm.nih.gov/projects/CS."
+                    <mat-icon ngbTooltip="At this time emails are not supported."
                               placement="top" class="infoIcon">add_box
                     </mat-icon>
                 </th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngIf="canComment(user)">
+            <tr *ngIf="hasRole(user, 'CommentReviewer')">
                 <td>Comment Approval</td>
                 <td>
                     <mat-slide-toggle checked="true" disabled>
@@ -70,16 +70,16 @@
                     </mat-icon>
                 </td>
                 <td>
-                    <mat-slide-toggle [checked]="user.notifications.approvalComment.push"
-                                      (change)="user.notifications.approvalComment.push = $event.checked; saveProfile()">
-                        {{booleanSettingOptions[user.notifications.approvalComment.push ? 1 : 0]}}
+                    <mat-slide-toggle [checked]="user.notificationSettings.approvalComment.push"
+                                      (change)="user.notificationSettings.approvalComment.push = $event.checked; saveProfile()">
+                        {{booleanSettingOptions[user.notificationSettings.approvalComment.push ? 1 : 0]}}
                     </mat-slide-toggle>
                 </td>
                 <td>
                     <mat-slide-toggle checked="false" disabled>
                         <span class="disabled">Disabled</span>
                     </mat-slide-toggle>
-                    <mat-icon ngbTooltip="At this time emails are not supported by NLM AWS. If you would like to receive email, please place a ticket with Cloud Services https://jira.nlm.nih.gov/projects/CS."
+                    <mat-icon ngbTooltip="At this time emails are not supported."
                               placement="top" class="infoIcon">add_box
                     </mat-icon>
                 </td>
@@ -107,7 +107,7 @@
                     <mat-slide-toggle checked="false" disabled>
                         <span class="disabled">Disabled</span>
                     </mat-slide-toggle>
-                    <mat-icon ngbTooltip="At this time emails are not supported by NLM AWS. If you would like to receive email, please place a ticket with Cloud Services https://jira.nlm.nih.gov/projects/CS."
+                    <mat-icon ngbTooltip="At this time emails are not supported."
                               placement="top" class="infoIcon">add_box
                     </mat-icon>
                 </td>

@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AlertService } from '_app/alert.service';
+import { ApprovalService } from '_app/notifications/approval.service';
+import { UserService } from '_app/user.service';
 import _noop from 'lodash/noop';
 
 @Injectable()
@@ -11,37 +13,14 @@ export class NotificationService {
     tasks: any[] = [];
 
     constructor(private alert: AlertService,
-                private http: HttpClient) {
+                private approvalService: ApprovalService,
+                private http: HttpClient,
+                private userService: UserService) {
+        this.userService.subscribe(() => this.reload());
     }
 
     clear() {
         this.tasks.length = 0;
-    }
-
-    commentApprove(t: any, cb) {
-        this.http.post('/server/discuss/approveComment',
-            t.task.reply ? {replyId: t.task._id} : {commentId: t.task._id},
-            {responseType: 'text'}
-        ).subscribe(response => {
-            this.alert.addAlert('success', response);
-            cb();
-        }, err => {
-            this.alert.httpErrorMessageAlert(err);
-            cb();
-        });
-    }
-
-    commentDecline(t: any, cb) {
-        this.http.post('/server/discuss/declineComment',
-            t.task.reply ? {replyId: t.task._id} : {commentId: t.task._id},
-            {responseType: 'text'}
-        ).subscribe(response => {
-            this.alert.addAlert('success', response);
-            cb();
-        }, err => {
-            this.alert.httpErrorMessageAlert(err);
-            cb();
-        });
     }
 
     createTask(t) {
@@ -63,8 +42,8 @@ export class NotificationService {
                 switch (task.name) {
                     case 'comment':
                         task.properties.unshift({key: 'Comment', icon: 'comment'});
-                        approve = () => this.commentApprove(task, () => this.reload());
-                        reject = () => this.commentDecline(task, () => this.reload());
+                        approve = () => this.approvalService.funcCommentApprove(task, () => this.reload());
+                        reject = () => this.approvalService.funcCommentDecline(task, () => this.reload());
                         break;
                 }
                 task.background = '#d4edda';

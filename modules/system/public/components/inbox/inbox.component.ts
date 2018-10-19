@@ -20,10 +20,6 @@ export class InboxComponent {
         this.getAllMail();
     }
 
-    approveComment(msg: InboxMessage) {
-
-    }
-
     approveAttachment(msg: InboxMessage) {
         this.http.get('/attachment/approve/' + msg.typeAttachmentApproval.fileid, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
@@ -65,10 +61,6 @@ export class InboxComponent {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
         }, err => this.alert.httpErrorMessageAlert(err));
-    }
-
-    declineComment(msg: InboxMessage) {
-
     }
 
     getAllMail() {

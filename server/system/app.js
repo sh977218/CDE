@@ -74,7 +74,7 @@ exports.init = function (app) {
     app.get(["/", "/home"], function (req, res) {
         if (isSearchEngine(req)) res.render('bot/home', 'system');
         else {
-            if (req.user || req.query.tour) res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
+            if (req.user || req.query.tour || req.query.notifications !== undefined) res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
             else res.send(homeHtml);
         }
     });
@@ -508,7 +508,7 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/tasks/:clientVersion', [authorization.loggedInMiddleware], (req, res) => {
+    app.get('/tasks/:clientVersion', (req, res) => {
         // mongo_data.taskGetByUser
         let client = -1;
         let server = -1;
@@ -529,7 +529,7 @@ exports.init = function (app) {
             tasksDone();
         }
         // TODO: implement org boundaries
-        if (authorizationShared.canComment(req.user) && req.user.notifications) { // required, req.user.notifications.approvalComment.drawer not used
+        if (authorizationShared.hasRole(req.user, 'CommentReviewer')) { // required, req.user.notificationSettings.approvalComment.drawer not used
             discussDb.unapprovedMessages(handleError({req, res}, c => {
                 comments = c;
                 tasksDone();

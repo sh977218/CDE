@@ -24,7 +24,7 @@ let userSchema = new Schema({
         clientLogDate: Date
     },
     lockCounter: Number,
-    notifications: {
+    notificationSettings: {
         approvalComment: notificationTypesSchema
     },
     orgAdmin: [StringType],
@@ -96,14 +96,14 @@ exports.find = (crit, cb) => {
 exports.updateUser = (user, fields, callback) => {
     let update = {};
     if (fields.email) update.email = fields.email;
-    if (fields.notifications) {
+    if (fields.notificationSettings) {
         let approvalComment = true;
-        if (!authorizationShared.canComment(user)) {
-            fields.notifications.approvalComment = undefined;
+        if (!authorizationShared.hasRole(user, 'CommentReviewer')) {
+            fields.notificationSettings.approvalComment = undefined;
             approvalComment = false;
         }
         if (approvalComment) {
-            update.notifications = fields.notifications;
+            update.notificationSettings = fields.notificationSettings;
         }
     }
     if (fields.searchSettings) update.searchSettings = fields.searchSettings;

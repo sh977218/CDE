@@ -28,7 +28,6 @@
            class="mdl-navigation__link mdl-typography--text-uppercase" title="New Mail">
             <mat-icon id="incomingMessage" class="text-danger">mail_outline</mat-icon>
         </a>
-        <cde-notifications></cde-notifications>
     </ng-container>
 </ng-template>
 
@@ -101,6 +100,7 @@
                     </mat-menu>
 
                     <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
+                    <cde-notifications></cde-notifications>
 
                     <a routerLink="/searchPreferences"
                        id="searchSettings" class="mdl-navigation__link mdl-typography--text-uppercase">
@@ -131,6 +131,8 @@
             <a class="mdl-navigation__link" routerLink="/api" (click)="toggleDrawer()">API</a>
             <div class="android-drawer-separator"></div>
             <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
+            <cde-notifications></cde-notifications>
+            <!--no search preferences-->
         </nav>
     </div>
 

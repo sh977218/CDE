@@ -19,6 +19,7 @@ import { ElasticService } from '_app/elastic.service';
 import { IEBannerComponent } from '_app/ieBanner/ieBanner.component';
 import { LoginService } from '_app/login.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
+import { ApprovalService } from '_app/notifications/approval.service';
 import { NotificationService } from '_app/notifications/notification.service';
 import { NotificationDrawerComponent } from '_app/notifications/notificationDrawer.component';
 import { NotificationDrawerPaneComponent } from '_app/notifications/notificationDrawerPane.component';
@@ -72,6 +73,7 @@ import { OrgHelperService } from 'core/orgHelper.service';
             }
         },
         AlertService,
+        ApprovalService,
         BackForwardService,
         ElasticService, // TODO: create shared CoreModule loaded async and provide to all lazy routes
         LoginService,

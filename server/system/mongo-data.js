@@ -188,7 +188,7 @@ exports.pushGetAdministratorRegistrations = callback => {
 function typeToCriteria(type) {
     switch (type) {
         case 'approveCommentReviewer':
-            return {roles: 'CommentReviewer', 'notifications.approvalComment.push': true};
+            return {roles: 'CommentReviewer', 'notificationSettings.approvalComment.push': true};
         default:
             return {findNone: 1};
     }
