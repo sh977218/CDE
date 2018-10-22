@@ -7,22 +7,26 @@ let DAOs = [
     {
         name: 'de',
         count: 0,
-        dao: DataElement
+        dao: DataElement,
+        finished: false
     },
     {
         name: 'de draft',
         count: 0,
-        dao: DataElementDraft
+        dao: DataElementDraft,
+        finished: false
     },
     {
         name: 'form',
         count: 0,
-        dao: Form
+        dao: Form,
+        finished: false
     },
     {
         name: 'form draft',
         count: 0,
-        dao: FormDraft
+        dao: FormDraft,
+        finished: false
     }
 ];
 
@@ -38,24 +42,26 @@ async function doDAO(DAO) {
             doc.markModified('sources');
             await doc.save();
             DAO.count++;
-        }).then(err => {
-        if (err) throw err;
-        console.log("Finished " + DAO.name + " Count: " + DAO.count);
-    });
+        })
 }
 
 async function run() {
     for (let DAO of DAOs) {
         await doDAO(DAO);
+        console.log("Finished " + DAO.name + " Count: " + DAO.count);
     }
 }
 
 run().then(() => {
+    for (let DAO of DAOs) {
+        console.log(DAO.name + " Count: " + DAO.count);
+    }
+    process.exit(1);
 }, error => console.log(error));
 
 setInterval(() => {
     for (let DAO of DAOs) {
-        console.log(DAO.name + " Count: " + DAO.count);
+        if (!DAO.finished) console.log(DAO.name + " Count: " + DAO.count);
     }
     console.log('---------------------------------');
 
