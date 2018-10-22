@@ -26,7 +26,7 @@ exports.parseClassification = function (loinc, orgInfo) {
             Abbreviation: classification
         });
         if (!classificationMap) {
-            console.log(loinc.loincId + ' type: ' + type + ' Abbreviation: ' + classification + ' in classificationMap is null');
+            console.log(loinc.loincId + ' type: ' + type + ' Abbreviation: ' + classification + ' in classificationMap is null. See README and update the map.');
             process.exit(1);
         }
         let classificationArray = [{
