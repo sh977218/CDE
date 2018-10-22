@@ -26,10 +26,9 @@ let DAOs = [
     }
 ];
 
-DAOs.forEach(DAO => {
+async function doDAO(DAO) {
     DAO.dao.find({'sources.0': {$exists: true}})
         .cursor({batchSize: 1000})
-        .exec()
         .eachAsync(async doc => {
             let sources = doc.toObject().sources;
             sources.forEach(source => {
@@ -42,6 +41,22 @@ DAOs.forEach(DAO => {
         }).then(err => {
         if (err) throw err;
         console.log("Finished " + DAO.name + " Count: " + DAO.count);
-        console.log(JSON.stringify(DAO.incorrectMap));
     });
-});
+}
+
+async function run() {
+    for (let DAO of DAOs) {
+        await doDAO(DAO);
+    }
+}
+
+run().then(() => {
+}, error => console.log(error));
+
+setInterval(() => {
+    for (let DAO of DAOs) {
+        console.log(DAO.name + " Count: " + DAO.count);
+    }
+    console.log('---------------------------------');
+
+}, 5000);
