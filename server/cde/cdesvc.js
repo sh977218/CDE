@@ -115,6 +115,7 @@ exports.saveDraftDataElement = (req, res) => {
     if (!tinyId) return res.status(400).send();
     let elt = req.body;
     if (elt.tinyId !== tinyId) return res.status(400).send();
+    if (!elt.designations || !elt.designations.length) return res.status(400).send();
     if (req.user && req.user.username) elt.updatedBy.username = req.user.username;
     if (!elt.created) elt.created = new Date();
     elt.updated = new Date();
@@ -180,6 +181,8 @@ exports.updateDataElement = (req, res) => {
 exports.publishDataElement = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
+    let elt = req.body;
+    if (!elt.designations || !elt.designations.length) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
     mongo_cde.byTinyId(tinyId, handleError({req, res}, item => {
         if (!item) return res.status(404).send();
@@ -190,7 +193,6 @@ exports.publishDataElement = (req, res) => {
                     && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) {
                     return res.status(403).send("Not authorized");
                 }
-                let elt = req.body;
                 elt.classification = item.classification;
                 elt.attachments = item.attachments;
                 deValidator.wipeDatatype(elt);
