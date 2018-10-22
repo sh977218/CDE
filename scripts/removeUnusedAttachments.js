@@ -37,4 +37,5 @@ async function run() {
 
 }
 
-run();
+run().then(()=>{}, err => console.log(err));
+

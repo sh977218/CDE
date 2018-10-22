@@ -64,7 +64,6 @@ exports.FhirObservationInfo = FhirObservationInfo;
 exports.Org = Org;
 exports.User = User;
 exports.JobQueue = JobQueue;
-exports.gfs = gfs;
 
 var fs_files = conn.model('fs_files', schemas.fs_files);
 var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);

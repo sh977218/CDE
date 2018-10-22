@@ -1,5 +1,4 @@
 const mongo_cde = require("../server/cde/mongo-cde");
-const mongo_form = require("../server/form/mongo-form");
 const mongo_system = require("../server/system/mongo-data");
 
 const Files = mongo_system.mongoose_connection.model('fs.files',
@@ -20,7 +19,7 @@ async function run() {
                 (!elts[0].updatedBy.username && elts[0].createdBy.username === 'batchloader')) {
                 attachmentsApproved++;
 
-                Files.update({_id: oneFile._id}, {"metadata.status": "approved"}, (err, nb) => {
+                Files.update({_id: oneFile._id}, {"metadata.status": "approved"}, err => {
                     if (err) {
                         console.log(err);
                         process.exit(1);
@@ -36,4 +35,4 @@ async function run() {
 
 }
 
-run();
+run().then(()=>{}, err => console.log(err));
