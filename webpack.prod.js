@@ -16,7 +16,6 @@ module.exports = module.exports = merge(baseConfig,{
     plugins:
         [
             new webpack.DefinePlugin({
-                IS_BROWSER: true,
                 PRODUCTION: JSON.stringify(true),
             }),
         ],

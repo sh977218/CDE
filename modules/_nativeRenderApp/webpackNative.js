@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
@@ -12,5 +13,8 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin(['dist/native'], {root: process.cwd()}),
+        new webpack.DefinePlugin({
+            APPLICATION_NAME: '"CDE Form Embed"',
+        }),
     ]
 };
