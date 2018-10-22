@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
@@ -13,6 +14,9 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin(['dist/fhir'], {root: process.cwd()}),
+        new webpack.DefinePlugin({
+            APPLICATION_NAME: '"CDE FHIR Embed"',
+        }),
         new CopyWebpackPlugin([
             {from: 'node_modules/fhirclient/fhir-client.min.js'},
         ]),

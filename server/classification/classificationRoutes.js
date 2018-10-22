@@ -111,7 +111,7 @@ exports.module = function (roleConfig) {
         let deleteClassification = req.body.deleteClassification;
         let settings = req.body.settings;
         if (!deleteClassification || !settings) return res.status(400).send();
-        if (!roleConfig.allowClassify(req.user, deleteClassification.orgName)) return res.status(403).end();
+        if (!roleConfig.allowClassify(req.user, deleteClassification.orgName)) return res.status(403).send();
         mongo_data.jobStatus('deleteClassification', handleError({req, res}, j => {
             if (j) return res.status(409).send('Error - delete classification is in processing, try again later.');
             orgClassificationSvc.deleteOrgClassification(req.user, deleteClassification, settings,
@@ -141,7 +141,7 @@ exports.module = function (roleConfig) {
     router.put('/addOrgClassification/', (req, res) => {
         let newClassification = req.body.newClassification;
         if (!newClassification) return res.status(400).send();
-        if (!roleConfig.allowClassify(req.user, newClassification.orgName)) return res.status(403).end();
+        if (!roleConfig.allowClassify(req.user, newClassification.orgName)) return res.status(403).send();
         mongo_data.jobStatus('addClassification', handleError({req, res}, j => {
             if (j) return res.status(409).send('Error - delete classification is in processing, try again later.');
             orgClassificationSvc.addOrgClassification(newClassification, handleError({req, res},
@@ -155,7 +155,7 @@ exports.module = function (roleConfig) {
         let newClassification = req.body.newClassification;
         let settings = req.body.settings;
         if (!oldClassification || !newClassification || !settings) return res.status(400).send();
-        if (!roleConfig.allowClassify(req.user, newClassification.orgName)) return res.status(403).end();
+        if (!roleConfig.allowClassify(req.user, newClassification.orgName)) return res.status(403).send();
         mongo_data.jobStatus('reclassifyClassification', handleError({req, res}, j => {
                 if (j) return res.status(409).send('Error - reclassify classification is in processing, try again later.');
                 orgClassificationSvc.reclassifyOrgClassification(req.user, oldClassification, newClassification, settings,

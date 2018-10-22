@@ -307,6 +307,15 @@ export class Notification {
     };
 }
 
+export class NotificationSettings {
+    approvalComment: NotificationTypesSettings = new NotificationTypesSettings();
+}
+
+export class NotificationTypesSettings {
+    drawer: boolean = false;
+    push: boolean = false;
+}
+
 export class Organization {
     cdeStatusValidationRules?: StatusValidationRules[];
     classifications?: ClassficationElements[];
@@ -401,6 +410,7 @@ export class User {
     formViewHistory?: string[];
     hasMail?: boolean;
     lastViewNotification?: Date;
+    notificationSettings: NotificationSettings = new NotificationSettings();
     orgAdmin: string[] = [];
     orgCurator: string[] = [];
     publishedForms?: PublishedForm[];

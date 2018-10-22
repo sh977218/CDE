@@ -1,17 +1,17 @@
-import { CommonModule } from "@angular/common";
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { CommonModule } from '@angular/common';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MatButtonModule, MatIconModule, MatSelectModule, MatSlideToggleModule } from '@angular/material';
+import { RouterModule, Routes } from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { BoardModule } from 'board/public/board.module';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
-import { ProfileComponent } from "./components/profile.component";
 import { SearchModule } from 'search/search.module';
-import { UserCommentsComponent } from "./components/userComments.component";
+import { DraftsListMyComponent } from 'system/public/components/draftsList/draftsListMy.component';
+import { ProfileComponent } from 'system/public/components/profile.component';
+import { UserCommentsComponent } from 'system/public/components/userComments.component';
 import { WidgetModule } from 'widget/widget.module';
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { BoardModule } from 'board/public/board.module';
-import { DraftsListMyComponent } from "./components/draftsList/draftsListMy.component";
-import { MatButtonModule, MatIconModule } from '@angular/material';
 
 const appRoutes: Routes = [
     {path: '', component: ProfileComponent},
@@ -20,17 +20,19 @@ const appRoutes: Routes = [
 @NgModule({
     imports: [
         CommonModule,
+        MatIconModule,
+        MatButtonModule,
+        MatSelectModule,
+        MatSlideToggleModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core
         WidgetModule,
         // internal
+        BoardModule,
         CdeSearchModule,
         FormSearchModule,
         SearchModule,
-        BoardModule,
-        MatIconModule,
-        MatButtonModule,
     ],
     declarations: [
         ProfileComponent,
