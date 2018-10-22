@@ -8,7 +8,18 @@ import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-properties',
-    templateUrl: './properties.component.html'
+    templateUrl: './properties.component.html',
+    styles: [`
+        :host ::ng-deep #propertiesDiv table{
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 1rem;
+            background-color: transparent;
+        }
+        :host ::ng-deep #propertiesDiv table tbody tr:nth-of-type(odd){
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        `]
 })
 export class PropertiesComponent implements OnInit {
     @Input() canEdit: boolean = false;
@@ -23,7 +34,8 @@ export class PropertiesComponent implements OnInit {
         private alert: AlertService,
         public dialog: MatDialog,
         private orgHelperService: OrgHelperService,
-    ) {}
+    ) {
+    }
 
     ngOnInit() {
         this.orgHelperService.reload().then(() => {
