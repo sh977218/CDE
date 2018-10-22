@@ -51,7 +51,18 @@ self.addEventListener('push', function(event) {
 self.addEventListener('notificationclick', function(event) {
     event.notification.close();
 
-    if (event.action === 'audit-action') clients.openWindow('/siteAudit');
-    else if (event.action === 'profile-action') clients.openWindow('/profile');
-    else if (event.action === 'site-mgt-action') clients.openWindow('/status/cde');
+    switch (event.action) {
+        case 'audit-action':
+            clients.openWindow('/siteAudit');
+            break;
+        case 'open-app-action':
+            clients.openWindow('/home');
+            break;
+        case 'profile-action':
+            clients.openWindow('/profile');
+            break;
+        case 'site-mgt-action':
+            clients.openWindow('/status/cde');
+            break;
+    }
 }, false);

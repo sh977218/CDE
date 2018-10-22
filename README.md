@@ -112,16 +112,18 @@ $/cde/>  npm -install -g gulp
 ```
 
 ## Compile Static Homepage
-1. Do a prod build
-2. In Chrome, load Welcome page, then navigate to home page while logged out. (navigating directly to home would serve the existing static page)
-2. In the Devtool Elements Tab, right click the specified tag and click "Copy Element" to copy the following:
-
-   a. Copy the last three \<style> tags to one.css, two.css and three.css.
-
-   b. Copy <nih-cde> to nihcde.html. Replace slide paths to /launch/ relative path. For source[srcset] and img[src], prepend attributes with 'data-'.
-3. Check that the main app is built and run "gulp buildHome".
-4. Check-in the resulting css, html, png files and home-launch.ejs into git while removing old versions.
-5. To update the production build, run "gulp".
+1. Do a prod build.
+1. After the build, In Chrome, load CDE Search Welcome page, then navigate to home page while logged out. ___(navigating directly to home would serve the existing static page)___
+1. In the Devtool Elements Tab, right click the specified tag and click "Copy Element" to copy the following:
+   1. Copy the matching __\<style>__ tags to __one.css__ and __three.css__.
+   1. Copy __<nih-cde>__ to __nihcde.html__. ___\*\*\*INSTRUCTIONS MISSING\*\*\*___
+      1. For slideshow slides:
+         1. Replace paths __/app/__ to __/launch/__ path.
+         1. For __source@srcset__ and __img@src__, prepend attributes with __data-__.
+1. Run `gulp buildHome`.
+1. Check-in the resulting css, html, png files and home-launch.ejs into git while removing old versions.
+1. Restart node to view changes.
+1. To update the production build, run `gulp`.
 
 
 ## Run Node from the cde project directory
@@ -132,7 +134,6 @@ $> node app
 
 
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 

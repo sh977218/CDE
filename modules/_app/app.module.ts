@@ -1,33 +1,34 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserModule } from '@angular/platform-browser';
-import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
-import { LocalStorageModule } from 'angular-2-local-storage';
 import {
     MatBadgeModule,
-    MatButtonModule,
+    MatButtonModule, MatChipsModule,
     MatDialogModule,
     MatIconModule,
     MatMenuModule,
     MatSnackBarModule
 } from '@angular/material';
-
-import { AlertService } from 'alert/alert.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
+import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 import { BackForwardService } from '_app/backForward.service';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
 import { ElasticService } from '_app/elastic.service';
+import { IEBannerComponent } from '_app/ieBanner/ieBanner.component';
 import { LoginService } from '_app/login.service';
-import { NotificationsComponent } from '_app/notifications/notifications.component';
+import { NavigationComponent } from '_app/navigation/navigation.component';
+import { ApprovalService } from '_app/notifications/approval.service';
+import { NotificationService } from '_app/notifications/notification.service';
+import { NotificationDrawerComponent } from '_app/notifications/notificationDrawer.component';
+import { NotificationDrawerPaneComponent } from '_app/notifications/notificationDrawerPane.component';
+import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
-import { NavigationComponent } from '_app/navigation/navigation.component';
-import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
 import { CommonAppModule } from '_commonApp/commonApp.module';
+import { LocalStorageModule } from 'angular-2-local-storage';
 import { OrgHelperService } from 'core/orgHelper.service';
-import { IEBannerComponent } from '_app/ieBanner/ieBanner.component';
 import { AlertModule } from 'alert/alert.module';
 
 @NgModule({
@@ -41,6 +42,7 @@ import { AlertModule } from 'alert/alert.module';
         }),
         MatBadgeModule,
         MatButtonModule,
+        MatChipsModule,
         MatDialogModule,
         MatIconModule,
         MatMenuModule,
@@ -55,12 +57,14 @@ import { AlertModule } from 'alert/alert.module';
         IEBannerComponent,
         InactivityLoggedOutComponent,
         NavigationComponent,
-        NotificationsComponent,
+        NotificationDrawerComponent,
+        NotificationDrawerPaneComponent,
         PageNotFoundComponent,
         TruncateLongNamePipe,
     ],
     entryComponents: [
         InactivityLoggedOutComponent,
+        NotificationDrawerPaneComponent
     ],
     providers: [
         {
@@ -69,10 +73,11 @@ import { AlertModule } from 'alert/alert.module';
                 appendTo: 'body'
             }
         },
-        AlertService,
+        ApprovalService,
         BackForwardService,
         ElasticService, // TODO: create shared CoreModule loaded async and provide to all lazy routes
         LoginService,
+        NotificationService,
         QuickBoardListService,
         UserService,
         OrgHelperService

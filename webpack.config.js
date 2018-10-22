@@ -45,7 +45,10 @@ module.exports = {
             Tether: 'tether',
             Popper: ['popper.js', 'default'],
         }),
-        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/)
+        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
+        new webpack.DefinePlugin({
+            NAVIGATION_HEIGHT: 56,
+        }),
     ],
     performance: { hints: false },
     resolve: {

@@ -182,7 +182,7 @@
                                        href="/board/{{message.typeBoardApproval.element.eltId}}">{{message.typeBoardApproval.element.name}}</a>
                                 </dd>
                             </dl>
-                            <button *ngIf="type === 'received'" class="approveComment btn   btn-outline-dark"
+                            <button *ngIf="type === 'received'" class="approveComment btn btn-outline-dark"
                                     (click)="closeMessage(message)"
                                     [ngClass]="{disabled: message.states[0].action === 'Approved'}">Archive
                             </button>
