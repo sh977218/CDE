@@ -24,6 +24,7 @@ const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 const Message = conn.model('Message', schemas.message);
 const Org = conn.model('Org', schemas.orgSchema);
 const PushRegistration = conn.model('PushRegistration', schemas.pushRegistration);
+// const Task = conn.model('Task', schemas.task);
 const userDb = require('../user/userDb');
 const User = require('../user/userDb').User;
 const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema);
@@ -182,6 +183,24 @@ exports.pushGetAdministratorRegistrations = callback => {
             callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
         }));
     }));
+};
+
+function typeToCriteria(type) {
+    switch (type) {
+        case 'approveCommentReviewer':
+            return {roles: 'CommentReviewer', 'notificationSettings.approvalComment.push': true};
+        default:
+            return {findNone: 1};
+    }
+}
+
+exports.pushGetRegistrations = (type, callback) => {
+    userDb.find(typeToCriteria(type), users => {
+        let userIds = users.map(u => u._id.toString());
+        PushRegistration.find({}).exec(handleError({}, registrations => {
+            callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
+        }));
+    });
 };
 
 exports.userByName = (name, callback) => {
@@ -451,6 +470,22 @@ exports.createMessage = (msg, cb) => {
     new Message(msg).save(cb);
 };
 
+// exports.taskCreate = (task, cb) => {
+//     new Task(task).save(cb);
+// };
+//
+// exports.taskGetByUser = (req, res) => {
+//     // TODO: implement by org
+//     let user = req.user;
+//     if (authorizationShared.hasRole(user, 'CommentReviewer')) {
+//         Task.find({'to.type': 'role', 'to.typeId': 'CommentReviewer'}).exec(handleError({req, res}, tasks => {
+//             res.send(tasks);
+//         }));
+//     } else {
+//         res.send([]);
+//     }
+// };
+
 exports.updateMessage = function (msg, callback) {
     let id = msg._id;
     delete msg._id;
@@ -528,9 +563,9 @@ exports.addUserRole = function (request, cb) {
     });
 };
 
-exports.usersByRole = function (role, callback) {
-    User.find({roles: role}, callback);
-};
+// exports.usersByRole = function (role, callback) {
+//     User.find({roles: role}, callback);
+// };
 
 exports.mailStatus = function (user, callback) {
     exports.getMessages({user: user, params: {type: "received"}}, callback);

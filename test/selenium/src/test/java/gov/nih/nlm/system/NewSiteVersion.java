@@ -10,6 +10,7 @@ public class NewSiteVersion extends NlmCdeBaseTest {
 
     @Test
     public void newSiteVersion() {
+        mustBeLoggedInAs(test_username, password);
         goToSearch("cde");
         goHome();
         ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated

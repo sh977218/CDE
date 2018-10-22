@@ -1,0 +1,6 @@
+<a id="notifications" class="mdl-navigation__link mdl-typography--text-uppercase navigationLink"
+   (click)="notificationService.drawerToggle(); interruptEvent($event)">
+    <mat-icon [matBadge]="notificationService.tasks.length" matBadgeColor="warn" matBadgeSize="small"
+              [matBadgeHidden]="!notificationService.tasks.length"
+              style="margin-right: 0">{{notificationService.hasCriticalError ? 'notifications_active' : 'notifications'}}</mat-icon>
+</a>
