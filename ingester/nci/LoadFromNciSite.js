@@ -1,83 +1,47 @@
-var request = require('request'),
-    url = require('url'),
-    async = require('async'),
-    parseString = require('xml2js').parseString,
-    MigrationNCIModel = require('../createMigrationConnection').MigrationNCIFormXmlModel
-    ;
-var jSessionId = '';
+const request = require('request');
+const url = require('url');
+const parseString = require('xml2js').parseString;
+const MigrationNCIModel = require('../createMigrationConnection').MigrationNCIFormXmlModel;
+
+let jSessionId = '';
 
 exports.setJSessionId = function (id) {
     jSessionId = id;
 };
 
 function doNCI(href, cb) {
-    if (jSessionId.length === 0) {
-        cb('no jSessionId set');
-        return;
-    }
-    var parsedUrl = url.parse(href, true, true);
-    var options = {
-        method: 'GET',
-        rejectUnauthorized: false,
-        url: 'https://formbuilder.nci.nih.gov/FormBuilder/formXMLDownload.do',
-        qs: {'': '', formIdSeq: parsedUrl.query.formIdSeq},
-        headers: {
-            'Cookie': 'JSESSIONID=' + jSessionId
-        }
-    };
-    request(options, function (error, response, body) {
-        if (error) throw new Error(error);
-        parseString(body, function (err, result) {
-            result.form.href = href;
-            var obj = MigrationNCIModel(result);
-            obj.save(function () {
-                cb();
-            })
+    return new Promise((resolve, reject) => {
+        if (jSessionId.length === 0) reject('no jSessionId set');
+        let parsedUrl = url.parse(href, true, true);
+        let options = {
+            method: 'GET',
+            rejectUnauthorized: false,
+            url: 'https://formbuilder.nci.nih.gov/FormBuilder/formXMLDownload.do',
+            qs: {'': '', formIdSeq: parsedUrl.query.formIdSeq},
+            headers: {
+                'Cookie': 'JSESSIONID=' + jSessionId
+            }
+        };
+        request(options, function (error, response, body) {
+            if (error) throw new Error(error);
+            parseString(body, async function (err, result) {
+                result.form.href = href;
+                let obj = await MigrationNCIModel(result).save();
+                resolve(obj);
+            });
         });
-    });
+    })
 }
 
-exports.runOne = function (nciUrl, removeMigration, next) {
-    async.series([
-        function (cb) {
-            if (removeMigration) {
-                MigrationNCIModel.remove({}, function (err) {
-                    if (err) throw err;
-                    console.log('removed migration nci collection.');
-                    cb();
-                });
-            } else cb();
-        },
-        function (cb) {
-            doNCI(nciUrl, cb);
-        },
-        function () {
-            if (next) next();
-            else process.exit(1);
+exports.runArray = function (nciUrlArray) {
+    return new Promise(async (resolve, reject) => {
+        await MigrationNCIModel.remove({});
+        console.log('removed migration nci collection.');
+
+        for (let nciUrl of nciUrlArray) {
+            await doNCI(nciUrl);
         }
-    ]);
+        resolve();
+    });
 };
 
-exports.runArray = function (nciUrlArray, next) {
-    async.series([
-        function (cb) {
-            MigrationNCIModel.remove({}, function (err) {
-                if (err) throw err;
-                console.log('removed migration nci collection.');
-                cb();
-            });
-        },
-        function (cb) {
-            async.forEach(nciUrlArray, function (nciUrl, doneOne) {
-                doNCI(nciUrl, doneOne);
-            }, function doneAll() {
-                cb();
-            })
-        },
-        function () {
-            if (next) next();
-            else process.exit(1);
-        }
-    ]);
-
-};

@@ -20,11 +20,13 @@ exports.map = {
     },
     'NCI-BPV': {
         'orgName': 'NCI-BPV',
-        'stewardOrgName':'NCI',
+        'stewardOrgName': 'NCI',
         'classificationOrgName': 'NCI-BPV',
         'classificationMap': {'NCI-BPV': 'BBRB - BPV'},
-        filter: function (a, b) {
-            return !!(a === 'BBRB' && b === 'BPV - Tumor Biospecimen Acquisition');
+        filter: function (contextName, b) {
+            let allowBBRB = contextName === 'BBRB';
+            let allowBPV = b === 'BPV - Tumor Biospecimen Acquisition';
+            return !!(allowBBRB && allowBPV);
         },
         statusMapping: {
             "Preferred Standard": "Standard",
@@ -34,11 +36,30 @@ exports.map = {
     },
     'NCI-GTEx': {
         'orgName': 'NCI-GTEx',
-        'stewardOrgName':'NCI',
+        'stewardOrgName': 'NCI',
         'classificationOrgName': 'NCI-GTEx',
         'classificationMap': {'NCI-GTEx': 'BBRB - GTEx'},
-        filter: function (a, b) {
-            return !!(a === 'BBRB' && b === 'GTEx - Postmortem Biospecimen Acquisition');
+        filter: function (contextName, b) {
+            let allowBBRB = contextName === 'BBRB';
+            let allowGTEx = b === 'GTEx - Postmortem Biospecimen Acquisition';
+            return !!(allowBBRB && allowGTEx);
+        },
+        statusMapping: {
+            "Preferred Standard": "Standard",
+            "Standard": "Standard",
+            "default": "Qualified"
+        }
+    },
+    'NCI-CDMH': {
+        'stewardOrgName': 'NCI',
+        'classificationOrgName': 'NCI',
+        'classificationMap': {'NCI-CDMH': 'CDMH'},
+        filter: function (contextName, b) {
+            let allowBBRB = contextName === 'BBRB';
+            let allowPCORI = contextName === 'PCORI CDM';
+            let allowGTEx = b === 'GTEx - Postmortem Biospecimen Acquisition';
+            let allowBPV = b === 'BPV - Tumor Biospecimen Acquisition';
+            return (allowBBRB || allowPCORI) && (allowBPV || allowGTEx);
         },
         statusMapping: {
             "Preferred Standard": "Standard",
