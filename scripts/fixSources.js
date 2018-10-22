@@ -49,6 +49,7 @@ async function run() {
     for (let DAO of DAOs) {
         await doDAO(DAO);
         console.log("Finished " + DAO.name + " Count: " + DAO.count);
+        DAO.finished = true;
     }
 }
 
