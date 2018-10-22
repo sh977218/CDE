@@ -1,148 +1,145 @@
-.navbar-nav    > li    > a {
-    padding-left: 15px;
-    padding-right: 15px;
-}
-.mat-toolbar {
-    background: #343a40;
-}
-.toolbarItem {
-    margin: 0.8em;
-}
-a.active {
-    color: rgb(255, 255, 255);
-}
-.mat-toolbar   a:not(.active):not(:hover) {
-    color: rgba(255, 255, 255, 0.53);
-}
-a {
-    text-decoration: none;
-    font-size: 1rem;
-}
-.toolbarItem:hover {
-    color: rgba(255, 255, 255, 0.75) !important;
-}
+/**** Material Overrides ****/
+.mdl-layout__header-row .mdl-navigation__link {
+    padding: 0 14px; }
 
-a   img {
-    border: 0;
-}
-::-moz-selection {
-    background-color: #6ab344;
-    color: #fff;
-}
-::selection {
-    background-color: #6ab344;
-    color: #fff;
-}
-.android-search-box   .mdl-textfield__input {
-    color: rgba(0, 0, 0, 0.87);
-}
-.android-header   .mdl-menu__container {
+/**** end ****/
+.navbar-nav > li > a {
+    padding-left: 15px;
+    padding-right: 15px; }
+
+.mat-toolbar {
+    background: #343a40; }
+
+.toolbarItem {
+    margin: 0.8em; }
+
+a.mdl-navigation__link.active {
+    color: white; }
+
+.mat-toolbar a:not(.active):not(:hover) {
+    color: rgba(255, 255, 255, 0.53); }
+
+a.mdl-navigation__link {
+    text-decoration: none;
+    font-size: 1rem; }
+
+.toolbarItem:hover {
+    color: rgba(255, 255, 255, 0.75) !important; }
+
+/* Disable ugly boxes around images in IE10 */
+a.mdl-navigation__link img {
+    border: 0; }
+
+.android-search-box .mdl-textfield__input {
+    color: rgba(0, 0, 0, 0.87); }
+
+.android-header .mdl-menu__container {
     z-index: 50;
-    margin: 0 !important;
-}
+    margin: 0 !important; }
+
 .mdl-textfield--expandable {
-    width: auto;
-}
+    width: auto; }
+
 .android-mobile-title {
-    display: none !important;
-}
+    display: none !important; }
+
 .android-header {
     overflow: visible;
-    background-color: #343a40;
-}
-.android-header   .material-icons {
-    color: white !important;
-}
-.android-header   .mdl-layout__drawer-button {
+    background-color: #343a40; }
+
+.android-header .mdl-layout__drawer-button {
     background: transparent;
-    color: #767777;
-}
-.android-header   .mdl-navigation__link {
+    color: #767777; }
+
+.android-header .mdl-navigation__link {
     color: white;
     font-weight: 700;
-    font-size: 14px;
-}
+    font-size: 14px; }
+
 .android-navigation-container {
+    /* Simple hack to make the overflow happen to the left instead... */
     direction: rtl;
     order: 1;
     width: 500px;
-    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+
 .android-navigation {
+    /* ... and now make sure the content is actually LTR */
     direction: ltr;
     justify-content: flex-end;
-    width: 1000px;
-}
-.android-search-box.is-focused    + .android-navigation-container {
+    width: 1000px; }
+
+.android-search-box.is-focused + .android-navigation-container {
     opacity: 0;
-    width: 100px;
-}
-.android-navigation   .mdl-navigation__link {
+    width: 100px; }
+
+.android-navigation .mdl-navigation__link {
     display: inline-block;
     height: 60px;
     line-height: 68px;
     background-color: transparent !important;
-    border-bottom: 4px solid transparent;
-}
-.android-navigation   .mdl-navigation__link:hover {
+    border-bottom: 4px solid transparent; }
+
+.android-navigation .mdl-navigation__link:hover {
     text-decoration: none;
-    border-bottom: 4px solid rgb(30, 104, 255);
-}
+    border-bottom: 4px solid #1e68ff; }
+
+.android-navigation .material-icons {
+    color: white !important; }
+
 .android-search-box {
     order: 2;
     margin-left: 16px;
-    margin-right: 16px;
-}
+    margin-right: 16px; }
+
 .android-drawer {
-    border-right: none;
-}
+    border-right: none; }
+
 .android-drawer-separator {
     height: 1px;
     background-color: #dcdcdc;
-    margin: 8px 0;
-}
-.android-drawer   .mdl-navigation__link.mdl-navigation__link {
+    margin: 8px 0; }
+
+.android-drawer .mdl-navigation__link.mdl-navigation__link {
     font-size: 14px;
-    color: #757575;
-}
-.android-drawer   span.mdl-navigation__link.mdl-navigation__link {
-    color: #8bc34a;
-}
-.android-drawer   .mdl-layout-title {
+    color: #757575; }
+
+.android-drawer .mdl-layout-title {
     position: relative;
     background: grey;
-    height: 160px;
-}
-.android-drawer   .logo-image {
+    height: 160px; }
+
+.android-drawer .logo-image {
     position: absolute;
-    bottom: 16px;
-}
+    bottom: 16px; }
+
 .logo-font {
     font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
     line-height: 1;
     color: #767777;
-    font-weight: 500;
-}
+    font-weight: 500; }
 
+/**** Large layout ****/
+@media (min-width: 901px) {
+    .largeLayout {
+        display: block; }
+    .mdl-layout__drawer,
+    .mdl-layout__drawer-button {
+        display: none; } }
+
+/**** Mobile layout ****/
 @media (max-width: 900px) {
+    .largeLayout {
+        display: none; }
     .android-navigation-container {
-        display: none;
-    }
-
+        display: none; }
     .android-title {
-        display: none !important;
-    }
-
+        display: none !important; }
     .android-mobile-title {
         display: block !important;
         position: absolute;
-
-        top: 12px;
-        transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-}
+        /*left: calc(50% - 70px);*/
+        transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1); } }
 
 .mdl-layout__container {
     position: static; }
@@ -158,11 +155,10 @@ a   img {
     transform: translateX(250px); }
 
 .mdl-layout__header-row {
-    padding: 0 40px 0 20px; }
+    padding: 0 0 0 20px; }
 
 .mat-drawer-container {
     background-color: white; }
 
 .android-navigation .mdl-navigation__link {
     line-height: 64px !important; }
-

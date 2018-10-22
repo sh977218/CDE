@@ -12,7 +12,7 @@ export class EmbeddedCdeSearchResultComponent {
 
     concatenatePVs(elt) {
         return elt.valueDomain.permissibleValues.map(a => a.permissibleValue).join(",");
-    };
+    }
 
     lfLimit = 3;
 
@@ -22,7 +22,7 @@ export class EmbeddedCdeSearchResultComponent {
 
     lowerLfLimit() {
         return this.lfLimit = 3;
-    };
+    }
 
     clLimit = 3;
 
@@ -32,6 +32,6 @@ export class EmbeddedCdeSearchResultComponent {
 
     lowerClLimit() {
         return this.clLimit = 3;
-    };
+    }
 
 }

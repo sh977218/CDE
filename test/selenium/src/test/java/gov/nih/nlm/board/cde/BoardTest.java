@@ -22,7 +22,7 @@ public class BoardTest extends NlmCdeBaseTest {
 
     public void gotoMyBoards() {
         clickElement(By.id("boardsMenu"));
-        textPresent("MY BOARDS");
+        textPresent("My Boards");
         clickElement(By.id("myBoardsLink"));
         textPresent("Add Board");
         hangon(2);
@@ -30,7 +30,7 @@ public class BoardTest extends NlmCdeBaseTest {
 
     protected void gotoPublicBoards() {
         clickElement(By.id("boardsMenu"));
-        clickElement(By.linkText("PUBLIC BOARDS"));
+        clickElement(By.linkText("Public Boards"));
     }
 
     public void createBoard(String name, String description, String type) {

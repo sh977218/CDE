@@ -136,7 +136,7 @@ setInterval(() => {
                 notificationTimeout = setTimeout(() => {
                     // send notification now
                     lastReport = newReport;
-                    let msg = {
+                    let msg = JSON.stringify({
                         title: 'Elastic Search Index Issue',
                         options: {
                             body: "Status reports not normal",
@@ -151,9 +151,9 @@ setInterval(() => {
                                 }
                             ]
                         }
-                    };
+                    });
                     mongo_data.pushGetAdministratorRegistrations(registrations => {
-                        registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
+                        registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
                     });
 
                     dbLogger.logError({

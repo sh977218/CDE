@@ -98,7 +98,7 @@ exports.draftDataElement = (req, res) => {
     if (!tinyId) return res.status(400).send();
     mongo_cde.draftDataElement(tinyId, handleError({req, res}, dataElement => {
         if (!req.user) hideProprietaryCodes(dataElement);
-        res.send(dataElement)
+        res.send(dataElement);
     }));
 };
 exports.draftDataElementById = (req, res) => {
@@ -106,7 +106,7 @@ exports.draftDataElementById = (req, res) => {
     if (!id) return res.status(400).send();
     mongo_cde.draftDataElementById(id, handleError({req, res}, dataElement => {
         if (!req.user) hideProprietaryCodes(dataElement);
-        res.send(dataElement)
+        res.send(dataElement);
     }));
 };
 
@@ -208,7 +208,7 @@ let parser = new xml2js.Parser();
 exports.vsacId = (req, res) => {
     if (!req.user) return res.status(202).send({error: {message: "Please login to see VSAC mapping."}});
     vsac.getValueSet(req.params.vsacId, handleError({req, res, message: 'Error retrieving from VSAC'}, result => {
-        if (result.statusCode === 404 || result === 400) return res.status(404).end();
+        if (result.statusCode === 404 || result === 400) return res.status(404).send();
         parser.parseString(result.body, handleError({req, res, message: 'Error parsing from VSAC'}, jsonResult => {
             res.send(jsonResult);
         }));
@@ -246,9 +246,9 @@ exports.show = function (req, res, cb) {
     }));
 };
 
-exports.save = (req, res) => {
-    adminSvc.save(req, res, mongo_cde, elastic.fetchPVCodeSystemList());
-};
+// exports.save = (req, res) => {
+//     adminSvc.save(req, res, mongo_cde, elastic.fetchPVCodeSystemList());
+// };
 
 var hideProprietaryCodes = function (cdes, user) {
     let hiddenFieldMessage = 'Login to see the value.';
@@ -301,7 +301,7 @@ exports.checkEligibleToRetire = function (req, res, elt, cb) {
             res.status(403).send("This record is already standard.");
         } else {
             if ((elt.registrationState.registrationStatus !== "Standard" &&
-                elt.registrationState.registrationStatus !== " Preferred Standard") &&
+                elt.registrationState.registrationStatus !== " Preferred Standard") && // TODO: what is the space doing there? (many occurrences)
                 (elt.registrationState.registrationStatus === "Standard" ||
                     elt.registrationState.registrationStatus === "Preferred Standard") &&
                 !req.user.siteAdmin) {
