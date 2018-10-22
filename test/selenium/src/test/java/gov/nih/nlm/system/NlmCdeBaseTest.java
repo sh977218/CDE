@@ -1631,20 +1631,22 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void approveComment(String adminUsername, String adminPassword, String username, String message) {
         mustBeLoggedInAs(adminUsername, adminPassword);
-        clickElement(By.id("incomingMessage"));
+        findElement(By.cssSelector("#notifications .mat-badge-content"));
+        clickElement(By.id("notifications"));
         if (message.length() >= 60) message = message.substring(0, 59).trim();
-        clickElement(By.xpath("//a[contains(normalize-space(),'" + "Comment approval | " + username + " | " + message + "')]"));
-        clickElement(By.cssSelector(".card .approveComment"));
-        textPresent("Message moved");
+        clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message
+                + "')]//button[contains(@class,'mat-primary')]"));
+        textPresent("Approved");
     }
 
     protected void declineComment(String adminUsername, String adminPassword, String username, String message) {
         mustBeLoggedInAs(adminUsername, adminPassword);
-        clickElement(By.id("incomingMessage"));
+        findElement(By.cssSelector("#notifications .mat-badge-content"));
+        clickElement(By.id("notifications"));
         if (message.length() >= 60) message = message.substring(0, 59).trim();
-        clickElement(By.xpath("//a[contains(normalize-space(),'" + "Comment approval | " + username + " | " + message + "')]"));
-        clickElement(By.cssSelector(".card .declineComment"));
-        textPresent("Message moved");
+        clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message
+                + "')]//button[contains(@class,'mat-warn')]"));
+        textPresent("Declined");
     }
 
     protected void removeComment(String message) {
