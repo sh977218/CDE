@@ -13,7 +13,9 @@ const MergeForm = require('./MergeForm');
 
 exports.parseFormElements = async function (loinc, orgInfo) {
     let formElements = [];
+    if (!loinc['PANEL HIERARCHY']) return formElements;
     let elements = loinc['PANEL HIERARCHY']['elements'];
+    if (!elements) return formElements;
     console.log('Form ' + loinc['loincId'] + ' has ' + elements.length + ' elements to process.');
     if (!elements || elements.length === 0) return;
     let tempFormElements = formElements;
@@ -41,96 +43,87 @@ exports.parseFormElements = async function (loinc, orgInfo) {
 
 };
 
-loadCde = function (element, orgInfo) {
-    return new Promise(async (resolve, reject) => {
-        let loincId = element.loincId;
-        let cdeCond = {
-            archived: false,
-            "registrationState.registrationStatus": {$ne: "Retired"},
-            'ids.id': loincId
-        };
-        let existingCde = await DataElement.findOne(cdeCond).exec();
-        let newCDE = await CreateCDE.createCde(element, orgInfo);
-        if (!existingCde) {
-            existingCde = await new DataElement(newCDE).save();
-        } else {
-            await MergeCDE.mergeCde(newCDE, existingCde, orgInfo);
-            existingCde.updated = new Date().toJSON();
-            await existingCde.save();
-        }
-        existingCde = existingCde.toObject();
-        let question = {
-            instructions: {value: ''},
-            cde: {
-                tinyId: existingCde.tinyId,
-                name: existingCde.designations[0].designation,
-                designations: existingCde.designations,
-                definitions: existingCde.definitions,
-                version: existingCde.version,
-                permissibleValues: existingCde.valueDomain.permissibleValues,
-                ids: existingCde.ids
-            },
-            required: REQUIRED_MAP[element['cardinality']],
-            multiselect: MULTISELECT_MAP[element['ANSWER CARDINALITY']],
-            datatype: existingCde.valueDomain.datatype,
-            datatypeNumber: existingCde.valueDomain.datatypeNumber,
-            datatypeText: existingCde.valueDomain.datatypeText,
-            answers: existingCde.valueDomain.permissibleValues,
-            unitsOfMeasure: []
-        };
-        if (question.datatype === 'Text') {
-            question.multiselect = false;
-        }
-        if (element['exUcumUnitsText']) {
-            question.unitsOfMeasure.push({system: '', code: element['exUcumUnitsText']});
-        }
-        let formElement = {
-            elementType: 'question',
-            instructions: {},
-            cardinality: CARDINALITY_MAP[element.cardinality],
-            label: element.loincName.trim(),
-            question: question,
-            formElements: []
-        };
-        resolve(formElement);
-    })
+loadCde = async function (element, orgInfo) {
+    let loincId = element.loincId;
+    let cdeCond = {
+        archived: false,
+        "registrationState.registrationStatus": {$ne: "Retired"},
+        'ids.id': loincId
+    };
+    let existingCde = await DataElement.findOne(cdeCond).exec();
+    let newCDE = await CreateCDE.createCde(element, orgInfo);
+    if (!existingCde) {
+        existingCde = await new DataElement(newCDE).save();
+    } else {
+        await MergeCDE.mergeCde(newCDE, existingCde, orgInfo);
+        existingCde.updated = new Date().toJSON();
+        await existingCde.save();
+    }
+    existingCde = existingCde.toObject();
+    let question = {
+        instructions: {value: ''},
+        cde: {
+            tinyId: existingCde.tinyId,
+            name: existingCde.designations[0].designation,
+            designations: existingCde.designations,
+            definitions: existingCde.definitions,
+            version: existingCde.version,
+            permissibleValues: existingCde.valueDomain.permissibleValues,
+            ids: existingCde.ids
+        },
+        required: REQUIRED_MAP[element['cardinality']],
+        multiselect: MULTISELECT_MAP[element['ANSWER CARDINALITY']],
+        datatype: existingCde.valueDomain.datatype,
+        datatypeNumber: existingCde.valueDomain.datatypeNumber,
+        datatypeText: existingCde.valueDomain.datatypeText,
+        answers: existingCde.valueDomain.permissibleValues,
+        unitsOfMeasure: []
+    };
+    if (question.datatype === 'Text') {
+        question.multiselect = false;
+    }
+    if (element['exUcumUnitsText']) {
+        question.unitsOfMeasure.push({system: '', code: element['exUcumUnitsText']});
+    }
+    let formElement = {
+        elementType: 'question',
+        instructions: {},
+        cardinality: CARDINALITY_MAP[element.cardinality],
+        label: element.loincName.trim(),
+        question: question,
+        formElements: []
+    };
+    return formElement;
 };
 
-loadForm = function (element, orgInfo) {
-    return new Promise(async (resolve, reject) => {
-        let loincId = element.loincId;
-        let formCond = {
-            archived: false,
-            "registrationState.registrationStatus": {$ne: "Retired"},
-            'ids.id': loincId
-        };
-        let existingForm;
-        try {
-            existingForm = await Form.findOne(formCond).exec();
-        } catch (err) {
-            console.log(err);
+loadForm = async function (element, orgInfo) {
+    let loincId = element.loincId;
+    let formCond = {
+        archived: false,
+        "registrationState.registrationStatus": {$ne: "Retired"},
+        'ids.id': loincId
+    };
+    let existingForm = await Form.findOne(formCond).exec();
+    let newForm = await CreateForm.createForm(element.loinc, orgInfo);
+    if (!existingForm) {
+        existingForm = await new Form(newForm).save();
+    } else {
+        MergeForm.mergeForm(newForm, existingForm, orgInfo);
+    }
+    let inForm = {
+        form: {
+            tinyId: existingForm.tinyId,
+            version: existingForm.version,
+            name: existingForm.designations[0].designation
         }
-        let newForm = await CreateForm.createForm(element.loinc, orgInfo);
-        if (!existingForm) {
-            existingForm = await new Form(newForm).save();
-        } else {
-            MergeForm.mergeForm(newForm, existingForm, orgInfo);
-        }
-        let inForm = {
-            form: {
-                tinyId: existingForm.tinyId,
-                version: existingForm.version,
-                name: existingForm.designations[0].designation
-            }
-        };
-        let formElement = {
-            elementType: 'form',
-            instructions: {value: '', valueFormat: ''},
-            cardinality: CARDINALITY_MAP[element.cardinality],
-            label: element.loincName.trim(),
-            inForm: inForm,
-            formElements: []
-        };
-        resolve(formElement);
-    });
+    };
+    let formElement = {
+        elementType: 'form',
+        instructions: {value: '', valueFormat: ''},
+        cardinality: CARDINALITY_MAP[element.cardinality],
+        label: element.loincName.trim(),
+        inForm: inForm,
+        formElements: []
+    };
+    return formElement;
 };

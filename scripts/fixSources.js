@@ -8,23 +8,22 @@ let DAOs = [
     {
         name: 'de',
         count: 0,
-        dao: DataElement,
-        incorrectMap: {}
-    }, {
+        dao: DataElement
+    },
+    {
         name: 'de draft',
         count: 0,
-        dao: DataElementDraft,
-        incorrectMap: {}
-    }, {
+        dao: DataElementDraft
+    },
+    {
         name: 'form',
         count: 0,
-        dao: Form,
-        incorrectMap: {}
-    }, {
+        dao: Form
+    },
+    {
         name: 'form draft',
         count: 0,
-        dao: FormDraft,
-        incorrectMap: {}
+        dao: FormDraft
     }
 ];
 
@@ -40,6 +39,7 @@ DAOs.forEach(DAO => {
             doc.sources = sources;
             doc.markModified('sources');
             await doc.save();
+            DAO.count++;
         }).then(err => {
         if (err) throw err;
         console.log("Finished " + DAO.name + " Count: " + DAO.count);

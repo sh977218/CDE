@@ -2,18 +2,19 @@ const _ = require('lodash');
 
 const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
 
-mergeSources = (o1, o2) => {
-    let result = _.uniqBy(o1.concat(o2), 'sourceName');
+mergeBySources = (newSources, existingSources) => {
+    let otherSources = existingSources.filter(o => o.source !== 'PhenX');
+    let result = newSources.concat(otherSources);
     return result;
 };
 
 exports.mergeCde = (existingCde, newCde) => {
     existingCde.designations = newCde.designations;
     existingCde.definitions = newCde.definitions;
-    existingCde.ids = newCde.ids;
-    existingCde.properties = newCde.properties;
-    existingCde.referenceDocuments = newCde.referenceDocuments;
-    existingCde.sources = mergeSources(newCde.sources, existingCde.sources);
+    existingCde.ids = mergeBySources(newCde.ids, existingCde.ids);
+    existingCde.properties = mergeBySources(newCde.properties, existingCde.properties);
+    existingCde.referenceDocuments = mergeBySources(newCde.referenceDocuments, existingCde.referenceDocuments);
+    existingCde.sources = mergeBySources(newCde.sources, existingCde.sources);
     existingCde.valueDomain = newCde.valueDomain;
     classificationShared.transferClassifications(newCde, existingCde);
 };

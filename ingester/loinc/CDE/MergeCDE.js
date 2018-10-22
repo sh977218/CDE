@@ -37,7 +37,7 @@ mergeDefinitions = (o1, o2) => {
     });
     return result;
 };
-mergeSources = (o1, o2) => {
+mergeBySource = (o1, o2) => {
     let result = _.uniqBy(o1.concat(o2), 'sourceName');
     return result;
 };
@@ -51,15 +51,22 @@ mergeWithEqual = (o1, o2) => {
     });
     return result;
 };
+
+mergeBySources = (newSources, existingSources) => {
+    let otherSources = existingSources.filter(o => o.source !== 'LOINC');
+    let result = newSources.concat(otherSources);
+    return result;
+};
+
 exports.mergeCde = function (newCde, existingCde) {
     existingCde.designations = mergeDesignations(existingCde.designations, newCde.designations);
     existingCde.definitios = mergeDefinitions(existingCde.definitions, newCde.definitions);
-    existingCde.sources = mergeSources(existingCde.sources, newCde.sources);
+    existingCde.sources = mergeBySource(existingCde.sources, newCde.sources);
     existingCde.property = newCde.property;
     existingCde.valueDomain = newCde.valueDomain;
     existingCde.mappingSpecifications = newCde.mappingSpecifications;
-    existingCde.referenceDocuments = mergeWithEqual(existingCde.referenceDocuments, newCde.referenceDocuments);
-    existingCde.properties = mergeWithEqual(existingCde.properties, newCde.properties);
-    existingCde.ids = mergeWithEqual(existingCde.ids, newCde.ids);
+    existingCde.referenceDocuments = mergeBySources(existingCde.referenceDocuments, newCde.referenceDocuments);
+    existingCde.properties = mergeBySources(existingCde.properties, newCde.properties);
+    existingCde.ids = mergeBySources(existingCde.ids, newCde.ids);
     classificationShared.transferClassifications(newCde, existingCde);
 };
