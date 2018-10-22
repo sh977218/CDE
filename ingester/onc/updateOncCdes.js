@@ -1,6 +1,6 @@
 var async = require('async');
 var mongo_cde = require('../../server/cde/mongo-cde');
-var cdesvc = require('../../server/cde/cdediff');
+var cdeDiff = require('../../server/cde/cdediff');
 var classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared');
 var MigrationDataElement = require('../createMigrationConnection').MigrationDataElementModel;
 var DataElement = mongo_cde.DataElement;
@@ -90,7 +90,7 @@ function compareCdes(existingCde, newCde) {
     newCde = JSON.parse(JSON.stringify(newCde));
     wipeUseless(newCde);
 
-    return cdesvc.diff(existingCde, newCde);
+    return cdeDiff.diff(existingCde, newCde);
 }
 
 function processCde(migrationCde, existingCde, processCdeCb) {
@@ -209,7 +209,7 @@ function findCde(cdeId, migrationCde, idv, findCdeDone) {
                 }, function doneAllAttachments() {
                     existingCdes[0].attachments = migrationCde.attachments;
                     processCde(migrationCde, existingCdes[0], findCdeDone);
-                })
+                });
             }
         } else {
             console.log(cdeId);
@@ -266,7 +266,7 @@ function streamOnClose() {
                         retired++;
                         doneOneRetireCde();
                     }
-                })
+                });
             }, function doneAllRetireCdes() {
                 console.log("Nothing left to do, saving Org");
                 MigrationOrg.find().exec(function (findMigOrgError, orgs) {

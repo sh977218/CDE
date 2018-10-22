@@ -48,6 +48,11 @@ button {
     transform: scale(0.8);
 }
 
+/* navigation and sub components */
+.navigationLink {
+    cursor: pointer;
+}
+/* end */
 
 /* home component */
 .homeDescriptionLink {

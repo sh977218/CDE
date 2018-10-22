@@ -9,7 +9,7 @@
     "buildFhir": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_fhirApp/webpackFhir.prod.js",
     "dev": "npm run devApp",
     "devApp": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_app/webpack.dev.js",
-    "devEmbed": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_embedApp/webpackEmbed.cdev.js",
+    "devEmbed": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_embedApp/webpackEmbed.dev.js",
     "devNative": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_nativeRenderApp/webpackNative.dev.js",
     "devFhir": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_fhirApp/webpackFhir.dev.js",
     "install": "napa",
@@ -202,7 +202,7 @@
     {
       "path": "./dist/app/cde.js",
       "compression": "none",
-      "maxSize": "1.46 MB"
+      "maxSize": "1.53 MB"
     },
     {
       "path": "./dist/app/cde.css",
@@ -212,7 +212,7 @@
     {
       "path": "./dist/embed/embed.js",
       "compression": "none",
-      "maxSize": "1.53 MB"
+      "maxSize": "1.27 MB"
     },
     {
       "path": "./dist/embed/embed.css",

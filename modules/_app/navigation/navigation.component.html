@@ -4,13 +4,8 @@
            class="mdl-navigation__link mdl-typography--text-uppercase">Login</a>
     </ng-template>
     <ng-container *ngIf="userService.user; else loginLink">
-        <a routerLink="/inbox" *ngIf="userService.user.hasMail">
-            <mat-icon id="incomingMessage" class="text-danger">mail_outline</mat-icon>
-        </a>
-
         <a id="username_link" class="mdl-navigation__link mdl-typography--text-uppercase"
-           [matMenuTriggerFor]="loginMenu">
-            <span [textContent]="userService.user.username | cdeTruncateLongName"></span>&nbsp;▼</a>
+           [matMenuTriggerFor]="loginMenu">{{userService.user.username | cdeTruncateLongName}}&nbsp;▼</a>
         <mat-menu #loginMenu="matMenu">
             <a routerLink="/profile" id="user_profile" mat-menu-item>Profile</a>
             <a routerLink="/inbox" id="user_inbox" mat-menu-item>Inbox</a>
@@ -28,6 +23,11 @@
                *ngIf="isOrgAuthority(userService.user)">Audit</a>
             <a (click)="loginSvc.logout()" target="_self" id="user_logout" mat-menu-item>Log Out</a>
         </mat-menu>
+
+        <a routerLink="/inbox" *ngIf="userService.user.hasMail"
+           class="mdl-navigation__link mdl-typography--text-uppercase" title="New Mail">
+            <mat-icon id="incomingMessage" class="text-danger">mail_outline</mat-icon>
+        </a>
     </ng-container>
 </ng-template>
 
@@ -40,10 +40,8 @@
         <a id="boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase"
            [matMenuTriggerFor]="boardMenu">Boards&nbsp;▼</a>
         <mat-menu #boardMenu="matMenu">
-            <a id="publicBoardsLink" routerLink="/boardList"
-               mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Public Boards</a>
-            <a id="myBoardsLink" routerLink="/myboards"
-               mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">My Boards</a>
+            <a id="publicBoardsLink" routerLink="/boardList" mat-menu-item>Public Boards</a>
+            <a id="myBoardsLink" routerLink="/myboards" mat-menu-item>My Boards</a>
         </mat-menu>
     </ng-container>
 </ng-template>
@@ -53,13 +51,12 @@
        *ngIf="isOrgCurator(userService.user)"
        [matMenuTriggerFor]="createMenu">Create&nbsp;▼</a>
     <mat-menu #createMenu="matMenu">
-        <a id="createCDELink" routerLink="/createCde" mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">CDE</a>
-        <a id="createFormLink" routerLink="/createForm"
-           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Form</a>
+        <a id="createCDELink" routerLink="/createCde" mat-menu-item>CDE</a>
+        <a id="createFormLink" routerLink="/createForm" mat-menu-item>Form</a>
     </mat-menu>
 </ng-template>
 
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header" (click)="checkNotificationDrawer()">
 
     <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
         <div class="mdl-layout__header-row">
@@ -103,13 +100,11 @@
                     </mat-menu>
 
                     <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
+                    <cde-notifications></cde-notifications>
 
-                    <a id="notifications">
-                        <cde-notifications></cde-notifications>
-                    </a>
-
-                    <a routerLink="/searchPreferences" id="searchSettings" style="padding-right: 24px">
-                       <i class="material-icons" style="font-size: 1.3em; margin-top: 10px">settings</i>
+                    <a routerLink="/searchPreferences"
+                       id="searchSettings" class="mdl-navigation__link mdl-typography--text-uppercase">
+                       <i class="material-icons">settings</i>
                     </a>
 
                 </nav>
@@ -136,6 +131,8 @@
             <a class="mdl-navigation__link" routerLink="/api" (click)="toggleDrawer()">API</a>
             <div class="android-drawer-separator"></div>
             <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
+            <cde-notifications></cde-notifications>
+            <!--no search preferences-->
         </nav>
     </div>
 

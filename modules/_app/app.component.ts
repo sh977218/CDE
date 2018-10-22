@@ -5,6 +5,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import 'feedback/stable/2.0/html2canvas.js';
 import 'feedback/stable/2.0/feedback.js';
 import 'feedback/stable/2.0/feedback.min.css';
+import { NotificationService } from '_app/notifications/notification.service';
 import _noop from 'lodash/noop';
 
 import { BackForwardService } from '_app/backForward.service';
@@ -90,6 +91,7 @@ export class CdeAppComponent implements OnInit {
     }
 
     constructor(backForwardService: BackForwardService,
+                private notificationService: NotificationService,
                 private router: Router,
                 private userService: UserService,
                 iconReg: MatIconRegistry,
@@ -104,6 +106,11 @@ export class CdeAppComponent implements OnInit {
                 }
             });
         }
+        this.router.events.subscribe(event => {
+            if (event instanceof NavigationEnd && this.userService.loggedIn()) {
+                this.notificationService.reload();
+            }
+        });
 
         iconReg.addSvgIconLiteral("thumb_tack", sanitizer.bypassSecurityTrustHtml("<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\n" +
             "\t viewBox=\"0 0 96 96\" style='enable-background:new 0 0 96 96; vertical-align: baseline' xml:space=\"preserve\">\n" +

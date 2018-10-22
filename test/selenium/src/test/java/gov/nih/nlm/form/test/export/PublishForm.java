@@ -36,5 +36,4 @@ public class PublishForm extends BaseFormTest {
         checkAlert("Saved");
         textNotPresent("My Published Form");
     }
-
 }

@@ -1,14 +1,15 @@
 const authorization = require('../system/authorization');
+const loggedInMiddleware = authorization.loggedInMiddleware;
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
-const handleError = require('../log/dbLogger').handleError;
+const dbLogger = require('../log/dbLogger');
+const handleError = dbLogger.handleError;
+const handle404 = dbLogger.handle404;
 const discussDb = require('./discussDb');
 const daoManager = require('../system/moduleDaoManager');
-const ioServer = require("../system/ioServer");
-const userService = require("../system/usersrvc");
+const ioServer = require('../system/ioServer');
+const userService = require('../system/usersrvc');
 const mongo_data = require('../system/mongo-data');
 const adminItemService = require('../system/adminItemSvc');
-
-const loggedInMiddleware = authorization.loggedInMiddleware;
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
@@ -16,9 +17,9 @@ exports.module = function (roleConfig) {
     router.get('/comments/eltId/:eltId', (req, res) => {
         discussDb.byEltId(req.params.eltId, handleError({req, res}, comments => {
             comments.forEach(c => {
-                if (c.pendingApproval) c.text = "This comment is pending approval";
+                if (c.pendingApproval) c.text = 'This comment is pending approval';
                 c.replies.forEach(r => {
-                    if (r.pendingApproval) r.text = "This reply is pending approval";
+                    if (r.pendingApproval) r.text = 'This reply is pending approval';
                 });
             });
             res.send(comments);
@@ -32,41 +33,39 @@ exports.module = function (roleConfig) {
         if (numberUnapprovedMessages >= 5) return res.status(403).send('You have too many unapproved messages.');
         let dao = daoManager.getDao(comment.element.eltType);
         let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
-        idRetrievalFunc(comment.element.eltId, handleError({req, res}, elt => {
-                if (!elt) return res.status(404).send("Element does not exist.");
-                comment.user = req.user;
-                comment.created = new Date().toJSON();
-                if (!authorizationShared.canComment(req.user)) comment.pendingApproval = true;
-                discussDb.save(comment, handleError({req, res}, savedComment => {
-                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
-                    if (savedComment.pendingApproval) {
-                        let details = {
-                            element: {
-                                eltId: savedComment.element.eltId,
-                                name: dao.getPrimaryName(elt),
-                                eltType: dao.type
-                            },
-                            comment: {
-                                commentId: savedComment._id,
-                                text: savedComment.text
-                            }
-                        };
-                        adminItemService.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
-                    }
-                    res.send({});
-                }));
-            })
-        );
-
+        idRetrievalFunc(comment.element.eltId, handle404({req, res}, elt => {
+            comment.user = req.user;
+            comment.created = new Date().toJSON();
+            if (!authorizationShared.canComment(req.user)) {
+                comment.pendingApproval = true;
+            }
+            discussDb.save(comment, handleError({req, res}, savedComment => {
+                ioServerCommentUpdated(req.user.username, comment.element.eltId);
+                if (savedComment.pendingApproval) {
+                    adminItemService.createTask(req.user, 'CommentReviewer', 'approve', {
+                        element: {
+                            eltId: savedComment.element.eltId,
+                            name: dao.getPrimaryName(elt),
+                            eltType: dao.type
+                        },
+                        comment: {
+                            commentId: savedComment._id,
+                            text: savedComment.text
+                        }
+                    });
+                }
+                res.send({});
+            }));
+        }));
     });
+
     router.post('/replyComment', [loggedInMiddleware], async (req, res) => {
         let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username)
             .catch(handleError({req, res}));
         if (numberUnapprovedMessages >= 5) return res.status(403).send('You have too many unapproved messages.');
-        discussDb.byId(req.body.commentId, handleError({req, res}, comment => {
-            if (!comment) return res.status(404).send("Comment not found.");
+        discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
             let numberUnapprovedReplies = comment.replies.filter(r => r.pendingApproval && r.user.username === req.user.username).length;
-            if (numberUnapprovedReplies > 0) return res.status(403).send("You cannot do this.");
+            if (numberUnapprovedReplies > 0) return res.status(403).send('You cannot do this.');
             if (!comment.replies) comment.replies = [];
             let reply = {
                 user: req.user,
@@ -81,7 +80,7 @@ exports.module = function (roleConfig) {
                 ioServerCommentUpdated(req.user.username, comment.element.eltId);
                 res.send({});
                 if (reply.pendingApproval) {
-                    let details = {
+                    adminItemService.createTask(req.user, 'CommentReviewer', 'approve', {
                         element: {
                             tinyId: comment.element.eltId,
                             name: req.body.eltName
@@ -91,15 +90,14 @@ exports.module = function (roleConfig) {
                             replyIndex: comment.replies.length,
                             text: req.body.reply
                         }
-                    };
-                    adminItemService.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
+                    });
                 }
                 if (req.user.username !== savedComment.user.username) {
                     let message = {
-                        recipient: {recipientType: "user", name: savedComment.user.username},
-                        author: {authorType: "user", name: req.user.username},
+                        author: {authorType: 'user', name: req.user.username},
                         date: new Date(),
-                        type: "CommentReply",
+                        recipient: {recipientType: 'user', name: savedComment.user.username},
+                        type: 'CommentReply',
                         typeCommentReply: {
                             // TODO change this when you merge board comments
                             element: {
@@ -122,167 +120,139 @@ exports.module = function (roleConfig) {
 
     router.post('/deleteComment', [loggedInMiddleware], (req, res) => {
         let commentId = req.body.commentId;
-        discussDb.byId(commentId, handleError({req, res}, comment => {
-                if (!comment) return res.status(404).send("Comment not found");
-                let dao = daoManager.getDao(comment.element.eltType);
-                let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
-                let eltId = comment.element.eltId;
-                idRetrievalFunc(eltId, handleError({req, res}, element => {
-                        if (!comment) return res.status(404).send('Element not found');
-                        if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
-                            return res.status(401).send("You can only remove " + element.type + " you own.");
-                        }
-                        comment.remove(handleError({req, res}, () => {
-                                ioServerCommentUpdated(req.user.username, comment.element.eltId);
-                                res.send({});
-                            })
-                        );
-                    })
-                );
-
-            })
-        );
+        discussDb.byId(commentId, handle404({req, res}, comment => {
+            let dao = daoManager.getDao(comment.element.eltType);
+            let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
+            let eltId = comment.element.eltId;
+            idRetrievalFunc(eltId, handle404({req, res}, element => {
+                if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
+                    return res.status(403).send('You can only remove ' + element.type + ' you own.');
+                }
+                comment.remove(handleError({req, res}, () => {
+                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
+                    res.send({});
+                }));
+            }));
+        }));
     });
+
     router.post('/deleteReply', [loggedInMiddleware], (req, res) => {
         let replyId = req.body.replyId;
-        discussDb.byReplyId(replyId, handleError({req, res}, comment => {
-                if (!comment) return res.status(404).send("Reply not found");
-                let dao = daoManager.getDao(comment.element.eltType);
-                let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
-                let eltId = comment.element.eltId;
-                idRetrievalFunc(eltId, handleError({req, res}, element => {
-                        if (!element) return res.status(404).send('Element not found');
-                        if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
-                            return res.status(401).send("You can only remove " + element.type + " you own.");
-                        }
-                        comment.replies = comment.replies.filter(r => r._id.toString() !== replyId);
-                        comment.save(handleError({req, res}, () => {
-                                ioServerCommentUpdated(req.user.username, comment.element.eltId);
-                                res.send({});
-                            })
-                        );
-                    })
-                );
-
-            })
-        );
+        discussDb.byReplyId(replyId, handle404({req, res}, comment => {
+            let dao = daoManager.getDao(comment.element.eltType);
+            let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
+            let eltId = comment.element.eltId;
+            idRetrievalFunc(eltId, handle404({req, res}, element => {
+                if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
+                    return res.status(403).send('You can only remove ' + element.type + ' you own.');
+                }
+                comment.replies = comment.replies.filter(r => r._id.toString() !== replyId);
+                comment.save(handleError({req, res}, () => {
+                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
+                    res.send({});
+                }));
+            }));
+        }));
     });
 
     router.get('/commentsFor/:username/:from/:size', [loggedInMiddleware], (req, res) => {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
         let username = req.params.username;
-        if (!username || from < 0 || size < 0) return res.status(422).send();
-        discussDb.commentsForUser(username, from, size, handleError({req, res}, comments => res.send(comments))
-        );
+        if (!username || from < 0 || size < 0) {
+            return res.status(400).send();
+        }
+        discussDb.commentsForUser(username, from, size, handleError({req, res}, comments => res.send(comments)));
     });
+
     router.get('/allComments/:from/:size', roleConfig.allComments, (req, res) => {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
-        if (from < 0 || size < 0) return res.status(422).send();
+        if (from < 0 || size < 0) {
+            return res.status(400).send();
+        }
         discussDb.allComments(from, size, handleError({req, res}, comments => res.send(comments)));
     });
+
     router.get('/orgComments/:from/:size', authorization.loggedInMiddleware, (req, res) => {
-        let myOrgs = userService.myOrgs(req.user);
-        if (!myOrgs || myOrgs.length === 0) return res.send([]);
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
-        if (from < 0 || size < 0) return res.status(422).send();
+        if (from < 0 || size < 0) {
+            return res.status(400).send();
+        }
+        let myOrgs = userService.myOrgs(req.user);
+        if (!myOrgs || myOrgs.length === 0) {
+            return res.send([]);
+        }
         discussDb.orgComments(myOrgs, from, size, handleError({req, res}, comments => res.send(comments)));
     });
 
     router.post('/approveComment', roleConfig.manageComment, (req, res) => {
-        discussDb.byId(req.body.commentId, handleError({req, res}, comment => {
-                if (!comment) return res.status(404).send();
+        if (req.body.replyId) {
+            discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
+                comment.replies.filter(r => r._id.toString() === req.body.replyId).map(r => r.pendingApproval = false);
+                comment.save(handleError({req, res}, () => res.send('Approved')));
+            }));
+        } else {
+            discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
                 comment.pendingApproval = false;
-                comment.save(handleError({req, res}, () => res.send("Approved")));
-            })
-        );
-    });
-    router.post('/declineComment', roleConfig.manageComment, (req, res) => {
-        discussDb.byId(req.body.commentId, handleError({req, res}, comment => {
-                if (!comment) return res.status(404).send();
-                comment.pendingApproval = false;
-                comment.remove(handleError({req, res}, () => res.send("Declined")));
-            })
-        );
+                comment.save(handleError({req, res}, () => res.send('Approved')));
+            }));
+        }
     });
 
-    router.post('/approveReply', roleConfig.manageComment, (req, res) => {
-        let replyId = req.body.replyId;
-        discussDb.byReplyId(replyId, handleError({req, res}, comment => {
-                if (!comment) return res.status(404).send();
-                comment.replies.forEach(r => {
-                    if (r._id.toString() === replyId) r.pendingApproval = false;
-                });
-                comment.save(handleError({req, res}, () => res.send("Approved")));
-            })
-        );
-    });
-    router.post('/declineReply', roleConfig.manageComment, (req, res) => {
-        let replyId = req.body.replyId;
-        discussDb.byReplyId(replyId, handleError({req, res}, comment => {
-                if (!comment) return res.status(404).send();
-                comment.replies = comment.replies.filter(r => r._id.toString() !== replyId);
-                comment.save(handleError({req, res}, () => res.send("Approved")));
-            })
-        );
+    router.post('/declineComment', roleConfig.manageComment, (req, res) => {
+        if (req.body.replyId) {
+            discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
+                comment.replies = comment.replies.filter(r => r._id.toString() !== req.body.replyId);
+                comment.save(handleError({req, res}, () => res.send('Declined')));
+            }));
+        } else {
+            discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
+                comment.pendingApproval = false;
+                comment.remove(handleError({req, res}, () => res.send('Declined')));
+            }));
+        }
     });
 
     router.post('/resolveComment', [loggedInMiddleware], (req, res) => {
-        discussDb.byId(req.body.commentId, handleError({req, res}, comment => {
-                if (!comment) return res.status(404).send();
-                comment.status = 'resolved';
-                comment.save(handleError({req, res}, () => {
-                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
-                    res.send({});
-                }));
-            })
-        );
+        discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
+            replyTo(req, res, comment, 'resolved');
+        }));
     });
+
     router.post('/reopenComment', [loggedInMiddleware], (req, res) => {
-        discussDb.byId(req.body.commentId, handleError({req, res}, comment => {
-                if (!comment) return res.status(404).send();
-                comment.status = 'active';
-                comment.save(handleError({req, res}, () => {
-                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
-                    res.send({});
-                }));
-            })
-        );
+        discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
+            replyTo(req, res, comment, 'active');
+        }));
     });
 
     router.post('/resolveReply', [loggedInMiddleware], (req, res) => {
-        let replyId = req.body.replyId;
-        discussDb.byReplyId(replyId, handleError({req, res}, comment => {
-                if (!comment) return res.status(404).send();
-                comment.replies.forEach(r => {
-                    if (r._id.toString() === replyId) r.status = 'resolved';
-                });
-                comment.save(handleError({req, res}, () => {
-                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
-                    res.send({});
-                }));
-            })
-        );
+        discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
+            replyTo(req, res, comment, undefined, 'resolved');
+        }));
     });
+
     router.post('/reopenReply', [loggedInMiddleware], (req, res) => {
-        let replyId = req.body.replyId;
-        discussDb.byReplyId(replyId, handleError({req, res}, comment => {
-                if (!comment) return res.status(404).send();
-                comment.replies.forEach(r => {
-                    if (r._id.toString() === replyId) r.status = 'active';
-                });
-                comment.save(handleError({req, res}, () => {
-                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
-                    res.send({});
-                }));
-            })
-        );
+        discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
+            replyTo(req, res, comment, undefined, 'active');
+        }));
     });
 
     return router;
-
 };
 
-let ioServerCommentUpdated = (username, roomId) => ioServer.ioServer.of("/comment").to(roomId).emit('commentUpdated', {username: username});
+let ioServerCommentUpdated = (username, roomId) => ioServer.ioServer.of('/comment').to(roomId).emit('commentUpdated', {username: username});
+
+function replyTo(req, res, comment, status, repliesStatus, send = {}) {
+    if (status) {
+        comment.status = status;
+    }
+    if (repliesStatus) {
+        comment.replies.filter(r => r._id.toString() === req.body.replyId).map(r => r.status = repliesStatus);
+    }
+    comment.save(handleError({req, res}, () => {
+        ioServerCommentUpdated(req.user.username, comment.element.eltId);
+        res.send(send);
+    }));
+}

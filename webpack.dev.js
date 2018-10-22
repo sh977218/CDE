@@ -12,7 +12,6 @@ module.exports = merge(baseConfig, {
                 path.resolve(__dirname, '../src')
             ),
             new webpack.DefinePlugin({
-                IS_BROWSER: true,
                 PRODUCTION: JSON.stringify(false),
             }),
             new webpack.LoaderOptionsPlugin({debug: true}), // enable debug
