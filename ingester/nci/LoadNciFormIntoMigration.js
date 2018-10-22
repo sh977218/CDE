@@ -5,7 +5,7 @@ var async = require('async'),
     MigrationFormModel = require('./../createMigrationConnection').MigrationFormModel,
     MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel,
     classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared'),
-    classificationMapping = require('./caDSRClassificationMapping.json')
+    classificationMapping = require('./classificationMapping/caDSRClassificationMapping.json')
 ;
 
 var orgName = 'NCI';
