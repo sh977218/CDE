@@ -27,8 +27,6 @@ import { CdeForm, FormElement, FormElementsContainer, FormInForm, FormSection } 
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { scrollTo, waitRendered } from 'widget/browser';
 
-const TOOL_BAR_OFF_SET = 56;
-
 @Component({
     selector: 'cde-form-description',
     templateUrl: 'formDescription.component.html',
@@ -105,7 +103,7 @@ const TOOL_BAR_OFF_SET = 56;
             background-color: #343a40;
             position: fixed;
             padding: 5px 5px 5px 20px;
-            top: ${TOOL_BAR_OFF_SET} px;
+            top: ${NAVIGATION_HEIGHT}px;
             border-bottom-left-radius: 50px;
             right: 0;
             -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -129,6 +127,7 @@ const TOOL_BAR_OFF_SET = 56;
         .descriptionToolbox .btn.formDescriptionTool:hover span:before {
             content: ' Drag';
             font-weight: 900;
+            line-height: initial;
         }
 
         .toolSection:before {
@@ -308,8 +307,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     doIt() {
         if (this && this.descToolbox && this.descToolbox.nativeElement) {
-            this.descToolbox.nativeElement.style.top = (window.pageYOffset > TOOL_BAR_OFF_SET ? 0
-                : (TOOL_BAR_OFF_SET - window.pageYOffset)) + 'px';
+            this.descToolbox.nativeElement.style.top = (window.pageYOffset > NAVIGATION_HEIGHT ? 0
+                : (NAVIGATION_HEIGHT - window.pageYOffset)) + 'px';
         }
     }
 
