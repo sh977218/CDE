@@ -44,9 +44,13 @@ exports.derivationRuleSchema = new Schema({
 
 exports.sourceSchema = new Schema({
     sourceName: StringType,
+    source: StringType,
     created: {type: Date, description: 'Date created in source'},
     updated: {type: Date, description: 'Date updated in source'},
-    registrationStatus: {type: StringType, description: "Relative standing of official record status in steward's workflow"},
+    registrationStatus: {
+        type: StringType,
+        description: "Relative standing of official record status in steward's workflow"
+    },
     datatype: {type: StringType, description: 'May contain the source datatype'},
     copyright: {
         value: {type: StringType, description: 'Content of a copyright statement or terms of use'},
@@ -143,7 +147,10 @@ exports.fhirObservationInformationSchema = new Schema({
 exports.statusValidationRuleSchema = new Schema({
     field: StringType,
     id: Number,
-    targetStatus: {type: StringType, enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]},
+    targetStatus: {
+        type: StringType,
+        enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]
+    },
     ruleName: StringType,
     rule: {
         regex: StringType
@@ -234,7 +241,10 @@ exports.registrationStateSchema = {
     untilDate: Date,
     administrativeNote: StringType,
     unresolvedIssue: StringType,
-    administrativeStatus: {type: StringType, description: 'Relative standing of CDE as it relates to steward\'s administrative workflow'},
+    administrativeStatus: {
+        type: StringType,
+        description: 'Relative standing of CDE as it relates to steward\'s administrative workflow'
+    },
     replacedBy: {tinyId: {type: StringType, description: 'tinyId of replacement CDE'}},
 };
 

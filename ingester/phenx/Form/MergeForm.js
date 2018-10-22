@@ -2,8 +2,9 @@ const _ = require('lodash');
 
 const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
 
-mergeSources = (o1, o2) => {
-    let result = _.uniqBy(o1.concat(o2), 'sourceName');
+mergeSources = (newSources, existingSources) => {
+    let otherSources = existingSources.filter(o => o.sourceName !== 'PhenX');
+    let result = newSources.concat(otherSources);
     return result;
 };
 
