@@ -31,7 +31,7 @@ let DAOs = [
 ];
 
 async function doDAO(DAO) {
-    DAO.dao.find({'sources.0': {$exists: true}})
+    DAO.dao.find({archived: false, 'sources.0': {$exists: true}})
         .cursor({batchSize: 1000})
         .eachAsync(async doc => {
             let sources = doc.toObject().sources;
