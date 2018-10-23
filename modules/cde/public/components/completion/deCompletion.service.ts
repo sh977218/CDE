@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { SearchSettings } from 'search/search.model';
 import { Subject } from 'rxjs/Subject';

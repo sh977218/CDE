@@ -6,6 +6,7 @@ import { CodeAndSystem } from 'shared/models.model';
 import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
 import { ScoreService } from 'nativeRender/score.service';
+import { AlertService } from 'alert/alert.service';
 
 @Component({
     selector: 'cde-native-question',
@@ -29,6 +30,7 @@ export class NativeQuestionComponent implements OnInit {
 
     constructor(private http: HttpClient,
                 public scoreSvc: ScoreService,
+                private alert: AlertService,
                 public nrs: NativeRenderService) {
     }
 
