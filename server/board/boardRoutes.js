@@ -400,7 +400,6 @@ exports.module = function (roleConfig) {
         elastic.myBoards(req.user, req.body, handleError({req, res}, result => res.send(result)));
     });
 
-
     router.post('/pinEntireSearchToBoard', [loggedInMiddleware], (req, res) => {
         let boardId = req.body.boardId;
         boardDb.byId(boardId, handleError({req, res}, board => {

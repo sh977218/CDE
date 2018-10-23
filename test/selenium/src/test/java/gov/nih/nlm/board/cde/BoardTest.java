@@ -8,6 +8,12 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 public class BoardTest extends NlmCdeBaseTest {
+    protected void makePrivate(String boardName) {
+        gotoMyBoards();
+        editBoardByName(boardName, null, null, false, null);
+        checkAlert("Saved");
+        closeAlert();
+    }
 
     protected void makePublic(String boardName) {
         makePublic(boardName, "Saved");

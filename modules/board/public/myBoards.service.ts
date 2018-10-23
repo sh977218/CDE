@@ -17,7 +17,6 @@ export class MyBoardsService {
         selectedTags: [],
         suggestTags: []
     };
-    reloading: boolean = false;
 
     constructor(private http: HttpClient) {
     }
@@ -40,13 +39,7 @@ export class MyBoardsService {
                 this.filter.types.forEach(t => t.checked = (this.filter.selectedTypes.indexOf(t.key) > -1));
                 this.filter.suggestTags = res.aggregations.tagAgg.buckets.map(t => t.key);
             }
-            this.reloading = false;
             if (type) this.boards = this.boards.filter(b => b.type === type);
         });
-    }
-
-    waitAndReload() {
-        this.reloading = true;
-        setTimeout(() => this.loadMyBoards(), 2000);
     }
 }
