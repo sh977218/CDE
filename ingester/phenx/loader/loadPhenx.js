@@ -10,6 +10,9 @@ const CreateForm = require('../Form/CreateForm');
 const CompareForm = require('../Form/CompareForm');
 const MergeForm = require('../Form/MergeForm');
 
+const updatedByLoader = require('../../shared/updatedByLoader').updatedByLoader;
+const batchloader = require('../../shared/updatedByLoader').batchloader;
+
 let measureCount = 0;
 let protocolCount = 0;
 
@@ -17,8 +20,6 @@ let createdForm = 0;
 let sameForm = 0;
 let changeForm = 0;
 let skipForm = 0;
-
-let user = {username: 'batchloader'};
 
 retireCdes = async () => {
     let cond = {
@@ -86,22 +87,20 @@ MeasureModel.find(cond).cursor().eachAsync(async measure => {
                 await newForm.save();
                 createdForm++;
                 console.log('createdForm: ' + createdForm);
-            } else if (existingForm.updatedBy && existingForm.updatedBy.username && existingForm.updatedBy.username !== 'batchloader') {
+            } else if (updatedByLoader(existingForm)) {
                 skipForm++;
                 console.log('skipForm: ' + skipForm);
             } else {
+                existingForm.imported = new Date().toJSON();
+                existingForm.markModified('imported');
                 let diff = CompareForm.compareForm(newForm, existingForm);
                 if (_.isEmpty(diff)) {
-                    existingForm.imported = new Date().toJSON();
-                    existingForm.markModified('imported');
                     await existingForm.save();
                     sameForm++;
                     console.log('sameForm: ' + sameForm);
                 } else {
                     await MergeForm.mergeForm(existingForm, newForm);
-                    existingForm.imported = new Date().toJSON();
-                    existingForm.markModified('imported');
-                    await mongo_form.updatePromise(existingForm, user);
+                    await mongo_form.updatePromise(existingForm, batchloader);
                     changeForm++;
                     console.log('changeForm: ' + changeForm);
                 }

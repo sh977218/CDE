@@ -6,7 +6,9 @@ function isDesignationsExisted(designations, designation) {
 }
 
 function isQuestionTextExist(designations) {
-    let temp = designations.filter(n => n.tags.filter(t => t.tag && t.tag.toLowerCase().indexOf('Question Text') > 0).length > 0);
+    let temp = designations.filter(n => n.tags.filter(t => {
+        return t.toLowerCase().indexOf('Question Text') > 0;
+    }).length > 0);
     return temp.length > 0;
 }
 
@@ -51,7 +53,7 @@ exports.parseDesignations = function (loinc, element) {
             };
             let existingDesignation = isDesignationsExisted(designations, questionTextDesignationObj);
             if (existingDesignation) {
-                existingDesignation.tags.push({tag: 'Question Text'});
+                existingDesignation.tags.push('Question Text');
             } else {
                 designations.push(questionTextDesignationObj);
             }

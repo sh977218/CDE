@@ -1,13 +1,20 @@
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
 
-const Form = require('../../../server/form/mongo-form').Form;
-const CreateForm = require('../Form/CreateForm');
-const MergeForm = require('../Form/MergeForm');
-
-const DataElement = require('../../../server/cde/mongo-cde').DataElement;
+const mongo_cde = require('../../../server/cde/mongo-cde');
+const DataElement = mongo_cde.DataElement;
 const CreateCDE = require('../CDE/CreateCDE');
 const MergeCDE = require('../CDE/MergeCDE');
+const CompareCDE = require('../CDE/CompareCDE');
+
+const mongo_form = require('../../../server/form/mongo-form');
+const Form = mongo_form.Form;
+const CreateForm = require('../Form/CreateForm');
+const MergeForm = require('../Form/MergeForm');
+const CompareForm = require('../Form/CompareForm');
+
+const updatedByLoader = require('../../../shared/updatedByLoader').updatedByLoader;
+const batchloader = require('../../../shared/updatedByLoader').batchloader;
 
 const ParseLoincNameTable = require('./ParseLoincNameTable');
 const ParseLoincIdTable = require('./ParseLoincIdTable');
@@ -189,43 +196,53 @@ exports.runOneLoinc = loincId => {
     })
 };
 
-exports.runOneForm = (loinc, orgInfo) => {
-    return new Promise(async (resolve, reject) => {
-        let formCond = {
-            archived: false,
-            source: 'LOINC',
-            "registrationState.registrationStatus": {$not: /Retired/},
-            'ids.id': loinc.loincId
-        };
-        let existingForm = await Form.findOne(formCond);
-        let newForm = await CreateForm.createForm(loinc, orgInfo);
-        if (!existingForm) {
-            existingForm = await new Form(newForm).save();
+
+exports.runOneCde = async (loinc, orgInfo) => {
+    let loincId = loinc.loincId;
+    let cdeCond = {
+        archived: false,
+        "registrationState.registrationStatus": {$ne: "Retired"},
+        'ids.id': loincId
+    };
+    let existingCde = await DataElement.findOne(cdeCond).exec();
+    let newCde = await CreateCDE.createCde(loinc, orgInfo);
+    if (!existingCde) {
+        await new DataElement(newCde).save();
+    } else if (updatedByLoader.updatedByLoader(existingCde)) {
+    } else {
+        existingCde.imported = new Date().toJSON();
+        existingCde.markModified('imported');
+        let diff = CompareCDE.compareCde(newCde, existingCde);
+        if (_.isEmpty(diff)) {
+            await existingCde.save();
         } else {
-            await MergeForm.mergeForm(newForm, existingForm, orgInfo.stewardOrgName);
-            existingForm.updated = new Date().toJSON();
+            await MergeCDE.mergeCde(newCde, existingCde);
+            await mongo_cde.updatePromise(existingCde, batchloader);
         }
-        resolve(existingForm);
-    })
+    }
 };
 
-exports.runOneCde = (loinc, orgInfo) => {
-    return new Promise(async (resolve, reject) => {
-        let loincId = loinc.loincId;
-        let cdeCond = {
-            archived: false,
-            "registrationState.registrationStatus": {$ne: "Retired"},
-            'ids.id': loincId
-        };
-        let existingCde = await DataElement.findOne(cdeCond).exec();
-        let newCDE = await CreateCDE.createCde(loinc, orgInfo);
-        if (!existingCde) {
-            existingCde = await new DataElement(newCDE).save();
+exports.runOneForm = async (loinc, orgInfo) => {
+    let formCond = {
+        archived: false,
+        source: 'LOINC',
+        "registrationState.registrationStatus": {$not: /Retired/},
+        'ids.id': loinc.loincId
+    };
+    let existingForm = await Form.findOne(formCond);
+    let newForm = await CreateForm.createForm(loinc, orgInfo);
+    if (!existingForm) {
+        await new Form(newForm).save();
+    } else if (updatedByLoader.updatedByLoader(existingForm)) {
+    } else {
+        existingForm.imported = new Date().toJSON();
+        existingForm.markModified('imported');
+        let diff = CompareForm.compareForm(newForm, existingForm);
+        if (_.isEmpty(diff)) {
+            await existingForm.save();
         } else {
-            await MergeCDE.mergeCde(newCDE, existingCde, orgInfo);
-            existingCde.updated = new Date().toJSON();
-            await existingCde.save();
+            await MergeForm.mergeForm(newForm, existingForm);
+            await mongo_form.updatePromise(existingForm, batchloader);
         }
-        resolve(existingCde);
-    })
-}
+    }
+};

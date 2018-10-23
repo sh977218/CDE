@@ -1,16 +1,19 @@
 const _ = require('lodash');
 
-const DataElement = require('../../../server/cde/mongo-cde').DataElement;
-const Form = require('../../../server/form/mongo-form').Form;
-
 const REQUIRED_MAP = require('../Mapping/LOINC_REQUIRED_MAP').map;
 const MULTISELECT_MAP = require('../Mapping/LOINC_MULTISELECT_MAP').map;
 const CARDINALITY_MAP = require('../Mapping/LOINC_CARDINALITY_MAP').map;
 
 const CreateCDE = require('../CDE/CreateCDE');
 const MergeCDE = require('../CDE/MergeCDE');
+const DataElement = require('../../../server/cde/mongo-cde').DataElement;
+
 const CreateForm = require('./CreateForm');
 const MergeForm = require('./MergeForm');
+const Form = require('../../../server/form/mongo-form').Form;
+
+const updatedByLoader = require('../../shared/updatedByLoader').updatedByLoader;
+const batchloader = require('../../shared/updatedByLoader').batchloader;
 
 
 exports.parseFormElements = async function (loinc, orgInfo) {
@@ -18,8 +21,8 @@ exports.parseFormElements = async function (loinc, orgInfo) {
     if (!loinc['PANEL HIERARCHY']) return formElements;
     let elements = loinc['PANEL HIERARCHY']['elements'];
     if (!elements) return formElements;
-    console.log('Form ' + loinc['loincId'] + ' has ' + elements.length + ' elements to process.');
     if (!elements || elements.length === 0) return;
+    console.log('Form ' + loinc['loincId'] + ' has ' + elements.length + ' elements to process.');
     let tempFormElements = formElements;
     let needOuterSection = elements.filter(element => element.elements.length > 0).length === 0;
     if (needOuterSection) {
@@ -42,40 +45,10 @@ exports.parseFormElements = async function (loinc, orgInfo) {
         tempFormElements.push(formElement);
     }
     return formElements;
-
 };
 
 loadCde = async function (element, orgInfo) {
-    let loincId = element.loincId;
-    let cdeCond = {
-        archived: false,
-        "registrationState.registrationStatus": {$ne: "Retired"},
-        'ids.id': loincId
-    };
-    let existingCde = await DataElement.findOne(cdeCond).exec();
-    let newCDE = await CreateCDE.createCde(element, orgInfo);
-    if (newCDE.valueDomain.datatype === 'Value List') {
-        if (_.isEmpty(newCDE.valueDomain.permissibleValues)) {
-            console.log(loincId + ' pv is empty');
-            process.exit(1);
-        }
-        for (let pv of newCDE.valueDomain.permissibleValues) {
-            if (_.isEmpty(pv.codeSystemName)) {
-                console.log(loincId + ' ' + pv.permissibleValue + ' code system is empty');
-                process.exit(1);
-            }
-        }
-    }
-
-    if (!existingCde) {
-        existingCde = await new DataElement(newCDE).save();
-    } else {
-        await MergeCDE.mergeCde(newCDE, existingCde, orgInfo);
-        existingCde.imported = new Date().toJSON();
-        existingCde.updated = new Date().toJSON();
-        await existingCde.save();
-    }
-    existingCde = existingCde.toObject();
+    let existingCde = await require('../Website/loincLoader').runOneCde(element, orgInfo);
     let question = {
         instructions: {value: ''},
         cde: {
@@ -113,19 +86,7 @@ loadCde = async function (element, orgInfo) {
 };
 
 loadForm = async function (element, orgInfo) {
-    let loincId = element.loincId;
-    let formCond = {
-        archived: false,
-        "registrationState.registrationStatus": {$ne: "Retired"},
-        'ids.id': loincId
-    };
-    let existingForm = await Form.findOne(formCond).exec();
-    let newForm = await CreateForm.createForm(element.loinc, orgInfo);
-    if (!existingForm) {
-        existingForm = await new Form(newForm).save();
-    } else {
-        MergeForm.mergeForm(newForm, existingForm, orgInfo);
-    }
+    let existingForm = await require('../Website/loincLoader').runOneForm(element, orgInfo);
     let inForm = {
         form: {
             tinyId: existingForm.tinyId,
