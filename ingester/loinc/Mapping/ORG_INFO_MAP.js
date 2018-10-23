@@ -10,6 +10,6 @@ exports.map = {
         classification: []
     },
     'PhenX': {
-        stewardOrgName: 'LOINC', classificationOrgName: '', classification: []
+        stewardOrgName: 'LOINC', classificationOrgName: 'PhenX', classification: []
     }
 };

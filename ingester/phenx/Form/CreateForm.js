@@ -1,9 +1,4 @@
-const _ = require('lodash');
-
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
-const DataElement = require('../../../server/cde/mongo-cde').DataElement;
-
-const CreateCDE = require('../CDE/CreateCDE');
 const today = new Date().toJSON();
 
 exports.createForm = async (measure, protocol) => {

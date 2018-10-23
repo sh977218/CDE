@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const DataElement = require('../../../server/cde/mongo-cde').DataElement;
 const Form = require('../../../server/form/mongo-form').Form;
 
@@ -52,10 +54,24 @@ loadCde = async function (element, orgInfo) {
     };
     let existingCde = await DataElement.findOne(cdeCond).exec();
     let newCDE = await CreateCDE.createCde(element, orgInfo);
+    if (newCDE.valueDomain.datatype === 'Value List') {
+        if (_.isEmpty(newCDE.valueDomain.permissibleValues)) {
+            console.log(loincId + ' pv is empty');
+            process.exit(1);
+        }
+        for (let pv of newCDE.valueDomain.permissibleValues) {
+            if (_.isEmpty(pv.codeSystemName)) {
+                console.log(loincId + ' ' + pv.permissibleValue + ' code system is empty');
+                process.exit(1);
+            }
+        }
+    }
+
     if (!existingCde) {
         existingCde = await new DataElement(newCDE).save();
     } else {
         await MergeCDE.mergeCde(newCDE, existingCde, orgInfo);
+        existingCde.imported = new Date().toJSON();
         existingCde.updated = new Date().toJSON();
         await existingCde.save();
     }

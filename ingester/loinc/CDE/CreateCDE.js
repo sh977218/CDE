@@ -47,5 +47,6 @@ exports.createCde = async function (element, orgInfo) {
         valueDomain: valueDomain,
         classification: classification
     };
+
     return newCde;
 };
