@@ -1,4 +1,7 @@
 exports.mergeBySourceName = (existingArray, newArray) => {
-    let otherArray = existingArray.filter(o => o.sourceName !== 'LOINC');
-    return newArray.concat(otherArray);
+    if (existingArray) {
+        let otherArray = existingArray.filter(o => o.sourceName !== 'LOINC');
+        return newArray.concat(otherArray);
+    }
+    else return [];
 };

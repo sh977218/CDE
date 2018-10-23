@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
 
@@ -13,8 +15,8 @@ const CreateForm = require('../Form/CreateForm');
 const MergeForm = require('../Form/MergeForm');
 const CompareForm = require('../Form/CompareForm');
 
-const updatedByLoader = require('../../../shared/updatedByLoader').updatedByLoader;
-const batchloader = require('../../../shared/updatedByLoader').batchloader;
+const updatedByLoader = require('../../shared/updatedByLoader').updatedByLoader;
+const batchloader = require('../../shared/updatedByLoader').batchloader;
 
 const ParseLoincNameTable = require('./ParseLoincNameTable');
 const ParseLoincIdTable = require('./ParseLoincIdTable');
@@ -207,8 +209,8 @@ exports.runOneCde = async (loinc, orgInfo) => {
     let existingCde = await DataElement.findOne(cdeCond).exec();
     let newCde = await CreateCDE.createCde(loinc, orgInfo);
     if (!existingCde) {
-        await new DataElement(newCde).save();
-    } else if (updatedByLoader.updatedByLoader(existingCde)) {
+        existingCde = await new DataElement(newCde).save();
+    } else if (updatedByLoader(existingCde)) {
     } else {
         existingCde.imported = new Date().toJSON();
         existingCde.markModified('imported');
@@ -220,6 +222,7 @@ exports.runOneCde = async (loinc, orgInfo) => {
             await mongo_cde.updatePromise(existingCde, batchloader);
         }
     }
+    return existingCde;
 };
 
 exports.runOneForm = async (loinc, orgInfo) => {
@@ -232,8 +235,8 @@ exports.runOneForm = async (loinc, orgInfo) => {
     let existingForm = await Form.findOne(formCond);
     let newForm = await CreateForm.createForm(loinc, orgInfo);
     if (!existingForm) {
-        await new Form(newForm).save();
-    } else if (updatedByLoader.updatedByLoader(existingForm)) {
+        existingForm = await new Form(newForm).save();
+    } else if (updatedByLoader(existingForm)) {
     } else {
         existingForm.imported = new Date().toJSON();
         existingForm.markModified('imported');
@@ -245,4 +248,5 @@ exports.runOneForm = async (loinc, orgInfo) => {
             await mongo_form.updatePromise(existingForm, batchloader);
         }
     }
+    return existingForm;
 };

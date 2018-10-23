@@ -8,8 +8,7 @@ const orgMapping = require('../../loinc/Mapping/ORG_INFO_MAP').map;
 exports.parseFormElements = async protocol => {
     let loinc = _.find(protocol.Standards, standard => standard.Source === 'LOINC');
     if (loinc) {
-        let temp = await ParseLOINC.parseFormElements(loinc.loinc, orgMapping['PhenX']);
-        return temp;
+        return await ParseLOINC.parseFormElements(loinc, orgMapping['PhenX']);
     } else {
         return await ParseRedCap.parseRedCap(protocol);
     }

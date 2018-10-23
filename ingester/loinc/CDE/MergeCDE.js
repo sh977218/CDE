@@ -3,7 +3,7 @@ const classificationShared = require('@std/esm')(module)('../../../shared/system
 const mergeDesignations = require('../Shared/mergeDesignations').mergeDesignations;
 const mergeDefinitions = require('../Shared/mergeDefinitions').mergeDefinitions;
 const mergeBySource = require('../Shared/mergeBySource').mergeBySource;
-const mergeBySourceName = require('../Shared/mergeBySourceName').mergeBySourceName();
+const mergeBySourceName = require('../Shared/mergeBySourceName').mergeBySourceName;
 
 exports.mergeCde = function (newCde, existingCde) {
     existingCde.designations = mergeDesignations(existingCde.designations, newCde.designations);

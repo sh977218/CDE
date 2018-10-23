@@ -75,14 +75,14 @@ MeasureModel.find(cond).cursor().eachAsync(async measure => {
     let measureObj = measure.toObject();
     console.log('Starting measurement: ' + measureObj.browserId);
     measureCount++;
-    if (measureObj.protocols)
+    if (measureObj.protocols) {
         for (let protocol of measureObj.protocols) {
             let protocolId = protocol.protocolId;
             console.log('Starting protocol: ' + protocolId);
             protocolCount++;
             let newFormObj = await CreateForm.createForm(measureObj, protocol.protocol);
             let newForm = new Form(newFormObj);
-            let existingForm = await Form.findOne({'ids.id': protocolId});
+            let existingForm = await Form.findOne({archived: false, 'ids.id': protocolId});
             if (!existingForm) {
                 await newForm.save();
                 createdForm++;
@@ -107,7 +107,9 @@ MeasureModel.find(cond).cursor().eachAsync(async measure => {
             }
             console.log('Finished protocol: ' + protocolId);
         }
+    }
     console.log('Finished measurement: ' + measureObj.browserId);
+    await measure.remove();
 }).then(async () => {
     console.log('measureCount: ' + measureCount);
     console.log('protocolCount: ' + protocolCount);

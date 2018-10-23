@@ -4,19 +4,8 @@ const REQUIRED_MAP = require('../Mapping/LOINC_REQUIRED_MAP').map;
 const MULTISELECT_MAP = require('../Mapping/LOINC_MULTISELECT_MAP').map;
 const CARDINALITY_MAP = require('../Mapping/LOINC_CARDINALITY_MAP').map;
 
-const CreateCDE = require('../CDE/CreateCDE');
-const MergeCDE = require('../CDE/MergeCDE');
-const DataElement = require('../../../server/cde/mongo-cde').DataElement;
-
-const CreateForm = require('./CreateForm');
-const MergeForm = require('./MergeForm');
-const Form = require('../../../server/form/mongo-form').Form;
-
-const updatedByLoader = require('../../shared/updatedByLoader').updatedByLoader;
-const batchloader = require('../../shared/updatedByLoader').batchloader;
-
-
-exports.parseFormElements = async function (loinc, orgInfo) {
+exports.parseFormElements = async (loinc, orgInfo) => {
+    if (loinc.loinc) loinc = loinc.loinc;
     let formElements = [];
     if (!loinc['PANEL HIERARCHY']) return formElements;
     let elements = loinc['PANEL HIERARCHY']['elements'];
@@ -48,7 +37,8 @@ exports.parseFormElements = async function (loinc, orgInfo) {
 };
 
 loadCde = async function (element, orgInfo) {
-    let existingCde = await require('../Website/loincLoader').runOneCde(element, orgInfo);
+    const loincLoader = require('../Website/loincLoader');
+    let existingCde = await loincLoader.runOneCde(element, orgInfo);
     let question = {
         instructions: {value: ''},
         cde: {
@@ -86,7 +76,10 @@ loadCde = async function (element, orgInfo) {
 };
 
 loadForm = async function (element, orgInfo) {
-    let existingForm = await require('../Website/loincLoader').runOneForm(element, orgInfo);
+    const loincLoader = require('../Website/loincLoader');
+    let existingForm = await loincLoader.runOneForm(element, orgInfo);
+    if (!existingForm.designations[0])
+        debugger;
     let inForm = {
         form: {
             tinyId: existingForm.tinyId,

@@ -23,7 +23,7 @@ schemas.dataElementSchema.pre('save', function (next) {
     if (cdeError && cdeError.pvNotValidMsg) {
         logging.errorLogger.error(cdeError, {
             stack: new Error().stack,
-            details: self.tinyId = ' ' + JSON.stringify(cdeError)
+            details: 'element: ' + self.tinyId + ' ' + JSON.stringify(cdeError)
         });
         next(cdeError);
     } else {

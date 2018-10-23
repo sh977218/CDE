@@ -12,7 +12,8 @@ function isQuestionTextExist(designations) {
     return temp.length > 0;
 }
 
-exports.parseDesignations = function (loinc, element) {
+exports.parseDesignations = (loinc, element) => {
+    if (loinc.loinc) loinc = loinc.loinc;
     let designations = [];
     let longCommonNameObj = {};
     let shortNameObj = {};
