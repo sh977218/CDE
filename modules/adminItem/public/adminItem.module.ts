@@ -18,7 +18,7 @@ import { HistoryComponent } from "./components/history.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
 import { NamingComponent } from "./components/naming/naming.component";
-import { PropertiesComponent } from "./components/properties.component";
+import { PropertiesComponent } from "./components/properties/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
 import { SourcesComponent } from "./components/sources/sources.component";
 import { RegistrationComponent } from "./components/registration/registration.component";
