@@ -61,7 +61,7 @@ run().then(() => {
 
 setInterval(() => {
     for (let DAO of DAOs) {
-        if (!DAO.finished) console.log(DAO.name + " Count: " + DAO.count);
+        console.log(DAO.name + " Count: " + DAO.count);
     }
     console.log('---------------------------------');
 
