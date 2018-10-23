@@ -246,6 +246,7 @@ exports.saveDraftForm = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     let elt = req.body;
+    if (!elt.designations || !elt.designations.length) return res.status(400).send();
     if (elt.tinyId !== tinyId) return res.status(500);
     if (req.user && req.user.username) elt.createdBy.username = req.user.username;
     if (!elt.created) elt.created = new Date();
@@ -276,10 +277,7 @@ exports.publishForm = (req, res) => {
     if (!req.params.id || req.params.id.length !== 24) return res.status(400).send();
     mongo_form.byId(req.params.id, handleError({req, res}, form => {
         if (!form) return res.status(400).send('form not found');
-        exports.fetchWholeForm(form.toObject(), handleError({
-            req,
-            res,
-            message: 'Fetch whole for publish'
+        exports.fetchWholeForm(form.toObject(), handleError({req, res, message: 'Fetch whole for publish'
         }, wholeForm => {
             publishForm.getFormForPublishing(wholeForm, req, res);
         }));
@@ -320,6 +318,8 @@ exports.updateForm = (req, res) => {
 exports.publishTheForm = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
+    let elt = req.body;
+    if (!elt.designations || !elt.designations.length) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
     mongo_form.byTinyId(tinyId, handle404({req, res}, item => {
         authorization.allowUpdate(req.user, item, handleError({req, res}, () => {
@@ -329,7 +329,6 @@ exports.publishTheForm = (req, res) => {
                     && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) {
                     return res.status(403).send("Not authorized");
                 }
-                let elt = req.body;
                 elt.classification = item.classification;
                 elt.attachments = item.attachments;
                 formShared.trimWholeForm(elt);
