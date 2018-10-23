@@ -58,6 +58,7 @@ doOne = migrationCde => {
             } else {
                 MergeCDE.mergeCde(existingCde, migrationCde);
                 existingCde.imported = new Date().toJSON();
+                existingCde.markModified('imported');
                 await mongo_cde.updatePromise(existingCde, user);
                 changed++;
             }
@@ -66,31 +67,28 @@ doOne = migrationCde => {
     });
 };
 
-retireCde = () => {
-    return new Promise(async (resolve, reject) => {
-        let cond = {
-            "ids.source": "NINDS",
-            "archived": false,
-            "registrationState.registrationStatus": {$ne: "Retired"},
-            "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
-            $or: [
-                {"updatedBy.username": "batchloader"},
-                {
-                    $and: [
-                        {"updatedBy.username": {$exists: false}},
-                        {"createdBy.username": {$exists: true}}
-                    ]
-                }
-            ]
-        };
-        let update = {
-            'registrationState.registrationStatus': 'Retired',
-            'registrationState.administrativeNote': 'Not present in import at ' + new Date().toJSON()
-        };
-        let retires = await DataElement.update(cond, update, {multi: true});
-        console.log(retires.nModified + ' cdes retired');
-        resolve();
-    })
+retireCde = async () => {
+    let cond = {
+        "ids.source": "NINDS",
+        "archived": false,
+        "registrationState.registrationStatus": {$ne: "Retired"},
+        "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
+        $or: [
+            {"updatedBy.username": "batchloader"},
+            {
+                $and: [
+                    {"updatedBy.username": {$exists: false}},
+                    {"createdBy.username": {$exists: true}}
+                ]
+            }
+        ]
+    };
+    let update = {
+        'registrationState.registrationStatus': 'Retired',
+        'registrationState.administrativeNote': 'Not present in import at ' + new Date().toJSON()
+    };
+    let retires = await DataElement.update(cond, update, {multi: true});
+    console.log(retires.nModified + ' cdes retired');
 };
 
 async function run() {

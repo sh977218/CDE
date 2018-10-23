@@ -2,6 +2,8 @@ const _ = require('lodash');
 
 const MeasureModel = require('../../createMigrationConnection').MeasureModel;
 
+const mongo_Cde = require('../../../server/cde/mongo-cde');
+const DataElement = mongo_Cde.DataElement;
 const mongo_form = require('../../../server/form/mongo-form');
 const Form = mongo_form.Form;
 const CreateForm = require('../Form/CreateForm');
@@ -17,6 +19,54 @@ let changeForm = 0;
 let skipForm = 0;
 
 let user = {username: 'batchloader'};
+
+retireCdes = async () => {
+    let cond = {
+        "ids.source": "PhenX",
+        "archived": false,
+        "registrationState.registrationStatus": {$ne: "Retired"},
+        "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
+        $or: [
+            {"updatedBy.username": "batchloader"},
+            {
+                $and: [
+                    {"updatedBy.username": {$exists: false}},
+                    {"createdBy.username": {$exists: true}}
+                ]
+            }
+        ]
+    };
+    let update = {
+        'registrationState.registrationStatus': 'Retired',
+        'registrationState.administrativeNote': 'Not present in import at ' + new Date().toJSON()
+    };
+    let retires = await DataElement.update(cond, update, {multi: true});
+    console.log(retires.nModified + ' cdes retired');
+};
+
+retireForms = async () => {
+    let cond = {
+        "ids.source": "PhenX",
+        "archived": false,
+        "registrationState.registrationStatus": {$ne: "Retired"},
+        "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
+        $or: [
+            {"updatedBy.username": "batchloader"},
+            {
+                $and: [
+                    {"updatedBy.username": {$exists: false}},
+                    {"createdBy.username": {$exists: true}}
+                ]
+            }
+        ]
+    };
+    let update = {
+        'registrationState.registrationStatus': 'Retired',
+        'registrationState.administrativeNote': 'Not present in import at ' + new Date().toJSON()
+    };
+    let retires = await Form.update(cond, update, {multi: true});
+    console.log(retires.nModified + ' forms retired');
+};
 
 let cond = {};
 //let cond = {'protocols.protocolId': '150101'};
@@ -36,7 +86,7 @@ MeasureModel.find(cond).cursor().eachAsync(async measure => {
                 await newForm.save();
                 createdForm++;
                 console.log('createdForm: ' + createdForm);
-            } else if (existingForm.updated && existingForm.updated.username !== 'batchloader') {
+            } else if (existingForm.updatedBy && existingForm.updatedBy.username && existingForm.updatedBy.username !== 'batchloader') {
                 skipForm++;
                 console.log('skipForm: ' + skipForm);
             } else {
@@ -49,6 +99,8 @@ MeasureModel.find(cond).cursor().eachAsync(async measure => {
                     console.log('sameForm: ' + sameForm);
                 } else {
                     await MergeForm.mergeForm(existingForm, newForm);
+                    existingForm.imported = new Date().toJSON();
+                    existingForm.markModified('imported');
                     await mongo_form.updatePromise(existingForm, user);
                     changeForm++;
                     console.log('changeForm: ' + changeForm);
@@ -57,7 +109,9 @@ MeasureModel.find(cond).cursor().eachAsync(async measure => {
             console.log('Finished protocol: ' + protocolId);
         }
     console.log('Finished measurement: ' + measureObj.browserId);
-}).then(() => {
+}).then(async () => {
     console.log('measureCount: ' + measureCount);
     console.log('protocolCount: ' + protocolCount);
+    await retireCdes();
+    await retireForms();
 }, error => console.log(error));

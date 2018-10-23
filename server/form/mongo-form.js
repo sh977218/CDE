@@ -171,8 +171,8 @@ exports.update = function (elt, user, callback, special) {
     });
 };
 exports.updatePromise = async function (elt, user) {
-    let id = elt._id;
     if (elt.toObject) elt = elt.toObject();
+    let id = elt._id;
     let form = await Form.findById(id);
     delete elt._id;
     if (!elt.history) elt.history = [];
