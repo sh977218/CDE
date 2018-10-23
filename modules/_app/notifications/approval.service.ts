@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 
 @Injectable()
 export class ApprovalService {

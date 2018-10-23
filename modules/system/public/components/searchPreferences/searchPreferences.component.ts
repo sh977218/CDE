@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { ActivatedRoute } from '@angular/router';
 

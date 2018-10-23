@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { MatDialog } from '@angular/material';

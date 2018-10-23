@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import _noop from 'lodash/noop';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { UserService } from '_app/user.service';
 import { PublishedForm, User } from 'shared/models.model';

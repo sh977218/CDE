@@ -10,7 +10,7 @@ import {
 } from '@angular/router';
 
 import { UserService } from '_app/user.service';
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 
 @Injectable()
 export class IEGuard implements CanActivate, CanActivateChild, CanLoad {

@@ -6,7 +6,7 @@ import { CodeAndSystem } from 'shared/models.model';
 import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
 import { ScoreService } from 'nativeRender/score.service';
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 
 @Component({
     selector: 'cde-native-question',

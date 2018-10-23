@@ -7,7 +7,7 @@ import _noop from 'lodash/noop';
 import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { IsAllowedService } from 'core/isAllowed.service';
