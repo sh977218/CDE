@@ -3,14 +3,11 @@ const config = require('../system/parseConfig');
 const schemas = require('./schemas');
 const mongo_data_system = require('../system/mongo-data');
 const connHelper = require('../system/connections');
-const dbLogger = require('../log/dbLogger');
 const logging = require('../system/logging');
 const cdediff = require("./cdediff");
-const async = require('async');
 const elastic = require('./elastic');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 const draftSchema = require('./schemas').draftSchema;
-const boardDb = require('../board/boardDb');
 
 exports.type = "cde";
 exports.name = "CDEs";
@@ -21,12 +18,12 @@ schemas.dataElementSchema.post('remove', function (doc, next) {
     });
 });
 schemas.dataElementSchema.pre('save', function (next) {
-    var self = this;
+    let self = this;
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
     if (cdeError && cdeError.pvNotValidMsg) {
         logging.errorLogger.error(cdeError, {
             stack: new Error().stack,
-            details: JSON.stringify(cdeError)
+            details: self.tinyId = ' ' + JSON.stringify(cdeError)
         });
         next(cdeError);
     } else {
@@ -306,31 +303,28 @@ exports.update = function (elt, user, callback, special) {
     });
 };
 
-exports.updatePromise = function (elt, user) {
-    return new Promise(async (resolve, reject) => {
-        let id = elt._id;
-        if (elt.toObject) elt = elt.toObject();
-        let dataElement = await DataElement.findById(id);
-        delete elt._id;
-        if (!elt.history) elt.history = [];
-        elt.history.push(dataElement._id);
-        elt.updated = new Date().toJSON();
-        elt.updatedBy = user;
-        elt.sources = dataElement.sources;
-        elt.comments = dataElement.comments;
-        let newDe = new DataElement(elt);
-        if (!newDe.designations || newDe.designations.length === 0) {
-            logging.errorLogger.error("Error: Cannot save CDE without names", {
-                origin: "cde.mongo-cde.update.1",
-                stack: new Error().stack,
-                details: "elt " + JSON.stringify(elt)
-            });
-        }
-        await newDe.save();
-        dataElement.archived = true;
-        await dataElement.save();
-        resolve();
-    })
+exports.updatePromise = async function (elt, user) {
+    let id = elt._id;
+    if (elt.toObject) elt = elt.toObject();
+    let dataElement = await DataElement.findById(id);
+    delete elt._id;
+    if (!elt.history) elt.history = [];
+    elt.history.push(dataElement._id);
+    elt.updated = new Date().toJSON();
+    elt.updatedBy = user;
+    elt.sources = dataElement.sources;
+    elt.comments = dataElement.comments;
+    let newDe = new DataElement(elt);
+    if (!newDe.designations || newDe.designations.length === 0) {
+        logging.errorLogger.error("Error: Cannot save CDE without names", {
+            origin: "cde.mongo-cde.update.1",
+            stack: new Error().stack,
+            details: "elt " + JSON.stringify(elt)
+        });
+    }
+    await newDe.save();
+    dataElement.archived = true;
+    await dataElement.save();
 };
 
 exports.archiveCde = function (cde, callback) {
