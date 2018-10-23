@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AlertService } from '_app/alert.service';
 import { ApprovalService } from '_app/notifications/approval.service';
 import { UserService } from '_app/user.service';
 import _noop from 'lodash/noop';
+import { AlertService } from 'alert/alert.service';
 
 @Injectable()
 export class NotificationService {

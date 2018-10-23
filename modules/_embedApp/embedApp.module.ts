@@ -15,7 +15,6 @@ import { EmbeddedFormSearchResultComponent } from '_embedApp/searchResults/embed
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { OrgHelperService } from 'core/orgHelper.service';
 
-
 @NgModule({
     declarations: [
         EmbedAppComponent,
@@ -42,13 +41,12 @@ import { OrgHelperService } from 'core/orgHelper.service';
         CommonAppModule,
         MatButtonModule,
         MatDialogModule,
-        MatIconModule,
+        MatIconModule
     ],
     entryComponents: [
         InactivityLoggedOutComponent
     ],
-    exports: [
-    ],
+    exports: [],
     bootstrap: [EmbedAppComponent]
 })
 export class EmbedAppModule {
