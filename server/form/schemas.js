@@ -42,7 +42,8 @@ const questionSchema = new Schema({
         , regex: StringType
         , rule: StringType
         , showAsTextArea: {type: Boolean, default: false}
-    }, datatypeDate: {
+    },
+    datatypeDate: {
         precision: {
             type: StringType,
             enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'],

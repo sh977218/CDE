@@ -79,6 +79,10 @@
                 <dt class="col-3 text-right">File:</dt>
                 <dd class="col-9"></dd>
             </ng-container>
+            <ng-container *ngSwitchCase="'Geo Location'">
+                <dt class="col-3 text-right">Location:</dt>
+                <dd class="col-9"></dd>
+            </ng-container>
             <ng-container *ngSwitchCase="'Time'">
             </ng-container>
             <ng-container *ngSwitchCase="'Externally Defined'">
@@ -187,14 +191,17 @@
             </div>
             <ng-container *ngIf="canEdit">
                 <button mat-raised-button id="openAddPermissibleValueModelBtn" (click)="openNewPermissibleValueModal()">
-                    <mat-icon>add</mat-icon> Add Permissible Value
+                    <mat-icon>add</mat-icon>
+                    Add Permissible Value
                 </button>
                 <button mat-raised-button id="removeAllPermissibleValueBtn" (click)="removeAllPermissibleValues()">
-                    <mat-icon>delete_outline</mat-icon> Remove All Values
+                    <mat-icon>delete_outline</mat-icon>
+                    Remove All Values
                 </button>
                 <button mat-raised-button id="openImportPVModalBtn"
                         title="Import All Values" (click)="openImportPermissibleValueModal()">
-                    <mat-icon>play_for_work</mat-icon> Import PVs From CDE
+                    <mat-icon>play_for_work</mat-icon>
+                    Import PVs From CDE
                 </button>
             </ng-container>
         </div>
@@ -253,7 +260,10 @@
         </table>
         <div *ngIf="vsacMappingExists() && !userService.loggedIn()">Please log in to see VSAC mapping.</div>
         <button mat-raised-button *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()" class="mt20"
-           (click)="addAllVsac()"><mat-icon id="addAllVsac">add</mat-icon> Import Missing Values</button>
+                (click)="addAllVsac()">
+            <mat-icon id="addAllVsac">add</mat-icon>
+            Import Missing Values
+        </button>
     </ng-container>
 </div>
 
