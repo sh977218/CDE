@@ -5,7 +5,7 @@ import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/
 import { Subject } from 'rxjs/Subject';
 
 import { UserService } from '_app/user.service';
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { DataTypeService } from 'core/dataType.service';
 import { SearchSettings } from 'search/search.model';
 import { checkPvUnicity, fixDatatype } from 'shared/de/deValidator';
