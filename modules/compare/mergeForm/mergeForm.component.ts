@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { MergeFormService } from 'core/mergeForm.service';
 import { MatDialog } from '@angular/material';

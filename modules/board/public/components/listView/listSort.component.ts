@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { BoardListService } from 'board/public/components/listView/boardList.service';
 import { Elt } from 'shared/models.model';
 

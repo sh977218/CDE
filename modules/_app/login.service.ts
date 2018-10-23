@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserService } from '_app/user.service';
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 
 
 @Injectable()

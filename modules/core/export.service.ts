@@ -6,7 +6,7 @@ import { saveAs } from 'file-saver';
 import _intersectionWith from 'lodash/intersectionWith';
 import _noop from 'lodash/noop';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { RegistrationValidatorService } from 'core/registrationValidator.service';

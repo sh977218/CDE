@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { FormService } from 'nativeRender/form.service';
 import { Definition, Designation } from 'shared/models.model';
 import { CdeForm, FormSection } from 'shared/form/form.model';

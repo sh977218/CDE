@@ -13,6 +13,7 @@ import { NativeTableComponent } from 'nativeRender/nativeTable.component';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { ScoreService } from 'nativeRender/score.service';
 import { MatIconModule } from '@angular/material';
+import { AlertModule } from 'alert/alert.module';
 
 @NgModule({
     imports: [
@@ -21,7 +22,7 @@ import { MatIconModule } from '@angular/material';
         // core
         // no WidgetModule,
         // internal
-        CommonAppModule,
+        AlertModule,
         MatIconModule,
     ],
     declarations: [
