@@ -11,19 +11,20 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeModule } from 'angular-tree-component';
 import "angular-tree-component/dist/angular-tree-component.css";
 import { NgSelectModule } from '@ng-select/ng-select';
-import { HotkeyModule } from 'angular2-hotkeys';
-
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { HotkeyModule } from 'angular2-hotkeys';
 import { BoardModule } from 'board/public/board.module';
 import { CdeModule } from 'cde/public/cde.module';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
 import { CompareModule } from 'compare/compare.module';
 import { DiscussModule } from 'discuss/discuss.module';
 import { ArrayListPipe } from 'form/public/arrayList.pipe';
+import { FormViewComponent } from 'form/public/components/formView.component';
+import { FormViewResolverService } from 'form/public/components/formView.resolver.service';
+import { FormViewService } from 'form/public/components/formView.service';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
-import { FormViewComponent } from 'form/public/components/formView.component';
 import { DisplayProfileComponent } from 'form/public/components/displayProfile/displayProfile.component';
 import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { FormClassificationComponent } from 'form/public/components/formClassification/formClassification.component';
@@ -40,7 +41,7 @@ import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { WidgetModule } from 'widget/widget.module';
 
 const appRoutes: Routes = [
-    {path: '', component: FormViewComponent},
+    {path: '', component: FormViewComponent, resolve: {elt: FormViewResolverService}},
 ];
 
 @NgModule({
@@ -101,6 +102,8 @@ const appRoutes: Routes = [
     ],
     exports: [],
     providers: [
+        FormViewResolverService,
+        FormViewService,
         SkipLogicValidateService,
         UcumService
     ],
