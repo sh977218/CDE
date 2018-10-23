@@ -1,5 +1,6 @@
 package gov.nih.nlm.system;
 
+import com.paulhammant.ngwebdriver.NgWebDriver;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -35,8 +36,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
-
-import com.paulhammant.ngwebdriver.NgWebDriver;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
@@ -86,10 +85,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             if (u != null) chromeOptions.addArguments("--user-agent=googleBot");
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
+            prefs.put("profile.default_content_settings.geolocation", 2);
             chromeOptions.setExperimentalOption("prefs", prefs);
             chromeOptions.addArguments("disable-shared-workers");
             chromeOptions.addArguments("start-maximized");
             chromeOptions.addArguments("unsafely-treat-insecure-origin-as-secure");
+
             caps = chromeOptions;
         } else if ("ie".equals(b)) {
             DesiredCapabilities ieOptions = DesiredCapabilities.internetExplorer();
@@ -1669,11 +1670,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
                 Assert.assertEquals(findElement(by).getAttribute("class").contains(className), contains);
                 break;
             } catch (Exception e) {
-                if (i == 9) Assert.fail("Could not find class: " + className + ". Actual: " + findElement(by).getAttribute("class"));
+                if (i == 9)
+                    Assert.fail("Could not find class: " + className + ". Actual: " + findElement(by).getAttribute("class"));
                 hangon(1);
             }
-            }
         }
+    }
 
     protected void resolveComment(String message) {
         goToDiscussArea();

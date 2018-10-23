@@ -122,6 +122,31 @@
                                [required]="formElement.question.required"
                                [disabled]="!formElement.question.editable"/>
                     </ng-container>
+                    <ng-container *ngSwitchCase="'Geo Location'">
+                        <div class="input-group">
+                            <div class="input-group-prepend d-none d-sm-flex">
+                                <span class="input-group-text">Coordinates:</span>
+                            </div>
+                            <input type="text" class="form-control" [disabled]="locationDenied"
+                                   [id]="formElement.feId+'_latitude'"
+                                   value="{{formElement.question.answer?.latitude}}">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">,</span>
+                            </div>
+                            <input type="text" class="form-control" [disabled]="locationDenied"
+                                   [id]="formElement.feId+'_longitude'"
+                                   value="{{formElement.question.answer?.longitude}}">
+                            <button *ngIf="!locationDenied" class="btn btn-primary"
+                                    [id]="formElement.feId+'_location'">
+                                <mat-icon (click)="getCurrentGeoLocation(formElement);">
+                                    location_searching
+                                </mat-icon>
+                            </button>
+                            <button *ngIf="locationDenied" class="btn btn-disabled" (click)="locationDeniedMessage()">
+                                <mat-icon>location_disabled</mat-icon>
+                            </button>
+                        </div>
+                    </ng-container>
                     <ng-container *ngSwitchCase="'Number'">
                         <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
                             <input type="number" class="form-control"
