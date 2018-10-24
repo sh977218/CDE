@@ -10,9 +10,7 @@ import org.testng.Assert;
 public class BoardTest extends NlmCdeBaseTest {
     protected void makePrivate(String boardName) {
         gotoMyBoards();
-        editBoardByName(boardName, null, null, false, null);
-        checkAlert("Saved");
-        closeAlert();
+        editBoardByName(boardName, null, null, false, null, "Saved");
     }
 
     protected void makePublic(String boardName) {
@@ -21,16 +19,13 @@ public class BoardTest extends NlmCdeBaseTest {
 
     protected void makePublic(String boardName, String response) {
         gotoMyBoards();
-        editBoardByName(boardName, null, null, true, null);
-        checkAlert(response);
-        closeAlert();
+        editBoardByName(boardName, null, null, true, null, response);
     }
 
     public void gotoMyBoards() {
         clickElement(By.id("boardsMenu"));
         textPresent("My Boards");
         clickElement(By.id("myBoardsLink"));
-        hangon(2);
         textPresent("Add Board");
         textNotPresent("Sign up for an account");
     }
@@ -102,7 +97,7 @@ public class BoardTest extends NlmCdeBaseTest {
     }
 
 
-    void editBoardByName(String boardName, String boardNameChange, String boardDescriptionChange, boolean isPublic, String[] boardTags) {
+    void editBoardByName(String boardName, String boardNameChange, String boardDescriptionChange, boolean isPublic, String[] boardTags, String response) {
         clickElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'editBoard')]"));
         hangon(1);
         if (boardNameChange != null) findElement(By.id("boardName")).sendKeys(boardNameChange);
@@ -117,5 +112,6 @@ public class BoardTest extends NlmCdeBaseTest {
             }
         }
         clickElement(By.id("saveEditBoardBtn"));
+        checkAlert(response);
     }
 }

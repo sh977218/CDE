@@ -55,8 +55,10 @@ export class DataElementViewComponent implements OnInit {
     url;
 
     ngOnInit() {
-        this.eltLoad(this.route.data.pipe(map((data: { elt: DataElement }) => data.elt)), () => {
-            this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+        this.route.queryParams.subscribe(() => {
+            this.loadElt(() => {
+                this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+            });
         });
     }
 

@@ -1,6 +1,8 @@
 <div class="container-fluid">
     <h3 class="mt-4">My Boards
         <cde-create-board></cde-create-board>
+        <mat-icon *ngIf="myBoardsSvc.reloading" class="spin">autorenew</mat-icon>
+
     </h3>
     <hr/>
     <div *ngIf="!userService.user">

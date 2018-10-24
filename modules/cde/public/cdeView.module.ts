@@ -18,7 +18,6 @@ import { BoardModule } from 'board/public/board.module';
 import { CdeModule } from 'cde/public/cde.module';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
 import { ConceptsComponent } from 'cde/public/components/concepts.component';
-import { DataElementViewResolverService } from 'cde/public/components/dataElementView.resolver.service';
 import { DataElementViewService } from 'cde/public/components/dataElementView.service';
 import { DatasetsComponent } from 'cde/public/components/datasets/datasets.component';
 import { DataElementViewComponent } from 'cde/public/components/dataElementView.component';
@@ -35,7 +34,7 @@ import { WidgetModule } from 'widget/widget.module';
 
 
 const appRoutes: Routes = [
-    {path: '', component: DataElementViewComponent, resolve: {elt: DataElementViewResolverService}},
+    {path: '', component: DataElementViewComponent},
 ];
 
 @NgModule({
@@ -78,7 +77,6 @@ const appRoutes: Routes = [
     entryComponents: [],
     exports: [],
     providers: [
-        DataElementViewResolverService,
         DataElementViewService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

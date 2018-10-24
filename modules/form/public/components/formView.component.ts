@@ -77,8 +77,10 @@ export class FormViewComponent implements OnInit {
     validationErrors: { message: string, id: string }[] = [];
 
     ngOnInit() {
-        this.eltLoad(this.route.data.pipe(map((data: { elt: CdeForm }) => data.elt)), () => {
-            this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+        this.route.queryParams.subscribe(() => {
+            this.loadElt(() => {
+                this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+            });
         });
     }
 

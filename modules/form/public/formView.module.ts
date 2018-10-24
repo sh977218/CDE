@@ -20,7 +20,6 @@ import { CompareModule } from 'compare/compare.module';
 import { DiscussModule } from 'discuss/discuss.module';
 import { ArrayListPipe } from 'form/public/arrayList.pipe';
 import { FormViewComponent } from 'form/public/components/formView.component';
-import { FormViewResolverService } from 'form/public/components/formView.resolver.service';
 import { FormViewService } from 'form/public/components/formView.service';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
@@ -41,7 +40,7 @@ import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { WidgetModule } from 'widget/widget.module';
 
 const appRoutes: Routes = [
-    {path: '', component: FormViewComponent, resolve: {elt: FormViewResolverService}},
+    {path: '', component: FormViewComponent},
 ];
 
 @NgModule({
@@ -102,7 +101,6 @@ const appRoutes: Routes = [
     ],
     exports: [],
     providers: [
-        FormViewResolverService,
         FormViewService,
         SkipLogicValidateService,
         UcumService

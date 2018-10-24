@@ -18,12 +18,10 @@ export class FormViewService {
     fetchEltForEditing(queryParams: Params): Promise<CdeForm> {
         return this.userService.then(user => {
             return this.fetchDraft(queryParams).then(draft => {
-                if (draft && canEditCuratedItem(user, draft)) {
-                    return draft;
-                } else {
-                    return this.fetchPublished(queryParams);
-                }
-            });
+                return draft && canEditCuratedItem(user, draft)
+                    ? draft
+                    : this.fetchPublished(queryParams);
+            }, () => this.fetchPublished(queryParams));
         }, () => this.fetchPublished(queryParams));
     }
 
