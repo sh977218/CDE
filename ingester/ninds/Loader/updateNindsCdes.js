@@ -93,15 +93,12 @@ retireCde = async () => {
 
 async function run() {
     totalNinds = await NindsCdeModel.count();
-    NindsCdeModel.find({}).cursor().eachAsync(ninds => {
+    NindsCdeModel.find({}).cursor().eachAsync(async ninds => {
         let nindsObj = ninds.toObject();
-        return new Promise(async (resolve, reject) => {
-            let nindsCde = CreateCDE.createCde(nindsObj);
-            await doOne(new DataElement(nindsCde));
-            ninds.remove();
-            totalNinds--;
-            resolve();
-        })
+        let nindsCde = CreateCDE.createCde(nindsObj);
+        await doOne(new DataElement(nindsCde));
+        ninds.remove();
+        totalNinds--;
     }).then(async () => {
         await retireCde();
         console.log('changed: ' + changed + ' created: ' + created + ' same: ' + same);

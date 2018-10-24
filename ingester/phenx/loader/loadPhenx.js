@@ -69,50 +69,57 @@ retireForms = async () => {
     console.log(retires.nModified + ' forms retired');
 };
 
-let cond = {};
-//let cond = {'protocols.protocolId': '150101'};
-MeasureModel.find(cond).cursor().eachAsync(async measure => {
-    let measureObj = measure.toObject();
-    console.log('Starting measurement: ' + measureObj.browserId);
-    measureCount++;
-    if (measureObj.protocols) {
-        for (let protocol of measureObj.protocols) {
-            let protocolId = protocol.protocolId;
-            console.log('Starting protocol: ' + protocolId);
-            protocolCount++;
-            let newFormObj = await CreateForm.createForm(measureObj, protocol.protocol);
-            let newForm = new Form(newFormObj);
-            let existingForm = await Form.findOne({archived: false, 'ids.id': protocolId});
-            if (!existingForm) {
-                await newForm.save();
-                createdForm++;
-                console.log('createdForm: ' + createdForm);
-            } else if (updatedByLoader(existingForm)) {
-                skipForm++;
-                console.log('skipForm: ' + skipForm);
-            } else {
-                existingForm.imported = new Date().toJSON();
-                existingForm.markModified('imported');
-                let diff = CompareForm.compareForm(newForm, existingForm);
-                if (_.isEmpty(diff)) {
-                    await existingForm.save();
-                    sameForm++;
-                    console.log('sameForm: ' + sameForm);
+run = () => {
+    let cond = {};
+    MeasureModel.find(cond).cursor().eachAsync(async measure => {
+        let measureObj = measure.toObject();
+        console.log('Starting measurement: ' + measureObj.browserId);
+        measureCount++;
+        if (measureObj.protocols) {
+            for (let protocol of measureObj.protocols) {
+                let protocolId = protocol.protocolId;
+                console.log('Starting protocol: ' + protocolId);
+                protocolCount++;
+                let newFormObj = await CreateForm.createForm(measureObj, protocol.protocol);
+                let newForm = new Form(newFormObj);
+                let existingForm = await Form.findOne({
+                    archived: false,
+                    'registrationState.registrationStatus': {$ne: 'Retired'},
+                    'ids.id': protocolId
+                });
+                if (!existingForm) {
+                    await newForm.save();
+                    createdForm++;
+                    console.log('createdForm: ' + createdForm);
+                } else if (updatedByLoader(existingForm)) {
+                    skipForm++;
+                    console.log('skipForm: ' + skipForm);
                 } else {
-                    await MergeForm.mergeForm(existingForm, newForm);
-                    await mongo_form.updatePromise(existingForm, batchloader);
-                    changeForm++;
-                    console.log('changeForm: ' + changeForm);
+                    existingForm.imported = new Date().toJSON();
+                    existingForm.markModified('imported');
+                    let diff = CompareForm.compareForm(newForm, existingForm);
+                    if (_.isEmpty(diff)) {
+                        await existingForm.save();
+                        sameForm++;
+                        console.log('sameForm: ' + sameForm);
+                    } else {
+                        await MergeForm.mergeForm(existingForm, newForm);
+                        await mongo_form.updatePromise(existingForm, batchloader);
+                        changeForm++;
+                        console.log('changeForm: ' + changeForm);
+                    }
                 }
+                console.log('Finished protocol: ' + protocolId);
             }
-            console.log('Finished protocol: ' + protocolId);
         }
-    }
-    console.log('Finished measurement: ' + measureObj.browserId);
-    await measure.remove();
-}).then(async () => {
-    console.log('measureCount: ' + measureCount);
-    console.log('protocolCount: ' + protocolCount);
-    await retireCdes();
-    await retireForms();
-}, error => console.log(error));
+        console.log('Finished measurement: ' + measureObj.browserId);
+        await measure.remove();
+    }).then(async () => {
+        console.log('measureCount: ' + measureCount);
+        console.log('protocolCount: ' + protocolCount);
+        await retireCdes();
+        await retireForms();
+    }, error => console.log(error));
+};
+
+run();

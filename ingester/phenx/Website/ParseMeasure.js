@@ -71,7 +71,8 @@ async function parsingProtocolLinks(elements) {
         let protocolId = browserIdText.replace('#', '').trim();
         let linkText = await protocolLink.getAttribute('href');
         let protocol = await ParseProtocol.parseProtocol(linkText.trim());
-        protocols.push({protocolId: protocolId, protocol: protocol});
+        protocol.protocolId = protocolId;
+        protocols.push(protocol);
     }
     return protocols;
 }
