@@ -68,7 +68,7 @@ exports.module = function (roleConfig) {
     router.post('/feedback/report', (req, res) => {
         if (!canSubmitFeedback(req.ip)) return res.status(509).send();
         dbLogger.saveFeedback(req, () => {
-            let msg = {
+            let msg = JSON.stringify({
                 title: 'New Feedback Message\'',
                 options: {
                     body: req.body.feedback ? JSON.parse(req.body.feedback).note : '',
@@ -88,10 +88,9 @@ exports.module = function (roleConfig) {
                         }
                     ]
                 }
-            };
-
+            });
             mongo_data.pushGetAdministratorRegistrations(registrations => {
-                registrations.forEach(r => pushNotification.triggerPushMsg(r, JSON.stringify(msg)));
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
             });
             res.send({});
         });

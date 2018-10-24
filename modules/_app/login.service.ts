@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 
 
 @Injectable()
@@ -13,7 +14,8 @@ export class LoginService {
         private http: HttpClient,
         private route: ActivatedRoute,
         private router: Router,
-        private userService: UserService
+        private userService: UserService,
+        private alert: AlertService
     ) {}
 
     getPreviousRoute () {
@@ -36,6 +38,6 @@ export class LoginService {
         this.http.post('/logout', {}, {responseType: 'text'}).subscribe(() => {
             this.userService.reload();
             this.router.navigate(['/login']);
-       });
+       }, () => this.alert.addAlert("error", "Error logging out. Are you already logged out?"));
     }
 }

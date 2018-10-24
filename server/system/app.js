@@ -29,6 +29,8 @@ const fhirObservationInfo = require('./fhir').fhirObservationInfo;
 const cdeElastic = require('../cde/elastic.js');
 const formElastic = require('../form/elastic.js');
 const traffic = require('./traffic');
+const notificationDb = require('../notification/notificationDb');
+const discussDb = require('../discuss/discussDb');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -72,17 +74,17 @@ exports.init = function (app) {
     app.get(["/", "/home"], function (req, res) {
         if (isSearchEngine(req)) res.render('bot/home', 'system');
         else {
-            if (req.user || req.query.tour) res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
+            if (req.user || req.query.tour || req.query.notifications !== undefined) res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
             else res.send(homeHtml);
         }
     });
 
     app.get('/tour', (req, res) => res.redirect('/home?tour=yes'));
 
-    app.get("/site-version", (req, res) => res.send(version));
+    app.get('/site-version', (req, res) => res.send(version));
 
     if (!config.proxy) {
-        app.post("/site-version", (req, res) => {
+        app.post('/site-version', (req, res) => {
             version = version + ".";
             res.send();
         });
@@ -323,35 +325,29 @@ exports.init = function (app) {
 
     /* ---------- PUT NEW REST API above ---------- */
 
-    app.get('/indexCurrentNumDoc/:indexPosition', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            let index = esInit.indices[req.params.indexPosition];
-            return res.status(200).send({count: index.count, totalCount: index.totalCount});
-        }
-        res.status(401).send();
+    app.get('/indexCurrentNumDoc/:indexPosition', [authorization.isSiteAdminMiddleware], (req, res) => {
+        let index = esInit.indices[req.params.indexPosition];
+        return res.send({count: index.count, totalCount: index.totalCount});
     });
 
-    app.post('/reindex/:indexPosition', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            let index = esInit.indices[req.params.indexPosition];
-            elastic.reIndex(index, () => {
-                setTimeout(() => {
-                    index.count = 0;
-                    index.totalCount = 0;
-                }, 5000);
-            });
-            return res.send("Re-index request sent.");
-        }
-        res.status(401).send();
+    app.post('/reindex/:indexPosition', [authorization.isSiteAdminMiddleware], (req, res) => {
+        let index = esInit.indices[req.params.indexPosition];
+        elastic.reIndex(index, () => {
+            setTimeout(() => {
+                index.count = 0;
+                index.totalCount = 0;
+            }, 5000);
+        });
+        return res.send('Re-index request sent.');
     });
 
 
 
-    app.get("/supportedBrowsers", (req, res) => res.render('supportedBrowsers', 'system'));
+    app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
 
     app.get('/listOrgs', exportShared.nocacheMiddleware, (req, res) => {
         mongo_data.listOrgs(function (err, orgs) {
-            if (err) return res.status(500).send("ERROR - unable to list orgs");
+            if (err) return res.status(500).send('ERROR - unable to list orgs');
             res.send(orgs);
         });
     });
@@ -477,17 +473,8 @@ exports.init = function (app) {
     app.post('/addOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.addOrgCurator);
     app.post('/removeOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.removeOrgCurator);
 
-    app.post('/updateUserRoles', [authorization.isOrgAuthorityMiddleware], (req, res) => {
-        usersrvc.updateUserRoles(req.body, handleError({req, res}, () => {
-            res.status(200).end();
-        }));
-    });
-
-    app.post('/updateUserAvatar', [authorization.isOrgAuthorityMiddleware], (req, res) => {
-        usersrvc.updateUserAvatar(req.body, handleError({req, res}, () => {
-            res.status(200).end();
-        }));
-    });
+    app.post('/updateUserRoles', [authorization.isOrgAuthorityMiddleware], usersrvc.updateUserRoles);
+    app.post('/updateUserAvatar', [authorization.isOrgAuthorityMiddleware], usersrvc.updateUserAvatar);
 
     app.get('/data/:imgtag', (req, res) => {
         mongo_data.getFile(req.user, req.params.imgtag, res);
@@ -497,51 +484,132 @@ exports.init = function (app) {
         orgsvc.transferSteward(req, res);
     });
 
-    app.post('/mail/messages/new', (req, res) => {
-        if (req.isAuthenticated()) {
-            let message = req.body;
-            if (message.author.authorType === "user") message.author.name = req.user.username;
-            message.date = new Date();
-            mongo_data.createMessage(message, () => res.send());
-        } else res.status(401).send();
+    app.post('/mail/messages/new', [authorization.loggedInMiddleware], (req, res) => {
+        let message = req.body;
+        if (message.author.authorType === "user") message.author.name = req.user.username;
+        message.date = new Date();
+        mongo_data.createMessage(message, () => res.send());
     });
 
-    app.post('/mail/messages/update', (req, res) => {
-        if (req.isAuthenticated()) {
-            mongo_data.updateMessage(req.body, err => {
-                if (err) {
-                    res.statusCode = 404;
-                    res.send("Error while updating the message");
-                }
-                res.send();
-            });
-        } else res.status(401).send();
+    app.post('/mail/messages/update', [authorization.loggedInMiddleware], (req, res) => {
+        mongo_data.updateMessage(req.body, err => {
+            if (err) {
+                res.statusCode = 404;
+                res.send("Error while updating the message");
+            }
+            res.send();
+        });
     });
 
-    app.post('/mail/messages/:type', (req, res) => {
-        if (req.isAuthenticated()) {
-            mongo_data.getMessages(req, (err, messages) => {
-                if (err) return res.status(404).send(err);
-                res.send(messages);
-            });
-        } else res.status(401).send("Not Authorized");
+    app.post('/mail/messages/:type', [authorization.loggedInMiddleware], (req, res) => {
+        mongo_data.getMessages(req, (err, messages) => {
+            if (err) return res.status(404).send(err);
+            res.send(messages);
+        });
     });
 
-    app.post('/addUserRole', (req, res) => {
-        if (authorizationShared.hasRole(req.user, "CommentReviewer")) {
-            mongo_data.addUserRole(req.body, err => {
-                if (err) {
-                    dbLogger.logError({
-                        message: 'Error adding user role',
-                        origin: '/addUserRole',
-                        stack: err,
-                        details: ''
-                    });
-                    return res.status(500).send('Error adding user role');
-                }
-                res.send("Role added.");
-            });
+    app.get('/tasks/:clientVersion', (req, res) => {
+        // mongo_data.taskGetByUser
+        let client = -1;
+        let server = -1;
+        let comments;
+        let tasks = [];
+        if (authorizationShared.isSiteAdmin(req.user)) {
+            notificationDb.getNumberClientError(req.user, handleError({req, res}, clientErrorCount => {
+                client = clientErrorCount;
+                tasksDone();
+            }));
+            notificationDb.getNumberServerError(req.user, handleError({req, res}, serverErrorCount => {
+                server = serverErrorCount;
+                tasksDone();
+            }));
+        } else {
+            client = 0;
+            server = 0;
+            tasksDone();
         }
+        // TODO: implement org boundaries
+        if (authorizationShared.hasRole(req.user, 'CommentReviewer')) { // required, req.user.notificationSettings.approvalComment.drawer not used
+            discussDb.unapprovedMessages(handleError({req, res}, c => {
+                comments = c;
+                tasksDone();
+            }));
+        } else {
+            comments = [];
+            tasksDone();
+        }
+
+        function pending(comment) {
+            let pending = [];
+            if (comment.pendingApproval) {
+                pending.push(comment);
+            }
+            if (Array.isArray(comment.replies)) {
+                pending = pending.concat(comment.replies.filter(r => r.pendingApproval));
+            }
+            return pending;
+        }
+        function tasksDone() {
+            if (client === -1 || server === -1 || !comments) {
+                return;
+            }
+            if (version !== req.params.clientVersion) {
+                tasks.push({
+                    _id: 'version',
+                    name: 'Website Updated',
+                    text: 'A new version of this site is available. To enjoy the new features, please close all CDE tabs then load again.',
+                    type: 'error',
+                });
+            }
+            if (client > 0) {
+                tasks.push({
+                    _id: 'client',
+                    name: client + ' New Client Errors',
+                    properties: [
+                        {key: 'Audit Client Errors', link: '/siteAudit', linkParams: {tab:'clientError'}}
+                    ],
+                });
+            }
+            if (server > 0) {
+                tasks.push({
+                    _id: 'server',
+                    name: server + ' New Server Errors',
+                    properties: [
+                        {key: 'Audit Server Errors', link: '/siteAudit', linkParams: {tab:'serverError'}}
+                    ],
+                });
+            }
+            if (Array.isArray(comments)) {
+                comments.forEach(c => {
+                    pending(c).forEach(p => {
+                        let uri = c.element && (
+                            c.element.eltType === 'board' && '/board' ||
+                            c.element.eltType === 'cde' && '/deView' ||
+                            c.element.eltType === 'form' && '/formView' ||
+                            undefined
+                        );
+                        tasks.push({
+                            _id: p._id,
+                            name: 'comment',
+                            properties: [
+                                {key: 'User', value: p.user && p.user.username || c.user && c.user.username},
+                                {key: 'Form', value: c.element && c.element.eltId, link: uri, linkParams: c.element && {tinyId: c.element.eltId}}
+                            ],
+                            reply: p !== c,
+                            text: p.text,
+                            type: 'approval',
+                        });
+                    });
+                });
+            }
+            res.send(tasks);
+        }
+    });
+
+    app.post('/addUserRole', [authorization.canApproveCommentMiddleware], (req, res) => {
+        mongo_data.addUserRole(req.body, handleError({req, res}, () => {
+            res.send();
+        }));
     });
 
     // @TODO this should be POST

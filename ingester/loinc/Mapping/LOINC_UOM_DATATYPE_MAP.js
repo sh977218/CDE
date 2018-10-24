@@ -60,6 +60,9 @@ exports.map = {
     "[in_i]": "Number",
     "kg": "Number",
     "mm Hg": "Number",
-    "INCH(S)": "Number"
-
+    "INCH(S)": "Number",
+    "{Log_copies}/mL": "Number",
+    "{copies}/mL": "Number",
+    "m[IU]/mL": "Number",
+    "[IU]/mL": "Number"
 };

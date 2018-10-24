@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, ComponentFactoryResolver, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';

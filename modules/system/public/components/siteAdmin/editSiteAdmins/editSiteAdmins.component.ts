@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 
 
@@ -34,11 +34,11 @@ export class EditSiteAdminsComponent implements OnInit {
     }
 
     getSiteAdmins() {
-        this.http.get('/server/siteAdmin/siteAdmins').subscribe(response => this.siteAdmins = response);
+        this.http.get('/server/siteAdmin/siteAdmins').subscribe(response => this.siteAdmins = response, () => {});
     }
 
     getOrgAuthorities() {
-        this.http.get('/server/siteAdmin/orgAuthorities').subscribe(response => this.orgAuthorities = response);
+        this.http.get('/server/siteAdmin/orgAuthorities').subscribe(response => this.orgAuthorities = response, () => {});
     }
 
     removeSiteAdmin(byId: string) {

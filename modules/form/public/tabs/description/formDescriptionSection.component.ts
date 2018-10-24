@@ -10,7 +10,7 @@ import _noop from 'lodash/noop';
 import { Observable } from "rxjs/Observable";
 import { debounceTime, map } from 'rxjs/operators';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
 import { FormService } from 'nativeRender/form.service';

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { MyBoardsService } from 'board/public/myBoards.service';
 import { MatDialog, MatDialogRef } from '@angular/material';

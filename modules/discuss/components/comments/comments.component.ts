@@ -7,7 +7,7 @@ import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
 import * as io from 'socket.io-client';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { CommentReply } from 'shared/models.model';
@@ -172,8 +172,10 @@ export class CommentsComponent implements OnInit, OnDestroy {
             commentId: comment._id,
             eltName: this.eltName,
             reply: comment.newReply.text
-        }).subscribe(() => comment.newReply = {},
-            err => this.alertService.addAlert('danger', err.error));
+        }).subscribe(
+            () => comment.newReply = {},
+            err => this.alertService.addAlert('danger', err.error)
+        );
     }
 
     cancelReply = comment => comment.newReply = {};

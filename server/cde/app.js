@@ -127,7 +127,7 @@ exports.init = function (app, daoManager) {
 
     app.get('/crossWalkingVocabularies/:source/:code/:targetSource/', (req, res) => {
         if (!req.params.source || !req.params.code || !req.params.targetSource)
-            return res.status(401).end();
+            return res.status(401).send();
         vsac.getCrossWalkingVocabularies(req.params.source, req.params.code, req.params.targetSource, handleError({req, res}, result => {
             if (result.statusCode === 200)
                 return res.send({result: JSON.parse(result.body).result});

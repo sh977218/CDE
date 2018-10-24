@@ -3,7 +3,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import _noop from 'lodash/noop';
 import { saveAs } from 'file-saver';
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
@@ -48,13 +48,6 @@ export class BoardViewComponent implements OnInit {
     url: string;
     users: any[] = [];
 
-    ngOnInit() {
-        this.boardId = this.route.snapshot.params['boardId'];
-        if (this.userService.user) this.http.get('/server/board/viewBoard/' + this.boardId).subscribe();
-        this.reload();
-        this.url = location.href;
-    }
-
     constructor(private alert: AlertService,
                 public esService: ElasticService,
                 private http: HttpClient,
@@ -62,6 +55,12 @@ export class BoardViewComponent implements OnInit {
                 private route: ActivatedRoute,
                 private dialog: MatDialog,
                 protected userService: UserService) {
+    }
+
+    ngOnInit() {
+        this.boardId = this.route.snapshot.params['boardId'];
+        this.reload();
+        this.url = location.href;
     }
 
     addClassification(event) {

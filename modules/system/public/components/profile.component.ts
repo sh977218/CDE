@@ -2,26 +2,43 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import _noop from 'lodash/noop';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { UserService } from '_app/user.service';
 import { PublishedForm, User } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
+import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-profile',
-    templateUrl: 'profile.component.html'
+    templateUrl: 'profile.component.html',
+    styles: [`
+        h2 {
+            font-size: 2rem;
+        }
+        .disabled {
+            color: darkgray;
+        }
+        .infoIcon {
+            font-size: 1rem;
+            margin-left: 5px;
+            padding-top: 5px
+        }
+    `]
 })
 export class ProfileComponent {
+    readonly booleanSettingOptions = ['Disabled', 'Enabled'];
     cdes: DataElement[] = [];
     forms: CdeForm[] = [];
     hasQuota: any;
+    hasRole = hasRole;
+    isSiteAdmin = isSiteAdmin;
     orgCurators?: string;
     orgAdmins?: string;
-    user?: User;
     subscriptionStatusClient = PushNotificationSubscriptionService.subscriptionCheckClient;
     subscriptionStatusServer?: string;
+    user?: User;
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
@@ -80,6 +97,7 @@ export class ProfileComponent {
     }
 
     reloadUser() {
+        this.userService.reload();
         this.userService.then(user => {
             this.hasQuota = user.quota;
             this.orgCurators = user.orgCurator ? user.orgCurator.join(', ') : '';

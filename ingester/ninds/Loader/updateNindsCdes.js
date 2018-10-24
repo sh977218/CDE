@@ -45,11 +45,13 @@ doOne = migrationCde => {
             if (_.isEmpty(diff)) {
                 existingCde.imported = new Date().toJSON();
                 replaceClassification(existingCde, migrationCde);
+                existingCde.markModified("imported");
                 await existingCde.save();
                 same++;
             } else if (existingCde.updatedBy && existingCde.updatedBy.username !== 'batchloader') {
                 existingCde.registrationState.administrativeNote = "Because this CDE was previously manually modified, no batch modification was applied.";
                 replaceClassification(existingCde, migrationCde);
+                existingCde.markModified("registrationState");
                 await existingCde.save();
                 skip++;
                 skipCDE.push(existingCde.tinyId);

@@ -6,6 +6,7 @@ import { CodeAndSystem } from 'shared/models.model';
 import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
 import { ScoreService } from 'nativeRender/score.service';
+import { AlertService } from 'alert/alert.service';
 
 @Component({
     selector: 'cde-native-question',
@@ -29,6 +30,7 @@ export class NativeQuestionComponent implements OnInit {
 
     constructor(private http: HttpClient,
                 public scoreSvc: ScoreService,
+                private alert: AlertService,
                 public nrs: NativeRenderService) {
     }
 
@@ -107,11 +109,22 @@ export class NativeQuestionComponent implements OnInit {
             && q.elementType === 'question' && q.question.datatype !== 'Value List';
     }
 
+    locationDenied = false;
+
     getCurrentGeoLocation(formElement) {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
-                formElement.question.answer = position.coords;
-            });
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    if (formElement) formElement.question.answer = position.coords;
+                },
+                err => {
+                    this.locationDeniedMessage();
+                    this.locationDenied = err.code === err.PERMISSION_DENIED ? true : false
+                });
         }
     }
+    locationDeniedMessage () {
+        this.alert.addAlert("info", "Please enable location for this site.");
+    }
+
 }
