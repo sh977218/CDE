@@ -14,7 +14,7 @@ import { LocalStorageService } from 'angular-2-local-storage/dist';
 import { TreeComponent } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
 
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { IsAllowedService } from 'core/isAllowed.service';

@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { ElasticService } from '_app/elastic.service';
-import { AlertService } from '_app/alert.service';
+import { AlertService } from 'alert/alert.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { MergeShareService } from "core/mergeShare.service";
 
