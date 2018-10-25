@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const ParseRedCap = require('./ParseRedCap');
+const ParseRedCap = require('./redCap/ParseRedCap');
 
 const ParseLOINC = require('../../loinc/Form/ParseFormElements');
 const orgMapping = require('../../loinc/Mapping/ORG_INFO_MAP').map;

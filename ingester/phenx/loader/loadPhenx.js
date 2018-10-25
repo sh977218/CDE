@@ -80,7 +80,7 @@ run = () => {
                 let protocolId = protocol.protocolId;
                 console.log('Starting protocol: ' + protocolId);
                 protocolCount++;
-                let newFormObj = await CreateForm.createForm(measureObj, protocol.protocol);
+                let newFormObj = await CreateForm.createForm(measureObj, protocol);
                 let newForm = new Form(newFormObj);
                 let existingForm = await Form.findOne({
                     archived: false,

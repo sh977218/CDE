@@ -1,8 +1,8 @@
 var capitalize = require('capitalize');
 
-var SYMBOL_MAP = require('./REDCAP_SYMBOL_MAP').map;
-var CONJUNCTION_MAP = require('./REDCAP_CONJUNCTION_MAP').map;
-var REDCAP_DATATYPE_MAP = require('./REDCAP_DATATYPE_MAP').map;
+var SYMBOL_MAP = require('./Form/redCap/REDCAP_SYMBOL_MAP').map;
+var CONJUNCTION_MAP = require('./Form/redCap/REDCAP_CONJUNCTION_MAP').map;
+var REDCAP_DATATYPE_MAP = require('./Form/redCap/REDCAP_DATATYPE_MAP').map;
 
 exports.formatSkipLogic = function (m, equationText) {
     var result = '';
