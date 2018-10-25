@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
+import { UserService } from '_app/user.service';
 
 
 @Injectable()
