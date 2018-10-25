@@ -9,8 +9,10 @@ const stripBsonIds = require('@std/esm')(module)('../../shared/system/exportShar
 const checkBoardOwnerShip = authorization.checkBoardOwnerShip;
 const checkBoardViewerShip = authorization.checkBoardViewerShip;
 
-const handleError = require('../log/dbLogger').handleError;
-const logError = require('../log/dbLogger').logError;
+const dbLogger = require('../log/dbLogger');
+const handle404 = dbLogger.handle404;
+const handleError = dbLogger.handleError;
+const logError = dbLogger.logError;
 
 const boardDb = require('./boardDb');
 const userDb = require('../user/userDb');
@@ -194,10 +196,9 @@ exports.module = function (roleConfig) {
         if (size > 500) return res.status(403).send("Request too large");
         let boardId = req.params.boardId;
         let start = Number.parseInt(req.params.start);
-        boardDb.byId(boardId, handleError({req, res}, board => {
-                if (!board) return res.status(404).send("No board found.");
+        boardDb.byId(boardId, handle404({req, res}, board => {
                 if (board.shareStatus !== "Public" && !checkBoardViewerShip(board, req.user)) {
-                    return res.status(401).send("Not Authorized");
+                    return res.status(404).send();
                 }
                 delete board._doc.owner.userId;
                 let totalItems = board.pins.length;
@@ -398,7 +399,6 @@ exports.module = function (roleConfig) {
     router.post('/myBoards', [nocacheMiddleware, loggedInMiddleware], (req, res) => {
         elastic.myBoards(req.user, req.body, handleError({req, res}, result => res.send(result)));
     });
-
 
     router.post('/pinEntireSearchToBoard', [loggedInMiddleware], (req, res) => {
         let boardId = req.body.boardId;

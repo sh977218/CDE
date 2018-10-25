@@ -119,7 +119,7 @@ export class NativeQuestionComponent implements OnInit {
                 },
                 err => {
                     this.locationDeniedMessage();
-                    this.locationDenied = err.code === err.PERMISSION_DENIED ? true : false
+                    this.locationDenied = err.code === err.PERMISSION_DENIED;
                 });
         }
     }
