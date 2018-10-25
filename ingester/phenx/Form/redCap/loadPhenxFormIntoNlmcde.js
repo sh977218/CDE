@@ -3,23 +3,22 @@ let csv = require('csv');
 let fs = require('fs');
 let capitalize = require('capitalize');
 
-let mongo_data = require('../../server/system/mongo-data');
-let mongo_cde = require('../../server/cde/mongo-cde');
+let mongo_data = require('../../../../server/system/mongo-data');
+let mongo_cde = require('../../../../server/cde/mongo-cde');
 let DataElementModel = mongo_cde.DataElement;
-let mongo_form = require('../../server/form/mongo-form');
+let mongo_form = require('../../../../server/form/mongo-form');
 let FormModel = mongo_form.Form;
 
-let MigrationProtocolModel = require('../createMigrationConnection').MigrationProtocolModel;
-let BranchLogicUtility = require('./BranchLogicUtility');
+let MigrationProtocolModel = require('../../../createMigrationConnection').MigrationProtocolModel;
 
-let updateShare = require('../updateShare');
+let updateShare = require('../../../updateShare');
 
 let protocolCount = 0;
 
 let importDate = new Date().toJSON();
 let source = 'PhenX';
 
-let ZIP_BASE_PATH = require('../createMigrationConnection').PHENX_ZIP_BASE_FOLDER;
+let ZIP_BASE_PATH = require('../../../createMigrationConnection').PHENX_ZIP_BASE_FOLDER;
 
 function findInstrument(formId) {
     let instrumentPath = ZIP_BASE_PATH + '/' + formId + '.zip/' + 'instrument.csv';
@@ -149,7 +148,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                     DataElementModel.find(query).exec((error, cdes) => {
                         if (error) throw error;
                         else if (cdes.length === 1) {
-                            let question = BranchLogicUtility.convertCdeToQuestion(row, skipLogicMap, cdes[0]);
+                            let question = convertCdeToQuestion(row, skipLogicMap, cdes[0]);
                             if (question === null) {
                                 console.log('filePath ' + filePath);
                                 process.exit(1);

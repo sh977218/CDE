@@ -10,6 +10,6 @@ exports.parseFormElements = async protocol => {
     if (loinc) {
         return await ParseLOINC.parseFormElements(loinc, orgMapping['PhenX']);
     } else {
-        return await ParseRedCap.parseRedCap(protocol);
+        return await ParseRedCap.parseFormElements(protocol);
     }
 };
