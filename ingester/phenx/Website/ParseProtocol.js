@@ -123,7 +123,9 @@ exports.parseProtocol = async function (link) {
     driver.get(link);
     let protocol = {classification: []};
     await driver.findElement(By.id('button_showfull')).click();
-    await driver.findElement(By.id('label_VARIABLES')).click();
+    let labelSections = await driver.findElements(By.id('label_VARIABLES'));
+    if( labelSections.length > 0)
+        await driver.findElement(By.id('label_VARIABLES')).click();
     for (let task of tasks) {
         let elements = await driver.findElements(By.xpath(task.xpath));
         if (elements && elements[0])
