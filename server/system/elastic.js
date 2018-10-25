@@ -11,6 +11,7 @@ const mongo_cde = require("../cde/mongo-cde");
 const mongo_form = require("../form/mongo-form");
 const boardDb = require("../board/boardDb");
 const noDbLogger = require("./noDbLogger");
+const handleError = require('../log/dbLogger').handleError;
 
 
 let esClient = new elasticsearch.Client({
@@ -121,12 +122,10 @@ exports.daoMap = {
 
 
 exports.reIndex = function (index, cb) {
-    createIndex(index, () => {
+    createIndex(index, handleError({}, () => {
         let riverFunction = index.filter;
         if (!riverFunction) {
-            riverFunction = function (elt, cb) {
-                cb(elt);
-            };
+            riverFunction = (elt, cb) => cb(elt);
         }
         let startTime = new Date().getTime();
         let indexType = Object.keys(index.indexJson.mappings)[0];
@@ -134,61 +133,55 @@ exports.reIndex = function (index, cb) {
         let injector = new EsInjector(esClient, index.indexName, indexType);
         let condition = exports.daoMap[index.name].condition;
         index.count = 0;
-        exports.daoMap[index.name].dao.count(condition, function (err, totalCount) {
+        exports.daoMap[index.name].dao.count(condition, (err, totalCount) => {
             if (err) dbLogger.consoleLog("Error getting count: " + err, 'error');
             dbLogger.consoleLog("Total count for " + index.name + " is " + totalCount);
             index.totalCount = totalCount;
             let stream = exports.daoMap[index.name].dao.getStream(condition);
-            stream.on('data', function (elt) {
+            stream.on('data', elt => {
                 stream.pause();
-                riverFunction(elt.toObject(), function (afterRiverElt) {
-                    injector.queueDocument(afterRiverElt, function () {
+                riverFunction(elt.toObject(), afterRiverElt => {
+                    injector.queueDocument(afterRiverElt, () => {
                         index.count++;
                         stream.resume();
                     });
                 });
             });
-            stream.on('end', function () {
-                injector.inject(function () {
+            stream.on('end', () => {
+                injector.inject(() => {
                     let info = "done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs. count: " + index.count;
                     noDbLogger.noDbLogger.info(info);
                     dbLogger.consoleLog(info);
                     if (cb) cb();
                 });
             });
-            stream.on('error', function (err) {
+            stream.on('error', err => {
                 dbLogger.consoleLog("Error getting stream: " + err);
             });
         });
-    });
+    }));
 };
 
 function createIndex(index, cb) {
     let indexName = index.indexName;
     let indexMapping = index.indexJson;
-    esClient.indices.exists({index: indexName}, function (err, indiceExists) {
-        if (err) noDbLogger.noDbLogger.info(err);
+    esClient.indices.exists({index: indexName}, handleError({}, indiceExists => {
         if (indiceExists) {
             dbLogger.consoleLog("index already exists.");
             cb();
         } else {
             dbLogger.consoleLog("creating index: " + indexName);
             let cond = {index: indexName, timeout: "10s", body: indexMapping};
-            esClient.indices.create(cond, function (error) {
-                if (error) dbLogger.consoleLog("error creating index. " + error, 'error');
-                else {
-                    dbLogger.consoleLog("index Created");
-                    exports.reIndex(index, cb);
-                }
-            });
+            esClient.indices.create(cond, handleError({}, () => {
+                dbLogger.consoleLog("index Created");
+                exports.reIndex(index, cb);
+            }));
         }
-    });
+    }));
 }
 
 exports.initEs = function (cb) {
-    async.forEach(esInit.indices, function (index, doneOneIndex) {
-        createIndex(index, doneOneIndex);
-    }, function doneAllIndices() {
+    async.forEach(esInit.indices, createIndex, () => {
         if (cb) cb();
     });
 };
@@ -428,13 +421,13 @@ exports.buildElasticSearchQuery = function (user, settings) {
         regStatusAggFilter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
     }
 
-    if (sort) {
-        queryStuff.sort = {
-            "registrationState.registrationStatusSortOrder": "asc",
-            "classificationBoost": "desc",
-            "primaryNameSuggest.raw": "asc"
-        };
-    }
+    // if (sort) {
+    //     queryStuff.sort = {
+    //         "registrationState.registrationStatusSortOrder": "asc",
+    //         "classificationBoost": "desc",
+    //         "primaryNameSuggest.raw": "asc"
+    //     };
+    // }
 
     // Get aggregations on classifications and statuses
     if (settings.includeAggregations) {

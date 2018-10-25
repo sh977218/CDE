@@ -3,14 +3,11 @@ const config = require('../system/parseConfig');
 const schemas = require('./schemas');
 const mongo_data_system = require('../system/mongo-data');
 const connHelper = require('../system/connections');
-const dbLogger = require('../log/dbLogger');
 const logging = require('../system/logging');
 const cdediff = require("./cdediff");
-const async = require('async');
 const elastic = require('./elastic');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 const draftSchema = require('./schemas').draftSchema;
-const boardDb = require('../board/boardDb');
 
 exports.type = "cde";
 exports.name = "CDEs";

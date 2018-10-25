@@ -8,33 +8,33 @@ exports.createIndexJson = {
             "properties": {
                 "stewardOrg": {
                     "properties": {
-                        "name": {"type": "string", "index": "not_analyzed"}
+                        "name": {"type": "keyword", "index": "not_analyzed"}
                     }
                 }
-                , "flatClassifications": {"type": "string", "index": "not_analyzed"}
-                , "flatMeshTrees": {"type": "string", "index": "not_analyzed"}
+                , "flatClassifications": {"type": "keyword", "index": "not_analyzed"}
+                , "flatMeshTrees": {"type": "keyword", "index": "not_analyzed"}
                 , "classification": {
                     properties: {
                         "stewardOrg": {
                             properties: {
-                                "name": {"type": "string", "index": "not_analyzed"}
+                                "name": {"type": "keyword", "index": "not_analyzed"}
                             }
                         }
                     }
                 }
                 , "registrationState": {
                     properties: {
-                        "registrationStatus": {"type": "string", "index": "not_analyzed"}
+                        "registrationStatus": {"type": "keyword", "index": "not_analyzed"}
                     }
                 }
-                , "source": {"type": "string", "index": "not_analyzed"}
-                , "origin": {"type": "string", "index": "not_analyzed"}
+                , "source": {"type": "keyword", "index": "not_analyzed"}
+                , "origin": {"type": "keyword", "index": "not_analyzed"}
                 , "valueDomain": {
                     properties: {
-                        "datatype": {"type": "string", "index": "not_analyzed"},
+                        "datatype": {"type": "keyword", "index": "not_analyzed"},
                         "permissibleValues": {
                             properties: {
-                                "codeSystemName": {"type": "string", "index": "not_analyzed"}
+                                "codeSystemName": {"type": "keyword", "index": "not_analyzed"}
                             }
                         }
                     }
@@ -43,39 +43,39 @@ exports.createIndexJson = {
                     "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "key": {"type": "string"},
-                        "value": {"type": "string"}
+                        "key": {"type": "text"},
+                        "value": {"type": "text"}
                     }
                 }, "ids": {
                     "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "source": {"type": "string", "index": "not_analyzed"},
-                        "id": {"type": "string"},
-                        "version": {"type": "string"}
+                        "source": {"type": "keyword", "index": "not_analyzed"},
+                        "id": {"type": "text"},
+                        "version": {"type": "text"}
                     }
                 }
-                , "tinyId": {"type": "string", "index": "not_analyzed"}
+                , "tinyId": {"type": "keyword", "index": "not_analyzed"}
                 , "updated": {"type": "date", "index": "no"}
-                , "updatedBy": {properties: {"username": {"type": "string"}}}
-                , "changeNote": {"type": "string", "index": "no"}
+                , "updatedBy": {properties: {"username": {"type": "text"}}}
+                , "changeNote": {"type": "text", "index": "no"}
                 , "attachments": {
                     properties: {
-                        "fileid": {"type": "string", "index": "no"},
-                        "filename": {"type": "string", "index": "no"}
+                        "fileid": {"type": "text", "index": "no"},
+                        "filename": {"type": "text", "index": "no"}
                     }
                 }
-                , "history": {"type": "string", "index": "no"}
+                , "history": {"type": "text", "index": "no"}
                 , "imported": {"type": "date", "index": "no"}
-                , "version": {"type": "string", "index": "no"}
+                , "version": {"type": "text", "index": "no"}
                 , "views": {type: "integer"}
                 , primaryNameSuggest: {
-                    "type": "string",
+                    "type": "text",
                     "analyzer": "autocomplete",
                     "search_analyzer": "standard",
                     "fields": {
                         "raw": {
-                            "type": "string",
+                            "type": "keyword",
                             "index": "not_analyzed"
                         }
                     }
@@ -118,49 +118,49 @@ exports.createFormIndexJson = {
     "mappings": {
         "form": {
             "properties": {
-                "stewardOrg": {properties: {"name": {"type": "string", "index": "not_analyzed"}}}
-                , "flatClassifications": {"type": "string", "index": "not_analyzed"}
-                , "flatMeshTrees": {"type": "string", "index": "not_analyzed"}
+                "stewardOrg": {properties: {"name": {"type": "keyword", "index": "not_analyzed"}}}
+                , "flatClassifications": {"type": "keyword", "index": "not_analyzed"}
+                , "flatMeshTrees": {"type": "keyword", "index": "not_analyzed"}
                 , "classification": {
                     properties: {
                         "stewardOrg": {
                             "properties": {
-                                "name": {"type": "string", "index": "not_analyzed"}
+                                "name": {"type": "keyword", "index": "not_analyzed"}
                             }
                         }
                     }
                 }
                 , "registrationState": {
                     properties: {
-                        "registrationStatus": {"type": "string", "index": "not_analyzed"}
+                        "registrationStatus": {"type": "keyword", "index": "not_analyzed"}
                     }
                 }
-                , "source": {"type": "string", "index": "not_analyzed"}
-                , "origin": {"type": "string", "index": "not_analyzed"}
+                , "source": {"type": "keyword", "index": "not_analyzed"}
+                , "origin": {"type": "keyword", "index": "not_analyzed"}
                 , "properties": {
                     "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "key": {"type": "string"},
-                        "value": {"type": "string"}
+                        "key": {"type": "text"},
+                        "value": {"type": "text"}
                     }
                 }, "ids": {
                     "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "source": {"type": "string", "index": "not_analyzed"},
-                        "id": {"type": "string"},
-                        "version": {"type": "string"}
+                        "source": {"type": "keyword", "index": "not_analyzed"},
+                        "id": {"type": "text"},
+                        "version": {"type": "text"}
                     }
                 }, "views": {"type": "integer"}
                 , "numQuestions": {"type": "integer"}
                 , primaryNameSuggest: {
-                    "type": "string",
+                    "type": "text",
                     "analyzer": "autocomplete",
                     "search_analyzer": "standard",
                     "fields": {
                         "raw": {
-                            "type": "string",
+                            "type": "keyword",
                             "index": "not_analyzed"
                         }
                     }
