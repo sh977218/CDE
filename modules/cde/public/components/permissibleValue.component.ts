@@ -140,7 +140,7 @@ export class PermissibleValueComponent {
         let source = this.SOURCES[src];
         if (src && source) {
             matchedPvs.forEach(pvObj => {
-                pvObj.valueMeaningCode.split(':').forEach(code => {
+                pvObj.valueMeaningCode && pvObj.valueMeaningCode.split(':').forEach(code => {
                     if (this.SOURCES[pvObj.codeSystemName]) {
                         if (!source.codes) {
                             source.codes = {};
