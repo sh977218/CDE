@@ -14,7 +14,7 @@
                     [ngbTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)?stewardTooltip:undefined"
                     placement="bottom" [(value)]="elt.stewardOrg.name"
                     [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
-                    [isAllowed]="canEdit && !elt.isDraft">
+                    [isAllowed]="canEdit">
             </cde-inline-select-edit>
         </dd>
         <ng-container *ngIf="elt.definitions[0]">

@@ -122,15 +122,15 @@ exports.nbBoardsByUserId = function (userId, callback) {
 };
 
 exports.boardById = function (boardId, callback) {
-    PinningBoard.findOne({'_id': boardId}, function (err, b) {
-        if (err) callback(err, b);
-        else if (!b) {
-            callback("Cannot find board. boardId: " + boardId, b);
+    if (!mongoose.Types.ObjectId.isValid(boardId)) {
+        callback(undefined, undefined);
+        return;
+    }
+    PinningBoard.findById(boardId, function (err, b) {
+        if (b && !b.type) {
+            b.type = 'cde';
         }
-        else {
-            if (!b.type) b.type = 'cde';
-            callback(null, b);
-        }
+        callback(err, b);
     });
 };
 

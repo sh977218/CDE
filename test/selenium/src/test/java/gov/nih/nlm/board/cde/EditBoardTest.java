@@ -12,7 +12,7 @@ public class EditBoardTest extends BoardTest {
         String boardNameChange = " NEW";
         String boardDescriptionChange = "-- Desc Edited";
         String[] boardTags = new String[]{"tag1", "tag2", "tag3"};
-        editBoardByName(boardName, boardNameChange, boardDescriptionChange, false, boardTags);
+        editBoardByName(boardName, boardNameChange, boardDescriptionChange, false, boardTags, "Saved");
         textPresent(boardNameChange);
         textPresent(boardDescriptionChange);
         textPresent(boardDescriptionChange);
