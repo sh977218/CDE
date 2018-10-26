@@ -99,11 +99,15 @@ export class LoginComponent {
                 this.alert.addAlert('danger', res);
                 this.getCsrf();
             }
-        }, res => {
-            if (res.status === 412) {
+        }, err => {
+            if (err.status === 412) {
                 this.alert.addAlert('danger', 'Please fill out the Captcha before login in.');
             } else {
-                this.alert.addAlert('danger', 'Failed to log in.');
+                let res;
+                if (err.error) {
+                    res = JSON.parse(err.error);
+                }
+                this.alert.addAlert('danger', 'Failed to log in.' + (res && res.message ? ' ' + res.message : ''));
             }
             this.getCsrf();
         });

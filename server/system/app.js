@@ -415,18 +415,18 @@ exports.init = function (app) {
                 if (err) return res.status(412).send(err);
                 // Regenerate is used so appscan won't complain
                 req.session.regenerate(() => {
-                    passport.authenticate('local', (err, user) => {
-                        if (err) return res.status(403).end();
+                    passport.authenticate('local', (err, user, info) => {
+                        if (err) return res.status(403).send();
                         if (!user) {
                             if (failedIp && config.useCaptcha) failedIp.nb++;
                             else {
                                 failedIps.unshift({ip: getRealIp(req), nb: 1});
                                 failedIps.length = 50;
                             }
-                            return res.status(403).send();
+                            return res.status(403).send(info);
                         }
                         req.logIn(user, err => {
-                            if (err) return res.status(403).end();
+                            if (err) return res.status(403).send();
                             req.session.passport = {user: req.user._id};
                             return res.send("OK");
                         });
