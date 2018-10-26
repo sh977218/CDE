@@ -8,6 +8,10 @@ formatSkipLogic = function (equationText, redCapCdes) {
     let foundLabelArray = equationText.match(/\[[^\[\]]*\]\s*/);
     if (foundLabelArray && foundLabelArray.length === 1) {
         let foundLabel = foundLabelArray[0];
+        if (!foundLabel) {
+            console.log('Label not found ' + equationText);
+            process.exit(1);
+        }
         let _foundLabel = foundLabel.replace('[', '').replace(']', '').trim();
         let redCapCde = _.find(redCapCdes, redCapCde => {
             let variableFieldName = redCapCde['Variable / Field Name'];
@@ -25,7 +29,16 @@ formatSkipLogic = function (equationText, redCapCdes) {
         let foundSymbolArray = equationText.match(/[^']*\s/);
         if (foundSymbolArray && foundSymbolArray.length === 1) {
             let foundSymbol = foundSymbolArray[0];
-            result += SYMBOL_MAP[foundSymbol.trim()];
+            if (!foundSymbol) {
+                console.log('Symbol not found ' + equationText);
+                process.exit(1);
+            }
+            let cdeSymbol = SYMBOL_MAP[foundSymbol.trim()];
+            if (!cdeSymbol) {
+                console.log(foundSymbol + ' not found in SYMBOL_MAP');
+                process.exit(1);
+            }
+            result += cdeSymbol;
             equationText = equationText.replace(foundSymbol.trim(), '').trim();
         }
         let foundValueWithSingQuoteArray = equationText.match(/'.*'/);
@@ -54,17 +67,25 @@ exports.convertSkipLogic = function (skipLogicText, redCapCdes) {
         let foundEquationArray = skipLogicText.match(/\[[^[\]]*]\s*(?:<>|[<>]=|[=><])\s*['"]?[\w-]*['"]?/);
         if (foundEquationArray && foundEquationArray.length === 1) {
             let foundEquation = foundEquationArray[0];
-            let cdeSkipLogicEquation = formatSkipLogic(foundEquation, redCapCdes);
-            if (cdeSkipLogicEquation === null) {
-                console.log(skipLogicText);
-                return null;
+            if (!foundEquation) {
+                console.log(' Equation not found in ' + skipLogicText);
+                process.exit(1);
             }
+            let cdeSkipLogicEquation = formatSkipLogic(foundEquation, redCapCdes);
             result.push(cdeSkipLogicEquation);
             skipLogicText = skipLogicText.replace(foundEquation, '').trim();
             let foundConjunctionArray = skipLogicText.match(/[^\[\]]*\s/);
             if (foundConjunctionArray && foundConjunctionArray.length === 1) {
                 let foundConjunction = foundConjunctionArray[0];
+                if (!foundConjunction) {
+                    console.log('Conjunction not found ' + skipLogicText);
+                    process.exit(1);
+                }
                 let cdeSkipLogicConjunction = CONJUNCTION_MAP[foundConjunction.trim()];
+                if (!cdeSkipLogicConjunction) {
+                    console.log(foundConjunction + ' not found in CONJUNCTION_MAP');
+                    process.exit(1);
+                }
                 result.push(cdeSkipLogicConjunction);
                 skipLogicText = skipLogicText.replace(foundConjunction, '').trim();
             }

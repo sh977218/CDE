@@ -2,67 +2,67 @@ const capitalize = require('capitalize');
 
 const generateTinyId = require('../../../../server/system/mongo-data').generateTinyId;
 
-exports.createCde = async (row, formId, protocol) => {
-    let classificationArray = protocol['classification'];
+parseDesignations = row => {
+    let designations = [];
+
     let variableName = row['Variable / Field Name'];
     let fieldLabel = row['Field Label'];
-    let cde = {
-        tinyId: generateTinyId(),
-        naming: [{designation: capitalize.words(variableName.replace(/_/g, ' '))}],
-        stewardOrg: {name: 'PhenX'},
-        sources: [{sourceName: 'PhenX'}],
-        classification: [{
-            stewardOrg: {name: 'PhenX'},
-            elements: [{name: 'REDCap', elements: []}]
-        }],
-        registrationState: {registrationStatus: 'Qualified'},
-        properties: [{source: 'PhenX', key: 'Field Note', value: row['Field Note']}],
-        ids: [{source: 'PhenX Variable', id: formId + '_' + row['Variable / Field Name'].trim()}],
-        valueDomain: {}
-    };
-    if (fieldLabel.length > 0)
-        cde.naming.push({
+    if (fieldLabel) {
+        let designation = {
             designation: fieldLabel,
             source: 'PhenX',
-            tags: [{tag: 'Question Text'}]
-        });
+            tags: []
+        };
+        if (fieldLabel === variableName) {
+            designation.tags.push('Question Text');
+        }
+        designations.push(designation);
+    }
+
+    return designations;
+};
+
+let RED_CAP_DATA_TYPE_MAP = {
+    'date_mdy': 'Date',
+    'notes': 'Text',
+    'file': 'File',
+    'time': 'Time',
+    'integer': 'Number',
+    'yesno': 'Value List',
+    '': '',
+    '': '',
+
+}
+
+parseValueDomain = row => {
+    let valueDomain = {};
+
     let fieldType = row['Field Type'];
     let validationType = row['Text Validation Type OR Show Slider Number'];
-    if (validationType.trim() === 'date_mdy') {
-        cde.valueDomain.datatype = 'Date';
-        cde.valueDomain.datatypeDate = {
-            format: 'mdy'
+    if (validationType) validationType = validationType.trim();
+    let datatype = RED_CAP_DATA_TYPE_MAP[validationType];
+    valueDomain.datatype = datatype;
+    if (datatype === 'Date') {
+        valueDomain.datatypeDate = {
+            format: validationType.replace('date_', '')
         }
-    }
-    else if (validationType.trim() === 'date_dmy') {
-        cde.valueDomain.datatype = 'Date';
-        cde.valueDomain.datatypeDate = {
-            format: 'dmy'
-        }
-    } else if (validationType.trim() === 'notes') {
-        cde.valueDomain.datatype = 'text';
-    } else if (validationType.trim() === 'file') {
-        cde.valueDomain.datatype = 'File';
-    } else if (validationType.trim() === 'time') {
-        cde.valueDomain.datatype = 'Time';
-        cde.valueDomain.datatypeTime = {}
-    } else if (validationType.trim() === 'integer' || validationType.trim() === 'number') {
-        cde.valueDomain.datatype = 'Number';
-        cde.valueDomain.datatypeNUmber = {
-            precision: validationType.trim() === 'integer' ? 2 : 0
+    } else if (datatype === 'Number') {
+        valueDomain.datatypeNUmber = {
+            precision: validationType === 'integer' ? 2 : 0
         };
         let textValidationMin = row['Text Validation Min'].trim();
         let textValidationMax = row['Text Validation Max'].trim();
         if (textValidationMin.length > 0) {
-            cde.valueDomain.datatypeNUmber.minValue = Number(textValidationMin);
+            valueDomain.datatypeNUmber.minValue = Number(textValidationMin);
         }
         if (textValidationMax.length > 0) {
-            cde.valueDomain.datatypeNUmber.maxValue = Number(textValidationMax);
+            valueDomain.datatypeNUmber.maxValue = Number(textValidationMax);
         }
     } else {
+        valueDomain.datatype = 'Value List';
+        let choicesCalculationsORSliderLabels = row['Choices, Calculations, OR Slider Labels'];
         if (fieldType === 'yesno') {
-            cde.valueDomain.datatype = 'Value List';
-            cde.valueDomain.permissibleValues = [{
+            valueDomain.permissibleValues = [{
                 permissibleValue: '1',
                 valueMeaningName: 'Yes'
             }, {
@@ -70,24 +70,73 @@ exports.createCde = async (row, formId, protocol) => {
                 valueMeaningName: 'No'
             }];
         } else if (fieldType === 'calc') {
-        } else if (row['Choices, Calculations, OR Slider Labels'].length > 0) {
-            let pvText = row['Choices, Calculations, OR Slider Labels'];
-            if (pvText && pvText.length > 0) {
-                let permissibleValues = [];
-                let pvArray = pvText.split('|');
-                pvArray.forEach((pvText) => {
-                    let tempArray = pvText.toString().split(',');
-                    permissibleValues.push({
-                        permissibleValue: tempArray[0].trim(),
-                        valueMeaningName: tempArray[1].trim()
-                    })
-                });
-                cde.valueDomain.permissibleValues = permissibleValues;
-                cde.valueDomain.datatype = 'Value List';
-            }
+        } else if (choicesCalculationsORSliderLabels) {
+            let permissibleValues = [];
+            let pvArray = choicesCalculationsORSliderLabels.split('|');
+            pvArray.forEach(pvText => {
+                let tempArray = pvText.toString().split(',');
+                permissibleValues.push({
+                    permissibleValue: tempArray[0].trim(),
+                    valueMeaningName: tempArray[1].trim()
+                })
+            });
+            valueDomain.permissibleValues = permissibleValues;
         } else {
-            cde.valueDomain.datatype = 'text';
+            valueDomain.datatype = 'text';
         }
     }
+};
+
+parseIds = (formId, row) => {
+    let ids = [];
+    let variableName = row['Variable / Field Name'];
+    if (variableName) variableName = variableName.trim();
+    if (variableName) {
+        ids.push({
+            source: 'PhenX Variable',
+            id: formId + '_' + row['Variable / Field Name']
+        })
+    }
+
+    return ids;
+};
+parseProperties = row => {
+    let properties = [];
+    let fieldNote = row['Field Note'];
+    if (fieldNote) fieldNote = fieldNote.trim();
+    if (fieldNote) {
+        properties.push({
+            source: 'PhenX',
+            key: 'Field Note',
+            value: fieldNote
+        })
+    }
+
+    return properties;
+};
+
+exports.createCde = async (row, formId, protocol) => {
+    let classificationArray = protocol['classification'];
+    let designations = parseDesignations(row);
+    let valueDomain = parseValueDomain(row);
+    let ids = parseIds(formId, row);
+    let properties = parseProperties(row);
+
+    let cde = {
+        tinyId: generateTinyId(),
+        designations: designations,
+        stewardOrg: {name: 'PhenX'},
+        sources: [{sourceName: 'PhenX'}],
+        classification: [{
+            stewardOrg: {name: 'PhenX'},
+            elements: [{name: 'REDCap', elements: []}]
+        }],
+        valueDomain,
+        registrationState: {registrationStatus: 'Qualified'},
+        ids,
+        properties,
+        attachments: []
+    };
+
     return cde;
 };

@@ -13,6 +13,7 @@ exports.convert = async (redCapCde, redCapCdes, cde) => {
             skipLogicCondition = BranchLogic.convertSkipLogic(branchLogic, redCapCdes);
         } else {
             // put comment about this skip logic;
+            console.log('a');
         }
     }
 

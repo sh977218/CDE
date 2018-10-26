@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const AdmZip = require('adm-zip');
+const fs = require('fs');
 const csvParser = require('csv-parse');
 
 const mongo_cde = require('../../../../server/cde/mongo-cde');
@@ -14,32 +14,58 @@ const RedCapCdeToQuestion = require('./RedCapCdeToQuestion');
 const updatedByLoader = require('../../../shared/updatedByLoader').updatedByLoader;
 const batchloader = require('../../../shared/updatedByLoader').batchloader;
 
+const toolkit_content = 's:/MLB/CDE/phenx/original-phenxtoolkit.rti.org/toolkit_content';
+const redCapZipFolder = toolkit_content + '/redcap_zip/';
 
-const zipFolder = 's:/MLB/CDE/phenx/original-phenxtoolkit.rti.org/toolkit_content/redcap_zip/';
-
-doInstrument = data => {
+doInstrumentID = instrumentIDFilePath => {
     return new Promise((resolve, reject) => {
-
-        let records = [];
-        let options = {
-            trim: true,
-            skip_empty_lines: true,
-            columns: true,
-            relax_column_count: true
-        };
-        csvParser(data, options)
-            .on('readable', async function () {
-                let record = this.read();
-                if (record && record.fieldType !== 'descriptive') {
-                    records.push(record);
-                }
-            })
-            .on('end', function () {
-                resolve(records);
-            })
+        fs.readFile(instrumentIDFilePath, 'utf8', (err, data) => {
+            if (err) {
+                console.log('Read instrumentIDFilePath failed. ' + err);
+                process.exit(1);
+            }
+            resolve(data);
+        });
     })
 };
-exports.parseFormElements = async protocol => {
+doAuthorID = authorIDFilePath => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(authorIDFilePath, 'utf8', (err, data) => {
+            if (err) {
+                console.log('Read authorIDFilePath failed. ' + err);
+                process.exit(1);
+            }
+            resolve(data);
+        });
+    })
+};
+
+doInstrument = instrumentFilePath => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(instrumentFilePath, 'utf8', (err, data) => {
+            if (err) {
+                console.log('Read instrumentFilePath failed. ' + err);
+                process.exit(1);
+            }
+            let records = [];
+            let options = {
+                trim: true,
+                skip_empty_lines: true,
+                columns: true,
+                relax_column_count: true
+            };
+            csvParser(data, options)
+                .on('readable', async function () {
+                    let record = this.read();
+                    if (record) records.push(record);
+                })
+                .on('end', function () {
+                    resolve(records);
+                })
+        })
+    })
+};
+exports.parseFormElements = async (protocol, attachments) => {
     let formElements = [{
         elementType: "section",
         label: '',
@@ -48,51 +74,62 @@ exports.parseFormElements = async protocol => {
         formElements: []
     }];
     let protocolId = protocol.protocolId;
-    let zipFile = 'PX' + protocolId + '.zip';
-    let zip = new AdmZip(zipFolder + zipFile);
-    let zipEntries = zip.getEntries();
-    let redCapCdes = [];
-    let formId;
-    let authorId;
-    for (let zipEntry of zipEntries) {
-        let entryName = zipEntry.entryName;
-        if (entryName == 'instrument.csv') {
-            let data = zipEntry.getData();
-            redCapCdes = await doInstrument(data);
-        }
-        if (entryName == 'InstrumentID.txt') {
-            formId = zipEntry.getData().toString('utf8');
-        }
-        if (entryName == 'AuthorID.txt') {
-            authorId = zipEntry.getData().toString('utf8');
-        }
+
+    let zipFolder = redCapZipFolder + 'PX' + protocolId;
+
+    let formId = '';
+    let instrumentIDFileName = 'instrumentID.txt';
+    let instrumentIDFilePath = zipFolder + '/' + instrumentIDFileName;
+    let instrumentIDFileExist = fs.existsSync(instrumentIDFilePath);
+    if (instrumentIDFileExist) {
+        formId = await doInstrumentID(instrumentIDFilePath);
     }
 
+    let authorId = '';
+    let authorIdFileName = 'AuthorID.txt';
+    let authorIdFilePath = zipFolder + '/' + authorIdFileName;
+    let authorIdFileExist = fs.existsSync(authorIdFilePath);
+    if (authorIdFileExist) {
+        authorId = await doAuthorID(authorIdFilePath);
+    }
+
+    let redCapCdes = [];
+    let instrumentFileName = 'instrument.csv';
+    let instrumentFilePath = zipFolder + '/' + instrumentFileName;
+    let instrumentFileExist = fs.existsSync(instrumentFilePath);
+    if (instrumentFileExist) {
+        redCapCdes = await doInstrument(instrumentFilePath);
+    }
+    let fes = formElements[0].formElements;
     for (let redCapCde of redCapCdes) {
-        let newCdeObj = await CreateCDE.createCde(redCapCde, formId, protocol);
-        let newCde = new DataElement(newCdeObj);
-        let cdeId = newCdeObj.ids[0].id;
-        let existingCde = await DataElement.findOne({
-            archived: false,
-            'registrationState.registrationStatus': {$ne: 'Retired'},
-            'ids.id': cdeId
-        });
-        if (!existingCde) {
-            existingCde = await newCde.save();
-        } else if (updatedByLoader(existingCde)) {
+        if (redCapCde['Field Type'] === 'descriptive') {
+
         } else {
-            existingCde.imported = new Date().toJSON();
-            existingCde.markModified('imported');
-            let diff = CompareCDE.compareCde(newCde, existingCde);
-            if (_.isEmpty(diff)) {
-                await existingCde.save();
+            let newCdeObj = await CreateCDE.createCde(redCapCde, formId, protocol);
+            let newCde = new DataElement(newCdeObj);
+            let cdeId = newCdeObj.ids[0].id;
+            let existingCde = await DataElement.findOne({
+                archived: false,
+                'registrationState.registrationStatus': {$ne: 'Retired'},
+                'ids.id': cdeId
+            });
+            if (!existingCde) {
+                existingCde = await newCde.save();
+            } else if (updatedByLoader(existingCde)) {
             } else {
-                await MergeCDE.mergeCde(existingCde, newCde);
-                await mongo_cde.updatePromise(existingCde, batchloader);
+                existingCde.imported = new Date().toJSON();
+                existingCde.markModified('imported');
+                let diff = CompareCDE.compareCde(newCde, existingCde);
+                if (_.isEmpty(diff)) {
+                    await existingCde.save();
+                } else {
+                    await MergeCDE.mergeCde(existingCde, newCde);
+                    await mongo_cde.updatePromise(existingCde, batchloader);
+                }
             }
+            let question = await RedCapCdeToQuestion.convert(redCapCde, redCapCdes, existingCde);
+            fes.push(question);
         }
-        let question = await RedCapCdeToQuestion.convert(redCapCde, redCapCdes, existingCde);
-        formElements[0].formElements.push(question);
     }
 
     return formElements;

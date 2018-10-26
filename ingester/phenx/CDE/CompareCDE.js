@@ -45,10 +45,6 @@ exports.compareCde = function (newCde, existingCde) {
                 if (_.isEmpty(a[p])) delete a[p];
             }
         });
-        obj.ids.forEach(a => {
-            if (a.source === 'NINDS') a.version = Number.parseFloat(a.version);
-        });
-        obj.version = Number.parseFloat(obj.version);
     });
     return deepDiff(existingCdeObj, newCdeObj);
 };

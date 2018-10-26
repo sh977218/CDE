@@ -35,6 +35,7 @@ const sessionStore = new MongoStore({
     touchAfter: 60
 });
 
+exports.gfs = gfs;
 
 const userProject = {password: 0};
 const orgDetailProject = {
@@ -345,15 +346,15 @@ exports.addFile = function (file, cb) {
     });
 };
 
+
+function linkAttachmentToAdminItem(attachment, elt, newFileCreated, cb) {
+    elt.attachments.push(attachment);
+    elt.save(function (err) {
+        if (cb) cb(attachment, newFileCreated, err);
+    });
+};
+
 exports.addAttachment = function (file, user, comment, elt, cb) {
-
-    let linkAttachmentToAdminItem = function (attachment, elt, newFileCreated, cb) {
-        elt.attachments.push(attachment);
-        elt.save(function (err) {
-            if (cb) cb(attachment, newFileCreated, err);
-        });
-    };
-
     let attachment = {
         fileid: null,
         filename: file.originalname,

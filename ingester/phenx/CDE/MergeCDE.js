@@ -3,7 +3,7 @@ const _ = require('lodash');
 const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
 
 mergeBySources = (newSources, existingSources) => {
-    let otherSources = existingSources.filter(o => o.source !== 'PhenX');
+    let otherSources = existingSources.filter(o => ['PhenX', 'PhenX Variable'].indexOf(o.source) == -1);
     let result = newSources.concat(otherSources);
     return result;
 };

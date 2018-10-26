@@ -87,8 +87,6 @@
     "swagger-tools": "https://github.com/sh977218/swagger-tools.git",
     "trim": "0.0.1",
     "ucum": "https://github.com/ivanovgp/ucum-lhc.git",
-    "unzip": "^0.1.11",
-    "unzipper": "^0.9.4",
     "useragent": "2.3.0",
     "web-push": "3.3.2",
     "winston": "0.9.0",
