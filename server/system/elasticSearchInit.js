@@ -8,33 +8,33 @@ exports.createIndexJson = {
             "properties": {
                 "stewardOrg": {
                     "properties": {
-                        "name": {"type": "keyword", "index": "not_analyzed"}
+                        "name": {"type": "keyword"}
                     }
                 }
-                , "flatClassifications": {"type": "keyword", "index": "not_analyzed"}
-                , "flatMeshTrees": {"type": "keyword", "index": "not_analyzed"}
+                , "flatClassifications": {"type": "keyword"}
+                , "flatMeshTrees": {"type": "keyword"}
                 , "classification": {
                     properties: {
                         "stewardOrg": {
                             properties: {
-                                "name": {"type": "keyword", "index": "not_analyzed"}
+                                "name": {"type": "keyword"}
                             }
                         }
                     }
                 }
                 , "registrationState": {
                     properties: {
-                        "registrationStatus": {"type": "keyword", "index": "not_analyzed"}
+                        "registrationStatus": {"type": "keyword"}
                     }
                 }
-                , "source": {"type": "keyword", "index": "not_analyzed"}
-                , "origin": {"type": "keyword", "index": "not_analyzed"}
+                , "source": {"type": "keyword"}
+                , "origin": {"type": "keyword"}
                 , "valueDomain": {
                     properties: {
-                        "datatype": {"type": "keyword", "index": "not_analyzed"},
+                        "datatype": {"type": "keyword"},
                         "permissibleValues": {
                             properties: {
-                                "codeSystemName": {"type": "keyword", "index": "not_analyzed"}
+                                "codeSystemName": {"type": "keyword"}
                             }
                         }
                     }
@@ -50,24 +50,24 @@ exports.createIndexJson = {
                     "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "source": {"type": "keyword", "index": "not_analyzed"},
+                        "source": {"type": "keyword"},
                         "id": {"type": "text"},
                         "version": {"type": "text"}
                     }
                 }
-                , "tinyId": {"type": "keyword", "index": "not_analyzed"}
-                , "updated": {"type": "date", "index": "no"}
+                , "tinyId": {"type": "keyword"}
+                , "updated": {"enabled": false}
                 , "updatedBy": {properties: {"username": {"type": "text"}}}
-                , "changeNote": {"type": "text", "index": "no"}
+                , "changeNote": {"enabled": false}
                 , "attachments": {
                     properties: {
-                        "fileid": {"type": "text", "index": "no"},
-                        "filename": {"type": "text", "index": "no"}
+                        "fileid": {"enabled": false},
+                        "filename": {"enabled": false}
                     }
                 }
-                , "history": {"type": "text", "index": "no"}
-                , "imported": {"type": "date", "index": "no"}
-                , "version": {"type": "text", "index": "no"}
+                , "history": {"enabled": false}
+                , "imported": {"type": "date"}
+                , "version": {"type": "keyword"}
                 , "views": {type: "integer"}
                 , primaryNameSuggest: {
                     "type": "text",
@@ -76,7 +76,7 @@ exports.createIndexJson = {
                     "fields": {
                         "raw": {
                             "type": "keyword",
-                            "index": "not_analyzed"
+                            "index": false
                         }
                     }
                 }
@@ -118,25 +118,25 @@ exports.createFormIndexJson = {
     "mappings": {
         "form": {
             "properties": {
-                "stewardOrg": {properties: {"name": {"type": "keyword", "index": "not_analyzed"}}}
-                , "flatClassifications": {"type": "keyword", "index": "not_analyzed"}
-                , "flatMeshTrees": {"type": "keyword", "index": "not_analyzed"}
+                "stewardOrg": {properties: {"name": {"type": "keyword"}}}
+                , "flatClassifications": {"type": "keyword"}
+                , "flatMeshTrees": {"type": "keyword"}
                 , "classification": {
                     properties: {
                         "stewardOrg": {
                             "properties": {
-                                "name": {"type": "keyword", "index": "not_analyzed"}
+                                "name": {"type": "keyword"}
                             }
                         }
                     }
                 }
                 , "registrationState": {
                     properties: {
-                        "registrationStatus": {"type": "keyword", "index": "not_analyzed"}
+                        "registrationStatus": {"type": "keyword"}
                     }
                 }
-                , "source": {"type": "keyword", "index": "not_analyzed"}
-                , "origin": {"type": "keyword", "index": "not_analyzed"}
+                , "source": {"type": "keyword"}
+                , "origin": {"type": "keyword"}
                 , "properties": {
                     "type": "nested",
                     "include_in_parent": true,
@@ -148,7 +148,7 @@ exports.createFormIndexJson = {
                     "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "source": {"type": "keyword", "index": "not_analyzed"},
+                        "source": {"type": "keyword"},
                         "id": {"type": "text"},
                         "version": {"type": "text"}
                     }
@@ -161,7 +161,7 @@ exports.createFormIndexJson = {
                     "fields": {
                         "raw": {
                             "type": "keyword",
-                            "index": "not_analyzed"
+                            "index": false
                         }
                     }
                 }
