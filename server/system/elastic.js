@@ -421,13 +421,13 @@ exports.buildElasticSearchQuery = function (user, settings) {
         regStatusAggFilter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
     }
 
-    // if (sort) {
-    //     queryStuff.sort = {
-    //         "registrationState.registrationStatusSortOrder": "asc",
-    //         "classificationBoost": "desc",
-    //         "primaryNameSuggest.raw": "asc"
-    //     };
-    // }
+    if (sort) {
+        queryStuff.sort = {
+            "registrationState.registrationStatusSortOrder": "asc",
+            "classificationBoost": "desc",
+            "primaryNameSuggest.raw": "asc"
+        };
+    }
 
     // Get aggregations on classifications and statuses
     if (settings.includeAggregations) {
