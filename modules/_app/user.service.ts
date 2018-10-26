@@ -104,7 +104,7 @@ export class UserService {
     resetInactivityTimeout () {
         clearTimeout(this.logoutTimeout);
         if (this.loggedIn()) {
-            this.logoutTimeout = setTimeout(() => {
+            this.logoutTimeout = window.setTimeout(() => {
                 if (this.loggedIn()) {
                     this.reload(() => {
                         if (!this.loggedIn()) {
