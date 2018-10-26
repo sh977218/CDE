@@ -242,6 +242,7 @@ export class DataElementViewComponent implements OnInit {
         this.savingText = 'Saving ...';
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
         this.draftSubscription = this.http.post('/draftDataElement/' + this.elt.tinyId, this.elt).subscribe(res => {
+            this.draftSubscription = undefined;
             this.savingText = 'Saved';
             setTimeout(() => {
                 this.savingText = '';

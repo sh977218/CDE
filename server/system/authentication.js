@@ -111,9 +111,7 @@ exports.umlsAuth = function (user, password, cb) {
                 , password: password
             }
         }, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                cb(body);
-            }
+            cb(!error && response.statusCode == 200 ? body : undefined);
         }
     );
 };
@@ -128,7 +126,9 @@ exports.authBeforeVsac = function (req, username, password, done) {
             // If user was not found in local datastore || an error occurred || user was found and password equals 'umls'
             if (err || !user || (user && user.password === 'umls')) {
                 exports.umlsAuth(username, password, result => {
-                    if (result.indexOf("true") > 0) {
+                    if (result === undefined) {
+                        return done(null, false, {message: 'UMLS UTS login server is not available.'});
+                    } else if (result.indexOf("true") > 0) {
                         auth.findAddUserLocally({username: username, ip: req.ip}, user => {
                             return done(null, user);
                         });
