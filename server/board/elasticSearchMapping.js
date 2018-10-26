@@ -6,7 +6,7 @@ exports.createIndexJson = {
             properties: {
                 type: {type: "keyword"},
                 tags: {type: "keyword"},
-                shareStatus: {type: "keyword"},
+                shareStatus: {type: "text", "fielddata": true},
                 updatedDate: {"enabled": false},
                 createdDate: {"enabled": false}
             }
