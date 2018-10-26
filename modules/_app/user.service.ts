@@ -3,6 +3,7 @@ import { Component, Injectable, Injector } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
@@ -14,6 +15,7 @@ import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
 @Injectable()
 export class UserService {
     private listeners: Cb[] = [];
+    private $mail: Subscription;
     private promise!: Promise<User>;
     searchTypeahead = ((text$: Observable<string>) =>
         text$.pipe(
@@ -45,6 +47,8 @@ export class UserService {
     clear() {
         this.user = undefined;
         this.userOrgs.length = 0;
+        if (this.$mail) this.$mail.unsubscribe();
+        this.$mail = undefined;
     }
 
     static getEltLink(c: Comment) {
@@ -69,8 +73,11 @@ export class UserService {
                 this.user = response;
                 UserService.validate(this.user);
                 this.setOrganizations();
-                this.http.get<{count: number}>('/server/user/mailStatus').subscribe(response =>
-                    this.user!.hasMail = response.count > 0, () => {});
+                this.$mail = this.http.get<{ count: number }>('/server/user/mailStatus').subscribe(response => {
+                    if (this.user) {
+                        this.user.hasMail = response.count > 0;
+                    }
+                }, () => {});
                 resolve(this.user);
             }, err => {
                 reject(err);
