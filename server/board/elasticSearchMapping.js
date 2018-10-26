@@ -7,8 +7,8 @@ exports.createIndexJson = {
                 type: {type: "keyword"},
                 tags: {type: "keyword"},
                 shareStatus: {type: "text", "fielddata": true},
-                updatedDate: {"enabled": false},
-                createdDate: {"enabled": false}
+                updatedDate: {type: "date"},
+                createdDate: {type: "date"}
             }
         }
     }, settings: {
