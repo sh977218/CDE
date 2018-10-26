@@ -4,6 +4,8 @@ const AdmZip = require('adm-zip');
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
 const today = new Date().toJSON();
 
+const batchloader = require('../../shared/updatedByLoader').batchloader;
+
 const zipFolder = 's:/MLB/CDE/phenx/original-phenxtoolkit.rti.org/toolkit_content/redcap_zip/';
 
 exports.createForm = async (measure, protocol) => {
@@ -26,14 +28,14 @@ exports.createForm = async (measure, protocol) => {
 
     let newForm = {
         tinyId: generateTinyId(),
-        createdBy: {username: 'batchloader'},
+        createdBy: batchloader,
         sources,
         created: today,
         imported: today,
         isCopyrighted: false,
         noRenderAllowed: false,
         stewardOrg: {name: 'PhenX'},
-        registrationState: {registrationStatus: "Qualified"},
+        registrationState: {registrationStatus: "Candidate"},
         designations,
         definitions,
         referenceDocuments,

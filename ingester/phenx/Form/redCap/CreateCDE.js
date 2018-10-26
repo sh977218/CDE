@@ -129,7 +129,7 @@ exports.createCde = async (row, formId, protocol) => {
         sources: [{sourceName: 'PhenX'}],
         classification: [],
         valueDomain,
-        registrationState: {registrationStatus: 'Qualified'},
+        registrationState: {registrationStatus: 'Candidate'},
         ids,
         properties,
         attachments: []
