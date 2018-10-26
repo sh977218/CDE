@@ -91,6 +91,10 @@ exports.parseFormElements = async (protocol, attachments) => {
     let authorIdFileExist = fs.existsSync(authorIdFilePath);
     if (authorIdFileExist) {
         authorId = await doAuthorID(authorIdFilePath);
+        if (authorId !== 'PhenX') {
+            console.log('Unknown author Id ' + authorId);
+            process.exit(1);
+        }
     }
 
     let redCapCdes = [];
@@ -100,11 +104,31 @@ exports.parseFormElements = async (protocol, attachments) => {
     if (instrumentFileExist) {
         redCapCdes = await doInstrument(instrumentFilePath);
     }
-    let fes = formElements[0].formElements;
-    for (let redCapCde of redCapCdes) {
-        if (redCapCde['Field Type'] === 'descriptive') {
 
+    let fes;
+    for (let redCapCde of redCapCdes) {
+        let variableFieldName = redCapCde['Variable / Field Name']
+        let fieldType = redCapCde['Field Type'];
+        let fieldLabel = redCapCde['Field Label'];
+
+        let currType = fieldType;
+        if (fieldType === 'descriptive') {
+            let sectionFes = {
+                elementType: "section",
+                label: '',
+                instructions: {value: '', valueFormat: 'html'},
+                skipLogic: {condition: ''},
+                formElements: []
+            };
+            let foundAttachment = _.find(attachments, a => a.filename === variableFieldName);
+            if (foundAttachment)
+                sectionFes.instructions.value += '\n<figure><figcaption>' + fieldLabel + '</figcaption><img src="/data/' + foundAttachment.fileid + '"/></figure>';
+            else sectionFes.instructions.value += '\n' + fieldLabel;
+            fes = sectionFes.formElements;
+
+            formElements[0].formElements.push(sectionFes);
         } else {
+            fes = formElements[0].formElements;
             let newCdeObj = await CreateCDE.createCde(redCapCde, formId, protocol);
             let newCde = new DataElement(newCdeObj);
             let cdeId = newCdeObj.ids[0].id;

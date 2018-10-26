@@ -122,15 +122,12 @@ exports.createCde = async (row, formId, protocol) => {
     let ids = parseIds(formId, row);
     let properties = parseProperties(row);
 
-    let cde = {
+    let newCde = {
         tinyId: generateTinyId(),
         designations: designations,
         stewardOrg: {name: 'PhenX'},
         sources: [{sourceName: 'PhenX'}],
-        classification: [{
-            stewardOrg: {name: 'PhenX'},
-            elements: [{name: 'REDCap', elements: []}]
-        }],
+        classification: [],
         valueDomain,
         registrationState: {registrationStatus: 'Qualified'},
         ids,
@@ -138,5 +135,8 @@ exports.createCde = async (row, formId, protocol) => {
         attachments: []
     };
 
-    return cde;
+    let classificationToAdd = ['REDCap'].concat(classificationArray);
+    classificationShared.classifyItem(newCde, "PhenX", classificationToAdd);
+
+    return newCde;
 };
