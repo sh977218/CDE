@@ -9,12 +9,7 @@ exports.convert = async (redCapCde, redCapCdes, cde) => {
     let branchLogic = redCapCde['Branching Logic (Show field only if...)'];
     let skipLogicCondition = '';
     if (branchLogic && branchLogic.trim().length > 0) {
-        if (branchLogic.indexOf('(') === -1) {
-            skipLogicCondition = BranchLogic.convertSkipLogic(branchLogic, redCapCdes);
-        } else {
-            // put comment about this skip logic;
-            console.log('a');
-        }
+        skipLogicCondition = BranchLogic.convertSkipLogic(branchLogic, redCapCdes);
     }
 
     let question = {

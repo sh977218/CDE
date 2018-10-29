@@ -113,7 +113,7 @@ run = () => {
             }
         }
         console.log('Finished measurement: ' + measureObj.browserId);
-       // await measure.remove();
+        // await measure.remove();
     }).then(async () => {
         console.log('measureCount: ' + measureCount);
         console.log('protocolCount: ' + protocolCount);

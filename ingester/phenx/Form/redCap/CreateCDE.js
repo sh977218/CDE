@@ -1,4 +1,4 @@
-const capitalize = require('capitalize');
+const classificationShared = require('@std/esm')(module)('../../../../shared/system/classificationShared');
 
 const generateTinyId = require('../../../../server/system/mongo-data').generateTinyId;
 
@@ -32,7 +32,7 @@ let RED_CAP_DATA_TYPE_MAP = {
     '': '',
     '': '',
 
-}
+};
 
 parseValueDomain = row => {
     let valueDomain = {};
@@ -74,11 +74,15 @@ parseValueDomain = row => {
             let permissibleValues = [];
             let pvArray = choicesCalculationsORSliderLabels.split('|');
             pvArray.forEach(pvText => {
-                let tempArray = pvText.toString().split(',');
-                permissibleValues.push({
-                    permissibleValue: tempArray[0].trim(),
-                    valueMeaningName: tempArray[1].trim()
-                })
+                if (pvText) {
+                    let commaIndex = pvText.indexOf(',');
+                    let permissibleValue = pvText.substr(0, commaIndex);
+                    let valueMeaningName = pvText.substr(commaIndex + 1, pvText.length - 1);
+                    permissibleValues.push({
+                        permissibleValue: permissibleValue.trim(),
+                        valueMeaningName: valueMeaningName.trim()
+                    })
+                }
             });
             valueDomain.permissibleValues = permissibleValues;
         } else {
