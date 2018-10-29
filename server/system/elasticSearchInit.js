@@ -8,33 +8,33 @@ exports.createIndexJson = {
             "properties": {
                 "stewardOrg": {
                     "properties": {
-                        "name": {"type": "string", "index": "not_analyzed"}
+                        "name": {"type": "keyword"}
                     }
                 }
-                , "flatClassifications": {"type": "string", "index": "not_analyzed"}
-                , "flatMeshTrees": {"type": "string", "index": "not_analyzed"}
+                , "flatClassifications": {"type": "keyword"}
+                , "flatMeshTrees": {"type": "keyword"}
                 , "classification": {
                     properties: {
                         "stewardOrg": {
                             properties: {
-                                "name": {"type": "string", "index": "not_analyzed"}
+                                "name": {"type": "keyword"}
                             }
                         }
                     }
                 }
                 , "registrationState": {
                     properties: {
-                        "registrationStatus": {"type": "string", "index": "not_analyzed"}
+                        "registrationStatus": {"type": "keyword"}
                     }
                 }
-                , "source": {"type": "string", "index": "not_analyzed"}
-                , "origin": {"type": "string", "index": "not_analyzed"}
+                , "source": {"type": "keyword"}
+                , "origin": {"type": "keyword"}
                 , "valueDomain": {
                     properties: {
-                        "datatype": {"type": "string", "index": "not_analyzed"},
+                        "datatype": {"type": "keyword"},
                         "permissibleValues": {
                             properties: {
-                                "codeSystemName": {"type": "string", "index": "not_analyzed"}
+                                "codeSystemName": {"type": "keyword"}
                             }
                         }
                     }
@@ -43,40 +43,40 @@ exports.createIndexJson = {
                     "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "key": {"type": "string"},
-                        "value": {"type": "string"}
+                        "key": {"type": "text"},
+                        "value": {"type": "text"}
                     }
                 }, "ids": {
                     "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "source": {"type": "string", "index": "not_analyzed"},
-                        "id": {"type": "string"},
-                        "version": {"type": "string"}
+                        "source": {"type": "keyword"},
+                        "id": {"type": "text"},
+                        "version": {"type": "text"}
                     }
                 }
-                , "tinyId": {"type": "string", "index": "not_analyzed"}
-                , "updated": {"type": "date", "index": "no"}
-                , "updatedBy": {properties: {"username": {"type": "string"}}}
-                , "changeNote": {"type": "string", "index": "no"}
+                , "tinyId": {"type": "keyword"}
+                , "updated": {"enabled": false}
+                , "updatedBy": {properties: {"username": {"type": "text"}}}
+                , "changeNote": {"enabled": false}
                 , "attachments": {
                     properties: {
-                        "fileid": {"type": "string", "index": "no"},
-                        "filename": {"type": "string", "index": "no"}
+                        "fileid": {"enabled": false},
+                        "filename": {"enabled": false}
                     }
                 }
-                , "history": {"type": "string", "index": "no"}
-                , "imported": {"type": "date", "index": "no"}
-                , "version": {"type": "string", "index": "no"}
+                , "history": {"enabled": false}
+                , "imported": {"type": "date"}
+                , "version": {"type": "keyword"}
                 , "views": {type: "integer"}
                 , primaryNameSuggest: {
-                    "type": "string",
+                    "type": "text",
                     "analyzer": "autocomplete",
                     "search_analyzer": "standard",
                     "fields": {
                         "raw": {
-                            "type": "string",
-                            "index": "not_analyzed"
+                            "type": "keyword",
+                            "index": false
                         }
                     }
                 }
@@ -118,50 +118,50 @@ exports.createFormIndexJson = {
     "mappings": {
         "form": {
             "properties": {
-                "stewardOrg": {properties: {"name": {"type": "string", "index": "not_analyzed"}}}
-                , "flatClassifications": {"type": "string", "index": "not_analyzed"}
-                , "flatMeshTrees": {"type": "string", "index": "not_analyzed"}
+                "stewardOrg": {properties: {"name": {"type": "keyword"}}}
+                , "flatClassifications": {"type": "keyword"}
+                , "flatMeshTrees": {"type": "keyword"}
                 , "classification": {
                     properties: {
                         "stewardOrg": {
                             "properties": {
-                                "name": {"type": "string", "index": "not_analyzed"}
+                                "name": {"type": "keyword"}
                             }
                         }
                     }
                 }
                 , "registrationState": {
                     properties: {
-                        "registrationStatus": {"type": "string", "index": "not_analyzed"}
+                        "registrationStatus": {"type": "keyword"}
                     }
                 }
-                , "source": {"type": "string", "index": "not_analyzed"}
-                , "origin": {"type": "string", "index": "not_analyzed"}
+                , "source": {"type": "keyword"}
+                , "origin": {"type": "keyword"}
                 , "properties": {
                     "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "key": {"type": "string"},
-                        "value": {"type": "string"}
+                        "key": {"type": "text"},
+                        "value": {"type": "text"}
                     }
                 }, "ids": {
                     "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "source": {"type": "string", "index": "not_analyzed"},
-                        "id": {"type": "string"},
-                        "version": {"type": "string"}
+                        "source": {"type": "keyword"},
+                        "id": {"type": "text"},
+                        "version": {"type": "text"}
                     }
                 }, "views": {"type": "integer"}
                 , "numQuestions": {"type": "integer"}
                 , primaryNameSuggest: {
-                    "type": "string",
+                    "type": "text",
                     "analyzer": "autocomplete",
                     "search_analyzer": "standard",
                     "fields": {
                         "raw": {
-                            "type": "string",
-                            "index": "not_analyzed"
+                            "type": "keyword",
+                            "index": false
                         }
                     }
                 }
