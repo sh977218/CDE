@@ -113,7 +113,7 @@ export class EmbedAppComponent  {
         return result;
     }
 
-    reset () {
+    reset() {
         this.searchSettings.q = '';
         this.searchSettings.page = 1;
         this.searchSettings.classification = [];
@@ -121,7 +121,7 @@ export class EmbedAppComponent  {
         this.searchStarted = false;
     }
 
-    search () {
+    search() {
         this.searchSettings.resultPerPage = this.embed[this.searchType].pageSize;
         let embed4Type = {...this.embed[this.searchType]};
 
@@ -266,7 +266,7 @@ export class EmbedAppComponent  {
         });
     }
 
-    selectElement () {
+    selectElement() {
         this.searchSettings.classification.push(this.selectedClassif);
         this.selectedClassif = '';
         this.searchStarted = true;

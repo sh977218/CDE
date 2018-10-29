@@ -1,3 +1,4 @@
-declare var APPLICATION_NAME: string;
-declare var PRODUCTION: boolean;
+declare let APPLICATION_NAME: string;
+declare let INACTIVE_TIMEOUT: number;
+declare let PRODUCTION: boolean;
 declare let NAVIGATION_HEIGHT: number;

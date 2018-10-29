@@ -87,7 +87,7 @@ exports.init = function (app, daoManager) {
         adminItemSvc.removeAttachment(req, res, mongo_form);
     });
 
-    app.post('/elasticSearch/form', function (req, res) {
+    app.post('/elasticSearch/form', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         if (query.size > 100) return res.status(400).send();
         if ((query.from + query.size) > 10000) return res.status(400).send();
