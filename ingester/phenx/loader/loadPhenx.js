@@ -10,7 +10,6 @@ const CreateForm = require('../Form/CreateForm');
 const CompareForm = require('../Form/CompareForm');
 const MergeForm = require('../Form/MergeForm');
 
-const updatedByLoader = require('../../shared/updatedByLoader').updatedByLoader;
 const batchloader = require('../../shared/updatedByLoader').batchloader;
 
 let measureCount = 0;
@@ -19,7 +18,6 @@ let protocolCount = 0;
 let createdForm = 0;
 let sameForm = 0;
 let changeForm = 0;
-let skipForm = 0;
 
 retireCdes = async () => {
     let cond = {
@@ -71,47 +69,48 @@ retireForms = async () => {
 
 run = () => {
     let cond = {};
-    MeasureModel.find(cond).cursor().eachAsync(async measure => {
-        let measureObj = measure.toObject();
-        console.log('Starting measurement: ' + measureObj.browserId);
-        measureCount++;
-        if (measureObj.protocols) {
-            for (let protocol of measureObj.protocols) {
-                let protocolId = protocol.protocolId;
-                console.log('Starting protocol: ' + protocolId);
-                protocolCount++;
-                let newFormObj = await CreateForm.createForm(measureObj, protocol);
-                let newForm = new Form(newFormObj);
-                let existingForm = await Form.findOne({
-                    archived: false,
-                    'registrationState.registrationStatus': {$ne: 'Retired'},
-                    'ids.id': protocolId
-                });
-                if (!existingForm) {
-                    await newForm.save();
-                    createdForm++;
-                    console.log('createdForm: ' + createdForm);
-                } else {
-                    existingForm.imported = new Date().toJSON();
-                    existingForm.markModified('imported');
-                    let diff = CompareForm.compareForm(newForm, existingForm);
-                    if (_.isEmpty(diff)) {
-                        await existingForm.save();
-                        sameForm++;
-                        console.log('sameForm: ' + sameForm);
+    MeasureModel.find(cond).cursor({batchSize: 1, useMongooseAggCursor: true})
+        .eachAsync(async measure => {
+            let measureObj = measure.toObject();
+            console.log('Starting measurement: ' + measureObj.browserId);
+            measureCount++;
+            if (measureObj.protocols) {
+                for (let protocol of measureObj.protocols) {
+                    let protocolId = protocol.protocolId;
+                    console.log('Starting protocol: ' + protocolId);
+                    protocolCount++;
+                    let newFormObj = await CreateForm.createForm(measureObj, protocol);
+                    let newForm = new Form(newFormObj);
+                    let existingForm = await Form.findOne({
+                        archived: false,
+                        'registrationState.registrationStatus': {$ne: 'Retired'},
+                        'ids.id': protocolId
+                    });
+                    if (!existingForm) {
+                        await newForm.save();
+                        createdForm++;
+                        console.log('createdForm: ' + createdForm);
                     } else {
-                        await MergeForm.mergeForm(existingForm, newForm);
-                        await mongo_form.updatePromise(existingForm, batchloader);
-                        changeForm++;
-                        console.log('changeForm: ' + changeForm);
+                        existingForm.imported = new Date().toJSON();
+                        existingForm.markModified('imported');
+                        let diff = CompareForm.compareForm(newForm, existingForm);
+                        if (_.isEmpty(diff)) {
+                            await existingForm.save();
+                            sameForm++;
+                            console.log('sameForm: ' + sameForm);
+                        } else {
+                            await MergeForm.mergeForm(existingForm, newForm);
+                            await mongo_form.updatePromise(existingForm, batchloader);
+                            changeForm++;
+                            console.log('changeForm: ' + changeForm);
+                        }
                     }
+                    console.log('Finished protocol: ' + protocolId);
                 }
-                console.log('Finished protocol: ' + protocolId);
             }
-        }
-        console.log('Finished measurement: ' + measureObj.browserId);
-        //await measure.remove();
-    }).then(async () => {
+            console.log('Finished measurement: ' + measureObj.browserId);
+            //await measure.remove();
+        }).then(async () => {
         console.log('measureCount: ' + measureCount);
         console.log('protocolCount: ' + protocolCount);
         await retireCdes();
