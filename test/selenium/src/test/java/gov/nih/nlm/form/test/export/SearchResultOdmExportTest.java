@@ -13,6 +13,7 @@ public class SearchResultOdmExportTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormSearch();
         clickElement(By.id("search_by_classification_NIDA"));
+        hangon(1);
         clickElement(By.id("export"));
         clickElement(By.id("odmExport"));
         long zipSize = 0;
