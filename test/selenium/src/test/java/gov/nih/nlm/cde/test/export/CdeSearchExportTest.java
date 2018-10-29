@@ -90,7 +90,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
                 }
             }
         } catch (IOException e) {
-            Assert.fail("Exception reading SearchExport.csv");
+            Assert.fail("Exception reading SearchExport.csv " + e);
         }
     }
 
