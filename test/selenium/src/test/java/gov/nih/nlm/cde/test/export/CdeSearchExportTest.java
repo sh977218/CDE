@@ -46,8 +46,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
                 }
             }
         } catch (IOException e) {
-            Assert.fail("Exception reading " + fileLoc);
-            throw new RuntimeException(e);
+            Assert.fail("Exception reading " + fileLoc + " --- " + e);
         }
         clickElement(By.id("tableViewSettings"));
         clickElement(By.id("uom"));
@@ -90,7 +89,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
                 }
             }
         } catch (IOException e) {
-            Assert.fail("Exception reading SearchExport.csv");
+            Assert.fail("Exception reading SearchExport.csv " + e);
         }
     }
 

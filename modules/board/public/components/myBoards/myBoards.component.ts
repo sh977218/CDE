@@ -19,15 +19,17 @@ export class MyBoardsComponent {
 
     saveBoard(board) {
         this.http.post('/server/board/', board, {responseType: 'text'}).subscribe(() => {
-            this.alert.addAlert('success', 'Saved.');
-            this.myBoardsSvc.waitAndReload();
+            this.myBoardsSvc.waitAndReload(() => {
+                this.alert.addAlert('success', 'Saved.');
+            });
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     deleteBoard(board) {
         this.http.delete('/server/board/' + board._id, {responseType: 'text'}).subscribe(() => {
-            this.alert.addAlert('success', 'Deleted.');
-            this.myBoardsSvc.waitAndReload();
+            this.myBoardsSvc.waitAndReload(() => {
+                this.alert.addAlert('success', 'Deleted.');
+            });
         }, err => this.alert.httpErrorMessageAlert('danger', err));
     }
 

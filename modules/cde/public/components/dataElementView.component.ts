@@ -1,25 +1,25 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { ActivatedRoute, Data, Router } from '@angular/router';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
-import _cloneDeep from 'lodash/cloneDeep';
-import _noop from 'lodash/noop';
-import { Subscription } from 'rxjs/Subscription';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { IsAllowedService } from 'core/isAllowed.service';
+import { DataElementViewService } from 'cde/public/components/dataElementView.service';
+import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
+import _cloneDeep from 'lodash/cloneDeep';
+import _noop from 'lodash/noop';
+import { Observable } from 'rxjs/Observable';
+import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs/Subscription';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Comment } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity } from 'shared/de/deValidator';
-import { isOrgCurator } from 'shared/system/authorizationShared';
-import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
-import { MatDialog, MatDialogRef } from '@angular/material';
-
+import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-data-element-view',
@@ -37,17 +37,17 @@ export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent') commentAreaComponent: DiscussAreaComponent;
     @ViewChild('copyDataElementContent') copyDataElementContent: TemplateRef<any>;
     @ViewChild('tabSet') tabSet: NgbTabset;
-
     commentMode;
     currentTab = 'general_tab';
     deId;
     displayStatusWarning;
-    drafts = [];
     draftSubscription: Subscription;
     elt: DataElement;
     eltCopy = {};
     hasComments;
+    hasDrafts = false;
     highlightedTabs = [];
+    isOrgCurator = isOrgCurator;
     modalRef: MatDialogRef<TemplateRef<any>>;
     tabsCommented = [];
     savingText: String;
@@ -56,18 +56,18 @@ export class DataElementViewComponent implements OnInit {
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
-            this.loadDataElement(() => {
+            this.loadElt(() => {
                 this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
             });
         });
     }
 
-    constructor(private http: HttpClient,
+    constructor(private deViewService: DataElementViewService,
+                private http: HttpClient,
                 private route: ActivatedRoute,
                 private router: Router,
                 private ref: ChangeDetectorRef,
                 private dialog: MatDialog,
-                public isAllowedModel: IsAllowedService,
                 private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
@@ -75,11 +75,28 @@ export class DataElementViewComponent implements OnInit {
     }
 
     canEdit() {
-        return this.isAllowedModel.isAllowed(this.elt) && (this.drafts.length === 0 || this.elt.isDraft);
+        return canEditCuratedItem(this.userService.user, this.elt);
+    }
+
+    eltLoad(getElt: Observable<DataElement> | Promise<DataElement> | DataElement, cb = _noop) {
+        if (getElt instanceof Observable) {
+            getElt.subscribe(
+                elt => this.eltLoaded(elt, cb),
+                () => this.router.navigate(['/pageNotFound'], {skipLocationChange: true})
+            );
+        } else if (getElt instanceof Promise) {
+            getElt.then(
+                elt => this.eltLoaded(elt, cb),
+                () => this.router.navigate(['/pageNotFound'], {skipLocationChange: true})
+            );
+        } else {
+            this.eltLoaded(getElt, cb);
+        }
     }
 
     eltLoaded(elt: DataElement, cb = _noop) {
         if (elt) {
+            if (elt.isDraft) this.hasDrafts = true;
             DataElement.validate(elt);
             this.elt = elt;
             this.loadComments(this.elt);
@@ -108,37 +125,16 @@ export class DataElementViewComponent implements OnInit {
             }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
     }
 
-    loadDataElement(cb = _noop) {
-        this.userService.then(() => {
-            this.http.get<DataElement>('/draftDataElement/' + this.route.snapshot.queryParams['tinyId']).subscribe(
-                res => {
-                    if (res && this.isAllowedModel.isAllowed(res)) {
-                        this.drafts = [res];
-                        this.eltLoaded(res, cb);
-                    } else {
-                        this.drafts = [];
-                        this.loadPublished(cb);
-                    }
-                },
-                err => {
-                    // do not load elt
-                    this.alert.httpErrorMessageAlert(err);
-                    this.eltLoaded(null, cb);
-                }
-            );
-        }, () => {
-            this.loadPublished(cb);
-        });
+    loadElt(cb = _noop) {
+        this.eltLoad(this.deViewService.fetchEltForEditing(this.route.snapshot.queryParams), cb);
+    }
+
+    loadHighlightedTabs($event) {
+        this.highlightedTabs = $event;
     }
 
     loadPublished(cb = _noop) {
-        let cdeId = this.route.snapshot.queryParams['cdeId'];
-        let url = '/de/' + this.route.snapshot.queryParams['tinyId'];
-        if (cdeId) url = '/deById/' + cdeId;
-        this.http.get<DataElement>(url).subscribe(
-            res => this.eltLoaded(res, cb),
-            () => this.router.navigate(['/pageNotFound'])
-        );
+        this.eltLoad(this.deViewService.fetchPublished(this.route.snapshot.queryParams), cb);
     }
 
     openCopyElementModal() {
@@ -171,10 +167,6 @@ export class DataElementViewComponent implements OnInit {
             administrativeNote: 'Copy of: ' + this.elt.tinyId
         };
         this.modalRef = this.dialog.open(this.copyDataElementContent, {width: '1200px'});
-    }
-
-    loadHighlightedTabs($event) {
-        this.highlightedTabs = $event;
     }
 
     setCurrentTab(currentTab) {
@@ -227,43 +219,42 @@ export class DataElementViewComponent implements OnInit {
     }
 
     removeDraft() {
-        this.http.delete('/draftDataElement/' + this.elt.tinyId, {responseType: 'text'})
-            .subscribe(() => {
-                this.drafts = [];
-                this.loadDataElement();
-            }, err => this.alert.httpErrorMessageAlert(err));
+        this.http.delete('/draftDataElement/' + this.elt.tinyId, {responseType: 'text'}).subscribe(
+            () => this.loadElt(() => this.hasDrafts = false),
+            err => this.alert.httpErrorMessageAlert(err)
+        );
     }
 
-    saveDraft(cb) {
-        this.savingText = 'Saving ...';
-        this.elt._id = this.deId;
+    saveDraft() {
         let username = this.userService.user.username;
-        if (this.elt.updatedBy) {
-            this.elt.updatedBy.username = username;
-        } else {
-            this.elt.updatedBy = {username: username, userId: undefined};
-        }
+        this.elt._id = this.deId;
         if (!this.elt.createdBy) {
             this.elt.createdBy = {username: username, userId: undefined};
         }
         this.elt.updated = new Date();
+        if (!this.elt.updatedBy) {
+            this.elt.updatedBy = {username: username, userId: undefined};
+        }
+        this.elt.updatedBy.username = username;
+
+        this.elt.isDraft = true;
+        this.hasDrafts = true;
+        this.savingText = 'Saving ...';
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
-        this.draftSubscription = this.http.post('/draftDataElement/' + this.elt.tinyId, this.elt)
-            .subscribe(res => {
-                this.savingText = 'Saved';
-                setTimeout(() => {
-                    this.savingText = '';
-                }, 3000);
-                this.elt.isDraft = true;
-                if (!this.drafts.length) this.drafts = [this.elt];
-                if (cb) cb(res);
-            }, err => this.alert.httpErrorMessageAlert(err));
+        this.draftSubscription = this.http.post('/draftDataElement/' + this.elt.tinyId, this.elt).subscribe(res => {
+            this.draftSubscription = undefined;
+            this.savingText = 'Saved';
+            setTimeout(() => {
+                this.savingText = '';
+            }, 3000);
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     saveDataElement() {
         this.http.put('/dePublish/' + this.elt.tinyId, this.elt).subscribe(res => {
             if (res) {
-                this.loadDataElement(() => this.alert.addAlert('success', 'Data Element saved.'));
+                this.hasDrafts = false;
+                this.loadElt(() => this.alert.addAlert('success', 'Data Element saved.'));
             }
         }, () => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
     }

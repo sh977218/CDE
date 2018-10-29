@@ -4,11 +4,11 @@ exports.createIndexJson = {
     mappings: {
         board: {
             properties: {
-                type: {type: "string", "index": "not_analyzed"},
-                tags: {type: "string", index: "not_analyzed"},
-                shareStatus: {type: "string", index: "not_analyzed"},
-                updatedDate: {type: "date", index: "not_analyzed"},
-                createdDate: {type: "date", index: "not_analyzed"}
+                type: {type: "keyword"},
+                tags: {type: "keyword"},
+                shareStatus: {type: "keyword"},
+                updatedDate: {type: "date"},
+                createdDate: {type: "date"}
             }
         }
     }, settings: {

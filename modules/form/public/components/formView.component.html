@@ -43,8 +43,8 @@
         </div>
     </div>
     <h1 class="mobileViewH1 my-4">
-        <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadForm():loadPublished()"
-                          [hidden]="drafts?.length === 0">
+        <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadElt():loadPublished()"
+                          [hidden]="!hasDrafts">
         </cde-draft-slider>
         {{elt?.designations[0]?.designation}}
     </h1>
@@ -112,7 +112,7 @@
             <mat-icon>add_shopping_cart</mat-icon>
             <span class="d-none d-sm-inline ml-1">Pin CDEs</span>
         </button>
-        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyFormBtn" mat-raised-button
+        <button *ngIf="isOrgCurator(userService.user)" id="copyFormBtn" mat-raised-button
                 (click)="openCopyElementModal()">
             <mat-icon>content_copy</mat-icon>
             <span class="d-none d-sm-inline ml-1">Copy</span>
