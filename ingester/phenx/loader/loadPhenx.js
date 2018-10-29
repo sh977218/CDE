@@ -91,9 +91,6 @@ run = () => {
                     await newForm.save();
                     createdForm++;
                     console.log('createdForm: ' + createdForm);
-                } else if (updatedByLoader(existingForm)) {
-                    skipForm++;
-                    console.log('skipForm: ' + skipForm);
                 } else {
                     existingForm.imported = new Date().toJSON();
                     existingForm.markModified('imported');
@@ -113,7 +110,7 @@ run = () => {
             }
         }
         console.log('Finished measurement: ' + measureObj.browserId);
-        // await measure.remove();
+        //await measure.remove();
     }).then(async () => {
         console.log('measureCount: ' + measureCount);
         console.log('protocolCount: ' + protocolCount);

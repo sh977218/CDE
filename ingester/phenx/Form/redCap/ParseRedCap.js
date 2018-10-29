@@ -65,7 +65,43 @@ doInstrument = instrumentFilePath => {
         })
     })
 };
-exports.parseFormElements = async (protocol, attachments) => {
+
+function doDescriptive(sectionFes, redCapCde, attachments) {
+    let variableFieldName = redCapCde['Variable / Field Name'];
+    let fieldLabel = redCapCde['Field Label'];
+    let foundAttachment = _.find(attachments, a => a.filename === variableFieldName);
+    if (foundAttachment) sectionFes.instructions.value += '\n<figure><figcaption>' + fieldLabel + '</figcaption><img src="/data/' + foundAttachment.fileid + '"/></figure>';
+    else sectionFes.instructions.value += '\n' + fieldLabel;
+}
+
+async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
+    let newCdeObj = await CreateCDE.createCde(redCapCde, formId, protocol);
+    let newCde = new DataElement(newCdeObj);
+    let cdeId = newCdeObj.ids[0].id;
+    let existingCde = await DataElement.findOne({
+        archived: false,
+        'registrationState.registrationStatus': {$ne: 'Retired'},
+        'ids.id': cdeId
+    });
+    if (!existingCde) {
+        existingCde = await newCde.save();
+    } else if (updatedByLoader(existingCde)) {
+    } else {
+        existingCde.imported = new Date().toJSON();
+        existingCde.markModified('imported');
+        let diff = CompareCDE.compareCde(newCde, existingCde);
+        if (_.isEmpty(diff)) {
+            await existingCde.save();
+        } else {
+            await MergeCDE.mergeCde(existingCde, newCde);
+            await mongo_cde.updatePromise(existingCde, batchloader);
+        }
+    }
+    let question = await RedCapCdeToQuestion.convert(redCapCde, redCapCdes, existingCde, newForm);
+    return question;
+}
+
+exports.parseFormElements = async (protocol, attachments, newForm) => {
     let formElements = [{
         elementType: "section",
         label: '',
@@ -105,56 +141,39 @@ exports.parseFormElements = async (protocol, attachments) => {
         redCapCdes = await doInstrument(instrumentFilePath);
     }
 
-    let fes;
+    let newSection = true;
+    let fe;
+    let index = 0;
     for (let redCapCde of redCapCdes) {
-        let variableFieldName = redCapCde['Variable / Field Name']
+        index++;
         let fieldType = redCapCde['Field Type'];
-        let fieldLabel = redCapCde['Field Label'];
-
-        let currType = fieldType;
         if (fieldType === 'descriptive') {
-            let sectionFes = {
-                elementType: "section",
-                label: '',
-                instructions: {value: '', valueFormat: 'html'},
-                skipLogic: {condition: ''},
-                formElements: []
-            };
-            let foundAttachment = _.find(attachments, a => a.filename === variableFieldName);
-            if (foundAttachment)
-                sectionFes.instructions.value += '\n<figure><figcaption>' + fieldLabel + '</figcaption><img src="/data/' + foundAttachment.fileid + '"/></figure>';
-            else sectionFes.instructions.value += '\n' + fieldLabel;
-            fes = sectionFes.formElements;
-
-            formElements[0].formElements.push(sectionFes);
-        } else {
-            fes = formElements[0].formElements;
-            let newCdeObj = await CreateCDE.createCde(redCapCde, formId, protocol);
-            let newCde = new DataElement(newCdeObj);
-            let cdeId = newCdeObj.ids[0].id;
-            let existingCde = await DataElement.findOne({
-                archived: false,
-                'registrationState.registrationStatus': {$ne: 'Retired'},
-                'ids.id': cdeId
-            });
-            if (!existingCde) {
-                existingCde = await newCde.save();
-            } else if (updatedByLoader(existingCde)) {
-            } else {
-                existingCde.imported = new Date().toJSON();
-                existingCde.markModified('imported');
-                let diff = CompareCDE.compareCde(newCde, existingCde);
-                if (_.isEmpty(diff)) {
-                    await existingCde.save();
-                } else {
-                    await MergeCDE.mergeCde(existingCde, newCde);
-                    await mongo_cde.updatePromise(existingCde, batchloader);
-                }
+            if (newSection) {
+                formElements.push({
+                    elementType: "section",
+                    label: '',
+                    instructions: {value: '', valueFormat: 'html'},
+                    skipLogic: {condition: ''},
+                    formElements: []
+                });
+                newSection = false;
             }
-            let question = await RedCapCdeToQuestion.convert(redCapCde, redCapCdes, existingCde);
-            fes.push(question);
+            fe = formElements[formElements.length - 1];
+            doDescriptive(fe, redCapCde, attachments);
+        } else {
+            if (index === 1)
+                formElements.push({
+                    elementType: "section",
+                    label: '',
+                    instructions: {value: '', valueFormat: 'html'},
+                    skipLogic: {condition: ''},
+                    formElements: []
+                });
+            newSection = true;
+            fe = formElements[formElements.length - 1];
+            let question = await doQuestion(redCapCde, redCapCdes, formId, protocol, newForm);
+            fe.formElements.push(question);
         }
     }
-
-    return formElements;
+    newForm.formElements = formElements;
 };

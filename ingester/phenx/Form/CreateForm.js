@@ -24,7 +24,6 @@ exports.createForm = async (measure, protocol) => {
     let referenceDocuments = require('../Shared/ParseReferenceDocuments').parseReferenceDocuments(protocol);
     let attachments = await require('./ParseAttachments').parseAttachments(protocol);
     let classification = require('../Shared/ParseClassification').parseClassification(measure);
-    let formElements = await require('./ParseFormElements').parseFormElements(protocol, attachments);
 
     let newForm = {
         tinyId: generateTinyId(),
@@ -43,8 +42,11 @@ exports.createForm = async (measure, protocol) => {
         attachments,
         classification,
         properties,
-        formElements
+        formElements: [],
+        comments: []
     };
+
+    await require('./ParseFormElements').parseFormElements(protocol, attachments, newForm);
 
     return newForm;
 };

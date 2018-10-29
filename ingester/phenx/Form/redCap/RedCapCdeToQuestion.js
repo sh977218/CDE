@@ -1,7 +1,11 @@
 const capitalize = require('capitalize');
 const BranchLogic = require('./BranchLogic');
 
-exports.convert = async (redCapCde, redCapCdes, cde) => {
+const Comment = require('../../../../server/discuss/discussDb').Comment;
+
+const batchloader = require('../../../shared/updatedByLoader').batchloader;
+
+exports.convert = async (redCapCde, redCapCdes, cde, newForm) => {
     let fieldLabel = redCapCde['Field Label'].trim();
     let variableName = redCapCde['Variable / Field Name'];
     let required = redCapCde['Required Field?'] ? redCapCde['Required Field?'] : false;
@@ -9,7 +13,24 @@ exports.convert = async (redCapCde, redCapCdes, cde) => {
     let branchLogic = redCapCde['Branching Logic (Show field only if...)'];
     let skipLogicCondition = '';
     if (branchLogic && branchLogic.trim().length > 0) {
-        skipLogicCondition = BranchLogic.convertSkipLogic(branchLogic, redCapCdes);
+        if (branchLogic.indexOf('(') === -1)
+            skipLogicCondition = BranchLogic.convertSkipLogic(branchLogic, redCapCdes);
+        else {
+            let newComment = {
+                text: 'Phenx Batch loader was not able to create Skip Logic rule on Question ' + fieldLabel + '. Rules: ' + branchLogic,
+                user: batchloader,
+                created: new Date(),
+                pendingApproval: false,
+                linkedTab: 'description',
+                status: 'active',
+                replies: [],
+                element: {
+                    eltType: 'form',
+                    eltId: newForm.tinyId
+                }
+            };
+            await new Comment(newComment).save();
+        }
     }
 
     let question = {
@@ -39,7 +60,7 @@ exports.convert = async (redCapCde, redCapCdes, cde) => {
         question.question.datatypeNumber = cde.valueDomain.datatypeNumber ? cde.valueDomain.datatypeNumber : {};
     } else if (question.question.datatype === 'Text') {
         question.question.datatypeText = cde.valueDomain.datatypeText ? cde.valueDomain.datatypeText : {};
-        var validationType = data['Text Validation Type OR Show Slider Number'];
+        let validationType = data['Text Validation Type OR Show Slider Number'];
         if (validationType.trim() === 'notes')
             question.question.datatypeText.showAsTextArea = true;
     } else if (question.question.datatype === 'Date') {

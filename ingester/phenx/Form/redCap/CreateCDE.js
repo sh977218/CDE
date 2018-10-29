@@ -29,9 +29,7 @@ let RED_CAP_DATA_TYPE_MAP = {
     'time': 'Time',
     'integer': 'Number',
     'yesno': 'Value List',
-    '': '',
-    '': '',
-
+    '': ''
 };
 
 parseValueDomain = row => {
