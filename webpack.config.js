@@ -1,3 +1,4 @@
+const config = require('config');
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -47,6 +48,7 @@ module.exports = {
         }),
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
         new webpack.DefinePlugin({
+            INACTIVE_TIMEOUT: config.inactivityTimeout,
             NAVIGATION_HEIGHT: 56,
         }),
     ],
