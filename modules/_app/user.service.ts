@@ -1,13 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Injectable, Injector } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
-
-import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { ITEM_MAP } from 'shared/item';
 import { Cb, CbErr, Comment, NotificationSettings, NotificationTypesSettings, User } from 'shared/models.model';
 import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
@@ -15,7 +14,7 @@ import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
 @Injectable()
 export class UserService {
     private listeners: Cb[] = [];
-    private $mail: Subscription;
+    private mailSubscription: Subscription;
     private promise!: Promise<User>;
     searchTypeahead = ((text$: Observable<string>) =>
         text$.pipe(
@@ -47,8 +46,8 @@ export class UserService {
     clear() {
         this.user = undefined;
         this.userOrgs.length = 0;
-        if (this.$mail) this.$mail.unsubscribe();
-        this.$mail = undefined;
+        if (this.mailSubscription) this.mailSubscription.unsubscribe();
+        this.mailSubscription = undefined;
     }
 
     static getEltLink(c: Comment) {
@@ -63,7 +62,7 @@ export class UserService {
         return this.user && isOrgCurator(this.user);
     }
 
-    reload() {
+    reload(cb = _noop) {
         this.clear();
         this.promise = new Promise<User>((resolve, reject) => {
             this.http.get<User>('/server/user/').subscribe(response => {
@@ -73,7 +72,7 @@ export class UserService {
                 this.user = response;
                 UserService.validate(this.user);
                 this.setOrganizations();
-                this.$mail = this.http.get<{ count: number }>('/server/user/mailStatus').subscribe(response => {
+                this.mailSubscription = this.http.get<{ count: number }>('/server/user/mailStatus').subscribe(response => {
                     if (this.user) {
                         this.user.hasMail = response.count > 0;
                     }
@@ -83,9 +82,10 @@ export class UserService {
                 reject(err);
             });
         }).finally(() => {
-            this.listeners.forEach(cb => cb());
+            this.listeners.forEach(listener => listener());
         });
         this.promise.then(user => PushNotificationSubscriptionService.subscriptionServerUpdate(user && user._id)).catch(_noop);
+        this.promise.then(cb, cb);
     }
 
     setOrganizations() {
@@ -104,15 +104,15 @@ export class UserService {
     resetInactivityTimeout () {
         clearTimeout(this.logoutTimeout);
         if (this.loggedIn()) {
-            // @ts-ignore
-            this.logoutTimeout = setTimeout(() => {
+            this.logoutTimeout = window.setTimeout(() => {
                 if (this.loggedIn()) {
-                    this.reload();
-                    if (!this.loggedIn()) {
-                        this.dialog.open(InactivityLoggedOutComponent);
-                    }
+                    this.reload(() => {
+                        if (!this.loggedIn()) {
+                            this.dialog.open(InactivityLoggedOutComponent);
+                        }
+                    });
                 }
-            }, (window as any).inactivityTimeout);
+            }, INACTIVE_TIMEOUT);
         }
     }
 
