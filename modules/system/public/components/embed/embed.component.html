@@ -200,12 +200,12 @@
             <button class="btn btn-outline-dark" (click)="reloadEmbedsOrg(selection.org)" *ngIf="selection.cde || selection.form">
                 <mat-icon>cancel</mat-icon> Cancel</button>
 
-            <div *ngIf="selection?._id" class="mt15"> preview:
+            <div *ngIf="selection?._id" class="mt-5"> preview:
                 <span class="btn-group">
-                <button id="previewEnabled" class="btn  " [ngClass]="{'btn-success':previewOn}"
+                <button id="previewEnabled" class="btn flush" [ngClass]="{'btn-success':previewOn}"
                         (click)="enablePreview(true)"> On
                 </button>
-                <button id="previewDisabled" class="btn  " [ngClass]="{'btn-danger':!previewOn}"
+                <button id="previewDisabled" class="btn flush" [ngClass]="{'btn-danger':!previewOn}"
                         (click)="enablePreview(false)"> Off
                 </button>
             </span>

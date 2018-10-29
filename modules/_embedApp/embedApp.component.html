@@ -26,15 +26,13 @@
                            type="text" [(ngModel)]="searchSettings.q"
                            placeholder="Search..."
                            autocomplete="off">
-                    <span class="input-group-btn">
-                        <button id="search.submit" (click)="searchStarted = true;  search()" type="submit"
-                                mat-raised-button>
+                    <span class="input-group-append">
+                        <button id="search.submit" class="flush" (click)="searchStarted = true; search()" type="submit"
+                                mat-raised-button color="primary">
                             <mat-icon>search</mat-icon> Search
                         </button>
-                    </span>
-                    <span class="input-group-btn">
-                        <button id="search.reset" (click)="reset()" class="btn">
-                            <mat-icon>search</mat-icon> Reset
+                        <button id="search.reset" class="flush" (click)="reset()" mat-raised-button>
+                            <mat-icon>clear</mat-icon> Reset
                         </button>
                     </span>
                 </div>
@@ -59,21 +57,19 @@
 
     <div class="clearfix"></div>
 
-    <div>
-        <div *ngIf="searchStarted" id="searchResult">
-            <cde-embedded-cde-search-result
-                    *ngIf="searchType === 'cde'"
-                    [elts]="elts"
-                    [searchViewSettings]="searchViewSettings"
-                    [embed]="embed"
-            ></cde-embedded-cde-search-result>
-            <cde-embedded-form-search-result
-                    *ngIf="searchType === 'form'"
-                    [elts]="elts"
-                    [embed]="embed"
-                    [searchViewSettings]="searchViewSettings"
-            ></cde-embedded-form-search-result>
-        </div>
+    <div *ngIf="searchStarted" id="searchResult">
+        <cde-embedded-cde-search-result
+                *ngIf="searchType === 'cde'"
+                [elts]="elts"
+                [searchViewSettings]="searchViewSettings"
+                [embed]="embed"
+        ></cde-embedded-cde-search-result>
+        <cde-embedded-form-search-result
+                *ngIf="searchType === 'form'"
+                [elts]="elts"
+                [embed]="embed"
+                [searchViewSettings]="searchViewSettings"
+        ></cde-embedded-form-search-result>
 
         <ngb-pagination [collectionSize]="totalItems" [(page)]="searchSettings.page"
                         [maxSize]="10" (pageChange)="search()"></ngb-pagination>
