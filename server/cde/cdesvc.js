@@ -135,12 +135,17 @@ exports.byTinyIdList = (req, res) => {
     mongo_cde.DataElement.find({'archived': false}).where('tinyId')
         .in(tinyIdList)
         .exec(handleError({req, res}, dataElements => {
-        let result = dataElements.map(elt => {
-            let r = mongo_data.formatElt(elt);
-            if (!req.user) hideProprietaryCodes(r);
-            return r;
-        });
-        res.send(result);
+            let result = [];
+            dataElements = dataElements.map(elt => {
+                let r = mongo_data.formatElt(elt);
+                if (!req.user) hideProprietaryCodes(r);
+                return r;
+            });
+            _.forEach(tinyIdList, t => {
+                let c = _.find(dataElements, cde => cde.tinyId === t);
+                if (c) result.push(c);
+            });
+            res.send(result);
     }));
 };
 
