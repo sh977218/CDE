@@ -63,6 +63,7 @@ exports.parseValueDomain = nindsForms => {
     _inputRestrictionsTypeArray.forEach(inputRestrictions => {
         if (inputRestrictions === 'Free-Form Entry') {
             let datatype = DATA_TYPE_MAP[_dataTypeTypeArray[0]];
+            valueDomain.datatype = datatype;
             if (!datatype) {
                 console.log(' unknown dataType found:' + datatype);
                 process.exit(1);

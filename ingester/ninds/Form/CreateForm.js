@@ -9,7 +9,10 @@ const parseReferenceDocuments = require('./ParseReferenceDocuments').parseRefere
 const parseClassification = require('../Shared/ParseClassification').parseClassification;
 const parseFormElements = require('./ParseFormElements').parseFormElements;
 const parseCopyright = require('./ParseCopyright').parseCopyright;
+
 const today = new Date().toJSON();
+const batchloader = require('../../shared/updatedByNonLoader').batchloader;
+
 
 exports.createForm = async nindsForms => {
     let designations = parseDesignations(nindsForms);
@@ -24,21 +27,21 @@ exports.createForm = async nindsForms => {
 
     let newForm = {
         tinyId: generateTinyId(),
-        createdBy: {username: 'batchloader'},
-        sources: sources,
+        sources,
+        createdBy: batchloader,
         created: today,
         imported: today,
-        isCopyrighted: isCopyrighted,
+        isCopyrighted,
         noRenderAllowed: isCopyrighted,
         stewardOrg: {name: 'NINDS'},
         registrationState: {registrationStatus: "Qualified"},
-        designations: designations,
-        definitions: definitions,
-        referenceDocuments: referenceDocuments,
-        ids: ids,
+        designations,
+        definitions,
+        referenceDocuments,
+        ids,
         classification: [],
-        properties: properties,
-        formElements: formElements
+        properties,
+        formElements
     };
 
     parseClassification(nindsForms, newForm);

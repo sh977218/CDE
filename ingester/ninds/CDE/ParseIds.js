@@ -31,8 +31,8 @@ exports.parseIds = nindsForms => {
         console.log('_versionNumArray not 1');
         process.exit(1);
     }
-    if (_cadsrIdArray.length !== 1) {
-        console.log('_cadsrIdArray not 1');
+    if (_cadsrIdArray.length > 1) {
+        console.log('_cadsrIdArray greater than 1');
         process.exit(1);
     }
     if (_variableNameArray.length !== 1) {
@@ -43,20 +43,20 @@ exports.parseIds = nindsForms => {
     let ids = [];
     _cdeIdArray.forEach(v => {
         ids.push({
-            sourceName: 'NINDS',
+            source: 'NINDS',
             id: v,
             version: _versionNumArray[0]
         })
     });
     _cadsrIdArray.forEach(v => {
         ids.push({
-            sourceName: 'caDSR',
+            source: 'caDSR',
             id: v
         })
     });
     _variableNameArray.forEach(v => {
         ids.push({
-            sourceName: 'NINDS Variable Name',
+            source: 'NINDS Variable Name',
             id: v
         })
     });

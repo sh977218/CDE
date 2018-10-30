@@ -8,15 +8,24 @@ const CreateForm = require('../Form/CreateForm');
 const CompareForm = require('../Form/CompareForm');
 const MergeForm = require('../Form/MergeForm');
 
-const updatedByLoader = require('../../shared/updatedByLoader').updatedByLoader;
-const batchloader = require('../../shared/updatedByLoader').batchloader;
+const updatedByNonLoader = require('../../shared/updatedByNonLoader').updatedByNonLoader;
+const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
 let createdForm = 0;
 let sameForm = 0;
 let changeForm = 0;
 let skipForm = 0;
 
-doOneNindsForm = async formId => {
+async function retireCdes() {
+
+}
+
+async function retiredForms() {
+
+}
+
+
+doOneNindsFormById = async formId => {
     let nindsForms = await MigrationNindsModel.find({formId: formId}).lean();
     let newFormObj = await CreateForm.createForm(nindsForms);
     let newForm = new Form(newFormObj);
@@ -29,7 +38,7 @@ doOneNindsForm = async formId => {
         await newForm.save();
         createdForm++;
         console.log('createdForm: ' + createdForm);
-    } else if (updatedByLoader(existingForm)) {
+    } else if (updatedByNonLoader(existingForm)) {
         skipForm++;
         console.log('skipForm: ' + skipForm);
     } else {
@@ -52,10 +61,13 @@ doOneNindsForm = async formId => {
 run = async () => {
     let formIdList = await MigrationNindsModel.distinct('formId');
     for (let formId of formIdList) {
-        await doOneNindsForm(formId);
+        await doOneNindsFormById(formId);
+        await MigrationNindsModel.remove({formId: formId});
     }
 };
 
 
-run().then(() => {
+run().then(async () => {
+    await retireCdes();
+    await retiredForms();
 }, error => console.log(error));
