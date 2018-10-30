@@ -1,6 +1,6 @@
 const xml2js = require('xml2js');
 const js2xml = require('js2xmlparser');
-
+const _ = require("lodash");
 const authorization = require("../system/authorization");
 const adminSvc = require('../system/adminItemSvc.js');
 const elastic = require('./elastic');
