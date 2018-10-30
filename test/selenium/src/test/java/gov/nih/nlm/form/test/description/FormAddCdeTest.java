@@ -3,6 +3,7 @@ package gov.nih.nlm.form.test.description;
 import gov.nih.nlm.form.test.QuestionTest;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 
 public class FormAddCdeTest extends QuestionTest {
@@ -106,5 +107,17 @@ public class FormAddCdeTest extends QuestionTest {
         textPresent(cdeName5, By.id("designation_0"));
         textPresent("Question Text", By.id("designationTags_0"));
     }
+
+    private void addCdesByNames(String[] cdeNames) {
+        for (String cdeName : cdeNames) {
+            new Actions(driver).sendKeys("q").build().perform();
+            textPresent("Create Data Element");
+            // wait for modal animation
+            hangon(2);
+            new Actions(driver).sendKeys(cdeName).build().perform();
+            clickElement(By.id("createNewDataElement"));
+        }
+    }
+
 
 }
