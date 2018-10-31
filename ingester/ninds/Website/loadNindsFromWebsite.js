@@ -1,65 +1,100 @@
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
 
-let driver = new webdriver.Builder().forBrowser('chrome').build();
+let NindsModel = require('../../createMigrationConnection').NindsModel;
 
-const baseUrl = 'https://commondataelements.ninds.nih.gov/#page=Default';
 
-fetchAllLinks = async () => {
-    let diseases = [];
-    await driver.get(baseUrl);
-    let linkElements = await driver.findElements(By.xpath("//*[@id='cde_menu']/li"));
-    for (let linkElement of linkElements) {
-        let anchorElement = await linkElement.findElement(By.xpath('a'));
-        let disease = await anchorElement.getAttribute('textContent');
-        let href = await anchorElement.getAttribute('href');
-        diseases.push({url: href, name: disease.trim()})
+const doOnePage = require('./ParseNindsCdes').doOnePage;
+const parseDiseases = require('./ParseDiseases').parseDisease;
+
+doTrElement = async trElement => {
+    let form = {};
+    let thElements = await trElement.findElements(By.xpath('th'));
+    let tdElements = await trElement.findElements(By.xpath('td'));
+
+    let thElement = thElements[0];
+    let tdElement = tdElements[0];
+
+    let formNameText = await thElement.getText();
+    form.formName = formNameText.trim();
+
+    let formNoteElements = await thElement.findElements(By.css('formnote'));
+    if (formNoteElements.length === 1) {
+        let formNoteText = await formNoteElements[0].getText();
+        let formNote = formNoteText.trim();
+        form.formName.replace(formNote, '').trim();
     }
-    return diseases;
+
+    let formIdText = await thElement.getAttribute('id');
+    let formId = formIdText.trim();
+    form.formId = formId;
+
+    let anchorElements = await thElement.findElements(By.xpath('a'));
+    if (anchorElements.length === 1) {
+        let downloadLinkText = await anchorElements[0].getAttribute('href');
+        form.downloadLink = downloadLinkText.trim();
+    }
+
+    let copyrightElements = await thElement.findElements(By.css('copyright'));
+    if (copyrightElements.length === 1) {
+        let copyrightText = await copyrightElements[0].getText();
+        let copyright = copyrightText.trim();
+        form.copyright = true;
+        form.formName.replace(copyright, '').trim();
+    }
+
+    let cdeLinkElements = await tdElement.findElements(By.xpath('a'));
+    if (cdeLinkElements.length === 1) {
+        let hrefText = await cdeLinkElements[0].getAttribute('href');
+        let href = hrefText.trim();
+        form.cdes = await doOnePage(href);
+    }
+    return form;
 };
 
-doDomain = async domainElement => {
+doDomain = async (driver, disease, domainElement) => {
     let domainText = await domainElement.getText();
     let domain = domainText.trim();
 
     let id = await domainElement.getAttribute('id');
+    let cdeTableElement = await driver.findElement(By.xpath("//*[@id='" + id + "']/following-sibling::table"))
 
-    let cdeTableElement = await driver.findElement(By.xpath("//*[@id=" + id + "]/following-sibling::table"))
-
-    let trs = await cdeTableElement.findElements(By.xpath('tbody/tr'));
-    let subDomain = '';
-    for (let tr of trs) {
-        let ths = await tr.findElements(By.xpath('th'));
-        let tds = await tr.findElements(By.xpath('td'));
-        if (tds.length === 0) {
-            let subDomainText = await trs[0].getText();
+    let trElements = await cdeTableElement.findElements(By.xpath('tbody/tr'));
+    for (let trElement of trElements) {
+        let form;
+        let subDomain = '';
+        let thElements = await trElement.findElements(By.xpath('th'));
+        let tdElements = await trElement.findElements(By.xpath('td'));
+        if (tdElements.length === 0) {
+            let subDomainText = await thElements[0].getText();
             subDomain = subDomainText.trim();
         } else {
-            let th = ths[0];
-            let td = tds[0];
+            form = await doTrElement(trElement);
+            form.subDomain = subDomain;
+            form.domain = domain;
+            form.disease = disease.name;
         }
-
+        await new NindsModel(form).save();
     }
-    console.log('a');
-
 };
 
-doDisease = async disease => {
+async function doDisease(disease) {
+    let driver = new webdriver.Builder().forBrowser('chrome').build();
     await driver.get(disease.url);
-
-    let titleElement = await driver.getElement(By.xpath("//*[@id='bcrumbTab']//following-sibling::h2"));
+    let titleElement = await driver.findElement(By.xpath("//*[@id='bcrumbTab']//following-sibling::h2"));
     let titleText = await titleElement.getText();
     let title = titleText.trim();
+    disease.title = title;
 
-    let domainElements = await driver.getElements(By.xpath("//*[@class='cdetable']/preceding-sibling::a"));
+    let domainElements = await driver.findElements(By.xpath("//*[@class='cdetable']/preceding-sibling::a"));
     for (let domainElement of domainElements) {
-        await doDomain(domainElement);
+        await doDomain(driver, disease, domainElement);
     }
-
 };
 
 async function run() {
-    let diseases = await fetchAllLinks(driver);
+    await NindsModel.remove({});
+    let diseases = await parseDiseases();
     for (let disease of diseases) {
         await doDisease(disease);
     }

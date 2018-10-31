@@ -30,7 +30,7 @@ exports.MigrationLoincScaleMappingModel = migrationConn.model('MigrationLoincSca
 
 
 // NINDS
-exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new Schema({}, {
+exports.NindsModel = migrationConn.model('NINDS', new Schema({}, {
     strict: false,
     collection: 'ninds',
     usePushEach: true
