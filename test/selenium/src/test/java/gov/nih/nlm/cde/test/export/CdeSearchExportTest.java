@@ -33,7 +33,8 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
                 "\"Unified Parkinson's Disease Rating Scale (UPDRS) - symptomatic orthostasis indicator\",\"Does the patient have symptomatic orthostasis?\",\"Value List\",\"0; 1\",\"2\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C09927 v3; NINDS Variable Name: UPDRSSymOrtInd\"",
                 "1; 0.9; 0.8; 0.7; 0.6; 0.5; 0.4; 0.3; 0.2; 0.1; 0"
         };
-        
+
+        hangon(1);
         String fileLoc = downloadFolder + "/SearchExport.csv";
         try {
             String actual = new String(Files.readAllBytes(Paths.get(fileLoc)));
@@ -71,7 +72,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         }
 
         checkAlert("Export downloaded.");
-
+        hangon(1);
         String[] expected2 = {
                 "Name, Question Texts, Other Names, Value Type, Permissible Values, Code Names, Nb of Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, NINDS Variable Name, Source, Updated",
                 "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - light headedness on stand score\",\"LIGHT HEADEDNESS ON STANDING\",\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - light headedness on stand score\",\"Value List\",\"0; 1; 2; 3; 4\",\"Normal: No dizzy or foggy feelings; Slight: Dizzy or foggy feelings occur. However, they do not cause me troubles doing things; Mild: Dizzy or foggy feelings cause me to hold on to something, but I do not need to sit or lie back down; Moderate: Dizzy or foggy feelings cause me to sit or lie down to avoid fainting or falling; Severe: Dizzy or foggy feelings cause me to fall or faint.\",\"5\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"MDSUPDRSLiteHeadStndngScore\",\"NINDS\",\"\",\n",
