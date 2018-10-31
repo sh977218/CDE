@@ -228,7 +228,6 @@ exports.runOneCde = async (loinc, orgInfo) => {
 exports.runOneForm = async (loinc, orgInfo) => {
     let formCond = {
         archived: false,
-        source: 'LOINC',
         "registrationState.registrationStatus": {$not: /Retired/},
         'ids.id': loinc.loincId
     };

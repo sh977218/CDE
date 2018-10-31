@@ -21,7 +21,7 @@ let changeForm = 0;
 
 retireCdes = async () => {
     let cond = {
-        "ids.source": "PhenX",
+        "stewardOrg.name": "PhenX",
         "archived": false,
         "registrationState.registrationStatus": {$ne: "Retired"},
         "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
@@ -68,7 +68,7 @@ retireForms = async () => {
 };
 
 run = () => {
-    let cond = {};
+    let cond = {browserId: '250100'};
     MeasureModel.find(cond).cursor({batchSize: 1, useMongooseAggCursor: true})
         .eachAsync(async measure => {
             let measureObj = measure.toObject();
@@ -100,6 +100,7 @@ run = () => {
                             console.log('sameForm: ' + sameForm);
                         } else {
                             await MergeForm.mergeForm(existingForm, newForm);
+                            existingForm.changeNote = '';
                             await mongo_form.updatePromise(existingForm, batchloader);
                             changeForm++;
                             console.log('changeForm: ' + changeForm);

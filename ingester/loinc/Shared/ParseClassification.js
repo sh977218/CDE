@@ -4,13 +4,15 @@ const MigrationLoincClassificationMappingModel = require('../../createMigrationC
 
 exports.parseClassification = async (loinc, orgInfo) => {
     if (loinc.loinc) loinc = loinc.loinc;
+    if (!orgInfo.classificationOrgName) return [];
     let classification = '';
     let classificationType = '';
     let basicAttributes = loinc['BASIC ATTRIBUTES'];
     if (!basicAttributes) reject("No BASIC ATTRIBUTES found in " + loinc.loincId);
     let classTypeString = basicAttributes['Class/Type'];
     let classTypeArray = classTypeString.split('/');
-    if (classTypeArray.length === 0) reject('No Class/Type found in loinc id: ' + loinc.loincId);
+    if (classTypeArray.length === 0)
+        reject('No Class/Type found in loinc id: ' + loinc.loincId);
     else if (classTypeArray.length === 2) {
         classification = classTypeArray[0];
         classificationType = classTypeArray[1];

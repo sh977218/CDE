@@ -26,7 +26,7 @@ formatSkipLogic = function (equationText, redCapCdes) {
 
         result += '"' + redCapCde['Field Label'] + '"';
         equationText = equationText.replace(foundLabel, '').trim();
-        let foundSymbolArray = equationText.match(/[^']*\s/);
+        let foundSymbolArray = equationText.match(/<>|<=|>=|=|>|</);
         if (foundSymbolArray && foundSymbolArray.length === 1) {
             let foundSymbol = foundSymbolArray[0];
             if (!foundSymbol) {

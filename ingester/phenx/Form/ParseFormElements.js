@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const fs = require('fs');
-const AdmZip = require('adm-zip');
 
 const ParseRedCap = require('./redCap/ParseRedCap');
 
