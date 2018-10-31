@@ -54,7 +54,7 @@ exports.doOnePage = async href => {
         let _cdes = await doCdes(trElements);
         cdes = cdes.concat(_cdes);
         if (i < cdesTotalPage) {
-            driver.findElement(By.xpath("//*[ @id='viewer_ctl01_ctl01_ctl05_ctl00']/tbody/tr/td/input")).click();
+            await driver.findElement(By.xpath("//*[ @id='viewer_ctl01_ctl01_ctl05_ctl00']/tbody/tr/td/input")).click();
         }
     }
     return cdes;
