@@ -1,6 +1,6 @@
 const xml2js = require('xml2js');
 const js2xml = require('js2xmlparser');
-
+const _ = require("lodash");
 const authorization = require("../system/authorization");
 const adminSvc = require('../system/adminItemSvc.js');
 const elastic = require('./elastic');
@@ -132,13 +132,20 @@ exports.byTinyIdList = (req, res) => {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) return res.status(400).send();
     tinyIdList = tinyIdList.split(",");
-    mongo_cde.byTinyIdList(tinyIdList, handleError({req, res}, dataElements => {
-        let result = dataElements.map(elt => {
-            let r = mongo_data.formatElt(elt);
-            if (!req.user) hideProprietaryCodes(r);
-            return r;
-        });
-        res.send(result);
+    mongo_cde.DataElement.find({'archived': false}).where('tinyId')
+        .in(tinyIdList)
+        .exec(handleError({req, res}, dataElements => {
+            let result = [];
+            dataElements = dataElements.map(elt => {
+                let r = mongo_data.formatElt(elt);
+                if (!req.user) hideProprietaryCodes(r);
+                return r;
+            });
+            _.forEach(tinyIdList, t => {
+                let c = _.find(dataElements, cde => cde.tinyId === t);
+                if (c) result.push(c);
+            });
+            res.send(result);
     }));
 };
 
