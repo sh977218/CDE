@@ -11,8 +11,7 @@
       "name": "cdetest"
     },
     "formIndex": {
-      "name": "formtest",
-      "limit": "5000"
+      "name": "formtest"
     },
     "boardIndex": {
       "name": "boardtest"
