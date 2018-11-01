@@ -2,7 +2,7 @@
 
 <ng-template #welcomeSearch>
     <div class="container">
-        <div *ngIf="!addMode" class="jumbotron bg-white text-center d-none d-lg-block">
+        <div *ngIf="!addMode" class="jumbotron text-center d-none d-lg-block" style="background-color: #fff">
             <img [hidden]="embedded" id="homeNihCdeLogo" class="img-center-responsive"
                  alt="NIH Common Data Elements (CDE) log" src="/cde/public/assets/img/min/NIH-CDE.png"/>
         </div>
@@ -32,7 +32,7 @@
         </div>
         <div class="mt-3" id="tabs">
             <mat-tab-group>
-                <mat-tab id="browseByClassification" label="Browse by Classification" style="overflow: hidden">
+                <mat-tab label="Browse by Classification" style="overflow: hidden">
                     <div *ngIf="orgs?.length === 0">
                         <h1 class="pl130">
                             <mat-icon class="spin">auto_renew</mat-icon> Searching...
@@ -73,7 +73,7 @@
                         </div>
                     </div>
                 </mat-tab>
-                <mat-tab>
+                <mat-tab disabled>
                     <ng-template mat-tab-label>
                         <cde-search-export-button id="exportEverything" *ngIf="!embedded"
                               (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})"
@@ -161,8 +161,9 @@
             <span *ngIf="!searchedTerm" class="badge badge-secondary mx-1">All Terms</span>
             <span *ngIf="searchedTerm" class="badge badge-success mx-1">{{searchedTerm}}
                 <mat-icon id="removeTerm" class="remove-filter hand-cursor dark-icon pl-1"
-                   ngbTooltip="Remove this search term filter" placement="right" container="body"
-                   (click)="searchSettings.q = ''; doSearch()">cancel</mat-icon>
+                          aria-label="Remove this search term filter" matTooltip="Remove this search term filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                          (click)="searchSettings.q = ''; doSearch()">cancel</mat-icon>
             </span>
         </span>
         <span id="classif_filter">
@@ -170,39 +171,45 @@
                 All Classifications</span>
             <span *ngIf="hasSelectedClassifications()" class="badge badge-success mx-1">{{getSelectedClassifications()}}
                 <mat-icon id="removeClassifications" class="remove-filter hand-cursor dark-icon pl-1"
-                   ngbTooltip="Remove this classification filter" placement="right" container="body"
-                   (click)="clearSelectedClassifications()">cancel</mat-icon>
+                          aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                          (click)="clearSelectedClassifications()">cancel</mat-icon>
             </span>
         </span>
         <span *ngIf="altClassificationFilterMode" id="classifAlt_filter">and
             <span class="badge badge-success">{{getSelectedClassificationsAlt()}}
                 <mat-icon id="removeAltClassificationFilterMode" class="remove-filter hand-cursor dark-icon pl-1"
                    (click)="clearSelectedClassificationsAlt()"
-                   ngbTooltip="Remove this classifications filter" placement="right" container="body">cancel</mat-icon>
+                          aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right">cancel</mat-icon>
             </span>
         </span>
         <span id="topic_crumb">
             <span *ngIf="!hasSelectedTopics()" class="badge badge-secondary mx-1">All Topics</span>
             <span *ngIf="hasSelectedTopics()" class="badge badge-success mx-1">{{getSelectedTopics()}}
                 <mat-icon id="removeTopics" class="remove-filter hand-cursor dark-icon pl-1"
-                   ngbTooltip="Remove this topics filter" placement="right" container="body"
-                   (click)="clearSelectedTopics()">cancel</mat-icon>
+                          aria-label="Remove this topics filter" matTooltip="Remove this topics filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                          (click)="clearSelectedTopics()">cancel</mat-icon>
             </span>
         </span>
         <span id="status_crumb">
             <span *ngIf="!hasSelectedStatuses()" class="badge badge-secondary mx-1">All Statuses</span>
             <span *ngIf="hasSelectedStatuses()" class="badge badge-success mx-1">{{getSelectedStatuses()}}
                 <mat-icon id="removeStatuses" class="remove-filter hand-cursor dark-icon pl-1"
-                   ngbTooltip="Remove this registration statuses filter" placement="right" container="body"
-                   (click)="clearSelectedStatuses()">cancel</mat-icon>
+                          aria-label="Remove this registration statuses filter"
+                          matTooltip="Remove this registration statuses filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                          (click)="clearSelectedStatuses()">cancel</mat-icon>
             </span>
         </span>
         <span *ngIf="module === 'cde'" id="datatype_crumb">|
             <span *ngIf="!hasSelectedDatatypes()" class="badge badge-secondary mx-1">All Datatypes</span>
             <span *ngIf="hasSelectedDatatypes()" class="badge badge-success mx-1">{{getSelectedDatatypes()}}
                 <mat-icon id="removeDatatypes" class="remove-filter hand-cursor dark-icon pl-1"
-                   (click)="clearSelectedDatatypes()"
-                   ngbTooltip="Remove this datatypes filter" placement="right" container="body">cancel</mat-icon>
+                          aria-label="Remove this datatype filter" matTooltip="Remove this datatype filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                          (click)="clearSelectedDatatypes()">cancel</mat-icon>
             </span>
         </span>
         <small> ({{took / 1000}} secs)</small>
@@ -219,8 +226,10 @@
                         <mat-icon *ngIf="!altClassificationFilterMode && !embedded"
                                   id="altClassificationFilterModeToggle"
                                   class="hand-cursor" (click)="setAltClassificationFilterMode()" role="link"
-                                  ngbTooltip="Add a second classifications filter as an AND condition"
-                                  placement="right" style="font-size: 1rem; padding-top: 5px">add_box
+                                  aria-label="Add a second classifications filter as an AND condition"
+                                  matTooltip="Add a second classifications filter as an AND condition"
+                                  matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                                  style="font-size: 1rem; padding-top: 5px">add_box
                         </mat-icon>
                     </div>
                     <ng-container *ngFor="let t of aggregations.orgs.buckets; trackBy: trackByKey">
@@ -228,21 +237,25 @@
                             <ng-container *ngIf="t.key === getCurrentSelectedOrg()">
                                 <div *ngIf="getCurrentSelectedClassification()?.length; else classifSelf"
                                      id="classif-{{t.key}}" class="treeParent hand-cursor"
-                                     (click)="alterOrgFilter(t.key)" role="link"
-                                     [ngbTooltip]="t.longName" placement="right" container="body">
+                                     [attr.aria-label]="t.longName" [matTooltip]="t.longName"
+                                     matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                                     (click)="alterOrgFilter(t.key)" role="link">
                                     <mat-icon class="treeItemIcon">keyboard_arrow_left</mat-icon>
                                     <a class="treeItemText"> {{t.key}}</a>
                                 </div>
                                 <ng-template #classifSelf>
                                     <div id="classif-{{t.key}}" class="treeCurrent treeItemText"
-                                         [ngbTooltip]="t.longName" placement="right" container="body">{{t.key}}
+                                         [attr.aria-label]="t.longName" [matTooltip]="t.longName"
+                                         matTooltipClass="cdeTooltip" matTooltipPosition="right">{{t.key}}
                                     </div>
                                 </ng-template>
                             </ng-container>
                         </ng-container>
                         <ng-template #classifOrg>
                             <div id="classif-{{t.key}}" class="treeChild hand-cursor" (click)="alterOrgFilter(t.key)"
-                                 role="link" [ngbTooltip]="t.longName" placement="right" container="body">
+                                 role="link"
+                                 [attr.aria-label]="t.longName" [matTooltip]="t.longName"
+                                 matTooltipClass="cdeTooltip" matTooltipPosition="right">
                                 <mat-icon class="treeItemIcon">keyboard_arrow_right</mat-icon>
                                 <a class="treeItemText">{{t.key}} (<span
                                         id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)</a>
@@ -301,7 +314,8 @@
                     <ng-container *ngFor="let t of aggregations.statuses.statuses.buckets">
                         <div *ngIf="t.doc_count > 0" id="regstatus-{{t.key}}" class="treeItem hand-cursor"
                              (click)="addStatusFilter(t.key)" role="link"
-                             [ngbTooltip]="getRegStatusHelp(t.key)" placement="right" container="body">
+                             [attr.aria-label]="getRegStatusHelp(t.key)" [matTooltip]="getRegStatusHelp(t.key)"
+                             matTooltipClass="cdeTooltip" matTooltipPosition="right">
                             <ng-container
                                     *ngIf="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1; else else06">
                                 <mat-icon class="filter-cb">check_box</mat-icon>

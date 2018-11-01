@@ -5,16 +5,12 @@
         <dd id="dd_general_name" itemprop="name" class="col-9">{{elt.designations[0].designation}}</dd>
         <dt class="col-3 text-right">Steward:</dt>
         <dd id="dd_general_steward" class="col-9">
-            <ng-template #stewardTooltip>
-                <span *ngIf="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)"
-                      [innerHtml]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)">
-                </span>
-            </ng-template>
             <cde-inline-select-edit
-                    [ngbTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)?stewardTooltip:undefined"
-                    placement="bottom" [(value)]="elt.stewardOrg.name"
-                    [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
-                    [isAllowed]="canEdit">
+                    [(value)]="elt.stewardOrg.name" [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
+                    [isAllowed]="canEdit"
+                    [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)"
+                    [matTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)"
+                    matTooltipClass="cdeTooltipMultiline" matTooltipPosition="below">
             </cde-inline-select-edit>
         </dd>
         <ng-container *ngIf="elt.definitions[0]">

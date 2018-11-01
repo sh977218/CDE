@@ -50,7 +50,10 @@ gulp.task('thirdParty', gulp.series('npmRebuildNodeSass', function _thirdParty()
 }));
 
 gulp.task('createDist', gulp.series('thirdParty', function _createDist() {
-    return gulp.src('./modules/cde/public/css/style.css') // TODO: move style.css to modules/standard_theme.css
+    const sass = require('gulp-sass');
+    sass.compiler = require('node-sass'); // delay using node-sass until npmRebuildNodeSass is done
+    return gulp.src('./modules/common.scss')
+        .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest('./dist/common'));
 }));
 
