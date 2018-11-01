@@ -4,9 +4,9 @@ const deepDiff = require('deep-diff');
 const wipeUseless = require('../Shared/wipeUseless').wipeUseless;
 
 exports.compareForm = (newForm, existingForm) => {
-    let newFormObj = _.cloneDeep(newForm);
+    let newFormObj = newForm;
     if (newFormObj.toObject) newFormObj = newFormObj.toObject();
-    let existingFormObj = _.cloneDeep(existingForm);
+    let existingFormObj = existingForm;
     if (existingFormObj.toObject) existingFormObj = existingFormObj.toObject();
 
     [existingFormObj, newFormObj].forEach(obj => {
@@ -18,12 +18,11 @@ exports.compareForm = (newForm, existingForm) => {
 
         wipeUseless(obj);
 
-        if (!obj.valueDomain.uom) delete obj.valueDomain.uom;
-
         ['properties', 'referenceDocuments', 'ids'].forEach(p => {
             obj[p] = obj[p].filter(a => a.source === 'LOINC')
         })
 
     });
-    return deepDiff(existingFormObj, newFormObj);
+    let result = deepDiff(existingFormObj, newFormObj);
+    return result;
 };

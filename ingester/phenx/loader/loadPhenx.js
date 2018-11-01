@@ -112,8 +112,9 @@ run = () => {
             console.log('Finished measurement: ' + measureObj.browserId);
             //await measure.remove();
         }).then(async () => {
-        console.log('measureCount: ' + measureCount);
-        console.log('protocolCount: ' + protocolCount);
+        console.log('createdForm: ' + createdForm);
+        console.log('sameForm: ' + sameForm);
+        console.log('changeForm: ' + changeForm);
         await retireCdes();
         await retireForms();
     }, error => console.log(error));

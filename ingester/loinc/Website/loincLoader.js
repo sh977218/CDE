@@ -232,9 +232,10 @@ exports.runOneForm = async (loinc, orgInfo) => {
         'ids.id': loinc.loincId
     };
     let existingForm = await Form.findOne(formCond);
-    let newForm = await CreateForm.createForm(loinc, orgInfo);
+    let newFormObj = await CreateForm.createForm(loinc, orgInfo);
+    let newForm = new Form(newFormObj);
     if (!existingForm) {
-        existingForm = await new Form(newForm).save();
+        existingForm = await newForm.save();
     } else if (updatedByLoader(existingForm)) {
     } else {
         existingForm.imported = new Date().toJSON();
