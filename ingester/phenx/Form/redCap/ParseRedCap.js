@@ -102,13 +102,7 @@ async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
 }
 
 exports.parseFormElements = async (protocol, attachments, newForm) => {
-    let formElements = [{
-        elementType: "section",
-        label: '',
-        instructions: {value: '', valueFormat: ''},
-        skipLogic: {condition: ''},
-        formElements: []
-    }];
+    let formElements = [];
     let protocolId = protocol.protocolId;
 
     let zipFolder = redCapZipFolder + 'PX' + protocolId;

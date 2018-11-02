@@ -20,7 +20,7 @@ let tasks = [
     {
         sectionName: 'classification',
         function: parsingClassification,
-        xpath: "//p[@class='back'][1]/a"
+        xpath: "//*[@id='phenxTooltip']/following-sibling::p[@class='back'][1]/a"
     },
     {
         sectionName: 'protocols',

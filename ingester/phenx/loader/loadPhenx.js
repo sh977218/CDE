@@ -2,8 +2,6 @@ const _ = require('lodash');
 
 const MeasureModel = require('../../createMigrationConnection').MeasureModel;
 
-const mongo_Cde = require('../../../server/cde/mongo-cde');
-const DataElement = mongo_Cde.DataElement;
 const mongo_form = require('../../../server/form/mongo-form');
 const Form = mongo_form.Form;
 const CreateForm = require('../Form/CreateForm');
@@ -19,29 +17,6 @@ let createdForm = 0;
 let sameForm = 0;
 let changeForm = 0;
 
-retireCdes = async () => {
-    let cond = {
-        "stewardOrg.name": "PhenX",
-        "archived": false,
-        "registrationState.registrationStatus": {$ne: "Retired"},
-        "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
-        $or: [
-            {"updatedBy.username": "batchloader"},
-            {
-                $and: [
-                    {"updatedBy.username": {$exists: false}},
-                    {"createdBy.username": {$exists: true}}
-                ]
-            }
-        ]
-    };
-    let update = {
-        'registrationState.registrationStatus': 'Retired',
-        'registrationState.administrativeNote': 'Not present in import at ' + new Date().toJSON()
-    };
-    let retires = await DataElement.update(cond, update, {multi: true});
-    console.log(retires.nModified + ' cdes retired');
-};
 
 retireForms = async () => {
     let cond = {
@@ -63,8 +38,8 @@ retireForms = async () => {
         'registrationState.registrationStatus': 'Retired',
         'registrationState.administrativeNote': 'Not present in import at ' + new Date().toJSON()
     };
-    let retires = await Form.update(cond, update, {multi: true});
-    console.log(retires.nModified + ' forms retired');
+    let retiredFormsResult = await Form.update(cond, update, {multi: true});
+    console.log('retiredFormCount: ' + retiredFormsResult.nModified);
 };
 
 run = () => {
@@ -112,11 +87,13 @@ run = () => {
             console.log('Finished measurement: ' + measureObj.browserId);
             //await measure.remove();
         }).then(async () => {
+        await retireForms();
+        console.log('************************************************');
+        console.log('Finished PhenX Loader: ');
         console.log('createdForm: ' + createdForm);
+        console.log('changeForm: ' + changeForm);
         console.log('sameForm: ' + sameForm);
         console.log('changeForm: ' + changeForm);
-        await retireCdes();
-        await retireForms();
     }, error => console.log(error));
 };
 

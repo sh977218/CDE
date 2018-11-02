@@ -87,6 +87,7 @@ parseValueDomain = row => {
             valueDomain.datatype = 'text';
         }
     }
+    return valueDomain;
 };
 
 parseIds = (formId, row) => {

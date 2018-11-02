@@ -6,6 +6,7 @@ const connHelper = require('../system/connections');
 const logging = require('../system/logging');
 const cdediff = require("./cdediff");
 const elastic = require('./elastic');
+const sharedElastic = require('../system/elastic.js');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 const draftSchema = require('./schemas').draftSchema;
 
@@ -483,6 +484,24 @@ exports.findModifiedElementsSince = function (date, cb) {
         {$group: {"_id": "$tinyId"}}
     ]).exec(cb);
 
+};
 
-    //find({updated: {$gte: date}}).distinct('tinyId').limit(1000).sort({updated: -1}).exec(cb);
+exports.retireCdeByTinyId = async tinyId => {
+    let cde = await DataElement.findOne({tinyId: tinyId});
+    let query = sharedElastic.buildElasticSearchQuery({}, {searchTerm: tinyId});
+    sharedElastic.elasticsearch('form', query, {}, async function (err, result) {
+        if (err) throw err;
+        if (!result) {
+            cde.registrationState.registrationStatus = 'Retired';
+            await cde.save();
+        } else {
+            let _result = result.filter(r => r.registrationState.registrationStatus !== 'Retired');
+            if (!_result) {
+                cde.registrationState.registrationStatus = 'Retired';
+                await cde.save();
+            }
+        }
+    });
+
+
 };

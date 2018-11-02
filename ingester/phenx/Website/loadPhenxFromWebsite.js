@@ -21,6 +21,7 @@ async function doLoadPhenxMeasure() {
         measure['browserId'] = browserIdText.replace('#', '').trim();
         await new MeasureModel(measure).save();
         measureCount++;
+        console.log("measureCount: " + measureCount);
     }
 }
 
@@ -36,7 +37,3 @@ async function run() {
 run().then(() => {
     process.exit(1);
 }, err => console.log(err));
-
-setInterval(() => {
-    console.log("measureCount: " + measureCount);
-}, 5000);
