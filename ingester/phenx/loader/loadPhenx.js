@@ -43,7 +43,7 @@ retireForms = async () => {
 };
 
 run = () => {
-    let cond = {'browserId':'240300'};
+    let cond = {};
     MeasureModel.find(cond).cursor({batchSize: 1, useMongooseAggCursor: true})
         .eachAsync(async measure => {
             let measureObj = measure.toObject();
