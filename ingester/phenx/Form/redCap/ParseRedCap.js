@@ -9,6 +9,8 @@ const CreateCDE = require('./CreateCDE');
 const CompareCDE = require('../../CDE/CompareCDE');
 const MergeCDE = require('../../CDE/MergeCDE');
 
+const Comment = require('../../../../server/discuss/discussDb').Comment;
+
 const RedCapCdeToQuestion = require('./RedCapCdeToQuestion');
 
 const updatedByLoader = require('../../../shared/updatedByLoader').updatedByLoader;
@@ -133,6 +135,27 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
     let instrumentFileExist = fs.existsSync(instrumentFilePath);
     if (instrumentFileExist) {
         redCapCdes = await doInstrument(instrumentFilePath);
+    } else {
+        let _instrumentFilePath = zipFolder + '/' + 'PX' + protocolId + '/' + instrumentFileName;
+        let _instrumentFileExist = fs.existsSync(_instrumentFilePath);
+        if (_instrumentFileExist) {
+            redCapCdes = await doInstrument(_instrumentFilePath);
+        } else {
+            let csvComment = {
+                text: 'Phenx Batch loader was not able to find instrument.csv',
+                user: batchloader,
+                created: new Date(),
+                pendingApproval: false,
+                linkedTab: 'description',
+                status: 'active',
+                replies: [],
+                element: {
+                    eltType: 'form',
+                    eltId: newForm.tinyId
+                }
+            };
+            await new Comment(csvComment).save();
+        }
     }
     let newSection = true;
     let fe;
