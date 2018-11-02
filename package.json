@@ -208,7 +208,7 @@
     {
       "path": "./dist/app/cde.css",
       "compression": "none",
-      "maxSize": "604 kB"
+      "maxSize": "611 kB"
     },
     {
       "path": "./dist/embed/embed.js",
@@ -218,7 +218,7 @@
     {
       "path": "./dist/embed/embed.css",
       "compression": "none",
-      "maxSize": "237 kB"
+      "maxSize": "239 kB"
     },
     {
       "path": "./dist/fhir/fhir.js",

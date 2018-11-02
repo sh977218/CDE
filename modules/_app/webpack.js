@@ -12,8 +12,7 @@ const assets = [
     '/cde/public/assets/img/min/nih-cde-logo-simple.png',
     '/cde/public/assets/img/min/nih-cde-logo.png',
     '/cde/public/assets/img/min/usagov_logo.png',
-    '/cde/public/assets/img/min/NLM-logo.png',
-    '/app/styles-cde.css'
+    '/cde/public/assets/img/min/NLM-logo.png'
 ];
 
 module.exports = {
