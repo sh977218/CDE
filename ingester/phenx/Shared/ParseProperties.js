@@ -2,7 +2,12 @@ const _ = require('lodash');
 
 exports.parseProperties = (measure, protocol) => {
     let properties = [];
-    let prop1 = ['Specific Instructions', 'Protocol', 'Protocol Name From Source', 'Selection Rationale', 'Life Stage', 'Language', 'Participant', 'Personnel and Training Required', 'Equipment Needs', 'Mode of Administration', 'Derived Variables', 'Process and Review'];
+
+    let protocolHtml = protocol['Protocol'];
+    properties.push({key: 'Protocol', value: protocolHtml, valueFormat: 'html', source: 'PhenX'});
+
+
+    let prop1 = ['Specific Instructions', 'Protocol Name From Source', 'Selection Rationale', 'Life Stage', 'Language', 'Participant', 'Personnel and Training Required', 'Equipment Needs', 'Mode of Administration', 'Derived Variables', 'Process and Review'];
     _.forEach(prop1, p => {
         let value = protocol[p];
         if (value) {

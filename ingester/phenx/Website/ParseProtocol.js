@@ -26,7 +26,7 @@ let tasks = [
     },
     {
         sectionName: 'Protocol',
-        function: parseTextContent,
+        function: parseProtocolHtml,
         xpath: "//*[@id='element_PROTOCOL_TEXT']"
     },
     {
@@ -119,12 +119,17 @@ async function parseTextContent(element) {
     return text.trim();
 }
 
+async function parseProtocolHtml(element) {
+    let html = await element.getAttribute('innerHTML');
+    return html;
+}
+
 exports.parseProtocol = async function (link) {
     driver.get(link);
     let protocol = {classification: []};
     await driver.findElement(By.id('button_showfull')).click();
     let labelSections = await driver.findElements(By.id('label_VARIABLES'));
-    if( labelSections.length > 0)
+    if (labelSections.length > 0)
         await driver.findElement(By.id('label_VARIABLES')).click();
     for (let task of tasks) {
         let elements = await driver.findElements(By.xpath(task.xpath));
