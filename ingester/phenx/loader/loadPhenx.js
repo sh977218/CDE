@@ -87,8 +87,8 @@ run = () => {
             console.log('Finished measurement: ' + measureObj.browserId);
             //await measure.remove();
         }).then(async () => {
-        await retireForms();
         console.log('************************************************');
+        await retireForms();
         console.log('Finished PhenX Loader: ');
         console.log('createdForm: ' + createdForm);
         console.log('changeForm: ' + changeForm);

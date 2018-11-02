@@ -134,7 +134,6 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
     if (instrumentFileExist) {
         redCapCdes = await doInstrument(instrumentFilePath);
     }
-
     let newSection = true;
     let fe;
     let index = 0;

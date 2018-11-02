@@ -1,6 +1,9 @@
+const _ = require('lodash');
+const generateTinyId = require('../../../../server/system/mongo-data').generateTinyId;
+
 const classificationShared = require('@std/esm')(module)('../../../../shared/system/classificationShared');
 
-const generateTinyId = require('../../../../server/system/mongo-data').generateTinyId;
+const RED_CAP_DATA_TYPE_MAP = require('./REDCAP_DATATYPE_MAP').map;
 
 parseDesignations = row => {
     let designations = [];
@@ -22,23 +25,18 @@ parseDesignations = row => {
     return designations;
 };
 
-let RED_CAP_DATA_TYPE_MAP = {
-    'date_mdy': 'Date',
-    'notes': 'Text',
-    'file': 'File',
-    'time': 'Time',
-    'integer': 'Number',
-    'yesno': 'Value List',
-    '': ''
-};
-
 parseValueDomain = row => {
     let valueDomain = {};
 
-    let fieldType = row['Field Type'];
+    let fieldNote = row['Field Note'].trim();
+    let uomIndex = fieldNote.indexOf('| |');
+    if (uomIndex !== -1) valueDomain.uom = fieldNote.substr(0, uomIndex).trim();
+
+    let fieldType = row['Field Type'].trim();
     let validationType = row['Text Validation Type OR Show Slider Number'];
+    let choicesCalculationsORSliderLabels = row['Choices, Calculations, OR Slider Labels'];
     if (validationType) validationType = validationType.trim();
-    let datatype = RED_CAP_DATA_TYPE_MAP[validationType];
+    let datatype = RED_CAP_DATA_TYPE_MAP[fieldType];
     valueDomain.datatype = datatype;
     if (datatype === 'Date') {
         valueDomain.datatypeDate = {
@@ -56,9 +54,7 @@ parseValueDomain = row => {
         if (textValidationMax.length > 0) {
             valueDomain.datatypeNUmber.maxValue = Number(textValidationMax);
         }
-    } else {
-        valueDomain.datatype = 'Value List';
-        let choicesCalculationsORSliderLabels = row['Choices, Calculations, OR Slider Labels'];
+    } else if (datatype === 'Value List') {
         if (fieldType === 'yesno') {
             valueDomain.permissibleValues = [{
                 permissibleValue: '1',
@@ -67,25 +63,34 @@ parseValueDomain = row => {
                 permissibleValue: '0',
                 valueMeaningName: 'No'
             }];
-        } else if (fieldType === 'calc') {
-        } else if (choicesCalculationsORSliderLabels) {
-            let permissibleValues = [];
-            let pvArray = choicesCalculationsORSliderLabels.split('|');
-            pvArray.forEach(pvText => {
-                if (pvText) {
-                    let commaIndex = pvText.indexOf(',');
-                    let permissibleValue = pvText.substr(0, commaIndex);
-                    let valueMeaningName = pvText.substr(commaIndex + 1, pvText.length - 1);
-                    permissibleValues.push({
-                        permissibleValue: permissibleValue.trim(),
-                        valueMeaningName: valueMeaningName.trim()
-                    })
-                }
-            });
-            valueDomain.permissibleValues = permissibleValues;
         } else {
-            valueDomain.datatype = 'text';
+            if (!_.isEmpty(choicesCalculationsORSliderLabels)) {
+                let permissibleValues = [];
+                let pvArray = choicesCalculationsORSliderLabels.split('|');
+                pvArray.forEach(pvText => {
+                    if (pvText) {
+                        let commaIndex = pvText.indexOf(',');
+                        let permissibleValue = pvText.substr(0, commaIndex);
+                        let valueMeaningName = pvText.substr(commaIndex + 1, pvText.length - 1);
+                        permissibleValues.push({
+                            permissibleValue: permissibleValue.trim(),
+                            valueMeaningName: valueMeaningName.trim()
+                        })
+                    }
+                });
+                valueDomain.permissibleValues = permissibleValues;
+            } else {
+                valueDomain.datatype = 'Text';
+            }
         }
+    } else if (datatype === 'Text') {
+        if (validationType.trim() === 'number') {
+            valueDomain.datatype = 'Number';
+        }
+
+    } else if (datatype === 'File') {
+    } else {
+        throw 'Unknow datatype: ' + fieldType;
     }
     return valueDomain;
 };
