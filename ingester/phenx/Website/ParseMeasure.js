@@ -4,8 +4,6 @@ let By = webdriver.By;
 
 let ParseProtocol = require('./ParseProtocol');
 
-let driver = new webdriver.Builder().forBrowser('firefox').build();
-
 let tasks = [
     {
         sectionName: 'introduction',
@@ -78,6 +76,7 @@ async function parsingProtocolLinks(elements) {
 }
 
 exports.parseMeasure = async function (link) {
+    let driver = await new webdriver.Builder().forBrowser('firefox').build();
     driver.get(link);
     let measure = {};
     for (let task of tasks) {

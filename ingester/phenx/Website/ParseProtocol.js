@@ -1,8 +1,6 @@
 let webdriver = require('selenium-webdriver');
 let By = webdriver.By;
 
-let driver = new webdriver.Builder().forBrowser('firefox').build();
-
 let tasks = [
     {
         sectionName: 'Protocol Release Date',
@@ -125,6 +123,7 @@ async function parseProtocolHtml(element) {
 }
 
 exports.parseProtocol = async function (link) {
+    let driver = await new webdriver.Builder().forBrowser('firefox').build();
     driver.get(link);
     let protocol = {classification: []};
     await driver.findElement(By.id('button_showfull')).click();
@@ -136,7 +135,6 @@ exports.parseProtocol = async function (link) {
         if (elements && elements[0])
             protocol[task.sectionName] = await task.function(elements[0]);
     }
-
     let classificationArr = await driver.findElements(By.xpath("//p[@class='back'][1]/a"));
     for (let c of classificationArr) {
         let text = await c.getText();
