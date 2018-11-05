@@ -12,6 +12,7 @@ async function doLoadPhenxMeasure() {
     await driver.get(baseUrl);
     let measureXpath = "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td/div/div/a[2]";
     let measureLinks = await driver.findElements(webdriver.By.xpath(measureXpath));
+    measureLinks.splice(200);
     for (let measureLink of measureLinks) {
         console.log("There are " + measureLinks.length + " measurements to load.");
         let browserIdText = await measureLink.findElement(webdriver.By.css('span')).getText();
