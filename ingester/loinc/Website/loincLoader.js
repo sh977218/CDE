@@ -46,8 +46,6 @@ const url_prefix = 'http://r.details.loinc.org/LOINC/';
 const url_postfix = '.html';
 const url_postfix_para = '?sections=Comprehensive';
 
-let driver = new webdriver.Builder().forBrowser('firefox').build();
-
 const tasks = [
     {
         sectionName: 'PANEL HIERARCHY',
@@ -182,6 +180,7 @@ const tasks = [
 
 exports.runOneLoinc = loincId => {
     return new Promise(async (resolve, reject) => {
+        let driver = await new webdriver.Builder().forBrowser('firefox').build();
         let url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
         await driver.get(url);
         let loinc = {URL: url, loincId: loincId};
