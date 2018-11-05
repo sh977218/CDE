@@ -6,7 +6,7 @@ import {
     MatDialogModule,
     MatIconModule, MatInputModule,
     MatMenuModule,
-    MatProgressSpinnerModule, MatSelectModule
+    MatProgressSpinnerModule, MatSelectModule, MatTooltipModule
 } from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -48,6 +48,7 @@ const appRoutes: Routes = [
         MatMenuModule,
         MatSelectModule,
         MatProgressSpinnerModule,
+        MatTooltipModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
         TreeModule,

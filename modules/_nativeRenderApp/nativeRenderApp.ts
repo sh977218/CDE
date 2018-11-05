@@ -14,3 +14,6 @@ if (PRODUCTION) enableProdMode();
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { NativeRenderAppModule } from '_nativeRenderApp/nativeRenderApp.module';
 platformBrowserDynamic().bootstrapModule(NativeRenderAppModule);
+
+// must be after bootstrap to overload material styles
+import '../common.scss';

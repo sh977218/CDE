@@ -1,19 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { NgSelectModule } from '@ng-select/ng-select';
-
-import { BoardFormSummaryListComponent } from "./components/listView/boardFormSummaryList.component";
-import { BoardFormSummaryListContentComponent } from "./components/listView/boardFormSummaryListContent.component";
-import { BoardModule } from 'board/public/board.module';
-import { FormAccordionListComponent } from "./components/listView/formAccordionList.component";
-import { FormSearchComponent } from "./components/search/formSearch.component";
-import { FormSummaryListContentComponent } from "./components/listView/formSummaryListContent.component";
-import { SearchModule } from "search/search.module";
-import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
-import { WidgetModule } from "widget/widget.module";
-import { FormTableViewPreferencesComponent } from "search/tableViewPreferences/formTableViewPreferencesComponent";
 import {
     MatButtonModule,
     MatInputModule,
@@ -25,13 +12,38 @@ import {
     MatIconModule,
     MatListModule,
     MatSelectModule,
-    MatAutocompleteModule, MatTabsModule
+    MatAutocompleteModule, MatTabsModule, MatTooltipModule
 } from "@angular/material";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgSelectModule } from '@ng-select/ng-select';
+import { BoardModule } from 'board/public/board.module';
+import { BoardFormSummaryListComponent } from "form/public/components/listView/boardFormSummaryList.component";
+import { BoardFormSummaryListContentComponent } from "form/public/components/listView/boardFormSummaryListContent.component";
+import { FormAccordionListComponent } from "form/public/components/listView/formAccordionList.component";
+import { FormSummaryListContentComponent } from "form/public/components/listView/formSummaryListContent.component";
+import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
+import { FormSearchComponent } from "form/public/components/search/formSearch.component";
+import { SearchModule } from "search/search.module";
+import { FormTableViewPreferencesComponent } from "search/tableViewPreferences/formTableViewPreferencesComponent";
+import { WidgetModule } from "widget/widget.module";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
+        MatAutocompleteModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatDialogModule,
+        MatGridListModule,
+        MatIconModule,
+        MatInputModule,
+        MatListModule,
+        MatMenuModule,
+        MatPaginatorModule,
+        MatSelectModule,
+        MatTabsModule,
+        MatTooltipModule,
         NgbModule,
         NgSelectModule,
         // core
@@ -40,18 +52,6 @@ import {
         BoardModule,
         ReactiveFormsModule,
         SearchModule,
-        MatButtonModule,
-        MatAutocompleteModule,
-        MatPaginatorModule,
-        MatInputModule,
-        MatMenuModule,
-        MatCheckboxModule,
-        MatGridListModule,
-        MatIconModule,
-        MatListModule,
-        MatDialogModule,
-        MatSelectModule,
-        MatTabsModule,
     ],
     declarations: [
         BoardFormSummaryListComponent,
