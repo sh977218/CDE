@@ -18,3 +18,6 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { EmbedAppModule } from '_embedApp/embedApp.module';
 platformBrowserDynamic().bootstrapModule(EmbedAppModule/*, options*/).then(() => {
 });
+
+// must be after bootstrap to overload material styles
+import '../common.scss';

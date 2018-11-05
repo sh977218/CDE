@@ -50,7 +50,10 @@ gulp.task('thirdParty', gulp.series('npmRebuildNodeSass', function _thirdParty()
 }));
 
 gulp.task('createDist', gulp.series('thirdParty', function _createDist() {
-    return gulp.src('./modules/cde/public/css/style.css') // TODO: move style.css to modules/standard_theme.css
+    const sass = require('gulp-sass');
+    sass.compiler = require('node-sass'); // delay using node-sass until npmRebuildNodeSass is done
+    return gulp.src('./modules/common.scss')
+        .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest('./dist/common'));
 }));
 
@@ -179,7 +182,7 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
                 assetsDir: './dist/',
                 webpcss: ['concat', rev(), data(outputFile)],
                 webpcssLegacy: ['concat', rev()],
-                css: [minifyCss({target: './dist/app', rebase: true}), 'concat', rev(), data(outputFile)],
+                // css: [minifyCss({target: './dist/app', rebase: true}), 'concat', rev(), data(outputFile)],
                 cssLegacy: [minifyCss({target: './dist/app', rebase: true}), 'concat', rev()],
                 poly: [uglify({mangle: false}), 'concat', rev()],
                 polyLegacy: [uglify({mangle: false}), 'concat', rev()],
@@ -190,14 +193,13 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
         streamArray.push(useminTask);
         useminTask.on('end', function () {
             if (item.filename === 'index.ejs') {
-                if (useminOutputs.length !== 3) {
+                if (useminOutputs.length !== 2) {
                     console.log('useminOutputs:' + useminOutputs);
                     throw new Error('service worker creation failed');
                 }
                 gulp.src(config.node.buildDir + '/dist/app/sw.js') // does not preserve order
                     .pipe(replace('"/app/cde.css"', '"' + useminOutputs[0] + '"'))
-                    .pipe(replace('"/app/styles-cde.css"', '"' + useminOutputs[1] + '"'))
-                    .pipe(replace('"/app/cde.js"', '"' + useminOutputs[2] + '"'))
+                    .pipe(replace('"/app/cde.js"', '"' + useminOutputs[1] + '"'))
                     .pipe(replace('cde-cache-', 'cde-cache-v'))
                     .pipe(gulp.dest(config.node.buildDir + '/dist/app/'));
             }
