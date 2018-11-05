@@ -10,7 +10,6 @@ const appStatus = require('../siteAdmin/status');
 const elastic_system = require('../system/elastic');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const handleError = require('../log/dbLogger').handleError;
-const multer = require('multer');
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_cde);
@@ -27,17 +26,18 @@ exports.init = function (app, daoManager) {
 
     app.get("/deList/:tinyIdList?", exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
 
-    app.get("/draftDataElement/:tinyId", cdesvc.draftDataElement);
-    app.post("/draftDataElement/:tinyId", [authorization.canEditMiddleware], cdesvc.saveDraftDataElement);
-
-    app.delete("/draftDataElement/:tinyId", (req, res, next) => {
-        if (!authorizationShared.isOrgCurator(req.user)) return res.status(401).send();
+    const canEditItemByIdMiddleware = [authorization.isOrgCuratorMiddleware, (req, res, next) => {
         mongo_cde.byTinyId(req.params.tinyId, handleError({req, res}, dataElement => {
-            if (!dataElement) return res.send();
-            if (!authorizationShared.isOrgCurator(req.user, dataElement.stewardOrg.name)) return res.status(401).send();
+            if (!authorizationShared.canEditCuratedItem(req.user, dataElement)) {
+                return res.status(403).send();
+            }
             next();
         }));
-    }, cdesvc.deleteDraftDataElement);
+    }];
+
+    app.get("/draftDataElement/:tinyId", canEditItemByIdMiddleware, cdesvc.draftDataElement);
+    app.post("/draftDataElement/:tinyId", authorization.canEditMiddleware, cdesvc.saveDraftDataElement);
+    app.delete("/draftDataElement/:tinyId", canEditItemByIdMiddleware, cdesvc.deleteDraftDataElement);
 
     app.get("/draftDataElementById/:id", cdesvc.draftDataElementById);
 
@@ -61,18 +61,6 @@ exports.init = function (app, daoManager) {
 
     app.get('/elasticSearch/count', (req, res) => {
         elastic_system.nbOfCdes((err, result) => res.send("" + result));
-    });
-
-    app.post('/attachments/cde/add', multer(config.multer), (req, res) => {
-        adminItemSvc.addAttachment(req, res, mongo_cde);
-    });
-
-    app.post('/attachments/cde/remove', (req, res) => {
-        adminItemSvc.removeAttachment(req, res, mongo_cde);
-    });
-
-    app.post('/attachments/cde/setDefault', (req, res) => {
-        adminItemSvc.setAttachmentDefault(req, res, mongo_cde);
     });
 
     app.get('/moreLikeCde/:tinyId', exportShared.nocacheMiddleware, (req, res) => {

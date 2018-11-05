@@ -174,7 +174,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     removeAttachment(index) {
-        this.http.post<DataElement>('/attachments/cde/remove', {
+        this.http.post<DataElement>('/server/attachment/cde/remove', {
             index: index,
             id: this.elt._id
         }).subscribe(res => {
@@ -185,7 +185,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     setDefault(index) {
-        this.http.post<DataElement>('/attachments/cde/setDefault',
+        this.http.post<DataElement>('/server/attachment/cde/setDefault',
             {
                 index: index,
                 state: this.elt.attachments[index].isDefault,
@@ -205,7 +205,7 @@ export class DataElementViewComponent implements OnInit {
                 formData.append('uploadedFiles', files[i]);
             }
             formData.append('id', this.elt._id);
-            this.http.post<any>('/attachments/cde/add', formData).subscribe(
+            this.http.post<any>('/server/attachment/cde/add', formData).subscribe(
                 r => {
                     if (r.message) this.alert.addAlert('info', r);
                     else {

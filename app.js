@@ -4,6 +4,8 @@ const http = require('http');
 const httpProxy = require('http-proxy');
 const flash = require('connect-flash');
 const mongo_data_system = require('./server/system/mongo-data');
+const mongo_cde = require('./server/cde/mongo-cde');
+const mongo_form = require('./server/form/mongo-form');
 const config = require('config');
 const session = require('express-session');
 const favicon = require('serve-favicon');
@@ -234,6 +236,11 @@ express.response.render = function (view, module, msg) {
 };
 
 try {
+    app.use('/server/attachment', require('./server/attachment/attachmentRoute').module({}, [
+        {module: 'cde', db: mongo_cde},
+        {module: 'form', db: mongo_form}
+    ]));
+
     let discussModule = require("./server/discuss/discussRoutes").module({
         allComments: [authorization.isOrgAuthorityMiddleware],
         manageComment: [authorization.canApproveCommentMiddleware]

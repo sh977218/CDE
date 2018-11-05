@@ -1,6 +1,6 @@
 const async = require('async');
+const attachment = require('../server/attachment/attachment');
 const mongo_cde = require('../server/cde/mongo-cde');
-const mongo_data = require('../server/system/mongo-data');
 const DataElementModal = mongo_cde.DataElement;
 
 let count = 0;
@@ -10,8 +10,8 @@ let cursor = DataElementModal.find(cond).cursor();
 function removeAttachments(de, cb) {
     let attachments = de.attachments;
     if (attachments && attachments.length > 0) {
-        async.forEachSeries(attachments, function (attachment, doneOneAttachment) {
-            mongo_data.removeAttachmentIfNotUsed(attachment.fileid, doneOneAttachment);
+        async.forEachSeries(attachments, function (attachmentFile, doneOneAttachment) {
+            attachment.removeUnusedAttachment(attachmentFile.fileid, doneOneAttachment);
         }, function doneAllAttachments() {
             cb();
         });

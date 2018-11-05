@@ -92,7 +92,7 @@ function fetchWholeFormOutdated(form, callback) {
 
 function wipeRenderDisallowed(form, req, cb) {
     if (form && form.noRenderAllowed) {
-        authorization.checkOwnership(mongo_form, form._id, req, function (err, isYouAllowed) {
+        authorization.checkOwnership(req, mongo_form, form._id, function (err, isYouAllowed) {
             if (!isYouAllowed) form.formElements = [];
             cb();
         });

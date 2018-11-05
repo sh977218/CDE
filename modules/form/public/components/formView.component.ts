@@ -262,7 +262,7 @@ export class FormViewComponent implements OnInit {
     }
 
     removeAttachment(event) {
-        this.http.post<CdeForm>('/attachments/form/remove', {
+        this.http.post<CdeForm>('/server/attachment/form/remove', {
             index: event,
             id: this.elt._id
         }).subscribe(res => {
@@ -332,7 +332,7 @@ export class FormViewComponent implements OnInit {
     }
 
     setDefault(index: number) {
-        this.http.post<CdeForm>('/attachments/form/setDefault',
+        this.http.post<CdeForm>('/server/attachment/form/setDefault',
             {
                 index: index,
                 state: this.elt.attachments[index].isDefault,
@@ -352,7 +352,7 @@ export class FormViewComponent implements OnInit {
                 formData.append('uploadedFiles', files[i]);
             }
             formData.append('id', this.elt._id);
-            this.http.post<any>('/attachments/form/add', formData).subscribe(
+            this.http.post<any>('/server/attachment/form/add', formData).subscribe(
                 r => {
                     if (r.message) this.alert.addAlert('info', r);
                     else {
