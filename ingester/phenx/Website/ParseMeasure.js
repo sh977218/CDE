@@ -4,7 +4,7 @@ let By = webdriver.By;
 
 let ParseProtocol = require('./ParseProtocol');
 
-let driver = new webdriver.Builder().forBrowser().build();
+let driver = new webdriver.Builder().forBrowser('firefox').build();
 
 let tasks = [
     {
