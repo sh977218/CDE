@@ -1,6 +1,6 @@
 <ng-template #loginMenuTpl>
     <ng-template #loginLink>
-        <a (click)="loginSvc.goToLogin()" id="login_link"  routerLink="/login"
+        <a (click)="loginSvc.goToLogin()" id="login_link" routerLink="/login"
            class="mdl-navigation__link mdl-typography--text-uppercase">Login</a>
     </ng-template>
     <ng-container *ngIf="userService.user; else loginLink">
@@ -86,8 +86,8 @@
                     <a id="menu_qb_link" routerLink="/quickBoard"
                        class="mdl-navigation__link mdl-typography--text-uppercase"
                        [textContent]="'Quick&nbsp;Board&nbsp;(' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"></a>
-
-
+                    <a id="resourcesLink" routerLink="/resources"
+                       class="mdl-navigation__link mdl-typography--text-uppercase">Resources&nbsp;</a>
                     <a id="helpLink" class="mdl-navigation__link mdl-typography--text-uppercase"
                        [matMenuTriggerFor]="helpMenu">Help&nbsp;▼</a>
                     <mat-menu #helpMenu="matMenu">
@@ -104,7 +104,7 @@
 
                     <a routerLink="/searchPreferences"
                        id="searchSettings" class="mdl-navigation__link mdl-typography--text-uppercase">
-                       <i class="material-icons">settings</i>
+                        <i class="material-icons">settings</i>
                     </a>
 
                 </nav>

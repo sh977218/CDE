@@ -33,6 +33,7 @@ const appRoutes: Routes = [
     {path: 'orgAuthority', loadChildren: 'system/public/orgAuthority.module#OrgAuthorityModule', canLoad: [OrgAuthorityGuard]},
     {path: 'orgComments', loadChildren: 'discuss/discussEntry.module#DiscussEntryModule', canLoad: [OrgCuratorGuard]},
     {path: 'quickBoard', loadChildren: 'quickBoard/quickBoard.module#QuickBoardModule'},
+    {path: 'resources', loadChildren: 'resources/resources.module#ResourcesModule'},
     {path: 'profile', loadChildren: 'system/public/profile.module#ProfileModule', canLoad: [LoggedInGuard]},
     {path: 'whatsNew', loadChildren: 'system/public/whatsNew.module#WhatsNewModule'},
     {
