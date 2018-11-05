@@ -36,12 +36,13 @@ export class OrgHelperService  {
         if (this.orgsDetailedInfo[orgName]) {
             let anOrg = this.orgsDetailedInfo[orgName];
             if (anOrg.longName || anOrg.mailAddress || anOrg.emailAddress || anOrg.phoneNumber || anOrg.uri) {
-                let orgDetailsInfoHtml = '<strong>Organization Details</strong><br/><br/>Name: ' + anOrg.name;
-                orgDetailsInfoHtml += (anOrg.longName ? '<br/>Long name: ' + anOrg.longName : '');
-                orgDetailsInfoHtml += (anOrg.mailAddress ? '<br/>Mailing address: ' + anOrg.mailAddress : '');
-                orgDetailsInfoHtml += (anOrg.emailAddress ? '<br/>E-mail address: ' + anOrg.emailAddress : '');
-                orgDetailsInfoHtml += (anOrg.phoneNumber ? '<br/>Phone number: ' + anOrg.phoneNumber : '');
-                orgDetailsInfoHtml += (anOrg.uri ? '<br/>Website: ' + anOrg.uri : '');
+                let orgDetailsInfoHtml = 'Organization Details';
+                orgDetailsInfoHtml += '\nName: ' + anOrg.name;
+                if (anOrg.longName) orgDetailsInfoHtml += '\nLong name: ' + anOrg.longName;
+                if (anOrg.mailAddress) orgDetailsInfoHtml += '\nMailing address: ' + anOrg.mailAddress;
+                if (anOrg.emailAddress) orgDetailsInfoHtml += '\nE-mail address: ' + anOrg.emailAddress;
+                if (anOrg.phoneNumber) orgDetailsInfoHtml += '\nPhone number: ' + anOrg.phoneNumber;
+                if (anOrg.uri) orgDetailsInfoHtml += '\nWebsite: ' + anOrg.uri;
 
                 return orgDetailsInfoHtml;
             }

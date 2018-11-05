@@ -41,6 +41,13 @@ export const searchStyles: string = `
         font-size: 16.5px;
         vertical-align: middle;
     }
+    :host ::ng-deep .browseLink {
+        color: #337ab7;
+    }
+    :host ::ng-deep .browseLink:hover {
+        color: #23527c;
+        text-decoration: underline;
+    }
     .treeTitle {
         display: inline-block;
         font-weight: bold;
