@@ -5,6 +5,7 @@ const boardElasticSearchMapping = require('../board/elasticSearchMapping');
 exports.createIndexJson = {
     "mappings": {
         "dataelement": {
+            "date_detection": false,
             "properties": {
                 "stewardOrg": {
                     "properties": {
@@ -117,6 +118,7 @@ exports.createIndexJson = {
 exports.createFormIndexJson = {
     "mappings": {
         "form": {
+            "date_detection": false,
             "properties": {
                 "stewardOrg": {properties: {"name": {"type": "keyword"}}}
                 , "flatClassifications": {"type": "keyword"}
@@ -168,6 +170,7 @@ exports.createFormIndexJson = {
             }
         }
     }, settings: {
+        "index.mapping.total_fields.limit": 2000,
         index: {
             "number_of_replicas": config.elastic.number_of_replicas,
             analysis: {
