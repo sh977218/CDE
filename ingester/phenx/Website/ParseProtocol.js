@@ -1,7 +1,7 @@
 let webdriver = require('selenium-webdriver');
 let By = webdriver.By;
 
-let driver = new webdriver.Builder().forBrowser('chrome').build();
+let driver = new webdriver.Builder().forBrowser().build();
 
 let tasks = [
     {
