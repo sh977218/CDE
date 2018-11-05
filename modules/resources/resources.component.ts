@@ -5,5 +5,5 @@ import { Component } from '@angular/core';
     templateUrl: './resources.component.html'
 })
 export class ResourcesComponent {
-    pictures = [{url: '1'}, {url: '2'}, {url: '3'}];
+    pictures = [{src: '/system/public/img/1.png'}, {src: '/system/public/img/2.png'}, {src: '/system/public/img/3.png'}];
 }
