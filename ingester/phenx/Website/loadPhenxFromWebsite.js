@@ -7,8 +7,9 @@ let ParseMeasure = require('./ParseMeasure');
 
 let measureCount = 0;
 
+let driver = new webdriver.Builder().forBrowser('firefox').build();
+
 async function doLoadPhenxMeasure() {
-    let driver = await new webdriver.Builder().forBrowser('firefox').build();
     await driver.get(baseUrl);
     let measureXpath = "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td/div/div/a[2]";
     let measureLinks = await driver.findElements(webdriver.By.xpath(measureXpath));
