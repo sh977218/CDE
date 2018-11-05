@@ -1,4 +1,3 @@
-import _find from 'lodash/find';
 
 export const checkPvUnicity = function (valueDomain) {
     var result = {allValid: true};

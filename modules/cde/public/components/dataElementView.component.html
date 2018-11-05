@@ -27,6 +27,13 @@
             <mat-icon>warning</mat-icon>
             <strong>Note:</strong> You may not edit this CDE because it is standard.
         </div>
+        <div *ngIf="validationErrors.length > 0" class="alert alert-warning mt20" role="alert">
+            <mat-icon>warning</mat-icon>
+            The following errors need to be corrected in order to Publish:
+            <ul class="list-inline">
+                <li *ngFor="let error of validationErrors">{{error.message}}</li>
+            </ul>
+        </div>
     </div>
     <h1 class="mobileViewH1 my-4">
         <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadElt():loadPublished()"
@@ -81,7 +88,7 @@
                 <mat-icon>delete</mat-icon>
                 <span class="d-none d-sm-inline-block"> Delete Draft </span>
             </button>
-            <button *ngIf="elt.valueDomain.allValid" id="openSave" mat-raised-button color="primary"
+            <button *ngIf="!validationErrors?.length" id="openSave" mat-raised-button color="primary"
                     (click)="saveModal.openSaveModal()">
                 <mat-icon>publish</mat-icon>
                 <span class="d-none d-sm-inline-block"> Publish</span>
@@ -214,9 +221,6 @@
                               (highlightedTabsChange)="loadHighlightedTabs($event)"
                               [eltName]="elt.designations[0].designation"></cde-discuss-area>
         </div>
-    </div>
-    <div *ngIf="elt.valueDomain.allValid === false" class="row alert alert-danger mt20"
-         role="alert">There are validation errors. {{elt.valueDomain.pvNotValidMsg}}
     </div>
     <cde-save-modal #saveModal [elt]="elt" (save)="saveDataElement()"></cde-save-modal>
     <cde-delete-modal #deleteModal (confirm)="removeDraft();"></cde-delete-modal>

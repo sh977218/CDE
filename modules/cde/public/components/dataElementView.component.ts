@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { ActivatedRoute, Data, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
@@ -13,7 +13,6 @@ import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Comment } from 'shared/models.model';
@@ -53,6 +52,7 @@ export class DataElementViewComponent implements OnInit {
     savingText: String;
     tinyId;
     url;
+    validationErrors: { message: string }[] = [];
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
@@ -241,12 +241,13 @@ export class DataElementViewComponent implements OnInit {
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
-        this.draftSubscription = this.http.post('/draftDataElement/' + this.elt.tinyId, this.elt).subscribe(res => {
+        this.draftSubscription = this.http.post('/draftDataElement/' + this.elt.tinyId, this.elt).subscribe(() => {
             this.draftSubscription = undefined;
             this.savingText = 'Saved';
             setTimeout(() => {
                 this.savingText = '';
             }, 3000);
+            this.validate();
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
@@ -257,6 +258,17 @@ export class DataElementViewComponent implements OnInit {
                 this.loadElt(() => this.alert.addAlert('success', 'Data Element saved.'));
             }
         }, () => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
+    }
+
+    validate() {
+        this.validationErrors.length = 0;
+        this.elt.definitions.forEach(def => {
+            if (!def.definition || !def.definition.length) {
+                this.validationErrors.push({message: "Definition may not be empty."});
+            }
+        });
+        let pvErrors = checkPvUnicity(this.elt.valueDomain);
+        if (!pvErrors.allValid) this.validationErrors.push({message: pvErrors.pvNotValidMsg});
     }
 
     viewChanges() {
