@@ -88,8 +88,7 @@
                 <mat-icon>delete</mat-icon>
                 <span class="d-none d-sm-inline-block"> Delete Draft </span>
             </button>
-            <button *ngIf="!validationErrors?.length" id="openSave" mat-raised-button color="primary"
-                    (click)="saveModal.openSaveModal()">
+            <button id="openSave" mat-raised-button color="primary" (click)="publish()">
                 <mat-icon>publish</mat-icon>
                 <span class="d-none d-sm-inline-block"> Publish</span>
             </button>

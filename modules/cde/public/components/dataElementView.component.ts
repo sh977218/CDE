@@ -17,8 +17,9 @@ import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Comment } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { checkPvUnicity } from 'shared/de/deValidator';
+import { checkPvUnicity, checkDefinitions } from 'shared/de/deValidator';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
+import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 
 @Component({
     selector: 'cde-data-element-view',
@@ -35,6 +36,7 @@ import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationSha
 export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent') commentAreaComponent: DiscussAreaComponent;
     @ViewChild('copyDataElementContent') copyDataElementContent: TemplateRef<any>;
+    @ViewChild('saveModal') saveModal!: SaveModalComponent;
     @ViewChild('tabSet') tabSet: NgbTabset;
     commentMode;
     currentTab = 'general_tab';
@@ -99,6 +101,7 @@ export class DataElementViewComponent implements OnInit {
             if (elt.isDraft) this.hasDrafts = true;
             DataElement.validate(elt);
             this.elt = elt;
+            this.validate();
             this.loadComments(this.elt);
             this.deId = this.elt._id;
             if (this.userService.user) {
@@ -135,6 +138,14 @@ export class DataElementViewComponent implements OnInit {
 
     loadPublished(cb = _noop) {
         this.eltLoad(this.deViewService.fetchPublished(this.route.snapshot.queryParams), cb);
+    }
+
+    publish() {
+        if (this.validationErrors.length) {
+            this.alert.addAlert("danger", "Please fix all errors before publishing");
+        } else {
+            this.saveModal.openSaveModal();
+        }
     }
 
     openCopyElementModal() {
@@ -262,11 +273,8 @@ export class DataElementViewComponent implements OnInit {
 
     validate() {
         this.validationErrors.length = 0;
-        this.elt.definitions.forEach(def => {
-            if (!def.definition || !def.definition.length) {
-                this.validationErrors.push({message: "Definition may not be empty."});
-            }
-        });
+        let defError = checkDefinitions(this.elt);
+        if (!defError.allValid) this.validationErrors.push({message: defError.message});
         let pvErrors = checkPvUnicity(this.elt.valueDomain);
         if (!pvErrors.allValid) this.validationErrors.push({message: pvErrors.pvNotValidMsg});
     }

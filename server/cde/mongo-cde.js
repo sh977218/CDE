@@ -20,7 +20,10 @@ schemas.dataElementSchema.post('remove', function (doc, next) {
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
-    if (cdeError && cdeError.pvNotValidMsg) {
+    if (!cdeError) {
+        cdeError = deValidator.checkDefinitions(self);
+    }
+    if (cdeError && !cdeError.allValid) {
         logging.errorLogger.error(cdeError, {
             stack: new Error().stack,
             details: JSON.stringify(cdeError)

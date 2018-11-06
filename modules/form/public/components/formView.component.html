@@ -138,7 +138,7 @@
                     (click)="deleteModal.openDeleteModal()">
                 <mat-icon>delete</mat-icon><span class="d-none d-sm-inline-block ml-1">Delete Draft</span>
             </button>
-            <button id="openSave" *ngIf="!validationErrors?.length" mat-raised-button color="primary" (click)="publish()">
+            <button id="openSave" mat-raised-button color="primary" (click)="publish()">
                 <mat-icon>publish</mat-icon><span class="d-none d-sm-inline-block ml-1">Publish</span>
             </button>
         </ng-container>

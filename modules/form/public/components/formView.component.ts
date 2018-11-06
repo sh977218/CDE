@@ -18,7 +18,6 @@ import { UcumService } from 'form/public/ucum.service';
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Cb, Comment, ObjectId } from 'shared/models.model';
@@ -295,7 +294,7 @@ export class FormViewComponent implements OnInit {
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
-        this.draftSubscription = this.http.post<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt).subscribe(res => {
+        this.draftSubscription = this.http.post<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt).subscribe(() => {
             this.draftSubscription = undefined;
             this.savingText = 'Saved';
             setTimeout(() => {
@@ -371,8 +370,8 @@ export class FormViewComponent implements OnInit {
         this.validationErrors.length = 0;
         this.validateNoFeCycle();
         this.validateSkipLogic();
-        this.validateUoms(cb);
         this.validateDefinitions();
+        this.validateUoms(cb);
     }
 
     validateDefinitions() {
