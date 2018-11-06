@@ -44,28 +44,30 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         textNotPresent("There are validation errors");
 
         changeField(0, "pv2");
-        textPresent("There are validation errors. Duplicate Permissible Value");
+        textPresent("The following errors need to be corrected in order to Publish");
+        textPresent("Duplicate Permissible Value");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-notValid")));
         Assert.assertEquals(0, driver.findElements(By.id("openSave")).size());
 
         changeField(1, "pv1");
-        textNotPresent("There are validation errors");
+        textNotPresent("Duplicate Permissible Value");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
         addPv("pv5", "name1", "code5", "LOINC");
-        textPresent("There are validation errors. Duplicate Code Name");
+        textNotPresent("Duplicate Code Name");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
         Assert.assertEquals(0, driver.findElements(By.id("openSave")).size());
         clickElement(By.id("pvRemove_4"));
-        textNotPresent("There are validation errors");
+        textNotPresent("The following errors need to be corrected in order to Publish");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
         addPv("pv5", "name5", "code2", "NCI");
-        textPresent("There are validation errors. Duplicate Code");
+        textPresent("The following errors need to be corrected in order to Publish");
+        textPresent("Duplicate Code");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
         Assert.assertEquals(0, driver.findElements(By.id("openSave")).size());
         clickElement(By.id("pvRemove_4"));
-        textNotPresent("There are validation errors");
+        textNotPresent("Duplicate Code");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
         clickElement(By.id("openAddPermissibleValueModelBtn"));
