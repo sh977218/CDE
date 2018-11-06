@@ -11,3 +11,5 @@ loadPhenx script only retires PhenX Forms
 
 If previous PhenX forms, even with LOINC id, do not present in the current load, the forms will be retired.
 
+
+LOINC CDE/Form loaded through PhenX steward Org is LOINC, empty classification
