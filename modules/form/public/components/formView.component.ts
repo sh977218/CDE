@@ -171,6 +171,7 @@ export class FormViewComponent implements OnInit {
             if (elt.isDraft) this.hasDrafts = true;
             CdeForm.validate(elt);
             this.elt = elt;
+            this.validate();
             this.loadComments(this.elt);
             this.formId = this.elt._id;
             this.missingCdes = areDerivationRulesSatisfied(this.elt);
@@ -371,6 +372,15 @@ export class FormViewComponent implements OnInit {
         this.validateNoFeCycle();
         this.validateSkipLogic();
         this.validateUoms(cb);
+        this.validateDefinitions();
+    }
+
+    validateDefinitions() {
+        this.elt.definitions.forEach(def => {
+            if (!def.definition || !def.definition.length) {
+                this.validationErrors.push(new LocatableError("Definition may not be empty.", undefined));
+            }
+        });
     }
 
     validateNoFeCycle() {
