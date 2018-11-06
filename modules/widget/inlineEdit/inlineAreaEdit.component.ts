@@ -33,6 +33,7 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     @Input() model!: string;
     @Input() inputType = 'text';
     @Input() isAllowed = false;
+    @Input() threshold = 500;
     @Output() modelChange = new EventEmitter<string>();
     @Input() defFormat = '';
     @Output() defFormatChange = new EventEmitter<string>();

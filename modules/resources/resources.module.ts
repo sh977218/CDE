@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { MatGridListModule } from '@angular/material';
 
 import { ResourcesComponent } from 'resources/resources.component';
+import { WidgetModule } from 'widget/widget.module';
 
 
 const qbRoutes: Routes = [
@@ -15,7 +16,8 @@ const qbRoutes: Routes = [
     imports: [
         CommonModule,
         RouterModule.forChild(qbRoutes),
-        MatGridListModule
+        MatGridListModule,
+        WidgetModule
     ],
     declarations: [ResourcesComponent],
     entryComponents: [ResourcesComponent],
