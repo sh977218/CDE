@@ -1,5 +1,3 @@
-<div>
-    <cde-inline-area-edit *ngIf="resource" [(model)]="resource.body" [defFormat]="'html'" [isAllowed]="true"
-                          [threshold]="1" (modelChange)="save()">
-    </cde-inline-area-edit>
-</div>
+<cde-inline-area-edit [(model)]="resource.body" [defFormat]="'html'" [isAllowed]="true"
+                      [threshold]="1" (modelChange)="save()">
+</cde-inline-area-edit>

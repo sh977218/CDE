@@ -9,6 +9,8 @@ import { OrgCuratorGuard } from '_app/routerGuard/orgCuratorGuard';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { IdentifierSourcesResolve } from 'system/public/components/searchPreferences/identifier-source.resolve.service';
 import { IEGuard } from '_app/routerGuard/ieGuard';
+import { ResourcesComponent } from 'resources/resources.component';
+import { ResourcesResolve } from 'resources/resourcesResolve';
 
 const appRoutes: Routes = [
     {path: 'api', loadChildren: 'system/public/documentApi.module#DocumentApiModule'},
@@ -33,7 +35,11 @@ const appRoutes: Routes = [
     {path: 'orgAuthority', loadChildren: 'system/public/orgAuthority.module#OrgAuthorityModule', canLoad: [OrgAuthorityGuard]},
     {path: 'orgComments', loadChildren: 'discuss/discussEntry.module#DiscussEntryModule', canLoad: [OrgCuratorGuard]},
     {path: 'quickBoard', loadChildren: 'quickBoard/quickBoard.module#QuickBoardModule'},
-    {path: 'resources', loadChildren: 'resources/resources.module#ResourcesModule'},
+    {
+        path: 'resources', component: ResourcesComponent, resolve: {
+            resource: ResourcesResolve
+        }
+    },
     {path: 'profile', loadChildren: 'system/public/profile.module#ProfileModule', canLoad: [LoggedInGuard]},
     {path: 'whatsNew', loadChildren: 'system/public/whatsNew.module#WhatsNewModule'},
     {

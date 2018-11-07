@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 import { Article } from 'shared/article/article.model';
 import { AlertService } from 'alert/alert.service';
 
@@ -8,13 +9,12 @@ import { AlertService } from 'alert/alert.service';
     templateUrl: './resources.component.html'
 })
 export class ResourcesComponent {
-    resource: Article = new Article();
+    resource: Article;
 
     constructor(private http: HttpClient,
+                private route: ActivatedRoute,
                 private alertSvc: AlertService) {
-        this.http.get<Article>("/server/article/resources")
-            .subscribe(a => this.resource = a,
-                err => this.alertSvc.addAlert('danger', err));
+        this.resource = this.route.snapshot.data['resource'];
     }
 
     save() {
