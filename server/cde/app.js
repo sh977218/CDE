@@ -35,7 +35,7 @@ exports.init = function (app, daoManager) {
         }));
     }];
 
-    app.get("/draftDataElement/:tinyId", canEditItemByIdMiddleware, cdesvc.draftDataElement);
+    app.get("/draftDataElement/:tinyId", cdesvc.draftDataElement);
     app.post("/draftDataElement/:tinyId", authorization.canEditMiddleware, cdesvc.saveDraftDataElement);
     app.delete("/draftDataElement/:tinyId", canEditItemByIdMiddleware, cdesvc.deleteDraftDataElement);
 

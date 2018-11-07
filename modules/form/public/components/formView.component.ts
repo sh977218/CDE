@@ -18,9 +18,7 @@ import { UcumService } from 'form/public/ucum.service';
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Cb, Comment, ObjectId } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormElementsContainer, FormInForm, QuestionCde } from 'shared/form/form.model';
@@ -365,8 +363,7 @@ export class FormViewComponent implements OnInit {
         }
     }
 
-    // cb()
-    validate(cb = _noop): void {
+    validate(cb: Cb = _noop): void {
         this.validationErrors.length = 0;
         this.validateNoFeCycle();
         this.validateSkipLogic();
@@ -400,8 +397,7 @@ export class FormViewComponent implements OnInit {
         this.elt.formElements.forEach(fe => findExistingErrors(this.elt, fe));
     }
 
-    // cb()
-    validateUoms(callback) {
+    validateUoms(callback: Cb) {
         iterateFe(this.elt, noopSkipIterCb, undefined, (q, cb) => {
             this.ucumService.validateUoms(q.question, () => {
                 if (q.question.uomsValid.some(e => !!e)) {
@@ -414,17 +410,10 @@ export class FormViewComponent implements OnInit {
     }
 
     viewChanges() {
-        let tinyId = this.route.snapshot.queryParams['tinyId'];
-        let draftEltObs = this.http.get<DataElement>('/draftForm/' + tinyId);
-        let publishedEltObs = this.http.get<DataElement>('/form/' + tinyId);
-        forkJoin([draftEltObs, publishedEltObs]).subscribe(res => {
-            if (res.length = 2) {
-                let newer = res[0];
-                let older = res[1];
-                this.dialogRef = this.dialog.open(CompareHistoryContentComponent,
-                    {width: '800px', data: {newer: newer, older: older}});
-            } else this.alert.addAlert('danger', 'Error loading view changes. ');
-        }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err));
+        let draft = this.elt;
+        this.formViewService.fetchPublished(this.route.snapshot.queryParams).then(published => {
+            this.dialogRef = this.dialog.open(CompareHistoryContentComponent,
+                {width: '800px', data: {newer: draft, older: published}});
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error loading view changes.'));
     }
-
 }

@@ -11,18 +11,9 @@ export class FormViewService {
                 private userService: UserService) {
     }
 
-    private fetchDraft(queryParams: Params) {
-        return this.http.get<CdeForm>('/draftForm/' + queryParams['tinyId']).toPromise();
-    }
-
     fetchEltForEditing(queryParams: Params): Promise<CdeForm> {
-        return this.userService.then(user => {
-            return this.fetchDraft(queryParams).then(draft => {
-                return draft && canEditCuratedItem(user, draft)
-                    ? draft
-                    : this.fetchPublished(queryParams);
-            }, () => this.fetchPublished(queryParams));
-        }, () => this.fetchPublished(queryParams));
+        return this.http.get<CdeForm>('/draftForm/' + queryParams['tinyId']).toPromise()
+            .catch(() => this.fetchPublished(queryParams));
     }
 
     fetchPublished(queryParams: Params) {

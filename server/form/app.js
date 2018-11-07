@@ -48,7 +48,7 @@ exports.init = function (app, daoManager) {
         }));
     }];
 
-    app.get("/draftForm/:tinyId", canEditItemByIdMiddleware, formSvc.draftForm);
+    app.get("/draftForm/:tinyId", formSvc.draftForm);
     app.post("/draftForm/:tinyId", authorization.canEditMiddleware, formSvc.saveDraftForm);
     app.delete("/draftForm/:tinyId", canEditItemByIdMiddleware, formSvc.deleteDraftForm);
 
