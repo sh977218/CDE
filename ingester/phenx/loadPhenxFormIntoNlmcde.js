@@ -3,7 +3,7 @@ let csv = require('csv');
 let fs = require('fs');
 let capitalize = require('capitalize');
 
-let attachment = require('../../server/attachment/attachment');
+let attachment = require('../../server/attachment');
 let mongo_cde = require('../../server/cde/mongo-cde');
 let DataElementModel = mongo_cde.DataElement;
 let mongo_form = require('../../server/form/mongo-form');

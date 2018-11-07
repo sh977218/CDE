@@ -1,5 +1,5 @@
 const async = require('async');
-const attachment = require('../server/attachment/attachment');
+const attachment = require('../server/attachment');
 const mongo_cde = require('../server/cde/mongo-cde');
 const DataElementModal = mongo_cde.DataElement;
 
