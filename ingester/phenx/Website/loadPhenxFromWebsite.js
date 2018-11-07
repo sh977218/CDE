@@ -16,7 +16,7 @@ async function doLoadPhenxMeasure() {
     for (let measureLink of measureLinks) {
         let browserIdText = await measureLink.findElement(webdriver.By.css('span')).getText();
         let browserId = browserIdText.replace('#', '').trim();
-        let existingMeasure = await MeasureModel.findOne({browserId: browserId});
+        let existingMeasure = await MeasureModel.findOne({browserId: browserId}).lean();
         if (!existingMeasure) {
             let hrefText = await measureLink.getAttribute('href');
             let measure = await ParseMeasure.parseMeasure(hrefText.trim());
