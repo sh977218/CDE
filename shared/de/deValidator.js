@@ -63,6 +63,7 @@ export const checkDefinitions = function (elt) {
             result.allValid = false;
         }
     });
+    return result;
 };
 
 export const fixDatatype = function (elt) {
