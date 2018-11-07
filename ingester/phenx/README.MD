@@ -13,3 +13,5 @@ If previous PhenX forms, even with LOINC id, do not present in the current load,
 
 
 LOINC CDE/Form loaded through PhenX steward Org is LOINC, classification is empty;
+
+PhenX form 030502 does have LOINC id 62551-7 in version 23, does not have LOINC id. For the load, remove LOINC id from Measure collection of 030502.
