@@ -20,13 +20,14 @@ schemas.dataElementSchema.post('remove', function (doc, next) {
 });
 schemas.dataElementSchema.pre('save', function (next) {
     let self = this;
+//    if (this.archived) return next();
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
     if (cdeError && cdeError.pvNotValidMsg) {
         logging.errorLogger.error(cdeError, {
             stack: new Error().stack,
             details: 'element: ' + self.tinyId + ' ' + JSON.stringify(cdeError)
         });
-        next(cdeError);
+        next(new Error('PV Not good'));
     } else {
         try {
             elastic.updateOrInsert(self);
