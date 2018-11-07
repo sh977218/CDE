@@ -2,7 +2,7 @@ let xml2js = require('xml2js');
 let _ = require('lodash');
 let builder = new xml2js.Builder({attrkey: 'attribute'});
 let Readable = require('stream').Readable;
-let attachment = require('../server/attachment');
+let attachment = require('../server/attachment/attachmentSvc');
 let cdediff = require('../server/cde/cdediff');
 let classificationShared = require('@std/esm')(module)('../shared/system/classificationShared');
 

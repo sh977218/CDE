@@ -7,7 +7,7 @@ const Readable = require('stream').Readable;
 
 const ORG_INFO_MAP = require('../Shared/ORG_INFO_MAP').map;
 
-const attachment = require('../../../server/attachment');
+const attachment = require('../../../server/attachment/attachmentSvc');
 
 const CreateCDE = require('../CDE/CreateCDE');
 const CompareCDE = require('../CDE/CompareCDE');

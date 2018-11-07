@@ -1,6 +1,6 @@
 const config = require('config');
 const multer = require('multer');
-const attachment = require('../attachment');
+const attachment = require('./attachmentSvc');
 
 exports.module = function (roleConfig, modules) {
     const router = require('express').Router();
