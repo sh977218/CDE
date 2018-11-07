@@ -236,7 +236,7 @@ express.response.render = function (view, module, msg) {
 };
 
 try {
-    app.use('/server/attachment', require('./server/attachment/attachmentRouter').module({}, [
+    app.use('/server/attachment', require('./server/attachment/attachmentRoutes').module({}, [
         {module: 'cde', db: mongo_cde},
         {module: 'form', db: mongo_form}
     ]));
