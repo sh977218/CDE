@@ -16,7 +16,7 @@ let protocolCount = 0;
 let createdForm = 0;
 let sameForm = 0;
 let changeForm = 0;
-
+let retiredForm = 0;
 
 retireForms = async () => {
     let cond = {
@@ -34,12 +34,14 @@ retireForms = async () => {
             }
         ]
     };
-    let update = {
-        'registrationState.registrationStatus': 'Retired',
-        'registrationState.administrativeNote': 'Not present in import at ' + new Date().toJSON()
-    };
-    let retiredFormsResult = await Form.update(cond, update, {multi: true});
-    console.log('retiredFormCount: ' + retiredFormsResult.nModified);
+    let forms = await Form.find(cond);
+    for (let form of forms) {
+        form.registrationState.registrationStatus = 'Retired';
+        form.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
+        form.markModified('registrationState');
+        await form.save();
+        retiredForm++;
+    }
 };
 
 run = () => {
@@ -93,6 +95,7 @@ run = () => {
         console.log('createdForm: ' + createdForm);
         console.log('changeForm: ' + changeForm);
         console.log('sameForm: ' + sameForm);
+        console.log('retiredForm: ' + retiredForm);
     }, error => console.log(error));
 };
 
