@@ -187,8 +187,12 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
                 });
             newSection = true;
             fe = formElements[formElements.length - 1];
-            let question = await doQuestion(redCapCde, redCapCdes, formId, protocol, newForm);
-            fe.formElements.push(question);
+            let variableName = row['Variable / Field Name'];
+            let fieldLabel = row['Field Label'];
+            if (!_.isEmpty(variableName) || !_.isEmpty(fieldLabel)) {
+                let question = await doQuestion(redCapCde, redCapCdes, formId, protocol, newForm);
+                fe.formElements.push(question);
+            }
         }
     }
     newForm.formElements = formElements;
