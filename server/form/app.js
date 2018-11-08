@@ -1,13 +1,11 @@
 const _ = require('lodash');
 const dns = require('dns');
 const os = require('os');
-const multer = require('multer');
 const authorization = require('../system/authorization');
 const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const config = require('../system/parseConfig');
 const formSvc = require('./formsvc');
 const mongo_form = require('./mongo-form');
-const adminItemSvc = require('../system/adminItemSvc.js');
 const elastic_system = require('../system/elastic');
 const handleError = require('../log/dbLogger').handleError;
 const sharedElastic = require('../system/elastic.js');
@@ -41,16 +39,18 @@ exports.init = function (app, daoManager) {
 
     app.get("/formList/:tinyIdList?", exportShared.nocacheMiddleware, formSvc.byTinyIdList);
 
-    app.get("/draftForm/:tinyId", formSvc.draftForm);
-    app.post("/draftForm/:tinyId", [authorization.canEditMiddleware], formSvc.saveDraftForm);
-    app.delete("/draftForm/:tinyId", (req, res, next) => {
-        if (!authorizationShared.isOrgCurator(req.user)) return res.status(401).send();
+    const canEditItemByIdMiddleware = [authorization.isOrgCuratorMiddleware, (req, res, next) => {
         mongo_form.byTinyId(req.params.tinyId, handleError({req, res}, form => {
-            if (!form) return res.send();
-            if (!authorizationShared.isOrgCurator(req.user, form.stewardOrg.name)) return res.status(401).send();
+            if (!authorizationShared.canEditCuratedItem(req.user, form)) {
+                return res.status(403).send();
+            }
             next();
         }));
-    }, formSvc.deleteDraftForm);
+    }];
+
+    app.get("/draftForm/:tinyId", formSvc.draftForm);
+    app.post("/draftForm/:tinyId", authorization.canEditMiddleware, formSvc.saveDraftForm);
+    app.delete("/draftForm/:tinyId", canEditItemByIdMiddleware, formSvc.deleteDraftForm);
 
     app.get("/draftFormById/:id",formSvc.draftFormById);
 
@@ -73,18 +73,6 @@ exports.init = function (app, daoManager) {
     /* ---------- PUT NEW REST API above ---------- */
     app.get('/elasticSearch/form/count', function (req, res) {
         elastic_system.nbOfForms((err, result) => res.send("" + result));
-    });
-
-    app.post('/attachments/form/setDefault', function (req, res) {
-        adminItemSvc.setAttachmentDefault(req, res, mongo_form);
-    });
-
-    app.post('/attachments/form/add', multer(config.multer), function (req, res) {
-        adminItemSvc.addAttachment(req, res, mongo_form);
-    });
-
-    app.post('/attachments/form/remove', function (req, res) {
-        adminItemSvc.removeAttachment(req, res, mongo_form);
     });
 
     app.post('/elasticSearch/form', (req, res) => {

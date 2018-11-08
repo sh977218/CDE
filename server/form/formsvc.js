@@ -8,6 +8,7 @@ const mongo_form = require("./mongo-form");
 const mongo_data = require("../system/mongo-data");
 const formShared = require('@std/esm')(module)('../../shared/form/fe');
 const authorization = require("../system/authorization");
+const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const nih = require("./nihForm");
 const sdc = require("./sdcForm");
 const odm = require("./odmForm");
@@ -92,7 +93,7 @@ function fetchWholeFormOutdated(form, callback) {
 
 function wipeRenderDisallowed(form, req, cb) {
     if (form && form.noRenderAllowed) {
-        authorization.checkOwnership(mongo_form, form._id, req, function (err, isYouAllowed) {
+        authorization.checkOwnership(req, mongo_form, form._id, function (err, isYouAllowed) {
             if (!isYouAllowed) form.formElements = [];
             cb();
         });
@@ -227,10 +228,23 @@ exports.byTinyIdAndVersion = (req, res) => {
 exports.draftForm = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_form.draftForm(tinyId, handleError({req, res}, form => {
-        if (!form) return res.send();
-        fetchWholeFormOutdated(form.toObject(), handleError({req, res}, wholeForm => res.send(wholeForm)));
-    }));
+    if (authorizationShared.isOrgCurator(req.user)) {
+        mongo_form.byTinyId(req.params.tinyId, handleError({req, res}, form => {
+            if (authorizationShared.canEditCuratedItem(req.user, form)) {
+                mongo_form.draftForm(tinyId, handleError({req, res}, form => {
+                    if (form) {
+                        fetchWholeFormOutdated(form.toObject(), handleError({req, res}, wholeForm => res.send(wholeForm)));
+                    } else {
+                        exports.byTinyId(req, res);
+                    }
+                }));
+            } else {
+                exports.byTinyId(req, res);
+            }
+        }));
+    } else {
+        exports.byTinyId(req, res);
+    }
 };
 
 exports.draftFormById = (req, res) => {

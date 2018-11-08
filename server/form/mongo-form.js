@@ -24,8 +24,8 @@ schemas.formSchema.pre('save', function (next) {
 
 let Form = conn.model('Form', schemas.formSchema);
 let FormDraft = conn.model('Draft', schemas.draftSchema);
-exports.Form = Form;
-exports.FormDraft = FormDraft;
+exports.Form = exports.dao = Form;
+exports.FormDraft = exports.daoDraft = FormDraft;
 
 exports.elastic = elastic;
 
@@ -245,28 +245,6 @@ exports.byTinyIdListInOrder = function (idList, callback) {
             }
         });
         callback(err, reorderedForms);
-    });
-};
-
-exports.removeAttachmentLinks = function (id) {
-    Form.update({"attachments.fileid": id}, {$pull: {"attachments": {"fileid": id}}});
-};
-
-exports.setAttachmentApproved = function (id) {
-    Form.update(
-        {"attachments.fileid": id},
-        {
-            $unset: {
-                "attachments.$.pendingApproval": ""
-            }
-        },
-        {multi: true}).exec();
-};
-
-
-exports.fileUsed = function (id, cb) {
-    Form.find({"attachments.fileid": id}).count().exec(function (err, count) {
-        cb(err, count > 0);
     });
 };
 

@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const async = require('async');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const shortId = require('shortid');
@@ -65,7 +64,6 @@ exports.Org = Org;
 exports.User = User;
 exports.JobQueue = JobQueue;
 
-var fs_files = conn.model('fs_files', schemas.fs_files);
 var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
 
 exports.jobStatus = (type, callback) => {
@@ -322,111 +320,29 @@ exports.userTotalSpace = (Model, name, callback) => {
         });
 };
 
-exports.addFile = function (file, cb) {
-    gfs.findOne({md5: file.md5}, function (err, f) {
-        if (!f) {
-            let streamDescription = {
+exports.addFile = function (file, cb, streamDescription = null) {
+    gfs.findOne({md5: file.md5}, (err, f) => {
+        if (f) {
+            cb(err, f, false);
+            return;
+        }
+
+        if (!streamDescription) {
+            streamDescription = {
                 filename: file.filename,
                 mode: 'w',
                 content_type: file.type
             };
-
-            let writestream = gfs.createWriteStream(streamDescription);
-
-            writestream.on('close', function (newFile) {
-                cb(null, newFile);
-            });
-            writestream.on('error', cb);
-
-            file.stream.pipe(writestream);
-        } else {
-            cb(err, f);
         }
+
+        file.stream.pipe(gfs.createWriteStream(streamDescription)
+            .on('close', newFile => cb(null, newFile, true))
+            .on('error', cb));
     });
-};
-
-exports.addAttachment = function (file, user, comment, elt, cb) {
-
-    let linkAttachmentToAdminItem = function (attachment, elt, newFileCreated, cb) {
-        elt.attachments.push(attachment);
-        elt.save(function (err) {
-            if (cb) cb(attachment, newFileCreated, err);
-        });
-    };
-
-    let attachment = {
-        fileid: null,
-        filename: file.originalname,
-        filetype: file.mimetype,
-        uploadDate: Date.now(),
-        comment: comment,
-        filesize: file.size,
-        uploadedBy: {
-            userId: user._id,
-            username: user.username
-        }
-    };
-
-    gfs.findOne({md5: file.md5}, function (err, f) {
-        if (!f) {
-            let streamDescription = {
-                filename: attachment.filename,
-                mode: 'w',
-                content_type: attachment.filetype,
-                metadata: {
-                    status: null
-                }
-            };
-
-
-            if (file.scanned) streamDescription.metadata.status = "scanned";
-            else if (user.roles && user.roles.filter((r) => {
-                return r === "AttachmentReviewer";
-            }).length > 0) {
-                streamDescription.metadata.status = 'approved';
-            } else streamDescription.metadata.status = "uploaded";
-
-            let writestream = gfs.createWriteStream(streamDescription);
-
-            writestream.on('close', function (newfile) {
-                attachment.fileid = newfile._id;
-                if (!authorizationShared.hasRole(user, "AttachmentReviewer")) {
-                    attachment.pendingApproval = true;
-                }
-                attachment.scanned = file.scanned;
-                linkAttachmentToAdminItem(attachment, elt, true, cb);
-            });
-
-            file.stream.pipe(writestream);
-        } else {
-            attachment.fileid = f._id;
-            linkAttachmentToAdminItem(attachment, elt, false, cb);
-        }
-    });
-
 };
 
 exports.deleteFileById = (id, callback) => {
     gfs.remove({_id: id}, callback);
-};
-
-exports.alterAttachmentStatus = function (id, status, callback) {
-    fs_files.update({_id: id}, {$set: {"metadata.status": status}}, callback);
-    if (status === "approved") {
-        daoManager.getDaoList().forEach(function (dao) {
-            if (dao.setAttachmentApproved)
-                dao.setAttachmentApproved(id);
-        });
-    }
-};
-
-exports.removeAttachmentIfNotUsed = function (id, callback) {
-    async.map(daoManager.getDaoList(), function (dao, cb) {
-        if (dao.fileUsed) dao.fileUsed(id, cb);
-    }, function (err, results) {
-        if (results.indexOf(true) === -1)
-            exports.deleteFileById(id, callback);
-    });
 };
 
 exports.getFile = function (user, id, res) {
