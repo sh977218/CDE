@@ -7,6 +7,7 @@ var async = require('async'),
     MigrationOrg = require('../createMigrationConnection').MigrationOrgModel,
     Org = require('../../server/system/mongo-data').Org,
     updateShare = require('../updateShare');
+const adminItemSvc = require('../../server/system/adminItemSvc');
 
 var importDate = new Date().toJSON();
 
@@ -192,12 +193,11 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
         } else if (existingCdes.length === 1) {
             if (existingCdes[0].attachments) {
                 async.forEach(existingCdes[0].attachments, function (attachment, doneOneAttachment) {
-                    mongo_cde.removeAttachmentLinks(attachment.fileid);
-                    doneOneAttachment();
+                    adminItemSvc.attachmentRemove(mongo_cde, attachment.fileid, doneOneAttachment);
                 }, function doneAllAttachments() {
                     existingCdes[0].attachments = migrationCde.attachments;
                     processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
-                })
+                });
             }
         } else {
             console.log(cdeId);

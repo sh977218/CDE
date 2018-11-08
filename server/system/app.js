@@ -612,24 +612,6 @@ exports.init = function (app) {
         }));
     });
 
-    // @TODO this should be POST
-    app.get('/attachment/approve/:id', (req, res) => {
-        if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
-        mongo_data.alterAttachmentStatus(req.params.id, "approved", err => {
-            if (err) return res.status(500).send("Unable to approve attachment");
-            res.send("Attachment approved.");
-        });
-    });
-
-    app.get('/attachment/decline/:id', (req, res) => {
-        if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
-        daoManager.getDaoList().forEach(dao => {
-            if (dao.removeAttachmentLinks) dao.removeAttachmentLinks(req.params.id);
-        });
-        mongo_data.deleteFileById(req.params.id);
-        res.send("Attachment declined");
-    });
-
     app.post('/getClassificationAuditLog', (req, res) => {
         if (authorizationShared.isOrgAuthority(req.user)) {
             mongo_data.getClassificationAuditLog(req.body, (err, result) => {

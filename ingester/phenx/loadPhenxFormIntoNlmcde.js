@@ -3,7 +3,7 @@ let csv = require('csv');
 let fs = require('fs');
 let capitalize = require('capitalize');
 
-let mongo_data = require('../../server/system/mongo-data');
+let attachment = require('../../server/attachment/attachmentSvc');
 let mongo_cde = require('../../server/cde/mongo-cde');
 let DataElementModel = mongo_cde.DataElement;
 let mongo_form = require('../../server/form/mongo-form');
@@ -73,7 +73,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                                 let attachmentStream = fs.createReadStream(attachmentPath + '/' + attachmentFile);
                                 let fileType = attachmentFile.split('.').pop();
                                 let fileSize = fs.statSync(attachmentPath + '/' + attachmentFile).size;
-                                mongo_data.addAttachment({
+                                attachment.addToItem(form, {
                                     originalname: attachmentFile,
                                     mimetype: "image/" + fileType,
                                     size: fileSize,
@@ -81,7 +81,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                                 }, {
                                     username: 'batchloader',
                                     roles: ["AttachmentReviewer"]
-                                }, variableName, form, (attachment) => {
+                                }, variableName, (attachment) => {
                                     formElement.instructions.value += '\n<figure><figcaption>' + fieldLabel + '</figcaption><img src="/data/' + attachment.fileid + '"/></figure>';
                                     doneOneAttachmentFile();
                                 });
@@ -101,7 +101,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                                 let attachmentStream = fs.createReadStream(attachmentPath + '/' + attachmentFile);
                                 let fileType = attachmentFile.split('.').pop();
                                 let fileSize = fs.statSync(attachmentPath + '/' + attachmentFile).size;
-                                mongo_data.addAttachment({
+                                attachment.addToItem(form, {
                                     originalname: attachmentFile,
                                     mimetype: "image/" + fileType,
                                     size: fileSize,
@@ -109,7 +109,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                                 }, {
                                     username: 'batchloader',
                                     roles: ["AttachmentReviewer"]
-                                }, variableName, form, (attachment) => {
+                                }, variableName, (attachment) => {
                                     formElement.instructions.value += '\n<figure><figcaption>' + fieldLabel + '</figcaption><img src="/data/' + attachment.fileid + '"/></figure>';
                                     doneOneAttachmentFile();
                                 });

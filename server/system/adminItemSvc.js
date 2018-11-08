@@ -1,14 +1,6 @@
 const mongo_data = require('./mongo-data');
 const async = require('async');
-const auth = require('./authorization');
-const fs = require('fs');
-const md5 = require('md5-file');
-const clamav = require('clamav.js');
-const config = require('./parseConfig');
-const logging = require('./logging');
 const pushNotification = require('../system/pushNotification');
-const handleError = require('../log/dbLogger').handleError;
-const streamifier = require('streamifier');
 const utilShared = require('@std/esm')(module)("../../shared/system/util");
 // const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 
@@ -77,90 +69,25 @@ const utilShared = require('@std/esm')(module)("../../shared/system/util");
 //     }
 // };
 
-exports.setAttachmentDefault = function (req, res, dao) {
-    auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
-        if (err) {
-            logging.expressLogger.info(err);
-            return res.status(500).send('ERROR - attachment as default - cannot check ownership');
-        }
-        var state = req.body.state;
-        for (var i = 0; i < elt.attachments.length; i++) {
-            elt.attachments[i].isDefault = false;
-        }
-        elt.attachments[req.body.index].isDefault = state;
-        elt.save(function (err) {
-            if (err) {
-                res.send('error: ' + err);
-            } else {
-                res.send(elt);
+exports.attachmentApproved = (collection, id, cb) => {
+    collection.update(
+        {'attachments.fileid': id},
+        {
+            $unset: {
+                'attachments.$.pendingApproval': ''
             }
-        });
-    });
+        },
+        {multi: true}, cb);
 };
 
-exports.scanFile = (stream, res, cb) => {
-    clamav.createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, (err, object, malicious) => {
-        if (err) return cb(false);
-        if (malicious) return res.status(431).send('The file probably contains a virus.');
-        cb(true);
-    });
+exports.attachmentRemove = (collection, id, cb) => {
+    collection.update({'attachments.fileid': id}, {$pull: {'attachments': {'fileid': id}}}, cb);
 };
 
-exports.addAttachment = function (req, res, dao) {
-    if (!req.files.uploadedFiles) {
-        res.status(400).send('No files to attach.');
-        return;
-    }
-
-    var fileBuffer = req.files.uploadedFiles.buffer;
-    var stream = streamifier.createReadStream(fileBuffer);
-    var streamFS = streamifier.createReadStream(fileBuffer);
-    var streamFS1 = streamifier.createReadStream(fileBuffer);
-    exports.scanFile(stream, res, function (scanned) {
-        req.files.uploadedFiles.scanned = scanned;
-        auth.checkOwnership(dao, req.body.id, req, handleError({req, res}, elt => {
-            dao.userTotalSpace(req.user.username, function (totalSpace) {
-                if (totalSpace > req.user.quota) {
-                    return res.send({message: 'You have exceeded your quota'});
-                }
-                var file = req.files.uploadedFiles;
-                file.stream = streamFS1;
-
-                //store it to FS here
-                var writeStream = fs.createWriteStream(file.path);
-                streamFS.pipe(writeStream);
-                writeStream.on('finish', function () {
-                    md5(file.path, function (err, hash) {
-                        file.md5 = hash;
-                        mongo_data.addAttachment(file, req.user, 'some comment', elt, (attachment, requiresApproval) => {
-                            if (requiresApproval) {
-                                exports.createApprovalMessage(req.user, 'AttachmentReviewer', 'AttachmentApproval', attachment);
-                            }
-                            res.send(elt);
-                        });
-                    });
-                });
-            });
-        }));
+exports.fileUsed = (collection, id, cb) => {
+    collection.find({'attachments.fileid': id}).count({}, (err, count) => {
+        cb(err, count > 0);
     });
-};
-
-exports.removeAttachment = function (req, res, dao) {
-    auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
-        if (err) return res.status(500).send('ERROR - remove attachment ownership');
-        let fileid = elt.attachments[req.body.index].fileid;
-        elt.attachments.splice(req.body.index, 1);
-
-        elt.save(function (err) {
-            if (err) return res.status(500).send('ERROR - cannot save attachment');
-            res.send(elt);
-            mongo_data.removeAttachmentIfNotUsed(fileid);
-        });
-    });
-};
-
-exports.removeAttachmentLinks = function (id, collection) {
-    collection.update({'attachments.fileid': id}, {$pull: {'attachments': {'fileid': id}}});
 };
 
 exports.createApprovalMessage = function (user, role, type, details) {

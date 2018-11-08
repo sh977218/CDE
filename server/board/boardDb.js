@@ -92,7 +92,7 @@ pinningBoardSchema.pre('remove', function (next) {
 pinningBoardSchema.virtual('elementType').get(() => 'board');
 pinningBoardSchema.set('collection', 'pinningBoards');
 let PinningBoard = conn.model('PinningBoard', pinningBoardSchema);
-exports.PinningBoard = PinningBoard;
+exports.PinningBoard = exports.dao = PinningBoard;
 
 
 exports.getPrimaryName = function (elt) {
