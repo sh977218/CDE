@@ -45,7 +45,7 @@ retireForms = async () => {
 };
 
 run = () => {
-    let cond = {'protocols.protocolId': '741401'};
+    let cond = {};
     MeasureModel.find(cond).cursor({batchSize: 1, useMongooseAggCursor: true})
         .eachAsync(async measure => {
             let measureObj = measure.toObject();
