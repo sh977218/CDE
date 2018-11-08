@@ -7,7 +7,7 @@ const Readable = require('stream').Readable;
 
 const ORG_INFO_MAP = require('../Shared/ORG_INFO_MAP').map;
 
-const mongo_data = require('../../../server/system/mongo-data');
+const attachment = require('../../../server/attachment/attachmentSvc');
 
 const CreateCDE = require('../CDE/CreateCDE');
 const CompareCDE = require('../CDE/CompareCDE');
@@ -28,14 +28,14 @@ addAttachments = (originXml, elt) => {
         let xml = builder.buildObject(originXml).toString();
         readable.push(xml);
         readable.push(null);
-        mongo_data.addAttachment({
+        attachment.addToItem(elt, {
                 originalname: originXml.DataElement.PUBLICID[0] + "v" + originXml.DataElement.VERSION[0] + ".xml",
                 mimetype: "application/xml",
                 size: xml.length,
                 stream: readable
             },
             {username: "batchloader", roles: ["AttachmentReviewer"]},
-            "Original XML File", elt, (attachment, newFileCreated, e) => {
+            "Original XML File", (attachment, newFileCreated, e) => {
                 if (e) throw reject(e);
                 resolve();
             });

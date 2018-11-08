@@ -2,6 +2,7 @@ const xml2js = require('xml2js');
 const js2xml = require('js2xmlparser');
 const _ = require("lodash");
 const authorization = require("../system/authorization");
+const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const adminSvc = require('../system/adminItemSvc.js');
 const elastic = require('./elastic');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
@@ -96,10 +97,23 @@ exports.byTinyIdAndVersion = (req, res) => {
 exports.draftDataElement = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_cde.draftDataElement(tinyId, handleError({req, res}, dataElement => {
-        if (!req.user) hideProprietaryCodes(dataElement);
-        res.send(dataElement);
-    }));
+    if (authorizationShared.isOrgCurator(req.user)) {
+        mongo_cde.byTinyId(req.params.tinyId, handleError({req, res}, dataElement => {
+            if (authorizationShared.canEditCuratedItem(req.user, dataElement)) {
+                mongo_cde.draftDataElement(tinyId, handleError({req, res}, dataElement => {
+                    if (dataElement) {
+                        res.send(dataElement);
+                    } else {
+                        exports.byTinyId(req, res);
+                    }
+                }));
+            } else {
+                exports.byTinyId(req, res);
+            }
+        }));
+    } else {
+        exports.byTinyId(req, res);
+    }
 };
 exports.draftDataElementById = (req, res) => {
     let id = req.params.id;
