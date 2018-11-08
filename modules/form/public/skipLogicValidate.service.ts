@@ -121,14 +121,17 @@ export class SkipLogicValidateService {
 
     static validateSkipLogicSingleExpression(parent: FormElementsContainer, fe: FormElement, tokens): string {
         let filteredQuestion = getQuestionPriorByLabel(parent, fe, _trim(tokens[0], '"'));
+        let filteredAnswer = _trim(tokens[2], '"');
         if (!filteredQuestion) {
             return tokens[0] + ' is not a valid question label';
         }
 
+        if (filteredAnswer.length === 0) return null;
+
         switch (filteredQuestion.question.datatype) {
             case 'Value List':
-                if (tokens[2].length > 0 && filteredQuestion.question.answers.map(a => '"' +
-                    tokenSanitizer(a.permissibleValue) + '"').indexOf(tokens[2]) < 0) {
+                if (filteredQuestion.question.answers.map(a => '"' +
+                    tokenSanitizer(a.permissibleValue) + '"').indexOf(filteredAnswer) < 0) {
                     return tokens[2] + ' is not a valid answer for "' + filteredQuestion.label + '"';
                 }
                 break;
@@ -150,7 +153,7 @@ export class SkipLogicValidateService {
                 }
                 break;
             case 'Date':
-                if (tokens[2].length > 0 && new Date(tokens[2]).toString() === 'Invalid Date') {
+                if (new Date(filteredAnswer).toString() === 'Invalid Date') {
                     return tokens[2] + ' is not a valid date for "' + filteredQuestion.label + '".';
                 }
                 break;
