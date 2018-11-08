@@ -6,7 +6,6 @@ const connHelper = require('../system/connections');
 const logging = require('../system/logging');
 const cdediff = require("./cdediff");
 const elastic = require('./elastic');
-const sharedElastic = require('../system/elastic.js');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 const draftSchema = require('./schemas').draftSchema;
 
@@ -19,15 +18,14 @@ schemas.dataElementSchema.post('remove', function (doc, next) {
     });
 });
 schemas.dataElementSchema.pre('save', function (next) {
-    let self = this;
-    if (this.archived) return next();
+    var self = this;
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
     if (cdeError && cdeError.pvNotValidMsg) {
         logging.errorLogger.error(cdeError, {
             stack: new Error().stack,
-            details: 'element: ' + self.tinyId + ' ' + JSON.stringify(cdeError)
+            details: JSON.stringify(cdeError)
         });
-        next(new Error(cdeError.pvNotValidMsg));
+        next(cdeError);
     } else {
         try {
             elastic.updateOrInsert(self);
@@ -306,28 +304,31 @@ exports.update = function (elt, user, callback, special) {
     });
 };
 
-exports.updatePromise = async function (elt, user) {
-    let id = elt._id;
-    if (elt.toObject) elt = elt.toObject();
-    let dataElement = await DataElement.findById(id);
-    delete elt._id;
-    if (!elt.history) elt.history = [];
-    elt.history.push(dataElement._id);
-    elt.updated = new Date().toJSON();
-    elt.updatedBy = user;
-    elt.sources = dataElement.sources;
-    elt.comments = dataElement.comments;
-    let newDe = new DataElement(elt);
-    if (!newDe.designations || newDe.designations.length === 0) {
-        logging.errorLogger.error("Error: Cannot save CDE without names", {
-            origin: "cde.mongo-cde.update.1",
-            stack: new Error().stack,
-            details: "elt " + JSON.stringify(elt)
-        });
-    }
-    await newDe.save();
-    dataElement.archived = true;
-    await dataElement.save();
+exports.updatePromise = function (elt, user) {
+    return new Promise(async (resolve, reject) => {
+        let id = elt._id;
+        if (elt.toObject) elt = elt.toObject();
+        let dataElement = await DataElement.findById(id);
+        delete elt._id;
+        if (!elt.history) elt.history = [];
+        elt.history.push(dataElement._id);
+        elt.updated = new Date().toJSON();
+        elt.updatedBy = user;
+        elt.sources = dataElement.sources;
+        elt.comments = dataElement.comments;
+        let newDe = new DataElement(elt);
+        if (!newDe.designations || newDe.designations.length === 0) {
+            logging.errorLogger.error("Error: Cannot save CDE without names", {
+                origin: "cde.mongo-cde.update.1",
+                stack: new Error().stack,
+                details: "elt " + JSON.stringify(elt)
+            });
+        }
+        await newDe.save();
+        dataElement.archived = true;
+        await dataElement.save();
+        resolve();
+    })
 };
 
 exports.archiveCde = function (cde, callback) {
@@ -465,24 +466,6 @@ exports.findModifiedElementsSince = function (date, cb) {
         {$group: {"_id": "$tinyId"}}
     ]).exec(cb);
 
-};
 
-exports.retireCdeByTinyId = async tinyId => {
-    let cde = await DataElement.findOne({tinyId: tinyId});
-    let query = sharedElastic.buildElasticSearchQuery({}, {searchTerm: tinyId});
-    sharedElastic.elasticsearch('form', query, {}, async function (err, result) {
-        if (err) throw err;
-        if (!result) {
-            cde.registrationState.registrationStatus = 'Retired';
-            await cde.save();
-        } else {
-            let _result = result.filter(r => r.registrationState.registrationStatus !== 'Retired');
-            if (!_result) {
-                cde.registrationState.registrationStatus = 'Retired';
-                await cde.save();
-            }
-        }
-    });
-
-
+    //find({updated: {$gte: date}}).distinct('tinyId').limit(1000).sort({updated: -1}).exec(cb);
 };

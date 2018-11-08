@@ -13,7 +13,7 @@ async function run() {
         'registrationState.registrationStatus': {$ne: 'Retired'}
     }).lean();
     let rows = forms.map(form => {
-        let fields = [form.tinyId, form.ids[0].id, 'https://cde.nlm.nih.gov/formView?tinyId=' + form.tinyId];
+        let fields = [form.tinyId, 'PX' + form.ids[0].id, 'https://cde.nlm.nih.gov/formView?tinyId=' + form.tinyId];
         return fields.join(',');
     });
     let data = csvHeader + rows.join('\n');
