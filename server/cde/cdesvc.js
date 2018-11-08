@@ -1,7 +1,8 @@
 const xml2js = require('xml2js');
 const js2xml = require('js2xmlparser');
-
+const _ = require("lodash");
 const authorization = require("../system/authorization");
+const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
 const adminSvc = require('../system/adminItemSvc.js');
 const elastic = require('./elastic');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
@@ -96,10 +97,23 @@ exports.byTinyIdAndVersion = (req, res) => {
 exports.draftDataElement = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_cde.draftDataElement(tinyId, handleError({req, res}, dataElement => {
-        if (!req.user) hideProprietaryCodes(dataElement);
-        res.send(dataElement);
-    }));
+    if (authorizationShared.isOrgCurator(req.user)) {
+        mongo_cde.byTinyId(req.params.tinyId, handleError({req, res}, dataElement => {
+            if (authorizationShared.canEditCuratedItem(req.user, dataElement)) {
+                mongo_cde.draftDataElement(tinyId, handleError({req, res}, dataElement => {
+                    if (dataElement) {
+                        res.send(dataElement);
+                    } else {
+                        exports.byTinyId(req, res);
+                    }
+                }));
+            } else {
+                exports.byTinyId(req, res);
+            }
+        }));
+    } else {
+        exports.byTinyId(req, res);
+    }
 };
 exports.draftDataElementById = (req, res) => {
     let id = req.params.id;
@@ -132,13 +146,20 @@ exports.byTinyIdList = (req, res) => {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) return res.status(400).send();
     tinyIdList = tinyIdList.split(",");
-    mongo_cde.byTinyIdList(tinyIdList, handleError({req, res}, dataElements => {
-        let result = dataElements.map(elt => {
-            let r = mongo_data.formatElt(elt);
-            if (!req.user) hideProprietaryCodes(r);
-            return r;
-        });
-        res.send(result);
+    mongo_cde.DataElement.find({'archived': false}).where('tinyId')
+        .in(tinyIdList)
+        .exec(handleError({req, res}, dataElements => {
+            let result = [];
+            dataElements = dataElements.map(elt => {
+                let r = mongo_data.formatElt(elt);
+                if (!req.user) hideProprietaryCodes(r);
+                return r;
+            });
+            _.forEach(tinyIdList, t => {
+                let c = _.find(dataElements, cde => cde.tinyId === t);
+                if (c) result.push(c);
+            });
+            res.send(result);
     }));
 };
 

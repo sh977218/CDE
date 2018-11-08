@@ -24,9 +24,9 @@
         There are no comments.
     </div>
 
-    <ngb-pagination [collectionSize]="comments.totalItems"
-                    [(page)]="comments.currentCommentsPage" (pageChange)="pageChange()" [maxSize]="10">
-    </ngb-pagination>
-
+    <mat-paginator (page)="pageChange($event)" [length]="comments.totalItems"
+                   [pageIndex]="comments.currentCommentsPage - 1"
+                   [pageSize]="30" [hidePageSize]="true" style="font-size: 1.4em">
+    </mat-paginator>
 
 </div>

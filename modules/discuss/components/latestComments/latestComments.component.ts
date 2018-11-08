@@ -5,7 +5,6 @@ import { ActivatedRoute } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { Comment, DiscussionComments } from 'shared/models.model';
 
-
 @Component({
     selector: 'cde-latest-comments',
     templateUrl: 'latestComments.component.html'
@@ -24,15 +23,11 @@ export class LatestCommentsComponent {
         if (!commentsUrl) commentsUrl = '/server/discuss/allComments';
         this.http.get<Comment[]>(commentsUrl + '/' + (page - 1) * 30 + '/30').subscribe(comments => {
             this.comments.latestComments = comments;
-            if (this.comments.latestComments.length === 0) {
-                this.comments.totalItems = (page - 2) * 30;
-            } else if (this.comments.latestComments.length < 30) {
-                this.comments.totalItems = (page - 2) * 30 + this.comments.latestComments.length;
-            }
         });
     }
 
-    pageChange() {
+    pageChange(newPageNb) {
+        this.comments.currentCommentsPage = newPageNb.pageIndex + 1;
         this.getComments(this.comments.currentCommentsPage);
     }
 }

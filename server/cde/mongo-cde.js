@@ -41,15 +41,16 @@ var conn = connHelper.establishConnection(config.database.appData);
 
 var User = require('../user/userDb').User;
 var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
-var DataElementDraft = conn.model('DataElementDraft', draftSchema);
+
 exports.User = User;
-exports.DataElementDraft = DataElementDraft;
 exports.elastic = elastic;
 
 var mongo_data = this;
 
 var DataElement = conn.model('DataElement', schemas.dataElementSchema);
-exports.DataElement = DataElement;
+var DataElementDraft = conn.model('DataElementDraft', draftSchema);
+exports.DataElement = exports.dao = DataElement;
+exports.DataElementDraft = exports.daoDraft = DataElementDraft;
 
 exports.byId = function (id, cb) {
     DataElement.findOne({'_id': id}, cb);
@@ -400,22 +401,6 @@ exports.getCdeAuditLog = function (params, callback) {
         });
 };
 
-exports.removeAttachmentLinks = function (id) {
-    DataElement.update({"attachments.fileid": id}, {$pull: {"attachments": {"fileid": id}}});
-    DataElement.update({"attachments.fileid": id}, {$pull: {"attachments": {"fileid": id}}});
-};
-
-exports.setAttachmentApproved = function (id) {
-    DataElement.update(
-        {"attachments.fileid": id},
-        {
-            $unset: {
-                "attachments.$.pendingApproval": ""
-            }
-        },
-        {multi: true}).exec();
-};
-
 exports.byOtherId = function (source, id, cb) {
     DataElement.find({archived: false}).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
         if (cdes.length > 1)
@@ -447,6 +432,7 @@ exports.bySourceIdVersion = function (source, id, version, cb) {
         else cb(err, cdes[0]);
     });
 };
+
 exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, version, cb) {
     //noinspection JSUnresolvedFunction
     DataElement.find({
@@ -456,12 +442,6 @@ exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, versio
         source: source, id: id, version: version
     }).exec(function (err, cdes) {
         cb(err, cdes);
-    });
-};
-
-exports.fileUsed = function (id, cb) {
-    DataElement.find({"attachments.fileid": id}).count().exec(function (err, count) {
-        cb(err, count > 0);
     });
 };
 

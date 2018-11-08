@@ -13,9 +13,7 @@ import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Comment } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity } from 'shared/de/deValidator';
@@ -174,7 +172,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     removeAttachment(index) {
-        this.http.post<DataElement>('/attachments/cde/remove', {
+        this.http.post<DataElement>('/server/attachment/cde/remove', {
             index: index,
             id: this.elt._id
         }).subscribe(res => {
@@ -185,7 +183,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     setDefault(index) {
-        this.http.post<DataElement>('/attachments/cde/setDefault',
+        this.http.post<DataElement>('/server/attachment/cde/setDefault',
             {
                 index: index,
                 state: this.elt.attachments[index].isDefault,
@@ -205,7 +203,7 @@ export class DataElementViewComponent implements OnInit {
                 formData.append('uploadedFiles', files[i]);
             }
             formData.append('id', this.elt._id);
-            this.http.post<any>('/attachments/cde/add', formData).subscribe(
+            this.http.post<any>('/server/attachment/cde/add', formData).subscribe(
                 r => {
                     if (r.message) this.alert.addAlert('info', r);
                     else {
@@ -260,14 +258,10 @@ export class DataElementViewComponent implements OnInit {
     }
 
     viewChanges() {
-        let tinyId = this.route.snapshot.queryParams['tinyId'];
-        let draftEltObs = this.http.get<DataElement>('/draftDataElement/' + tinyId);
-        let publishedEltObs = this.http.get<DataElement>('/de/' + tinyId);
-        forkJoin([draftEltObs, publishedEltObs]).subscribe(res => {
-            if (res.length = 2) {
-                let data = {newer:  res[0], older: res[1]};
-                this.dialog.open(CompareHistoryContentComponent, {width: '1000px', data: data});
-            } else this.alert.addAlert('danger', 'Error loading view changes. ');
-        }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err));
+        let draft = this.elt;
+        this.deViewService.fetchPublished(this.route.snapshot.queryParams).then(published => {
+            this.dialog.open(CompareHistoryContentComponent,
+                {width: '1000px', data: {newer: draft, older: published}});
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error loading view changes.'));
     }
 }

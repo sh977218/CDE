@@ -40,14 +40,11 @@
         <dd class="col-9">{{elt.version}}</dd>
         <dt class="col-3 text-right">Steward:</dt>
         <dd class="col-9">
-            <ng-template #stewardTooltip>
-                <span *ngIf="orgHelperService.orgsDetailedInfo"
-                      [innerHtml]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)">
-                </span>
-            </ng-template>
-            <cde-inline-select-edit [ngbTooltip]="stewardTooltip" [(value)]="elt.stewardOrg.name"
-                                    [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
-                                    [isAllowed]="canEdit && !elt.isDraft">
+            <cde-inline-select-edit [(value)]="elt.stewardOrg.name" [selectOptions]="userOrgs"
+                                    (save)="changeStewardOrg($event);" [isAllowed]="canEdit && !elt.isDraft"
+                                    [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)"
+                                    [matTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)"
+                                    matTooltipClass="cdeTooltipMultiline">
             </cde-inline-select-edit>
         </dd>
         <ng-container *ngIf="elt.imported">

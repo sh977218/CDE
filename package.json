@@ -158,6 +158,7 @@
     "gulp-replace": "1.0.0",
     "gulp-rev": "8.1.1",
     "gulp-run": "1.7.1",
+    "gulp-sass": "^4.0.2",
     "gulp-uglify": "3.0.0",
     "gulp-usemin": "0.3.29",
     "hard-source-webpack-plugin": "0.5.16",
@@ -173,7 +174,7 @@
     "ng-recaptcha": "3.0.3",
     "ng2-ckeditor": "^1.2.1",
     "ngx-bootstrap": "2.0.0-beta.8",
-    "node-sass": "^4.9.0",
+    "node-sass": "^4.9.4",
     "optimize-js-plugin": "0.0.4",
     "raw-loader": "0.5.1",
     "reflect-metadata": "0.1.12",
@@ -207,7 +208,7 @@
     {
       "path": "./dist/app/cde.css",
       "compression": "none",
-      "maxSize": "604 kB"
+      "maxSize": "611 kB"
     },
     {
       "path": "./dist/embed/embed.js",
@@ -217,7 +218,7 @@
     {
       "path": "./dist/embed/embed.css",
       "compression": "none",
-      "maxSize": "237 kB"
+      "maxSize": "239 kB"
     },
     {
       "path": "./dist/fhir/fhir.js",

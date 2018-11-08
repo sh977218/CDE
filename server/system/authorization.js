@@ -58,16 +58,16 @@ exports.isOrgAuthorityMiddleware = (req, res, next) => {
     next();
 };
 
-exports.isSiteAdminMiddleware = (req, res, next) => {
-    if (!authorizationShared.isSiteAdmin(req.user)) {
+exports.isOrgCuratorMiddleware = (req, res, next) => {
+    if (!authorizationShared.isOrgCurator(req.user)) {
         res.status(403).send();
         return;
     }
     next();
 };
 
-exports.isOrgAuthorityMiddleware = (req, res, next) => {
-    if (!authorizationShared.isOrgAuthority(req.user)) {
+exports.isSiteAdminMiddleware = (req, res, next) => {
+    if (!authorizationShared.isSiteAdmin(req.user)) {
         res.status(403).send();
         return;
     }
@@ -86,7 +86,7 @@ exports.loggedInMiddleware = function (req, res, next) {
 // Permission Helpers with Request/Response
 // --------------------------------------------------
 
-exports.checkOwnership = function (dao, id, req, cb) {
+exports.checkOwnership = function (req, dao, id, cb) {
     if (!req.isAuthenticated()) return cb("You are not authorized.", null);
     dao.byId(id, function (err, elt) {
         if (err || !elt) return cb("Element does not exist.", null);
