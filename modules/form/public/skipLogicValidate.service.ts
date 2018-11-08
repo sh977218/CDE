@@ -136,12 +136,12 @@ export class SkipLogicValidateService {
                 }
                 break;
             case 'Number':
-                if (isNaN(tokens[2])) {
+                if (isNaN(parseFloat(filteredAnswer))) {
                     return tokens[2] + ' is not a valid number for "' + filteredQuestion.label + '". Replace '
                         + tokens[2] + ' with a valid number.';
                 }
                 if (filteredQuestion.question.datatypeNumber) {
-                    let answerNumber = parseInt(tokens[2]);
+                    let answerNumber = parseFloat(tokens[2]);
                     let max = filteredQuestion.question.datatypeNumber.maxValue;
                     let min = filteredQuestion.question.datatypeNumber.minValue;
                     if (min !== undefined && answerNumber < min) {
