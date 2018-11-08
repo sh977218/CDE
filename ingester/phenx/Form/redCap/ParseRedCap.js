@@ -194,7 +194,7 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
                 let question = await doQuestion(redCapCde, redCapCdes, formId, protocol, newForm);
                 fe.formElements.push(question);
             } else {
-                console.log('Empty designation row in redCap.');
+                console.log('Empty designation row in redCap. ' + protocolId);
                 console.log('variableName: ' + variableName);
                 console.log('sectionHeader: ' + sectionHeader);
                 console.log('fieldLabel: ' + fieldLabel);
