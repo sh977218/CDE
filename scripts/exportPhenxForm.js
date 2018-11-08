@@ -1,5 +1,4 @@
 const fs = require('fs');
-const generate = require('csv-generate');
 
 const Form = require('../server/form/mongo-form').Form;
 
