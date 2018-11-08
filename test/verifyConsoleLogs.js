@@ -20,7 +20,7 @@ let expectedContent = {
     logClientErrors: '*',
     meshTopics: 'classificationmanagement - Form submission canceled because the form is not connected',
     noDoublePin: 'Failed to load resource: the server responded with a status of 409 (Conflict)',
-    pageNotFound: 'de/abc - Failed to load resource: the server responded with a status of 404 (Not Found)',
+    pageNotFound: 'Failed to load resource: the server responded with a status of 404 (Not Found)',
     publicVsPrivateBoards: 'Failed to load resource: the server responded with a status of',
     report: 'cde/search 0:0 Uncaught SyntaxError: Unexpected token <',
     searchPageSize: 'the server responded with a status of 400 (Bad Request)',
