@@ -321,21 +321,6 @@ exports.jobQueue = Schema({
     error: StringType
 }, {usePushEach: true});
 
-exports.fs_files = new Schema({
-    _id: Schema.Types.ObjectId,
-    filename: StringType,
-    contentType: StringType,
-    length: Number,
-    chunkSize: Number,
-    uploadDate: Date,
-    aliases: StringType,
-    metadata: {
-        status: StringType
-    },
-    md5: StringType
-});
-exports.fs_files.set('collection', 'fs.files');
-
 exports.referenceDocumentSchema = {
     docType: StringType,
     document: StringType,
