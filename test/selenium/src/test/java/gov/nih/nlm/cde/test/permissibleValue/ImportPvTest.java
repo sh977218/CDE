@@ -16,7 +16,8 @@ public class ImportPvTest extends NlmCdeBaseTest {
         importPvByTinyId("mJQiShWEW");
         textPresent("The following errors need to be corrected in order to Publish");
         textPresent("Duplicate Permissible Value");
-        checkElementDoesNotExistByLocator(By.id("openSave"));
+        clickElement(By.id("openSave"));
+        textPresent("Please fix all errors before publishing");
         deleteDraft();
 
         clickElement(By.id("openImportPVModalBtn"));

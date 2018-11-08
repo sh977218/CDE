@@ -19,6 +19,7 @@ schemas.dataElementSchema.post('remove', function (doc, next) {
 });
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
+    if (this.archived) return next();
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
     if (!cdeError) {
         cdeError = deValidator.checkDefinitions(self);
@@ -28,7 +29,7 @@ schemas.dataElementSchema.pre('save', function (next) {
             stack: new Error().stack,
             details: JSON.stringify(cdeError)
         });
-        next(cdeError);
+        next(new Error(JSON.stringify(cdeError)));
     } else {
         try {
             elastic.updateOrInsert(self);
