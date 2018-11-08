@@ -14,6 +14,7 @@ let conn = connHelper.establishConnection(config.database.appData);
 
 schemas.formSchema.pre('save', function (next) {
     let self = this;
+    if (this.archived) return next();
     try {
         elastic.updateOrInsert(self);
     } catch (exception) {
