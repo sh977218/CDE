@@ -163,6 +163,9 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
     for (let redCapCde of redCapCdes) {
         index++;
         let fieldType = redCapCde['Field Type'];
+        let variableName = redCapCde['Variable / Field Name'];
+        let fieldLabel = redCapCde['Field Label'];
+        let sectionHeader = redCapCde['Section Header'];
         if (fieldType === 'descriptive') {
             if (newSection) {
                 formElements.push({
@@ -187,11 +190,14 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
                 });
             newSection = true;
             fe = formElements[formElements.length - 1];
-            let variableName = row['Variable / Field Name'];
-            let fieldLabel = row['Field Label'];
-            if (!_.isEmpty(variableName) || !_.isEmpty(fieldLabel)) {
+            if (!_.isEmpty(sectionHeader) || !_.isEmpty(fieldLabel)) {
                 let question = await doQuestion(redCapCde, redCapCdes, formId, protocol, newForm);
                 fe.formElements.push(question);
+            } else {
+                console.log('Empty designation row in redCap.');
+                console.log('variableName: ' + variableName);
+                console.log('sectionHeader: ' + sectionHeader);
+                console.log('fieldLabel: ' + fieldLabel);
             }
         }
     }

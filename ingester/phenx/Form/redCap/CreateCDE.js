@@ -8,19 +8,27 @@ const RED_CAP_DATA_TYPE_MAP = require('./REDCAP_DATATYPE_MAP').map;
 parseDesignations = row => {
     let designations = [];
 
-    let variableName = row['Variable / Field Name'];
+    let sectionHeader = row['Section Header'];
     let fieldLabel = row['Field Label'];
+    let fieldLabelDesignation;
+    let sectionHeaderDesignation;
     if (fieldLabel) {
-        let designation = {
+        fieldLabelDesignation = {
             designation: fieldLabel,
             source: 'PhenX',
             tags: []
         };
-        if (fieldLabel === variableName) {
-            designation.tags.push('Question Text');
-        }
-        designations.push(designation);
     }
+    if (sectionHeader) {
+        sectionHeaderDesignation = {
+            designation: sectionHeader,
+            source: 'PhenX',
+            tags: ['Question Text']
+        };
+    }
+
+    if (fieldLabel === sectionHeader) designations = [sectionHeaderDesignation];
+    else designations = [fieldLabelDesignation, sectionHeaderDesignation];
 
     return designations;
 };
