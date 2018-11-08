@@ -12,23 +12,22 @@ parseDesignations = row => {
     let fieldLabel = row['Field Label'];
     let fieldLabelDesignation;
     let sectionHeaderDesignation;
-    if (fieldLabel) {
+    if (!_.isEmpty(fieldLabel.trim())) {
         fieldLabelDesignation = {
-            designation: fieldLabel,
+            designation: fieldLabel.trim(),
             source: 'PhenX',
             tags: []
         };
+        designations.push(fieldLabelDesignation);
     }
-    if (sectionHeader) {
+    if (!_.isEmpty(sectionHeader.trim())) {
         sectionHeaderDesignation = {
-            designation: sectionHeader,
+            designation: sectionHeader.trim(),
             source: 'PhenX',
             tags: ['Question Text']
         };
+        designations.push(sectionHeaderDesignation);
     }
-
-    if (fieldLabel === sectionHeader) designations = [sectionHeaderDesignation];
-    else designations = [fieldLabelDesignation, sectionHeaderDesignation];
 
     return designations;
 };
