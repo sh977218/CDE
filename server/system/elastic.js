@@ -49,7 +49,7 @@ exports.nbOfForms = function (cb) {
 function EsInjector(esClient, indexName, documentType) {
     let _esInjector = this;
     this.buffer = [];
-    this.injectThreshold = 100;
+    this.injectThreshold = 50;
     this.documentType = documentType;
     this.indexName = indexName;
     this.queueDocument = function (doc, cb) {

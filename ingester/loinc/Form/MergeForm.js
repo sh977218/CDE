@@ -1,47 +1,21 @@
-const _ = require('lodash');
-const removeClassificationByOrgName = require('../Utility/utility').removeClassificationByOrgName;
-const cdediff = require('../../../server/cde/cdediff');
-const wipeUseless = require('../Utility/utility').wipeUseless;
+const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
 
-compareForms = function (newForm, existingForm) {
-    let newFormObj = _.cloneDeep(newForm);
-    if (newFormObj.toObject) newFormObj = newFormObj.toObject();
-    let existingFormObj = _.cloneDeep(existingForm);
-    if (existingFormObj.toObject) existingFormObj = existingFormObj.toObject();
+const mergeDesignations = require('../Shared/mergeDesignations').mergeDesignations;
+const mergeDefinitions = require('../Shared/mergeDefinitions').mergeDefinitions;
+const mergeBySource = require('../Shared/mergeBySource').mergeBySource;
+const mergeBySourceName = require('../Shared/mergeBySourceName').mergeBySourceName;
 
+exports.mergeForm = async (newForm, existingForm) => {
+    existingForm.designations = mergeDesignations(existingForm.designations, newForm.designations);
+    existingForm.definitios = mergeDefinitions(existingForm.definitions, newForm.definitions);
+    existingForm.sources = mergeBySourceName(existingForm.sources, newForm.sources);
 
-    [existingFormObj, newFormObj].forEach(obj => {
-        obj.ids.sort((a, b) => a.source > b.source);
-        obj.properties.sort((a, b) => a.key > b.key);
-        delete obj.classification;
-        delete obj.formElements;
-        wipeUseless(obj);
-    });
-    return cdediff.diff(existingForm, newForm);
-};
-exports.mergeForm = function (newForm, existingForm, orgInfo) {
-    return new Promise(async (resolve, reject) => {
-        let diff = compareForms(newForm, existingForm);
-        if (_.isEmpty(diff)) resolve();
-        existingForm.designations = newForm.designations;
-        existingForm.definitios = newForm.definitios;
-        existingForm.sources = newForm.sources;
-        existingForm.version = newForm.version;
-        existingForm.changeNote = "Bulk update from source";
-        existingForm.imported = new Date().toJSON();
-        existingForm.valueDomain = newForm.valueDomain;
-        existingForm.mappingSpecifications = newForm.mappingSpecifications;
-        existingForm.referenceDocuments = newForm.referenceDocuments;
-        existingForm.ids = newForm.ids;
-        existingForm.properties = newForm.properties;
-        existingForm.formElements = newForm.formElements;
+    existingForm.mappingSpecifications = newForm.mappingSpecifications;
+    existingForm.referenceDocuments = mergeBySource(existingForm.referenceDocuments, newForm.referenceDocuments);
+    existingForm.properties = mergeBySource(existingForm.properties, newForm.properties);
+    existingForm.ids = mergeBySource(existingForm.ids, newForm.ids);
+    existingForm.formElements = newForm.formElements;
 
-        removeClassificationByOrgName(existingForm, orgInfo);
-        existingForm.classification.push(newForm.classification[0]);
+    classificationShared.transferClassifications(newForm, existingForm);
 
-        mongo_form.update(existingForm, {username: "batchloader"}, err => {
-            if (err) reject(err);
-            else resolve();
-        });
-    })
 };
