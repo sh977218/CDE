@@ -1,3 +1,6 @@
 <cde-inline-area-edit [(model)]="resource.body" [defFormat]="'html'" [isAllowed]="true"
                       [threshold]="1" (modelChange)="save()">
 </cde-inline-area-edit>
+
+<cde-attachments [elt]="resource" [canEdit]="true" (upload)="upload($event);">
+</cde-attachments>

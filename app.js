@@ -6,6 +6,7 @@ const flash = require('connect-flash');
 const mongo_data_system = require('./server/system/mongo-data');
 const mongo_cde = require('./server/cde/mongo-cde');
 const mongo_form = require('./server/form/mongo-form');
+const articleDb = require('./server/article/articleDb');
 const config = require('config');
 const session = require('express-session');
 const favicon = require('serve-favicon');
@@ -238,7 +239,8 @@ express.response.render = function (view, module, msg) {
 try {
     app.use('/server/attachment', require('./server/attachment/attachmentRoutes').module({}, [
         {module: 'cde', db: mongo_cde},
-        {module: 'form', db: mongo_form}
+        {module: 'form', db: mongo_form},
+        {module: 'article', db: articleDb}
     ]));
 
     let discussModule = require("./server/discuss/discussRoutes").module({

@@ -12,6 +12,11 @@ let articleSchema = new Schema({
 let conn = connHelper.establishConnection(config.database.appData);
 let Article = conn.model('article', articleSchema);
 
+
+exports.byId = function (id, cb) {
+    Article.findById(id, cb);
+};
+
 exports.byKey = function (key, cb) {
     Article.findOne({key: key}, cb);
 };
