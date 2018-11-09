@@ -34,6 +34,7 @@ import { ResourcesComponent } from 'resources/resources.component';
 import { ResourcesResolve } from 'resources/resourcesResolve';
 import { WidgetModule } from 'widget/widget.module';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { ResourcesModule } from 'resources/resources.module';
 
 @NgModule({
     imports: [
@@ -56,7 +57,7 @@ import { AdminItemModule } from 'adminItem/public/adminItem.module';
         CommonAppModule,
         WidgetModule,
         AlertModule,
-        AdminItemModule
+        ResourcesModule
     ],
     declarations: [
         CdeAppComponent,

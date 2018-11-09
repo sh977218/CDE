@@ -6,6 +6,7 @@ exports.module = function (roleConfig, modules) {
     const router = require('express').Router();
 
     modules.forEach(m => {
+
         router.post(`/${m.module}/add`, multer(config.multer), (req, res) => {
             attachment.add(req, res, m.db);
         });
