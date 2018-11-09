@@ -6,6 +6,7 @@ const mongo_data = require('../system/mongo-data');
 const connHelper = require('../system/connections');
 const logging = require('../system/logging');
 const elastic = require('./elastic');
+const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 
 exports.type = "form";
 exports.name = "forms";
@@ -251,5 +252,16 @@ exports.byTinyIdListInOrder = function (idList, callback) {
 exports.exists = function (condition, callback) {
     Form.count(condition, function (err, result) {
         callback(err, result > 0);
+    });
+};
+
+
+exports.checkOwnership = function (req, dao, id, cb) {
+    if (!req.isAuthenticated()) return cb("You are not authorized.", null);
+    dao.byId(id, function (err, elt) {
+        if (err || !elt) return cb("Element does not exist.", null);
+        if (!authorizationShared.isOrgCurator(req.user, elt.stewardOrg.name))
+            return cb("You do not own this element.", null);
+        cb(null, elt);
     });
 };

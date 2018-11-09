@@ -8,6 +8,7 @@ const cdediff = require("./cdediff");
 const elastic = require('./elastic');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 const draftSchema = require('./schemas').draftSchema;
+const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 
 exports.type = "cde";
 exports.name = "CDEs";
@@ -466,6 +467,14 @@ exports.findModifiedElementsSince = function (date, cb) {
         {$group: {"_id": "$tinyId"}}
     ]).exec(cb);
 
+};
 
-    //find({updated: {$gte: date}}).distinct('tinyId').limit(1000).sort({updated: -1}).exec(cb);
+exports.checkOwnership = function (req, dao, id, cb) {
+    if (!req.isAuthenticated()) return cb("You are not authorized.", null);
+    dao.byId(id, function (err, elt) {
+        if (err || !elt) return cb("Element does not exist.", null);
+        if (!authorizationShared.isOrgCurator(req.user, elt.stewardOrg.name))
+            return cb("You do not own this element.", null);
+        cb(null, elt);
+    });
 };

@@ -25,7 +25,7 @@ exports.add = (req, res, db) => {
     let streamFS1 = streamifier.createReadStream(fileBuffer);
     exports.scanFile(stream, res, scanned => {
         req.files.uploadedFiles.scanned = scanned;
-        authorization.checkOwnership(req, db, req.body.id, handleError({req, res}, elt => {
+        db.checkOwnership(req, db, req.body.id, handleError({req, res}, elt => {
             db.userTotalSpace(req.user.username, totalSpace => {
                 if (totalSpace > req.user.quota) {
                     return res.send({message: 'You have exceeded your quota'});

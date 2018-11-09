@@ -86,16 +86,6 @@ exports.loggedInMiddleware = function (req, res, next) {
 // Permission Helpers with Request/Response
 // --------------------------------------------------
 
-exports.checkOwnership = function (req, dao, id, cb) {
-    if (!req.isAuthenticated()) return cb("You are not authorized.", null);
-    dao.byId(id, function (err, elt) {
-        if (err || !elt) return cb("Element does not exist.", null);
-        if (!authorizationShared.isOrgCurator(req.user, elt.stewardOrg.name))
-            return cb("You do not own this element.", null);
-        cb(null, elt);
-    });
-};
-
 exports.checkBoardOwnerShip = function (board, user) {
     if (!user || !board) return false;
     return board.owner.userId.equals(user._id);
