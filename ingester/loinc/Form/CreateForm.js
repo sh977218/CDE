@@ -10,7 +10,6 @@ const ParseSources = require('../Shared/ParseSources');
 
 const ParseFormElements = require('./ParseFormElements');
 
-
 const today = new Date().toJSON();
 const ParseClassification = require('../Shared/ParseClassification');
 
