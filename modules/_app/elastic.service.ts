@@ -18,7 +18,7 @@ export class ElasticService {
         , regStatuses: []
         , resultPerPage: 20
     };
-    searchToken = "id" + Math.random().toString(16).slice(2);
+    searchToken = 'id' + Math.random().toString(16).slice(2);
 
     searchSettings: any;
 
@@ -52,33 +52,31 @@ export class ElasticService {
 
     generalSearchQuery(settings, type: 'cde'|'form', cb: CbErr<ElasticQueryResponse, boolean>) {
         let search = (good: Cb<ElasticQueryResponse>, bad: CbErr) => {
-            this.http.post("/elasticSearch/" + type, settings).subscribe(good, bad);
+            this.http.post('/elasticSearch/' + type, settings).subscribe(good, bad);
         };
 
-        function success(isRetry: boolean, response: ElasticQueryResponse) {
+        function success(response: ElasticQueryResponse, isRetry = false) {
             ElasticService.highlightResults(response[type + 's']);
             response[type + 's'].forEach(e => type === 'form' ? CdeForm.validate(e) : DataElement.validate(e));
-            cb('', response, isRetry);
+            cb(undefined, response, isRetry);
         }
 
-        search(success.bind(null, false), function failOne() {
+        search(success, () => {
             if (settings.searchTerm) settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, '');
-            search(success.bind(null, true), function failTwo() {
-                cb("Error");
-            });
+            search(response => success(response, true), cb);
         });
     }
 
     static highlight(field1, field2, cde) {
-        if (cde.highlight[field1 + "." + field2]) {
-            cde.highlight[field1 + "." + field2].forEach(function (nameHighlight) {
+        if (cde.highlight[field1 + '.' + field2]) {
+            cde.highlight[field1 + '.' + field2].forEach(function (nameHighlight) {
                 let elements;
-                if (field1.indexOf(".") < 0) elements = cde[field1];
-                else elements = cde[field1.replace(/\..+$/, "")][field1.replace(/^.+\./, "")];
+                if (field1.indexOf('.') < 0) elements = cde[field1];
+                else elements = cde[field1.replace(/\..+$/, '')][field1.replace(/^.+\./, '')];
                 elements.forEach(function (nameCde, i) {
                     if (nameCde[field2] === nameHighlight.replace(/<[^>]+>/gm, '')) {
                         nameCde[field2] = nameHighlight;
-                        if (field2 === "designation" && i === 0) cde.highlight.primaryName = true;
+                        if (field2 === 'designation' && i === 0) cde.highlight.primaryName = true;
                     }
                 });
 
@@ -87,27 +85,27 @@ export class ElasticService {
     }
 
     static highlightElt(cde) {
-        ElasticService.highlightOne("primaryNameCopy", cde);
-        ElasticService.highlightOne("primaryDefinitionCopy", cde);
+        ElasticService.highlightOne('primaryNameCopy', cde);
+        ElasticService.highlightOne('primaryDefinitionCopy', cde);
         ElasticService.setMatchedBy(cde);
     }
 
     static highlightOne(field, cde) {
         if (!cde.highlight) return;
         if (cde.highlight[field]) {
-            if (field.indexOf(".") < 0) {
+            if (field.indexOf('.') < 0) {
                 if (cde.highlight[field][0].replace(/<strong>/g, "").replace(/<\/strong>/g, "")
                         .substr(0, 50) === cde[field].substr(0, 50)) {
                     cde[field] = cde.highlight[field][0];
                 } else {
-                    cde[field] = cde[field].substr(0, 50) + " [...] " + cde.highlight[field][0];
+                    cde[field] = cde[field].substr(0, 50) + ' [...] ' + cde.highlight[field][0];
                 }
             }
             else cde[field.replace(/\..+$/, "")][field.replace(/^.+\./, "")] = cde.highlight[field][0];
         } else {
-            if (field.indexOf(".") < 0) {
+            if (field.indexOf('.') < 0) {
                 cde[field] = cde[field].substr(0, 200);
-                if (cde[field].length > 199) cde[field] += "...";
+                if (cde[field].length > 199) cde[field] += '...';
             }
         }
     }
@@ -117,32 +115,32 @@ export class ElasticService {
     }
 
     static setMatchedBy(cde) {
-        let field = "Full Document";
+        let field = 'Full Document';
         if (!cde.highlight) {
             cde.highlight = {matchedBy: field};
             return;
         } else {
             if (cde.highlight.primaryNameCopy || cde.highlight.primaryDefinitionCopy) return;
             let matched = Object.keys(cde.highlight)[0];
-            if (matched === "definitions.definition") field = "Definition";
-            if (matched.indexOf("classification.") > -1) field = "Classification";
-            if (matched.indexOf("valueDomain.permissibleValues") > -1) field = "Permissible Values";
-            if (matched.indexOf(".concepts.") > -1) field = "Concepts";
-            if (matched.substr(0, 11) === "valueDomain") field = "Permissible Values";
-            if (matched.substr(0, 15) === "flatProperties") field = "Properties";
-            if (matched === "designations.designation") field = "Other Names";
-            if (matched === "stewardOrgCopy.name") field = "Steward";
-            if (matched === "flatIds") field = "Identifiers";
+            if (matched === 'definitions.definition') field = 'Definition';
+            if (matched.indexOf('classification.') > -1) field = 'Classification';
+            if (matched.indexOf('valueDomain.permissibleValues') > -1) field = 'Permissible Values';
+            if (matched.indexOf('.concepts.') > -1) field = 'Concepts';
+            if (matched.substr(0, 11) === 'valueDomain') field = 'Permissible Values';
+            if (matched.substr(0, 15) === 'flatProperties') field = 'Properties';
+            if (matched === 'designations.designation') field = 'Other Names';
+            if (matched === 'stewardOrgCopy.name') field = 'Steward';
+            if (matched === 'flatIds') field = 'Identifiers';
             cde.highlight.matchedBy = field;
         }
     }
 
     getExport(query, type, cb) {
-        this.http.post("/elasticSearchExport/" + type, query).subscribe(
+        this.http.post('/elasticSearchExport/' + type, query).subscribe(
             response => cb(null, response),
             err => {
-                if (err.status === 503) cb("The server is busy processing similar request, please try again in a minute.");
-                else cb("An error occured. This issue has been reported.");
+                if (err.status === 503) cb('The server is busy processing similar request, please try again in a minute.');
+                else cb('An error occured. This issue has been reported.');
             }
         );
     }
@@ -151,36 +149,36 @@ export class ElasticService {
         this.searchSettings = settings;
         let savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
         delete savedSettings.includeRetired;
-        this.localStorageService.set("SearchSettings", savedSettings);
+        this.localStorageService.set('SearchSettings', savedSettings);
         if (this.userService.user) {
-            this.http.post("/server/user/", {searchSettings: savedSettings}).subscribe();
+            this.http.post('/server/user/', {searchSettings: savedSettings}).subscribe();
         }
     }
 
     getDefault() {
         return {
-            "version": 20160329
-            , "defaultSearchView": "summary"
-            , "lowestRegistrationStatus": "Qualified"
-            , "tableViewFields": {
-                "name": true,
-                "naming": false,
-                "questionTexts": true,
-                "permissibleValues": true,
-                "pvCodeNames": false,
-                "nbOfPVs": true,
-                "uom": false,
-                "stewardOrg": true,
-                "usedBy": true,
-                "registrationStatus": true,
-                "administrativeStatus": false,
-                "ids": true,
-                "identifiers": [],
-                "source": false,
-                "updated": false,
-                "numQuestions": true,
-                "tinyId": false
-            }
+            defaultSearchView: 'summary',
+            lowestRegistrationStatus: 'Qualified',
+            tableViewFields: {
+                name: true,
+                naming: false,
+                questionTexts: true,
+                permissibleValues: true,
+                pvCodeNames: false,
+                nbOfPVs: true,
+                uom: false,
+                stewardOrg: true,
+                usedBy: true,
+                registrationStatus: true,
+                administrativeStatus: false,
+                ids: true,
+                identifiers: [],
+                source: false,
+                updated: false,
+                numQuestions: true,
+                tinyId: false
+            },
+            version: 20160329,
         };
     }
 
@@ -195,13 +193,13 @@ export class ElasticService {
             overThreshold = this.searchSettings.lowestRegistrationStatus === status;
             return true;
         });
-        if (this.searchSettings.includeRetired) result.push("Retired");
+        if (this.searchSettings.includeRetired) result.push('Retired');
         return result;
     }
 
     loadSearchSettings() {
         if (!this.searchSettings) {
-            this.searchSettings = this.localStorageService.get("SearchSettings");
+            this.searchSettings = this.localStorageService.get('SearchSettings');
             if (!this.searchSettings) this.searchSettings = this.getDefault();
 
             this.userService.then(user => {

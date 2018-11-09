@@ -77,7 +77,9 @@ export class FormViewComponent implements OnInit {
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
             this.loadElt(() => {
-                this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+                this.orgHelperService.then(() => {
+                    this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+                }).catch(_noop);
             });
         });
     }

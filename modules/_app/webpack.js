@@ -6,14 +6,17 @@ const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const FileListPlugin = require('file-list-plugin');
+const serverConstants = require('@std/esm')(module)('../../shared/serverConstants');
 
-const assets = [
+const assets = serverConstants.htmlServedUri.concat([
     '/cde/public/assets/img/min/NIH-CDE.png',
+    '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
     '/cde/public/assets/img/min/nih-cde-logo-simple.png',
     '/cde/public/assets/img/min/nih-cde-logo.png',
     '/cde/public/assets/img/min/usagov_logo.png',
-    '/cde/public/assets/img/min/NLM-logo.png'
-];
+    '/cde/public/assets/img/min/NLM-logo.png',
+    '/system/public/img/doctor-404.png'
+]);
 
 module.exports = {
     entry: {
