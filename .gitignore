@@ -57,6 +57,7 @@ logs
 *.iml
 .gradle/
 chromedriver.exe
+geckodriver.exe
 gradle setting.txt
 groovy/out/
 protractor/reports/

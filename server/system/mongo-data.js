@@ -34,6 +34,7 @@ const sessionStore = new MongoStore({
     touchAfter: 60
 });
 
+exports.gfs = gfs;
 
 const userProject = {password: 0};
 const orgDetailProject = {

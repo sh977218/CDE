@@ -5,6 +5,7 @@ exports.map = {
     "Scale": 'property',
     "System": 'property',
     "Time": 'property',
+    "Time Modifier": 'property',
     "Super System": 'property',
     "Divisors": 'property',
     "Method": 'property',
