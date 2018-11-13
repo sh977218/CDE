@@ -31,10 +31,20 @@ export class ResourcesComponent {
                 formData.append('uploadedFiles', files[i]);
             }
             formData.append('id', this.resource._id);
-            this.http.post<any>('/server/attachment/article/add', formData).subscribe(
-                () => this.http.get("/server/article/resources"),
+            this.http.post<Article>('/server/attachment/article/add', formData).subscribe(
+                res => this.resource = res,
                 err => this.alertSvc.addAlert('danger', err));
         }
+    }
+
+    removeAttachment(event) {
+        this.http.post<Article>('/server/attachment/article/remove', {
+            index: event,
+            id: this.resource._id
+        }).subscribe(res => {
+            this.resource = res;
+            this.alertSvc.addAlert('success', 'Attachment Removed.');
+        });
     }
 
 }

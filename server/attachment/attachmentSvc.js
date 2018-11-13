@@ -56,7 +56,7 @@ exports.addToItem = (item, file, user, comment, cb) => {
     function linkAttachmentToAdminItem(item, attachment, isFileCreated, cb) {
         if (!item.attachments) item.attachments = [];
         item.attachments.push(attachment);
-//        item.markModified('attachments');
+        item.markModified('attachments');
         item.save(err => {
             if (cb) cb(attachment, isFileCreated, err);
         });
@@ -131,7 +131,7 @@ exports.approvalDecline = (req, res) => {
 };
 
 exports.remove = (req, res, db) => {
-    authorization.checkOwnership(req, db, req.body.id, handleError({req, res}, elt => {
+    db.checkOwnership(req, db, req.body.id, handleError({req, res}, elt => {
         let fileId = elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
         elt.save(handleError({req, res}, () => {
@@ -163,7 +163,7 @@ exports.scanFile = (stream, res, cb) => {
 };
 
 exports.setDefault = (req, res, db) => {
-    authorization.checkOwnership(req, db, req.body.id, (err, elt) => {
+    db.checkOwnership(req, db, req.body.id, (err, elt) => {
         if (err) {
             logging.expressLogger.info(err);
             return res.status(500).send('ERROR - attachment as default - cannot check ownership');

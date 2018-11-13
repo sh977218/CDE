@@ -1,16 +1,19 @@
 import { CommonModule } from "@angular/common";
-import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
-import { WidgetModule } from 'widget/widget.module';
+import { NgModule } from '@angular/core';
+import { CKEditorModule } from 'ng2-ckeditor';
+
 import { ResourcesComponent } from 'resources/resources.component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 
 @NgModule({
     imports: [
         CommonModule,
+        FormsModule,
+        CKEditorModule,
         // core
-        WidgetModule,
-        AdminItemModule
+        AdminItemModule,
     ],
     declarations: [
         ResourcesComponent
