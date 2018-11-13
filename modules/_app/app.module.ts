@@ -30,10 +30,8 @@ import { CommonAppModule } from '_commonApp/commonApp.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { AlertModule } from 'alert/alert.module';
-import { ResourcesComponent } from 'resources/resources.component';
 import { ResourcesResolve } from 'resources/resourcesResolve';
 import { WidgetModule } from 'widget/widget.module';
-import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { ResourcesModule } from 'resources/resources.module';
 
 @NgModule({
@@ -67,8 +65,7 @@ import { ResourcesModule } from 'resources/resources.module';
         NotificationDrawerComponent,
         NotificationDrawerPaneComponent,
         PageNotFoundComponent,
-        TruncateLongNamePipe,
-        ResourcesComponent
+        TruncateLongNamePipe
     ],
     entryComponents: [
         InactivityLoggedOutComponent,

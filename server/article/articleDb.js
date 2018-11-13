@@ -2,14 +2,17 @@ const Schema = require('mongoose').Schema;
 const connHelper = require('../system/connections');
 const config = require('../system/parseConfig');
 
+const sharedSchemas = require('../system/schemas.js');
+
 const isOrgAdmin = require('../../shared/system/authorizationShared').isOrgAdmin;
 
 let articleSchema = new Schema({
     key: {type: String, index: true},
     body: String,
     created: {type: Date, default: new Date()},
-    updated: {type: Date, default: new Date()}
-});
+    updated: {type: Date, default: new Date()},
+    attachments: [sharedSchemas.attachmentSchema]
+}, {usePushEach: true});
 
 let conn = connHelper.establishConnection(config.database.appData);
 let Article = conn.model('article', articleSchema);
@@ -36,4 +39,8 @@ exports.checkOwnership = function (req, dao, id, cb) {
             return cb("You do not own this element.", null);
         cb(null, elt);
     });
+};
+
+exports.userTotalSpace = function (name, callback) {
+    callback(10000000);
 };

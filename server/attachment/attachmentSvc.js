@@ -54,7 +54,9 @@ exports.add = (req, res, db) => {
 
 exports.addToItem = (item, file, user, comment, cb) => {
     function linkAttachmentToAdminItem(item, attachment, isFileCreated, cb) {
+        if (!item.attachments) item.attachments = [];
         item.attachments.push(attachment);
+//        item.markModified('attachments');
         item.save(err => {
             if (cb) cb(attachment, isFileCreated, err);
         });
@@ -132,7 +134,7 @@ exports.remove = (req, res, db) => {
     authorization.checkOwnership(req, db, req.body.id, handleError({req, res}, elt => {
         let fileId = elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
-        elt.save(handleError({req, res},() => {
+        elt.save(handleError({req, res}, () => {
             exports.removeUnusedAttachment(fileId, () => {
                 res.send(elt);
             });

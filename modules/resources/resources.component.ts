@@ -32,7 +32,8 @@ export class ResourcesComponent {
             }
             formData.append('id', this.resource._id);
             this.http.post<any>('/server/attachment/article/add', formData).subscribe(
-            );
+                () => this.http.get("/server/article/resources"),
+                err => this.alertSvc.addAlert('danger', err));
         }
     }
 

@@ -4,4 +4,5 @@ export class Article {
     body: string;
     updated?: Date;
     created?: Date;
+    attachments?;
 }
