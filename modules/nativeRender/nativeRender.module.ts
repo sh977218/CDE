@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 
+import { CommonAppModule } from '_commonApp/commonApp.module';
 import { FormService } from 'nativeRender/form.service';
 import { NativeMetadataComponent } from 'nativeRender/nativeMetadata.component';
 import { NativeRenderComponent } from 'nativeRender/nativeRender.component';
