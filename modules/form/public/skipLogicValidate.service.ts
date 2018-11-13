@@ -130,8 +130,7 @@ export class SkipLogicValidateService {
 
         switch (filteredQuestion.question.datatype) {
             case 'Value List':
-                if (filteredQuestion.question.answers.map(a => '"' +
-                    tokenSanitizer(a.permissibleValue) + '"').indexOf(filteredAnswer) < 0) {
+                if (filteredQuestion.question.answers.map(a => tokenSanitizer(a.permissibleValue)).indexOf(filteredAnswer) < 0) {
                     return tokens[2] + ' is not a valid answer for "' + filteredQuestion.label + '"';
                 }
                 break;
