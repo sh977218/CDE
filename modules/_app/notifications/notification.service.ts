@@ -115,7 +115,7 @@ export class NotificationService {
             NotificationService.sortTasks(this.tasks);
             this.hasCriticalError = this.tasks.filter(t => t.task._id === 'version').length > 0;
             // this.tasks.push(NotificationService.createTask({type: 'voting', name: 'Choose', text: 'fight for you right'}));
-        }, err => this.alert.addAlert('danger', err));
+        }, _noop);
     }
 
     static sortTasks(tasks) {

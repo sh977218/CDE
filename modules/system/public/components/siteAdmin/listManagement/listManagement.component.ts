@@ -9,15 +9,14 @@ import { Organization } from 'shared/models.model';
     templateUrl: './listManagement.component.html'
 })
 export class ListManagementComponent {
-    orgs?: any[];
     allPropertyKeys: string[] = [];
     allTags: string[] = [];
+    orgs?: any[];
 
     constructor(private http: HttpClient,
                 private Alert: AlertService,
                 private orgHelperService: OrgHelperService) {
         this.getOrgs();
-
     }
 
     getOrgs() {
@@ -38,9 +37,9 @@ export class ListManagementComponent {
     }
 
     saveOrg(org: Organization) {
-        this.http.post('/updateOrg', org)
-            .subscribe(() => this.orgHelperService.reload().then(() => this.Alert.addAlert('success', 'Org Updated')),
-                () => this.Alert.addAlert('danger', 'Error. Unable to save.'));
+        this.http.post('/updateOrg', org).subscribe(
+            () => this.orgHelperService.reload().then(() => this.Alert.addAlert('success', 'Org Updated')),
+            () => this.Alert.addAlert('danger', 'Error. Unable to save.')
+        );
     }
-
 }

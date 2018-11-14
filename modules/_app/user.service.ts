@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, Injectable, Injector } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
@@ -8,7 +8,9 @@ import { Subscription } from 'rxjs/Subscription';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { ITEM_MAP } from 'shared/item';
-import { Cb, CbErr, Comment, NotificationSettings, NotificationTypesSettings, User } from 'shared/models.model';
+import {
+    Cb, CbErr, CbErrObj, Comment, NotificationSettings, NotificationTypesSettings, User
+} from 'shared/models.model';
 import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
 
 @Injectable()
@@ -39,7 +41,7 @@ export class UserService {
         document.body.addEventListener('click', () => this.resetInactivityTimeout());
     }
 
-    catch(cb: CbErr): Promise<any> {
+    catch(cb: CbErrObj<HttpErrorResponse>): Promise<any> {
         return this.promise.catch(cb);
     }
 

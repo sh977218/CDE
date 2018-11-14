@@ -22,8 +22,10 @@ export class DataElementViewService {
             }
             return this.http.get<DataElement>(ITEM_MAP.cde.apiDraft + queryParams['tinyId']).toPromise()
                 .catch((err: HttpErrorResponse) => {
-                    if (err.status === 404) throw err;
-                    return this.fetchPublished(queryParams);
+                    if (err.status === 403) {
+                        return this.fetchPublished(queryParams);
+                    }
+                    throw err;
                 });
         }, () => this.fetchPublished(queryParams));
     }
