@@ -33,7 +33,6 @@ const appRoutes: Routes = [
     {path: 'login', loadChildren: 'system/public/login.module#LoginModule', canLoad: [IEGuard]},
     {path: 'ieDiscontinued', loadChildren: 'system/public/ieDiscontinued.module#IeDiscontinuedModule'},
     {path: 'myboards', loadChildren: 'board/public/myBoards.module#MyBoardsModule'},
-
     {path: 'offline', component: OfflineComponent},
     {
         path: 'orgaccountmanagement',

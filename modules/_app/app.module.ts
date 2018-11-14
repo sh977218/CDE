@@ -30,7 +30,6 @@ import { LocalStorageModule } from 'angular-2-local-storage';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { AlertModule } from 'alert/alert.module';
 import { WidgetModule } from 'widget/widget.module';
-import { PageNotFoundComponent } from '_app/routing/pageNotFound.component';
 
 @NgModule({
     imports: [
@@ -61,7 +60,6 @@ import { PageNotFoundComponent } from '_app/routing/pageNotFound.component';
         NavigationComponent,
         NotificationDrawerComponent,
         NotificationDrawerPaneComponent,
-        PageNotFoundComponent,
         TruncateLongNamePipe
     ],
     entryComponents: [
