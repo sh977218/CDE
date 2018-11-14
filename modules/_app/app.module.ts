@@ -22,7 +22,6 @@ import { ApprovalService } from '_app/notifications/approval.service';
 import { NotificationService } from '_app/notifications/notification.service';
 import { NotificationDrawerComponent } from '_app/notifications/notificationDrawer.component';
 import { NotificationDrawerPaneComponent } from '_app/notifications/notificationDrawerPane.component';
-import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
@@ -59,7 +58,6 @@ import { AlertModule } from 'alert/alert.module';
         NavigationComponent,
         NotificationDrawerComponent,
         NotificationDrawerPaneComponent,
-        PageNotFoundComponent,
         TruncateLongNamePipe,
     ],
     entryComponents: [
@@ -83,7 +81,6 @@ import { AlertModule } from 'alert/alert.module';
         OrgHelperService
     ],
     exports: [
-        PageNotFoundComponent,
     ],
     bootstrap: [CdeAppComponent]
 })

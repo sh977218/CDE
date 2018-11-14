@@ -103,7 +103,7 @@ export class ProfileComponent {
             this.orgCurators = user.orgCurator ? user.orgCurator.join(', ') : '';
             this.orgAdmins = user.orgAdmin ? user.orgAdmin.join(', ') : '';
             this.user = user;
-        });
+        }, _noop);
     }
 
     removePublishedForm(pf: PublishedForm) {

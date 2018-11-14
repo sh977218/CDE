@@ -22,8 +22,10 @@ export class FormViewService {
             }
             return this.http.get<CdeForm>(ITEM_MAP.form.apiDraft + queryParams['tinyId']).toPromise()
                 .catch((err: HttpErrorResponse) => {
-                    if (err.status === 404) throw err;
-                    return this.fetchPublished(queryParams);
+                    if (err.status === 403) {
+                        return this.fetchPublished(queryParams);
+                    }
+                    throw err;
                 });
         }, () => this.fetchPublished(queryParams));
     }

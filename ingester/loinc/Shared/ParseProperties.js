@@ -1,4 +1,5 @@
-exports.parseProperties = function (loinc) {
+exports.parseProperties = loinc => {
+    if (loinc.loinc) loinc = loinc.loinc;
     let properties = [];
     if (loinc['RELATED NAMES']) {
         let table = '<table class="table table-striped">';
@@ -18,7 +19,7 @@ exports.parseProperties = function (loinc) {
         table = table + '</table>';
         properties.push({key: 'RELATED NAMES', value: table, source: 'LOINC', valueFormat: 'html'});
     }
-    if (loinc['NAME']['Fully-Specified Name']) {
+    if (loinc['NAME'] && loinc['NAME']['Fully-Specified Name']) {
         let ths = '';
         let tds = '';
         for (let key in loinc['NAME']['Fully-Specified Name']) {

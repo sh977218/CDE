@@ -1,21 +1,21 @@
+import { ENTER } from '@angular/cdk/keycodes';
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatChipInputEvent, MatDialog } from '@angular/material';
-import { TreeNode } from 'angular-tree-component';
-import _clone from 'lodash/clone';
-import { Observable } from 'rxjs/Observable';
-import { debounceTime, map } from 'rxjs/operators';
-
 import { AlertService } from 'alert/alert.service';
+import { TreeNode } from 'angular-tree-component';
 import { DataTypeService } from 'core/dataType.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
 import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
 import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
+import _clone from 'lodash/clone';
+import _noop from 'lodash/noop';
+import { Observable } from 'rxjs/Observable';
+import { debounceTime, map } from 'rxjs/operators';
 import { CodeAndSystem, FormattedValue } from 'shared/models.model';
 import { FormElement, FormQuestion, SkipLogic } from 'shared/form/form.model';
-import { ENTER } from '@angular/cdk/keycodes';
 
 @Component({
     selector: 'cde-form-description-question-detail',
@@ -88,7 +88,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.syncAnswerListItems();
         this.syncDefaultAnswerListItems();
         let stewardOrgName = this.elt.stewardOrg.name;
-        this.tag = this.orgHelperService.orgsDetailedInfo[stewardOrgName].nameTags;
+        this.orgHelperService.then(orgsDetailedInfo => {
+            this.tag = orgsDetailedInfo[stewardOrgName].nameTags;
+        }, _noop);
     }
 
     getRepeatLabel(fe) {

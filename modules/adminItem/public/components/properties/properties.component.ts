@@ -1,10 +1,10 @@
 import { Component, Input, ViewChild, OnInit, Output, EventEmitter, TemplateRef } from '@angular/core';
-
+import { MatDialog } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
+import { OrgHelperService } from 'core/orgHelper.service';
+import _noop from 'lodash/noop';
 import { DataElement } from 'shared/de/dataElement.model';
 import { Property } from 'shared/models.model';
-import { OrgHelperService } from 'core/orgHelper.service';
-import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-properties',
@@ -38,10 +38,10 @@ export class PropertiesComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.orgHelperService.reload().then(() => {
-            this.orgPropertyKeys = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
+        this.orgHelperService.then(orgsDetailedInfo => {
+            this.orgPropertyKeys = orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
             this.onInitDone = true;
-        });
+        }, _noop);
     }
 
     openNewPropertyModal() {

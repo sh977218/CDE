@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-
-import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFound.component';
+import { OfflineComponent } from '_app/routing/offline.component';
+import { PageNotFoundComponent } from '_app/routing/pageNotFound.component';
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
 import { OrgAdminGuard } from '_app/routerGuard/orgAdminGuard';
 import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
@@ -29,6 +29,7 @@ const appRoutes: Routes = [
     {path: 'login', loadChildren: 'system/public/login.module#LoginModule', canLoad: [IEGuard]},
     {path: 'ieDiscontinued', loadChildren: 'system/public/ieDiscontinued.module#IeDiscontinuedModule'},
     {path: 'myboards', loadChildren: 'board/public/myBoards.module#MyBoardsModule'},
+    {path: 'offline', component: OfflineComponent},
     {path: 'orgaccountmanagement', loadChildren: 'system/public/orgManagement.module#OrgManagementModule', canLoad: [OrgAdminGuard]},
     {path: 'orgAuthority', loadChildren: 'system/public/orgAuthority.module#OrgAuthorityModule', canLoad: [OrgAuthorityGuard]},
     {path: 'orgComments', loadChildren: 'discuss/discussEntry.module#DiscussEntryModule', canLoad: [OrgCuratorGuard]},
@@ -56,6 +57,10 @@ const appRoutes: Routes = [
                 // enableTracing: true, // TODO: dev only
             }
         ),
+    ],
+    declarations: [
+        OfflineComponent,
+        PageNotFoundComponent,
     ],
     providers: [
         IdentifierSourcesResolve,

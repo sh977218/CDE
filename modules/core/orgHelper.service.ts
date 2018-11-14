@@ -9,8 +9,8 @@ import { isOrgCurator } from 'shared/system/authorizationShared';
 type OrgDetailedInfo = {[org: string]: Organization};
 
 @Injectable()
-export class OrgHelperService  {
-    orgsDetailedInfo: OrgDetailedInfo = {};
+export class OrgHelperService {
+    private orgsDetailedInfo: OrgDetailedInfo = {};
     private promise!: Promise<OrgDetailedInfo>;
 
     constructor(
