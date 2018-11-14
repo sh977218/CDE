@@ -9,8 +9,6 @@ import { OrgCuratorGuard } from '_app/routerGuard/orgCuratorGuard';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { IdentifierSourcesResolve } from 'system/public/components/searchPreferences/identifier-source.resolve.service';
 import { IEGuard } from '_app/routerGuard/ieGuard';
-import { ResourcesComponent } from 'resources/resources.component';
-import { ResourcesResolve } from 'resources/resourcesResolve';
 
 const appRoutes: Routes = [
     {path: 'api', loadChildren: 'system/public/documentApi.module#DocumentApiModule'},
@@ -20,7 +18,11 @@ const appRoutes: Routes = [
     {path: 'cde/search', loadChildren: 'cde/public/cdeSearchEntry.module#CdeSearchEntryModule'},
     {path: 'cdeStatusReport', loadChildren: 'cde/public/cdeStatusReport.module#CdeStatusReportModule'},
     {path: 'cde', redirectTo: '/cde/search', pathMatch: 'full'},
-    {path: 'classificationmanagement', loadChildren: 'system/public/classifManagement.module#ClassifManagementModule', canLoad: [OrgCuratorGuard]},
+    {
+        path: 'classificationmanagement',
+        loadChildren: 'system/public/classifManagement.module#ClassifManagementModule',
+        canLoad: [OrgCuratorGuard]
+    },
     {path: 'createCde', loadChildren: 'cde/public/cdeCreate.module#CdeCreateModule'},
     {path: 'createForm', loadChildren: 'form/public/formCreate.module#FormCreateModule'},
     {path: 'deView', loadChildren: 'cde/public/cdeView.module#CdeViewModule'},
@@ -31,15 +33,19 @@ const appRoutes: Routes = [
     {path: 'login', loadChildren: 'system/public/login.module#LoginModule', canLoad: [IEGuard]},
     {path: 'ieDiscontinued', loadChildren: 'system/public/ieDiscontinued.module#IeDiscontinuedModule'},
     {path: 'myboards', loadChildren: 'board/public/myBoards.module#MyBoardsModule'},
-    {path: 'orgaccountmanagement', loadChildren: 'system/public/orgManagement.module#OrgManagementModule', canLoad: [OrgAdminGuard]},
-    {path: 'orgAuthority', loadChildren: 'system/public/orgAuthority.module#OrgAuthorityModule', canLoad: [OrgAuthorityGuard]},
+    {
+        path: 'orgaccountmanagement',
+        loadChildren: 'system/public/orgManagement.module#OrgManagementModule',
+        canLoad: [OrgAdminGuard]
+    },
+    {
+        path: 'orgAuthority',
+        loadChildren: 'system/public/orgAuthority.module#OrgAuthorityModule',
+        canLoad: [OrgAuthorityGuard]
+    },
     {path: 'orgComments', loadChildren: 'discuss/discussEntry.module#DiscussEntryModule', canLoad: [OrgCuratorGuard]},
     {path: 'quickBoard', loadChildren: 'quickBoard/quickBoard.module#QuickBoardModule'},
-    {
-        path: 'resources', component: ResourcesComponent, resolve: {
-            resource: ResourcesResolve
-        }
-    },
+    {path: 'resources', loadChildren: 'system/public/resources.module#ResourcesModule'},
     {path: 'profile', loadChildren: 'system/public/profile.module#ProfileModule', canLoad: [LoggedInGuard]},
     {path: 'whatsNew', loadChildren: 'system/public/whatsNew.module#WhatsNewModule'},
     {
@@ -49,7 +55,11 @@ const appRoutes: Routes = [
         },
         loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule'
     },
-    {path: 'siteaccountmanagement', loadChildren: 'system/public/siteManagement.module#SiteManagementModule', canLoad: [SiteAdminGuard]},
+    {
+        path: 'siteaccountmanagement',
+        loadChildren: 'system/public/siteManagement.module#SiteManagementModule',
+        canLoad: [SiteAdminGuard]
+    },
     {path: 'siteAudit', loadChildren: 'system/public/siteAudit.module#SiteAuditModule', canLoad: [OrgAuthorityGuard]},
     {path: '', redirectTo: '/home', pathMatch: 'full'},
     {path: '**', component: PageNotFoundComponent}

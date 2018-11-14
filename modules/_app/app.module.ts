@@ -30,9 +30,7 @@ import { CommonAppModule } from '_commonApp/commonApp.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { AlertModule } from 'alert/alert.module';
-import { ResourcesResolve } from 'resources/resourcesResolve';
 import { WidgetModule } from 'widget/widget.module';
-import { ResourcesModule } from 'resources/resources.module';
 
 @NgModule({
     imports: [
@@ -54,8 +52,7 @@ import { ResourcesModule } from 'resources/resources.module';
         CdeAppRoutingModule,
         CommonAppModule,
         WidgetModule,
-        AlertModule,
-        ResourcesModule
+        AlertModule
     ],
     declarations: [
         CdeAppComponent,
@@ -85,8 +82,7 @@ import { ResourcesModule } from 'resources/resources.module';
         NotificationService,
         QuickBoardListService,
         UserService,
-        OrgHelperService,
-        ResourcesResolve
+        OrgHelperService
     ],
     exports: [
         PageNotFoundComponent,

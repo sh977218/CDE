@@ -1,8 +1,0 @@
-<ckeditor [config]="{extraPlugins: 'divarea'}"
-          [(ngModel)]="resource.body">
-</ckeditor>
-
-<cde-attachments [elt]="resource" [canEdit]="true"
-                 (removeAttachment)="removeAttachment($event);"
-                 (upload)="upload($event);">
-</cde-attachments>

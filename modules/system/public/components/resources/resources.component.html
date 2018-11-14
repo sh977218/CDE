@@ -1,0 +1,75 @@
+<div *ngIf="resource" class="container">
+    <div *ngIf="canEdit">
+        You can edit this document by click
+        <mat-icon routerLink="/siteaccountmanagement" [queryParams]="{tab: 'resourcesTab'}">edit</mat-icon>
+    </div>
+
+    <div [innerHtml]="resource.body | cdeSafeHtml"></div>
+
+    <div>
+        Publications and Studies
+        <mat-list>
+            <mat-list-item *ngFor="let feed of RSS_FEED">
+                <a [href]="feed.link" target="_blank">{{feed.title}}</a>
+            </mat-list-item>
+        </mat-list>
+    </div>
+
+    <div>
+        NIH RePORTer Search
+
+
+        Collecting Data with an Eye Towards Reuse: Common Data Elements (2018)
+        Lisa Lang, NLM, provides context and background for the use of common data elements in health sciences research.
+        Presented as part of the series, Clinical Information, Librarians and the NLM: from Health Data Standards to
+        Better Health.
+
+        NIH Common Data Elements: A tool to support data management for clinical research (2017)
+        Liz Amos, NLM, presents an update on the NIH Common Data Elements for the 2017 Medical Library Association
+        annual conference. Liz explains the importance of common data elements for clinical data collection and
+        management and the role of the librarian.
+
+        NIH Common Data Elements (CDE) Initiatives Overview Webinar, BD2K CDE Webinar (2015)
+        Multiple presenters provide an overview of CDE initiatives at NIH.
+
+    </div>
+
+    <div>
+        Related NLM Resources
+        
+
+        Value Set Authority Center (VSAC)
+        The VSAC is a repository and authoring tool for public value sets created by external programs. Value sets are
+        lists of codes and corresponding terms, from NLM-hosted standard clinical vocabularies (such as SNOMED CT®,
+        RxNorm, LOINC® and others), that define clinical concepts to support effective and interoperable health
+        information exchange. The VSAC does not create value set content. The VSAC also provides downloadable access to
+        all official versions of value sets specified by the Centers for Medicare & Medicaid Services (CMS) electronic
+        Clinical Quality Measures (eCQMs). For information on CMS eCQMs, visit the eCQI Resource Center. The VSAC is
+        provided by the National Library of Medicine (NLM), in collaboration with the Office of the National Coordinator
+        for Health Information Technology (ONC) and CMS.
+
+        HSRR (Health Services and Sciences Research Resources)
+        Information about research datasets and instruments/indices employed in Health Services Research, Behavioral and
+        Social Sciences and Public Health with links to PubMed.
+
+        Unified Medical Language System® (UMLS®)
+        The UMLS integrates and distributes key terminology, classification and coding standards, and associated
+        resources to promote creation of more effective and interoperable biomedical information systems and services,
+        including electronic health records.
+
+        SNOMED CT
+        SNOMED CT is one of a suite of designated standards for use in U.S. Federal Government systems for the
+        electronic exchange of clinical health information and is also a required standard in interoperability
+        specifications of the U.S. Healthcare Information Technology Standards Panel. The clinical terminology is owned
+        and maintained by SNOMED International, a not-for-profit association.
+
+        AccessGUDID
+        The Global Unique Device Identification Database (GUDID) contains key device identification information
+        submitted to the FDA about medical devices that have Unique Device Identifiers (UDI).
+
+        See Other Resources at Health Information Technology and Health Data Standards at NLM
+
+    </div>
+
+
+</div>

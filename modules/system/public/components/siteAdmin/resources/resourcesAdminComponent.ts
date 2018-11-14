@@ -1,20 +1,20 @@
-import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { Component } from '@angular/core';
 import { Article } from 'shared/article/article.model';
 import { AlertService } from 'alert/alert.service';
 
 @Component({
-    selector: 'cde-resources',
-    templateUrl: './resources.component.html'
+    selector: 'cde-resources-admin',
+    templateUrl: './resourcesAdmin.component.html'
 })
-export class ResourcesComponent {
-    resource: Article;
+export class ResourcesAdminComponent {
+    resource?: Article;
 
     constructor(private http: HttpClient,
-                private route: ActivatedRoute,
                 private alertSvc: AlertService) {
-        this.resource = this.route.snapshot.data['resource'];
+        this.http.get<Article>("/server/article/resources")
+            .subscribe(resource => this.resource = resource ? resource : {key: "resources", body: ""},
+                err => this.alertSvc.addAlert('danger', err));
     }
 
     save() {
