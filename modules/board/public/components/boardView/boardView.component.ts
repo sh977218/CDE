@@ -1,16 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
-import _noop from 'lodash/noop';
-import { saveAs } from 'file-saver';
-import { AlertService } from 'alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'core/orgHelper.service';
+import { saveAs } from 'file-saver';
+import _noop from 'lodash/noop';
 import { Comment } from 'shared/models.model';
 import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'shared/system/exportShared';
-import { MatDialog, MatDialogRef } from '@angular/material';
+
 
 @Component({
     selector: 'cde-board-view',

@@ -1,0 +1,32 @@
+import { capString } from 'shared/system/util';
+
+export const htmlServedUri = [
+    '/',
+    '/404',
+    '/api',
+    '/board/:id',
+    '/boardList',
+    '/cde/search',
+    '/cdeStatusReport',
+    '/classificationmanagement',
+    '/createCde',
+    '/createForm',
+    '/deView',
+    '/form/search',
+    '/formView',
+    '/help/:title',
+    '/home',
+    '/inbox',
+    '/login',
+    '/myboards',
+    '/orgaccountmanagement',
+    '/orgAuthority',
+    '/orgComments',
+    '/profile',
+    '/quickBoard',
+    '/sdcview',
+    '/searchPreferences',
+    '/siteAudit',
+    '/siteaccountmanagement',
+    '/whatsNew'
+];

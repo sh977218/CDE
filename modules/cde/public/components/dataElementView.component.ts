@@ -53,11 +53,13 @@ export class DataElementViewComponent implements OnInit {
     url;
 
     ngOnInit() {
-        this.route.queryParams.subscribe(() => {
-            this.loadElt(() => {
-                this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+        this.orgHelperService.then(() => {
+            this.route.queryParams.subscribe(() => {
+                this.loadElt(() => {
+                    this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+                });
             });
-        });
+        }, _noop);
     }
 
     constructor(private deViewService: DataElementViewService,
