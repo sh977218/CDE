@@ -25,6 +25,7 @@ schemas.dataElementSchema.pre('save', function (next) {
         cdeError = deValidator.checkDefinitions(self);
     }
     if (cdeError && !cdeError.allValid) {
+        cdeError.tinyId = this.tinyId;
         logging.errorLogger.error(cdeError, {
             stack: new Error().stack,
             details: JSON.stringify(cdeError)
