@@ -50,7 +50,6 @@ import { WidgetModule } from 'widget/widget.module';
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
-        WidgetModule,
         AlertModule
     ],
     declarations: [

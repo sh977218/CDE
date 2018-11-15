@@ -6,6 +6,7 @@ import { MatIconModule, MatListModule } from '@angular/material';
 
 import { ResourcesComponent } from 'system/public/components/resources/resources.component';
 import { SafeHtmlPipe } from '_app/safeHtml.pipe';
+import { WidgetModule } from 'widget/widget.module';
 
 const appRoutes: Routes = [
     {path: '', component: ResourcesComponent},
@@ -15,6 +16,8 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         RouterModule.forChild(appRoutes),
+        WidgetModule,
+
         MatIconModule,
         MatListModule,
     ],
