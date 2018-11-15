@@ -240,38 +240,32 @@ gulp.task('es', function _es() {
 
 // Procedure calling task in README
 gulp.task('buildHome', function _buildHome() {
-    return del(['dist/launch/*.png']).then(() => {
-        gulp.src('./dist/app/*.png')
-            .pipe(gulp.dest('dist/launch'));
-        gulp.src('./dist/app/*.webp')
-            .pipe(gulp.dest('dist/launch'));
-        return gulp.src('./modules/system/views/home.ejs')
-            .pipe(replace('<NIHCDECONTENT/>', fs.readFileSync('./modules/_app/staticHome/nihcde.html', {encoding: 'utf8'})))
-            .pipe(usemin({
-                jsAttributes: {
-                    async: true,
-                    defer: false
-                },
-                html: [htmlmin({
-                    collapseInlineTagWhitespace: true,
-                    collapseWhitespace: true,
-                    conservativeCollapse: true,
-                    minifyJS: true,
-                    minifyCSS: true,
-                    processScripts: ['application/ld+json'],
-                    processConditionalComments: true,
-                    removeComments: true,
-                    removeScriptTypeAttributes: true,
-                    removeStyleLinkTypeAttributes: true,
-                })],
-                assetsDir: './dist/',
-                inlinecss: [minifyCss, 'concat'],
-                inlinejs: [uglify({mangle: false}), 'concat'],
-            }))
-            .pipe(gulp.dest('./dist/'))
-            .pipe(rename('home-launch.ejs'))
-            .pipe(gulp.dest('./modules/system/views'));
-    });
+    return gulp.src('./modules/system/views/home.ejs')
+        .pipe(replace('<NIHCDECONTENT/>', fs.readFileSync('./modules/_app/staticHome/nihcde.html', {encoding: 'utf8'})))
+        .pipe(usemin({
+            jsAttributes: {
+                async: true,
+                defer: false
+            },
+            html: [htmlmin({
+                collapseInlineTagWhitespace: true,
+                collapseWhitespace: true,
+                conservativeCollapse: true,
+                minifyJS: true,
+                minifyCSS: true,
+                processScripts: ['application/ld+json'],
+                processConditionalComments: true,
+                removeComments: true,
+                removeScriptTypeAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+            })],
+            assetsDir: './dist/',
+            inlinecss: [minifyCss, 'concat'],
+            inlinejs: [uglify({mangle: false}), 'concat'],
+        }))
+        .pipe(gulp.dest('./dist/'))
+        .pipe(rename('home-launch.ejs'))
+        .pipe(gulp.dest('./modules/system/views'));
 });
 gulp.task('checkDbConnection', function _buildHome() {
     return new Promise(function (resolve, reject) {

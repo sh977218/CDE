@@ -39,6 +39,7 @@ export class Attachment {
 
 export type Cb<T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => void;
 export type CbErr<T = never, U = never, V = never> = (error?: string, t?: T, u?: U, v?: V) => void;
+export type CbErrObj<E = string, T = never, U = never, V = never> = (error?: E, t?: T, u?: U, v?: V) => void;
 export type CbRet<R = never, T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => R;
 
 export class CdeId {
