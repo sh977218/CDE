@@ -114,7 +114,7 @@ exports.morelike = function (id, callback) {
                 "must": {
                     "more_like_this": {
                         "fields": mltConf.mlt_fields,
-                        "docs": [
+                        "like": [
                             {
                                 "_id": id
                             }

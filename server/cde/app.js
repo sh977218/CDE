@@ -64,7 +64,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/moreLikeCde/:tinyId', exportShared.nocacheMiddleware, (req, res) => {
-        elastic.morelike(req.params.tinyId, function (result) {
+        elastic.morelike(req.params.tinyId, result => {
             cdesvc.hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
         });
