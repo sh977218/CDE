@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const MigrationNindsModel = require('../../createMigrationConnection').MigrationNindsModel;
+const NindsModel = require('../../createMigrationConnection').NindsModel;
 
 const mongo_form = require('../../../server/form/mongo-form');
 const Form = mongo_form.Form;
@@ -26,7 +26,7 @@ async function retiredForms() {
 
 
 doOneNindsFormById = async formId => {
-    let nindsForms = await MigrationNindsModel.find({formId: formId}).lean();
+    let nindsForms = await NindsModel.find({formId: formId}).lean();
     let newFormObj = await CreateForm.createForm(nindsForms);
     let newForm = new Form(newFormObj);
     let existingForm = await Form.findOne({
@@ -59,10 +59,10 @@ doOneNindsFormById = async formId => {
 };
 
 run = async () => {
-    let formIdList = await MigrationNindsModel.distinct('formId');
+    let formIdList = await NindsModel.distinct('formId');
     for (let formId of formIdList) {
         await doOneNindsFormById(formId);
-        await MigrationNindsModel.remove({formId: formId});
+        await NindsModel.remove({formId: formId});
     }
 };
 

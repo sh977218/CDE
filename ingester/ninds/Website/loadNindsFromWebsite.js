@@ -3,9 +3,10 @@ const By = webdriver.By;
 
 let NindsModel = require('../../createMigrationConnection').NindsModel;
 
-
 const doOnePage = require('./ParseNindsCdes').doOnePage;
 const parseDiseases = require('./ParseDiseases').parseDisease;
+
+let formCounter = 0;
 
 doTrElement = async trElement => {
     let form = {};
@@ -73,8 +74,9 @@ doDomain = async (driver, disease, domainElement) => {
             form.subDomain = subDomain;
             form.domain = domain;
             form.disease = disease.name;
+            await new NindsModel(form).save();
+            formCounter++;
         }
-        await new NindsModel(form).save();
     }
 };
 
@@ -98,7 +100,7 @@ async function run() {
     for (let disease of diseases) {
         await doDisease(disease);
     }
-    console.log('a');
+    console.log('formCounter: ' + formCounter);
 }
 
 run().then(() => {

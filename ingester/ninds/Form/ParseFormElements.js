@@ -59,6 +59,7 @@ exports.parseFormElements = async nindsForms => {
     if (_nindsQuestionList.length === 0) return formElements;
     if (_nindsQuestionList.length > 1) {
         console.log('More than one different question list found.');
+        console.log(nindsForms[0].formId);
         process.exit(1);
     }
     formElements.push({

@@ -1,7 +1,4 @@
-const _ = require('lodash');
-const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
-
-const MigrationNindsModel = require('../../createMigrationConnection').MigrationNindsModel;
+const NindsModel = require('../../createMigrationConnection').NindsModel;
 
 const parseDesignations = require('./ParseDesignations').parseDesignations;
 const parseDefinitions = require('./ParseDefinitions').parseDefinitions;
@@ -13,7 +10,7 @@ const parseValueDomain = require('./ParseValueDomain').parseValueDomain;
 
 
 exports.createCde = async cdeId => {
-    let nindsForms = await MigrationNindsModel.find({'cdes.cdeId': cdeId}, {
+    let nindsForms = await NindsModel.find({'cdes.cdeId': cdeId}, {
         diseaseName: 1,
         subDiseaseName: 1,
         formId: 1,
