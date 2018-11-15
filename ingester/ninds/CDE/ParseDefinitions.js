@@ -3,10 +3,11 @@ const _ = require('lodash');
 exports.parseDefinitions = nindsForms => {
     let definitionDescriptionArray = [];
     nindsForms.forEach(nindsForm => {
-        nindsForm.cdes.forEach(nindsCde => {
-            if (nindsCde.definitionDescription)
-                definitionDescriptionArray.push(nindsCde.definitionDescription);
-        })
+        if (nindsForm.cdes)
+            nindsForm.cdes.forEach(nindsCde => {
+                if (nindsCde['Definition / Description'])
+                    definitionDescriptionArray.push(nindsCde['Definition / Description']);
+            })
     });
 
     let _definitionDescriptionArray = _.uniq(definitionDescriptionArray);

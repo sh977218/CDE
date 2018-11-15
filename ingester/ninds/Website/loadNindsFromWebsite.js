@@ -103,5 +103,57 @@ async function run() {
     console.log('formCounter: ' + formCounter);
 }
 
-run().then(() => {
+fixWrongData = async () => {
+    let queries = [
+        {
+            field: 'cdes.Description',
+            fieldIncorrect: 'Yes, that is true;;;;;;No, that is not true;',
+            fieldCorrect: 'Yes, that is true;6;5;4;3;2;No, that is not true;'
+        },
+        {
+            field: 'cdes.Description',
+            fieldIncorrect: 'No Pain;;;;;;;;;;pain as bad as you can imagine;',
+            fieldCorrect: 'No Pain;1;2;3;4;5;6;7;8;9;pain as bad as you can imagine;'
+        },
+        {
+            field: 'cdes.Description',
+            fieldIncorrect: 'No Pain;;;;;;;;;;Worst possible pain;',
+            fieldCorrect: 'No Pain;1;2;3;4;5;6;7;8;9;Worst possible pain;'
+        },
+        {
+            field: 'cdes.Description',
+            fieldIncorrect: 'Not tired;;;;;;;;;;Worst possible tiredness;',
+            fieldCorrect: 'Not tired;1;2;3;4;5;6;7;8;9;Worst possible tiredness;'
+        },
+        {
+            field: 'cdes.Description',
+            fieldIncorrect: '',
+            fieldCorrect: ''
+        },
+        {
+            field: 'cdes.Description',
+            fieldIncorrect: '',
+            fieldCorrect: ''
+        },
+        {
+            field: 'cdes.Description',
+            fieldIncorrect: '',
+            fieldCorrect: ''
+        },
+
+    ];
+    for (let query of queries) {
+        let count = 100000;
+        while (count) {
+            count = await NindsModel.update(
+                {'cdes.Description': query.fieldIncorrect},
+                {$set: {'cdes.$.Description': query.fieldCorrect}},
+                {multi: true});
+        }
+    }
+
+};
+
+run().then(async () => {
+    // await fixWrongData();
 }, error => console.log(error));

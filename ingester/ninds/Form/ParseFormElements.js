@@ -13,7 +13,6 @@ const MergeCDE = require('../CDE/MergeCDE');
 const updatedByNonLoader = require('../../shared/updatedByNonLoader').updatedByNonLoader;
 const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
-
 doOneNindsCde = async cdeId => {
     let newCdeObj = await CreateCDE.createCde(cdeId);
     let newCde = new DataElement(newCdeObj);
@@ -45,12 +44,23 @@ exports.parseFormElements = async nindsForms => {
     let nindsQuestionList = [];
     let nindsCdeIdList = [];
     nindsForms.forEach(nindsForm => {
-        if (!_.isEmpty(nindsForm.cdes))
-            nindsQuestionList.push(nindsForm.cdes);
-        nindsForm.cdes.forEach(nindsCde => {
-            if (nindsCde.cdeId)
-                nindsCdeIdList.push(nindsCde.cdeId);
-        })
+        if (!_.isEmpty(nindsForm.cdes)) {
+            let questions = [];
+            nindsForm.cdes.forEach(cde => {
+                let _cde = _.cloneDeep(cde);
+                delete _cde['Disease'];
+                delete _cde['Domain'];
+                delete _cde['Sub-Domain'];
+                delete _cde['SubDisease'];
+                questions.push(_cde);
+            });
+            nindsQuestionList.push(questions);
+        }
+        if (nindsForm.cdes)
+            nindsForm.cdes.forEach(nindsCde => {
+                if (nindsCde['CDE ID'])
+                    nindsCdeIdList.push(nindsCde['CDE ID']);
+            })
     });
 
     let _nindsQuestionList = _.unionWith(nindsQuestionList, _.isEqual);
@@ -72,13 +82,14 @@ exports.parseFormElements = async nindsForms => {
         await doOneNindsCde(nindsCdeId);
     }
     for (let nindsQuestion of _nindsQuestionList[0]) {
+        let cdeId = nindsQuestion['CDE ID'];
         let existingCde = await DataElement.findOne({
             "archived": false,
-            "ids.id": nindsQuestion.cdeId,
+            "ids.id": cdeId,
             "registrationState.registrationStatus": {$ne: "Retired"}
         });
         if (!existingCde) {
-            console.log(nindsQuestion.cdeId + ' not exists.');
+            console.log(cdeId + ' not exists.');
             process.exit(1);
         }
         let question = {
@@ -95,7 +106,7 @@ exports.parseFormElements = async nindsForms => {
         if (question.datatype === 'Value List') {
             question.answers = parseAnswers(nindsQuestion);
             question.cde.permissibleValues = existingCde.valueDomain.permissibleValues;
-            question.multiselect = nindsQuestion.inputRestrictions === 'Multiple Pre-Defined Values Selected';
+            question.multiselect = nindsQuestion['Instructions'] === 'Multiple Pre-Defined Values Selected';
         } else if (question.datatype === 'Text') {
             question.datatypeText = existingCde.valueDomain.datatypeText;
         } else if (question.datatype === 'Number') {
@@ -111,8 +122,8 @@ exports.parseFormElements = async nindsForms => {
 
         formElements[0].formElements.push({
             elementType: 'question',
-            label: nindsQuestion.questionText,
-            instructions: {value: nindsQuestion.instruction},
+            label: nindsQuestion['Question Text'],
+            instructions: {value: nindsQuestion['Instructions']},
             question: question,
             formElements: []
         });

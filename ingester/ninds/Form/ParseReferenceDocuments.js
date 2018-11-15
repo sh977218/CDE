@@ -7,10 +7,6 @@ exports.parseReferenceDocuments = nindsForms => {
             downloadLinkArray.push(nindsForm.downloadLink);
     });
     let downloadLink = _.uniq(downloadLinkArray);
-    if (downloadLink.length !== 1) {
-        console.log(nindsForms[0].formId + ' downloadLink not good');
-        process.exit(1);
-    }
     let referenceDocuments = [];
 
     downloadLink.forEach(d => {

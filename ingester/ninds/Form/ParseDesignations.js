@@ -1,20 +1,20 @@
 const _ = require('lodash');
 
 exports.parseDesignations = nindsForms => {
-    let crfModuleGuidelineArray = [];
+    let formNameArray = [];
     nindsForms.forEach(nindsForm => {
-        if (nindsForm.crfModuleGuideline)
-            crfModuleGuidelineArray.push(nindsForm.crfModuleGuideline);
+        if (nindsForm.formName)
+            formNameArray.push(nindsForm.formName);
     });
 
-    let crfModuleGuideline = _.uniq(crfModuleGuidelineArray);
-    if (crfModuleGuideline.length !== 1) {
-        console.log(nindsForms[0].formId + ' crfModuleGuideline not good');
+    let _formNameArray = _.uniq(formNameArray);
+    if (_formNameArray.length !== 1) {
+        console.log(nindsForms[0].formId + ' _formNameArray not good');
         process.exit(1);
     }
     let designations = [];
 
-    crfModuleGuideline.forEach(c => {
+    _formNameArray.forEach(c => {
         designations.push({
             designation: c.trim(),
             tags: []

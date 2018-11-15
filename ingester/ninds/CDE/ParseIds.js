@@ -6,16 +6,17 @@ exports.parseIds = nindsForms => {
     let cadsrIdArray = [];
     let variableNameArray = [];
     nindsForms.forEach(nindsForm => {
-        nindsForm.cdes.forEach(nindsCde => {
-            if (nindsCde.cdeId)
-                cdeIdArray.push(nindsCde.cdeId);
-            if (nindsCde.versionNum)
-                versionNumArray.push(nindsCde.versionNum);
-            if (nindsCde.cadsrId)
-                cadsrIdArray.push(nindsCde.cadsrId);
-            if (nindsCde.variableName)
-                variableNameArray.push(nindsCde.variableName);
-        })
+        if (nindsForm.cdes)
+            nindsForm.cdes.forEach(nindsCde => {
+                if (nindsCde['CDE ID'])
+                    cdeIdArray.push(nindsCde['CDE ID']);
+                if (nindsCde['Version #'])
+                    versionNumArray.push(nindsCde['Version #']);
+                if (nindsCde['caDSR ID'])
+                    cadsrIdArray.push(nindsCde['caDSR ID']);
+                if (nindsCde['Variable Name'])
+                    variableNameArray.push(nindsCde['Variable Name']);
+            })
     });
 
     let _cdeIdArray = _.uniq(cdeIdArray);

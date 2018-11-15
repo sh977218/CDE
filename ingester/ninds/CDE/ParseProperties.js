@@ -4,24 +4,17 @@ exports.parseProperties = nindsForms => {
     let previousTitleArray = [];
     let aliasesForVariableNameArray = [];
     nindsForms.forEach(nindsForm => {
-        nindsForm.cdes.forEach(nindsCde => {
-            if (nindsCde.previousTitle)
-                previousTitleArray.push(nindsCde.previousTitle);
-            if (nindsCde.aliasesForVariableName)
-                aliasesForVariableNameArray.push(nindsCde.aliasesForVariableName);
-        })
+        if (nindsForm.cdes)
+            nindsForm.cdes.forEach(nindsCde => {
+                if (nindsCde['Previous Title'])
+                    previousTitleArray.push(nindsCde['Previous Title']);
+                if (nindsCde['Aliases for Variable Name'])
+                    aliasesForVariableNameArray.push(nindsCde['Aliases for Variable Name']);
+            })
     });
 
     let _previousTitle = _.uniq(previousTitleArray);
     let _aliasesForVariableNameArray = _.uniq(aliasesForVariableNameArray);
-    if (_previousTitle.length !== 1) {
-        console.log('_previousTitle not 1');
-        process.exit(1);
-    }
-    if (_aliasesForVariableNameArray.length !== 1) {
-        console.log('_aliasesForVariableNameArray not 1');
-        process.exit(1);
-    }
 
     let properties = [];
     _previousTitle.forEach(p => {

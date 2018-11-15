@@ -10,11 +10,11 @@ const parseValueDomain = require('./ParseValueDomain').parseValueDomain;
 
 
 exports.createCde = async cdeId => {
-    let nindsForms = await NindsModel.find({'cdes.cdeId': cdeId}, {
+    let nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId}, {
         diseaseName: 1,
         subDiseaseName: 1,
         formId: 1,
-        cdes: {$elemMatch: {cdeId: cdeId}}
+        cdes: {$elemMatch: {'CDE ID': cdeId}}
     }).lean();
 
     let designations = parseDesignations(nindsForms);
