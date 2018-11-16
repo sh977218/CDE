@@ -21,7 +21,7 @@ public class QuickboardButtons extends NlmCdeBaseTest{
         textNotPresent("Empty Quick Board");
         textNotPresent("Export Quick Board");
 
-        addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
+        addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N");
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
         textPresent("QUICK BOARD (2)");
         goToQuickBoardByModule("cde");
@@ -36,7 +36,7 @@ public class QuickboardButtons extends NlmCdeBaseTest{
         // counteract save summary/table view
         if (driver.findElements(By.id("list_summaryView")).size() > 0)
             clickElement(By.id("list_summaryView"));
-        findElement(By.linkText("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage"));
+        findElement(By.linkText("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N"));
 
         clickElement(By.id("list_gridView"));
         textPresent("NX");
@@ -51,7 +51,7 @@ public class QuickboardButtons extends NlmCdeBaseTest{
         textNotPresent("NCI Thesaurus");
 
         clickElement(By.id("list_summaryView"));
-        findElement(By.linkText("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage"));
+        findElement(By.linkText("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N"));
 
         clickElement(By.id("qb_compare"));
         textPresent("Prostate Cancer pN0 TNM Finding");

@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class EmptyCdeQuickboard extends NlmCdeBaseTest {
     @Test
     public void emptyCdeQuickBoardTest() {
-        addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
+        addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N");
         textPresent("QUICK BOARD (1)");
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
         textPresent("QUICK BOARD (2)");
