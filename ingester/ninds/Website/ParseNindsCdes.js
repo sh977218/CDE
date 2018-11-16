@@ -50,7 +50,7 @@ exports.doOnePage = async href => {
 
     let resultMap = {};
     let keys = ['Disease: ', 'SubDisease: '];
-    let prefix_xpath = '//*[contains(@id,"ReportCell")]/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr[4]/td[3]/table/tbody/tr/td/div//div[contains(text(),"';
+    let prefix_xpath = '//*[contains(@id,"ReportCell")]/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td[3]/table/tbody/tr/td/div//div[contains(text(),"';
     let postfix_xpath = '")]';
     for (let key of keys) {
         let xpath = prefix_xpath + key + postfix_xpath;

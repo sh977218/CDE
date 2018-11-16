@@ -49,7 +49,7 @@ doTrElement = async trElement => {
         let hrefText = await cdeLinkElements[0].getAttribute('href');
         let href = hrefText.trim();
         form.cdes = await doOnePage(href);
-    }
+    } else form.cdes = [];
     return form;
 };
 
