@@ -30,14 +30,11 @@ exports.module = function (roleConfig) {
     router.get('/rss/feeds', async (req, res) => {
         let RSS_FEED = [];
         for (let url of RSS_FEED_URLs) {
-            try {
-                let feed = await parser.parseURL(url);
+            let feed = await parser.parseURL(url);
+            if (feed && feed.items)
                 feed.items.forEach(item => {
                     RSS_FEED.push(item);
                 });
-            } catch (e) {
-                return res.status(500).send();
-            }
         }
         res.send(RSS_FEED);
     });

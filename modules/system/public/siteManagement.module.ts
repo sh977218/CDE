@@ -16,8 +16,8 @@ import { ServerStatusComponent } from 'system/public/components/siteAdmin/server
 import { SiteManagementComponent } from 'system/public/components/siteAdmin/siteManagement/siteManagement.component';
 import { WidgetModule } from 'widget/widget.module';
 import { WhatsNewAdminComponent } from 'system/public/components/siteAdmin/whatsNew/whatsNewAdminComponent';
-import { ResourcesAdminComponent } from 'system/public/components/siteAdmin/resources/resourcesAdminComponent';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { ResourcesAdminComponent } from 'system/public/components/siteAdmin/resources/resourcesAdmin.component';
 
 
 const appRoutes: Routes = [

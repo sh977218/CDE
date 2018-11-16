@@ -29,7 +29,6 @@ import { CommonAppModule } from '_commonApp/commonApp.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { AlertModule } from 'alert/alert.module';
-import { WidgetModule } from 'widget/widget.module';
 
 @NgModule({
     imports: [
