@@ -25,8 +25,11 @@ schemas.formSchema.pre('save', function (next) {
 
 let Form = conn.model('Form', schemas.formSchema);
 let FormDraft = conn.model('Draft', schemas.draftSchema);
+
 exports.Form = exports.dao = Form;
 exports.FormDraft = exports.daoDraft = FormDraft;
+
+mongo_data.attachables.push(exports.Form);
 
 exports.elastic = elastic;
 
@@ -224,10 +227,6 @@ exports.byOtherId = function (source, id, cb) {
     });
 };
 
-exports.userTotalSpace = function (name, callback) {
-    mongo_data.userTotalSpace(Form, name, callback);
-};
-
 exports.query = function (query, callback) {
     Form.find(query).exec(callback);
 };
@@ -256,9 +255,9 @@ exports.exists = function (condition, callback) {
 };
 
 
-exports.checkOwnership = function (req, dao, id, cb) {
+exports.checkOwnership = function (req, id, cb) {
     if (!req.isAuthenticated()) return cb("You are not authorized.", null);
-    dao.byId(id, function (err, elt) {
+    exports.byId(id, function (err, elt) {
         if (err || !elt) return cb("Element does not exist.", null);
         if (!isOrgCurator(req.user, elt.stewardOrg.name))
             return cb("You do not own this element.", null);

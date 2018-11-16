@@ -237,10 +237,12 @@ express.response.render = function (view, module, msg) {
 };
 
 try {
-    app.use('/server/attachment', require('./server/attachment/attachmentRoutes').module({}, [
-        {module: 'cde', db: mongo_cde},
-        {module: 'form', db: mongo_form},
-        {module: 'article', db: articleDb}
+    app.use('/server/attachment', [authorization.loggedInMiddleware], require('./server/attachment/attachmentRoutes').module({
+        attachmentApproval: [authorization.canApproveAttachmentMiddleware]
+    }, [
+        {module: 'cde', db: mongo_cde, crudPermission: authorization.checkOwnership},
+        {module: 'form', db: mongo_form, crudPermission: authorization.checkOwnership},
+        {module: 'article', db: articleDb, crudPermission: authorization.isDocumentationEditor}
     ]));
 
     let discussModule = require("./server/discuss/discussRoutes").module({

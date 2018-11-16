@@ -8,20 +8,20 @@ exports.module = function (roleConfig, modules) {
     modules.forEach(m => {
 
         router.post(`/${m.module}/add`, multer(config.multer), (req, res) => {
-            attachment.add(req, res, m.db);
+            attachment.add(req, res, m.db, m.crudPermission);
         });
 
         router.post(`/${m.module}/remove`, (req, res) => {
-            attachment.remove(req, res, m.db);
+            attachment.remove(req, res, m.crudPermission);
         });
 
         router.post(`/${m.module}/setDefault`, (req, res) => {
-            attachment.setDefault(req, res, m.db);
+            attachment.setDefault(req, res, m.crudPermission);
         });
     });
 
-    router.post('/approve/:id', attachment.approvalApprove);
-    router.post('/decline/:id', attachment.approvalDecline);
+    router.post('/approve/:id', roleConfig.attachmentApproval, attachment.approvalApprove);
+    router.post('/decline/:id', roleConfig.attachmentApproval, attachment.approvalDecline);
 
     return router;
 };

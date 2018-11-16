@@ -4,6 +4,8 @@ const config = require('../system/parseConfig');
 
 const sharedSchemas = require('../system/schemas.js');
 
+const mongo_data = require('../system/mongo-data');
+
 const isOrgAdmin = require('../../shared/system/authorizationShared').isOrgAdmin;
 
 let articleSchema = new Schema({
@@ -17,6 +19,7 @@ let articleSchema = new Schema({
 let conn = connHelper.establishConnection(config.database.appData);
 let Article = conn.model('article', articleSchema);
 
+mongo_data.attachables.push(Article);
 
 exports.byId = function (id, cb) {
     Article.findById(id, cb);
@@ -31,16 +34,12 @@ exports.update = function (art, cb) {
 };
 
 
-exports.checkOwnership = function (req, dao, id, cb) {
+exports.checkOwnership = function (req, id, cb) {
     if (!req.isAuthenticated()) return cb("You are not authorized.", null);
-    dao.byId(id, function (err, elt) {
+    exports.byId(id, function (err, elt) {
         if (err || !elt) return cb("Element does not exist.", null);
         if (!isOrgAdmin(req.user))
             return cb("You do not own this element.", null);
         cb(null, elt);
     });
-};
-
-exports.userTotalSpace = function (name, callback) {
-    callback(10000000);
 };

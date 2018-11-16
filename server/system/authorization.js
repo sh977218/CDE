@@ -41,6 +41,13 @@ exports.canApproveCommentMiddleware = function (req, res, next) {
     }
     next();
 };
+exports.canApproveAttachmentMiddleware = function (req, res, next) {
+    if (!authorizationShared.hasRole(req.user, 'AttachmentReviewer')) {
+        res.send(403).send();
+        return;
+    }
+    next();
+};
 
 exports.isOrgAdminMiddleware = (req, res, next) => {
     if (!authorizationShared.isOrgAdmin(req.user, req.body.org)) {
@@ -75,10 +82,7 @@ exports.isSiteAdminMiddleware = (req, res, next) => {
 };
 
 exports.loggedInMiddleware = function (req, res, next) {
-    if (!req.isAuthenticated()) {
-        res.status(401).send();
-        return;
-    }
+    if (!req.isAuthenticated()) return res.status(401).send();
     next();
 };
 
@@ -86,6 +90,14 @@ exports.loggedInMiddleware = function (req, res, next) {
 // Permission Helpers with Request/Response
 // --------------------------------------------------
 
+
+exports.isDocumentationEditor = function (elt, user) {
+    return authorizationShared.hasRole(user, 'DocumentationEditor');
+};
+
+exports.checkOwnership = function (elt, user) {
+    return authorizationShared.isOrgCurator(user, elt.stewardOrg.name);
+};
 exports.checkBoardOwnerShip = function (board, user) {
     if (!user || !board) return false;
     return board.owner.userId.equals(user._id);

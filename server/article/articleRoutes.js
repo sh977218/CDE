@@ -22,21 +22,31 @@ exports.module = function (roleConfig) {
 
 
     const RSS_FEED_URLs = [
-        'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/erss.cgi?rss_guid=1levKdK_NRDgDOegKHJEyYZlo0FVQP1DGnMNZF2yzL7RLoLM60',
-        'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/erss.cgi?rss_guid=1xiH0Yth4GMcdkFE8LXzZAUVMEtKGBCLORz-NNsoeDUG-l1s1v',
-        'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/erss.cgi?rss_guid=1xiH0Yth4GMcdkFE8LXzZAUVMEtKGBCLORz-NNsoeDUG-l1s1v'
+        '',
+        ''
     ];
 
     router.get('/rss/feeds', async (req, res) => {
-        let RSS_FEED = [];
+        let RSS_FEEDs = [];
         for (let url of RSS_FEED_URLs) {
             let feed = await parser.parseURL(url);
             if (feed && feed.items)
                 feed.items.forEach(item => {
-                    RSS_FEED.push(item);
+                    RSS_FEEDs.push(item);
                 });
         }
-        res.send(RSS_FEED);
+        let html = '';
+        if (RSS_FEEDs) {
+            let items = '';
+            RSS_FEEDs.forEach(RSS_FEED => {
+                let item = '<a href=' + RSS_FEED.link + ' target="_blank">' + RSS_FEED.title + '</a>';
+                items += '<mat-list-item>' + item + '</mat-list-item>';
+            });
+            html += '<mat-list>' + items + '</mat-list>';
+        }
+
+        res.send(html);
+
     });
 
     return router;

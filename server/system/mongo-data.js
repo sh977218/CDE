@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const async = require('async');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const shortId = require('shortid');
@@ -23,7 +24,6 @@ const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 const Message = conn.model('Message', schemas.message);
 const Org = conn.model('Org', schemas.orgSchema);
 const PushRegistration = conn.model('PushRegistration', schemas.pushRegistration);
-// const Task = conn.model('Task', schemas.task);
 const userDb = require('../user/userDb');
 const User = require('../user/userDb').User;
 const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema);
@@ -301,33 +301,33 @@ exports.formatElt = elt => {
     return elt;
 };
 
-exports.userTotalSpace = (Model, name, callback) => {
-    Model.aggregate(
-        {$match: {"attachments.uploadedBy.username": name}},
-        {$unwind: "$attachments"},
-        {
-            $group: {
-                _id: {uname: "$attachments.uploadedBy.username"},
-                totalSize: {$sum: "$attachments.filesize"}
-            }
-        },
-        {$sort: {totalSize: -1}},
-        (err, res) => {
-            let result = 0;
-            if (res.length > 0) {
-                result = res[0].totalSize;
-            }
-            callback(result);
-        });
+exports.attachables = [];
+
+exports.userTotalSpace = (name, callback) => {
+    let totalSpace = 0;
+    async.forEach(exports.attachable, (attachable, doneOne) => {
+        attachable.aggregate(
+            {$match: {"attachments.uploadedBy.username": name}},
+            {$unwind: "$attachments"},
+            {
+                $group: {
+                    _id: {uname: "$attachments.uploadedBy.username"},
+                    totalSize: {$sum: "$attachments.filesize"}
+                }
+            },
+            {$sort: {totalSize: -1}},
+            (err, res) => {
+                if (res.length > 0) {
+                    totalSpace += res[0].totalSize;
+                }
+                doneOne();
+            });
+    }, () => callback(totalSpace))
 };
 
 exports.addFile = function (file, cb, streamDescription = null) {
     gfs.findOne({md5: file.md5}, (err, f) => {
-        if (f) {
-            cb(err, f, false);
-            return;
-        }
-
+        if (f) return cb(err, f, false);
         if (!streamDescription) {
             streamDescription = {
                 filename: file.filename,
@@ -386,22 +386,6 @@ exports.createMessage = (msg, cb) => {
     }];
     new Message(msg).save(cb);
 };
-
-// exports.taskCreate = (task, cb) => {
-//     new Task(task).save(cb);
-// };
-//
-// exports.taskGetByUser = (req, res) => {
-//     // TODO: implement by org
-//     let user = req.user;
-//     if (authorizationShared.hasRole(user, 'CommentReviewer')) {
-//         Task.find({'to.type': 'role', 'to.typeId': 'CommentReviewer'}).exec(handleError({req, res}, tasks => {
-//             res.send(tasks);
-//         }));
-//     } else {
-//         res.send([]);
-//     }
-// };
 
 exports.updateMessage = function (msg, callback) {
     let id = msg._id;
