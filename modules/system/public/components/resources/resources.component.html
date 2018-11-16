@@ -6,12 +6,4 @@
 
     <div [innerHtml]="resource.body | cdeSafeHtml"></div>
 
-    <div>
-        <mat-list>
-            <mat-list-item *ngFor="let feed of RSS_FEED">
-                <a [href]="feed.link" target="_blank">{{feed.title}}</a>
-            </mat-list-item>
-        </mat-list>
-    </div>
-
 </div>

@@ -33,7 +33,6 @@ exports.update = function (art, cb) {
     Article.findOneAndUpdate({key: art.key}, {$set: {body: art.body, updated: Date.now()}}, {upsert: true}, cb);
 };
 
-
 exports.checkOwnership = function (req, id, cb) {
     if (!req.isAuthenticated()) return cb("You are not authorized.", null);
     exports.byId(id, function (err, elt) {

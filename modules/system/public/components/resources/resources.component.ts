@@ -22,12 +22,8 @@ export class ResourcesComponent {
                 private alertSvc: AlertService) {
         this.canEdit = hasRole(this.userService.user, 'DocumentationEditor');
 
-        this.http.get<any>('/server/article/resources')
+        this.http.get<any>('/server/article/resourcesAndFeed')
             .subscribe(res => this.resource = res,
-                err => this.alertSvc.addAlert('danger', err));
-
-        this.http.get<any>('/server/article/rss/feeds')
-            .subscribe(res => this.RSS_FEED = res,
                 err => this.alertSvc.addAlert('danger', err));
     }
 
