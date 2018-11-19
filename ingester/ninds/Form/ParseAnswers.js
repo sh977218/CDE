@@ -1,4 +1,6 @@
 exports.parseAnswers = ninds => {
+    if (!ninds['Permissible Value'] || !ninds['Description'])
+        return [];
     let answers = [];
     let pvsArray = ninds['Permissible Value'].split(';');
     let isPvValueNumber = /^\d+$/.test(pvsArray[0]);

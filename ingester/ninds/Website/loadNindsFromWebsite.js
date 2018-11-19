@@ -7,6 +7,36 @@ const doOnePage = require('./ParseNindsCdes').doOnePage;
 const parseDiseases = require('./ParseDiseases').parseDisease;
 
 let formCounter = 0;
+let skipCounter = 0;
+
+getFormInfo = async trElement => {
+    let thElements = await trElement.findElements(By.xpath('th'));
+    let thElement = thElements[0];
+
+    let formNameText = await thElement.getText();
+    let formName = formNameText.trim();
+
+    let formNoteElements = await thElement.findElements(By.css('formnote'));
+    if (formNoteElements.length === 1) {
+        let formNoteText = await formNoteElements[0].getText();
+        let formNote = formNoteText.trim();
+        formName.replace(formNote, '').trim();
+    }
+
+    let formIdText = await thElement.getAttribute('id');
+    let formId = formIdText.trim();
+
+    let copyrightElements = await thElement.findElements(By.css('copyright'));
+    if (copyrightElements.length === 1) {
+        let copyrightText = await copyrightElements[0].getText();
+        let copyright = copyrightText.trim();
+        formName.replace(copyright, '').trim();
+    }
+    return {
+        formId: formId,
+        formName: formName
+    }
+};
 
 doTrElement = async trElement => {
     let form = {};
@@ -62,7 +92,6 @@ doDomain = async (driver, disease, domainElement) => {
 
     let trElements = await cdeTableElement.findElements(By.xpath('tbody/tr'));
     for (let trElement of trElements) {
-        let form;
         let subDomain = '';
         let thElements = await trElement.findElements(By.xpath('th'));
         let tdElements = await trElement.findElements(By.xpath('td'));
@@ -70,12 +99,22 @@ doDomain = async (driver, disease, domainElement) => {
             let subDomainText = await thElements[0].getText();
             subDomain = subDomainText.trim();
         } else {
-            form = await doTrElement(trElement);
-            form.subDomain = subDomain;
-            form.domain = domain;
-            form.disease = disease.name;
-            await new NindsModel(form).save();
-            formCounter++;
+            let cond = await getFormInfo(trElement);
+            cond.domain = domain;
+            cond.disease = disease;
+            let existingNinds = await NindsModel.findOne(cond);
+            if (!existingNinds) {
+                let formObj = await doTrElement(trElement);
+                formObj.subDomain = subDomain;
+                formObj.domain = domain;
+                formObj.disease = disease.name;
+                await new NindsModel(formObj).save();
+                formCounter++;
+                console.log('formCounter: ' + formCounter);
+            } else {
+                skipCounter++;
+                console.log('skipCounter: ' + skipCounter);
+            }
         }
     }
 };
@@ -95,7 +134,6 @@ async function doDisease(disease) {
 };
 
 async function run() {
-    await NindsModel.remove({});
     let diseases = await parseDiseases();
     for (let disease of diseases) {
         await doDisease(disease);
@@ -103,57 +141,5 @@ async function run() {
     console.log('formCounter: ' + formCounter);
 }
 
-fixWrongData = async () => {
-    let queries = [
-        {
-            field: 'cdes.Description',
-            fieldIncorrect: 'Yes, that is true;;;;;;No, that is not true;',
-            fieldCorrect: 'Yes, that is true;6;5;4;3;2;No, that is not true;'
-        },
-        {
-            field: 'cdes.Description',
-            fieldIncorrect: 'No Pain;;;;;;;;;;pain as bad as you can imagine;',
-            fieldCorrect: 'No Pain;1;2;3;4;5;6;7;8;9;pain as bad as you can imagine;'
-        },
-        {
-            field: 'cdes.Description',
-            fieldIncorrect: 'No Pain;;;;;;;;;;Worst possible pain;',
-            fieldCorrect: 'No Pain;1;2;3;4;5;6;7;8;9;Worst possible pain;'
-        },
-        {
-            field: 'cdes.Description',
-            fieldIncorrect: 'Not tired;;;;;;;;;;Worst possible tiredness;',
-            fieldCorrect: 'Not tired;1;2;3;4;5;6;7;8;9;Worst possible tiredness;'
-        },
-        {
-            field: 'cdes.Description',
-            fieldIncorrect: '',
-            fieldCorrect: ''
-        },
-        {
-            field: 'cdes.Description',
-            fieldIncorrect: '',
-            fieldCorrect: ''
-        },
-        {
-            field: 'cdes.Description',
-            fieldIncorrect: '',
-            fieldCorrect: ''
-        },
-
-    ];
-    for (let query of queries) {
-        let count = 100000;
-        while (count) {
-            count = await NindsModel.update(
-                {'cdes.Description': query.fieldIncorrect},
-                {$set: {'cdes.$.Description': query.fieldCorrect}},
-                {multi: true});
-        }
-    }
-
-};
-
 run().then(async () => {
-    // await fixWrongData();
 }, error => console.log(error));

@@ -4,13 +4,12 @@ exports.parseDesignations = nindsForms => {
     let cdeNameArray = [];
     let questionTextArray = [];
     nindsForms.forEach(nindsForm => {
-        if (nindsForm.cdes)
-            nindsForm.cdes.forEach(nindsCde => {
-                if (nindsCde['CDE Name'])
-                    cdeNameArray.push(nindsCde['CDE Name']);
-                if (nindsCde['Question Text'])
-                    questionTextArray.push(nindsCde['Question Text']);
-            })
+        nindsForm.cdes.forEach(nindsCde => {
+            if (nindsCde['CDE Name'])
+                cdeNameArray.push(nindsCde['CDE Name']);
+            if (nindsCde['Question Text'])
+                questionTextArray.push(nindsCde['Question Text']);
+        })
     });
 
     let _cdeNameArray = _.uniq(cdeNameArray);

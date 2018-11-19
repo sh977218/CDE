@@ -4,13 +4,12 @@ exports.parseSources = nindsForms => {
     let versionDateArray = [];
     let dataTypeArray = [];
     nindsForms.forEach(nindsForm => {
-        if (nindsForm.cdes)
-            nindsForm.cdes.forEach(nindsCde => {
-                if (nindsCde['Version Date'])
-                    versionDateArray.push(nindsCde['Version Date']);
-                if (nindsCde['Data Type'])
-                    dataTypeArray.push(nindsCde['Data Type']);
-            })
+        nindsForm.cdes.forEach(nindsCde => {
+            if (nindsCde['Version Date'])
+                versionDateArray.push(nindsCde['Version Date']);
+            if (nindsCde['Data Type'])
+                dataTypeArray.push(nindsCde['Data Type']);
+        })
     });
     if (dataTypeArray.length === 0) {
         console.log('dataTypeArray is empty');

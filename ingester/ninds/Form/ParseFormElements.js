@@ -56,11 +56,10 @@ exports.parseFormElements = async nindsForms => {
             });
             nindsQuestionList.push(questions);
         }
-        if (nindsForm.cdes)
-            nindsForm.cdes.forEach(nindsCde => {
-                if (nindsCde['CDE ID'])
-                    nindsCdeIdList.push(nindsCde['CDE ID']);
-            })
+        nindsForm.cdes.forEach(nindsCde => {
+            if (nindsCde['CDE ID'])
+                nindsCdeIdList.push(nindsCde['CDE ID']);
+        })
     });
 
     let _nindsQuestionList = _.unionWith(nindsQuestionList, _.isEqual);

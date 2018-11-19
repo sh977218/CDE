@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 const DATA_TYPE_MAP = require('./DATA_TYPE_MAP').map;
 
-const parsePermissibleValues = require('./ParsePermissibleValues').parsePermissibleValues;
+const parseAnswer = require('../Form/ParseAnswers').parseAnswers;
 
 exports.parseValueDomain = nindsForms => {
     let measurementTypeArray = [];
@@ -12,27 +12,23 @@ exports.parseValueDomain = nindsForms => {
     let minValueArray = [];
     let maxValueArray = [];
     let permissibleValuesArray = [];
-    let permissibleDescriptionArray = [];
+
     nindsForms.forEach(nindsForm => {
-        if (nindsForm.cdes)
-            nindsForm.cdes.forEach(nindsCde => {
-                if (nindsCde['Measurement Type'])
-                    measurementTypeArray.push(nindsCde['Measurement Type']);
-                if (nindsCde['Input Restrictions'])
-                    inputRestrictionsTypeArray.push(nindsCde['Input Restrictions']);
-                if (nindsCde['Data Type'])
-                    dataTypeTypeArray.push(nindsCde['Data Type']);
-                if (nindsCde['Size'])
-                    sizeArray.push(nindsCde['Size']);
-                if (nindsCde['Min Value'])
-                    minValueArray.push(nindsCde['Min Value']);
-                if (nindsCde['Max Value'])
-                    maxValueArray.push(nindsCde['Max Value']);
-                if (nindsCde['Permissible Value'])
-                    permissibleValuesArray.push(nindsCde['Permissible Value']);
-                if (nindsCde['Description'])
-                    permissibleDescriptionArray.push(nindsCde['Description']);
-            })
+        nindsForm.cdes.forEach(nindsCde => {
+            if (nindsCde['Measurement Type'])
+                measurementTypeArray.push(nindsCde['Measurement Type']);
+            if (nindsCde['Input Restrictions'])
+                inputRestrictionsTypeArray.push(nindsCde['Input Restrictions']);
+            if (nindsCde['Data Type'])
+                dataTypeTypeArray.push(nindsCde['Data Type']);
+            if (nindsCde['Size'])
+                sizeArray.push(nindsCde['Size']);
+            if (nindsCde['Min Value'])
+                minValueArray.push(nindsCde['Min Value']);
+            if (nindsCde['Max Value'])
+                maxValueArray.push(nindsCde['Max Value']);
+            permissibleValuesArray = permissibleValuesArray.concat(parseAnswer(nindsCde));
+        })
     });
 
     let _measurementTypeArray = _.uniq(measurementTypeArray);
@@ -41,8 +37,11 @@ exports.parseValueDomain = nindsForms => {
     let _sizeArray = _.uniq(sizeArray);
     let _minValueArray = _.uniq(minValueArray);
     let _maxValueArray = _.uniq(maxValueArray);
-    let _permissibleValuesArray = _.uniq(permissibleValuesArray);
-    let _permissibleDescriptionArray = _.uniq(permissibleDescriptionArray);
+    let _permissibleValuesArray = _.uniqWith(permissibleValuesArray, (a, b) => {
+        let apv = a.permissibleValue;
+        let bpv = b.permissibleValue;
+        return apv && bpv && _.isEqual(apv, bpv);
+    });
 
     let valueDomain = {};
 
@@ -101,22 +100,12 @@ exports.parseValueDomain = nindsForms => {
             }
             valueDomain.datatypeValueList = {datatype: datatype};
             if (datatype === 'Value List') {
-                if (_permissibleValuesArray.length === 0) {
-                    console.log('_permissibleValuesArray is 0');
-                    process.exit(1);
-                }
-                if (_permissibleDescriptionArray.length === 0) {
-                    console.log('_permissibleDescriptionArray is 0');
+                if (_permissibleValuesArray.length !== 1) {
+                    console.log('_permissibleValuesArray is not 1');
                     process.exit(1);
                 }
             }
-            try {
-                valueDomain.permissibleValues = parsePermissibleValues(_permissibleValuesArray.join(';').toString(), _permissibleDescriptionArray.join(';').toString());
-            } catch (e) {
-                console.log('Error on ParseValue Domain');
-                console.log(e + ' fromId:  ' + nindsForms[0].formId + ' cdeId: ' + nindsForms[0].cdes[0]['CDE ID']);
-                process.exit(1);
-            }
+            valueDomain.permissibleValues = _permissibleValuesArray;
         } else {
             console.log(' unknown inputRestrictions found:' + inputRestrictions);
             process.exit(1);

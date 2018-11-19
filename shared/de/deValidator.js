@@ -1,5 +1,3 @@
-import _find from 'lodash/find';
-
 export const checkPvUnicity = function (valueDomain) {
     var result = {allValid: true};
     valueDomain.allValid = true;
@@ -46,7 +44,7 @@ export const checkPvUnicity = function (valueDomain) {
             valueDomain.allValid = false;
             return result;
         }
-        allPvs[pv.permissibleValue] = 1;
+        if (pv.permissibleValue) allPvs[pv.permissibleValue] = 1;
         if (pv.valueMeaningName && pv.valueMeaningName.length > 0)
             allVms[pv.valueMeaningName] = 1;
         if (pv.valueMeaningCode && pv.valueMeaningCode.length > 0)
