@@ -70,10 +70,19 @@ exports.createIndexJson = {
                 , "imported": {"type": "date"}
                 , "version": {"type": "keyword"}
                 , "views": {type: "integer"}
+                // , primaryNameSuggest: {
+                //     "type": "completion",
+                //     "fields": {
+                //         "raw": {
+                //             "type": "keyword",
+                //             "index": false
+                //         }
+                //     }
+                // }
                 , primaryNameSuggest: {
-                    "type": "text",
-                    "analyzer": "autocomplete",
-                    "search_analyzer": "standard",
+                    "type": "completion",
+                    // "analyzer": "autocomplete",
+                    // "search_analyzer": "standard",
                     "fields": {
                         "raw": {
                             "type": "keyword",
@@ -157,9 +166,9 @@ exports.createFormIndexJson = {
                 }, "views": {"type": "integer"}
                 , "numQuestions": {"type": "integer"}
                 , primaryNameSuggest: {
-                    "type": "text",
-                    "analyzer": "autocomplete",
-                    "search_analyzer": "standard",
+                    "type": "completion",
+                    // "analyzer": "autocomplete",
+                    // "search_analyzer": "standard",
                     "fields": {
                         "raw": {
                             "type": "keyword",

@@ -188,10 +188,11 @@ exports.initEs = function (cb) {
 
 exports.completionSuggest = function (term, user, settings, indexName, cb) {
     let suggestQuery = {
-        "query": {
-            "match": {
-                "primaryNameSuggest": {
-                    "query": term
+        "suggest": {
+            "primaryNameSuggest": {
+                "prefix": term,
+                "completion": {
+                    "field": "primaryNameSuggest"
                 }
             }
         }, "_source": {
@@ -527,6 +528,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     // highlight search results if part of the following fields.
     queryStuff.highlight = {
         "require_field_match": false,
+        "fragment_size": 150,
         "order": "score"
         , "pre_tags": ["<strong>"]
         , "post_tags": ["</strong>"]

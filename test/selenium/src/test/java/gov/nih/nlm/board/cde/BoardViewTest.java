@@ -30,7 +30,7 @@ public class BoardViewTest extends BoardTest {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Test Board";
 
-        attachToBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N", boardName);
+        attachToBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage", boardName);
         attachToBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value", boardName);
         attachToBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count", boardName);
         attachToBoard("Prior BMSCT Administered Indicator", boardName);

@@ -180,8 +180,8 @@ exports.init = function (app, daoManager) {
     app.post('/cdeCompletion/:term', exportShared.nocacheMiddleware, (req, res) => {
         let term = req.params.term;
         elastic_system.completionSuggest(term, req.user, req.body, config.elastic.index.name, resp => {
-            resp.hits.hits.forEach(r => r._index = undefined);
-            res.send(resp.hits.hits);
+            resp.suggest.primaryNameSuggest[0].options.forEach(r => r._index = undefined);
+            res.send(resp.suggest.primaryNameSuggest[0].options);
         });
     });
 
