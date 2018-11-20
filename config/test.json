@@ -16,6 +16,12 @@
     "boardIndex": {
       "name": "boardtest"
     },
+    "cdeSuggestIndex": {
+      "name": "cdesuggesttest"
+    },
+    "formSuggestIndex": {
+      "name": "formsuggesttest"
+    },
     "number_of_replicas": 0
   },
   "versionCheckIntervalInSeconds": 20,

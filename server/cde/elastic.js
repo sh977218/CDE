@@ -12,7 +12,7 @@ const esClient = new elasticsearch.Client({
 exports.esClient = esClient;
 
 exports.updateOrInsert = function (elt, cb) {
-    esInit.riverFunction(elt.toObject(), function (doc) {
+    esInit.riverFunction(elt.toObject(), doc => {
         if (doc) {
             delete doc._id;
             esClient.index({
@@ -20,7 +20,7 @@ exports.updateOrInsert = function (elt, cb) {
                 type: "dataelement",
                 id: doc.tinyId,
                 body: doc
-            }, function (err) {
+            }, err => {
                 if (err) {
                     dbLogger.logError({
                         message: "Unable to Index document: " + doc.tinyId,
@@ -30,6 +30,14 @@ exports.updateOrInsert = function (elt, cb) {
                     });
                 }
                 if (cb) cb(err);
+            });
+            esInit.suggestRiverFunction(elt, sugDoc => {
+                esClient.index({
+                    index: config.elastic.cdeSuggestIndex.name,
+                    type: "suggest",
+                    id: doc.tinyId,
+                    body: sugDoc
+                })
             });
         }
     });
