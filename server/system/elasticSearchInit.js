@@ -313,10 +313,10 @@ if (config.elastic.boardIndex.name === "auto") {
     config.elastic.boardIndex.name = "board_" + shortHash(boardElasticSearchMapping.createIndexJson);
 }
 if (config.elastic.cdeSuggestIndex.name === "auto") {
-    config.elastic.cdeSuggestIndex.name = "cdeSuggest_" + shortHash(exports.createSuggestIndexJson);
+    config.elastic.cdeSuggestIndex.name = "cdesuggest_" + shortHash(exports.createSuggestIndexJson);
 }
 if (config.elastic.formSuggestIndex.name === "auto") {
-    config.elastic.formSuggestIndex.name = "formSuggest_" + shortHash(exports.createSuggestIndexJson);
+    config.elastic.formSuggestIndex.name = "formsuggest_" + shortHash(exports.createSuggestIndexJson);
 }
 
 exports.indices = [
