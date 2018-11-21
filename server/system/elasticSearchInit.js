@@ -137,6 +137,14 @@ exports.createIndexJson = {
     }, settings: {
         index: {
             "number_of_replicas": config.elastic.number_of_replicas
+        },
+        analysis: {
+            analyzer: {
+                default: {
+                    type: 'snowball'
+                    , language: 'English'
+                }
+            }
         }
     }
 };
@@ -199,7 +207,16 @@ exports.createFormIndexJson = {
         "index.mapping.total_fields.limit": 2000,
         index: {
             "number_of_replicas": config.elastic.number_of_replicas
+        },
+        analysis: {
+            analyzer: {
+                default: {
+                    type: 'snowball'
+                    , language: 'English'
+                }
+            }
         }
+
     }
 };
 
