@@ -147,6 +147,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     addMode?: string;
     aggregations: any;
     altClassificationFilterMode?: boolean;
+    excludeOrgFilterMode?: boolean;
     autocompleteSuggestions?: string[];
     cutoffIndex: any;
     elts?: Elt[];
@@ -804,6 +805,12 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     setAltClassificationFilterMode() {
         this.altClassificationFilterMode = true;
+        this.doSearch();
+        if (!this.embedded) SearchBaseComponent.focusClassification();
+    }
+
+    setExcludeOrgFilterMode() {
+        this.excludeOrgFilterMode = true;
         this.doSearch();
         if (!this.embedded) SearchBaseComponent.focusClassification();
     }

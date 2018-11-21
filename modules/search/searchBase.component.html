@@ -184,6 +184,14 @@
                           matTooltipClass="cdeTooltip" matTooltipPosition="right">cancel</mat-icon>
             </span>
         </span>
+        <span *ngIf="altClassificationFilterMode" id="classifAlt_filter" class="border">not
+            <span class="badge badge-success">{{getSelectedClassificationsAlt()}}
+                <mat-icon id="removeAltClassificationFilterMode" class="remove-filter hand-cursor dark-icon pl-1"
+                          (click)="clearSelectedClassificationsAlt()"
+                          aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right">cancel</mat-icon>
+            </span>
+        </span>
         <span id="topic_crumb">
             <span *ngIf="!hasSelectedTopics()" class="badge badge-secondary mx-1">All Topics</span>
             <span *ngIf="hasSelectedTopics()" class="badge badge-success mx-1">{{getSelectedTopics()}}
@@ -222,14 +230,20 @@
                 <!-- CLASSIFICATION AGGREGATIONS -->
                 <div *ngIf="aggregations.orgs.buckets" id="classificationListHolder" class="my-3">
                     <div>
-                        <span class="treeTitle" style="vertical-align: top">Classification</span>
+                        <span class="treeTitle">Classification</span>
                         <mat-icon *ngIf="!altClassificationFilterMode && !embedded"
                                   id="altClassificationFilterModeToggle"
-                                  class="hand-cursor" (click)="setAltClassificationFilterMode()" role="link"
+                                  class="hand-cursor classification-filter" (click)="setAltClassificationFilterMode()" role="link"
                                   aria-label="Add a second classifications filter as an AND condition"
                                   matTooltip="Add a second classifications filter as an AND condition"
-                                  matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                                  style="font-size: 1rem; padding-top: 5px">add_box
+                                  matTooltipClass="cdeTooltip" matTooltipPosition="right">add_box
+                        </mat-icon>
+                        <mat-icon *ngIf="!excludeOrgFilterMode && !embedded"
+                                  id="altClassificationFilterModeToggle"
+                                  class="hand-cursor classification-filter" (click)="setExcludeOrgFilterMode()" role="link"
+                                  aria-label="Add a second classifications filter as an NOT condition"
+                                  matTooltip="Add a second classifications filter as an NOT condition"
+                                  matTooltipClass="cdeTooltip" matTooltipPosition="right">indeterminate_check_box
                         </mat-icon>
                     </div>
                     <ng-container *ngFor="let t of aggregations.orgs.buckets; trackBy: trackByKey">
