@@ -12,7 +12,17 @@ exports.createSuggestIndexJson = {
     "mappings": {
         "suggest": {
             "properties": {
-                "nameSuggest": primaryNameSuggest
+                "nameSuggest": primaryNameSuggest,
+                "stewardOrg": {
+                    "properties": {
+                        "name": {"type": "keyword"}
+                    }
+                },
+                "registrationState": {
+                    properties: {
+                        "registrationStatus": {"type": "keyword"}
+                    }
+                }
             }
         }
     }, settings: {
@@ -195,7 +205,11 @@ exports.createFormIndexJson = {
 
 
 exports.suggestRiverFunction = function (_elt, cb) {
-    return cb({nameSuggest: _elt.designations[0].designation});
+    let toIndex = {nameSuggest: _elt.designations[0].designation};
+    toIndex.registrationState = _elt.registrationState;
+    toIndex.stewardOrg = _elt.stewardOrg;
+
+    return cb(toIndex);
 };
 
 
