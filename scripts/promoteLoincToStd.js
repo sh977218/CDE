@@ -12,6 +12,8 @@ async function run() {
     let total = await mongo_cde.DataElement.find(query).count();
     let done = 0;
 
+    console.log("need to do: " + total);
+
     mongo_cde.DataElement.find(query).cursor({batchSize: 20}).eachAsync(async oneCde => {
         oneCde.registrationState.registrationStatus = "Standard";
         oneCde.changeNote = "Updated LOINC CDEs to Standard Status";
@@ -29,5 +31,5 @@ async function run() {
 
 }
 
-run().then(() => process.exit(0), err => console.log(err));
+run().then(() => {}, err => console.log(err));
 
