@@ -64,7 +64,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/moreLikeCde/:tinyId', exportShared.nocacheMiddleware, (req, res) => {
-        elastic.morelike(req.params.tinyId, function (result) {
+        elastic.morelike(req.params.tinyId, result => {
             cdesvc.hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
         });
@@ -179,7 +179,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/cdeCompletion/:term', exportShared.nocacheMiddleware, (req, res) => {
         let term = req.params.term;
-        elastic_system.completionSuggest(term, req.user, req.body, config.elastic.index.name, resp => {
+        elastic_system.completionSuggest(term, req.user, req.body, config.elastic.cdeSuggestIndex.name, resp => {
             resp.hits.hits.forEach(r => r._index = undefined);
             res.send(resp.hits.hits);
         });

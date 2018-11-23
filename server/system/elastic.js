@@ -117,6 +117,14 @@ exports.daoMap = {
     "board": {
         condition: {},
         dao: boardDb
+    },
+    "cdeSuggest": {
+        condition: {archived: false},
+        dao: mongo_cde
+    },
+    "formSuggest": {
+        condition: {archived: false},
+        dao: mongo_form
     }
 };
 
@@ -190,12 +198,10 @@ exports.completionSuggest = function (term, user, settings, indexName, cb) {
     let suggestQuery = {
         "query": {
             "match": {
-                "primaryNameSuggest": {
+                "nameSuggest": {
                     "query": term
                 }
             }
-        }, "_source": {
-            "includes": ["primaryNameSuggest"]
         },
         post_filter: {
             bool: {
@@ -425,7 +431,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.sort = {
             "registrationState.registrationStatusSortOrder": "asc",
             "classificationBoost": "desc",
-            "primaryNameSuggest.raw": "asc"
+            "primaryNameCopy.raw": "asc"
         };
     }
 
@@ -527,6 +533,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     // highlight search results if part of the following fields.
     queryStuff.highlight = {
         "require_field_match": false,
+        "fragment_size": 150,
         "order": "score"
         , "pre_tags": ["<strong>"]
         , "post_tags": ["</strong>"]
