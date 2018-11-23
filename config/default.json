@@ -64,6 +64,12 @@
     "boardIndex": {
       "name": "auto"
     },
+    "cdeSuggestIndex": {
+      "name": "auto"
+    },
+    "formSuggestIndex": {
+      "name": "auto"
+    },
     "number_of_replicas": 2
   },
   "database": {
