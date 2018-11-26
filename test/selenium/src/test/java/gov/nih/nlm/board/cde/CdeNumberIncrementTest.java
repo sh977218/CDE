@@ -11,11 +11,11 @@ public class CdeNumberIncrementTest extends BoardTest {
         mustBeLoggedInAs(boardUser, password);
         gotoMyBoards();
         int numBefore = getNumberElementsByBoardName(boardName);
-        Assert.assertEquals(0, numBefore);
+        Assert.assertEquals(numBefore, 0);
         pinCdeToBoard("Lymph Node Procedure", boardName);
         gotoMyBoards();
         int numAfter = getNumberElementsByBoardName(boardName);
-        Assert.assertEquals(1, numAfter);
+        Assert.assertEquals(numAfter, 1);
     }
 
 }

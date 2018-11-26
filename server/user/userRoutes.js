@@ -18,8 +18,8 @@ exports.module = function (roleConfig) {
     });
 
     router.post('/', (req, res) => {
-        userDb.updateUser(req.user, req.body, handle404({req, res}, user => {
-            res.send(user);
+        userDb.updateUser(req.user, req.body, handle404({req, res}, () => {
+            res.send();
         }));
     });
 
@@ -38,6 +38,28 @@ exports.module = function (roleConfig) {
     router.get('/searchUsers/:username?', roleConfig.search, (req, res) => {
         userDb.usersByUsername(req.params.username, handle404({req, res}, users => {
             res.send(users);
+        }));
+    });
+
+    router.get('/tasks', [nocacheMiddleware, loggedInMiddleware], (req, res) => {
+        if (!req.user) return res.send({});
+        userDb.byId(req.user._id, handle404({req, res}, user => {
+            res.send(user.tasks);
+        }));
+    });
+
+    router.delete('/tasks', [loggedInMiddleware], (req, res) => {
+        userDb.byId(req.user._id, handle404({req, res}, user => {
+            let updatedTasks = user.tasks.filter(t => req.query.ids.indexOf(t.id) === -1);
+            if (user.tasks.length === updatedTasks.length) {
+                res.send({tasks: user.tasks});
+                return;
+            }
+            userDb.updateUser(user, {tasks: updatedTasks}, handleError({req, res}, () => {
+                userDb.byId(req.user._id, handle404({req, res}, savedUser => {
+                    res.send({tasks: savedUser.tasks});
+                }));
+            }));
         }));
     });
 

@@ -9,6 +9,7 @@ const MongoStore = require('connect-mongo')(session);
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const connHelper = require('./connections');
 const dbLogger = require('../log/dbLogger');
+const notificationSvc = require('../notification/notificationSvc');
 const consoleLog = dbLogger.consoleLog;
 const handleError = dbLogger.handleError;
 const logging = require('./logging.js');
@@ -184,22 +185,30 @@ exports.pushGetAdministratorRegistrations = callback => {
     }));
 };
 
-function typeToCriteria(type) {
-    switch (type) {
-        case 'approveCommentReviewer':
-            return {roles: 'CommentReviewer', 'notificationSettings.approvalComment.push': true};
-        default:
-            return {findNone: 1};
-    }
-}
+// cb(err, registrations)
+exports.pushRegistrationFindActive = (criteria, cb) => {
+    criteria.loggedIn = true;
+    PushRegistration.find(criteria, cb);
+};
 
-exports.pushGetRegistrations = (type, callback) => {
-    userDb.find(typeToCriteria(type), users => {
-        let userIds = users.map(u => u._id.toString());
-        PushRegistration.find({}).exec(handleError({}, registrations => {
-            callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
-        }));
-    });
+// cb(err, registrations)
+exports.pushRegistrationSubscribersByType = (type, cb, data = undefined) => {
+    userDb.find(
+        notificationSvc.criteriaSet(
+            notificationSvc.typeToCriteria(type, data),
+            'notificationSettings.comment.push'
+        ),
+        (err, users) => {
+            if (err) return cb(err);
+            exports.pushRegistrationSubscribersByUsers(users, cb);
+        }
+    );
+};
+
+// cb(err, registrations)
+exports.pushRegistrationSubscribersByUsers = (users, cb) => {
+    let userIds = users.map(u => u._id.toString());
+    exports.pushRegistrationFindActive({userId: {$in: userIds}}, cb);
 };
 
 exports.userByName = (name, callback) => {
@@ -470,6 +479,16 @@ exports.addUserRole = function (request, cb) {
 
 exports.mailStatus = function (user, callback) {
     exports.getMessages({user: user, params: {type: "received"}}, callback);
+};
+
+// cb(err, item)
+exports.fetchItem = function (module, tinyId, cb) {
+    let db = daoManager.getDao(module);
+    if (!db) {
+        cb('Module has no database.');
+        return;
+    }
+    (db.byTinyId || db.byId)(tinyId, cb);
 };
 
 exports.addToClassifAudit = function (msg) {

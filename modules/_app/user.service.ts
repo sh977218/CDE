@@ -8,10 +8,9 @@ import { Subscription } from 'rxjs/Subscription';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { ITEM_MAP } from 'shared/item';
-import {
-    Cb, CbErr, CbErrObj, Comment, NotificationSettings, NotificationTypesSettings, User
-} from 'shared/models.model';
+import { Cb, CbErr, CbErrObj, Comment, User } from 'shared/models.model';
 import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
+import { newNotificationSettings, newNotificationSettingsMedia } from 'shared/user';
 
 @Injectable()
 export class UserService {
@@ -78,12 +77,11 @@ export class UserService {
                     if (this.user) {
                         this.user.hasMail = response.count > 0;
                     }
-                }, () => {});
+                }, _noop);
                 resolve(this.user);
-            }, err => {
-                reject(err);
-            });
-        }).finally(() => {
+            }, reject);
+        });
+        this.promise.finally(() => {
             this.listeners.forEach(listener => listener());
         });
         this.promise.then(user => PushNotificationSubscriptionService.subscriptionServerUpdate(user && user._id)).catch(_noop);
@@ -125,8 +123,8 @@ export class UserService {
     static validate(user: User) {
         if (!user.orgAdmin) user.orgAdmin = [];
         if (!user.orgCurator) user.orgCurator = [];
-        if (!user.notificationSettings) user.notificationSettings = new NotificationSettings();
-        if (!user.notificationSettings.approvalComment) user.notificationSettings.approvalComment = new NotificationTypesSettings();
+        if (!user.notificationSettings) user.notificationSettings = newNotificationSettings();
+        if (!user.notificationSettings.approvalComment) user.notificationSettings.approvalComment = newNotificationSettingsMedia();
     }
 }
 
