@@ -225,8 +225,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                                 let final = new Set();
                                 this.lastTypeahead = {};
                                 hits.forEach(e => {
-                                    this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
-                                    final.add(e._source.primaryNameSuggest);
+                                    this.lastTypeahead[e._source.nameSuggest] = e._id;
+                                    final.add(e._source.nameSuggest);
                                 });
                                 return Array.from(final);
                             })

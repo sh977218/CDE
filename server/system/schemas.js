@@ -206,7 +206,7 @@ exports.designationSchema = new Schema({
 }, {_id: false});
 
 exports.definitionSchema = new Schema({
-    definition: StringType,
+    definition: {type: String, required: true, minlength: 1},
     definitionFormat: StringType,
     tags: [StringType]
 }, {_id: false});
