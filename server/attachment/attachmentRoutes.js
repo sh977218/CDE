@@ -12,11 +12,11 @@ exports.module = function (roleConfig, modules) {
         });
 
         router.post(`/${m.module}/remove`, (req, res) => {
-            attachment.remove(req, res, m.crudPermission);
+            attachment.remove(req, res, m.db, m.crudPermission);
         });
 
         router.post(`/${m.module}/setDefault`, (req, res) => {
-            attachment.setDefault(req, res, m.crudPermission);
+            attachment.setDefault(req, res, m.db, m.crudPermission);
         });
     });
 

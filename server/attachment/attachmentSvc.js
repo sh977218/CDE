@@ -124,8 +124,10 @@ exports.approvalDecline = (req, res) => {
     }));
 };
 
-exports.remove = (req, res, crudPermission) => {
-    crudPermission(req, req.body.id, handleError({req, res}, elt => {
+exports.remove = (req, res, db, crudPermission) => {
+    db.byId(req.body.id, handleError({req, res}, elt => {
+        let ownership = crudPermission(elt, req.user);
+        if (!ownership) return res.status(401).send('You do not own this element');
         let fileId = elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
         elt.save(handleError({req, res}, () => {
@@ -133,7 +135,7 @@ exports.remove = (req, res, crudPermission) => {
                 res.send(elt);
             });
         }));
-    }));
+    }))
 };
 
 exports.removeUnusedAttachment = function (id, callback) {
@@ -156,23 +158,16 @@ exports.scanFile = (stream, res, cb) => {
     });
 };
 
-exports.setDefault = (req, res, crudPermission) => {
-    crudPermission(req, req.body.id, (err, elt) => {
-        if (err) {
-            logging.expressLogger.info(err);
-            return res.status(500).send('ERROR - attachment as default - cannot check ownership');
-        }
+exports.setDefault = (req, res, db, crudPermission) => {
+    db.byId(req.body.id, handleError({req, res}, elt => {
+        let ownership = crudPermission(elt, req.user);
+        if (!ownership) return res.status(401).send('You do not own this element');
         let state = req.body.state;
         for (let i = 0; i < elt.attachments.length; i++) {
             elt.attachments[i].isDefault = false;
         }
         elt.attachments[req.body.index].isDefault = state;
-        elt.save(err => {
-            if (err) {
-                res.send('error: ' + err);
-            } else {
-                res.send(elt);
-            }
-        });
-    });
+        elt.save(handleError({req, res}, newElt => res.send(newElt)));
+    }))
+
 };
