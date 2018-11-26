@@ -9,7 +9,7 @@ public class CreateCdeValidationErrorsTest extends BaseClassificationTest {
 
     @Test
     public void createCdeValidationErrors() {
-        mustBeLoggedInAs(classificationMgtUser_username, password);
+        mustBeLoggedInAs(nlm_username,nlm_password);
         goHome();
         clickElement(By.id("createEltLink"));
         clickElement(By.linkText("CDE"));
