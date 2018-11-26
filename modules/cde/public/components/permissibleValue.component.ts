@@ -8,7 +8,7 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { DataTypeService } from 'core/dataType.service';
 import { SearchSettings } from 'search/search.model';
-import { checkPvUnicity, fixDatatype } from 'shared/de/deValidator';
+import { fixDatatype } from 'shared/de/deValidator';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
@@ -120,12 +120,6 @@ export class PermissibleValueComponent {
     canLinkPvFunc() {
         let dec = this.elt.dataElementConcept;
         this.canLinkPv = (this.canEdit && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
-    }
-
-    checkPvUnicity() {
-        let validObject = checkPvUnicity(this.elt.valueDomain);
-        this.elt.allValid = validObject['allValid'];
-        this.elt.pvNotValidMsg = validObject['pvNotValidMsg'];
     }
 
     checkVsacId() {
@@ -322,7 +316,7 @@ export class PermissibleValueComponent {
     runManualValidation() {
         this.validatePvWithVsac();
         this.validateVsacWithPv();
-        this.checkPvUnicity();
+        // this.checkPvUnicity();
     }
 
 

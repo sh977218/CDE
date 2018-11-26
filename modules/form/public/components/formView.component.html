@@ -36,8 +36,9 @@
             <mat-icon>warning</mat-icon>
             The following errors need to be corrected in order to Publish:
             <ul class="list-inline">
-                <li *ngFor="let error of validationErrors;let i = index;">
-                    <a class="fake-link" (click)="scrollToDescriptionId(error.id)">{{error.message}}</a>
+                <li *ngFor="let error of validationErrors">
+                    <ng-container *ngIf="!error.id">{{error.message}}</ng-container>
+                    <a class="fake-link" *ngIf="error.id" (click)="scrollToDescriptionId(error.id)">{{error.message}}</a>
                 </li>
             </ul>
         </div>
@@ -137,7 +138,7 @@
                     (click)="deleteModal.openDeleteModal()">
                 <mat-icon>delete</mat-icon><span class="d-none d-sm-inline-block ml-1">Delete Draft</span>
             </button>
-            <button id="openSave" mat-raised-button color="primary" title="Publish" (click)="publish()">
+            <button id="openSave" mat-raised-button color="primary" (click)="publish()">
                 <mat-icon>publish</mat-icon><span class="d-none d-sm-inline-block ml-1">Publish</span>
             </button>
         </ng-container>
