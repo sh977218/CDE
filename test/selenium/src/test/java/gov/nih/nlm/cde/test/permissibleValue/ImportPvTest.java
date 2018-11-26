@@ -14,13 +14,15 @@ public class ImportPvTest extends NlmCdeBaseTest {
         goToPermissibleValues();
         clickElement(By.id("openImportPVModalBtn"));
         importPvByTinyId("mJQiShWEW");
-        textPresent("There are validation errors. Duplicate Permissible Value");
-        checkElementDoesNotExistByLocator(By.id("openSave"));
+        textPresent("The following errors need to be corrected in order to Publish");
+        textPresent("Duplicate Permissible Value");
+        clickElement(By.id("openSave"));
+        textPresent("Please fix all errors before publishing");
         deleteDraft();
 
         clickElement(By.id("openImportPVModalBtn"));
         importPvByTinyId("CK8F0tHZ5wp");
-        textNotPresent("There are validation errors. Duplicate Permissible Value");
+        textNotPresent("Duplicate Permissible Value");
         goToHistory();
         selectHistoryAndCompare(1, 2);
 

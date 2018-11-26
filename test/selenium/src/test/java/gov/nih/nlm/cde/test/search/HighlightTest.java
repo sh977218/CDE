@@ -24,7 +24,7 @@ public class HighlightTest extends NlmCdeBaseTest {
         clickElement(By.id("search.submit"));
 
         textPresent("A compound of two or more amino acids where the al [...]");
-        textPresent("request for and delivery of a file (such as a Web page) on a server.:The enzymatic processing");
+        textPresent(":The enzymatic processing of a polypeptide chain");
         findElement(By.xpath("//*[@id='searchResult_0']//strong[.='enzymatic']"));
 
         // no highlights

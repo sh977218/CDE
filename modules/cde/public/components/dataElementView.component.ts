@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { ActivatedRoute, Data, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
@@ -16,8 +16,9 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { Comment } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { checkPvUnicity } from 'shared/de/deValidator';
+import { checkPvUnicity, checkDefinitions } from 'shared/de/deValidator';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
+import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 
 @Component({
     selector: 'cde-data-element-view',
@@ -34,6 +35,7 @@ import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationSha
 export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent') commentAreaComponent: DiscussAreaComponent;
     @ViewChild('copyDataElementContent') copyDataElementContent: TemplateRef<any>;
+    @ViewChild('saveModal') saveModal!: SaveModalComponent;
     @ViewChild('tabSet') tabSet: NgbTabset;
     commentMode;
     currentTab = 'general_tab';
@@ -51,6 +53,7 @@ export class DataElementViewComponent implements OnInit {
     savingText: String;
     tinyId;
     url;
+    validationErrors: { message: string }[] = [];
 
     ngOnInit() {
         this.orgHelperService.then(() => {
@@ -99,6 +102,7 @@ export class DataElementViewComponent implements OnInit {
             if (elt.isDraft) this.hasDrafts = true;
             DataElement.validate(elt);
             this.elt = elt;
+            this.validate();
             this.loadComments(this.elt);
             this.deId = this.elt._id;
             if (this.userService.user) {
@@ -135,6 +139,14 @@ export class DataElementViewComponent implements OnInit {
 
     loadPublished(cb = _noop) {
         this.eltLoad(this.deViewService.fetchPublished(this.route.snapshot.queryParams), cb);
+    }
+
+    publish() {
+        if (this.validationErrors.length) {
+            this.alert.addAlert("danger", "Please fix all errors before publishing");
+        } else {
+            this.saveModal.openSaveModal();
+        }
     }
 
     openCopyElementModal() {
@@ -241,12 +253,13 @@ export class DataElementViewComponent implements OnInit {
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
-        this.draftSubscription = this.http.post('/draftDataElement/' + this.elt.tinyId, this.elt).subscribe(res => {
+        this.draftSubscription = this.http.post('/draftDataElement/' + this.elt.tinyId, this.elt).subscribe(() => {
             this.draftSubscription = undefined;
             this.savingText = 'Saved';
             setTimeout(() => {
                 this.savingText = '';
             }, 3000);
+            this.validate();
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
@@ -257,6 +270,14 @@ export class DataElementViewComponent implements OnInit {
                 this.loadElt(() => this.alert.addAlert('success', 'Data Element saved.'));
             }
         }, () => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
+    }
+
+    validate() {
+        this.validationErrors.length = 0;
+        let defError = checkDefinitions(this.elt);
+        if (!defError.allValid) this.validationErrors.push({message: defError.message});
+        let pvErrors = checkPvUnicity(this.elt.valueDomain);
+        if (!pvErrors.allValid) this.validationErrors.push({message: pvErrors.pvNotValidMsg});
     }
 
     viewChanges() {

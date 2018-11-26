@@ -12,8 +12,6 @@ import _noop from 'lodash/noop';
 import { BackForwardService } from '_app/backForward.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { UserService } from '_app/user.service';
-import { IEGuard } from '_app/routerGuard/ieGuard';
-
 
 @Component({
     selector: 'nih-cde',

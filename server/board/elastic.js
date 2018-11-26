@@ -37,7 +37,7 @@ exports.boardSearch = (filter, callback) => {
     };
 
     if (filter.search && filter.search.length > 0) {
-        query.query.bool.must.push({match: {_all: filter.search}});
+        query.query.bool.must.push({query_string: {query: filter.search}});
     }
     if (filter.selectedTypes) {
         filter.selectedTypes.forEach(t => {
