@@ -171,6 +171,7 @@ export class FormViewComponent implements OnInit {
             if (elt.isDraft) this.hasDrafts = true;
             CdeForm.validate(elt);
             this.elt = elt;
+            this.validate();
             this.loadComments(this.elt);
             this.formId = this.elt._id;
             this.missingCdes = areDerivationRulesSatisfied(this.elt);
@@ -294,7 +295,7 @@ export class FormViewComponent implements OnInit {
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
-        this.draftSubscription = this.http.post<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt).subscribe(res => {
+        this.draftSubscription = this.http.post<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt).subscribe(() => {
             this.draftSubscription = undefined;
             this.savingText = 'Saved';
             setTimeout(() => {
@@ -369,7 +370,16 @@ export class FormViewComponent implements OnInit {
         this.validationErrors.length = 0;
         this.validateNoFeCycle();
         this.validateSkipLogic();
+        this.validateDefinitions();
         this.validateUoms(cb);
+    }
+
+    validateDefinitions() {
+        this.elt.definitions.forEach(def => {
+            if (!def.definition || !def.definition.length) {
+                this.validationErrors.push(new LocatableError("Definition may not be empty.", undefined));
+            }
+        });
     }
 
     validateNoFeCycle() {

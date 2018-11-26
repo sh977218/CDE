@@ -1,12 +1,11 @@
-import _find from 'lodash/find';
 
 export const checkPvUnicity = function (valueDomain) {
     var result = {allValid: true};
     valueDomain.allValid = true;
     if (valueDomain.datatype === 'Value List' && valueDomain.permissibleValues.length === 0) {
-        result.pvNotValidMsg = "permissibleValues is empty";
+        result.pvNotValidMsg = "Value List must contain at least one Permissible Value";
         result.allValid = false;
-        valueDomain.pvNotValidMsg = "permissibleValues is empty";
+        valueDomain.pvNotValidMsg = "Value List must contain at least one Permissible Value";
         valueDomain.allValid = false;
         return result;
     }
@@ -52,6 +51,17 @@ export const checkPvUnicity = function (valueDomain) {
         if (pv.valueMeaningCode && pv.valueMeaningCode.length > 0)
             allCodes[pv.valueMeaningCode] = 1;
         delete pv.notValid;
+    });
+    return result;
+};
+
+export const checkDefinitions = function (elt) {
+    let result = {allValid: true};
+    elt.definitions.forEach(def => {
+        if (!def.definition || !def.definition.length) {
+            result.message = "Definition may not be empty.";
+            result.allValid = false;
+        }
     });
     return result;
 };
