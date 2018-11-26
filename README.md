@@ -117,6 +117,7 @@ $/cde/>  npm -install -g gulp
 1. In the Devtool Elements Tab, right click the specified tag and click "Copy Element" to copy the following:
    1. Copy the matching __\<style>__ tags to __one.css__ and __three.css__.
    1. Copy __<nih-cde>__ to __nihcde.html__. ___\*\*\*INSTRUCTIONS MISSING\*\*\*___
+      1. (Remove Angular related properties from element. i.e. [routeLink]="XXXXXX").
       1. For slideshow slides:
          1. Replace paths __/app/__ to __/launch/__ path.
          1. For __source@srcset__ and __img@src__, prepend attributes with __data-__.

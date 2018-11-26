@@ -128,6 +128,7 @@
             <ng-container *ngTemplateOutlet="createTpl"></ng-container>
             <div *ngIf="userService.user" class="android-drawer-separator"></div>
             <a class="mdl-navigation__link" routerLink="/quickBoard" (click)="toggleDrawer()">Quick Board</a>
+            <a id="resourcesLink" routerLink="/resources" class="mdl-navigation__link mdl-typography--text-uppercase">Resources&nbsp;</a>
             <a class="mdl-navigation__link" routerLink="/api" (click)="toggleDrawer()">API</a>
             <div class="android-drawer-separator"></div>
             <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
