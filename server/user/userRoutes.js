@@ -45,7 +45,7 @@ exports.module = function (roleConfig) {
     router.get('/tasks', [nocacheMiddleware, loggedInMiddleware], (req, res) => {
         userDb.byId(req.user._id, handleError({req, res}, user => {
             if (!user) {
-                respondError('User got deleted XP', {req, res});
+                respondError(new Error('User got deleted XP'), {req, res});
                 return;
             }
             res.send(user.tasks);
