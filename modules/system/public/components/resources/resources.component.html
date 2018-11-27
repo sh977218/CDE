@@ -1,0 +1,9 @@
+<div *ngIf="resource" class="container">
+    <div *ngIf="canEdit">
+        You can edit this document by click
+        <mat-icon routerLink="/siteaccountmanagement" [queryParams]="{tab: 'resourcesTab'}">edit</mat-icon>
+    </div>
+
+    <div [innerHtml]="resource.body | cdeSafeHtml"></div>
+
+</div>

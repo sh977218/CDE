@@ -8,6 +8,7 @@ const cdediff = require("./cdediff");
 const elastic = require('./elastic');
 const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 const draftSchema = require('./schemas').draftSchema;
+const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 
 exports.type = "cde";
 exports.name = "CDEs";
@@ -56,6 +57,8 @@ var DataElement = conn.model('DataElement', schemas.dataElementSchema);
 var DataElementDraft = conn.model('DataElementDraft', draftSchema);
 exports.DataElement = exports.dao = DataElement;
 exports.DataElementDraft = exports.daoDraft = DataElementDraft;
+
+mongo_data_system.attachables.push(exports.DataElement);
 
 exports.byId = function (id, cb) {
     DataElement.findOne({'_id': id}, cb);
@@ -125,10 +128,6 @@ exports.getPrimaryName = function (elt) {
 
 exports.getStream = function (condition) {
     return DataElement.find(condition).sort({_id: -1}).cursor();
-};
-
-exports.userTotalSpace = function (name, callback) {
-    mongo_data_system.userTotalSpace(DataElement, name, callback);
 };
 
 exports.count = function (condition, callback) {
@@ -471,6 +470,14 @@ exports.findModifiedElementsSince = function (date, cb) {
         {$group: {"_id": "$tinyId"}}
     ]).exec(cb);
 
+};
 
-    //find({updated: {$gte: date}}).distinct('tinyId').limit(1000).sort({updated: -1}).exec(cb);
+exports.checkOwnership = function (req, id, cb) {
+    if (!req.isAuthenticated()) return cb("You are not authorized.", null);
+    exports.byId(id, function (err, elt) {
+        if (err || !elt) return cb("Element does not exist.", null);
+        if (!isOrgCurator(req.user, elt.stewardOrg.name))
+            return cb("You do not own this element.", null);
+        cb(null, elt);
+    });
 };
