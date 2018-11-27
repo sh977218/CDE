@@ -16,6 +16,8 @@ import { ServerStatusComponent } from 'system/public/components/siteAdmin/server
 import { SiteManagementComponent } from 'system/public/components/siteAdmin/siteManagement/siteManagement.component';
 import { WidgetModule } from 'widget/widget.module';
 import { WhatsNewAdminComponent } from 'system/public/components/siteAdmin/whatsNew/whatsNewAdminComponent';
+import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { ResourcesAdminComponent } from 'system/public/components/siteAdmin/resources/resourcesAdmin.component';
 
 
 const appRoutes: Routes = [
@@ -39,6 +41,7 @@ const appRoutes: Routes = [
         CommonAppModule,
         DiscussModule,
         SystemModule,
+        AdminItemModule
     ],
     declarations: [
         EditSiteAdminsComponent,
@@ -47,13 +50,11 @@ const appRoutes: Routes = [
         ServerStatusComponent,
         SiteManagementComponent,
         WhatsNewAdminComponent,
+        ResourcesAdminComponent
     ],
-    entryComponents: [
-    ],
-    exports: [
-    ],
-    providers: [
-    ],
+    entryComponents: [],
+    exports: [],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SiteManagementModule {

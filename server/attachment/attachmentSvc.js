@@ -10,10 +10,9 @@ const adminItemSvc = require('../system/adminItemSvc');
 const daoManager = require('../system/moduleDaoManager');
 const logging = require('../system/logging');
 const mongo_data = require('../system/mongo-data');
-const authorization = require('../system/authorization');
 const attachmentDb = require('./attachmentDb');
 
-exports.add = (req, res, db) => {
+exports.add = (req, res, db, crudPermission) => {
     if (!req.files.uploadedFiles) {
         res.status(400).send('No files to attach.');
         return;
@@ -25,8 +24,10 @@ exports.add = (req, res, db) => {
     let streamFS1 = streamifier.createReadStream(fileBuffer);
     exports.scanFile(stream, res, scanned => {
         req.files.uploadedFiles.scanned = scanned;
-        authorization.checkOwnership(req, db, req.body.id, handleError({req, res}, elt => {
-            db.userTotalSpace(req.user.username, totalSpace => {
+        db.byId(req.body.id, handleError({req, res}, elt => {
+            let ownership = crudPermission(elt, req.user);
+            if (!ownership) return res.status(401).send('You do not own this element');
+            mongo_data.userTotalSpace(req.user.username, totalSpace => {
                 if (totalSpace > req.user.quota) {
                     return res.send({message: 'You have exceeded your quota'});
                 }
@@ -48,18 +49,20 @@ exports.add = (req, res, db) => {
                     });
                 });
             });
-        }));
+        }))
     });
 };
 
-exports.addToItem = (item, file, user, comment, cb) => {
-    function linkAttachmentToAdminItem(item, attachment, isFileCreated, cb) {
-        item.attachments.push(attachment);
-        item.save(err => {
-            if (cb) cb(attachment, isFileCreated, err);
-        });
-    }
+function linkAttachmentToAdminItem(item, attachment, isFileCreated, cb) {
+    if (!item.attachments) item.attachments = [];
+    item.attachments.push(attachment);
+    item.markModified('attachments');
+    item.save(err => {
+        if (cb) cb(attachment, isFileCreated, err);
+    });
+}
 
+exports.addToItem = (item, file, user, comment, cb) => {
     let attachment = {
         comment: comment,
         fileid: null,
@@ -90,24 +93,20 @@ exports.addToItem = (item, file, user, comment, cb) => {
     }
 
     mongo_data.addFile(file, (err, newFile, isNew) => {
-        if (!newFile) {
-            return;
-        }
         if (isNew) {
             if (!authorizationShared.hasRole(user, 'AttachmentReviewer')) {
                 attachment.pendingApproval = true;
             }
             attachment.scanned = file.scanned;
         }
-        attachment.fileid = newFile._id;
-        linkAttachmentToAdminItem(item, attachment, isNew, cb);
+        if (newFile) {
+            attachment.fileid = newFile._id;
+            linkAttachmentToAdminItem(item, attachment, isNew, cb);
+        }
     }, streamDescription);
 };
 
 exports.approvalApprove = (req, res) => {
-    if (!authorizationShared.hasRole(req.user, 'AttachmentReviewer')) {
-        return res.status(403).send();
-    }
     attachmentDb.alterAttachmentStatus(req.params.id, 'approved', handleError({req, res}, () => {
         let asyncAttachmentApproved = (dao, done) => adminItemSvc.attachmentApproved(dao.dao, req.params.id, done);
         async.each(daoManager.getDaoList(), asyncAttachmentApproved, handleError({req, res}, () => {
@@ -117,9 +116,6 @@ exports.approvalApprove = (req, res) => {
 };
 
 exports.approvalDecline = (req, res) => {
-    if (!authorizationShared.hasRole(req.user, 'AttachmentReviewer')) {
-        return res.status(403).send();
-    }
     let asyncAttachmentRemove = (dao, done) => adminItemSvc.attachmentRemove(dao.dao, req.params.id, done);
     async.each(daoManager.getDaoList(), asyncAttachmentRemove, handleError({req, res}, () => {
         mongo_data.deleteFileById(req.params.id, handleError({req, res}, () => {
@@ -128,16 +124,18 @@ exports.approvalDecline = (req, res) => {
     }));
 };
 
-exports.remove = (req, res, db) => {
-    authorization.checkOwnership(req, db, req.body.id, handleError({req, res}, elt => {
+exports.remove = (req, res, db, crudPermission) => {
+    db.byId(req.body.id, handleError({req, res}, elt => {
+        let ownership = crudPermission(elt, req.user);
+        if (!ownership) return res.status(401).send('You do not own this element');
         let fileId = elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
-        elt.save(handleError({req, res},() => {
+        elt.save(handleError({req, res}, () => {
             exports.removeUnusedAttachment(fileId, () => {
                 res.send(elt);
             });
         }));
-    }));
+    }))
 };
 
 exports.removeUnusedAttachment = function (id, callback) {
@@ -160,23 +158,16 @@ exports.scanFile = (stream, res, cb) => {
     });
 };
 
-exports.setDefault = (req, res, db) => {
-    authorization.checkOwnership(req, db, req.body.id, (err, elt) => {
-        if (err) {
-            logging.expressLogger.info(err);
-            return res.status(500).send('ERROR - attachment as default - cannot check ownership');
-        }
+exports.setDefault = (req, res, db, crudPermission) => {
+    db.byId(req.body.id, handleError({req, res}, elt => {
+        let ownership = crudPermission(elt, req.user);
+        if (!ownership) return res.status(401).send('You do not own this element');
         let state = req.body.state;
         for (let i = 0; i < elt.attachments.length; i++) {
             elt.attachments[i].isDefault = false;
         }
         elt.attachments[req.body.index].isDefault = state;
-        elt.save(err => {
-            if (err) {
-                res.send('error: ' + err);
-            } else {
-                res.send(elt);
-            }
-        });
-    });
+        elt.save(handleError({req, res}, newElt => res.send(newElt)));
+    }))
+
 };
