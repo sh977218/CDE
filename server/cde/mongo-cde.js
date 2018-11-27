@@ -18,7 +18,7 @@ schemas.dataElementSchema.post('remove', function (doc, next) {
     });
 });
 schemas.dataElementSchema.pre('save', function (next) {
-    var self = this;
+    let self = this;
     if (this.archived) return next();
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
     if (!cdeError) {
@@ -424,8 +424,7 @@ exports.byOtherIdAndNotRetired = function (source, id, cb) {
             cb("Multiple results, returning first. source: " + source + " id: " + id, cdes[0]);
         else if (cdes.length === 0) {
             cb("No results", null);
-        }
-        else cb(err, cdes[0]);
+        } else cb(err, cdes[0]);
     });
 };
 

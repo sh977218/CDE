@@ -9,6 +9,8 @@ const CreateCDE = require('../CDE/CreateCDE');
 const CompareCDE = require('../CDE/CompareCDE');
 const MergeCDE = require('../CDE/MergeCDE');
 
+const deValidator = require('@std/esm')(module)('../../../shared/de/deValidator');
+const Comment = require('../../../server/discuss/discussDb').Comment;
 
 const updatedByNonLoader = require('../../shared/updatedByNonLoader').updatedByNonLoader;
 const batchloader = require('../../shared/updatedByNonLoader').batchloader;
@@ -16,6 +18,29 @@ const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 doOneNindsCde = async cdeId => {
     let newCdeObj = await CreateCDE.createCde(cdeId);
     let newCde = new DataElement(newCdeObj);
+    let cdeError = deValidator.checkPvUnicity(newCde.valueDomain);
+    if (cdeError) {
+        if (cdeError.pvNotValidMsg === 'Value List must contain at least one Permissible Value') {
+            let slComment = {
+                text: 'NINDS Batch loader was not able to find PV Value List',
+                user: batchloader,
+                created: new Date(),
+                pendingApproval: false,
+                linkedTab: 'description',
+                status: 'active',
+                replies: [],
+                element: {
+                    eltType: 'cde',
+                    eltId: newCde.tinyId
+                }
+            };
+            await new Comment(slComment).save();
+            newCde.valueDomain.permissibleValues = [{permissibleValue: '0'}];
+        } else {
+            console.log('some other error.');
+        }
+    }
+
     let existingCde = await DataElement.findOne({
         archived: false,
         'registrationState.registrationStatus': {$ne: 'Retired'},

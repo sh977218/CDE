@@ -1,3 +1,5 @@
+const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
+
 const NindsModel = require('../../createMigrationConnection').NindsModel;
 
 const parseDesignations = require('./ParseDesignations').parseDesignations;
@@ -8,6 +10,8 @@ const parseProperties = require('./ParseProperties').parseProperties;
 const parseReferenceDocuments = require('./ParseReferenceDocuments').parseReferenceDocuments;
 const parseValueDomain = require('./ParseValueDomain').parseValueDomain;
 
+const today = new Date().toJSON();
+const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
 exports.createCde = async cdeId => {
     let nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId}, {
@@ -27,13 +31,20 @@ exports.createCde = async cdeId => {
     let valueDomain = parseValueDomain(nindsForms);
 
     let cde = {
+        tinyId: generateTinyId(),
+        sources,
+        createdBy: batchloader,
+        created: today,
+        imported: today,
+        stewardOrg: {name: 'NINDS'},
         designations: designations,
         definitions: definitions,
         sources: sources,
         ids: ids, properties: properties,
         referenceDocuments: referenceDocuments,
         valueDomain: valueDomain,
-        classification: classification
+        classification: classification,
+        registrationState: {registrationStatus: "Qualified"},
     };
 
     return cde;

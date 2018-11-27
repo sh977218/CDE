@@ -100,7 +100,7 @@ exports.parseValueDomain = nindsForms => {
             }
             valueDomain.datatypeValueList = {datatype: datatype};
             if (datatype === 'Value List') {
-                if (_permissibleValuesArray.length !== 1) {
+                if (_permissibleValuesArray.length === 0) {
                     console.log('_permissibleValuesArray is not 1');
                     process.exit(1);
                 }
