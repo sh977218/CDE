@@ -2,11 +2,12 @@ import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { MatIconModule, MatListModule } from '@angular/material';
+import { MatButtonModule, MatIconModule, MatListModule } from '@angular/material';
 
 import { ResourcesComponent } from 'system/public/components/resources/resources.component';
 import { SafeHtmlPipe } from '_app/safeHtml.pipe';
 import { WidgetModule } from 'widget/widget.module';
+import { ResourcesRssComponent } from 'system/public/components/resources/resourcesRss.component';
 
 const appRoutes: Routes = [
     {path: '', component: ResourcesComponent},
@@ -17,15 +18,16 @@ const appRoutes: Routes = [
         CommonModule,
         RouterModule.forChild(appRoutes),
         WidgetModule,
-
+        MatButtonModule,
         MatIconModule,
         MatListModule,
     ],
     declarations: [
         SafeHtmlPipe,
-        ResourcesComponent
+        ResourcesComponent,
+        ResourcesRssComponent,
     ],
-    entryComponents: [],
+    entryComponents: [ResourcesRssComponent],
     exports: [],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
