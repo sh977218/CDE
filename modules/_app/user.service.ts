@@ -70,8 +70,7 @@ export class UserService {
                 if (!response || !response.username) {
                     return reject();
                 }
-                this.user = response;
-                UserService.validate(this.user);
+                this.user = UserService.validate(response);
                 this.setOrganizations();
                 this.mailSubscription = this.http.get<{ count: number }>('/server/user/mailStatus').subscribe(response => {
                     if (this.user) {
@@ -125,6 +124,8 @@ export class UserService {
         if (!user.orgCurator) user.orgCurator = [];
         if (!user.notificationSettings) user.notificationSettings = newNotificationSettings();
         if (!user.notificationSettings.approvalComment) user.notificationSettings.approvalComment = newNotificationSettingsMedia();
+        if (!user.notificationSettings.comment) user.notificationSettings.comment = newNotificationSettingsMedia();
+        return user;
     }
 }
 

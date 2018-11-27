@@ -4,6 +4,7 @@ const loggedInMiddleware = authorization.loggedInMiddleware;
 const dbLogger = require('../log/dbLogger');
 const handle404 = dbLogger.handle404;
 const handleError = dbLogger.handleError;
+const respondError = dbLogger.respondError;
 const mongo_data = require('../system/mongo-data');
 const userDb = require('./userDb');
 
@@ -42,8 +43,11 @@ exports.module = function (roleConfig) {
     });
 
     router.get('/tasks', [nocacheMiddleware, loggedInMiddleware], (req, res) => {
-        if (!req.user) return res.send({});
-        userDb.byId(req.user._id, handle404({req, res}, user => {
+        userDb.byId(req.user._id, handleError({req, res}, user => {
+            if (!user) {
+                respondError('User got deleted XP', {req, res});
+                return;
+            }
             res.send(user.tasks);
         }));
     });
