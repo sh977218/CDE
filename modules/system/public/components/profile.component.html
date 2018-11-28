@@ -38,7 +38,7 @@
         </dl>
     </div>
 
-    <div *ngIf="hasRole(user, 'CommentReviewer') || isSiteAdmin(user)">
+    <div>
         <h2>Notifications</h2>
         <table class="table">
             <thead>
@@ -61,6 +61,37 @@
             </tr>
             </thead>
             <tbody>
+            <tr>
+                <td>
+                    Relevant Comment
+                    <mat-icon class="infoIcon"
+                              aria-label="New comment on an item you are having a comment conversation on or are a curator for."
+                              matTooltip="New comment on an item you are having a comment conversation on or are a curator for."
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">add_box
+                    </mat-icon>
+                </td>
+                <td>
+                    <mat-slide-toggle [checked]="user.notificationSettings.comment.drawer"
+                                      (change)="user.notificationSettings.comment.drawer = $event.checked; saveProfile()">
+                        {{booleanSettingOptions[user.notificationSettings.comment.drawer ? 1 : 0]}}
+                    </mat-slide-toggle>
+                </td>
+                <td>
+                    <mat-slide-toggle [checked]="user.notificationSettings.comment.push"
+                                      (change)="user.notificationSettings.comment.push = $event.checked; saveProfile()">
+                        {{booleanSettingOptions[user.notificationSettings.comment.push ? 1 : 0]}}
+                    </mat-slide-toggle>
+                </td>
+                <td>
+                    <mat-slide-toggle checked="false" disabled>
+                        <span class="disabled">Disabled</span>
+                    </mat-slide-toggle>
+                    <mat-icon class="infoIcon"
+                              aria-label="At this time emails are not supported."
+                              matTooltip="At this time emails are not supported."
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">add_box</mat-icon>
+                </td>
+            </tr>
             <tr *ngIf="hasRole(user, 'CommentReviewer')">
                 <td>Comment Approval</td>
                 <td>

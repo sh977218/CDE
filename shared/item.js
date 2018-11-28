@@ -33,3 +33,15 @@ export const ITEM_MAP = {
         viewById: '/formView?formId=',
     }
 };
+
+export function uriView(module, tinyId) {
+    let mod = ITEM_MAP[module];
+    return mod && mod.view && (mod.view + tinyId);
+}
+
+export function uriViewBase(module) {
+    return module === 'board' && '/board'
+        || module === 'cde' && '/deView'
+        || module === 'form' && '/formView'
+        || undefined;
+}

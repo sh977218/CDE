@@ -10,6 +10,7 @@ public interface USERNAME {
     String test_username = "testuser";
     String history_username = "historyuser";
     String ninds_username = "ninds";
+    String nindsCurator_username = "nindsCurator";
     String wguser_username = "wguser";
     String reguser_username = "reguser";
     String boarduser1_username = "boarduser1";
