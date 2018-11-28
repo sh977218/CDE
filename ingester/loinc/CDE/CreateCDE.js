@@ -33,7 +33,7 @@ exports.createCde = async function (element, orgInfo) {
         createdBy: {username: 'batchloader'},
         created: today,
         imported: today,
-        registrationState: {registrationStatus: "Qualified"},
+        registrationState: {registrationStatus: "Standard"},
         sources: sources,
         designations: designations,
         definitions: definitions,
