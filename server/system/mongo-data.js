@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const async = require('async');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const shortId = require('shortid');
@@ -8,6 +9,7 @@ const MongoStore = require('connect-mongo')(session);
 const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
 const connHelper = require('./connections');
 const dbLogger = require('../log/dbLogger');
+const notificationSvc = require('../notification/notificationSvc');
 const consoleLog = dbLogger.consoleLog;
 const handleError = dbLogger.handleError;
 const logging = require('./logging.js');
@@ -23,7 +25,6 @@ const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 const Message = conn.model('Message', schemas.message);
 const Org = conn.model('Org', schemas.orgSchema);
 const PushRegistration = conn.model('PushRegistration', schemas.pushRegistration);
-// const Task = conn.model('Task', schemas.task);
 const userDb = require('../user/userDb');
 const User = require('../user/userDb').User;
 const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema);
@@ -184,22 +185,30 @@ exports.pushGetAdministratorRegistrations = callback => {
     }));
 };
 
-function typeToCriteria(type) {
-    switch (type) {
-        case 'approveCommentReviewer':
-            return {roles: 'CommentReviewer', 'notificationSettings.approvalComment.push': true};
-        default:
-            return {findNone: 1};
-    }
-}
+// cb(err, registrations)
+exports.pushRegistrationFindActive = (criteria, cb) => {
+    criteria.loggedIn = true;
+    PushRegistration.find(criteria, cb);
+};
 
-exports.pushGetRegistrations = (type, callback) => {
-    userDb.find(typeToCriteria(type), users => {
-        let userIds = users.map(u => u._id.toString());
-        PushRegistration.find({}).exec(handleError({}, registrations => {
-            callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
-        }));
-    });
+// cb(err, registrations)
+exports.pushRegistrationSubscribersByType = (type, cb, data = undefined) => {
+    userDb.find(
+        notificationSvc.criteriaSet(
+            notificationSvc.typeToCriteria(type, data),
+            'notificationSettings.comment.push'
+        ),
+        (err, users) => {
+            if (err) return cb(err);
+            exports.pushRegistrationSubscribersByUsers(users, cb);
+        }
+    );
+};
+
+// cb(err, registrations)
+exports.pushRegistrationSubscribersByUsers = (users, cb) => {
+    let userIds = users.map(u => u._id.toString());
+    exports.pushRegistrationFindActive({userId: {$in: userIds}}, cb);
 };
 
 exports.userByName = (name, callback) => {
@@ -301,33 +310,33 @@ exports.formatElt = elt => {
     return elt;
 };
 
-exports.userTotalSpace = (Model, name, callback) => {
-    Model.aggregate(
-        {$match: {"attachments.uploadedBy.username": name}},
-        {$unwind: "$attachments"},
-        {
-            $group: {
-                _id: {uname: "$attachments.uploadedBy.username"},
-                totalSize: {$sum: "$attachments.filesize"}
-            }
-        },
-        {$sort: {totalSize: -1}},
-        (err, res) => {
-            let result = 0;
-            if (res.length > 0) {
-                result = res[0].totalSize;
-            }
-            callback(result);
-        });
+exports.attachables = [];
+
+exports.userTotalSpace = (name, callback) => {
+    let totalSpace = 0;
+    async.forEach(exports.attachable, (attachable, doneOne) => {
+        attachable.aggregate(
+            {$match: {"attachments.uploadedBy.username": name}},
+            {$unwind: "$attachments"},
+            {
+                $group: {
+                    _id: {uname: "$attachments.uploadedBy.username"},
+                    totalSize: {$sum: "$attachments.filesize"}
+                }
+            },
+            {$sort: {totalSize: -1}},
+            (err, res) => {
+                if (res.length > 0) {
+                    totalSpace += res[0].totalSize;
+                }
+                doneOne();
+            });
+    }, () => callback(totalSpace))
 };
 
 exports.addFile = function (file, cb, streamDescription = null) {
     gfs.findOne({md5: file.md5}, (err, f) => {
-        if (f) {
-            cb(err, f, false);
-            return;
-        }
-
+        if (f) return cb(err, f, false);
         if (!streamDescription) {
             streamDescription = {
                 filename: file.filename,
@@ -386,22 +395,6 @@ exports.createMessage = (msg, cb) => {
     }];
     new Message(msg).save(cb);
 };
-
-// exports.taskCreate = (task, cb) => {
-//     new Task(task).save(cb);
-// };
-//
-// exports.taskGetByUser = (req, res) => {
-//     // TODO: implement by org
-//     let user = req.user;
-//     if (authorizationShared.hasRole(user, 'CommentReviewer')) {
-//         Task.find({'to.type': 'role', 'to.typeId': 'CommentReviewer'}).exec(handleError({req, res}, tasks => {
-//             res.send(tasks);
-//         }));
-//     } else {
-//         res.send([]);
-//     }
-// };
 
 exports.updateMessage = function (msg, callback) {
     let id = msg._id;
@@ -486,6 +479,16 @@ exports.addUserRole = function (request, cb) {
 
 exports.mailStatus = function (user, callback) {
     exports.getMessages({user: user, params: {type: "received"}}, callback);
+};
+
+// cb(err, item)
+exports.fetchItem = function (module, tinyId, cb) {
+    let db = daoManager.getDao(module);
+    if (!db) {
+        cb('Module has no database.');
+        return;
+    }
+    (db.byTinyId || db.byId)(tinyId, cb);
 };
 
 exports.addToClassifAudit = function (msg) {

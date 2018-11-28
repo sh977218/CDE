@@ -69,7 +69,7 @@ exports.module = function (roleConfig) {
         if (!canSubmitFeedback(req.ip)) return res.status(509).send();
         dbLogger.saveFeedback(req, () => {
             let msg = JSON.stringify({
-                title: 'New Feedback Message\'',
+                title: 'New Feedback Message',
                 options: {
                     body: req.body.feedback ? JSON.parse(req.body.feedback).note : '',
                     icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',

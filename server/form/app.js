@@ -131,7 +131,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/formCompletion/:term', exportShared.nocacheMiddleware, (req, res) => {
         let term = req.params.term;
-        elastic_system.completionSuggest(term, req.user, req.body, config.elastic.formIndex.name, resp => {
+        elastic_system.completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex.name, resp => {
             resp.hits.hits.forEach(r => r._index = undefined);
             res.send(resp.hits.hits);
         });

@@ -2,11 +2,73 @@ const config = require('config');
 const hash = require('crypto');
 const boardElasticSearchMapping = require('../board/elasticSearchMapping');
 
+let primaryNameSuggest = {
+    "type": "text",
+    "analyzer": "autocomplete",
+    "search_analyzer": "standard"
+};
+
+exports.createSuggestIndexJson = {
+    "mappings": {
+        "suggest": {
+            "properties": {
+                "nameSuggest": primaryNameSuggest,
+                "stewardOrg": {
+                    "properties": {
+                        "name": {"type": "keyword"}
+                    }
+                },
+                "registrationState": {
+                    properties: {
+                        "registrationStatus": {"type": "keyword"}
+                    }
+                }
+            }
+        }
+    }, settings: {
+        index: {
+            "number_of_replicas": config.elastic.number_of_replicas,
+            analysis: {
+                "filter": {
+                    "autocomplete_filter": {
+                        "type": "edge_ngram",
+                        "min_gram": 1,
+                        "max_gram": 20
+                    }
+                },
+                analyzer: {
+                    default: {
+                        type: 'snowball'
+                        , language: 'English'
+                    },
+                    "autocomplete": {
+                        "type": "custom",
+                        "tokenizer": "standard",
+                        "filter": [
+                            "lowercase",
+                            "autocomplete_filter"
+                        ]
+                    }
+                }
+            }
+        }
+    }
+};
+
 exports.createIndexJson = {
     "mappings": {
         "dataelement": {
             "date_detection": false,
             "properties": {
+                "primaryNameCopy": {
+                    "type": "text",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword",
+                            "index": false
+                        }
+                    }
+                },
                 "stewardOrg": {
                     "properties": {
                         "name": {"type": "keyword"}
@@ -70,43 +132,17 @@ exports.createIndexJson = {
                 , "imported": {"type": "date"}
                 , "version": {"type": "keyword"}
                 , "views": {type: "integer"}
-                , primaryNameSuggest: {
-                    "type": "text",
-                    "analyzer": "autocomplete",
-                    "search_analyzer": "standard",
-                    "fields": {
-                        "raw": {
-                            "type": "keyword",
-                            "index": false
-                        }
-                    }
-                }
             }
         }
     }, settings: {
         index: {
-            "number_of_replicas": config.elastic.number_of_replicas,
-            analysis: {
-                "filter": {
-                    "autocomplete_filter": {
-                        "type": "edge_ngram",
-                        "min_gram": 1,
-                        "max_gram": 20
-                    }
-                },
-                analyzer: {
-                    default: {
-                        type: 'snowball'
-                        , language: 'English'
-                    },
-                    "autocomplete": {
-                        "type": "custom",
-                        "tokenizer": "standard",
-                        "filter": [
-                            "lowercase",
-                            "autocomplete_filter"
-                        ]
-                    }
+            "number_of_replicas": config.elastic.number_of_replicas
+        },
+        analysis: {
+            analyzer: {
+                default: {
+                    type: 'snowball'
+                    , language: 'English'
                 }
             }
         }
@@ -120,6 +156,15 @@ exports.createFormIndexJson = {
         "form": {
             "date_detection": false,
             "properties": {
+                "primaryNameCopy": {
+                    "type": "text",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword",
+                            "index": false
+                        }
+                    }
+                },
                 "stewardOrg": {properties: {"name": {"type": "keyword"}}}
                 , "flatClassifications": {"type": "keyword"}
                 , "flatMeshTrees": {"type": "keyword"}
@@ -156,49 +201,35 @@ exports.createFormIndexJson = {
                     }
                 }, "views": {"type": "integer"}
                 , "numQuestions": {"type": "integer"}
-                , primaryNameSuggest: {
-                    "type": "text",
-                    "analyzer": "autocomplete",
-                    "search_analyzer": "standard",
-                    "fields": {
-                        "raw": {
-                            "type": "keyword",
-                            "index": false
-                        }
-                    }
-                }
             }
         }
     }, settings: {
         "index.mapping.total_fields.limit": 2000,
         index: {
-            "number_of_replicas": config.elastic.number_of_replicas,
-            analysis: {
-                "filter": {
-                    "autocomplete_filter": {
-                        "type": "edge_ngram",
-                        "min_gram": 1,
-                        "max_gram": 20
-                    }
-                },
-                analyzer: {
-                    default: {
-                        type: 'snowball'
-                        , language: 'English'
-                    },
-                    "autocomplete": {
-                        "type": "custom",
-                        "tokenizer": "standard",
-                        "filter": [
-                            "lowercase",
-                            "autocomplete_filter"
-                        ]
-                    }
+            "number_of_replicas": config.elastic.number_of_replicas
+        },
+        analysis: {
+            analyzer: {
+                default: {
+                    type: 'snowball'
+                    , language: 'English'
                 }
             }
         }
+
     }
 };
+
+
+exports.suggestRiverFunction = function (_elt, cb) {
+    let toIndex = {nameSuggest: _elt.designations[0].designation};
+    toIndex.registrationState = _elt.registrationState;
+    toIndex.stewardOrg = _elt.stewardOrg;
+    toIndex.tinyId = _elt.tinyId;
+
+    return cb(toIndex);
+};
+
 
 exports.riverFunction = function (_elt, cb) {
     if (_elt.archived) return cb();
@@ -260,7 +291,7 @@ exports.riverFunction = function (_elt, cb) {
         elt.stewardOrgCopy = elt.stewardOrg;
         elt.steward = elt.stewardOrg.name;
         elt.primaryNameCopy = elt.designations[0] ? escapeHTML(elt.designations[0].designation) : '';
-        elt.primaryNameSuggest = elt.primaryNameCopy;
+
         elt.primaryDefinitionCopy = elt.definitions[0] ? elt.definitions[0].definition : '';
         if (elt.definitions[0] && elt.definitions[0].definitionFormat === 'html') {
             elt.primaryDefinitionCopy = elt.primaryDefinitionCopy.replace(/<(?:.|\\n)*?>/gm, '');
@@ -312,6 +343,12 @@ if (config.elastic.formIndex.name === "auto") {
 if (config.elastic.boardIndex.name === "auto") {
     config.elastic.boardIndex.name = "board_" + shortHash(boardElasticSearchMapping.createIndexJson);
 }
+if (config.elastic.cdeSuggestIndex.name === "auto") {
+    config.elastic.cdeSuggestIndex.name = "cdesuggest_" + shortHash(exports.createSuggestIndexJson);
+}
+if (config.elastic.formSuggestIndex.name === "auto") {
+    config.elastic.formSuggestIndex.name = "formsuggest_" + shortHash(exports.createSuggestIndexJson);
+}
 
 exports.indices = [
     {
@@ -330,6 +367,18 @@ exports.indices = [
         name: "board",
         indexName: config.elastic.boardIndex.name,
         indexJson: boardElasticSearchMapping.createIndexJson
+    },
+    {
+        name: "cdeSuggest",
+        indexName: config.elastic.cdeSuggestIndex.name,
+        indexJson: exports.createSuggestIndexJson,
+        filter: exports.suggestRiverFunction
+    },
+    {
+        name: "formSuggest",
+        indexName: config.elastic.formSuggestIndex.name,
+        indexJson: exports.createSuggestIndexJson,
+        filter: exports.suggestRiverFunction
     }
 ];
 

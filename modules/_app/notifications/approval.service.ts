@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { NotificationTask } from '_app/notifications/notification.service';
 import { AlertService } from 'alert/alert.service';
 
 @Injectable()
@@ -11,9 +12,9 @@ export class ApprovalService {
                 private http: HttpClient) {
     }
 
-    commentApprove(t: any, cb) {
+    commentApprove(t: NotificationTask, cb) {
         this.http.post('/server/discuss/approveComment',
-            t.task.reply ? {replyId: t.task._id} : {commentId: t.task._id},
+            t.tasks[0].idType === 'commentReply' ? {replyId: t.tasks[0].id} : {commentId: t.tasks[0].id},
             {responseType: 'text'}
         ).subscribe(response => {
             this.alert.addAlert('success', response);
@@ -24,9 +25,9 @@ export class ApprovalService {
         });
     }
 
-    commentDecline(t: any, cb) {
+    commentDecline(t: NotificationTask, cb) {
         this.http.post('/server/discuss/declineComment',
-            t.task.reply ? {replyId: t.task._id} : {commentId: t.task._id},
+            t.tasks[0].idType === 'commentReply' ? {replyId: t.tasks[0].id} : {commentId: t.tasks[0].id},
             {responseType: 'text'}
         ).subscribe(response => {
             this.alert.addAlert('success', response);

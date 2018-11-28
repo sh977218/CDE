@@ -148,7 +148,6 @@ exports.dataElementSchema = new Schema(deJson, {
     }
 });
 
-
 exports.dataElementSchema.set('collection', 'dataelements');
 
 exports.cdeAuditSchema = new Schema({
@@ -181,7 +180,5 @@ exports.draftSchema = new Schema(deJson, {
         virtuals: true
     }
 });
-exports.draftSchema.virtual('isDraft').get(function () {
-    return true;
-});
+exports.draftSchema.virtual('isDraft').get(() => true);
 exports.draftSchema.set('collection', 'dataelementdrafts');

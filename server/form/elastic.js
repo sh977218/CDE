@@ -26,6 +26,15 @@ exports.updateOrInsert = function (elt) {
                     });
                 }
             });
+            esInit.suggestRiverFunction(elt, sugDoc => {
+                esClient.index({
+                    index: config.elastic.formSuggestIndex.name,
+                    type: "suggest",
+                    id: doc.tinyId,
+                    body: sugDoc
+                })
+            });
+
         }
     });
 };
