@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-
-import './notificationDrawer.scss';
 import { NotificationService } from '_app/notifications/notification.service';
+import '_app/notifications/notificationDrawer.scss';
 
 @Component({
     templateUrl: './notificationDrawerPane.component.html',

@@ -55,6 +55,9 @@ self.addEventListener('notificationclick', function(event) {
         case 'open-app-action':
             clients.openWindow('/home');
             break;
+        case 'open-uri':
+            clients.openWindow(event.notification.data.uri);
+            break;
         case 'profile-action':
             clients.openWindow('/profile');
             break;

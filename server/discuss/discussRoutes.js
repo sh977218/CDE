@@ -6,6 +6,7 @@ const handleError = dbLogger.handleError;
 const handle404 = dbLogger.handle404;
 const discussDb = require('./discussDb');
 const daoManager = require('../system/moduleDaoManager');
+const eltShared = require('@std/esm')(module)('../../shared/elt');
 const ioServer = require('../system/ioServer');
 const userService = require('../system/usersrvc');
 const mongo_data = require('../system/mongo-data');
@@ -27,32 +28,35 @@ exports.module = function (roleConfig) {
     });
 
     router.post('/postComment', [loggedInMiddleware], async (req, res) => {
+        let handlerOptions = {req, res};
         let comment = req.body;
+        const eltModule = comment.element && comment.element.eltType;
+        const eltTinyId = comment.element && comment.element.eltId;
         let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username)
-            .catch(handleError({req, res}));
+            .catch(handleError(handlerOptions));
         if (numberUnapprovedMessages >= 5) return res.status(403).send('You have too many unapproved messages.');
-        let dao = daoManager.getDao(comment.element.eltType);
-        let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
-        idRetrievalFunc(comment.element.eltId, handle404({req, res}, elt => {
+        mongo_data.fetchItem(eltModule, eltTinyId, handle404(handlerOptions, elt => {
             comment.user = req.user;
             comment.created = new Date().toJSON();
             if (!authorizationShared.canComment(req.user)) {
                 comment.pendingApproval = true;
             }
-            discussDb.save(comment, handleError({req, res}, savedComment => {
-                ioServerCommentUpdated(req.user.username, comment.element.eltId);
+            discussDb.save(comment, handleError(handlerOptions, savedComment => {
+                ioServerCommentUpdated(req.user.username, eltTinyId);
                 if (savedComment.pendingApproval) {
                     adminItemService.createTask(req.user, 'CommentReviewer', 'approve', {
                         element: {
                             eltId: savedComment.element.eltId,
-                            name: dao.getPrimaryName(elt),
-                            eltType: dao.type
+                            name: eltShared.getName(elt),
+                            eltType: comment.element.eltType
                         },
                         comment: {
                             commentId: savedComment._id,
                             text: savedComment.text
                         }
                     });
+                } else {
+                    adminItemService.notifyForComment({}, eltModule, savedComment, elt);
                 }
                 res.send({});
             }));
@@ -60,10 +64,13 @@ exports.module = function (roleConfig) {
     });
 
     router.post('/replyComment', [loggedInMiddleware], async (req, res) => {
+        let handlerOptions = {req, res};
         let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username)
-            .catch(handleError({req, res}));
+            .catch(handleError(handlerOptions));
         if (numberUnapprovedMessages >= 5) return res.status(403).send('You have too many unapproved messages.');
-        discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
+        discussDb.byId(req.body.commentId, handle404(handlerOptions, comment => {
+            const eltModule = comment.element && comment.element.eltType;
+            const eltTinyId = comment.element && comment.element.eltId;
             let numberUnapprovedReplies = comment.replies.filter(r => r.pendingApproval && r.user.username === req.user.username).length;
             if (numberUnapprovedReplies > 0) return res.status(403).send('You cannot do this.');
             if (!comment.replies) comment.replies = [];
@@ -76,9 +83,8 @@ exports.module = function (roleConfig) {
                 reply.pendingApproval = true;
             }
             comment.replies.push(reply);
-            discussDb.save(comment, handleError({req, res}, savedComment => {
+            discussDb.save(comment, handleError(handlerOptions, savedComment => {
                 ioServerCommentUpdated(req.user.username, comment.element.eltId);
-                res.send({});
                 if (reply.pendingApproval) {
                     adminItemService.createTask(req.user, 'CommentReviewer', 'approve', {
                         element: {
@@ -91,6 +97,10 @@ exports.module = function (roleConfig) {
                             text: req.body.reply
                         }
                     });
+                } else {
+                    mongo_data.fetchItem(eltModule, eltTinyId, handle404({}, elt => {
+                        adminItemService.notifyForComment({}, eltModule, savedComment, elt);
+                    }));
                 }
                 if (req.user.username !== savedComment.user.username) {
                     let message = {
@@ -114,6 +124,7 @@ exports.module = function (roleConfig) {
                     };
                     mongo_data.createMessage(message);
                 }
+                res.send({});
             }));
         }));
     });

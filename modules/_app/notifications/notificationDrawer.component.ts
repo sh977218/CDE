@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-
 import { NotificationService } from '_app/notifications/notification.service';
 import { interruptEvent } from 'widget/browser';
 
