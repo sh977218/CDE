@@ -133,11 +133,13 @@ export const searchStyles: string = `
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @Input() searchSettingsInput?: SearchSettings;
+
     @HostListener('window:beforeunload') unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname)) {
             window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
         }
     }
+
     @ViewChild('orgDetailsModal') orgDetailsModal!: TemplateRef<any>;
     @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer!: ViewContainerRef;
     @ViewChild('validRulesModal') validRulesModal!: TemplateRef<any>;
@@ -152,14 +154,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     cutoffIndex: any;
     elts?: Elt[];
     embedded = false;
-    exporters: {[format: string]: {id: string, display: string}} = {
+    exporters: { [format: string]: { id: string, display: string } } = {
         json: {id: 'jsonExport', display: 'JSON Export'},
         xml: {id: 'xmlExport', display: 'XML Export'}
     };
     filterMode = true;
     lastQueryTimeStamp?: number;
-    private lastTypeahead: {[term: string]: string} = {};
-    module!: 'cde'|'form';
+    private lastTypeahead: { [term: string]: string } = {};
+    module!: 'cde' | 'form';
     numPages: any;
     orgs?: Organization[];
     orgHtmlOverview?: string;
@@ -180,7 +182,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     trackByKey = trackByKey;
     trackByName = trackByName;
     validRulesStatus?: CurationStatus;
-    view?: 'welcome'|'results';
+    view?: 'welcome' | 'results';
 
     constructor(protected _componentFactoryResolver: any,
                 protected alert: AlertService,
@@ -219,9 +221,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             .subscribe(term => {
                 term && term.length >= 3
                     ? this.http.post<ElasticQueryResponseHit[]>('/' + this.module + 'Completion/' + encodeURIComponent(term),
-                        this.elasticService.buildElasticQuerySettings(this.searchSettings))
+                    this.elasticService.buildElasticQuerySettings(this.searchSettings))
                         .pipe(
-                        map(hits => {
+                            map(hits => {
                                 let final = new Set();
                                 this.lastTypeahead = {};
                                 hits.forEach(e => {
@@ -359,8 +361,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (!this.embedded) {
             this.searchSettings.page = 1;
             this.redirect(this.generateSearchForTerm());
-        }
-        else this.reload();
+        } else this.reload();
     }
 
     doSearchWithPage() {
@@ -462,6 +463,12 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         );
     }
 
+    getClassificationSelectedOrg() {
+        if (this.altClassificationFilterMode) return this.aggregations.flatClassificationsAlt;
+        else if (this.excludeOrgFilterMode) return this.aggregations.excludeClassification;
+        else return this.aggregations.flatClassifications;
+    }
+
     getSelectedDatatypes() {
         return this.searchSettings.datatypes.join(', ');
     }
@@ -534,7 +541,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     status: report.status
                 }
             });
-        }, () => {});
+        }, () => {
+        });
     }
 
     goToPage = 1;
@@ -645,6 +653,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     });
                 } else {
                     this.aggregations.flatClassificationsAlt = [];
+                    this.aggregations.excludeClassification = [];
                 }
 
                 if (result.aggregations.meshTrees !== undefined) {
@@ -766,7 +775,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.reload();
     }
 
-    static searchParamsGet(): {[param: string]: string} {
+    static searchParamsGet(): { [param: string]: string } {
         let params: any = {};
         location.search && location.search.substr(1).split('&').forEach(e => {
             let p = e.split('=');
@@ -815,7 +824,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (!this.embedded) SearchBaseComponent.focusClassification();
     }
 
-    switchView(view: 'welcome'|'results') {
+    switchView(view: 'welcome' | 'results') {
         if (this.view === view || view !== 'welcome' && view !== 'results') return;
 
         this.view = view;
@@ -859,8 +868,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (!this.embedded) {
             this.router.navigate([this.module === 'form' ? 'formView' : 'deView'],
                 {queryParams: {tinyId: this.lastTypeahead[item.option.value]}});
-        }
-        else this.reload();
+        } else this.reload();
     }
 
     static waitScroll(count: number, previousSpot: number) {

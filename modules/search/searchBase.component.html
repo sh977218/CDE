@@ -288,7 +288,7 @@
                             </div>
                         </ng-template>
                     </ng-container>
-                    <div *ngFor="let b of (altClassificationFilterMode?aggregations.flatClassificationsAlt:aggregations.flatClassifications); trackBy: trackByName"
+                    <div *ngFor="let b of getClassificationSelectedOrg(); trackBy: trackByName"
                          id="classif-{{b.name}}" class="treeChild hand-cursor"
                          [class.treeItem]="getCurrentSelectedClassification().length"
                          (click)="selectElement(b.name)" role="link">
