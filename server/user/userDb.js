@@ -7,7 +7,6 @@ const authorizationShared = require('@std/esm')(module)('../../shared/system/aut
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
-const handleError = require('../log/dbLogger').handleError;
 
 let notificationTypesSchema = {
     drawer: Boolean,
@@ -25,11 +24,25 @@ let userSchema = new Schema({
     },
     lockCounter: Number,
     notificationSettings: {
-        approvalComment: notificationTypesSchema
+        approvalComment: notificationTypesSchema,
+        comment: notificationTypesSchema,
     },
     orgAdmin: [StringType],
     orgCurator: [StringType],
     siteAdmin: Boolean,
+    tasks: [{
+        id: StringType,
+        idType: {type: StringType, enum: ['client', 'comment', 'commentReply', 'server', 'version']},
+        name: StringType,
+        properties: [{
+            key: StringType,
+            link: StringType,
+            linkParams: {tab: StringType, tinyId: StringType}, value: StringType
+        }],
+        source: {type: StringType, enum: ['calculated', 'user']},
+        text: StringType,
+        type: {type: StringType, enum: ['approve', 'error', 'message', 'vote']},
+    }],
     quota: Number,
     viewHistory: [StringType],
     formViewHistory: [StringType],
@@ -69,6 +82,11 @@ let userSchema = new Schema({
     }]
 }, {usePushEach: true});
 
+exports.userRefSchema = {
+    _id: Schema.Types.ObjectId,
+    username: {type: StringType, index: true}
+};
+
 // remove this once all formEditor roles have been removed.
 userSchema.pre('validate', function (next) {
     let doc = this;
@@ -90,25 +108,25 @@ exports.byId = (id, callback) => {
 };
 
 exports.find = (crit, cb) => {
-    User.find(crit, handleError({}, cb));
+    User.find(crit, cb);
 };
 
+// cb(err, {nMatched, nUpserted, nModified})
 exports.updateUser = (user, fields, callback) => {
     let update = {};
     if (fields.email) update.email = fields.email;
     if (fields.notificationSettings) {
-        let approvalComment = true;
-        if (!authorizationShared.hasRole(user, 'CommentReviewer')) {
+        if (fields.notificationSettings.approvalComment && !authorizationShared.hasRole(user, 'CommentReviewer')) {
             fields.notificationSettings.approvalComment = undefined;
-            approvalComment = false;
         }
-        if (approvalComment) {
+        if (fields.notificationSettings.approvalComment || fields.notificationSettings.comment) {
             update.notificationSettings = fields.notificationSettings;
         }
     }
     if (fields.searchSettings) update.searchSettings = fields.searchSettings;
     if (fields.publishedForms) update.publishedForms = fields.publishedForms;
-    User.update({_id: user.id}, {$set: update}, callback);
+    if (fields.tasks) update.tasks = fields.tasks;
+    User.update({_id: user._id}, {$set: update}, callback);
 };
 exports.avatarByUsername = (username, callback) => {
     User.findOne({'username': new RegExp('^' + username + '$', "i")}, {avatarUrl: 1}, callback);
