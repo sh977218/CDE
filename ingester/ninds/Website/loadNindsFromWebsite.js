@@ -100,8 +100,8 @@ doDomain = async (driver, disease, domainElement) => {
             subDomain = subDomainText.trim();
         } else {
             let cond = await getFormInfo(trElement);
-            cond.domain = domain;
-            cond.disease = disease.name;
+            if (domain) cond.domain = domain;
+            if (disease && disease.name) cond.disease = disease.name;
             let existingNinds = await NindsModel.findOne(cond);
             if (!existingNinds) {
                 let formObj = await doTrElement(trElement);
