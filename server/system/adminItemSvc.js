@@ -1,7 +1,15 @@
-const mongo_data = require('./mongo-data');
 const async = require('async');
-const pushNotification = require('../system/pushNotification');
-const utilShared = require('@std/esm')(module)("../../shared/system/util");
+const _ = require('lodash');
+const itemShared = require('@std/esm')(module)('../../shared/item');
+const utilShared = require('@std/esm')(module)('../../shared/system/util');
+const userShared = require('@std/esm')(module)('../../shared/user');
+const discussDb = require('../discuss/discussDb');
+const dbLogger = require('../log/dbLogger');
+const notificationSvc = require('../notification/notificationSvc');
+const userDb = require('../user/userDb');
+const handleError = dbLogger.handleError;
+const mongo_data = require('./mongo-data');
+const pushNotification = require('./pushNotification');
 // const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
 
 // exports.save = function (req, res, dao, cb) {
@@ -113,8 +121,9 @@ exports.createTask = function (user, role, type, details) {
     //     typeInfo: details,
     // });
 
-    let msg = JSON.stringify({
-        title: utilShared.capString(type) + ' Request',
+    let name = utilShared.capString(type) + ' Request';
+    let pushTaskMsg = JSON.stringify({
+        title: name,
         options: {
             body: 'Tasks can be completed using the notification bell menu on the navigation bar',
             icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
@@ -134,9 +143,9 @@ exports.createTask = function (user, role, type, details) {
             ]
         }
     });
-    mongo_data.pushGetRegistrations(type + role, registrations => {
-        registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
-    });
+    mongo_data.pushRegistrationSubscribersByType(type + role, handleError({}, registrations => {
+        registrations.forEach(r => pushNotification.triggerPushMsg(r, pushTaskMsg));
+    }));
 };
 
 exports.bulkAction = function (ids, action, cb) {
@@ -167,4 +176,73 @@ exports.hideProprietaryIds = function (elt) {
             }
         });
     }
+};
+
+exports.notifyForComment = (handlerOptions, eltModule, commentOrReply, elt, cb = _.noop) => {
+    const eltTinyId = elt.tinyId;
+    discussDb.byEltId(eltTinyId, handleError(handlerOptions, comments => {
+        let userList = Array.from(new Set(comments
+            .reduce((acc, c) => acc.concat(c.user._id, c.replies.map(r => r.user._id)), [])
+            .filter(u => !!u && !u.equals(commentOrReply.user._id))
+        ));
+        userDb.find(notificationSvc.typeToCriteria('comment', {users: userList, org: elt.stewardOrg && elt.stewardOrg.name}), handleError(handlerOptions, users => {
+            users = users.filter(u => !u.equals(commentOrReply.user._id));
+
+            // drawer
+            let userTaskMsg = {
+                id: commentOrReply._id,
+                idType: !!commentOrReply.element ? 'comment' : 'commentReply',
+                name: commentOrReply.user.username + ' commented',
+                properties: [
+                    {
+                        key: utilShared.capString(eltModule),
+                        link: itemShared.uriViewBase(eltModule),
+                        linkParams: itemShared.uriViewBase(eltModule) && {tinyId: eltTinyId},
+                        value: eltTinyId,
+                    }
+                ],
+                source: 'user',
+                text: commentOrReply.text,
+                type: 'message',
+            };
+            userShared.usersToNotify('comment', 'drawer', users).forEach(user => {
+                if (!user.tasks) {
+                    user.tasks = [];
+                }
+                user.tasks.push(userTaskMsg);
+                if (user.tasks.length > 100) {
+                    user.tasks.length = 100;
+                }
+                userDb.updateUser(user, {tasks: user.tasks}, _.noop);
+            });
+
+            // push
+            let pushTaskMsg = JSON.stringify({
+                title: commentOrReply.user.username + ' commented on ' + utilShared.capString(eltModule) + ' ' + eltTinyId,
+                options: {
+                    body: commentOrReply.text,
+                    data: {uri: itemShared.uriView(eltModule, eltTinyId)},
+                    icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+                    badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
+                    tag: 'cde-comment-' + eltModule + '-' + eltTinyId,
+                    actions: [
+                        {
+                            action: 'open-uri',
+                            title: 'Open',
+                            icon: '/cde/public/assets/img/open_in_browser.png'
+                        },
+                        {
+                            action: 'profile-action',
+                            title: 'Edit Subscription',
+                            icon: '/cde/public/assets/img/min/portrait.png'
+                        }
+                    ]
+                }
+            });
+            mongo_data.pushRegistrationSubscribersByUsers(userShared.usersToNotify('comment', 'push', users), handleError(handlerOptions, registrations => {
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, pushTaskMsg));
+                cb();
+            }));
+        }));
+    }));
 };

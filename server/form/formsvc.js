@@ -93,11 +93,10 @@ function fetchWholeFormOutdated(form, callback) {
 
 function wipeRenderDisallowed(form, req, cb) {
     if (form && form.noRenderAllowed) {
-        authorization.checkOwnership(req, mongo_form, form._id, function (err, isYouAllowed) {
-            if (!isYouAllowed) form.formElements = [];
-            cb();
-        });
-    } else cb();
+        let isYouAllowed = authorization.checkOwnership(form, req.user);
+        if (!isYouAllowed) form.formElements = [];
+    }
+    cb();
 }
 
 exports.byId = (req, res) => {
@@ -233,7 +232,10 @@ exports.draftForm = (req, res) => {
             if (authorizationShared.canEditCuratedItem(req.user, form)) {
                 mongo_form.draftForm(tinyId, handleError({req, res}, form => {
                     if (form) {
-                        fetchWholeFormOutdated(form.toObject(), handleError({req, res}, wholeForm => res.send(wholeForm)));
+                        fetchWholeFormOutdated(form.toObject(), handleError({
+                            req,
+                            res
+                        }, wholeForm => res.send(wholeForm)));
                     } else {
                         exports.byTinyId(req, res);
                     }
@@ -291,7 +293,8 @@ exports.publishForm = (req, res) => {
     if (!req.params.id || req.params.id.length !== 24) return res.status(400).send();
     mongo_form.byId(req.params.id, handleError({req, res}, form => {
         if (!form) return res.status(400).send('form not found');
-        exports.fetchWholeForm(form.toObject(), handleError({req, res, message: 'Fetch whole for publish'
+        exports.fetchWholeForm(form.toObject(), handleError({
+            req, res, message: 'Fetch whole for publish'
         }, wholeForm => {
             publishForm.getFormForPublishing(wholeForm, req, res);
         }));

@@ -23,6 +23,7 @@ const daoManager = require('./moduleDaoManager');
 const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
 const esInit = require('./elasticSearchInit');
 const elastic = require('./elastic.js');
+const itemShared = require('@std/esm')(module)('../../shared/item');
 const meshElastic = require('../mesh/elastic');
 const fhirApps = require('./fhir').fhirApps;
 const fhirObservationInfo = require('./fhir').fhirObservationInfo;
@@ -72,10 +73,13 @@ exports.init = function (app) {
     });
 
     app.get(["/", "/home"], function (req, res) {
-        if (isSearchEngine(req)) res.render('bot/home', 'system');
-        else {
-            if (req.user || req.query.tour || req.query.notifications !== undefined) res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
-            else res.send(homeHtml);
+        if (isSearchEngine(req)) {
+            res.render('bot/home', 'system');
+        } else if (req.user || req.query.tour || req.query.notifications !== undefined
+            || req.headers.referer && req.headers.referer.endsWith('/sw.js')) {
+            res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
+        } else {
+            res.send(homeHtml);
         }
     });
 
@@ -555,49 +559,61 @@ exports.init = function (app) {
             }
             if (version !== req.params.clientVersion) {
                 tasks.push({
-                    _id: 'version',
+                    id: version,
+                    idType: 'version',
                     name: 'Website Updated',
+                    source: 'calculated',
                     text: 'A new version of this site is available. To enjoy the new features, please close all CDE tabs then load again.',
                     type: 'error',
                 });
             }
             if (client > 0) {
                 tasks.push({
-                    _id: 'client',
+                    id: client,
+                    idType: 'client',
                     name: client + ' New Client Errors',
                     properties: [
                         {key: 'Audit Client Errors', link: '/siteAudit', linkParams: {tab:'clientError'}}
                     ],
+                    source: 'calculated',
+                    type: 'message',
                 });
             }
             if (server > 0) {
                 tasks.push({
-                    _id: 'server',
+                    id: server,
+                    idType: 'server',
                     name: server + ' New Server Errors',
                     properties: [
                         {key: 'Audit Server Errors', link: '/siteAudit', linkParams: {tab:'serverError'}}
                     ],
+                    source: 'calculated',
+                    type: 'message',
                 });
             }
             if (Array.isArray(comments)) {
                 comments.forEach(c => {
+                    const eltModule = c.element && c.element.eltType;
+                    const eltTinyId = c.element && c.element.eltId;
                     pending(c).forEach(p => {
-                        let uri = c.element && (
-                            c.element.eltType === 'board' && '/board' ||
-                            c.element.eltType === 'cde' && '/deView' ||
-                            c.element.eltType === 'form' && '/formView' ||
-                            undefined
-                        );
                         tasks.push({
-                            _id: p._id,
-                            name: 'comment',
+                            id: p._id,
+                            idType: p === c ? 'comment' : 'commentReply',
                             properties: [
-                                {key: 'User', value: p.user && p.user.username || c.user && c.user.username},
-                                {key: 'Form', value: c.element && c.element.eltId, link: uri, linkParams: c.element && {tinyId: c.element.eltId}}
+                                {
+                                    key: 'User',
+                                    value: p.user && p.user.username || c.user && c.user.username
+                                },
+                                {
+                                    key: 'Form',
+                                    link: itemShared.uriViewBase(eltModule),
+                                    linkParams: itemShared.uriViewBase(eltModule) && {tinyId: eltTinyId},
+                                    value: eltTinyId,
+                                }
                             ],
-                            reply: p !== c,
+                            source: 'calculated',
                             text: p.text,
-                            type: 'approval',
+                            type: 'approve',
                         });
                     });
                 });

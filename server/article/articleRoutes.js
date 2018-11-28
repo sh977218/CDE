@@ -1,19 +1,55 @@
+const async = require('async');
+let Parser = require('rss-parser');
+let parser = new Parser();
+
 const handleError = require('../log/dbLogger').handleError;
 const db = require('./articleDb');
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
 
-    router.get('/:key', (req, res) => {
-        db.byKey(req.params.key, handleError({res: res, origin: "/article/key"}, article => {
-            if(!article) return res.status(404).send();
-            res.send(article);
-        }));
+    router.get('/whatsNew', (req, res) => {
+        db.byKey('whatsNew', handleError({res: res, origin: "GET /article/whatsNew"},
+            article => {
+                if (!article) return res.status(404).send();
+                res.send(article);
+            }));
     });
 
     router.post('/:key', roleConfig.update, (req, res) => {
         if (req.body.key !== req.params.key) return res.status(400).send();
-        db.update(req.body, handleError({res: res, origin: "POST /article/key"}, article => res.send(article)));
+        db.update(req.body, handleError({res: res, origin: "POST /article/whatsNew"},
+            article => res.send(article)));
+    });
+
+    router.get('/resources', (req, res) => {
+        db.byKey('resources', handleError({res: res, origin: "GET /article/resources"},
+            article => {
+                if (!article) return res.status(404).send();
+                res.send(article);
+            }));
+    });
+    router.get('/resourcesAndFeed', (req, res) => {
+        db.byKey('resources', handleError({res: res, origin: "GET /article/resourcesAndFeed"},
+            article => {
+                article = article.toObject();
+                if (!article) return res.status(404).send();
+                let regex = /&lt;rss-feed&gt;.+&lt;\/rss-feed&gt;/gm;
+                let matches = article.body.match(regex);
+                article.rssFeeds = [];
+                let i = 0;
+                async.forEachSeries(matches, (match, doneOneMatch) => {
+                    let url = match.replace('&lt;rss-feed&gt;', '').replace('&lt;/rss-feed&gt;', '').trim();
+                    parser.parseURL(url, handleError({req, res}, feed => {
+                        article.rssFeeds.push(feed);
+                        article.body = article.body.replace(match, "<div id='rssContent_" + i++ + "'></div>");
+                        doneOneMatch();
+                    }))
+                }, () => {
+                    res.send(article);
+                })
+
+            }));
     });
 
     return router;

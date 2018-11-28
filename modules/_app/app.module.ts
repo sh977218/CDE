@@ -49,7 +49,7 @@ import { AlertModule } from 'alert/alert.module';
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
-        AlertModule,
+        AlertModule
     ],
     declarations: [
         CdeAppComponent,
@@ -58,7 +58,7 @@ import { AlertModule } from 'alert/alert.module';
         NavigationComponent,
         NotificationDrawerComponent,
         NotificationDrawerPaneComponent,
-        TruncateLongNamePipe,
+        TruncateLongNamePipe
     ],
     entryComponents: [
         InactivityLoggedOutComponent,

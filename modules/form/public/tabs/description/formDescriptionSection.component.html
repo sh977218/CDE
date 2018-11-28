@@ -6,10 +6,10 @@
                [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">drag_handle</mat-icon>
             <mat-icon *ngIf="section.skipLogic?.condition?.length > 0 && section.elementType === 'section'"
                [ngClass]="{'spin': section.updatedSkipLogic}"
-               title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}">cog</mat-icon>
+               title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}">settings</mat-icon>
             <mat-icon *ngIf="section.skipLogic?.condition?.length > 0 && section.elementType === 'form'"
                       [ngClass]="{'spin': section.updatedSkipLogic}"
-               title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}">cog</mat-icon>
+               title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}">settings</mat-icon>
         </div>
         <div id="innerForm_label_edit_icon_{{section.label}}"
              class="font-weight-bold float-left hand-cursor sectionLabel ml-1"

@@ -2,36 +2,27 @@ const mongoose = require('mongoose');
 require('../system/mongoose-stringtype')(mongoose);
 const Schema = mongoose.Schema;
 const StringType = Schema.Types.StringType;
-
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
+const userDb = require('../user/userDb');
 
-exports.commentSchema = new Schema({
-    text: StringType,
-    user: {
-        userId: Schema.Types.ObjectId,
-        username: {type: StringType, index: true}
-    },
+const replySchema = {
     created: Date,
     pendingApproval: {type: Boolean, index: true},
-    linkedTab: StringType,
-    status: {type: StringType, enum: ["active", "resolved", "deleted"], default: "active"},
-    replies: [{
-        text: StringType,
-        user: {
-            userId: Schema.Types.ObjectId,
-            username: {type: StringType, index: true}
-        },
-        created: Date,
-        pendingApproval: {type: Boolean, index: true},
-        status: {type: StringType, enum: ["active", "resolved", "deleted"], default: "active"},
-    }],
+    status: {type: StringType, enum: ['active', 'resolved', 'deleted'], default: 'active'},
+    text: StringType,
+    user: userDb.userRefSchema,
+};
+
+exports.commentSchema = new Schema(Object.assign({
     element: {
-        eltType: {type: StringType, enum: ["cde", "form", "board"]},
-        eltId: StringType
-    }
-}, {usePushEach: true,});
+        eltId: StringType,
+        eltType: {type: StringType, enum: ['cde', 'form', 'board']},
+    },
+    linkedTab: StringType,
+    replies: [replySchema],
+}, replySchema), {usePushEach: true,});
 
 const Comment = conn.model('Comment', exports.commentSchema);
 exports.Comment = Comment;
@@ -56,7 +47,7 @@ exports.byEltId = (id, callback) => {
                 as: '__user'
             }
         },
-        {$replaceRoot: {newRoot: {$mergeObjects: [{$arrayElemAt: ['$__user', 0]}, "$$ROOT"]}}},
+        {$replaceRoot: {newRoot: {$mergeObjects: [{$arrayElemAt: ['$__user', 0]}, '$$ROOT']}}},
         {$project: {__user: 0}}
     ];
     Comment.aggregate(aggregate, callback);
