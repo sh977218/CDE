@@ -7,7 +7,6 @@ const doOnePage = require('./ParseNindsCdes').doOnePage;
 const parseDiseases = require('./ParseDiseases').parseDisease;
 
 let formCounter = 0;
-let skipCounter = 0;
 
 getFormInfo = async trElement => {
     let thElements = await trElement.findElements(By.xpath('th'));
@@ -112,8 +111,7 @@ doDomain = async (driver, disease, domainElement) => {
                 formCounter++;
                 console.log('formCounter: ' + formCounter);
             } else {
-                skipCounter++;
-                console.log('skipCounter: ' + skipCounter);
+                console.log('formCounter: ' + formCounter + ' skipped.');
             }
         }
     }
