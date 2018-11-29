@@ -1,13 +1,17 @@
 RSS Feeds Result:
-<mat-card>
-    <mat-list>
-        <mat-list-item *ngFor="let item of rssFeed.items">
-            <img matListAvatar [title]="rssFeed.image.title" [src]="rssFeed.image.url">
-            <h3 mat-line>{{item.author}}</h3>
-            <p mat-line>
-                <a [href]="item.link" target="_blank">{{item.title}}</a>
-            </p>
-        </mat-list-item>
-        <mat-divider></mat-divider>
-    </mat-list>
-</mat-card>
+<div class="border">
+    <div class="rssHeader border-top border-bottom p-1">
+        <div style="overflow:hidden">
+            <img class="float-left" [title]="rssFeed.image.title" [src]="rssFeed.image.url">
+            <div class="float-left text-center" style="width:90%; max-width: 95%;">
+                <a [href]="rssFeed.link">{{rssFeed.title}}</a>
+                <br>
+                <span>{{rssFeed.description}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div *ngFor="let item of rssFeed.items" class="border-top border-bottom p-1">
+        <a [href]="item.link" target="_blank">{{item.title}}</a>
+    </div>
+</div>
