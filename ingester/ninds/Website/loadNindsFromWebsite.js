@@ -111,6 +111,7 @@ doDomain = async (driver, disease, domainElement) => {
                 formCounter++;
                 console.log('formCounter: ' + formCounter);
             } else {
+                formCounter++;
                 console.log('formCounter: ' + formCounter + ' skipped.');
             }
         }
