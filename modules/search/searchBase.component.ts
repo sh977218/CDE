@@ -315,6 +315,12 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.doSearch();
     }
 
+    clearExcludeOrgs() {
+        this.excludeOrgFilterMode = false;
+        this.searchSettings.excludeOrgs = [];
+        this.doSearch();
+    }
+
     clearSelectedDatatypes() {
         if (this.searchSettings.datatypes) {
             this.searchSettings.datatypes.length = 0;
@@ -461,6 +467,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 ? ' > ' + this.searchSettings.classificationAlt.join(' > ')
                 : ''
         );
+    }
+
+    getSelectedOrgs(): string {
+        return this.searchSettings.selectedOrg;
     }
 
     getClassificationSelectedOrg() {
@@ -851,6 +861,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.searchSettings.classificationAlt.length = 0;
         this.searchSettings.selectedOrgAlt = undefined;
         this.altClassificationFilterMode = false;
+        this.excludeOrgFilterMode = false;
 
         if (this.searchSettings.meshTree) {
             let index = this.searchSettings.meshTree.indexOf(';');
