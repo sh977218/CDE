@@ -87,7 +87,16 @@ doDomain = async (driver, disease, domainElement) => {
     let domain = domainText.trim();
 
     let id = await domainElement.getAttribute('id');
-    let cdeTableElement = await driver.findElement(By.xpath("//*[@id='" + id + "']/following-sibling::table"))
+    let cdeTableElement = await driver.findElement(By.xpath("//*[@id='" + id + "']/following-sibling::table"));
+
+    let existingDbCount = await NindsModel.count(disease);
+    let existingWebCount = await driver.findElements(By.xpath("//*[@id='" + id + "']/following-sibling::table/tbody/tr//td"))
+    if (existingDbCount >= existingWebCount) {
+        console.log("***********************************************************************");
+        console.log("Previously Finished Disease " + disease.name + " on page " + disease.url);
+        console.log("***********************************************************************");
+        return;
+    }
 
     let trElements = await cdeTableElement.findElements(By.xpath('tbody/tr'));
     for (let trElement of trElements) {
@@ -99,6 +108,7 @@ doDomain = async (driver, disease, domainElement) => {
             subDomain = subDomainText.trim();
         } else {
             let cond = await getFormInfo(trElement);
+            cond.url = disease.url;
             if (domain) cond.domain = domain;
             if (disease && disease.name) cond.disease = disease.name;
             let existingNinds = await NindsModel.findOne(cond);
@@ -107,6 +117,7 @@ doDomain = async (driver, disease, domainElement) => {
                 formObj.subDomain = subDomain;
                 formObj.domain = domain;
                 formObj.disease = disease.name;
+                formObj.url = disease.url;
                 await new NindsModel(formObj).save();
                 formCounter++;
                 console.log('formCounter: ' + formCounter);
