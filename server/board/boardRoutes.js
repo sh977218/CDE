@@ -5,7 +5,7 @@ const authorization = require('../system/authorization');
 const loggedInMiddleware = authorization.loggedInMiddleware;
 const nocacheMiddleware = authorization.nocacheMiddleware;
 
-const stripBsonIds = require('@std/esm')(module)('../../shared/system/exportShared').stripBsonIds;
+const stripBsonIds = require('esm')(module)('../../shared/system/exportShared').stripBsonIds;
 const checkBoardOwnerShip = authorization.checkBoardOwnerShip;
 const checkBoardViewerShip = authorization.checkBoardViewerShip;
 

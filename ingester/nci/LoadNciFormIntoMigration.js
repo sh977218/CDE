@@ -4,7 +4,7 @@ var async = require('async'),
     MigrationNCIModel = require('./../createMigrationConnection').MigrationNCIFormXmlModel,
     MigrationFormModel = require('./../createMigrationConnection').MigrationFormModel,
     MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel,
-    classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared'),
+    classificationShared = require('esm')(module)('../../shared/system/classificationShared'),
     classificationMapping = require('./classificationMapping/caDSRClassificationMapping.json')
 ;
 

@@ -3,7 +3,7 @@ require('./mongoose-stringtype')(mongoose);
 const Schema = mongoose.Schema;
 const StringType = Schema.Types.StringType;
 
-const regStatusShared = require('@std/esm')(module)("../../shared/system/regStatusShared");
+const regStatusShared = require('esm')(module)("../../shared/system/regStatusShared");
 
 let csEltSchema = new Schema({
     elements: [],

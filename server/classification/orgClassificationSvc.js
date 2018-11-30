@@ -2,7 +2,7 @@ const async = require('async');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_data = require('../system/mongo-data');
-const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared');
+const classificationShared = require('esm')(module)('../../shared/system/classificationShared');
 const elastic = require('../system/elastic');
 const handleError = require('../log/dbLogger').handleError;
 

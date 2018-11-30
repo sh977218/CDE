@@ -6,7 +6,7 @@ const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const FileListPlugin = require('file-list-plugin');
-const serverConstants = require('@std/esm')(module)('../../shared/serverConstants');
+const serverConstants = require('esm')(module)('../../shared/serverConstants');
 
 const assets = serverConstants.htmlServedUri.concat([
     '/cde/public/assets/img/min/NIH-CDE.png',
