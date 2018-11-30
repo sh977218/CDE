@@ -216,7 +216,7 @@
     {
       "path": "./dist/embed/embed.js",
       "compression": "none",
-      "maxSize": "1.27 MB"
+      "maxSize": "1.45 MB"
     },
     {
       "path": "./dist/embed/embed.css",
