@@ -49,6 +49,7 @@ module.exports = {
                 let version = crypto.createHash('md5').update(filesInsert).digest('hex').substr(0,4);
                 sw = sw.replace('{#}', version);
                 sw = sw.replace('{#}', version);
+                sw = sw.replace('{htmlServedUri}', serverConstants.htmlServedUri.join('", "'));
                 let location = sw.indexOf('"###"');
                 let pre = sw.substring(0, location);
                 let post = sw.substring(location + 5);
