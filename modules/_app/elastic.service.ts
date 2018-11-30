@@ -37,6 +37,8 @@ export class ElasticService {
             , searchTerm: queryParams.q
             , selectedOrg: queryParams.selectedOrg
             , selectedOrgAlt: queryParams.selectedOrgAlt
+            , excludeAllOrgs: queryParams.excludeAllOrgs
+            , excludeOrgs: queryParams.excludeOrgs
             , selectedElements: queryParams.classification || []
             , selectedElementsAlt: queryParams.classificationAlt || []
             , page: queryParams.page
@@ -50,7 +52,7 @@ export class ElasticService {
         };
     }
 
-    generalSearchQuery(settings, type: 'cde'|'form', cb: CbErr<ElasticQueryResponse, boolean>) {
+    generalSearchQuery(settings, type: 'cde' | 'form', cb: CbErr<ElasticQueryResponse, boolean>) {
         let search = (good: Cb<ElasticQueryResponse>, bad: CbErr) => {
             this.http.post('/elasticSearch/' + type, settings).subscribe(good, bad);
         };
@@ -95,13 +97,12 @@ export class ElasticService {
         if (cde.highlight[field]) {
             if (field.indexOf('.') < 0) {
                 if (cde.highlight[field][0].replace(/<strong>/g, "").replace(/<\/strong>/g, "")
-                        .substr(0, 50) === cde[field].substr(0, 50)) {
+                    .substr(0, 50) === cde[field].substr(0, 50)) {
                     cde[field] = cde.highlight[field][0];
                 } else {
                     cde[field] = cde[field].substr(0, 50) + ' [...] ' + cde.highlight[field][0];
                 }
-            }
-            else cde[field.replace(/\..+$/, "")][field.replace(/^.+\./, "")] = cde.highlight[field][0];
+            } else cde[field.replace(/\..+$/, "")][field.replace(/^.+\./, "")] = cde.highlight[field][0];
         } else {
             if (field.indexOf('.') < 0) {
                 cde[field] = cde[field].substr(0, 200);

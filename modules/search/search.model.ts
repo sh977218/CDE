@@ -13,4 +13,5 @@ export class SearchSettings {
     selectedOrg?: string;
     selectedOrgAlt?: string;
     excludeOrgs = [];
+    excludeAllOrgs: boolean;
 }

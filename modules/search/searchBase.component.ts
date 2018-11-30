@@ -262,11 +262,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (orgToAlter === undefined) {
             if (this.altClassificationFilterMode) {
                 this.searchSettings.selectedOrgAlt = orgName;
+            } else if (this.excludeOrgFilterMode) {
+                this.searchSettings.excludeOrgs.push(orgName);
             } else {
                 this.searchSettings.selectedOrg = orgName;
             }
         } else {
             if (this.altClassificationFilterMode) this.searchSettings.classificationAlt.length = 0;
+            else if (this.excludeOrgFilterMode) this.searchSettings.excludeOrgs.push(orgName);
             else this.searchSettings.classification.length = 0;
         }
         delete this.aggregations.groups;
@@ -317,6 +320,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     clearExcludeOrgs() {
         this.excludeOrgFilterMode = false;
+        this.searchSettings.excludeAllOrgs = false;
         this.searchSettings.excludeOrgs = [];
         this.doSearch();
     }
@@ -366,7 +370,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     doSearch() {
         if (!this.embedded) {
             this.searchSettings.page = 1;
-            this.redirect(this.generateSearchForTerm());
+            let url = this.generateSearchForTerm();
+            this.redirect(url);
         } else this.reload();
     }
 
@@ -418,6 +423,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (this.altClassificationFilterMode && this.searchSettings.classificationAlt.length > 0) {
             searchTerms.classificationAlt = this.searchSettings.classificationAlt.join(';');
         }
+        if (this.searchSettings.excludeAllOrgs) searchTerms.excludeAllOrgs = true;
+        if (this.searchSettings.excludeOrgs && this.searchSettings.excludeOrgs.length > 0) searchTerms.excludeOrgs = this.searchSettings.excludeOrgs.join(';');
         if (pageNumber > 1) searchTerms.page = pageNumber;
         else if (this.searchSettings.page && this.searchSettings.page > 1) searchTerms.page = this.searchSettings.page;
         if (this.searchSettings.meshTree) searchTerms.topic = this.searchSettings.meshTree;
@@ -469,8 +476,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         );
     }
 
-    getSelectedOrgs(): string {
-        return this.searchSettings.selectedOrg;
+    searchExcludeAllOrgs() {
+        this.searchSettings.excludeAllOrgs = true;
+        this.doSearch();
+    }
+
+    getExcludedOrgs(): string {
+        if (this.searchSettings.excludeAllOrgs) return 'exclude all Orgs';
+        else return this.searchSettings.excludeOrgs.join(' , ');
     }
 
     getClassificationSelectedOrg() {

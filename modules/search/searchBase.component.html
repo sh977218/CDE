@@ -190,7 +190,7 @@
             </span>
         </span>
         <span *ngIf="excludeOrgFilterMode" id="classifExclude_filter" class="border">not
-            <span class="badge badge-success">{{searchSettings.excludeOrgs}}
+            <span class="badge badge-success">{{getExcludedOrgs()}}
                 <mat-icon id="removeExcludeOrgFilterMode" class="remove-filter hand-cursor dark-icon pl-1"
                           (click)="clearExcludeOrgs()"
                           aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
@@ -251,9 +251,9 @@
                                   matTooltipClass="cdeTooltip" matTooltipPosition="right">indeterminate_check_box
                         </mat-icon>
                     </div>
-                    <div *ngIf="excludeOrgFilterMode" class="treeChild hand-cursor">All</div>
+                    <div *ngIf="excludeOrgFilterMode" class="treeChild hand-cursor" (click)="searchExcludeAllOrgs()">All</div>
                     <ng-container *ngFor="let t of aggregations.orgs.buckets; trackBy: trackByKey">
-                        <ng-container *ngIf="getCurrentSelectedOrg(); else classifOrg">
+                        <ng-container *ngIf="getCurrentSelectedOrg() && altClassificationFilterMode; else classifOrg">
                             <ng-container *ngIf="t.key === getCurrentSelectedOrg()">
                                 <div *ngIf="getCurrentSelectedClassification()?.length; else classifSelf"
                                      id="classif-{{t.key}}" class="treeParent hand-cursor"
@@ -273,8 +273,7 @@
                         </ng-container>
                         <ng-template #classifOrg>
                             <div id="classif-{{t.key}}" class="treeChild hand-cursor" (click)="alterOrgFilter(t.key)"
-                                 role="link"
-                                 [attr.aria-label]="t.longName" [matTooltip]="t.longName"
+                                 role="link" [attr.aria-label]="t.longName" [matTooltip]="t.longName"
                                  matTooltipClass="cdeTooltip" matTooltipPosition="right">
                                 <mat-icon class="treeItemIcon">keyboard_arrow_right</mat-icon>
                                 <a class="treeItemText">{{t.key}} (<span
