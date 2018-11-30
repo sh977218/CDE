@@ -27,6 +27,8 @@ public class CdeLiveComment extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToDiscussArea();
 
+        replyComment(0, reply);
+
         switchTab(1);
         goToCdeByName(cdeName);
         goToDiscussArea();
@@ -35,7 +37,6 @@ public class CdeLiveComment extends NlmCdeBaseTest {
 
         switchTab(0);
         textPresent(newComment);
-        replyComment(0, reply);
 
         switchTab(1);
         textPresent(reply);
@@ -47,7 +48,9 @@ public class CdeLiveComment extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(nindsCurator_username, password);
         clickElement(By.id("notifications"));
-        textPresent("3 new comments");
-        textPresent("gPY57SQ7-ZF");
+        textPresent("3 new comments",
+                By.xpath("//div[contains(@class, 'taskItem')][*//mat-chip[contains(text(), 'gPY57SQ7-ZF')]]"));
+        textPresent(reply,
+                By.xpath("//div[contains(@class, 'taskItem')][*//mat-chip[contains(text(), 'gPY57SQ7-ZF')]]"));
     }
 }

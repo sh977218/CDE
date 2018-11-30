@@ -1,17 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Params, Router, UrlSegment } from '@angular/router';
 import { ApprovalService } from '_app/notifications/approval.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import _noop from 'lodash/noop';
-import { of } from 'rxjs/observable/of';
-import { zip } from 'rxjs/observable/zip';
-import { elementAt, filter, map, mergeMap } from 'rxjs/operators';
-import { assertUnreachable, Cb, Task } from 'shared/models.model';
+import { assertUnreachable, Cb, Task, TaskStateUnread } from 'shared/models.model';
 import { partition } from 'shared/system/util';
 
-const ID_TYPES = ['version', 'server', 'client', 'system', 'user']; // in sort order
+const TYPES = ['error', 'approve', 'vote', 'message', 'comment']; // in sort order
 
 export type NotificationTask = {
     actions: {color: string, icon: string, text: string, click: Cb}[],
@@ -21,17 +18,36 @@ export type NotificationTask = {
     properties: {key: string, icon?: string, link?: string, linkParams?: any}[],
     tasks: Task[],
     text?: string,
+    unread: boolean,
+    url?: string,
+    urlLink?: string,
+    urlQueryParams?: Params
 };
 
-function tasksEqual(l: Task, r: Task) {
-    return l.idType === r.idType && l.id === r.id;
+function tasksEqualAndState(l: Task, r: Task): {state?: number} {
+    if (l.id !== r.id || l.idType !== r.idType) {
+        return undefined;
+    }
+    if (l.type === 'comment' && r.type === 'comment' && ['cde', 'form'].includes(l.idType)) {
+        let same = l.date === r.date && l.name === r.name && l.text === r.text;
+        if (same) {
+            l.state = r.state;
+            return {state: r.state};
+        }
+        return same ? {} : undefined;
+    }
+    return {};
 }
 
 @Injectable()
 export class NotificationService {
     drawerMouseOver = false;
     private drawerState = false;
+    funcMergeTaskMessages = this.mergeTaskMessages.bind(this);
+    funcReloadFinished = this.reloadFinished.bind(this);
+    funcUpdateTaskMessages = this.updateTaskMessages.bind(this);
     hasCriticalError = false;
+    reloading = false;
     tasks: NotificationTask[] = [];
 
     constructor(private alert: AlertService,
@@ -50,18 +66,26 @@ export class NotificationService {
         let abstain = _noop;
         let approve = _noop;
         let reject = _noop;
+        let t0 = t[0];
         let task: NotificationTask = {
             actions: undefined,
             background: undefined,
             icon: undefined,
-            name: name || t[0].name,
-            properties: t[0].properties && t[0].properties.concat() || [],
+            name: name || t0.name,
+            properties: t0.properties && t0.properties.concat() || [],
+            url: t0.url,
             tasks: t,
-            text: t[0].text ? (t[0].text.length < 150 ? t[0].text : t[0].text.slice(0, 150) + '...') : undefined,
+            text: t0.text ? (t0.text.length < 150 ? t0.text : t0.text.slice(0, 150) + '...') : undefined,
+            unread: !!(t0.state === undefined || TaskStateUnread & t0.state),
         };
-        switch (t[0].type) {
+        if (task.url) {
+            let urlTree = this.router.parseUrl(task.url);
+            task.urlLink = '/' + urlTree.root.children.primary.segments.join('/');
+            task.urlQueryParams = urlTree.queryParams;
+        }
+        switch (t0.type) {
             case 'approve': // idType: comment, commentReply
-                switch (task.tasks[0].idType) {
+                switch (t0.idType) {
                     case 'comment':
                     case 'commentReply':
                         task.properties.unshift({key: 'Comment', icon: 'comment'});
@@ -79,7 +103,12 @@ export class NotificationService {
                 break;
             case 'error': // idType: version
                 task.background = '#f8d7da';
-                task.icon = 'warning';
+                task.icon = 'error';
+                switch (t0.idType) {
+                    case 'versionUpdate':
+                        task.icon = 'new_releases';
+                        break;
+                }
                 break;
             case 'vote': // idType:
                 task.actions = [
@@ -90,57 +119,25 @@ export class NotificationService {
                 task.background = '#cce5ff';
                 task.icon = 'done_all';
                 break;
-            case 'message': // idType: client comment commentReply server
-            default: // idType: *
+            case 'comment':
+                // TODO: read/unread impl
+                task.background = '#d1ecf1';
+                task.icon = 'question_answer';
+                break;
+            case 'message':
+            default:
                 task.actions = [];
-                if (!task.tasks[0].properties || !task.tasks[0].properties.filter(p => ['Audit Client Errors', 'Audit Server Errors'].includes(p.key)).length) {
-                    task.actions.push({
-                        color: 'warn', icon: 'delete', text: 'Close',
-                        click: this.deleteTask.bind(this, task)
-                    });
-                }
-                let filtered = task.tasks[0].properties && task.tasks[0].properties.filter(
-                    p => ['Audit Client Errors', 'Audit Server Errors', 'Cde', 'Form'].includes(p.key));
-                if (!!filtered && !!filtered.length) {
-                    task.actions.unshift({
-                        click: () => {
-                            this.router.navigate([filtered[0].link], {queryParams: filtered[0].linkParams});
-                            this.deleteTask(task);
-                            this.drawerClose();
-                        },
-                        color: 'primary',
-                        icon: 'open_in_browser',
-                        text: 'Open',
-                    });
-                }
                 task.background = '#d1ecf1';
                 task.icon = 'assignment';
+                switch (t0.idType) {
+                    case 'clientError':
+                    case 'serverError':
+                        // TODO: close impl
+                        task.icon = 'warning';
+                        break;
+                }
         }
         return task;
-    }
-
-    deleteTask(task: NotificationTask) {
-        this.tasks.splice(this.tasks.indexOf(task), 1);
-        let source = task.tasks[0].source;
-        switch (source) {
-            case 'calculated':
-                break;
-            case 'user':
-                this.http.delete<Task[]>('/server/user/tasks?ids=' + task.tasks.map(t => t.id).join(','))
-                    .subscribe(tasks => {
-                        if (this.userService.user) {
-                            this.userService.user.tasks = tasks;
-                            this.tasks = NotificationService.sortTasks(
-                                this.groupTasks(
-                                    this.reloadUserTasks()
-                                )
-                            );
-                        }
-                    });
-                break;
-            default:
-                assertUnreachable(source);
-        }
     }
 
     drawer() {
@@ -163,9 +160,13 @@ export class NotificationService {
         }
     }
 
-    getIcon() {
-        // notifications-off notifications-paused notifications-active
-        return 'notifications-none';
+    getBadge(): number {
+        return this.tasks.filter(task => task.unread).length;
+    }
+
+    getIcon(): string {
+        // notifications-off notifications-paused notifications-none
+        return this.hasCriticalError ? 'notifications_active' : 'notifications';
     }
 
     groupTasks(tasks: NotificationTask[]): NotificationTask[] {
@@ -174,20 +175,18 @@ export class NotificationService {
         // user comments on same item
         let groups = {};
         tasks
-            .filter(task => task.tasks[0].source === 'user' && ['comment', 'commentReply'].includes(task.tasks[0].idType))
-            .map(task => {
-                let property = task.tasks[0].properties.filter(p => ['Cde', 'Form'].includes(p.key))[0];
-                if (property && property.value) {
-                    let key = property.key + ' - ' + property.value;
-                    groups[key] = (groups[key] || 0) + 1;
-                }
+            .filter(task => task.tasks[0].source === 'user' && task.tasks[0].type === 'comment')
+            .forEach(task => {
+                let key = task.tasks[0].idType + ' - ' + task.tasks[0].id;
+                groups[key] = (groups[key] || 0) + 1;
             });
         for (let group in groups) {
             if (groups.hasOwnProperty(group) && groups[group] > 1) {
                 let eltTasks;
-                let [key, tinyId] = group.split(' - ');
-                [eltTasks, grouped] = partition(grouped, task =>
-                    !!task.tasks[0].properties && !!task.tasks[0].properties.filter(p => p.key === key && p.value === tinyId).length);
+                let [eltModule, eltTinyId] = group.split(' - ');
+                [eltTasks, grouped] = partition(grouped, task => task.tasks[0].id === eltTinyId
+                    && task.tasks[0].source === 'user' && task.tasks[0].type === 'comment'
+                    && task.tasks[0].idType === eltModule);
                 grouped.push(
                     this.createTask(
                         eltTasks.reduce((acc, t) => acc.concat(t.tasks), []),
@@ -201,48 +200,74 @@ export class NotificationService {
     }
 
     mergeTaskMessages(acc: NotificationTask[], t: Task): NotificationTask[] {
-        acc.push(this.tasks.filter(task => tasksEqual(task.tasks[0], t))[0] || this.createTask([t]));
+        let unread = undefined;
+        let match = this.tasks.filter(task => !!task.tasks.filter(i => {
+            let stateObj = tasksEqualAndState(i, t);
+            if (stateObj && stateObj.state) {
+                unread = unread || stateObj.state & TaskStateUnread;
+            }
+            return !!stateObj;
+        }).length);
+        if (match.length) {
+            if (acc.indexOf(match[0]) === -1) {
+                acc.push(match[0]);
+            }
+            if (unread !== undefined) {
+                match[0].unread = match[0].unread || unread;
+            }
+        } else {
+            acc.push(this.createTask([t]));
+        }
         return acc;
     }
 
-    reload() {
-        zip(
-            this.http.get<Task[]>('/tasks/' + (window as any).version).pipe(
-                map(serverTasks => serverTasks.reduce(this.mergeTaskMessages.bind(this), []))
-            ),
-            of(this.userService.user).pipe(
-                filter(user => !!user),
-                mergeMap(() => this.http.get<Task[]>('/server/user/tasks')),
-                map(userTasks => this.userService.user.tasks = userTasks),
-                elementAt(0, undefined)
-            )
-        ).subscribe(([serverTasks]) => {
-            this.tasks = NotificationService.sortTasks(
-                this.groupTasks(
-                    this.reloadUserTasks(
-                        serverTasks
-                    )
-                )
-            );
-            this.hasCriticalError = this.tasks.filter(t => t.tasks[0].idType === 'version').length > 0;
-        }, _noop);
+    readTask(task: NotificationTask) {
+        let source = task.tasks[0].source;
+        switch (source) {
+            case 'calculated':
+                break;
+            case 'user':
+                if (task.tasks[0].type === 'comment' && task.unread) {
+                    task.unread = false;
+                    this.reloading = true;
+                    this.http.post<Task[]>('/server/user/tasks/' + (window as any).version + '/read',
+                        {id: task.tasks[0].id, idType: task.tasks[0].idType})
+                        .subscribe(this.funcUpdateTaskMessages, this.funcReloadFinished, this.funcReloadFinished);
+                }
+                break;
+            default:
+                assertUnreachable(source);
+        }
     }
 
-    reloadUserTasks(tasks: NotificationTask[] = undefined): NotificationTask[] {
-        return this.userService.user && Array.isArray(this.userService.user.tasks)
-            ? this.userService.user.tasks.reduce(this.mergeTaskMessages.bind(this), tasks
-                || this.tasks.filter(t => t.tasks[0].source !== 'user'))
-            : tasks || this.tasks;
+    reload() {
+        if (!this.reloading) {
+            this.reloading = true;
+            this.http.get<Task[]>('/server/user/tasks/' + (window as any).version)
+                .subscribe(this.funcUpdateTaskMessages, this.funcReloadFinished, this.funcReloadFinished);
+        }
+    }
+
+    reloadFinished() {
+        this.reloading = false;
+    }
+
+    updateTaskMessages(serverTasks) {
+        this.tasks = NotificationService.sortTasks(
+            this.groupTasks(
+                serverTasks.reduce(this.funcMergeTaskMessages, [])
+            )
+        );
+        this.hasCriticalError = this.tasks.filter(t => t.tasks[0].idType === 'versionUpdate').length > 0;
     }
 
     static sortTasks(tasks: NotificationTask[]): NotificationTask[] {
-        let size = ID_TYPES.length;
-        let arrays: NotificationTask[][] = Array(size + 1);
-        for (let i = 0; i < size + 1; i++) arrays[i] = [];
-        tasks.forEach(task => {
-            let i = ID_TYPES.indexOf(task.tasks[0].idType);
-            arrays[i >= 0 && i < size ? i : size].push(task);
+        return tasks.sort((a: NotificationTask, b: NotificationTask) => {
+            if (TYPES.indexOf(a.tasks[0].type) !== TYPES.indexOf(b.tasks[0].type)) {
+                return TYPES.indexOf(a.tasks[0].type) - TYPES.indexOf(b.tasks[0].type);
+            } else {
+                return new Date(a.tasks[0].date).getTime() - new Date(b.tasks[0].date).getTime();
+            }
         });
-        return [].concat(...arrays);
     }
 }

@@ -58,6 +58,7 @@ export class DataElementViewComponent implements OnInit {
     ngOnInit() {
         this.orgHelperService.then(() => {
             this.route.queryParams.subscribe(() => {
+                this.hasDrafts = false;
                 this.loadElt(() => {
                     this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
                 });

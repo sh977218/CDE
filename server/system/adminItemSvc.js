@@ -178,42 +178,33 @@ exports.hideProprietaryIds = function (elt) {
     }
 };
 
-exports.notifyForComment = (handlerOptions, eltModule, commentOrReply, elt, cb = _.noop) => {
-    const eltTinyId = elt.tinyId;
+exports.notifyForComment = (handlerOptions, commentOrReply, eltModule, eltTinyId, eltStewardOrg, cb = _.noop) => {
     discussDb.byEltId(eltTinyId, handleError(handlerOptions, comments => {
         let userList = Array.from(new Set(comments
             .reduce((acc, c) => acc.concat(c.user._id, c.replies.map(r => r.user._id)), [])
             .filter(u => !!u && !u.equals(commentOrReply.user._id))
         ));
-        userDb.find(notificationSvc.typeToCriteria('comment', {users: userList, org: elt.stewardOrg && elt.stewardOrg.name}), handleError(handlerOptions, users => {
+        userDb.find(notificationSvc.typeToCriteria('comment', {users: userList, org: eltStewardOrg}), handleError(handlerOptions, users => {
             users = users.filter(u => !u.equals(commentOrReply.user._id));
 
             // drawer
-            let userTaskMsg = {
-                id: commentOrReply._id,
-                idType: !!commentOrReply.element ? 'comment' : 'commentReply',
-                name: commentOrReply.user.username + ' commented',
-                properties: [
-                    {
-                        key: utilShared.capString(eltModule),
-                        link: itemShared.uriViewBase(eltModule),
-                        linkParams: itemShared.uriViewBase(eltModule) && {tinyId: eltTinyId},
-                        value: eltTinyId,
-                    }
-                ],
-                source: 'user',
+            let userCommentNotification = {
+                date: new Date(),
+                eltModule,
+                eltTinyId,
+                read: false,
                 text: commentOrReply.text,
-                type: 'message',
+                username: commentOrReply.user.username,
             };
             userShared.usersToNotify('comment', 'drawer', users).forEach(user => {
-                if (!user.tasks) {
-                    user.tasks = [];
+                if (!user.commentNotifications) {
+                    user.commentNotifications = [];
                 }
-                user.tasks.push(userTaskMsg);
-                if (user.tasks.length > 100) {
-                    user.tasks.length = 100;
+                user.commentNotifications.push(userCommentNotification);
+                if (user.commentNotifications.length > 100) {
+                    user.commentNotifications.length = 100;
                 }
-                userDb.updateUser(user, {tasks: user.tasks}, _.noop);
+                userDb.updateUser(user, {commentNotifications: user.commentNotifications}, _.noop);
             });
 
             // push
@@ -221,13 +212,13 @@ exports.notifyForComment = (handlerOptions, eltModule, commentOrReply, elt, cb =
                 title: commentOrReply.user.username + ' commented on ' + utilShared.capString(eltModule) + ' ' + eltTinyId,
                 options: {
                     body: commentOrReply.text,
-                    data: {uri: itemShared.uriView(eltModule, eltTinyId)},
+                    data: {url: itemShared.uriView(eltModule, eltTinyId)},
                     icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
                     badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
                     tag: 'cde-comment-' + eltModule + '-' + eltTinyId,
                     actions: [
                         {
-                            action: 'open-uri',
+                            action: 'open-url',
                             title: 'Open',
                             icon: '/cde/public/assets/img/open_in_browser.png'
                         },
