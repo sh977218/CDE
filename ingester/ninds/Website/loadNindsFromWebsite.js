@@ -97,6 +97,8 @@ doDomain = async (driver, disease, domainElement) => {
         console.log("***********************************************************************");
         return;
     }
+    console.log('existingDbCount: ' + existingDbCount);
+    console.log('existingWebCount: ' + existingWebCount);
 
     let trElements = await cdeTableElement.findElements(By.xpath('tbody/tr'));
     for (let trElement of trElements) {
