@@ -90,7 +90,8 @@ doDomain = async (driver, disease, domainElement) => {
     let cdeTableElement = await driver.findElement(By.xpath("//*[@id='" + id + "']/following-sibling::table"));
 
     let existingDbCount = await NindsModel.count(disease);
-    let existingWebCount = await driver.findElements(By.xpath("//*[@id='" + id + "']/following-sibling::table/tbody/tr//td"))
+    let existingWebElements = await driver.findElements(By.xpath("//*[@id='" + id + "']/following-sibling::table/tbody/tr//td"));
+    let existingWebCount = existingWebElements.length;
     if (existingDbCount >= existingWebCount) {
         console.log("***********************************************************************");
         console.log("Previously Finished Disease " + disease.name + " on page " + disease.url);
