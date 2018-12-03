@@ -914,7 +914,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             }
 
         }
-        clickElement(By.xpath("//ngb-accordion//a[contains (., '" + cdeName + "')]"));
+        clickElement(By.xpath("//ngb-accordion//button[contains (., '" + cdeName + "')]"));
     }
 
     protected void setVisibleStatus(String id) {
