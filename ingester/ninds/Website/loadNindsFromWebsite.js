@@ -89,18 +89,6 @@ doDomain = async (driver, disease, domainElement) => {
     let id = await domainElement.getAttribute('id');
     let cdeTableElement = await driver.findElement(By.xpath("//*[@id='" + id + "']/following-sibling::table"));
 
-    let existingDbCount = await NindsModel.count({url: disease.url, disease: disease.name});
-    let existingWebElements = await driver.findElements(By.xpath("//*[@id='" + id + "']/following-sibling::table/tbody/tr//td"));
-    let existingWebCount = existingWebElements.length;
-    if (existingDbCount >= existingWebCount) {
-        console.log("***********************************************************************");
-        console.log("Previously Finished Disease " + disease.name + " on page " + disease.url);
-        console.log("***********************************************************************");
-        return;
-    }
-    console.log('existingDbCount: ' + existingDbCount);
-    console.log('existingWebCount: ' + existingWebCount);
-
     let trElements = await cdeTableElement.findElements(By.xpath('tbody/tr'));
     for (let trElement of trElements) {
         let subDomain = '';
@@ -140,6 +128,18 @@ async function doDisease(disease) {
     let title = titleText.trim();
     disease.title = title;
 
+    let existingDbCount = await NindsModel.count({url: disease.url, disease: disease.name});
+    let existingWebElements = await driver.findElements(By.xpath("//*[@id='Data_Standards']/a/following-sibling::table/tbody/tr//td"));
+    let existingWebCount = existingWebElements.length;
+    if (existingDbCount >= existingWebCount) {
+        console.log("***********************************************************************");
+        console.log("Previously Finished Disease " + disease.name + " on page " + disease.url);
+        console.log("***********************************************************************");
+        return;
+    }
+    console.log('existingDbCount: ' + existingDbCount);
+    console.log('existingWebCount: ' + existingWebCount);
+
     let domainElements = await driver.findElements(By.xpath("//*[@class='cdetable']/preceding-sibling::a"));
     for (let domainElement of domainElements) {
         await doDomain(driver, disease, domainElement);
@@ -148,10 +148,11 @@ async function doDisease(disease) {
 
 async function run() {
     let diseases = await parseDiseases();
-    for (let disease of diseases) {
-        await doDisease(disease);
+    for (let i = 0; i < diseases.length; i++) {
+        let disease = diseases[i];
+        if (i < 1)
+            await doDisease(disease);
     }
-    console.log('formCounter: ' + formCounter);
 }
 
 run().then(async () => {
