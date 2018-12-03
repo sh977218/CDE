@@ -236,7 +236,7 @@
     {
       "path": "./dist/native/native.js",
       "compression": "none",
-      "maxSize": "1.05 MB"
+      "maxSize": "1.11 MB"
     },
     {
       "path": "./dist/native/native.css",
