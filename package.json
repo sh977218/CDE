@@ -221,7 +221,7 @@
     {
       "path": "./dist/embed/embed.css",
       "compression": "none",
-      "maxSize": "239 kB"
+      "maxSize": "251 kB"
     },
     {
       "path": "./dist/fhir/fhir.js",
