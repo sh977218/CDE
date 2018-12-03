@@ -99,6 +99,36 @@ function wipeRenderDisallowed(form, req, cb) {
     cb();
 }
 
+/*
+|---------------|           |---------------|
+|   S1          |           |   S1          |
+|       Q1      |           |       Q1      |
+|       S2      |           |   S1-S2       |
+|           Q2  |    ==>    |       Q2      |
+|   S3          |           |   S3          |
+|       Q3      |           |       Q3      |
+|   Q4          |           |   S4(new)     |
+|               |           |       Q4      |
+|---------------|           |---------------|
+*/
+function oneLayerForm(form, insideSection) {
+    for (let i = 0; i < form.formElements.length; i++) {
+        let fe = form.formElements[i];
+        let _fe = {
+            elementType: 'section',
+            label: '',
+            formElements: [fe]
+        };
+        if (fe.elementType !== 'question') {
+            insideSection++;
+            _fe = oneLayerForm(fe, insideSection);
+        }
+        form.formElements[i] = _fe;
+        insideSection--;
+    }
+    return form;
+}
+
 exports.byId = (req, res) => {
     let id = req.params.id;
     if (!id || id.length !== 24) return res.status(400).send();
@@ -125,6 +155,7 @@ exports.byId = (req, res) => {
                         nih.getFormNih(wholeForm, handleError({req, res}, xmlForm => res.send(xmlForm)));
                     }
                 } else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
+                    oneLayerForm(wholeForm, 0);
                     redCap.getZipRedCap(wholeForm, res);
                 } else {
                     if (req.query.subtype === 'fhirQuestionnaire') {
