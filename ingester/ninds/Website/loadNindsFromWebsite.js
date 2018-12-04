@@ -150,8 +150,7 @@ async function run() {
     let diseases = await parseDiseases();
     for (let i = 0; i < diseases.length; i++) {
         let disease = diseases[i];
-        if (i < 1)
-            await doDisease(disease);
+        await doDisease(disease);
     }
 }
 
