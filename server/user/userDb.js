@@ -15,6 +15,15 @@ let notificationTypesSchema = {
 
 let userSchema = new Schema({
     username: {type: StringType, unique: true},
+    commentNotifications: [{
+        _id: false,
+        date: Date,
+        eltModule: {type: StringType, enum: ['cde', 'form']},
+        eltTinyId: StringType,
+        read: Boolean,
+        text: StringType,
+        username: StringType,
+    }],
     email: StringType,
     password: StringType,
     lastLogin: Date,
@@ -30,19 +39,6 @@ let userSchema = new Schema({
     orgAdmin: [StringType],
     orgCurator: [StringType],
     siteAdmin: Boolean,
-    tasks: [{
-        id: StringType,
-        idType: {type: StringType, enum: ['client', 'comment', 'commentReply', 'server', 'version']},
-        name: StringType,
-        properties: [{
-            key: StringType,
-            link: StringType,
-            linkParams: {tab: StringType, tinyId: StringType}, value: StringType
-        }],
-        source: {type: StringType, enum: ['calculated', 'user']},
-        text: StringType,
-        type: {type: StringType, enum: ['approve', 'error', 'message', 'vote']},
-    }],
     quota: Number,
     viewHistory: [StringType],
     formViewHistory: [StringType],
@@ -114,6 +110,7 @@ exports.find = (crit, cb) => {
 // cb(err, {nMatched, nUpserted, nModified})
 exports.updateUser = (user, fields, callback) => {
     let update = {};
+    if (fields.commentNotifications) update.commentNotifications = fields.commentNotifications;
     if (fields.email) update.email = fields.email;
     if (fields.notificationSettings) {
         if (fields.notificationSettings.approvalComment && !authorizationShared.hasRole(user, 'CommentReviewer')) {
@@ -125,7 +122,6 @@ exports.updateUser = (user, fields, callback) => {
     }
     if (fields.searchSettings) update.searchSettings = fields.searchSettings;
     if (fields.publishedForms) update.publishedForms = fields.publishedForms;
-    if (fields.tasks) update.tasks = fields.tasks;
     User.update({_id: user._id}, {$set: update}, callback);
 };
 exports.avatarByUsername = (username, callback) => {

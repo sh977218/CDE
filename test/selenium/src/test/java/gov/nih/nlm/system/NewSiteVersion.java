@@ -16,7 +16,7 @@ public class NewSiteVersion extends NlmCdeBaseTest {
         ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated
                 (By.id("notifications")));
 
-        post(baseUrl + "/site-version");
+        post(baseUrl + "/server/user/site-version");
         goToFormSearch();
         clickElement(By.id("notifications"));
         textPresent("A new version of this site is available");

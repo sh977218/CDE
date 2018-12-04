@@ -5,7 +5,8 @@
         <div class="taskItem">
             Notifications are configured on your
             <a routerLink="/profile" (click)="notificationService.drawerClose()">Profile</a>.
-            <button mat-raised-button (click)="notificationService.reload()">Refresh</button>
+            <button mat-raised-button (click)="notificationService.reload()"
+                    [disabled]="notificationService.reloading">Refresh</button>
         </div>
         <div class="notificationDrawerContent">
             <ng-container *ngFor="let task of notificationService.tasks">
@@ -20,7 +21,8 @@
 </div>
 
 <ng-template #notificationTask let-task="task">
-    <div class="taskItem" [style.backgroundColor]="task.background" style="display: flex">
+    <div class="taskItem" [style.backgroundColor]="task.unread && task.background || '#fff'" style="display: flex"
+         [routerLink]="task.urlLink" [queryParams]="task.urlQueryParams" (click)="notificationService.readTask(task)">
         <div style="flex-direction: column; flex-grow: 1; margin-right: 2px">
             <div style="margin-bottom: 2px">
                 <div style="display: inline-block; font-size: 1.5rem; margin-right: 8px">
@@ -29,16 +31,9 @@
                 </div>
                 <mat-chip-list style="display: inline-block">
                     <mat-chip *ngFor="let p of task.properties" style="margin: 0 2px; padding: 3px 6px">
-                        <a *ngIf="p.link; else chipContent"
-                           [routerLink]="p.link" [queryParams]="p.linkParams"
-                           (click)="notificationService.drawerClose()">
-                            <ng-container *ngTemplateOutlet="chipContent"></ng-container>
-                        </a>
-                        <ng-template #chipContent>
-                            <mat-icon *ngIf="p.icon" class="inlineIcon">{{p.icon}}</mat-icon>
-                            <span style="font-weight: bolder">{{p.key}}<span *ngIf="p.value" style="margin-right: 2px">:</span></span>
-                            {{p.value}}
-                        </ng-template>
+                        <mat-icon *ngIf="p.icon" class="inlineIcon">{{p.icon}}</mat-icon>
+                        <span style="font-weight: bolder">{{p.key}}<span *ngIf="p.value" style="margin-right: 2px">:</span></span>
+                        {{p.value}}
                     </mat-chip>
                 </mat-chip-list>
             </div>
@@ -48,7 +43,7 @@
         </div>
         <div *ngIf="task.actions?.length" style="display: flex; flex-direction: column">
             <button *ngFor="let action of task.actions" mat-raised-button [color]="action.color"
-                    (click)="action.click()">
+                    (click)="interruptEvent($event); action.click()">
                 <mat-icon *ngIf="action.icon">{{action.icon}}</mat-icon>
                 {{action.text}}
             </button>
