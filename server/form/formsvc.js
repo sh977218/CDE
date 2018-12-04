@@ -111,27 +111,64 @@ function wipeRenderDisallowed(form, req, cb) {
 |               |           |       Q4      |
 |---------------|           |---------------|
 */
-function oneLayerForm(form, insideSection) {
-    for (let i = 0; i < form.formElements.length; i++) {
-        let fe = form.formElements[i];
-        let _fe = fe;
-        if (fe.elementType !== 'question') {
-            insideSection++;
-            _fe = oneLayerForm(fe, insideSection);
-            form.formElements[i] = _fe;
-        } else {
-            if (insideSection === 0) {
-                _fe = {
+function oneLayerForm(form) {
+    /*
+
+        let fn = (parent, current, i) => {
+            let parentType = parent.elementType;
+            let currentType = current.elementType;
+            if (currentType === 'section' || currentType === 'form') {
+                if (parentType === 'section' || parentType === 'form') {
+                    parent.formElements.splice(i, 1, current);
+                } else {
+                    for (let i = 0; i < current.formElements.length; i++) {
+                        let fe = current.formElements[i];
+                        fn(current, fe, i);
+                    }
+                }
+            } else if (current.elementType === 'question') {
+                if (parentType !== 'section' || parentType !== 'form') {
+                    let fe = {
+                        elementType: 'section',
+                        label: '',
+                        formElements: [current]
+                    };
+                    parent.formElements.splice(i, 1, fe);
+                }
+            }
+
+        };
+
+        for (let i = 0; i < form.formElements.length; i++) {
+            let fe = form.formElements[i];
+            fn(form, fe, i);
+        }
+    */
+
+    let fn = (fe, depth, result, sectionLabel) => {
+        for (let i = 0; i < fe.formElements.length; i++) {
+            let _fe = fe.formElements[i];
+            let type = fe.elementType;
+            if (depth === 0) {
+
+            } else {
+
+            }
+            if (type === 'question' && depth === 0) {
+                result.push({
                     elementType: 'section',
                     label: '',
                     formElements: [fe]
-                };
-                form.formElements[i] = _fe;
+                });
+            } else {
+                depth++;
+                fn(fe.formElements, depth, result);
+                depth--;
             }
         }
-        insideSection--;
-    }
-    return form;
+    };
+    let result = [];
+    fn(form, 0, result);
 }
 
 exports.byId = (req, res) => {
@@ -316,7 +353,10 @@ exports.byTinyIdList = (req, res) => {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) return res.status(400).send();
     tinyIdList = tinyIdList.split(",");
-    mongo_form.byTinyIdList(tinyIdList, handleError({req, res}, forms => res.send(forms.map(mongo_data.formatElt))));
+    mongo_form.byTinyIdList(tinyIdList, handleError({
+        req,
+        res
+    }, forms => res.send(forms.map(mongo_data.formatElt))));
 };
 
 exports.latestVersionByTinyId = (req, res) => {
