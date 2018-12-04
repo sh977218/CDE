@@ -1575,7 +1575,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void selectMatSelectDropdownByText(String text) {
-        clickElement(By.xpath("//div[contains(@class,'mat-select-content')]//mat-option[contains(@class,'mat-option') and normalize-space(.) = '" + text + "']"));
+        clickElement(By.xpath("//mat-option/span[. = '" + text + "']"));
     }
 
     protected void openTableViewPreferenceModal() {

@@ -44,7 +44,7 @@ public class AddReviewerToBoardTest extends BoardTest {
         logout();
         mustBeLoggedInAs(ninds_username, password);
         clickElement(By.id("incomingMessage"));
-        clickElement(By.partialLinkText("Board approval | boarduser"));
+        clickElement(By.xpath("//button[contains(., '| Board approval | boarduser')]"));
         textPresent(boardName);
         clickElement(By.xpath("//*[@id='board_Bipolar Disorder']"));
         switchTab(1);
