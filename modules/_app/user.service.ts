@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
-import { ITEM_MAP } from 'shared/item';
+import { uriView } from 'shared/item';
 import { Cb, CbErr, CbErrObj, Comment, User } from 'shared/models.model';
 import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
 import { newNotificationSettings, newNotificationSettingsMedia } from 'shared/user';
@@ -52,7 +52,7 @@ export class UserService {
     }
 
     static getEltLink(c: Comment) {
-        return ITEM_MAP[c.element!.eltType!].view + c.element!.eltId;
+        return uriView(c.element!.eltType!, c.element!.eltId!);
     }
 
     loggedIn() {
