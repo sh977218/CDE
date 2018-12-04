@@ -129,6 +129,11 @@ export const searchStyles: string = `
         width: 14px;
         vertical-align: middle;
     }
+    .classification-filter {
+        height: 17px;
+        width: 17px;
+        font-size: 15px;
+    }
 `;
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
@@ -438,9 +443,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     getCurrentSelectedOrg() {
-        return this.altClassificationFilterMode
-            ? this.searchSettings.selectedOrgAlt
-            : this.searchSettings.selectedOrg;
+        if (this.altClassificationFilterMode) return this.searchSettings.selectedOrgAlt;
+        else if (this.excludeOrgFilterMode) return this.searchSettings.selectedOrgAlt;
+        else return this.searchSettings.selectedOrg;
     }
 
     getCurrentSelectedTopic() {
@@ -469,21 +474,19 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     getSelectedClassificationsAlt(): string {
-        return this.searchSettings.selectedOrgAlt + (
-            this.searchSettings.classificationAlt.length > 0
-                ? ' > ' + this.searchSettings.classificationAlt.join(' > ')
-                : ''
-        );
+        if (this.searchSettings.selectedOrgAlt) return this.searchSettings.selectedOrgAlt + this.searchSettings.classificationAlt.join(' > ');
+        else return 'Select Orgs Blow';
+    }
+
+    getExcludedOrgs(): string {
+        if (this.searchSettings.excludeAllOrgs) return 'Exclude all Orgs (except ' + this.searchSettings.selectedOrg + ')';
+        else if (this.searchSettings.excludeOrgs.length > 0) return this.searchSettings.excludeOrgs.join(' , ');
+        else return 'Select Orgs Blow';
     }
 
     searchExcludeAllOrgs() {
         this.searchSettings.excludeAllOrgs = true;
         this.doSearch();
-    }
-
-    getExcludedOrgs(): string {
-        if (this.searchSettings.excludeAllOrgs) return 'exclude all Orgs';
-        else return this.searchSettings.excludeOrgs.join(' , ');
     }
 
     getClassificationSelectedOrg() {

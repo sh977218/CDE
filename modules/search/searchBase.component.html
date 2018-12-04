@@ -189,7 +189,7 @@
                           matTooltipClass="cdeTooltip" matTooltipPosition="right">cancel</mat-icon>
             </span>
         </span>
-        <span *ngIf="excludeOrgFilterMode" id="classifExclude_filter" class="border">not
+        <span *ngIf="excludeOrgFilterMode" id="classifExclude_filter">not
             <span class="badge badge-success">{{getExcludedOrgs()}}
                 <mat-icon id="removeExcludeOrgFilterMode" class="remove-filter hand-cursor dark-icon pl-1"
                           (click)="clearExcludeOrgs()"
@@ -245,15 +245,17 @@
                         </mat-icon>
                         <mat-icon *ngIf="!excludeOrgFilterMode && !embedded && !altClassificationFilterMode"
                                   class="hand-cursor classification-filter" (click)="setExcludeOrgFilterMode()"
-                                  id="altClassificationFilterModeToggle" role="link"
+                                  id="excludeFilterModeToggle" role="link"
                                   aria-label="Add a second classifications filter as an NOT condition"
                                   matTooltip="Add a second classifications filter as an NOT condition"
                                   matTooltipClass="cdeTooltip" matTooltipPosition="right">indeterminate_check_box
                         </mat-icon>
                     </div>
-                    <div *ngIf="excludeOrgFilterMode" class="treeChild hand-cursor" (click)="searchExcludeAllOrgs()">All</div>
+                    <div *ngIf="excludeOrgFilterMode" class="treeChild hand-cursor" (click)="searchExcludeAllOrgs()">
+                        All (Except {{searchSettings.selectedOrg}})
+                    </div>
                     <ng-container *ngFor="let t of aggregations.orgs.buckets; trackBy: trackByKey">
-                        <ng-container *ngIf="getCurrentSelectedOrg() && altClassificationFilterMode; else classifOrg">
+                        <ng-container *ngIf="getCurrentSelectedOrg(); else classifOrg">
                             <ng-container *ngIf="t.key === getCurrentSelectedOrg()">
                                 <div *ngIf="getCurrentSelectedClassification()?.length; else classifSelf"
                                      id="classif-{{t.key}}" class="treeParent hand-cursor"
