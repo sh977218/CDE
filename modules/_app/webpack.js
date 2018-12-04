@@ -32,7 +32,7 @@ module.exports = {
         new CleanWebpackPlugin(['dist/app'], {root: process.cwd()}),
         new CopyWebpackPlugin([
             {from: 'modules/_app/assets/'},
-            {from: 'node_modules/material-design-lite/material.min.js'},
+            {from: 'node_modules/material-design-lite/material.min.js', transform: content => content.toString().replace('//# sourceMappingURL=material.min.js.map', '')},
             {from: 'node_modules/material-design-lite/material.min.css'}
         ]),
         new webpack.DefinePlugin({

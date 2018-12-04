@@ -19,19 +19,15 @@ const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
 const pushNotification = require('./pushNotification');
 const usersrvc = require('./usersrvc');
-const daoManager = require('./moduleDaoManager');
 const exportShared = require('esm')(module)('../../shared/system/exportShared');
 const esInit = require('./elasticSearchInit');
 const elastic = require('./elastic.js');
-const itemShared = require('esm')(module)('../../shared/item');
 const meshElastic = require('../mesh/elastic');
 const fhirApps = require('./fhir').fhirApps;
 const fhirObservationInfo = require('./fhir').fhirObservationInfo;
 const cdeElastic = require('../cde/elastic.js');
 const formElastic = require('../form/elastic.js');
 const traffic = require('./traffic');
-const notificationDb = require('../notification/notificationDb');
-const discussDb = require('../discuss/discussDb');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -510,116 +506,6 @@ exports.init = function (app) {
             if (err) return res.status(404).send(err);
             res.send(messages);
         });
-    });
-
-    app.get('/tasks/:clientVersion', (req, res) => {
-        // mongo_data.taskGetByUser
-        let client = -1;
-        let server = -1;
-        let comments;
-        let tasks = [];
-        if (authorizationShared.isSiteAdmin(req.user)) {
-            notificationDb.getNumberClientError(req.user, handleError({req, res}, clientErrorCount => {
-                client = clientErrorCount;
-                tasksDone();
-            }));
-            notificationDb.getNumberServerError(req.user, handleError({req, res}, serverErrorCount => {
-                server = serverErrorCount;
-                tasksDone();
-            }));
-        } else {
-            client = 0;
-            server = 0;
-            tasksDone();
-        }
-        // TODO: implement org boundaries
-        if (authorizationShared.hasRole(req.user, 'CommentReviewer')) { // required, req.user.notificationSettings.approvalComment.drawer not used
-            discussDb.unapprovedMessages(handleError({req, res}, c => {
-                comments = c;
-                tasksDone();
-            }));
-        } else {
-            comments = [];
-            tasksDone();
-        }
-
-        function pending(comment) {
-            let pending = [];
-            if (comment.pendingApproval) {
-                pending.push(comment);
-            }
-            if (Array.isArray(comment.replies)) {
-                pending = pending.concat(comment.replies.filter(r => r.pendingApproval));
-            }
-            return pending;
-        }
-        function tasksDone() {
-            if (client === -1 || server === -1 || !comments) {
-                return;
-            }
-            if (version !== req.params.clientVersion) {
-                tasks.push({
-                    id: version,
-                    idType: 'version',
-                    name: 'Website Updated',
-                    source: 'calculated',
-                    text: 'A new version of this site is available. To enjoy the new features, please close all CDE tabs then load again.',
-                    type: 'error',
-                });
-            }
-            if (client > 0) {
-                tasks.push({
-                    id: client,
-                    idType: 'client',
-                    name: client + ' New Client Errors',
-                    properties: [
-                        {key: 'Audit Client Errors', link: '/siteAudit', linkParams: {tab:'clientError'}}
-                    ],
-                    source: 'calculated',
-                    type: 'message',
-                });
-            }
-            if (server > 0) {
-                tasks.push({
-                    id: server,
-                    idType: 'server',
-                    name: server + ' New Server Errors',
-                    properties: [
-                        {key: 'Audit Server Errors', link: '/siteAudit', linkParams: {tab:'serverError'}}
-                    ],
-                    source: 'calculated',
-                    type: 'message',
-                });
-            }
-            if (Array.isArray(comments)) {
-                comments.forEach(c => {
-                    const eltModule = c.element && c.element.eltType;
-                    const eltTinyId = c.element && c.element.eltId;
-                    pending(c).forEach(p => {
-                        tasks.push({
-                            id: p._id,
-                            idType: p === c ? 'comment' : 'commentReply',
-                            properties: [
-                                {
-                                    key: 'User',
-                                    value: p.user && p.user.username || c.user && c.user.username
-                                },
-                                {
-                                    key: 'Form',
-                                    link: itemShared.uriViewBase(eltModule),
-                                    linkParams: itemShared.uriViewBase(eltModule) && {tinyId: eltTinyId},
-                                    value: eltTinyId,
-                                }
-                            ],
-                            source: 'calculated',
-                            text: p.text,
-                            type: 'approve',
-                        });
-                    });
-                });
-            }
-            res.send(tasks);
-        }
     });
 
     app.post('/addUserRole', [authorization.canApproveCommentMiddleware], (req, res) => {
