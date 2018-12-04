@@ -251,7 +251,8 @@
                                   matTooltipClass="cdeTooltip" matTooltipPosition="right">indeterminate_check_box
                         </mat-icon>
                     </div>
-                    <div *ngIf="excludeOrgFilterMode" class="treeChild hand-cursor" (click)="searchExcludeAllOrgs()">
+                    <div *ngIf="excludeOrgFilterMode" class="treeChild hand-cursor" id="exludeAllOrgs"
+                         (click)="searchExcludeAllOrgs()">
                         All (Except {{searchSettings.selectedOrg}})
                     </div>
                     <ng-container *ngFor="let t of aggregations.orgs.buckets; trackBy: trackByKey">

@@ -10,20 +10,38 @@ public class CdeSearchExcludeTest extends NlmCdeBaseTest {
     public void searchOneExclude() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-TEST"));
-        textPresent("LOINC");
+        textPresent("caBIG");
         clickElement(By.id("excludeFilterModeToggle"));
-        
+        clickElement(By.id("classif-caBIG"));
+        textNotPresent("caBIG");
     }
 
     @Test
     public void searchTwoExclude() {
-
+        goToCdeSearch();
+        clickElement(By.id("browseOrg-TEST"));
+        textPresent("caBIG");
+        clickElement(By.id("excludeFilterModeToggle"));
+        clickElement(By.id("classif-caBIG"));
+        textNotPresent("caBIG");
+        clickElement(By.id("classif-ONC"));
+        textNotPresent("ONC");
     }
 
     @Test
     public void searchAllExclude() {
-
+        goToCdeSearch();
+        clickElement(By.id("browseOrg-TEST"));
+        textPresent("caBIG");
+        textPresent("ONC");
+        textPresent("ECOG-ACRIN");
+        textPresent("NHC-NCI");
+        clickElement(By.id("excludeFilterModeToggle"));
+        clickElement(By.id("exludeAllOrgs"));
+        textNotPresent("caBIG");
+        textNotPresent("ONC");
+        textNotPresent("ECOG-ACRIN");
+        textNotPresent("NHC-NCI");
     }
-
-
+    
 }
