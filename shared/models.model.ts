@@ -393,18 +393,22 @@ export class StatusValidationRules {
 }
 
 export type Task = {
+    date: Date,
     id: string,
     idType: TaskIdType,
     name: string,
-    properties: {key: string, link?: string, linkParams?: {tab?: string, tinyId?: string}, value?: string}[],
+    properties: {key: string, value?: string}[],
     source: TaskSource,
+    state?: number,
     text?: string,
     type: TaskType,
+    url: string,
 };
 
-export type TaskIdType = 'client' | 'comment' | 'commentReply' | 'server' | 'version';
-export type TaskType = 'approve' | 'error' | 'message' | 'vote';
+export type TaskIdType = 'cde' | 'clientError' | 'comment' | 'commentReply' | 'form' | 'serverError' | 'versionUpdate';
+export type TaskType = 'approve' | 'comment' | 'error' | 'message' | 'vote';
 export type TaskSource = 'calculated' | 'user';
+export const TaskStateUnread = 1;
 
 export class User {
     _id!: ObjectId;

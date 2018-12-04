@@ -28,8 +28,8 @@ exports.module = function (roleConfig) {
     });
 
     router.post('/postComment', [loggedInMiddleware], async (req, res) => {
-        let handlerOptions = {req, res};
-        let comment = req.body;
+        const handlerOptions = {req, res};
+        const comment = req.body;
         const eltModule = comment.element && comment.element.eltType;
         const eltTinyId = comment.element && comment.element.eltId;
         let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username)
@@ -56,7 +56,8 @@ exports.module = function (roleConfig) {
                         }
                     });
                 } else {
-                    adminItemService.notifyForComment({}, eltModule, savedComment, elt);
+                    adminItemService.notifyForComment({}, savedComment, eltModule,  eltTinyId,
+                        elt.stewardOrg && elt.stewardOrg.name);
                 }
                 res.send({});
             }));
@@ -64,7 +65,7 @@ exports.module = function (roleConfig) {
     });
 
     router.post('/replyComment', [loggedInMiddleware], async (req, res) => {
-        let handlerOptions = {req, res};
+        const handlerOptions = {req, res};
         let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username)
             .catch(handleError(handlerOptions));
         if (numberUnapprovedMessages >= 5) return res.status(403).send('You have too many unapproved messages.');
@@ -99,7 +100,8 @@ exports.module = function (roleConfig) {
                     });
                 } else {
                     mongo_data.fetchItem(eltModule, eltTinyId, handle404({}, elt => {
-                        adminItemService.notifyForComment({}, eltModule, savedComment, elt);
+                        adminItemService.notifyForComment({}, savedComment.replies.filter(r => +new Date(r.created) === +new Date(reply.created))[0], eltModule, eltTinyId,
+                            elt.stewardOrg && elt.stewardOrg.name);
                     }));
                 }
                 if (req.user.username !== savedComment.user.username) {
