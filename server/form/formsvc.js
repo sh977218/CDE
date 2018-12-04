@@ -114,16 +114,21 @@ function wipeRenderDisallowed(form, req, cb) {
 function oneLayerForm(form, insideSection) {
     for (let i = 0; i < form.formElements.length; i++) {
         let fe = form.formElements[i];
-        let _fe = {
-            elementType: 'section',
-            label: '',
-            formElements: [fe]
-        };
+        let _fe = fe;
         if (fe.elementType !== 'question') {
             insideSection++;
             _fe = oneLayerForm(fe, insideSection);
+            form.formElements[i] = _fe;
+        } else {
+            if (insideSection === 0) {
+                _fe = {
+                    elementType: 'section',
+                    label: '',
+                    formElements: [fe]
+                };
+                form.formElements[i] = _fe;
+            }
         }
-        form.formElements[i] = _fe;
         insideSection--;
     }
     return form;
