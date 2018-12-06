@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const cdediff = require('../../../server/cde/cdediff');
 const wipeUseless = require('../../shared/utility').wipeUseless;
-const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
 exports.compareCdes = function (newCde, existingCde) {
     let newCdeObj = _.cloneDeep(newCde);

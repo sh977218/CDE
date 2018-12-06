@@ -1,8 +1,8 @@
 const async = require('async');
 const _ = require('lodash');
-const itemShared = require('@std/esm')(module)('../../shared/item');
-const utilShared = require('@std/esm')(module)('../../shared/system/util');
-const userShared = require('@std/esm')(module)('../../shared/user');
+const itemShared = require('esm')(module)('../../shared/item');
+const utilShared = require('esm')(module)('../../shared/system/util');
+const userShared = require('esm')(module)('../../shared/user');
 const discussDb = require('../discuss/discussDb');
 const dbLogger = require('../log/dbLogger');
 const notificationSvc = require('../notification/notificationSvc');
@@ -10,7 +10,7 @@ const userDb = require('../user/userDb');
 const handleError = dbLogger.handleError;
 const mongo_data = require('./mongo-data');
 const pushNotification = require('./pushNotification');
-// const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
+// const deValidator = require('esm')(module)('../../shared/de/deValidator');
 
 // exports.save = function (req, res, dao, cb) {
 //     var elt = req.body;

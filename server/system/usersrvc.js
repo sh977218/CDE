@@ -1,5 +1,5 @@
 const mongo_data = require('./mongo-data');
-const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
+const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const dbLogger = require('../log/dbLogger');
 const handle404 = dbLogger.handle404;
 const handleError = dbLogger.handleError;

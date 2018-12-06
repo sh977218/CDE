@@ -6,7 +6,7 @@ const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_data = require('../system/mongo-data');
 const classificationNode = require('./classificationNode');
-const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared.js');
+const classificationShared = require('esm')(module)('../../shared/system/classificationShared.js');
 const orgClassificationSvc = require('./orgClassificationSvc');
 
 exports.module = function (roleConfig) {
