@@ -19,7 +19,7 @@ public class CdeReplyNotification extends NlmCdeBaseTest {
         mustBeLoggedInAs(test_username, password);
         clickElement(By.id("incomingMessage"));
         textPresent("Comment reply | reguser | This reply will trigger");
-        clickElement(By.partialLinkText("Comment reply | reguser | This reply will trigger"));
+        clickElement(By.xpath("//button['Comment reply | reguser | This reply will trigger']"));
         clickElement(By.xpath("//button[normalize-space(.)='Archive']"));
         checkAlert("Message moved to archived.");
     }
