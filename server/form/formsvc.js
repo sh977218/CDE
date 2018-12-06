@@ -103,72 +103,45 @@ function wipeRenderDisallowed(form, req, cb) {
 |---------------|           |---------------|
 |   S1          |           |   S1          |
 |       Q1      |           |       Q1      |
-|       S2      |           |   S1-S2       |
+|       Q11      |          |       Q11     |
+|       S2      |           |   S1 S2       |
 |           Q2  |    ==>    |       Q2      |
-|   S3          |           |   S3          |
-|       Q3      |           |       Q3      |
-|   Q4          |           |   S4(new)     |
-|               |           |       Q4      |
+|   Q3          |           |   S3(new)     |
+|               |           |       Q3      |
+|   S4          |           |   S4          |
+|       Q4      |           |       Q4      |
 |---------------|           |---------------|
 */
 function oneLayerForm(form) {
-    /*
-
-        let fn = (parent, current, i) => {
-            let parentType = parent.elementType;
-            let currentType = current.elementType;
-            if (currentType === 'section' || currentType === 'form') {
-                if (parentType === 'section' || parentType === 'form') {
-                    parent.formElements.splice(i, 1, current);
-                } else {
-                    for (let i = 0; i < current.formElements.length; i++) {
-                        let fe = current.formElements[i];
-                        fn(current, fe, i);
-                    }
-                }
-            } else if (current.elementType === 'question') {
-                if (parentType !== 'section' || parentType !== 'form') {
-                    let fe = {
-                        elementType: 'section',
-                        label: '',
-                        formElements: [current]
-                    };
-                    parent.formElements.splice(i, 1, fe);
-                }
-            }
-
-        };
-
-        for (let i = 0; i < form.formElements.length; i++) {
-            let fe = form.formElements[i];
-            fn(form, fe, i);
-        }
-    */
-
-    let fn = (fe, depth, result, sectionLabel) => {
-        for (let i = 0; i < fe.formElements.length; i++) {
-            let _fe = fe.formElements[i];
-            let type = fe.elementType;
-            if (depth === 0) {
-
+    let doSection = (section) => {
+        let qFormElements = [];
+        let sFormElements = [];
+        for (let fe of section.formElements) {
+            if (fe.elementType === 'question') {
+                qFormElements.push(fe)
             } else {
-
-            }
-            if (type === 'question' && depth === 0) {
-                result.push({
-                    elementType: 'section',
-                    label: '',
-                    formElements: [fe]
-                });
-            } else {
-                depth++;
-                fn(fe.formElements, depth, result);
-                depth--;
+                let _sections = doSection(fe);
+                sFormElements = sFormElements.concat(_sections);
             }
         }
+        section.formElements = qFormElements;
+        return [section].concat(sFormElements);
     };
-    let result = [];
-    fn(form, 0, result);
+    let formElements = [];
+    for (let formElement of form.formElements) {
+        let type = formElement.elementType;
+        if (type === 'question') {
+            formElements.push({
+                elementType: 'section',
+                label: '',
+                formElements: [formElement]
+            });
+        } else {
+            let fes = doSection(formElement);
+            formElements = formElements.concat(fes);
+        }
+    }
+    form.formElements = formElements;
 }
 
 exports.byId = (req, res) => {
