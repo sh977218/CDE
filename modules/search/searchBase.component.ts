@@ -428,7 +428,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (this.altClassificationFilterMode && this.searchSettings.classificationAlt.length > 0) {
             searchTerms.classificationAlt = this.searchSettings.classificationAlt.join(';');
         }
-        searchTerms.excludeAllOrgs = !!this.searchSettings.excludeAllOrgs;
+        if (this.searchSettings.excludeAllOrgs) searchTerms.excludeAllOrgs = true;
         if (this.searchSettings.excludeOrgs && this.searchSettings.excludeOrgs.length > 0) {
             searchTerms.excludeOrgs = this.searchSettings.excludeOrgs.join(';');
         }
@@ -786,33 +786,23 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     search() {
-        // TODO: replace with router
-        let params = SearchBaseComponent.searchParamsGet();
-        if (params['q']) this.searchSettings.q = params['q'];
-        else this.searchTermFC.reset();
-        this.searchSettings.page = parseInt(params['page']);
-        if (!this.searchSettings.page) this.searchSettings.page = 1;
-        this.searchSettings.selectedOrg = params['selectedOrg'];
-        this.searchSettings.selectedOrgAlt = params['selectedOrgAlt'];
-        this.altClassificationFilterMode = !!params['selectedOrgAlt'];
-        this.excludeOrgFilterMode = !!params['excludeAllOrgs'] || !!params['excludeOrgs'];
-        this.searchSettings.excludeOrgs = params['excludeOrgs'] ? params['excludeOrgs'].split(';') : [];
-        this.searchSettings.classification = params['classification'] ? params['classification'].split(';') : [];
-        this.searchSettings.classificationAlt = params['classificationAlt'] ? params['classificationAlt'].split(';') : [];
-        this.searchSettings.regStatuses = params['regStatuses'] ? params['regStatuses'].split(';') as CurationStatus[] : [];
-        this.searchSettings.datatypes = params['datatypes'] ? params['datatypes'].split(';') as DataType[] : [];
-        this.searchSettings.meshTree = params['topic'];
-        this.reload();
-    }
-
-    static searchParamsGet(): { [param: string]: string } {
-        let params: any = {};
-        location.search && location.search.substr(1).split('&').forEach(e => {
-            let p = e.split('=');
-            if (p.length === 2) params[p[0]] = decodeURIComponent(p[1]);
-            else params[p[0]] = null;
+        this.route.queryParams.subscribe(params => {
+            if (params['q']) this.searchSettings.q = params['q'];
+            else this.searchTermFC.reset();
+            this.searchSettings.page = parseInt(params['page']);
+            if (!this.searchSettings.page) this.searchSettings.page = 1;
+            this.searchSettings.selectedOrg = params['selectedOrg'];
+            this.searchSettings.selectedOrgAlt = params['selectedOrgAlt'];
+            this.altClassificationFilterMode = !!params['selectedOrgAlt'];
+            this.excludeOrgFilterMode = !!params['excludeAllOrgs'] || !!params['excludeOrgs'];
+            this.searchSettings.excludeOrgs = params['excludeOrgs'] ? params['excludeOrgs'].split(';') : [];
+            this.searchSettings.classification = params['classification'] ? params['classification'].split(';') : [];
+            this.searchSettings.classificationAlt = params['classificationAlt'] ? params['classificationAlt'].split(';') : [];
+            this.searchSettings.regStatuses = params['regStatuses'] ? params['regStatuses'].split(';') as CurationStatus[] : [];
+            this.searchSettings.datatypes = params['datatypes'] ? params['datatypes'].split(';') as DataType[] : [];
+            this.searchSettings.meshTree = params['topic'];
+            this.reload();
         });
-        return params;
     }
 
     selectElement(e: string) {

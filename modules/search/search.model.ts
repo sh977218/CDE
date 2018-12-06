@@ -12,6 +12,6 @@ export class SearchSettings {
     resultPerPage?: number = 20;
     selectedOrg?: string;
     selectedOrgAlt?: string;
-    excludeOrgs = [];
+    excludeOrgs: string[] = [];
     excludeAllOrgs: boolean;
 }

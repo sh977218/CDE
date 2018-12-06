@@ -38,7 +38,7 @@ export class ElasticService {
             , selectedOrg: queryParams.selectedOrg
             , selectedOrgAlt: queryParams.selectedOrgAlt
             , excludeAllOrgs: queryParams.excludeAllOrgs
-            , excludeOrgs: queryParams.excludeOrgs
+            , excludeOrgs: queryParams.excludeOrgs || []
             , selectedElements: queryParams.classification || []
             , selectedElementsAlt: queryParams.classificationAlt || []
             , page: queryParams.page
