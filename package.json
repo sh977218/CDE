@@ -97,24 +97,25 @@
     "xsd-schema-validator": "0.6.0"
   },
   "devDependencies": {
-    "@angular/animations": "6.1.0",
-    "@angular/cdk": "6.2.0",
-    "@angular/common": "6.1.0",
-    "@angular/compiler": "6.1.0",
-    "@angular/compiler-cli": "6.1.0",
-    "@angular/core": "6.1.0",
-    "@angular/forms": "6.1.0",
-    "@angular/material": "6.2.0",
-    "@angular/platform-browser": "6.1.0",
-    "@angular/platform-browser-dynamic": "6.1.0",
-    "@angular/router": "6.1.0",
-    "@ng-bootstrap/ng-bootstrap": "1.1.2",
+    "@angular/animations": "^7.0.4",
+    "@angular/cdk": "^7.0.4",
+    "@angular/common": "^7.0.4",
+    "@angular/compiler": "^7.0.4",
+    "@angular/compiler-cli": "^7.0.4",
+    "@angular/core": "^7.0.4",
+    "@angular/forms": "^7.0.4",
+    "@angular/http": "^7.0.4",
+    "@angular/material": "^7.0.4",
+    "@angular/platform-browser": "^7.0.4",
+    "@angular/platform-browser-dynamic": "^7.0.4",
+    "@angular/router": "^7.0.4",
+    "@ng-bootstrap/ng-bootstrap": "^4.0.0",
     "@ng-select/ng-select": "1.4.0",
     "@ngtools/webpack": "6.0.3",
     "@types/async": "^2.0.49",
     "@types/deep-diff": "0.0.31",
     "@types/jasmine": "2.6.0",
-    "@types/jquery": "^3.3.1",
+    "@types/jquery": "^3.3.22",
     "@types/lodash": "^4.14.116",
     "@types/node": "9.3.0",
     "angular-2-local-storage": "^2.0.0",
@@ -134,7 +135,7 @@
     "clean-webpack-plugin": "^0.1.19",
     "codelyzer": "^4.3.0",
     "copy-webpack-plugin": "^4.5.1",
-    "core-js": "2.4.1",
+    "core-js": "^2.5.7",
     "cpx": "1.5.0",
     "cross-env": "3.1.4",
     "css-loader": "0.28.7",
@@ -175,7 +176,7 @@
     "ng-diff-match-patch": "2.0.6",
     "ng-recaptcha": "3.0.3",
     "ng2-ckeditor": "^1.2.1",
-    "ngx-bootstrap": "2.0.0-beta.8",
+    "ngx-bootstrap": "^3.1.2",
     "node-sass": "^4.9.4",
     "optimize-js-plugin": "0.0.4",
     "raw-loader": "0.5.1",
@@ -189,14 +190,14 @@
     "ts-loader": "4.3.1",
     "tslint": "5.10.0",
     "tslint-loader": "^3.6.0",
-    "typescript": "2.9.2",
+    "typescript": "^3.1.6",
     "url-loader": "0.6.2",
     "web-animations-js": "2.3.1",
     "webpack": "4.27.1",
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^3.1.2",
     "webpack-merge": "^4.1.4",
-    "zone.js": "0.8.26"
+    "zone.js": "^0.8.26"
   },
   "@std/esm": {
     "esm": "all"
@@ -205,22 +206,22 @@
     {
       "path": "./dist/app/cde.js",
       "compression": "none",
-      "maxSize": "1.53 MB"
+      "maxSize": "1.60 MB"
     },
     {
       "path": "./dist/app/cde.css",
       "compression": "none",
-      "maxSize": "611 kB"
+      "maxSize": "619 kB"
     },
     {
       "path": "./dist/embed/embed.js",
       "compression": "none",
-      "maxSize": "1.27 MB"
+      "maxSize": "1.38 MB"
     },
     {
       "path": "./dist/embed/embed.css",
       "compression": "none",
-      "maxSize": "239 kB"
+      "maxSize": "245 kB"
     },
     {
       "path": "./dist/fhir/fhir.js",
@@ -235,7 +236,7 @@
     {
       "path": "./dist/native/native.js",
       "compression": "none",
-      "maxSize": "1.05 MB"
+      "maxSize": "1.06 MB"
     },
     {
       "path": "./dist/native/native.css",

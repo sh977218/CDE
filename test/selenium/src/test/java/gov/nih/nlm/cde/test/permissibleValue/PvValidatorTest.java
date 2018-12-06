@@ -55,7 +55,7 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
         addPv("pv5", "name1", "code5", "LOINC");
-        textNotPresent("Duplicate Code Name");
+        textPresent("Duplicate Code Name");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
         clickElement(By.id("openSave"));
         textPresent("Please fix all errors before publishing");
