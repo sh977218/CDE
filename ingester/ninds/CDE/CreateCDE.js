@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
 
-const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 const DATA_TYPE_MAP = require('./DATA_TYPE_MAP').map;
 const today = new Date().toJSON();
 

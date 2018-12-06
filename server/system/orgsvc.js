@@ -2,7 +2,7 @@ var mongo_data = require('./mongo-data')
     , daoManager = require('./moduleDaoManager')
     , async = require('async')
     ;
-const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
+const authorizationShared = require('esm')(module)("../../shared/system/authorizationShared");
 
 exports.managedOrgs = function (req, res) {
     mongo_data.managedOrgs(function (err, orgs) {

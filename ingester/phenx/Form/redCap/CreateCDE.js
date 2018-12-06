@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const generateTinyId = require('../../../../server/system/mongo-data').generateTinyId;
 
-const classificationShared = require('@std/esm')(module)('../../../../shared/system/classificationShared');
+const classificationShared = require('esm')(module)('../../../../shared/system/classificationShared');
 
 const RED_CAP_DATA_TYPE_MAP = require('./REDCAP_DATATYPE_MAP').map;
 

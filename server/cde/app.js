@@ -1,5 +1,5 @@
 const authorization = require('../system/authorization');
-const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
+const authorizationShared = require('esm')(module)("../../shared/system/authorizationShared");
 const cdesvc = require('./cdesvc');
 const mongo_cde = require('./mongo-cde');
 const vsac = require('./vsac-io');
@@ -8,7 +8,7 @@ const elastic = require('./elastic');
 const adminItemSvc = require('../system/adminItemSvc.js');
 const appStatus = require('../siteAdmin/status');
 const elastic_system = require('../system/elastic');
-const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
+const exportShared = require('esm')(module)('../../shared/system/exportShared');
 const handleError = require('../log/dbLogger').handleError;
 
 exports.init = function (app, daoManager) {

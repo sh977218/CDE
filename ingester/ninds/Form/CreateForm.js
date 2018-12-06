@@ -3,7 +3,7 @@ const _ = require('lodash');
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
 const DataElement = require('../../../server/cde/mongo-cde').DataElement;
 
-const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
 const CreateCDE = require('../CDE/CreateCDE');
 const today = new Date().toJSON();

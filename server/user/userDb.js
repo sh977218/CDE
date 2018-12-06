@@ -3,7 +3,7 @@ require('../system/mongoose-stringtype')(mongoose);
 const Schema = mongoose.Schema;
 const StringType = Schema.Types.StringType;
 
-const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
+const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);

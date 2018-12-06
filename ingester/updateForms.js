@@ -7,7 +7,7 @@ var MigrationFormModel = require('./createMigrationConnection').MigrationFormMod
     OrgModel = require('../server/system/mongo-data').Org,
     mongo_form = require('../server/form/mongo-form'),
     FormModel = mongo_form.Form,
-    classificationShared = require('@std/esm')(module)('../shared/system/classificationShared'),
+    classificationShared = require('esm')(module)('../shared/system/classificationShared'),
     updateShare = require('./updateShare')
     ;
 

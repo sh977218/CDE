@@ -1,5 +1,5 @@
 var mongo_cde = require('../../server/cde/mongo-cde')
-    , classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared')
+    , classificationShared = require('esm')(module)('../../shared/system/classificationShared')
     , fs = require('fs')
     , csv = require('csv-parse')
     ;
