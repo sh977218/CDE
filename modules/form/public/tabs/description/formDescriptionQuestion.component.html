@@ -5,7 +5,7 @@
            [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">drag_handle</mat-icon>
         <mat-icon *ngIf="question.skipLogic?.condition?.length > 0" class="updatedSkipLogicIcon"
            [ngClass]="{'fa-spin': question.updatedSkipLogic}"
-           title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}">cog</mat-icon>
+           title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}">settings</mat-icon>
     </div>
     <div class="font-weight-bold d-inline-block" (click)="editQuestion(question);"
          [ngClass]="{'hand-cursor':!isSubForm && canEdit}"
@@ -13,7 +13,8 @@
         <span *ngIf="question.question.isScore">Score:</span>
         <span class="questionLabel ml-1" title="{{question.label}}">
             <ng-container *ngIf="question.hideLabel">
-                <mat-icon ngbTooltip="This question has no label" placement="right">help</mat-icon>
+                <mat-icon aria-label="This question has no label" matTooltip="This question has no label"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right">help</mat-icon>
                 <strong [textContent]="question.question.cde.name"></strong>
             </ng-container>
             <strong *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}} </strong>

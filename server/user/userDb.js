@@ -3,11 +3,10 @@ require('../system/mongoose-stringtype')(mongoose);
 const Schema = mongoose.Schema;
 const StringType = Schema.Types.StringType;
 
-const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
+const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
-const handleError = require('../log/dbLogger').handleError;
 
 let notificationTypesSchema = {
     drawer: Boolean,
@@ -16,6 +15,15 @@ let notificationTypesSchema = {
 
 let userSchema = new Schema({
     username: {type: StringType, unique: true},
+    commentNotifications: [{
+        _id: false,
+        date: Date,
+        eltModule: {type: StringType, enum: ['cde', 'form']},
+        eltTinyId: StringType,
+        read: Boolean,
+        text: StringType,
+        username: StringType,
+    }],
     email: StringType,
     password: StringType,
     lastLogin: Date,
@@ -25,7 +33,8 @@ let userSchema = new Schema({
     },
     lockCounter: Number,
     notificationSettings: {
-        approvalComment: notificationTypesSchema
+        approvalComment: notificationTypesSchema,
+        comment: notificationTypesSchema,
     },
     orgAdmin: [StringType],
     orgCurator: [StringType],
@@ -69,6 +78,11 @@ let userSchema = new Schema({
     }]
 }, {usePushEach: true});
 
+exports.userRefSchema = {
+    _id: Schema.Types.ObjectId,
+    username: {type: StringType, index: true}
+};
+
 // remove this once all formEditor roles have been removed.
 userSchema.pre('validate', function (next) {
     let doc = this;
@@ -90,25 +104,25 @@ exports.byId = (id, callback) => {
 };
 
 exports.find = (crit, cb) => {
-    User.find(crit, handleError({}, cb));
+    User.find(crit, cb);
 };
 
+// cb(err, {nMatched, nUpserted, nModified})
 exports.updateUser = (user, fields, callback) => {
     let update = {};
+    if (fields.commentNotifications) update.commentNotifications = fields.commentNotifications;
     if (fields.email) update.email = fields.email;
     if (fields.notificationSettings) {
-        let approvalComment = true;
-        if (!authorizationShared.hasRole(user, 'CommentReviewer')) {
+        if (fields.notificationSettings.approvalComment && !authorizationShared.hasRole(user, 'CommentReviewer')) {
             fields.notificationSettings.approvalComment = undefined;
-            approvalComment = false;
         }
-        if (approvalComment) {
+        if (fields.notificationSettings.approvalComment || fields.notificationSettings.comment) {
             update.notificationSettings = fields.notificationSettings;
         }
     }
     if (fields.searchSettings) update.searchSettings = fields.searchSettings;
     if (fields.publishedForms) update.publishedForms = fields.publishedForms;
-    User.update({_id: user.id}, {$set: update}, callback);
+    User.update({_id: user._id}, {$set: update}, callback);
 };
 exports.avatarByUsername = (username, callback) => {
     User.findOne({'username': new RegExp('^' + username + '$', "i")}, {avatarUrl: 1}, callback);

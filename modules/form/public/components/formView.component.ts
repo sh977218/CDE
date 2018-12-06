@@ -18,9 +18,7 @@ import { UcumService } from 'form/public/ucum.service';
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Cb, Comment, ObjectId } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormElementsContainer, FormInForm, QuestionCde } from 'shared/form/form.model';
@@ -78,8 +76,11 @@ export class FormViewComponent implements OnInit {
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
+            this.hasDrafts = false;
             this.loadElt(() => {
-                this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+                this.orgHelperService.then(() => {
+                    this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+                }).catch(_noop);
             });
         });
     }
@@ -171,6 +172,7 @@ export class FormViewComponent implements OnInit {
             if (elt.isDraft) this.hasDrafts = true;
             CdeForm.validate(elt);
             this.elt = elt;
+            this.validate();
             this.loadComments(this.elt);
             this.formId = this.elt._id;
             this.missingCdes = areDerivationRulesSatisfied(this.elt);
@@ -262,7 +264,7 @@ export class FormViewComponent implements OnInit {
     }
 
     removeAttachment(event) {
-        this.http.post<CdeForm>('/attachments/form/remove', {
+        this.http.post<CdeForm>('/server/attachment/form/remove', {
             index: event,
             id: this.elt._id
         }).subscribe(res => {
@@ -294,7 +296,7 @@ export class FormViewComponent implements OnInit {
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
-        this.draftSubscription = this.http.post<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt).subscribe(res => {
+        this.draftSubscription = this.http.post<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt).subscribe(() => {
             this.draftSubscription = undefined;
             this.savingText = 'Saved';
             setTimeout(() => {
@@ -332,7 +334,7 @@ export class FormViewComponent implements OnInit {
     }
 
     setDefault(index: number) {
-        this.http.post<CdeForm>('/attachments/form/setDefault',
+        this.http.post<CdeForm>('/server/attachment/form/setDefault',
             {
                 index: index,
                 state: this.elt.attachments[index].isDefault,
@@ -352,7 +354,7 @@ export class FormViewComponent implements OnInit {
                 formData.append('uploadedFiles', files[i]);
             }
             formData.append('id', this.elt._id);
-            this.http.post<any>('/attachments/form/add', formData).subscribe(
+            this.http.post<any>('/server/attachment/form/add', formData).subscribe(
                 r => {
                     if (r.message) this.alert.addAlert('info', r);
                     else {
@@ -365,12 +367,20 @@ export class FormViewComponent implements OnInit {
         }
     }
 
-    // cb()
-    validate(cb = _noop): void {
+    validate(cb: Cb = _noop): void {
         this.validationErrors.length = 0;
         this.validateNoFeCycle();
         this.validateSkipLogic();
+        this.validateDefinitions();
         this.validateUoms(cb);
+    }
+
+    validateDefinitions() {
+        this.elt.definitions.forEach(def => {
+            if (!def.definition || !def.definition.length) {
+                this.validationErrors.push(new LocatableError("Definition may not be empty.", undefined));
+            }
+        });
     }
 
     validateNoFeCycle() {
@@ -400,8 +410,7 @@ export class FormViewComponent implements OnInit {
         this.elt.formElements.forEach(fe => findExistingErrors(this.elt, fe));
     }
 
-    // cb()
-    validateUoms(callback) {
+    validateUoms(callback: Cb) {
         iterateFe(this.elt, noopSkipIterCb, undefined, (q, cb) => {
             this.ucumService.validateUoms(q.question, () => {
                 if (q.question.uomsValid.some(e => !!e)) {
@@ -414,17 +423,10 @@ export class FormViewComponent implements OnInit {
     }
 
     viewChanges() {
-        let tinyId = this.route.snapshot.queryParams['tinyId'];
-        let draftEltObs = this.http.get<DataElement>('/draftForm/' + tinyId);
-        let publishedEltObs = this.http.get<DataElement>('/form/' + tinyId);
-        forkJoin([draftEltObs, publishedEltObs]).subscribe(res => {
-            if (res.length = 2) {
-                let newer = res[0];
-                let older = res[1];
-                this.dialogRef = this.dialog.open(CompareHistoryContentComponent,
-                    {width: '800px', data: {newer: newer, older: older}});
-            } else this.alert.addAlert('danger', 'Error loading view changes. ');
-        }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err));
+        let draft = this.elt;
+        this.formViewService.fetchPublished(this.route.snapshot.queryParams).then(published => {
+            this.dialogRef = this.dialog.open(CompareHistoryContentComponent,
+                {width: '800px', data: {newer: draft, older: published}});
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error loading view changes.'));
     }
-
 }

@@ -1,20 +1,59 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Params, Router, UrlSegment } from '@angular/router';
 import { ApprovalService } from '_app/notifications/approval.service';
 import { UserService } from '_app/user.service';
-import _noop from 'lodash/noop';
 import { AlertService } from 'alert/alert.service';
+import _noop from 'lodash/noop';
+import { assertUnreachable, Cb, Task, TaskStateUnread } from 'shared/models.model';
+import { partition } from 'shared/system/util';
+
+const TYPES = ['error', 'approve', 'vote', 'message', 'comment']; // in sort order
+
+export type NotificationTask = {
+    actions: {color: string, icon: string, text: string, click: Cb}[],
+    background: string,
+    icon: string,
+    name: string,
+    properties: {key: string, icon?: string, link?: string, linkParams?: any}[],
+    tasks: Task[],
+    text?: string,
+    unread: boolean,
+    url?: string,
+    urlLink?: string,
+    urlQueryParams?: Params
+};
+
+function tasksEqualAndState(l: Task, r: Task): {state?: number} {
+    if (l.id !== r.id || l.idType !== r.idType) {
+        return undefined;
+    }
+    if (l.type === 'comment' && r.type === 'comment' && ['cde', 'form'].includes(l.idType)) {
+        let same = l.date === r.date && l.name === r.name && l.text === r.text;
+        if (same) {
+            l.state = r.state;
+            return {state: r.state};
+        }
+        return same ? {} : undefined;
+    }
+    return {};
+}
 
 @Injectable()
 export class NotificationService {
     drawerMouseOver = false;
     private drawerState = false;
+    funcMergeTaskMessages = this.mergeTaskMessages.bind(this);
+    funcReloadFinished = this.reloadFinished.bind(this);
+    funcUpdateTaskMessages = this.updateTaskMessages.bind(this);
     hasCriticalError = false;
-    tasks: any[] = [];
+    reloading = false;
+    tasks: NotificationTask[] = [];
 
     constructor(private alert: AlertService,
                 private approvalService: ApprovalService,
                 private http: HttpClient,
+                private router: Router,
                 private userService: UserService) {
         this.userService.subscribe(() => this.reload());
     }
@@ -23,55 +62,80 @@ export class NotificationService {
         this.tasks.length = 0;
     }
 
-    createTask(t) {
+    createTask(t: Task[], name?: string) {
         let abstain = _noop;
         let approve = _noop;
-        let close = _noop;
         let reject = _noop;
-        let task = {
-            task: t,
+        let t0 = t[0];
+        let task: NotificationTask = {
+            actions: undefined,
             background: undefined,
             icon: undefined,
-            name: t.name,
-            properties: t.properties ? t.properties : [],
-            text: t.text,
-            actions: undefined,
+            name: name || t0.name,
+            properties: t0.properties && t0.properties.concat() || [],
+            url: t0.url,
+            tasks: t,
+            text: t0.text ? (t0.text.length < 150 ? t0.text : t0.text.slice(0, 150) + '...') : undefined,
+            unread: !!(t0.state === undefined || TaskStateUnread & t0.state),
         };
-        switch (t.type) {
-            case 'approval':
-                switch (task.name) {
+        if (task.url) {
+            let urlTree = this.router.parseUrl(task.url);
+            task.urlLink = '/' + urlTree.root.children.primary.segments.join('/');
+            task.urlQueryParams = urlTree.queryParams;
+        }
+        switch (t0.type) {
+            case 'approve': // idType: comment, commentReply
+                switch (t0.idType) {
                     case 'comment':
+                    case 'commentReply':
                         task.properties.unshift({key: 'Comment', icon: 'comment'});
                         approve = () => this.approvalService.funcCommentApprove(task, () => this.reload());
                         reject = () => this.approvalService.funcCommentDecline(task, () => this.reload());
                         break;
                 }
-                task.background = '#d4edda';
-                task.icon = 'supervisor_account';
-                task.name = 'Approve';
                 task.actions = [
                     {color: 'primary', icon: 'done', text: 'Approve', click: approve},
                     {color: 'warn', icon: 'clear', text: 'Reject', click: reject}
                 ];
+                task.background = '#d4edda';
+                task.icon = 'supervisor_account';
+                task.name = 'Approve';
                 break;
-            case 'error':
+            case 'error': // idType: version
                 task.background = '#f8d7da';
-                task.icon = 'warning';
+                task.icon = 'error';
+                switch (t0.idType) {
+                    case 'versionUpdate':
+                        task.icon = 'new_releases';
+                        break;
+                }
                 break;
-            case 'voting':
-                task.background = '#cce5ff';
-                task.icon = 'done_all';
+            case 'vote': // idType:
                 task.actions = [
                     {color: 'primary', icon: 'thumb_up', text: 'Yes', click: approve},
                     {color: 'warn', icon: 'thumb_down', text: 'No', click: reject},
                     {color: 'accent', icon: 'thumbs_up_down', text: 'Abstain', click: abstain}
                 ];
+                task.background = '#cce5ff';
+                task.icon = 'done_all';
                 break;
+            case 'comment':
+                // TODO: read/unread impl
+                task.background = '#d1ecf1';
+                task.icon = 'question_answer';
+                break;
+            case 'message':
             default:
+                task.actions = [];
                 task.background = '#d1ecf1';
                 task.icon = 'assignment';
-                task.actions = [{color: 'warn', icon: 'delete', text: 'Close',
-                    click: () => this.tasks.splice(this.tasks.indexOf(task), 1)}];
+                switch (t0.idType) {
+                    case 'clientError':
+                    case 'serverError':
+                        // TODO: close impl
+                        task.icon = 'warning';
+                        break;
+                }
         }
         return task;
     }
@@ -96,43 +160,113 @@ export class NotificationService {
         }
     }
 
-    getIcon() {
-        // notifications-off notifications-paused notifications-active
-        return 'notifications-none';
+    getBadge(): number {
+        return this.tasks.filter(task => task.unread).length;
+    }
+
+    getIcon(): string {
+        // notifications-off notifications-paused notifications-none
+        return this.hasCriticalError ? 'notifications_active' : 'notifications';
+    }
+
+    groupTasks(tasks: NotificationTask[]): NotificationTask[] {
+        let grouped = tasks.concat();
+
+        // user comments on same item
+        let groups = {};
+        tasks
+            .filter(task => task.tasks[0].source === 'user' && task.tasks[0].type === 'comment')
+            .forEach(task => {
+                let key = task.tasks[0].idType + ' - ' + task.tasks[0].id;
+                groups[key] = (groups[key] || 0) + 1;
+            });
+        for (let group in groups) {
+            if (groups.hasOwnProperty(group) && groups[group] > 1) {
+                let eltTasks;
+                let [eltModule, eltTinyId] = group.split(' - ');
+                [eltTasks, grouped] = partition(grouped, task => task.tasks[0].id === eltTinyId
+                    && task.tasks[0].source === 'user' && task.tasks[0].type === 'comment'
+                    && task.tasks[0].idType === eltModule);
+                grouped.push(
+                    this.createTask(
+                        eltTasks.reduce((acc, t) => acc.concat(t.tasks), []),
+                        groups[group] + ' new comments'
+                    )
+                );
+            }
+        }
+
+        return grouped;
+    }
+
+    mergeTaskMessages(acc: NotificationTask[], t: Task): NotificationTask[] {
+        let unread = undefined;
+        let match = this.tasks.filter(task => !!task.tasks.filter(i => {
+            let stateObj = tasksEqualAndState(i, t);
+            if (stateObj && stateObj.state) {
+                unread = unread || stateObj.state & TaskStateUnread;
+            }
+            return !!stateObj;
+        }).length);
+        if (match.length) {
+            if (acc.indexOf(match[0]) === -1) {
+                acc.push(match[0]);
+            }
+            if (unread !== undefined) {
+                match[0].unread = match[0].unread || unread;
+            }
+        } else {
+            acc.push(this.createTask([t]));
+        }
+        return acc;
+    }
+
+    readTask(task: NotificationTask) {
+        let source = task.tasks[0].source;
+        switch (source) {
+            case 'calculated':
+                break;
+            case 'user':
+                if (task.tasks[0].type === 'comment' && task.unread) {
+                    task.unread = false;
+                    this.reloading = true;
+                    this.http.post<Task[]>('/server/user/tasks/' + (window as any).version + '/read',
+                        {id: task.tasks[0].id, idType: task.tasks[0].idType})
+                        .subscribe(this.funcUpdateTaskMessages, this.funcReloadFinished, this.funcReloadFinished);
+                }
+                break;
+            default:
+                assertUnreachable(source);
+        }
     }
 
     reload() {
-        this.http.get('/tasks/' + (window as any).version).subscribe((newTasks: any[]) => {
-            this.tasks
-                .filter(t => ['version', 'server', 'client'].indexOf(t.task._id) > -1)
-                .forEach(t => this.tasks.splice(this.tasks.indexOf(t), 1));
-            this.tasks
-                .filter(task => newTasks.filter(t => task.task._id === t._id).length === 0)
-                .forEach(task => this.tasks.splice(this.tasks.indexOf(task), 1));
-            newTasks
-                .filter(t => this.tasks.filter(task => task.task._id === t._id).length === 0)
-                .forEach(t => this.tasks.push(this.createTask(t)));
-            NotificationService.sortTasks(this.tasks);
-            this.hasCriticalError = this.tasks.filter(t => t.task._id === 'version').length > 0;
-            // this.tasks.push(NotificationService.createTask({type: 'voting', name: 'Choose', text: 'fight for you right'}));
-        }, err => this.alert.addAlert('danger', err));
+        if (!this.reloading) {
+            this.reloading = true;
+            this.http.get<Task[]>('/server/user/tasks/' + (window as any).version)
+                .subscribe(this.funcUpdateTaskMessages, this.funcReloadFinished, this.funcReloadFinished);
+        }
     }
 
-    static sortTasks(tasks) {
-        function swap(arr, i, j) {
-            let temp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = temp;
-        }
-        let index = 0;
-        ['version', 'server', 'client'].forEach(id => {
-            let task = tasks.filter(t => t.task._id === id)[0];
-            if (task) {
-                let j = tasks.indexOf(task);
-                if (j > index) {
-                    swap(tasks, index, j);
-                }
-                index++;
+    reloadFinished() {
+        this.reloading = false;
+    }
+
+    updateTaskMessages(serverTasks) {
+        this.tasks = NotificationService.sortTasks(
+            this.groupTasks(
+                serverTasks.reduce(this.funcMergeTaskMessages, [])
+            )
+        );
+        this.hasCriticalError = this.tasks.filter(t => t.tasks[0].idType === 'versionUpdate').length > 0;
+    }
+
+    static sortTasks(tasks: NotificationTask[]): NotificationTask[] {
+        return tasks.sort((a: NotificationTask, b: NotificationTask) => {
+            if (TYPES.indexOf(a.tasks[0].type) !== TYPES.indexOf(b.tasks[0].type)) {
+                return TYPES.indexOf(a.tasks[0].type) - TYPES.indexOf(b.tasks[0].type);
+            } else {
+                return new Date(a.tasks[0].date).getTime() - new Date(b.tasks[0].date).getTime();
             }
         });
     }

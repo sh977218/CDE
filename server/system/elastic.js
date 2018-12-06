@@ -2,7 +2,7 @@ const async = require('async');
 const _ = require('lodash');
 const config = require('./parseConfig');
 const logging = require('./logging');
-const regStatusShared = require('@std/esm')(module)('../../shared/system/regStatusShared'); //jshint ignore:line
+const regStatusShared = require('esm')(module)('../../shared/system/regStatusShared'); //jshint ignore:line
 const usersvc = require("./usersrvc");
 const elasticsearch = require('elasticsearch');
 const esInit = require('./elasticSearchInit');
@@ -49,7 +49,7 @@ exports.nbOfForms = function (cb) {
 function EsInjector(esClient, indexName, documentType) {
     let _esInjector = this;
     this.buffer = [];
-    this.injectThreshold = 100;
+    this.injectThreshold = 50;
     this.documentType = documentType;
     this.indexName = indexName;
     this.queueDocument = function (doc, cb) {
@@ -117,6 +117,14 @@ exports.daoMap = {
     "board": {
         condition: {},
         dao: boardDb
+    },
+    "cdeSuggest": {
+        condition: {archived: false},
+        dao: mongo_cde
+    },
+    "formSuggest": {
+        condition: {archived: false},
+        dao: mongo_form
     }
 };
 
@@ -190,12 +198,10 @@ exports.completionSuggest = function (term, user, settings, indexName, cb) {
     let suggestQuery = {
         "query": {
             "match": {
-                "primaryNameSuggest": {
+                "nameSuggest": {
                     "query": term
                 }
             }
-        }, "_source": {
-            "includes": ["primaryNameSuggest"]
         },
         post_filter: {
             bool: {
@@ -425,7 +431,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.sort = {
             "registrationState.registrationStatusSortOrder": "asc",
             "classificationBoost": "desc",
-            "primaryNameSuggest.raw": "asc"
+            "primaryNameCopy.raw": "asc"
         };
     }
 
@@ -527,6 +533,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     // highlight search results if part of the following fields.
     queryStuff.highlight = {
         "require_field_match": false,
+        "fragment_size": 150,
         "order": "score"
         , "pre_tags": ["<strong>"]
         , "post_tags": ["</strong>"]

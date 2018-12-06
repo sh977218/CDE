@@ -27,11 +27,19 @@ module.exports = {
                 test: /\.css$/, include: /node_modules/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    "css-loader"
+                    'css-loader'
+                ]
+            },
+            {
+                test: /common\.scss$/, exclude: /node_modules/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'sass-loader'
                 ]
             },
             {test: /\.css$/, exclude: /node_modules/, use: ['style-loader', 'css-loader']},
-            {test: /\.scss$/, exclude: /node_modules/, use: ['style-loader', 'css-loader', 'sass-loader']},
+            {test: /\.scss$/, exclude: [/node_modules/, /common.scss/], use: ['style-loader', 'css-loader', 'sass-loader']},
             {test: /\.html$/, use: [{loader: 'html-loader', options: {attrs: ['img:src', 'source:srcset'], minimize: false}}]},
             {test: /\.(eot|png|svg|ttf|webp|woff|woff2)$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]},
             {test: /[\/\\]@angular[\/\\].+\.js$/, parser: { system: true }}

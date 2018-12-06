@@ -1,6 +1,7 @@
 var CACHE_NAME = 'cde-cache-{#}';
 var CACHE_WHITELIST = ['cde-cache-{#}'];
 var urlsToCache = ["###"];
+var htmlServedUri = ["{htmlServedUri}"];
 
 self.addEventListener('install', function (event) {
     event.waitUntil(
@@ -26,16 +27,18 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('fetch', function (event) {
     event.respondWith(
-        caches.match(event.request).then(function (response) {
-            return response
-                || fetch(event.request).then(function (resp) {
-                    if (resp.status === 503) {
-                        throw new Error();
-                    }
-                    return resp;
-                }).catch(function () {
-                    return caches.match('/app/offline/offline.html');
-                });
+        fetch(event.request).then(function (resp) {
+            if (resp.status === 503) {
+                throw new Error();
+            }
+            return resp;
+        }).catch(function (err) {
+            var path = event.request.url.indexOf(self.location.origin) === 0
+                ? event.request.url.substr(self.location.origin.length)
+                : event.request.url;
+            return htmlServedUri.indexOf(path) > -1
+                ? caches.match('/app/offline/offline.html')
+                : caches.match(event.request);
         })
     );
 });
@@ -57,6 +60,9 @@ self.addEventListener('notificationclick', function(event) {
             break;
         case 'open-app-action':
             clients.openWindow('/home');
+            break;
+        case 'open-url':
+            clients.openWindow(event.notification.data.url);
             break;
         case 'profile-action':
             clients.openWindow('/profile');

@@ -8,7 +8,7 @@ const passport = require('passport');
 const path = require('path');
 const useragent = require('useragent');
 const authorization = require('./authorization');
-const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
+const authorizationShared = require('esm')(module)("../../shared/system/authorizationShared");
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_data = require('./mongo-data');
@@ -19,8 +19,7 @@ const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
 const pushNotification = require('./pushNotification');
 const usersrvc = require('./usersrvc');
-const daoManager = require('./moduleDaoManager');
-const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
+const exportShared = require('esm')(module)('../../shared/system/exportShared');
 const esInit = require('./elasticSearchInit');
 const elastic = require('./elastic.js');
 const meshElastic = require('../mesh/elastic');
@@ -29,8 +28,6 @@ const fhirObservationInfo = require('./fhir').fhirObservationInfo;
 const cdeElastic = require('../cde/elastic.js');
 const formElastic = require('../form/elastic.js');
 const traffic = require('./traffic');
-const notificationDb = require('../notification/notificationDb');
-const discussDb = require('../discuss/discussDb');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -72,10 +69,13 @@ exports.init = function (app) {
     });
 
     app.get(["/", "/home"], function (req, res) {
-        if (isSearchEngine(req)) res.render('bot/home', 'system');
-        else {
-            if (req.user || req.query.tour || req.query.notifications !== undefined) res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
-            else res.send(homeHtml);
+        if (isSearchEngine(req)) {
+            res.render('bot/home', 'system');
+        } else if (req.user || req.query.tour || req.query.notifications !== undefined
+            || req.headers.referer && req.headers.referer.endsWith('/sw.js')) {
+            res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
+        } else {
+            res.send(homeHtml);
         }
     });
 
@@ -258,7 +258,7 @@ exports.init = function (app) {
     }, null, true, 'America/New_York', this, true);
 
     ["/help/:title", "/createForm", "/createCde", "/boardList",
-        "/board/:id", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404", "whatsNew",
+        "/board/:id", "/myboards", "/cdeStatusReport", "/api", "/sdcview", "/404", "/whatsNew",
         "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(path => {
         app.get(path, (req, res) => res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml));
@@ -508,126 +508,10 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/tasks/:clientVersion', (req, res) => {
-        // mongo_data.taskGetByUser
-        let client = -1;
-        let server = -1;
-        let comments;
-        let tasks = [];
-        if (authorizationShared.isSiteAdmin(req.user)) {
-            notificationDb.getNumberClientError(req.user, handleError({req, res}, clientErrorCount => {
-                client = clientErrorCount;
-                tasksDone();
-            }));
-            notificationDb.getNumberServerError(req.user, handleError({req, res}, serverErrorCount => {
-                server = serverErrorCount;
-                tasksDone();
-            }));
-        } else {
-            client = 0;
-            server = 0;
-            tasksDone();
-        }
-        // TODO: implement org boundaries
-        if (authorizationShared.hasRole(req.user, 'CommentReviewer')) { // required, req.user.notificationSettings.approvalComment.drawer not used
-            discussDb.unapprovedMessages(handleError({req, res}, c => {
-                comments = c;
-                tasksDone();
-            }));
-        } else {
-            comments = [];
-            tasksDone();
-        }
-
-        function pending(comment) {
-            let pending = [];
-            if (comment.pendingApproval) {
-                pending.push(comment);
-            }
-            if (Array.isArray(comment.replies)) {
-                pending = pending.concat(comment.replies.filter(r => r.pendingApproval));
-            }
-            return pending;
-        }
-        function tasksDone() {
-            if (client === -1 || server === -1 || !comments) {
-                return;
-            }
-            if (version !== req.params.clientVersion) {
-                tasks.push({
-                    _id: 'version',
-                    name: 'Website Updated',
-                    text: 'A new version of this site is available. To enjoy the new features, please close all CDE tabs then load again.',
-                    type: 'error',
-                });
-            }
-            if (client > 0) {
-                tasks.push({
-                    _id: 'client',
-                    name: client + ' New Client Errors',
-                    properties: [
-                        {key: 'Audit Client Errors', link: '/siteAudit', linkParams: {tab:'clientError'}}
-                    ],
-                });
-            }
-            if (server > 0) {
-                tasks.push({
-                    _id: 'server',
-                    name: server + ' New Server Errors',
-                    properties: [
-                        {key: 'Audit Server Errors', link: '/siteAudit', linkParams: {tab:'serverError'}}
-                    ],
-                });
-            }
-            if (Array.isArray(comments)) {
-                comments.forEach(c => {
-                    pending(c).forEach(p => {
-                        let uri = c.element && (
-                            c.element.eltType === 'board' && '/board' ||
-                            c.element.eltType === 'cde' && '/deView' ||
-                            c.element.eltType === 'form' && '/formView' ||
-                            undefined
-                        );
-                        tasks.push({
-                            _id: p._id,
-                            name: 'comment',
-                            properties: [
-                                {key: 'User', value: p.user && p.user.username || c.user && c.user.username},
-                                {key: 'Form', value: c.element && c.element.eltId, link: uri, linkParams: c.element && {tinyId: c.element.eltId}}
-                            ],
-                            reply: p !== c,
-                            text: p.text,
-                            type: 'approval',
-                        });
-                    });
-                });
-            }
-            res.send(tasks);
-        }
-    });
-
     app.post('/addUserRole', [authorization.canApproveCommentMiddleware], (req, res) => {
         mongo_data.addUserRole(req.body, handleError({req, res}, () => {
             res.send();
         }));
-    });
-
-    // @TODO this should be POST
-    app.get('/attachment/approve/:id', (req, res) => {
-        if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
-        mongo_data.alterAttachmentStatus(req.params.id, "approved", err => {
-            if (err) return res.status(500).send("Unable to approve attachment");
-            res.send("Attachment approved.");
-        });
-    });
-
-    app.get('/attachment/decline/:id', (req, res) => {
-        if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
-        daoManager.getDaoList().forEach(dao => {
-            if (dao.removeAttachmentLinks) dao.removeAttachmentLinks(req.params.id);
-        });
-        mongo_data.deleteFileById(req.params.id);
-        res.send("Attachment declined");
     });
 
     app.post('/getClassificationAuditLog', (req, res) => {

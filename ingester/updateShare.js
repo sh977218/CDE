@@ -2,9 +2,9 @@ let xml2js = require('xml2js');
 let _ = require('lodash');
 let builder = new xml2js.Builder({attrkey: 'attribute'});
 let Readable = require('stream').Readable;
-let mongo_data = require('../server/system/mongo-data');
+let attachment = require('../server/attachment/attachmentSvc');
 let cdediff = require('../server/cde/cdediff');
-let classificationShared = require('@std/esm')(module)('../shared/system/classificationShared');
+let classificationShared = require('esm')(module)('../shared/system/classificationShared');
 
 exports.loaderUser = {
     username: 'batchloader'
@@ -33,14 +33,14 @@ exports.addAttachment = function (elt, xml, cb) {
     let origXml = builder.buildObject(xmlObj).toString();
     readable.push(origXml);
     readable.push(null);
-    mongo_data.addAttachment({
+    attachment.addToItem(elt, {
             originalname: elt.ids[0].id + "v" + elt.ids[0].version + ".xml",
             mimetype: "application/xml",
             size: origXml.length,
             stream: readable
         },
         {username: "batchloader", roles: ["AttachmentReviewer"]},
-        "Original XML File", elt, function (attachment, newFileCreated, e) {
+        "Original XML File", function (attachment, newFileCreated, e) {
             if (e) throw e;
             cb(attachment, newFileCreated, e);
         });

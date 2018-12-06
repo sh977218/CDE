@@ -1,12 +1,13 @@
 var async = require('async'),
     mongo_cde = require('../server/cde/mongo-cde'),
     cdediff = require('../server/cde/cdediff'),
-    classificationShared = require('@std/esm')(module)('../shared/system/classificationShared'),
+    classificationShared = require('esm')(module)('../shared/system/classificationShared'),
     MigrationDataElement = require('./createMigrationConnection').MigrationDataElementModel,
     DataElement = mongo_cde.DataElement,
     MigrationOrg = require('./createMigrationConnection').MigrationOrgModel,
     Org = require('../server/system/mongo-data').Org,
     updateShare = require('./updateShare');
+const adminItemSvc = require('../server/system/adminItemSvc');
 
 var cdeSource = process.argv[3];
 
@@ -195,8 +196,7 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
         } else if (existingCdes.length === 1) {
             if (existingCdes[0].attachments) {
                 async.forEach(existingCdes[0].attachments, function (attachment, doneOneAttachment) {
-                    mongo_cde.removeAttachmentLinks(attachment.fileid);
-                    doneOneAttachment();
+                    adminItemSvc.attachmentRemove(mongo_cde.dao, attachment.fileid, doneOneAttachment);
                 }, function doneAllAttachments() {
                     existingCdes[0].attachments = migrationCde.attachments;
                     processCde(migrationCde, existingCdes[0], orgName, findCdeDone);

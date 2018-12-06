@@ -10,6 +10,14 @@ public class CdeLiveComment extends NlmCdeBaseTest {
     public void cdeLiveCommentTest() {
         clickElement(By.linkText("NIH CDE Resource Portal"));
         switchTab(0);
+
+        mustBeLoggedInAs(nindsCurator_username, password);
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Profile"));
+        clickElement(By.xpath("//tbody/tr//mat-slide-toggle"));
+        checkAlert("Saved");
+        logout();
+
         String cdeName = "Sensory system abnormality stocking glove present text";
         String existingComment = "new comment from nlm";
         String newComment = "This comment just added.";
@@ -19,6 +27,8 @@ public class CdeLiveComment extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToDiscussArea();
 
+        replyComment(0, reply);
+
         switchTab(1);
         goToCdeByName(cdeName);
         goToDiscussArea();
@@ -27,7 +37,6 @@ public class CdeLiveComment extends NlmCdeBaseTest {
 
         switchTab(0);
         textPresent(newComment);
-        replyComment(0, reply);
 
         switchTab(1);
         textPresent(reply);
@@ -35,5 +44,13 @@ public class CdeLiveComment extends NlmCdeBaseTest {
 
         switchTab(0);
         textPresent(replyToReply);
+        logout();
+
+        mustBeLoggedInAs(nindsCurator_username, password);
+        clickElement(By.id("notifications"));
+        textPresent("3 new comments",
+                By.xpath("//div[contains(@class, 'taskItem')][*//mat-chip[contains(text(), 'gPY57SQ7-ZF')]]"));
+        textPresent(reply,
+                By.xpath("//div[contains(@class, 'taskItem')][*//mat-chip[contains(text(), 'gPY57SQ7-ZF')]]"));
     }
 }

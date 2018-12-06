@@ -2,9 +2,9 @@ const async = require('async');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_data = require('../system/mongo-data');
-const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared');
+const classificationShared = require('esm')(module)('../../shared/system/classificationShared');
 const elastic = require('../system/elastic');
-const logger = require('../system/logging.js').MongoLogger;
+const handleError = require('../log/dbLogger').handleError;
 
 exports.deleteOrgClassification = (user, deleteClassification, settings, callback) => {
     if (!(deleteClassification.categories instanceof Array))
@@ -22,19 +22,14 @@ exports.deleteOrgClassification = (user, deleteClassification, settings, callbac
                 settings.selectedElements = deleteClassification.categories;
                 let query = elastic.buildElasticSearchQuery(user, settings);
                 async.parallel([
-                    done => elastic.elasticsearch("cde", query, settings, function (err, result) {
-                        if (err) logger.log(err);
+                    done => elastic.elasticsearch("cde", query, settings, handleError({}, result => {
                         if (result && result.cdes && result.cdes.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
-                                mongo_cde.byTinyId(tinyId, (err, de) => {
-                                    if (err) logger.log(err);
+                                mongo_cde.byTinyId(tinyId, handleError({}, de => {
                                     classificationShared.unclassifyElt(de, deleteClassification.orgName, deleteClassification.categories);
-                                    de.save(err => {
-                                        if (err) logger.log(err);
-                                        doneOne();
-                                    });
-                                });
+                                    de.save(handleError({}, doneOne));
+                                }));
                             }, () => {
                                 done();
                                 mongo_data.addToClassifAudit({
@@ -48,20 +43,15 @@ exports.deleteOrgClassification = (user, deleteClassification, settings, callbac
                                 });
                             });
                         } else done();
-                    }),
-                    done => elastic.elasticsearch("form", query, settings, function (err, result) {
-                        if (err) logger.log(err);
+                    })),
+                    done => elastic.elasticsearch("form", query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
                             let tinyIds = result.forms.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
-                                mongo_form.byTinyId(tinyId, (err, form) => {
-                                    if (err) logger.log(err);
+                                mongo_form.byTinyId(tinyId, handleError({}, form => {
                                     classificationShared.unclassifyElt(form, deleteClassification.orgName, deleteClassification.categories);
-                                    form.save(err => {
-                                        if (err) logger.log(err);
-                                        doneOne();
-                                    });
-                                });
+                                    form.save(handleError({}, doneOne));
+                                }));
                             }, () => {
                                 done();
                                 mongo_data.addToClassifAudit({
@@ -75,11 +65,10 @@ exports.deleteOrgClassification = (user, deleteClassification, settings, callbac
                                 });
                             });
                         } else done();
-                    })
-                ], err => {
-                    if (err) logger.log(err);
+                    }))
+                ], handleError({}, () => {
                     mongo_data.removeJobStatus("deleteClassification", callback);
-                });
+                }));
             });
         });
     });
@@ -101,19 +90,14 @@ exports.renameOrgClassification = (user, newClassification, settings, callback) 
                 settings.selectedElements = newClassification.categories;
                 let query = elastic.buildElasticSearchQuery(user, settings);
                 async.parallel([
-                    done => elastic.elasticsearch("cde", query, settings, function (err, result) {
-                        if (err) logger.log(err);
+                    done => elastic.elasticsearch("cde", query, settings, handleError({}, result => {
                         if (result && result.cdes && result.cdes.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
-                                mongo_cde.byTinyId(tinyId, (err, de) => {
-                                    if (err) logger.log(err);
+                                mongo_cde.byTinyId(tinyId, handleError({}, de => {
                                     classificationShared.renameClassifyElt(de, newClassification.orgName, newClassification.categories, newClassification.newName);
-                                    de.save(err => {
-                                        if (err) logger.log(err);
-                                        doneOne();
-                                    });
-                                });
+                                    de.save(handleError({}, doneOne));
+                                }));
                             }, () => {
                                 done();
                                 mongo_data.addToClassifAudit({
@@ -128,20 +112,15 @@ exports.renameOrgClassification = (user, newClassification, settings, callback) 
                                 });
                             });
                         } else done();
-                    }),
-                    done => elastic.elasticsearch("form", query, settings, function (err, result) {
-                        if (err) logger.log(err);
+                    })),
+                    done => elastic.elasticsearch("form", query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
                             let tinyIds = result.forms.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
-                                mongo_form.byTinyId(tinyId, (err, form) => {
-                                    if (err) logger.log(err);
+                                mongo_form.byTinyId(tinyId, handleError({}, form => {
                                     classificationShared.renameClassifyElt(form, newClassification.orgName, newClassification.categories, newClassification.newName);
-                                    form.save(err => {
-                                        if (err) logger.log(err);
-                                        doneOne();
-                                    });
-                                });
+                                    form.save(handleError({}, doneOne));
+                                }));
                             }, () => {
                                 done();
                                 mongo_data.addToClassifAudit({
@@ -156,11 +135,8 @@ exports.renameOrgClassification = (user, newClassification, settings, callback) 
                                 });
                             });
                         } else done();
-                    })
-                ], err => {
-                    if (err) logger.log(err);
-                    mongo_data.removeJobStatus("renameClassification", callback);
-                });
+                    }))
+                ], handleError({}, () => mongo_data.removeJobStatus("renameClassification", callback)));
             });
         });
     });
@@ -192,19 +168,14 @@ exports.reclassifyOrgClassification = (user, oldClassification, newClassificatio
                 settings.selectedElements = oldClassification.categories;
                 let query = elastic.buildElasticSearchQuery(user, settings);
                 async.parallel([
-                    done => elastic.elasticsearch("cde", query, settings, function (err, result) {
-                        if (err) logger.log(err);
+                    done => elastic.elasticsearch("cde", query, settings, handleError({}, result => {
                         if (result && result.cdes && result.cdes.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
-                                mongo_cde.byTinyId(tinyId, (err, de) => {
-                                    if (err) logger.log(err);
+                                mongo_cde.byTinyId(tinyId, handleError({}, de => {
                                     classificationShared.classifyElt(de, newClassification.orgName, newClassification.categories);
-                                    de.save(err => {
-                                        if (err) logger.log(err);
-                                        doneOne();
-                                    });
-                                });
+                                    de.save(handleError({}, doneOne));
+                                }));
                             }, () => {
                                 done();
                                 mongo_data.addToClassifAudit({
@@ -218,20 +189,15 @@ exports.reclassifyOrgClassification = (user, oldClassification, newClassificatio
                                 });
                             });
                         } else done();
-                    }),
-                    done => elastic.elasticsearch( "form", query, settings, function (err, result) {
-                        if (err) logger.log(err);
+                    })),
+                    done => elastic.elasticsearch( "form", query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
-                                mongo_form.byTinyId(tinyId, (err, de) => {
-                                    if (err) logger.log(err);
+                                mongo_form.byTinyId(tinyId, handleError({}, de => {
                                     classificationShared.classifyElt(de, newClassification.orgName, newClassification.categories);
-                                    de.save(err => {
-                                        if (err) logger.log(err);
-                                        doneOne();
-                                    });
-                                });
+                                    de.save(handleError({}, doneOne));
+                                }));
                             }, () => {
                                 done();
                                 mongo_data.addToClassifAudit({
@@ -245,11 +211,8 @@ exports.reclassifyOrgClassification = (user, oldClassification, newClassificatio
                                 });
                             });
                         } else done();
-                    })
-                ], err => {
-                    if (err) logger.log(err);
-                    mongo_data.removeJobStatus("reclassifyClassification", callback);
-                });
+                    }))
+                ], handleError({}, () => mongo_data.removeJobStatus("reclassifyClassification", callback)));
             });
         });
     });

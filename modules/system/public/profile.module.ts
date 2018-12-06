@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { MatButtonModule, MatIconModule, MatSelectModule, MatSlideToggleModule } from '@angular/material';
+import {
+    MatButtonModule, MatIconModule, MatSelectModule, MatSlideToggleModule, MatTooltipModule
+} from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
 import { BoardModule } from 'board/public/board.module';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
@@ -24,6 +25,7 @@ const appRoutes: Routes = [
         MatButtonModule,
         MatSelectModule,
         MatSlideToggleModule,
+        MatTooltipModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core

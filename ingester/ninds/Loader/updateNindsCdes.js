@@ -58,6 +58,7 @@ doOne = migrationCde => {
             } else {
                 MergeCDE.mergeCde(existingCde, migrationCde);
                 existingCde.imported = new Date().toJSON();
+                existingCde.markModified('imported');
                 await mongo_cde.updatePromise(existingCde, user);
                 changed++;
             }
@@ -91,15 +92,12 @@ retireCde = () => {
 
 async function run() {
     totalNinds = await NindsCdeModel.count();
-    NindsCdeModel.find({}).cursor().eachAsync(ninds => {
+    NindsCdeModel.find({}).cursor().eachAsync(async ninds => {
         let nindsObj = ninds.toObject();
-        return new Promise(async (resolve, reject) => {
-            let nindsCde = CreateCDE.createCde(nindsObj);
-            await doOne(new DataElement(nindsCde));
-            ninds.remove();
-            totalNinds--;
-            resolve();
-        })
+        let nindsCde = CreateCDE.createCde(nindsObj);
+        await doOne(new DataElement(nindsCde));
+        ninds.remove();
+        totalNinds--;
     }).then(async () => {
         await retireCde();
         console.log('changed: ' + changed + ' created: ' + created + ' same: ' + same);

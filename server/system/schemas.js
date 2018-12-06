@@ -3,7 +3,7 @@ require('./mongoose-stringtype')(mongoose);
 const Schema = mongoose.Schema;
 const StringType = Schema.Types.StringType;
 
-const regStatusShared = require('@std/esm')(module)("../../shared/system/regStatusShared");
+const regStatusShared = require('esm')(module)("../../shared/system/regStatusShared");
 
 let csEltSchema = new Schema({
     elements: [],
@@ -206,7 +206,7 @@ exports.designationSchema = new Schema({
 }, {_id: false});
 
 exports.definitionSchema = new Schema({
-    definition: StringType,
+    definition: {type: String, required: true, minlength: 1},
     definitionFormat: StringType,
     tags: [StringType]
 }, {_id: false});
@@ -320,21 +320,6 @@ exports.jobQueue = Schema({
     status: {type: StringType, enum: ["Running"]},
     error: StringType
 }, {usePushEach: true});
-
-exports.fs_files = new Schema({
-    _id: Schema.Types.ObjectId,
-    filename: StringType,
-    contentType: StringType,
-    length: Number,
-    chunkSize: Number,
-    uploadDate: Date,
-    aliases: StringType,
-    metadata: {
-        status: StringType
-    },
-    md5: StringType
-});
-exports.fs_files.set('collection', 'fs.files');
 
 exports.referenceDocumentSchema = {
     docType: StringType,

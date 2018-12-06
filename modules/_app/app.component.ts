@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -11,8 +12,6 @@ import _noop from 'lodash/noop';
 import { BackForwardService } from '_app/backForward.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { UserService } from '_app/user.service';
-import { IEGuard } from '_app/routerGuard/ieGuard';
-
 
 @Component({
     selector: 'nih-cde',
@@ -96,6 +95,13 @@ export class CdeAppComponent implements OnInit {
                 private userService: UserService,
                 iconReg: MatIconRegistry,
                 sanitizer: DomSanitizer) {
+        this.userService.subscribe(() => {
+            this.userService.catch((err: HttpErrorResponse) => {
+                if (err && err.status === 0 && err.statusText === 'Unknown Error') {
+                    this.router.navigate(['/offline'], {skipLocationChange: true});
+                }
+            });
+        });
 
         if (!!(<any>window).ga && !!(<any>window).ga.getAll) {
             this.router.events.subscribe(event => {

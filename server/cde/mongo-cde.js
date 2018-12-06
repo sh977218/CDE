@@ -6,8 +6,9 @@ const connHelper = require('../system/connections');
 const logging = require('../system/logging');
 const cdediff = require("./cdediff");
 const elastic = require('./elastic');
-const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
+const deValidator = require('esm')(module)('../../shared/de/deValidator');
 const draftSchema = require('./schemas').draftSchema;
+const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 
 exports.type = "cde";
 exports.name = "CDEs";
@@ -19,13 +20,18 @@ schemas.dataElementSchema.post('remove', function (doc, next) {
 });
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
+    if (this.archived) return next();
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
-    if (cdeError && cdeError.pvNotValidMsg) {
+    if (!cdeError) {
+        cdeError = deValidator.checkDefinitions(self);
+    }
+    if (cdeError && !cdeError.allValid) {
+        cdeError.tinyId = this.tinyId;
         logging.errorLogger.error(cdeError, {
             stack: new Error().stack,
             details: JSON.stringify(cdeError)
         });
-        next(cdeError);
+        next(new Error(JSON.stringify(cdeError)));
     } else {
         try {
             elastic.updateOrInsert(self);
@@ -41,15 +47,18 @@ var conn = connHelper.establishConnection(config.database.appData);
 
 var User = require('../user/userDb').User;
 var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
-var DataElementDraft = conn.model('DataElementDraft', draftSchema);
+
 exports.User = User;
-exports.DataElementDraft = DataElementDraft;
 exports.elastic = elastic;
 
 var mongo_data = this;
 
 var DataElement = conn.model('DataElement', schemas.dataElementSchema);
-exports.DataElement = DataElement;
+var DataElementDraft = conn.model('DataElementDraft', draftSchema);
+exports.DataElement = exports.dao = DataElement;
+exports.DataElementDraft = exports.daoDraft = DataElementDraft;
+
+mongo_data_system.attachables.push(exports.DataElement);
 
 exports.byId = function (id, cb) {
     DataElement.findOne({'_id': id}, cb);
@@ -119,10 +128,6 @@ exports.getPrimaryName = function (elt) {
 
 exports.getStream = function (condition) {
     return DataElement.find(condition).sort({_id: -1}).cursor();
-};
-
-exports.userTotalSpace = function (name, callback) {
-    mongo_data_system.userTotalSpace(DataElement, name, callback);
 };
 
 exports.count = function (condition, callback) {
@@ -400,22 +405,6 @@ exports.getCdeAuditLog = function (params, callback) {
         });
 };
 
-exports.removeAttachmentLinks = function (id) {
-    DataElement.update({"attachments.fileid": id}, {$pull: {"attachments": {"fileid": id}}});
-    DataElement.update({"attachments.fileid": id}, {$pull: {"attachments": {"fileid": id}}});
-};
-
-exports.setAttachmentApproved = function (id) {
-    DataElement.update(
-        {"attachments.fileid": id},
-        {
-            $unset: {
-                "attachments.$.pendingApproval": ""
-            }
-        },
-        {multi: true}).exec();
-};
-
 exports.byOtherId = function (source, id, cb) {
     DataElement.find({archived: false}).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
         if (cdes.length > 1)
@@ -447,6 +436,7 @@ exports.bySourceIdVersion = function (source, id, version, cb) {
         else cb(err, cdes[0]);
     });
 };
+
 exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, version, cb) {
     //noinspection JSUnresolvedFunction
     DataElement.find({
@@ -456,12 +446,6 @@ exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, versio
         source: source, id: id, version: version
     }).exec(function (err, cdes) {
         cb(err, cdes);
-    });
-};
-
-exports.fileUsed = function (id, cb) {
-    DataElement.find({"attachments.fileid": id}).count().exec(function (err, count) {
-        cb(err, count > 0);
     });
 };
 
@@ -486,6 +470,14 @@ exports.findModifiedElementsSince = function (date, cb) {
         {$group: {"_id": "$tinyId"}}
     ]).exec(cb);
 
+};
 
-    //find({updated: {$gte: date}}).distinct('tinyId').limit(1000).sort({updated: -1}).exec(cb);
+exports.checkOwnership = function (req, id, cb) {
+    if (!req.isAuthenticated()) return cb("You are not authorized.", null);
+    exports.byId(id, function (err, elt) {
+        if (err || !elt) return cb("Element does not exist.", null);
+        if (!isOrgCurator(req.user, elt.stewardOrg.name))
+            return cb("You do not own this element.", null);
+        cb(null, elt);
+    });
 };

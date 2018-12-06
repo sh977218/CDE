@@ -21,7 +21,7 @@ export class InboxComponent {
     }
 
     approveAttachment(msg: InboxMessage) {
-        this.http.get('/attachment/approve/' + msg.typeAttachmentApproval.fileid, {responseType: 'text'}).subscribe(response => {
+        this.http.post('/server/attachment/approve/' + msg.typeAttachmentApproval.fileid, {}, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
         }, err => this.alert.httpErrorMessageAlert(err));
@@ -57,7 +57,7 @@ export class InboxComponent {
     }
 
     declineAttachment(msg: InboxMessage) {
-        this.http.get('/attachment/decline/' + msg.typeAttachmentApproval.fileid, {responseType: 'text'}).subscribe(response => {
+        this.http.post('/server/attachment/decline/' + msg.typeAttachmentApproval.fileid, {}, {responseType: 'text'}).subscribe(response => {
             this.alert.addAlert('success', response);
             this.closeMessage(msg);
         }, err => this.alert.httpErrorMessageAlert(err));

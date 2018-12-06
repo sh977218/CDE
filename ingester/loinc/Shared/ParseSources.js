@@ -1,6 +1,6 @@
 exports.parseSources = function (loinc) {
     let sources = [];
-    let source = {sourceName: 'LOINC'};
+    let source = {source: 'LOINC'};
     if (loinc['BASIC ATTRIBUTES']) {
         source.created = loinc['BASIC ATTRIBUTES']['Created On'];
         source.registrationStatus = loinc['BASIC ATTRIBUTES']['Status'];

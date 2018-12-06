@@ -55,6 +55,7 @@ const appRoutes: Routes = [
         MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
+        MatChipsModule,
         MatDialogModule,
         MatExpansionModule,
         MatGridListModule,
@@ -64,9 +65,8 @@ const appRoutes: Routes = [
         MatSelectModule,
         MatSliderModule,
         MatTabsModule,
-        MatChipsModule,
         MatTooltipModule,
-// core
+        // core
         WidgetModule,
         // internal
         AdminItemModule,

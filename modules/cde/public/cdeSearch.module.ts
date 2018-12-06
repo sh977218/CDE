@@ -1,20 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgSelectModule } from '@ng-select/ng-select';
-
-import { BoardCdeSummaryListComponent } from 'cde/public/components/listView/boardCdeSummaryList.component';
-import { BoardCdeSummaryListContentComponent } from 'cde/public/components/listView/boardCdeSummaryListContent.component';
-import { BoardModule } from 'board/public/board.module';
-import { CdeModule } from 'cde/public/cde.module';
-import { CdeSearchComponent } from 'cde/public/components/search/cdeSearch.component';
-import { CdeSummaryListContentComponent } from 'cde/public/components/listView/cdeSummaryListContent.component';
-import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/listView/quickBoardCdeSummaryListContent.component';
-import { SearchModule } from 'search/search.module';
-import { WidgetModule } from 'widget/widget.module';
-import { CdeTableViewPreferencesComponent } from "../../search/tableViewPreferences/cdeTableViewPreferencesComponent";
 import {
     MatButtonModule,
     MatInputModule,
@@ -27,16 +13,44 @@ import {
     MatListModule,
     MatAutocompleteModule,
     MatSelectModule,
-    MatTabsModule, MatChipsModule,
+    MatTabsModule, MatChipsModule, MatTooltipModule,
 } from "@angular/material";
+import { RouterModule } from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { BoardModule } from 'board/public/board.module';
+import { CdeModule } from 'cde/public/cde.module';
+import { BoardCdeSummaryListComponent } from 'cde/public/components/listView/boardCdeSummaryList.component';
+import { BoardCdeSummaryListContentComponent } from 'cde/public/components/listView/boardCdeSummaryListContent.component';
+import { CdeSummaryListContentComponent } from 'cde/public/components/listView/cdeSummaryListContent.component';
+import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/listView/quickBoardCdeSummaryListContent.component';
+import { CdeSearchComponent } from 'cde/public/components/search/cdeSearch.component';
+import { SearchModule } from 'search/search.module';
+import { CdeTableViewPreferencesComponent } from "search/tableViewPreferences/cdeTableViewPreferencesComponent";
+import { WidgetModule } from 'widget/widget.module';
+
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
+        MatAutocompleteModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatChipsModule,
+        MatDialogModule,
+        MatGridListModule,
+        MatIconModule,
+        MatInputModule,
+        MatListModule,
+        MatMenuModule,
+        MatPaginatorModule,
+        MatSelectModule,
+        MatTabsModule,
+        MatTooltipModule,
         NgbModule,
-        ReactiveFormsModule,
         NgSelectModule,
+        ReactiveFormsModule,
         RouterModule,
         // core
         WidgetModule,
@@ -44,19 +58,6 @@ import {
         BoardModule,
         CdeModule,
         SearchModule,
-        MatButtonModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        MatMenuModule,
-        MatPaginatorModule,
-        MatCheckboxModule,
-        MatGridListModule,
-        MatListModule,
-        MatDialogModule,
-        MatIconModule,
-        MatChipsModule,
-        MatSelectModule,
-        MatTabsModule,
     ],
     declarations: [
         BoardCdeSummaryListComponent,

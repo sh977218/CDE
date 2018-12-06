@@ -26,3 +26,6 @@ declare const ITEM_MAP: {
     cde: itemActionsApi,
     form: itemActionsApi
 };
+
+declare function uriView(module: string, tinyId: string): string|undefined;
+declare function uriViewBase(module: string): string|undefined;

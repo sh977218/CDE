@@ -1,6 +1,6 @@
 import { Cb, CbRet } from 'shared/models.model';
 
-export function interruptEvent(event: Event) {
+export function interruptEvent(event?: Event) {
     if (event) {
         event.preventDefault();
         event.stopPropagation();

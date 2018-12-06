@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { ActivatedRoute, Data, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
@@ -13,13 +13,12 @@ import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Comment } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { checkPvUnicity } from 'shared/de/deValidator';
+import { checkPvUnicity, checkDefinitions } from 'shared/de/deValidator';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
+import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 
 @Component({
     selector: 'cde-data-element-view',
@@ -36,6 +35,7 @@ import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationSha
 export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent') commentAreaComponent: DiscussAreaComponent;
     @ViewChild('copyDataElementContent') copyDataElementContent: TemplateRef<any>;
+    @ViewChild('saveModal') saveModal!: SaveModalComponent;
     @ViewChild('tabSet') tabSet: NgbTabset;
     commentMode;
     currentTab = 'general_tab';
@@ -53,13 +53,17 @@ export class DataElementViewComponent implements OnInit {
     savingText: String;
     tinyId;
     url;
+    validationErrors: { message: string }[] = [];
 
     ngOnInit() {
-        this.route.queryParams.subscribe(() => {
-            this.loadElt(() => {
-                this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+        this.orgHelperService.then(() => {
+            this.route.queryParams.subscribe(() => {
+                this.hasDrafts = false;
+                this.loadElt(() => {
+                    this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+                });
             });
-        });
+        }, _noop);
     }
 
     constructor(private deViewService: DataElementViewService,
@@ -99,6 +103,7 @@ export class DataElementViewComponent implements OnInit {
             if (elt.isDraft) this.hasDrafts = true;
             DataElement.validate(elt);
             this.elt = elt;
+            this.validate();
             this.loadComments(this.elt);
             this.deId = this.elt._id;
             if (this.userService.user) {
@@ -135,6 +140,14 @@ export class DataElementViewComponent implements OnInit {
 
     loadPublished(cb = _noop) {
         this.eltLoad(this.deViewService.fetchPublished(this.route.snapshot.queryParams), cb);
+    }
+
+    publish() {
+        if (this.validationErrors.length) {
+            this.alert.addAlert("danger", "Please fix all errors before publishing");
+        } else {
+            this.saveModal.openSaveModal();
+        }
     }
 
     openCopyElementModal() {
@@ -174,7 +187,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     removeAttachment(index) {
-        this.http.post<DataElement>('/attachments/cde/remove', {
+        this.http.post<DataElement>('/server/attachment/cde/remove', {
             index: index,
             id: this.elt._id
         }).subscribe(res => {
@@ -185,7 +198,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     setDefault(index) {
-        this.http.post<DataElement>('/attachments/cde/setDefault',
+        this.http.post<DataElement>('/server/attachment/cde/setDefault',
             {
                 index: index,
                 state: this.elt.attachments[index].isDefault,
@@ -205,7 +218,7 @@ export class DataElementViewComponent implements OnInit {
                 formData.append('uploadedFiles', files[i]);
             }
             formData.append('id', this.elt._id);
-            this.http.post<any>('/attachments/cde/add', formData).subscribe(
+            this.http.post<any>('/server/attachment/cde/add', formData).subscribe(
                 r => {
                     if (r.message) this.alert.addAlert('info', r);
                     else {
@@ -241,12 +254,13 @@ export class DataElementViewComponent implements OnInit {
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
-        this.draftSubscription = this.http.post('/draftDataElement/' + this.elt.tinyId, this.elt).subscribe(res => {
+        this.draftSubscription = this.http.post('/draftDataElement/' + this.elt.tinyId, this.elt).subscribe(() => {
             this.draftSubscription = undefined;
             this.savingText = 'Saved';
             setTimeout(() => {
                 this.savingText = '';
             }, 3000);
+            this.validate();
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
@@ -259,15 +273,19 @@ export class DataElementViewComponent implements OnInit {
         }, () => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
     }
 
+    validate() {
+        this.validationErrors.length = 0;
+        let defError = checkDefinitions(this.elt);
+        if (!defError.allValid) this.validationErrors.push({message: defError.message});
+        let pvErrors = checkPvUnicity(this.elt.valueDomain);
+        if (!pvErrors.allValid) this.validationErrors.push({message: pvErrors.pvNotValidMsg});
+    }
+
     viewChanges() {
-        let tinyId = this.route.snapshot.queryParams['tinyId'];
-        let draftEltObs = this.http.get<DataElement>('/draftDataElement/' + tinyId);
-        let publishedEltObs = this.http.get<DataElement>('/de/' + tinyId);
-        forkJoin([draftEltObs, publishedEltObs]).subscribe(res => {
-            if (res.length = 2) {
-                let data = {newer:  res[0], older: res[1]};
-                this.dialog.open(CompareHistoryContentComponent, {width: '1000px', data: data});
-            } else this.alert.addAlert('danger', 'Error loading view changes. ');
-        }, err => this.alert.addAlert('danger', 'Error loading view change. ' + err));
+        let draft = this.elt;
+        this.deViewService.fetchPublished(this.route.snapshot.queryParams).then(published => {
+            this.dialog.open(CompareHistoryContentComponent,
+                {width: '1000px', data: {newer: draft, older: published}});
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error loading view changes.'));
     }
 }

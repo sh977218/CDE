@@ -6,6 +6,7 @@ const mongo_data = require('../system/mongo-data');
 const connHelper = require('../system/connections');
 const logging = require('../system/logging');
 const elastic = require('./elastic');
+const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 
 exports.type = "form";
 exports.name = "forms";
@@ -24,8 +25,11 @@ schemas.formSchema.pre('save', function (next) {
 
 let Form = conn.model('Form', schemas.formSchema);
 let FormDraft = conn.model('Draft', schemas.draftSchema);
-exports.Form = Form;
-exports.FormDraft = FormDraft;
+
+exports.Form = exports.dao = Form;
+exports.FormDraft = exports.daoDraft = FormDraft;
+
+mongo_data.attachables.push(exports.Form);
 
 exports.elastic = elastic;
 
@@ -223,10 +227,6 @@ exports.byOtherId = function (source, id, cb) {
     });
 };
 
-exports.userTotalSpace = function (name, callback) {
-    mongo_data.userTotalSpace(Form, name, callback);
-};
-
 exports.query = function (query, callback) {
     Form.find(query).exec(callback);
 };
@@ -248,30 +248,19 @@ exports.byTinyIdListInOrder = function (idList, callback) {
     });
 };
 
-exports.removeAttachmentLinks = function (id) {
-    Form.update({"attachments.fileid": id}, {$pull: {"attachments": {"fileid": id}}});
-};
-
-exports.setAttachmentApproved = function (id) {
-    Form.update(
-        {"attachments.fileid": id},
-        {
-            $unset: {
-                "attachments.$.pendingApproval": ""
-            }
-        },
-        {multi: true}).exec();
-};
-
-
-exports.fileUsed = function (id, cb) {
-    Form.find({"attachments.fileid": id}).count().exec(function (err, count) {
-        cb(err, count > 0);
-    });
-};
-
 exports.exists = function (condition, callback) {
     Form.count(condition, function (err, result) {
         callback(err, result > 0);
+    });
+};
+
+
+exports.checkOwnership = function (req, id, cb) {
+    if (!req.isAuthenticated()) return cb("You are not authorized.", null);
+    exports.byId(id, function (err, elt) {
+        if (err || !elt) return cb("Element does not exist.", null);
+        if (!isOrgCurator(req.user, elt.stewardOrg.name))
+            return cb("You do not own this element.", null);
+        cb(null, elt);
     });
 };

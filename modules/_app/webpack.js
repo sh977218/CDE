@@ -6,15 +6,17 @@ const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const FileListPlugin = require('file-list-plugin');
+const serverConstants = require('esm')(module)('../../shared/serverConstants');
 
-const assets = [
+const assets = serverConstants.htmlServedUri.concat([
     '/cde/public/assets/img/min/NIH-CDE.png',
+    '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
     '/cde/public/assets/img/min/nih-cde-logo-simple.png',
     '/cde/public/assets/img/min/nih-cde-logo.png',
     '/cde/public/assets/img/min/usagov_logo.png',
     '/cde/public/assets/img/min/NLM-logo.png',
-    '/app/styles-cde.css'
-];
+    '/system/public/img/doctor-404.png'
+]);
 
 module.exports = {
     entry: {
@@ -30,7 +32,7 @@ module.exports = {
         new CleanWebpackPlugin(['dist/app'], {root: process.cwd()}),
         new CopyWebpackPlugin([
             {from: 'modules/_app/assets/'},
-            {from: 'node_modules/material-design-lite/material.min.js'},
+            {from: 'node_modules/material-design-lite/material.min.js', transform: content => content.toString().replace('//# sourceMappingURL=material.min.js.map', '')},
             {from: 'node_modules/material-design-lite/material.min.css'}
         ]),
         new webpack.DefinePlugin({
@@ -47,6 +49,7 @@ module.exports = {
                 let version = crypto.createHash('md5').update(filesInsert).digest('hex').substr(0,4);
                 sw = sw.replace('{#}', version);
                 sw = sw.replace('{#}', version);
+                sw = sw.replace('{htmlServedUri}', serverConstants.htmlServedUri.join('", "'));
                 let location = sw.indexOf('"###"');
                 let pre = sw.substring(0, location);
                 let post = sw.substring(location + 5);

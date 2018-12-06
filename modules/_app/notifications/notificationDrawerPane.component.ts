@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-
-import './notificationDrawer.scss';
 import { NotificationService } from '_app/notifications/notification.service';
+import '_app/notifications/notificationDrawer.scss';
+import { interruptEvent } from 'widget/browser';
 
 @Component({
     templateUrl: './notificationDrawerPane.component.html',
 })
 export class NotificationDrawerPaneComponent {
+    interruptEvent = interruptEvent;
+
     constructor(public notificationService: NotificationService) {}
 }

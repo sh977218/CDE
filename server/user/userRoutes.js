@@ -1,14 +1,26 @@
-const authorization = require('../system/authorization');
-const nocacheMiddleware = authorization.nocacheMiddleware;
-const loggedInMiddleware = authorization.loggedInMiddleware;
+const config = require('config');
+const itemShared = require('esm')(module)('../../shared/item');
+const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
+const utilShared = require('esm')(module)('../../shared/system/util');
+const discussDb = require('../discuss/discussDb');
 const dbLogger = require('../log/dbLogger');
 const handle404 = dbLogger.handle404;
 const handleError = dbLogger.handleError;
+const notificationDb = require('../notification/notificationDb');
+const authorization = require('../system/authorization');
+const nocacheMiddleware = authorization.nocacheMiddleware;
+const loggedInMiddleware = authorization.loggedInMiddleware;
 const mongo_data = require('../system/mongo-data');
 const userDb = require('./userDb');
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
+
+    let version = "local-dev";
+    try {
+        version = require('../system/version.js').version;
+    } catch (e) {
+    }
 
     router.get('/', [nocacheMiddleware], (req, res) => {
         if (!req.user) return res.send({});
@@ -18,8 +30,8 @@ exports.module = function (roleConfig) {
     });
 
     router.post('/', (req, res) => {
-        userDb.updateUser(req.user, req.body, handle404({req, res}, user => {
-            res.send(user);
+        userDb.updateUser(req.user, req.body, handle404({req, res}, () => {
+            res.send();
         }));
     });
 
@@ -38,6 +50,166 @@ exports.module = function (roleConfig) {
     router.get('/searchUsers/:username?', roleConfig.search, (req, res) => {
         userDb.usersByUsername(req.params.username, handle404({req, res}, users => {
             res.send(users);
+        }));
+    });
+
+    function taskAggregator(req, res) {
+        const handlerOptions = {req, res};
+        const errorHandler = handleError.bind(undefined, handlerOptions);
+        if (req.user) {
+            userDb.byId(req.user._id, errorHandler(taskAggregate)); // get user this request for real-time user.commentNotifications
+        } else {
+            taskAggregate(undefined);
+        }
+
+        function taskAggregate(user) {
+            let tasks = user ? user.commentNotifications.map(createTaskFromCommentNotification) : [];
+
+            let client = -1;
+            let server = -1;
+            let comments;
+            if (authorizationShared.isSiteAdmin(user)) {
+                notificationDb.getNumberClientError(user, errorHandler(clientErrorCount => {
+                    client = clientErrorCount;
+                    tasksDone();
+                }));
+                notificationDb.getNumberServerError(user, errorHandler(serverErrorCount => {
+                    server = serverErrorCount;
+                    tasksDone();
+                }));
+            } else {
+                client = 0;
+                server = 0;
+                tasksDone();
+            }
+            // TODO: implement org boundaries
+            if (authorizationShared.hasRole(user, 'CommentReviewer')) { // required, req.user.notificationSettings.approvalComment.drawer not used
+                discussDb.unapprovedMessages(errorHandler(c => {
+                    comments = c;
+                    tasksDone();
+                }));
+            } else {
+                comments = [];
+                tasksDone();
+            }
+
+            function createTaskFromCommentNotification(c) {
+                return {
+                    date: c.date,
+                    id: c.eltTinyId,
+                    idType: c.eltModule,
+                    name: c.username + ' commented',
+                    properties: [{
+                        key: utilShared.capString(c.eltModule),
+                        value: c.eltTinyId,
+                    }],
+                    source: 'user',
+                    state: !c.read && 1 || 0,
+                    text: c.text,
+                    type: 'comment',
+                    url: itemShared.uriView(c.eltModule, c.eltTinyId),
+                };
+            }
+
+            function pending(comment) {
+                let pending = [];
+                if (comment.pendingApproval) {
+                    pending.push(comment);
+                }
+                if (Array.isArray(comment.replies)) {
+                    pending = pending.concat(comment.replies.filter(r => r.pendingApproval));
+                }
+                return pending;
+            }
+
+            function tasksDone() {
+                if (client === -1 || server === -1 || !comments) {
+                    return;
+                }
+                if (req.params.clientVersion && version !== req.params.clientVersion) {
+                    tasks.push({
+                        id: version,
+                        idType: 'versionUpdate',
+                        name: 'Website Updated',
+                        source: 'calculated',
+                        text: 'A new version of this site is available. To enjoy the new features, please close all CDE tabs then load again.',
+                        type: 'error',
+                    });
+                }
+                if (client > 0) {
+                    tasks.push({
+                        id: client,
+                        idType: 'clientError',
+                        name: client + ' New Client Errors',
+                        source: 'calculated',
+                        type: 'message',
+                        url: '/siteAudit?tab=clientError',
+                    });
+                }
+                if (server > 0) {
+                    tasks.push({
+                        id: server,
+                        idType: 'serverError',
+                        name: server + ' New Server Errors',
+                        source: 'calculated',
+                        type: 'message',
+                        url: '/siteAudit?tab=serverError',
+                    });
+                }
+                if (Array.isArray(comments)) {
+                    comments.forEach(c => {
+                        const eltModule = c.element && c.element.eltType;
+                        const eltTinyId = c.element && c.element.eltId;
+                        pending(c).forEach(p => {
+                            tasks.push({
+                                id: p._id,
+                                idType: p === c ? 'comment' : 'commentReply',
+                                properties: [
+                                    {
+                                        key: 'User',
+                                        value: p.user && p.user.username || c.user && c.user.username
+                                    },
+                                    {
+                                        key: utilShared.capString(eltModule),
+                                        value: eltTinyId,
+                                    }
+                                ],
+                                source: 'calculated',
+                                text: p.text,
+                                type: 'approve',
+                                url: itemShared.uriView(eltModule, eltTinyId),
+                            });
+                        });
+                    });
+                }
+                res.send(tasks);
+            }
+        }
+    }
+
+    if (!config.proxy) {
+        router.post('/site-version', (req, res) => {
+            version = version + ".";
+            res.send();
+        });
+    }
+
+    router.get('/tasks/:clientVersion', [nocacheMiddleware], taskAggregator);
+
+    router.post('/tasks/:clientVersion/read', [loggedInMiddleware], (req, res) => {
+        // assume all comments for an elt have been read
+        userDb.byId(req.user._id, handle404({req, res}, user => {
+            let updated = false;
+            user.commentNotifications
+                .filter(t => t.eltTinyId === req.body.id && t.eltModule === req.body.idType)
+                .forEach(t => updated = t.read = true);
+            if (!updated) {
+                taskAggregator(req, res);
+                return;
+            }
+            userDb.updateUser(user, {commentNotifications: user.commentNotifications}, handleError({req, res}, () => {
+                taskAggregator(req, res);
+            }));
         }));
     });
 

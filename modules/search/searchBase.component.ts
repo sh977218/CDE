@@ -41,6 +41,13 @@ export const searchStyles: string = `
         font-size: 16.5px;
         vertical-align: middle;
     }
+    :host ::ng-deep .browseLink {
+        color: #337ab7;
+    }
+    :host ::ng-deep .browseLink:hover {
+        color: #23527c;
+        text-decoration: underline;
+    }
     .treeTitle {
         display: inline-block;
         font-weight: bold;
@@ -217,8 +224,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                                 let final = new Set();
                                 this.lastTypeahead = {};
                                 hits.forEach(e => {
-                                    this.lastTypeahead[e._source.primaryNameSuggest] = e._id;
-                                    final.add(e._source.primaryNameSuggest);
+                                    this.lastTypeahead[e._source.nameSuggest] = e._id;
+                                    final.add(e._source.nameSuggest);
                                 });
                                 return Array.from(final);
                             })

@@ -39,6 +39,7 @@ export class Attachment {
 
 export type Cb<T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => void;
 export type CbErr<T = never, U = never, V = never> = (error?: string, t?: T, u?: U, v?: V) => void;
+export type CbErrObj<E = string, T = never, U = never, V = never> = (error?: E, t?: T, u?: U, v?: V) => void;
 export type CbRet<R = never, T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => R;
 
 export class CdeId {
@@ -101,9 +102,16 @@ export class CodeAndSystem {
     }
 }
 
-export class Comment {
-    _id?: string;
+export class CommentReply {
+    _id?: ObjectId;
     created?: Date;
+    pendingApproval?: boolean;
+    status: string = 'active';
+    text?: string;
+    user: UserRef;
+}
+
+export class Comment extends CommentReply {
     currentComment: boolean = false; // calculated, used by CommentsComponent
     currentlyReplying?: boolean; // calculated, used by CommentsComponent
     element?: {
@@ -111,21 +119,7 @@ export class Comment {
         eltType?: 'board' | 'cde' | 'form',
     };
     linkedTab?: string;
-    pendingApproval?: boolean;
     replies?: CommentReply[];
-    status: string = 'active';
-    text?: string;
-    user?: string;
-    username?: string;
-}
-
-export class CommentReply {
-    created?: Date;
-    pendingApproval?: boolean;
-    status: string = 'active';
-    text?: string;
-    user?: string;
-    username?: string;
 }
 
 export type CurationStatus = 'Incomplete'|'Recorded'|'Candidate'|'Qualified'|'Standard'|'Preferred Standard'|'Retired';
@@ -300,21 +294,17 @@ export class DerivationRule {
 type DerivationRuleFormula = 'sumAll' | 'mean' | 'bmi';
 type DerivationRuleType = 'score' | 'panel';
 
-export class Notification {
-    _id?: {
-        title?: string,
-        url?: string
-    };
-}
+export type NotificationSettingsMediaType = 'drawer' | 'push';
 
-export class NotificationSettings {
-    approvalComment: NotificationTypesSettings = new NotificationTypesSettings();
-}
+export type NotificationSettingsMedia = {
+    [key in NotificationSettingsMediaType]?: boolean;
+};
 
-export class NotificationTypesSettings {
-    drawer: boolean = false;
-    push: boolean = false;
-}
+export type NotificationSettingsType = 'approvalComment' | 'comment';
+
+export type NotificationSettings = {
+    [key in NotificationSettingsType]?: NotificationSettingsMedia;
+};
 
 export class Organization {
     cdeStatusValidationRules?: StatusValidationRules[];
@@ -402,6 +392,24 @@ export class StatusValidationRules {
     targetStatus?: CurationStatus;
 }
 
+export type Task = {
+    date: Date,
+    id: string,
+    idType: TaskIdType,
+    name: string,
+    properties: {key: string, value?: string}[],
+    source: TaskSource,
+    state?: number,
+    text?: string,
+    type: TaskType,
+    url: string,
+};
+
+export type TaskIdType = 'cde' | 'clientError' | 'comment' | 'commentReply' | 'form' | 'serverError' | 'versionUpdate';
+export type TaskType = 'approve' | 'comment' | 'error' | 'message' | 'vote';
+export type TaskSource = 'calculated' | 'user';
+export const TaskStateUnread = 1;
+
 export class User {
     _id!: ObjectId;
     accessToken?: string;
@@ -410,7 +418,7 @@ export class User {
     formViewHistory?: string[];
     hasMail?: boolean;
     lastViewNotification?: Date;
-    notificationSettings: NotificationSettings = new NotificationSettings();
+    notificationSettings?: NotificationSettings;
     orgAdmin: string[] = [];
     orgCurator: string[] = [];
     publishedForms?: PublishedForm[];
@@ -441,9 +449,15 @@ export class User {
         version?: number,
     };
     siteAdmin?: boolean;
+    tasks?: Task[];
     tester?: boolean;
     username?: string;
     viewHistory?: string[];
+}
+
+export interface UserRef {
+    _id: ObjectId;
+    username?: string;
 }
 
 export interface UserReference {

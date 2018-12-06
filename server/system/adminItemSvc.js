@@ -1,16 +1,16 @@
-const mongo_data = require('./mongo-data');
 const async = require('async');
-const auth = require('./authorization');
-const fs = require('fs');
-const md5 = require('md5-file');
-const clamav = require('clamav.js');
-const config = require('./parseConfig');
-const logging = require('./logging');
-const pushNotification = require('../system/pushNotification');
-const handleError = require('../log/dbLogger').handleError;
-const streamifier = require('streamifier');
-const utilShared = require('@std/esm')(module)("../../shared/system/util");
-// const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
+const _ = require('lodash');
+const itemShared = require('esm')(module)('../../shared/item');
+const utilShared = require('esm')(module)('../../shared/system/util');
+const userShared = require('esm')(module)('../../shared/user');
+const discussDb = require('../discuss/discussDb');
+const dbLogger = require('../log/dbLogger');
+const notificationSvc = require('../notification/notificationSvc');
+const userDb = require('../user/userDb');
+const handleError = dbLogger.handleError;
+const mongo_data = require('./mongo-data');
+const pushNotification = require('./pushNotification');
+// const deValidator = require('esm')(module)('../../shared/de/deValidator');
 
 // exports.save = function (req, res, dao, cb) {
 //     var elt = req.body;
@@ -77,90 +77,25 @@ const utilShared = require('@std/esm')(module)("../../shared/system/util");
 //     }
 // };
 
-exports.setAttachmentDefault = function (req, res, dao) {
-    auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
-        if (err) {
-            logging.expressLogger.info(err);
-            return res.status(500).send('ERROR - attachment as default - cannot check ownership');
-        }
-        var state = req.body.state;
-        for (var i = 0; i < elt.attachments.length; i++) {
-            elt.attachments[i].isDefault = false;
-        }
-        elt.attachments[req.body.index].isDefault = state;
-        elt.save(function (err) {
-            if (err) {
-                res.send('error: ' + err);
-            } else {
-                res.send(elt);
+exports.attachmentApproved = (collection, id, cb) => {
+    collection.update(
+        {'attachments.fileid': id},
+        {
+            $unset: {
+                'attachments.$.pendingApproval': ''
             }
-        });
-    });
+        },
+        {multi: true}, cb);
 };
 
-exports.scanFile = (stream, res, cb) => {
-    clamav.createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, (err, object, malicious) => {
-        if (err) return cb(false);
-        if (malicious) return res.status(431).send('The file probably contains a virus.');
-        cb(true);
-    });
+exports.attachmentRemove = (collection, id, cb) => {
+    collection.update({'attachments.fileid': id}, {$pull: {'attachments': {'fileid': id}}}, cb);
 };
 
-exports.addAttachment = function (req, res, dao) {
-    if (!req.files.uploadedFiles) {
-        res.status(400).send('No files to attach.');
-        return;
-    }
-
-    var fileBuffer = req.files.uploadedFiles.buffer;
-    var stream = streamifier.createReadStream(fileBuffer);
-    var streamFS = streamifier.createReadStream(fileBuffer);
-    var streamFS1 = streamifier.createReadStream(fileBuffer);
-    exports.scanFile(stream, res, function (scanned) {
-        req.files.uploadedFiles.scanned = scanned;
-        auth.checkOwnership(dao, req.body.id, req, handleError({req, res}, elt => {
-            dao.userTotalSpace(req.user.username, function (totalSpace) {
-                if (totalSpace > req.user.quota) {
-                    return res.send({message: 'You have exceeded your quota'});
-                }
-                var file = req.files.uploadedFiles;
-                file.stream = streamFS1;
-
-                //store it to FS here
-                var writeStream = fs.createWriteStream(file.path);
-                streamFS.pipe(writeStream);
-                writeStream.on('finish', function () {
-                    md5(file.path, function (err, hash) {
-                        file.md5 = hash;
-                        mongo_data.addAttachment(file, req.user, 'some comment', elt, (attachment, requiresApproval) => {
-                            if (requiresApproval) {
-                                exports.createApprovalMessage(req.user, 'AttachmentReviewer', 'AttachmentApproval', attachment);
-                            }
-                            res.send(elt);
-                        });
-                    });
-                });
-            });
-        }));
+exports.fileUsed = (collection, id, cb) => {
+    collection.find({'attachments.fileid': id}).count({}, (err, count) => {
+        cb(err, count > 0);
     });
-};
-
-exports.removeAttachment = function (req, res, dao) {
-    auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
-        if (err) return res.status(500).send('ERROR - remove attachment ownership');
-        let fileid = elt.attachments[req.body.index].fileid;
-        elt.attachments.splice(req.body.index, 1);
-
-        elt.save(function (err) {
-            if (err) return res.status(500).send('ERROR - cannot save attachment');
-            res.send(elt);
-            mongo_data.removeAttachmentIfNotUsed(fileid);
-        });
-    });
-};
-
-exports.removeAttachmentLinks = function (id, collection) {
-    collection.update({'attachments.fileid': id}, {$pull: {'attachments': {'fileid': id}}});
 };
 
 exports.createApprovalMessage = function (user, role, type, details) {
@@ -186,8 +121,9 @@ exports.createTask = function (user, role, type, details) {
     //     typeInfo: details,
     // });
 
-    let msg = JSON.stringify({
-        title: utilShared.capString(type) + ' Request',
+    let name = utilShared.capString(type) + ' Request';
+    let pushTaskMsg = JSON.stringify({
+        title: name,
         options: {
             body: 'Tasks can be completed using the notification bell menu on the navigation bar',
             icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
@@ -207,9 +143,9 @@ exports.createTask = function (user, role, type, details) {
             ]
         }
     });
-    mongo_data.pushGetRegistrations(type + role, registrations => {
-        registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
-    });
+    mongo_data.pushRegistrationSubscribersByType(type + role, handleError({}, registrations => {
+        registrations.forEach(r => pushNotification.triggerPushMsg(r, pushTaskMsg));
+    }));
 };
 
 exports.bulkAction = function (ids, action, cb) {
@@ -240,4 +176,64 @@ exports.hideProprietaryIds = function (elt) {
             }
         });
     }
+};
+
+exports.notifyForComment = (handlerOptions, commentOrReply, eltModule, eltTinyId, eltStewardOrg, cb = _.noop) => {
+    discussDb.byEltId(eltTinyId, handleError(handlerOptions, comments => {
+        let userList = Array.from(new Set(comments
+            .reduce((acc, c) => acc.concat(c.user._id, c.replies.map(r => r.user._id)), [])
+            .filter(u => !!u && !u.equals(commentOrReply.user._id))
+        ));
+        userDb.find(notificationSvc.typeToCriteria('comment', {users: userList, org: eltStewardOrg}), handleError(handlerOptions, users => {
+            users = users.filter(u => !u.equals(commentOrReply.user._id));
+
+            // drawer
+            let userCommentNotification = {
+                date: new Date(),
+                eltModule,
+                eltTinyId,
+                read: false,
+                text: commentOrReply.text,
+                username: commentOrReply.user.username,
+            };
+            userShared.usersToNotify('comment', 'drawer', users).forEach(user => {
+                if (!user.commentNotifications) {
+                    user.commentNotifications = [];
+                }
+                user.commentNotifications.push(userCommentNotification);
+                if (user.commentNotifications.length > 100) {
+                    user.commentNotifications.length = 100;
+                }
+                userDb.updateUser(user, {commentNotifications: user.commentNotifications}, _.noop);
+            });
+
+            // push
+            let pushTaskMsg = JSON.stringify({
+                title: commentOrReply.user.username + ' commented on ' + utilShared.capString(eltModule) + ' ' + eltTinyId,
+                options: {
+                    body: commentOrReply.text,
+                    data: {url: itemShared.uriView(eltModule, eltTinyId)},
+                    icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+                    badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
+                    tag: 'cde-comment-' + eltModule + '-' + eltTinyId,
+                    actions: [
+                        {
+                            action: 'open-url',
+                            title: 'Open',
+                            icon: '/cde/public/assets/img/open_in_browser.png'
+                        },
+                        {
+                            action: 'profile-action',
+                            title: 'Edit Subscription',
+                            icon: '/cde/public/assets/img/min/portrait.png'
+                        }
+                    ]
+                }
+            });
+            mongo_data.pushRegistrationSubscribersByUsers(userShared.usersToNotify('comment', 'push', users), handleError(handlerOptions, registrations => {
+                registrations.forEach(r => pushNotification.triggerPushMsg(r, pushTaskMsg));
+                cb();
+            }));
+        }));
+    }));
 };
