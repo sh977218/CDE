@@ -1,4 +1,4 @@
-const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
+const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 
 // --------------------------------------------------
 // Middleware

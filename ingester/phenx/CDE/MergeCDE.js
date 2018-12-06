@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
 mergeBySources = (newSources, existingSources) => {
     let otherSources = existingSources.filter(o => ['PhenX', 'PhenX Variable'].indexOf(o.source) == -1);

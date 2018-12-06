@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
 mergeSources = (o1, o2) => {
     let result = _.uniqBy(o1.concat(o2), 'sourceName');
