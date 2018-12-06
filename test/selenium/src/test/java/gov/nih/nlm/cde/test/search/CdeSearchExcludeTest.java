@@ -8,6 +8,7 @@ public class CdeSearchExcludeTest extends NlmCdeBaseTest {
 
     @Test
     public void searchOneExclude() {
+        setLowStatusesVisible();
         goToCdeSearch();
         clickElement(By.id("browseOrg-TEST"));
         textPresent("caBIG");
@@ -18,6 +19,7 @@ public class CdeSearchExcludeTest extends NlmCdeBaseTest {
 
     @Test
     public void searchTwoExclude() {
+        setLowStatusesVisible();
         goToCdeSearch();
         clickElement(By.id("browseOrg-TEST"));
         textPresent("caBIG");
@@ -30,6 +32,7 @@ public class CdeSearchExcludeTest extends NlmCdeBaseTest {
 
     @Test
     public void searchAllExclude() {
+        setLowStatusesVisible();
         goToCdeSearch();
         clickElement(By.id("browseOrg-TEST"));
         textPresent("caBIG", By.id("resultList"));

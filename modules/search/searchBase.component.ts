@@ -474,7 +474,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     getSelectedClassificationsAlt(): string {
-        if (this.searchSettings.selectedOrgAlt) return this.searchSettings.selectedOrgAlt + this.searchSettings.classificationAlt.join(' > ');
+        if (this.searchSettings.selectedOrgAlt) return [this.searchSettings.selectedOrgAlt].concat(this.searchSettings.classificationAlt).join(' > ');
         else return 'Select Orgs Blow';
     }
 
