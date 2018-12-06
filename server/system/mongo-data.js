@@ -6,7 +6,7 @@ const shortId = require('shortid');
 const Grid = require('gridfs-stream');
 const MongoStore = require('connect-mongo')(session);
 
-const authorizationShared = require('@std/esm')(module)("../../shared/system/authorizationShared");
+const authorizationShared = require('esm')(module)("../../shared/system/authorizationShared");
 const connHelper = require('./connections');
 const dbLogger = require('../log/dbLogger');
 const notificationSvc = require('../notification/notificationSvc');

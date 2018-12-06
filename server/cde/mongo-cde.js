@@ -6,7 +6,7 @@ const connHelper = require('../system/connections');
 const logging = require('../system/logging');
 const cdediff = require("./cdediff");
 const elastic = require('./elastic');
-const deValidator = require('@std/esm')(module)('../../shared/de/deValidator');
+const deValidator = require('esm')(module)('../../shared/de/deValidator');
 const draftSchema = require('./schemas').draftSchema;
 const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 

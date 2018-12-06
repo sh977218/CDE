@@ -1,4 +1,4 @@
-const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
 const mergeDesignations = require('../Shared/mergeDesignations').mergeDesignations;
 const mergeDefinitions = require('../Shared/mergeDefinitions').mergeDefinitions;
