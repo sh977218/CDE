@@ -1,6 +1,6 @@
 const boardDb = require('../board/boardDb');
 const mongo_data_system = require('../system/mongo-data');
-const classificationShared = require('@std/esm')(module)('../../shared/system/classificationShared');
+const classificationShared = require('esm')(module)('../../shared/system/classificationShared');
 const daoManager = require('../system/moduleDaoManager');
 const adminItemSvc = require("../system/adminItemSvc");
 const elastic = require('../system/elastic');

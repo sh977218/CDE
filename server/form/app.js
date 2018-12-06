@@ -2,14 +2,14 @@ const _ = require('lodash');
 const dns = require('dns');
 const os = require('os');
 const authorization = require('../system/authorization');
-const authorizationShared = require('@std/esm')(module)('../../shared/system/authorizationShared');
+const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const config = require('../system/parseConfig');
 const formSvc = require('./formsvc');
 const mongo_form = require('./mongo-form');
 const elastic_system = require('../system/elastic');
 const handleError = require('../log/dbLogger').handleError;
 const sharedElastic = require('../system/elastic.js');
-const exportShared = require('@std/esm')(module)('../../shared/system/exportShared');
+const exportShared = require('esm')(module)('../../shared/system/exportShared');
 
 // ucum from lhc uses IndexDB
 global.location = {origin: 'localhost'};
