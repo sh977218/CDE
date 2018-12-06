@@ -35,7 +35,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         gotoInbox();
 
         textPresent("Attachment approval");
-        clickElement(By.partialLinkText(name));
+        clickElement(By.xpath("//button[contains(., '( " + name + " )')]"));
 
         findElement(By.linkText(name));
         clickElement(By.id("approve-" + name));
@@ -47,7 +47,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         gotoInbox();
 
         textPresent("Attachment approval");
-        clickElement(By.partialLinkText(name));
+        clickElement(By.xpath("//button[contains(., '( " + name + " )')]"));
 
         findElement(By.linkText(name));
 
