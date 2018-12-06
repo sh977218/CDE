@@ -428,8 +428,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (this.altClassificationFilterMode && this.searchSettings.classificationAlt.length > 0) {
             searchTerms.classificationAlt = this.searchSettings.classificationAlt.join(';');
         }
-        if (this.searchSettings.excludeAllOrgs) searchTerms.excludeAllOrgs = true;
-        if (this.searchSettings.excludeOrgs && this.searchSettings.excludeOrgs.length > 0) searchTerms.excludeOrgs = this.searchSettings.excludeOrgs.join(';');
+        searchTerms.excludeAllOrgs = !!this.searchSettings.excludeAllOrgs;
+        if (this.searchSettings.excludeOrgs && this.searchSettings.excludeOrgs.length > 0) {
+            searchTerms.excludeOrgs = this.searchSettings.excludeOrgs.join(';');
+        }
         if (pageNumber > 1) searchTerms.page = pageNumber;
         else if (this.searchSettings.page && this.searchSettings.page > 1) searchTerms.page = this.searchSettings.page;
         if (this.searchSettings.meshTree) searchTerms.topic = this.searchSettings.meshTree;
@@ -475,13 +477,13 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     getSelectedClassificationsAlt(): string {
         if (this.searchSettings.selectedOrgAlt) return [this.searchSettings.selectedOrgAlt].concat(this.searchSettings.classificationAlt).join(' > ');
-        else return 'Select Orgs Blow';
+        else return '(Select Orgs)';
     }
 
     getExcludedOrgs(): string {
         if (this.searchSettings.excludeAllOrgs) return 'Exclude all Orgs (except ' + this.searchSettings.selectedOrg + ')';
         else if (this.searchSettings.excludeOrgs.length > 0) return this.searchSettings.excludeOrgs.join(' , ');
-        else return 'Select Orgs Blow';
+        else return '(Select Orgs)';
     }
 
     searchExcludeAllOrgs() {
@@ -793,6 +795,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.searchSettings.selectedOrg = params['selectedOrg'];
         this.searchSettings.selectedOrgAlt = params['selectedOrgAlt'];
         this.altClassificationFilterMode = !!params['selectedOrgAlt'];
+        this.excludeOrgFilterMode = !!params['excludeAllOrgs'] || !!params['excludeOrgs'];
+        this.searchSettings.excludeOrgs = params['excludeOrgs'] ? params['excludeOrgs'].split(';') : [];
         this.searchSettings.classification = params['classification'] ? params['classification'].split(';') : [];
         this.searchSettings.classificationAlt = params['classificationAlt'] ? params['classificationAlt'].split(';') : [];
         this.searchSettings.regStatuses = params['regStatuses'] ? params['regStatuses'].split(';') as CurationStatus[] : [];
