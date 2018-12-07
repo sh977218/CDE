@@ -796,6 +796,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.altClassificationFilterMode = !!params['selectedOrgAlt'];
             this.excludeOrgFilterMode = !!params['excludeAllOrgs'] || !!params['excludeOrgs'];
             this.searchSettings.excludeOrgs = params['excludeOrgs'] ? params['excludeOrgs'].split(';') : [];
+            this.searchSettings.excludeAllOrgs = !!params['excludeAllOrgs'];
             this.searchSettings.classification = params['classification'] ? params['classification'].split(';') : [];
             this.searchSettings.classificationAlt = params['classificationAlt'] ? params['classificationAlt'].split(';') : [];
             this.searchSettings.regStatuses = params['regStatuses'] ? params['regStatuses'].split(';') as CurationStatus[] : [];

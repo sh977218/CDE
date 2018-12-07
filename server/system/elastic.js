@@ -364,8 +364,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
     } else {
         if (settings.excludeOrgs && settings.excludeOrgs.length > 0) {
             settings.excludeOrgs.forEach(o => {
-                settings.filter.bool.filter.push({bool: {must_not: {"term": {"classification.stewardOrg.name": o}}}});
-            })
+                queryStuff.query.bool.must_not = {"term": {"classification.stewardOrg.name": o}};
+            });
         }
     }
 
