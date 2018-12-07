@@ -35,7 +35,8 @@
                 <mat-tab label="Browse by Classification" style="overflow: hidden">
                     <div *ngIf="orgs?.length === 0">
                         <h1 class="pl130">
-                            <mat-icon class="spin">auto_renew</mat-icon> Searching...
+                            <mat-icon class="spin">auto_renew</mat-icon>
+                            Searching...
                         </h1>
                     </div>
                     <div class="row">
@@ -55,7 +56,9 @@
                                 </div>
                             </fieldset>
                             <mat-icon class="welcomeDetailIcon hand-cursor" *ngIf="org.htmlOverview"
-                               id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org)">help_outline</mat-icon>
+                                      id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org)">
+                                help_outline
+                            </mat-icon>
                         </div>
                     </div>
                 </mat-tab>
@@ -76,8 +79,8 @@
                 <mat-tab disabled>
                     <ng-template mat-tab-label>
                         <cde-search-export-button id="exportEverything" *ngIf="!embedded"
-                              (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})"
-                              [module]="module">
+                                                  (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})"
+                                                  [module]="module">
                         </cde-search-export-button>
                     </ng-template>
                 </mat-tab>
@@ -120,11 +123,13 @@
              id="searchBarContent" role="group" aria-label="Basic example">
             <button mat-raised-button *ngIf="embedded" id="resetSearch" class="mr-1" name="resetSearch"
                     type="button" (click)="reset()">
-                <mat-icon>delete_outline</mat-icon> Reset
+                <mat-icon>delete_outline</mat-icon>
+                Reset
             </button>
             <button id="pinAll" (click)="openPinModal()" class="mx-1" mat-raised-button
                     [hidden]="totalItems <= 0 || module === 'form'" *ngIf="!embedded">
-                <mat-icon svgIcon="thumb_tack"></mat-icon> Pin All
+                <mat-icon svgIcon="thumb_tack"></mat-icon>
+                Pin All
             </button>
             <button (click)="hideShowFilter()" class="mx-1" id="showHideFilters" mat-raised-button>
                 <mat-icon>filter_list</mat-icon>
@@ -179,7 +184,15 @@
         <span *ngIf="altClassificationFilterMode" id="classifAlt_filter">and
             <span class="badge badge-success">{{getSelectedClassificationsAlt()}}
                 <mat-icon id="removeAltClassificationFilterMode" class="remove-filter hand-cursor dark-icon pl-1"
-                   (click)="clearSelectedClassificationsAlt()"
+                          (click)="clearSelectedClassificationsAlt()"
+                          aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right">cancel</mat-icon>
+            </span>
+        </span>
+        <span *ngIf="excludeOrgFilterMode" id="classifExclude_filter">not
+            <span class="badge badge-success">{{getExcludedOrgs()}}
+                <mat-icon id="removeExcludeOrgFilterMode" class="remove-filter hand-cursor dark-icon pl-1"
+                          (click)="clearExcludeOrgs()"
                           aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
                           matTooltipClass="cdeTooltip" matTooltipPosition="right">cancel</mat-icon>
             </span>
@@ -222,15 +235,25 @@
                 <!-- CLASSIFICATION AGGREGATIONS -->
                 <div *ngIf="aggregations.orgs.buckets" id="classificationListHolder" class="my-3">
                     <div>
-                        <span class="treeTitle" style="vertical-align: top">Classification</span>
-                        <mat-icon *ngIf="!altClassificationFilterMode && !embedded"
-                                  id="altClassificationFilterModeToggle"
-                                  class="hand-cursor" (click)="setAltClassificationFilterMode()" role="link"
-                                  aria-label="Add a second classifications filter as an AND condition"
-                                  matTooltip="Add a second classifications filter as an AND condition"
-                                  matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                                  style="font-size: 1rem; padding-top: 5px">add_box
+                        <span class="treeTitle">Classification</span>
+                        <mat-icon *ngIf="!altClassificationFilterMode && !embedded && !excludeOrgFilterMode"
+                                  class="hand-cursor classification-filter" (click)="setAltClassificationFilterMode()"
+                                  id="altClassificationFilterModeToggle" role="link"
+                                  aria-label="Add a second classification filter as an AND condition"
+                                  matTooltip="Add a second classification filter as an AND condition"
+                                  matTooltipClass="cdeTooltip" matTooltipPosition="right">add_box
                         </mat-icon>
+                        <mat-icon *ngIf="!excludeOrgFilterMode && !embedded && !altClassificationFilterMode"
+                                  class="hand-cursor classification-filter" (click)="setExcludeOrgFilterMode()"
+                                  id="excludeFilterModeToggle" role="link"
+                                  aria-label="Add a second classification filter as a NOT condition"
+                                  matTooltip="Add a second classification filter as a NOT condition"
+                                  matTooltipClass="cdeTooltip" matTooltipPosition="right">indeterminate_check_box
+                        </mat-icon>
+                    </div>
+                    <div *ngIf="excludeOrgFilterMode" class="treeChild hand-cursor" id="exludeAllOrgs"
+                         (click)="searchExcludeAllOrgs()">
+                        All (Except {{searchSettings.selectedOrg}})
                     </div>
                     <ng-container *ngFor="let t of aggregations.orgs.buckets; trackBy: trackByKey">
                         <ng-container *ngIf="getCurrentSelectedOrg(); else classifOrg">
@@ -253,8 +276,7 @@
                         </ng-container>
                         <ng-template #classifOrg>
                             <div id="classif-{{t.key}}" class="treeChild hand-cursor" (click)="alterOrgFilter(t.key)"
-                                 role="link"
-                                 [attr.aria-label]="t.longName" [matTooltip]="t.longName"
+                                 role="link" [attr.aria-label]="t.longName" [matTooltip]="t.longName"
                                  matTooltipClass="cdeTooltip" matTooltipPosition="right">
                                 <mat-icon class="treeItemIcon">keyboard_arrow_right</mat-icon>
                                 <a class="treeItemText">{{t.key}} (<span
@@ -274,7 +296,7 @@
                             </div>
                         </ng-template>
                     </ng-container>
-                    <div *ngFor="let b of (altClassificationFilterMode?aggregations.flatClassificationsAlt:aggregations.flatClassifications); trackBy: trackByName"
+                    <div *ngFor="let b of getClassificationSelectedOrg(); trackBy: trackByName"
                          id="classif-{{b.name}}" class="treeChild hand-cursor"
                          [class.treeItem]="getCurrentSelectedClassification().length"
                          (click)="selectElement(b.name)" role="link">
@@ -395,6 +417,7 @@
     </div>
     <div mat-dialog-actions>
         <button mat-raised-button color="accent" [mat-dialog-close] id="cancelCopy">Cancel</button>
-        <button mat-raised-button color="primary" [mat-dialog-close]="{status: validRulesStatus}" id="exportVR">Export</button>
+        <button mat-raised-button color="primary" [mat-dialog-close]="{status: validRulesStatus}" id="exportVR">Export
+        </button>
     </div>
 </ng-template>
