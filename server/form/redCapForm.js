@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const archiver = require("archiver");
 const exportShared = require('esm')(module)('../../shared/system/exportShared');
 const field_type_map = {
@@ -13,32 +14,8 @@ const text_validation_type_map = {
     "Date": "date"
 };
 
-const redCapExportWarnings = {
-    "PhenX": "You can download PhenX REDCap from <a class='alert-link' href='https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist'>here</a>.",
-    "PROMIS / Neuro-QOL": "You can download PROMIS / Neuro-QOL REDCap from <a class='alert-link' href='http://project-redcap.org/'>here</a>.",
-    "emptySection": "REDCap cannot support empty section.",
-    "nestedSection": "REDCap cannot support nested section.",
-    "unknownElementType": "This form has error."
-};
-
 let existingVariables = {};
 let label_variables_map = {};
-
-function loopForm(form) {
-    function loopFormElements(fe) {
-        for (let i = 0; i < fe.formElements.length; i++) {
-            let e = fe.formElements[i];
-            if (e.elementType === 'section') {
-                return loopFormElements(e, true);
-            } else if (e.elementType !== 'question') {
-                return 'unknownElementType';
-            }
-        }
-        return false;
-    }
-
-    return loopFormElements(form, false);
-}
 
 function formatSkipLogic(text, map) {
     if (text) {
@@ -53,69 +30,91 @@ function formatSkipLogic(text, map) {
 }
 
 function getRedCap(form) {
+    let sectionsAsMatrix = form.displayProfiles && form.displayProfiles[0] && form.displayProfiles[0].sectionsAsMatrix;
     let instrumentResult = '';
-    let loopFormElements = fe => {
-        let sectionsAsMatrix = form.displayProfiles && form.displayProfiles[0] && form.displayProfiles[0].sectionsAsMatrix;
-        let sectionHeader = '';
-        if (fe.elementType === 'section') {
-            sectionHeader = fe.label;
-        }
+    let doSection = (formElement) => {
+        let sectionHeader = formElement.label;
         if (sectionsAsMatrix) {
-            let answers = JSON.stringify(fe.formElements[0].question.answers);
-            fe.formElements.forEach(e => {
-                if (answers !== JSON.stringify(e.question.answers) || e.question.answers.length === 0) {
-                    sectionsAsMatrix = false;
-                }
+            let temp = _.uniqBy(formElement.formElements, (a, b) => {
+                return _.isEqual(a.question.answers, b.question.answers)
             });
+            if (temp.length > 1) sectionsAsMatrix = false;
         }
-        fe.formElements.forEach((e, i) => {
-            if (e.elementType === 'question') {
-                let q = e.question;
-                let questionSkipLogic = '';
-                if (e.skipLogic) questionSkipLogic = e.skipLogic.condition;
-                if (!q.cde.tinyId) q.cde.tinyId = "missing question cde";
-                let variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' + q.cde.tinyId.toLowerCase();
-                if (existingVariables[variableName]) {
-                    let index = existingVariables[variableName];
-                    let newVariableName = variableName + "_" + index;
-                    existingVariables[variableName] = index++;
-                    existingVariables[newVariableName] = 1;
-                    label_variables_map[e.label] = variableName;
-                    variableName = newVariableName;
-                } else {
-                    existingVariables[variableName] = 1;
-                    label_variables_map[e.label] = variableName;
-                }
-                let questionRow = {
-                    'Variable / Field Name': variableName,
-                    'Form Name': form.designations[0].designation,
-                    'Section Header': i === 0 ? sectionHeader : '',
-                    'Field Type': field_type_map[q.datatype],
-                    'Field Label': e.label,
-                    'Choices, Calculations, OR Slider Labels': q.answers.map(function (a) {
-                        return a.permissibleValue + ',' + a.valueMeaningName;
-                    }).join('|'),
-                    'Field Note': '',
-                    'Text Validation Type OR Show Slider Number': text_validation_type_map[q.datatype],
-                    'Text Validation Min': q.datatypeNumber ? q.datatypeNumber.minValue : '',
-                    'Text Validation Max': q.datatypeNumber ? q.datatypeNumber.maxValue : '',
-                    'Identifier?': '',
-                    'Branching Logic (Show field only if...)': formatSkipLogic(questionSkipLogic, label_variables_map),
-                    'Required Field?': q.required,
-                    'Custom Alignment': '',
-                    'Question Number (surveys only)': '',
-                    'Matrix Group Name': sectionsAsMatrix ? sectionHeader : '',
-                    'Matrix Ranking?': ''
-                };
-                instrumentResult += exportShared.convertToCsv(questionRow);
+        return {
+            'Variable / Field Name': variableName,
+            'Form Name': form.designations[0].designation,
+            'Section Header': sectionHeader,
+            'Field Type': 'descriptive',
+            'Field Label': formElement.label,
+            'Choices, Calculations, OR Slider Labels': q.answers.map(function (a) {
+                return a.permissibleValue + ',' + a.valueMeaningName;
+            }).join('|'),
+            'Field Note': '',
+            'Text Validation Type OR Show Slider Number': text_validation_type_map[q.datatype],
+            'Text Validation Min': q.datatypeNumber ? q.datatypeNumber.minValue : '',
+            'Text Validation Max': q.datatypeNumber ? q.datatypeNumber.maxValue : '',
+            'Identifier?': '',
+            'Branching Logic (Show field only if...)': formatSkipLogic(questionSkipLogic, label_variables_map),
+            'Required Field?':'',
+            'Custom Alignment': '',
+            'Question Number (surveys only)': '',
+            'Matrix Group Name': sectionsAsMatrix ? sectionHeader : '',
+            'Matrix Ranking?': ''
+        };
+
+
+        for (let fe of formElement.formElements) {
+            let q = fe.question;
+            let questionSkipLogic = fe.skipLogic ? fe.skipLogic.condition : '';
+            if (!q.cde.tinyId) q.cde.tinyId = "missing question cde";
+            let variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' + q.cde.tinyId.toLowerCase();
+            if (existingVariables[variableName]) {
+                let index = existingVariables[variableName];
+                let newVariableName = variableName + "_" + index;
+                existingVariables[variableName] = index++;
+                existingVariables[newVariableName] = 1;
+                label_variables_map[fe.label] = variableName;
+                variableName = newVariableName;
+            } else {
+                existingVariables[variableName] = 1;
+                label_variables_map[fe.label] = variableName;
             }
-            else if (e.elementType === 'section')
-                loopFormElements(e);
-            else throw "unknown elementType";
-        });
-        return instrumentResult;
+            let questionRow = {
+                'Variable / Field Name': variableName,
+                'Form Name': form.designations[0].designation,
+                'Section Header': i === 0 ? sectionHeader : '',
+                'Field Type': field_type_map[q.datatype],
+                'Field Label': fe.label,
+                'Choices, Calculations, OR Slider Labels': q.answers.map(function (a) {
+                    return a.permissibleValue + ',' + a.valueMeaningName;
+                }).join('|'),
+                'Field Note': '',
+                'Text Validation Type OR Show Slider Number': text_validation_type_map[q.datatype],
+                'Text Validation Min': q.datatypeNumber ? q.datatypeNumber.minValue : '',
+                'Text Validation Max': q.datatypeNumber ? q.datatypeNumber.maxValue : '',
+                'Identifier?': '',
+                'Branching Logic (Show field only if...)': formatSkipLogic(questionSkipLogic, label_variables_map),
+                'Required Field?': q.required,
+                'Custom Alignment': '',
+                'Question Number (surveys only)': '',
+                'Matrix Group Name': sectionsAsMatrix ? sectionHeader : '',
+                'Matrix Ranking?': ''
+            };
+            instrumentResult += exportShared.convertToCsv(questionRow);
+        }
     };
-    return loopFormElements(form);
+    let doQuestion = (formElement) => {
+
+    };
+    for (let formElement of form.formElements) {
+        let sectionResult = doSection(formElement);
+        let questionResult = '';
+        for (let fe of formElement.formElements) {
+            questionResult = questionResult + doQuestion(fe);
+        }
+        instrumentResult = instrumentResult + sectionResult + questionResult;
+    }
+    return instrumentResult;
 }
 
 function formToRedCap(form) {
@@ -124,10 +123,6 @@ function formToRedCap(form) {
 }
 
 exports.getZipRedCap = function (form, res) {
-    if (redCapExportWarnings[form.stewardOrg.name])
-        return res.status(202).send(redCapExportWarnings[form.stewardOrg.name]);
-    let validationErr = loopForm(form);
-    if (validationErr) return res.status(500).send(redCapExportWarnings[validationErr]);
     res.writeHead(200, {
         "Content-Type": "application/zip",
         "Content-disposition": "attachment; filename=" + form.designations[0].designation + ".zip"
