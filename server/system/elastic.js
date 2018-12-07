@@ -359,6 +359,15 @@ exports.buildElasticSearchQuery = function (user, settings) {
     if (settings.selectedOrgAlt) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrgAlt}});
     }
+    if (settings.excludeAllOrgs) {
+        queryStuff.query.bool.must.push({term: {"classificationSize": 1}});
+    } else {
+        if (settings.excludeOrgs && settings.excludeOrgs.length > 0) {
+            settings.excludeOrgs.forEach(o => {
+                queryStuff.query.bool.must_not = {"term": {"classification.stewardOrg.name": o}};
+            });
+        }
+    }
 
     // filter by topic
     if (settings.meshTree) {
@@ -677,8 +686,7 @@ exports.elasticSearchExport = function (dataCb, query, type) {
         if (response.hits.hits.length === 0) {
             lock = false;
             dataCb();
-        }
-        else {
+        } else {
             for (let i = 0; i < response.hits.hits.length; i++) {
                 let thisElt = response.hits.hits[i]._source;
                 dataCb(null, thisElt);
