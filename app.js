@@ -1,7 +1,7 @@
 const path = require('path');
 const express = require('express');
 const http = require('http');
-const httpProxy = require('http-proxy');
+const httpProxy = require('express-http-proxy');
 const flash = require('connect-flash');
 const mongo_data_system = require('./server/system/mongo-data');
 const mongo_cde = require('./server/cde/mongo-cde');
@@ -55,8 +55,6 @@ app.use(auth.ticketAuth);
 app.use(compress());
 
 app.use(require('hsts')({maxAge: 31536000000}));
-
-let localRedirectProxy = httpProxy.createProxyServer({});
 
 process.on('uncaughtException', function (err) {
     console.log("Error: Process Uncaught Exception");
@@ -161,6 +159,7 @@ app.use("/swagger/public", express.static(path.join(__dirname, '/modules/swagger
 app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
 
 app.use("/app", express.static(path.join(__dirname, '/dist/app')));
+app.use("/s3", httpProxy(config.s3_bucket));
 app.use("/app/offline", express.static(path.join(__dirname, '/dist/app/offline')));
 app.use("/common", express.static(path.join(__dirname, '/dist/common')));
 app.use("/components", express.static(path.join(__dirname, '/dist/components')));
