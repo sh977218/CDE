@@ -85,6 +85,7 @@ exports.createIndexJson = {
                         }
                     }
                 }
+                , "classificationSize": {type: "integer"}
                 , "registrationState": {
                     properties: {
                         "registrationStatus": {"type": "keyword"}
@@ -177,6 +178,7 @@ exports.createFormIndexJson = {
                         }
                     }
                 }
+                , "classificationSize": {type: "integer"}
                 , "registrationState": {
                     properties: {
                         "registrationStatus": {"type": "keyword"}
@@ -291,12 +293,12 @@ exports.riverFunction = function (_elt, cb) {
         elt.stewardOrgCopy = elt.stewardOrg;
         elt.steward = elt.stewardOrg.name;
         elt.primaryNameCopy = elt.designations[0] ? escapeHTML(elt.designations[0].designation) : '';
+        elt.classificationSize = elt.classification.length;
 
         elt.primaryDefinitionCopy = elt.definitions[0] ? elt.definitions[0].definition : '';
         if (elt.definitions[0] && elt.definitions[0].definitionFormat === 'html') {
             elt.primaryDefinitionCopy = elt.primaryDefinitionCopy.replace(/<(?:.|\\n)*?>/gm, '');
-        }
-        else {
+        } else {
             elt.primaryDefinitionCopy = escapeHTML(elt.primaryDefinitionCopy);
         }
 
@@ -314,8 +316,7 @@ exports.riverFunction = function (_elt, cb) {
             let size = elt.classification.length;
             if (size > 10) {
                 elt.classificationBoost = 2.1;
-            }
-            else {
+            } else {
                 elt.classificationBoost = 0.1 + 0.2 * size;
             }
         } else {
