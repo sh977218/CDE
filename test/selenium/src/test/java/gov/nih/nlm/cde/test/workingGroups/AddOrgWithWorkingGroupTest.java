@@ -13,7 +13,6 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         // Create some classifications for working group
         String classification = "DISEASE";
         String subClassification = "Phase II Lung Cancer";
-        logout();
         mustBeLoggedInAs(ctepCurator_username, password);
         gotoClassificationMgt();
         new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText(orgWG);
