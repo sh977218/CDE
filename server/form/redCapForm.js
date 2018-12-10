@@ -18,15 +18,15 @@ let existingVariables = {};
 let label_variables_map = {};
 
 function formatSkipLogic(text, map) {
-    if (text) {
-        text = text.replace(/ AND /g, ' and ').replace(/ OR /g, ' or ');
-        return text.replace(/'[A-z0-9 ()-]+' [=|<|>] '[A-z0-9 \(\)-]+'/g, segment => {
-            return segment.replace(/'[A-z0-9 \(\)-]+'/, s => {
-                s = s.replace(/'/g, '');
-                return '[' + map[s] + ']';
-            });
-        });
-    }
+    let textString = text.replace(/ AND /g, ' and ').replace(/ OR /g, ' or ');
+    let foundEquationArray = textString.match(/"([^"])+"/g);
+    if (foundEquationArray && foundEquationArray.length > 0) {
+        foundEquationArray.forEach((label, i) => {
+            if (i % 2 == 0) {
+                text = text.replace(label, '[' + map[label] + ']');
+            }
+        })
+    } else throw "Error Parse Skip Logic.";
 }
 
 function getRedCap(form) {

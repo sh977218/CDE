@@ -64,6 +64,10 @@ run = () => {
                         'ids.id': protocolId
                     });
                     if (!existingForm) {
+                        for (let comment of newForm.comments) {
+                            comment.eltTinyId = newForm.tinyId;
+                            await comment.save();
+                        }
                         await newForm.save();
                         createdForm++;
                         console.log('createdForm: ' + createdForm);
@@ -71,6 +75,10 @@ run = () => {
                         existingForm.imported = new Date().toJSON();
                         existingForm.markModified('imported');
                         let diff = CompareForm.compareForm(newForm, existingForm);
+                        for (let comment of newForm.comments) {
+                            comment.eltTinyId = existingForm.tinyId;
+                            await comment.save();
+                        }
                         if (_.isEmpty(diff)) {
                             await existingForm.save();
                             sameForm++;

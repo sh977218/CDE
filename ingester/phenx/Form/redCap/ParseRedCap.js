@@ -9,8 +9,6 @@ const CreateCDE = require('./CreateCDE');
 const CompareCDE = require('../../CDE/CompareCDE');
 const MergeCDE = require('../../CDE/MergeCDE');
 
-const Comment = require('../../../../server/discuss/discussDb').Comment;
-
 const RedCapCdeToQuestion = require('./RedCapCdeToQuestion');
 
 const updatedByLoader = require('../../../shared/updatedByLoader').updatedByLoader;
@@ -150,11 +148,10 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
                 status: 'active',
                 replies: [],
                 element: {
-                    eltType: 'form',
-                    eltId: newForm.tinyId
+                    eltType: 'form'
                 }
             };
-            await new Comment(csvComment).save();
+            newForm.comments.push(csvComment);
         }
     }
     let newSection = true;
@@ -202,4 +199,5 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
         }
     }
     newForm.formElements = formElements;
+    return comments;
 };

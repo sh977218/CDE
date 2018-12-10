@@ -31,11 +31,10 @@ exports.convert = async (redCapCde, redCapCdes, cde, newForm) => {
                 status: 'active',
                 replies: [],
                 element: {
-                    eltType: 'form',
-                    eltId: newForm.tinyId
+                    eltType: 'form'
                 }
             };
-            await new Comment(skipLogicComment).save();
+            newForm.comments.push(skipLogicComment);
         }
     }
     if (fieldType && fieldType.trim() === 'calc') {
