@@ -63,6 +63,7 @@
     "indexeddbshim": "^3.10.0",
     "js2xmlparser": "1.0.0",
     "jxon": "2.0.0-beta.5",
+    "json2csv": "^4.3.2",
     "lodash": "^4.17.10",
     "log-buffer": "0.0.3",
     "md5": "2.2.1",
