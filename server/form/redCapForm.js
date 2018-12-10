@@ -40,7 +40,7 @@ function getRedCap(form) {
         }
         let sectionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
         return {
-            'Variable / Field Name': 'insect_' + i,
+            'Variable / Field Name': '',
             'Form Name': form.designations[0].designation,
             'Section Header': sectionHeader,
             'Field Type': 'descriptive',
