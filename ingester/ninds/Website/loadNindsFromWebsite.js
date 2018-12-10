@@ -1,5 +1,6 @@
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
+let driver = new webdriver.Builder().forBrowser('chrome').build();
 
 let NindsModel = require('../../createMigrationConnection').NindsModel;
 
@@ -121,7 +122,6 @@ doDomain = async (driver, disease, domainElement) => {
 };
 
 async function doDisease(disease) {
-    let driver = new webdriver.Builder().forBrowser('chrome').build();
     await driver.get(disease.url);
     let titleElement = await driver.findElement(By.xpath("//*[@id='bcrumbTab']//following-sibling::h2"));
     let titleText = await titleElement.getText();
