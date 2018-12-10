@@ -157,7 +157,10 @@
   "multer": {
     "inMemory": true
   },
-  "s3_bucket": "https://bucket.here",
+  "s3": {
+    "host": "s3.amazonaws.com",
+    "path": "/awsbuckethere"
+  },
   "captchaCode": "Override actual here.",
   "siteKey": "6LdAmh4TAAAAABf_PCxKsd4ikR-S5pSSa25PGqUV",
   "useCaptcha": true,
