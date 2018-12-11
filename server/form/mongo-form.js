@@ -145,7 +145,6 @@ exports.update = function (elt, user, callback, special) {
         if (special) special(elt, form);
 
         let newForm = new Form(elt);
-        form.archived = true;
         if (newForm.designations.length < 1) {
             logging.errorLogger.error("Error: Cannot save form without names", {
                 origin: "cde.mongo-form.update.1",
@@ -157,20 +156,25 @@ exports.update = function (elt, user, callback, special) {
 
         newForm.save(function (err, savedForm) {
             if (err) {
-                logging.errorLogger.error("Error: Cannot save form", {
-                    origin: "cde.mongo-form.update.2",
-                    stack: new Error().stack,
-                    details: "err " + err
-                });
+                logging.errorLogger.error("Cannot save new form",
+                    {
+                        stack: new Error().stack,
+                        details: "err " + err
+                    });
                 callback(err);
-            } else form.save(function (err) {
-                if (err) logging.errorLogger.error("Error: Cannot save form", {
-                    origin: "cde.mongo-form.update.3",
-                    stack: new Error().stack,
-                    details: "err " + err
-                });
-                callback(err, savedForm);
-            });
+            } else {
+                form.archived = true;
+                Form.findOneAndUpdate({_id: form._id}, form, function (err) {
+                    if (err) {
+                        logging.errorLogger.error("Traction failed. Cannot save archived form. Possible duplicated tinyId: " + newForm.tinyId,
+                            {
+                                stack: new Error().stack,
+                                details: "err " + err
+                            });
+                    }
+                    callback(err, savedForm);
+                })
+            }
         });
     });
 };
