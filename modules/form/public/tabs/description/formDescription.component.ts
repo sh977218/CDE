@@ -376,6 +376,12 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         }
     }
 
+    treeEvents(event) {
+        if (event && event.eventName === 'updateData') {
+            this.onEltChange.emit();
+        }
+    }
+
     updateTree() {
         this.tree.treeModel.update();
         // @TODO: if node passed in, expand all node only, else no expand
