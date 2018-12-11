@@ -12,9 +12,13 @@ function removeWhite(text) {
 function loopFes(fes) {
     for (let fe of fes) {
         let type = fe.elementType;
-        if (!fe)
-            console.log('a');
         fe.label = removeWhite(fe.label);
+        if (fe.skipLogic && fe.skipLogic.condition) {
+            fe.skipLogic.condition = removeWhite(fe.skipLogic.condition);
+        }
+        if (type === 'question') {
+            fe.question.cde.name = removeWhite(fe.question.cde.name);
+        }
         if (type === 'section') {
             loopFes(fe.formElements);
         }
