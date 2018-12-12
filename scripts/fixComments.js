@@ -48,7 +48,7 @@ function runComment() {
                 'element.eltId': wrongTinyId
             }, {
                 'element': {
-                    'element.eltType': 'form',
+                    'eltType': 'form',
                     'eltId': rightTinyId
                 }
             }, {multi: true});
