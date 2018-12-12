@@ -63,7 +63,7 @@ run = () => {
                         'registrationState.registrationStatus': {$ne: 'Retired'},
                         'ids.id': protocolId
                     });
-                    if (!existingForm) {
+                    /*if (!existingForm) {
                         await newForm.save();
                         createdForm++;
                         console.log('createdForm: ' + createdForm);
@@ -82,12 +82,12 @@ run = () => {
                             changeForm++;
                             console.log('changeForm: ' + changeForm);
                         }
-                    }
+                    }*/
                     console.log('Finished protocol: ' + protocolId);
                 }
             }
             console.log('Finished measurement: ' + measureObj.browserId);
-            //await measure.remove();
+            await measure.remove();
         }).then(async () => {
         console.log('************************************************');
         await retireForms();

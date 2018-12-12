@@ -23,7 +23,7 @@ exports.convert = async (redCapCde, redCapCdes, cde, newForm) => {
             skipLogicCondition = BranchLogic.convertSkipLogic(branchLogic, redCapCdes);
         else {
             let skipLogicComment = {
-                text: 'Phenx Batch loader was not able to create Skip Logic rule on Question ' + fieldLabel + '. Rules: ' + branchLogic,
+                text: newForm.ids[0].id + ' Phenx Batch loader was not able to create Skip Logic rule on Question ' + fieldLabel + '. Rules: ' + branchLogic,
                 user: batchloader,
                 created: new Date(),
                 pendingApproval: false,

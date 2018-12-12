@@ -1,56 +1,34 @@
-const _ = require('lodash');
-const Comment = require('../server/system/mongo-data').Comment;
-const User = require('../server/user/index').user;
+const Form = require('../server/form/mongo-form').Form;
+const Comment = require('../server/discuss/discussDb').Comment;
 
-let count = 0;
 
-exports.run = function () {
-    /*
-    @TODO run this in robo mongo
-        Comment.remove({status: 'delete'});
-    */
-    Comment.find({'user.username': {$exists: false}}, (error, results) => {
-        if (error) throw error;
-        else {
-            if (results.length > 0) {
-                console.log('Running fix comment script');
-                results.forEach(result => {
-                    result.replies = result.replies.filter(r => r.status !== 'delete');
-                    result.replies.forEach(r => {
-                        User.findOne({username: r.username}, (err, userObj) => {
-                            if (err) throw err;
-                            else if (!userObj) throw "No user found" + result.username;
-                            else {
-                                r.user = {
-                                    userId: userObj._id,
-                                    username: userObj.username
-                                }
-                            }
-                        })
+let map={
 
-                    })
-                    User.findOne({username: result.username}, (err, userObj) => {
-                        if (err) throw err;
-                        else if (!userObj) throw "No user found" + result.username;
-                        else {
-                            result.user = {
-                                userId: userObj._id,
-                                username: userObj.username
-                            }
-                            result.save((e, o) => {
-                                if (e) throw e;
-                                else {
-                                    count++;
-                                    console.log('counter: ' + count);
-                                }
-                            })
-                        }
-                    })
-                })
+};
+
+function runComment() {
+    Comment.aggregate([
+        {
+            $match: {
+                'element.eltType': 'form'
+            },
+        },
+        {
+            $lookup: {
+                from: 'forms',
+                localField: 'element.eltId',
+                foreignField: "tinyId",
+                as: 'form'
+            }
+        },
+        {
+            $match: {
+                'form.0': {$exists: false}
             }
         }
+    ]).exec(function (err, elts) {
+        console.log(elts);
     })
-
 }
 
-exports.run();
+runComment();

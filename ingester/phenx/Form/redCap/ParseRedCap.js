@@ -142,7 +142,7 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
             redCapCdes = await doInstrument(_instrumentFilePath);
         } else {
             let csvComment = {
-                text: 'Phenx Batch loader was not able to find instrument.csv',
+                text: newForm.ids[0].id + ' Phenx Batch loader was not able to find instrument.csv',
                 user: batchloader,
                 created: new Date(),
                 pendingApproval: false,
