@@ -27,6 +27,7 @@ const winston = require('winston');
 const authorization = require('./server/system/authorization');
 const traffic = require('./server/system/traffic');
 const authorizationShared = require('./shared/system/authorizationShared');
+const consoleLog = require('./server/log/dbLogger').consoleLog;
 
 require('./server/system/elastic').initEs();
 
@@ -160,7 +161,8 @@ app.use("/form/public", express.static(path.join(__dirname, '/modules/form/publi
 
 
 if (config.s3) {
-    app.use("/app", httpProxy(config.s3.host, {
+    consoleLog("found s3 config");
+    app.use("/app/", httpProxy(config.s3.host, {
         https: true,
         proxyReqOptDecorator: (proxyReqOpts, originalReq) => {
             proxyReqOpts.rejectUnauthorized = false;
@@ -170,6 +172,7 @@ if (config.s3) {
             let parts = req.url.split('?');
             let queryString = parts[1];
             let updatedPath = "/" + config.s3.path + parts[0];
+            consoleLog("updatedPath: " + updatedPath);
             return updatedPath + (queryString ? '?' + queryString : '');
         },
     }));
