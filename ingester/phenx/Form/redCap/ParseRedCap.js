@@ -86,8 +86,8 @@ async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
         'ids.id': cdeId
     });
     if (!existingCde) {
-//        existingCde = await newCde.save();
-        existingCde = await DataElement.findOneAndUpdate({_id: newCde._id}, newCde, {upsert: true, new: true});
+        existingCde = await newCde.save();
+//        existingCde = await DataElement.findOneAndUpdate({_id: newCde._id}, newCde, {upsert: true, new: true});
     } else if (updatedByLoader(existingCde)) {
     } else {
         existingCde.imported = new Date().toJSON();

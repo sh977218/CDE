@@ -63,7 +63,7 @@ run = () => {
                         'registrationState.registrationStatus': {$ne: 'Retired'},
                         'ids.id': protocolId
                     });
-                    /*if (!existingForm) {
+                    if (!existingForm) {
                         await newForm.save();
                         createdForm++;
                         console.log('createdForm: ' + createdForm);
@@ -82,7 +82,7 @@ run = () => {
                             changeForm++;
                             console.log('changeForm: ' + changeForm);
                         }
-                    }*/
+                    }
                     console.log('Finished protocol: ' + protocolId);
                 }
             }
