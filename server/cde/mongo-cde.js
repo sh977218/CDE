@@ -295,7 +295,7 @@ exports.update = function (elt, user, callback, special) {
                 dataElement.archived = true;
                 DataElement.findOneAndUpdate({_id: dataElement._id}, dataElement, function (err) {
                     if (err) {
-                        logging.errorLogger.error("Traction failed. Cannot save archived CDE.Possible duplicated tinyId: " + newDe.tinyId,
+                        logging.errorLogger.error("Transaction failed. Cannot save archived CDE.Possible duplicated tinyId: " + newDe.tinyId,
                             {
                                 origin: "cde.mongo-cde.update.3",
                                 stack: new Error().stack,

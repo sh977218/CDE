@@ -166,7 +166,7 @@ exports.update = function (elt, user, callback, special) {
                 form.archived = true;
                 Form.findOneAndUpdate({_id: form._id}, form, function (err) {
                     if (err) {
-                        logging.errorLogger.error("Traction failed. Cannot save archived form. Possible duplicated tinyId: " + newForm.tinyId,
+                        logging.errorLogger.error("Transaction failed. Cannot save archived form. Possible duplicated tinyId: " + newForm.tinyId,
                             {
                                 stack: new Error().stack,
                                 details: "err " + err
