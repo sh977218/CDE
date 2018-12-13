@@ -179,7 +179,7 @@ let getS3Link = function (subpath) {
 };
 
 if (config.s3) {
-    app.use("/app/", httpProxy(config.s3.host, getS3Link("")));
+    app.use("/app/", httpProxy(config.s3.host, getS3Link("/app")));
     app.use("/common/", httpProxy(config.s3.host, getS3Link("/common")));
     app.use("/embed/", httpProxy(config.s3.host, getS3Link("/embed")));
     app.use("/launch/", httpProxy(config.s3.host, getS3Link("/launch")));
