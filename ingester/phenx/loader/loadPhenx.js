@@ -64,6 +64,10 @@ run = () => {
                         'ids.id': protocolId
                     });
                     if (!existingForm) {
+                        for (let comment of newFormObj.comments) {
+                            comment.eltTinyId = newForm.tinyId;
+                            await comment.save();
+                        }
                         await newForm.save();
                         createdForm++;
                         console.log('createdForm: ' + createdForm);
@@ -71,6 +75,11 @@ run = () => {
                         existingForm.imported = new Date().toJSON();
                         existingForm.markModified('imported');
                         let diff = CompareForm.compareForm(newForm, existingForm);
+                        for (let comment of newFormObj.comments) {
+                            comment.eltTinyId = existingForm.tinyId;
+                            await comment.save();
+                            console.log(existingForm.tinyId);
+                        }
                         if (_.isEmpty(diff)) {
                             await existingForm.save();
                             sameForm++;
@@ -87,7 +96,7 @@ run = () => {
                 }
             }
             console.log('Finished measurement: ' + measureObj.browserId);
-            //await measure.remove();
+            await measure.remove();
         }).then(async () => {
         console.log('************************************************');
         await retireForms();
