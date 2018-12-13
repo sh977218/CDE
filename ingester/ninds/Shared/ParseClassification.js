@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const classificationShared = require('@std/esm')(module)('../../../shared/system/classificationShared');
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
 exports.parseClassification = (nindsForms, newForm) => {
     let classificationArray = [];

@@ -35,12 +35,12 @@ doOneNindsFormById = async formId => {
         'ids.id': formId
     });
     if (!existingForm) {
-        await newForm.save();
+        let savedForm = await newForm.save();
         createdForm++;
-        console.log('createdForm: ' + createdForm);
+        console.log('createdForm: ' + createdForm + ' ' + savedForm.tinyId);
     } else if (updatedByNonLoader(existingForm)) {
         skipForm++;
-        console.log('skipForm: ' + skipForm);
+        console.log('skipForm: ' + skipForm + ' ' + existingForm.tinyId);
     } else {
         existingForm.imported = new Date().toJSON();
         existingForm.markModified('imported');
@@ -48,12 +48,12 @@ doOneNindsFormById = async formId => {
         if (_.isEmpty(diff)) {
             await existingForm.save();
             sameForm++;
-            console.log('sameForm: ' + sameForm);
+            console.log('sameForm: ' + sameForm + ' ' + existingForm.tinyId);
         } else {
             await MergeForm.mergeForm(existingForm, newForm);
             await mongo_form.updatePromise(existingForm, batchloader);
             changeForm++;
-            console.log('changeForm: ' + changeForm);
+            console.log('changeForm: ' + changeForm + ' ' + existingForm.tinyId);
         }
     }
 };

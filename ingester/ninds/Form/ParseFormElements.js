@@ -9,7 +9,7 @@ const CreateCDE = require('../CDE/CreateCDE');
 const CompareCDE = require('../CDE/CompareCDE');
 const MergeCDE = require('../CDE/MergeCDE');
 
-const deValidator = require('@std/esm')(module)('../../../shared/de/deValidator');
+const deValidator = require('esm')(module)('../../../shared/de/deValidator');
 const Comment = require('../../../server/discuss/discussDb').Comment;
 
 const updatedByNonLoader = require('../../shared/updatedByNonLoader').updatedByNonLoader;
@@ -19,7 +19,7 @@ doOneNindsCde = async cdeId => {
     let newCdeObj = await CreateCDE.createCde(cdeId);
     let newCde = new DataElement(newCdeObj);
     let cdeError = deValidator.checkPvUnicity(newCde.valueDomain);
-    if (cdeError) {
+    if (cdeError && !cdeError.allValid) {
         if (cdeError.pvNotValidMsg === 'Value List must contain at least one Permissible Value') {
             let slComment = {
                 text: 'NINDS Batch loader was not able to find PV Value List',
@@ -38,6 +38,7 @@ doOneNindsCde = async cdeId => {
             newCde.valueDomain.permissibleValues = [{permissibleValue: '0'}];
         } else {
             console.log('some other error.');
+            process.exit(1);
         }
     }
 
@@ -91,11 +92,7 @@ exports.parseFormElements = async nindsForms => {
     let _nindsCdeIdList = _.uniq(nindsCdeIdList);
 
     if (_nindsQuestionList.length === 0) return formElements;
-    if (_nindsQuestionList.length > 1) {
-        console.log('More than one different question list found.');
-        console.log(nindsForms[0].formId);
-        process.exit(1);
-    }
+
     formElements.push({
         elementType: 'section',
         instructions: {value: ''},
