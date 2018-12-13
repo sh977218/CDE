@@ -104,7 +104,7 @@ export function getFormOdm(form, cb) {
                     }
                 }
                 , FormDef: {
-                    '$Name': escapeHTML(form.naming[0].designation)
+                    '$Name': escapeHTML(form.designations[0].designation)
                     , '$OID': form.tinyId
                     , '$Repeating': 'No'
                     , 'ItemGroupRef': []
