@@ -1,8 +1,8 @@
 <div id="namingDiv">
-    <h4>Namings:&nbsp;
+    <h4>Names:&nbsp;
         <button *ngIf="canEdit" id="openNewDesignationModalBtn" (click)="openNewDesignationModal()" mat-raised-button>
             <mat-icon>add</mat-icon>
-            Add Naming
+            Add Name
         </button>
     </h4>
     <div *ngIf="elt.designations.length === 0">There are no designations.</div>
@@ -15,7 +15,7 @@
                 </mat-icon>
                 <cde-sortable-array [theArray]="elt.designations" [index]="i" *ngIf="canEdit"
                                     (cb)="onEltChange.emit()"></cde-sortable-array>
-                Naming:
+                Name:
             </dt>
             <dd id="designation_{{i}}" class="col-9">
                 <cde-inline-edit id="designationEdit" [(model)]="designation.designation"
