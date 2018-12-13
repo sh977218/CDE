@@ -162,7 +162,7 @@ app.use("/form/public", express.static(path.join(__dirname, '/modules/form/publi
 
 if (config.s3) {
     consoleLog("found s3 config");
-    app.use("/app/", httpProxy(config.s3.host, {
+    app.use("/s3/", httpProxy(config.s3.host, {
         https: true,
         proxyReqOptDecorator: (proxyReqOpts, originalReq) => {
             proxyReqOpts.rejectUnauthorized = false;
@@ -177,9 +177,9 @@ if (config.s3) {
         },
     }));
 } else {
-    app.use("/app", express.static(path.join(__dirname, '/dist/app')));
 }
 
+app.use("/app", express.static(path.join(__dirname, '/dist/app')));
 app.use("/app/offline", express.static(path.join(__dirname, '/dist/app/offline')));
 app.use("/common", express.static(path.join(__dirname, '/dist/common')));
 app.use("/components", express.static(path.join(__dirname, '/dist/components')));
