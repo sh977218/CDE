@@ -8,8 +8,9 @@ const batchloader = require('../../shared/updatedByLoader').batchloader;
 
 const zipFolder = 's:/MLB/CDE/phenx/original-phenxtoolkit.rti.org/toolkit_content/redcap_zip/';
 
-exports.createForm = async (measure, protocol) => {
-    let protocolId = protocol.protocolId;
+exports.createForm = async (measure, protocolObj) => {
+    let protocolId = protocolObj.protocolId;
+    let protocol = protocolObj.protocol;
     let zipFile = zipFolder + 'PX' + protocolId + '.zip';
     if (fs.existsSync(zipFile)) {
         let zip = new AdmZip(zipFile);
@@ -19,7 +20,7 @@ exports.createForm = async (measure, protocol) => {
     let designations = require('../Shared/ParseDesignations').parseDesignations(protocol);
     let definitions = require('../Shared/ParseDefinitions').parseDefinitions(protocol);
     let sources = require('../Shared/ParseSources').parseSources(protocol);
-    let ids = require('../Shared/ParseIds').parseIds(protocol);
+    let ids = require('../Shared/ParseIds').parseIds(protocolObj);
     let properties = require('../Shared/ParseProperties').parseProperties(measure, protocol);
     let referenceDocuments = require('../Shared/ParseReferenceDocuments').parseReferenceDocuments(protocol);
     let attachments = await require('./ParseAttachments').parseAttachments(protocol);

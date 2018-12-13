@@ -74,10 +74,16 @@ doImg = async imgFolder => {
         if (imgSubFolderExist) {
             let imgFiles = fs.readdirSync(imgFolder);
             for (let imgFile of imgFiles) {
-                let imgFilePath = imgFolder + '/' + imgSubFolder + '/' + imgFile + '.jpg';
+                let fileType = 'jpg';
+                let imgFilePath = imgFolder + '/' + imgSubFolder + '/' + imgFile + '.' + fileType;
                 let imgFileExist = fs.existsSync(imgFilePath);
+                if (!imgFileExist) {
+                    fileType = 'png';
+                    imgFilePath = imgFolder + '/' + imgSubFolder + '/' + imgFile + '.' + fileType;
+                    imgFileExist = fs.existsSync(imgFilePath);
+                }
                 if (imgFileExist) {
-                    let attachment = await addAttachment(imgFile, imgFilePath, 'jpg')
+                    let attachment = await addAttachment(imgFile, imgFilePath, fileType);
                     if (attachment) attachments.push(attachment);
                 }
             }

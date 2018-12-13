@@ -9,8 +9,6 @@ const CreateCDE = require('./CreateCDE');
 const CompareCDE = require('../../CDE/CompareCDE');
 const MergeCDE = require('../../CDE/MergeCDE');
 
-const Comment = require('../../../../server/discuss/discussDb').Comment;
-
 const RedCapCdeToQuestion = require('./RedCapCdeToQuestion');
 
 const updatedByLoader = require('../../../shared/updatedByLoader').updatedByLoader;
@@ -87,6 +85,7 @@ async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
     });
     if (!existingCde) {
         existingCde = await newCde.save();
+//        existingCde = await DataElement.findOneAndUpdate({_id: newCde._id}, newCde, {upsert: true, new: true});
     } else if (updatedByLoader(existingCde)) {
     } else {
         existingCde.imported = new Date().toJSON();
@@ -142,7 +141,7 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
             redCapCdes = await doInstrument(_instrumentFilePath);
         } else {
             let csvComment = {
-                text: 'Phenx Batch loader was not able to find instrument.csv',
+                text: newForm.ids[0].id + ' Phenx Batch loader was not able to find instrument.csv',
                 user: batchloader,
                 created: new Date(),
                 pendingApproval: false,
@@ -151,10 +150,9 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
                 replies: [],
                 element: {
                     eltType: 'form',
-                    eltId: newForm.tinyId
                 }
             };
-            await new Comment(csvComment).save();
+            newForm.comments.push(csvComment);
         }
     }
     let newSection = true;
