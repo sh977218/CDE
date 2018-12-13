@@ -160,33 +160,40 @@ app.use("/swagger/public", express.static(path.join(__dirname, '/modules/swagger
 app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
 
 
-if (config.s3) {
-    consoleLog("found s3 config");
-    app.use("/s3/", httpProxy(config.s3.host, {
+
+let getS3Link = function (subpath) {
+    return {
         https: true,
-        proxyReqOptDecorator: (proxyReqOpts, originalReq) => {
+        proxyReqOptDecorator: proxyReqOpts => {
             proxyReqOpts.rejectUnauthorized = false;
             return proxyReqOpts;
         },
         proxyReqPathResolver: req => {
             let parts = req.url.split('?');
             let queryString = parts[1];
-            let updatedPath = "/" + config.s3.path + parts[0];
+            let updatedPath = "/" + config.s3.path + subpath + parts[0];
             consoleLog("updatedPath: " + updatedPath);
             return updatedPath + (queryString ? '?' + queryString : '');
-        },
-    }));
-} else {
-}
+        }
+    }
+};
 
-app.use("/app", express.static(path.join(__dirname, '/dist/app')));
-app.use("/app/offline", express.static(path.join(__dirname, '/dist/app/offline')));
-app.use("/common", express.static(path.join(__dirname, '/dist/common')));
-app.use("/components", express.static(path.join(__dirname, '/dist/components')));
-app.use("/embed", express.static(path.join(__dirname, '/dist/embed')));
-app.use("/launch", express.static(path.join(__dirname, '/dist/launch')));
-app.use("/native", express.static(path.join(__dirname, '/dist/native')));
-app.use("/fhir", express.static(path.join(__dirname, '/dist/fhir')));
+if (config.s3) {
+    app.use("/app/", httpProxy(config.s3.host, getS3Link("")));
+    app.use("/common/", httpProxy(config.s3.host, getS3Link("/common")));
+    app.use("/embed/", httpProxy(config.s3.host, getS3Link("/embed")));
+    app.use("/launch/", httpProxy(config.s3.host, getS3Link("/launch")));
+    app.use("/native/", httpProxy(config.s3.host, getS3Link("/native")));
+    app.use("/fhir/", httpProxy(config.s3.host, getS3Link("/fhir")));
+} else {
+    app.use("/app", express.static(path.join(__dirname, '/dist/app')));
+    app.use("/app/offline", express.static(path.join(__dirname, '/dist/app/offline')));
+    app.use("/common", express.static(path.join(__dirname, '/dist/common')));
+    app.use("/embed", express.static(path.join(__dirname, '/dist/embed')));
+    app.use("/launch", express.static(path.join(__dirname, '/dist/launch')));
+    app.use("/native", express.static(path.join(__dirname, '/dist/native')));
+    app.use("/fhir", express.static(path.join(__dirname, '/dist/fhir')));
+}
 
 ["/embedded/public", "/_embedApp/public"].forEach(p => {
     app.use(p, (req, res, next) => {
