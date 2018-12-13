@@ -1,9 +1,7 @@
 const capitalize = require('capitalize');
 const BranchLogic = require('./BranchLogic');
 
-const Comment = require('../../../../server/discuss/discussDb').Comment;
-
-const REDCAP_MULTISELECT_MAP = require('./REDCAP_MULTISELECT_MAP').map
+const REDCAP_MULTISELECT_MAP = require('./REDCAP_MULTISELECT_MAP').map;
 
 const batchloader = require('../../../shared/updatedByLoader').batchloader;
 
@@ -23,7 +21,7 @@ exports.convert = async (redCapCde, redCapCdes, cde, newForm) => {
             skipLogicCondition = BranchLogic.convertSkipLogic(branchLogic, redCapCdes);
         else {
             let skipLogicComment = {
-                text: 'Phenx Batch loader was not able to create Skip Logic rule on Question ' + fieldLabel + '. Rules: ' + branchLogic,
+                text: newForm.ids[0].id + ' Phenx Batch loader was not able to create Skip Logic rule on Question ' + fieldLabel + '. Rules: ' + branchLogic,
                 user: batchloader,
                 created: new Date(),
                 pendingApproval: false,
@@ -51,7 +49,7 @@ exports.convert = async (redCapCde, redCapCdes, cde, newForm) => {
                 eltId: newForm.tinyId
             }
         };
-        await new Comment(scoreComment).save();
+        newForm.comments.push(scoreComment);
     }
     let question = {
         elementType: "question",

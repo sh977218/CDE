@@ -1,7 +1,7 @@
 const path = require('path');
 const express = require('express');
 const http = require('http');
-const httpProxy = require('http-proxy');
+const httpProxy = require('express-http-proxy');
 const flash = require('connect-flash');
 const mongo_data_system = require('./server/system/mongo-data');
 const mongo_cde = require('./server/cde/mongo-cde');
@@ -55,8 +55,6 @@ app.use(auth.ticketAuth);
 app.use(compress());
 
 app.use(require('hsts')({maxAge: 31536000000}));
-
-let localRedirectProxy = httpProxy.createProxyServer({});
 
 process.on('uncaughtException', function (err) {
     console.log("Error: Process Uncaught Exception");
@@ -160,7 +158,25 @@ app.use("/system/public", express.static(path.join(__dirname, '/modules/system/p
 app.use("/swagger/public", express.static(path.join(__dirname, '/modules/swagger/public')));
 app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
 
-app.use("/app", express.static(path.join(__dirname, '/dist/app')));
+
+if (config.s3) {
+    app.use("/app", httpProxy(config.s3.host, {
+        https: true,
+        proxyReqOptDecorator: (proxyReqOpts, originalReq) => {
+            proxyReqOpts.rejectUnauthorized = false;
+            return proxyReqOpts;
+        },
+        proxyReqPathResolver: req => {
+            let parts = req.url.split('?');
+            let queryString = parts[1];
+            let updatedPath = "/" + config.s3.path + parts[0];
+            return updatedPath + (queryString ? '?' + queryString : '');
+        },
+    }));
+} else {
+    app.use("/app", express.static(path.join(__dirname, '/dist/app')));
+}
+
 app.use("/app/offline", express.static(path.join(__dirname, '/dist/app/offline')));
 app.use("/common", express.static(path.join(__dirname, '/dist/common')));
 app.use("/components", express.static(path.join(__dirname, '/dist/components')));
