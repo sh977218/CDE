@@ -284,21 +284,23 @@ exports.update = function (elt, user, callback, special) {
 
         newDe.save(function (err) {
             if (err) {
-                logging.errorLogger.error("Error: Cannot save CDE", {
-                    origin: "cde.mongo-cde.update.2",
-                    stack: new Error().stack,
-                    details: "err " + err
-                });
+                logging.errorLogger.error("Cannot save new CDE",
+                    {
+                        origin: "cde.mongo-cde.update.2",
+                        stack: new Error().stack,
+                        details: "err " + err
+                    });
                 callback(err);
             } else {
                 dataElement.archived = true;
-                dataElement.save(function (err) {
+                DataElement.findOneAndUpdate({_id: dataElement._id}, dataElement, function (err) {
                     if (err) {
-                        logging.errorLogger.error("Error: Cannot save CDE", {
-                            origin: "cde.mongo-cde.update.3",
-                            stack: new Error().stack,
-                            details: "err " + err
-                        });
+                        logging.errorLogger.error("Transaction failed. Cannot save archived CDE.Possible duplicated tinyId: " + newDe.tinyId,
+                            {
+                                origin: "cde.mongo-cde.update.3",
+                                stack: new Error().stack,
+                                details: "err " + err
+                            });
                     }
                     callback(err, newDe);
                     auditModifications(dataElement, newDe, user);

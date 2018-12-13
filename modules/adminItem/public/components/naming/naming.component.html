@@ -1,15 +1,16 @@
 <div id="namingDiv">
-    <h4>Designations&nbsp;
+    <h4>Namings:&nbsp;
         <button *ngIf="canEdit" id="openNewDesignationModalBtn" (click)="openNewDesignationModal()" mat-raised-button>
             <mat-icon>add</mat-icon>
-            Add Designation
+            Add Naming
         </button>
     </h4>
     <div *ngIf="elt.designations.length === 0">There are no designations.</div>
     <ng-container *ngFor="let designation of elt.designations;let i = index">
         <dl class="row">
             <dt class="col-3 text-right">
-                <mat-icon (click)="removeDesignationByIndex(i)" *ngIf="canEdit && !designation.edit && elt.designations.length > 1"
+                <mat-icon (click)="removeDesignationByIndex(i)"
+                          *ngIf="canEdit && !designation.edit && elt.designations.length > 1"
                           id="removeDesignation-{{i}}">delete
                 </mat-icon>
                 <cde-sortable-array [theArray]="elt.designations" [index]="i" *ngIf="canEdit"
