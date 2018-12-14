@@ -43,7 +43,9 @@ exports.parseValueDomain = nindsForms => {
         return apv && bpv && _.isEqual(apv, bpv);
     });
 
-    let valueDomain = {};
+    let valueDomain = {
+        permissibleValues: []
+    };
 
     if (_measurementTypeArray.length > 1) {
         console.log('_measurementTypeArray > 1');

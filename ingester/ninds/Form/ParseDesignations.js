@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const trimWhite = require('../../shared/utility').trimWhite;
 
 exports.parseDesignations = nindsForms => {
     let formNameArray = [];
@@ -16,7 +17,7 @@ exports.parseDesignations = nindsForms => {
 
     _formNameArray.forEach(c => {
         designations.push({
-            designation: c.trim(),
+            designation: c.trim().trimWhite(),
             tags: []
         })
     });

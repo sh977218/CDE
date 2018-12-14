@@ -1,3 +1,5 @@
+const trimWhite = require('../../shared/utility').trimWhite;
+
 function isDesignationsExisted(designations, designation) {
     let temp = designations.filter(n => n.designation === designation.designation);
     if (temp.length > 0) return temp[0];
@@ -21,7 +23,7 @@ exports.parseDesignations = (loinc, element) => {
     if (NAME) {
         if (NAME['Long Common Name']) {
             longCommonNameObj = {
-                designation: NAME['Long Common Name'],
+                designation: NAME['Long Common Name'].trimWhite(),
                 tags: ["Long Common Name"]
             };
             let existingDesignation = isDesignationsExisted(designations, longCommonNameObj);
@@ -33,7 +35,7 @@ exports.parseDesignations = (loinc, element) => {
         }
         if (NAME['Shortname']) {
             shortNameObj = {
-                designation: NAME['Shortname'],
+                designation: NAME['Shortname'].trimWhite(),
                 tags: ["Shortname"]
             };
             let existingDesignation = isDesignationsExisted(designations, shortNameObj);
@@ -49,7 +51,7 @@ exports.parseDesignations = (loinc, element) => {
     if (loinc['SURVEY QUESTION']) {
         if (loinc['SURVEY QUESTION'].Text) {
             questionTextDesignationObj = {
-                designation: loinc['SURVEY QUESTION'].Text,
+                designation: loinc['SURVEY QUESTION'].Text.trimWhite(),
                 tags: ['Question Text']
             };
             let existingDesignation = isDesignationsExisted(designations, questionTextDesignationObj);
@@ -64,7 +66,7 @@ exports.parseDesignations = (loinc, element) => {
     let loincNameObj = {};
     if (element && element.overrideDisplayNameText) {
         loincNameObj = {
-            designation: element.overrideDisplayNameText,
+            designation: element.overrideDisplayNameText.trimWhite(),
             tags: ['Question Text']
         };
         let existingDesignation = isDesignationsExisted(designations, loincNameObj);
@@ -77,7 +79,7 @@ exports.parseDesignations = (loinc, element) => {
     }
     if (LOINCNAME) {
         loincNameObj = {
-            designation: LOINCNAME,
+            designation: LOINCNAME.trimWhite(),
             tags: ['Question Text']
         };
         let existingDesignation = isDesignationsExisted(designations, loincNameObj);

@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const trimWhite = require('../../shared/utility').trimWhite;
 
 exports.parseDesignations = nindsForms => {
     let cdeNameArray = [];
@@ -25,7 +26,7 @@ exports.parseDesignations = nindsForms => {
     _questionTextArray.forEach(n => {
         if (n !== 'N/A')
             designations.push({
-                designation: n,
+                designation: n.trimWhite(),
                 tags: ['Question Text']
             });
     });

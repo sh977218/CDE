@@ -17,8 +17,7 @@ const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
 doOneNindsCde = async cdeId => {
     let newCdeObj = await CreateCDE.createCde(cdeId);
-    let newCde = new DataElement(newCdeObj);
-    let cdeError = deValidator.checkPvUnicity(newCde.valueDomain);
+    let cdeError = deValidator.checkPvUnicity(newCdeObj.valueDomain);
     if (cdeError && !cdeError.allValid) {
         if (cdeError.pvNotValidMsg === 'Value List must contain at least one Permissible Value') {
             let slComment = {
@@ -30,17 +29,18 @@ doOneNindsCde = async cdeId => {
                 status: 'active',
                 replies: [],
                 element: {
-                    eltType: 'cde',
-                    eltId: newCde.tinyId
+                    eltType: 'cde'
                 }
             };
-            newCde.comments.push(slComment);
-            newCde.valueDomain.permissibleValues = [{permissibleValue: '0'}];
+            newCdeObj.comments.push(slComment);
+            newCdeObj.valueDomain.permissibleValues = [{permissibleValue: '0'}];
         } else {
-            console.log(newCde.ids[0].id + ' has some other error. ' + JSON.stringify(cdeError));
+            console.log(newCdeObj.ids[0].id + ' has some other error. ' + JSON.stringify(cdeError));
             process.exit(1);
         }
     }
+
+    let newCde = new DataElement(newCdeObj);
 
     let existingCde = await DataElement.findOne({
         archived: false,
@@ -51,7 +51,7 @@ doOneNindsCde = async cdeId => {
     if (!existingCde) {
         for (let comment of newCdeObj.comments) {
             comment.element.eltId = newCde.tinyId;
-            await comment.save();
+            await new Comment(comment).save();
             console.log('comment saved on ' + newCde.tinyId);
         }
         await newCde.save();
@@ -62,7 +62,7 @@ doOneNindsCde = async cdeId => {
         let diff = CompareCDE.compareCde(newCde, existingCde);
         for (let comment of newCdeObj.comments) {
             comment.eltTinyId = existingCde.tinyId;
-            await comment.save();
+            await new Comment(comment).save();
             console.log('comment saved on ' + existingCde.tinyId);
         }
         if (_.isEmpty(diff)) {
