@@ -34,7 +34,11 @@ function runDe() {
                 d.designation = removeWhite(d.designation);
             });
             elt.designations = eltObj.designations;
-            await elt.save();
+            try {
+                await elt.save();
+            } catch (e) {
+                console.log(e);
+            }
             deCount++;
             console.log('deCount: ' + deCount);
         }).then(() => console.log('Finished. deCount: ' + deCount), err => console.log(err));
@@ -51,7 +55,11 @@ function runForm() {
             elt.markModified('designations');
             loopFes(elt.formElements);
             elt.markModified('formElements');
-            await elt.save();
+            try {
+                await elt.save();
+            } catch (e) {
+                console.log(e);
+            }
             formCount++;
             console.log('formCount: ' + formCount);
         }).then(() => console.log('Finished. formCount: ' + formCount), err => console.log(err));
