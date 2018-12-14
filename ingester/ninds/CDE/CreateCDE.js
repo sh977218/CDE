@@ -45,6 +45,7 @@ exports.createCde = async cdeId => {
         valueDomain: valueDomain,
         classification: classification,
         registrationState: {registrationStatus: "Qualified"},
+        comments: []
     };
 
     return cde;

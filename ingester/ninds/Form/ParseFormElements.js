@@ -34,10 +34,10 @@ doOneNindsCde = async cdeId => {
                     eltId: newCde.tinyId
                 }
             };
-            await new Comment(slComment).save();
+            newCde.comments.push(slComment);
             newCde.valueDomain.permissibleValues = [{permissibleValue: '0'}];
         } else {
-            console.log('some other error.');
+            console.log(newCde.ids[0].id + ' has some other error. ' + JSON.stringify(cdeError));
             process.exit(1);
         }
     }
@@ -49,12 +49,22 @@ doOneNindsCde = async cdeId => {
     });
     let yesterday = new Date().setDate(new Date().getDate() - 1);
     if (!existingCde) {
+        for (let comment of newCdeObj.comments) {
+            comment.element.eltId = newCde.tinyId;
+            await comment.save();
+            console.log('comment saved on ' + newCde.tinyId);
+        }
         await newCde.save();
     } else if (updatedByNonLoader(existingCde) && existingCde.updated > yesterday) {
     } else {
         existingCde.imported = new Date().toJSON();
         existingCde.markModified('imported');
         let diff = CompareCDE.compareCde(newCde, existingCde);
+        for (let comment of newCdeObj.comments) {
+            comment.eltTinyId = existingCde.tinyId;
+            await comment.save();
+            console.log('comment saved on ' + existingCde.tinyId);
+        }
         if (_.isEmpty(diff)) {
             await existingCde.save();
         } else {
