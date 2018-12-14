@@ -179,12 +179,13 @@ let getS3Link = function (subpath) {
 };
 
 if (config.s3) {
-    app.use("/app/", httpProxy(config.s3.host, getS3Link("/app")));
-    app.use("/common/", httpProxy(config.s3.host, getS3Link("/common")));
-    app.use("/embed/", httpProxy(config.s3.host, getS3Link("/embed")));
-    app.use("/launch/", httpProxy(config.s3.host, getS3Link("/launch")));
-    app.use("/native/", httpProxy(config.s3.host, getS3Link("/native")));
-    app.use("/fhir/", httpProxy(config.s3.host, getS3Link("/fhir")));
+    app.use("/app", httpProxy(config.s3.host, getS3Link("/app")));
+    app.use("/app/offline", httpProxy(config.s3.host, getS3Link("/app/offline")));
+    app.use("/common", httpProxy(config.s3.host, getS3Link("/common")));
+    app.use("/embed", httpProxy(config.s3.host, getS3Link("/embed")));
+    app.use("/launch", httpProxy(config.s3.host, getS3Link("/launch")));
+    app.use("/native", httpProxy(config.s3.host, getS3Link("/native")));
+    app.use("/fhir", httpProxy(config.s3.host, getS3Link("/fhir")));
 } else {
     app.use("/app", express.static(path.join(__dirname, '/dist/app')));
     app.use("/app/offline", express.static(path.join(__dirname, '/dist/app/offline')));
