@@ -329,15 +329,12 @@ try {
 
 app.use('/robots.txt', express.static(path.join(__dirname, '/modules/system/public/robots.txt')));
 
-const consoleLog = require('./server/log/dbLogger').consoleLog;
 // final route -> 404
 app.use((req, res, next) => {
     // swagger does something i don't get. This will let swagger work
     if (req.originalUrl === "/docs" || req.originalUrl === "/api-docs" || req.originalUrl.indexOf("/docs/") === 0) {
         return next();
     }
-    consoleLog(req.originalUrl);
-    consoleLog(req.url);
     res.render('index', 'system', {config: config, version: 'version'});
 });
 
