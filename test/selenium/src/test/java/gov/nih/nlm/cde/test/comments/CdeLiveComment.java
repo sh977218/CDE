@@ -14,8 +14,7 @@ public class CdeLiveComment extends NlmCdeBaseTest {
         mustBeLoggedInAs(nindsCurator_username, password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
-        clickElement(By.xpath("//tbody/tr//mat-slide-toggle"));
-        checkAlert("Saved");
+        textPresent("Enabled", By.xpath("//tbody/tr//mat-slide-toggle"));
         logout();
 
         String cdeName = "Sensory system abnormality stocking glove present text";
@@ -48,7 +47,7 @@ public class CdeLiveComment extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(nindsCurator_username, password);
         clickElement(By.id("notifications"));
-        textPresent("3 new comments",
+        textPresent("3 comments",
                 By.xpath("//div[contains(@class, 'taskItem')][*//mat-chip[contains(text(), 'gPY57SQ7-ZF')]]"));
         textPresent(reply,
                 By.xpath("//div[contains(@class, 'taskItem')][*//mat-chip[contains(text(), 'gPY57SQ7-ZF')]]"));

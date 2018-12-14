@@ -98,22 +98,7 @@ exports.fileUsed = (collection, id, cb) => {
     });
 };
 
-exports.createApprovalMessage = function (user, role, type, details) {
-    mongo_data.createMessage({
-        author: {authorType: 'user', name: user.username},
-        date: new Date(),
-        recipient: {recipientType: 'role', name: role},
-        states: [{
-            action: String,
-            date: new Date(),
-            comment: String
-        }],
-        type: type,
-        typeAttachmentApproval: type === 'AttachmentApproval' ? details : undefined,
-    });
-};
-
-exports.createTask = function (user, role, type, details) {
+exports.createTask = function (user, role, type, eltModule, eltTinyId, item) {
     // mongo_data.taskCreate({
     //     from: [{type: 'user', typeId: user.username}],
     //     to: {type: 'role', typeId: role},
@@ -121,20 +106,23 @@ exports.createTask = function (user, role, type, details) {
     //     typeInfo: details,
     // });
 
-    let name = utilShared.capString(type) + ' Request';
-    let pushTaskMsg = JSON.stringify({
+    // drawer - query calculated
+
+    // push
+    let name;
+    switch (type) {
+        case 'approval':
+            name = utilShared.capString(type) + ' Request: ' + user.username + ' added ' + item + ' on '
+                + utilShared.capString(eltModule) + ' ' + eltTinyId + ' and needs approval';
+    }
+    const pushTask = {
         title: name,
         options: {
             body: 'Tasks can be completed using the notification bell menu on the navigation bar',
             icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
             badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
-            tag: 'cde-' + type,
+            tag: 'cde-' + role + '-' + type,
             actions: [
-                {
-                    action: 'open-app-action',
-                    title: 'View in Notification Bell',
-                    icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
-                },
                 {
                     action: 'profile-action',
                     title: 'Edit Subscription',
@@ -142,7 +130,22 @@ exports.createTask = function (user, role, type, details) {
                 }
             ]
         }
-    });
+    };
+    if (!!eltTinyId) {
+        pushTask.options.data = {url: itemShared.uriView(eltModule, eltTinyId)};
+        pushTask.options.actions.unshift({
+            action: 'open-url',
+            title: 'Open',
+            icon: '/cde/public/assets/img/open_in_browser.png'
+        });
+    } else {
+        pushTask.options.actions.unshift({
+            action: 'open-app-action',
+            title: 'View in Notification Bell',
+            icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
+        });
+    }
+    const pushTaskMsg = JSON.stringify(pushTask);
     mongo_data.pushRegistrationSubscribersByType(type + role, handleError({}, registrations => {
         registrations.forEach(r => pushNotification.triggerPushMsg(r, pushTaskMsg));
     }));

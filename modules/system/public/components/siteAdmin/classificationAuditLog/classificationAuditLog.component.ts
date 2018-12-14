@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import _noop from 'lodash/noop';
 
 type ClassificationAuditLogRecord = any;
 
@@ -26,6 +27,6 @@ export class ClassificationAuditLogComponent implements OnInit {
             limit: 50
         }).subscribe(response => {
             this.records = response;
-        });
+        }, _noop);
     }
 }

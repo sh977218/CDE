@@ -44,17 +44,8 @@ exports.module = function (roleConfig) {
             discussDb.save(comment, handleError(handlerOptions, savedComment => {
                 ioServerCommentUpdated(req.user.username, eltTinyId);
                 if (savedComment.pendingApproval) {
-                    adminItemService.createTask(req.user, 'CommentReviewer', 'approve', {
-                        element: {
-                            eltId: savedComment.element.eltId,
-                            name: eltShared.getName(elt),
-                            eltType: comment.element.eltType
-                        },
-                        comment: {
-                            commentId: savedComment._id,
-                            text: savedComment.text
-                        }
-                    });
+                    adminItemService.createTask(req.user, 'CommentReviewer', 'approval', eltModule,
+                        eltTinyId, 'comment');
                 } else {
                     adminItemService.notifyForComment({}, savedComment, eltModule,  eltTinyId,
                         elt.stewardOrg && elt.stewardOrg.name);
@@ -87,20 +78,12 @@ exports.module = function (roleConfig) {
             discussDb.save(comment, handleError(handlerOptions, savedComment => {
                 ioServerCommentUpdated(req.user.username, comment.element.eltId);
                 if (reply.pendingApproval) {
-                    adminItemService.createTask(req.user, 'CommentReviewer', 'approve', {
-                        element: {
-                            tinyId: comment.element.eltId,
-                            name: req.body.eltName
-                        },
-                        comment: {
-                            commentId: comment._id,
-                            replyIndex: comment.replies.length,
-                            text: req.body.reply
-                        }
-                    });
+                    adminItemService.createTask(req.user, 'CommentReviewer', 'approval', eltModule,
+                        eltTinyId, 'comment');
                 } else {
                     mongo_data.fetchItem(eltModule, eltTinyId, handle404({}, elt => {
-                        adminItemService.notifyForComment({}, savedComment.replies.filter(r => +new Date(r.created) === +new Date(reply.created))[0], eltModule, eltTinyId,
+                        adminItemService.notifyForComment({}, savedComment.replies.filter(r =>
+                            +new Date(r.created) === +new Date(reply.created))[0], eltModule, eltTinyId,
                             elt.stewardOrg && elt.stewardOrg.name);
                     }));
                 }

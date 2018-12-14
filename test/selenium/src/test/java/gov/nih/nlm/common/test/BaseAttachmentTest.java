@@ -30,29 +30,18 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         switchTabAndClose(0);
     }
 
-    protected void reviewAttachment(String name) {
+    protected void reviewAttachment(String fileName) {
         mustBeLoggedInAs(attachmentReviewer_username, password);
-        gotoInbox();
-
-        textPresent("Attachment approval");
-        clickElement(By.xpath("//button[contains(., '( " + name + " )')]"));
-
-        findElement(By.linkText(name));
-        clickElement(By.id("approve-" + name));
-        checkAlert("Message moved to archive");
+        clickElement(By.id("notifications"));
+        clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'" + fileName
+                + "')]]//button[*[contains(text(),'Approve')]]"));
     }
 
-    protected void declineAttachment(String name) {
+    protected void declineAttachment(String fileName) {
         mustBeLoggedInAs(attachmentReviewer_username, password);
-        gotoInbox();
-
-        textPresent("Attachment approval");
-        clickElement(By.xpath("//button[contains(., '( " + name + " )')]"));
-
-        findElement(By.linkText(name));
-
-        clickElement(By.id("decline-" + name));
-        checkAlert("Message moved to archive");
+        clickElement(By.id("notifications"));
+        clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'" + fileName
+                + "')]]//button[*[contains(text(),'Reject')]]"));
     }
 
     public void setAttachmentDefault() {
