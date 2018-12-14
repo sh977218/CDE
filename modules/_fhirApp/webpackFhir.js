@@ -8,12 +8,12 @@ module.exports = {
         fhir: './modules/_fhirApp/fhirApp.ts'
     },
     output: {
-        path: path.resolve(__dirname, '../../dist/fhirApp'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
-        publicPath: '/fhirApp/',
+        path: path.resolve(__dirname, '../../dist/fhir'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
+        publicPath: '/fhir/',
         filename: '[name].js'
     },
     plugins: [
-        new CleanWebpackPlugin(['dist/fhirApp'], {root: process.cwd()}),
+        new CleanWebpackPlugin(['dist/fhir'], {root: process.cwd()}),
         new webpack.DefinePlugin({
             APPLICATION_NAME: '"CDE FHIR Embed"',
         }),

@@ -148,7 +148,7 @@ gulp.task('copyDist', gulp.series('createDist',
         buildFhir = () => run('npm run buildFhir').exec())
     , copyApp = () => gulp.src('./dist/app/**/*').pipe(gulp.dest(config.node.buildDir + '/dist/app'))
     , copyEmbed = () => gulp.src('./dist/embed/**/*').pipe(gulp.dest(config.node.buildDir + '/dist/embed'))
-    , copyFhir = () => gulp.src('./dist/fhirApp/*').pipe(gulp.dest(config.node.buildDir + '/dist/fhirApp'))
+    , copyFhir = () => gulp.src('./dist/fhir/*').pipe(gulp.dest(config.node.buildDir + '/dist/fhir'))
     , copyNative = () => gulp.src('./dist/native/**/*').pipe(gulp.dest(config.node.buildDir + '/dist/native'))
     , copyHome = () => gulp.src('./modules/system/views/home-launch.ejs').pipe(gulp.dest(config.node.buildDir + '/modules/system/views'))
     , copyLaunch = () => gulp.src('./dist/launch/*').pipe(gulp.dest(config.node.buildDir + '/dist/launch'))
