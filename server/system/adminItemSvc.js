@@ -181,10 +181,10 @@ exports.hideProprietaryIds = function (elt) {
     }
 };
 
-exports.notifyForComment = (handlerOptions, commentOrReply, eltModule, eltTinyId, eltStewardOrg, cb = _.noop) => {
+exports.notifyForComment = (handlerOptions, commentOrReply, eltModule, eltTinyId, eltStewardOrg, users = [], cb = _.noop) => {
     discussDb.byEltId(eltTinyId, handleError(handlerOptions, comments => {
         let userList = Array.from(new Set(comments
-            .reduce((acc, c) => acc.concat(c.user._id, c.replies.map(r => r.user._id)), [])
+            .reduce((acc, c) => acc.concat(c.user._id, c.replies.map(r => r.user._id)), users)
             .filter(u => !!u && !u.equals(commentOrReply.user._id))
         ));
         userDb.find(notificationSvc.typeToCriteria('comment', {users: userList, org: eltStewardOrg}), handleError(handlerOptions, users => {
