@@ -27,7 +27,6 @@ const winston = require('winston');
 const authorization = require('./server/system/authorization');
 const traffic = require('./server/system/traffic');
 const authorizationShared = require('./shared/system/authorizationShared');
-const consoleLog = require('./server/log/dbLogger').consoleLog;
 
 require('./server/system/elastic').initEs();
 
