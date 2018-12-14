@@ -159,8 +159,6 @@ app.use("/system/public", express.static(path.join(__dirname, '/modules/system/p
 app.use("/swagger/public", express.static(path.join(__dirname, '/modules/swagger/public')));
 app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
 
-
-
 let getS3Link = function (subpath) {
     return {
         https: true,
@@ -172,7 +170,6 @@ let getS3Link = function (subpath) {
             let parts = req.url.split('?');
             let queryString = parts[1];
             let updatedPath = "/" + config.s3.path + subpath + parts[0];
-            consoleLog("updatedPath: " + updatedPath);
             return updatedPath + (queryString ? '?' + queryString : '');
         }
     }
