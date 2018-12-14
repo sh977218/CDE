@@ -165,14 +165,14 @@ let getS3Link = function (subpath) {
             proxyReqOpts.rejectUnauthorized = false;
             return proxyReqOpts;
         },
-        skipToNextHandlerFilter: proxyRes => proxyRes.statusCode === 404,
+        filter: req => !req.originalUrl.startsWith('/fhir/launch/') && !req.originalUrl.startsWith('/fhir/form/'),
         proxyReqPathResolver: req => {
             let parts = req.url.split('?');
             let queryString = parts[1];
             let updatedPath = "/" + config.s3.path + subpath + parts[0];
             return updatedPath + (queryString ? '?' + queryString : '');
         }
-    }
+    };
 };
 
 if (config.s3) {
