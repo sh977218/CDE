@@ -165,9 +165,7 @@ let getS3Link = function (subpath) {
             proxyReqOpts.rejectUnauthorized = false;
             return proxyReqOpts;
         },
-        skipToNextHandlerFilter: function(proxyRes) {
-            return proxyRes.statusCode === 404;
-        },
+        skipToNextHandlerFilter: proxyRes => proxyRes.statusCode === 404,
         proxyReqPathResolver: req => {
             let parts = req.url.split('?');
             let queryString = parts[1];
