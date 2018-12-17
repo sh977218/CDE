@@ -20,5 +20,5 @@ exports.wipeUseless = function (toWipeCde) {
 
 exports.trimWhite = function (text) {
     if (!text) return '';
-    return text.replace(/\s+/g, ' ');
+    return text.trim().replace(/\s+/g, ' ');
 };
