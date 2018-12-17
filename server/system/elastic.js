@@ -1,5 +1,4 @@
 const async = require('async');
-const _ = require('lodash');
 const config = require('./parseConfig');
 const logging = require('./logging');
 const regStatusShared = require('esm')(module)('../../shared/system/regStatusShared'); //jshint ignore:line
