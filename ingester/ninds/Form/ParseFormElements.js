@@ -21,7 +21,7 @@ doOneNindsCde = async cdeId => {
     if (cdeError && !cdeError.allValid) {
         if (cdeError.pvNotValidMsg === 'Value List must contain at least one Permissible Value') {
             let slComment = {
-                text: 'NINDS Batch loader was not able to find PV Value List',
+                text: 'NINDS Batch loader was not able to find PV Value List on ' + cdeId,
                 user: batchloader,
                 created: new Date(),
                 pendingApproval: false,
@@ -52,7 +52,7 @@ doOneNindsCde = async cdeId => {
         for (let comment of newCdeObj.comments) {
             comment.element.eltId = newCde.tinyId;
             await new Comment(comment).save();
-            console.log('comment saved on ' + newCde.tinyId);
+            console.log('comment saved on new CDE ' + newCde.tinyId);
         }
         await newCde.save();
     } else if (updatedByNonLoader(existingCde) && existingCde.updated > yesterday) {
@@ -61,9 +61,9 @@ doOneNindsCde = async cdeId => {
         existingCde.markModified('imported');
         let diff = CompareCDE.compareCde(newCde, existingCde);
         for (let comment of newCdeObj.comments) {
-            comment.eltTinyId = existingCde.tinyId;
+            comment.element.eltTinyId = existingCde.tinyId;
             await new Comment(comment).save();
-            console.log('comment saved on ' + existingCde.tinyId);
+            console.log('comment saved on existing CDE ' + existingCde.tinyId);
         }
         if (_.isEmpty(diff)) {
             await existingCde.save();
