@@ -26,7 +26,7 @@ exports.parseDesignations = nindsForms => {
     _questionTextArray.forEach(n => {
         if (n !== 'N/A')
             designations.push({
-                designation: n.trimWhite(),
+                designation: trimWhite(n),
                 tags: ['Question Text']
             });
     });

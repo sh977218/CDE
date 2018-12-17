@@ -2,7 +2,7 @@ const trimWhite = require('../../shared/utility').trimWhite;
 
 exports.parseDesignations = nciCde => {
     let designations = [{
-        designation: nciCde.LONGNAME[0].trimWhite(),
+        designation: trimWhite(nciCde.LONGNAME[0]),
         tags: []
     }];
 
@@ -12,7 +12,7 @@ exports.parseDesignations = nciCde => {
             let tagIndex = designationTags.indexOf(refDoc.DocumentType[0]);
             if (tagIndex > -1) {
                 designations.push({
-                    designation: refDoc.DocumentText[0].trimWhite(),
+                    designation: trimWhite(refDoc.DocumentText[0]),
                     tags: [refDoc.DocumentType[0]]
                 });
             }

@@ -17,7 +17,7 @@ exports.parseDesignations = nindsForms => {
 
     _formNameArray.forEach(c => {
         designations.push({
-            designation: c.trimWhite(),
+            designation: trimWhite(c),
             tags: []
         })
     });
