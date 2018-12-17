@@ -26,7 +26,9 @@ function formatSkipLogic(text, map) {
                 text = text.replace(label, '[' + map[label] + ']');
             }
         })
-    } else throw "Error Parse Skip Logic.";
+    } else {
+        console.log("Error Parse Skip Logic.");
+    }
 }
 
 function getRedCap(form) {
@@ -38,7 +40,9 @@ function getRedCap(form) {
             let temp = _.uniqWith(formElement.formElements, (a, b) => _.isEqual(a.question.answers, b.question.answers));
             if (temp.length > 1) sectionsAsMatrix = false;
         }
+        let _sectionSkipLogic = '';
         let sectionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
+        if (sectionSkipLogic) formatSkipLogic(sectionSkipLogic, label_variables_map);
         return {
             'Variable / Field Name': 'insect_' + i,
             'Form Name': form.designations[0].designation,
@@ -51,7 +55,7 @@ function getRedCap(form) {
             'Text Validation Min': '',
             'Text Validation Max': '',
             'Identifier?': '',
-            'Branching Logic (Show field only if...)': formatSkipLogic(sectionSkipLogic, label_variables_map),
+            'Branching Logic (Show field only if...)': _sectionSkipLogic,
             'Required Field?': '',
             'Custom Alignment': '',
             'Question Number (surveys only)': '',
@@ -62,6 +66,7 @@ function getRedCap(form) {
     let doQuestion = (formElement) => {
         let q = formElement.question;
         let questionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
+        if (questionSkipLogic) formatSkipLogic(questionSkipLogic, label_variables_map);
         if (!q.cde.tinyId) q.cde.tinyId = 'missing question cde';
         let variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' + q.cde.tinyId.toLowerCase();
         if (existingVariables[variableName]) {
@@ -89,7 +94,7 @@ function getRedCap(form) {
             'Text Validation Min': q.datatypeNumber ? q.datatypeNumber.minValue : '',
             'Text Validation Max': q.datatypeNumber ? q.datatypeNumber.maxValue : '',
             'Identifier?': '',
-            'Branching Logic (Show field only if...)': formatSkipLogic(questionSkipLogic, label_variables_map),
+            'Branching Logic (Show field only if...)': questionSkipLogic,
             'Required Field?': q.required,
             'Custom Alignment': '',
             'Question Number (surveys only)': '',
