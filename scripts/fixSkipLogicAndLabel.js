@@ -26,34 +26,53 @@ function loopFes(fes) {
 }
 
 function runDe() {
-    DataElement.find({archived: false, 'designations.designation': /[\n\r\t]/})
-        .cursor()
-        .eachAsync(async elt => {
-            let eltObj = elt.toObject();
-            eltObj.designations.forEach(d => {
-                d.designation = removeWhite(d.designation);
+    DataElement.find({archived: false, 'designations.designation': /[\n\r\t]/}).cursor()
+        .eachAsync(elt => {
+            return new Promise((resolve, reject) => {
+                let eltObj = elt.toObject();
+                eltObj.designations.forEach(d => {
+                    d.designation = removeWhite(d.designation);
+                });
+                elt.designations = eltObj.designations;
+                elt.save(err => {
+                    if (err) {
+                        console.log(err);
+                        process.exit(1)
+                    } else {
+                        deCount++;
+                        console.log('deCount: ' + deCount);
+                        if (deCount % 200 === 0) {
+                            setTimeout(() => resolve(), 5000);
+                        } else resolve();
+                    }
+                });
             });
-            elt.designations = eltObj.designations;
-            await elt.save();
-            deCount++;
-            console.log('deCount: ' + deCount);
         }).then(() => console.log('Finished. deCount: ' + deCount), err => console.log(err));
-
 }
 
 function runForm() {
-    Form.find({archived: false})
-        .cursor()
-        .eachAsync(async elt => {
-            elt.designations.forEach(d => {
-                d.designation = removeWhite(d.designation);
-            });
-            elt.markModified('designations');
-            loopFes(elt.formElements);
-            elt.markModified('formElements');
-            await elt.save();
-            formCount++;
-            console.log('formCount: ' + formCount);
+    Form.find({archived: false}).cursor()
+        .eachAsync(elt => {
+            return new Promise((resolve, reject) => {
+                elt.designations.forEach(d => {
+                    d.designation = removeWhite(d.designation);
+                });
+                elt.markModified('designations');
+                loopFes(elt.formElements);
+                elt.markModified('formElements');
+                elt.save(err => {
+                    if (err) {
+                        console.log(err);
+                        process.exit(1)
+                    } else {
+                        formCount++;
+                        console.log('formCount: ' + formCount);
+                        if (formCount % 200 === 0) {
+                            setTimeout(() => resolve(), 5000);
+                        } else resolve();
+                    }
+                });
+            })
         }).then(() => console.log('Finished. formCount: ' + formCount), err => console.log(err));
 }
 
