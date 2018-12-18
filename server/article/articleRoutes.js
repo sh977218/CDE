@@ -8,27 +8,22 @@ const db = require('./articleDb');
 exports.module = function (roleConfig) {
     const router = require('express').Router();
 
-    router.get('/whatsNew', (req, res) => {
-        db.byKey('whatsNew', handleError({res: res, origin: "GET /article/whatsNew"},
-            article => {
-                if (!article) return res.status(404).send();
-                res.send(article);
-            }));
+    ['whatsNew', "contactUs", "resources"].forEach(a => {
+        router.get('/' + a, (req, res) => {
+            db.byKey(a, handleError({res: res, origin: "GET /article/" + a},
+                article => {
+                    if (!article) return res.status(404).send();
+                    res.send(article);
+                }));
+        });
     });
 
     router.post('/:key', roleConfig.update, (req, res) => {
         if (req.body.key !== req.params.key) return res.status(400).send();
-        db.update(req.body, handleError({res: res, origin: "POST /article/whatsNew"},
+        db.update(req.body, handleError({res: res, origin: "POST /article/:key"},
             article => res.send(article)));
     });
 
-    router.get('/resources', (req, res) => {
-        db.byKey('resources', handleError({res: res, origin: "GET /article/resources"},
-            article => {
-                if (!article) return res.status(404).send();
-                res.send(article);
-            }));
-    });
     router.get('/resourcesAndFeed', (req, res) => {
         db.byKey('resources', handleError({res: res, origin: "GET /article/resourcesAndFeed"},
             article => {

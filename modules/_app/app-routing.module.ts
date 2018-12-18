@@ -49,6 +49,7 @@ const appRoutes: Routes = [
     {path: 'resources', loadChildren: 'system/public/resources.module#ResourcesModule'},
     {path: 'profile', loadChildren: 'system/public/profile.module#ProfileModule', canLoad: [LoggedInGuard]},
     {path: 'whatsNew', loadChildren: 'system/public/whatsNew.module#WhatsNewModule'},
+    {path: 'contactUs', loadChildren: 'system/public/contactUs.module#ContactUsModule'},
     {
         path: 'searchPreferences',
         resolve: {
