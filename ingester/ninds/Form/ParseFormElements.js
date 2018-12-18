@@ -50,7 +50,7 @@ doOneNindsCde = async cdeId => {
     let yesterday = new Date().setDate(new Date().getDate() - 1);
     if (!existingCde) {
         for (let comment of newCdeObj.comments) {
-            comment.element.eltId = newCde.tinyId;
+            comment.element.eltId = newCde.toObject().tinyId;
             await new Comment(comment).save();
             console.log('comment saved on new CDE ' + newCde.tinyId);
         }
@@ -61,7 +61,7 @@ doOneNindsCde = async cdeId => {
         existingCde.markModified('imported');
         let diff = CompareCDE.compareCde(newCde, existingCde);
         for (let comment of newCdeObj.comments) {
-            comment.element.eltTinyId = existingCde.tinyId;
+            comment.element.eltTinyId = existingCde.toObject().tinyId;
             await new Comment(comment).save();
             console.log('comment saved on existing CDE ' + existingCde.tinyId);
         }
