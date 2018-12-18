@@ -11,6 +11,8 @@ const MergeForm = require('../Form/MergeForm');
 const updatedByNonLoader = require('../../shared/updatedByNonLoader').updatedByNonLoader;
 const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
+const checkNullComments = require('../../shared/utility').checkNullComments;
+
 let createdForm = 0;
 let sameForm = 0;
 let changeForm = 0;
@@ -64,6 +66,12 @@ run = async () => {
         await doOneNindsFormById(formId);
         await NindsModel.remove({formId: formId});
     }
+    let nullComments = await checkNullComments();
+    for (let nullComment of nullComments) {
+        let nullCommentObj = nullComment.toObject();
+        console.log(nullCommentObj.element.eltType + ' has null comment ' + nullCommentObj._id);
+    }
+
 };
 
 
