@@ -12,8 +12,8 @@ exports.module = function (roleConfig) {
         router.get('/' + a, (req, res) => {
             db.byKey(a, handleError({res: res, origin: "GET /article/" + a},
                 article => {
-                    if (!article) return res.status(404).send();
-                    res.send(article);
+                    if (!article) res.send("");
+                    else res.send(article);
                 }));
         });
     });
