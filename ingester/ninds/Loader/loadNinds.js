@@ -61,15 +61,15 @@ doOneNindsFormById = async formId => {
 };
 
 run = async () => {
-    let formIdList = await NindsModel.distinct('formId');
+//    let formIdList = await NindsModel.distinct('formId');
+    let formIdList = ['formF2316'];
     for (let formId of formIdList) {
         await doOneNindsFormById(formId);
         await NindsModel.remove({formId: formId});
     }
     let nullComments = await checkNullComments();
     for (let nullComment of nullComments) {
-        let nullCommentObj = nullComment.toObject();
-        console.log(nullCommentObj.element.eltType + ' has null comment ' + nullCommentObj._id);
+        console.log(nullComment.element.eltType + ' has null comment ' + nullComment._id);
     }
 
 };

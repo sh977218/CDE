@@ -49,12 +49,12 @@ doOneNindsCde = async cdeId => {
     });
     let yesterday = new Date().setDate(new Date().getDate() - 1);
     if (!existingCde) {
+        let savedCde = await newCde.save();
         for (let comment of newCdeObj.comments) {
-            comment.element.eltId = newCde.toObject().tinyId;
+            comment.element.eltId = savedCde.toObject().tinyId;
             await new Comment(comment).save();
-            console.log('comment saved on new CDE ' + newCde.tinyId);
+            console.log('comment saved on new CDE ' + savedCde.tinyId);
         }
-        await newCde.save();
     } else if (updatedByNonLoader(existingCde) && existingCde.updated > yesterday) {
     } else {
         existingCde.imported = new Date().toJSON();
