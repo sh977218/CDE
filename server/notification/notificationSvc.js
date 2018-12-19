@@ -1,7 +1,19 @@
 exports.typeToCriteria = function (type, {org, users} = {org: undefined, users: undefined}) {
     switch (type) {
-        case 'approveCommentReviewer':
-            return {roles: 'CommentReviewer'};
+        case 'approvalAttachmentReviewer':
+            return {
+                $or: [
+                    {siteAdmin: true},
+                    {roles: 'AttachmentReviewer'}
+                ]
+            };
+        case 'approvalCommentReviewer':
+            return {
+                $or: [
+                    {siteAdmin: true},
+                    {roles: 'CommentReviewer'}
+                ]
+            };
         case 'comment':
             return {
                 $or: [
@@ -12,6 +24,19 @@ exports.typeToCriteria = function (type, {org, users} = {org: undefined, users: 
             };
         default:
             return {findNone: 1};
+    }
+};
+
+exports.typeToNotificationSetting = function (type) {
+    switch (type) {
+        case 'approvalAttachmentReviewer':
+            return 'approvalAttachment';
+        case 'approvalCommentReviewer':
+            return 'approvalComment';
+        case 'comment':
+            return 'comment';
+        default:
+            return 'noMatch';
     }
 };
 

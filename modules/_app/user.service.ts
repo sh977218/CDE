@@ -9,8 +9,8 @@ import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { uriView } from 'shared/item';
 import { Cb, CbErr, CbErrObj, Comment, User } from 'shared/models.model';
-import { isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
-import { newNotificationSettings, newNotificationSettingsMedia } from 'shared/user';
+import { hasRole, isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
+import { newNotificationSettings, newNotificationSettingsMedia, newNotificationSettingsMediaDrawer } from 'shared/user';
 
 @Injectable()
 export class UserService {
@@ -123,8 +123,13 @@ export class UserService {
         if (!user.orgAdmin) user.orgAdmin = [];
         if (!user.orgCurator) user.orgCurator = [];
         if (!user.notificationSettings) user.notificationSettings = newNotificationSettings();
-        if (!user.notificationSettings.approvalComment) user.notificationSettings.approvalComment = newNotificationSettingsMedia();
-        if (!user.notificationSettings.comment) user.notificationSettings.comment = newNotificationSettingsMedia();
+        if (!user.notificationSettings.approvalAttachment && hasRole(user, 'AttachmentReviewer')) {
+            user.notificationSettings.approvalAttachment = newNotificationSettingsMediaDrawer();
+        }
+        if (!user.notificationSettings.approvalComment && hasRole(user, 'CommentReviewer')) {
+            user.notificationSettings.approvalComment = newNotificationSettingsMediaDrawer();
+        }
+        if (!user.notificationSettings.comment) user.notificationSettings.comment = newNotificationSettingsMediaDrawer();
         return user;
     }
 }
