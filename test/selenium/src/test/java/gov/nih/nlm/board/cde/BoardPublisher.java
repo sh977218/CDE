@@ -16,7 +16,7 @@ public class BoardPublisher extends BoardTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         openUserMenu();
         goToSiteManagement();
-        clickElement(By.xpath("/div[. = 'Users']"));
+        clickElement(By.xpath("//div[. = 'Users']"));
 
         findElement(By.id("searchUsersInput")).sendKeys(newUsername);
         clickElement(By.id("searchUsersSubmit"));

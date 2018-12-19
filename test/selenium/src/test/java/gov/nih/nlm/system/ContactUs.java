@@ -10,7 +10,7 @@ public class ContactUs extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Site Management"));
-        clickElement(By.xpath("/div[. = 'Articles']"));
+        clickElement(By.xpath("//div[. = 'Articles']"));
 
         clickElement(By.cssSelector("mat-select"));
         selectMatSelectDropdownByText("contactUs");
