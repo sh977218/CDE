@@ -300,7 +300,7 @@ export type NotificationSettingsMedia = {
     [key in NotificationSettingsMediaType]?: boolean;
 };
 
-export type NotificationSettingsType = 'approvalComment' | 'comment';
+export type NotificationSettingsType = 'approvalAttachment' | 'approvalComment' | 'comment';
 
 export type NotificationSettings = {
     [key in NotificationSettingsType]?: NotificationSettingsMedia;
@@ -405,7 +405,7 @@ export type Task = {
     url: string,
 };
 
-export type TaskIdType = 'cde' | 'clientError' | 'comment' | 'commentReply' | 'form' | 'serverError' | 'versionUpdate';
+export type TaskIdType = 'attachment' | 'cde' | 'clientError' | 'comment' | 'commentReply' | 'form' | 'serverError' | 'versionUpdate';
 export type TaskType = 'approve' | 'comment' | 'error' | 'message' | 'vote';
 export type TaskSource = 'calculated' | 'user';
 export const TaskStateUnread = 1;

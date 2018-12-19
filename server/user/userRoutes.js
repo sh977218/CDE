@@ -1,7 +1,9 @@
 const config = require('config');
 const itemShared = require('esm')(module)('../../shared/item');
+const eltShared = require('esm')(module)('../../shared/elt');
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const utilShared = require('esm')(module)('../../shared/system/util');
+const attachment = require('../attachment/attachmentSvc');
 const discussDb = require('../discuss/discussDb');
 const dbLogger = require('../log/dbLogger');
 const handle404 = dbLogger.handle404;
@@ -67,6 +69,7 @@ exports.module = function (roleConfig) {
 
             let client = -1;
             let server = -1;
+            let attachmentElts;
             let comments;
             if (authorizationShared.isSiteAdmin(user)) {
                 notificationDb.getNumberClientError(user, errorHandler(clientErrorCount => {
@@ -83,8 +86,17 @@ exports.module = function (roleConfig) {
                 tasksDone();
             }
             // TODO: implement org boundaries
+            if (authorizationShared.hasRole(user, 'AttachmentReviewer')) { // required, req.user.notificationSettings.approvalAttachment.drawer not used
+                attachment.unapproved(errorHandler(a => {
+                    attachmentElts = a;
+                    tasksDone();
+                }));
+            } else {
+                attachmentElts = [];
+                tasksDone();
+            }
             if (authorizationShared.hasRole(user, 'CommentReviewer')) { // required, req.user.notificationSettings.approvalComment.drawer not used
-                discussDb.unapprovedMessages(errorHandler(c => {
+                discussDb.unapproved(errorHandler(c => {
                     comments = c;
                     tasksDone();
                 }));
@@ -123,7 +135,7 @@ exports.module = function (roleConfig) {
             }
 
             function tasksDone() {
-                if (client === -1 || server === -1 || !comments) {
+                if (client === -1 || server === -1 || !attachmentElts || !comments) {
                     return;
                 }
                 if (req.params.clientVersion && version !== req.params.clientVersion) {
@@ -156,19 +168,51 @@ exports.module = function (roleConfig) {
                         url: '/siteAudit?tab=serverError',
                     });
                 }
+                if (Array.isArray(attachmentElts)) {
+                    attachmentElts.forEach(elt => {
+                        const eltModule = eltShared.getModule(elt);
+                        const eltTinyId = elt.tinyId;
+                        elt.attachments
+                            .filter(a => !!a.pendingApproval)
+                            .forEach(a => {
+                                let task = {
+                                    id: a.fileid,
+                                    idType: 'attachment',
+                                    properties: [
+                                        {
+                                            key: utilShared.capString(eltModule),
+                                            value: eltTinyId,
+                                        }
+                                    ],
+                                    source: 'calculated',
+                                    text: a.filetype + '\n' + a.filename + '\n' + a.comment,
+                                    type: 'approve',
+                                    url: itemShared.uriView(eltModule, eltTinyId)
+                                };
+                                if (a.uploadedBy && a.uploadedBy.username) {
+                                    task.properties.unshift({
+                                        key: 'User',
+                                        value: a.uploadedBy.username
+                                    });
+                                }
+                                if (!a.scanned) {
+                                    task.properties.push({
+                                        key: 'NOT VIRUS SCANNED'
+                                    });
+                                }
+                                tasks.push(task);
+                            });
+                    });
+                }
                 if (Array.isArray(comments)) {
                     comments.forEach(c => {
                         const eltModule = c.element && c.element.eltType;
                         const eltTinyId = c.element && c.element.eltId;
                         pending(c).forEach(p => {
-                            tasks.push({
+                            let task = {
                                 id: p._id,
                                 idType: p === c ? 'comment' : 'commentReply',
                                 properties: [
-                                    {
-                                        key: 'User',
-                                        value: p.user && p.user.username || c.user && c.user.username
-                                    },
                                     {
                                         key: utilShared.capString(eltModule),
                                         value: eltTinyId,
@@ -178,7 +222,15 @@ exports.module = function (roleConfig) {
                                 text: p.text,
                                 type: 'approve',
                                 url: itemShared.uriView(eltModule, eltTinyId),
-                            });
+                            };
+                            let username = p.user && p.user.username || c.user && c.user.username;
+                            if (username) {
+                                task.properties.unshift({
+                                    key: 'User',
+                                    value: username
+                                });
+                            }
+                            tasks.push(task);
                         });
                     });
                 }

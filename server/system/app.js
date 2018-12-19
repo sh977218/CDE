@@ -15,6 +15,7 @@ const mongo_data = require('./mongo-data');
 const config = require('./parseConfig');
 const dbLogger = require('../log/dbLogger');
 const handleError = dbLogger.handleError;
+const respondError = dbLogger.respondError;
 const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
 const pushNotification = require('./pushNotification');
@@ -416,7 +417,10 @@ exports.init = function (app) {
                 // Regenerate is used so appscan won't complain
                 req.session.regenerate(() => {
                     passport.authenticate('local', (err, user, info) => {
-                        if (err) return res.status(403).send();
+                        if (err) {
+                            respondError(err);
+                            return res.status(403).send();
+                        }
                         if (!user) {
                             if (failedIp && config.useCaptcha) failedIp.nb++;
                             else {
@@ -426,7 +430,10 @@ exports.init = function (app) {
                             return res.status(403).send(info);
                         }
                         req.logIn(user, err => {
-                            if (err) return res.status(403).send();
+                            if (err) {
+                                respondError(err);
+                                return res.status(403).send();
+                            }
                             req.session.passport = {user: req.user._id};
                             return res.send("OK");
                         });
@@ -480,13 +487,13 @@ exports.init = function (app) {
         mongo_data.getFile(req.user, req.params.imgtag, res);
     });
 
-    app.post('/transferSteward', (req, res) => {
-        orgsvc.transferSteward(req, res);
-    });
+    app.post('/transferSteward', orgsvc.transferSteward);
 
     app.post('/mail/messages/new', [authorization.loggedInMiddleware], (req, res) => {
         let message = req.body;
-        if (message.author.authorType === "user") message.author.name = req.user.username;
+        if (message.author.authorType === "user") {
+            message.author.name = req.user.username;
+        }
         message.date = new Date();
         mongo_data.createMessage(message, () => res.send());
     });
@@ -494,8 +501,8 @@ exports.init = function (app) {
     app.post('/mail/messages/update', [authorization.loggedInMiddleware], (req, res) => {
         mongo_data.updateMessage(req.body, err => {
             if (err) {
-                res.statusCode = 404;
-                res.send("Error while updating the message");
+                res.status(404).send("Error while updating the message");
+                return;
             }
             res.send();
         });
@@ -503,64 +510,67 @@ exports.init = function (app) {
 
     app.post('/mail/messages/:type', [authorization.loggedInMiddleware], (req, res) => {
         mongo_data.getMessages(req, (err, messages) => {
-            if (err) return res.status(404).send(err);
+            if (err) {
+                res.status(404).send(err);
+                return;
+            }
             res.send(messages);
         });
     });
 
-    app.post('/addUserRole', [authorization.canApproveCommentMiddleware], (req, res) => {
-        mongo_data.addUserRole(req.body, handleError({req, res}, () => {
+    app.post('/addCommentAuthor', [authorization.canApproveCommentMiddleware], (req, res) => {
+        mongo_data.addUserRole(req.body.username, 'CommentAuthor', handleError({req, res}, err => {
+            if (err) {
+                res.status(404).send(err);
+                return;
+            }
             res.send();
         }));
     });
 
-    app.post('/getClassificationAuditLog', (req, res) => {
-        if (authorizationShared.isOrgAuthority(req.user)) {
-            mongo_data.getClassificationAuditLog(req.body, (err, result) => {
-                if (err) return res.status(500).send();
-                res.send(result);
-            });
-        } else res.status(401).send("Not Authorized");
+    app.post('/getClassificationAuditLog', [authorization.isOrgAuthorityMiddleware], (req, res) => {
+        mongo_data.getClassificationAuditLog(req.body, handleError({req, res}, result => {
+            res.send(result);
+        }));
     });
 
     app.post('/embed/', [authorization.isOrgAdminMiddleware], (req, res) => {
-        mongo_data.embeds.save(req.body, handleError({
-            req,
-            res,
-            publicMessage: 'There was an error saving this embed.'
-        }, embed =>
-            res.send(embed)));
+        const handlerOptions = {req, res, publicMessage: 'There was an error saving this embed.'};
+        mongo_data.embeds.save(req.body, handleError(handlerOptions, embed => {
+            res.send(embed);
+        }));
     });
 
     app.delete('/embed/:id', [authorization.loggedInMiddleware], (req, res) => {
-        const errorOptions = {req, res, publicMessage: 'There was an error removing this embed.'};
-        mongo_data.embeds.find({_id: req.params.id}, handleError(errorOptions, embeds => {
+        const handlerOptions = {req, res, publicMessage: 'There was an error removing this embed.'};
+        mongo_data.embeds.find({_id: req.params.id}, handleError(handlerOptions, embeds => {
             if (embeds.length !== 1) {
                 res.status.send("Expectation not met: one document.");
                 return;
             }
             if (!req.isAuthenticated() || !authorizationShared.isOrgAdmin(req.user, embeds[0].org)) {
-                res.status(401).send();
+                res.status(403).send();
                 return;
             }
-            mongo_data.embeds.delete(req.params.id, handleError(errorOptions, () => res.send()));
+            mongo_data.embeds.delete(req.params.id, handleError(handlerOptions, () => res.send()));
         }));
     });
 
     app.get('/embed/:id', (req, res) => {
-        mongo_data.embeds.find({_id: req.params.id}, (err, embeds) => {
-            if (err) return res.status(500).send();
-            if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
+        mongo_data.embeds.find({_id: req.params.id}, handleError({req, res}, embeds => {
+            if (embeds.length !== 1) {
+                res.status.send("Expectation not met: one document.");
+                return;
+            }
             res.send(embeds[0]);
-        });
+        }));
 
     });
 
     app.get('/embeds/:org', (req, res) => {
-        mongo_data.embeds.find({org: req.params.org}, (err, embeds) => {
-            if (err) return res.status(500).send();
+        mongo_data.embeds.find({org: req.params.org}, handleError({req, res}, embeds => {
             res.send(embeds);
-        });
+        }));
     });
 
     app.get('/fhirApps', (req, res) => fhirApps.find(res, {}, apps => res.send(apps)));
