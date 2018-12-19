@@ -20,13 +20,13 @@ public class RedCapExportTest extends BaseFormTest {
         for (int i = 0; i < 30; i++) {
             zipSize = new File(downloadFolder + "/Frontal Behavioral Inventory (FBI).zip").length();
             System.out.println("Wait for zip file to appear: " + i);
-            if (zipSize == 2894) {
+            if (zipSize == 2914) {
                 i = 30;
             } else {
                 hangon(5);
             }
         }
-        Assert.assertEquals(zipSize, 2894);
+        Assert.assertEquals(zipSize, 2914);
     }
 }
 
