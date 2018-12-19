@@ -6,11 +6,11 @@ import org.testng.annotations.Test;
 public class ContactUs extends NlmCdeBaseTest {
 
     @Test
-    public void whatsNew() {
+    public void contactUs() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Site Management"));
-        clickElement(By.id("articlesTab"));
+        clickElement(By.xpath("/div[. = 'Articles']"));
 
         clickElement(By.cssSelector("mat-select"));
         selectMatSelectDropdownByText("contactUs");

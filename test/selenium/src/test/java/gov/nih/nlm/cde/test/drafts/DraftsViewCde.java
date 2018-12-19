@@ -22,7 +22,7 @@ public class DraftsViewCde extends NlmCdeBaseTest {
 
         clickElement(By.id("username_link"));
         clickElement(By.id("user_account_management"));
-        clickElement(By.id("draftsTab"));
+        clickElement(By.xpath("/div[. = 'Drafts']"));
         findElement(By.linkText("Person Elevated Urine Protein Measurement Clinical Trial Eligibility Criteria Yes No Indicator"));
         textPresent("ctepOnlyCurator");
 
@@ -34,7 +34,7 @@ public class DraftsViewCde extends NlmCdeBaseTest {
 
         clickElement(By.id("username_link"));
         clickElement(By.id("user_site_management"));
-        clickElement(By.id("draftsTab"));
+        clickElement(By.xpath("/div[. = 'Drafts']"));
         findElement(By.linkText("Person Elevated Urine Protein Measurement Clinical Trial Eligibility Criteria Yes No Indicator"));
         textPresent("ctepOnlyCurator");
     }

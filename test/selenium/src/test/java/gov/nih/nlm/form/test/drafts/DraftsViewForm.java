@@ -23,7 +23,7 @@ public class DraftsViewForm extends NlmCdeBaseTest {
 
         clickElement(By.id("username_link"));
         clickElement(By.id("user_account_management"));
-        clickElement(By.id("draftsTab"));
+        clickElement(By.xpath("/div[. = 'Drafts']"));
         findElement(By.linkText("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)"));
         textPresent("nindsCurator");
 
@@ -35,7 +35,7 @@ public class DraftsViewForm extends NlmCdeBaseTest {
 
         clickElement(By.id("username_link"));
         clickElement(By.id("user_site_management"));
-        clickElement(By.id("draftsTab"));
+        clickElement(By.xpath("/div[. = 'Drafts']"));
         findElement(By.linkText("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)"));
         textPresent("nindsCurator");
     }
