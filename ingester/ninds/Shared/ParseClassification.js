@@ -6,14 +6,14 @@ exports.parseClassification = (nindsForms, newForm) => {
     let classificationArray = [];
     nindsForms.forEach(nindsForm => {
         let temp = {};
-        if (nindsForm.diseaseName)
-            temp.diseaseName = nindsForm.diseaseName;
-        if (nindsForm.subDiseaseName)
-            temp.subDiseaseName = nindsForm.subDiseaseName;
-        if (nindsForm.domainName)
-            temp.domainName = nindsForm.domainName;
-        if (nindsForm.subDomainName)
-            temp.subDomainName = nindsForm.subDomainName;
+        if (nindsForm.disease)
+            temp.disease = nindsForm.disease;
+        if (nindsForm.subDisease)
+            temp.subDisease = nindsForm.subDisease;
+        if (nindsForm.domain)
+            temp.domain = nindsForm.domain;
+        if (nindsForm.subDomain)
+            temp.subDomain = nindsForm.subDomain;
         classificationArray.push(temp);
     });
 
@@ -24,12 +24,11 @@ exports.parseClassification = (nindsForms, newForm) => {
         let subDomainToAdd = ['Disease', c.disease];
         let classificationToAdd = ['Disease', c.disease];
 
-        if (c.disease === 'Traumatic Brain Injury') {
+        if (c.subDisease) {
             diseaseToAdd.push(c.subDisease);
             classificationToAdd.push(c.subDisease);
             subDomainToAdd.push(c.subDisease);
         }
-
 
         if (c.classification) {
             classificationToAdd.push('Classification');
@@ -39,8 +38,8 @@ exports.parseClassification = (nindsForms, newForm) => {
         if (c.domain) {
             diseaseToAdd.push('Domain');
             subDomainToAdd.push('Domain');
-            diseaseToAdd.push([c.domain, c.subDomain]);
-            subDomainToAdd.push([c.domain, c.subDomain]);
+            diseaseToAdd.push(c.domain);
+            subDomainToAdd.push(c.domain);
             if (c.subDomain) {
                 diseaseToAdd.push(c.subDomain);
                 subDomainToAdd.push(c.subDomain);

@@ -27,8 +27,9 @@ async function retiredForms() {
 }
 
 
-doOneNindsFormById = async formId => {
-    let nindsForms = await NindsModel.find({formId: formId}).lean();
+doOneNindsFormById = async formIdString => {
+    let formId = formIdString.replace('form', '').trim();
+    let nindsForms = await NindsModel.find({formId: formIdString}).lean();
     let newFormObj = await CreateForm.createForm(nindsForms);
     let newForm = new Form(newFormObj);
     let existingForm = await Form.findOne({
@@ -62,7 +63,7 @@ doOneNindsFormById = async formId => {
 
 run = async () => {
 //    let formIdList = await NindsModel.distinct('formId');
-    let formIdList = ['formF2316'];
+    let formIdList = ['formF1336'];
     for (let formId of formIdList) {
         await doOneNindsFormById(formId);
         await NindsModel.remove({formId: formId});
