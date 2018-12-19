@@ -62,8 +62,8 @@ doOneNindsFormById = async formIdString => {
 };
 
 run = async () => {
-//    let formIdList = await NindsModel.distinct('formId');
-    let formIdList = ['formF1336'];
+    let formIdList = await NindsModel.distinct('formId');
+//  let formIdList = ['formF1336'];
     for (let formId of formIdList) {
         await doOneNindsFormById(formId);
         await NindsModel.remove({formId: formId});
