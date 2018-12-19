@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const mongoose = require('mongoose');
 require('../system/mongoose-stringtype')(mongoose);
 const Schema = mongoose.Schema;
@@ -27,13 +28,13 @@ exports.commentSchema = new Schema(Object.assign({
 const Comment = conn.model('Comment', exports.commentSchema);
 exports.Comment = Comment;
 
-exports.byId = (id, callback) => {
-    Comment.findById(id, callback);
+exports.byId = (id, cb) => {
+    Comment.findById(id, cb);
 };
-exports.byReplyId = (id, callback) => {
-    Comment.findOne({'replies._id': id}, callback);
+exports.byReplyId = (id, cb) => {
+    Comment.findOne({'replies._id': id}, cb);
 };
-exports.byEltId = (id, callback) => {
+exports.byEltId = (id, cb) => {
     let aggregate = [
         {$match: {'element.eltId': id}},
         {
@@ -50,24 +51,24 @@ exports.byEltId = (id, callback) => {
         {$replaceRoot: {newRoot: {$mergeObjects: [{$arrayElemAt: ['$__user', 0]}, '$$ROOT']}}},
         {$project: {__user: 0}}
     ];
-    Comment.aggregate(aggregate, callback);
+    Comment.aggregate(aggregate, cb);
 };
 
-exports.save = (comment, callback) => {
-    new Comment(comment).save(callback);
+exports.save = (comment, cb) => {
+    new Comment(comment).save(cb);
 };
 
-exports.removeById = (id, callback) => {
-    Comment.findByIdAndRemove(id, callback);
+exports.removeById = (id, cb) => {
+    Comment.findByIdAndRemove(id, cb);
 };
 
-exports.commentsForUser = (username, from, size, callback) => {
-    Comment.find({username: username}).skip(from).limit(size).sort({created: -1}).exec(callback);
+exports.commentsForUser = (username, from, size, cb) => {
+    Comment.find({username: username}).skip(from).limit(size).sort({created: -1}).exec(cb);
 };
-exports.allComments = (from, size, callback) => {
-    Comment.find().skip(from).limit(size).sort({created: -1}).exec(callback);
+exports.allComments = (from, size, cb) => {
+    Comment.find().skip(from).limit(size).sort({created: -1}).exec(cb);
 };
-exports.orgComments = (myOrgs, from, size, callback) => {
+exports.orgComments = (myOrgs, from, size, cb) => {
     Comment.aggregate([
         {
             $lookup: {
@@ -92,20 +93,17 @@ exports.orgComments = (myOrgs, from, size, callback) => {
                     {'embeddedForm.classification.stewardOrg.name': {$in: myOrgs}}
                 ]
             }
-        }, {$sort: {created: -1}}, {$skip: from}, {$limit: size}], callback);
+        }, {$sort: {created: -1}}, {$skip: from}, {$limit: size}], cb);
 };
 
-exports.unapprovedMessages = (callback) => {
-    Comment.find({
-        $or: [{pendingApproval: true}, {'replies.pendingApproval': true}]
-    }).exec(callback);
+// cb(err comments)
+exports.unapproved = cb => {
+    Comment.find({$or: [{pendingApproval: true}, {'replies.pendingApproval': true}]}, cb);
 };
 
-exports.numberUnapprovedMessageByUsername = username => {
+exports.numberUnapprovedMessageByUsername = (username, cb = _.noop()) => {
     return Comment.count({
         $or: [{'user.username': username, pendingApproval: true},
             {'replies.user.username': username, 'replies.pendingApproval': true}]
-    }).exec();
+    }, cb);
 };
-
-

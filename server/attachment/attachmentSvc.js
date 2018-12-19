@@ -8,7 +8,6 @@ const authorizationShared = require('esm')(module)('../../shared/system/authoriz
 const handleError = require('../log/dbLogger').handleError;
 const adminItemSvc = require('../system/adminItemSvc');
 const daoManager = require('../system/moduleDaoManager');
-const logging = require('../system/logging');
 const mongo_data = require('../system/mongo-data');
 const attachmentDb = require('./attachmentDb');
 
@@ -42,14 +41,15 @@ exports.add = (req, res, db, crudPermission) => {
                         file.md5 = hash;
                         exports.addToItem(elt, file, req.user, 'some comment', (attachment, requiresApproval) => {
                             if (requiresApproval) {
-                                adminItemSvc.createApprovalMessage(req.user, 'AttachmentReviewer', 'AttachmentApproval', attachment);
+                                adminItemSvc.createTask(req.user, 'AttachmentReviewer', 'approval', db.type,
+                                    elt.tinyId, 'attachment');
                             }
                             res.send(elt);
                         });
                     });
                 });
             });
-        }))
+        }));
     });
 };
 
@@ -135,19 +135,15 @@ exports.remove = (req, res, db, crudPermission) => {
                 res.send(elt);
             });
         }));
-    }))
+    }));
 };
 
-exports.removeUnusedAttachment = function (id, callback) {
-    async.map(daoManager.getDaoList(), (dao, done) => {
-        adminItemSvc.fileUsed(dao.dao, id, done);
-    }, (err, results) => {
-        if (results.indexOf(true) === -1) {
-            mongo_data.deleteFileById(id, callback);
-        } else {
-            callback();
-        }
-    });
+exports.removeUnusedAttachment = function (id, cb) {
+    async.map(
+        daoManager.getDaoList(),
+        (dao, done) => adminItemSvc.fileUsed(dao.dao, id, done),
+        (err, results) => results.indexOf(true) === -1 ? mongo_data.deleteFileById(id, cb) : cb()
+    );
 };
 
 exports.scanFile = (stream, res, cb) => {
@@ -168,6 +164,14 @@ exports.setDefault = (req, res, db, crudPermission) => {
         }
         elt.attachments[req.body.index].isDefault = state;
         elt.save(handleError({req, res}, newElt => res.send(newElt)));
-    }))
+    }));
+};
 
+// cb(err, elts)
+exports.unapproved = cb => {
+    async.map(
+        daoManager.getDaoList(),
+        (dao, done) => dao.type !== 'board' ? dao.dao.find({'attachments.pendingApproval': true}, done) : done(undefined, []),
+        (err, results) => err ? cb(err) : cb(undefined, [].concat.apply([], results))
+    );
 };
