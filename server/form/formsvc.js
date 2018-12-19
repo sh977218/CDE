@@ -99,6 +99,55 @@ function wipeRenderDisallowed(form, req, cb) {
     cb();
 }
 
+/*
+|---------------|           |---------------|
+|   S1          |           |   S1          |
+|       Q1      |           |       Q1      |
+|       Q11      |          |       Q11     |
+|       S2      |           |   S1 S2       |
+|           Q2  |    ==>    |       Q2      |
+|   Q3          |           |   S3(new)     |
+|               |           |       Q3      |
+|   S4          |           |   S4          |
+|       Q4      |           |       Q4      |
+|---------------|           |---------------|
+*/
+function oneLayerForm(form) {
+
+    /*
+    convert formElement into formElement[]
+     */
+    let doSection = (formElement) => {
+        let qFormElements = [];
+        let sFormElements = [];
+        for (let fe of formElement.formElements) {
+            if (fe.elementType === 'question') {
+                qFormElements.push(fe)
+            } else {
+                let _sFormElements = doSection(fe);
+                sFormElements = sFormElements.concat(_sFormElements);
+            }
+        }
+        formElement.formElements = qFormElements;
+        return [formElement].concat(sFormElements);
+    };
+    let formElements = [];
+    for (let formElement of form.formElements) {
+        let type = formElement.elementType;
+        if (type === 'question') {
+            formElements.push({
+                elementType: 'section',
+                label: '',
+                formElements: [formElement]
+            });
+        } else {
+            let fes = doSection(formElement);
+            formElements = formElements.concat(fes);
+        }
+    }
+    form.formElements = formElements;
+}
+
 exports.byId = (req, res) => {
     let id = req.params.id;
     if (!id || id.length !== 24) return res.status(400).send();
@@ -125,6 +174,7 @@ exports.byId = (req, res) => {
                         nih.getFormNih(wholeForm, handleError({req, res}, xmlForm => res.send(xmlForm)));
                     }
                 } else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
+                    oneLayerForm(wholeForm, 0);
                     redCap.getZipRedCap(wholeForm, res);
                 } else {
                     if (req.query.subtype === 'fhirQuestionnaire') {
@@ -280,7 +330,10 @@ exports.byTinyIdList = (req, res) => {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) return res.status(400).send();
     tinyIdList = tinyIdList.split(",");
-    mongo_form.byTinyIdList(tinyIdList, handleError({req, res}, forms => res.send(forms.map(mongo_data.formatElt))));
+    mongo_form.byTinyIdList(tinyIdList, handleError({
+        req,
+        res
+    }, forms => res.send(forms.map(mongo_data.formatElt))));
 };
 
 exports.latestVersionByTinyId = (req, res) => {
