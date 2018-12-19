@@ -27,7 +27,7 @@ function formatSkipLogic(text, map) {
             }
         })
     } else {
-        console.log("Error Parse Skip Logic.");
+        console.log("Error parsing skip logic.");
     }
 }
 

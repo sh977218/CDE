@@ -1,9 +1,7 @@
 
 <mat-form-field>
     <mat-select placeholder="Article Key" [(ngModel)]="selectedKey" (ngModelChange)="keyChanged()">
-        <mat-option *ngFor="let key of articles" [value]="key">
-            {{key}}
-        </mat-option>
+        <mat-option *ngFor="let key of articles" [value]="key">{{key}}</mat-option>
     </mat-select>
 </mat-form-field>
 
