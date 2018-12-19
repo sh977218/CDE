@@ -19,7 +19,7 @@ import { IEBannerComponent } from '_app/ieBanner/ieBanner.component';
 import { LoginService } from '_app/login.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
 import { ApprovalService } from '_app/notifications/approval.service';
-import { NotificationService } from '_app/notifications/notification.service';
+import { CommentAuthorizeUserComponent, NotificationService } from '_app/notifications/notification.service';
 import { NotificationDrawerComponent } from '_app/notifications/notificationDrawer.component';
 import { NotificationDrawerPaneComponent } from '_app/notifications/notificationDrawerPane.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
@@ -53,6 +53,7 @@ import { AlertModule } from 'alert/alert.module';
     ],
     declarations: [
         CdeAppComponent,
+        CommentAuthorizeUserComponent,
         IEBannerComponent,
         InactivityLoggedOutComponent,
         NavigationComponent,
@@ -61,6 +62,7 @@ import { AlertModule } from 'alert/alert.module';
         TruncateLongNamePipe
     ],
     entryComponents: [
+        CommentAuthorizeUserComponent,
         InactivityLoggedOutComponent,
         NotificationDrawerPaneComponent
     ],

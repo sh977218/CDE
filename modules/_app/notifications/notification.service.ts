@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { Params, Router, UrlSegment } from '@angular/router';
 import { ApprovalService } from '_app/notifications/approval.service';
 import { UserService } from '_app/user.service';
@@ -44,6 +45,7 @@ export class NotificationService {
     drawerMouseOver = false;
     private drawerState = false;
     funcMergeTaskMessages = this.mergeTaskMessages.bind(this);
+    funcReload = this.reload.bind(this);
     funcReloadFinished = this.reloadFinished.bind(this);
     funcUpdateTaskMessages = this.updateTaskMessages.bind(this);
     hasCriticalError = false;
@@ -53,9 +55,16 @@ export class NotificationService {
     constructor(private alert: AlertService,
                 private approvalService: ApprovalService,
                 private http: HttpClient,
+                private dialog: MatDialog,
                 private router: Router,
                 private userService: UserService) {
-        this.userService.subscribe(() => this.reload());
+        this.userService.subscribe(this.funcReload);
+    }
+
+    authorizeToComment(username: string) {
+        this.http.post('/addCommentAuthor', {username}).subscribe(() => {
+            this.alert.addAlert('success', 'Role added.');
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     clear() {
@@ -85,18 +94,36 @@ export class NotificationService {
         }
         switch (t0.type) {
             case 'approve': // idType: comment, commentReply
+                task.actions = [];
                 switch (t0.idType) {
+                    case 'attachment':
+                        task.properties.unshift({key: 'Attachment', icon: 'attach_file'});
+                        approve = () => this.approvalService.funcAttachmentApprove(task, this.funcReload);
+                        reject = () => this.approvalService.funcAttachmentDecline(task, this.funcReload);
+                        break;
                     case 'comment':
                     case 'commentReply':
                         task.properties.unshift({key: 'Comment', icon: 'comment'});
-                        approve = () => this.approvalService.funcCommentApprove(task, () => this.reload());
-                        reject = () => this.approvalService.funcCommentDecline(task, () => this.reload());
+                        approve = () => this.approvalService.funcCommentApprove(task, this.funcReload);
+                        reject = () => this.approvalService.funcCommentDecline(task, this.funcReload);
+                        let userProp = task.tasks[0].properties.filter(p => p.key === 'User')[0];
+                        if (userProp) {
+                            let username = userProp.value;
+                            task.actions.push({
+                                color: 'accent', icon: 'person_add', text: 'Authorize', click: () => {
+                                    this.dialog.open(CommentAuthorizeUserComponent).afterClosed().subscribe(result => {
+                                        if (result === 'Authorize') {
+                                            this.authorizeToComment(username);
+                                            this.approvalService.commentApprove(task, this.funcReload);
+                                        }
+                                    });
+                                }
+                            });
+                        }
                         break;
                 }
-                task.actions = [
-                    {color: 'primary', icon: 'done', text: 'Approve', click: approve},
-                    {color: 'warn', icon: 'clear', text: 'Reject', click: reject}
-                ];
+                task.actions.push({color: 'primary', icon: 'done', text: 'Approve', click: approve});
+                task.actions.push({color: 'warn', icon: 'clear', text: 'Reject', click: reject});
                 task.background = '#d4edda';
                 task.icon = 'supervisor_account';
                 task.name = 'Approve';
@@ -190,7 +217,7 @@ export class NotificationService {
                 grouped.push(
                     this.createTask(
                         eltTasks.reduce((acc, t) => acc.concat(t.tasks), []),
-                        groups[group] + ' new comments'
+                        groups[group] + ' comments'
                     )
                 );
             }
@@ -271,3 +298,18 @@ export class NotificationService {
         });
     }
 }
+
+@Component({
+    template: `
+        <h3 mat-dialog-title>Please confirm</h3>
+        <div mat-dialog-content>
+            The user will be able to post comments without an approval.<br>
+            Do you want to proceed?
+        </div>
+        <div mat-dialog-actions>
+            <button mat-raised-button color="accent" mat-dialog-close>No</button>
+            <button id="authorizeUserOK" mat-raised-button mat-dialog-close="Authorize">Yes</button>
+        </div>
+    `,
+})
+export class CommentAuthorizeUserComponent {}

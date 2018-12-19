@@ -18,7 +18,7 @@ let userSchema = new Schema({
     commentNotifications: [{
         _id: false,
         date: Date,
-        eltModule: {type: StringType, enum: ['cde', 'form']},
+        eltModule: {type: StringType, enum: ['board', 'cde', 'form']},
         eltTinyId: StringType,
         read: Boolean,
         text: StringType,
@@ -33,6 +33,7 @@ let userSchema = new Schema({
     },
     lockCounter: Number,
     notificationSettings: {
+        approvalAttachment: notificationTypesSchema,
         approvalComment: notificationTypesSchema,
         comment: notificationTypesSchema,
     },
@@ -113,10 +114,15 @@ exports.updateUser = (user, fields, callback) => {
     if (fields.commentNotifications) update.commentNotifications = fields.commentNotifications;
     if (fields.email) update.email = fields.email;
     if (fields.notificationSettings) {
-        if (fields.notificationSettings.approvalComment && !authorizationShared.hasRole(user, 'CommentReviewer')) {
-            fields.notificationSettings.approvalComment = undefined;
+        if (fields.notificationSettings.approvalAttachment && !authorizationShared.hasRole(user, 'AttachmentReviewer')) {
+            delete fields.notificationSettings.approvalAttachment;
         }
-        if (fields.notificationSettings.approvalComment || fields.notificationSettings.comment) {
+        if (fields.notificationSettings.approvalComment && !authorizationShared.hasRole(user, 'CommentReviewer')) {
+            delete fields.notificationSettings.approvalComment;
+        }
+        if (fields.notificationSettings.approvalAttachment
+            || fields.notificationSettings.approvalComment
+            || fields.notificationSettings.comment) {
             update.notificationSettings = fields.notificationSettings;
         }
     }
