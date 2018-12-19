@@ -99,6 +99,20 @@ function wipeRenderDisallowed(form, req, cb) {
     cb();
 }
 
+function doSection(sFormElement) {
+    let formElements = [];
+    for (let fe of sFormElement.formElements) {
+        if (fe.elementType === 'question') {
+            formElements.push(fe)
+        } else {
+            let sFormElement = doSection(fe);
+            formElements.push(sFormElement);
+        }
+    }
+    sFormElement.formElements = formElements;
+    return sFormElement;
+};
+
 /*
 |---------------|           |---------------|
 |   S1          |           |   S1          |
@@ -113,36 +127,27 @@ function wipeRenderDisallowed(form, req, cb) {
 |---------------|           |---------------|
 */
 function oneLayerForm(form) {
-
-    /*
-    convert formElement into formElement[]
-     */
-    let doSection = (formElement) => {
-        let qFormElements = [];
-        let sFormElements = [];
-        for (let fe of formElement.formElements) {
-            if (fe.elementType === 'question') {
-                qFormElements.push(fe)
-            } else {
-                let _sFormElements = doSection(fe);
-                sFormElements = sFormElements.concat(_sFormElements);
-            }
-        }
-        formElement.formElements = qFormElements;
-        return [formElement].concat(sFormElements);
-    };
     let formElements = [];
+    let qFormElements = {
+        elementType: 'section',
+        label: '',
+        formElements: []
+    };
     for (let formElement of form.formElements) {
         let type = formElement.elementType;
         if (type === 'question') {
-            formElements.push({
-                elementType: 'section',
-                label: '',
-                formElements: [formElement]
-            });
+            qFormElements.formElements.push(formElement);
         } else {
-            let fes = doSection(formElement);
-            formElements = formElements.concat(fes);
+            if (qFormElements.formElements.length > 0) {
+                formElements.push(qFormElements);
+                qFormElements = {
+                    elementType: 'section',
+                    label: '',
+                    formElements: []
+                };
+            }
+            let fe = doSection(formElement);
+            formElements.push(fe);
         }
     }
     form.formElements = formElements;
