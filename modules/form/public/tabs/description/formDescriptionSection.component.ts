@@ -196,7 +196,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     removeNode(node) {
         node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
         node.treeModel.update();
-        this.onEltChange.emit();
+        // this.onEltChange.emit(); treeEvent will handle, this one works
     }
 
     setRepeat(section) {

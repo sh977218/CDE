@@ -1,5 +1,4 @@
 const config = require('config');
-const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
@@ -10,10 +9,10 @@ module.exports = {
             {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
             {
                 test: /\.js$/,
-                exclude: /node_modules/,
+                exclude: [/node_modules/, /\.module\.ngfactory\.js$/],
                 loader: 'babel-loader',
                 query: {
-                    presets: [["env", { "modules": false }]]
+                    presets: ["@babel/preset-env"]
                 }
             },
             {

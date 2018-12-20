@@ -8,9 +8,9 @@ import {
 } from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { TreeModule } from 'angular-tree-component';
-import "angular-tree-component/dist/angular-tree-component.css";
 import { NgSelectModule } from '@ng-select/ng-select';
+import { TreeModule } from 'angular-tree-component';
+import 'angular-tree-component/dist/angular-tree-component.css';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { BoardModule } from 'board/public/board.module';
@@ -47,11 +47,7 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         FormsModule,
-        NgbModule,
-        RouterModule.forChild(appRoutes),
-        NgSelectModule,
         HotkeyModule.forRoot(),
-        TreeModule,
         MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
@@ -66,6 +62,10 @@ const appRoutes: Routes = [
         MatSliderModule,
         MatTabsModule,
         MatTooltipModule,
+        NgbModule,
+        NgSelectModule,
+        RouterModule.forChild(appRoutes),
+        TreeModule.forRoot(),
         // core
         WidgetModule,
         // internal
