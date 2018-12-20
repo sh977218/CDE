@@ -27,9 +27,8 @@ function formatSkipLogic(text, map) {
             }
         })
     } else {
-        text = "Error Parsing " + text;
+        console.log("Error parsing skip logic.");
     }
-    return text;
 }
 
 function getRedCap(form) {
@@ -41,8 +40,9 @@ function getRedCap(form) {
             let temp = _.uniqWith(formElement.formElements, (a, b) => _.isEqual(a.question.answers, b.question.answers));
             if (temp.length > 1) sectionsAsMatrix = false;
         }
+        let _sectionSkipLogic = '';
         let sectionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
-        if (sectionSkipLogic) sectionSkipLogic = formatSkipLogic(sectionSkipLogic, label_variables_map);
+        if (sectionSkipLogic) formatSkipLogic(sectionSkipLogic, label_variables_map);
         return {
             'Variable / Field Name': 'insect_' + i,
             'Form Name': form.designations[0].designation,
@@ -55,7 +55,7 @@ function getRedCap(form) {
             'Text Validation Min': '',
             'Text Validation Max': '',
             'Identifier?': '',
-            'Branching Logic (Show field only if...)': sectionSkipLogic,
+            'Branching Logic (Show field only if...)': _sectionSkipLogic,
             'Required Field?': '',
             'Custom Alignment': '',
             'Question Number (surveys only)': '',
@@ -66,7 +66,7 @@ function getRedCap(form) {
     let doQuestion = (formElement) => {
         let q = formElement.question;
         let questionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
-        if (questionSkipLogic) questionSkipLogic = formatSkipLogic(questionSkipLogic, label_variables_map);
+        if (questionSkipLogic) formatSkipLogic(questionSkipLogic, label_variables_map);
         if (!q.cde.tinyId) q.cde.tinyId = 'missing question cde';
         let variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' + q.cde.tinyId.toLowerCase();
         if (existingVariables[variableName]) {
