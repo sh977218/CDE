@@ -2,14 +2,16 @@ const _ = require('lodash');
 
 const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
-mergeSources = (o1, o2) => {
-    let result = _.uniqBy(o1.concat(o2), 'sourceName');
+mergeSources = (newSources, existingSources) => {
+    let otherSources = existingSources.filter(s => s.sourceName !== 'NINDS');
+    let result = newSources.concat(otherSources);
     return result;
 };
 
 exports.mergeForm = (existingForm, newForm) => {
     existingForm.designations = newForm.designations;
-    existingForm.definitions = newForm.definitions;
+    //@TODO this is a temporarily, see README
+    // existingForm.definitions = newForm.definitions;
     existingForm.ids = newForm.ids;
     existingForm.properties = newForm.properties;
     existingForm.referenceDocuments = newForm.referenceDocuments;

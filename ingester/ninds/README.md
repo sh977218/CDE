@@ -5,7 +5,8 @@
 
 ## Notes
 The data is grabbed from this link: https://www.commondataelements.ninds.nih.gov/#page=Default, under dropdown 'CDEs'.
-* form id is come from the id attribute in th element of DOM.
+* Form definitions are kept from previous load, since this load doesn't have form description.
+* form id is come from the id attribute in th element of DOM. 'form1234' became '1234';
 * The link on the form name is reference document.
 * If CDE has column 'Permissible Values', data type will be 'Value List'. Else column 'Data Type' is the CDE's data type.
 * Column 'Input Restrictions' is the question mutiselect.
