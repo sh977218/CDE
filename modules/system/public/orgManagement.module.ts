@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material';
+import { MatIconModule, MatTabsModule } from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { WidgetModule } from 'widget/widget.module';
@@ -20,6 +20,7 @@ const appRoutes: Routes = [
         CommonModule,
         FormsModule,
         MatIconModule,
+        MatTabsModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core
