@@ -21,6 +21,7 @@ exports.parseClassification = (nindsForms, newForm) => {
 
     uniqClassificationArray.forEach(c => {
         let diseaseToAdd = ['Disease', c.disease];
+        let domainToAdd = ['Domain', c.domain];
         let subDomainToAdd = ['Disease', c.disease];
         let classificationToAdd = ['Disease', c.disease];
 
@@ -40,17 +41,17 @@ exports.parseClassification = (nindsForms, newForm) => {
             subDomainToAdd.push('Domain');
             diseaseToAdd.push(c.domain);
             subDomainToAdd.push(c.domain);
-            if (c.subDomain) {
+            if (!_.isEmpty(c.subDomain)) {
                 diseaseToAdd.push(c.subDomain);
+                domainToAdd.push(c.subDomain);
                 subDomainToAdd.push(c.subDomain);
             }
         }
 
         classificationShared.classifyItem(newForm, "NINDS", diseaseToAdd);
+        classificationShared.classifyItem(newForm, "NINDS", domainToAdd);
         classificationShared.classifyItem(newForm, "NINDS", subDomainToAdd);
         classificationShared.classifyItem(newForm, "NINDS", classificationToAdd);
-        let domainToAdd = ['Domain', c.domain, c.subDomain];
-        classificationShared.classifyItem(newForm, "NINDS", domainToAdd);
     });
 
 };
