@@ -56,6 +56,22 @@
     </mat-menu>
 </ng-template>
 
+
+<ng-template #helpTpl>
+    <a id="helpLink" class="mdl-navigation__link mdl-typography--text-uppercase"
+       [matMenuTriggerFor]="helpMenu">Help&nbsp;▼</a>
+    <mat-menu #helpMenu="matMenu">
+        <a id="takeATourLink" routerLink="/home" [queryParams]="{tour: 'yes'}"
+           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Take a Tour</a>
+        <a id="whatsNewLink" routerLink="/whatsNew"
+           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">New Features</a>
+        <a id="apiDocumentationLink" class="mdl-navigation__link mdl-typography--text-uppercase"
+           mat-menu-item routerLink="/api">API</a>
+        <a id="contactUsLink" routerLink="/contactUs"
+           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Contact Us</a>
+    </mat-menu>
+</ng-template>
+
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header" (click)="checkNotificationDrawer()">
 
     <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
@@ -88,16 +104,9 @@
                        [textContent]="'Quick&nbsp;Board&nbsp;(' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"></a>
                     <a id="resourcesLink" routerLink="/resources"
                        class="mdl-navigation__link mdl-typography--text-uppercase">Resources&nbsp;</a>
-                    <a id="helpLink" class="mdl-navigation__link mdl-typography--text-uppercase"
-                       [matMenuTriggerFor]="helpMenu">Help&nbsp;▼</a>
-                    <mat-menu #helpMenu="matMenu">
-                        <a id="apiDocumentationLink" class="mdl-navigation__link mdl-typography--text-uppercase"
-                           mat-menu-item routerLink="/api">API</a>
-                        <a id="whatsNewLink" routerLink="/whatsNew"
-                           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">New Features</a>
-                        <a id="takeATourLink" routerLink="/home" [queryParams]="{tour: 'yes'}"
-                           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Take a Tour</a>
-                    </mat-menu>
+
+
+                    <ng-container *ngTemplateOutlet="helpTpl"></ng-container>
 
                     <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
                     <cde-notifications></cde-notifications>
@@ -129,7 +138,9 @@
             <div *ngIf="userService.user" class="android-drawer-separator"></div>
             <a class="mdl-navigation__link" routerLink="/quickBoard" (click)="toggleDrawer()">Quick Board</a>
             <a id="resourcesLink" routerLink="/resources" class="mdl-navigation__link mdl-typography--text-uppercase">Resources&nbsp;</a>
-            <a class="mdl-navigation__link" routerLink="/api" (click)="toggleDrawer()">API</a>
+            <!--<a class="mdl-navigation__link" routerLink="/api" (click)="toggleDrawer()">API</a>-->
+            <div class="android-drawer-separator"></div>
+            <ng-container *ngTemplateOutlet="helpTpl"></ng-container>
             <div class="android-drawer-separator"></div>
             <ng-container *ngTemplateOutlet="loginMenuTpl"></ng-container>
             <cde-notifications></cde-notifications>

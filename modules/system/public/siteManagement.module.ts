@@ -1,7 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule, MatDialogModule, MatIconModule, MatInputModule } from '@angular/material';
+import {
+    MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatInputModule,
+    MatSelectModule,
+    MatTabsModule
+} from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CKEditorModule } from 'ng2-ckeditor';
@@ -15,7 +22,7 @@ import { EditSiteAdminsComponent } from 'system/public/components/siteAdmin/edit
 import { ServerStatusComponent } from 'system/public/components/siteAdmin/serverStatus/serverStatus.component';
 import { SiteManagementComponent } from 'system/public/components/siteAdmin/siteManagement/siteManagement.component';
 import { WidgetModule } from 'widget/widget.module';
-import { WhatsNewAdminComponent } from 'system/public/components/siteAdmin/whatsNew/whatsNewAdminComponent';
+import { ArticleAdminComponent } from 'system/public/components/siteAdmin/article/articleAdmin.component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { ResourcesAdminComponent } from 'system/public/components/siteAdmin/resources/resourcesAdmin.component';
 
@@ -33,6 +40,8 @@ const appRoutes: Routes = [
         MatInputModule,
         MatButtonModule,
         MatDialogModule,
+        MatSelectModule,
+        MatTabsModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core
@@ -49,7 +58,7 @@ const appRoutes: Routes = [
         DraftsListAdminComponent,
         ServerStatusComponent,
         SiteManagementComponent,
-        WhatsNewAdminComponent,
+        ArticleAdminComponent,
         ResourcesAdminComponent
     ],
     entryComponents: [],
