@@ -147,8 +147,8 @@ function oneLayerForm(form) {
                     formElements: []
                 };
             }
-            let existingSection = doSection(formElement);
-            formElements.push(existingSection);
+            doSection(formElement);
+            formElements.push(formElement);
         }
     }
     form.formElements = formElements;

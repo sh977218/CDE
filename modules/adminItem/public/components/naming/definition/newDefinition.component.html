@@ -23,7 +23,7 @@
             <label for="newDefinitionTags">Tags</label>
             <div id="newDefinitionTags">
                 <ng-select [(ngModel)]="newDefinition.tags" [items]="tags" [hideSelected]="true" [hideSelected]="true"
-                           [placeholder]="noTagFoundMessage" multiple="true"  name="newTags">
+                           [placeholder]="noTagFoundMessage" appendTo="body" multiple="true" name="newTags">
                 </ng-select>
             </div>
         </div>

@@ -37,7 +37,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Site Management"));
-        clickElement(By.linkText("Server Statuses"));
+        clickElement(By.xpath("//div[. = 'Server Statuses']"));
         clickElement(By.id("syncWithMeshButton"));
 
         for (int i = 0; i < 5; i++) {

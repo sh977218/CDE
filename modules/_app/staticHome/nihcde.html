@@ -25,20 +25,23 @@
                             <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
                                 for="helpLink">
                                 <li class="mdl-menu__item">
-                                    <a id="apiDocumentationLink"
-                                       class="mdl-menu__item mdl-typography--text-uppercase"
-                                       href="/api">API</a>
+                                    <a id="takeATourLink" href="/home?tour=yes"
+                                       class="mdl-menu__item mdl-typography--text-uppercase">Take a Tour</a>
                                 </li>
                                 <li class="mdl-menu__item">
                                     <a id="whatsNewLink" href="/whatsNew"
                                        class="mdl-menu__item mdl-typography--text-uppercase">New Features</a>
                                 </li>
                                 <li class="mdl-menu__item">
-                                    <a id="takeATourLink" href="/home?tour=yes"
-                                       class="mdl-menu__item mdl-typography--text-uppercase">Take a Tour</a>
+                                    <a id="apiDocumentationLink"
+                                       class="mdl-menu__item mdl-typography--text-uppercase"
+                                       href="/api">API</a>
+                                </li>
+                                <li class="mdl-menu__item">
+                                    <a id="contactUsLink" href="/contactUs"
+                                       class="mdl-menu__item mdl-typography--text-uppercase">Contact Us</a>
                                 </li>
                             </ul>
-
                             <a class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
                                 id="login_link" href="/login">Login</a>
                             <a class="mdl-navigation__link mdl-typography--text-uppercase navigationLink"
@@ -61,12 +64,27 @@
                         class="mdl-navigation__link" href="/form/search">Forms</a>
                     <div class="android-drawer-separator"></div>
                     <a class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
-                            id="boardsMenu" href="/boardList">Boards</a>
+                            href="/boardList">Boards</a>
                     <div class="android-drawer-separator"></div>
                     <mat-menu class="ng-tns-c0-2 ng-star-inserted"></mat-menu>
                     <a class="mdl-navigation__link" href="/quickBoard">Quick Board</a>
                     <a class="mdl-navigation__link" href="/resources">Resources</a>
-                    <a class="mdl-navigation__link" href="/api" id="apiDocumentationLink">API</a>
+                    <a id="helpLinkXs" class="mdl-navigation__link mdl-typography--text-uppercase">Help&nbsp;▼</a>
+                    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                        for="helpLinkXs">
+                        <li class="mdl-menu__item">
+                            <a href="/home?tour=yes" class="mdl-menu__item mdl-typography--text-uppercase">Take a Tour</a>
+                        </li>
+                        <li class="mdl-menu__item">
+                            <a href="/whatsNew" class="mdl-menu__item mdl-typography--text-uppercase">New Features</a>
+                        </li>
+                        <li class="mdl-menu__item">
+                            <a class="mdl-menu__item mdl-typography--text-uppercase" href="/api">API</a>
+                        </li>
+                        <li class="mdl-menu__item">
+                            <a href="/contactUs" class="mdl-menu__item mdl-typography--text-uppercase">Contact Us</a>
+                        </li>
+                    </ul>
                     <div class="android-drawer-separator"></div>
                     <a class="mdl-navigation__link mdl-typography--text-uppercase ng-star-inserted"
                             id="login_link" href="/login">Login</a></nav>

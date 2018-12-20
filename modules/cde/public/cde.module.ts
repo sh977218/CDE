@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { RouterModule } from '@angular/router';
-import { TreeModule } from 'angular-tree-component/dist/angular-tree-component';
+import { TreeModule } from 'angular-tree-component';
 import 'angular-tree-component/dist/angular-tree-component.css';
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
@@ -27,7 +27,7 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/materi
         NgbModule,
         NgSelectModule,
         RouterModule,
-        TreeModule,
+        TreeModule.forRoot(),
         // core
         WidgetModule,
         // internal

@@ -3,7 +3,7 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { RouterModule } from '@angular/router';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
+import { TreeModule } from "angular-tree-component";
 import "angular-tree-component/dist/angular-tree-component.css";
 import { CKEditorModule } from 'ng2-ckeditor';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -39,7 +39,7 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from "@angular/materi
         NgbModule,
         NgSelectModule,
         RouterModule,
-        TreeModule,
+        TreeModule.forRoot(),
         // core
         WidgetModule,
         // internal
