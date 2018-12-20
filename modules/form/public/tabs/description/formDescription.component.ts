@@ -214,13 +214,13 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                             TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
                             addFormIds(this.elt);
                             this.updateTree();
-                            this.onEltChange.emit();
+                            // this.onEltChange.emit(); treeEvent will handle
                         }
                     } else {
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
                         addFormIds(this.elt);
                         this.updateTree();
-                        this.onEltChange.emit();
+                        // this.onEltChange.emit(); treeEvent will handle
                     }
                 }
             }
@@ -274,7 +274,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         }
         addFormIds(this.elt);
         this.updateTree();
-        this.onEltChange.emit();
+        // this.onEltChange.emit(); treeEvent will handle
     }
 
     addFormFromSearch(form: CdeForm, cb: Cb<FormInForm> = _noop) {
