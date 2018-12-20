@@ -4,7 +4,7 @@ exports.parseIds = nindsForms => {
     let formIdArray = [];
     nindsForms.forEach(nindsForm => {
         if (nindsForm.formId)
-            formIdArray.push(nindsForm.formId);
+            formIdArray.push(nindsForm.formId.replace('form', '').trim());
     });
     let formId = _.uniq(formIdArray);
     if (formId.length !== 1) {
