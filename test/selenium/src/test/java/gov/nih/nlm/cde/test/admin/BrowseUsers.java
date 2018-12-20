@@ -34,7 +34,6 @@ public class BrowseUsers extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Site Management"));
-        clickElement(By.linkText("Users"));
-
+        clickElement(By.xpath("//div[. = 'Users']"));
     }
 }

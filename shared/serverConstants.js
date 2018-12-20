@@ -9,6 +9,7 @@ export const htmlServedUri = [
     '/cde/search',
     '/cdeStatusReport',
     '/classificationmanagement',
+    '/contactUs',
     '/createCde',
     '/createForm',
     '/deView',
