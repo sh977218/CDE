@@ -31,7 +31,7 @@ exports.module = function (roleConfig) {
         }));
     });
 
-    router.post('/', (req, res) => {
+    router.post('/', [loggedInMiddleware], (req, res) => {
         userDb.updateUser(req.user, req.body, handle404({req, res}, () => {
             res.send();
         }));

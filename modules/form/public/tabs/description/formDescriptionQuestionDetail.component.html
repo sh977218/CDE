@@ -206,7 +206,7 @@
                 <dd class="col-10 answerList">
                     <ng-select [(ngModel)]="question.question.answers" [items]="answerListItems"
                                [multiple]="true" bindLabel="valueMeaningName" placeholder="Select Answer"
-                               [appendTo]="'body'" [hideSelected]="true" (add)="onAnswerListAdd();"
+                               appendTo="body" [hideSelected]="true" (add)="onAnswerListAdd();"
                                (remove)="onAnswerListRemove($event)" (clear)="onEltChange.emit();">
                     </ng-select>
                 </dd>
@@ -217,7 +217,7 @@
             <ng-container *ngIf="question.question.datatype === 'Value List'">
                 <ng-select [(ngModel)]="question.question.defaultAnswer" [(items)]="defaultAnswerListItems"
                            bindLabel="valueMeaningName" bindValue="valueMeaningName" placeholder="Select Default Answer"
-                           [appendTo]="'body'" [hideSelected]="true" (change)="onEltChange.emit()">
+                           appendTo="body" [hideSelected]="true" (change)="onEltChange.emit()">
                 </ng-select>
             </ng-container>
             <ng-container *ngIf="question.question.datatype !== 'Value List'">

@@ -19,7 +19,7 @@ const appRoutes: Routes = [
         CommonModule,
         FormsModule,
         RouterModule.forChild(appRoutes),
-        TreeModule,
+        TreeModule.forRoot(),
         // core
         WidgetModule,
         // internal
