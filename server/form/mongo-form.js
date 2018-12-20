@@ -179,7 +179,7 @@ exports.update = function (elt, user, callback, special) {
     });
 };
 exports.updatePromise = function (elt, user) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         exports.update(elt, user, resolve);
     })
 };
