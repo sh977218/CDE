@@ -24,14 +24,12 @@
             </dd>
             <dt class="col-3 text-right">Tags:</dt>
             <dd id="designationTags_{{i}}" class="col-9">
-                <ng-select [(ngModel)]="designation.tags" [items]="tags" [hideSelected]="true"
-                           [disabled]="!canEdit" multiple="true" appendTo="body" (change)="onEltChange.emit();">
-                </ng-select>
+                <cde-naming-tag [tags]="designation.tags" [allTags]="tags" [canEdit]="canEdit"
+                                (changed)="onEltChange.emit();"></cde-naming-tag>
             </dd>
         </dl>
         <hr>
     </ng-container>
-
     <h4>Definitions&nbsp;
         <button *ngIf="canEdit" id="openNewDefinitionModalBtn" mat-raised-button (click)="openNewDefinitionModal()">
             <mat-icon>add</mat-icon>

@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from '@angular/router';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component";
@@ -18,6 +18,7 @@ import { HistoryComponent } from "./components/history.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
 import { NamingComponent } from "./components/naming/naming.component";
+import { NamingTagComponent } from 'adminItem/public/components/naming/tag/namingTag.component';
 import { PropertiesComponent } from "./components/properties/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
 import { SourcesComponent } from "./components/sources/sources.component";
@@ -29,13 +30,16 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/deleteModal.component';
 import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
-import { MatButtonModule, MatDialogModule, MatIconModule } from "@angular/material";
+import {
+    MatButtonModule, MatDialogModule, MatIconModule, MatChipsModule, MatAutocompleteModule
+} from "@angular/material";
 
 @NgModule({
     imports: [
         CommonModule,
         CKEditorModule,
         FormsModule,
+        ReactiveFormsModule,
         NgbModule,
         NgSelectModule,
         RouterModule,
@@ -47,7 +51,9 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from "@angular/materi
         SearchModule,
         MatButtonModule,
         MatDialogModule,
-        MatIconModule
+        MatIconModule,
+        MatChipsModule,
+        MatAutocompleteModule
     ],
     declarations: [
         AttachmentsComponent,
@@ -61,6 +67,7 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from "@angular/materi
         LinkedFormsComponent,
         HistoryComponent,
         NamingComponent,
+        NamingTagComponent,
         PropertiesComponent,
         ReferenceDocumentComponent,
         RegistrationComponent,
@@ -82,6 +89,7 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from "@angular/materi
         LinkedFormsComponent,
         HistoryComponent,
         NamingComponent,
+        NamingTagComponent,
         PropertiesComponent,
         ReferenceDocumentComponent,
         RegistrationComponent,
