@@ -24,7 +24,7 @@ function formatSkipLogic(skipLogicString, map) {
     if (foundEquationArray && foundEquationArray.length > 0) {
         foundEquationArray.forEach((label, i) => {
             if (i % 2 === 0) {
-                let foundVariable = map[label];
+                let foundVariable = map[label.replace(/\"/g, '')];
                 redCapSkipLogic = redCapSkipLogic.replace(label, '[' + foundVariable + ']');
             }
         })

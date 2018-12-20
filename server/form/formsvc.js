@@ -105,12 +105,11 @@ function doSection(sFormElement) {
         if (fe.elementType === 'question') {
             formElements.push(fe)
         } else {
-            let sFormElement = doSection(fe);
-            formElements.push(sFormElement);
+            let questions = doSection(fe);
+            formElements = formElements.concat(questions);
         }
     }
-    sFormElement.formElements = formElements;
-    return sFormElement;
+    return formElements;
 };
 
 /*
@@ -118,7 +117,7 @@ function doSection(sFormElement) {
 |   S1          |           |   S1          |
 |       Q1      |           |       Q1      |
 |       Q11      |          |       Q11     |
-|       S2      |           |   S1 S2       |
+|       S2      |           |   S1-S2       |
 |           Q2  |    ==>    |       Q2      |
 |   Q3          |           |   S3(new)     |
 |               |           |       Q3      |
@@ -133,7 +132,6 @@ function oneLayerForm(form) {
         label: '',
         formElements: []
     };
-    let existingSection;
     for (let formElement of form.formElements) {
         let type = formElement.elementType;
         if (type === 'question') {
@@ -147,7 +145,8 @@ function oneLayerForm(form) {
                     formElements: []
                 };
             }
-            doSection(formElement);
+            let questions = doSection(formElement);
+            formElement.formElements = questions;
             formElements.push(formElement);
         }
     }
