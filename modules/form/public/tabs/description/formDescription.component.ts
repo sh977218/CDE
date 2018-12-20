@@ -229,6 +229,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         displayField: 'label',
         isExpandedField: 'expanded'
     };
+    updateDataCredit = 0;
 
     @HostListener('window:scroll', ['$event']) scrollEvent() {
         this.doIt();
@@ -327,10 +328,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     static isSubForm(node: TreeNode): boolean {
         let n = node;
-        while (n.data.elementType !== 'form' && n.parent) {
+        while (n && n.data && n.data.elementType !== 'form' && n.parent) {
             n = n.parent;
         }
-        return n.data.elementType === 'form';
+        return n && n.data && n.data.elementType === 'form';
     }
 
     openFormSearch() {
@@ -377,8 +378,12 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     treeEvents(event) {
-        if (event && event.eventName === 'updateData') {
+        if (event && event.eventName === 'updateData' && this.updateDataCredit === 0) {
             this.onEltChange.emit();
+        }
+        if (event && event.eventName === 'moveNode') {
+            this.updateDataCredit++;
+            setTimeout(() => this.updateDataCredit = 0, 100);
         }
     }
 
