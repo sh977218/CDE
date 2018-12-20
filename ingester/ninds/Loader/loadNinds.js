@@ -18,12 +18,60 @@ let sameForm = 0;
 let changeForm = 0;
 let skipForm = 0;
 
-async function retireCdes() {
+let retiredCDE = 0;
+let retiredForm = 0;
 
+async function retireCdes() {
+    let cond = {
+        "ids.source": "NINDS",
+        "archived": false,
+        "registrationState.registrationStatus": {$ne: "Retired"},
+        "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
+        $where: 'this.classification.length < 2',
+        $or: [
+            {"updatedBy.username": "batchloader"},
+            {
+                $and: [
+                    {"updatedBy.username": {$exists: false}},
+                    {"createdBy.username": {$exists: true}}
+                ]
+            }
+        ]
+    };
+    let cdes = await DataElement.find(cond);
+    for (let cde of cdes) {
+        cde.registrationState.registrationStatus = 'Retired';
+        cde.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
+        cde.markModified('registrationState');
+        await cde.save();
+        retiredCDE++;
+    }
 }
 
 async function retiredForms() {
-
+    let cond = {
+        "ids.source": "NINDS",
+        "archived": false,
+        "registrationState.registrationStatus": {$ne: "Retired"},
+        "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
+        $or: [
+            {"updatedBy.username": "batchloader"},
+            {
+                $and: [
+                    {"updatedBy.username": {$exists: false}},
+                    {"createdBy.username": {$exists: true}}
+                ]
+            }
+        ]
+    };
+    let forms = await Form.find(cond);
+    for (let form of forms) {
+        form.registrationState.registrationStatus = 'Retired';
+        form.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
+        form.markModified('registrationState');
+        await form.save();
+        retiredForm++;
+    }
 }
 
 
@@ -63,7 +111,6 @@ doOneNindsFormById = async formIdString => {
 
 run = async () => {
     let formIdList = await NindsModel.distinct('formId');
-//  let formIdList = ['formF1336'];
     for (let formId of formIdList) {
         await doOneNindsFormById(formId);
         await NindsModel.remove({formId: formId});
@@ -78,5 +125,7 @@ run = async () => {
 
 run().then(async () => {
     await retireCdes();
+    console.log('retiredCDE: ' + retiredCDE);
     await retiredForms();
+    console.log('retiredForm: ' + retiredForm);
 }, error => console.log(error));
