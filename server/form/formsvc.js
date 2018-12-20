@@ -128,26 +128,27 @@ function doSection(sFormElement) {
 */
 function oneLayerForm(form) {
     let formElements = [];
-    let qFormElements = {
+    let newSection = {
         elementType: 'section',
         label: '',
         formElements: []
     };
+    let existingSection;
     for (let formElement of form.formElements) {
         let type = formElement.elementType;
         if (type === 'question') {
-            qFormElements.formElements.push(formElement);
+            newSection.formElements.push(formElement);
         } else {
-            if (qFormElements.formElements.length > 0) {
-                formElements.push(qFormElements);
-                qFormElements = {
+            if (newSection.formElements.length > 0) {
+                formElements.push(newSection);
+                newSection = {
                     elementType: 'section',
                     label: '',
                     formElements: []
                 };
             }
-            let fe = doSection(formElement);
-            formElements.push(fe);
+            let existingSection = doSection(formElement);
+            formElements.push(existingSection);
         }
     }
     form.formElements = formElements;
