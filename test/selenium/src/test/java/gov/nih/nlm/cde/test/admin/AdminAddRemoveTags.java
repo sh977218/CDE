@@ -75,7 +75,7 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
-        clickElement(By.linkText("List Management"));
+        clickElement(By.xpath("//div[. = 'List Management']"));
         addPropertyKeyByOrg(orgName, propertyKey);
         findElement(By.xpath("//tr[@id='orgListName-TEST']//mat-chip[contains(. , 'doYouSeeThis')]"));
 

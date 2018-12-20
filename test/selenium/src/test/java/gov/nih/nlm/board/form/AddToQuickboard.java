@@ -14,7 +14,7 @@ public class AddToQuickboard extends BoardTest {
         clickElement(By.id("addToCompare_0"));
         textPresent("QUICK BOARD (1)");
         clickElement(By.id("menu_qb_link"));
-        clickElement(By.id("formQuickBoard"));
+        clickElement(By.xpath("//div[contains(., 'Form QuickBoard')]"));
         clickElement(By.linkText("Walking Speed"));
     }
 

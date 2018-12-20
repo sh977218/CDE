@@ -15,7 +15,7 @@ public class EmbedTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Account Management"));
-        clickElement(By.id("embeddingTab"));
+        clickElement(By.xpath("//div[. = 'Embedding']"));
         clickElement(By.id("NINDS_addEmbed"));
 
         findElement(By.id("embedName")).sendKeys("Main NINDS Embed");

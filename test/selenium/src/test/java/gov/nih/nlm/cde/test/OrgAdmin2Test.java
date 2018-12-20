@@ -27,7 +27,7 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         //
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Account Management"));
-        clickElement(By.linkText("CDE & Form Management"));
+        clickElement(By.xpath("//div[. = '\"CDE & Form Management']"));
         scrollToTop();
 
         new Select(findElement(By.name("transferSteward_from"))).selectByVisibleText(org1);
