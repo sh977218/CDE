@@ -5,6 +5,14 @@ export function capString(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+export function decamelize(str) {
+    let result = str
+        .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+        .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1 $2')
+        .toLowerCase();
+    return result.charAt(0).toUpperCase() + result.slice(1);
+}
+
 export function deepCopy(obj) {
     return JSON.parse(JSON.stringify(obj));
 }

@@ -1,9 +1,9 @@
-<h4 mat-dialog-title>Add a Designation</h4>
+<h4 mat-dialog-title>Add a Name</h4>
 
 <form role="form" #newDesignationForm="ngForm">
     <div mat-dialog-content>
         <div class="form-group">
-            <label for="newDesignation">Designation</label>
+            <label for="newDesignation">Name</label>
             <input class="form-control" id="newDesignation" name="newDesignation"
                    [(ngModel)]="newDesignation.designation" Placeholder="Name / Designation" required/>
         </div>
@@ -11,7 +11,7 @@
             <label for="newDesignationTags">Tags</label>
             <div id="newDesignationTags">
                 <ng-select [(ngModel)]="newDesignation.tags" [items]="tags" [hideSelected]="true" [hideSelected]="true"
-                           [placeholder]="noTagFoundMessage" multiple="true"  name="newTags">
+                           [placeholder]="noTagFoundMessage" multiple="true" name="newTags">
                 </ng-select>
             </div>
         </div>
@@ -23,6 +23,7 @@
         <button [mat-dialog-close] id="cancelNewDesignationBtn" type="button" mat-raised-button color="warn">Cancel
         </button>
         <button [disabled]="!newDesignationForm.form.valid" id="createNewDesignationBtn"
-                type="button" mat-raised-button color="primary" [mat-dialog-close]="newDesignation">Save</button>
+                type="button" mat-raised-button color="primary" [mat-dialog-close]="newDesignation">Save
+        </button>
     </div>
 </form>

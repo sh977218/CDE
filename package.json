@@ -59,10 +59,11 @@
     "gridfs-stream": "1.1.1",
     "gulp-graph": "0.0.3",
     "helmet": "^3.12.0",
-    "http-proxy": "1.17.0",
+    "express-http-proxy": "^1.5.0",
     "indexeddbshim": "^3.10.0",
     "js2xmlparser": "1.0.0",
     "jxon": "2.0.0-beta.5",
+    "json2csv": "^4.3.2",
     "lodash": "^4.17.10",
     "log-buffer": "0.0.3",
     "md5": "2.2.1",
@@ -128,7 +129,7 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "bootstrap": "^4.1.1",
-    "bootstrap-tour": "^0.12.0",
+    "bootstrap-tour": "https://github.com/sorich87/bootstrap-tour.git",
     "capitalize": "^2.0.0",
     "cheerio": "1.0.0-rc.2",
     "classlist.js": "1.1.20150312",
@@ -207,7 +208,7 @@
     {
       "path": "./dist/app/cde.js",
       "compression": "none",
-      "maxSize": "1.60 MB"
+      "maxSize": "1.61 MB"
     },
     {
       "path": "./dist/app/cde.css",

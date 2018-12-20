@@ -1,3 +1,4 @@
+const async = require('async');
 const authorization = require('../system/authorization');
 const loggedInMiddleware = authorization.loggedInMiddleware;
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
@@ -8,9 +9,30 @@ const discussDb = require('./discussDb');
 const daoManager = require('../system/moduleDaoManager');
 const eltShared = require('esm')(module)('../../shared/elt');
 const ioServer = require('../system/ioServer');
+const userDb = require('../user/userDb');
 const userService = require('../system/usersrvc');
 const mongo_data = require('../system/mongo-data');
 const adminItemService = require('../system/adminItemSvc');
+
+// cb(userIds)
+function getEltUsers(elt, cb) {
+    let userIds = [];
+    if (elt.owner && elt.owner.userId) {
+        userIds.push(elt.owner.userId);
+    }
+    if (Array.isArray(elt.users)) {
+        async.map(
+            elt.users.filter(u => !!u.username),
+            (u, doneOne) => userDb.byUsername(u.username, doneOne),
+            (err, users) => {
+                users.forEach(user => user && user._id && userIds.push(user._id));
+                cb(userIds);
+            }
+        );
+    } else {
+        cb();
+    }
+}
 
 exports.module = function (roleConfig) {
     const router = require('express').Router();
@@ -44,20 +66,13 @@ exports.module = function (roleConfig) {
             discussDb.save(comment, handleError(handlerOptions, savedComment => {
                 ioServerCommentUpdated(req.user.username, eltTinyId);
                 if (savedComment.pendingApproval) {
-                    adminItemService.createTask(req.user, 'CommentReviewer', 'approve', {
-                        element: {
-                            eltId: savedComment.element.eltId,
-                            name: eltShared.getName(elt),
-                            eltType: comment.element.eltType
-                        },
-                        comment: {
-                            commentId: savedComment._id,
-                            text: savedComment.text
-                        }
-                    });
+                    adminItemService.createTask(req.user, 'CommentReviewer', 'approval', eltModule,
+                        eltTinyId, 'comment');
                 } else {
-                    adminItemService.notifyForComment({}, savedComment, eltModule,  eltTinyId,
-                        elt.stewardOrg && elt.stewardOrg.name);
+                    getEltUsers(elt, userIds => {
+                        adminItemService.notifyForComment({}, savedComment, eltModule,  eltTinyId,
+                            elt.stewardOrg && elt.stewardOrg.name, userIds);
+                    });
                 }
                 res.send({});
             }));
@@ -87,21 +102,15 @@ exports.module = function (roleConfig) {
             discussDb.save(comment, handleError(handlerOptions, savedComment => {
                 ioServerCommentUpdated(req.user.username, comment.element.eltId);
                 if (reply.pendingApproval) {
-                    adminItemService.createTask(req.user, 'CommentReviewer', 'approve', {
-                        element: {
-                            tinyId: comment.element.eltId,
-                            name: req.body.eltName
-                        },
-                        comment: {
-                            commentId: comment._id,
-                            replyIndex: comment.replies.length,
-                            text: req.body.reply
-                        }
-                    });
+                    adminItemService.createTask(req.user, 'CommentReviewer', 'approval', eltModule,
+                        eltTinyId, 'comment');
                 } else {
                     mongo_data.fetchItem(eltModule, eltTinyId, handle404({}, elt => {
-                        adminItemService.notifyForComment({}, savedComment.replies.filter(r => +new Date(r.created) === +new Date(reply.created))[0], eltModule, eltTinyId,
-                            elt.stewardOrg && elt.stewardOrg.name);
+                        getEltUsers(elt, userIds => {
+                            adminItemService.notifyForComment({}, savedComment.replies.filter(r =>
+                                +new Date(r.created) === +new Date(reply.created))[0], eltModule, eltTinyId,
+                                elt.stewardOrg && elt.stewardOrg.name, userIds);
+                        });
                     }));
                 }
                 if (req.user.username !== savedComment.user.username) {

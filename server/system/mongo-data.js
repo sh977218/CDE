@@ -6,7 +6,8 @@ const shortId = require('shortid');
 const Grid = require('gridfs-stream');
 const MongoStore = require('connect-mongo')(session);
 
-const authorizationShared = require('esm')(module)("../../shared/system/authorizationShared");
+const eltShared = require('esm')(module)('../../shared/elt');
+const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const connHelper = require('./connections');
 const dbLogger = require('../log/dbLogger');
 const notificationSvc = require('../notification/notificationSvc');
@@ -196,7 +197,7 @@ exports.pushRegistrationSubscribersByType = (type, cb, data = undefined) => {
     userDb.find(
         notificationSvc.criteriaSet(
             notificationSvc.typeToCriteria(type, data),
-            'notificationSettings.comment.push'
+            'notificationSettings.' + notificationSvc.typeToNotificationSetting(type) + '.push'
         ),
         (err, users) => {
             if (err) return cb(err);
@@ -331,7 +332,7 @@ exports.userTotalSpace = (name, callback) => {
                 }
                 doneOne();
             });
-    }, () => callback(totalSpace))
+    }, () => callback(totalSpace));
 };
 
 exports.addFile = function (file, cb, streamDescription = null) {
@@ -466,10 +467,19 @@ exports.getMessages = function (req, callback) {
     Message.find(authorRecipient, callback);
 };
 
-exports.addUserRole = function (request, cb) {
-    exports.userByName(request.username, function (err, u) {
-        u.roles.push(request.role);
-        u.save(cb);
+// cb(err)
+exports.addUserRole = (username, role, cb) => {
+    exports.userByName(username, (err, u) => {
+        if (!!err || !u) {
+            cb(err || 'user not found');
+            return;
+        }
+        if (u.roles.indexOf(role) === -1) {
+            u.roles.push(role);
+            u.save(cb);
+        } else {
+            cb();
+        }
     });
 };
 
@@ -494,8 +504,8 @@ exports.fetchItem = function (module, tinyId, cb) {
 exports.addToClassifAudit = function (msg) {
     let persistClassifRecord = function (err, elt) {
         if (!elt) return;
-        msg.elements[0].eltType = elt.formElements ? 'form' : 'cde';
-        msg.elements[0].name = elt.designations[0].designation;
+        msg.elements[0].eltType = eltShared.getModule(elt);
+        msg.elements[0].name = eltShared.getName(elt);
         msg.elements[0].status = elt.registrationState.registrationStatus;
         new classificationAudit(msg).save();
     };
