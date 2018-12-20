@@ -3,15 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
-import 'feedback/stable/2.0/html2canvas.js';
-import 'feedback/stable/2.0/feedback.js';
-import 'feedback/stable/2.0/feedback.min.css';
 import { NotificationService } from '_app/notifications/notification.service';
-import _noop from 'lodash/noop';
-
 import { BackForwardService } from '_app/backForward.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { UserService } from '_app/user.service';
+import 'feedback/stable/2.0/html2canvas.js';
+import 'feedback/stable/2.0/feedback.js';
+import 'feedback/stable/2.0/feedback.min.css';
+import _noop from 'lodash/noop';
 
 @Component({
     selector: 'nih-cde',

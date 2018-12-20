@@ -12,7 +12,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
-import { TreeModule } from 'angular-tree-component/dist/angular-tree-component';
+import { TreeModule } from 'angular-tree-component';
 import 'angular-tree-component/dist/angular-tree-component.css';
 import { BoardModule } from 'board/public/board.module';
 import { CdeModule } from 'cde/public/cde.module';
@@ -51,7 +51,7 @@ const appRoutes: Routes = [
         MatTooltipModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
-        TreeModule,
+        TreeModule.forRoot(),
         NgSelectModule,
         // core
         WidgetModule,

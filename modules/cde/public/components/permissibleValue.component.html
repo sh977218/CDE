@@ -4,7 +4,7 @@
         <dt class="col-3 text-right">Value Type:</dt>
         <dd id="datatypeSelect" class="col-9">
             <ng-select [(ngModel)]="elt.valueDomain.datatype" [items]="dataTypeList" bindValue="value"
-                       placeholder="Select data type" [appendTo]="'body'" [hideSelected]="true"
+                       placeholder="Select data type" appendTo="body" [hideSelected]="true"
                        (change)="onDataTypeChange();" [disabled]="!canEdit">
             </ng-select>
         </dd>
