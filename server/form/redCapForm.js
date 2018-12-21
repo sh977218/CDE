@@ -17,18 +17,19 @@ const text_validation_type_map = {
 let existingVariables = {};
 let label_variables_map = {};
 
-function formatSkipLogic(text, map) {
-    let textString = text.replace(/ AND /g, ' and ').replace(/ OR /g, ' or ');
-    let foundEquationArray = textString.match(/"([^"])+"/g);
+function formatSkipLogic(skipLogicString, map) {
+    let redCapSkipLogic = skipLogicString;
+    let _skipLogicString = skipLogicString.replace(/ AND /g, ' and ').replace(/ OR /g, ' or ');
+    let foundEquationArray = _skipLogicString.match(/"([^"])+"/g);
     if (foundEquationArray && foundEquationArray.length > 0) {
         foundEquationArray.forEach((label, i) => {
-            if (i % 2 == 0) {
-                text = text.replace(label, '[' + map[label] + ']');
+            if (i % 2 === 0) {
+                let foundVariable = map[label.replace(/\"/g, '')];
+                redCapSkipLogic = redCapSkipLogic.replace(label, '[' + foundVariable + ']');
             }
         })
-    } else {
-        console.log("Error parsing skip logic.");
-    }
+    } else redCapSkipLogic = "Error Parse " + skipLogicString;
+    return redCapSkipLogic;
 }
 
 function getRedCap(form) {
@@ -42,7 +43,7 @@ function getRedCap(form) {
         }
         let _sectionSkipLogic = '';
         let sectionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
-        if (sectionSkipLogic) formatSkipLogic(sectionSkipLogic, label_variables_map);
+        if (sectionSkipLogic) _sectionSkipLogic = formatSkipLogic(sectionSkipLogic, label_variables_map);
         return {
             'Variable / Field Name': 'insect_' + i,
             'Form Name': form.designations[0].designation,
@@ -65,8 +66,9 @@ function getRedCap(form) {
     };
     let doQuestion = (formElement) => {
         let q = formElement.question;
+        let _questionSkipLogic = '';
         let questionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
-        if (questionSkipLogic) formatSkipLogic(questionSkipLogic, label_variables_map);
+        if (questionSkipLogic) _questionSkipLogic = formatSkipLogic(questionSkipLogic, label_variables_map);
         if (!q.cde.tinyId) q.cde.tinyId = 'missing question cde';
         let variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' + q.cde.tinyId.toLowerCase();
         if (existingVariables[variableName]) {
@@ -94,7 +96,7 @@ function getRedCap(form) {
             'Text Validation Min': q.datatypeNumber ? q.datatypeNumber.minValue : '',
             'Text Validation Max': q.datatypeNumber ? q.datatypeNumber.maxValue : '',
             'Identifier?': '',
-            'Branching Logic (Show field only if...)': questionSkipLogic,
+            'Branching Logic (Show field only if...)': _questionSkipLogic,
             'Required Field?': q.required,
             'Custom Alignment': '',
             'Question Number (surveys only)': '',

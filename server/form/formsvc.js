@@ -99,12 +99,25 @@ function wipeRenderDisallowed(form, req, cb) {
     cb();
 }
 
+function doSection(sFormElement) {
+    let formElements = [];
+    for (let fe of sFormElement.formElements) {
+        if (fe.elementType === 'question') {
+            formElements.push(fe)
+        } else {
+            let questions = doSection(fe);
+            formElements = formElements.concat(questions);
+        }
+    }
+    return formElements;
+};
+
 /*
 |---------------|           |---------------|
 |   S1          |           |   S1          |
 |       Q1      |           |       Q1      |
 |       Q11      |          |       Q11     |
-|       S2      |           |   S1 S2       |
+|       S2      |           |   S1-S2       |
 |           Q2  |    ==>    |       Q2      |
 |   Q3          |           |   S3(new)     |
 |               |           |       Q3      |
@@ -113,36 +126,28 @@ function wipeRenderDisallowed(form, req, cb) {
 |---------------|           |---------------|
 */
 function oneLayerForm(form) {
-
-    /*
-    convert formElement into formElement[]
-     */
-    let doSection = (formElement) => {
-        let qFormElements = [];
-        let sFormElements = [];
-        for (let fe of formElement.formElements) {
-            if (fe.elementType === 'question') {
-                qFormElements.push(fe)
-            } else {
-                let _sFormElements = doSection(fe);
-                sFormElements = sFormElements.concat(_sFormElements);
-            }
-        }
-        formElement.formElements = qFormElements;
-        return [formElement].concat(sFormElements);
-    };
     let formElements = [];
+    let newSection = {
+        elementType: 'section',
+        label: '',
+        formElements: []
+    };
     for (let formElement of form.formElements) {
         let type = formElement.elementType;
         if (type === 'question') {
-            formElements.push({
-                elementType: 'section',
-                label: '',
-                formElements: [formElement]
-            });
+            newSection.formElements.push(formElement);
         } else {
-            let fes = doSection(formElement);
-            formElements = formElements.concat(fes);
+            if (newSection.formElements.length > 0) {
+                formElements.push(newSection);
+                newSection = {
+                    elementType: 'section',
+                    label: '',
+                    formElements: []
+                };
+            }
+            let questions = doSection(formElement);
+            formElement.formElements = questions;
+            formElements.push(formElement);
         }
     }
     form.formElements = formElements;
