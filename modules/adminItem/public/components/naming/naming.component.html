@@ -24,8 +24,8 @@
             </dd>
             <dt class="col-3 text-right">Tags:</dt>
             <dd id="designationTags_{{i}}" class="col-9">
-                <cde-naming-tag [tags]="designation.tags" [allTags]="tags" [canEdit]="canEdit"
-                                (changed)="onEltChange.emit();"></cde-naming-tag>
+                <cde-naming-tag [tags]="designation.tags" [stewardOrgName]="elt.stewardOrg.name"
+                                [canEdit]="canEdit" (changed)="onEltChange.emit();"></cde-naming-tag>
             </dd>
         </dl>
         <hr>

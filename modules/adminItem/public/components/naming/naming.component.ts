@@ -11,16 +11,18 @@ import _uniq from 'lodash/uniq';
     templateUrl: './naming.component.html'
 })
 export class NamingComponent implements OnInit {
-    @Input() canEdit: boolean = false;
     @Input() elt: any;
+    @Input() canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
     tags = [];
 
-    constructor(public dialog: MatDialog,
-                private orgHelperService: OrgHelperService) {
+    constructor(private orgHelperService: OrgHelperService,
+                public dialog: MatDialog) {
+        console.log('naming constructor ');
     }
 
     ngOnInit() {
+        console.log('naming Init ');
         let stewardOrgName = this.elt.stewardOrg.name;
         this.orgHelperService.then(orgsDetailedInfo => {
             let namingTags = orgsDetailedInfo[stewardOrgName].nameTags;

@@ -1,17 +1,20 @@
-import { Component, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete } from '@angular/material';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { OrgHelperService } from 'core/orgHelper.service';
 
 @Component({
     selector: 'cde-naming-tag',
     templateUrl: './namingTag.component.html'
 })
-export class NamingTagComponent {
+export class NamingTagComponent implements OnInit {
     @Input() tags;
-    @Input() allTags;
     @Input() canEdit;
+    @Input() stewardOrgName;
+
+    allTags = [];
 
     tagCtrl = new FormControl();
     filteredTags: Observable<string[]>;
@@ -19,10 +22,22 @@ export class NamingTagComponent {
     @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-    constructor() {
+    constructor(private orgHelperService: OrgHelperService) {
         this.filteredTags = this.tagCtrl.valueChanges.pipe(
             startWith(null),
             map((t: string | null) => t ? this._filter(t) : this.allTags.slice()));
+        console.log('naming tag constructor ');
+    }
+
+    ngOnInit() {
+        console.log('naming tag component OnInit tags: ' + this.tags);
+        console.log('naming tag component OnInit all tags: ' + this.allTags);
+        this.orgHelperService.then(orgsDetailedInfo => {
+            let namingTags = orgsDetailedInfo[this.stewardOrgName].nameTags;
+            console.log('naming tags: ' + namingTags);
+            this.allTags = namingTags;
+        }, () => {
+        });
     }
 
 
