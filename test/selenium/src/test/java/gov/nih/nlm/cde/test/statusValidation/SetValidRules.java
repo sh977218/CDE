@@ -12,7 +12,6 @@ public class SetValidRules extends BaseClassificationTest {
         clickElement(By.id("username_link"));
         clickElement(By.id("user_org_authority"));
         clickElement(By.xpath("//div[. = 'Status Validation Rules']"));
-        clickElement(By.linkText("Status Validation Rules"));
         clickElement(By.id("addRule"));
         hangon(1);
         new Select(findElement(By.id("org"))).selectByVisibleText("TEST");

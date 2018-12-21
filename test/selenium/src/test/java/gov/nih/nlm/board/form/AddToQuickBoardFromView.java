@@ -14,10 +14,9 @@ public class AddToQuickBoardFromView extends NlmCdeBaseTest {
         checkAlert("Added to QuickBoard");
         textPresent("QUICK BOARD (1)");
         clickElement(By.id("menu_qb_link"));
-        clickElement(By.xpath("//div[contains(., 'Form QuickBoard')]"));
+        clickElement(By.xpath("//div[contains(., 'Form QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
         textPresent("30 Questions");
         clickElement(By.linkText("Vessel Imaging Angiography"));
     }
-
 
 }

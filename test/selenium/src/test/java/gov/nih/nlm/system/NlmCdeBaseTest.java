@@ -762,11 +762,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     public void goToQuickBoardByModule(String module) {
         clickElement(By.id("menu_qb_link"));
         if (module.equals("cde")) {
-            clickElement(By.xpath("//div[contains(., 'CDE QuickBoard')]"));
+            clickElement(By.xpath("//div[contains(., 'CDE QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
             textPresent("CDE QuickBoard (");
         }
         if (module.equals("form")) {
-            clickElement(By.xpath("//div[contains(., 'Form QuickBoard')]"));
+            clickElement(By.xpath("//div[contains(., 'Form QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
             textPresent("Form QuickBoard (");
         }
     }
@@ -786,7 +786,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent("QUICK BOARD (1)");
         addCdeToQuickBoard(cdeName2);
         clickElement(By.linkText("QUICK BOARD (2)"));
-        clickElement(By.xpath("//div[contains(., 'CDE QuickBoard')]"));
+        clickElement(By.xpath("//div[contains(., 'CDE QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
         textPresent(cdeName1);
         textPresent(cdeName2);
         clickElement(By.id("qb_elt_compare_0"));
@@ -1106,7 +1106,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
         clickElement(By.xpath("//div[. = 'Classification Audit Log']"));
-        clickElement(By.linkText("Classification Audit Log"));
         clickElement(By.xpath("(//span[text()='" + name + "' and contains(@class,'text-info')])[1]"));
     }
 

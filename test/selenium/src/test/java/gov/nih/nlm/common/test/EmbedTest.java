@@ -110,7 +110,7 @@ public class EmbedTest extends NlmCdeBaseTest {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
         hangon(1);
-        findElement(By.id("embeddingTab")).click();
+        clickElement(By.xpath("//div[. = 'Embedding']"));
         findElement(By.id("removeEmbed-0")).click();
         findElement(By.id("confirmRemoveEmbed-0")).click();
         textPresent("Removed");
