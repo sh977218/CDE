@@ -4,6 +4,7 @@ import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete } from
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { OrgHelperService } from 'core/orgHelper.service';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
     selector: 'cde-naming-tag',
@@ -19,6 +20,8 @@ export class NamingTagComponent implements OnInit {
     tagCtrl = new FormControl();
     filteredTags: Observable<string[]>;
 
+    separatorKeysCodes: number[] = [ENTER, COMMA];
+
     @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
@@ -31,7 +34,6 @@ export class NamingTagComponent implements OnInit {
 
     ngOnInit() {
         console.log('naming tag component OnInit tags: ' + this.tags);
-        console.log('naming tag component OnInit all tags: ' + this.allTags);
         this.orgHelperService.then(orgsDetailedInfo => {
             let namingTags = orgsDetailedInfo[this.stewardOrgName].nameTags;
             console.log('naming tags: ' + namingTags);
