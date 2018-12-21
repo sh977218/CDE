@@ -12,6 +12,7 @@ Org.find({}, async (err, orgs) => {
         for (let org of orgs) {
             console.log('Start updating ' + org.name);
             console.log('Old nameTags: ' + org.nameTags);
+            console.log('');
             console.log('Old propertyKeys: ' + org.propertyKeys);
             let deDesignationsTags = await DataElement.distinct('designations.tags');
             let deDefinitionsTags = await DataElement.distinct('definitions.tags');
@@ -29,6 +30,7 @@ Org.find({}, async (err, orgs) => {
             let newOrg = await org.save();
             console.log('Finished Updating ' + org.name);
             console.log('New nameTags: ' + newOrg.nameTags);
+            console.log('');
             console.log('New propertyKeys: ' + newOrg.propertyKeys);
             console.log('----------------------------------------------------------')
         }
