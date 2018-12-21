@@ -11,8 +11,8 @@ Org.find({}, async (err, orgs) => {
     else {
         for (let org of orgs) {
             console.log('Start updating ' + org.name);
-            console.log('nameTags: ' + org.nameTags);
-            console.log('propertyKeys: ' + org.propertyKeys);
+            console.log('Old nameTags: ' + org.nameTags);
+            console.log('Old propertyKeys: ' + org.propertyKeys);
             let deDesignationsTags = await DataElement.distinct('designations.tags');
             let deDefinitionsTags = await DataElement.distinct('definitions.tags');
             let formDesignationsTags = await Form.distinct('designations.tags');
@@ -25,8 +25,13 @@ Org.find({}, async (err, orgs) => {
             let propertiesKeys = _.uniq(dePropertyKeys.concat(formPropertyKeys));
             org.nameTags = namingTags;
             org.propertyKeys = propertiesKeys;
-            await org.save();
+            let newOrg = await org.save();
             console.log('Finished Updating ' + org.name);
+            console.log('New nameTags: ' + newOrg.nameTags);
+            console.log('New propertyKeys: ' + newOrg.propertyKeys);
+            console.log('----------------------------------------------------------')
         }
+        console.log('Finihsed All Orgs.');
+        process.exit(1);
     }
 });
