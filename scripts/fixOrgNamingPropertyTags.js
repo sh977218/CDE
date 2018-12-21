@@ -17,8 +17,9 @@ Org.find({}, async (err, orgs) => {
             let deDefinitionsTags = await DataElement.distinct('definitions.tags');
             let formDesignationsTags = await Form.distinct('designations.tags');
             let formDefinitionsTags = await Form.distinct('definitions.tags');
-            let dePropertyKeys = await DataElement.distinct('properties.keys');
-            let formPropertyKeys = await Form.distinct('properties.keys');
+            let dePropertyKeys = await DataElement.distinct('properties.key');
+            let formPropertyKeys = await Form.distinct('properties.key');
+
             let deNamingTags = _.uniq(deDesignationsTags.concat(deDefinitionsTags))
             let formNamingTags = _.uniq(formDesignationsTags.concat(formDefinitionsTags))
             let namingTags = _.uniq(deNamingTags.concat(formNamingTags));
