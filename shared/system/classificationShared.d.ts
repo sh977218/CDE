@@ -1,14 +1,10 @@
-import { Cb, Classification, Organization } from 'shared/models.model';
-import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm } from 'shared/form/form.model';
+import { Cb, Classification, Item, Organization } from 'shared/models.model';
 
 declare const actions: {
     create: string,
     delete: string,
     rename: string
 };
-
-type Item = DataElement|CdeForm;
 
 declare function addCategoriesToOrg(org: Organization, categories: string[]): void;
 declare function addCategoriesToTree(tree: Classification, categories: string[]): void;

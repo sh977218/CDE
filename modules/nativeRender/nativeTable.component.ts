@@ -1,23 +1,31 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { FormElement, FormQuestion } from 'shared/form/form.model';
-
+import { FormElement, FormQuestion, FormSectionOrForm, Question } from 'shared/form/form.model';
 import { ScoreService } from 'nativeRender/score.service';
-import { questionMulti } from 'shared/form/fe';
+import { isInForm, isQuestion, isSection, questionMulti } from 'shared/form/fe';
+
+type Style = {backgroundColor?: string};
+type Theme = {
+    sectionStyle: Style,
+    questionStyle: Style,
+    answerStyle: Style
+};
+type SType = {q: {header?: boolean, label?: string, rspan?: number, cspan?: number, style?: Style}[]};
+type QType = {name?: string, question?: Question, type: 'date' | 'label' | 'list' | 'mlist' | 'number' | 'text', style: Style};
 
 @Component({
     selector: 'cde-native-table',
     templateUrl: './nativeTable.component.html'
 })
 export class NativeTableComponent implements OnInit {
-    @Input() formElement: FormElement;
-
+    @Input() formElement!: FormSectionOrForm;
     canRender = false;
-    firstQuestion: FormQuestion;
-    sectionNumber: number;
-    tableForm: any = {
+    firstQuestion?: FormQuestion;
+    sectionNumber?: number;
+    tableForm: { s: SType[], q: QType[], rows: {label: string}[] } = {
         s: [{q: [{cspan: 1}]}],
-        q: [{type: 'label', style: {}}]
+        q: [{type: 'label', style: {}}],
+        rows: []
     };
     entry: any;
     readonly NRS = NativeRenderService;
@@ -32,7 +40,7 @@ export class NativeTableComponent implements OnInit {
         this.render();
     }
 
-    radioButtonSelect(required: boolean, obj, property, value: string, q) {
+    radioButtonSelect(required: boolean, obj: any, property: string, value: string, q: FormQuestion) {
         if (required || obj[property] !== value) {
             obj[property] = value;
         } else {
@@ -66,7 +74,7 @@ export class NativeTableComponent implements OnInit {
             if (!this.firstQuestion) return false;
             this.firstQuestion.question.answers.forEach((a, i) => {
                 this.tableForm.rows.push({label: NativeRenderService.getPvLabel(a)});
-                this.nrs.elt.formInput[i + '_' + this.firstQuestion.feId] = a.permissibleValue;
+                this.nrs.elt.formInput[i + '_' + this.firstQuestion!.feId] = a.permissibleValue;
             });
             this.entry.label = this.firstQuestion.label;
             this.tableForm.q[0].name = '_' + this.firstQuestion.feId;
@@ -83,14 +91,14 @@ export class NativeTableComponent implements OnInit {
         return true;
     }
 
-    renderSection(s, level, r = 1, c = 0) {
-        let sectionStyle = this.getSectionStyle(this.sectionNumber++);
+    renderSection(s: FormSectionOrForm, level: number, r = 1, c = 0) {
+        let sectionStyle = this.getSectionStyle(this.sectionNumber!++);
         let section = {header: true, cspan: c, label: s.label, style: sectionStyle.sectionStyle};
         if (level === 0) section.label = "";
         this.tableForm.s[level].q.push(section);
         let tcontent = this.getSectionLevel(level + 1);
         let retr = 0;
-        s.formElements && s.formElements.forEach(f => {
+        s.formElements && s.formElements.forEach((f: FormElement) => {
             let ret = this.renderFormElement(f, tcontent, level, retr, r, c, sectionStyle);
             retr = ret.retr;
             c = ret.c;
@@ -100,14 +108,16 @@ export class NativeTableComponent implements OnInit {
         return {r: r, c: c};
     }
 
-    renderFormElement(f, tcontent, level, retr, r, c, sectionStyle) {
-        if (f.elementType === 'section' || f.elementType === 'form') {
+    renderFormElement(f: FormElement, tcontent: SType, level: number, retr: number, r: number, c: number, sectionStyle: Theme) {
+        if (isSection(f) || isInForm(f)) {
             if (!f.repeat) {
                 let ret = this.renderSection(f, level + 1);
                 c += ret.c;
                 retr = Math.max(retr, ret.r);
             } else if (f.repeat[0] === 'F') {
-                NativeRenderService.getFirstQuestion(f).question.answers.forEach(() => {
+                const firstQuestion = NativeRenderService.getFirstQuestion(f);
+                if (!firstQuestion) throw new Error('Cannot Repeat over missing first question');
+                firstQuestion.question.answers.forEach(() => {
                     let ret = this.renderSection(f, level + 1);
                     c += ret.c;
                     retr = Math.max(retr, ret.r);
@@ -120,8 +130,7 @@ export class NativeTableComponent implements OnInit {
                     retr = Math.max(retr, ret.r);
                 }
             }
-        }
-        else if (f.elementType === 'question' && f !== this.firstQuestion) {
+        } else if (isQuestion(f) && f !== this.firstQuestion) {
             c++;
             tcontent.q.push({rspan: r, label: f.label, style: sectionStyle.questionStyle});
             this.tableForm.q.push({
@@ -157,20 +166,20 @@ export class NativeTableComponent implements OnInit {
         return {retr: retr, c: c};
     }
 
-    setDepth(r) {
-        this.tableForm.s.forEach((s, level) => {
+    setDepth(r: number) {
+        this.tableForm.s.forEach((s, level: number) => {
             s.q.forEach(q => {
                 if (!q.header) q.rspan = r - level;
             });
         });
     }
 
-    getSectionLevel(level) {
+    getSectionLevel(level: number) {
         if (this.tableForm.s.length <= level) this.tableForm.s[level] = {q: []};
         return this.tableForm.s[level];
     }
 
-    theme: Array<any> = [
+    theme: Theme[] = [
         {
             sectionStyle: {backgroundColor: '#d7f3da'},
             questionStyle: {backgroundColor: '#d7f3da'},
@@ -203,11 +212,11 @@ export class NativeTableComponent implements OnInit {
         },
     ];
 
-    getSectionStyle(i) {
+    getSectionStyle(i: number) {
         return this.theme[i % this.theme.length];
     }
 
-    static getQuestionType(fe) {
+    static getQuestionType(fe: FormQuestion) {
         switch (fe.question.datatype) {
             case 'Value List':
                 return questionMulti(fe) ? 'mlist' : 'list';

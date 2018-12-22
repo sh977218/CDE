@@ -45,7 +45,7 @@ export function getCdeCsvHeader(settings) {
         if (settings.identifiers.length > 0) {
             settings.identifiers.forEach(i => {
                 cdeHeader = cdeHeader + ", " + i;
-            })
+            });
         } else cdeHeader += ", Identifiers";
     }
     if (settings.source) {
@@ -164,14 +164,14 @@ export function projectCdeForExport(ele, settings) {
 }
 
 function sanitize(v) {
-    return (v && v.trim) ? v.trim().replace(/\"/g, "\"\"") : v;
-};
+    return (v && v.trim) ? v.trim().replace(/"/g, "\"\"") : v;
+}
 
-export function convertToCsv(ele) {
+export function convertToCsv(obj) {
     let row = "";
-    Object.keys(ele).forEach(function (key) {
-        row += "\"";
-        let value = ele[key];
+    Object.keys(obj).forEach(function (key) {
+        row += '"';
+        let value = obj[key];
         if (Array.isArray(value)) {
             row += value.map(function (value) {
                 return sanitize(value);
@@ -179,9 +179,9 @@ export function convertToCsv(ele) {
         } else if (value !== undefined) {
             row += sanitize(value);
         }
-        row += "\",";
+        row += '",';
     });
-    return row + "\n";
+    return row + '\n';
 }
 
 export function stripBsonIds(elt) {

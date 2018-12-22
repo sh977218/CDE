@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
 import { OrgHelperService } from "core/orgHelper.service";
+import { CurationStatus, StatusValidationRulesOrgs } from 'shared/models.model';
 
 @Injectable()
 export class RegistrationValidatorService {
     constructor(private orgHelperService: OrgHelperService) {
     }
 
-    evalCde(cde, orgName, status, cdeOrgRules) {
+    evalCde(cde, orgName: string, status: CurationStatus, cdeOrgRules) {
         let orgRules = cdeOrgRules[orgName];
         let rules = orgRules.filter(r => {
             let s = r.targetStatus;
@@ -57,10 +58,10 @@ export class RegistrationValidatorService {
         return lookForPropertyInNestedObject(cde, rule, 0);
     }
 
-    getOrgRulesForCde(cde) {
-        let result = {};
-        cde.classification.forEach(org =>
-            result[org.stewardOrg.name] = this.orgHelperService.getStatusValidationRules(org.stewardOrg.name));
+    getOrgRulesForCde(cde): StatusValidationRulesOrgs {
+        let result: StatusValidationRulesOrgs = {};
+        cde.classification.forEach(c =>
+            result[c.stewardOrg.name] = this.orgHelperService.getStatusValidationRules(c.stewardOrg.name));
         return result;
     }
 
