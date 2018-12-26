@@ -45,7 +45,7 @@ async function retireCdes() {
         cde.registrationState.registrationStatus = 'Retired';
         cde.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
         cde.markModified('registrationState');
-        await cde.save();
+        await DataElement.findOneAndUpdate({_id: cde._id}, cde).exec();
         retiredCDE++;
     }
 }
@@ -130,4 +130,7 @@ run().then(async () => {
     console.log('retiredCDE: ' + retiredCDE);
     await retiredForms();
     console.log('retiredForm: ' + retiredForm);
+
+    console.log('Finished NINDS loader. ');
+    process.exit(1);
 }, error => console.log(error));
