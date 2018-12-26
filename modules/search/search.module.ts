@@ -15,6 +15,7 @@ import { TableListComponent } from 'search/listView/tableList.component';
 import { WidgetModule } from 'widget/widget.module';
 import { MatButtonModule, MatIconModule, MatMenuModule, MatTabsModule } from "@angular/material";
 import { TableViewPreferencesComponent } from 'search/tableViewPreferences/tableViewPreferences.component';
+import { NamingTagComponent } from 'adminItem/public/components/naming/tag/namingTag.component';
 
 @NgModule({
     imports: [
@@ -40,7 +41,8 @@ import { TableViewPreferencesComponent } from 'search/tableViewPreferences/table
         SummaryListItemComponent,
         SummaryPlaceholderDirective,
         TableListComponent,
-        TableViewPreferencesComponent
+        TableViewPreferencesComponent,
+        NamingTagComponent,
     ],
     entryComponents: [
         ListViewComponent,

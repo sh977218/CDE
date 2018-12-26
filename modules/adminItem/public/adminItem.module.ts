@@ -31,7 +31,7 @@ import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/de
 import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
 import {
-    MatButtonModule, MatDialogModule, MatIconModule, MatChipsModule, MatAutocompleteModule
+    MatInputModule, MatButtonModule, MatDialogModule, MatIconModule, MatChipsModule, MatAutocompleteModule
 } from "@angular/material";
 
 @NgModule({
@@ -49,6 +49,7 @@ import {
         // internal
         CompareModule,
         SearchModule,
+        MatInputModule,
         MatButtonModule,
         MatDialogModule,
         MatIconModule,

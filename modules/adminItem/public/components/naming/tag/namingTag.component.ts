@@ -48,7 +48,6 @@ export class NamingTagComponent implements OnInit {
             const input = event.input;
             const value = event.value;
 
-            // Add our fruit
             if ((value || '').trim()) {
                 this.tags.push(value.trim());
             }
@@ -78,7 +77,6 @@ export class NamingTagComponent implements OnInit {
 
     private _filter(value: string): string[] {
         const filterValue = value.toLowerCase();
-
         return this.allTags.filter(t => t.toLowerCase().indexOf(filterValue) === 0);
     }
 
