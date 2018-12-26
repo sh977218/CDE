@@ -4,10 +4,11 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { assertUnreachable, CdeId, CodeAndSystem } from 'shared/models.model';
 import { pvGetDisplayValue, pvGetLabel } from 'shared/de/deShared';
 import {
-    CdeForm, DisplayProfile, FormElement, FormOrElement, FormQuestion, FormSection, FormSectionOrForm,
+    CdeForm, DisplayProfile, DisplayType, FormElement, FormElementsContainer, FormOrElement, FormQuestion, FormSection,
+    FormSectionOrForm,
     PermissibleFormValue, Question
 } from 'shared/form/form.model';
-import { addFormIds, iterateFeSync, questionMulti } from 'shared/form/fe';
+import { addFormIds, isQuestion, iterateFeSync, questionMulti } from 'shared/form/fe';
 import { getShowIfQ } from 'shared/form/skipLogic';
 import { ScoreService } from 'nativeRender/score.service';
 
@@ -20,37 +21,36 @@ export class NativeRenderService {
     static readonly FOLLOW_UP: string = 'Follow-up';
     static readonly getPvDisplayValue = pvGetDisplayValue;
     static readonly getPvLabel = pvGetLabel;
-    private _nativeRenderType?: string;
-    private _nativeRenderTypeOn?: boolean;
-    elt: CdeForm;
+    private _nativeRenderType: DisplayType = 'Follow-up';
+    elt!: CdeForm;
     private errors: string[] = [];
-    followForm: any;
+    followForm?: CdeForm;
     flatMapping: any;
-    profile?: DisplayProfile;
+    profile!: DisplayProfile;
     questionMulti = questionMulti;
     submitForm?: boolean;
-    vm: any;
+    vm!: CdeForm;
 
     constructor(public scoreSvc: ScoreService,
                 public skipLogicService: SkipLogicService) {
     }
 
-    eltSet(elt) {
+    eltSet(elt: CdeForm) {
         if (elt !== this.elt) {
             this.elt = elt;
-            this.followForm = null;
+            this.followForm = undefined;
+            this.scoreSvc.register(this.elt);
             if (!this.elt.formInput) {
                 this.elt.formInput = [];
             }
             if (this.nativeRenderType) {
                 this.render(this.nativeRenderType);
-                this.vm = this.nativeRenderType === NativeRenderService.SHOW_IF ? this.elt : this.followForm;
+                this.vm = this.nativeRenderType === NativeRenderService.SHOW_IF ? this.elt! : this.followForm!;
             }
         }
         if (this.submitForm && !this.flatMapping) {
             this.flatMapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
         }
-        this.scoreSvc.register(this.elt);
     }
 
     getAliases(f: FormQuestion) {
@@ -73,33 +73,34 @@ export class NativeRenderService {
         return !fe.question.multiselect && fe.question.answers.length === 1 && fe.question.required;
     }
 
-    get nativeRenderType() {
+    get nativeRenderType(): DisplayType {
         return this._nativeRenderType;
     }
 
-    set nativeRenderType(userType) {
-        if (userType === 'default') {
-            this._nativeRenderTypeOn = false;
-            if (!this.profile) {
-                this.profileSet();
-            }
+    set nativeRenderType(userType: DisplayType) {
+        if (!this.profile) {
+            this.profileSet();
+        }
+        if (!NativeRenderService.validateDisplayType(userType)) {
             userType = this.profile.displayType;
         }
-        if (this.nativeRenderType !== userType
-            && (userType === NativeRenderService.SHOW_IF || userType === NativeRenderService.FOLLOW_UP)) {
+        if (!this.nativeRenderType && NativeRenderService.validateDisplayType(userType)) {
+            this._nativeRenderType = userType;
+        }
+        if (this.nativeRenderType !== userType && NativeRenderService.validateDisplayType(userType)) {
             if (this.elt) {
                 this.render(userType);
             }
             this._nativeRenderType = userType;
-            this.vm = this.nativeRenderType === NativeRenderService.SHOW_IF ? this.elt : this.followForm;
+            this.vm = this.nativeRenderType === NativeRenderService.SHOW_IF ? this.elt! : this.followForm!;
         }
     }
 
-    profileSet(profile = null) {
+    profileSet(profile?: DisplayProfile) {
         if (profile) {
             this.profile = profile;
         }
-        if (this.elt && this.elt.displayProfiles && this.elt.displayProfiles.length > 0 &&
+        if (!this.profile || this.elt && this.elt.displayProfiles && this.elt.displayProfiles.length > 0 &&
             this.elt.displayProfiles.indexOf(this.profile) === -1) {
             this.profile = this.elt.displayProfiles[0];
         }
@@ -107,9 +108,6 @@ export class NativeRenderService {
             this.profile = new DisplayProfile('Default Config');
         }
         iterateFeSync(this.elt, undefined, undefined, this.getAliases.bind(this));
-        if (this._nativeRenderTypeOn === false) {
-            this.nativeRenderType = this.profile.displayType;
-        }
     }
 
     radioButtonSelect(q: FormQuestion, value: string) {
@@ -121,7 +119,7 @@ export class NativeRenderService {
         this.scoreSvc.triggerCalculateScore(q);
     }
 
-    render(renderType) {
+    render(renderType: DisplayType) {
         if (!this.elt) {
             return;
         }
@@ -136,7 +134,7 @@ export class NativeRenderService {
                         f.question.answers.splice(i--, 1);
                     }
                     else {
-                        if (answer.formElements) answer.formElements = undefined;
+                        if (answer.formElements) answer.formElements = [];
                         if (answer.index) answer.index = undefined;
                     }
                 }
@@ -223,7 +221,7 @@ export class NativeRenderService {
         }
     }
 
-    static transformFormToInline(form: FormElement): boolean {
+    static transformFormToInline(form: FormElementsContainer): boolean {
         let followEligibleQuestions = [];
         let transformed = false;
         let feSize = (form.formElements ? form.formElements.length : 0);
@@ -367,7 +365,7 @@ export class NativeRenderService {
             return flattenFormSection(elt, [], '', '');
         } else {
             let startSection = elt.formElements[0] as FormSection;
-            return flattenFormSection(startSection, [startSection.label], '', '');
+            return flattenFormSection(startSection, [startSection.label || ''], '', '');
         }
 
         function flattenFormSection(fe: CdeForm | FormSectionOrForm, sectionHeading: string[], namePrefix: string, repeatNum: string): SectionQuestions[] {
@@ -390,7 +388,7 @@ export class NativeRenderService {
             for (let i = 0; i < repeats; i++) {
                 if (repeats > 1) repeatNum = ' #' + i;
                 fe.formElements.forEach(feIter => {
-                    output = flattenFormFe(feIter, sectionHeading.concat(feIter.label), namePrefix + (repeats > 1 ? i + '_' : ''), repeatNum);
+                    output = flattenFormFe(feIter, sectionHeading.concat(feIter.label || ''), namePrefix + (repeats > 1 ? i + '_' : ''), repeatNum);
 
                     if (output.length !== 0) {
                         if (isSectionQuestions(output[0])) {
@@ -411,7 +409,7 @@ export class NativeRenderService {
             let repeats = NativeRenderService.getRepeatNumber(fe);
             for (let i = 0; i < repeats; i++) {
                 let q: QuestionStruct = {
-                    question: fe.label,
+                    question: fe.label || '',
                     name: namePrefix + (repeats > 1 ? i + '_' : '') + fe.feId,
                     ids: fe.question.cde.ids,
                     tinyId: fe.question.cde.tinyId
@@ -442,19 +440,20 @@ export class NativeRenderService {
         }
     }
 
-    static getFirstQuestion(fe: FormElement | null): any {
+    static getFirstQuestion(fe: FormElement | undefined): FormQuestion | undefined {
         let firstQuestion: FormQuestion | undefined;
         while (fe) {
-            if (fe.elementType === 'question') {
+            if (isQuestion(fe)) {
                 firstQuestion = fe;
                 break;
             } else {
-                fe = fe.formElements && fe.formElements.length ? fe.formElements[0] : null;
+                fe = fe.formElements && fe.formElements.length ? fe.formElements[0] : undefined;
             }
         }
 
-        if (!firstQuestion || firstQuestion.question.datatype !== 'Value List') return null;
-
+        if (!firstQuestion || firstQuestion.question.datatype !== 'Value List') {
+            return undefined;
+        }
         return firstQuestion;
     }
 
@@ -475,4 +474,7 @@ export class NativeRenderService {
         return 1;
     }
 
+    static validateDisplayType(displayType: string): boolean {
+        return displayType === NativeRenderService.SHOW_IF || displayType === NativeRenderService.FOLLOW_UP;
+    }
 }

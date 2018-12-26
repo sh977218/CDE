@@ -1,5 +1,7 @@
 const JXON = require("jxon");
 const _ = require("lodash");
+const formShared = require('esm')(module)('../../shared/form/fe');
+
 let _crypto;
 
 if (typeof(window) === "undefined") {
@@ -40,21 +42,6 @@ const ODM_DATATYPE_MAP = {
     "DATE/TIME": "datetime",
     "java.lang.Byte": "integer"
 };
-
-function flattenFormElement(fe) {
-    let result = [];
-    fe.formElements.map(function (subFe) {
-        if (!subFe.formElements || subFe.formElements.length === 0) {
-            result.push(subFe);
-        } else {
-            let subEs = flattenFormElement(subFe);
-            subEs.forEach(function (e) {
-                result.push(e);
-            });
-        }
-    });
-    return result;
-}
 
 exports.getFormOdm = function (form, cb) {
     if (!form) return cb(null, "");
@@ -118,7 +105,7 @@ exports.getFormOdm = function (form, cb) {
 
     form.formElements.forEach(function (s1, si) {
         let childrenOids = [];
-        flattenFormElement(s1).forEach(function (q1, qi) {
+        formShared.flattenFormElement(s1).forEach(function (q1, qi) {
             let oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
             childrenOids.push(oid);
             let omdDatatype = ODM_DATATYPE_MAP[q1.question.datatype] ? ODM_DATATYPE_MAP[q1.question.datatype] : "text";

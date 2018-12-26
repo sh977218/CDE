@@ -3,14 +3,11 @@ import async_forEachSeries from 'async/forEachSeries';
 import _noop from 'lodash/noop';
 
 export function addFormIds(parent, parentId = '') {
-    if (Array.isArray(parent.formElements)) {
-        parent.formElements.forEach((fe, i) => {
-            fe.feId = parentId ? parentId + '-' + i : '' + i;
-            if (fe.elementType === 'section' || fe.elementType === 'form') {
-                addFormIds(fe, fe.feId);
-            }
-        });
+    function addFeId(fe, parentId, i) {
+        fe.feId = parentId + i;
+        return fe.feId + '-';
     }
+    iterateFeSync(parent, addFeId, addFeId, addFeId, parentId ? parentId + '-': '');
 }
 
 export function areDerivationRulesSatisfied(elt) {
@@ -47,76 +44,41 @@ export function areDerivationRulesSatisfied(elt) {
     return missingCdeTinyIds;
 }
 
+// excludes subForms
 export function findQuestionByTinyId(tinyId, elt) {
-    let result = null;
-    let doFormElement = formElt => {
-        if (formElt.elementType === 'question') {
-            if (formElt.question.cde.tinyId === tinyId) {
-                result = formElt;
-            }
-        } else if (formElt.elementType === 'section') {
-            formElt.formElements.forEach(doFormElement);
-        }
-    };
-    elt.formElements.forEach(doFormElement);
-    return result;
+    let question;
+    iterateFeSyncOptions(elt, noopSkipSync, undefined, q => q.question.cde.tinyId === tinyId && (question = q));
+    return question;
 }
 
 export function flattenFormElement(fe) {
-    let result = [];
-    fe.formElements.map(function (subFe) {
-        if (!subFe.formElements || subFe.formElements.length === 0) {
-            result.push(subFe);
-        } else {
-            let subEs = flattenFormElement(subFe);
-            subEs.forEach(function (e) {
-                result.push(e);
-            });
+    function pushLeaf(fe) {
+        if (!fe.formElements || fe.formElements.length === 0) {
+            result.push(fe);
         }
-    });
+    }
+
+    let result = [];
+    iterateFeSync(fe, pushLeaf, pushLeaf, pushLeaf);
     return result;
 }
 
 export function getFormQuestions(form) {
-    let getQuestions = function (fe) {
-        let qs = [];
-        if (fe.formElements) {
-            fe.formElements.forEach(function (e) {
-                if (e.elementType === 'question') qs.push(e);
-                else qs = qs.concat(getQuestions(e));
-            });
-        }
-        return qs;
-    };
-    return getQuestions(form);
+    let questions = [];
+    iterateFeSync(form, undefined, undefined, q => questions.push(q));
+    return questions;
 }
 
-export function getFormScoreQuestion(form) {
-    let getQuestions = function (fe) {
-        let scoreQuestions = [];
-        if (fe.formElements) {
-            fe.formElements.forEach(function (e) {
-                if (e.elementType === 'question' && e.question.isScore) scoreQuestions.push(e);
-                else scoreQuestions = scoreQuestions.concat(getQuestions(e));
-            });
-        }
-        return scoreQuestions;
-    };
-    return getQuestions(form);
+export function getFormScoreQuestions(form) {
+    let questions = [];
+    iterateFeSync(form, undefined, undefined, q => q.question.isScore && questions.push(q));
+    return questions;
 }
 
-export function getFormSkipLogicQuestion(form) {
-    let getQuestions = function (fe) {
-        let skipLogicQuestions = [];
-        if (fe.formElements) {
-            fe.formElements.forEach(function (e) {
-                if (e.elementType === 'question' && e.skipLogic.condition.length > 0) skipLogicQuestions.push(e);
-                else skipLogicQuestions = skipLogicQuestions.concat(getQuestions(e));
-            });
-        }
-        return skipLogicQuestions;
-    };
-    return getQuestions(form);
+export function getFormSkipLogicQuestions(form) {
+    let questions = [];
+    iterateFeSync(form, undefined, undefined, q => q.skipLogic.condition.length > 0 && questions.push(q));
+    return questions;
 }
 
 export function getFormQuestionsAsQuestion(form) {
@@ -166,6 +128,7 @@ export function iterateFeSync(fe, formCb = undefined, sectionCb = undefined, que
 
 // implemented options: skip
 // feCb(fe, pass, options): return
+//   skip: noopSkipSync
 export function iterateFeSyncOptions(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, pass = undefined) {
     if (fe) {
         return iterateFesSyncOptions(fe.formElements, formCb, sectionCb, questionCb, pass);
@@ -212,16 +175,16 @@ export function iterateFesSync(fes, formCb = noopSync, sectionCb = noopSync, que
     if (!Array.isArray(fes)) {
         return;
     }
-    fes.forEach(fe => {
+    fes.forEach((fe, i) => {
         switch (fe.elementType) {
             case 'form':
-                iterateFeSync(fe, formCb, sectionCb, questionCb, formCb(fe, pass));
+                iterateFeSync(fe, formCb, sectionCb, questionCb, formCb(fe, pass, i));
                 break;
             case 'section':
-                iterateFeSync(fe, formCb, sectionCb, questionCb, sectionCb(fe, pass));
+                iterateFeSync(fe, formCb, sectionCb, questionCb, sectionCb(fe, pass, i));
                 break;
             case 'question':
-                questionCb(fe, pass);
+                questionCb(fe, pass, i);
                 break;
         }
     });
@@ -230,28 +193,29 @@ export function iterateFesSync(fes, formCb = noopSync, sectionCb = noopSync, que
 
 // implemented options: skip
 // feCb(fe, pass, options): return
+//   skip: noopSkipSync
 export function iterateFesSyncOptions(fes, formCb = noopSync, sectionCb = noopSync, questionCb = noopSync, pass = undefined) {
     if (!Array.isArray(fes)) {
         return;
     }
-    fes.forEach(fe => {
+    fes.forEach((fe, i) => {
         let options = {};
         let ret;
         switch (fe.elementType) {
             case 'form':
-                ret = formCb(fe, pass, options);
+                ret = formCb(fe, pass, options, i);
                 if (!options.skip) {
                     iterateFeSyncOptions(fe, formCb, sectionCb, questionCb, ret);
                 }
                 break;
             case 'section':
-                ret = sectionCb(fe, pass, options);
+                ret = sectionCb(fe, pass, options, i);
                 if (!options.skip) {
                     iterateFeSyncOptions(fe, formCb, sectionCb, questionCb, ret);
                 }
                 break;
             case 'question':
-                questionCb(fe, pass, options);
+                questionCb(fe, pass, options, i);
                 break;
         }
     });

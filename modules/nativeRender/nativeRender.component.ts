@@ -3,7 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import './nativeRender.scss';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { CdeForm, DisplayProfile } from 'shared/form/form.model';
+import { CdeForm, DisplayProfile, DisplayType } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-native-render',
@@ -19,7 +19,7 @@ export class NativeRenderComponent {
         this.nrs.profileSet(p);
     }
 
-    @Input() set nativeRenderType(userType) {
+    @Input() set nativeRenderType(userType: DisplayType) {
         this.nrs.nativeRenderType = userType;
     }
 

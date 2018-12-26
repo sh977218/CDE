@@ -71,7 +71,7 @@
             <ng-container *ngIf="nativeFe.metadataTagsNew === 'UDI'">Unique</ng-container>Device Id:</label></div>
         <div class="input-group mr-2 mb-1">
             <input #searchField id="deviceSearchInput" class="form-control" [(ngModel)]="metadataSearch"/>
-            <button class="btn btn-outline-dark input-group-addon" (click)="accessGUDIdSearch(metadataSearch)">Add</button>
+            <button class="btn btn-outline-dark input-group-addon" (click)="accessGUDIdSearch()">Add</button>
         </div>
         <ng-container *ngIf="nativeFe.metadataTagsNew !== watchNewState && moveFocus(searchField)"></ng-container>
         <div><a *ngIf="metadataSearchResult === null" style="color: red">Device Identifier(DI) Not Found</a></div>
