@@ -355,7 +355,7 @@ exports.query = function (query, callback) {
 };
 
 exports.transferSteward = function (from, to, callback) {
-    DataElement.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, {multi: true}).exec(function (err, result) {
+    DataElement.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec(function (err, result) {
         callback(err, result.nModified);
     });
 };

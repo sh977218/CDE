@@ -44,8 +44,6 @@ db.dataelements.updateMany({
 	$set : {
 		"registrationState.registrationStatus" : "Retired"
 	}
-}, {
-	multi : true
 });
 
 6. remove suggested question text from properties
@@ -54,8 +52,7 @@ db.dataelements.updateMany(
 {source: "NINDS", archived: false},
 {$pull: {properties:
 {key: "NINDS Suggested Question"}
-}},
-{multi: true}
+}}
 )
 
 result: WriteResult({ "nMatched" : 11215, "nUpserted" : 0, "nModified" : 9722 })

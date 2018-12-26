@@ -236,7 +236,7 @@ exports.query = function (query, callback) {
 };
 
 exports.transferSteward = function (from, to, callback) {
-    Form.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, {multi: true}).exec(function (err, result) {
+    Form.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec(function (err, result) {
         callback(err, result.nModified);
     });
 };

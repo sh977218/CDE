@@ -82,7 +82,7 @@ exports.jobStatus = (type, callback) => {
     JobQueue.findOne({type: type}, callback);
 };
 exports.updateJobStatus = (type, status, callback) => {
-    JobQueue.updateMany({type: type}, {status: status}, {upsert: true}, callback);
+    JobQueue.updateOne({type: type}, {status: status}, {upsert: true}, callback);
 };
 exports.removeJobStatus = (type, callback) => {
     JobQueue.remove({type: type}, callback);
@@ -183,7 +183,7 @@ exports.pushDelete = (endpoint, userId, callback) => {
 };
 
 exports.pushEndpointUpdate = (endpoint, commandObj, callback) => {
-    PushRegistration.updateMany({'subscription.endpoint': endpoint}, commandObj, {multi: true}, callback);
+    PushRegistration.updateMany({'subscription.endpoint': endpoint}, commandObj, callback);
 };
 
 exports.pushGetAdministratorRegistrations = callback => {

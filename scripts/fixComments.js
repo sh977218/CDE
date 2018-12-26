@@ -51,7 +51,7 @@ function runComment() {
                     'eltType': 'form',
                     'eltId': rightTinyId
                 }
-            }, {multi: true});
+            });
             console.log(num_updated.nModified + ' ' + wrongTinyId + ' updated to ' + rightTinyId);
         }
     })

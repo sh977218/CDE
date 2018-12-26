@@ -12,8 +12,6 @@ db.dataelements.updateMany({
 	$set : {
 		"registrationState.registrationStatus" : "Retired"
 	}
-}, {
-	multi : true
 });
 
 db.dataelements.count({

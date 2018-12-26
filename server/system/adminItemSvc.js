@@ -85,7 +85,8 @@ exports.attachmentApproved = (collection, id, cb) => {
                 'attachments.$.pendingApproval': ''
             }
         },
-        {multi: true}, cb);
+        cb
+    );
 };
 
 exports.attachmentRemove = (collection, id, cb) => {
