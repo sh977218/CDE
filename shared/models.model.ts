@@ -40,6 +40,7 @@ export class Attachment {
 export type Cb<T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => void;
 export type CbErr<T = never, U = never, V = never> = (error?: string, t?: T, u?: U, v?: V) => void;
 export type CbErrObj<E = string, T = never, U = never, V = never> = (error?: E, t?: T, u?: U, v?: V) => void;
+export type CbRequired<T = never> = (t: T) => void;
 export type CbRet<R = never, T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => R;
 
 export class CdeId {
@@ -81,7 +82,7 @@ export class ClassificationHistory {
 }
 
 export class CodeAndSystem {
-    code?: string;
+    code: string;
     system?: string;
 
     constructor(system: string, code: string) {
@@ -108,7 +109,7 @@ export class CommentReply {
     pendingApproval?: boolean;
     status: string = 'active';
     text?: string;
-    user: UserRef;
+    user!: UserRef;
 }
 
 export class Comment extends CommentReply {
@@ -195,6 +196,8 @@ export abstract class Elt {
     comments: Comment[] = []; // mutable
     created?: Date;
     createdBy?: UserReference;
+    definitions: Definition[] = [];
+    designations: Designation[] = [];
     highlight?: any; // volatile, Elastic
     history: ObjectId[] = [];
     ids: CdeId[] = [];
@@ -202,8 +205,6 @@ export abstract class Elt {
     isDefault?: boolean; // client only
     isDraft?: boolean; // optional, draft only
     lastMigrationScript?: string;
-    designations: Designation[] = [];
-    definitions: Definition[] = [];
     origin?: string;
     primaryDefinitionCopy?: string; // volatile, Elastic
     primaryNameCopy?: string; // volatile, Elastic
@@ -285,7 +286,7 @@ export class Definition {
 export class DerivationRule {
     formula?: DerivationRuleFormula;
     fullCdes?: DataElement[];
-    inputs?: string[];
+    inputs: string[] = [];
     name?: string;
     outputs?: string[];
     ruleType?: DerivationRuleType;
@@ -293,6 +294,8 @@ export class DerivationRule {
 
 type DerivationRuleFormula = 'sumAll' | 'mean' | 'bmi';
 type DerivationRuleType = 'score' | 'panel';
+
+export type Item = DataElementElastic | CdeFormElastic;
 
 export type NotificationSettingsMediaType = 'drawer' | 'push';
 
@@ -392,6 +395,27 @@ export class StatusValidationRules {
     targetStatus?: CurationStatus;
 }
 
+export type StatusValidationRulesOrgs = {[org: string]: StatusValidationRules[]};
+
+export type TableViewFields = {
+    administrativeStatus?: boolean,
+    ids?: boolean,
+    identifiers?: string[],
+    name?: boolean,
+    naming?: boolean,
+    nbOfPVs?: boolean,
+    numQuestions?: boolean,
+    permissibleValues?: boolean,
+    questionTexts?: boolean,
+    registrationStatus?: boolean,
+    source?: boolean,
+    stewardOrg?: boolean,
+    tinyId?: boolean,
+    uom?: boolean,
+    updated?: boolean,
+    usedBy?: boolean,
+};
+
 export type Task = {
     date: Date,
     id: string,
@@ -428,24 +452,7 @@ export class User {
     searchSettings?: {
         defaultSearchView?: string,
         lowestRegistrationStatus?: string,
-        tableViewFields?: {
-            administrativeStatus?: boolean,
-            ids?: boolean,
-            identifiers?: string[],
-            name?: boolean,
-            naming?: boolean,
-            nbOfPVs?: boolean,
-            numQuestions?: boolean,
-            permissibleValues?: boolean,
-            questionTexts?: boolean,
-            registrationStatus?: boolean,
-            source?: boolean,
-            stewardOrg?: boolean,
-            tinyId?: boolean,
-            uom?: boolean,
-            updated?: boolean,
-            usedBy?: boolean,
-        },
+        tableViewFields?: TableViewFields,
         version?: number,
     };
     siteAdmin?: boolean;

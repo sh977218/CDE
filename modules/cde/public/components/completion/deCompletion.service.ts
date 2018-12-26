@@ -25,7 +25,7 @@ export class DeCompletionService {
                 if (term) {
                     settings.resultPerPage = 5;
                     settings.searchTerm = term;
-                    return this.http.post<any[]>('/cdeCompletion/' + encodeURI(term), this.elasticService.buildElasticQuerySettings(settings));
+                    return this.http.post<any[]>('/cdeCompletion/' + encodeURI(term), settings);
                 } else {
                     return EmptyObservable.create<string[]>();
                 }

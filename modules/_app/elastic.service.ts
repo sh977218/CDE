@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { LocalStorageService } from 'angular-2-local-storage';
 
 import { UserService } from '_app/user.service';
-import { Cb, CbErr, ElasticQueryResponse } from 'shared/models.model';
+import { SearchSettings, SearchSettingsElastic } from 'search/search.model';
+import { Cb, CbErr, CbRequired, CurationStatus, ElasticQueryResponse, Item } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { orderedList } from 'shared/system/regStatusShared';
@@ -28,38 +29,40 @@ export class ElasticService {
         this.loadSearchSettings();
     }
 
-    buildElasticQuerySettings(queryParams) {
-        let regStatuses = queryParams.regStatuses;
-        if (!regStatuses) regStatuses = [];
-
+    buildElasticQuerySettings(queryParams: SearchSettings): SearchSettingsElastic {
         return {
-            resultPerPage: queryParams.resultPerPage
-            , searchTerm: queryParams.q
-            , selectedOrg: queryParams.selectedOrg
-            , selectedOrgAlt: queryParams.selectedOrgAlt
-            , excludeAllOrgs: queryParams.excludeAllOrgs
-            , excludeOrgs: queryParams.excludeOrgs || []
-            , selectedElements: queryParams.classification || []
-            , selectedElementsAlt: queryParams.classificationAlt || []
-            , page: queryParams.page
-            , includeAggregations: true
-            , meshTree: queryParams.meshTree
-            , selectedStatuses: regStatuses || []
-            , selectedDatatypes: queryParams.datatypes || []
-            , visibleStatuses: this.getUserDefaultStatuses()
-            , searchToken: this.searchToken
-            , fullRecord: null
+            resultPerPage: queryParams.resultPerPage,
+            searchTerm: queryParams.q,
+            selectedOrg: queryParams.selectedOrg,
+            selectedOrgAlt: queryParams.selectedOrgAlt,
+            excludeAllOrgs: queryParams.excludeAllOrgs,
+            excludeOrgs: queryParams.excludeOrgs || [],
+            selectedElements: queryParams.classification || [],
+            selectedElementsAlt: queryParams.classificationAlt || [],
+            page: queryParams.page,
+            includeAggregations: true,
+            meshTree: queryParams.meshTree,
+            selectedStatuses: queryParams.regStatuses || [],
+            selectedDatatypes: queryParams.datatypes || [],
+            visibleStatuses: this.getUserDefaultStatuses(),
+            searchToken: this.searchToken,
+            fullRecord: undefined,
         };
     }
 
-    generalSearchQuery(settings, type: 'cde' | 'form', cb: CbErr<ElasticQueryResponse, boolean>) {
-        let search = (good: Cb<ElasticQueryResponse>, bad: CbErr) => {
-            this.http.post('/elasticSearch/' + type, settings).subscribe(good, bad);
+    generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr<ElasticQueryResponse, boolean>) {
+        let search = (good: CbRequired<ElasticQueryResponse>, bad: CbErr) => {
+            this.http.post<ElasticQueryResponse>('/elasticSearch/' + type, settings).subscribe(good, bad);
         };
 
         function success(response: ElasticQueryResponse, isRetry = false) {
-            ElasticService.highlightResults(response[type + 's']);
-            response[type + 's'].forEach(e => type === 'form' ? CdeForm.validate(e) : DataElement.validate(e));
+            if (type === 'cde') {
+                ElasticService.highlightResults(response.cdes!);
+                response.cdes!.forEach(DataElement.validate);
+            } else {
+                ElasticService.highlightResults(response.forms!);
+                response.forms!.forEach(CdeForm.validate);
+            }
             cb(undefined, response, isRetry);
         }
 
@@ -69,30 +72,30 @@ export class ElasticService {
         });
     }
 
-    static highlight(field1, field2, cde) {
-        if (cde.highlight[field1 + '.' + field2]) {
-            cde.highlight[field1 + '.' + field2].forEach(function (nameHighlight) {
-                let elements;
-                if (field1.indexOf('.') < 0) elements = cde[field1];
-                else elements = cde[field1.replace(/\..+$/, '')][field1.replace(/^.+\./, '')];
-                elements.forEach(function (nameCde, i) {
-                    if (nameCde[field2] === nameHighlight.replace(/<[^>]+>/gm, '')) {
-                        nameCde[field2] = nameHighlight;
-                        if (field2 === 'designation' && i === 0) cde.highlight.primaryName = true;
-                    }
-                });
+    // static highlight(field1: string, field2: string, cde) {
+    //     if (cde.highlight[field1 + '.' + field2]) {
+    //         cde.highlight[field1 + '.' + field2].forEach(function (nameHighlight) {
+    //             let elements;
+    //             if (field1.indexOf('.') < 0) elements = cde[field1];
+    //             else elements = cde[field1.replace(/\..+$/, '')][field1.replace(/^.+\./, '')];
+    //             elements.forEach((nameCde, i: number) => {
+    //                 if (nameCde[field2] === nameHighlight.replace(/<[^>]+>/gm, '')) {
+    //                     nameCde[field2] = nameHighlight;
+    //                     if (field2 === 'designation' && i === 0) cde.highlight.primaryName = true;
+    //                 }
+    //             });
+    //
+    //         });
+    //     }
+    // }
 
-            });
-        }
-    }
-
-    static highlightElt(cde) {
+    static highlightElt(cde: Item) {
         ElasticService.highlightOne('primaryNameCopy', cde);
         ElasticService.highlightOne('primaryDefinitionCopy', cde);
         ElasticService.setMatchedBy(cde);
     }
 
-    static highlightOne(field, cde) {
+    static highlightOne(field: string, cde: Item) {
         if (!cde.highlight) return;
         if (cde.highlight[field]) {
             if (field.indexOf('.') < 0) {
@@ -111,11 +114,11 @@ export class ElasticService {
         }
     }
 
-    static highlightResults(elts) {
-        elts.forEach(elt => ElasticService.highlightElt(elt));
+    static highlightResults(elts: Item[]) {
+        elts.forEach(ElasticService.highlightElt);
     }
 
-    static setMatchedBy(cde) {
+    static setMatchedBy(cde: Item) {
         let field = 'Full Document';
         if (!cde.highlight) {
             cde.highlight = {matchedBy: field};
@@ -136,9 +139,9 @@ export class ElasticService {
         }
     }
 
-    getExport(query, type, cb) {
-        this.http.post('/elasticSearchExport/' + type, query).subscribe(
-            response => cb(null, response),
+    getExport(query: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr<Item[]>) {
+        this.http.post<Item[]>('/elasticSearchExport/' + type, query).subscribe(
+            response => cb(undefined, response),
             err => {
                 if (err.status === 503) cb('The server is busy processing similar request, please try again in a minute.');
                 else cb('An error occured. This issue has been reported.');
@@ -146,7 +149,7 @@ export class ElasticService {
         );
     }
 
-    saveConfiguration(settings) {
+    saveConfiguration(settings: SearchSettings) {
         this.searchSettings = settings;
         let savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
         delete savedSettings.includeRetired;
@@ -187,7 +190,7 @@ export class ElasticService {
         return this.searchSettings.defaultSearchView;
     }
 
-    getUserDefaultStatuses() {
+    getUserDefaultStatuses(): CurationStatus[] {
         let overThreshold = false;
         let result = orderedList.filter(status => {
             if (overThreshold) return false;

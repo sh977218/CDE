@@ -1,3 +1,3 @@
-import { FhirDateTime } from 'shared/mapping/fhir/fhir.model';
+import { FhirDateTime, FhirPeriod } from 'shared/mapping/fhir/fhir.model';
 
-export function newPeriod(start: FhirDateTime, end?: FhirDateTime);
+declare function newPeriod(start: FhirDateTime, end?: FhirDateTime): FhirPeriod;

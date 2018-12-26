@@ -12,26 +12,26 @@ type sectionCb = (fe: FormSection, continueCb: continueCb, options?: IterateOpti
 
 // sync callbacks
 // returns data as "pass" to children
-type informCbSync = (fe: FormInForm, pass?: any) => any;
-type quesCbSync = (fe: FormQuestion, pass?: any) => any;
-type sectionCbSync = (fe: FormSection, pass?: any) => any;
+type informCbSync = (fe: FormInForm, pass?: any, key?: any) => any;
+type quesCbSync = (fe: FormQuestion, pass?: any, key?: any) => any;
+type sectionCbSync = (fe: FormSection, pass?: any, key?: any) => any;
 
 // sync callbacks with options
 // returns data as "pass" to children
 // options are extendable
 //     skip: skip children
 type IterateOptionsSync = IterateOptions;
-type informOptionsCbSync = (fe: FormInForm, pass?: any, options?: IterateOptionsSync) => any;
-type quesOptionsCbSync = (fe: FormQuestion, pass?: any, options?: IterateOptionsSync) => any;
-type sectionOptionsCbSync = (fe: FormSection, pass?: any, options?: IterateOptionsSync) => any;
+type informOptionsCbSync = (fe: FormInForm, pass?: any, options?: IterateOptionsSync, key?: any) => any;
+type quesOptionsCbSync = (fe: FormQuestion, pass?: any, options?: IterateOptionsSync, key?: any) => any;
+type sectionOptionsCbSync = (fe: FormSection, pass?: any, options?: IterateOptionsSync, key?: any) => any;
 
 declare function addFormIds(parent: FormElementsContainer, parentId?: string): void;
 declare function areDerivationRulesSatisfied(elt: FormElementsContainer): string[];
 declare function findQuestionByTinyId(tinyId: string, elt: FormElementsContainer): FormQuestion;
 declare function flattenFormElement(fe: FormElementsContainer): FormElement[];
 declare function getFormQuestions(form: FormElementsContainer): FormQuestion[];
-declare function getFormScoreQuestion(form: FormElementsContainer): FormQuestion[];
-declare function getFormSkipLogicQuestion(form: FormElementsContainer): FormQuestion[];
+declare function getFormScoreQuestions(form: FormElementsContainer): FormQuestion[];
+declare function getFormSkipLogicQuestions(form: FormElementsContainer): FormQuestion[];
 declare function getFormQuestionsAsQuestion(form: FormElementsContainer): Question[];
 declare function getFormQuestionsAsQuestionCde(form: FormElementsContainer): QuestionCde[];
 declare function getLabel(fe: FormElement): string;

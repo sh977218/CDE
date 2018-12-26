@@ -3,14 +3,14 @@
 
 <form *ngIf="!endpointUrl && nrs.vm" name="sectionLabel" role="form" class="form-horizontal">
     <cde-native-section *ngIf="nrs.nativeRenderType !== NRS.SHOW_IF
-                                  || nrs.skipLogicService.evalSkipLogic(null, nrs.vm, nrs)"
+                                  || nrs.skipLogicService.evalSkipLogic(undefined, nrs.vm, nrs)"
                         [formElement]="nrs.vm"></cde-native-section>
 </form>
 <form ngNoForm #formData *ngIf="endpointUrl && nrs.vm" name="sectionLabel" role="form" class="form-horizontal"
       [action]="getEndpointUrl()" method="post">
 
     <cde-native-section *ngIf="nrs.nativeRenderType !== NRS.SHOW_IF
-                                  || nrs.skipLogicService.evalSkipLogic(null, nrs.vm, nrs)"
+                                  || nrs.skipLogicService.evalSkipLogic(undefined, nrs.vm, nrs)"
                         [formElement]="nrs.vm"></cde-native-section>
 
     <input type="hidden" name="formUrl" [value]="formUrl">

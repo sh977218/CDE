@@ -57,8 +57,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
-    @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl: TemplateRef<any>;
-    @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl: TemplateRef<any>;
+    @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl!: TemplateRef<any>;
+    @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl!: TemplateRef<any>;
     @ViewChild('slInput') slInput: ElementRef;
     answerListItems = [];
     dataTypeList = [];

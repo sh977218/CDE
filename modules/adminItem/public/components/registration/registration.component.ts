@@ -4,7 +4,7 @@ import _noop from 'lodash/noop';
 
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
-import { Comment, RegistrationState } from 'shared/models.model';
+import { Comment, CurationStatus, RegistrationState } from 'shared/models.model';
 import { statusList } from 'shared/system/regStatusShared';
 import { MatDialog } from '@angular/material';
 
@@ -16,9 +16,9 @@ export class RegistrationComponent implements OnInit {
     @Input() canEdit: boolean = false;
     @Input() elt: any;
     @Output() onEltChange = new EventEmitter();
-    @ViewChild('regStatusEdit') regStatusEditModal: TemplateRef<any>;
-    helpMessage: string;
-    newState: RegistrationState;
+    @ViewChild('regStatusEdit') regStatusEditModal!: TemplateRef<any>;
+    helpMessage?: string;
+    newState?: RegistrationState;
     validRegStatuses: string[] = ['Retired', 'Incomplete', 'Candidate'];
 
     constructor (
@@ -33,10 +33,9 @@ export class RegistrationComponent implements OnInit {
     }
 
     openRegStatusUpdate() {
-        this.http.get<Comment[]>('/server/discuss/comments/eltId/' + this.elt.tinyId).subscribe((response) => {
-            if (Array.isArray(response) && response.filter(function (a) {
-                    return a.status !== 'resolved' && a.status !== 'deleted';
-                }).length > 0) {
+        this.http.get<Comment[]>('/server/discuss/comments/eltId/' + this.elt.tinyId).subscribe(comments => {
+            if (Array.isArray(comments)
+                && comments.filter(c => c.status !== 'resolved' && c.status !== 'deleted').length > 0) {
                 this.alert.addAlert('info', 'Info: There are unresolved comments. ');
             }
 
@@ -63,7 +62,7 @@ export class RegistrationComponent implements OnInit {
         });
     }
 
-    setHelpMessage(newValue) {
+    setHelpMessage(newValue: CurationStatus) {
         statusList.forEach(status => {
             if (status.name === newValue) this.helpMessage = status.curHelp;
         });
