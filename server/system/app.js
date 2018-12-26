@@ -256,7 +256,7 @@ exports.init = function (app) {
                     wstream.end();
                 });
             })
-            .catch(err => console.log('Cron Sunday 4:07 AM did not complete due to error:', err));
+            .catch(err => dbLogger.consoleLog('Cron Sunday 4:07 AM did not complete due to error:', err));
     }, null, true, 'America/New_York', this, true);
 
     ["/help/:title", "/createForm", "/createCde", "/boardList",
