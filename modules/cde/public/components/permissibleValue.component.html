@@ -3,10 +3,12 @@
     <dl class="row">
         <dt class="col-3 text-right">Value Type:</dt>
         <dd id="datatypeSelect" class="col-9">
-            <ng-select [(ngModel)]="elt.valueDomain.datatype" [items]="dataTypeList" bindValue="value"
-                       placeholder="Select data type" appendTo="body" [hideSelected]="true"
-                       (change)="onDataTypeChange();" [disabled]="!canEdit">
-            </ng-select>
+            <mat-form-field>
+                <mat-select [(value)]="elt.valueDomain.datatype" [disabled]="!canEdit"
+                            (selectionChange)="onDataTypeChange();" placeholder="Select data type">
+                    <mat-option *ngFor="let dataType of dataTypeList" [value]="dataType">{{dataType}}</mat-option>
+                </mat-select>
+            </mat-form-field>
         </dd>
         <ng-container *ngIf="elt.valueDomain.definition">
             <dt class="col-3 text-right">Instructions:</dt>
@@ -187,7 +189,7 @@
         </ng-container>
         <div>
             <!--<div *ngIf="!elt.allValid && elt.valueDomain.permissibleValues.length > 0" class="alert alert-danger mt20"-->
-                 <!--role="alert">There are validation errors. {{elt.pvNotValidMsg }}-->
+            <!--role="alert">There are validation errors. {{elt.pvNotValidMsg }}-->
             <!--</div>-->
             <ng-container *ngIf="canEdit">
                 <button mat-raised-button id="openAddPermissibleValueModelBtn" (click)="openNewPermissibleValueModal()">

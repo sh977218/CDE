@@ -14,8 +14,7 @@ export class NamingTagComponent implements OnInit {
     @Input() tags;
     @Input() canEdit;
     @Input() stewardOrgName;
-
-    allTags = [];
+    @Input() allTags?;
 
     tagCtrl = new FormControl();
     filteredTags: Observable<string[]>;
@@ -29,17 +28,16 @@ export class NamingTagComponent implements OnInit {
         this.filteredTags = this.tagCtrl.valueChanges.pipe(
             startWith(null),
             map((t: string | null) => t ? this._filter(t) : this.allTags.slice()));
-        console.log('naming tag constructor ');
     }
 
     ngOnInit() {
-        console.log('naming tag component OnInit tags: ' + this.tags);
-        this.orgHelperService.then(orgsDetailedInfo => {
-            let namingTags = orgsDetailedInfo[this.stewardOrgName].nameTags;
-            console.log('naming tags: ' + namingTags);
-            this.allTags = namingTags;
-        }, () => {
-        });
+        if (this.stewardOrgName) {
+            this.orgHelperService.then(orgsDetailedInfo => {
+                let namingTags = orgsDetailedInfo[this.stewardOrgName].nameTags;
+                this.allTags = namingTags;
+            }, () => {
+            });
+        }
     }
 
 

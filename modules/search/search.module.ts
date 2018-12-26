@@ -15,7 +15,6 @@ import { TableListComponent } from 'search/listView/tableList.component';
 import { WidgetModule } from 'widget/widget.module';
 import { MatButtonModule, MatIconModule, MatMenuModule, MatTabsModule } from "@angular/material";
 import { TableViewPreferencesComponent } from 'search/tableViewPreferences/tableViewPreferences.component';
-import { AdminItemModule } from 'adminItem/public/adminItem.module';
 
 @NgModule({
     imports: [
@@ -25,7 +24,6 @@ import { AdminItemModule } from 'adminItem/public/adminItem.module';
         RouterModule.forChild([]),
         // core
         WidgetModule,
-        AdminItemModule,
         MatIconModule,
         MatButtonModule,
         MatIconModule,
@@ -37,6 +35,7 @@ import { AdminItemModule } from 'adminItem/public/adminItem.module';
         ListViewComponent,
         ListViewControlsComponent,
         SearchExportButtonComponent,
+        SummaryHeadingComponent,
         SummaryListComponent,
         SummaryListItemComponent,
         SummaryPlaceholderDirective,
