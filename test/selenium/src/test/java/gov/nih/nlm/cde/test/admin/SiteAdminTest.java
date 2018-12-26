@@ -28,6 +28,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.xpath("//div[. = 'Org Admins']"));
+        textPresent("Admins for this Organization");
         new Select(driver.findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText(testOrg);
         findElement(By.id("newOrgAdminUsername")).sendKeys(test_username);
         clickElement(By.id("newOrgAdminSubmit"));
@@ -48,7 +49,6 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 
         clickElement(By.xpath("//span[contains(text(),'" + test_username + "')]/..//mat-icon[. = 'delete_outline']"));
         textNotPresent(test_username);
-
     }
 
     @Test

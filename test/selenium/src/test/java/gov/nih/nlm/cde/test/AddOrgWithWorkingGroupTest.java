@@ -19,6 +19,7 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.xpath("//div[. = 'Org Admins']"));
+        textPresent("Admins for this Organization");
         new Select(driver.findElement(By.name("newOrgAdminOrgName"))).selectByVisibleText(orgWG);
         findElement(By.id("newOrgAdminUsername")).sendKeys(ctepCurator_username);
         clickElement(By.id("newOrgAdminSubmit"));
