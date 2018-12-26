@@ -28,25 +28,22 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.xpath("//div[. = 'Org Admins']"));
-        textPresent("Admins for this Organization");
         new Select(driver.findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText(testOrg);
         findElement(By.id("newOrgAdminUsername")).sendKeys(test_username);
         clickElement(By.id("newOrgAdminSubmit"));
-
         logout();
-        loginAs(test_username, password);
 
+        loginAs(test_username, password);
         clickElement(By.id("createEltLink"));
         clickElement(By.linkText("CDE"));
         // following will assert that test user was indeed promoted
         new Select(driver.findElement(By.id("eltStewardOrgName"))).selectByVisibleText(testOrg);
         logout();
-        mustBeLoggedInAs(nlm_username, nlm_password);
 
+        mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.xpath("//div[. = 'Org Admins']"));
-
         clickElement(By.xpath("//span[contains(text(),'" + test_username + "')]/..//mat-icon[. = 'delete_outline']"));
         textNotPresent(test_username);
     }

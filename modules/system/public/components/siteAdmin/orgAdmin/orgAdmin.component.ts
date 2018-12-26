@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
@@ -11,20 +11,18 @@ import { UsersOrgQuery } from 'shared/models.model';
     selector: 'cde-org-admin',
     templateUrl: './orgAdmin.component.html'
 })
-export class OrgAdminComponent implements OnInit {
+export class OrgAdminComponent {
     newAdmin: any = {orgName: '', username: ''};
     orgAdmins: any[] = [{name: 'Loading...'}];
-
-    ngOnInit() {
-        this.getAdmins();
-    }
 
     constructor(
         private alert: AlertService,
         private http: HttpClient,
         public isAllowedModel: IsAllowedService,
         public userService: UserService,
-    ) {}
+    ) {
+        this.getAdmins();
+    }
 
     addOrgAdmin() {
         this.http.post('/addOrgAdmin', {
@@ -52,7 +50,7 @@ export class OrgAdminComponent implements OnInit {
         }, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Removed');
             this.getAdmins();
-        }, () => this.alert.addAlert('danger', 'An error occured.'));
+        }, () => this.alert.addAlert('danger', 'An error occurred.'));
     }
 
     setOrgs(r: UsersOrgQuery[]) {
