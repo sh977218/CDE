@@ -1,103 +1,124 @@
 import { Injectable } from '@angular/core';
-import { findQuestionByTinyId, getFormScoreQuestion } from 'shared/form/fe';
-import { FormQuestion } from 'shared/form/form.model';
+import { findQuestionByTinyId, getFormScoreQuestions } from 'shared/form/fe';
+import { CdeForm, FormQuestion } from 'shared/form/form.model';
 import { HttpClient } from '@angular/common/http';
+import { CbErr } from 'shared/models.model';
+
+type ErrorOrScore = {error?: string, sum?: number};
 
 @Injectable()
 export class ScoreService {
-    INPUT_SCORE_MAP = new Map<string, [Object]>();
-    elt;
+    INPUT_SCORE_MAP!: Map<string, FormQuestion[]>;
+    elt!: CdeForm;
 
     constructor(private http: HttpClient) {
     }
 
-    register(elt) {
+    register(elt: CdeForm) {
         // register all scores used by one question tinyId
         this.elt = elt;
-        let formScoreQuestions = getFormScoreQuestion(elt);
+        this.INPUT_SCORE_MAP = new Map<string, FormQuestion[]>();
+        let formScoreQuestions = getFormScoreQuestions(elt);
         formScoreQuestions.forEach(formScoreQuestion => {
             formScoreQuestion.question.cde.derivationRules.forEach(derivationRule => {
                 derivationRule.inputs.forEach(cdeTinyId => {
-                    if (!this.INPUT_SCORE_MAP[cdeTinyId]) this.INPUT_SCORE_MAP[cdeTinyId] = [];
-                    this.INPUT_SCORE_MAP[cdeTinyId].push(formScoreQuestion);
+                    if (!this.INPUT_SCORE_MAP.has(cdeTinyId)) this.INPUT_SCORE_MAP.set(cdeTinyId, []);
+                    this.INPUT_SCORE_MAP.get(cdeTinyId)!.push(formScoreQuestion);
                 });
             });
         });
     }
 
-
-    /**
-     * @param {FormQuestion}inputQuestion FormQuestion which is input
-     */
-    triggerCalculateScore(inputQuestion: FormQuestion) {
-        let scoreQuestions = this.INPUT_SCORE_MAP[inputQuestion.question.cde.tinyId];
-        if (scoreQuestions) scoreQuestions.forEach(scoreQuestion => this.calculateScore(scoreQuestion));
+    triggerCalculateScore(question: FormQuestion) {
+        let scoreQuestions: FormQuestion[] | undefined = this.INPUT_SCORE_MAP.get(question.question.cde.tinyId);
+        if (!!scoreQuestions) {
+            scoreQuestions.forEach(scoreQuestion => this.scoreSet(scoreQuestion, this.elt));
+        }
     }
 
-    /**
-     * @param {FormQuestion}scoreQuestion FormQuestion which is score
-     */
-    calculateScore(scoreQuestion: FormQuestion) {
-        if (!scoreQuestion.question.isScore) return;
-        scoreQuestion.question.cde.derivationRules.forEach(async derRule => {
+    calculateScore(question: FormQuestion, elt: CdeForm, cb: CbErr<number>) {
+        if (!question.question.isScore) {
+            return;
+        }
+        question.question.cde.derivationRules.forEach(async derRule => {
             if (derRule.ruleType === 'score') {
                 if (derRule.formula === 'sumAll') {
-                    let result: any = this.sum(derRule.inputs);
-                    scoreQuestion.question.answer = result.sum;
-                    scoreQuestion.question.scoreError = result.error;
+                    const {error, sum} = ScoreService.sum(derRule.inputs, elt);
+                    return cb(error, sum);
                 }
                 if (derRule.formula === 'mean') {
-                    let result: any = this.sum(derRule.inputs);
-                    scoreQuestion.question.answer = result.sum / derRule.inputs.length;
-                    scoreQuestion.question.scoreError = result.error;
+                    let result = ScoreService.sum(derRule.inputs, elt);
+                    return cb(result.error, result.sum !== undefined && !Number.isNaN(result.sum)
+                        ? result.sum / derRule.inputs.length
+                        : result.sum
+                    );
                 }
                 if (derRule.formula === 'bmi') {
-                    let aQuestion = findQuestionByTinyId(derRule.inputs[0], this.elt);
-                    if (!aQuestion) scoreQuestion.question.scoreError = 'Cannot find ' + derRule.inputs[0] + ' in form ' + this.elt.tinyId;
-                    let aAnswer = parseFloat(aQuestion.question.answer);
-                    if (isNaN(aAnswer)) scoreQuestion.question.scoreError = "Incomplete answers";
-                    if (!aQuestion.question.answerUom) return scoreQuestion.question.scoreError = 'Select unit of measurement for weight';
-                    else scoreQuestion.question.scoreError = '';
-                    let bQuestion = findQuestionByTinyId(derRule.inputs[1], this.elt);
-                    if (!bQuestion) scoreQuestion.question.scoreError = 'Cannot find ' + derRule.inputs[1] + ' in form ' + this.elt.tinyId;
-                    let bAnswer = parseFloat(bQuestion.question.answer);
-                    if (isNaN(bAnswer)) scoreQuestion.question.scoreError = "Incomplete answers";
-                    if (!bQuestion.question.answerUom) return scoreQuestion.question.scoreError = 'Select unit of measurement for height';
-                    else scoreQuestion.question.scoreError = '';
-
-                    if (aAnswer && bAnswer) {
-                        let aPromise = this.ucumConvter(aAnswer, aQuestion.question.answerUom.code, 'kg');
-                        let bPromise = this.ucumConvter(bAnswer, bQuestion.question.answerUom.code, 'm');
-                        Promise.all([aPromise, bPromise]).then(values => {
-                            aAnswer = values[0];
-                            bAnswer = values[1];
-                            scoreQuestion.question.answer = aAnswer / (bAnswer * bAnswer);
-                            scoreQuestion.question.scoreError = '';
-                        });
+                    let aQuestion = findQuestionByTinyId(derRule.inputs[0], elt);
+                    if (!aQuestion) {
+                        return cb('Cannot find ' + derRule.inputs[0] + ' in form ' + elt.tinyId);
                     }
+                    let aAnswer = parseFloat(aQuestion.question.answer);
+                    if (isNaN(aAnswer)) {
+                        return cb('Incomplete answers');
+                    }
+                    if (!aQuestion.question.answerUom) {
+                        return cb('Select unit of measurement for weight');
+                    }
+
+                    let bQuestion = findQuestionByTinyId(derRule.inputs[1], elt);
+                    if (!bQuestion) {
+                        return cb('Cannot find ' + derRule.inputs[1] + ' in form ' + elt.tinyId);
+                    }
+                    let bAnswer = parseFloat(bQuestion.question.answer);
+                    if (isNaN(bAnswer)) {
+                        return cb('Incomplete answers');
+                    }
+                    if (!bQuestion.question.answerUom) {
+                        return cb('Select unit of measurement for height');
+                    }
+
+                    let aPromise = this.ucumConverter(aAnswer, aQuestion.question.answerUom.code, 'kg');
+                    let bPromise = this.ucumConverter(bAnswer, bQuestion.question.answerUom.code, 'm');
+                    Promise.all([aPromise, bPromise]).then(values => {
+                        aAnswer = values[0];
+                        bAnswer = values[1];
+                        cb(undefined, aAnswer / (bAnswer * bAnswer));
+                    });
                 }
             }
         });
     }
 
-    sum(tinyIds) {
-        let sum = null;
-        for (let cdeTinyId of tinyIds) {
-            let q = findQuestionByTinyId(cdeTinyId, this.elt);
-            if (!q) return {error: 'Cannot find ' + cdeTinyId + ' in form ' + this.elt.tinyId};
-            else {
-                let answer = parseFloat(q.question.answer);
-                if (isNaN(answer)) return {error: "Incomplete answers"};
-                else {
-                    if (isNaN(sum)) sum = answer;
-                    else sum = sum + answer;
-                }
+    scoreSet(question: FormQuestion, elt: CdeForm) {
+        this.calculateScore(question, elt, (err?: string, sum?: number) => {
+            if (err) {
+                question.question.scoreError = err;
+            } else {
+                question.question.answer = sum;
+                question.question.scoreError = undefined;
             }
-        }
-        return {sum: sum};
+        });
     }
 
-    ucumConvter(value, from, to) {
+    static sum(tinyIds: string[], elt: CdeForm): ErrorOrScore {
+        let error = '';
+        let sum = 0;
+        tinyIds.forEach(cdeTinyId => {
+            let q = findQuestionByTinyId(cdeTinyId, elt);
+            if (!q) {
+                return error = 'Cannot find ' + cdeTinyId + ' in form ' + elt.tinyId;
+            }
+            const answer = parseFloat(q.question.answer);
+            if (isNaN(answer)) {
+                return error = 'Incomplete answers';
+            }
+            sum += answer;
+        });
+        return {error, sum};
+    }
+
+    ucumConverter(value: number, from?: string, to?: string) {
         return this.http.get<number>('/ucumConvert?value=' + value + '&from=' + from + '&to=' + to).toPromise();
     }
 }
