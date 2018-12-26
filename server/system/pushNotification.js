@@ -143,7 +143,7 @@ exports.updateStatus = (req, res) => {
                 }
 
                 if (!push || push.loggedIn) return respond();
-                push.updateMany({$set: {loggedIn: true}}, undefined, dbLogger.handleError({req, res}, respond));
+                push.updateOne({$set: {loggedIn: true}}, undefined, dbLogger.handleError({req, res}, respond));
             }));
         }));
     } else {

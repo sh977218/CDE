@@ -6,5 +6,5 @@ ahrqCdes.forEach(function(cde){
     if (cde.sourceId) cde.sourceId.split("v")[1];
     cde.ids.push({id: id, source: "AHRQ", version: v});
     delete cde.sourceId;
-    db.dataelements.updateMany({tinyId: cde.tinyId}, cde);
+    db.dataelements.updateOne({tinyId: cde.tinyId}, cde);
 });
