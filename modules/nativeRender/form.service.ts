@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { DataElementService } from 'cde/public/dataElement.service';
 import { CodeAndSystem, ObjectId } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm, FormQuestion, PermissibleFormValue } from 'shared/form/form.model';
+import { CdeForm, FormQuestion } from 'shared/form/form.model';
 
 @Injectable()
 export class FormService {

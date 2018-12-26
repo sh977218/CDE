@@ -305,7 +305,7 @@ export class FhirQuestionnaire extends FhirDomainResource {
     publisher?: string;
     purpose?: FhirMarkdown;
     resourceType!: 'Questionnaire';
-    status: FhirCode<'draft'|'active'|'retired'|'unknown'>;
+    status!: FhirCode<'draft'|'active'|'retired'|'unknown'>;
     subjectType?: FhirCode[];
     title?: string;
     useContext?: FhirUsageContext[];
@@ -330,7 +330,7 @@ export class FhirQuestionnaireItem extends FhirBackboneElement {
     initialTime?: FhirTime;
     initialUri?: FhirUri;
     item?: FhirQuestionnaireItem[];
-    linkId: string;
+    linkId!: string;
     maxLength?: number;
     option?: FhirQuestionnaireItemOption[];
     options?: FhirReference<FhirValueSet>;
@@ -339,7 +339,7 @@ export class FhirQuestionnaireItem extends FhirBackboneElement {
     required?: boolean;
     repeats?: boolean;
     text?: string;
-    type: FhirCode;
+    type!: FhirCode;
 }
 
 export class FhirQuestionnaireItemEnableWhen extends FhirBackboneElement {
@@ -356,7 +356,7 @@ export class FhirQuestionnaireItemEnableWhen extends FhirBackboneElement {
     answerTime?: FhirTime;
     answerUri?: FhirUri;
     hasAnswer?: boolean;
-    question: string;
+    question!: string;
 }
 
 export class FhirQuestionnaireItemOption extends FhirBackboneElement {
@@ -387,7 +387,7 @@ export class FhirQuestionnaireResponseItem extends FhirBackboneElement {
     answer?: FhirQuestionnaireResponseItemAnswer[];
     definition?: FhirUri;
     item?: FhirQuestionnaireResponseItem[];
-    linkId: string;
+    linkId!: string;
     subject?: FhirReference<any>;
     text?: string;
 }

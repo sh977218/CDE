@@ -3,7 +3,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import _noop from 'lodash/noop';
 
 import { OrgHelperService } from 'core/orgHelper.service';
-import { Organization, StatusValidationRules } from 'shared/models.model';
+import { Organization, StatusValidationRules, StatusValidationRulesOrgs } from 'shared/models.model';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
 
@@ -14,6 +14,7 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 export class StatusValidationRulesComponent implements OnInit {
     @ViewChild('removeRuleModal') removeRuleModal!: TemplateRef<any>;
     @ViewChild('addNewRuleModal') addNewRuleModal!: TemplateRef<any>;
+    dialogRef?: MatDialogRef<TemplateRef<any>>;
     fields: string[] = [
         'stewardOrg.name'
         , 'properties.key'
@@ -51,9 +52,8 @@ export class StatusValidationRulesComponent implements OnInit {
     orgNames: string[] = [];
     newRule: StatusValidationRules = {id: Math.random(), rule: {}};
     newRuleOrg = '';
-    userOrgs: {[org: string]: StatusValidationRules[]} = {};
+    userOrgs: StatusValidationRulesOrgs = {};
     userOrgsArray: string[] = [];
-    dialogRef: MatDialogRef<TemplateRef<any>>;
 
     constructor(
         private http: HttpClient,
@@ -82,14 +82,14 @@ export class StatusValidationRulesComponent implements OnInit {
        }, () => {});
     }
 
-    saveRule () {
+    saveRule() {
         this.http.post<Organization>('/enableRule', {
             orgName: this.newRuleOrg,
             rule: this.newRule
         }).subscribe(response => {
             this.userOrgs[this.newRuleOrg] = response.cdeStatusValidationRules || [];
         }, () => {});
-        this.dialogRef.close();
+        this.dialogRef!.close();
     }
 
     openAddRuleModal() {

@@ -104,7 +104,7 @@ export class FormViewComponent implements OnInit {
         return canEditCuratedItem(this.userService.user, this.elt);
     }
 
-    createDataElement(newCde: any, cb: Cb) {
+    createDataElement(newCde, cb: Cb) {
         let dataElement = {
             designations: newCde.designations,
             definitions: newCde.definitions,
@@ -227,8 +227,8 @@ export class FormViewComponent implements OnInit {
         this.eltCopy['designations'][0].designation = 'Copy of: ' + this.eltCopy['designations'][0].designation;
         this.eltCopy['definitions'] = this.eltCopy['definitions'];
         this.eltCopy['registrationState'] = {
+            administrativeNote: 'Copy of: ' + this.elt.tinyId,
             registrationStatus: 'Incomplete',
-            administrativeNote: 'Copy of: ' + this.elt.tinyId
         };
         this.dialogRef = this.dialog.open(this.copyFormContent, {width: '1200px'});
     }

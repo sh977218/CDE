@@ -1,7 +1,9 @@
 import { FormElement, FormElementsContainer, FormQuestion } from 'shared/form/form.model';
+import { CbRequired } from 'shared/models.model';
 
 type filter = (fe: FormElement) => boolean;
 
+declare function evaluateSkipLogic(condition: string | undefined, parent: FormElement, fe: FormElement, addError: CbRequired<string>): boolean;
 declare function getLabel(q: FormQuestion): string;
 declare function getQuestions(fes: FormElement[], filter?: filter): FormQuestion[];
 declare function getQuestionsPrior(parent: FormElementsContainer, fe: FormElement, filter?: filter): FormQuestion[];
