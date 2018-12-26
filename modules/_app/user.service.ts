@@ -15,7 +15,7 @@ import { newNotificationSettings, newNotificationSettingsMedia, newNotificationS
 @Injectable()
 export class UserService {
     private listeners: Cb[] = [];
-    private mailSubscription: Subscription;
+    private mailSubscription?: Subscription;
     private promise!: Promise<User>;
     searchTypeahead = ((text$: Observable<string>) =>
         text$.pipe(
@@ -30,7 +30,7 @@ export class UserService {
         )));
     user?: User;
     userOrgs: string[] = [];
-    logoutTimeout: number;
+    logoutTimeout?: number;
 
     constructor(private dialog: MatDialog,
                 private http: HttpClient,

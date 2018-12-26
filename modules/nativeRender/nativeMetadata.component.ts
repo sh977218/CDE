@@ -8,37 +8,39 @@ import { textTruncate } from 'widget/browser';
 const ACCESSGUDID_LOOKUP = 'https://accessgudid.nlm.nih.gov/api/v1/devices/lookup.json';
 const ACCESSGUDID_PARSEUDI = 'https://accessgudid.nlm.nih.gov/api/v1/parse_udi.json?udi=';
 
+type AccessGUDIDDevice = any;
+
 @Component({
     selector: 'cde-native-metadata',
     templateUrl: './nativeMetadata.component.html',
 })
 export class NativeMetadataComponent {
     componentClass = NativeMetadataComponent;
-    metadataSearch: string;
+    metadataSearch?: string;
     metadataSearchResult: any;
     textTruncate = textTruncate;
-    watchNewState: string;
+    watchNewState?: string;
 
     constructor(public nativeFe: NativeQuestionComponent, private http: HttpClient) {}
 
-    accessGUDIdSearch(term) {
-        if (typeof(term) === 'string') term = term.trim();
-        if (!term) return;
+    accessGUDIdSearch() {
+        if (typeof(this.metadataSearch) === 'string') this.metadataSearch = this.metadataSearch.trim();
+        if (!this.metadataSearch) return;
         this.http.get<any>(ACCESSGUDID_LOOKUP + (this.nativeFe.metadataTagsNew === 'UDI' ? '?udi=' : '?di=')
-            + encodeURIComponent(term)).subscribe((result: any) => {
-            if (result.error) {
+            + encodeURIComponent(this.metadataSearch)).subscribe((device: AccessGUDIDDevice) => {
+            if (device.error) {
                 return this.metadataSearchResult = null;
             }
-            this.metadataSearchResult = result;
-            this.addDevice(result);
+            this.metadataSearchResult = device;
+            this.addDevice(device);
         }, () => this.metadataSearchResult = null);
     }
 
-    addDevice(accessgudid) {
-        let addDI = () => this.nativeFe.formElement.metadataTags.push({key: 'device', value: accessgudid});
+    addDevice(accessgudid: AccessGUDIDDevice) {
+        let addDI = () => this.nativeFe.formElement.metadataTags!.push({key: 'device', value: accessgudid});
         if (!this.nativeFe.formElement.metadataTags) this.nativeFe.formElement.metadataTags = [];
         if (this.nativeFe.metadataTagsNew === 'UDI') {
-            this.http.get<any>(ACCESSGUDID_PARSEUDI + encodeURIComponent(this.metadataSearch.trim())).subscribe(udi => {
+            this.http.get<any>(ACCESSGUDID_PARSEUDI + encodeURIComponent(this.metadataSearch!.trim())).subscribe(udi => {
                 if (udi.error) {
                     return addDI();
                 }
@@ -54,7 +56,7 @@ export class NativeMetadataComponent {
         this.watchNewState = undefined;
     }
 
-    static deviceId(accessgudid) {
+    static deviceId(accessgudid: AccessGUDIDDevice) {
         let ids = accessgudid.gudid.device.identifiers.identifier;
         if (Array.isArray(ids)) {
             let primary = ids.filter(id => id.deviceIdType === 'Primary');
@@ -64,7 +66,7 @@ export class NativeMetadataComponent {
         }
     }
 
-    static ensureArray(obj) {
+    static ensureArray(obj: any) {
         return Array.isArray(obj) ? obj : [obj];
     }
 

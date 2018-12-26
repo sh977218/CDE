@@ -46,7 +46,7 @@ export class PushNotificationSubscriptionService {
             try {
                 // generate new endpoint
                 let registration = await this.registration;
-                let pushSubscription: PushSubscription = await registration.pushManager.getSubscription();
+                let pushSubscription: PushSubscription | null = await registration.pushManager.getSubscription();
                 if (pushSubscription && pushSubscription.endpoint) {
                     this.lastEndpoint = pushSubscription.endpoint;
                     return Promise.resolve();
@@ -113,11 +113,11 @@ export class PushNotificationSubscriptionService {
         }
     }
 
-    static async subscriptionNew(userId: string): Promise<PushSubscription> {
+    static async subscriptionNew(userId: string): Promise<PushSubscription | null> {
         try {
             await this.askNotificationPermission();
             let registration = await this.registration;
-            let pushSubscription: PushSubscription = await registration.pushManager.getSubscription();
+            let pushSubscription: PushSubscription | null = await registration.pushManager.getSubscription();
             let response: Response = await fetch('./pushRegistration', {
                 method: 'post',
                 headers: {

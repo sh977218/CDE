@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
+import { CbErr } from 'shared/models.model';
 
 @Component({
     selector: 'cde-native-render-standalone',
@@ -30,10 +31,10 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
     templateUrl: './nativeRenderApp.component.html'
 })
 export class NativeRenderAppComponent {
-    elt: CdeForm;
-    errorMessage: string;
+    elt?: CdeForm;
+    errorMessage?: string;
     methodLoadForm = this.loadForm.bind(this);
-    selectedProfile: DisplayProfile;
+    selectedProfile?: DisplayProfile;
     selectedProfileName: string;
     summary = false;
     submitForm: boolean;
@@ -44,7 +45,7 @@ export class NativeRenderAppComponent {
         this.submitForm = args.submit !== undefined;
         if ((<any>window).formElt) {
             let elt = JSON.parse(JSON.stringify((<any>window).formElt));
-            this.loadForm(null, elt);
+            this.loadForm(undefined, elt);
         } else {
             if (args.tinyId) {
                 this.getForm(args.tinyId, this.methodLoadForm);
@@ -54,21 +55,24 @@ export class NativeRenderAppComponent {
         }
     }
 
-    getForm(tinyId, cb) {
+    getForm(tinyId: string, cb: CbErr<CdeForm>) {
         this.http.get<CdeForm>('/form/' + tinyId).subscribe(elt => {
             CdeForm.validate(elt);
-            cb(null, elt);
-        }, (err) => cb(err.statusText));
+            cb(undefined, elt);
+        }, err => cb(err.statusText));
     }
 
-    loadForm(err = null, elt = null) {
-        if (err) return this.errorMessage = 'Sorry, we are unable to retrieve this element.';
+    loadForm(err?: string, elt?: CdeForm) {
+        if (err || !elt) {
+            return this.errorMessage = 'Sorry, we are unable to retrieve this element.';
+        }
         this.elt = elt;
-        if (!this.selectedProfileName) this.selectedProfile = this.elt.displayProfiles[0];
-        else {
+        if (!this.selectedProfileName) {
+            this.selectedProfile = this.elt.displayProfiles[0];
+        } else {
             let selectedProfileArray = this.elt.displayProfiles.filter(d => d.name === this.selectedProfileName);
             if (selectedProfileArray && selectedProfileArray.length > 0) this.selectedProfile = selectedProfileArray[0];
-            else this.selectedProfile = null;
+            else this.selectedProfile = undefined;
         }
     }
 

@@ -1,16 +1,16 @@
 import { Component, Input } from '@angular/core';
 
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { FormElement } from 'shared/form/form.model';
+import { FormElement, FormSectionOrForm } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-native-section',
     templateUrl: './nativeSection.component.html'
 })
 export class NativeSectionComponent {
-    @Input() formElements: FormElement[];
-    @Input() formElement: FormElement;
-    @Input() numSubQuestions: number;
+    @Input() formElements!: FormElement[];
+    @Input() formElement!: FormSectionOrForm;
+    @Input() numSubQuestions!: number;
 
     constructor(public nrs: NativeRenderService) {
     }
@@ -21,14 +21,14 @@ export class NativeSectionComponent {
         return 'section';
     }
 
-    isSectionDisplayed(section) {
+    isSectionDisplayed(section: FormSectionOrForm) {
         return section.label || section.formElements.some(elem => elem.elementType === 'question');
     }
 
-    canBeDisplayedAsMatrix(section) {
+    canBeDisplayedAsMatrix(section: FormSectionOrForm) {
         if (!section) return true;
         let result = true;
-        let answerHash;
+        let answerHash: string;
 
         if (section && section.formElements
             && (section.formElements.length === 0 || section.formElements.length === 1)) {

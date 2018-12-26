@@ -1,16 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { ErrorHandler, Injectable } from '@angular/core';
 
+type AngularError = any;
+
 @Injectable()
 export class FrontExceptionHandler implements ErrorHandler {
     lock = false;
-    previousException;
+    previousException: AngularError;
 
     constructor(
         private http: HttpClient
     ) {}
 
-    handleError (error) {
+    handleError (error: AngularError) {
         if (this.previousException && error.toString() === this.previousException.toString()) return;
         this.previousException = error;
         console.error(error);

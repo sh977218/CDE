@@ -1,21 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import * as JSZip from 'jszip';
-import * as JXON from 'jxon';
-import { saveAs } from 'file-saver';
-import _intersectionWith from 'lodash/intersectionWith';
-import _noop from 'lodash/noop';
-
-import { AlertService } from 'alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 import { RegistrationValidatorService } from 'core/registrationValidator.service';
-import { DataElement } from 'shared/de/dataElement.model';
+import { saveAs } from 'file-saver';
+import * as JSZip from 'jszip';
+import * as JXON from 'jxon';
+import _intersectionWith from 'lodash/intersectionWith';
+import _noop from 'lodash/noop';
+import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { getFormOdm } from 'shared/form/form';
 import { CdeForm } from 'shared/form/form.model';
 import { getFormQuestionsAsQuestionCde } from 'shared/form/fe';
+import { ElasticQueryResponse, Item } from 'shared/models.model';
 import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'shared/system/exportShared';
-
 
 @Injectable()
 export class ExportService {
@@ -25,7 +24,7 @@ export class ExportService {
                 protected userService: UserService,
                 protected http: HttpClient) {}
 
-    async resultToCsv (result) {
+    async resultToCsv(result) {
         let settings = this.elasticService.searchSettings;
         let csv = getCdeCsvHeader(settings.tableViewFields);
         if (settings.tableViewFields.linkedForms) {
@@ -34,13 +33,14 @@ export class ExportService {
                     if (r !== undefined) {
                         let forms = await new Promise<Array<CdeForm>>(resolve => {
                             let lfSettings = this.elasticService.buildElasticQuerySettings({
-                                q: r.tinyId
-                                , page: 1
-                                , classification: []
-                                , classificationAlt: []
-                                , regStatuses: []
+                                q: r.tinyId,
+                                page: 1,
+                                classification: [],
+                                classificationAlt: [],
+                                regStatuses: [],
                             });
-                            this.elasticService.generalSearchQuery(lfSettings, 'form', (err, esRes) => resolve(esRes.forms));
+                            this.elasticService.generalSearchQuery(lfSettings, 'form',
+                                (err?: string, esRes?: ElasticQueryResponse) => resolve(esRes.forms));
                         });
                         if (forms.length) r.linkedForms = forms.map(f => f.tinyId).join(', ');
                     }
@@ -122,7 +122,7 @@ export class ExportService {
                 }
 
                 let exporters = {
-                    'csv': async result => {
+                    'csv': async (result: Item[]) => {
                         let csv = await this.resultToCsv(result);
                         let blob = new Blob([csv], {type: 'text/csv'});
                         saveAs(blob, 'SearchExport.csv');
@@ -158,11 +158,9 @@ export class ExportService {
 
                             if (!this.registrationValidatorService.conditionsMetForStatusWithinOrg(oneElt, orgName, status, cdeOrgRules)) {
                                 let record = {
-                                    tinyId: oneElt.tinyId
-                                    ,
-                                    cdeName: oneElt.designations[0].designation
-                                    ,
-                                    validationRules: this.registrationValidatorService.evalCde(oneElt, orgName, status, cdeOrgRules)
+                                    tinyId: oneElt.tinyId,
+                                    cdeName: oneElt.designations[0].designation,
+                                    validationRules: this.registrationValidatorService.evalCde(oneElt, orgName, status, cdeOrgRules),
                                 };
                                 if (!record.validationRules.every(function (x) {
                                         return x.cdePassingRule;
@@ -174,7 +172,7 @@ export class ExportService {
                 };
 
                 if (result) {
-                    let exporter = exporters[type];
+                    let exporter = (exporters as any)[type];
                     if (!exporter) {
                         this.alertService.addAlert('danger', 'This export format is not supported.');
                     } else {
@@ -198,11 +196,14 @@ export class ExportService {
         }
     }
 
-    async formCdeExport (form) {
+    async formCdeExport(form: CdeForm) {
         this.alertService.addAlert("", 'Fetching cdes. Please wait...');
         let tinyIdList = getFormQuestionsAsQuestionCde(form).map(f => f.tinyId);
-        let elts = await this.http.get<DataElement>('/deList/' + tinyIdList).toPromise().catch(_noop);
-        let csv = await this.resultToCsv(elts);
+        let elts = await this.http.get<DataElement[]>('/deList/' + tinyIdList).toPromise().catch(_noop);
+        let csv;
+        if (elts) {
+            csv = await this.resultToCsv(elts);
+        }
         if (csv) {
             let blob = new Blob([csv], {type: 'text/csv'});
             saveAs(blob, 'FormCdes-' + form.tinyId + '.csv');
