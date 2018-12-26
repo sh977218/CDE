@@ -84,7 +84,7 @@ retireCde = () => {
             'registrationState.registrationStatus': 'Retired',
             'registrationState.administrativeNote': 'Not present in import at ' + new Date().toJSON()
         };
-        let retires = await DataElement.update(cond, update, {multi: true});
+        let retires = await DataElement.updateMany(cond, update, {multi: true});
         console.log(retires.nModified + ' cdes retired');
         resolve();
     })

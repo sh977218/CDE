@@ -78,7 +78,7 @@ const pushNotification = require('./pushNotification');
 // };
 
 exports.attachmentApproved = (collection, id, cb) => {
-    collection.update(
+    collection.updateMany(
         {'attachments.fileid': id},
         {
             $unset: {
@@ -89,7 +89,7 @@ exports.attachmentApproved = (collection, id, cb) => {
 };
 
 exports.attachmentRemove = (collection, id, cb) => {
-    collection.update({'attachments.fileid': id}, {$pull: {'attachments': {'fileid': id}}}, cb);
+    collection.updateMany({'attachments.fileid': id}, {$pull: {'attachments': {'fileid': id}}}, cb);
 };
 
 exports.fileUsed = (collection, id, cb) => {

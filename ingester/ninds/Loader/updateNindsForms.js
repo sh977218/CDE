@@ -72,7 +72,7 @@ retireForm = () => {
             'registrationState.registrationStatus': 'Retired',
             'registrationState.administrativeNote': 'Not present in import at ' + new Date().toJSON()
         };
-        let retires = await Form.update(cond, update, {multi: true});
+        let retires = await Form.updateMany(cond, update, {multi: true});
         console.log(retires.nModified + ' forms retired');
         resolve();
     })

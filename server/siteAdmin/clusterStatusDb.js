@@ -36,5 +36,5 @@ exports.getClusterHostStatuses = callback => {
 
 exports.updateClusterHostStatus = (status, callback) => {
     status.lastUpdate = new Date();
-    ClusterStatus.update({port: status.port, hostname: status.hostname}, status, {upsert: true}, callback);
+    ClusterStatus.updateMany({port: status.port, hostname: status.hostname}, status, {upsert: true}, callback);
 };

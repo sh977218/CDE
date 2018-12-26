@@ -104,7 +104,7 @@ exports.getStream = function (condition) {
 };
 
 exports.count = function (condition, callback) {
-    PinningBoard.count(condition).exec(callback);
+    PinningBoard.countDocuments(condition, callback);
 };
 
 exports.boardsByUserId = function (userId, callback) {
@@ -118,7 +118,7 @@ exports.publicBoardsByPinTinyId = (tinyId, callback) => {
 };
 
 exports.nbBoardsByUserId = function (userId, callback) {
-    PinningBoard.count({"owner.userId": userId}).exec(callback);
+    PinningBoard.countDocuments({"owner.userId": userId}, callback);
 };
 
 exports.boardById = function (boardId, callback) {
@@ -138,12 +138,12 @@ exports.byId = exports.boardById;
 
 exports.boardList = function (from, limit, searchOptions, callback) {
     PinningBoard.find(searchOptions).exec(function (err, boards) {
-        PinningBoard.count(searchOptions).exec(function (err, count) {
+        PinningBoard.countDocuments(searchOptions, (err, count) => {
             callback(err, {
-                boards: boards
-                , page: Math.ceil(from / limit)
-                , pages: Math.ceil(count / limit)
-                , totalNumber: count
+                boards: boards,
+                page: Math.ceil(from / limit),
+                pages: Math.ceil(count / limit),
+                totalNumber: count,
             });
         });
     });

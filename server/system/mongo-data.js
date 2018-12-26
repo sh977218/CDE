@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const async = require('async');
+const mongo = require('mongodb');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const shortId = require('shortid');
@@ -10,9 +11,10 @@ const eltShared = require('esm')(module)('../../shared/elt');
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const connHelper = require('./connections');
 const dbLogger = require('../log/dbLogger');
-const notificationSvc = require('../notification/notificationSvc');
 const consoleLog = dbLogger.consoleLog;
 const handleError = dbLogger.handleError;
+const logger = require('./noDbLogger');
+const notificationSvc = require('../notification/notificationSvc');
 const logging = require('./logging.js');
 const daoManager = require('./moduleDaoManager');
 const config = require('./parseConfig');
@@ -30,7 +32,14 @@ const userDb = require('../user/userDb');
 const User = require('../user/userDb').User;
 const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema);
 
-const gfs = Grid(conn.db, mongoose.mongo);
+let gfs;
+mongo.connect(config.database.appData.uri, (err, client) => {
+    if (err) {
+        logger.noDbLogger.info("Error connection open to legacy mongodb: " + err);
+    } else {
+        gfs = Grid(client, mongo);
+    }
+});
 const sessionStore = new MongoStore({
     mongooseConnection: conn,
     touchAfter: 60
@@ -73,7 +82,7 @@ exports.jobStatus = (type, callback) => {
     JobQueue.findOne({type: type}, callback);
 };
 exports.updateJobStatus = (type, status, callback) => {
-    JobQueue.update({type: type}, {status: status}, {upsert: true}, callback);
+    JobQueue.updateMany({type: type}, {status: status}, {upsert: true}, callback);
 };
 exports.removeJobStatus = (type, callback) => {
     JobQueue.remove({type: type}, callback);
@@ -89,7 +98,7 @@ exports.addCdeToViewHistory = (elt, user) => {
             $slice: 1000
         }
     };
-    User.update({'_id': user._id}, {$push: updStmt}, err => {
+    User.updateOne({'_id': user._id}, {$push: updStmt}, err => {
         if (err) logging.errorLogger.error("Error: Cannot update viewing history", {
             origin: "cde.mongo-cde.addCdeToViewHistory",
             stack: new Error().stack,
@@ -107,7 +116,7 @@ exports.addFormToViewHistory = (elt, user) => {
             $slice: 1000
         }
     };
-    User.update({'_id': user._id}, {$push: updStmt}, err => {
+    User.updateOne({'_id': user._id}, {$push: updStmt}, err => {
         if (err) logging.errorLogger.error("Error: Cannot update viewing history", {
             origin: "cde.mongo-cde.addFormToViewHistory",
             stack: new Error().stack,
@@ -121,7 +130,7 @@ exports.embeds = {
         if (embed._id) {
             let _id = embed._id;
             delete embed._id;
-            Embeds.update({_id: _id}, embed, cb);
+            Embeds.updateOne({_id: _id}, embed, cb);
         } else {
             new Embeds(embed).save(cb);
         }
@@ -174,7 +183,7 @@ exports.pushDelete = (endpoint, userId, callback) => {
 };
 
 exports.pushEndpointUpdate = (endpoint, commandObj, callback) => {
-    PushRegistration.update({'subscription.endpoint': endpoint}, commandObj, {multi: true}, callback);
+    PushRegistration.updateMany({'subscription.endpoint': endpoint}, commandObj, {multi: true}, callback);
 };
 
 exports.pushGetAdministratorRegistrations = callback => {
@@ -400,7 +409,7 @@ exports.createMessage = (msg, cb) => {
 exports.updateMessage = function (msg, callback) {
     let id = msg._id;
     delete msg._id;
-    Message.update({_id: id}, msg, callback);
+    Message.updateOne({_id: id}, msg, callback);
 };
 
 // TODO this function name is not good

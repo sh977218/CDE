@@ -41,7 +41,7 @@ for (var m  = 0; m < replaceMap.length; m++) {
             elt.dataElementConcept.conceptualDomain = toDo.conceptualDomain;
             elt.registrationState.administrativeStatus = "Ready For Review";
             console.log("updating: " + id);
-            DataElement.update({'_id': id}, elt, function (err, savedElt) {
+            DataElement.updateOne({'_id': id}, elt, function (err, savedElt) {
                 if (err)
                     console.log(err);   
             });

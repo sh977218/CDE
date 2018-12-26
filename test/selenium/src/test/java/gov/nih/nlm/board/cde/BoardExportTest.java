@@ -53,7 +53,7 @@ public class BoardExportTest extends BoardTest {
         String response = given().when().get(url_string).asString();
         String[] expected2 = {
                 "\"name\":\"Board Export Test\",\"description\":\"Test for board export\",\"shareStatus\":\"Public\"",
-                "\"name\":\"Acute Hospitalized\"},{\"elements\":[{\"elements\":[{\"elements\":[],\"name\":\"Psychiatric and Psychological"
+                "\"name\":\"Acute Hospitalized\",\"elements\":[{\"name\":\"Classification\",\"elements\":[{\"name\":\"Supplemental\""
         };
         for (String s : expected2) {
             Assert.assertTrue(response.contains(s), "Actual Export: " + response);

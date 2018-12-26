@@ -33,7 +33,7 @@ db.dataelements.count({
 
 5. remote log into mongodb by history   !998
 use nlmcde
-db.dataelements.update({
+db.dataelements.updateMany({
 	"source" : "NINDS",
 	archived : false,
 	"registrationState.registrationStatus" : "Qualified",
@@ -50,7 +50,7 @@ db.dataelements.update({
 
 6. remove suggested question text from properties
 use nlmcde
-db.dataelements.update(
+db.dataelements.updateMany(
 {source: "NINDS", archived: false},
 {$pull: {properties:
 {key: "NINDS Suggested Question"}
