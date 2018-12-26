@@ -3,6 +3,8 @@ const NindsModel = require('../../createMigrationConnection').NindsModel;
 
 const mongo_form = require('../../../server/form/mongo-form');
 const Form = mongo_form.Form;
+const mongo_cde = require('../../../server/cde/mongo-cde');
+const DataElement = mongo_cde.DataElement;
 
 const CreateForm = require('../Form/CreateForm');
 const CompareForm = require('../Form/CompareForm');
