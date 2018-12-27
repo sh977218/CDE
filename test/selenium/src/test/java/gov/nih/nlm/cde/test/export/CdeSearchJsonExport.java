@@ -25,8 +25,9 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
         textPresent("Export downloaded.");
 
         String[] expected = {
-                "{\"tinyId\":\"03UmDCNQ4x7\",\"imported\":\"2015-09-21T18:20:26.298Z\",\"source\":\"NINDS\",\"version\":\"3\"",
-                "\"referenceDocuments\":[],\"views\":0,\"attachments\":[],\"archived\":false"
+                "\"tinyId\":\"03UmDCNQ4x7\",\"imported\":\"2015-09-21T18:20:26.298Z\",\"source\":\"NINDS\",\"version\":\"3\"",
+                "\"referenceDocuments\":[],\"attachments\":[]",
+                "\"archived\":false,\"views\":0"
         };
 
         try {

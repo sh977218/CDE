@@ -239,7 +239,7 @@ function streamOnData(migrationCde) {
 
 function streamOnClose() {
     // Retire Missing CDEs
-    DataElement.update({
+    DataElement.updateMany({
         imported: {$ne: importDate},
         source: cdeSource
     }, {

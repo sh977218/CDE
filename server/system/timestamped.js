@@ -36,7 +36,7 @@ module.exports = function timestamped(model, noPost) {
                     return;
                 }
                 data.timestamp = new Date();
-                model.update({_id: data._id, timestamp: timestamp}, data, handleError(errorOptions, status => {
+                model.updateOne({_id: data._id, timestamp: timestamp}, data, handleError(errorOptions, status => {
                     if (status.nModified === 1) {
                         cb(data);
                     } else {

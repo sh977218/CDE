@@ -196,29 +196,29 @@ exports.module = function (roleConfig) {
         if (size > 500) return res.status(403).send("Request too large");
         let boardId = req.params.boardId;
         let start = Number.parseInt(req.params.start);
-        boardDb.byId(boardId, handle404({req, res}, board => {
-                if (board.shareStatus !== "Public" && !checkBoardViewerShip(board, req.user)) {
-                    return res.status(404).send();
+        boardDb.byId(boardId, handle404({req, res}, b => {
+            let board = b.toObject();
+            if (board.shareStatus !== "Public" && !checkBoardViewerShip(board, req.user)) {
+                return res.status(404).send();
+            }
+            delete board.owner.userId;
+            let totalItems = board.pins.length;
+            let tinyIdList = board.pins.splice(start, size).map(p => p.tinyId);
+            board.pins = [];
+            daoManager.getDao(board.type).elastic.byTinyIdList(tinyIdList, size, handleError({req, res}, elts => {
+                if (board.type === 'cde') cdeSvc.hideProprietaryCodes(elts, req.user);
+                let exportBoard = {
+                    board: stripBsonIds(board),
+                    elts: elts,
+                    totalItems: totalItems
+                };
+                if (req.query.type === "xml") {
+                    res.setHeader("Content-Type", "application/xml");
+                    return res.send(js2xml("export", exportBoard));
                 }
-                delete board._doc.owner.userId;
-                let totalItems = board.pins.length;
-                let tinyIdList = board.pins.splice(start, size).map(p => p.tinyId);
-                board.pins = [];
-                daoManager.getDao(board.type).elastic.byTinyIdList(tinyIdList, size, handleError({req, res}, elts => {
-                    if (board.type === 'cde') cdeSvc.hideProprietaryCodes(elts, req.user);
-                    let exportBoard = {
-                        board: stripBsonIds(board.toObject()),
-                        elts: elts,
-                        totalItems: totalItems
-                    };
-                    if (req.query.type === "xml") {
-                        res.setHeader("Content-Type", "application/xml");
-                        return res.send(js2xml("export", exportBoard));
-                    }
-                    res.send(exportBoard);
-                }));
-            })
-        );
+                res.send(exportBoard);
+            }));
+        }));
     });
 
     router.post('/', [loggedInMiddleware], (req, res) => {
