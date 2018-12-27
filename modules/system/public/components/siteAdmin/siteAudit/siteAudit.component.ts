@@ -22,7 +22,6 @@ export class SiteAuditComponent implements OnInit {
         {label: "tab1", content: "<cde-feedback-issues></cde-feedback-issues>"}
     ];
 
-
     constructor(public userService: UserService,
                 private route: ActivatedRoute) {
         this.userService.then(user => this.isAdmin = isSiteAdmin(user), _noop);
@@ -30,7 +29,6 @@ export class SiteAuditComponent implements OnInit {
 
     ngOnInit() {
         setTimeout(() => {
-            console.log(this.serverErrorTab);
             if (this.route.snapshot.queryParams['tab']) {
                 let tab = this.route.snapshot.queryParams['tab'];
                 if (tab === "serverErrors") {
@@ -38,7 +36,6 @@ export class SiteAuditComponent implements OnInit {
                 } if (tab === "clientErrors") {
                     this.selectedTab.setValue(this.clientErrorTab.position);
                 }
-
             }
         }, 0);
     }
