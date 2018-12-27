@@ -188,9 +188,6 @@
             </table>
         </ng-container>
         <div>
-            <!--<div *ngIf="!elt.allValid && elt.valueDomain.permissibleValues.length > 0" class="alert alert-danger mt20"-->
-            <!--role="alert">There are validation errors. {{elt.pvNotValidMsg }}-->
-            <!--</div>-->
             <ng-container *ngIf="canEdit">
                 <button mat-raised-button id="openAddPermissibleValueModelBtn" (click)="openNewPermissibleValueModal()">
                     <mat-icon>add</mat-icon>
