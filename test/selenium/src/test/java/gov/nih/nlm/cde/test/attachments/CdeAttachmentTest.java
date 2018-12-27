@@ -29,7 +29,7 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
         goToAttachments();
         findElement(By.linkText("glass.jpg"));
         clickElement(By.id("notifications"));
-        clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'glass.jpg ')]]//button[*[contains(text(),'Approve')]]"));
+        clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'glass.jpg')]]//button[*[contains(text(),'Approve')]]"));
 
         logout();
         mustBeLoggedInAs(ninds_username, password);
