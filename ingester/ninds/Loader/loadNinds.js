@@ -91,7 +91,8 @@ doOneNindsFormById = async formIdString => {
         let savedForm = await newForm.save();
         createdForm++;
         console.log('createdForm: ' + createdForm + ' ' + savedForm.tinyId);
-    } else if (updatedByNonLoader(existingForm)) {
+    } else if (updatedByNonLoader(existingForm) ||
+        existingForm.registrationState.registrationStatus === 'Standard') {
         skipForm++;
         console.log('skipForm: ' + skipForm + ' ' + existingForm.tinyId);
     } else {
@@ -113,7 +114,7 @@ doOneNindsFormById = async formIdString => {
 
 run = async () => {
 //    let formIdList = await NindsModel.distinct('formId');
-    let formIdList = ['F0374'];
+    let formIdList = ['formF2032'];
     for (let formId of formIdList) {
         await doOneNindsFormById(formId);
         await NindsModel.remove({formId: formId});

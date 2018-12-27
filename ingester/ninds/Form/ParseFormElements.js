@@ -55,7 +55,9 @@ doOneNindsCde = async cdeId => {
             console.log('comment saved on new CDE ' + newCde.tinyId);
         }
         await newCde.save();
-    } else if (updatedByNonLoader(existingCde) || existingCde.updated > yesterday) {
+    } else if (updatedByNonLoader(existingCde) ||
+        existingCde.updated > yesterday ||
+        existingCde.registrationState.registrationStatus === 'Standard') {
     } else {
         existingCde.imported = new Date().toJSON();
         existingCde.markModified('imported');
